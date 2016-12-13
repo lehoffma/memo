@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class TestController {
 
-    @RequestMapping("/test")
+    @RequestMapping("/")
     @ResponseBody
     public String test(){
         return "test";
