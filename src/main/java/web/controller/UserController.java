@@ -16,9 +16,9 @@ public class UserController {
 
 
     @RequestMapping("/user")
-    public User getUser ()//@RequestParam(value="ID")int ID)
+    public User getUser (@RequestParam(value="ID")int ID)
     {
-        int ID = 1;
+        //int ID = 1;
         //TODO: Ask SQL for UserData
 
         User _user = new User();
@@ -34,11 +34,11 @@ public class UserController {
         _user.firstName = "Nils";
         _user.partyPermission = Permission.read;
         _user.passwordHash = "tohuuihgrohujt0uiwe89jg7";
-        _user.surname = "Pöcking";
+        _user.LastName = "Pöcking";
         _user.telephone = "+(49) 176 / 84 80 62 85";
         _user.userManagementPermission = Permission.read;
         _user.tourPermission = Permission.read;
-        _user.bankAccount = new BankAccount("Nils Pöcking", "DE31270200001514940236","VOWADE2BXXX");
+        _user.bankAccount = new BankAccount(1,"Nils Pöcking", "DE31270200001514940236","VOWADE2BXXX");
         _user.address = new Address(1,"Nils Pöcking","Helmstedter Str.", "58", "39112", "Magdeburg", "Deutschland");
 
         // TODO: HIDE SOME DATA (JSON IGNORE PROPERTY)

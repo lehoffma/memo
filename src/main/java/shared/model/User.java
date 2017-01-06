@@ -9,7 +9,7 @@ public class User {
 
     public int memberID;
     public String firstName;
-    public String surname;
+    public String LastName;
     public Date birthDate;
     public String telephone;
     public ClubRole ClubRole;

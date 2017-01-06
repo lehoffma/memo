@@ -5,11 +5,13 @@ package shared.model;
  */
 public class BankAccount {
 
+    public Integer AccountID;
     public String FullName;
     public String IBAN;
     public String BIC;
 
-    public BankAccount(String _FullName, String _IBAN, String _BIC){
+    public BankAccount(Integer _AccountID, String _FullName, String _IBAN, String _BIC){
+        this.AccountID = _AccountID;
         this.FullName = _FullName;
         this.IBAN = _IBAN;
         this.BIC = _BIC;
