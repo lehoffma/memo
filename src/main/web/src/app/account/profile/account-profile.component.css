@@ -9,11 +9,14 @@
 }
 .name{
     font-size: 5em;
-    align-items: center;
-    justify-content: space-between;
-    display: flex;
     padding-left: 80px;
     padding-right: 80px;
+    justify-content: space-between;
+}
+.profilecard > div{
+    align-items: center;
+    justify-content: flex-start;
+    display: flex;
 }
 
 .profilpic{
@@ -28,19 +31,25 @@
 }
 
 .middle-icon{
+
+    font-size: 4em;
+    height: 60px;
+    width: 60px;
     margin-left: 0.5em;
     margin-right: 1em;
     margin-bottom: 0.5em;
-    font-size: 4em;
-    height:auto;
-    width: auto;
+
+
+
 }
 .icontext{
     font-size: 3em;
+    margin-bottom: 0.5em;
 }
 
 .proftext{
     font-size: 2em;
-    margin-left: 0.5em;
+
+
 
 }
