@@ -1,0 +1,43 @@
+<md-toolbar color="primary">
+    <!--The left side-->
+    <div>
+        <!--The left side is hidden when the screen size is larger than small -->
+        <button md-button class="menu" (click)="sideBarChanged()">
+            <md-icon class="material-icons">menu</md-icon>
+        </button>
+    </div>
+
+    <span class="navigation-fill-remaining-space navigation-left-space"></span>
+
+    <div class="logo">
+        <img src="../../../resources/images/Logo_white.png">
+    </div>
+
+    <span class="navigation-fill-remaining-space navigation-right-space"></span>
+
+    <!--The right side-->
+    <div class="navigation-right-side">
+        <navigation-toolbar-element *ngFor="let link of (links|async);" [link]="link">
+        </navigation-toolbar-element>
+
+        <!--user is logged in -> show profile picture -->
+        <div *ngIf="loggedIn" class="dropdown profile-picture-container">
+            <button md-button class="dropbtn" routerLink="profile">
+                <img class="profile-picture" src="{{imagePath}}">
+            </button>
+
+            <div class="dropdown-content profile-picture-dropdown-content">
+                <a *ngFor="let childLink of (accountLinks | async)" routerLink="{{childLink.route}}"
+                   routerLinkActive="active">
+                    <md-icon *ngIf="childLink.icon">{{childLink.icon}}</md-icon>
+                    {{childLink.name}}</a>
+            </div>
+        </div>
+        <!--user is not logged in -> show log-in button instead -->
+        <div *ngIf="!loggedIn" class="login-button-container">
+            <button md-raised-button color="accent" (click)="takeToLoginPage()">
+                Login
+            </button>
+        </div>
+    </div>
+</md-toolbar>

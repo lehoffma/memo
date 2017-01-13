@@ -1,0 +1,15 @@
+<div class="background">
+
+    <md-sidenav-container>
+        <md-sidenav #sidenav>
+            <navigation-sidenav (sideBarClosed)="sidenav.close()"></navigation-sidenav>
+        </md-sidenav>
+
+        <!--main content-->
+        <div>
+            <!--output: sidebar button wurde angeklickt -> callback in AppComponent -->
+            <navigation-toolbar (sideBarOpened)="sidenav.open()"></navigation-toolbar>
+            <router-outlet></router-outlet>
+        </div>
+    </md-sidenav-container>
+</div>

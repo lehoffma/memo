@@ -1,0 +1,44 @@
+[
+  {
+    "route": "tours",
+    "icon": "",
+    "name": "Fahrten"
+  },
+  {
+    "route": "partys",
+    "icon": "",
+    "name": "Veranstaltungen"
+  },
+  {
+    "route": "merchandise",
+    "icon": "",
+    "name": "Merchandise"
+  },
+  {
+    "route": "management",
+    "icon": "",
+    "name": "Vereinsverwaltung",
+    "children": [
+      {
+        "route": "management/costs",
+        "icon": "",
+        "name": "Kostenübersicht"
+      },
+      {
+        "route": "management/memberlist",
+        "icon": "",
+        "name": "Mitgliederliste"
+      },
+      {
+        "route": "management/stock",
+        "icon": "",
+        "name": "Bestand"
+      }
+    ]
+  },
+  {
+    "route": "cart",
+    "icon": "shopping_cart",
+    "name": ""
+  }
+]

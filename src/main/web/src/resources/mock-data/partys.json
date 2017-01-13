@@ -1,0 +1,19 @@
+[
+  {
+    "id": 0,
+    "title": "super duper party",
+    "date": "2016-12-31T23:00:00.000Z",
+    "description": "suuuuper duper party",
+    "expectedRole": "Mitglied",
+    "picPath": "https://placekitten.com/505/505",
+    "capacity": "20",
+    "priceMember": "5",
+    "meetingPoint": "is geheim",
+    "price": "10",
+    "emptySeats": "18",
+    "participants": [
+      0,
+      1
+    ]
+  }
+]

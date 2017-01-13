@@ -61,3 +61,4 @@ fabric.properties
 
 
 target/
+/src/main/webapp/

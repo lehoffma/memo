@@ -1,0 +1,20 @@
+
+
+<div class="preview-container">
+    <md-card *ngFor="let event of events" (click)="showDetails(event)">
+        <img md-card-image src="http://placekitten.com/1500/1500">
+        <!--todo: cut off after certain length-->
+        <md-card-title>{{event.title}}</md-card-title>
+        <md-card-content>
+
+            <div *ngFor="let key of iconKeys">
+                <md-icon>{{icons[key]}}
+                </md-icon>
+                <span>
+                {{formatDetails(event[key])}}
+                </span>
+            </div>
+        </md-card-content>
+    </md-card>
+
+</div>
