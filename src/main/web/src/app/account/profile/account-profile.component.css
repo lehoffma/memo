@@ -1,3 +1,4 @@
+
 .profilecard{
     min-height: 50%;
     height: 90%;
@@ -5,13 +6,15 @@
     display: inline-block;
     margin: 2.5%;
     background-color: #ededed;
-
 }
+
+
 .name{
     font-size: 5em;
     padding-left: 80px;
     padding-right: 80px;
     justify-content: space-between;
+
 
 
 }
@@ -30,11 +33,11 @@
     border-radius: 50%;
     margin-top: 1em;
     margin-bottom: 1em;
-
-
-
 }
-
+.plz{
+    margin-bottom: 0.2em;
+    margin-top: 0.2em;
+}
 .middle-icon{
 
     font-size: 4em;
@@ -61,4 +64,15 @@
     font-size: 4em;
     margin-top: 1em;
     margin-left: 1em;
+}
+.edit{
+    justify-content: flex-end;
+    align-items: center;
+    display: flex;
+    font-size: 6em;
+    height: 60px;
+    width: 60px;
+    margin-left: 9em;
+    margin-bottom: 0.2em;
+    margin-top: 0.2em;
 }

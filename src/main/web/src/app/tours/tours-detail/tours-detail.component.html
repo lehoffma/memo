@@ -20,54 +20,33 @@
 
 
         </md-card-content>
-        <!-- Danach ein Tab einbauen mit moeglichen tabs: Beschreibung; Route; Treffpunkt -->
+        <!-- Danach ein Tab einbauen mit moeglichen tabs: Beschreibung; Route; Treffpunkt-->
         <md-tab-group>
             <md-tab>
                 <template md-tab-label>
                     <div class="tour-ueberschrift-tab">Daten</div>
                 </template>
+                <div class="questions">Wohin?</div>
+                <div class="answers"> {{tour.destination}} </div>
 
-                <!-- Tabelle -->
-                <md-grid-list cols="3" rows="2" [style.background]="'#ededed'">
-                    <md-grid-tile>
-                        <div class="tour-date">
-                            <div> <!--<md-icon class="middle-icon">date_range</md-icon> -->Datum:</div>
-                            <span>{{tour.date.toLocaleString()}}</span>
-                        </div>
-                    </md-grid-tile>
-                    <md-grid-tile>
-                        <div class="tour-destination">
-                            <div>Ziel:</div>
-                            <span>{{tour.destination}}</span>
-                        </div>
-                    </md-grid-tile>
-                    <md-grid-tile>
-                        <div class="tour-vehicle">
-                            <div><span>{{tour.vehicle}}</span> mit</div>
-                            <span>{{tour.emptySeats}} / {{tour.capacity}} </span>
-                            <!--<md-icon class="middle-icon">airline_seat_recline_normal</md-icon>--> freien Plätzen
-                        </div>
-                    </md-grid-tile>
-                    <md-grid-tile>
-                        <div class="tour-price">
-                            <div><!--<md-icon class="middle-icon">monetization_on</md-icon> -->Preise:</div>
-                            <div>Mitglied: {{tour.priceMember}} €</div>
-                            <div>Andere: {{tour.priceMember}} €</div>
-                        </div>
-                    </md-grid-tile>
-                    <md-grid-tile>
-                        <div class="tour-driver">
-                            <div> <!--<md-icon class="middle-icon">monetization_on</md-icon>--> Fahrer ??</div>
-                        </div>
-                    </md-grid-tile>
-                    <md-grid-tile>
-                        <div class="tour-miles">
-                            <div>Meilen:</div>
-                            <span>{{tour.miles}}</span>
-                        </div>
-                    </md-grid-tile>
+                <div class="questions"> Wann? </div>
+                <div class="answers">{{tour.date|date}}</div>
 
-                </md-grid-list>
+                <div class="questions">Wieviele Plätze sind noch frei?</div>
+                <div class="answers">{{tour.emptySeats}} Plätze</div>
+
+                <div class="questions">Wie teuer ist die Tour?</div>
+                <div class="answers">{{tour.priceMember}} Euro</div>
+
+                <div class="questions">Wieviele Meilen fahren wir?</div>
+                <div class="answers">{{tour.miles}} Meilen</div>
+                <!--Wo?-->
+                <!--Wann?-->
+                <!--Wieviele fahren mit?-->
+                <!--Preis-->
+                <!--Vehicle-->
+                <!--Meilen-->
+
 
             </md-tab>
             <md-tab>

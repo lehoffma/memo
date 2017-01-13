@@ -1,20 +1,36 @@
 <div class="profilecard" *ngIf="user">
 
+
     <div class="name">
         <img class="profilpic" src={{user.imagePath}}>
         <span class="nameF">{{user.firstName}} {{user.surname}}</span>
     </div>
+
+
+
     <div><md-icon class="middle-icon">work</md-icon> <span class="icontext">{{user.clubRole}} der Meilenwölfe</span></div>
     <div><md-icon class="middle-icon">cake</md-icon> <span class="icontext">{{user.birthDate|date}}</span></div>
     <hr>
     <div><md-icon class="middle-icon">local_phone</md-icon>  <span class="icontext">{{user.telephone}}</span></div>
     <div><md-icon class="middle-icon">local_post_office</md-icon>  <span class="icontext">{{user.email}}</span></div>
     <hr>
-    <div> <md-icon class="middle-icon">home</md-icon>  <span class="icontext">Helmstedter Str. 58 <div>39112 Magdeburg</div></span></div>
+    <div> <md-icon class="middle-icon">home</md-icon>  <span class="icontext">Helmstedter Str. 58 <div class="plz">39112 Magdeburg</div></span></div>
     <div> <md-icon class="middle-icon">account_balance</md-icon>  <span class="icontext">IBAN: 11111111 <div>BIC: 22222</div> <div>Sparkasse Magdeburg</div></span></div>
     <hr>
-    <div> <md-icon class="middle-icon">favorite</md-icon>  <span class="icontext">Fußball, die Meilenwölfe, ...</span></div>
     <div><md-icon class="middle-icon">directions_car</md-icon>  <span class="icontext">{{user.miles}} Meilen</span></div>
-    <div class="tourenHeadline">Veranstaltungen und Touren:</div>
+    <div> <md-icon class="middle-icon">favorite</md-icon>  <span class="icontext">Fußball, die Meilenwölfe, ...</span></div>
+    <button md-button class="edit-button"><md-icon class="edit">create</md-icon></button>
+
+
+    <div class="tourenHeadline">Veranstaltungen und Touren</div>
+    <!-- Touren die Member mitgefahren ist -->
+    <!-- recentActivity sollen die mitgefahrenen touren sein warum funktioniert es nicht? wie macht man in der klasse richtig get/set
+    <div class="tour-profil-container">
+        <div *ngFor="let recentActivity of (getRecentActivity(tour.recentActivity) | async);"
+             (click)="showDetailsOfUser(recentActivity)"></div>
+                <div>{{recentActivity.title}} am {{participant.date|date}}</div>
+    </div>
+-->
+
 
 </div>

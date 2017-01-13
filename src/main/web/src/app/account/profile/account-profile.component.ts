@@ -4,6 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Subscription, Observable} from "rxjs";
 import {UserStore} from "../../shared/stores/user.store";
 import {TourStore} from "../../shared/stores/tour.store";
+import {Tour} from "../../shared/model/tour";
 
 @Component({
     selector: "account-profiles",

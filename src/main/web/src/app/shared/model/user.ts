@@ -1,5 +1,6 @@
 import {ClubRole} from "./club-role";
 import {UserPermissions, VisitorPermissions} from "./permission";
+import {Tour} from "./tour";
 
 
 export class User {
@@ -16,7 +17,17 @@ export class User {
                 private _passwordHash: string = "default",
                 private _isStudent: boolean = false,
                 private _hasDebitAuth: boolean = false,
-                private _imagePath: string = "default") {
+                private _imagePath: string = "default",
+                private _recentActivity: Tour[] = []) {
+    }
+
+
+    get recentActivity(): Tour[] {
+        return this._recentActivity;
+    }
+
+    set recentActivity(value: Tour[]) {
+        this._recentActivity = value;
     }
 
     get id(): number {
