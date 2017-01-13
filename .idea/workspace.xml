@@ -1,166 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0ded04ad-66cf-4a2a-bebb-119b128d29e8" name="Default" comment="database connection">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/images/Logo.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/images/Logo_white.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/images/favicon.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/images/nils.PNG" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/web/controller/WebController.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/.gitignore" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/README.md" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/angular-cli.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/package.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/account.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/account.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/account.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/details/account-details.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/details/account-details.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/details/account-details.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/login/account-login.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/login/account-login.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/login/account-login.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/my-tours/account-my-tours.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/my-tours/account-my-tours.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/my-tours/account-my-tours.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/my-tours/tour-entry/account-my-tours-entry.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/my-tours/tour-entry/account-my-tours-entry.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/my-tours/tour-entry/account-my-tours-entry.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/password-recovery/account-password-recovery.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/password-recovery/account-password-recovery.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/password-recovery/account-password-recovery.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/profile/account-profile.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/profile/account-profile.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/account/profile/account-profile.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/accounting/accounting-entry/accounting-entry.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/accounting/accounting-entry/accounting-entry.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/accounting/accounting-entry/accounting-entry.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/accounting/accounting.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/accounting/accounting.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/accounting/accounting.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/app.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/app.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/app.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/app.module.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/address-check/checkout-address-check.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/address-check/checkout-address-check.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/address-check/checkout-address-check.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/cart/cart-entry/checkout-cart-entry.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/cart/cart-entry/checkout-cart-entry.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/cart/cart-entry/checkout-cart-entry.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/cart/chechkout-cart.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/cart/checkout-cart.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/cart/checkout-cart.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/checkout.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/checkout.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/checkout.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/payment/checkout-payment.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/payment/checkout-payment.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/checkout/payment/checkout-payment.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/club-administration.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/club-administration.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/club-administration.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/costs/club-administration-costs.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/costs/club-administration-costs.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/costs/club-administration-costs.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/costs/cost-entry/club-administration-cost-entry.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/costs/cost-entry/club-administration-cost-entry.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/costs/cost-entry/club-administration-cost-entry.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/member-list/club-administration-member-list.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/member-list/club-administration-member-list.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/member-list/club-administration-member-list.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/member-list/member-entry/club-administration-member-list-entry.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/member-list/member-entry/club-administration-member-list-entry.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/member-list/member-entry/club-administration-member-list-entry.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/stock/club-administration-stock.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/stock/club-administration-stock.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/stock/club-administration-stock.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/stock/stock-entry/club-administration-stock-entry.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/stock/stock-entry/club-administration-stock-entry.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/club-administration/stock/stock-entry/club-administration-stock-entry.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/merchandise/merchandise-detail/merchandise-detail.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/merchandise/merchandise-detail/merchandise-detail.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/merchandise/merchandise-detail/merchandise-detail.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/merchandise/merchandise.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/merchandise/merchandise.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/merchandise/merchandise.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/navigation/sidenav/navigation-sidenav.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/navigation/sidenav/navigation-sidenav.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/navigation/sidenav/navigation-sidenav.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/navigation/toolbar/element/navigation-toolbar-element.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/navigation/toolbar/element/navigation-toolbar-element.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/navigation/toolbar/element/navigation-toolbar-element.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/navigation/toolbar/navigation-toolbar.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/navigation/toolbar/navigation-toolbar.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/navigation/toolbar/navigation-toolbar.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/overview/overview.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/overview/overview.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/overview/overview.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/overview/preview/overview-preview.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/overview/preview/overview-preview.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/overview/preview/overview-preview.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/partys/party-detail/party-detail.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/partys/party-detail/party-detail.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/partys/party-detail/party-detail.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/partys/partys.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/partys/partys.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/partys/partys.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/model/address.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/model/club-role.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/model/event.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/model/link.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/model/merchandise.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/model/party.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/model/permission.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/model/tour.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/model/user.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/services/navigation.service.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/stores/merch.store.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/stores/party.store.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/stores/store.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/stores/tour.store.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/shared/stores/user.store.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/tours/tours-detail/tours-detail.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/tours/tours-detail/tours-detail.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/tours/tours-detail/tours-detail.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/tours/tours.component.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/tours/tours.component.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/app/tours/tours.component.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/environments/environment.prod.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/environments/environment.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/main.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/polyfills.ts" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/account-links.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/mock-data/merch.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/mock-data/partys.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/mock-data/tours.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/mock-data/users.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/sidenav-links.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/resources/toolbar-links.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/styles.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/theme.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/theme.scss" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/web/src/tsconfig.json" />
+    <list default="true" id="0ded04ad-66cf-4a2a-bebb-119b128d29e8" name="Default" comment="merge java and web content">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/memo-server.iml" afterPath="$PROJECT_DIR$/memo-server.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/web/Application.java" afterPath="$PROJECT_DIR$/src/main/java/web/Application.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/web/controller/EventController.java" afterPath="$PROJECT_DIR$/src/main/java/web/controller/EventController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/web/controller/TestController.java" afterPath="$PROJECT_DIR$/src/main/java/web/controller/TestController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/web/controller/UserController.java" afterPath="$PROJECT_DIR$/src/main/java/web/controller/UserController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/database/DatabaseHandler.java" afterPath="$PROJECT_DIR$/src/main/java/lib/database/DatabaseHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/shared/model/Address.java" afterPath="$PROJECT_DIR$/src/main/java/lib/model/Address.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/shared/model/BankAccount.java" afterPath="$PROJECT_DIR$/src/main/java/lib/model/BankAccount.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/shared/model/ClubRole.java" afterPath="$PROJECT_DIR$/src/main/java/lib/model/ClubRole.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/shared/model/Event.java" afterPath="$PROJECT_DIR$/src/main/java/lib/model/Event.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/shared/model/Merchandise.java" afterPath="$PROJECT_DIR$/src/main/java/lib/model/Merchandise.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/shared/model/Party.java" afterPath="$PROJECT_DIR$/src/main/java/lib/model/Party.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/shared/model/Permission.java" afterPath="$PROJECT_DIR$/src/main/java/lib/model/Permission.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/shared/model/Tour.java" afterPath="$PROJECT_DIR$/src/main/java/lib/model/Tour.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/shared/model/User.java" afterPath="$PROJECT_DIR$/src/main/java/lib/model/User.java" />
     </list>
     <ignored path="memoshop_java.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -197,7 +40,7 @@
       <file leaf-file-name="Application.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/web/Application.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="267">
+            <state relative-caret-position="330">
               <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -207,28 +50,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/web/README.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="0">
-                <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="package.json" pinned="false" current-in-tab="false">
+      <file leaf-file-name="package.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/web/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
-              <folding>
-                <marker date="1484313528898" expanded="true" signature="0:919" ph="{&quot;name&quot;: &quot;memo-web&quot;...}" />
-                <marker date="1484313528898" expanded="true" signature="59:193" ph="{&quot;start&quot;: &quot;ng serve&quot;...}" />
-              </folding>
+            <state relative-caret-position="200">
+              <caret line="18" column="25" lean-forward="false" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -237,13 +64,13 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/web/controller/EventController.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
-              <caret line="16" column="16" lean-forward="true" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+              <caret line="16" column="16" lean-forward="false" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WebController.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="WebController.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/web/controller/WebController.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="220">
@@ -257,11 +84,31 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="679">
+              <caret line="42" column="25" lean-forward="false" selection-start-line="42" selection-start-column="25" selection-end-line="42" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="application.properties" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="66">
+              <caret line="3" column="27" lean-forward="false" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="app.module.ts" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/web/src/app/app.module.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="198">
-              <caret line="27" column="30" lean-forward="true" selection-start-line="27" selection-start-column="30" selection-end-line="33" selection-end-column="69" />
+              <caret line="27" column="30" lean-forward="false" selection-start-line="27" selection-start-column="30" selection-end-line="33" selection-end-column="69" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -346,12 +193,12 @@
         <option value="$PROJECT_DIR$/src/main/java/web/controller/EventController.java" />
         <option value="$PROJECT_DIR$/src/main/java/web/Application.java" />
         <option value="$PROJECT_DIR$/src/main/web/package.json" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/lib/database/DatabaseHandler.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
         <option value="$PROJECT_DIR$/src/main/java/web/controller/TestController.java" />
         <option value="$PROJECT_DIR$/src/main/java/web/controller/WebController.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
       </list>
     </option>
   </component>
@@ -502,196 +349,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="web" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controller" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="memo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="database" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1371,7 +1028,7 @@
       <workItem from="1483733542558" duration="215000" />
       <workItem from="1484312100392" duration="703000" />
       <workItem from="1484312821864" duration="512000" />
-      <workItem from="1484313364379" duration="2305000" />
+      <workItem from="1484313364379" duration="2673000" />
     </task>
     <task id="LOCAL-00001" summary="startup code">
       <created>1478257131605</created>
@@ -1394,11 +1051,18 @@
       <option name="project" value="LOCAL" />
       <updated>1481654855585</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="merge java and web content">
+      <created>1484315738272</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1484315738272</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35409000" />
+    <option name="totallyTimeSpent" value="35777000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1426,14 +1090,14 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3997735" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3997735" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329582" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33816424" sideWeight="0.4956076" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329582" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32616082" sideWeight="0.49707174" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32616082" sideWeight="0.49707174" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="npm" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23147154" sideWeight="0.5058824" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1474,7 +1138,8 @@
     <MESSAGE value="spring shit kp" />
     <MESSAGE value="model classes&#10;default request" />
     <MESSAGE value="database connection" />
-    <option name="LAST_COMMIT_MESSAGE" value="database connection" />
+    <MESSAGE value="merge java and web content" />
+    <option name="LAST_COMMIT_MESSAGE" value="merge java and web content" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1584,6 +1249,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1626,6 +1292,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
           <caret line="13" column="22" lean-forward="false" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1633,6 +1300,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
           <caret line="10" column="8" lean-forward="false" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1640,6 +1308,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="286">
           <caret line="13" column="16" lean-forward="true" selection-start-line="13" selection-start-column="16" selection-end-line="13" selection-end-column="16" />
+          <folding>
+            <element signature="e#202#203#0" expanded="false" />
+            <element signature="e#225#226#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1647,6 +1319,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="132">
           <caret line="6" column="6" lean-forward="false" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1666,17 +1339,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/web/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="0">
-            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/web/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="127">
@@ -1690,25 +1352,6 @@
         <state relative-caret-position="176">
           <caret line="8" column="24" lean-forward="false" selection-start-line="8" selection-start-column="24" selection-end-line="8" selection-end-column="24" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="52" column="13" lean-forward="true" selection-start-line="52" selection-start-column="13" selection-end-line="52" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/web/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="8" column="4" lean-forward="false" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
-          <folding>
-            <marker date="1484313528898" expanded="true" signature="0:919" ph="{&quot;name&quot;: &quot;memo-web&quot;...}" />
-            <marker date="1484313528898" expanded="true" signature="59:193" ph="{&quot;start&quot;: &quot;ng serve&quot;...}" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1728,17 +1371,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/web/Application.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#431#432#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/lib/database/DatabaseHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="110">
@@ -1752,14 +1384,6 @@
             <marker date="1484314130930" expanded="true" signature="1183:1208" ph="DROP TABLE u... " />
             <marker date="1484314130930" expanded="true" signature="1236:2570" ph="CREATE TABLE... user" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="1" column="33" lean-forward="false" selection-start-line="1" selection-start-column="33" selection-end-line="1" selection-end-column="33" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1782,7 +1406,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/web/controller/EventController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
-          <caret line="16" column="16" lean-forward="true" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
+          <caret line="16" column="16" lean-forward="false" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="16" />
           <folding />
         </state>
       </provider>
@@ -1790,7 +1414,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/web/src/app/app.module.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
-          <caret line="27" column="30" lean-forward="true" selection-start-line="27" selection-start-column="30" selection-end-line="33" selection-end-column="69" />
+          <caret line="27" column="30" lean-forward="false" selection-start-line="27" selection-start-column="30" selection-end-line="33" selection-end-column="69" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
@@ -1806,6 +1430,52 @@
             <element signature="e#308#309#0" expanded="true" />
             <element signature="e#352#353#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="679">
+          <caret line="42" column="25" lean-forward="false" selection-start-line="42" selection-start-column="25" selection-end-line="42" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/application.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="66">
+          <caret line="3" column="27" lean-forward="false" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/web/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/web/Application.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#431#432#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/web/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="18" column="25" lean-forward="false" selection-start-line="18" selection-start-column="25" selection-end-line="18" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>

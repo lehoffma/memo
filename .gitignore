@@ -1,8 +1,6 @@
 #ignore client code
 /web/memo-web/
 ### Java template
-*.class
-
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -61,4 +59,4 @@ fabric.properties
 
 
 target/
-/src/main/webapp/
+/src/main/webapp/*
