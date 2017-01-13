@@ -1,6 +1,7 @@
 package shared.model;
 
 import java.util.Date;
+import java.util.StringJoiner;
 
 /**
  * Created by gzae on 12/13/16.
@@ -19,6 +20,7 @@ public class User {
     public Permission partyPermission;
     public Permission fundsPermission;
     public int miles;
+    public String picPath;
     public String email;
     public String passwordHash;
     public Boolean isStudent;
