@@ -10,8 +10,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class DatabaseHandler {
 
-//    @Autowired
-//    private JdbcTemplate jdbc;
+    @Autowired
+    private JdbcTemplate jdbc;
 
 
     public DatabaseHandler() {
@@ -20,6 +20,7 @@ public class DatabaseHandler {
 
 
     private void InitializeTables() {
+        
         //TODO: Implement
 //        jdbc.execute("DROP TABLE address IF EXISTS");
 //        jdbc.execute("CREATE TABLE address(" +

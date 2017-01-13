@@ -1,0 +1,15 @@
+<div class="profilecard" *ngIf="user">
+
+    <div class="name">
+        <img class="profilpic" src={{user.imagePath}}>
+        <span>{{user.firstName}} {{user.surname}}</span>
+    </div>
+    <div><md-icon class="middle-icon">work</md-icon> <span class="icontext">{{user.clubRole}} der Meilenwölfe</span></div>
+    <div><md-icon class="middle-icon">cake</md-icon> <span class="icontext">{{user.birthDate|date}}</span></div>
+    <div><md-icon class="middle-icon">local_phone</md-icon>  <span class="icontext">{{user.telephone}}</span></div>
+    <div> <md-icon class="middle-icon">local_post_office</md-icon>  <span class="icontext">{{user.email}}</span></div>
+    <div> <md-icon class="middle-icon">directions_car</md-icon>  <span class="icontext">{{user.miles}} Meilen</span></div>
+
+
+
+</div>

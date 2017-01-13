@@ -11,13 +11,14 @@ import {TourStore} from "../../shared/stores/tour.store";
     styleUrls: ["./account-profile.component.css"]
 })
 
-export class AccountProfileComponent implements OnInit, OnDestroy{
-    subscription:Subscription;
-    user: Observable<User>;
+export class AccountProfileComponent implements OnInit, OnDestroy {
+    subscription: Subscription;
+    observableUser: Observable<User>;
+    user: User = new User();
 
     constructor(private route: ActivatedRoute,
                 private tourStore: TourStore,
-                private userStore: UserStore){
+                private userStore: UserStore) {
 
     }
 
@@ -25,9 +26,14 @@ export class AccountProfileComponent implements OnInit, OnDestroy{
         this.subscription = this.route.params.subscribe(params => {
             let id = +params['id']; // (+) converts string 'id' to a number
 
-            this.user = this.userStore.getDataByID(id);
+            this.observableUser = this.userStore.getDataByID(id);
+            this.observableUser.subscribe(user => {
+                this.user = user;
+
+            })
         });
     }
+
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }

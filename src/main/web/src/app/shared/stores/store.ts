@@ -55,7 +55,7 @@ export abstract class AbstractStore<T extends StoreObject> {
 
     /**
      * Creates new data object.
-     * This calls the createData-API on the server and waits until the server is done adding the new data object to the lib.database.
+     * This calls the createData-API on the server and waits until the server is done adding the new data object to the database.
      * After the server returns the new data object, we add it to the observable data-stream.
      *
      * @param data the data object to be created
@@ -66,7 +66,7 @@ export abstract class AbstractStore<T extends StoreObject> {
             .subscribe((json: any) => {
                 let data:T = this.jsonToObject(json);
 
-                //add new user to the observable after creating new entry in lib.database
+                //add new user to the observable after creating new entry in database
                 let currentData: T[] = this._data.value;
                 this._data.next(Object.assign({}, currentData.concat(data)));
             }, error => console.error(`could not create user, error msg: ${error}`));

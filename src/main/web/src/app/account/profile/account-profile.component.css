@@ -1,0 +1,46 @@
+.profilecard{
+    min-height: 50%;
+    height: 90%;
+    width: 95%;
+    display: inline-block;
+    margin: 2.5%;
+    background-color: #ededed;
+
+}
+.name{
+    font-size: 5em;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    padding-left: 80px;
+    padding-right: 80px;
+}
+
+.profilpic{
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    margin-top: 1em;
+    margin-bottom: 1em;
+
+
+
+}
+
+.middle-icon{
+    margin-left: 0.5em;
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+    font-size: 4em;
+    height:auto;
+    width: auto;
+}
+.icontext{
+    font-size: 3em;
+}
+
+.proftext{
+    font-size: 2em;
+    margin-left: 0.5em;
+
+}
