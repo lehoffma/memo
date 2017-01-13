@@ -1,4 +1,4 @@
-package lib.model;
+package model;
 
 /**
  * Created by gzae on 12/13/16.

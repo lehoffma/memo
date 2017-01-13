@@ -1,4 +1,4 @@
-package lib.model;
+package model;
 
 import java.util.Date;
 
@@ -19,6 +19,7 @@ public class User {
     public Permission partyPermission;
     public Permission fundsPermission;
     public int miles;
+    public String picPath;
     public String email;
     public String passwordHash;
     public Boolean isStudent;
