@@ -12,6 +12,11 @@
     padding-left: 80px;
     padding-right: 80px;
     justify-content: space-between;
+
+
+}
+.nameF{
+    margin-left: 1em;
 }
 .profilecard > div{
     align-items: center;
@@ -37,19 +42,23 @@
     width: 60px;
     margin-left: 0.5em;
     margin-right: 1em;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.2em;
+    margin-top: 0.2em;
 
 
 
 }
 .icontext{
     font-size: 3em;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.2em;
+    margin-top: 0.2em;
 }
 
 .proftext{
     font-size: 2em;
-
-
-
+}
+.tourenHeadline{
+    font-size: 4em;
+    margin-top: 1em;
+    margin-left: 1em;
 }
