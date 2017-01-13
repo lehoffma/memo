@@ -1,0 +1,99 @@
+
+
+md-toolbar{
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26);
+}
+
+/*
+source for :host >>> md-toolbar-row: https://github.com/angular/material2/issues/1376
+ */
+md-toolbar, :host >>> md-toolbar-row  {
+    height: 7em;
+    transition: height 0.5s;
+}
+
+/*center button icon*/
+.md-button-wrapper {
+    height: 90px;
+    width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navigation-fill-remaining-space {
+    /*This fills the remaining space, by using flexbox.*/
+    /*Every toolbar row uses a flexbox row layout.*/
+    flex: 1 1 auto;
+}
+
+/*don't display links until the screen is big enough*/
+.navigation-right-side,
+.navigation-right-space {
+    display: none;
+}
+
+.navigation-left-space{
+    display: flex;
+}
+
+.menu{
+    height: 100px;
+    width: 200px;
+}
+
+.logo > img{
+    height: 115px;
+    transition: height 0.5s;
+}
+
+/*change size of hamburger menu*/
+.material-icons{
+    height: 85px;
+    width: 85px;
+    font-size: 6em;
+    vertical-align: middle;
+}
+
+.login-button-container{
+    margin-left: 15px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.profile-picture-container{
+    margin-bottom: -4px;
+}
+
+.profile-picture-dropdown-content{
+    margin-top: -4px;
+}
+
+.profile-picture {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+@media all and (min-width: 1000px) {
+    md-toolbar, :host >>> md-toolbar-row{
+        height: 64px;
+    }
+
+    /*hide hamburger menu if screen gets big enough*/
+    .menu,
+    .navigation-left-space{
+        display: none;
+    }
+
+    /*show navigation buttons*/
+    .navigation-right-side,
+    .navigation-right-space{
+        display: flex;
+    }
+
+    .logo > img{
+        height: 50px;
+    }
+}

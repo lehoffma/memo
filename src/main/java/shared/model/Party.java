@@ -1,9 +1,6 @@
-package shared.model;
+package model;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by gzae on 12/13/16.

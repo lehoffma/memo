@@ -1,0 +1,87 @@
+[
+  {
+    "route": "",
+    "icon": "home",
+    "name": "Startseite"
+  },
+  {
+    "route": "tours",
+    "icon": "drive_eta",
+    "name": "Fahrten"
+  },
+  {
+    "route": "partys",
+    "icon": "local_bar",
+    "name": "Veranstaltungen"
+  },
+  {
+    "route": "merchandise",
+    "icon": "local_offer",
+    "name": "Merchandise"
+  },
+  {
+    "route": "",
+    "icon": "",
+    "name": "Accountverwaltung",
+    "children": [
+      {
+        "route": "profile",
+        "icon": "account_circle",
+        "name": "Dein Profil"
+      },
+      {
+        "route": "profile/events",
+        "icon": "event",
+        "name": "Deine Events"
+      },
+      {
+        "route": "profile/history",
+        "icon": "history",
+        "name": "Deine Bestellungen"
+      },
+      {
+        "route": "profile/details",
+        "icon": "description",
+        "name": "Dein Account"
+      }
+    ]
+  },
+  {
+    "route": "management",
+    "icon": "",
+    "name": "Vereinsverwaltung",
+    "children": [
+      {
+        "route": "management/costs",
+        "icon": "payment",
+        "name": "Kostenübersicht"
+      },
+      {
+        "route": "management/memberlist",
+        "icon": "view_list",
+        "name": "Mitgliederliste"
+      },
+      {
+        "route": "management/stock",
+        "icon": "local_shipping",
+        "name": "Bestand"
+      }
+    ]
+  },
+  {
+    "route": "settings",
+    "icon": "settings",
+    "name": "Einstellungen",
+    "drawLineAbove": true
+  },
+  {
+    "route": "impressum",
+    "icon": "info",
+    "name": "Impressum"
+  },
+  {
+    "route": "logout",
+    "icon": "exit_to_app",
+    "name": "Logout"
+  }
+]

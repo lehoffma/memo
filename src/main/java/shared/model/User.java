@@ -1,7 +1,6 @@
-package shared.model;
+package model;
 
 import java.util.Date;
-import java.util.StringJoiner;
 
 /**
  * Created by gzae on 12/13/16.
@@ -29,9 +28,9 @@ public class User {
     public Address address;
 
 
-public User(){
+    public User() {
 
-}
+    }
 
 
 }

@@ -1,4 +1,4 @@
-package shared.model;
+package model;
 
 import java.util.Date;
 

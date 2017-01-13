@@ -1,0 +1,52 @@
+
+.preview-container {
+    display: flex;
+    width: auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+/*change size of hamburger menu*/
+.material-icons {
+    height: 50px;
+    width: 50px;
+    font-size: 1.45em;
+    vertical-align: middle;
+}
+
+md-card {
+    margin: 1.5%;
+    width: 500px;
+}
+
+md-card-title {
+    font-size: 2.5em;
+}
+
+md-card-content {
+    font-size: 2em;
+}
+
+md-card-content > div > span {
+    overflow-wrap: break-word;
+}
+
+md-card-content > div:not(:last-child) {
+    margin-bottom: 0.3em;
+}
+
+/*md-card-content > div:last-child{*/
+    /*margin-bottom: -1em;*/
+/*}*/
+
+md-card > img{
+    width: 500px;
+    height: 500px;
+}
+
+@media all and (min-width: 1000px){
+    md-card-title{
+        font-size: 1em;
+    }
+}
