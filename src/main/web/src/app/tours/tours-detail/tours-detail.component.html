@@ -18,85 +18,105 @@
         <img md-card-image class="img-tour-detail" src="http://placekitten.com/1500/950">
         <md-card-content>
 
-
-        </md-card-content>
-        <!-- Danach ein Tab einbauen mit moeglichen tabs: Beschreibung; Route; Treffpunkt-->
-        <md-tab-group>
-            <md-tab>
-                <template md-tab-label>
-                    <div class="tour-ueberschrift-tab">Daten</div>
-                </template>
-                <div class="questions">Wohin?</div>
-                <div class="answers"> {{tour.destination}} </div>
-
-                <div class="questions"> Wann? </div>
-                <div class="answers">{{tour.date|date}}</div>
-
-                <div class="questions">Wieviele Plätze sind noch frei?</div>
-                <div class="answers">{{tour.emptySeats}} Plätze</div>
-
-                <div class="questions">Wie teuer ist die Tour?</div>
-                <div class="answers">{{tour.priceMember}} Euro</div>
-
-                <div class="questions">Wieviele Meilen fahren wir?</div>
-                <div class="answers">{{tour.miles}} Meilen</div>
-                <!--Wo?-->
-                <!--Wann?-->
-                <!--Wieviele fahren mit?-->
-                <!--Preis-->
-                <!--Vehicle-->
-                <!--Meilen-->
-
-
-            </md-tab>
-            <md-tab>
-                <template md-tab-label>
-                    <div class="tour-ueberschrift-tab">Beschreibung</div>
-                </template>
-                <div class="tour-description">
-                    <span>{{tour.description}}</span>
-                </div>
-
-            </md-tab>
-            <md-tab>
-                <template md-tab-label>
-                    <div class="tour-ueberschrift-tab">Route</div>
-                </template>
-                <div class="tour-adress">
-                    <div>Treffpunkt:</div>
-                    <div>{{tour.meetingPoint.name}}</div>
-                    <div>{{tour.meetingPoint.street}} {{tour.meetingPoint.streetnr}}</div>
-                    <div>{{tour.meetingPoint.zip}} {{tour.meetingPoint.city}}</div>
-                </div>
-                <!-- Maps einbinden? -->
-            </md-tab>
-        </md-tab-group>
-    </md-card>
-
-
-    <md-card>
-        <md-card-header>
-            <md-card-title>
-                <div class="tour-titel-member">Wer fährt mit?</div>
-            </md-card-title>
-        </md-card-header>
-        <md-card-content>
-            <div class="tour-participant-container">
-                <md-card *ngFor="let participant of (getParticipants(tour.participants) | async);"
-                         (click)="showDetailsOfUser(participant)">
-
-                    <img md-card-image src="{{participant.imagePath}}" class="tour-img-participant">
-                    <md-card-content class="tour-participant">
-                        <div>{{participant.firstName}}</div>
-                        <div>{{participant.surname}}</div>
-                    </md-card-content>
-                </md-card>
+            <div class="greenBox">
+                <table>
+                    <tr class="row">
+                        <td class="tableData">Ziel: <span class="tabledatacontent">{{tour.destination}}</span></td>
+                        <td class="tableData">Treffpunkt: <span class="tabledatacontent">{{tour.meetingPoint}}</span></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="tableData">Preis: <span class="tabledatacontent">{{tour.priceMember}}</span></td>
+                        <td class="tableData">Freie Plätze: <span class="tabledatacontent">{{tour.emptySeats}}/{{tour.capacity}}</span></td>
+                    </tr>
+                    <tr class="row">
+                        <td class="tableData">Abfahrt: <span class="tabledatacontent">{{tour.date|date}}</span></td>
+                        <td class="tableData">Meilen: <span class="tabledatacontent">{{tour.miles}}</span></td>
+                    </tr>
+                </table>
             </div>
+
+            <div class="diskription">
+                Beschreibung
+            </div>
+            <div class="tour-description">
+                {{tour.description}}
+            </div>
+
+
         </md-card-content>
+                    <!-- Danach ein Tab einbauen mit moeglichen tabs: Beschreibung; Route; Treffpunkt-->
+        <!--
+               <md-tab-group>
+                   <md-tab>
+                       <template md-tab-label>
+                           <div class="tour-ueberschrift-tab">Daten</div>
+                       </template>
+                       <div class="questions">Wohin?</div>
+                       <div class="answers"> {{tour.destination}} </div>
 
-    </md-card>
+                       <div class="questions"> Wann? </div>
+                       <div class="answers">{{tour.date|date}}</div>
 
-    <button md-raised-button color="primary" class="tour-teilnehmen">
-        In den Warenkorb
-    </button>
-</div>
+                       <div class="questions">Wieviele Plätze sind noch frei?</div>
+                       <div class="answers">{{tour.emptySeats}} Plätze</div>
+
+                       <div class="questions">Wie teuer ist die Tour?</div>
+                       <div class="answers">{{tour.priceMember}} Euro</div>
+
+                       <div class="questions">Wieviele Meilen fahren wir?</div>
+                       <div class="answers">{{tour.miles}} Meilen</div>
+
+
+
+                   </md-tab>
+                   <md-tab>
+                       <template md-tab-label>
+                           <div class="tour-ueberschrift-tab">Beschreibung</div>
+                       </template>
+                       <div class="tour-description">
+                           <span>{{tour.description}}</span>
+                       </div>
+
+                   </md-tab>
+                   <md-tab>
+                       <template md-tab-label>
+                           <div class="tour-ueberschrift-tab">Route</div>
+                       </template>
+                       <div class="tour-adress">
+                           <div>Treffpunkt:</div>
+                           <div>{{tour.meetingPoint.name}}</div>
+                           <div>{{tour.meetingPoint.street}} {{tour.meetingPoint.streetnr}}</div>
+                           <div>{{tour.meetingPoint.zip}} {{tour.meetingPoint.city}}</div>
+                       </div>
+
+                   </md-tab>
+               </md-tab-group> -->
+           </md-card>
+
+
+           <md-card>
+               <md-card-header>
+                   <md-card-title>
+                       <div class="tour-titel-member">Wer fährt mit?</div>
+                   </md-card-title>
+               </md-card-header>
+               <md-card-content>
+                   <div class="tour-participant-container">
+                       <md-card *ngFor="let participant of (getParticipants(tour.participants) | async);"
+                                (click)="showDetailsOfUser(participant)">
+
+                           <img md-card-image src="{{participant.imagePath}}" class="tour-img-participant">
+                           <md-card-content class="tour-participant">
+                               <div>{{participant.firstName}}</div>
+                               <div>{{participant.surname}}</div>
+                           </md-card-content>
+                       </md-card>
+                   </div>
+               </md-card-content>
+
+           </md-card>
+
+           <button md-raised-button color="primary" class="tour-teilnehmen">
+               In den Warenkorb
+           </button>
+       </div>

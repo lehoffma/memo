@@ -101,7 +101,7 @@ md-tab-group > .md-tab-header{
 }
 
 .tour-description{
-    font-size: 1em;
+    font-size: 3em;
     margin-left: 0.2em;
     margin-top: 1em;
     margin-bottom: 1em;
@@ -169,4 +169,31 @@ md-card a{
     justify-content: flex-end;
     align-items: center;
     display: flex;
+}
+
+.greenBox{
+    min-height: 20%;
+    height: 20%;
+    width: 95%;
+    display: inline-block;
+    margin: 2.5%;
+    background-color: #4caf50;
+    align-items: center;
+    border-style: groove;
+
+}
+.tableData{
+    font-size: 3em;
+    font-weight: bold;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+    color: #c8e6c9;
+}
+.diskription{
+    font-size: 4em;
+}
+.tabledatacontent{
+    font-weight: normal;
 }
