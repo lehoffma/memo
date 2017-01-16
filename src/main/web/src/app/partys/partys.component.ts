@@ -1,5 +1,6 @@
 import {Component} from "@angular/core";
 
+
 @Component({
     selector: "partys",
     templateUrl: "./partys.component.html",

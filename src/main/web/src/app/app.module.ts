@@ -19,6 +19,7 @@ import {NavigationSideNavComponent} from "./navigation/sidenav/navigation-sidena
 import {UserStore} from "./shared/stores/user.store";
 import {MerchStore} from "./shared/stores/merch.store";
 import {TourStore} from "./shared/stores/tour.store";
+import {PartyDetailComponent} from "./partys/party-detail/party-detail.component";
 
 @NgModule({
     imports: [
@@ -31,6 +32,7 @@ import {TourStore} from "./shared/stores/tour.store";
             {path: "tours/:id", component: TourDetailComponent},
             {path: "account", component: AccountComponent},
             {path: "partys", component: PartysComponent},
+            {path: "partys/:id", component: PartyDetailComponent},
             {path: "members/:id", component: AccountProfileComponent}
         ])
     ],
@@ -45,6 +47,7 @@ import {TourStore} from "./shared/stores/tour.store";
         TourDetailComponent,
         AccountComponent,
         PartysComponent,
+        PartyDetailComponent,
         AccountProfileComponent
     ],
     bootstrap: [
