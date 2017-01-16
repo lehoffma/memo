@@ -18,22 +18,39 @@
         <img md-card-image class="img-tour-detail" src="http://placekitten.com/1500/950">
         <md-card-content>
 
-            <div class="greenBox">
-                <table>
-                    <tr class="row">
-                        <td class="tableData">Ziel: <span class="tabledatacontent">{{tour.destination}}</span></td>
-                        <td class="tableData">Treffpunkt: <span class="tabledatacontent">{{tour.meetingPoint}}</span></td>
-                    </tr>
-                    <tr class="row">
-                        <td class="tableData">Preis: <span class="tabledatacontent">{{tour.priceMember}}</span></td>
-                        <td class="tableData">Freie Plätze: <span class="tabledatacontent">{{tour.emptySeats}}/{{tour.capacity}}</span></td>
-                    </tr>
-                    <tr class="row">
-                        <td class="tableData">Abfahrt: <span class="tabledatacontent">{{tour.date|date}}</span></td>
-                        <td class="tableData">Meilen: <span class="tabledatacontent">{{tour.miles}}</span></td>
-                    </tr>
-                </table>
-            </div>
+            <table class="table1">
+                <tr class="bordered">
+                    <td class="row" align="left" >Ziel</td>
+                    <td class="row" align="right">{{tour.destination}}</td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Preis</td>
+                    <td class="row" align="right">{{tour.priceMember}} €</td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Datum</td>
+                    <td class="row" align="right">{{tour.date.getDay()}}.{{tour.date.getMonth()}}</td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Abfahrt</td>
+                    <td class="row" align="right">{{tour.date.getHours()}}:{{tour.date.getMinutes()}} Uhr</td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Treffpunkt</td>
+                    <td class="row" align="right">{{tour.meetingPoint}}</td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Freie Plätze</td>
+                    <td class="row" align="right">{{tour.emptySeats}}/{{tour.capacity}}</td>
+                </tr>
+                <tr>
+                    <td class="row" align="left">Strecke (in Meilen)</td>
+                    <td class="row" align="right" class="spacebottom">{{tour.miles}}</td>
+                </tr>
+            </table>
+
+
+
 
             <div class="diskription">
                 Beschreibung
