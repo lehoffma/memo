@@ -20,6 +20,7 @@ import {UserStore} from "./shared/stores/user.store";
 import {MerchStore} from "./shared/stores/merch.store";
 import {TourStore} from "./shared/stores/tour.store";
 import {PartyDetailComponent} from "./partys/party-detail/party-detail.component";
+import {MerchDetailComponent} from "./merchandise/merchandise-detail/merchandise-detail.component";
 
 @NgModule({
     imports: [
@@ -33,7 +34,8 @@ import {PartyDetailComponent} from "./partys/party-detail/party-detail.component
             {path: "account", component: AccountComponent},
             {path: "partys", component: PartysComponent},
             {path: "partys/:id", component: PartyDetailComponent},
-            {path: "members/:id", component: AccountProfileComponent}
+            {path: "members/:id", component: AccountProfileComponent},
+            {path: "merch/:id", component: MerchDetailComponent}
         ])
     ],
     declarations: [
@@ -48,6 +50,7 @@ import {PartyDetailComponent} from "./partys/party-detail/party-detail.component
         AccountComponent,
         PartysComponent,
         PartyDetailComponent,
+        MerchDetailComponent,
         AccountProfileComponent
     ],
     bootstrap: [

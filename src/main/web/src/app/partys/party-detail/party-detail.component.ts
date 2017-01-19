@@ -8,7 +8,7 @@ import {TourStore} from "../../shared/stores/tour.store";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {UserStore} from "../../shared/stores/user.store";
 import {PartyStore} from "../../shared/stores/party.store";
-/**
+
 
 @Component({
     selector: "partys-details",
@@ -19,7 +19,7 @@ import {PartyStore} from "../../shared/stores/party.store";
 export class PartyDetailComponent implements OnInit, OnDestroy {
     partyObservable:Observable<Party>;
     subscription:Subscription;
-}
+
 constructor(private route: ActivatedRoute,
     private partyStore: PartyStore,
     private userStore: UserStore,
@@ -37,14 +37,14 @@ ngOnInit(){
 ngOnDestroy(){
     this.subscription.unsubscribe();
 }
-getParticipants(ids:number[]):Observable < Party[] > {
-    return this.partyStore.data.map(partys => partys.filter(user => ids.indexOf(party.id) !== -1));
+getParticipants(ids: number[]): Observable<User[]>{
+    return this.userStore.data.map(users => users.filter(user => ids.indexOf(user.id) !== -1));
 }
 
-showDetailsOfParty(party:Party){
-    let url: string = `partys/${party.id}`;
-    this.navigationService.navigateByUrl(url);
-}
+
+    showDetailsOfUser(user: User){
+        let url: string = `members/${user.id}`;
+        this.navigationService.navigateByUrl(url);
+    }
 }
 
- */

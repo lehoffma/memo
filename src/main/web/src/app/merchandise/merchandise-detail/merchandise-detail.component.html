@@ -1,0 +1,55 @@
+<div *ngFor="let merchandise of [merchObservable | async]">
+    <md-card>
+        <md-card-header>
+            <md-card-title>
+                <span>{{merch.title}}</span>
+                <div>
+                    <button md-button class="centered-icon">
+                        <md-icon>email</md-icon>
+                    </button>
+                    <button md-button class="centered-icon">
+                        <md-icon>share</md-icon>
+                    </button>
+                </div>
+            </md-card-title>
+        </md-card-header>
+        <img md-card-image class="img-party-detail" src="http://placekitten.com/1500/950">
+        <md-card-content>
+
+            <table class="table1">
+                <tr class="bordered">
+                    <td class="row" align="left">Ort</td>
+                    <td class="row" align="right"></td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Datum</td>
+                    <td class="row" align="right"></td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Uhrzeit</td>
+                    <td class="row" align="right"></td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Preis</td>
+                    <td class="row" align="right"></td>
+                </tr>
+                <tr>
+                    <td class="row" align="left">Teilnehmer (Anzahl)</td>
+                    <td class="row" align="right" class="spacebottom"></td>
+                </tr>
+            </table>
+
+
+
+
+            <div class="diskription">
+                Beschreibung
+            </div>
+            <div class="party-description">
+                {{merch.description}}
+            </div>
+
+
+        </md-card-content>
+    </md-card>
+</div>

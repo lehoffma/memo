@@ -112,28 +112,28 @@
 
 
            <md-card>
-               <md-card-header>
-                   <md-card-title>
-                       <div class="tour-titel-member">Wer fährt mit?</div>
-                   </md-card-title>
-               </md-card-header>
-               <md-card-content>
-                   <div class="tour-participant-container">
-                       <md-card *ngFor="let participant of (getParticipants(tour.participants) | async);"
-                                (click)="showDetailsOfUser(participant)">
+    <md-card-header>
+        <md-card-title>
+            <div class="tour-titel-member">Wer fährt mit?</div>
+        </md-card-title>
+    </md-card-header>
+    <md-card-content>
+        <div class="tour-participant-container">
+            <md-card *ngFor="let participant of (getParticipants(tour.participants) | async);"
+                     (click)="showDetailsOfUser(participant)">
 
-                           <img md-card-image src="{{participant.imagePath}}" class="tour-img-participant">
-                           <md-card-content class="tour-participant">
-                               <div>{{participant.firstName}}</div>
-                               <div>{{participant.surname}}</div>
-                           </md-card-content>
-                       </md-card>
-                   </div>
-               </md-card-content>
+                <img md-card-image src="{{participant.imagePath}}" class="tour-img-participant">
+                <md-card-content class="tour-participant">
+                    <div>{{participant.firstName}}</div>
+                    <div>{{participant.surname}}</div>
+                </md-card-content>
+            </md-card>
+        </div>
+    </md-card-content>
 
-           </md-card>
+</md-card>
 
-           <button md-raised-button color="primary" class="tour-teilnehmen">
-               In den Warenkorb
-           </button>
-       </div>
+<button md-raised-button color="primary" class="tour-teilnehmen">
+    In den Warenkorb
+</button>
+</div>

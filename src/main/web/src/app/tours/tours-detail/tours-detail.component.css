@@ -20,14 +20,12 @@ md-card > md-card-header > .md-card-header-text{
 :host >>> .md-card-header-text{
     width: 100%;
 }
-
 md-card > md-card-header md-card-title,
 md-card button md-icon{
     font-size: 3.5em;
     margin-left: 0.2em;
     margin-bottom: 0em;
 }
-
 .centered-icon md-icon{
     font-size: 3.5em;
     margin-left: 0.2em;
@@ -36,7 +34,6 @@ md-card button md-icon{
     height: 50px;
     vertical-align: middle;
 }
-
 md-card > img.img-tour-detail{
     margin-top: 60px;
 
@@ -54,7 +51,6 @@ md-card > img.img-tour-detail{
     align-items: center;
     justify-content: center;
 }
-
 .tour-main-info{
     font-size: 3em;
     display: flex; /* Flexbox Container!!!*/
@@ -62,23 +58,18 @@ md-card > img.img-tour-detail{
     justify-content: space-between;
     width: 100%;
 }
-
 .md-tab-label{
     margin-bottom: 100px;
 }
-
 md-tab-group > md-tab-header{
     height: 100px;
 }
-
 md-tab-group>div{
     margin-bottom: 100px;
 }
-
 md-tab-group > .md-tab-header{
     height: 100px;
 }
-
 .tour-date,
 .tour-price,
 .tour-emptySeats,

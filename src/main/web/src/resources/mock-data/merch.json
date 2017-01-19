@@ -1,3 +1,25 @@
 [
+  {
+    "id": 0,
+    "title": "Polo-Shirt",
+    "date": "2016-12-31T23:00:00.000Z",
+    "description": "Cooles Polo-Shirt für den echten Fan!",
+    "expectedRole": "Mitglied",
+    "picPath": "https://placekitten.com/505/505",
+    "capacity": "20",
+    "priceMember": "19",
+    "meetingPoint": "Allerstraße 9 38448 Wolfsburg"
+  },
+  {
+    "id": 1,
+    "title": "Meilenwölfe-Schal",
+    "date": "2016-12-31T23:00:00.000Z",
+    "description": "Cooles Schal für den echten Fan!",
+    "expectedRole": "Mitglied",
+    "picPath": "https://placekitten.com/505/505",
+    "capacity": "20",
+    "priceMember": "9",
+    "meetingPoint": "Allerstraße 9 38448 Wolfsburg"
+  }
 
 ]

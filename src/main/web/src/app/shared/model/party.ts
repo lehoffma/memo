@@ -13,9 +13,10 @@ export class Party extends Event {
                 priceMember: number = 9999,
                 meetingPoint: Address = new Address(),
                 private _emptySeats: number = -1,
-                private _participants:number[]) {
+                private _participants:number[] = []) {
         super(id, title, date, description, expectedRole, picPath, capacity, priceMember, meetingPoint);
     }
+
 
     get emptySeats(): number {
         return this._emptySeats;
