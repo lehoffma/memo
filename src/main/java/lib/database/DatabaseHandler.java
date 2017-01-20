@@ -1,8 +1,8 @@
-package database;
+package lib.database;
 
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import shared.model.User;
+import lib.model.User;
 
 
 /**
