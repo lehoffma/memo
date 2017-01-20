@@ -22,6 +22,7 @@ import {TourStore} from "./shared/stores/tour.store";
 import {PartyDetailComponent} from "./partys/party-detail/party-detail.component";
 import {MerchDetailComponent} from "./merchandise/merchandise-detail/merchandise-detail.component";
 
+
 @NgModule({
     imports: [
         BrowserModule,

@@ -67,6 +67,25 @@
                 {{merch?.description}}
             </div>
 
+            <div class="titelChoice">Größentabelle</div>
+
+            <table class="tableSizesClothes">
+                <tr>
+                    <th></th>
+                    <th *ngFor="let size of clothesSizeKeys">
+                        {{size}}
+                    </th>
+                </tr>
+                <tr *ngFor="let index of attributeIndices">
+                    <td class="rowSize">{{attributes[index]}}</td>
+                    <td class="rowSize" *ngFor="let size of clothesSizeKeys">
+                        {{merch.sizeTable[size]}}
+                    </td>
+                </tr>
+            </table>
+
+
+
 
             <button md-raised-button color="primary" class="merch-teilnehmen">
                 In den Warenkorb

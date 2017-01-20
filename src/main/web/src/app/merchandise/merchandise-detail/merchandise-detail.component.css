@@ -180,3 +180,16 @@ md-card > img.img-party-detail{
     margin-top: 2em;
     background-color: #212121;
 }
+.tableSizesClothes{
+    font-size: 3em;
+    margin-bottom: 1em;
+}
+.rowSize{
+    padding-bottom: 0.25em;
+    padding-top: 0.25em;
+}
+
+.tableSizesClothes tr:nth-child(even) {
+    background-color: #f2f2f2;
+
+}

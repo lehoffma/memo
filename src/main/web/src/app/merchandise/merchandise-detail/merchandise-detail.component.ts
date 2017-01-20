@@ -17,6 +17,9 @@ export class MerchDetailComponent implements OnInit, OnDestroy{
     merchObservable: Observable<Merchandise> = Observable.of(new Merchandise());
     subscription:Subscription;
     clothesSize = ClothesSize;
+    clothesSizeKeys = Object.keys(this.clothesSize).filter(key => isNaN(+key));
+    attributes = ['Brustumfang', 'Tailenumfang', 'Hüftumfang', 'Modelllänge', 'Schulterbreite'];
+    attributeIndices = this.attributes.map((attr, index) => index);
 
     constructor(private route: ActivatedRoute,
                 private merchStore: MerchStore,

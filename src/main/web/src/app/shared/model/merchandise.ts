@@ -1,7 +1,7 @@
 import {Event} from "./event";
 import {Address} from "./address";
 import {ClubRole} from "./club-role";
-import {SizeTable} from "./sizeTable";
+import {SizeTable} from "./size-table";
 export class Merchandise extends Event {
 
     constructor(id: number = 9999,
