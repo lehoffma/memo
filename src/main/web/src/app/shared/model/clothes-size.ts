@@ -9,5 +9,5 @@ export enum ClothesSize{
     L = <any> "L",
     XL = <any> "XL",
     XXL = <any> "XXL",
-    oneSize = <any> "One size"
+    oneSize = <any> "oneSize"
 }

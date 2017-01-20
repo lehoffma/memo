@@ -2,13 +2,7 @@ import {Event} from "./event";
 import {ClubRole} from "./club-role";
 import {SizeTable} from "./size-table";
 export class Merchandise extends Event {
-    get color(): string[] {
-        return this._color;
-    }
 
-    set color(value: string[]) {
-        this._color = value;
-    }
     constructor(id: number = 9999,
                 title: string = "default",
                 date: Date = new Date(1999, 9, 19),
@@ -22,6 +16,13 @@ export class Merchandise extends Event {
                 priceMember: number = 9999,
                 meetingPoint: number = 0) {
         super(id, title, date, description, expectedRole, picPath, capacity, priceMember, meetingPoint);
+    }
+    get color(): string[] {
+        return this._color;
+    }
+
+    set color(value: string[]) {
+        this._color = value;
     }
 
     get sizeTable(): SizeTable {

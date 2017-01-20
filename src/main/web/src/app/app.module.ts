@@ -23,6 +23,7 @@ import {PartyDetailComponent} from "./partys/party-detail/party-detail.component
 import {MerchDetailComponent} from "./merchandise/merchandise-detail/merchandise-detail.component";
 import {AddressStore} from "./shared/stores/adress.store";
 
+
 @NgModule({
     imports: [
         BrowserModule,
