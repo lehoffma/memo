@@ -1,11 +1,9 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Tour} from "../../shared/model/tour";
 import {Merchandise} from "../../shared/model/merchandise";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {Subscription, Observable} from "rxjs";
 import {MerchStore} from "../../shared/stores/merch.store";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {UserStore} from "../../shared/stores/user.store";
 
 
 @Component({
@@ -15,7 +13,7 @@ import {UserStore} from "../../shared/stores/user.store";
 })
 
 export class MerchDetailComponent implements OnInit, OnDestroy{
-    merchObservable:Observable<Merchandise>;
+    merchObservable: Observable<Merchandise> = Observable.of(new Merchandise());
     subscription:Subscription;
 
     constructor(private route: ActivatedRoute,
