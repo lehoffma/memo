@@ -2,9 +2,10 @@
   "name": "memo-web",
   "version": "0.0.1",
   "scripts": {
-    "ng": "ng",
     "start": "ng serve",
-    "production": "ng serve --prod"
+    "production": "ng serve --prod",
+    "build": "ng build --prod",
+    "build dev": "ng build"
   },
   "dependencies": {
     "@angular/common": "~2.4.0",
