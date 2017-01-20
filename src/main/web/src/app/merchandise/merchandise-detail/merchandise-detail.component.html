@@ -1,4 +1,4 @@
-<div *ngFor="let merchandise of [merchObservable | async]">
+<div *ngFor="let merch of [merchObservable | async]">
     <md-card>
         <md-card-header>
             <md-card-title>
@@ -19,11 +19,11 @@
             <table class="table1">
                 <tr class="bordered">
                     <td class="row" align="left">Ort</td>
-                    <td class="row" align="right"></td>
+                    <td class="row" align="right">{{merch.meetingPoint}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Datum</td>
-                    <td class="row" align="right"></td>
+                    <td class="row" align="right">{{merch.date|date:"dd.MM"}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Uhrzeit</td>
