@@ -4,7 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Subscription, Observable} from "rxjs";
 import {MerchStore} from "../../shared/stores/merch.store";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {ClothesSize} from "../../shared/model/clothesSize";
+import {ClothesSize} from "../../shared/model/clothes-size";
 
 
 @Component({
