@@ -1,8 +1,8 @@
-<div *ngFor="let merchandise of [merchObservable | async]">
+<div *ngFor="let merch of [merchObservable | async]">
     <md-card>
         <md-card-header>
             <md-card-title>
-                <span>{{merch.title}}</span>
+                <span>{{merch?.title}}</span>
                 <div>
                     <button md-button class="centered-icon">
                         <md-icon>email</md-icon>
@@ -18,24 +18,20 @@
 
             <table class="table1">
                 <tr class="bordered">
-                    <td class="row" align="left">Ort</td>
-                    <td class="row" align="right"></td>
+                    <td class="row" align="left">Abholung </td>
+                    <td class="row" align="right">{{merch?.meetingPoint.name}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Datum</td>
-                    <td class="row" align="right"></td>
+                    <td class="row" align="right">{{merch?.date|date:"dd.MM"}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Uhrzeit</td>
-                    <td class="row" align="right"></td>
+                    <td class="row" align="right">{{merch?.date|date:"hh.ss"}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Preis</td>
-                    <td class="row" align="right"></td>
-                </tr>
-                <tr>
-                    <td class="row" align="left">Teilnehmer (Anzahl)</td>
-                    <td class="row" align="right" class="spacebottom"></td>
+                    <td class="row" align="right" class="spacebottom">{{merch?.priceMember}} €</td>
                 </tr>
             </table>
 
@@ -46,8 +42,18 @@
                 Beschreibung
             </div>
             <div class="party-description">
-                {{merch.description}}
+                {{merch?.description}}
             </div>
+
+
+
+
+
+            <button md-raised-button color="primary" class="merch-teilnehmen">
+                In den Warenkorb
+            </button>
+
+
 
 
         </md-card-content>
