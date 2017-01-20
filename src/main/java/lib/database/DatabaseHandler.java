@@ -19,7 +19,7 @@ public class DatabaseHandler {
     public DatabaseHandler(){
 
         jdbc = new JdbcTemplate();
-        InitializeTables();
+        //InitializeTables();
     }
 
 
