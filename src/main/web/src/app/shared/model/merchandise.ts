@@ -1,6 +1,7 @@
 import {Event} from "./event";
 import {Address} from "./address";
 import {ClubRole} from "./club-role";
+import {SizeTable} from "./sizeTable";
 export class Merchandise extends Event {
 
 
@@ -11,6 +12,9 @@ export class Merchandise extends Event {
                 expectedRole: ClubRole = ClubRole.Mitglied,
                 picPath: string = "default",
                 capacity: number = -1,
+                private color: string = "default",
+                private material: string = "default",
+                private sizeTable: SizeTable = {},
                 priceMember: number = 9999,
                 meetingPoint: Address = new Address()) {
         super(id, title, date, description, expectedRole, picPath, capacity, priceMember, meetingPoint);
