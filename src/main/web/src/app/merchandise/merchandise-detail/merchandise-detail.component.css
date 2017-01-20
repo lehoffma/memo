@@ -138,3 +138,45 @@ md-card > img.img-party-detail{
     position: absolute;
     top: -20px;
 }
+.tableColor{
+    font-size: 4em;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.tableColor label{
+    float: left;
+    width: 130px;
+    height: 60px;
+    margin: 10px;
+    background-color: #EFEFEF;
+    border-radius: 4px;
+    border: 1px solid #212121;
+    overflow: auto;
+}
+.tableColor label span{
+    text-align: center;
+    font-size: 32px;
+    padding: 22px 0px;
+    display: block;
+}
+.tableColor label input {
+    display: none;
+    position: absolute;
+    top: -20px;
+}
+.color input:checked + span{
+    border: 7px solid #212121;
+
+
+}
+.titelChoice{
+    font-size: 4em;
+    margin-bottom: 0.5em;
+    margin-top: 1em;
+
+}
+.underline{
+    margin-top: 2em;
+    background-color: #212121;
+}

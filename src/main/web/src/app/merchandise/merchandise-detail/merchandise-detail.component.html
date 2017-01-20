@@ -16,6 +16,8 @@
         <img md-card-image class="img-party-detail" src="http://placekitten.com/1500/950">
         <md-card-content>
 
+            <div class="titelChoice">Größe</div>
+
             <div class="tableSizes">
                 <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XS}}</span></label>
                 <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.S}}</span></label>
@@ -24,10 +26,16 @@
                 <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XL}}</span></label>
                 <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XXL}}</span></label>
             </div>
+            <hr class="underline">
+            <div class="titelChoice">Farbe</div>
             <div class="tableColor">
-                <div *ngFor="let color of merch.color"></div>
-                <label class="color"><input type="radio" name="toggle"><span>{{color}}</span></label>
+                <label *ngFor="let color of merch?.color" class="color" [ngStyle]="{'background-color': color}">
+                    <input type="radio" name="colortoggle"><span></span>
+                </label>
             </div>
+            <hr class="underline">
+
+            <div class="titelChoice">Details</div>
 
             <table class="table1">
                 <tr class="bordered">
@@ -45,13 +53,11 @@
                 <tr class="bordered">
                     <td class="row" align="left">Abholung</td>
                     <td class="row" align="right" class="spacebottom">{{merch?.meetingPoint.name}}
-                        <div>{{merch.meetingPoint.street}} {{merch.meetingPoint.streetNr}}</div>
-                        <div>{{merch.meetingPoint.zip}} {{merch.meetingPoint.city}}</div>
+                        <div>{{merch?.meetingPoint.street}} {{merch?.meetingPoint.streetNr}}</div>
+                        <div>{{merch?.meetingPoint.zip}} {{merch?.meetingPoint.city}}</div>
                     </td>
                 </tr>
             </table>
-
-
 
 
             <div class="diskription">
@@ -62,14 +68,9 @@
             </div>
 
 
-
-
-
             <button md-raised-button color="primary" class="merch-teilnehmen">
                 In den Warenkorb
             </button>
-
-
 
 
         </md-card-content>
