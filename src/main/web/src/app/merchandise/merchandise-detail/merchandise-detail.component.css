@@ -15,6 +15,7 @@ md-card > md-card-header > .md-card-header-text{
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    text-overflow: ellipsis;
 }
 :host >>> .md-card-header-text{
     width: 100%;
@@ -88,4 +89,46 @@ md-card > img.img-party-detail{
     /*margin-bottom: 0.5em;*/
 
 
+}
+.merch-description{
+    font-size: 3em;
+    margin-left: 0.2em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+.sizes{
+    background-color:#d9d9d9;
+}
+.sizes input:checked + span{
+    background-color:#4CAF50;
+    color:#FAFAFA;
+
+}
+.tableSizes{
+    font-size: 4em;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+}
+.tableSizes label{
+    float:left;
+    width:130px;
+    margin:10px;
+    background-color:#EFEFEF;
+    border-radius:4px;
+    border:1px solid #D0D0D0;
+    overflow:auto;
+}
+.tableSizes label span {
+    text-align:center;
+    font-size: 32px;
+    padding:13px 0px;
+    display:block;
+}
+
+.tableSizes label input {
+    display: none;
+    position:absolute;
+    top:-20px;
 }
