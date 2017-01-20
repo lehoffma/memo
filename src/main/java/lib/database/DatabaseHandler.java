@@ -1,6 +1,8 @@
 package lib.database;
 
 
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import lib.model.User;
 
@@ -11,14 +13,19 @@ import lib.model.User;
 public class DatabaseHandler {
 
 
-    private final JdbcTemplate jdbc;
+    private JdbcTemplate jdbc;
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.jdbc = new JdbcTemplate(dataSource);
+    }
+
 
 
 
 
     public DatabaseHandler(){
 
-        jdbc = new JdbcTemplate();
         //InitializeTables();
     }
 
