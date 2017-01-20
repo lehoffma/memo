@@ -6,6 +6,7 @@ import {Subscription, Observable} from "rxjs";
 import {MerchStore} from "../../shared/stores/merch.store";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {UserStore} from "../../shared/stores/user.store";
+import {ClothesSize} from "../../shared/model/clothesSize";
 
 
 @Component({
@@ -17,6 +18,7 @@ import {UserStore} from "../../shared/stores/user.store";
 export class MerchDetailComponent implements OnInit, OnDestroy{
     merchObservable:Observable<Merchandise>;
     subscription:Subscription;
+    clothesSize = ClothesSize;
 
     constructor(private route: ActivatedRoute,
                 private merchStore: MerchStore,

@@ -16,22 +16,35 @@
         <img md-card-image class="img-party-detail" src="http://placekitten.com/1500/950">
         <md-card-content>
 
+            <div class="tableSizes">
+                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XS}}</span></label>
+                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.S}}</span></label>
+                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.M}}</span></label>
+                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.L}}</span></label>
+                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XL}}</span></label>
+                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XXL}}</span></label>
+            </div>
+            <div class="tableColor">
+                <div *ngFor="let color of merch.color"></div>
+                
+            </div>
+
             <table class="table1">
                 <tr class="bordered">
-                    <td class="row" align="left">Abholung </td>
-                    <td class="row" align="right">{{merch.meetingPoint.name}}</td>
-                </tr>
-                <tr class="bordered">
-                    <td class="row" align="left">Datum</td>
-                    <td class="row" align="right">{{merch.date|date:"dd.MM"}}</td>
-                </tr>
-                <tr class="bordered">
-                    <td class="row" align="left">Uhrzeit</td>
-                    <td class="row" align="right">{{merch.date|date:"hh.ss"}}</td>
-                </tr>
-                <tr class="bordered">
                     <td class="row" align="left">Preis</td>
-                    <td class="row" align="right" class="spacebottom">{{merch.priceMember}} €</td>
+                    <td class="row" align="right">{{merch.priceMember}} €</td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Material</td>
+                    <td class="row" align="right">{{merch.material}}</td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Vorrätig (Stück)</td>
+                    <td class="row" align="right">{{merch.capacity}}</td>
+                </tr>
+                <tr class="bordered">
+                    <td class="row" align="left">Abholung </td>
+                    <td class="row" align="right" class="spacebottom">{{merch.meetingPoint.name}}<div>{{merch.meetingPoint.street}} {{merch.meetingPoint.streetNr}}</div><div>{{merch.meetingPoint.zip}} {{merch.meetingPoint.city}}</div></td>
                 </tr>
             </table>
 
@@ -41,7 +54,7 @@
             <div class="diskription">
                 Beschreibung
             </div>
-            <div class="party-description">
+            <div class="merch-description">
                 {{merch.description}}
             </div>
 
