@@ -1,4 +1,4 @@
-package shared.model;
+package lib.model;
 
 /**
  * Created by gzae on 12/13/16.
