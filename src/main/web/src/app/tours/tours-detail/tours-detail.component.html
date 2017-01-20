@@ -29,11 +29,11 @@
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Datum</td>
-                    <td class="row" align="right">{{tour.date.getDay()}}.{{tour.date.getMonth()}}</td>
+                    <td class="row" align="right">{{tour.date|date:"dd.MM.yy"}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Abfahrt</td>
-                    <td class="row" align="right">{{tour.date.getHours()}}:{{tour.date.getMinutes()}} Uhr</td>
+                    <td class="row" align="right">{{tour.date|date:"hh:ss"}} Uhr</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Treffpunkt</td>

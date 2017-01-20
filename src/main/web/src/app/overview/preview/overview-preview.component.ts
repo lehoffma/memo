@@ -44,7 +44,7 @@ export class OverViewPreviewComponent implements OnInit {
     showDetails(event: Event) {
         let url: string;
         if (event instanceof Merchandise) {
-            url = `merchandise/${event.id}`;
+            url = `merch/${event.id}`;
         }
         else if (event instanceof Tour) {
             url = `tours/${event.id}`;
