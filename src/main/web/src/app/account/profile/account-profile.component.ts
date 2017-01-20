@@ -5,6 +5,8 @@ import {Subscription, Observable} from "rxjs";
 import {UserStore} from "../../shared/stores/user.store";
 import {TourStore} from "../../shared/stores/tour.store";
 import {Tour} from "../../shared/model/tour";
+import {Party} from "../../shared/model/party";
+import {PartyStore} from "../../shared/stores/party.store";
 
 @Component({
     selector: "account-profiles",
@@ -15,11 +17,12 @@ import {Tour} from "../../shared/model/tour";
 export class AccountProfileComponent implements OnInit, OnDestroy {
     subscription: Subscription;
     observableUser: Observable<User>;
-    user: User = new User();
+    user: User;
 
     constructor(private route: ActivatedRoute,
                 private tourStore: TourStore,
-                private userStore: UserStore) {
+                private userStore: UserStore,
+                private partyStore: PartyStore) {
 
     }
 
@@ -37,5 +40,21 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
+    }
+
+    getEventsOfUser(id: number) {
+        return Observable.zip(this.tourStore.data, this.partyStore.data, (tours, partys) => {
+            //combine the two arrays into one
+            return [...tours, ...partys];
+        })
+            .map((events: (Tour|Party)[]) =>
+                events.filter(event =>
+                    event.participants.find(participantID => participantID === id) !== undefined
+                )
+            );
+    }
+
+    showEvent() {
+        //todo
     }
 }

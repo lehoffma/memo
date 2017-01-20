@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Tour} from "../../shared/model/tour";
 import {User} from "../../shared/model/user";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {Subscription, Observable} from "rxjs";
 import {TourStore} from "../../shared/stores/tour.store";
 import {NavigationService} from "../../shared/services/navigation.service";
@@ -15,7 +15,7 @@ import {UserStore} from "../../shared/stores/user.store";
 })
 
 export class TourDetailComponent implements OnInit, OnDestroy{
-    tourObservable:Observable<Tour>;
+    tourObservable: Observable<Tour> = Observable.of(new Tour());
     subscription:Subscription;
 
     constructor(private route: ActivatedRoute,

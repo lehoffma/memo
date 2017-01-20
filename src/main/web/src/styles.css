@@ -12,7 +12,9 @@ html, body, main, app{
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-
+md-icon.md-dark {
+    color: #757575;
+}
 
 main{
     min-height: 100%;

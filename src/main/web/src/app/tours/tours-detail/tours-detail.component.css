@@ -4,7 +4,6 @@ md-card{
     width: 95%;
     display: inline-block;
     margin: 2.5%;
-    background-color: #ededed;
 }
 md-card > md-card-header > .md-card-header-text{
     /*display: flex; !* Flexbox Container!!!*!*/

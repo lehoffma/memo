@@ -1,5 +1,3 @@
-
-
 <div class="preview-container">
     <md-card *ngFor="let event of events" (click)="showDetails(event)">
         <img md-card-image src="http://placekitten.com/1500/1500">
@@ -8,8 +6,7 @@
         <md-card-content>
 
             <div *ngFor="let key of iconKeys">
-                <md-icon>{{icons[key]}}
-                </md-icon>
+                <md-icon class="md-dark">{{icons[key]}}</md-icon>
                 <span>
                     <!--todo: pipe-->
                 {{formatDetails(event[key])}}

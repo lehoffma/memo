@@ -2,7 +2,7 @@
     <md-card>
         <md-card-header>
         <md-card-title>
-            <span>{{party.title}}</span>
+            <span>{{party?.title}}</span>
             <div>
                 <button md-button class="centered-icon">
                     <md-icon>email</md-icon>
@@ -19,23 +19,23 @@
             <table class="table1">
                 <tr class="bordered">
                     <td class="row" align="left">Ort</td>
-                    <td class="row" align="right">{{party.meetingPoint}}</td>
+                    <td class="row" align="right">{{party?.meetingPoint}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Datum</td>
-                    <td class="row" align="right">{{party.date.getDay()}}.{{party.date.getMonth()}}</td>
+                    <td class="row" align="right">{{party?.date.getDay()}}.{{party?.date.getMonth()}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Uhrzeit</td>
-                    <td class="row" align="right">{{party.date.getHours()}}:{{party.date.getMinutes()}} Uhr</td>
+                    <td class="row" align="right">{{party?.date.getHours()}}:{{party?.date.getMinutes()}} Uhr</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Preis</td>
-                    <td class="row" align="right">{{party.priceMember}} €</td>
+                    <td class="row" align="right">{{party?.priceMember}} €</td>
                 </tr>
                 <tr>
                     <td class="row" align="left">Teilnehmer (Anzahl)</td>
-                    <td class="row" align="right" class="spacebottom">{{party.participants.length}}</td>
+                    <td class="row" align="right" class="spacebottom">{{party?.participants.length}}</td>
                 </tr>
             </table>
 
@@ -46,7 +46,7 @@
                 Beschreibung
             </div>
             <div class="party-description">
-                {{party.description}}
+                {{party?.description}}
             </div>
 
 
@@ -63,7 +63,7 @@
             </md-card-header>
             <md-card-content>
                 <div class="participant-container">
-                    <md-card *ngFor="let participant of (getParticipants(party.participants) | async);"
+                    <md-card *ngFor="let participant of (getParticipants(party?.participants) | async);"
                              (click)="showDetailsOfUser(participant)">
 
                         <img md-card-image src="{{participant.imagePath}}" class="img-participant">

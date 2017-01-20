@@ -17,14 +17,14 @@
         <!--"main" link-->
         <a routerLink="{{link.route}}"
            routerLinkActive="active">
-            <md-icon *ngIf="!link.children">{{link.icon}}</md-icon>
+            <md-icon class="md-dark" *ngIf="!link.children">{{link.icon}}</md-icon>
             <span>{{link.name}}</span>
         </a>
         <!--child links-->
         <a *ngFor="let childLink of link.children"
            routerLink="{{childLink.route}}"
            routerLinkActive="active">
-            <md-icon>{{childLink.icon}}</md-icon>
+            <md-icon class="md-dark">{{childLink.icon}}</md-icon>
             <span>{{childLink.name}}</span>
         </a>
     </div>
