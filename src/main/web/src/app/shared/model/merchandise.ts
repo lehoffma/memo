@@ -24,6 +24,7 @@ export class Merchandise extends Event {
                 meetingPoint: Address = new Address()) {
         super(id, title, date, description, expectedRole, picPath, capacity, priceMember, meetingPoint);
     }
+
     get sizeTable(): SizeTable {
         return this._sizeTable;
     }

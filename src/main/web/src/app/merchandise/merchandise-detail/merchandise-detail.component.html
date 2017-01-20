@@ -17,12 +17,12 @@
         <md-card-content>
 
             <div class="tableSizes">
-                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XS}}</span></label>
-                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.S}}</span></label>
-                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.M}}</span></label>
-                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.L}}</span></label>
-                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XL}}</span></label>
-                    <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XXL}}</span></label>
+                <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XS}}</span></label>
+                <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.S}}</span></label>
+                <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.M}}</span></label>
+                <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.L}}</span></label>
+                <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XL}}</span></label>
+                <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XXL}}</span></label>
             </div>
             <div class="tableColor">
                 <div *ngFor="let color of merch.color"></div>
@@ -43,8 +43,11 @@
                     <td class="row" align="right">{{merch?.capacity}}</td>
                 </tr>
                 <tr class="bordered">
-                    <td class="row" align="left">Abholung </td>
-                    <td class="row" align="right" class="spacebottom">{{merch?.meetingPoint.name}}<div>{{merch.meetingPoint.street}} {{merch.meetingPoint.streetNr}}</div><div>{{merch.meetingPoint.zip}} {{merch.meetingPoint.city}}</div></td>
+                    <td class="row" align="left">Abholung</td>
+                    <td class="row" align="right" class="spacebottom">{{merch?.meetingPoint.name}}
+                        <div>{{merch.meetingPoint.street}} {{merch.meetingPoint.streetNr}}</div>
+                        <div>{{merch.meetingPoint.zip}} {{merch.meetingPoint.city}}</div>
+                    </td>
                 </tr>
             </table>
 
