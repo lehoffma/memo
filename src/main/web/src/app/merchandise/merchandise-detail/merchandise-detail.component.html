@@ -25,7 +25,7 @@
                 <label class="sizes"><input type="radio" name="toggle"><span>{{clothesSize.XXL}}</span></label>
             </div>
             <div class="tableColor">
-                <div *ngFor="let color of merch.color"></div>
+                <div *ngFor="let color of merch?.color"></div>
 
             </div>
 
@@ -44,14 +44,14 @@
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Abholung</td>
-                    <td class="row" align="right" class="spacebottom">{{merch?.meetingPoint.name}}
-                        <div>{{merch.meetingPoint.street}} {{merch.meetingPoint.streetNr}}</div>
-                        <div>{{merch.meetingPoint.zip}} {{merch.meetingPoint.city}}</div>
+                    <td *ngFor="let meetingPoint of [getAddress(merch?.meetingPoint) | async]" align="right"
+                        class="row spacebottom">
+                        {{meetingPoint?.name}}
+                        <div>{{meetingPoint?.street}} {{meetingPoint?.streetNr}}</div>
+                        <div>{{meetingPoint?.zip}} {{meetingPoint?.city}}</div>
                     </td>
                 </tr>
             </table>
-
-
 
 
             <div class="diskription">
@@ -62,14 +62,9 @@
             </div>
 
 
-
-
-
             <button md-raised-button color="primary" class="merch-teilnehmen">
                 In den Warenkorb
             </button>
-
-
 
 
         </md-card-content>

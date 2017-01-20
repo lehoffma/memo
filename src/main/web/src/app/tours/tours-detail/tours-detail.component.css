@@ -128,8 +128,11 @@ md-card a{
     width: 100%;
     height: 120px;
     /*margin-bottom: 0.5em;*/
+}
 
-
+.tour-participant-container > md-card {
+    height: auto;
+    min-width: 250px;
 }
 
 .tour-participant{
@@ -147,7 +150,6 @@ md-card a{
     overflow-y: hidden;
     white-space: nowrap;
 }
-
 
 .diskription{
     font-size: 4em;

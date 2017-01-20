@@ -1,7 +1,4 @@
 import {ClubRole} from "./club-role";
-import {Address} from "./address";
-import {User} from "./user";
-import {Permission} from "./permission";
 export class Event {
     constructor(protected _id: number = 9999,
                 protected _title: string = "default",
@@ -11,7 +8,7 @@ export class Event {
                 protected _picPath: string = "default",
                 protected _capacity: number = -1,
                 protected _priceMember: number = 9999,
-                protected _meetingPoint: Address = new Address(),
+                protected _meetingPoint: number = 0,
                 protected _price: number = _priceMember) {
 
     }
@@ -120,11 +117,11 @@ export class Event {
         this._priceMember = value;
     }
 
-    get meetingPoint(): Address {
+    get meetingPoint(): number {
         return this._meetingPoint;
     }
 
-    set meetingPoint(value: Address) {
+    set meetingPoint(value: number) {
         this._meetingPoint = value;
     }
 

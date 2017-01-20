@@ -1,5 +1,4 @@
 import {Event} from "./event";
-import {Address} from "./address";
 import {ClubRole} from "./club-role";
 export class Party extends Event {
 
@@ -11,7 +10,7 @@ export class Party extends Event {
                 picPath: string = "default",
                 capacity: number = -1,
                 priceMember: number = 9999,
-                meetingPoint: Address = new Address(),
+                meetingPoint: number = 0,
                 private _emptySeats: number = -1,
                 private _participants:number[] = []) {
         super(id, title, date, description, expectedRole, picPath, capacity, priceMember, meetingPoint);

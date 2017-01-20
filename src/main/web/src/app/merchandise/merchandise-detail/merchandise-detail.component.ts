@@ -5,6 +5,8 @@ import {Subscription, Observable} from "rxjs";
 import {MerchStore} from "../../shared/stores/merch.store";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {ClothesSize} from "../../shared/model/clothes-size";
+import {AddressStore} from "../../shared/stores/adress.store";
+import {Address} from "../../shared/model/address";
 
 
 @Component({
@@ -20,7 +22,8 @@ export class MerchDetailComponent implements OnInit, OnDestroy{
 
     constructor(private route: ActivatedRoute,
                 private merchStore: MerchStore,
-                private navigationService:NavigationService){
+                private navigationService: NavigationService,
+                private addressStore: AddressStore) {
 
     }
 
@@ -36,6 +39,8 @@ export class MerchDetailComponent implements OnInit, OnDestroy{
         this.subscription.unsubscribe();
     }
 
-
+    getAddress(id: number): Observable<Address> {
+        return this.addressStore.getDataByID(id);
+    }
 
 }

@@ -6,9 +6,9 @@
     "description": "Cooles Polo-Shirt für den echten Fan!",
     "expectedRole": "Mitglied",
     "picPath": "https://placekitten.com/505/505",
-    "capacity": "20",
-    "priceMember": "19",
-    "meetingPoint": "Allerstraße 9 38448 Wolfsburg",
+    "capacity": 20,
+    "priceMember": 19,
+    "meetingPoint": 0,
     "sizeTable": {
       "XS": [
         "78-81",
@@ -69,9 +69,9 @@
     "description": "Cooles Schal für den echten Fan!",
     "expectedRole": "Mitglied",
     "picPath": "https://placekitten.com/505/505",
-    "capacity": "20",
-    "priceMember": "9",
-    "meetingPoint": "Allerstraße 9 38448 Wolfsburg",
+    "capacity": 20,
+    "priceMember": 9,
+    "meetingPoint": 1,
     "sizeTable": {
       "XS": [
         "78-81",

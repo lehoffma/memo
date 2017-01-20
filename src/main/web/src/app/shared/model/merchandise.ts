@@ -1,7 +1,6 @@
 import {Event} from "./event";
-import {Address} from "./address";
 import {ClubRole} from "./club-role";
-import {SizeTable} from "./sizeTable";
+import {SizeTable} from "./size-table";
 export class Merchandise extends Event {
     get color(): string[] {
         return this._color;
@@ -21,7 +20,7 @@ export class Merchandise extends Event {
                 private _material: string = "default",
                 private _sizeTable: SizeTable = {},
                 priceMember: number = 9999,
-                meetingPoint: Address = new Address()) {
+                meetingPoint: number = 0) {
         super(id, title, date, description, expectedRole, picPath, capacity, priceMember, meetingPoint);
     }
 

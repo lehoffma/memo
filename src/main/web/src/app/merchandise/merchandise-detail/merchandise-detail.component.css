@@ -1,32 +1,37 @@
-md-card{
+md-card {
     min-height: 50%;
     height: 90%;
     width: 95%;
     display: inline-block;
     margin: 2.5%;
 }
-md-card > md-card-header > .md-card-header-text{
+
+md-card > md-card-header > .md-card-header-text {
     /*display: flex; !* Flexbox Container!!!*!*/
     /*align-items: center;*/
     /*justify-content: space-around;*/
 }
-:host >>> .md-card-header-text > md-card-title{
+
+:host > > > .md-card-header-text > md-card-title {
     display: flex; /* Flexbox Container!!!*/
     align-items: center;
     justify-content: space-between;
     width: 100%;
     text-overflow: ellipsis;
 }
-:host >>> .md-card-header-text{
+
+:host > > > .md-card-header-text {
     width: 100%;
 }
+
 md-card > md-card-header md-card-title,
-md-card button md-icon{
+md-card button md-icon {
     font-size: 3.5em;
     margin-left: 0.2em;
     margin-bottom: 0em;
 }
-.centered-icon md-icon{
+
+.centered-icon md-icon {
     font-size: 3.5em;
     margin-left: 0.2em;
     margin-bottom: 0.7em;
@@ -34,15 +39,18 @@ md-card button md-icon{
     height: 50px;
     vertical-align: middle;
 }
-md-card > img.img-party-detail{
+
+md-card > img.img-party-detail {
     margin-top: 60px;
 
 }
-.centered-icon{
+
+.centered-icon {
     width: 100px;
     height: 80px;
 
 }
+
 /*center button icon*/
 .md-button-wrapper {
     height: 90px;
@@ -52,42 +60,45 @@ md-card > img.img-party-detail{
     justify-content: center;
 }
 
-.table1{
+.table1 {
     font-size: 3em;
     width: 100%;
-    border-collapse:collapse;
+    border-collapse: collapse;
 }
-.bordered{
-    border-bottom: 1px solid  #cccccc;
+
+.bordered {
+    border-bottom: 1px solid #cccccc;
 }
-.spacebottom{
+
+.spacebottom {
     margin-bottom: 2em;
 }
-.row{
+
+.row {
 
     padding-top: 0.25em;
     padding-bottom: 0.25em;
 }
 
-.diskription{
+.diskription {
     font-size: 4em;
     margin-right: 0.5em;
     margin-top: 1em;
 }
-.party-teilnehmen{
+
+.party-teilnehmen {
     font-size: 4em;
     width: 100%;
     height: 120px;
     /*margin-bottom: 0.5em;*/
-
 
 }
-.merch-teilnehmen{
+
+.merch-teilnehmen {
     font-size: 4em;
     width: 100%;
     height: 120px;
     /*margin-bottom: 0.5em;*/
-
 
 }
 

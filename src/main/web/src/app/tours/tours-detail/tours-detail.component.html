@@ -21,7 +21,7 @@
             <table class="table1">
                 <tr class="bordered">
                     <td class="row" align="left">Ziel</td>
-                    <td class="row" align="right">{{tour?.destination}}</td>
+                    <td class="row" align="right">{{getAddress(tour?.destination) | async}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Preis</td>
@@ -37,7 +37,7 @@
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Treffpunkt</td>
-                    <td class="row" align="right">{{tour?.meetingPoint}}</td>
+                    <td class="row" align="right">{{getAddress(tour?.meetingPoint) | async}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Freie Plätze</td>

@@ -1,5 +1,4 @@
 import {Event} from "./event";
-import {Address} from "./address";
 import {ClubRole} from "./club-role";
 export class Tour extends Event {
 
@@ -11,7 +10,7 @@ export class Tour extends Event {
                 picPath: string = "default",
                 capacity: number = -1,
                 priceMember: number = 9999,
-                meetingPoint: Address = new Address(),
+                meetingPoint: number = 0,
                 private _vehicle: string = "default",
                 private _miles: number = 0,
                 private _destination: string = "default",

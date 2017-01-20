@@ -6,6 +6,8 @@ import {Subscription, Observable} from "rxjs";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {UserStore} from "../../shared/stores/user.store";
 import {PartyStore} from "../../shared/stores/party.store";
+import {AddressStore} from "../../shared/stores/adress.store";
+import {Address} from "../../shared/model/address";
 
 
 @Component({
@@ -21,6 +23,7 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
     constructor(private route: ActivatedRoute,
                 private partyStore: PartyStore,
                 private userStore: UserStore,
+                private addressStore: AddressStore,
                 private navigationService: NavigationService) {
 
     }
@@ -45,6 +48,10 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
     showDetailsOfUser(user: User) {
         let url: string = `members/${user.id}`;
         this.navigationService.navigateByUrl(url);
+    }
+
+    getAddress(id: number): Observable<Address> {
+        return this.addressStore.getDataByID(id);
     }
 }
 

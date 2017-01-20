@@ -21,6 +21,7 @@ import {MerchStore} from "./shared/stores/merch.store";
 import {TourStore} from "./shared/stores/tour.store";
 import {PartyDetailComponent} from "./partys/party-detail/party-detail.component";
 import {MerchDetailComponent} from "./merchandise/merchandise-detail/merchandise-detail.component";
+import {AddressStore} from "./shared/stores/adress.store";
 
 @NgModule({
     imports: [
@@ -56,7 +57,7 @@ import {MerchDetailComponent} from "./merchandise/merchandise-detail/merchandise
     bootstrap: [
         AppComponent
     ],
-    providers: [NavigationService, PartyStore, MerchStore, TourStore, UserStore]
+    providers: [NavigationService, AddressStore, PartyStore, MerchStore, TourStore, UserStore]
 })
 export class AppModule {
 }

@@ -19,7 +19,7 @@
             <table class="table1">
                 <tr class="bordered">
                     <td class="row" align="left">Ort</td>
-                    <td class="row" align="right">{{party?.meetingPoint}}</td>
+                    <td class="row" align="right">{{getAddress(party?.meetingPoint) | async}}</td>
                 </tr>
                 <tr class="bordered">
                     <td class="row" align="left">Datum</td>

@@ -1,9 +1,8 @@
-
-export const enum Permission{
-    owner,
-    write,
-    read,
-    none
+export enum Permission{
+    owner = <any> "owner",
+    write = <any> "write",
+    read = <any> "read",
+    none = <any> "none"
 }
 
 export interface UserPermissions{
