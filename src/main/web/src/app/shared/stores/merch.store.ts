@@ -14,7 +14,7 @@ export class MerchStore extends AbstractStore<Merchandise> {
             json["expectedRole"],
             json["picPath"],
             json["capacity"],
-            json["color"],
+            json["colors"],
             json["material"],
             json["sizeTable"],
             json["priceMember"],

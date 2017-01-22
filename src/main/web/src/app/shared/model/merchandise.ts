@@ -10,19 +10,20 @@ export class Merchandise extends Event {
                 expectedRole: ClubRole = ClubRole.Mitglied,
                 picPath: string = "default",
                 capacity: number = -1,
-                private _color: string[] = [],
+                private _colors: string[] = [],
                 private _material: string = "default",
                 private _sizeTable: SizeTable = {},
                 priceMember: number = 9999,
                 meetingPoint: number = 0) {
         super(id, title, date, description, expectedRole, picPath, capacity, priceMember, meetingPoint);
     }
-    get color(): string[] {
-        return this._color;
+
+    get colors(): string[] {
+        return this._colors;
     }
 
-    set color(value: string[]) {
-        this._color = value;
+    set colors(value: string[]) {
+        this._colors = value;
     }
 
     get sizeTable(): SizeTable {

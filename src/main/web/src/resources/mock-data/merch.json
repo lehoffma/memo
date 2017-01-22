@@ -10,51 +10,141 @@
     "priceMember": 19,
     "meetingPoint": 0,
     "sizeTable": {
-      "XS": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "S": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "M": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "L": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "XL": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "XXL": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ]
+      "XS": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "S": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "M": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "L": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "XL": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "XXL": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      }
     },
     "material": "Baumwolle",
-    "color": [
+    "colors": [
       "#ffffff",
       "#ff0000",
       "#ff00ff",
@@ -73,56 +163,146 @@
     "priceMember": 9,
     "meetingPoint": 1,
     "sizeTable": {
-      "XS": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "S": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "M": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "L": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "XL": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
-      ],
-      "XXL": [
-        "78-81",
-        "82-85",
-        "86-89",
-        "90-93",
-        "94-97"
+      "XS": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "S": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "M": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "L": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "XL": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "XXL": {
+        "Brustumfang": {
+          "min": 78,
+          "max": 81
+        },
+        "Tailenumfang": {
+          "min": 82,
+          "max": 85
+        },
+        "Hüftumfang": {
+          "min": 86,
+          "max": 89
+        },
+        "Modelllänge": {
+          "min": 90,
+          "max": 93
+        },
+        "Schulterbreite": {
+          "min": 94,
+          "max": 97
+        }
+      },
+      "material": "Baumwolle",
+      "colors": [
+        "#ffffff",
+        "#ff0000",
+        "#ff00ff",
+        "#00ff00",
+        "#0000ff"
       ]
-    },
-    "material": "Baumwolle",
-    "color": [
-      "#ffffff",
-      "#ff0000",
-      "#ff00ff",
-      "#00ff00",
-      "#0000ff"
-    ]
+    }
   }
 ]

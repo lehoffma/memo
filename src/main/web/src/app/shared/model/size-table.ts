@@ -1,7 +1,14 @@
-/**
- * Created by le on 20.01.2017.
- */
+import {SizeRanges} from "./size-range";
 export interface SizeTable {
-    [ClothesSize: string]: string[];
+    [string: string]: SizeRanges;
 }
 
+//Example:
+// let test:SizeTable = {
+//     "XS": {
+//         "Hüftumfang": {
+//             "min": 50,
+//             "max": 52
+//         }
+//     }
+// }

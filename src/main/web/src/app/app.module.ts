@@ -22,6 +22,7 @@ import {TourStore} from "./shared/stores/tour.store";
 import {PartyDetailComponent} from "./partys/party-detail/party-detail.component";
 import {MerchDetailComponent} from "./merchandise/merchandise-detail/merchandise-detail.component";
 import {AddressStore} from "./shared/stores/adress.store";
+import {ClothesSizePipe} from "./merchandise/merchandise-detail/clothes-size.pipe";
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import {AddressStore} from "./shared/stores/adress.store";
     ],
     declarations: [
         AppComponent,
+        ClothesSizePipe,
         NavigationSideNavComponent,
         NavigationComponent,
         NavigationElementComponent,
