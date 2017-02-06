@@ -6,8 +6,8 @@
 // Define a theme.
 $primary: md-palette($md-green);
 
-//$accent:  md-palette($md-amber, A200, A100, A400);
-$accent: md-palette($md-blue);
+//$accent:  md-palette($md-blue-grey, A200, A100, A400);
+$accent: md-palette($md-blue-grey);
 //test
 
 $theme: md-light-theme($primary, $accent);

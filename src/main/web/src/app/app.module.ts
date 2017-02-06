@@ -23,26 +23,24 @@ import {PartyDetailComponent} from "./partys/party-detail/party-detail.component
 import {MerchDetailComponent} from "./merchandise/merchandise-detail/merchandise-detail.component";
 import {AddressStore} from "./shared/stores/adress.store";
 import {ClothesSizePipe} from "./merchandise/merchandise-detail/clothes-size.pipe";
-
+import {AgmCoreModule} from "angular2-google-maps/core";
+import {ROUTES} from "./app.routes";
+import {GoogleMapsRedirectComponent} from "./shared/google-maps-redirect/google-maps-redirect.component";
+import {MerchComponent} from "./merchandise/merchandise.component";
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         MaterialModule.forRoot(),
-        RouterModule.forRoot([
-            {path: "", component: OverViewComponent},
-            {path: "tours", component: ToursComponent},
-            {path: "tours/:id", component: TourDetailComponent},
-            {path: "account", component: AccountComponent},
-            {path: "partys", component: PartysComponent},
-            {path: "partys/:id", component: PartyDetailComponent},
-            {path: "members/:id", component: AccountProfileComponent},
-            {path: "merch/:id", component: MerchDetailComponent}
-        ])
+        RouterModule.forRoot(ROUTES),
+        AgmCoreModule.forRoot({
+            apiKey: "AIzaSyBu1f0LaP7haUohKDfHzqq9nO0ardgP3UE"
+        })
     ],
     declarations: [
         AppComponent,
+        GoogleMapsRedirectComponent,
         ClothesSizePipe,
         NavigationSideNavComponent,
         NavigationComponent,
@@ -54,6 +52,7 @@ import {ClothesSizePipe} from "./merchandise/merchandise-detail/clothes-size.pip
         AccountComponent,
         PartysComponent,
         PartyDetailComponent,
+        MerchComponent,
         MerchDetailComponent,
         AccountProfileComponent
     ],

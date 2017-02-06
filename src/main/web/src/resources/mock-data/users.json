@@ -18,7 +18,7 @@
     "passwordHash": "tohuuihgrohujt0uiwe89jg7",
     "isStudent": true,
     "hasDebitAuth": true,
-    "imagePath": "https://placekitten.com/505/505"
+    "imagePath": "https://placekitten.com/504/504"
   },
   {
     "id": 1,
@@ -39,7 +39,7 @@
     "passwordHash": "tohuuihgrohujt0uiwe89jg7",
     "isStudent": true,
     "hasDebitAuth": true,
-    "imagePath": "https://placekitten.com/505/505"
+    "imagePath": "https://placekitten.com/503/503"
   },
   {
     "id": 2,
@@ -81,6 +81,6 @@
     "passwordHash": "tohuuihgrohujt0uiwe89jg7",
     "isStudent": true,
     "hasDebitAuth": true,
-    "imagePath": "https://placekitten.com/505/505"
+    "imagePath": "https://placekitten.com/502/502"
   }
 ]
