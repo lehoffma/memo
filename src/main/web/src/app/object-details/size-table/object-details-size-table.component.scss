@@ -1,0 +1,32 @@
+
+.size-table-container {
+  overflow-y: scroll;
+
+  .table-size-clothes {
+    font-size: 2em;
+
+    th, td {
+      min-width: 200px;
+      padding-right: 56px;
+      min-height: 60px;
+      height: 60px;
+    }
+
+    tr:not(:last-child) > td, th {
+      border-bottom: 1px solid #cccccc;
+    }
+
+    td {
+      color: rgba(0, 0, 0, .87)
+    }
+
+    th {
+      color: rgba(0, 0, 0, .54);
+      font-weight: 600;
+    }
+
+    td:not(:first-child) {
+      text-align: center;
+    }
+  }
+}

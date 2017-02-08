@@ -2,8 +2,8 @@
   "name": "memo-web",
   "version": "0.0.1",
   "scripts": {
-    "start": "ng serve",
-    "production": "ng serve --prod",
+    "start": "ng serve --host 0.0.0.0",
+    "production": "ng serve --prod --host 0.0.0.0",
     "build": "ng build --prod",
     "build dev": "ng build"
   },

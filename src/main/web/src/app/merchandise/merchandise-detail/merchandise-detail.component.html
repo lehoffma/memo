@@ -1,94 +1,123 @@
-<div *ngFor="let merch of [merchObservable | async]">
-    <md-card>
-        <md-card-header>
-            <md-card-title>
-                <span>{{merch?.title}}</span>
-                <div>
-                    <button md-button class="centered-icon">
-                        <md-icon>email</md-icon>
-                    </button>
-                    <button md-button class="centered-icon">
-                        <md-icon>share</md-icon>
-                    </button>
-                </div>
-            </md-card-title>
-        </md-card-header>
-        <img md-card-image class="img-party-detail" src="http://placekitten.com/1500/950">
-        <md-card-content>
+<object-details-container *ngFor="let merch of [merchObservable | async]" [objectObservable]="merchObservable">
+    <div component-list>
 
-            <div class="category-title">Größe</div>
-            <div class="sizes-container">
-                <label *ngFor="let clothesSize of (clothesSizes | async)" class="sizes">
-                    <input type="radio" name="sizeToggle" [(ngModel)]="options.size" [value]="clothesSize">
-                    <span>{{clothesSize}}</span>
-                </label>
-            </div>
+        <object-details-content [title]="'Farbe'">
+            <details-selection (selectedValueChange)="options.color = $event.value"
+                               [selections]="colorSelections" content></details-selection>
+        </object-details-content>
 
-            <hr class="underline">
+        <object-details-content [title]="'Größe'">
+            <details-selection (selectedValueChange)="options.size = $event.value"
+                               [selections]="clothesSizeSelections" content></details-selection>
+        </object-details-content>
 
-            <div class="category-title">Farbe</div>
-            <div class="colors-container">
-                <label *ngFor="let color of merch?.colors" class="color" [ngStyle]="{'background-color': color}">
-                    <input type="radio" name="colorToggle" [(ngModel)]="options.color" [value]="color">
-                    <span></span>
-                </label>
-            </div>
+        <object-details-content [title]="'Details'">
+            <details-table [objectObservable]="merchObservable" content></details-table>
+        </object-details-content>
 
-            <hr class="underline">
+        <object-details-content [title]="'Beschreibung'">
+            <span class="description secondary-text" content>{{merch?.description}}</span>
+        </object-details-content>
 
-            <div class="category-title">Details</div>
+        <object-details-content [title]="'Größentabelle'">
+            <details-size-table [clothesSizes]="clothesSizes"
+                                [sizeTableCategories]="sizeTableCategories"
+                                [merchObservable]="merchObservable" content></details-size-table>
+        </object-details-content>
+    </div>
+</object-details-container>
 
-            <!--todo: export as component (maybe radioButtonGroupComponent)-->
-            <table class="tour-details-table">
-                <tr class="bordered">
-                    <td class="row" align="left">Preis</td>
-                    <td class="row" align="right">{{merch?.priceMember}} €</td>
-                </tr>
-                <tr class="bordered">
-                    <td class="row" align="left">Material</td>
-                    <td class="row" align="right">{{merch?.material}}</td>
-                </tr>
-                <tr class="bordered">
-                    <td class="row" align="left">Vorrätig (Stück)</td>
-                    <td class="row" align="right">{{merch?.capacity}}</td>
-                </tr>
-                <tr class="bordered">
-                    <td class="row" align="left">Abholung</td>
-                    <td *ngFor="let meetingPoint of [getAddress(merch?.meetingPoint) | async]" align="right"
-                        class="row spacebottom">
-                        {{meetingPoint?.name}}
-                        <div>{{meetingPoint?.street}} {{meetingPoint?.streetNr}}</div>
-                        <div>{{meetingPoint?.zip}} {{meetingPoint?.city}}</div>
-                    </td>
-                </tr>
-            </table>
+<!--<div *ngFor="let merch of [merchObservable | async]">-->
+<!--<md-card>-->
+<!--<md-card-header>-->
+<!--<md-card-title>-->
+<!--<span>{{merch?.title}}</span>-->
+<!--<div>-->
+<!--<button md-button class="centered-icon">-->
+<!--<md-icon>email</md-icon>-->
+<!--</button>-->
+<!--<button md-button class="centered-icon">-->
+<!--<md-icon>share</md-icon>-->
+<!--</button>-->
+<!--</div>-->
+<!--</md-card-title>-->
+<!--</md-card-header>-->
+<!--<img md-card-image class="img-party-detail" src="http://placekitten.com/1500/950">-->
+<!--<md-card-content>-->
+
+<!--<div class="category-title">Größe</div>-->
+<!--<div class="sizes-container">-->
+<!--<label *ngFor="let clothesSize of (clothesSizes | async)" class="sizes">-->
+<!--<input type="radio" name="sizeToggle" [(ngModel)]="options.size" [value]="clothesSize">-->
+<!--<span>{{clothesSize}}</span>-->
+<!--</label>-->
+<!--</div>-->
+
+<!--<hr class="underline">-->
+
+<!--<div class="category-title">Farbe</div>-->
+<!--<div class="colors-container">-->
+<!--<label *ngFor="let color of merch?.colors" class="color" [ngStyle]="{'background-color': color}">-->
+<!--<input type="radio" name="colorToggle" [(ngModel)]="options.color" [value]="color">-->
+<!--<span></span>-->
+<!--</label>-->
+<!--</div>-->
+
+<!--<hr class="underline">-->
+
+<!--<div class="category-title">Details</div>-->
+
+<!--&lt;!&ndash;todo: export as component (maybe radioButtonGroupComponent)&ndash;&gt;-->
+<!--<table class="tour-details-table">-->
+<!--<tr class="bordered">-->
+<!--<td class="row" align="left">Preis</td>-->
+<!--<td class="row" align="right">{{merch?.priceMember}} €</td>-->
+<!--</tr>-->
+<!--<tr class="bordered">-->
+<!--<td class="row" align="left">Material</td>-->
+<!--<td class="row" align="right">{{merch?.material}}</td>-->
+<!--</tr>-->
+<!--<tr class="bordered">-->
+<!--<td class="row" align="left">Vorrätig (Stück)</td>-->
+<!--<td class="row" align="right">{{merch?.capacity}}</td>-->
+<!--</tr>-->
+<!--<tr class="bordered">-->
+<!--<td class="row" align="left">Abholung</td>-->
+<!--<td *ngFor="let meetingPoint of [getAddress(merch?.meetingPoint) | async]" align="right"-->
+<!--class="row spacebottom">-->
+<!--{{meetingPoint?.name}}-->
+<!--<div>{{meetingPoint?.street}} {{meetingPoint?.streetNr}}</div>-->
+<!--<div>{{meetingPoint?.zip}} {{meetingPoint?.city}}</div>-->
+<!--</td>-->
+<!--</tr>-->
+<!--</table>-->
 
 
-            <div class="description">Beschreibung</div>
-            <div class="merch-description">{{merch?.description}}</div>
+<!--<div class="description">Beschreibung</div>-->
+<!--<div class="merch-description">{{merch?.description}}</div>-->
 
-            <div class="category-title">Größentabelle</div>
+<!--<div class="category-title">Größentabelle</div>-->
 
-            <table class="table-size-clothes">
-                <tr>
-                    <th></th>
-                    <th *ngFor="let size of (clothesSizes | async)">
-                        {{size}}
-                    </th>
-                </tr>
-                <tr *ngFor="let category of (sizeTableCategories | async)">
-                    <td class="row-size">{{category}}</td>
-                    <td class="row-size" *ngFor="let size of (clothesSizes | async)">
-                        {{(merch?.sizeTable[size] && merch?.sizeTable[size][category]) | clothesSize}}
-                    </td>
-                </tr>
-            </table>
+<!--<table class="table-size-clothes">-->
+<!--<tr>-->
+<!--<th></th>-->
+<!--<th *ngFor="let size of (clothesSizes | async)">-->
+<!--{{size}}-->
+<!--</th>-->
+<!--</tr>-->
+<!--<tr *ngFor="let category of (sizeTableCategories | async)">-->
+<!--<td class="row-size">{{category}}</td>-->
+<!--<td class="row-size" *ngFor="let size of (clothesSizes | async)">-->
+<!--{{(merch?.sizeTable[size] && merch?.sizeTable[size][category]) | clothesSize}}-->
+<!--</td>-->
+<!--</tr>-->
+<!--</table>-->
 
-            <button md-raised-button color="primary" class="merch-teilnehmen">
-                In den Warenkorb
-            </button>
+<!--<button md-raised-button color="primary" class="merch-teilnehmen">-->
+<!--In den Warenkorb-->
+<!--</button>-->
 
 
-        </md-card-content>
-    </md-card>
-</div>
+<!--</md-card-content>-->
+<!--</md-card>-->
+<!--</div>-->

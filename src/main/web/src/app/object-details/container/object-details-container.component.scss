@@ -1,0 +1,53 @@
+
+.detail-container {
+  background-color: white;
+
+  .image-container {
+    position: relative;
+
+    .image-title-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 20%;
+      display: block;
+      background-color: rgba(96, 125, 139, 0.5);
+      padding: 15px;
+      font-size: 3.5em;
+      color: #FFF;
+    }
+
+    .image-detail {
+      width: 100%;
+      height: auto;
+    }
+
+    button {
+      position: absolute;
+      bottom: calc(20% - 50px);
+      right: 5%;
+      height: 100px;
+      width: 100px;
+      display: block;
+      font-size: 3.5em;
+      color: #FFF;
+    }
+    > button md-icon.material-icons {
+      height: 100px;
+      width: 100px;
+      font-size: 64px;
+      line-height: 64px;
+    }
+  }
+
+  .content {
+    margin: 0 2% 50px;
+  }
+
+  .add-to-cart-button {
+    font-size: 4em;
+    width: 100%;
+    height: 120px;
+  }
+}

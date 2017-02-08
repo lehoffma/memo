@@ -1,0 +1,19 @@
+<div class="detail-container" *ngFor="let object of [objectObservable | async]">
+    <!--display image with overlayed title/star button if present-->
+    <div class="image-container" *ngIf="object?.picPath">
+        <img class="image-detail" src="{{object?.picPath}}">
+        <span class="image-title-overlay">{{object?.title}}</span>
+
+        <button md-fab color="accent" (click)="selected = !selected">
+            <md-icon>{{selected ? "star" : "star_border"}}</md-icon>
+        </button>
+    </div>
+
+    <div class="content">
+        <ng-content select="[component-list]"></ng-content>
+    </div>
+
+    <button md-raised-button color="accent" class="add-to-cart-button">
+        In den Warenkorb
+    </button>
+</div>

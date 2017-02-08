@@ -1,0 +1,14 @@
+<div class="selection-container">
+    <label *ngFor="let selection of (selections | async)"
+           class="selection"
+           [ngClass]="{'text-selection': !(!selection.text || selection.text==='')}"
+           [ngStyle]="{'background-color': (selection.color) ? selection.color : 'white'}">
+        <input type="radio" name="{{toggleName}}"
+               (change)="selectedValueHasChanged(selection?.value)"
+               [(ngModel)]="selectedValue"
+               [value]="selection?.value">
+        <span>
+            {{(!selection.text || selection.text==="") ? "" : selection.text}}
+        </span>
+    </label>
+</div>

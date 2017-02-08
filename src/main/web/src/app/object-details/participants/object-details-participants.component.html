@@ -1,0 +1,15 @@
+<div class="participants-container">
+    <div>
+        <div *ngFor="let participant of (getParticipants(participants) | async);"
+             (click)="showDetailsOfUser(participant)">
+            <img src="{{participant?.imagePath}}" alt="profile picture of {{participant?.firstName}}">
+            <div class="participant-details">
+                <div>
+                    <span class="participant-name">{{participant?.firstName + " " + participant?.surname}}   </span>
+                    <span class="participant-role secondary-text">{{participant?.clubRole}}</span>
+                </div>
+                <div class="participant-miles"> {{participant?.miles}} Meilen</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,101 +1,19 @@
-<!--todo besseren weg finden -->
-<div class="tour-detail-container" *ngFor="let tour of [tourObservable | async]">
-    <div class="image-container">
-        <img class="img-tour-detail" src="http://placekitten.com/1500/950">
-        <span class="img-title-overlay">{{"Das ist ein Tour-Titel"}}</span>
-        <button md-fab color="accent" (click)="toggleTourSelection()">
-            <md-icon>{{tourSelected ? "star" : "star_border"}}</md-icon>
-        </button>
+<object-details-container *ngFor="let tour of [tourObservable | async]" [objectObservable]="tourObservable">
+    <div component-list>
+        <object-details-content [title]="'Details'">
+            <details-table [objectObservable]="tourObservable" content></details-table>
+        </object-details-content>
+
+        <object-details-content [title]="'Route'">
+            <details-route [tourRoute]="tourRoute" content></details-route>
+        </object-details-content>
+
+        <object-details-content [title]="'Beschreibung'">
+            <span class="description secondary-text" content>{{tour?.description}}</span>
+        </object-details-content>
+
+        <object-details-content [title]="'Wer fährt mit?'">
+            <details-participants [participants]="tour?.participants" content></details-participants>
+        </object-details-content>
     </div>
-
-    <div class="tour-details">
-
-        <table class="tour-details-table">
-            <tr class="bordered">
-                <td class="row" align="left">Ziel</td>
-                <td class="row secondary-text" align="right">{{getAddress(tour?.destination) | async}}</td>
-            </tr>
-            <tr class="bordered">
-                <td class="row" align="left">Preis</td>
-                <td class="row secondary-text" align="right">{{tour?.priceMember}} €</td>
-            </tr>
-            <tr class="bordered">
-                <td class="row" align="left">Datum</td>
-                <td class="row secondary-text" align="right">{{tour?.date|date:"dd.MM.yy"}}</td>
-            </tr>
-            <tr class="bordered">
-                <td class="row" align="left">Abfahrt</td>
-                <td class="row secondary-text" align="right">{{tour?.date|date:"hh:ss"}} Uhr</td>
-            </tr>
-            <tr class="bordered">
-                <td class="row" align="left">Treffpunkt</td>
-                <td class="row secondary-text" align="right">{{getAddress(tour?.meetingPoint) | async}}</td>
-            </tr>
-            <tr class="bordered">
-                <td class="row" align="left">Freie Plätze</td>
-                <td class="row secondary-text" align="right">{{tour?.emptySeats}}/{{tour?.capacity}}</td>
-            </tr>
-            <tr>
-                <td class="row" align="left">Strecke</td>
-                <!--todo als pipe/funktion-->
-                <td class="row secondary-text" align="right">{{tour?.miles}} Meile(n)</td>
-            </tr>
-        </table>
-
-        <div class="description">
-            Route
-        </div>
-
-        <sebm-google-map [latitude]="tourRoute.center().latitude"
-                         [longitude]="tourRoute.center().longitude"
-                         [mapDraggable]="false"
-                         [scrollwheel]="false"
-                         [zoomControl]="false"
-                         (tap)="openRouteOnGoogleMaps(tourRoute)">
-            <sebm-google-map-marker [latitude]="tourRoute.from.latitude"
-                                    [longitude]="tourRoute.from.longitude">
-            </sebm-google-map-marker>
-
-            <sebm-google-map-marker [latitude]="tourRoute.to.latitude"
-                                    [longitude]="tourRoute.to.longitude">
-            </sebm-google-map-marker>
-            <sebm-google-map-polyline>
-                <sebm-google-map-polyline-point [latitude]="tourRoute.from.latitude"
-                                                [longitude]="tourRoute.from.longitude">
-                </sebm-google-map-polyline-point>
-                <sebm-google-map-polyline-point [latitude]="tourRoute.to.latitude"
-                                                [longitude]="tourRoute.to.longitude">
-                </sebm-google-map-polyline-point>
-            </sebm-google-map-polyline>
-        </sebm-google-map>
-
-        <div class="description">
-            Beschreibung
-        </div>
-        <div class="tour-description secondary-text">
-            {{tour?.description}}
-        </div>
-
-        <div class="participants-container">
-            <span>Wer fährt mit?</span>
-            <div>
-                <div *ngFor="let participant of (getParticipants(tour?.participants) | async);"
-                     (click)="showDetailsOfUser(participant)">
-                    <img src="{{participant.imagePath}}" alt="profile picture of {{participant.firstName}}">
-                    <div class="participant-details">
-                        <div>
-                            <span class="participant-name">{{participant.firstName + " " + participant.surname}}   </span>
-                            <span class="participant-role secondary-text">{{participant.clubRole}}</span>
-                        </div>
-                        <div class="participant-miles"> {{participant.miles}} Meilen</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <button md-raised-button color="accent" class="participate-button">
-        In den Warenkorb
-    </button>
-</div>
+</object-details-container>

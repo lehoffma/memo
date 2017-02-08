@@ -1,0 +1,46 @@
+
+.participants-container {
+  > span:first-child {
+    font-size: 3.5em;
+  }
+
+  img {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+  }
+
+  > div {
+    margin-top: 10px;
+  }
+
+  > div > div {
+    display: flex;
+    justify-content: flex-start;
+    height: 150px;
+    padding: 25px 10px;
+  }
+
+  > div > div:not(:first-child) {
+    border-top: 1px solid #BDBDBD;
+  }
+
+  > div > div > img {
+    margin-right: 40px;
+  }
+
+  .participant-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .participant-name, .participant-role {
+      font-size: 2.5em;
+    }
+
+    .participant-miles {
+      font-size: 2em;
+    }
+  }
+
+}

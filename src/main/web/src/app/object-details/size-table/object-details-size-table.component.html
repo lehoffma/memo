@@ -1,0 +1,20 @@
+<div class="size-table-container">
+    <table class="table-size-clothes" *ngFor="let merch of [merchObservable | async]">
+        <thead>
+        <tr>
+            <th></th>
+            <th *ngFor="let size of (clothesSizes | async)">
+                {{size}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let category of (sizeTableCategories | async)">
+            <td class="row-size">{{category}}</td>
+            <td class="row-size" *ngFor="let size of (clothesSizes | async)">
+                {{(merch?.sizeTable[size] && merch?.sizeTable[size][category]) | clothesSize}}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

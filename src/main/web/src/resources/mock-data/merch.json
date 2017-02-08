@@ -294,15 +294,15 @@
           "min": 94,
           "max": 97
         }
-      },
-      "material": "Baumwolle",
-      "colors": [
-        "#ffffff",
-        "#ff0000",
-        "#ff00ff",
-        "#00ff00",
-        "#0000ff"
-      ]
-    }
+      }
+    },
+    "material": "Baumwolle",
+    "colors": [
+      "#ffffff",
+      "#ff0000",
+      "#ff00ff",
+      "#00ff00",
+      "#0000ff"
+    ]
   }
 ]

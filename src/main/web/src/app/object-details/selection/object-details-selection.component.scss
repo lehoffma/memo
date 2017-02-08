@@ -1,0 +1,41 @@
+.selection-container {
+  font-size: 4em;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.selection {
+  float: left;
+  width: 130px;
+  height: 60px;
+  margin: 10px;
+  background-color: #EFEFEF;
+  border: 3px solid #D0D0D0;
+  overflow: auto;
+}
+
+.selection span {
+  text-align: center;
+  font-size: 32px;
+  padding: 22px 0;
+  height: 100%;
+  display: flex;
+  justify-content: center; /* align horizontal */
+  align-items: center; /* align vertical */
+}
+
+.selection input {
+  display: none;
+  position: absolute;
+  top: -20px;
+}
+
+.selection:not(.text-selection) input:checked + span {
+  border: 7px solid #212121;
+}
+
+.selection.text-selection input:checked + span {
+  background-color: #4caf50;
+  color: white;
+}

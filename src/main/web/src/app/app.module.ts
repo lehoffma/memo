@@ -27,6 +27,16 @@ import {AgmCoreModule} from "angular2-google-maps/core";
 import {ROUTES} from "./app.routes";
 import {GoogleMapsRedirectComponent} from "./shared/google-maps-redirect/google-maps-redirect.component";
 import {MerchComponent} from "./merchandise/merchandise.component";
+import {ObjectDetailsContainerComponent} from "./object-details/container/object-details-container.component";
+import {ObjectDetailsContentComponent} from "./object-details/content/object-details-content.component";
+import {KeysOfObjectPipe} from "./shared/pipes/keys-of-object.pipe";
+import {DetailsTableComponent} from "./object-details/details-table/object-details-table.component";
+import {ConvertCamelCaseToTitleCasePipe} from "./shared/pipes/convert-camelcase-to-titlecase.pipe";
+import {DetailsParticipantsComponent} from "./object-details/participants/object-details-participants.component";
+import {DetailsRouteComponent} from "./object-details/route/object-details-route.component";
+import {DetailsSelectionComponent} from "./object-details/selection/object-details-selection.component";
+import {FilterPipe} from "./shared/pipes/filter.pipe";
+import {DetailsSizeTableComponent} from "./object-details/size-table/object-details-size-table.component";
 
 @NgModule({
     imports: [
@@ -42,11 +52,21 @@ import {MerchComponent} from "./merchandise/merchandise.component";
         AppComponent,
         GoogleMapsRedirectComponent,
         ClothesSizePipe,
+        KeysOfObjectPipe,
+        FilterPipe,
+        ConvertCamelCaseToTitleCasePipe,
         NavigationSideNavComponent,
         NavigationComponent,
         NavigationElementComponent,
         OverViewComponent,
         OverViewPreviewComponent,
+        ObjectDetailsContainerComponent,
+        ObjectDetailsContentComponent,
+        DetailsParticipantsComponent,
+        DetailsRouteComponent,
+        DetailsTableComponent,
+        DetailsSelectionComponent,
+        DetailsSizeTableComponent,
         ToursComponent,
         TourDetailComponent,
         AccountComponent,
