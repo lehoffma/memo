@@ -1,9 +1,17 @@
 
 .object-details-content-container {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  //padding-top: 20px;
+  //padding-bottom: 20px;
 }
 
-.object-details-component-title {
-  font-size: 4em;
+.object-details-content-title {
+  padding: 3vw;
+  //font-size: 2em;
+  color: #666666;
+  font-weight: 600;
+}
+
+.object-details-content {
+  padding: 5vw;
+  background-color: white;
 }

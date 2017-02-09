@@ -1,7 +1,9 @@
 <div class="object-details-content-container">
-    <div class="object-details-component-title">
+    <div class="object-details-content-title">
         {{title}}
     </div>
 
-    <ng-content select="[content]"></ng-content>
+    <div class="object-details-content">
+        <ng-content select="[content]"></ng-content>
+    </div>
 </div>

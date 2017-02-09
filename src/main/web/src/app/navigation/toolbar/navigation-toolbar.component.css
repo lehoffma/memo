@@ -8,14 +8,14 @@ md-toolbar{
 source for :host >>> md-toolbar-row: https://github.com/angular/material2/issues/1376
  */
 md-toolbar, :host >>> md-toolbar-row  {
-    height: 7em;
+    height: 10vh;
     transition: height 0.5s;
 }
 
 /*center button icon*/
 .md-button-wrapper {
-    height: 90px;
-    width: 90px;
+    height: 6vh;
+    width: 6vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -38,20 +38,20 @@ md-toolbar, :host >>> md-toolbar-row  {
 }
 
 .menu{
-    height: 100px;
-    width: 200px;
+    height: 6vh;
+    width: 6vh;
 }
 
 .logo > img{
-    height: 115px;
+    height: 7vh;
     transition: height 0.5s;
 }
 
 /*change size of hamburger menu*/
 .material-icons{
-    height: 85px;
-    width: 85px;
-    font-size: 6em;
+    height: 6vh;
+    width: 6vh;
+    font-size: 6vh;
     vertical-align: middle;
 }
 

@@ -1,14 +1,16 @@
-md-card{
-    min-height: 50%;
-    height: 90%;
-    width: 95%;
-    display: inline-block;
-    margin: 2.5%;
+div.overview-preview-container:not(:last-child) {
+    /*background-color: #4caf50;*/
+    margin-bottom: 5vh;
 }
 
-md-card > h1{
-    font-size: 3.5em;
-    margin-left: 0.2em;
-    margin-bottom: 0.2em;
-    color: rgba(0,0,0,0.87);
+div.overview-preview-container > h2 {
+    padding: 4vw 4vw 4vw 8vw;
+    margin-top: 0;
+    margin-bottom: 0;
+    /*font-size: 3vw;*/
+    background-color: #fafafa;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

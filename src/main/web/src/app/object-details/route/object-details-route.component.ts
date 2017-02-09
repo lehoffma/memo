@@ -1,4 +1,5 @@
 import {Component, OnInit, Input} from "@angular/core";
+import {NavigationService} from "../../shared/services/navigation.service";
 
 @Component({
     selector: 'details-route',
@@ -8,10 +9,14 @@ import {Component, OnInit, Input} from "@angular/core";
 export class DetailsRouteComponent implements OnInit {
     @Input() tourRoute;
 
-    constructor() {
+    constructor(private navigationService: NavigationService) {
     }
 
     ngOnInit() {
+    }
+
+    openRouteOnGoogleMaps(tourRoute) {
+        this.navigationService.navigateByUrl("redirect");
     }
 
 }

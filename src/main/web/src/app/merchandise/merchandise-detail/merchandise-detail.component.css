@@ -1,11 +1,5 @@
 
 
-.description {
-    font-size: 2em;
-    margin-right: 0.5em;
-    margin-top: 1em;
-}
-
 .table-size-clothes tr:nth-child(even) {
     background-color: #f2f2f2;
 

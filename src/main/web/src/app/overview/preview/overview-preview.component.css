@@ -5,27 +5,34 @@
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
+    padding-left: 6vw;
+    background-color: #fafafa;
 }
 
 /*change size of hamburger menu*/
 .material-icons {
-    height: 50px;
-    width: 50px;
-    font-size: 1.45em;
+    height: 6vw;
+    width: 5vw;
+    font-size: 5vw;
     vertical-align: middle;
 }
 
 md-card {
-    margin: 1.5%;
-    width: 500px;
+    width: 70vw;
+    margin-left: 2vw;
+    margin-bottom: 5vh;
+    margin-right: 2vw;
 }
 
 md-card-title {
-    font-size: 2.5em;
+    /*font-size: 8vw;*/
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 md-card-content {
-    font-size: 2em;
+    font-size: 5vw;
 }
 
 md-card-content > div > span {
@@ -36,13 +43,10 @@ md-card-content > div:not(:last-child) {
     margin-bottom: 0.3em;
 }
 
-/*md-card-content > div:last-child{*/
-    /*margin-bottom: -1em;*/
-/*}*/
 
 md-card > img{
-    width: 500px;
-    height: 500px;
+    width: 70vw;
+    height: 70vw;
 }
 
 @media all and (min-width: 1000px){

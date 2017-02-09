@@ -1,6 +1,6 @@
 <div class="preview-container">
     <md-card *ngFor="let event of events" (click)="showDetails(event)">
-        <img md-card-image src="http://placekitten.com/1500/1500">
+        <img md-card-image src="{{event.picPath}}">
         <!--todo: cut off after certain length-->
         <md-card-title>{{event.title}}</md-card-title>
         <md-card-content>
