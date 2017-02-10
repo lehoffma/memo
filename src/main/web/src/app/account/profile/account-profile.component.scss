@@ -14,17 +14,17 @@
     display: flex;
     flex-direction: column;
     //padding-right: 5vw;
-    padding-bottom: 5vw;
+    //padding-bottom: 5vw;
 
     .profile-picture {
       height: 30vw;
       width: 30vw;
-      margin-bottom: 5vw;
       border-radius: 50%;
     }
 
     .profile-name {
-      font-size: 7vw;
+      //font-size: 7vw;
+      color: rgba(0, 0, 0, 0.8);
     }
   }
 
@@ -52,13 +52,6 @@
   }
 
   .profile-tours-title {
-    font-size: 6vw;
-
+    margin-bottom: 0;
   }
-}
-
-.middle-icon {
-  height: 7vw;
-  width: 7vw;
-  font-size: 7vw;
 }

@@ -11,9 +11,6 @@
 
 /*change size of hamburger menu*/
 .material-icons {
-    height: 6vw;
-    width: 5vw;
-    font-size: 5vw;
     vertical-align: middle;
 }
 
@@ -32,7 +29,7 @@ md-card-title {
 }
 
 md-card-content {
-    font-size: 5vw;
+    /*font-size: 5vw;*/
 }
 
 md-card-content > div > span {

@@ -37,11 +37,6 @@ md-toolbar, :host >>> md-toolbar-row  {
     display: flex;
 }
 
-.menu{
-    height: 6vh;
-    width: 6vh;
-}
-
 .logo > img{
     height: 7vh;
     transition: height 0.5s;
