@@ -1,0 +1,64 @@
+
+.profile-container {
+  min-height: 50%;
+  height: 90%;
+  width: 95%;
+  display: inline-block;
+  margin: 2.5%;
+  background-color: white;
+  padding: 8vw;
+
+  .profile-header {
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    //padding-right: 5vw;
+    padding-bottom: 5vw;
+
+    .profile-picture {
+      height: 30vw;
+      width: 30vw;
+      margin-bottom: 5vw;
+      border-radius: 50%;
+    }
+
+    .profile-name {
+      font-size: 7vw;
+    }
+  }
+
+  .profile-info-container {
+    margin-bottom: 7vw;
+
+    > div {
+      > div {
+        align-items: center;
+        justify-content: space-between;
+        display: flex;
+      }
+
+    }
+
+    md-divider {
+      margin-top: 3vw;
+      margin-bottom: 3vw;
+    }
+  }
+
+  > md-divider {
+    margin-top: 3vw;
+    margin-bottom: 3vw;
+  }
+
+  .profile-tours-title {
+    font-size: 6vw;
+
+  }
+}
+
+.middle-icon {
+  height: 7vw;
+  width: 7vw;
+  font-size: 7vw;
+}

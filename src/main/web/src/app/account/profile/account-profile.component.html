@@ -1,52 +1,39 @@
-<div class="profilecard" *ngIf="user">
+<div class="profile-container" *ngIf="user">
 
 
-    <div class="name">
-        <img class="profilpic" src={{user.imagePath}}>
-        <span class="nameF">{{user.firstName}} {{user.surname}}</span>
+    <div class="profile-header">
+        <img class="profile-picture" src={{user.imagePath}}>
+        <span class="profile-name">{{user.firstName}} {{user.surname}}</span>
     </div>
 
-
-    <div>
-        <md-icon class="middle-icon md-dark">work</md-icon>
-        <span class="icontext">{{user.clubRole}} der Meilenwölfe</span></div>
-    <div>
-        <md-icon class="middle-icon md-dark">cake</md-icon>
-        <span class="icontext">{{user.birthDate|date}}</span></div>
-    <hr>
-    <div>
-        <md-icon class="middle-icon md-dark">local_phone</md-icon>
-        <span class="icontext">{{user.telephone}}</span></div>
-    <div>
-        <md-icon class="middle-icon md-dark">local_post_office</md-icon>
-        <span class="icontext">{{user.email}}</span></div>
-    <hr>
-    <div>
-        <md-icon class="middle-icon md-dark">home</md-icon>
-        <span class="icontext">Helmstedter Str. 58 <div class="plz">39112 Magdeburg</div></span></div>
-    <div>
-        <md-icon class="middle-icon md-dark">account_balance</md-icon>
-        <span class="icontext">IBAN: 11111111 <div>BIC: 22222</div> <div>Sparkasse Magdeburg</div></span></div>
-    <hr>
-    <div>
-        <md-icon class="middle-icon md-dark">directions_car</md-icon>
-        <span class="icontext">{{user.miles}} Meilen</span></div>
-    <div>
-        <md-icon class="middle-icon md-dark">favorite</md-icon>
-        <span class="icontext">Fußball, die Meilenwölfe, ...</span></div>
-    <button md-button class="edit-button">
-        <md-icon class="edit">create</md-icon>
-    </button>
-
-
-    <div class="tourenHeadline">Veranstaltungen und Touren</div>
-    <!-- Touren die Member mitgefahren ist -->
-    <!--recentActivity sollen die mitgefahrenen touren sein warum funktioniert es nicht? wie macht man in der klasse richtig get/set-->
-    <div class="tour-profil-container">
-        <div *ngFor="let recentEvent of (getEventsOfUser(user.id) | async);"
-             (click)="showEvent(recentEvent)">
-            <div>{{recentEvent.title}} am {{recentEvent.date|date}}</div>
+    <div class="profile-info-container">
+        <div *ngFor="let category of profileCategories; let lastCategory = last;">
+            <div *ngFor="let item of category">
+                <md-icon class="middle-icon md-dark">{{item.icon}}</md-icon>
+                <span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | date}}</span>
+                <span *ngIf="!item.isDate" class="icon-text secondary-text">{{user[item.key]}}</span>
+            </div>
+            <md-divider *ngIf="!lastCategory"></md-divider>
         </div>
+    </div>
+
+    <div class="profile-tours-title">Veranstaltungen und Touren</div>
+    <!-- Touren die Member mitgefahren ist -->
+    <div class="profile-tours-container">
+        <md-list>
+            <span *ngFor="let recentEvent of (getEventsOfUser(user.id) | async); let lastTour = last"
+                  (click)="showEvent(recentEvent)">
+                <md-list-item>
+                    <img md-list-avatar src="{{recentEvent?.picPath}}"
+                         alt="picture of the {{recentEvent.title}} event">
+                    <h3 md-line> {{recentEvent.title}} </h3>
+                    <p md-line>
+                        <span class="secondary-text"> {{recentEvent.date|date}} </span>
+                    </p>
+                </md-list-item>
+                <md-divider *ngIf="!lastTour"></md-divider>
+            </span>
+        </md-list>
     </div>
 
 

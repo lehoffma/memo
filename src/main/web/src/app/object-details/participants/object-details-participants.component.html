@@ -1,15 +1,34 @@
+<!--<div class="participants-container">-->
+<!--<div>-->
+<!--<div *ngFor="let participant of (getParticipants(participants) | async);"-->
+<!--(click)="showDetailsOfUser(participant)">-->
+<!--<img src="{{participant?.imagePath}}" alt="profile picture of {{participant?.firstName}}">-->
+<!--<div class="participant-details">-->
+<!--<div>-->
+<!--<span class="participant-name">{{participant?.firstName + " " + participant?.surname}}   </span>-->
+<!--<span class="participant-role secondary-text">{{participant?.clubRole}}</span>-->
+<!--</div>-->
+<!--<div class="participant-miles"> {{participant?.miles}} Meilen</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+
 <div class="participants-container">
     <div>
-        <div *ngFor="let participant of (getParticipants(participants) | async);"
-             (click)="showDetailsOfUser(participant)">
-            <img src="{{participant?.imagePath}}" alt="profile picture of {{participant?.firstName}}">
-            <div class="participant-details">
-                <div>
-                    <span class="participant-name">{{participant?.firstName + " " + participant?.surname}}   </span>
-                    <span class="participant-role secondary-text">{{participant?.clubRole}}</span>
-                </div>
-                <div class="participant-miles"> {{participant?.miles}} Meilen</div>
-            </div>
-        </div>
+        <md-list>
+            <span *ngFor="let participant of (getParticipants(participants) | async)">
+                <md-list-item (click)="showDetailsOfUser(participant)">
+                    <img md-list-avatar src="{{participant?.imagePath}}" alt="...">
+                    <h3 md-line> {{participant?.firstName + " " + participant?.surname}} </h3>
+                    <p md-line>
+                        <span> {{participant.clubRole}} </span>
+                        <span class="secondary-text"> -- {{participant?.miles}} Meilen </span>
+                    </p>
+                </md-list-item>
+                <md-divider></md-divider>
+            </span>
+        </md-list>
     </div>
 </div>
+
