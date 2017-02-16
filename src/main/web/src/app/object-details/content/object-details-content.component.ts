@@ -8,6 +8,7 @@ import {Component, OnInit, Input} from "@angular/core";
 })
 export class ObjectDetailsContentComponent implements OnInit {
     @Input() title: string = "";
+    @Input() route: string;
 
     constructor() {
 

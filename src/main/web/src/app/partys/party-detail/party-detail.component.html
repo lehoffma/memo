@@ -8,8 +8,8 @@
             <span class="description secondary-text" content>{{party?.description}}</span>
         </object-details-content>
 
-        <object-details-content [title]="'Teilnehmer'">
-            <details-participants [participants]="party?.participants" content></details-participants>
+        <object-details-content [title]="'Teilnehmer'" [route]="'partys/' + party.id + '/participants'">
+            <details-participants [participants]="party?.participants.slice(0,3)" content></details-participants>
         </object-details-content>
     </div>
 </object-details-container>

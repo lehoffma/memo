@@ -1,14 +1,18 @@
-div.overview-preview-container:not(:last-child) {
-    /*background-color: #4caf50;*/
-    margin-bottom: 5vh;
+
+div.overview-preview-container > .overview-preview-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 4vw 4vw 4vw 4vw;
 }
 
-div.overview-preview-container > h2 {
-    padding: 4vw 4vw 4vw 8vw;
+div.overview-preview-container > .overview-preview-header > a {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+div.overview-preview-container > .overview-preview-header > h4 {
     margin-top: 0;
     margin-bottom: 0;
-    /*font-size: 3vw;*/
-    background-color: #fafafa;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;

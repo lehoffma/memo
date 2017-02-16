@@ -6,6 +6,7 @@
     <div *ngIf="link.children" class="dropdown-content">
         <a *ngFor="let childLink of link.children" routerLink="{{childLink.route}}" routerLinkActive="active">
             <md-icon *ngIf="childLink.icon">{{childLink.icon}}</md-icon>
-            {{childLink.name}}</a>
+            {{childLink.name}}
+        </a>
     </div>
 </div>

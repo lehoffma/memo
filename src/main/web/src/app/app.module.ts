@@ -1,4 +1,4 @@
-import {NgModule} from "@angular/core";
+import {NgModule, LOCALE_ID} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppComponent} from "./app.component";
@@ -79,7 +79,11 @@ import {DetailsSizeTableComponent} from "./object-details/size-table/object-deta
     bootstrap: [
         AppComponent
     ],
-    providers: [NavigationService, AddressStore, PartyStore, MerchStore, TourStore, UserStore]
+    providers: [
+        NavigationService, AddressStore, PartyStore, MerchStore, TourStore, UserStore,
+
+        {provide: LOCALE_ID, useValue: "de-DE"}
+    ]
 })
 export class AppModule {
 }

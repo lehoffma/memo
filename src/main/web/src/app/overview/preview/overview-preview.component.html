@@ -1,15 +1,13 @@
 <div class="preview-container">
-    <md-card *ngFor="let event of events" (click)="showDetails(event)">
+    <md-card *ngFor="let event of (events | async)" (click)="showDetails(event)">
         <img md-card-image src="{{event.picPath}}">
-        <md-card-title>{{event.title}}</md-card-title>
         <md-card-content>
-
-            <div *ngFor="let key of iconKeys">
-                <md-icon class="md-dark">{{icons[key]}}</md-icon>
-                <span>
-                    <!--todo: pipe-->
-                {{formatDetails(event[key])}}
-                </span>
+            <div class="card-content-container">
+                <div class="event-content">
+                    <span>{{event.title}}</span>
+                    <span *ngIf="showDate" class="secondary-text">{{event.date | date:'longDate'}}</span>
+                </div>
+                <span class="event-price">{{event.priceMember}} €</span>
             </div>
         </md-card-content>
     </md-card>

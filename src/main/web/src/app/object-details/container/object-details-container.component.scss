@@ -1,6 +1,5 @@
 
 .detail-container {
-  //background-color: #4caf50;
 
   .image-container {
     position: relative;
@@ -14,7 +13,6 @@
       display: block;
       background-color: rgba(96, 125, 139, 0.5);
       padding: 5vw;
-      //font-size: 3.5em;
       color: #FFF;
     }
 
@@ -27,18 +25,8 @@
       position: absolute;
       bottom: calc(20% - 5.5vw);
       right: 5%;
-      //height: 13vw;
-      //width: 13vw;
       display: block;
-      //font-size: 5vw;
       color: #FFF;
-    }
-    > button md-icon.material-icons {
-      //height: 10vw;
-      //width: 10vw;
-      //font-size: 10vw;
-      //line-height: 3vw;
-      //line-height: 0.5;
     }
   }
 

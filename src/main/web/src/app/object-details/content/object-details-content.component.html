@@ -1,6 +1,7 @@
 <div class="object-details-content-container">
     <div class="object-details-content-title">
-        {{title}}
+        <span>{{title}}</span>
+        <a *ngIf="route" routerLink="{{route}}">MEHR</a>
     </div>
 
     <div class="object-details-content">

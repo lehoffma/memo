@@ -1,17 +1,8 @@
-<div class="overview-preview-container">
-    <h2>Fahrten</h2>
+<div class="overview-preview-container" *ngFor="let eventPreview of events">
+    <div class="overview-preview-header">
+        <h4>{{eventPreview.title}}</h4>
+        <a routerLink="{{eventPreview.route}}">MEHR</a>
+    </div>
 
-    <overview-preview [events]="tours | async"></overview-preview>
-</div>
-
-<div class="overview-preview-container">
-    <h2>Veranstaltungen</h2>
-
-    <overview-preview [events]="partys | async"></overview-preview>
-</div>
-
-<div class="overview-preview-container">
-    <h2>Merchandise</h2>
-
-    <overview-preview [events]="merch | async"></overview-preview>
+    <overview-preview [events]="eventPreview.events" [route]="eventPreview.route"></overview-preview>
 </div>
