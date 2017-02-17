@@ -37,6 +37,7 @@ import {DetailsRouteComponent} from "./object-details/route/object-details-route
 import {DetailsSelectionComponent} from "./object-details/selection/object-details-selection.component";
 import {FilterPipe} from "./shared/pipes/filter.pipe";
 import {DetailsSizeTableComponent} from "./object-details/size-table/object-details-size-table.component";
+import {memoConfig} from "./app.config";
 
 @NgModule({
     imports: [
@@ -45,7 +46,7 @@ import {DetailsSizeTableComponent} from "./object-details/size-table/object-deta
         MaterialModule.forRoot(),
         RouterModule.forRoot(ROUTES),
         AgmCoreModule.forRoot({
-            apiKey: "AIzaSyBu1f0LaP7haUohKDfHzqq9nO0ardgP3UE"
+            apiKey: memoConfig.mapsApiKey
         })
     ],
     declarations: [

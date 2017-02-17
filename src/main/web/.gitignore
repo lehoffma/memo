@@ -46,8 +46,8 @@ crashlytics-build.properties
 fabric.properties
 
 /node_modules/
-.idea/
-
 *.map
 /npm-debug.log
 /src/app/**/*.js
+
+*.config.ts

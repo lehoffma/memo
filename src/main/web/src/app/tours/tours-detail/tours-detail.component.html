@@ -12,7 +12,7 @@
             <span class="description secondary-text" content>{{tour?.description}}</span>
         </object-details-content>
 
-        <object-details-content [title]="'Wer fährt mit?'" [route]="'tours/' + tour.id + '/participants'">
+        <object-details-content [title]="'Wer fährt mit?'" [route]="'tours/' + tour?.id + '/participants'">
             <details-participants [participants]="tour?.participants.slice(0,3)" content></details-participants>
         </object-details-content>
     </div>
