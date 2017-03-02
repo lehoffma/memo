@@ -4,19 +4,19 @@ import {UserPermissions, visitorPermissions} from "./permission";
 
 export class User {
 
-    constructor(private _id: number = 9999,
-                private _firstName: string = "default",
-                private _surname: string = "default",
-                private _birthDate: Date = new Date(1999, 9, 19),
-                private _telephone: string = "default",
+    constructor(private _id: number = -1,
+                private _firstName: string = "",
+                private _surname: string = "",
+                private _birthDate: Date = new Date(),
+                private _telephone: string = "",
                 private _clubRole: ClubRole = ClubRole.Mitglied,
                 private _permissions: UserPermissions = visitorPermissions,
-                private _miles: number = 9999,
-                private _email: string = "default",
-                private _passwordHash: string = "default",
+                private _miles: number = 0,
+                private _email: string = "",
+                private _passwordHash: string = "",
                 private _isStudent: boolean = false,
                 private _hasDebitAuth: boolean = false,
-                private _imagePath: string = "default") {
+                private _imagePath: string = "") {
     }
 
 

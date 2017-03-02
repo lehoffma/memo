@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+import {User} from "../../shared/model/user";
 
 @Component({
     selector: 'account-signup',
@@ -7,6 +8,13 @@ import {Component, OnInit} from "@angular/core";
 })
 export class AccountSignUpComponent implements OnInit {
     private currentDate: Date = new Date();
+    private newUser: User = new User();
+    private password: string;
+    private confirmedPassword: string;
+
+    private sections = [0, 1, 2];
+    private currentSection = 0;
+
 
     constructor() {
     }
@@ -14,4 +22,7 @@ export class AccountSignUpComponent implements OnInit {
     ngOnInit() {
     }
 
+    checkPassword() {
+        return this.password === this.confirmedPassword;
+    }
 }

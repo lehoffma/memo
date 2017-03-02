@@ -1,5 +1,43 @@
 @import "../login/account-login.component";
+@import "../../../theme";
 
 //md-card{
 //  margin: 4vw;
 //}
+
+md2-datepicker {
+  width: 100%;
+}
+
+.account-signup-progress {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 25%;
+  padding-right: 25%;
+
+  > div {
+    height: 3vw;
+    width: 3vw;
+    border-radius: 50%;
+    background-color: grey;
+  }
+
+  > div.active {
+    background-color: md-color($accent);
+  }
+
+  > div.completed {
+    background-color: md-color($primary);
+  }
+
+  > span {
+    width: 30%;
+    align-self: center;
+    height: 1px;
+    background-color: grey;
+  }
+
+  > span.completed {
+    background-color: md-color($primary);
+  }
+}

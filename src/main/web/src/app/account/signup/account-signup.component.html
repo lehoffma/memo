@@ -1,37 +1,72 @@
 <md-card>
-    <!--<input type="">-->
-    <md-input placeholder="Vorname"
-              type="text"
-              name="first-name-input"
-              [(ngModel)]="firstName"
-              required>
-    </md-input>
-    <md-input placeholder="Nachname"
-              type="text"
-              name="name-input"
-              [(ngModel)]="surname"
-              required>
-    </md-input>
-    <md2-datepicker max="{{currentDate}}">
-    </md2-datepicker>
+    <div class="account-signup-progress">
+        <template ngFor let-item [ngForOf]="sections">
+            <div [ngClass]="{'active': item === currentSection, 'completed': currentSection > item}"></div>
+            <span *ngIf="item !== 2"></span>
+        </template>
+    </div>
 
-    <md-input placeholder="Email"
-              type="email"
-              name="email-input"
-              [(ngModel)]="email"
-              required>
-    </md-input>
-    <md-input placeholder="Passwort"
-              type="password"
-              name="password-input"
-              minlength="5"
-              [(ngModel)]="password"
-              required>
-        <md-hint align="end">
-            <ng2-password-strength-bar
-                    [passwordToCheck]="password"
-                    [barLabel]="''">
-            </ng2-password-strength-bar>
-        </md-hint>
-    </md-input>
+    <div [ngSwitch]="currentSection">
+        <div *ngSwitchCase="0">
+            <h4>Account Daten</h4>
+            <form>
+                <md-input placeholder="Email"
+                          type="email"
+                          name="email-input"
+                          [(ngModel)]="newUser.email"
+                          required>
+                </md-input>
+                <md-input placeholder="Passwort"
+                          type="password"
+                          name="password-input"
+                          minlength="5"
+                          [(ngModel)]="password"
+                          required>
+                    <md-hint align="end">
+                        <ng2-password-strength-bar
+                                [passwordToCheck]="password"
+                                [barLabel]="''">
+                        </ng2-password-strength-bar>
+                    </md-hint>
+                </md-input>
+                <md-input placeholder="Passwort bestätigen"
+                          type="password"
+                          name="confirm-password-input"
+                          [(ngModel)]="confirmedPassword"
+                          required>
+
+                </md-input>
+
+                <div [hidden]="">
+                    <!--todo: error message wenn passwörter nicht übereinstimmen-->
+                </div>
+                <button type="submit" color="primary" md-raised-button>Weiter</button>
+            </form>
+        </div>
+        <div *ngSwitchCase="1">
+
+        </div>
+        <div *ngSwitchCase="2">
+
+        </div>
+        <div *ngSwitchDefault>test</div>
+    </div>
+
 </md-card>
+
+
+<!--<md-input placeholder="Vorname"-->
+<!--type="text"-->
+<!--name="first-name-input"-->
+<!--[(ngModel)]="firstName"-->
+<!--required>-->
+<!--</md-input>-->
+<!--<md-input placeholder="Nachname"-->
+<!--type="text"-->
+<!--name="name-input"-->
+<!--[(ngModel)]="surname"-->
+<!--required>-->
+<!--</md-input>-->
+
+<!--<md2-datepicker max="{{currentDate}}" placeholder="Geburtsdatum">-->
+<!--</md2-datepicker>-->
