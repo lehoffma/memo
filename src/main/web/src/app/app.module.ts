@@ -38,6 +38,11 @@ import {DetailsSelectionComponent} from "./object-details/selection/object-detai
 import {FilterPipe} from "./shared/pipes/filter.pipe";
 import {DetailsSizeTableComponent} from "./object-details/size-table/object-details-size-table.component";
 import {memoConfig} from "./app.config";
+import {LogInService} from "./shared/services/login.service";
+import {AccountLoginComponent} from "./account/login/account-login.component";
+import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
+import {AccountSignUpComponent} from "./account/signup/account-signup.component";
+import {Md2Module} from "md2";
 
 @NgModule({
     imports: [
@@ -47,7 +52,9 @@ import {memoConfig} from "./app.config";
         RouterModule.forRoot(ROUTES),
         AgmCoreModule.forRoot({
             apiKey: memoConfig.mapsApiKey
-        })
+        }),
+        PasswordStrengthBarModule,
+        Md2Module.forRoot(),
     ],
     declarations: [
         AppComponent,
@@ -75,13 +82,16 @@ import {memoConfig} from "./app.config";
         PartyDetailComponent,
         MerchComponent,
         MerchDetailComponent,
-        AccountProfileComponent
+        AccountProfileComponent,
+        AccountLoginComponent,
+        AccountSignUpComponent
     ],
     bootstrap: [
         AppComponent
     ],
     providers: [
         NavigationService, AddressStore, PartyStore, MerchStore, TourStore, UserStore,
+        LogInService,
 
         {provide: LOCALE_ID, useValue: "de-DE"}
     ]

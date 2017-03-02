@@ -14,6 +14,8 @@ export class UserStore extends AbstractStore<User> {
             userManagement: jsonPermissions["userManagement"],
             merch: jsonPermissions["merch"],
             tour: jsonPermissions["tour"],
+            stock: jsonPermissions["stock"],
+            accountManagement: jsonPermissions["accountManagement"]
         };
 
 

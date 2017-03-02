@@ -1,30 +1,36 @@
 export enum Permission{
-    owner = <any> "owner",
-    write = <any> "write",
-    read = <any> "read",
-    none = <any> "none"
+    owner = 3,
+    write = 2,
+    read = 1,
+    none = 0
 }
 
 export interface UserPermissions{
-    readonly merch: Permission,
     readonly userManagement: Permission,
     readonly tour: Permission,
     readonly party: Permission,
-    readonly funds: Permission
+    readonly merch: Permission,
+    readonly funds: Permission,
+    readonly stock: Permission,
+    readonly accountManagement: Permission
 }
 
-export const AdminPermissions: UserPermissions = {
-    merch: Permission.write,
+export const adminPermissions: UserPermissions = {
     userManagement: Permission.write,
     tour: Permission.write,
     party: Permission.write,
-    funds: Permission.write
+    merch: Permission.write,
+    funds: Permission.write,
+    stock: Permission.write,
+    accountManagement: Permission.owner
 };
 
-export const VisitorPermissions: UserPermissions = {
-    merch: Permission.none,
+export const visitorPermissions: UserPermissions = {
     userManagement: Permission.none,
-    tour: Permission.none,
-    party: Permission.none,
-    funds: Permission.none
-}
+    tour: Permission.read,
+    party: Permission.read,
+    merch: Permission.read,
+    funds: Permission.none,
+    stock: Permission.none,
+    accountManagement: Permission.none
+};

@@ -1,5 +1,5 @@
 import {ClubRole} from "./club-role";
-import {UserPermissions, VisitorPermissions} from "./permission";
+import {UserPermissions, visitorPermissions} from "./permission";
 
 
 export class User {
@@ -10,7 +10,7 @@ export class User {
                 private _birthDate: Date = new Date(1999, 9, 19),
                 private _telephone: string = "default",
                 private _clubRole: ClubRole = ClubRole.Mitglied,
-                private _permissions: UserPermissions = VisitorPermissions,
+                private _permissions: UserPermissions = visitorPermissions,
                 private _miles: number = 9999,
                 private _email: string = "default",
                 private _passwordHash: string = "default",

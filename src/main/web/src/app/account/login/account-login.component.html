@@ -1,0 +1,39 @@
+<md-card>
+
+    <h4>Bereits Meilenwölfe-Mitglied?</h4>
+    <form>
+        <label>
+            <md-input placeholder="Email"
+                      type="email"
+                      name="email-input"
+                      [(ngModel)]="email"
+                      required>
+
+            </md-input>
+        </label>
+        <label>
+            <md-input placeholder="Passwort"
+                      type="password"
+                      name="password-input"
+                      minlength="5"
+                      [(ngModel)]="password"
+                      required>
+                <md-hint align="end">
+                    <ng2-password-strength-bar
+                            [passwordToCheck]="password"
+                            [barLabel]="''">
+                    </ng2-password-strength-bar>
+                </md-hint>
+            </md-input>
+        </label>
+        <!--todo: submit-->
+        <button type="submit" md-raised-button color="primary">{{'Einloggen' | uppercase}}</button>
+    </form>
+
+    <hr/>
+
+
+    <h4>Noch keinen Account?</h4>
+    <a routerLink="../signup" md-raised-button color="primary">{{'Registrieren' | uppercase}}</a>
+
+</md-card>

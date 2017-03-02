@@ -1,0 +1,37 @@
+<md-card>
+    <!--<input type="">-->
+    <md-input placeholder="Vorname"
+              type="text"
+              name="first-name-input"
+              [(ngModel)]="firstName"
+              required>
+    </md-input>
+    <md-input placeholder="Nachname"
+              type="text"
+              name="name-input"
+              [(ngModel)]="surname"
+              required>
+    </md-input>
+    <md2-datepicker max="{{currentDate}}">
+    </md2-datepicker>
+
+    <md-input placeholder="Email"
+              type="email"
+              name="email-input"
+              [(ngModel)]="email"
+              required>
+    </md-input>
+    <md-input placeholder="Passwort"
+              type="password"
+              name="password-input"
+              minlength="5"
+              [(ngModel)]="password"
+              required>
+        <md-hint align="end">
+            <ng2-password-strength-bar
+                    [passwordToCheck]="password"
+                    [barLabel]="''">
+            </ng2-password-strength-bar>
+        </md-hint>
+    </md-input>
+</md-card>

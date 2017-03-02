@@ -7,6 +7,8 @@ import {ToursComponent} from "./tours/tours.component";
 import {OverViewComponent} from "./overview/overview.component";
 import {PartyDetailComponent} from "./partys/party-detail/party-detail.component";
 import {GoogleMapsRedirectComponent} from "./shared/google-maps-redirect/google-maps-redirect.component";
+import {AccountLoginComponent} from "./account/login/account-login.component";
+import {AccountSignUpComponent} from "./account/signup/account-signup.component";
 export const ROUTES = [
     {path: "", component: OverViewComponent},
     {path: "tours", component: ToursComponent},
@@ -16,5 +18,7 @@ export const ROUTES = [
     {path: "partys/:id", component: PartyDetailComponent},
     {path: "members/:id", component: AccountProfileComponent},
     {path: "merch/:id", component: MerchDetailComponent},
+    {path: "login", component: AccountLoginComponent},
+    {path: "signup", component: AccountSignUpComponent},
     {path: "redirect", component: GoogleMapsRedirectComponent}
 ];

@@ -11,7 +11,9 @@
       "userManagement": "write",
       "tour": "write",
       "party": "write",
-      "funds": "write"
+      "funds": "write",
+      "stock": "write",
+      "accountManagement": "write"
     },
     "miles": 1337,
     "email": "nils.poecking@hotmail.de",
@@ -32,7 +34,9 @@
       "userManagement": "write",
       "tour": "write",
       "party": "write",
-      "funds": "write"
+      "funds": "write",
+      "stock": "write",
+      "accountManagement": "write"
     },
     "miles": 1337,
     "email": "nils.poecking@hotmail.de",
@@ -53,7 +57,9 @@
       "userManagement": "write",
       "tour": "write",
       "party": "write",
-      "funds": "write"
+      "funds": "write",
+      "stock": "write",
+      "accountManagement": "write"
     },
     "miles": 1337,
     "email": "nils.poecking@hotmail.de",
@@ -74,7 +80,9 @@
       "userManagement": "write",
       "tour": "write",
       "party": "write",
-      "funds": "write"
+      "funds": "write",
+      "stock": "write",
+      "accountManagement": "write"
     },
     "miles": 1337,
     "email": "nils.poecking@hotmail.de",

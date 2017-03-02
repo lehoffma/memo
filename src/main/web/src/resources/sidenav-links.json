@@ -23,6 +23,15 @@
     "route": "",
     "icon": "",
     "name": "Accountverwaltung",
+    "minimumPermission": {
+      "userManagement": 0,
+      "merch": 1,
+      "tour": 1,
+      "party": 1,
+      "funds": 0,
+      "stock": 0,
+      "accountManagement": 3
+    },
     "children": [
       {
         "route": "profile",
@@ -50,11 +59,29 @@
     "route": "management",
     "icon": "",
     "name": "Vereinsverwaltung",
+    "minimumPermission": {
+      "userManagement": 1,
+      "merch": 1,
+      "tour": 1,
+      "party": 1,
+      "funds": 0,
+      "stock": 0,
+      "accountManagement": 0
+    },
     "children": [
       {
         "route": "management/costs",
         "icon": "payment",
-        "name": "Kostenübersicht"
+        "name": "Kostenübersicht",
+        "minimumPermission": {
+          "userManagement": 1,
+          "merch": 1,
+          "tour": 1,
+          "party": 1,
+          "funds": 1,
+          "stock": 0,
+          "accountManagement": 0
+        }
       },
       {
         "route": "management/memberlist",
@@ -64,7 +91,16 @@
       {
         "route": "management/stock",
         "icon": "local_shipping",
-        "name": "Bestand"
+        "name": "Bestand",
+        "minimumPermission": {
+          "userManagement": 1,
+          "merch": 1,
+          "tour": 1,
+          "party": 1,
+          "funds": 0,
+          "stock": 1,
+          "accountManagement": 0
+        }
       }
     ]
   },
@@ -82,6 +118,15 @@
   {
     "route": "logout",
     "icon": "exit_to_app",
-    "name": "Logout"
+    "name": "Logout",
+    "minimumPermission": {
+      "userManagement": 0,
+      "merch": 0,
+      "tour": 0,
+      "party": 0,
+      "funds": 0,
+      "stock": 0,
+      "accountManagement": 3
+    }
   }
 ]

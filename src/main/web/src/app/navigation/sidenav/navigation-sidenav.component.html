@@ -1,32 +1,47 @@
 <!--header (link to profile)-->
 <div class="account-header">
-    <img src="../../../resources/images/nils.PNG" class="profile-picture">
-    <div>
-        <span class="profile-name">Lennart Hoffmann</span>
-        <div class="profile-email-container">
-            <span class="profile-email">lennarthoffmann@gmx.de</span>
-            <md-icon>expand_more</md-icon>
-            <!--todo (click)="showAccountStuff = true" usw.-->
+    <div *ngIf="loggedIn">
+        <div *ngFor="let account of [user | async]">
+            <img src="{{account.picPath}}" class="profile-picture">
+            <div>
+                <span class="profile-name">{{account.firstName}}</span>
+                <div class="profile-email-container">
+                    <span class="profile-email">{{account.email}}</span>
+                    <md-icon>expand_more</md-icon>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="account-header-logged-out" *ngIf="!loggedIn">
+        <div>
+            <img src="../../../resources/images/Logo.png">
         </div>
     </div>
 </div>
 <!--navigation links-->
-<nav class="navigation-links">
-    <div *ngFor="let link of (links | async);" (click)="closeSideNav()">
-        <hr *ngIf="link.drawLineAbove || link.children">
-        <!--"main" link-->
-        <a routerLink="{{link.route}}"
-           routerLinkActive="active">
-            <md-icon class="md-dark" *ngIf="!link.children">{{link.icon}}</md-icon>
-            <span>{{link.name}}</span>
+<nav class="navigation-links" (click)="closeSideNav()">
+    <div id="navigation-links-login" *ngIf="!loggedIn">
+        <a routerLink="login">
+            <!--<md-icon class="md-dark">vpn_key</md-icon>-->
+            <span>Anmelden</span>
         </a>
-        <!--child links-->
-        <a *ngFor="let childLink of link.children"
-           routerLink="{{childLink.route}}"
-           routerLinkActive="active">
-            <md-icon class="md-dark">{{childLink.icon}}</md-icon>
-            <span>{{childLink.name}}</span>
-        </a>
+    </div>
+    <div *ngFor="let link of (links | async);">
+        <template [ngIf]="loggedIn ? checkPermissions(link?.minimumPermission, (user|async)?.permissions)
+                                   : checkPermissions(link?.minimumPermission)">
+            <hr *ngIf="link.drawLineAbove || link.children">
+            <!--"main" link-->
+            <a routerLink="{{link.route}}">
+                <md-icon class="md-dark" *ngIf="!link.children">{{link.icon}}</md-icon>
+                <span>{{link.name}}</span>
+            </a>
+            <!--child links-->
+            <a *ngFor="let childLink of link.children"
+               routerLink="{{childLink.route}}">
+                <md-icon class="md-dark">{{childLink.icon}}</md-icon>
+                <span>{{childLink.name}}</span>
+            </a>
+        </template>
     </div>
 
 </nav>
