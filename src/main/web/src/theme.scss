@@ -12,7 +12,9 @@ $accent: md-palette($md-blue, 900, 900, 900);
 //test
 //todo: secondary color: "#203864"
 
-$theme: md-light-theme($primary, $accent);
+$warn: md-palette($md-red);
+
+$theme: md-light-theme($primary, $accent, $warn);
 
 // Include all theme styles for the components.
 @include angular-material-theme($theme);

@@ -9,18 +9,26 @@
     <div [ngSwitch]="currentSection">
         <div *ngSwitchCase="0">
             <h4>Account Daten</h4>
-            <form>
+            <form (ngSubmit)="onSubmit(currentSection)" #accountDataForm="ngForm" novalidate>
                 <md-input placeholder="Email"
                           type="email"
-                          name="email-input"
+                          name="email"
+                          dividerColor="{{(email.touched && email.invalid) ? 'warn' : 'primary'}}"
+                          [ngClass]="{'has-error': email.touched && email.invalid}"
+                          pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
                           [(ngModel)]="newUser.email"
+                          #email="ngModel"
                           required>
+                    <!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
+                    <md-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
+                        Email-Adresse muss in der Form <i>test@email.de</i> sein
+                    </md-hint>
                 </md-input>
                 <md-input placeholder="Passwort"
                           type="password"
-                          name="password-input"
-                          minlength="5"
+                          name="password"
                           [(ngModel)]="password"
+                          #passwordInput="ngModel"
                           required>
                     <md-hint align="end">
                         <ng2-password-strength-bar
@@ -32,15 +40,24 @@
                 <md-input placeholder="Passwort bestätigen"
                           type="password"
                           name="confirm-password-input"
+                          #confirmPasswordInput="ngModel"
+                          dividerColor="{{(confirmPasswordInput.touched && !checkPassword()) ? 'warn' : 'primary'}}"
                           [(ngModel)]="confirmedPassword"
                           required>
 
+                    <!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
+                    <md-hint align="end" class="error-message"
+                             *ngIf="passwordInput.touched && confirmPasswordInput.touched && !checkPassword()">
+                        Passwörter stimmen nicht überein
+                    </md-hint>
                 </md-input>
 
-                <div [hidden]="">
-                    <!--todo: error message wenn passwörter nicht übereinstimmen-->
-                </div>
-                <button type="submit" color="primary" md-raised-button>Weiter</button>
+                <button type="submit"
+                        color="primary"
+                        [disabled]="!accountDataForm.form.valid || !checkPassword()"
+                        md-raised-button>
+                    Weiter
+                </button>
             </form>
         </div>
         <div *ngSwitchCase="1">

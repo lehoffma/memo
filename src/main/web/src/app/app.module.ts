@@ -53,8 +53,8 @@ import {Md2Module} from "md2";
         AgmCoreModule.forRoot({
             apiKey: memoConfig.mapsApiKey
         }),
-        PasswordStrengthBarModule,
         Md2Module.forRoot(),
+        PasswordStrengthBarModule,
     ],
     declarations: [
         AppComponent,

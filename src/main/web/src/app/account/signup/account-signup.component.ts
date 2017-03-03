@@ -11,6 +11,7 @@ export class AccountSignUpComponent implements OnInit {
     private newUser: User = new User();
     private password: string;
     private confirmedPassword: string;
+    private passwordsMatch: boolean = true;
 
     private sections = [0, 1, 2];
     private currentSection = 0;
@@ -24,5 +25,15 @@ export class AccountSignUpComponent implements OnInit {
 
     checkPassword() {
         return this.password === this.confirmedPassword;
+    }
+
+    onSubmit(currentSection) {
+        this.passwordsMatch = this.checkPassword();
+        if (this.passwordsMatch) {
+            //next section
+            if (currentSection !== this.sections[this.sections.length - 1]) {
+                this.currentSection++;
+            }
+        }
     }
 }

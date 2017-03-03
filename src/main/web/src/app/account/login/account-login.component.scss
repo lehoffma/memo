@@ -1,3 +1,4 @@
+@import "../../../theme";
 
 md-card {
   margin: 4vw;
@@ -17,5 +18,16 @@ md-card {
 
   h4 {
     text-align: center;
+  }
+
+  .has-error {
+    margin-bottom: 16px;
+  }
+
+  .error-message {
+    color: md-color($warn);
+    //font-size: 0.8em;
+    //margin-top: -2%;
+    //margin-bottom: 2%;
   }
 }
