@@ -18,7 +18,9 @@
       "mobile": false,
       "styles": [
         "styles.scss",
-        "theme.scss"
+        "theme.scss",
+        "spinner.scss",
+        "mixins.scss"
       ],
       "scripts": [],
       "environments": {
