@@ -55,8 +55,8 @@ import {CheckoutCartComponent} from "./checkout/cart/checkout-cart.component";
         AgmCoreModule.forRoot({
             apiKey: memoConfig.mapsApiKey
         }),
-        PasswordStrengthBarModule,
         Md2Module.forRoot(),
+        PasswordStrengthBarModule,
     ],
     declarations: [
         AppComponent,

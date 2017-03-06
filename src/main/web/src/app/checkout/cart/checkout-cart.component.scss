@@ -1,0 +1,4 @@
+@import "../../../mixins";
+.cart {
+  @include card-like();
+}
