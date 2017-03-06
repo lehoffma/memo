@@ -22,9 +22,11 @@ interface ShoppingCartContent{
 @Injectable()
 export class ShoppingCartService {
     private _content : BehaviorSubject<ShoppingCartContent> = new BehaviorSubject({
-        merch: [],
-        partys: [],
-        tours: []
+        merch: [{id: 0,amount: 1,options: {size: "XS", color: "red"}},
+            {id: 1,amount: 1,options: {size: "XS", color: "red"}},
+            {id: 0,amount: 1,options: {size: "S", color: "red"}}],
+        partys: [{id: 1,amount: 1}, {id: 1,amount: 1}],
+        tours: [{id: 0,amount: 1}, {id: 1,amount: 1}]
     });
     public content = this._content.asObservable();
 

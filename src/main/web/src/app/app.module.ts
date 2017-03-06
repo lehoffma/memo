@@ -56,8 +56,8 @@ import {ShoppingCartBadgeComponent} from "./navigation/toolbar/shopping-cart-bad
         AgmCoreModule.forRoot({
             apiKey: memoConfig.mapsApiKey
         }),
-        PasswordStrengthBarModule,
         Md2Module.forRoot(),
+        PasswordStrengthBarModule,
     ],
     declarations: [
         AppComponent,
