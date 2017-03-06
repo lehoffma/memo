@@ -3,6 +3,7 @@ import {Tour} from "../../shared/model/tour";
 import {ActivatedRoute} from "@angular/router";
 import {Subscription, Observable} from "rxjs";
 import {TourStore} from "../../shared/stores/tour.store";
+import {Participant} from "../../shared/model/participant";
 
 
 @Component({
@@ -47,5 +48,12 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
+    }
+    private getIds(participants: Participant[]){
+        if(participants){
+            return participants.map(participant => participant.id);
+        }
+        return [];
+
     }
 }

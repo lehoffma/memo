@@ -2,6 +2,7 @@ import {Component, OnInit, Input} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {UserStore} from "../../shared/stores/user.store";
 import {NavigationService} from "../../shared/services/navigation.service";
+import {Participant} from "../../shared/model/participant";
 
 @Component({
     selector: 'details-participants',

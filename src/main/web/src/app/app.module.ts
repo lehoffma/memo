@@ -43,6 +43,8 @@ import {AccountLoginComponent} from "./account/login/account-login.component";
 import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {AccountSignUpComponent} from "./account/signup/account-signup.component";
 import {Md2Module} from "md2";
+import {ShoppingCartService} from "./shared/services/shopping-cart.service";
+import {CheckoutCartComponent} from "./checkout/cart/checkout-cart.component";
 
 @NgModule({
     imports: [
@@ -84,14 +86,15 @@ import {Md2Module} from "md2";
         MerchDetailComponent,
         AccountProfileComponent,
         AccountLoginComponent,
-        AccountSignUpComponent
+        AccountSignUpComponent,
+        CheckoutCartComponent
     ],
     bootstrap: [
         AppComponent
     ],
     providers: [
         NavigationService, AddressStore, PartyStore, MerchStore, TourStore, UserStore,
-        LogInService,
+        LogInService, ShoppingCartService,
 
         {provide: LOCALE_ID, useValue: "de-DE"}
     ]

@@ -25,8 +25,8 @@ export class NavigationComponent implements OnInit {
 
     }
 
-    takeToLoginPage() {
-        this.navigationService.navigateByUrl("/login");
+    takeToPage(url: string) {
+        this.navigationService.navigateByUrl(url);
     }
 
     sideBarChanged() {

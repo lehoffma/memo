@@ -1,5 +1,6 @@
 import {Event} from "./event";
 import {ClubRole} from "./club-role";
+import {Participant} from "./participant";
 export class Tour extends Event {
 
     constructor(id: number = 9999,
@@ -15,7 +16,7 @@ export class Tour extends Event {
                 private _miles: number = 0,
                 private _destination: string = "default",
                 private _emptySeats: number = -1,
-                private _participants: number[] = []) {
+                private _participants: Participant[] = []) {
 
         super(id, title, date, description, expectedRole, picPath, capacity, priceMember, meetingPoint);
 
@@ -53,11 +54,11 @@ export class Tour extends Event {
         this._emptySeats = value;
     }
 
-    get participants(): Array<number> {
+    get participants(): Array<Participant> {
         return this._participants;
     }
 
-    set participants(value: Array<number>) {
+    set participants(value: Array<Participant>) {
         this._participants = value;
     }
 }

@@ -12,8 +12,17 @@
     "price": 10,
     "emptySeats": 18,
     "participants": [
-      0,
-      1
+      {
+        "id": 0,
+        "isDriver": true,
+        "hasPaid": false
+      },
+      {
+        "id": 1,
+        "isDriver": true,
+        "hasPaid": false
+      }
+
     ]
   },
   {
@@ -29,9 +38,21 @@
     "price": 10,
     "emptySeats": 18,
     "participants": [
-      0,
-      1,
-      2
+      {
+        "id": 2,
+        "isDriver": true,
+        "hasPaid": false
+      },
+      {
+        "id": 3,
+        "isDriver": true,
+        "hasPaid": false
+      },
+      {
+        "id": 1,
+        "isDriver": true,
+        "hasPaid": false
+      }
     ]
   }
 ]

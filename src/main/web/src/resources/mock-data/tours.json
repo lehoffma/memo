@@ -15,10 +15,26 @@
     "miles": 300,
     "destination": 1,
     "participants": [
-      0,
-      1,
-      2,
-      3
+      {
+        "id": 0,
+        "isDriver": true,
+        "hasPaid": false
+      },
+      {
+        "id": 1,
+        "isDriver": true,
+        "hasPaid": false
+      },
+      {
+        "id": 2,
+        "isDriver": true,
+        "hasPaid": false
+      },
+      {
+        "id": 3,
+        "isDriver": true,
+        "hasPaid": false
+      }
     ]
   },
   {
@@ -37,8 +53,16 @@
     "miles": 200,
     "destination": 1,
     "participants": [
-      0,
-      3
+      {
+        "id": 0,
+        "isDriver": true,
+        "hasPaid": false
+      },
+      {
+        "id": 3,
+        "isDriver": true,
+        "hasPaid": false
+      }
     ]
   },
   {
@@ -57,9 +81,21 @@
     "miles": 10,
     "destination": 1,
     "participants": [
-      1,
-      2,
-      3
+      {
+        "id": 1,
+        "isDriver": true,
+        "hasPaid": false
+      },
+      {
+        "id": 2,
+        "isDriver": true,
+        "hasPaid": false
+      },
+      {
+        "id": 3,
+        "isDriver": true,
+        "hasPaid": false
+      }
     ]
   }
 ]

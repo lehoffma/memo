@@ -10,7 +10,9 @@
     <span class="navigation-fill-remaining-space navigation-left-space"></span>
 
     <div class="logo">
-        <img src="../../../resources/images/Logo_white.png">
+        <button md-button><md-icon class="cart-icon">search</md-icon></button>
+        <button md-button (click)="takeToPage('/cart')"><md-icon class="cart-icon">shopping_cart</md-icon></button>
+
     </div>
 
     <span class="navigation-fill-remaining-space navigation-right-space"></span>
@@ -35,7 +37,7 @@
         </div>
         <!--user is not logged in -> show log-in button instead -->
         <div *ngIf="!loggedIn" class="login-button-container">
-            <button md-raised-button color="accent" (click)="takeToLoginPage()">
+            <button md-raised-button color="accent" (click)="takeToPage('/login')">
                 Login
             </button>
         </div>

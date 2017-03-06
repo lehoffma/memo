@@ -113,7 +113,7 @@ export class AccountProfileComponent implements OnInit, OnDestroy {
         })
             .map((events: (Tour|Party)[]) =>
                 events.filter(event =>
-                    event.participants.find(participantID => participantID === id) !== undefined
+                    event.participants.find(participants => participants.id=== id) !== undefined
                 )
             );
     }

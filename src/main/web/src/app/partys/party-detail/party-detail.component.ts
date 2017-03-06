@@ -3,6 +3,7 @@ import {Party} from "../../shared/model/party";
 import {ActivatedRoute} from "@angular/router";
 import {Subscription, Observable} from "rxjs";
 import {PartyStore} from "../../shared/stores/party.store";
+import {Participant} from "../../shared/model/participant";
 
 
 @Component({
@@ -30,6 +31,13 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.subscription.unsubscribe();
+    }
+    private getIds(participants: Participant[]){
+        if(participants){
+            return participants.map(participant => participant.id);
+        }
+        return [];
+
     }
 }
 
