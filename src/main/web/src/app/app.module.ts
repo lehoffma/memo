@@ -45,6 +45,7 @@ import {AccountSignUpComponent} from "./account/signup/account-signup.component"
 import {Md2Module} from "md2";
 import {ShoppingCartService} from "./shared/services/shopping-cart.service";
 import {CheckoutCartComponent} from "./checkout/cart/checkout-cart.component";
+import {ShoppingCartBadgeComponent} from "./navigation/toolbar/shopping-cart-badge/shopping-cart-badge.component";
 
 @NgModule({
     imports: [
@@ -87,7 +88,8 @@ import {CheckoutCartComponent} from "./checkout/cart/checkout-cart.component";
         AccountProfileComponent,
         AccountLoginComponent,
         AccountSignUpComponent,
-        CheckoutCartComponent
+        CheckoutCartComponent,
+        ShoppingCartBadgeComponent
     ],
     bootstrap: [
         AppComponent

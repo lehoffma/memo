@@ -2,17 +2,16 @@
     <!--The left side-->
     <div>
         <!--The left side is hidden when the screen size is larger than small -->
-        <button md-button class="menu" (click)="sideBarChanged()">
+        <div class="menu ripple" (click)="sideBarChanged()">
             <md-icon class="material-icons">menu</md-icon>
-        </button>
+        </div>
     </div>
 
     <span class="navigation-fill-remaining-space navigation-left-space"></span>
 
     <div class="logo">
-        <button md-button><md-icon class="cart-icon">search</md-icon></button>
-        <button md-button (click)="takeToPage('/cart')"><md-icon class="cart-icon">shopping_cart</md-icon></button>
-
+        <md-icon class="cart-icon ripple">search</md-icon>
+        <md-icon (click)="takeToPage('/cart')" class="cart-icon ripple">shopping_cart</md-icon>
     </div>
 
     <span class="navigation-fill-remaining-space navigation-right-space"></span>
