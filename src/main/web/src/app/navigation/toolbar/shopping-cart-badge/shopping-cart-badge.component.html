@@ -1,0 +1,7 @@
+<template ngFor let-amount [ngForOf]="[amountOfFiles | async]">
+<span class="cart-icon-container"
+      [ngClass]="{'no-items': amount === '0'}"
+      [attr.amount]="amount">
+    <md-icon (click)="takeToPage('/cart')" class="cart-icon ripple">shopping_cart</md-icon>
+</span>
+</template>

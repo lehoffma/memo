@@ -7,7 +7,7 @@ interface StoreObject {
 
 /**
  * An abstract store storing the data the currently logged in user is allowed to see
- * Supports all CRUD (create, read, update, delete) operations.
+ * Supports all CRUD (create, read, update, remove) operations.
  */
 export abstract class AbstractStore<T extends StoreObject> {
     protected _data: BehaviorSubject<Array<T>> = new BehaviorSubject([]);
