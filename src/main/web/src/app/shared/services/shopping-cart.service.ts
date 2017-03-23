@@ -33,7 +33,7 @@ export class ShoppingCartService {
 
     }
 
-    get amountOfFiles(): Observable<number> {
+    get amountOfCartItems(): Observable<number> {
         return this.content.map(content => [...content.merch, ...content.partys, ...content.tours].length)
     }
 

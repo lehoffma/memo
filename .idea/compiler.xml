@@ -6,11 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="memo" />
         <module name="memo-server" />
         <module name="memoshop_java" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="memo" target="1.8" />
       <module name="memo-server" target="1.8" />
       <module name="memoshop_java" target="1.8" />
     </bytecodeTargetLevel>

@@ -1,6 +1,7 @@
-@import "../../../../theme.scss";
+@import "../../../theme.scss";
+@import "../../../mixins.scss";
 
-.cart-icon-container {
+.badge-container {
   height: 6vh;
   width: 6vh;
 
@@ -27,13 +28,15 @@
     border-radius: 50%;
     background: md-color($accent);
     color: #fff;
+    @include animation(memo-badge 100ms ease-in)
   }
 }
 
-/*change size of hamburger menu*/
-.material-icons {
-  height: 6vh;
-  width: 6vh;
-  font-size: 6vh;
-  vertical-align: middle;
+@include keyframes(memo-badge) {
+  0% {
+    @include transform(scale(0))
+  }
+  100% {
+    @include transform(scale(1))
+  }
 }

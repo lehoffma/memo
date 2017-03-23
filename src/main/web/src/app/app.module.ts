@@ -1,4 +1,4 @@
-import {NgModule, LOCALE_ID} from "@angular/core";
+import {LOCALE_ID, NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppComponent} from "./app.component";
@@ -25,7 +25,7 @@ import {AddressStore} from "./shared/stores/adress.store";
 import {ClothesSizePipe} from "./merchandise/merchandise-detail/clothes-size.pipe";
 import {AgmCoreModule} from "angular2-google-maps/core";
 import {ROUTES} from "./app.routes";
-import {GoogleMapsRedirectComponent} from "./shared/google-maps-redirect/google-maps-redirect.component";
+import {GoogleMapsRedirectComponent} from "./util/google-maps-redirect/google-maps-redirect.component";
 import {MerchComponent} from "./merchandise/merchandise.component";
 import {ObjectDetailsContainerComponent} from "./object-details/container/object-details-container.component";
 import {ObjectDetailsContentComponent} from "./object-details/content/object-details-content.component";
@@ -45,7 +45,7 @@ import {AccountSignUpComponent} from "./account/signup/account-signup.component"
 import {Md2Module} from "md2";
 import {ShoppingCartService} from "./shared/services/shopping-cart.service";
 import {CheckoutCartComponent} from "./checkout/cart/checkout-cart.component";
-import {ShoppingCartBadgeComponent} from "./navigation/toolbar/shopping-cart-badge/shopping-cart-badge.component";
+import {BadgeComponent} from "./util/badge/badge.component";
 
 @NgModule({
     imports: [
@@ -89,7 +89,7 @@ import {ShoppingCartBadgeComponent} from "./navigation/toolbar/shopping-cart-bad
         AccountLoginComponent,
         AccountSignUpComponent,
         CheckoutCartComponent,
-        ShoppingCartBadgeComponent
+        BadgeComponent
     ],
     bootstrap: [
         AppComponent

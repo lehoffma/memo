@@ -6,7 +6,7 @@ import {TourDetailComponent} from "./tours/tours-detail/tours-detail.component";
 import {ToursComponent} from "./tours/tours.component";
 import {OverViewComponent} from "./overview/overview.component";
 import {PartyDetailComponent} from "./partys/party-detail/party-detail.component";
-import {GoogleMapsRedirectComponent} from "./shared/google-maps-redirect/google-maps-redirect.component";
+import {GoogleMapsRedirectComponent} from "./util/google-maps-redirect/google-maps-redirect.component";
 import {AccountLoginComponent} from "./account/login/account-login.component";
 import {AccountSignUpComponent} from "./account/signup/account-signup.component";
 import {CheckoutCartComponent} from "./checkout/cart/checkout-cart.component";

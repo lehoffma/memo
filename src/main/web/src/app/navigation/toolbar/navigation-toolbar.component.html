@@ -11,7 +11,11 @@
 
     <div class="logo">
         <md-icon class="cart-icon ripple">search</md-icon>
-        <shopping-cart-badge></shopping-cart-badge>
+        <badge [value]="shoppingCartContent | async">
+            <md-icon (click)="takeToPage('/cart')" class="cart-icon ripple">
+                shopping_cart
+            </md-icon>
+        </badge>
     </div>
 
     <span class="navigation-fill-remaining-space navigation-right-space"></span>

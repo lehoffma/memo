@@ -70,6 +70,14 @@ md-toolbar, :host > > > md-toolbar-row {
   height: 40px;
 }
 
+/*change size of hamburger menu*/
+.material-icons {
+  height: 6vh;
+  width: 6vh;
+  font-size: 6vh;
+  vertical-align: middle;
+}
+
 
 @media all and (min-width: 1000px) {
   md-toolbar, :host > > > md-toolbar-row {
