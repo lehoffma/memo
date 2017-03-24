@@ -22,11 +22,11 @@ md2-datepicker {
   }
 
   > div.active {
-    background-color: md-color($accent);
+    background-color: mat-color($accent);
   }
 
   > div.completed {
-    background-color: md-color($primary);
+    background-color: mat-color($primary);
   }
 
   > span {
@@ -37,6 +37,6 @@ md2-datepicker {
   }
 
   > span.completed {
-    background-color: md-color($primary);
+    background-color: mat-color($primary);
   }
 }

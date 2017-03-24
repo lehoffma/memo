@@ -3,7 +3,7 @@
 md-card {
   margin: 4vw;
 
-  md-input {
+  md-input-container {
     width: 100%;
   }
 
@@ -20,14 +20,7 @@ md-card {
     text-align: center;
   }
 
-  .has-error {
-    margin-bottom: 16px;
-  }
-
   .error-message {
-    color: md-color($warn);
-    //font-size: 0.8em;
-    //margin-top: -2%;
-    //margin-bottom: 2%;
+    color: mat-color($warn);
   }
 }

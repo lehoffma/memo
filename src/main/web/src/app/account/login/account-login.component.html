@@ -3,28 +3,32 @@
     <h4>Bereits Meilenwölfe-Mitglied?</h4>
     <form>
         <label>
-            <md-input placeholder="Email"
-                      type="email"
-                      name="email-input"
-                      [(ngModel)]="email"
-                      required>
-
-            </md-input>
+            <md-input-container>
+                <input mdInput
+                       placeholder="Email"
+                       type="email"
+                       name="email-input"
+                       [(ngModel)]="email"
+                       required>
+            </md-input-container>
         </label>
         <label>
-            <md-input placeholder="Passwort"
-                      type="password"
-                      name="password-input"
-                      minlength="5"
-                      [(ngModel)]="password"
-                      required>
+            <md-input-container>
+                <input mdInput
+                       placeholder="Passwort"
+                       type="password"
+                       name="password-input"
+                       minlength="5"
+                       [(ngModel)]="password"
+                       required>
                 <md-hint align="end">
                     <ng2-password-strength-bar
                             [passwordToCheck]="password"
                             [barLabel]="''">
                     </ng2-password-strength-bar>
                 </md-hint>
-            </md-input>
+            </md-input-container>
+
         </label>
         <!--todo: submit-->
         <button type="submit" md-raised-button color="primary">{{'Einloggen' | uppercase}}</button>

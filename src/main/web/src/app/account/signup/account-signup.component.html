@@ -10,47 +10,52 @@
         <div *ngSwitchCase="0">
             <h4>Account Daten</h4>
             <form (ngSubmit)="onSubmit(currentSection)" #accountDataForm="ngForm" novalidate>
-                <md-input placeholder="Email"
-                          type="email"
-                          name="email"
-                          dividerColor="{{(email.touched && email.invalid) ? 'warn' : 'primary'}}"
-                          [ngClass]="{'has-error': email.touched && email.invalid}"
-                          pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
-                          [(ngModel)]="newUser.email"
-                          #email="ngModel"
-                          required>
+                <md-input-container
+                        [dividerColor]="(email.touched && email.invalid) ? 'warn' : 'primary'">
+                    <input mdInput
+                           placeholder="Email"
+                           type="email"
+                           name="email"
+                           [ngClass]="{'has-error': email.touched && email.invalid}"
+                           pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+                           [(ngModel)]="newUser.email"
+                           #email="ngModel"
+                           required>
                     <!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
                     <md-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
                         Email-Adresse muss in der Form <i>test@email.de</i> sein
                     </md-hint>
-                </md-input>
-                <md-input placeholder="Passwort"
-                          type="password"
-                          name="password"
-                          [(ngModel)]="password"
-                          #passwordInput="ngModel"
-                          required>
+                </md-input-container>
+                <md-input-container>
+                    <input mdInput
+                           placeholder="Passwort"
+                           type="password"
+                           name="password"
+                           [(ngModel)]="password"
+                           #passwordInput="ngModel"
+                           required>
                     <md-hint align="end">
                         <ng2-password-strength-bar
                                 [passwordToCheck]="password"
                                 [barLabel]="''">
                         </ng2-password-strength-bar>
                     </md-hint>
-                </md-input>
-                <md-input placeholder="Passwort bestätigen"
-                          type="password"
-                          name="confirm-password-input"
-                          #confirmPasswordInput="ngModel"
-                          dividerColor="{{(confirmPasswordInput.touched && !checkPassword()) ? 'warn' : 'primary'}}"
-                          [(ngModel)]="confirmedPassword"
-                          required>
-
+                </md-input-container>
+                <md-input-container
+                        [dividerColor]="(confirmPasswordInput.touched && !checkPassword()) ? 'warn' : 'primary'">
+                    <input mdInput
+                           placeholder="Passwort bestätigen"
+                           type="password"
+                           name="confirm-password-input"
+                           #confirmPasswordInput="ngModel"
+                           [(ngModel)]="confirmedPassword"
+                           required>
                     <!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
                     <md-hint align="end" class="error-message"
                              *ngIf="passwordInput.touched && confirmPasswordInput.touched && !checkPassword()">
                         Passwörter stimmen nicht überein
                     </md-hint>
-                </md-input>
+                </md-input-container>
 
                 <button type="submit"
                         color="primary"

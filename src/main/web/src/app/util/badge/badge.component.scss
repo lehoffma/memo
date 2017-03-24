@@ -26,7 +26,7 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background: md-color($accent);
+    background: mat-color($accent);
     color: #fff;
     @include animation(memo-badge 100ms ease-in)
   }

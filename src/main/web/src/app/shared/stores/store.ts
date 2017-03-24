@@ -13,8 +13,8 @@ export abstract class AbstractStore<T extends StoreObject> {
     protected _data: BehaviorSubject<Array<T>> = new BehaviorSubject([]);
     public data: Observable<Array<T>> = this._data
         .asObservable()
-        .distinctUntilChanged()
-        .do(changes => console.log("changes to state: ", changes));
+        .distinctUntilChanged();
+    // .do(changes => console.log("changes to state: ", changes));
 
     protected baseUrl: string = "www.meilenwoelfe.de/shop";
     protected apiURL: string = "data";

@@ -47,16 +47,17 @@ import {ShoppingCartService} from "./shared/services/shopping-cart.service";
 import {CheckoutCartComponent} from "./checkout/cart/checkout-cart.component";
 import {BadgeComponent} from "./util/badge/badge.component";
 
+
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
-        MaterialModule.forRoot(),
+        MaterialModule,
         RouterModule.forRoot(ROUTES),
         AgmCoreModule.forRoot({
             apiKey: memoConfig.mapsApiKey
         }),
-        Md2Module.forRoot(),
+        Md2Module,
         PasswordStrengthBarModule,
     ],
     declarations: [

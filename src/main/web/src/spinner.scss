@@ -22,7 +22,7 @@
 
   z-index: 1500;
   border: 3px solid transparent;
-  border-top-color: md-color($primary);
+  border-top-color: mat-color($primary);
   @include border-radius(50%);
   @include animation(spin 2s linear infinite);
 }
@@ -35,7 +35,7 @@
   right: 5px;
   bottom: 5px;
   border: 3px solid transparent;
-  border-top-color: md-color($warn);
+  border-top-color: mat-color($warn);
   @include border-radius(50%);
   @include animation(spin 3s linear infinite);
 }
@@ -48,7 +48,7 @@
   right: 15px;
   bottom: 15px;
   border: 3px solid transparent;
-  border-top-color: md-color($accent);
+  border-top-color: mat-color($accent);
   @include border-radius(50%);
   @include animation(spin 1.5s linear infinite);
 }
