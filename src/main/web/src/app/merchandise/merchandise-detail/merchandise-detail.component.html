@@ -1,4 +1,4 @@
-<object-details-container *ngFor="let merch of [merchObservable | async]" [objectObservable]="merchObservable">
+<object-details-container *ngFor="let merch of [merchObservable | async]" [eventObservable]="merchObservable">
     <div component-list>
 
         <object-details-content [title]="'Farbe'">

@@ -1,4 +1,4 @@
-<object-details-container *ngFor="let tour of [tourObservable | async]" [objectObservable]="tourObservable">
+<object-details-container *ngFor="let tour of [tourObservable | async]" [eventObservable]="tourObservable">
     <div component-list>
         <object-details-content [title]="'Details'">
             <details-table [objectObservable]="tourObservable" content></details-table>

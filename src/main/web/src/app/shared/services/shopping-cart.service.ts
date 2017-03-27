@@ -24,7 +24,7 @@ export class ShoppingCartService {
             {id: 1, amount: 1, options: {size: "XS", color: "red"}},
             {id: 0, amount: 1, options: {size: "S", color: "red"}}],
         partys: [{id: 1, amount: 1}, {id: 1, amount: 1}],
-        tours: [{id: 0, amount: 1}, {id: 1, amount: 1}]
+        tours: [{id: 0, amount: 1}, {id: 1, amount: 2}]
     });
     public content = this._content.asObservable();
 
@@ -34,7 +34,8 @@ export class ShoppingCartService {
     }
 
     get amountOfCartItems(): Observable<number> {
-        return this.content.map(content => [...content.merch, ...content.partys, ...content.tours].length)
+        return this.content.map(content => [...content.merch, ...content.partys, ...content.tours]
+            .reduce((previousValue, currentValue) => previousValue + currentValue.amount, 0))
     }
 
     /**

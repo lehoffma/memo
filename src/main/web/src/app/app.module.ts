@@ -46,6 +46,8 @@ import {Md2Module} from "md2";
 import {ShoppingCartService} from "./shared/services/shopping-cart.service";
 import {CheckoutCartComponent} from "./checkout/cart/checkout-cart.component";
 import {BadgeComponent} from "./util/badge/badge.component";
+import {EventService} from "./shared/services/event.service";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 
 @NgModule({
@@ -53,6 +55,7 @@ import {BadgeComponent} from "./util/badge/badge.component";
         BrowserModule,
         FormsModule,
         MaterialModule,
+        BrowserAnimationsModule,
         RouterModule.forRoot(ROUTES),
         AgmCoreModule.forRoot({
             apiKey: memoConfig.mapsApiKey
@@ -97,7 +100,7 @@ import {BadgeComponent} from "./util/badge/badge.component";
     ],
     providers: [
         NavigationService, AddressStore, PartyStore, MerchStore, TourStore, UserStore,
-        LogInService, ShoppingCartService,
+        LogInService, ShoppingCartService, EventService,
 
         {provide: LOCALE_ID, useValue: "de-DE"}
     ]

@@ -1,9 +1,9 @@
 <md-card>
     <div class="account-signup-progress">
-        <template ngFor let-item [ngForOf]="sections">
+        <ng-template ngFor let-item [ngForOf]="sections">
             <div [ngClass]="{'active': item === currentSection, 'completed': currentSection > item}"></div>
             <span *ngIf="item !== 2"></span>
-        </template>
+        </ng-template>
     </div>
 
     <div [ngSwitch]="currentSection">

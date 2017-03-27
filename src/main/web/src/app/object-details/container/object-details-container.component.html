@@ -1,21 +1,45 @@
-<div class="detail-container" *ngFor="let object of [objectObservable | async]">
+<div class="detail-container" *ngFor="let event of [eventObservable | async]">
     <!--display image with overlayed title/star button if present-->
-    <div class="image-container" *ngIf="object?.picPath">
-        <img class="image-detail" src="{{object?.picPath}}">
-        <span class="image-title-overlay">{{object?.title}}</span>
+    <div class="image-container" *ngIf="event?.picPath" [attr.object-title]="event.title">
+        <img class="image-detail" src="{{event?.picPath}}">
+    </div>
 
-        <button md-mini-fab color="accent" (click)="selected = !selected">
-            <md-icon>{{selected ? "star" : "star_border"}}</md-icon>
-        </button>
+    <div class="object-overview-container">
+        <div class="object-info-container" *ngIf="overviewKeys | async; let keys">
+            <div class="object-info" *ngFor="let overviewKey of keys">
+                <ng-template [ngIf]="event[overviewKey.key]">
+                    <div [ngSwitch]="overviewKey.pipe">
+                        <ng-template [ngSwitchCase]="'price'">{{event[overviewKey.key] + "€"}}</ng-template>
+                        <ng-template [ngSwitchCase]="'date'">{{event[overviewKey.key] | date:'shortDate'}}</ng-template>
+                        <ng-template ngSwitchDefault>{{event[overviewKey.key]}}</ng-template>
+                    </div>
+                    <div class="secondary-text">
+                        {{overviewKey.label}}
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+        <hr/>
+        <div class="add-to-cart-container">
+            <form #addToCartForm="ngForm">
+                <md-select placeholder="Anzahl" [(ngModel)]="model.amount" name="food" [required]="true">
+                    <md-option *ngFor="let number of [1,2,3,4,5,6,7,8,9]" [value]="number">
+                        {{number}}
+                    </md-option>
+                </md-select>
+            </form>
+
+            <button [disabled]="!addToCartForm.valid"
+                    md-raised-button
+                    color="accent"
+                    (click)="addToCart(event)"
+                    class="add-to-cart-button">
+                In den Warenkorb
+            </button>
+        </div>
     </div>
 
     <div class="content">
         <ng-content select="[component-list]"></ng-content>
     </div>
-
-    <button md-raised-button color="accent" class="add-to-cart-button">
-        In den Warenkorb
-    </button>
 </div>
-
-<!--<button md-fab color="accent" style=" position: sticky;"><md-icon>add</md-icon></button>-->

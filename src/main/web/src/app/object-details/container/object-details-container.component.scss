@@ -4,21 +4,10 @@
   .image-container {
     position: relative;
 
-    .image-title-overlay {
-      position: absolute;
-      bottom: 1.5vw;
-      left: 0;
-      width: 100%;
-      height: 20%;
-      display: block;
-      background-color: rgba(96, 125, 139, 0.5);
-      padding: 5vw;
-      color: #FFF;
-    }
-
     .image-detail {
       width: 100%;
-      height: auto;
+      height: 250px;
+      object-fit: cover;
     }
 
     button {
@@ -30,9 +19,58 @@
     }
   }
 
-  .add-to-cart-button {
-    font-size: 6vw;
-    width: 100%;
-    height: 12vw;
+  .image-container::after {
+    content: attr(object-title);
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 1.5rem;
+    width: calc(100% - 3rem);
+    height: calc(250px - 3rem);
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    font-size: 1.5rem;
+    color: white;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+  }
+
+  .object-overview-container {
+    background-color: white;
+    padding: 1.5rem;
+    margin-top: -0.3rem;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+
+    .object-info-container {
+      display: flex;
+      justify-content: space-between;
+
+      .object-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        div:first-child {
+          font-size: 1.1rem;
+        }
+        div:not(:first-child) {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .add-to-cart-container {
+      padding-top: 1rem;
+      padding-left: 3rem;
+      padding-right: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+
+      form > * {
+        margin-bottom: 0.5rem;
+        width: 100%;
+      }
+    }
   }
 }

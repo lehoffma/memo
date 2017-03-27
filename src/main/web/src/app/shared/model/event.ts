@@ -21,6 +21,7 @@ export class Event {
     fromJSON(json: any): Event {
         let role: ClubRole = ClubRole.None;
 
+        //todo use a function instead
         switch (json["expectedRole"]) {
             case "Admin":
                 role = ClubRole.Admin;

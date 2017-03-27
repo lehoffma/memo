@@ -27,7 +27,7 @@
         </a>
     </div>
     <div *ngFor="let link of (links | async);">
-        <template [ngIf]="loggedIn ? checkPermissions(link?.minimumPermission, (user|async)?.permissions)
+        <ng-template [ngIf]="loggedIn ? checkPermissions(link?.minimumPermission, (user|async)?.permissions)
                                    : checkPermissions(link?.minimumPermission)">
             <hr *ngIf="link.drawLineAbove || link.children">
             <!--"main" link-->
@@ -41,7 +41,7 @@
                 <md-icon class="md-dark">{{childLink.icon}}</md-icon>
                 <span>{{childLink.name}}</span>
             </a>
-        </template>
+        </ng-template>
     </div>
 
 </nav>

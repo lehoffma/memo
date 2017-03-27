@@ -1,4 +1,4 @@
-<object-details-container *ngFor="let party of [partyObservable | async]" [objectObservable]="partyObservable">
+<object-details-container *ngFor="let party of [partyObservable | async]" [eventObservable]="partyObservable">
     <div component-list>
         <object-details-content [title]="'Details'">
             <details-table [objectObservable]="partyObservable" content></details-table>
