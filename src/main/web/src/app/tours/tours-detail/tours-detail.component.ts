@@ -1,9 +1,11 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Tour} from "../../shared/model/tour";
 import {ActivatedRoute} from "@angular/router";
-import {Subscription, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {TourStore} from "../../shared/stores/tour.store";
 import {Participant} from "../../shared/model/participant";
+import {EventOverviewKey} from "../../object-details/container/object-details-overview/object-details-overview.component";
+import {EventService} from "../../shared/services/event.service";
 
 
 @Component({
@@ -11,9 +13,9 @@ import {Participant} from "../../shared/model/participant";
     templateUrl: "./tours-detail.component.html",
     styleUrls: ["./tours-detail.component.scss"]
 })
-export class TourDetailComponent implements OnInit, OnDestroy {
+export class TourDetailComponent implements OnInit {
     tourObservable: Observable<Tour> = Observable.of(new Tour());
-    subscription: Subscription;
+	overViewKeys: Observable<EventOverviewKey[]> = this.tourObservable.map(merch => this.eventService.getOverviewKeys(merch));
 
 
     tourRoute = {
@@ -34,23 +36,18 @@ export class TourDetailComponent implements OnInit, OnDestroy {
     };
 
     constructor(private activatedRoute: ActivatedRoute,
-                private tourStore: TourStore) {
+				private tourStore: TourStore,
+				private eventService: EventService) {
 
     }
 
     ngOnInit() {
-        this.subscription = this.activatedRoute.params.subscribe(params => {
-            let id = +params['id']; // (+) converts string 'id' to a number
-
-            this.tourObservable = this.tourStore.getDataByID(id);
-        });
+		this.tourObservable = this.activatedRoute.params
+			.flatMap(params => this.tourStore.getDataByID(+params["id"]));
     }
 
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
-    private getIds(participants: Participant[]){
-        if(participants){
+	private getIds(participants: Participant[]) {
+		if (participants) {
             return participants.map(participant => participant.id);
         }
         return [];

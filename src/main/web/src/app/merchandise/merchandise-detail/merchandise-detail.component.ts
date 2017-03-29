@@ -1,14 +1,14 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Merchandise} from "../../shared/model/merchandise";
 import {ActivatedRoute} from "@angular/router";
-import {Subscription, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {MerchStore} from "../../shared/stores/merch.store";
-import {NavigationService} from "../../shared/services/navigation.service";
 import {AddressStore} from "../../shared/stores/adress.store";
-import {Address} from "../../shared/model/address";
 import {isNullOrUndefined} from "util";
 import {MerchandiseOptions} from "./merchandise-options";
 import {SelectionModel} from "../../object-details/selection/object-details-selection.component";
+import {EventOverviewKey} from "../../object-details/container/object-details-overview/object-details-overview.component";
+import {EventService} from "../../shared/services/event.service";
 
 
 @Component({
@@ -16,102 +16,38 @@ import {SelectionModel} from "../../object-details/selection/object-details-sele
     templateUrl: "./merchandise-detail.component.html",
     styleUrls: ["./merchandise-detail.component.css"]
 })
-export class MerchDetailComponent implements OnInit, OnDestroy {
+export class MerchDetailComponent implements OnInit {
     merchObservable: Observable<Merchandise> = Observable.of(new Merchandise());
-    subscription: Subscription;
-    clothesSizes: Observable<string[]> = Observable.of([]);
-    sizeTableCategories: Observable<string[]> = Observable.of([]);
+	clothesSizes: Observable<string[]> = this.merchObservable.map(merch => merch.clothesSizes);
+	sizeTableCategories: Observable<string[]> = this.merchObservable.map(merch => merch.sizeTableCategories);
+	overViewKeys: Observable<EventOverviewKey[]> = this.merchObservable.map(merch => this.eventService.getOverviewKeys(merch));
+	colorSelections: Observable<SelectionModel[]> = this.merchObservable.map(merch => merch.colorSelections);
+	clothesSizeSelections: Observable<SelectionModel[]> = this.merchObservable.map(merch => merch.clothesSizeSelections);
 
     options: MerchandiseOptions = {size: "", color: ""};
-    colorSelections: Observable<SelectionModel[]> = Observable.of([]);
-
-    //todo: hier dran liegt das wohl? aber kp warum
-    clothesSizeSelections: Observable<SelectionModel[]> = Observable.of([]);
-
 
     constructor(private route: ActivatedRoute,
-                private merchStore: MerchStore,
-                private navigationService: NavigationService,
-                private addressStore: AddressStore) {
+				private merchStore: MerchStore,
+				private addressStore: AddressStore,
+				private eventService: EventService) {
 
     }
 
     ngOnInit() {
-        this.subscription = this.route.params.subscribe(params => {
-            let id = +params['id']; // (+) converts string 'id' to a number
-
-            this.merchObservable = this.merchStore.getDataByID(id);
-
-            if (this.merchObservable) {
-                this.initialize();
-            }
-        });
+		this.merchObservable = this.route.params
+			.flatMap(params => this.merchStore.getDataByID(+params["id"]));
+		this.initialize();
     }
 
     initialize() {
-        this.clothesSizes = this.merchObservable
-            .filter(merch => !isNullOrUndefined(merch))
-            .map(merch => {
-                return Object.keys(merch.sizeTable)
-            });
+		this.clothesSizes.filter(sizes => !this.options.size && sizes && sizes.length > 0)
+			.subscribe(sizes => this.options.size = sizes[0]);
 
-        this.colorSelections = this.merchObservable
-            .filter(merch => !isNullOrUndefined(merch))
-            .map(merch => merch.colors)
-            .map(colors =>
-                colors.map(color => {
-                    return {
-                        value: color,
-                        color: color
-                    };
-                })
-            );
-
-        this.clothesSizeSelections = this.clothesSizes
-            .map(sizes => sizes.map(size => {
-                return {
-                    value: size,
-                    color: "white",
-                    text: size
-                };
-            }));
-
-        this.sizeTableCategories = this.merchObservable
-            .filter(merch => !isNullOrUndefined(merch))
-            .map(merch => merch.sizeTable)
-            .map(sizeTable => {
-                return Object.keys(sizeTable).reduce((prev: string[], size: string) => {
-                    Object.keys(sizeTable[size]).forEach(category => {
-                        if (prev.indexOf(category) === -1) {
-                            prev.push(category);
-                        }
-                    });
-
-                    return prev;
-                }, []);
-            });
-
-        this.clothesSizes.subscribe(sizes => {
-            if (!this.options.size && sizes && sizes.length > 0) {
-                this.options.size = sizes[0];
-            }
-        });
         this.merchObservable
             .filter(merch => !isNullOrUndefined(merch))
             .map(merch => merch.colors)
-            .subscribe(colors => {
-                if (!this.options.color && colors && colors.length > 0) {
-                    this.options.color = colors[0];
-                }
-            })
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
-
-    getAddress(id: number): Observable<Address> {
-        return this.addressStore.getDataByID(id);
+			.filter(colors => !this.options.color && colors && colors.length > 0)
+			.subscribe(colors => this.options.color = colors[0]);
     }
 
 }

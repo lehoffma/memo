@@ -1,5 +1,5 @@
 import {LOCALE_ID, NgModule} from "@angular/core";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppComponent} from "./app.component";
 import {RouterModule} from "@angular/router";
@@ -48,12 +48,17 @@ import {CheckoutCartComponent} from "./checkout/cart/checkout-cart.component";
 import {BadgeComponent} from "./util/badge/badge.component";
 import {EventService} from "./shared/services/event.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-
+import {ObjectDetailsOverviewComponent} from "./object-details/container/object-details-overview/object-details-overview.component";
+import {AccountDataFormComponent} from "./account/signup/account-data-form/account-data-form.component";
+import {UserDataFormComponent} from "./account/signup/user-data-form/user-data-form.component";
+import {ImageUploadModule} from "angular2-image-upload";
+import {ImageUploadPreviewComponent} from "./account/signup/user-data-form/image-upload-preview/image-upload-preview.component";
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
+		ReactiveFormsModule,
         MaterialModule,
         BrowserAnimationsModule,
         RouterModule.forRoot(ROUTES),
@@ -62,6 +67,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         }),
         Md2Module,
         PasswordStrengthBarModule,
+		ImageUploadModule.forRoot()
     ],
     declarations: [
         AppComponent,
@@ -93,7 +99,11 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         AccountLoginComponent,
         AccountSignUpComponent,
         CheckoutCartComponent,
-        BadgeComponent
+		BadgeComponent,
+		ObjectDetailsOverviewComponent,
+		AccountDataFormComponent,
+		UserDataFormComponent,
+		ImageUploadPreviewComponent
     ],
     bootstrap: [
         AppComponent

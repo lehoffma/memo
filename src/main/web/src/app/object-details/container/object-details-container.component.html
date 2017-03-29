@@ -4,40 +4,7 @@
         <img class="image-detail" src="{{event?.picPath}}">
     </div>
 
-    <div class="object-overview-container">
-        <div class="object-info-container" *ngIf="overviewKeys | async; let keys">
-            <div class="object-info" *ngFor="let overviewKey of keys">
-                <ng-template [ngIf]="event[overviewKey.key]">
-                    <div [ngSwitch]="overviewKey.pipe">
-                        <ng-template [ngSwitchCase]="'price'">{{event[overviewKey.key] + "€"}}</ng-template>
-                        <ng-template [ngSwitchCase]="'date'">{{event[overviewKey.key] | date:'shortDate'}}</ng-template>
-                        <ng-template ngSwitchDefault>{{event[overviewKey.key]}}</ng-template>
-                    </div>
-                    <div class="secondary-text">
-                        {{overviewKey.label}}
-                    </div>
-                </ng-template>
-            </div>
-        </div>
-        <hr/>
-        <div class="add-to-cart-container">
-            <form #addToCartForm="ngForm">
-                <md-select placeholder="Anzahl" [(ngModel)]="model.amount" name="food" [required]="true">
-                    <md-option *ngFor="let number of [1,2,3,4,5,6,7,8,9]" [value]="number">
-                        {{number}}
-                    </md-option>
-                </md-select>
-            </form>
-
-            <button [disabled]="!addToCartForm.valid"
-                    md-raised-button
-                    color="accent"
-                    (click)="addToCart(event)"
-                    class="add-to-cart-button">
-                In den Warenkorb
-            </button>
-        </div>
-    </div>
+	<object-details-overview [event]="event" [overviewKeys]="overviewKeys | async"></object-details-overview>
 
     <div class="content">
         <ng-content select="[component-list]"></ng-content>

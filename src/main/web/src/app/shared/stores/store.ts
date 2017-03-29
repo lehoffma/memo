@@ -36,7 +36,7 @@ export abstract class AbstractStore<T extends StoreObject> {
         return `${this.baseUrl}/${this.apiURL}/${id}`;
     }
 
-    protected abstract jsonToObject(json:any):T;
+	protected abstract jsonToObject(json: any): T;
 
     /**
      * Loads the data from the server
@@ -46,8 +46,8 @@ export abstract class AbstractStore<T extends StoreObject> {
         //also todo configure security/authorization so we don't load everything if not logged in/not an admin
         this.http.get(this.loadDataUrl)
             .map(response => response.json())
-            .subscribe((json:any) => {
-                let data:T[] = json.map(data => this.jsonToObject(data));
+			.subscribe((json: any) => {
+				let data: T[] = json.map(data => this.jsonToObject(data));
 
                 this._data.next(data);
             });
@@ -64,7 +64,7 @@ export abstract class AbstractStore<T extends StoreObject> {
         this.http.post(this.getCreateDataUrl(data), JSON.stringify(data))
             .map(response => response.json())
             .subscribe((json: any) => {
-                let data:T = this.jsonToObject(json);
+				let data: T = this.jsonToObject(json);
 
                 //add new user to the observable after creating new entry in database
                 let currentData: T[] = this._data.value;

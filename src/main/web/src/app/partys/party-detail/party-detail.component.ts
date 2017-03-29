@@ -1,9 +1,11 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {Party} from "../../shared/model/party";
 import {ActivatedRoute} from "@angular/router";
-import {Subscription, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {PartyStore} from "../../shared/stores/party.store";
 import {Participant} from "../../shared/model/participant";
+import {EventOverviewKey} from "../../object-details/container/object-details-overview/object-details-overview.component";
+import {EventService} from "../../shared/services/event.service";
 
 
 @Component({
@@ -12,26 +14,20 @@ import {Participant} from "../../shared/model/participant";
     styleUrls: ["./party-detail.component.css"]
 })
 
-export class PartyDetailComponent implements OnInit, OnDestroy {
+export class PartyDetailComponent implements OnInit {
     partyObservable: Observable<Party> = Observable.of(new Party());
-    subscription: Subscription;
+	overViewKeys: Observable<EventOverviewKey[]> = this.partyObservable.map(merch => this.eventService.getOverviewKeys(merch));
 
     constructor(private route: ActivatedRoute,
-                private partyStore: PartyStore,) {
+				private partyStore: PartyStore,
+				private eventService: EventService) {
 
     }
 
     ngOnInit() {
-        this.subscription = this.route.params.subscribe(params => {
-            let id = +params['id']; // (+) converts string 'id' to a number
-
-            this.partyObservable = this.partyStore.getDataByID(id);
-        });
+		this.partyObservable = this.route.params.flatMap(params => this.partyStore.getDataByID(+params["id"]));
     }
 
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
     private getIds(participants: Participant[]){
         if(participants){
             return participants.map(participant => participant.id);

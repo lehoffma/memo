@@ -1,5 +1,4 @@
-import {Component, OnInit, Input} from "@angular/core";
-import {Observable} from "rxjs";
+import {Component, Input, OnInit} from "@angular/core";
 import {Merchandise} from "../../shared/model/merchandise";
 
 @Component({
@@ -8,12 +7,18 @@ import {Merchandise} from "../../shared/model/merchandise";
     styleUrls: ["./object-details-size-table.component.scss"]
 })
 export class DetailsSizeTableComponent implements OnInit {
-    @Input() clothesSizes: Observable<string[]> = Observable.of([]);
-    @Input() sizeTableCategories: Observable<string[]> = Observable.of([]);
-    @Input() merchObservable: Observable<Merchandise> = Observable.of(new Merchandise());
+	@Input() merch: Merchandise = new Merchandise();
 
     constructor() {
     }
+
+	get clothesSizes(): string[] {
+		return this.merch ? this.merch.clothesSizes : []
+	}
+
+	get sizeTableCategories(): string[] {
+		return this.merch ? this.merch.sizeTableCategories : [];
+	}
 
     ngOnInit() {
     }

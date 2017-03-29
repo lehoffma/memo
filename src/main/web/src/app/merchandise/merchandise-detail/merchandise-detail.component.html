@@ -1,15 +1,17 @@
-<object-details-container *ngFor="let merch of [merchObservable | async]" [eventObservable]="merchObservable">
+<object-details-container *ngFor="let merch of [merchObservable | async]"
+						  [overviewKeys]="overViewKeys"
+						  [eventObservable]="merchObservable">
     <div component-list>
 
-        <object-details-content [title]="'Farbe'">
-            <details-selection (selectedValueChange)="options.color = $event.value"
-                               [selections]="colorSelections" content></details-selection>
-        </object-details-content>
+		<!--<object-details-content [title]="'Farbe'">-->
+		<!--<details-selection (selectedValueChange)="options.color = $event.value"-->
+		<!--[selections]="colorSelections" content></details-selection>-->
+		<!--</object-details-content>-->
 
-        <object-details-content [title]="'Größe'">
-            <details-selection (selectedValueChange)="options.size = $event.value"
-                               [selections]="clothesSizeSelections" content></details-selection>
-        </object-details-content>
+		<!--<object-details-content [title]="'Größe'">-->
+		<!--<details-selection (selectedValueChange)="options.size = $event.value"-->
+		<!--[selections]="clothesSizeSelections" content></details-selection>-->
+		<!--</object-details-content>-->
 
         <object-details-content [title]="'Details'">
             <details-table [objectObservable]="merchObservable" content></details-table>
@@ -20,9 +22,7 @@
         </object-details-content>
 
         <object-details-content [title]="'Größentabelle'">
-            <details-size-table [clothesSizes]="clothesSizes"
-                                [sizeTableCategories]="sizeTableCategories"
-                                [merchObservable]="merchObservable" content></details-size-table>
+			<details-size-table [merch]="merch" content></details-size-table>
         </object-details-content>
     </div>
 </object-details-container>

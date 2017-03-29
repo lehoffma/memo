@@ -1,94 +1,24 @@
-<md-card>
+<md-card *ngIf="currentSection | async; let section">
     <div class="account-signup-progress">
-        <ng-template ngFor let-item [ngForOf]="sections">
-            <div [ngClass]="{'active': item === currentSection, 'completed': currentSection > item}"></div>
-            <span *ngIf="item !== 2"></span>
+		<ng-template ngFor let-item [ngForOf]="sections" let-i="index">
+			<div [ngClass]="{'active': item === section, 'completed': sections.indexOf(section) > i}"></div>
+			<span *ngIf="item !== sectionEnum.three"></span>
         </ng-template>
     </div>
 
-    <div [ngSwitch]="currentSection">
-        <div *ngSwitchCase="0">
-            <h4>Account Daten</h4>
-            <form (ngSubmit)="onSubmit(currentSection)" #accountDataForm="ngForm" novalidate>
-                <md-input-container
-                        [dividerColor]="(email.touched && email.invalid) ? 'warn' : 'primary'">
-                    <input mdInput
-                           placeholder="Email"
-                           type="email"
-                           name="email"
-                           [ngClass]="{'has-error': email.touched && email.invalid}"
-                           pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
-                           [(ngModel)]="newUser.email"
-                           #email="ngModel"
-                           required>
-                    <!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-                    <md-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
-                        Email-Adresse muss in der Form <i>test@email.de</i> sein
-                    </md-hint>
-                </md-input-container>
-                <md-input-container>
-                    <input mdInput
-                           placeholder="Passwort"
-                           type="password"
-                           name="password"
-                           [(ngModel)]="password"
-                           #passwordInput="ngModel"
-                           required>
-                    <md-hint align="end">
-                        <ng2-password-strength-bar
-                                [passwordToCheck]="password"
-                                [barLabel]="''">
-                        </ng2-password-strength-bar>
-                    </md-hint>
-                </md-input-container>
-                <md-input-container
-                        [dividerColor]="(confirmPasswordInput.touched && !checkPassword()) ? 'warn' : 'primary'">
-                    <input mdInput
-                           placeholder="Passwort bestätigen"
-                           type="password"
-                           name="confirm-password-input"
-                           #confirmPasswordInput="ngModel"
-                           [(ngModel)]="confirmedPassword"
-                           required>
-                    <!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
-                    <md-hint align="end" class="error-message"
-                             *ngIf="passwordInput.touched && confirmPasswordInput.touched && !checkPassword()">
-                        Passwörter stimmen nicht überein
-                    </md-hint>
-                </md-input-container>
+	<div [ngSwitch]="section">
+		<memo-account-data-form *ngSwitchCase="sectionEnum.AccountData"
+								(onSubmit)="onSubmit($event)"></memo-account-data-form>
+		<memo-user-data-form *ngSwitchCase="sectionEnum.two"
+							 (onSubmit)="onSubmit($event)">
 
-                <button type="submit"
-                        color="primary"
-                        [disabled]="!accountDataForm.form.valid || !checkPassword()"
-                        md-raised-button>
-                    Weiter
-                </button>
-            </form>
-        </div>
-        <div *ngSwitchCase="1">
+		</memo-user-data-form>
+		<div *ngSwitchCase="sectionEnum.three">
 
+		</div>
+		<div *ngSwitchDefault>
+			Something went wrong.
         </div>
-        <div *ngSwitchCase="2">
-
-        </div>
-        <div *ngSwitchDefault>test</div>
     </div>
 
 </md-card>
-
-
-<!--<md-input placeholder="Vorname"-->
-<!--type="text"-->
-<!--name="first-name-input"-->
-<!--[(ngModel)]="firstName"-->
-<!--required>-->
-<!--</md-input>-->
-<!--<md-input placeholder="Nachname"-->
-<!--type="text"-->
-<!--name="name-input"-->
-<!--[(ngModel)]="surname"-->
-<!--required>-->
-<!--</md-input>-->
-
-<!--<md2-datepicker max="{{currentDate}}" placeholder="Geburtsdatum">-->
-<!--</md2-datepicker>-->

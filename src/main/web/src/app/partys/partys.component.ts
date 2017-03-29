@@ -7,7 +7,8 @@ import {Component} from "@angular/core";
     styleUrls: ["./partys.component.css"]
 })
 export class PartysComponent {
-    constructor() {
+
+	constructor() {
 
     }
 }

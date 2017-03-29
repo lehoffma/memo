@@ -145,11 +145,9 @@
     },
     "material": "Baumwolle",
     "colors": [
-      "#ffffff",
-      "#ff0000",
-      "#ff00ff",
-      "#00ff00",
-      "#0000ff"
+		"Weiss",
+		"Grün",
+		"Blau"
     ]
   },
   {
@@ -298,11 +296,9 @@
     },
     "material": "Baumwolle",
     "colors": [
-      "#ffffff",
-      "#ff0000",
-      "#ff00ff",
-      "#00ff00",
-      "#0000ff"
+		"Weiss",
+		"Grün",
+		"Blau"
     ]
   }
 ]

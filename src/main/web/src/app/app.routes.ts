@@ -20,7 +20,8 @@ export const ROUTES = [
     {path: "members/:id", component: AccountProfileComponent},
     {path: "merch/:id", component: MerchDetailComponent},
     {path: "login", component: AccountLoginComponent},
-    {path: "signup", component: AccountSignUpComponent},
+	{path: "signup", redirectTo: "signup/AccountData", pathMatch: "full"},
+	{path: "signup/:step", component: AccountSignUpComponent},
     {path: "cart", component: CheckoutCartComponent},
     {path: "redirect", component: GoogleMapsRedirectComponent}
 
