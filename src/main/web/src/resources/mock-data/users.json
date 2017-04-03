@@ -7,13 +7,13 @@
     "telephone": "+(49) 176 / 84 80 62 85",
     "clubRole": "Kasse",
     "permissions": {
-      "merch": "write",
-      "userManagement": "write",
-      "tour": "write",
-      "party": "write",
-      "funds": "write",
-      "stock": "write",
-      "accountManagement": "write"
+		"merch": 2,
+		"userManagement": 2,
+		"tour": 2,
+		"party": 2,
+		"funds": 2,
+		"stock": 2,
+		"accountManagement": 2
     },
     "miles": 1337,
     "email": "nils.poecking@hotmail.de",
@@ -30,13 +30,13 @@
     "telephone": "+(49) 176 / 84 80 62 85",
     "clubRole": "Kasse",
     "permissions": {
-      "merch": "write",
-      "userManagement": "write",
-      "tour": "write",
-      "party": "write",
-      "funds": "write",
-      "stock": "write",
-      "accountManagement": "write"
+		"merch": 2,
+		"userManagement": 2,
+		"tour": 2,
+		"party": 2,
+		"funds": 2,
+		"stock": 2,
+		"accountManagement": 2
     },
     "miles": 1337,
     "email": "nils.poecking@hotmail.de",
@@ -53,13 +53,13 @@
     "telephone": "+(49) 176 / 84 80 62 85",
     "clubRole": "Kasse",
     "permissions": {
-      "merch": "write",
-      "userManagement": "write",
-      "tour": "write",
-      "party": "write",
-      "funds": "write",
-      "stock": "write",
-      "accountManagement": "write"
+		"merch": 2,
+		"userManagement": 2,
+		"tour": 2,
+		"party": 2,
+		"funds": 2,
+		"stock": 2,
+		"accountManagement": 2
     },
     "miles": 1337,
     "email": "nils.poecking@hotmail.de",
@@ -76,13 +76,13 @@
     "telephone": "+(49) 176 / 84 80 62 85",
     "clubRole": "Kasse",
     "permissions": {
-      "merch": "write",
-      "userManagement": "write",
-      "tour": "write",
-      "party": "write",
-      "funds": "write",
-      "stock": "write",
-      "accountManagement": "write"
+		"merch": 2,
+		"userManagement": 2,
+		"tour": 2,
+		"party": 2,
+		"funds": 2,
+		"stock": 2,
+		"accountManagement": 2
     },
     "miles": 1337,
     "email": "nils.poecking@hotmail.de",

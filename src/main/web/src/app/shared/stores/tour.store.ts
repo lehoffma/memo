@@ -12,7 +12,7 @@ export class TourStore extends AbstractStore<Tour>{
             new Date(json["date"]),
             json["description"],
             json["expectedRole"],
-            json["picPath"],
+			json["imagePath"],
             json["capacity"],
             json["priceMember"],
             json["meetingPoint"],

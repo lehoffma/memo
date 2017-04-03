@@ -4,21 +4,21 @@ import {Participant} from "./participant";
 export class Tour extends Event {
 
     constructor(id: number = 9999,
-                title: string = "default",
-                date: Date = new Date(1999, 9, 19),
-                description: string = "default",
-                expectedRole: ClubRole = ClubRole.Mitglied,
-                picPath: string = "default",
-                capacity: number = -1,
-                priceMember: number = 9999,
-                meetingPoint: number = 0,
-                private _vehicle: string = "default",
-                private _miles: number = 0,
-                private _destination: string = "default",
-                private _emptySeats: number = -1,
-                private _participants: Participant[] = []) {
+				title: string = "default",
+				date: Date = new Date(1999, 9, 19),
+				description: string = "default",
+				expectedRole: ClubRole = ClubRole.Mitglied,
+				imagePath: string = "default",
+				capacity: number = -1,
+				priceMember: number = 9999,
+				meetingPoint: number = 0,
+				private _vehicle: string = "default",
+				private _miles: number = 0,
+				private _destination: string = "default",
+				private _emptySeats: number = -1,
+				private _participants: Participant[] = []) {
 
-        super(id, title, date, description, expectedRole, picPath, capacity, priceMember, meetingPoint);
+		super(id, title, date, description, expectedRole, imagePath, capacity, priceMember, meetingPoint);
 
     }
 

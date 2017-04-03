@@ -12,7 +12,7 @@ export class PartyStore extends AbstractStore<Party> {
             new Date(json["date"]),
             json["description"],
             json["expectedRole"],
-            json["picPath"],
+			json["imagePath"],
             json["capacity"],
             json["priceMember"],
             json["meetingPoint"],

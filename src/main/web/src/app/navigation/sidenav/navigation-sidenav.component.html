@@ -1,8 +1,8 @@
 <!--header (link to profile)-->
 <div class="account-header">
-    <div *ngIf="loggedIn">
-        <div *ngFor="let account of [user | async]">
-            <img src="{{account.picPath}}" class="profile-picture">
+	<div *ngIf="user | async; else loggedOutHeader; let account;">
+		<!--<div *ngFor="let account of [user | async]">-->
+		<img src="{{account.imagePath}}" class="profile-picture">
             <div>
                 <span class="profile-name">{{account.firstName}}</span>
                 <div class="profile-email-container">
@@ -10,25 +10,26 @@
                     <md-icon>expand_more</md-icon>
                 </div>
             </div>
-        </div>
+		<!--</div>-->
     </div>
-    <div class="account-header-logged-out" *ngIf="!loggedIn">
-        <div>
-            <img src="../../../resources/images/Logo.png">
-        </div>
-    </div>
+	<ng-template #loggedOutHeader>
+		<div class="account-header-logged-out">
+			<div>
+				<img src="../../../resources/images/Logo.png">
+			</div>
+		</div>
+	</ng-template>
 </div>
 <!--navigation links-->
 <nav class="navigation-links" (click)="closeSideNav()">
-    <div id="navigation-links-login" *ngIf="!loggedIn">
+	<div id="navigation-links-login" *ngIf="!(user | async)">
         <a routerLink="login">
             <!--<md-icon class="md-dark">vpn_key</md-icon>-->
             <span>Anmelden</span>
         </a>
     </div>
     <div *ngFor="let link of (links | async);">
-        <ng-template [ngIf]="loggedIn ? checkPermissions(link?.minimumPermission, (user|async)?.permissions)
-                                   : checkPermissions(link?.minimumPermission)">
+		<ng-template [ngIf]="checkPermissions(link?.minimumPermission, (user|async)?.permissions)">
             <hr *ngIf="link.drawLineAbove || link.children">
             <!--"main" link-->
             <a routerLink="{{link.route}}">

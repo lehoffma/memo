@@ -53,67 +53,72 @@ import {AccountDataFormComponent} from "./account/signup/account-data-form/accou
 import {UserDataFormComponent} from "./account/signup/user-data-form/user-data-form.component";
 import {ImageUploadModule} from "angular2-image-upload";
 import {ImageUploadPreviewComponent} from "./account/signup/user-data-form/image-upload-preview/image-upload-preview.component";
+import {ObjectImagePopupComponent} from "./object-details/container/object-image-popup/object-image-popup.component";
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        FormsModule,
+	imports: [
+		BrowserModule,
+		FormsModule,
 		ReactiveFormsModule,
-        MaterialModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot(ROUTES),
-        AgmCoreModule.forRoot({
-            apiKey: memoConfig.mapsApiKey
-        }),
-        Md2Module,
-        PasswordStrengthBarModule,
+		MaterialModule,
+		BrowserAnimationsModule,
+		RouterModule.forRoot(ROUTES),
+		AgmCoreModule.forRoot({
+			apiKey: memoConfig.mapsApiKey
+		}),
+		Md2Module,
+		PasswordStrengthBarModule,
 		ImageUploadModule.forRoot()
-    ],
-    declarations: [
-        AppComponent,
-        GoogleMapsRedirectComponent,
-        ClothesSizePipe,
-        KeysOfObjectPipe,
-        FilterPipe,
-        ConvertCamelCaseToTitleCasePipe,
-        NavigationSideNavComponent,
-        NavigationComponent,
-        NavigationElementComponent,
-        OverViewComponent,
-        OverViewPreviewComponent,
-        ObjectDetailsContainerComponent,
-        ObjectDetailsContentComponent,
-        DetailsParticipantsComponent,
-        DetailsRouteComponent,
-        DetailsTableComponent,
-        DetailsSelectionComponent,
-        DetailsSizeTableComponent,
-        ToursComponent,
-        TourDetailComponent,
-        AccountComponent,
-        PartysComponent,
-        PartyDetailComponent,
-        MerchComponent,
-        MerchDetailComponent,
-        AccountProfileComponent,
-        AccountLoginComponent,
-        AccountSignUpComponent,
-        CheckoutCartComponent,
+	],
+	declarations: [
+		AppComponent,
+		GoogleMapsRedirectComponent,
+		ClothesSizePipe,
+		KeysOfObjectPipe,
+		FilterPipe,
+		ConvertCamelCaseToTitleCasePipe,
+		NavigationSideNavComponent,
+		NavigationComponent,
+		NavigationElementComponent,
+		OverViewComponent,
+		OverViewPreviewComponent,
+		ObjectDetailsContainerComponent,
+		ObjectDetailsContentComponent,
+		DetailsParticipantsComponent,
+		DetailsRouteComponent,
+		DetailsTableComponent,
+		DetailsSelectionComponent,
+		DetailsSizeTableComponent,
+		ToursComponent,
+		TourDetailComponent,
+		AccountComponent,
+		PartysComponent,
+		PartyDetailComponent,
+		MerchComponent,
+		MerchDetailComponent,
+		AccountProfileComponent,
+		AccountLoginComponent,
+		AccountSignUpComponent,
+		CheckoutCartComponent,
 		BadgeComponent,
 		ObjectDetailsOverviewComponent,
 		AccountDataFormComponent,
 		UserDataFormComponent,
-		ImageUploadPreviewComponent
-    ],
-    bootstrap: [
-        AppComponent
-    ],
-    providers: [
-        NavigationService, AddressStore, PartyStore, MerchStore, TourStore, UserStore,
-        LogInService, ShoppingCartService, EventService,
+		ImageUploadPreviewComponent,
+		ObjectImagePopupComponent
+	],
+	bootstrap: [
+		AppComponent
+	],
+	providers: [
+		NavigationService, AddressStore, PartyStore, MerchStore, TourStore, UserStore,
+		LogInService, ShoppingCartService, EventService,
 
-        {provide: LOCALE_ID, useValue: "de-DE"}
-    ]
+		{provide: LOCALE_ID, useValue: "de-DE"}
+	],
+	entryComponents: [
+		ObjectImagePopupComponent,
+	]
 })
 export class AppModule {
 }

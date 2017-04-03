@@ -12,7 +12,7 @@ export class MerchStore extends AbstractStore<Merchandise> {
             new Date(json["date"]),
             json["description"],
             json["expectedRole"],
-            json["picPath"],
+			json["imagePath"],
             json["capacity"],
             json["colors"],
             json["material"],

@@ -1,15 +1,15 @@
 import {ClubRole} from "./club-role";
 export class Event {
     constructor(protected _id: number = 9999,
-                protected _title: string = "default",
-                protected _date: Date = new Date(1999, 9, 19),
-                protected _description: string = "default",
-                protected _expectedRole: ClubRole = ClubRole.Mitglied,
-                protected _picPath: string = "default",
-                protected _capacity: number = -1,
-                protected _priceMember: number = 9999,
-                protected _meetingPoint: number = 0,
-                protected _price: number = _priceMember) {
+				protected _title: string = "default",
+				protected _date: Date = new Date(1999, 9, 19),
+				protected _description: string = "default",
+				protected _expectedRole: ClubRole = ClubRole.Mitglied,
+				protected _imagePath: string = "default",
+				protected _capacity: number = -1,
+				protected _priceMember: number = 9999,
+				protected _meetingPoint: number = 0,
+				protected _price: number = _priceMember) {
 
     }
 
@@ -45,7 +45,7 @@ export class Event {
             new Date(json["date"]),
             json["description"],
             role,
-            json["picPath"],
+			json["imagePath"],
             +json["capacity"],
             +json["priceMember"],
             //todo address as json
@@ -94,12 +94,12 @@ export class Event {
         this._expectedRole = value;
     }
 
-    get picPath(): string {
-        return this._picPath;
+	get imagePath(): string {
+		return this._imagePath;
     }
 
-    set picPath(value: string) {
-        this._picPath = value;
+	set imagePath(value: string) {
+		this._imagePath = value;
     }
 
     get capacity(): number {
