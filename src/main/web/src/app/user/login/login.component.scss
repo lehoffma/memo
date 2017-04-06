@@ -1,0 +1,26 @@
+@import "../../../theme";
+
+md-card {
+	margin: 4vw;
+}
+
+md-input-container {
+	width: 100%;
+}
+
+button, a {
+	width: 100%;
+}
+
+form button {
+	margin-top: 4vh;
+	margin-bottom: 2vh;
+}
+
+h4 {
+	text-align: center;
+}
+
+.error-message {
+	color: mat-color($warn);
+}

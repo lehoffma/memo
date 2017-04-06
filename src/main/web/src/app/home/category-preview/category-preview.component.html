@@ -1,0 +1,15 @@
+<div class="preview-container">
+	<md-card *ngFor="let event of (events | async)" (click)="showDetails(event)">
+		<img md-card-image src="{{event.imagePath}}">
+		<md-card-content>
+			<div class="card-content-container">
+				<div class="event-content">
+					<span>{{event.title}}</span>
+					<span *ngIf="showDate | async" class="secondary-text">{{event.date | date:'longDate'}}</span>
+				</div>
+				<span class="event-price">{{event.priceMember}} €</span>
+			</div>
+		</md-card-content>
+	</md-card>
+
+</div>

@@ -1,0 +1,19 @@
+@import "../../login/login.component";
+
+md2-datepicker {
+	width: 100%;
+}
+
+.name-container {
+	display: flex;
+	justify-content: space-between;
+	md-input-container {
+		width: 45%;
+	}
+}
+
+.isStudent-container {
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+}

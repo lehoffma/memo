@@ -1,0 +1,38 @@
+
+.detail-container {
+
+	.image-container {
+		position: relative;
+
+		.image-detail {
+			width: 100%;
+			height: 250px;
+			object-fit: cover;
+		}
+
+		button {
+			position: absolute;
+			bottom: calc(20% - 5.5vw);
+			right: 5%;
+			display: block;
+			color: #FFF;
+		}
+	}
+
+	.image-container::after {
+		content: attr(object-title);
+		position: absolute;
+		left: 0;
+		top: 0;
+		padding: 1.5rem;
+		width: calc(100% - 3rem);
+		height: calc(250px - 3rem);
+		display: flex;
+		justify-content: flex-end;
+		flex-direction: column;
+		font-size: 1.5rem;
+		color: white;
+		background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
+	}
+
+}

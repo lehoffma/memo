@@ -1,0 +1,17 @@
+.details-table {
+	width: 100%;
+	border-collapse: collapse;
+
+	td.row:first-child {
+		color: #212121;
+	}
+
+	tr:not(:last-child) {
+		border-bottom: 1px solid #cccccc;
+	}
+
+	.row {
+		padding-top: 0.25em;
+		padding-bottom: 0.25em;
+	}
+}

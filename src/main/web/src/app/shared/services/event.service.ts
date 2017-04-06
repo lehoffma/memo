@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core";
-import {Merchandise} from "../model/merchandise";
-import {Event} from "../model/event";
-import {Tour} from "../model/tour";
-import {Party} from "../model/party";
+import {Merchandise} from "../../shop/shared/model/merchandise";
+import {Event} from "../../shop/shared/model/event";
+import {Tour} from "../../shop/shared/model/tour";
+import {Party} from "../../shop/shared/model/party";
 import {isNullOrUndefined} from "util";
-import {EventOverviewKey} from "../../object-details/container/object-details-overview/object-details-overview.component";
-import {EventType} from "../model/event-type";
+import {EventOverviewKey} from "../../shop/item-details/container/overview/event-overview-key";
+import {EventType} from "../../shop/shared/model/event-type";
 
 
 export const overViewKeys = {
@@ -74,8 +74,8 @@ export const overViewKeys = {
 @Injectable()
 export class EventService {
 
-    constructor() {
-    }
+	constructor() {
+	}
 
 	getEventType(event: Event): EventType {
 		return this.handleEvent(event,
@@ -127,15 +127,15 @@ export class EventService {
 		return defaultCallback(event);
 	}
 
-    isMerchandise(event: Event): event is Merchandise {
+	isMerchandise(event: Event): event is Merchandise {
 		return event && (<Merchandise>event).colors !== undefined;
-    }
+	}
 
-    isTour(event: Event): event is Tour {
+	isTour(event: Event): event is Tour {
 		return event && (<Tour>event).vehicle !== undefined
-    }
+	}
 
-    isParty(event: Event): event is Party {
+	isParty(event: Event): event is Party {
 		return event && (<Party>event).emptySeats !== undefined && (<Tour>event).vehicle === undefined;
-    }
+	}
 }

@@ -1,67 +1,76 @@
 @import "theme";
 
 html, body, main, app {
-  min-height: 100%;
-  height: 100%;
-  background-color: #e9ebee;
-  margin: 0;
-  padding: 0;
-  font-size: 16px;
+	min-height: 100%;
+	height: 100%;
+	background-color: #e9ebee;
+	margin: 0;
+	padding: 0;
+	font-size: 16px;
 }
 
 * {
-  box-sizing: border-box;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+	box-sizing: border-box;
+	font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 md-icon.md-dark {
-  color: #757575;
+	color: #757575;
 }
 
 main {
-  min-height: 100%;
-  height: 100%;
+	min-height: 100%;
+	height: 100%;
 }
 
 .md-overlay-backdrop {
-  background-color: transparent;
+	background-color: transparent;
 }
 
 .md-overlay-pane {
-  background-color: white;
+	background-color: white;
 }
 
 .secondary-text {
-  color: #757575;
+	color: #757575;
 }
 
 .md2-datepicker-header {
-  background: mat-color($primary) !important;
+	background: mat-color($primary) !important;
+}
+
+md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input {
+	color: mat-color($primary) !important;
+	border-color: mat-color($primary) !important;
+}
+
+md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-arrow {
+	color: mat-color($primary) !important;
 }
 
 .ripple {
-  position: relative;
-  overflow: hidden;
-  transform: translate3d(0, 0, 0);
+	position: relative;
+	overflow: hidden;
+	transform: translate3d(0, 0, 0);
 
-  &:after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    background: radial-gradient(circle, #000 10%, transparent 10.01%) no-repeat 50%;
-    transform: scale(10, 10);
-    opacity: 0;
-    transition: transform .5s, opacity 1s;
-  }
+	&:after {
+		content: "";
+		display: block;
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		left: 0;
+		pointer-events: none;
+		background: radial-gradient(circle, #000 10%, transparent 10.01%) no-repeat 50%;
+		transform: scale(10, 10);
+		opacity: 0;
+		transition: transform .5s, opacity 1s;
+	}
 
-  &:active:after {
-    transform: scale(0, 0);
-    opacity: .2;
-    transition: 0s;
-  }
+	&:active:after {
+		transform: scale(0, 0);
+		opacity: .2;
+		transition: 0s;
+	}
 }

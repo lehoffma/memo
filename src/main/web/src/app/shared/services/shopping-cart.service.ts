@@ -1,21 +1,8 @@
 import {Injectable, OnInit} from "@angular/core";
-import {EventType} from "../model/event-type";
+import {EventType} from "../../shop/shared/model/event-type";
 import {BehaviorSubject, Observable} from "rxjs";
-
-interface ShoppingCartItem {
-	id: number,
-	amount: number,
-	options?: {
-		size?: string,
-		color?: string,
-	}
-}
-interface ShoppingCartContent {
-	merch: ShoppingCartItem[],
-	partys: ShoppingCartItem[],
-	tours: ShoppingCartItem[]
-}
-
+import {ShoppingCartContent} from "../model/shopping-cart-content";
+import {ShoppingCartItem} from "../model/shopping-cart-item";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {

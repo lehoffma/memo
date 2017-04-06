@@ -1,20 +1,20 @@
 [
-  {
-    "addressID": 0,
-    "name": "Sörens Haus",
-    "street": "Allerstraße",
-    "streetNr": "9",
-    "zip": "38448",
-    "city": "Wolfsburg",
-    "country": "Deutschland"
-  },
-  {
-    "addressID": 1,
-    "name": "Alis Autoverleih",
-    "street": "Allerstraße",
-    "streetNr": "10",
-    "zip": "38448",
-    "city": "Wolfsburg",
-    "country": "Deutschland"
-  }
+	{
+		"addressID": 0,
+		"name": "Sörens Haus",
+		"street": "Allerstraße",
+		"streetNr": "9",
+		"zip": "38448",
+		"city": "Wolfsburg",
+		"country": "Deutschland"
+	},
+	{
+		"addressID": 1,
+		"name": "Alis Autoverleih",
+		"street": "Allerstraße",
+		"streetNr": "10",
+		"zip": "38448",
+		"city": "Wolfsburg",
+		"country": "Deutschland"
+	}
 ]

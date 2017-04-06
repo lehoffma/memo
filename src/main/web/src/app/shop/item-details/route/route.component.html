@@ -1,0 +1,24 @@
+<sebm-google-map *ngIf="tourRoute"
+				 [latitude]="tourRoute.center().latitude"
+				 [longitude]="tourRoute.center().longitude"
+				 [mapDraggable]="false"
+				 [scrollwheel]="false"
+				 [zoomControl]="false"
+				 [zoom]="7"
+				 (tap)="openRouteOnGoogleMaps(tourRoute)">
+	<sebm-google-map-marker [latitude]="tourRoute.from.latitude"
+							[longitude]="tourRoute.from.longitude">
+	</sebm-google-map-marker>
+
+	<sebm-google-map-marker [latitude]="tourRoute.to.latitude"
+							[longitude]="tourRoute.to.longitude">
+	</sebm-google-map-marker>
+	<sebm-google-map-polyline>
+		<sebm-google-map-polyline-point [latitude]="tourRoute.from.latitude"
+										[longitude]="tourRoute.from.longitude">
+		</sebm-google-map-polyline-point>
+		<sebm-google-map-polyline-point [latitude]="tourRoute.to.latitude"
+										[longitude]="tourRoute.to.longitude">
+		</sebm-google-map-polyline-point>
+	</sebm-google-map-polyline>
+</sebm-google-map>

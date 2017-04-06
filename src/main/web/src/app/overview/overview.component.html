@@ -1,8 +1,0 @@
-<div class="overview-preview-container" *ngFor="let eventPreview of events">
-    <div class="overview-preview-header">
-        <h4>{{eventPreview.title}}</h4>
-        <a routerLink="{{eventPreview.route}}">MEHR</a>
-    </div>
-
-    <overview-preview [events]="eventPreview.events" [route]="eventPreview.route"></overview-preview>
-</div>
