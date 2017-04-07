@@ -6,7 +6,7 @@ md-toolbar {
 /*
 source for :host >>> md-toolbar-row: https://github.com/angular/material2/issues/1376
  */
-md-toolbar, :host > > > md-toolbar-row {
+md-toolbar, :host /deep/ md-toolbar-row {
 	height: 10vh;
 	transition: height 0.5s;
 }
@@ -71,7 +71,7 @@ md-toolbar, :host > > > md-toolbar-row {
 }
 
 @media all and (min-width: 1000px) {
-	md-toolbar, :host > > > md-toolbar-row {
+	md-toolbar, :host /deep/ md-toolbar-row {
 		height: 64px;
 	}
 
