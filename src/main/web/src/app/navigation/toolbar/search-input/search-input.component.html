@@ -1,0 +1,24 @@
+<form #searchForm="ngForm" (ngSubmit)="inputState === searchInputState.INACTIVE ? toggleInputState() : onSearch()">
+	<button md-icon-button
+			type="submit"
+			#searchButton
+			class="search-button">
+		<md-icon class="cart-icon">
+			search
+		</md-icon>
+	</button>
+	<md-input-container
+		*ngIf="inputState === searchInputState.ACTIVE"
+		[@searchInputState]="inputState"
+		class="search-input" [dividerColor]="'accent'">
+		<input mdInput
+			   #searchInput
+			   name="searchInput"
+			   [(ngModel)]="model.searchInput"
+			   autocomplete="off">
+		<md-icon mdSuffix
+				 class="cart-icon ripple" (click)="toggleInputState()">
+			clear
+		</md-icon>
+	</md-input-container>
+</form>

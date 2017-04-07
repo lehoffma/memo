@@ -14,7 +14,6 @@ export abstract class AbstractStore<T extends StoreObject> {
 	public data: Observable<Array<T>> = this._data
 		.asObservable()
 		.distinctUntilChanged();
-	// .do(changes => console.log("changes to state: ", changes));
 
 	protected baseUrl: string = "www.meilenwoelfe.de/shop";
 	protected apiURL: string = "data";

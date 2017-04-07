@@ -9,11 +9,8 @@
 
 	<span class="navigation-fill-remaining-space navigation-left-space"></span>
 
-
-	<div class="logo">
-		<md-icon class="cart-icon ripple">
-			search
-		</md-icon>
+	<div class="toolbar-actions">
+		<memo-search-input></memo-search-input>
 		<badge [value]="shoppingCartContent | async">
 			<md-icon (click)="takeToPage('/cart')" class="cart-icon ripple">
 				shopping_cart

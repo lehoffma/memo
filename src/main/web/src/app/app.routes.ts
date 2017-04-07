@@ -10,6 +10,7 @@ import {GoogleMapsRedirectComponent} from "./util/google-maps-redirect/google-ma
 import {LoginComponent} from "./user/login/login.component";
 import {SignUpComponent} from "./user/signup/signup.component";
 import {CheckoutCartComponent} from "./shop/checkout/cart/cart.component";
+import {SearchResultComponent} from "./shop/search-results/search-results.component";
 export const ROUTES = [
 	{path: "", component: HomeComponent},
 	{path: "tours", component: ToursComponent},
@@ -22,6 +23,7 @@ export const ROUTES = [
 	{path: "login", component: LoginComponent},
 	{path: "signup", redirectTo: "signup/account-data", pathMatch: "full"},
 	{path: "signup/:step", component: SignUpComponent},
+	{path: "search", component: SearchResultComponent},
 	{path: "cart", component: CheckoutCartComponent},
 	{path: "redirect", component: GoogleMapsRedirectComponent}
 

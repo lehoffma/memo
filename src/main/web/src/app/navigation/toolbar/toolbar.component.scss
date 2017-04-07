@@ -7,17 +7,8 @@ md-toolbar {
 source for :host >>> md-toolbar-row: https://github.com/angular/material2/issues/1376
  */
 md-toolbar, :host /deep/ md-toolbar-row {
-	height: 10vh;
 	transition: height 0.5s;
-}
-
-/*center button icon*/
-.md-button-wrapper {
-	height: 6vh;
-	width: 6vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	height: 64px;
 }
 
 .navigation-fill-remaining-space {
@@ -30,10 +21,6 @@ md-toolbar, :host /deep/ md-toolbar-row {
 .navigation-right-side,
 .navigation-right-space {
 	display: none;
-}
-
-.navigation-left-space {
-	display: flex;
 }
 
 .logo > img {
@@ -62,11 +49,20 @@ md-toolbar, :host /deep/ md-toolbar-row {
 	height: 40px;
 }
 
+.toolbar-actions {
+	display: flex;
+	align-items: center;
+
+	*:not(:first-child) {
+		margin-left: 10px
+	}
+}
+
 /*change size of hamburger menu*/
 .material-icons {
-	height: 2.75rem;
-	width: 2.75rem;
-	font-size: 2.75rem;
+	height: 1.7rem;
+	width: 1.7rem;
+	font-size: 1.7rem;
 	vertical-align: middle;
 }
 

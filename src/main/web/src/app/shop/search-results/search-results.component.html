@@ -1,0 +1,12 @@
+<div *ngIf="term | async; let searchTerm; else noTerm">
+	Ergebnisse für {{searchTerm}}:
+
+	<memo-results-category [title]="'Touren'" [events]="results.tours | async"></memo-results-category>
+	<memo-results-category [title]="'Partys'" [events]="results.partys | async"></memo-results-category>
+	<memo-results-category [title]="'Merchandise'" [events]="results.merch | async"></memo-results-category>
+
+</div>
+
+<ng-template #noTerm>
+	Bitte geben Sie einen Suchbegriff ein
+</ng-template>

@@ -69,7 +69,10 @@ import {ClubAdministrationComponent} from "./club-management/administration/club
 import {StockComponent} from "./club-management/administration/stock/stock.component";
 import {CostsComponent} from "./club-management/administration/costs/costs.component";
 import {MemberListComponent} from "./club-management/administration/member-list/member-list.component";
-
+import {SearchResultComponent} from "./shop/search-results/search-results.component";
+import {SearchInputComponent} from "./navigation/toolbar/search-input/search-input.component";
+import {ResultsCategoryComponent} from "./shop/search-results/results-category/results-category.component";
+import {ResultsCategoryEntryComponent} from "./shop/search-results/results-category/results-category-entry/results-category-entry.component";
 @NgModule({
 	imports: [
 		BrowserModule,
@@ -135,7 +138,11 @@ import {MemberListComponent} from "./club-management/administration/member-list/
 		ClubAdministrationComponent,
 		StockComponent,
 		CostsComponent,
-		MemberListComponent
+		MemberListComponent,
+		SearchResultComponent,
+		SearchInputComponent,
+		ResultsCategoryComponent,
+		ResultsCategoryEntryComponent
 	],
 	bootstrap: [
 		AppComponent

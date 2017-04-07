@@ -23,6 +23,20 @@ main {
 	height: 100%;
 }
 
+.search-input {
+	.mat-input-underline {
+		border-color: white !important;
+	}
+
+	.mat-accent {
+		background-color: white !important;
+	}
+}
+
+.search-button.mat-icon-button:hover .mat-button-focus-overlay {
+	opacity: 0 !important;
+}
+
 .md-overlay-backdrop {
 	background-color: transparent;
 }
