@@ -13,7 +13,7 @@
 			"party": 2,
 			"funds": 2,
 			"stock": 2,
-			"accountManagement": 2
+			"accountManagement": 3
 		},
 		"miles": 1337,
 		"email": "nils.poecking@hotmail.de",
@@ -36,7 +36,7 @@
 			"party": 2,
 			"funds": 2,
 			"stock": 2,
-			"accountManagement": 2
+			"accountManagement": 3
 		},
 		"miles": 1337,
 		"email": "nils.poecking@hotmail.de",
@@ -59,7 +59,7 @@
 			"party": 2,
 			"funds": 2,
 			"stock": 2,
-			"accountManagement": 2
+			"accountManagement": 3
 		},
 		"miles": 1337,
 		"email": "nils.poecking@hotmail.de",
@@ -82,7 +82,7 @@
 			"party": 2,
 			"funds": 2,
 			"stock": 2,
-			"accountManagement": 2
+			"accountManagement": 3
 		},
 		"miles": 1337,
 		"email": "nils.poecking@hotmail.de",

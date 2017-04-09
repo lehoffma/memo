@@ -44,5 +44,10 @@
 			</a>
 		</ng-template>
 	</div>
-
+	<div *ngIf="(user | async)">
+		<a routerLink="/" (click)="logout()">
+			<md-icon class="md-dark">exit_to_app</md-icon>
+			<span>Logout</span>
+		</a>
+	</div>
 </nav>

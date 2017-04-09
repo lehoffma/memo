@@ -3,7 +3,6 @@ import {Link} from "../../shared/model/link";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs/Observable";
 import {LogInService} from "../../shared/services/login.service";
-import {User} from "../../shared/model/user";
 import {UserStore} from "../../shared/stores/user.store";
 import {UserPermissions, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
@@ -16,11 +15,6 @@ export class SideNavComponent implements OnInit {
 	@Output() sideBarClosed = new EventEmitter();
 
 	public links: Observable<Link[]> = this.navigationService.sidenavLinks;
-	private user: Observable<User> = Observable.empty();
-
-	get loggedIn() {
-		return this.user !== null;
-	}
 
 	constructor(private navigationService: NavigationService,
 				private logInService: LogInService,
@@ -29,7 +23,11 @@ export class SideNavComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.user = this.logInService.accountObservable
+
+	}
+
+	get user() {
+		return this.logInService.accountObservable
 			.flatMap(accountId => accountId === null ? Observable.empty() : this.userStore.getDataByID(accountId));
 	}
 
@@ -60,6 +58,10 @@ export class SideNavComponent implements OnInit {
 		return Object.keys(minimumPermissions).every(
 			(key: string) => userPermissions[key] >= minimumPermissions[key]
 		);
+	}
+
+	logout() {
+		this.logInService.logout();
 	}
 
 	/**

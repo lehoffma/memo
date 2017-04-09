@@ -114,19 +114,5 @@
 		"route": "impressum",
 		"icon": "info",
 		"name": "Impressum"
-	},
-	{
-		"route": "logout",
-		"icon": "exit_to_app",
-		"name": "Logout",
-		"minimumPermission": {
-			"userManagement": 0,
-			"merch": 0,
-			"tour": 0,
-			"party": 0,
-			"funds": 0,
-			"stock": 0,
-			"accountManagement": 3
-		}
 	}
 ]
