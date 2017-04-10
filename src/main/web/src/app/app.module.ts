@@ -51,7 +51,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ItemDetailsOverviewComponent} from "./shop/item-details/container/overview/item-details-overview.component";
 import {AccountDataFormComponent} from "./user/signup/account-data-form/account-data-form.component";
 import {UserDataFormComponent} from "./user/signup/user-data-form/user-data-form.component";
-import {ImageUploadModule} from "angular2-image-upload";
+
 import {ImageUploadPreviewComponent} from "./user/signup/user-data-form/image-upload-preview/image-upload-preview.component";
 import {ItemImagePopupComponent} from "./shop/item-details/container/image-popup/item-image-popup.component";
 import {ToolbarProfileLinkComponent} from "./navigation/toolbar/profile-link/toolbar-profile-link.component";
@@ -86,7 +86,7 @@ import {ResultsCategoryEntryComponent} from "./shop/search-results/results-categ
 		}),
 		Md2Module,
 		PasswordStrengthBarModule,
-		ImageUploadModule.forRoot()
+
 	],
 	declarations: [
 		AppComponent,
