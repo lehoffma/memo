@@ -1,5 +1,4 @@
 <md-card>
-
 	<h4>Bereits Meilenwölfe-Mitglied?</h4>
 	<form #loginForm="ngForm" (ngSubmit)="checkLogin()">
 		<label>
@@ -48,7 +47,7 @@
 				md-raised-button
 				[disabled]="!loginForm.form.valid"
 				color="primary">
-			<span *ngIf="!loading else loadingSpinner">
+			<span *ngIf="!loading; else loadingSpinner">
 			{{'Einloggen' | uppercase}}
 			</span>
 			<ng-template #loadingSpinner>

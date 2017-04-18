@@ -1,5 +1,5 @@
-@import "../../../theme";
-@import '~@angular/material/core/theming/theming';
+@import "../../../../theme";
+@import '../../../../../node_modules/@angular/material/core/theming/_theming';
 
 .account-header {
 	height: 40vw;
@@ -96,8 +96,7 @@
 }
 
 .navigation-links > div > a > span {
-	margin-left: 10vw;
-	//margin-top: 3vw;
+	margin-left: 2rem;
 }
 
 .navigation-links > div > a > span:only-child {
@@ -107,9 +106,8 @@
 
 .navigation-links > div > a md-icon {
 	/*font-size: 1.6em;*/
-	height: 4vw;
-	width: 4vw;
+	height: 24px;
+	width: 24px;
 	vertical-align: middle;
 	color: rgba(0, 0, 0, 0.5);
-	margin-top: -3vw;
 }

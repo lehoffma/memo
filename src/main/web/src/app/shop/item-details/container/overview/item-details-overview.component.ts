@@ -3,7 +3,7 @@ import {SelectionModel} from "../../selection/object-details-selection.component
 import {Event} from "../../../shared/model/event";
 import {Merchandise} from "../../../shared/model/merchandise";
 import {ShoppingCartService} from "../../../../shared/services/shopping-cart.service";
-import {EventService} from "../../../../shared/services/event.service";
+import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {EventOverviewKey} from "./event-overview-key";
 
 
@@ -13,7 +13,7 @@ import {EventOverviewKey} from "./event-overview-key";
 	styleUrls: ["./item-details-overview.component.scss"]
 })
 export class ItemDetailsOverviewComponent implements OnInit {
-	@Input() event: Event = new Event();
+	@Input() event: Event = Event.create();
 	@Input() overviewKeys: EventOverviewKey[] = [];
 	model = {
 		options: {
@@ -41,7 +41,7 @@ export class ItemDetailsOverviewComponent implements OnInit {
 		}
 	}
 
-	constructor(private eventService: EventService,
+	constructor(private eventService: EventUtilityService,
 				private shoppingCartService: ShoppingCartService) {
 	}
 

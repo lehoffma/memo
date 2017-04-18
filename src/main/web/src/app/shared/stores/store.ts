@@ -1,5 +1,6 @@
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Http, Response} from "@angular/http";
+import {Observable} from "rxjs/Observable";
 
 interface StoreObject {
 	id: number;
@@ -15,9 +16,9 @@ export abstract class AbstractStore<T extends StoreObject> {
 		.asObservable()
 		.distinctUntilChanged();
 
-	protected baseUrl: string = "www.meilenwoelfe.de/shop";
-	protected apiURL: string = "data";
-	protected loadDataUrl: string = `${this.baseUrl}/${this.apiURL}.json`;
+	protected baseUrl = "www.meilenwoelfe.de/shop";
+	protected apiURL = "data";
+	protected loadDataUrl = `${this.baseUrl}/${this.apiURL}.json`;
 
 	constructor(private http: Http) {
 
@@ -62,10 +63,10 @@ export abstract class AbstractStore<T extends StoreObject> {
 		this.http.post(this.getCreateDataUrl(data), JSON.stringify(data))
 			.map(response => response.json())
 			.map((json: any) => this.jsonToObject(json))
-			.subscribe((data: T) => {
+			.subscribe((dataObject: T) => {
 				//add new user to the observable after creating new entry in database
-				let currentData: T[] = this._data.value;
-				this._data.next(Object.assign({}, currentData.concat(data)));
+				const currentData: T[] = this._data.value;
+				this._data.next(Object.assign({}, currentData.concat(dataObject)));
 			}, error => console.error(`could not create user, error msg: ${error}`));
 	}
 
@@ -80,13 +81,13 @@ export abstract class AbstractStore<T extends StoreObject> {
 		this.http.put(this.getUpdateDataUrl(data.id), JSON.stringify(data))
 			.map(response => response.json())
 			.map((json: any) => this.jsonToObject(json))
-			.subscribe((data: T) => {
+			.subscribe((dataObject: T) => {
 				//update the user in our user-stream with the new data
-				let currentData: T[] = this._data.value;
-				let index: number = currentData.findIndex(_user => _user.id === data.id);
+				const currentData: T[] = this._data.value;
+				const index: number = currentData.findIndex(_user => _user.id === dataObject.id);
 
 				//replaces 1 element at 'index' with 'data'
-				currentData.splice(index, 1, data);
+				currentData.splice(index, 1, dataObject);
 
 				this._data.next(Object.assign({}, currentData));
 			}, error => console.error(`could not update user, error msg: ${error}`));
@@ -101,8 +102,8 @@ export abstract class AbstractStore<T extends StoreObject> {
 	remove(id: number) {
 		this.http.delete(this.getRemoveDataUrl(id))
 			.subscribe((response: Response) => {
-				let currentData: T[] = this._data.value;
-				let index: number = currentData.findIndex(data => data.id === id);
+				const currentData: T[] = this._data.value;
+				const index: number = currentData.findIndex(data => data.id === id);
 
 				//replaces 1 element at 'index' with nothing, thereby removing the element
 				currentData.splice(index, 1);
@@ -117,7 +118,7 @@ export abstract class AbstractStore<T extends StoreObject> {
 	 * @returns {Observable<T>} an observable of the data object with the given ID
 	 */
 	getDataByID(id: number): Observable<T> {
-		return this.data.map(data => data.find(_data => _data.id === id))
+		return this.data.map(data => data.find(_data => _data.id === id));
 	}
 
 }

@@ -1,13 +1,15 @@
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class LogInService {
 	private accountSubject: BehaviorSubject<number> = new BehaviorSubject(null);
 	public accountObservable: Observable<number> = this.accountSubject.asObservable();
 
-	private readonly loginUrl = ""; //TODO
+	private readonly loginUrl = "/api/login";
+	private readonly logoutUrl = "/api/logout";
 
 	constructor(private http: Http) {
 	}
@@ -26,22 +28,25 @@ export class LogInService {
 		//todo remove
 		if (!password.includes("gzae")) {
 			return Observable.of(false).delay(2000).publish().refCount();
-		}
-		else if (password.includes("gzae")) {
-			this.pushNewData(0);
-			return Observable.of(true).delay(2000).publish().refCount();
+		} else if (password.includes("gzae")) {
+			return Observable.of(true).delay(2000).do(tick => this.pushNewData(0)).publish().refCount();
 		}
 
 		return this.http.post(this.loginUrl, {email, password})
 			.map(response => response.json())
 			.map(json => {
-				let {id, auth_token} = json;
+				const {id, auth_token} = json;
 				if (id !== null && id >= 0) {
-					localStorage.setItem("id_token", auth_token);
+					localStorage.setItem("auth_token", auth_token);
 					//todo store profile data in localStorage?
-					this.pushNewData(id)
+					this.pushNewData(id);
 				}
 				return id !== null;
+			})
+			.retry(3)
+			.catch(error => {
+				console.error(error);
+				return Observable.of(false);
 			})
 			//convert the observable to a hot observable, i.e. immediately perform the http request
 			//instead of waiting for someone to subscribe
@@ -52,11 +57,30 @@ export class LogInService {
 	 *
 	 * @returns {boolean}
 	 */
-	logout() {
-		localStorage.removeItem("id_token");
-		//todo remove profile data from localStorage?
-
+	logout(): Observable<boolean> {
+		//todo remove
+		localStorage.removeItem("auth_token");
 		this.pushNewData(null);
+		if (this.logoutUrl === "/api/logout") {
+			return Observable.of(true);
+		}
+
+		return this.http.post(this.logoutUrl, {auth_token: localStorage.getItem("auth_token")})
+			.map(() => {
+				localStorage.removeItem("auth_token");
+				//todo remove profile data from localStorage?
+
+				this.pushNewData(null);
+				return true;
+			})
+			.retry(3)
+			.catch(error => {
+				console.error(error);
+				return Observable.of(false);
+			})
+			//convert the observable to a hot observable, i.e. immediately perform the http request
+			//instead of waiting for someone to subscribe
+			.publish().refCount();
 	}
 
 	isLoggedIn() {

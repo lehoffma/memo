@@ -1,11 +1,12 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {Link} from "../../shared/model/link";
-import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs/Observable";
-import {LogInService} from "../../shared/services/login.service";
-import {UserStore} from "../../shared/stores/user.store";
-import {UserPermissions, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
+import {User} from "../../../shared/model/user";
+import {Link} from "../../../shared/model/link";
+import {UserPermissions, visitorPermissions} from "../../../shared/model/permission";
+import {NavigationService} from "../../../shared/services/navigation.service";
+import {LogInService} from "../../../shared/services/login.service";
+import {UserService} from "../../../shared/services/user.service";
 @Component({
 	selector: "memo-sidenav",
 	templateUrl: "./sidenav.component.html",
@@ -14,11 +15,31 @@ import {isNullOrUndefined} from "util";
 export class SideNavComponent implements OnInit {
 	@Output() sideBarClosed = new EventEmitter();
 
-	public links: Observable<Link[]> = this.navigationService.sidenavLinks;
+	public user: Observable<User> = this.logInService.accountObservable
+		.flatMap(accountId => accountId === null
+			? Observable.of(User.create().setProperties({id: -1}))
+			: this.userService.getById(accountId));
+
+	public links: Observable<Link[]> = this.user
+		.flatMap(user => {
+			const permissions = user === null ? visitorPermissions : user.permissions;
+			return this.navigationService.sidenavLinks
+				.map(links => {
+					const setId = (link: Link): Link => {
+						if (link.children) {
+							link.children = link.children.map(childLink => setId(childLink))
+						}
+						link.route = link.route.replace("PROFILE_ID", "" + user.id);
+						return link;
+					};
+					return links.map(setId)
+						.filter(link => this.checkPermissions(link.minimumPermission, permissions))
+				})
+		});
 
 	constructor(private navigationService: NavigationService,
 				private logInService: LogInService,
-				private userStore: UserStore) {
+				private userService: UserService) {
 
 	}
 
@@ -26,19 +47,14 @@ export class SideNavComponent implements OnInit {
 
 	}
 
-	get user() {
-		return this.logInService.accountObservable
-			.flatMap(accountId => accountId === null ? Observable.empty() : this.userStore.getDataByID(accountId));
-	}
 
 	/**
 	 * Schließt die Seitennavigation
 	 */
 	closeSideNav() {
-		this.sideBarClosed.emit({
-			value: true
-		});
+		this.sideBarClosed.emit({value: true});
 	}
+
 
 	/**
 	 *

@@ -1,10 +1,10 @@
-<table class="details-table" *ngFor="let object of [(objectObservable | async)]">
-	<tr *ngFor="let key of (object | keysOfObject
-            | filter:['_id', '_title', '_description', '_expectedRole', '_imagePath', '_priceMember', '_participants',
-            '_meetingPoint', '_destination']
-            | filter: ['_colors', '_sizeTable'])">
-		<td align="left" class="row">{{key | convertCamelcaseToTitlecase}}</td>
-		<td *ngIf="key==='_date'" align="right" class="row secondary-text">{{object[key] | date}}</td>
-		<td *ngIf="key!=='_date'" align="right" class="row secondary-text">{{object[key]}}</td>
+<table class="details-table" *ngIf="event">
+	<tr *ngFor="let category of (tableCategories)">
+		<td align="left" class="row">{{category.label}}</td>
+		<td [ngSwitch]="category.pipe" align="right" class="row secondary-text">
+			<ng-template [ngSwitchCase]="'price'">{{event[category.key] + "€"}}</ng-template>
+			<ng-template [ngSwitchCase]="'date'">{{event[category.key] | date:'shortDate'}}</ng-template>
+			<ng-template ngSwitchDefault>{{event[category.key]}}</ng-template>
+		</td>
 	</tr>
 </table>

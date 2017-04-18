@@ -13,7 +13,7 @@ import {SignUpSection} from "./signup-section";
 })
 export class SignUpComponent implements OnInit {
 	private currentDate: Date = new Date();
-	private newUser: User = new User();
+	private newUser: User = User.create();
 
 	sectionEnum = SignUpSection;
 	sections = [SignUpSection.AccountData, SignUpSection.PersonalData, SignUpSection.three];
@@ -34,17 +34,29 @@ export class SignUpComponent implements OnInit {
 			);
 	}
 
-
+	/**
+	 *
+	 * @param section
+	 */
 	navigateToSection(section: SignUpSection) {
 		this.navigationService.navigateByUrl(`signup/${section}`)
 	}
 
-
+	/**
+	 *
+	 * @param section
+	 * @returns {SignUpSection|SignUpSection|SignUpSection}
+	 */
 	getNextSection(section: SignUpSection): SignUpSection {
 		let indexOfSection = this.sections.indexOf(section);
 		return this.sections[indexOfSection + 1];
 	}
 
+	/**
+	 *
+	 * @param currentSection
+	 * @returns {boolean}
+	 */
 	navigateToNextSection(currentSection: SignUpSection): boolean {
 		//done
 		if (currentSection === SignUpSection.three) {
@@ -58,6 +70,10 @@ export class SignUpComponent implements OnInit {
 		}
 	}
 
+	/**
+	 *
+	 * @param event
+	 */
 	onSubmit(event: SignUpSubmitEvent) {
 		//extract section, email and passwordHash properties
 		const {
@@ -73,15 +89,10 @@ export class SignUpComponent implements OnInit {
 
 		switch (section) {
 			case SignUpSection.AccountData:
-				this.newUser.email = email;
-				this.newUser.passwordHash = passwordHash;
+				this.newUser.setProperties({email, passwordHash});
 				break;
 			case SignUpSection.PersonalData:
-				this.newUser.firstName = firstName;
-				this.newUser.surname = surname;
-				this.newUser.birthDate = birthday;
-				this.newUser.telephone = phoneNumber;
-				this.newUser.isStudent = isStudent;
+				this.newUser.setProperties({firstName, surname, birthDate: birthday, telephone: phoneNumber, isStudent});
 				break;
 			case SignUpSection.three:
 				break;

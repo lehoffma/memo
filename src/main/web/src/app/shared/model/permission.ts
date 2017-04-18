@@ -15,6 +15,18 @@ export interface UserPermissions {
 	readonly accountManagement: Permission
 }
 
+export function jsonToPermissions(jsonPermissions): UserPermissions {
+	return {
+		funds: jsonPermissions["funds"],
+		party: jsonPermissions["party"],
+		userManagement: jsonPermissions["userManagement"],
+		merch: jsonPermissions["merch"],
+		tour: jsonPermissions["tour"],
+		stock: jsonPermissions["stock"],
+		accountManagement: jsonPermissions["accountManagement"]
+	};
+}
+
 export const adminPermissions: UserPermissions = {
 	userManagement: Permission.write,
 	tour: Permission.write,

@@ -1,4 +1,4 @@
-<md-card *ngIf="currentSection | async; let section">
+<md-card *ngIf="currentSection | async as section">
 	<div class="account-signup-progress">
 		<ng-template ngFor let-item [ngForOf]="sections" let-i="index">
 			<div [ngClass]="{'active': item === section, 'completed': sections.indexOf(section) > i}"></div>

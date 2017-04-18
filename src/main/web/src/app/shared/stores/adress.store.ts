@@ -5,14 +5,7 @@ import {Http} from "@angular/http";
 @Injectable()
 export class AddressStore extends AbstractStore<Address> {
 	protected jsonToObject(json: any): Address {
-		return new Address(
-			json["id"],
-			json["street"],
-			json["streetNr"],
-			json["zip"],
-			json["city"],
-			json["country"]
-		);
+		return Address.create().setProperties(json);
 	}
 
 	constructor(private _http: Http) {

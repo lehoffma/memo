@@ -1,6 +1,6 @@
 import {Component, OnInit, Renderer, ViewChild} from "@angular/core";
-import {NavigationService} from "../../../shared/services/navigation.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {NavigationService} from "../../../../shared/services/navigation.service";
 
 export enum SearchInputState{
 	ACTIVE = <any> "active",
@@ -43,6 +43,7 @@ export class SearchInputComponent implements OnInit {
 
 	ngOnInit() {
 	}
+
 
 	toggleInputState() {
 		this.inputState = this.inputState === SearchInputState.INACTIVE

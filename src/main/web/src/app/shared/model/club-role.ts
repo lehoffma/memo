@@ -1,4 +1,4 @@
-export enum ClubRole{
+export enum ClubRole {
 	Admin = <any> "Admin",
 	Kasse = <any> "Kassenwart",
 	Organizer = <any> "Organizer",

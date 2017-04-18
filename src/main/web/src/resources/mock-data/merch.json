@@ -8,6 +8,7 @@
 		"imagePath": "https://placekitten.com/505/1000",
 		"capacity": 20,
 		"priceMember": 19,
+		"price": 19,
 		"meetingPoint": 0,
 		"sizeTable": {
 			"XS": {
@@ -159,6 +160,7 @@
 		"imagePath": "https://placekitten.com/505/503",
 		"capacity": 20,
 		"priceMember": 9,
+		"price": 9,
 		"meetingPoint": 1,
 		"sizeTable": {
 			"XS": {

@@ -1,136 +1,42 @@
 import {ClubRole} from "../../../shared/model/club-role";
-export class Event {
-	constructor(protected _id: number = 9999,
-				protected _title: string = "default",
-				protected _date: Date = new Date(1999, 9, 19),
-				protected _description: string = "default",
-				protected _expectedRole: ClubRole = ClubRole.Mitglied,
-				protected _imagePath: string = "default",
-				protected _capacity: number = -1,
-				protected _priceMember: number = 9999,
-				protected _meetingPoint: number = 0,
-				protected _price: number = _priceMember) {
+import {ImmutableObject} from "../../../shared/model/immutable-object";
+import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 
+
+export class Event extends ImmutableObject<Event> {
+	constructor(public id: number,
+				public title: string,
+				public date: Date,
+				public description: string,
+				public expectedRole: ClubRole,
+				public imagePath: string,
+				public capacity: number,
+				public priceMember: number,
+				public meetingPoint: number,
+				public price: number = priceMember) {
+		super(id);
+	}
+
+	static create() {
+		return new Event(-1, "", new Date(1999, 9, 19), "", ClubRole.None, "", -1, -1, -1, -1);
 	}
 
 	/**
-	 * converts a json object (which only contains string values) into an actual event object
-	 * @param json the json (provided externally, for example by the server)
-	 * @returns {Event} the composed event object
+	 * Geht alle Attribute des Objektes durch und gibt true zurück, wenn der Wert mindestens eines Attributes auf den
+	 * Suchbegriff matcht. Der Default-Wert des Suchbegriffs ist dabei "", für welchen immer true
+	 * zurückgegeben wird (der leere String ist Teilstring von jedem String).
+	 * @param searchTerm
+	 * @returns {string[]}
 	 */
-	fromJSON(json: any): Event {
-		let role: ClubRole = ClubRole.None;
-
-		//todo use a function instead
-		switch (json["expectedRole"]) {
-			case "Admin":
-				role = ClubRole.Admin;
-				break;
-			case "Kasse":
-				role = ClubRole.Kasse;
-				break;
-			case "Mitglied":
-				role = ClubRole.Mitglied;
-				break;
-			case "Vorstand":
-				role = ClubRole.Vorstand;
-				break;
-			case "Organizer":
-				role = ClubRole.Organizer;
-		}
-
-		return new Event(
-			+json["id"],
-			json["title"],
-			new Date(json["date"]),
-			json["description"],
-			role,
-			json["imagePath"],
-			+json["capacity"],
-			+json["priceMember"],
-			//todo address as json
-			json["meetingPoint"]
-		)
+	matchesSearchTerm(searchTerm: string = ""): boolean {
+		return Object.keys(this).some(key => ("" + this[key]).includes(searchTerm));
 	}
 
-
-	get id(): number {
-		return this._id;
+	get overviewKeys(): EventOverviewKey[] {
+		return [];
 	}
 
-	set id(value: number) {
-		this._id = value;
-	}
-
-	get title(): string {
-		return this._title;
-	}
-
-	set title(value: string) {
-		this._title = value;
-	}
-
-	get date(): Date {
-		return this._date;
-	}
-
-	set date(value: Date) {
-		this._date = value;
-	}
-
-	get description(): string {
-		return this._description;
-	}
-
-	set description(value: string) {
-		this._description = value;
-	}
-
-	get expectedRole(): ClubRole {
-		return this._expectedRole;
-	}
-
-	set expectedRole(value: ClubRole) {
-		this._expectedRole = value;
-	}
-
-	get imagePath(): string {
-		return this._imagePath;
-	}
-
-	set imagePath(value: string) {
-		this._imagePath = value;
-	}
-
-	get capacity(): number {
-		return this._capacity;
-	}
-
-	set capacity(value: number) {
-		this._capacity = value;
-	}
-
-	get priceMember(): number {
-		return this._priceMember;
-	}
-
-	set priceMember(value: number) {
-		this._priceMember = value;
-	}
-
-	get meetingPoint(): number {
-		return this._meetingPoint;
-	}
-
-	set meetingPoint(value: number) {
-		this._meetingPoint = value;
-	}
-
-	get price(): number {
-		return this._price;
-	}
-
-	set price(value: number) {
-		this._price = value;
+	get detailsTableKeys(): EventOverviewKey[] {
+		return [];
 	}
 }

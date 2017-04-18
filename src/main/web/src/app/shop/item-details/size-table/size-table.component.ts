@@ -7,7 +7,7 @@ import {Merchandise} from "../../shared/model/merchandise";
 	styleUrls: ["./size-table.component.scss"]
 })
 export class SizeTableComponent implements OnInit {
-	@Input() merch: Merchandise = new Merchandise();
+	@Input() merch: Merchandise = Merchandise.create();
 
 	constructor() {
 	}

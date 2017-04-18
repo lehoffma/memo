@@ -5,20 +5,16 @@ import {AppComponent} from "./app.component";
 import {RouterModule} from "@angular/router";
 import {HomeComponent} from "./home/home.component";
 import {MaterialModule} from "@angular/material";
-import {ToolbarComponent} from "./navigation/toolbar/toolbar.component";
+import {ToolbarComponent} from "./home/navigation/toolbar/toolbar.component";
 import {CategoryPreviewComponent} from "./home/category-preview/category-preview.component";
 import {ToursComponent} from "./shop/tours/tours.component";
 import {AccountComponent} from "./user/account.component";
 import {PartysComponent} from "./shop/partys/partys.component";
-import {PartyStore} from "./shared/stores/party.store";
 import {ProfileComponent} from "./user/profile/profile.component";
 import {TourDetailComponent} from "./shop/tours/tour-detail/tour-detail.component";
 import {NavigationService} from "./shared/services/navigation.service";
-import {ToolbarElementComponent} from "./navigation/toolbar/element/toolbar-element.component";
-import {SideNavComponent} from "./navigation/sidenav/sidenav.component";
-import {UserStore} from "./shared/stores/user.store";
-import {MerchStore} from "./shared/stores/merch.store";
-import {TourStore} from "./shared/stores/tour.store";
+import {ToolbarElementComponent} from "./home/navigation/toolbar/element/toolbar-element.component";
+import {SideNavComponent} from "./home/navigation/sidenav/sidenav.component";
 import {PartyDetailComponent} from "./shop/partys/party-detail/party-detail.component";
 import {MerchandiseDetailComponent} from "./shop/merchandise/merchandise-detail/merchandise-detail.component";
 import {AddressStore} from "./shared/stores/adress.store";
@@ -46,7 +42,7 @@ import {Md2Module} from "md2";
 import {ShoppingCartService} from "./shared/services/shopping-cart.service";
 import {CheckoutCartComponent} from "./shop/checkout/cart/cart.component";
 import {BadgeComponent} from "./util/badge/badge.component";
-import {EventService} from "./shared/services/event.service";
+import {EventUtilityService} from "./shared/services/event-utility.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ItemDetailsOverviewComponent} from "./shop/item-details/container/overview/item-details-overview.component";
 import {AccountDataFormComponent} from "./user/signup/account-data-form/account-data-form.component";
@@ -54,7 +50,7 @@ import {UserDataFormComponent} from "./user/signup/user-data-form/user-data-form
 import {ImageUploadModule} from "angular2-image-upload";
 import {ImageUploadPreviewComponent} from "./user/signup/user-data-form/image-upload-preview/image-upload-preview.component";
 import {ItemImagePopupComponent} from "./shop/item-details/container/image-popup/item-image-popup.component";
-import {ToolbarProfileLinkComponent} from "./navigation/toolbar/profile-link/toolbar-profile-link.component";
+import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-link/toolbar-profile-link.component";
 import {AccountDetailsComponent} from "./user/account-details/account-details.component";
 import {MyToursComponent} from "./user/my-tours/my-tours.component";
 import {MyToursEntryComponent} from "./user/my-tours/entry/my-tours-entry.component";
@@ -67,12 +63,21 @@ import {PaymentComponent} from "./shop/checkout/payment/payment.component";
 import {CartEntryComponent} from "./shop/checkout/cart/cart-entry/cart-entry.component";
 import {ClubAdministrationComponent} from "./club-management/administration/club-administration.component";
 import {StockComponent} from "./club-management/administration/stock/stock.component";
-import {CostsComponent} from "./club-management/administration/costs/costs.component";
 import {MemberListComponent} from "./club-management/administration/member-list/member-list.component";
 import {SearchResultComponent} from "./shop/search-results/search-results.component";
-import {SearchInputComponent} from "./navigation/toolbar/search-input/search-input.component";
+import {SearchInputComponent} from "./home/navigation/toolbar/search-input/search-input.component";
 import {ResultsCategoryComponent} from "./shop/search-results/results-category/results-category.component";
 import {ResultsCategoryEntryComponent} from "./shop/search-results/results-category/results-category-entry/results-category-entry.component";
+import {EventService} from "./shared/services/event.service";
+import {CachedEventsStore} from "./shared/stores/cached-events.store";
+import {EntryService} from "./shared/services/entry.service";
+import {EventFactoryService} from "./shared/services/event-factory.service";
+import {OrderHistoryComponent} from "./user/order-history/order-history.component";
+import {SettingsComponent} from "./home/settings/settings.component";
+import {ImprintComponent} from "./home/imprint/imprint.component";
+import {UserService} from "app/shared/services/user.service";
+import {CachedUsersStore} from "./shared/stores/cached-users.store";
+import {ParticipatedToursPreviewComponent} from "./user/profile/participated-tours-preview/participated-tours-preview.component";
 @NgModule({
 	imports: [
 		BrowserModule,
@@ -137,20 +142,23 @@ import {ResultsCategoryEntryComponent} from "./shop/search-results/results-categ
 		CartEntryComponent,
 		ClubAdministrationComponent,
 		StockComponent,
-		CostsComponent,
 		MemberListComponent,
 		SearchResultComponent,
 		SearchInputComponent,
 		ResultsCategoryComponent,
-		ResultsCategoryEntryComponent
+		ResultsCategoryEntryComponent,
+		OrderHistoryComponent,
+		SettingsComponent,
+		ImprintComponent,
+		ParticipatedToursPreviewComponent
 	],
 	bootstrap: [
 		AppComponent
 	],
 	providers: [
-		NavigationService, AddressStore, PartyStore, MerchStore, TourStore, UserStore,
-		LogInService, ShoppingCartService, EventService,
-
+		NavigationService, AddressStore, UserService, CachedUsersStore,
+		LogInService, ShoppingCartService, EventUtilityService, EventService, CachedEventsStore,
+		EntryService, EventFactoryService,
 		{provide: LOCALE_ID, useValue: "de-DE"}
 	],
 	entryComponents: [

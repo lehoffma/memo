@@ -11,11 +11,11 @@
 
 	<div class="toolbar-actions">
 		<memo-search-input></memo-search-input>
-		<badge [value]="shoppingCartContent | async">
+		<memo-badge [value]="shoppingCartContent | async">
 			<md-icon (click)="takeToPage('/cart')" class="cart-icon ripple">
 				shopping_cart
 			</md-icon>
-		</badge>
+		</memo-badge>
 	</div>
 
 	<span class="navigation-fill-remaining-space navigation-right-space"></span>

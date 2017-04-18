@@ -1,8 +1,8 @@
 import {Component, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
-import {LogInService} from "../../../shared/services/login.service";
-import {NavigationService} from "../../../shared/services/navigation.service";
-import {Link} from "../../../shared/model/link";
+import {Link} from "../../../../shared/model/link";
+import {LogInService} from "../../../../shared/services/login.service";
+import {NavigationService} from "../../../../shared/services/navigation.service";
 
 @Component({
 	selector: "memo-toolbar-profile-link",

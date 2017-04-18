@@ -1,4 +1,4 @@
-<div *ngIf="term | async; let searchTerm; else noTerm">
+<div *ngIf="term | async as searchTerm; else noTerm">
 	Ergebnisse für {{searchTerm}}:
 
 	<memo-results-category [title]="'Touren'" [events]="results.tours | async"></memo-results-category>

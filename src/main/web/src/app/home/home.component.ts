@@ -1,10 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {Merchandise} from "../shop/shared/model/merchandise";
 import {Event} from "../shop/shared/model/event";
-import {TourStore} from "../shared/stores/tour.store";
-import {MerchStore} from "../shared/stores/merch.store";
-import {PartyStore} from "../shared/stores/party.store";
 import {Observable} from "rxjs";
+import {EventService} from "../shared/services/event.service";
+import {EventType} from "../shop/shared/model/event-type";
 
 interface EventsPreview {
 	title: string,
@@ -20,9 +19,7 @@ interface EventsPreview {
 export class HomeComponent implements OnInit {
 	events: EventsPreview[] = [];
 
-	constructor(public tourStore: TourStore,
-				public merchStore: MerchStore,
-				public partyStore: PartyStore) {
+	constructor(private eventService: EventService) {
 	}
 
 	ngOnInit(): void {
@@ -31,17 +28,17 @@ export class HomeComponent implements OnInit {
 			{
 				title: "Touren",
 				route: "tours",
-				events: this.tourStore.data.map(data => data.slice(0, 7))
+				events: this.eventService.search("", {eventType: EventType.tours}).map(tours => tours.slice(0, 7))
 			},
 			{
 				title: "Veranstaltungen",
 				route: "partys",
-				events: this.partyStore.data.map(data => data.slice(0, 7))
+				events: this.eventService.search("", {eventType: EventType.partys}).map(partys => partys.slice(0, 7))
 			},
 			{
 				title: "Merchandise",
 				route: "merch",
-				events: this.merchStore.data.map(data => data.slice(0, 7))
+				events: this.eventService.search("", {eventType: EventType.merch}).map(merch => merch.slice(0, 7))
 			},
 		];
 	}
