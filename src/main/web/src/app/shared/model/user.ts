@@ -1,6 +1,6 @@
 import {ClubRole} from "./club-role";
 import {UserPermissions, visitorPermissions} from "./permission";
-import {ImmutableObject} from "./immutable-object";
+import {ImmutableObject} from "./util/immutable-object";
 
 
 export class User extends ImmutableObject<User> {
@@ -38,5 +38,9 @@ export class User extends ImmutableObject<User> {
 
 	static create() {
 		return new User(-1, "", "", null, "", ClubRole.None, visitorPermissions, 0, "", "", false, false, "");
+	}
+
+	static isUser(user: any): user is User {
+		return user && (<User>user).email !== undefined;
 	}
 }

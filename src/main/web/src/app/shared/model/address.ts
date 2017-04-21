@@ -1,4 +1,4 @@
-import {ImmutableObject} from "./immutable-object";
+import {ImmutableObject} from "./util/immutable-object";
 export class Address extends ImmutableObject<Address> {
 
 	/**

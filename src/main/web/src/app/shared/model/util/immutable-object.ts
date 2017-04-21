@@ -1,5 +1,5 @@
-import {ClubRole} from "./club-role";
-import {jsonToPermissions, UserPermissions} from "./permission";
+import {ClubRole} from "../club-role";
+import {jsonToPermissions, UserPermissions} from "../permission";
 export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 
 	constructor(public readonly id: number) {
@@ -28,11 +28,25 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 					value = +value;
 				} else if (key === "expectedRole") {
 					value = ClubRole[(<any>properties)["expectedRole"]]
+				} else if (key === "clubRole") {
+					value = ClubRole[(<any>properties)["clubRole"]];
 				} else if (key === "permissions") {
 					value = jsonToPermissions((<any>properties)["permissions"]);
 				}
 				this[key] = value;
 			});
 		return this;
+	}
+
+
+	/**
+	 * Geht alle Attribute des Objektes durch und gibt true zurück, wenn der Wert mindestens eines Attributes auf den
+	 * Suchbegriff matcht. Der Default-Wert des Suchbegriffs ist dabei "", für welchen immer true
+	 * zurückgegeben wird (der leere String ist Teilstring von jedem String).
+	 * @param searchTerm
+	 * @returns {string[]}
+	 */
+	matchesSearchTerm(searchTerm: string = ""): boolean {
+		return Object.keys(this).some(key => ("" + this[key]).includes(searchTerm));
 	}
 }

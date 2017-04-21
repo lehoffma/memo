@@ -22,7 +22,7 @@
 	<!--navigation links-->
 	<nav class="navigation-links" (click)="closeSideNav()">
 		<div id="navigation-links-login" *ngIf="account.id === -1">
-			<a routerLink="login">
+			<a routerLink="login" (click)="saveUrl()">
 				<!--<md-icon class="md-dark">vpn_key</md-icon>-->
 				<span>Anmelden</span>
 			</a>

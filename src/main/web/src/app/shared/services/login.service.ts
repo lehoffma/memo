@@ -2,16 +2,21 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
+import {UserService} from "./user.service";
+import {User} from "../model/user";
 
 @Injectable()
 export class LogInService {
 	private accountSubject: BehaviorSubject<number> = new BehaviorSubject(null);
 	public accountObservable: Observable<number> = this.accountSubject.asObservable();
 
+	public redirectUrl = "/";
+
 	private readonly loginUrl = "/api/login";
 	private readonly logoutUrl = "/api/logout";
 
-	constructor(private http: Http) {
+	constructor(private http: Http,
+				private userService: UserService) {
 	}
 
 
@@ -85,6 +90,12 @@ export class LogInService {
 
 	isLoggedIn() {
 		return this.accountSubject.getValue() !== null;
+	}
+
+	currentUser(): Observable<User> {
+		//todo change implementation if we decide to store user details in localStorage
+		const currentId = this.accountSubject.getValue();
+		return currentId !== null ? this.userService.getById(this.accountSubject.getValue()) : Observable.of(null);
 	}
 
 	isLoggedInObservable() {

@@ -69,15 +69,19 @@ import {SearchInputComponent} from "./home/navigation/toolbar/search-input/searc
 import {ResultsCategoryComponent} from "./shop/search-results/results-category/results-category.component";
 import {ResultsCategoryEntryComponent} from "./shop/search-results/results-category/results-category-entry/results-category-entry.component";
 import {EventService} from "./shared/services/event.service";
-import {CachedEventsStore} from "./shared/stores/cached-events.store";
 import {EntryService} from "./shared/services/entry.service";
 import {EventFactoryService} from "./shared/services/event-factory.service";
 import {OrderHistoryComponent} from "./user/order-history/order-history.component";
 import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {UserService} from "app/shared/services/user.service";
-import {CachedUsersStore} from "./shared/stores/cached-users.store";
 import {ParticipatedToursPreviewComponent} from "./user/profile/participated-tours-preview/participated-tours-preview.component";
+import {TourParticipantsComponent} from "./shop/tours/tour-detail/tour-participants/tour-participants.component";
+import {CacheStore} from "./shared/stores/cache.store";
+import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
+import {IsOrganizerGuard} from "./shared/route-guards/is-organizer.guard";
+import {IsTreasurerGuard} from "./shared/route-guards/is-treasurer.guard";
+import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthorized-access.component";
 @NgModule({
 	imports: [
 		BrowserModule,
@@ -150,15 +154,21 @@ import {ParticipatedToursPreviewComponent} from "./user/profile/participated-tou
 		OrderHistoryComponent,
 		SettingsComponent,
 		ImprintComponent,
-		ParticipatedToursPreviewComponent
+		ParticipatedToursPreviewComponent,
+		TourParticipantsComponent,
+		UnauthorizedAccessComponent
 	],
 	bootstrap: [
 		AppComponent
 	],
 	providers: [
-		NavigationService, AddressStore, UserService, CachedUsersStore,
-		LogInService, ShoppingCartService, EventUtilityService, EventService, CachedEventsStore,
+		NavigationService, AddressStore, UserService, CacheStore,
+		LogInService, ShoppingCartService, EventUtilityService, EventService,
 		EntryService, EventFactoryService,
+
+		//guards
+		AuthenticatedGuard, IsOrganizerGuard, IsTreasurerGuard,
+
 		{provide: LOCALE_ID, useValue: "de-DE"}
 	],
 	entryComponents: [

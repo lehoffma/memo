@@ -1,4 +1,8 @@
 import {Component} from "@angular/core";
+import {EventService} from "../../shared/services/event.service";
+import {Tour} from "../shared/model/tour";
+import {Observable} from "rxjs/Observable";
+import {EventType} from "../shared/model/event-type";
 
 @Component({
 	selector: "memo-tours",
@@ -6,7 +10,8 @@ import {Component} from "@angular/core";
 	styleUrls: ["./tours.component.scss"]
 })
 export class ToursComponent {
-	constructor() {
+	public tours: Observable<Tour[]> = this.eventService.search("", {eventType: EventType.tours});
 
+	constructor(private eventService: EventService) {
 	}
 }

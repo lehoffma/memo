@@ -14,7 +14,7 @@
 			<span class="description secondary-text" content>{{tour?.description}}</span>
 		</memo-item-details-content>
 
-		<memo-item-details-content [title]="'Wer fährt mit?'" [route]="'tours/' + tour?.id + '/participants'">
+		<memo-item-details-content [title]="'Wer fährt mit?'" [route]="'/tours/' + tour?.id + '/participants'">
 			<memo-participants [participantIds]="getIds(tour?.participants).slice(0,3)" content></memo-participants>
 		</memo-item-details-content>
 	</div>

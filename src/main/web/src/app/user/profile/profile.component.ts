@@ -32,9 +32,4 @@ export class ProfileComponent implements OnInit {
 		this.userEvents = this.userObservable
 			.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}));
 	}
-
-
-	showEvent() {
-		//todo
-	}
 }

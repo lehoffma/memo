@@ -8,13 +8,13 @@ import {EventUtilityService} from "./event-utility.service";
 import {EventFactoryService} from "./event-factory.service";
 import {Tour} from "../../shop/shared/model/tour";
 import {Party} from "../../shop/shared/model/party";
-import {CachedEventsStore} from "../stores/cached-events.store";
+import {CacheStore} from "../stores/cache.store";
 
 @Injectable()
 export class EventService implements ServletService<Event> {
 
 	constructor(private http: Http,
-				private cachedEventsStore: CachedEventsStore,
+				private cache: CacheStore,
 				private eventUtilService: EventUtilityService,
 				private eventFactoryService: EventFactoryService) {
 	}
@@ -26,6 +26,22 @@ export class EventService implements ServletService<Event> {
 
 	private readonly baseUrl = `/api/event`;
 
+	/**
+	 * Helper method for accessing the cache
+	 * @param eventType
+	 * @param id
+	 */
+	cacheKeyFromEventType(eventType: EventType): "tours" | "partys" | "merch" {
+		switch (eventType) {
+			case EventType.tours:
+				return "tours";
+			case EventType.partys:
+				return "partys";
+			case EventType.merch:
+				return "merch";
+		}
+		return "tours";
+	}
 
 	/**
 	 * Requested das Event (mit einem bestimmten Event-Typen) vom Server, welches die gegebene ID besitzt
@@ -38,8 +54,8 @@ export class EventService implements ServletService<Event> {
 		let url = `${this.baseUrl}?id=${eventId}&type=${eventType}`;
 
 		//return cached version if available to reduce number of http request necessary
-		if (this.cachedEventsStore.eventIsCached(eventId) && !refresh) {
-			return this.cachedEventsStore.cachedEvents[eventType]
+		if (this.cache.isCached(this.cacheKeyFromEventType(eventType), eventId) && !refresh) {
+			return this.cache.cache[eventType]
 				.map((events: Event[]) => events.find(event => event.id === eventId));
 		}
 
@@ -52,7 +68,7 @@ export class EventService implements ServletService<Event> {
 		return this.http.get(url)
 			.map(response => response.json())
 			.map(json => this.eventFactoryService.build(eventType).setProperties(json))
-			.do(event => this.cachedEventsStore.add(event))
+			.do(event => this.cache.add(event))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
@@ -71,7 +87,7 @@ export class EventService implements ServletService<Event> {
 		let searchQueries: Observable<Event[]>[] = getEventTypes()
 			.filter(type => eventTypes[type])
 			.map(eventType => this.search("", {eventType}));
-		//todo replace with actual method call instead of searching whole database?
+		//todo replace with actual method call instead of searching whole database!
 
 		return Observable.combineLatest(searchQueries)
 		//combine two observable arrays (one for tours, one for partys) into one
@@ -100,7 +116,7 @@ export class EventService implements ServletService<Event> {
 		const httpRequest = this.http.get(url)
 			.map(response => response.json())
 			.map((jsonArray: any[]) => jsonArray.map(json => this.eventFactoryService.build(eventType).setProperties(json)))
-			.do(events => this.cachedEventsStore.addMultiple(...events))
+			.do(events => this.cache.addMultiple(...events))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
@@ -110,16 +126,15 @@ export class EventService implements ServletService<Event> {
 			.publish().refCount();
 
 		//todo remove when backend is running
-		const DEBUG_httpRequest = httpRequest.map(events => events.filter(event => event.matchesSearchTerm));
+		const DEBUG_httpRequest = httpRequest.map(events => events.filter(event => event.matchesSearchTerm(searchTerm)));
 
-		const cachedObservable: Observable<Event[]> = this.cachedEventsStore.search(searchTerm, eventType);
+		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, this.cacheKeyFromEventType(eventType));
 
-		//TODO: cached events are always returned?
 		//if any of the cached events match the search term, combine these with the ones loaded from the server
 		return Observable.combineLatest(cachedObservable, DEBUG_httpRequest,
 			(cachedEvents, loadedEvents) => [...cachedEvents, ...loadedEvents]
-			//removes duplicate entries
 				.filter((value, index, array) =>
+					//removes duplicate entries
 					array.findIndex((event: Event) => event.id === value.id && event.title === value.title) === index
 				));
 	}
@@ -138,7 +153,7 @@ export class EventService implements ServletService<Event> {
 		return this.http.post(this.baseUrl, {event}, options)
 			.map(response => response.json())
 			.map(eventJson => this.eventFactoryService.build(eventType).setProperties(eventJson))
-			.do(event => this.cachedEventsStore.add(event))
+			.do(event => this.cache.add(event))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
@@ -147,6 +162,7 @@ export class EventService implements ServletService<Event> {
 			//instead of waiting for someone to subscribe
 			.publish().refCount();
 	}
+
 
 	/**
 	 * Löscht das Event mit der gegebenen ID aus der Datenbank
@@ -160,7 +176,7 @@ export class EventService implements ServletService<Event> {
 		return this.http.delete(this.baseUrl, {body: {id: eventId, type: eventType}})
 			.do((removeResponse: Response) => {
 				const eventId: number = removeResponse.json();
-				this.cachedEventsStore.remove(eventId);
+				this.cache.remove(this.cacheKeyFromEventType(eventType), eventId);
 			})
 			//retry 3 times before throwing an error
 			.retry(3)

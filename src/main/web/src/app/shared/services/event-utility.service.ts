@@ -54,15 +54,15 @@ export class EventUtilityService {
 		return defaultCallback(event);
 	}
 
-	isMerchandise(event: Event): event is Merchandise {
+	isMerchandise(event: any): event is Merchandise {
 		return event && (<Merchandise>event).colors !== undefined;
 	}
 
-	isTour(event: Event): event is Tour {
+	isTour(event: any): event is Tour {
 		return event && (<Tour>event).vehicle !== undefined
 	}
 
-	isParty(event: Event): event is Party {
+	isParty(event: any): event is Party {
 		return event && (<Party>event).emptySeats !== undefined && (<Tour>event).vehicle === undefined;
 	}
 }

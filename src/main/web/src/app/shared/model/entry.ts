@@ -1,4 +1,4 @@
-import {ImmutableObject} from "./immutable-object";
+import {ImmutableObject} from "./util/immutable-object";
 export class Entry extends ImmutableObject<Entry> {
 
 	constructor(public id: number) {
@@ -7,5 +7,10 @@ export class Entry extends ImmutableObject<Entry> {
 
 	static create() {
 		return new Entry(-1);
+	}
+
+	static isEntry(entry: any): entry is Entry {
+		//TODO implement
+		return true;
 	}
 }

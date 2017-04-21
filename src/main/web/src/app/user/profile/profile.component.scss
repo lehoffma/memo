@@ -47,24 +47,39 @@
 			justify-content: space-between;
 			display: flex;
 			flex-direction: column;
-			margin-top: -105px;
+			margin-top: -90px;
 
 			.profile-picture {
-				height: 10rem;
-				width: 10rem;
+				height: 8rem;
+				width: 8rem;
 				border-radius: 50%;
 				border: #ffffff solid 5px;
 				box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
 				//box-shadow: inset 0 1.5px 3px 0 rgba(0,0,0,.15), 0 1.5px 3px 0 rgba(0,0,0,.15);
 			}
 
+		}
+
+		.profile-title-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-top: 10px;
+			flex-direction: column;
+
 			.profile-name {
+				font-size: 1.5rem;
 				color: rgba(0, 0, 0, 0.8);
+			}
+
+			.profile-role {
+				font-size: 1.2rem;
+				color: grey;
 			}
 		}
 
 		.profile-info-container {
-			margin-bottom: 7vw;
+			margin-top: 2rem;
 
 			> div {
 				> div {
@@ -74,18 +89,21 @@
 				}
 
 			}
+		}
 
-			md-divider {
-				margin-top: 3vw;
-				margin-bottom: 3vw;
+		.profile-action-container {
+			display: flex;
+			justify-content: space-around;
+			margin-top: 2rem;
+
+			button {
+				width: 45%;
+
+				.action-text {
+					margin-left: 1rem;
+				}
 			}
 		}
-
-		> md-divider {
-			margin-top: 3vw;
-			margin-bottom: 3vw;
-		}
-
 	}
 
 	.profile-tours-title {

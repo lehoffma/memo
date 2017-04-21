@@ -19,26 +19,52 @@ import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {AccountingComponent} from "./club-management/accounting/accounting.component";
 import {StockComponent} from "./club-management/administration/stock/stock.component";
+import {MerchandiseComponent} from "./shop/merchandise/merchandise.component";
+import {TourParticipantsComponent} from "./shop/tours/tour-detail/tour-participants/tour-participants.component";
+import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
+import {IsTreasurerGuard} from "./shared/route-guards/is-treasurer.guard";
+import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthorized-access.component";
 export const ROUTES = [
 	{path: "", component: HomeComponent},
+
 	{path: "tours", component: ToursComponent},
 	{path: "tours/:id", component: TourDetailComponent},
-	{path: "account", component: AccountComponent},
+	{path: "tours/:id/participants", component: TourParticipantsComponent},
+	//todo implement
+	//nur eingeloggte user, die die Tour erstellt haben oder Admin sind
+	//{path: "tours/:id/edit", component: TourEditComponent},
+
 	{path: "partys", component: PartysComponent},
 	{path: "partys/:id", component: PartyDetailComponent},
+	//todo implement
+	//nur eingeloggte user, die die Party erstellt haben oder Admin sind
+	//{path: "party/:id/edit", component: PartyEditComponent},
+
+	{path: "merch", component: MerchandiseComponent},
+	{path: "merch/:id", component: MerchandiseDetailComponent},
+	//todo implement
+	//nur eingeloggte user, die das Merchandise-Objekt erstellt haben oder Admin sind
+	//{path: "merch/:id/edit", component: MerchEditComponent},
+
+	//todo wird das überhaupt benutzt?
+	{path: "account", component: AccountComponent},
+
 	{path: "members", component: MemberListComponent},
 	{path: "members/:id", component: ProfileComponent},
+
+	//nur eingeloggte User können diese Routen sehen
 	{path: "my-events", component: MyToursComponent},
 	{path: "order-history", component: OrderHistoryComponent},
 	{path: "account-details", component: AccountDetailsComponent},
-	{path: "merch/:id", component: MerchandiseDetailComponent},
 
-	{path: "management/costs", component: AccountingComponent},
-	{path: "management/stock", component: StockComponent},
+	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
+	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
+	{path: "management/stock", component: StockComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
 
 	{path: "settings", component: SettingsComponent},
 	{path: "impressum", component: ImprintComponent},
 
+	{path: "not-allowed", component: UnauthorizedAccessComponent},
 	{path: "login", component: LoginComponent},
 	{path: "signup", redirectTo: "signup/account-data", pathMatch: "full"},
 	{path: "signup/:step", component: SignUpComponent},

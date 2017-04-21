@@ -7,6 +7,7 @@ import {UserPermissions, visitorPermissions} from "../../../shared/model/permiss
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {LogInService} from "../../../shared/services/login.service";
 import {UserService} from "../../../shared/services/user.service";
+import {Location} from "@angular/common";
 @Component({
 	selector: "memo-sidenav",
 	templateUrl: "./sidenav.component.html",
@@ -39,6 +40,7 @@ export class SideNavComponent implements OnInit {
 
 	constructor(private navigationService: NavigationService,
 				private logInService: LogInService,
+				private location: Location,
 				private userService: UserService) {
 
 	}
@@ -78,6 +80,10 @@ export class SideNavComponent implements OnInit {
 
 	logout() {
 		this.logInService.logout();
+	}
+
+	saveUrl() {
+		this.logInService.redirectUrl = this.location.path();
 	}
 
 	/**

@@ -1,3 +1,3 @@
-<div *ngFor="let event of (tours | async)">
-	Titel: {{event.title}}
-</div>
+<memo-my-tours-entry *ngFor="let event of (tours | async)" [event]="event">
+
+</memo-my-tours-entry>

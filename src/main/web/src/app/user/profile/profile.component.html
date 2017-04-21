@@ -1,4 +1,5 @@
 <div *ngIf="userObservable | async as user" class="profile-container">
+	<!--backdrop behind profile picture-->
 	<div class="profile-background">
 		<div class="no-height-image-container">
 			<div class="profile-background-image"
@@ -12,17 +13,34 @@
 		<div class="profile-header">
 			<img class="profile-picture" src={{user.imagePath}}>
 		</div>
-		<h3 class="profile-name">{{user.firstName}} {{user.surname}}</h3>
-
+		<div class="profile-title-container">
+			<div class="profile-name">{{user.firstName}} {{user.surname}}</div>
+			<div class="profile-role">{{user.clubRole}}</div>
+		</div>
 		<div class="profile-info-container">
-			<div *ngFor="let category of profileCategories; let lastCategory = last;">
+			<div *ngFor="let category of profileCategories;">
 				<div *ngFor="let item of category">
 					<md-icon class="middle-icon md-dark">{{item.icon}}</md-icon>
 					<span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | date}}</span>
 					<span *ngIf="!item.isDate" class="icon-text secondary-text">{{user[item.key]}}</span>
 				</div>
-				<md-divider *ngIf="!lastCategory"></md-divider>
 			</div>
+		</div>
+		<div class="profile-action-container">
+			<!--todo buttons don't do anything-->
+			<button md-raised-button color="accent">
+				<md-icon>local_phone</md-icon>
+				<span class="action-text">
+				Anrufen
+				</span>
+
+			</button>
+			<button md-raised-button color="accent">
+				<md-icon>local_post_office</md-icon>
+				<span class="action-text">
+				Email
+				</span>
+			</button>
 		</div>
 	</div>
 	<div class="profile-component">
