@@ -82,6 +82,8 @@ import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
 import {IsOrganizerGuard} from "./shared/route-guards/is-organizer.guard";
 import {IsTreasurerGuard} from "./shared/route-guards/is-treasurer.guard";
 import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthorized-access.component";
+import {ProfileEditComponent} from "./user/profile/profile-edit/profile-edit.component";
+import {IsOwnProfileGuard} from "./shared/route-guards/is-own-profile.guard";
 @NgModule({
 	imports: [
 		BrowserModule,
@@ -156,7 +158,8 @@ import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthoriz
 		ImprintComponent,
 		ParticipatedToursPreviewComponent,
 		TourParticipantsComponent,
-		UnauthorizedAccessComponent
+		UnauthorizedAccessComponent,
+		ProfileEditComponent
 	],
 	bootstrap: [
 		AppComponent
@@ -167,7 +170,7 @@ import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthoriz
 		EntryService, EventFactoryService,
 
 		//guards
-		AuthenticatedGuard, IsOrganizerGuard, IsTreasurerGuard,
+		AuthenticatedGuard, IsOrganizerGuard, IsTreasurerGuard, IsOwnProfileGuard,
 
 		{provide: LOCALE_ID, useValue: "de-DE"}
 	],

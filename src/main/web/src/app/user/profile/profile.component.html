@@ -10,6 +10,18 @@
 	</div>
 
 	<div class="profile-details-container profile-component">
+		<div class="profile-other-actions">
+			<button md-icon-button
+					*ngIf="isOwnProfile | async"
+					[mdMenuTriggerFor]="menu">
+				<md-icon>more_vert</md-icon>
+			</button>
+			<md-menu #menu="mdMenu">
+				<button md-menu-item (click)="editProfile()">
+					<span>Bearbeiten</span>
+				</button>
+			</md-menu>
+		</div>
 		<div class="profile-header">
 			<img class="profile-picture" src={{user.imagePath}}>
 		</div>

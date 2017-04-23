@@ -24,6 +24,8 @@ import {TourParticipantsComponent} from "./shop/tours/tour-detail/tour-participa
 import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
 import {IsTreasurerGuard} from "./shared/route-guards/is-treasurer.guard";
 import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthorized-access.component";
+import {ProfileEditComponent} from "./user/profile/profile-edit/profile-edit.component";
+import {IsOwnProfileGuard} from "./shared/route-guards/is-own-profile.guard";
 export const ROUTES = [
 	{path: "", component: HomeComponent},
 
@@ -51,6 +53,7 @@ export const ROUTES = [
 
 	{path: "members", component: MemberListComponent},
 	{path: "members/:id", component: ProfileComponent},
+	{path: "members/:id/edit", component: ProfileEditComponent, canActivate: [AuthenticatedGuard, IsOwnProfileGuard]},
 
 	//nur eingeloggte User können diese Routen sehen
 	{path: "my-events", component: MyToursComponent},

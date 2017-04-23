@@ -4,6 +4,8 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {UserService} from "./user.service";
 import {User} from "../model/user";
+import {isNullOrUndefined} from "util";
+import {MdSnackBar} from "@angular/material";
 
 @Injectable()
 export class LogInService {
@@ -15,10 +17,17 @@ export class LogInService {
 	private readonly loginUrl = "/api/login";
 	private readonly logoutUrl = "/api/logout";
 
-	constructor(private http: Http,
-				private userService: UserService) {
-	}
+	private readonly authTokenKey = "auth_token";
+	private readonly profileKey = "profile";
 
+	constructor(private http: Http,
+				private snackBar: MdSnackBar,
+				private userService: UserService) {
+		const currentUser = JSON.parse(localStorage.getItem(this.profileKey));
+		if (currentUser && !isNullOrUndefined(currentUser.id)) {
+			this.pushNewData(+currentUser.id);
+		}
+	}
 
 	/**
 	 * Sendet POST-Request an den Server mit den übergebenen Login-Daten
@@ -34,7 +43,15 @@ export class LogInService {
 		if (!password.includes("gzae")) {
 			return Observable.of(false).delay(2000).publish().refCount();
 		} else if (password.includes("gzae")) {
-			return Observable.of(true).delay(2000).do(tick => this.pushNewData(0)).publish().refCount();
+			return Observable.of(true).delay(2000)
+				.do(tick => {
+					localStorage.setItem(this.authTokenKey, "test");
+					//store profile data in local storage (so the user won't get logged out if he closes the tab)
+					this.userService.getById(0).first()
+						.subscribe(user => localStorage.setItem(this.profileKey, JSON.stringify(user)));
+					this.pushNewData(0);
+				})
+				.publish().refCount();
 		}
 
 		return this.http.post(this.loginUrl, {email, password})
@@ -42,8 +59,11 @@ export class LogInService {
 			.map(json => {
 				const {id, auth_token} = json;
 				if (id !== null && id >= 0) {
-					localStorage.setItem("auth_token", auth_token);
-					//todo store profile data in localStorage?
+					localStorage.setItem(this.authTokenKey, auth_token);
+					//store profile data in local storage (so the user won't get logged out if he closes the tab)
+					this.userService.getById(id).first()
+						.subscribe(user => localStorage.setItem(this.profileKey, JSON.stringify(user)));
+
 					this.pushNewData(id);
 				}
 				return id !== null;
@@ -65,16 +85,19 @@ export class LogInService {
 	logout(): Observable<boolean> {
 		//todo remove
 		localStorage.removeItem("auth_token");
+		localStorage.removeItem("profile");
 		this.pushNewData(null);
 		if (this.logoutUrl === "/api/logout") {
+			this.snackBar.open("Du wurdest ausgeloggt.", "Schließen", {
+				duration: 2000
+			});
 			return Observable.of(true);
 		}
 
-		return this.http.post(this.logoutUrl, {auth_token: localStorage.getItem("auth_token")})
+		return this.http.post(this.logoutUrl, {auth_token: localStorage.getItem(this.authTokenKey)})
 			.map(() => {
-				localStorage.removeItem("auth_token");
-				//todo remove profile data from localStorage?
-
+				localStorage.removeItem(this.authTokenKey);
+				localStorage.removeItem(this.profileKey);
 				this.pushNewData(null);
 				return true;
 			})
@@ -93,7 +116,6 @@ export class LogInService {
 	}
 
 	currentUser(): Observable<User> {
-		//todo change implementation if we decide to store user details in localStorage
 		const currentId = this.accountSubject.getValue();
 		return currentId !== null ? this.userService.getById(this.accountSubject.getValue()) : Observable.of(null);
 	}
