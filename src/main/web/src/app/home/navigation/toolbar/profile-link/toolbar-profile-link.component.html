@@ -1,11 +1,13 @@
 <!--user is logged in -> show profile picture -->
-<div *ngIf="loggedIn | async; else logInButton" class="dropdown profile-picture-container">
-	<button md-button class="dropbtn" routerLink="profile">
-		<img class="profile-picture" src="{{imagePath}}">
+<div *ngIf="user | async; let loggedInUser; else logInButton" class="dropdown profile-picture-container">
+	<button md-button class="dropbtn" routerLink="{{'members/' + loggedInUser.id}}">
+		<img class="profile-picture" src="{{loggedInUser.imagePath}}">
 	</button>
 
 	<div class="dropdown-content profile-picture-dropdown-content">
-		<a *ngFor="let childLink of (accountLinks | async)" routerLink="{{childLink.route}}"
+		<a *ngFor="let childLink of (accountLinks | async)"
+		   (click)="childLink.name === 'Logout' ? logout() : null"
+		   routerLink="{{childLink.route}}"
 		   routerLinkActive="active">
 			<md-icon *ngIf="childLink.icon">{{childLink.icon}}</md-icon>
 			{{childLink.name}}</a>

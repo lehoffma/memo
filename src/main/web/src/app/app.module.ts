@@ -19,7 +19,6 @@ import {PartyDetailComponent} from "./shop/partys/party-detail/party-detail.comp
 import {MerchandiseDetailComponent} from "./shop/merchandise/merchandise-detail/merchandise-detail.component";
 import {AddressStore} from "./shared/stores/adress.store";
 import {ClothesSizePipe} from "./shop/merchandise/merchandise-detail/clothes-size.pipe";
-import {AgmCoreModule} from "angular2-google-maps/core";
 import {ROUTES} from "./app.routes";
 import {GoogleMapsRedirectComponent} from "./util/google-maps-redirect/google-maps-redirect.component";
 import {MerchandiseComponent} from "./shop/merchandise/merchandise.component";
@@ -47,7 +46,6 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ItemDetailsOverviewComponent} from "./shop/item-details/container/overview/item-details-overview.component";
 import {AccountDataFormComponent} from "./user/signup/account-data-form/account-data-form.component";
 import {UserDataFormComponent} from "./user/signup/user-data-form/user-data-form.component";
-import {ImageUploadModule} from "angular2-image-upload";
 import {ImageUploadPreviewComponent} from "./user/signup/user-data-form/image-upload-preview/image-upload-preview.component";
 import {ItemImagePopupComponent} from "./shop/item-details/container/image-popup/item-image-popup.component";
 import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-link/toolbar-profile-link.component";
@@ -66,8 +64,8 @@ import {StockComponent} from "./club-management/administration/stock/stock.compo
 import {MemberListComponent} from "./club-management/administration/member-list/member-list.component";
 import {SearchResultComponent} from "./shop/search-results/search-results.component";
 import {SearchInputComponent} from "./home/navigation/toolbar/search-input/search-input.component";
-import {ResultsCategoryComponent} from "./shop/search-results/results-category/results-category.component";
-import {ResultsCategoryEntryComponent} from "./shop/search-results/results-category/results-category-entry/results-category-entry.component";
+import {ResultsComponent} from "./shop/search-results/results/results.component";
+import {ResultsEntryComponent} from "./shop/search-results/results/results-entry/results-entry.component";
 import {EventService} from "./shared/services/event.service";
 import {EntryService} from "./shared/services/entry.service";
 import {EventFactoryService} from "./shared/services/event-factory.service";
@@ -84,20 +82,22 @@ import {IsTreasurerGuard} from "./shared/route-guards/is-treasurer.guard";
 import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthorized-access.component";
 import {ProfileEditComponent} from "./user/profile/profile-edit/profile-edit.component";
 import {IsOwnProfileGuard} from "./shared/route-guards/is-own-profile.guard";
+import {SortingDropdownComponent} from "./shop/search-results/sorting-dropdown/sorting-dropdown.component";
+import {FilteringMenuComponent} from "./shop/search-results/filtering-menu/filtering-menu.component";
+import {AgmCoreModule} from "@agm/core";
 @NgModule({
 	imports: [
 		BrowserModule,
 		FormsModule,
 		ReactiveFormsModule,
-		MaterialModule,
 		BrowserAnimationsModule,
+		MaterialModule,
 		RouterModule.forRoot(ROUTES),
 		AgmCoreModule.forRoot({
 			apiKey: memoConfig.mapsApiKey
 		}),
 		Md2Module,
-		PasswordStrengthBarModule,
-		ImageUploadModule.forRoot()
+		PasswordStrengthBarModule
 	],
 	declarations: [
 		AppComponent,
@@ -151,15 +151,17 @@ import {IsOwnProfileGuard} from "./shared/route-guards/is-own-profile.guard";
 		MemberListComponent,
 		SearchResultComponent,
 		SearchInputComponent,
-		ResultsCategoryComponent,
-		ResultsCategoryEntryComponent,
+		ResultsComponent,
+		ResultsEntryComponent,
 		OrderHistoryComponent,
 		SettingsComponent,
 		ImprintComponent,
 		ParticipatedToursPreviewComponent,
 		TourParticipantsComponent,
 		UnauthorizedAccessComponent,
-		ProfileEditComponent
+		ProfileEditComponent,
+		SortingDropdownComponent,
+		FilteringMenuComponent
 	],
 	bootstrap: [
 		AppComponent

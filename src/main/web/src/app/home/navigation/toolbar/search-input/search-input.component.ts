@@ -58,7 +58,7 @@ export class SearchInputComponent implements OnInit {
 
 	onSearch() {
 		if (this.inputState === SearchInputState.ACTIVE) {
-			this.takeToPage("/search?term=" + this.model.searchInput);
+			this.takeToPage("/search?keywords=" + this.model.searchInput);
 			this.toggleInputState();
 		}
 	}

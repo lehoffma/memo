@@ -8,10 +8,10 @@ import {SignUpSection} from "../signup-section";
 	styleUrls: ["./account-data-form.component.scss"]
 })
 export class AccountDataFormComponent implements OnInit {
-	private userEmail: string;
-	private password: string;
-	private confirmedPassword: string;
-	private passwordsMatch = true;
+	public userEmail: string;
+	public password: string;
+	public confirmedPassword: string;
+	public passwordsMatch = true;
 	@Output() onSubmit = new EventEmitter<SignUpSubmitEvent>();
 
 	constructor() {

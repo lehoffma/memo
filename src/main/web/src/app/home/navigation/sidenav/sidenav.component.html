@@ -1,5 +1,5 @@
 <!--header (link to profile)-->
-<div *ngIf="user | async as account;">
+<div *ngIf="user | async; let account;">
 	<div class="account-header">
 		<div *ngIf="account.id !== -1; else loggedOutHeader;">
 			<img src="{{account.imagePath}}" class="profile-picture">
@@ -21,6 +21,8 @@
 	</div>
 	<!--navigation links-->
 	<nav class="navigation-links" (click)="closeSideNav()">
+		<a md-button style="height: 0; position: absolute;"> <!-- 'absorbs' the focus behavior -->
+		</a>
 		<div id="navigation-links-login" *ngIf="account.id === -1">
 			<a routerLink="login" (click)="saveUrl()">
 				<!--<md-icon class="md-dark">vpn_key</md-icon>-->

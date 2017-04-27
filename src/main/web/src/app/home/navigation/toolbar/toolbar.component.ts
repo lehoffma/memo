@@ -19,8 +19,6 @@ export class ToolbarComponent implements OnInit {
 	//die links die vom User gesehen werden dürfen als observable
 	links: Observable<Link[]> = this.navigationService.toolbarLinks;
 
-	//der pfad zum profilbild des users TODO durch richtigen pfad ersetzen
-	imagePath: string = "../../../resources/images/nils.PNG";
 
 	shoppingCartContent: Observable<number> = this.shoppingCartService.amountOfCartItems;
 

@@ -21,21 +21,18 @@ export class SideNavComponent implements OnInit {
 			? Observable.of(User.create().setProperties({id: -1}))
 			: this.userService.getById(accountId));
 
-	public links: Observable<Link[]> = this.user
-		.flatMap(user => {
+	public links = Observable.combineLatest(this.user, this.navigationService.sidenavLinks)
+		.map(([user, links]) => {
 			const permissions = user === null ? visitorPermissions : user.permissions;
-			return this.navigationService.sidenavLinks
-				.map(links => {
-					const setId = (link: Link): Link => {
-						if (link.children) {
-							link.children = link.children.map(childLink => setId(childLink))
-						}
-						link.route = link.route.replace("PROFILE_ID", "" + user.id);
-						return link;
-					};
-					return links.map(setId)
-						.filter(link => this.checkPermissions(link.minimumPermission, permissions))
-				})
+			const setId = (link: Link): Link => {
+				if (link.children) {
+					link.children = link.children.map(childLink => setId(childLink))
+				}
+				link.route = link.route.replace("PROFILE_ID", "" + user.id);
+				return link;
+			};
+			return links.map(setId)
+				.filter(link => this.checkPermissions(link.minimumPermission, permissions))
 		});
 
 	constructor(private navigationService: NavigationService,

@@ -1,0 +1,10 @@
+
+.centered-container {
+	display: flex;
+	justify-content: center;
+
+	> div {
+		flex-grow: 2;
+		max-width: 500px;
+	}
+}

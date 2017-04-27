@@ -1,8 +1,14 @@
 @import "../../../theme";
 @import "../../../mixins.scss";
 
+.login-container {
+	display: flex;
+	justify-content: center;
+}
+
 md-card {
-	margin: 4vw;
+	margin: 1rem;
+	max-width: 500px;
 }
 
 md-input-container {

@@ -31,6 +31,7 @@ md-toolbar, :host /deep/ md-toolbar-row {
 .login-button-container {
 	margin-left: 15px;
 	display: flex;
+	height: 100%;
 	justify-content: center;
 	flex-direction: column;
 }

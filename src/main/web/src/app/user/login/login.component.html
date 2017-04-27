@@ -1,66 +1,70 @@
-<md-card>
-	<h4>Bereits Meilenwölfe-Mitglied?</h4>
-	<form #loginForm="ngForm" (ngSubmit)="checkLogin()">
-		<label>
-			<md-input-container
-				[dividerColor]="(emailInput.touched && emailInput.invalid) ? 'warn' : 'primary'">
-				<input mdInput
-					   placeholder="Email"
-					   type="email"
-					   name="emailInput"
-					   [ngClass]="{'has-error': emailInput.touched && emailInput.invalid}"
-					   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
-					   [(ngModel)]="email"
-					   #emailInput="ngModel"
-					   required>
-				<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-				<md-hint align="end" class="error-message" *ngIf="emailInput.touched && (emailInput.invalid)">
-					Email-Adresse muss in der Form <i>test@email.de</i> sein
-				</md-hint>
-			</md-input-container>
-		</label>
-		<label>
-			<md-input-container>
-				<input mdInput
-					   placeholder="Passwort"
-					   type="password"
-					   #passwordInput="ngModel"
-					   name="passwordInput"
-					   [(ngModel)]="password"
-					   required>
-				<md-hint align="end">
-					<ng2-password-strength-bar
-						[passwordToCheck]="password"
-						[barLabel]="''">
-					</ng2-password-strength-bar>
-				</md-hint>
-			</md-input-container>
+<div class="login-container">
 
-		</label>
+	<md-card>
+		<h4>Bereits Meilenwölfe-Mitglied?</h4>
+		<form #loginForm="ngForm" (ngSubmit)="checkLogin()">
+			<label>
+				<md-input-container
+					[dividerColor]="(emailInput.touched && emailInput.invalid) ? 'warn' : 'primary'">
+					<input mdInput
+						   placeholder="Email"
+						   type="email"
+						   name="emailInput"
+						   [ngClass]="{'has-error': emailInput.touched && emailInput.invalid}"
+						   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+						   [(ngModel)]="email"
+						   #emailInput="ngModel"
+						   required>
+					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
+					<md-hint align="end" class="error-message" *ngIf="emailInput.touched && (emailInput.invalid)">
+						Email-Adresse muss in der Form <i>test@email.de</i> sein
+					</md-hint>
+				</md-input-container>
+			</label>
+			<label>
+				<md-input-container>
+					<input mdInput
+						   placeholder="Passwort"
+						   type="password"
+						   #passwordInput="ngModel"
+						   name="passwordInput"
+						   [(ngModel)]="password"
+						   required>
+					<md-hint align="end">
+						<ng2-password-strength-bar
+							[passwordToCheck]="password"
+							[barLabel]="''">
+						</ng2-password-strength-bar>
+					</md-hint>
+				</md-input-container>
 
-		<div *ngIf="wrongInput" class="wrong-input error-message">
-			Die eingebenen Daten sind falsch.
-			<!--todo passwort vergessen link-->
-		</div>
+			</label>
 
-		<button type="submit"
-				md-raised-button
-				[disabled]="!loginForm.form.valid"
-				color="primary">
+			<div *ngIf="wrongInput" class="wrong-input error-message">
+				Die eingebenen Daten sind falsch.
+				<!--todo passwort vergessen link-->
+			</div>
+
+			<button type="submit"
+					md-raised-button
+					[disabled]="!loginForm.form.valid"
+					color="primary">
 			<span *ngIf="!loading; else loadingSpinner">
 			{{'Einloggen' | uppercase}}
 			</span>
-			<ng-template #loadingSpinner>
-				<md-icon class="loading-spinner">refresh</md-icon>
-				{{'Überprüfe...' | uppercase}}
-			</ng-template>
-		</button>
-	</form>
+				<ng-template #loadingSpinner>
+					<md-icon class="loading-spinner">refresh</md-icon>
+					{{'Überprüfe...' | uppercase}}
+				</ng-template>
+			</button>
+		</form>
 
-	<hr/>
+		<hr/>
 
 
-	<h4>Noch keinen Account?</h4>
-	<a routerLink="../signup" md-raised-button color="primary">{{'Registrieren' | uppercase}}</a>
+		<h4>Noch keinen Account?</h4>
+		<a routerLink="../signup" md-raised-button color="primary">{{'Registrieren' | uppercase}}</a>
 
-</md-card>
+	</md-card>
+
+</div>

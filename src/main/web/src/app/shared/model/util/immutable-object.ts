@@ -7,7 +7,7 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 	}
 
 	isString(value: any): value is string {
-		return typeof value === "string" || value instanceof String
+		return typeof value === "string";
 	}
 
 	isNumber(value: any): value is number {
@@ -22,7 +22,7 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 		Object.keys(properties)
 			.forEach(key => {
 				let value: (string | number | Date | UserPermissions) = (<any>properties)[key];
-				if (key === "date" && this.isString(value)) {
+				if (key === "date" && this.isString("string")) {
 					value = Date.parse(value);
 				} else if (this.isNumber(value)) {
 					value = +value;

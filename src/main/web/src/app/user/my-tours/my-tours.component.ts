@@ -11,7 +11,7 @@ import {Party} from "../../shop/shared/model/party";
 	styleUrls: ["./my-tours.component.scss"]
 })
 export class MyToursComponent implements OnInit {
-	private tours: Observable<(Tour | Party)[]> = this.loginService.accountObservable
+	public tours: Observable<(Tour | Party)[]> = this.loginService.accountObservable
 		.flatMap(accountId => accountId === null
 			? Observable.empty()
 			: this.eventService.getEventsOfUser(accountId, {tours: true, partys: true}));

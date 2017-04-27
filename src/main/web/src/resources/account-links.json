@@ -1,26 +1,26 @@
 [
 	{
-		"route": "profile",
+		"route": "members/PROFILE_ID",
 		"icon": "",
 		"name": "Dein Profil"
 	},
 	{
-		"route": "profile/events",
+		"route": "my-events",
 		"icon": "",
 		"name": "Deine Events"
 	},
 	{
-		"route": "profile/history",
+		"route": "order-history",
 		"icon": "",
 		"name": "Deine Bestellungen"
 	},
 	{
-		"route": "profile/details",
+		"route": "account-details",
 		"icon": "",
 		"name": "Dein Account"
 	},
 	{
-		"route": "logout",
+		"route": "",
 		"icon": "",
 		"name": "Logout"
 	}

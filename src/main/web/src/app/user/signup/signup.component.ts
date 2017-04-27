@@ -17,7 +17,7 @@ export class SignUpComponent implements OnInit {
 
 	sectionEnum = SignUpSection;
 	sections = [SignUpSection.AccountData, SignUpSection.PersonalData, SignUpSection.three];
-	private currentSection: Observable<SignUpSection> = this.activatedRoute.params.map(params => params["step"]);
+	public currentSection: Observable<SignUpSection> = this.activatedRoute.params.map(params => params["step"]);
 
 	constructor(private navigationService: NavigationService,
 				private activatedRoute: ActivatedRoute) {
