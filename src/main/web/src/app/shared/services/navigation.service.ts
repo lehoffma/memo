@@ -3,7 +3,7 @@ import {Link} from "../model/link";
 import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {Router} from "@angular/router";
-
+import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 
 @Injectable()
 export class NavigationService {
@@ -23,6 +23,10 @@ export class NavigationService {
 			.map(response => response.json());
 		this.accountLinks = this.http.get("/resources/account-links.json")
 			.map(response => response.json());
+	}
+
+	public navigateToItem(category: ShopItemType, id: number) {
+		this.navigateByUrl("" + category + id);
 	}
 
 	//todo: do something other than just printing to console (show the error to the user or fallback to some default route)

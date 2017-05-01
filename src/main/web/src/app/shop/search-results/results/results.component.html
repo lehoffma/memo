@@ -1,5 +1,9 @@
 <div *ngIf="events && events.length > 0">
-	<memo-results-entry *ngFor="let result of events" [result]="result"></memo-results-entry>
+	<memo-results-entry
+		*ngFor="let result of events"
+		[result]="result">
+
+	</memo-results-entry>
 </div>
 <div *ngIf="events && events.length === 0">
 	Keine Ergebnisse!

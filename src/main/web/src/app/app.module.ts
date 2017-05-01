@@ -17,7 +17,6 @@ import {ToolbarElementComponent} from "./home/navigation/toolbar/element/toolbar
 import {SideNavComponent} from "./home/navigation/sidenav/sidenav.component";
 import {PartyDetailComponent} from "./shop/partys/party-detail/party-detail.component";
 import {MerchandiseDetailComponent} from "./shop/merchandise/merchandise-detail/merchandise-detail.component";
-import {AddressStore} from "./shared/stores/adress.store";
 import {ClothesSizePipe} from "./shop/merchandise/merchandise-detail/clothes-size.pipe";
 import {ROUTES} from "./app.routes";
 import {GoogleMapsRedirectComponent} from "./util/google-maps-redirect/google-maps-redirect.component";
@@ -167,7 +166,7 @@ import {AgmCoreModule} from "@agm/core";
 		AppComponent
 	],
 	providers: [
-		NavigationService, AddressStore, UserService, CacheStore,
+		NavigationService, UserService, CacheStore,
 		LogInService, ShoppingCartService, EventUtilityService, EventService,
 		EntryService, EventFactoryService,
 

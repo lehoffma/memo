@@ -6,7 +6,9 @@
 </div>
 
 <div *ngIf="keywords | async; let searchTerm; else noTerm">
-	Ergebnisse für {{searchTerm}}:
+	<div class="search-results-header">
+		<!--Ergebnisse für {{searchTerm}}:-->
+	</div>
 
 	<memo-results [events]="results | async"></memo-results>
 </div>

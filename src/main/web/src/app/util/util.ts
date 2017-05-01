@@ -33,5 +33,5 @@ export function sortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => a
 }
 
 export function isString(value: any): value is string {
-	return (<string>value).toLowerCase !== undefined;
+	return value && (<string>value).toLowerCase !== undefined;
 }

@@ -71,6 +71,22 @@ export class Merchandise extends Event {
 		]
 	}
 
+	get colorsAsHex() {
+		//TODO: weniger blöd machen
+		return this.colors.map(color => {
+			if (color === "Weiss") {
+				return "#ffffff"
+			}
+			if (color === "Blau") {
+				return "#0000ff"
+			}
+			if (color === "Grün") {
+				return "#00ff00";
+			}
+			return "#ffffff"
+		})
+	}
+
 	get clothesSizes(): string[] {
 		return Object.keys(this.sizeTable);
 	}

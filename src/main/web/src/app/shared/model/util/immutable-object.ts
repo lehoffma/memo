@@ -22,7 +22,7 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 		Object.keys(properties)
 			.forEach(key => {
 				let value: (string | number | Date | UserPermissions) = (<any>properties)[key];
-				if (key === "date" && this.isString("string")) {
+				if (key === "date" && this.isString(value)) {
 					value = Date.parse(value);
 				} else if (this.isNumber(value)) {
 					value = +value;

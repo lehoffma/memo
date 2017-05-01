@@ -1,3 +1,28 @@
-<p>
-	{{result.title}}
-</p>
+<!--todo: indication if tour/party/merch/user (/entry?) -->
+<div class="result-entry-container" (click)="showResult(result)">
+	<div>
+		<div class="result-entry-info-container">
+			<div class="result-title">
+				{{result.title}}
+			</div>
+			<div class="result-info">
+				<div class="secondary-text">
+					<span *ngIf="!resultIsMerch(result)">{{result.date | date}}</span>
+					<!--todo: if merch: show color options-->
+					<span *ngIf="resultIsMerch(result)" class="merch-available-colors-container">
+						<span *ngFor="let color of result.colorsAsHex"
+							  class="merch-available-colors"
+							  [style.background-color]="color">
+						</span>
+					</span>
+				</div>
+				<div class="result-price">
+					{{result.price}} €
+				</div>
+			</div>
+		</div>
+		<div class="result-entry-image-container">
+			<img src="{{result.imagePath}}">
+		</div>
+	</div>
+</div>

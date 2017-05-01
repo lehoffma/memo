@@ -6,15 +6,6 @@ import {ShoppingCartItem} from "../model/shopping-cart-item";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
-	//todo löschen wenn test-daten nicht mehr benötigt werden
-	// private _content: BehaviorSubject<ShoppingCartContent> = new BehaviorSubject({
-	// 	merch: [{id: 0, amount: 1, options: {size: "XS", color: "red"}},
-	// 		{id: 1, amount: 1, options: {size: "XS", color: "red"}},
-	// 		{id: 0, amount: 1, options: {size: "S", color: "red"}}],
-	// 	partys: [{id: 1, amount: 1}, {id: 1, amount: 1}],
-	// 	tours: [{id: 0, amount: 1}, {id: 1, amount: 2}]
-	// });
-
 	private _content: BehaviorSubject<ShoppingCartContent> = new BehaviorSubject({
 		merch: [],
 		partys: [],
@@ -135,7 +126,7 @@ export class ShoppingCartService implements OnInit {
 	 * @returns {any}
 	 */
 	private getContentFromLocalStorage(): ShoppingCartContent {
-		let json: string = localStorage.getItem(this.localStorageKey);
+		const json: string = localStorage.getItem(this.localStorageKey);
 
 		//falls nichts im localStorage gespeichert wurde, ist der Warenkorb wohl leer
 		if (!json) {

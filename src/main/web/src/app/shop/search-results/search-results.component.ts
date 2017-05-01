@@ -8,6 +8,7 @@ import {SortingOption} from "../../shared/model/sorting-option";
 import {eventSortingOptions} from "./sorting-options";
 import {attributeSortingFunction} from "../../util/util";
 import {isNullOrUndefined} from "util";
+import {UserService} from "../../shared/services/user.service";
 
 type sortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -35,6 +36,7 @@ export class SearchResultComponent implements OnInit {
 
 
 	constructor(private activatedRoute: ActivatedRoute,
+				private userService: UserService,
 				private eventService: EventService) {
 	}
 
@@ -45,7 +47,7 @@ export class SearchResultComponent implements OnInit {
 					this.eventService.search(keywords, {eventType: EventType.tours}),
 					this.eventService.search(keywords, {eventType: EventType.partys}),
 					this.eventService.search(keywords, {eventType: EventType.merch}),
-					(tours, partys, merch) => [...tours, ...partys, ...merch]
+					(tours, partys, merch, users) => [...tours, ...partys, ...merch]
 				)
 				//todo replace with actual api call?
 					.map(events => {

@@ -8,6 +8,7 @@ import {Component, Input, OnInit} from "@angular/core";
 export class ResultsComponent implements OnInit {
 	@Input() events: Event[];
 
+
 	constructor() {
 	}
 

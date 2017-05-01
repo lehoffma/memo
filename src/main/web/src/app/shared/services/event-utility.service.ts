@@ -5,6 +5,9 @@ import {Tour} from "../../shop/shared/model/tour";
 import {Party} from "../../shop/shared/model/party";
 import {isNullOrUndefined} from "util";
 import {EventType} from "../../shop/shared/model/event-type";
+import {User} from "../model/user";
+import {Entry} from "../model/entry";
+import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 
 
 @Injectable()
@@ -14,44 +17,62 @@ export class EventUtilityService {
 	}
 
 	getEventType(event: Event): EventType {
-		return this.handleEvent(event,
+		return this.handleShopItem(event,
 			merch => EventType.merch,
 			tour => EventType.tours,
 			party => EventType.partys,
+			user => null,
+			entry => null,
 			error => {
 				console.error(`Could not deduce type from event ${error}`);
 				return null;
-			}
-		)
+			});
 	}
 
-	/**
-	 *
-	 * @param event
-	 * @param merchCallback
-	 * @param tourCallback
-	 * @param partyCallback
-	 * @param defaultCallback
-	 * @returns {T}
-	 */
-	handleEvent<T>(event: Event,
-				   merchCallback: (merch: Merchandise) => T,
-				   tourCallback: (tour: Tour) => T,
-				   partyCallback: (party: Party) => T,
-				   defaultCallback: (event: Event) => T = () => null): T {
-		if (isNullOrUndefined(event)) {
-			return defaultCallback(event);
+	getShopItemType(item: Event | User | Entry): ShopItemType {
+		return this.handleShopItem(item,
+			merch => ShopItemType.merch,
+			tour => ShopItemType.tour,
+			party => ShopItemType.party,
+			user => ShopItemType.user,
+			entry => ShopItemType.entry,
+			error => {
+				console.error(`Could not deduce type from event ${error}`);
+				return null;
+			});
+	}
+
+	handleShopItem<T>(item: Event | User | Entry,
+					  merchCallback: (merch: Merchandise) => T,
+					  tourCallback: (tour: Tour) => T,
+					  partyCallback: (party: Party) => T,
+					  userCallback: (user: User) => T,
+					  entryCallback: (entry: Entry) => T,
+					  defaultCallback: (event: typeof item) => T = () => null): T {
+		if (isNullOrUndefined(item)) {
+			return defaultCallback(item);
 		}
-		if (this.isMerchandise(event)) {
-			return merchCallback(event);
+		if (this.isMerchandise(item)) {
+			return merchCallback(item);
 		}
-		if (this.isTour(event)) {
-			return tourCallback(event);
+		if (this.isTour(item)) {
+			return tourCallback(item);
 		}
-		if (this.isParty(event)) {
-			return partyCallback(event);
+		if (this.isParty(item)) {
+			return partyCallback(item);
 		}
-		return defaultCallback(event);
+		if (this.isUser(item)) {
+			return userCallback(item);
+		}
+		//todo implement isEntry
+		// if (this.isEntry(item)) {
+		// 	return entryCallback(item);
+		// }
+		return defaultCallback(item);
+	}
+
+	isUser(event: any): event is User {
+		return event && (<User>event).email !== undefined;
 	}
 
 	isMerchandise(event: any): event is Merchandise {
