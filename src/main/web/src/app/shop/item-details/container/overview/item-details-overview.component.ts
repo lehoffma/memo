@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {SelectionModel} from "../../selection/object-details-selection.component";
+import {SelectionModel} from "../../../../shared/model/selection-model";
 import {Event} from "../../../shared/model/event";
 import {Merchandise} from "../../../shared/model/merchandise";
 import {ShoppingCartService} from "../../../../shared/services/shopping-cart.service";

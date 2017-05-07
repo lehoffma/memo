@@ -6,9 +6,9 @@
 		border-collapse: collapse;
 
 		th, td {
-			min-width: 20vw;
-			padding-right: 5vw;
-			height: 11vw;
+			min-width: 5rem;
+			padding-right: 2rem;
+			height: 2.5rem;
 		}
 
 		tr:not(:last-child) > td, th {

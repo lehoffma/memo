@@ -5,10 +5,13 @@
 
 	</memo-results-entry>
 </div>
-<div *ngIf="events && events.length === 0">
+<div *ngIf="events && events.length === 0" class="no-results">
 	Keine Ergebnisse!
 </div>
 <div *ngIf="!events">
 	<!--todo: loading animation-->
-	Loading...
+
+	<div id="loader-wrapper">
+		<div id="loader"></div>
+	</div>
 </div>

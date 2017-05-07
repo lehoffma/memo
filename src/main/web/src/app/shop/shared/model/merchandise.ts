@@ -1,7 +1,7 @@
 import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {SizeTable} from "./size-table";
-import {SelectionModel} from "../../item-details/selection/object-details-selection.component";
+import {SelectionModel} from "../../../shared/model/selection-model";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 
 export class Merchandise extends Event {

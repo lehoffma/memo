@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {SortingOption} from "../../../shared/model/sorting-option";
-import {ActivatedRoute, ParamMap, Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
+import {QueryParameterService} from "../../../shared/services/query-parameter.service";
 
 @Component({
 	selector: "memo-sorting-dropdown",
@@ -12,24 +13,16 @@ export class SortingDropdownComponent implements OnInit {
 	@Input() sortingOptions: SortingOption<any>[];
 
 	constructor(private router: Router,
-				private activatedRoute: ActivatedRoute) {
+				private activatedRoute: ActivatedRoute,
+				private queryParameterService: QueryParameterService) {
 	}
 
 	ngOnInit() {
 	}
 
-	updateQueryParams(queryParams) {
+	updateQueryParams(queryParams: Params) {
 		this.activatedRoute.queryParamMap.first()
-			.subscribe((paramMap: ParamMap) => {
-				const oldParamKeys = paramMap.keys
-					.filter(key => !Object.keys(queryParams).includes(key));
-
-				let newQueryParams = {};
-
-				oldParamKeys.forEach(key => newQueryParams[key] = paramMap.get(key));
-				Object.keys(queryParams).forEach(key => newQueryParams[key] = queryParams[key]);
-
-				this.router.navigate(["search"], {queryParams: newQueryParams});
-			});
+			.map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams))
+			.subscribe(newQueryParams => this.router.navigate(["search"], {queryParams: newQueryParams}));
 	}
 }

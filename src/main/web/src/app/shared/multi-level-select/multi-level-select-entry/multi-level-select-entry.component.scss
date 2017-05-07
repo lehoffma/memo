@@ -1,0 +1,25 @@
+
+.multi-level-select-entry-parent,
+.multi-level-select-entry-child {
+	min-width: 200px;
+}
+
+.multi-level-select-entry-parent {
+	display: flex;
+	justify-content: space-between;
+	.mat-icon {
+		margin-right: 0;
+		right: 0;
+		align-self: center;
+	}
+}
+
+.multi-level-select-entry-child {
+	text-align: right;
+	background-color: darken(#ffffff, 10%);
+}
+
+.multi-level-select-checkbox {
+	margin-left: 10px;
+	margin-right: -10px;
+}

@@ -23,15 +23,18 @@ export class SideNavComponent implements OnInit {
 
 	public links = Observable.combineLatest(this.user, this.navigationService.sidenavLinks)
 		.map(([user, links]) => {
+			const linksCopy = Object.assign([], links);
 			const permissions = user === null ? visitorPermissions : user.permissions;
 			const setId = (link: Link): Link => {
 				if (link.children) {
 					link.children = link.children.map(childLink => setId(childLink))
 				}
-				link.route = link.route.replace("PROFILE_ID", "" + user.id);
+				if (link.route.startsWith("members/")) {
+					link.route = "members/" + user.id;
+				}
 				return link;
 			};
-			return links.map(setId)
+			return linksCopy.map(setId)
 				.filter(link => this.checkPermissions(link.minimumPermission, permissions))
 		});
 

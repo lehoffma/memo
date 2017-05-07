@@ -28,7 +28,6 @@ import {ItemTableComponent} from "./shop/item-details/details-table/item-table.c
 import {ConvertCamelCaseToTitleCasePipe} from "./shared/pipes/convert-camelcase-to-titlecase.pipe";
 import {ParticipantsComponent} from "./shop/item-details/participants/participants.component";
 import {RouteComponent} from "./shop/item-details/route/route.component";
-import {DetailsSelectionComponent} from "./shop/item-details/selection/object-details-selection.component";
 import {FilterPipe} from "./shared/pipes/filter.pipe";
 import {SizeTableComponent} from "./shop/item-details/size-table/size-table.component";
 import {memoConfig} from "./app.config";
@@ -84,6 +83,10 @@ import {IsOwnProfileGuard} from "./shared/route-guards/is-own-profile.guard";
 import {SortingDropdownComponent} from "./shop/search-results/sorting-dropdown/sorting-dropdown.component";
 import {FilteringMenuComponent} from "./shop/search-results/filtering-menu/filtering-menu.component";
 import {AgmCoreModule} from "@agm/core";
+import {MultiLevelSelectComponent} from "./shared/multi-level-select/multi-level-select.component";
+import {MultiLevelSelectEntryComponent} from "./shared/multi-level-select/multi-level-select-entry/multi-level-select-entry.component";
+import {QueryParameterService} from "./shared/services/query-parameter.service";
+import {ModifyShopItemComponent} from "./shop/modify-shop-item/modify-shop-item.component";
 @NgModule({
 	imports: [
 		BrowserModule,
@@ -115,7 +118,6 @@ import {AgmCoreModule} from "@agm/core";
 		ParticipantsComponent,
 		RouteComponent,
 		ItemTableComponent,
-		DetailsSelectionComponent,
 		SizeTableComponent,
 		ToursComponent,
 		TourDetailComponent,
@@ -160,7 +162,10 @@ import {AgmCoreModule} from "@agm/core";
 		UnauthorizedAccessComponent,
 		ProfileEditComponent,
 		SortingDropdownComponent,
-		FilteringMenuComponent
+		FilteringMenuComponent,
+		MultiLevelSelectComponent,
+		MultiLevelSelectEntryComponent,
+		ModifyShopItemComponent
 	],
 	bootstrap: [
 		AppComponent
@@ -168,7 +173,7 @@ import {AgmCoreModule} from "@agm/core";
 	providers: [
 		NavigationService, UserService, CacheStore,
 		LogInService, ShoppingCartService, EventUtilityService, EventService,
-		EntryService, EventFactoryService,
+		EntryService, EventFactoryService, QueryParameterService,
 
 		//guards
 		AuthenticatedGuard, IsOrganizerGuard, IsTreasurerGuard, IsOwnProfileGuard,

@@ -10,14 +10,6 @@
 			height: 250px;
 			object-fit: cover;
 		}
-
-		button {
-			position: absolute;
-			bottom: calc(20% - 5.5vw);
-			right: 5%;
-			display: block;
-			color: #FFF;
-		}
 	}
 
 	.image-container::after {

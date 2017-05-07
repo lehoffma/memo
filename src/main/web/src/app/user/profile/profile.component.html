@@ -56,8 +56,19 @@
 		</div>
 	</div>
 	<div class="profile-component">
-		<h3 class="profile-tours-title">Veranstaltungen und Touren</h3>
+		<h3 class="profile-tours-title">Hat teilgenommen an</h3>
 		<!-- Touren die Member mitgefahren ist -->
 		<memo-participated-tours-preview [userEvents]="userEvents"></memo-participated-tours-preview>
+	</div>
+	<div class="profile-component" *ngIf="userEvents | async; let participatedTours;">
+		<h3 class="profile-tours-title">Karte</h3>
+		<!--todo: update once the tours have longitude/latitude data stored in them-->
+		<agm-map [zoom]="7" [latitude]="53" [longitude]="10.78">
+			<agm-marker *ngFor="let tour of participatedTours; let i = index;"
+						[latitude]="52.422650 + i*0.5"
+						[longitude]="10.786546">
+			</agm-marker>
+		</agm-map>
+
 	</div>
 </div>

@@ -9,6 +9,8 @@ import {eventSortingOptions} from "./sorting-options";
 import {attributeSortingFunction} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {UserService} from "../../shared/services/user.service";
+import {eventFilterOptions} from "./event-filter-options";
+import {MultiLevelSelectParent} from "app/shared/multi-level-select/shared/multi-level-select-parent";
 
 type sortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -32,7 +34,7 @@ export class SearchResultComponent implements OnInit {
 	results: Observable<Event[]>;
 
 	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
-	// eventFilteringOptions: FilterOption<Event>[] = filterOptions;
+	filterOptions: MultiLevelSelectParent[] = eventFilterOptions;
 
 
 	constructor(private activatedRoute: ActivatedRoute,
@@ -40,33 +42,38 @@ export class SearchResultComponent implements OnInit {
 				private eventService: EventService) {
 	}
 
-	fetchResults(): Observable<Event[]> {
-		return Observable.combineLatest(this.keywords, this.sortedBy, this.filteredBy)
-			.flatMap(([keywords, sortedBy, filteredBy]) =>
-				Observable.combineLatest(
-					this.eventService.search(keywords, {eventType: EventType.tours}),
-					this.eventService.search(keywords, {eventType: EventType.partys}),
-					this.eventService.search(keywords, {eventType: EventType.merch}),
-					(tours, partys, merch, users) => [...tours, ...partys, ...merch]
-				)
-				//todo replace with actual api call?
-					.map(events => {
-						//sortiere events
-						if (sortedBy && sortedBy.sortedBy && !isNullOrUndefined(sortedBy)) {
-							events = events.sort(attributeSortingFunction(sortedBy.sortedBy, sortedBy.descending === "true"));
-						}
+	fetchResults() {
+		Observable.combineLatest(this.keywords, this.sortedBy, this.filteredBy)
+			.subscribe(([keywords, sortedBy, filteredBy]) => {
+					//reset results so the result screen can show a loading screen while the http call is performed
+					this.results = Observable.empty();
 
-						return events;
-					})
-					.map(events => {
-						//filtere events
-						return events;
-					})
+					this.results = Observable.combineLatest(
+						this.eventService.search(keywords, {eventType: EventType.tours}),
+						this.eventService.search(keywords, {eventType: EventType.partys}),
+						this.eventService.search(keywords, {eventType: EventType.merch}),
+						(tours, partys, merch, users) => [...tours, ...partys, ...merch]
+					)
+					//todo replace with actual api call?
+						.map(events => {
+							//sortiere events
+							if (sortedBy && sortedBy.sortedBy && !isNullOrUndefined(sortedBy)) {
+								events = events.sort(attributeSortingFunction(sortedBy.sortedBy, sortedBy.descending === "true"));
+							}
+
+							return events;
+						})
+						//todo replace with actual api call..
+						.map(events => {
+							//filtere events
+							return events;
+						})
+				}
 			);
 	}
 
 	ngOnInit() {
-		this.results = this.fetchResults();
+		this.fetchResults();
 	}
 
 }

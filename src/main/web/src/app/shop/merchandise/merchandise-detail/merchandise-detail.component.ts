@@ -4,11 +4,10 @@ import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
 import {isNullOrUndefined} from "util";
 import {MerchandiseOptions} from "./merchandise-options";
-import {SelectionModel} from "../../item-details/selection/object-details-selection.component";
+import {SelectionModel} from "../../../shared/model/selection-model";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 import {EventService} from "../../../shared/services/event.service";
 import {EventType} from "../../shared/model/event-type";
-
 
 @Component({
 	selector: "memo-merchandise-details",

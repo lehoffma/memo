@@ -7,7 +7,6 @@
 				<span class="profile-name">{{account.firstName}}</span>
 				<div class="profile-email-container">
 					<span class="profile-email">{{account.email}}</span>
-					<md-icon>expand_more</md-icon>
 				</div>
 			</div>
 		</div>
@@ -25,7 +24,6 @@
 		</a>
 		<div id="navigation-links-login" *ngIf="account.id === -1">
 			<a routerLink="login" (click)="saveUrl()">
-				<!--<md-icon class="md-dark">vpn_key</md-icon>-->
 				<span>Anmelden</span>
 			</a>
 		</div>
