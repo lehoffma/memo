@@ -4,6 +4,10 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {Router} from "@angular/router";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
+import {Event} from "../../shop/shared/model/event";
+import {Entry} from "../model/entry";
+import {User} from "../model/user";
+import {EventUtilityService} from "./event-utility.service";
 
 @Injectable()
 export class NavigationService {
@@ -12,6 +16,7 @@ export class NavigationService {
 	public accountLinks: Observable<Link[]>;
 
 	constructor(private http: Http,
+				private eventUtilService: EventUtilityService,
 				private router: Router) {
 		this.initialize();
 	}
@@ -25,8 +30,12 @@ export class NavigationService {
 			.map(response => response.json());
 	}
 
-	public navigateToItem(category: ShopItemType, id: number) {
-		this.navigateByUrl("" + category + id);
+	public navigateToItem(item: (Event | User | Entry)) {
+		this.navigateToItemWithId(this.eventUtilService.getShopItemType(item), item.id);
+	}
+
+	public navigateToItemWithId(category: ShopItemType, id: number) {
+		this.navigateByUrl(`${category}/${id}`);
 	}
 
 	//todo: do something other than just printing to console (show the error to the user or fallback to some default route)

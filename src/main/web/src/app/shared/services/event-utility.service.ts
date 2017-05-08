@@ -71,6 +71,56 @@ export class EventUtilityService {
 		return defaultCallback(item);
 	}
 
+	handleOptionalShopType<T>(type: ShopItemType, callbacks: {
+		merch?: () => T,
+		tours?: () => T,
+		partys?: () => T,
+		members?: () => T,
+		entries?: () => T
+	}) {
+		if (!callbacks.merch) {
+			callbacks.merch = () => null;
+		}
+		if (!callbacks.tours) {
+			callbacks.tours = () => null;
+		}
+		if (!callbacks.partys) {
+			callbacks.partys = () => null;
+		}
+		if (!callbacks.members) {
+			callbacks.members = () => null;
+		}
+		if (!callbacks.entries) {
+			callbacks.entries = () => null;
+		}
+		return this.handleShopType(type, callbacks.merch, callbacks.tours, callbacks.partys, callbacks.members, callbacks.entries);
+	}
+
+	handleShopType<T>(type: ShopItemType,
+					  merchCallback: () => T,
+					  tourCallback: () => T,
+					  partyCallback: () => T,
+					  userCallback: () => T,
+					  entryCallback: () => T,
+					  defaultCallback: () => T = () => null): T {
+		if (isNullOrUndefined(type)) {
+			return defaultCallback();
+		}
+		switch (type) {
+			case ShopItemType.party:
+				return partyCallback();
+			case ShopItemType.tour:
+				return tourCallback();
+			case ShopItemType.merch:
+				return merchCallback();
+			case ShopItemType.user:
+				return userCallback();
+			case ShopItemType.entry:
+				return entryCallback();
+		}
+		return defaultCallback();
+	}
+
 	isUser(event: any): event is User {
 		return event && (<User>event).email !== undefined;
 	}

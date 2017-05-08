@@ -23,7 +23,7 @@ export class ResultsEntryComponent implements OnInit {
 	}
 
 	showResult(result: Event) {
-		this.navigationService.navigateToItem(this.eventUtilService.getShopItemType(result), result.id);
+		this.navigationService.navigateToItemWithId(this.eventUtilService.getShopItemType(result), result.id);
 	}
 
 }

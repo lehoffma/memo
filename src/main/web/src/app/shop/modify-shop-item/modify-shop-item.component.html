@@ -1,19 +1,87 @@
-<!--for each editItem in editItemList (stored in a constant somewhere since they don't really change)-->
+<div class="modify-shop-item-container">
+	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
+		<!--for each editItem in editItemList (stored in a constant somewhere since they don't really change)-->
+		<div *ngFor="let editItem of editItemFormList[itemType]">
+			<!--different types of inputs-->
+			<div [ngSwitch]="editItem.type">
+				<!--	1. text (name, title, description) -->
+				<md-input-container *ngSwitchCase="ItemFormType.TEXT">
+					<input mdInput name="{{editItem.key + 'Input'}}" type="text" [required]="editItem.required"
+						   placeholder="{{editItem.title}}" [(ngModel)]="model[editItem.key]">
+				</md-input-container>
+				<md-input-container *ngSwitchCase="ItemFormType.TEXT_AREA">
+						<textarea mdInput name="{{editItem.key + 'Input'}}"
+								  class="not-resizable-textarea"
+								  [required]="editItem.required"
+								  rows="10"
+								  type="text"
+								  placeholder="{{editItem.title}}" [(ngModel)]="model[editItem.key]">
+						</textarea>
+				</md-input-container>
+				<!--	2. number (capacity, priceMember, price) -->
+				<md-input-container *ngSwitchCase="ItemFormType.NUMBER">
+					<input mdInput name="{{editItem.key + 'Input'}}"
+						   type="number"
+						   [required]="editItem.required"
+						   placeholder="{{editItem.title}}" [(ngModel)]="model[editItem.key]">
+					<span mdSuffix *ngIf="editItem.key === 'price'">
+						€
+					</span>
+				</md-input-container>
+				<!--	3. date (date)--->
+				<div *ngSwitchCase="ItemFormType.DATE">
+					<md2-datepicker name="{{'datepicker' + editItem.title}}"
+									[required]="editItem.required"
+									[(ngModel)]="model[editItem.key]"></md2-datepicker>
+				</div>
+				<!--	4. dropdown (todo remove?) -->
+				<div *ngSwitchCase="ItemFormType.DROPDOWN">
+					<!--todo permissions-->
+				</div>
+				<!--	5. google-maps integrated autofill (meetingPoint, destination) todo calculate miles from these 2 inputs-->
+				<!--isRoute steuert, ob jeweils ein Suchfeld für Von/Nach angezeigt wird oder nur ein Suchfeld-->
+				<memo-tour-route-input *ngSwitchCase="ItemFormType.GOOGLE_MAPS_AUTOFILL"
+									   [isRoute]="editItem.key === 'route'"
+									   [route]="model.route"></memo-tour-route-input>
+				<!--	6. list of text (sizes) -->
+				<memo-list-form *ngSwitchCase="ItemFormType.TEXT_LIST"
+								(listChanged)="model[editItem.key]=$event"
+								[type]="ListFormType.TEXT"
+								[list]="model[editItem.key]"
+								[title]="editItem.title"></memo-list-form>
+				<!--todo: permissions...-->
+				<!--<memo-list-form *ngSwitchCase="ItemFormType.ROLE_LIST"-->
+				<!--(listChanged)="model[editItem.key]=$event"-->
+				<!--[type]="ListFormType.ROLE"-->
+				<!--[list]="model[editItem.key]"-->
+				<!--[title]="editItem.title"></memo-list-form>-->
+				<!--	7. list of colors? (colors)-->
+				<memo-list-form *ngSwitchCase="ItemFormType.COLOR_LIST"
+								(listChanged)="model[editItem.key]=$event"
+								[type]="ListFormType.COLOR"
+								[list]="model[editItem.key]"
+								[title]="editItem.title"></memo-list-form>
+				<!--	8. sizeTable (sizeTable) -->
+				<div *ngSwitchCase="ItemFormType.SIZE_TABLE">
+					<!--todo -->
+				</div>
+				<div *ngSwitchDefault>Whoops..</div>
+			</div>
+		</div>
 
-<!--different types of inputs-->
-<!--	1. text (name, title, description) -->
-<!--	2. number (capacity, priceMember, price) -->
-<!--	3. date (date)--->
-<!--	4. dropdown (clubRole, vehicle) -->
-<!--	5. google-maps integrated autofill (meetingPoint, destination) todo calculate miles from these 2 inputs-->
-<!--	6. list of text (sizes) -->
-<!--	7. list of colors? (colors)-->
-<!--	8. sizeTable (sizeTable) -->
+		<!--a little to the side of the rest of the input forms: -->
+		<div class="picture-input-container">
+			<!--	list of pictures (stored in extra variable, will be sent to server via http body)-->
+			<!--todo: as a grid would be great (export as a separate component)-->
+		</div>
 
-<!--a little to the side of the rest of the input forms: -->
-<!--	list of pictures (stored in extra variable, will be sent to server via http body)-->
-
-
-<!--below all that-->
-<!--	cancel button-->
-<!--	save button-->
+		<!--below all that-->
+		<div class="form-buttons">
+			<!--	cancel button-->
+			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<!--	save button-->
+			<button md-button color="primary" type="submit">{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+			</button>
+		</div>
+	</form>
+</div>

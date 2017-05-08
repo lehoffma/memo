@@ -1,0 +1,19 @@
+@import "../../../mixins";
+
+.modify-shop-item-container {
+	@include card-like();
+	padding: 1rem;
+
+	/deep/ md-input-container,
+	md2-datepicker {
+		width: 100%;
+	}
+
+	/deep/ input {
+		font-size: 1rem;
+	}
+}
+
+.not-resizable-textarea {
+	resize: none;
+}

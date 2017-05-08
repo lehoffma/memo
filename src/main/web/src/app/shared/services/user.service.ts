@@ -40,7 +40,7 @@ export class UserService implements ServletService<User> {
 		return this.http.get(`/api/user?id=${userId}`)
 			.map(response => response.json())
 			.map(json => User.create().setProperties(json))
-			.do((user: User) => this.cache.add(user))
+			.do((user: User) => this.cache.addOrModify(user))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
@@ -80,7 +80,7 @@ export class UserService implements ServletService<User> {
 	 * @param user
 	 * @returns {Observable<T>}
 	 */
-	add(user: User): Observable<User> {
+	addOrModify(user: User): Observable<User> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const options = new RequestOptions({headers});
 

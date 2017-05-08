@@ -73,7 +73,7 @@ export class EntryService implements ServletService<Entry> {
 	 *
 	 * @param entry
 	 */
-	add(entry: Entry): Observable<Entry> {
+	addOrModify(entry: Entry): Observable<Entry> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const options = new RequestOptions({headers});
 

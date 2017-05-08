@@ -87,6 +87,13 @@ import {MultiLevelSelectComponent} from "./shared/multi-level-select/multi-level
 import {MultiLevelSelectEntryComponent} from "./shared/multi-level-select/multi-level-select-entry/multi-level-select-entry.component";
 import {QueryParameterService} from "./shared/services/query-parameter.service";
 import {ModifyShopItemComponent} from "./shop/modify-shop-item/modify-shop-item.component";
+import {IsValidItemTypeGuard} from "./shared/route-guards/is-valid-itemtype.guard";
+import {PageNotFoundComponent} from "./util/page-not-found/page-not-found.component";
+import {ListFormComponent} from "./shop/modify-shop-item/list-form/list-form.component";
+import {TourRouteInputComponent} from "./shop/modify-shop-item/tour-route-input/tour-route-input.component";
+import {ColorPickerModule} from "ngx-color-picker";
+import {ChooseColorComponent} from "./shop/modify-shop-item/list-form/choose-color/choose-color.component";
+
 @NgModule({
 	imports: [
 		BrowserModule,
@@ -99,6 +106,7 @@ import {ModifyShopItemComponent} from "./shop/modify-shop-item/modify-shop-item.
 			apiKey: memoConfig.mapsApiKey
 		}),
 		Md2Module,
+		ColorPickerModule,
 		PasswordStrengthBarModule
 	],
 	declarations: [
@@ -165,7 +173,11 @@ import {ModifyShopItemComponent} from "./shop/modify-shop-item/modify-shop-item.
 		FilteringMenuComponent,
 		MultiLevelSelectComponent,
 		MultiLevelSelectEntryComponent,
-		ModifyShopItemComponent
+		ModifyShopItemComponent,
+		PageNotFoundComponent,
+		ListFormComponent,
+		TourRouteInputComponent,
+		ChooseColorComponent
 	],
 	bootstrap: [
 		AppComponent
@@ -176,12 +188,13 @@ import {ModifyShopItemComponent} from "./shop/modify-shop-item/modify-shop-item.
 		EntryService, EventFactoryService, QueryParameterService,
 
 		//guards
-		AuthenticatedGuard, IsOrganizerGuard, IsTreasurerGuard, IsOwnProfileGuard,
+		AuthenticatedGuard, IsOrganizerGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,
 
 		{provide: LOCALE_ID, useValue: "de-DE"}
 	],
 	entryComponents: [
 		ItemImagePopupComponent,
+		ChooseColorComponent
 	]
 })
 export class AppModule {

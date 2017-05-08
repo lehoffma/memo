@@ -83,14 +83,23 @@ export class CacheStore {
 	 * Fügt ein objekt dem entsprechenden Cache hinzu
 	 * @param object
 	 */
-	add(object: InnerCacheType) {
+	addOrModify(object: InnerCacheType) {
 		const key: string = this.getCacheKeyFromObject(object);
 		const value: InnerCacheType[] = this.values[key];
+		const cachedObjectIndex = value.findIndex(innerValue => innerValue.id === object.id);
 
 		//and event isn't already part of the cache
-		if (!value.find(_event => _event.id === object.id)) {
+		if (cachedObjectIndex === -1) {
 			//todo throw oldest values away when size > cacheSize?
 			const newValue: InnerCacheType[] = [...value, object];
+
+			//cast is necessary because typescript is complaining otherwise
+			(<BehaviorSubject<InnerCacheType[]>>this._cache[key]).next(newValue);
+		}
+		//update if it is already part of the cache
+		else {
+			const newValue: InnerCacheType[] = [...value];
+			newValue.splice(cachedObjectIndex, 1, object);
 
 			//cast is necessary because typescript is complaining otherwise
 			(<BehaviorSubject<InnerCacheType[]>>this._cache[key]).next(newValue);

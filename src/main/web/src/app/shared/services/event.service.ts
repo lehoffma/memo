@@ -68,7 +68,7 @@ export class EventService implements ServletService<Event> {
 		return this.http.get(url)
 			.map(response => response.json())
 			.map(json => this.eventFactoryService.build(eventType).setProperties(json))
-			.do(event => this.cache.add(event))
+			.do(event => this.cache.addOrModify(event))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
@@ -145,15 +145,21 @@ export class EventService implements ServletService<Event> {
 	 * @param event
 	 * @returns {Observable<T>}
 	 */
-	add(event: Event): Observable<Event> {
+	addOrModify(event: Event): Observable<Event> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const options = new RequestOptions({headers});
 		const eventType = this.eventUtilService.getEventType(event);
 
+		//todo remove when backend is running
+		if (eventType) {
+			this.cache.addOrModify(event);
+			return Observable.of(event);
+		}
+
 		return this.http.post(this.baseUrl, {event}, options)
 			.map(response => response.json())
 			.map(eventJson => this.eventFactoryService.build(eventType).setProperties(eventJson))
-			.do(event => this.cache.add(event))
+			.do(event => this.cache.addOrModify(event))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors

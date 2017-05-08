@@ -83,7 +83,7 @@ export class Merchandise extends Event {
 			if (color === "Grün") {
 				return "#00ff00";
 			}
-			return "#ffffff"
+			return color;
 		})
 	}
 
