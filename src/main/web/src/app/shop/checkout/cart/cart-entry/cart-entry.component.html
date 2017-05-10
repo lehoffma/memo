@@ -1,3 +1,11 @@
-<p>
-	cart-entry works!
-</p>
+<div class="cart-entry-border">
+
+	<div class="cart-entry-title">{{event.event.title}}</div>
+	{{event.event.price}} Euro
+	{{event.amount}} x
+	<md-select placeholder="amount">
+		<md-option *ngFor="let food of amountOptions" [value]="food.value">
+			{{ food.viewValue }}
+		</md-option>
+	</md-select>
+</div>

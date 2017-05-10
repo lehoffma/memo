@@ -3,3 +3,9 @@
 .cart {
 	@include card-like();
 }
+.cart-title{
+	font-size: 1.9rem;
+}
+.cart-total-price{
+	font-size: 1.5rem;
+}

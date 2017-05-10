@@ -56,7 +56,6 @@ import {AccountingEntryComponent} from "./club-management/accounting/accounting-
 import {CheckoutComponent} from "./shop/checkout/checkout.component";
 import {AddressCheckComponent} from "./shop/checkout/address-check/address-check.component";
 import {PaymentComponent} from "./shop/checkout/payment/payment.component";
-import {CartEntryComponent} from "./shop/checkout/cart/cart-entry/cart-entry.component";
 import {ClubAdministrationComponent} from "./club-management/administration/club-administration.component";
 import {StockComponent} from "./club-management/administration/stock/stock.component";
 import {MemberListComponent} from "./club-management/administration/member-list/member-list.component";
@@ -93,6 +92,7 @@ import {ListFormComponent} from "./shop/modify-shop-item/list-form/list-form.com
 import {TourRouteInputComponent} from "./shop/modify-shop-item/tour-route-input/tour-route-input.component";
 import {ColorPickerModule} from "ngx-color-picker";
 import {ChooseColorComponent} from "./shop/modify-shop-item/list-form/choose-color/choose-color.component";
+import { CartEntryComponent } from './shop/checkout/cart/cart-entry/cart-entry.component';
 
 @NgModule({
 	imports: [
@@ -154,7 +154,6 @@ import {ChooseColorComponent} from "./shop/modify-shop-item/list-form/choose-col
 		CheckoutComponent,
 		AddressCheckComponent,
 		PaymentComponent,
-		CartEntryComponent,
 		ClubAdministrationComponent,
 		StockComponent,
 		MemberListComponent,
@@ -177,7 +176,8 @@ import {ChooseColorComponent} from "./shop/modify-shop-item/list-form/choose-col
 		PageNotFoundComponent,
 		ListFormComponent,
 		TourRouteInputComponent,
-		ChooseColorComponent
+		ChooseColorComponent,
+		CartEntryComponent
 	],
 	bootstrap: [
 		AppComponent
