@@ -1,9 +1,9 @@
-<memo-item-details-container *ngFor="let tour of [tourObservable | async]"
+<memo-item-details-container *ngIf="tourObservable | async as tour;"
 							 [overviewKeys]="overViewKeys"
 							 [eventObservable]="tourObservable">
-	<div component-list>
+	<!--<div component-list>-->
 		<memo-item-details-content [title]="'Details'">
-			<memo-item-table [objectObservable]="tourObservable" content></memo-item-table>
+			<memo-item-table [event]="tour" content></memo-item-table>
 		</memo-item-details-content>
 
 		<memo-item-details-content [title]="'Route'">
@@ -14,8 +14,8 @@
 			<span class="description secondary-text" content>{{tour?.description}}</span>
 		</memo-item-details-content>
 
-		<memo-item-details-content [title]="'Wer fährt mit?'" [route]="'tours/' + tour?.id + '/participants'">
-			<memo-participants [participants]="getIds(tour?.participants).slice(0,3)" content></memo-participants>
+		<memo-item-details-content [title]="'Wer fährt mit?'" [route]="'/tours/' + tour?.id + '/participants'">
+			<memo-participants [participantIds]="getIds(tour?.participants).slice(0,3)" content></memo-participants>
 		</memo-item-details-content>
-	</div>
+	<!--</div>-->
 </memo-item-details-container>

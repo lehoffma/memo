@@ -1,7 +1,5 @@
-/**
- * Created by le on 20.01.2017.
- */
-export enum gender{
+//todo?
+export enum Gender {
 	female = <any> "Damen",
 	male = <any> "Herren",
 	oneSize = <any> "One size"

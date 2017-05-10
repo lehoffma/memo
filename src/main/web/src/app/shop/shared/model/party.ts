@@ -1,36 +1,70 @@
 import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {Participant} from "./participant";
+import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 export class Party extends Event {
 
-	constructor(id: number = 9999,
-				title: string = "default",
-				date: Date = new Date(1999, 9, 19),
-				description: string = "default",
-				expectedRole: ClubRole = ClubRole.Mitglied,
-				imagePath: string = "default",
-				capacity: number = -1,
-				priceMember: number = 9999,
-				meetingPoint: number = 0,
-				private _emptySeats: number = -1,
-				private _participants: Participant[] = []) {
+	constructor(id: number,
+				title: string,
+				date: Date,
+				description: string,
+				expectedRole: ClubRole,
+				imagePath: string,
+				capacity: number,
+				priceMember: number,
+				meetingPoint: number,
+				public emptySeats: number,
+				public participants: Participant[]) {
 		super(id, title, date, description, expectedRole, imagePath, capacity, priceMember, meetingPoint);
 	}
 
-
-	get emptySeats(): number {
-		return this._emptySeats;
+	static create() {
+		return new Party(-1, "", new Date(1999, 9, 19), "", ClubRole.None, "", -1, -1, -1, -1, []);
 	}
 
-	set emptySeats(value: number) {
-		this._emptySeats = value;
+	get overviewKeys(): EventOverviewKey[] {
+		return [
+			{
+				key: "price",
+				label: "Preis",
+				pipe: "price"
+			},
+			{
+				key: "date",
+				label: "Datum",
+				pipe: "date"
+			},
+			{
+				key: "emptySeats",
+				label: "Freie Plätze"
+			},
+			{
+				key: "expectedRole",
+				label: "Für"
+			},
+		];
 	}
 
-	get participants(): Array<Participant> {
-		return this._participants;
-	}
-
-	set participants(value: Array<Participant>) {
-		this._participants = value;
+	get detailsTableKeys(): EventOverviewKey[] {
+		return [
+			{
+				key: "date",
+				label: "Datum",
+				pipe: "date"
+			},
+			{
+				key: "capacity",
+				label: "Maximale Teilnehmeranzahl"
+			},
+			{
+				key: "emptySeats",
+				label: "Freie Plätze"
+			},
+			{
+				key: "price",
+				label: "Preis",
+				pipe: "price"
+			}
+		]
 	}
 }

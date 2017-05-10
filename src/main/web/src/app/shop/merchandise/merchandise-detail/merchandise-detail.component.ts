@@ -4,12 +4,10 @@ import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
 import {isNullOrUndefined} from "util";
 import {MerchandiseOptions} from "./merchandise-options";
-import {SelectionModel} from "../../item-details/selection/object-details-selection.component";
+import {SelectionModel} from "../../../shared/model/selection-model";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
-import {AddressStore} from "app/shared/stores/adress.store";
-import {MerchStore} from "../../../shared/stores/merch.store";
 import {EventService} from "../../../shared/services/event.service";
-
+import {EventType} from "../../shared/model/event-type";
 
 @Component({
 	selector: "memo-merchandise-details",
@@ -17,25 +15,23 @@ import {EventService} from "../../../shared/services/event.service";
 	styleUrls: ["./merchandise-detail.component.scss"]
 })
 export class MerchandiseDetailComponent implements OnInit {
-	merchObservable: Observable<Merchandise> = Observable.of(new Merchandise());
+	merchObservable: Observable<Merchandise> = Observable.of(Merchandise.create());
 	clothesSizes: Observable<string[]> = this.merchObservable.map(merch => merch.clothesSizes);
 	sizeTableCategories: Observable<string[]> = this.merchObservable.map(merch => merch.sizeTableCategories);
-	overViewKeys: Observable<EventOverviewKey[]> = this.merchObservable.map(merch => this.eventService.getOverviewKeys(merch));
+	overViewKeys: Observable<EventOverviewKey[]> = this.merchObservable.map(merch => merch.overviewKeys);
 	colorSelections: Observable<SelectionModel[]> = this.merchObservable.map(merch => merch.colorSelections);
 	clothesSizeSelections: Observable<SelectionModel[]> = this.merchObservable.map(merch => merch.clothesSizeSelections);
 
 	options: MerchandiseOptions = {size: "", color: ""};
 
 	constructor(private route: ActivatedRoute,
-				private merchStore: MerchStore,
-				private addressStore: AddressStore,
 				private eventService: EventService) {
 
 	}
 
 	ngOnInit() {
 		this.merchObservable = this.route.params
-			.flatMap(params => this.merchStore.getDataByID(+params["id"]));
+			.flatMap(params => this.eventService.getById(+params["id"], {eventType: EventType.merch}));
 		this.initialize();
 	}
 

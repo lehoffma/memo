@@ -1,9 +1,9 @@
-<memo-item-details-container *ngFor="let party of [partyObservable | async]"
+<memo-item-details-container *ngIf="partyObservable | async as party;"
 							 [overviewKeys]="overViewKeys"
 							 [eventObservable]="partyObservable">
-	<div component-list>
+	<!--<div component-list>-->
 		<memo-item-details-content [title]="'Details'">
-			<memo-item-table [objectObservable]="partyObservable" content></memo-item-table>
+			<memo-item-table [event]="party" content></memo-item-table>
 		</memo-item-details-content>
 
 		<memo-item-details-content [title]="'Beschreibung'">
@@ -11,7 +11,7 @@
 		</memo-item-details-content>
 
 		<memo-item-details-content [title]="'Teilnehmer'" [route]="'partys/' + party?.id + '/participants'">
-			<memo-participants [participants]="getIds(party?.participants).slice(0,3)" content></memo-participants>
+			<memo-participants [participantIds]="getIds(party?.participants).slice(0,3)" content></memo-participants>
 		</memo-item-details-content>
-	</div>
+	<!--</div>-->
 </memo-item-details-container>

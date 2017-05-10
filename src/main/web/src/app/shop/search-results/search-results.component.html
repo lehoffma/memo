@@ -1,12 +1,22 @@
-<div *ngIf="term | async; let searchTerm; else noTerm">
-	Ergebnisse für {{searchTerm}}:
+<!--todo: filter component-->
+<!--      dropdown welches ab bestimmter größe zu seitenmenü wird-->
+<div class="sorting-results-modifier-container">
+	<memo-filtering-menu [filterOptions]="filterOptions"></memo-filtering-menu>
+	<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
+</div>
 
-	<memo-results-category [title]="'Touren'" [events]="results.tours | async"></memo-results-category>
-	<memo-results-category [title]="'Partys'" [events]="results.partys | async"></memo-results-category>
-	<memo-results-category [title]="'Merchandise'" [events]="results.merch | async"></memo-results-category>
+<div *ngIf="keywords | async; let searchTerm; else noTerm">
+	<div class="search-results-header">
+		<!--Ergebnisse für {{searchTerm}}:-->
+	</div>
 
+	<memo-results [events]="results | async"></memo-results>
 </div>
 
 <ng-template #noTerm>
-	Bitte geben Sie einen Suchbegriff ein
+	<div class="nothing-entered">
+		Bitte geben Sie einen Suchbegriff ein
+	</div>
 </ng-template>
+
+<!--todo pagination-->

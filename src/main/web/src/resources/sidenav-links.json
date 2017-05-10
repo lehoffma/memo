@@ -34,22 +34,22 @@
 		},
 		"children": [
 			{
-				"route": "profile",
+				"route": "members/PROFILE_ID",
 				"icon": "account_circle",
 				"name": "Dein Profil"
 			},
 			{
-				"route": "profile/events",
+				"route": "my-events",
 				"icon": "event",
 				"name": "Deine Events"
 			},
 			{
-				"route": "profile/history",
+				"route": "order-history",
 				"icon": "history",
 				"name": "Deine Bestellungen"
 			},
 			{
-				"route": "profile/details",
+				"route": "account-details",
 				"icon": "description",
 				"name": "Dein Account"
 			}
@@ -84,7 +84,7 @@
 				}
 			},
 			{
-				"route": "management/memberlist",
+				"route": "members",
 				"icon": "view_list",
 				"name": "Mitgliederliste"
 			},

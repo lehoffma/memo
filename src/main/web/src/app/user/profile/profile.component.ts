@@ -1,13 +1,13 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {ActivatedRoute} from "@angular/router";
-import {Observable, Subscription} from "rxjs";
-import {UserStore} from "../../shared/stores/user.store";
-import {TourStore} from "../../shared/stores/tour.store";
-import {Tour} from "../../shop/shared/model/tour";
-import {Party} from "../../shop/shared/model/party";
-import {PartyStore} from "../../shared/stores/party.store";
+import {Observable} from "rxjs";
 import {profileCategories} from "./profile-info-category";
+import {EventService} from "../../shared/services/event.service";
+import {UserService} from "../../shared/services/user.service";
+import {Event} from "../../shop/shared/model/event";
+import {LogInService} from "../../shared/services/login.service";
+import {NavigationService} from "../../shared/services/navigation.service";
 
 
 @Component({
@@ -16,41 +16,37 @@ import {profileCategories} from "./profile-info-category";
 	styleUrls: ["./profile.component.scss"]
 })
 
-export class ProfileComponent implements OnInit, OnDestroy {
-	subscription: Subscription;
+export class ProfileComponent implements OnInit {
 	userObservable: Observable<User>;
+	userEvents: Observable<Event[]>;
 
 	profileCategories = profileCategories;
 
+	isOwnProfile: Observable<boolean>;
+
 	constructor(private route: ActivatedRoute,
-				private tourStore: TourStore,
-				private userStore: UserStore,
-				private partyStore: PartyStore) {
+				private navigationService: NavigationService,
+				private eventService: EventService,
+				private loginService: LogInService,
+				private userService: UserService) {
 
 	}
 
 	ngOnInit() {
-		this.userObservable = this.route.params.map(params => +params["id"])
-			.flatMap(id => this.userStore.getDataByID(id));
+		const userId = this.route.params.map(params => +params["id"]);
+
+		this.isOwnProfile = userId.combineLatest(this.loginService.accountObservable,
+			(profileId, currentUserId) => profileId === currentUserId);
+		this.userObservable = userId.flatMap(id => this.userService.getById(id));
+		this.userEvents = this.userObservable
+			.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}));
 	}
 
-	ngOnDestroy() {
-		this.subscription.unsubscribe();
-	}
-
-	getEventsOfUser(id: number) {
-		return Observable.zip(this.tourStore.data, this.partyStore.data, (tours, partys) => {
-			//combine the two arrays into one
-			return [...tours, ...partys];
-		})
-			.map((events: (Tour | Party)[]) =>
-				events.filter(event =>
-					event.participants.find(participants => participants.id === id) !== undefined
-				)
-			);
-	}
-
-	showEvent() {
-		//todo
+	editProfile() {
+		this.route.params.map(params => +params["id"])
+			.first()
+			.subscribe(
+				id => this.navigationService.navigateByUrl(`/members/${id}/edit`)
+			)
 	}
 }

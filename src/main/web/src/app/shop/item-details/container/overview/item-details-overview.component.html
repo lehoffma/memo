@@ -1,54 +1,58 @@
-<div class="object-overview-container" *ngIf="event">
-	<div class="object-info-container">
-		<div class="object-info" *ngFor="let overviewKey of overviewKeys">
-			<ng-template [ngIf]="event[overviewKey.key]">
-				<div [ngSwitch]="overviewKey.pipe">
-					<ng-template [ngSwitchCase]="'price'">{{event[overviewKey.key] + "€"}}</ng-template>
-					<ng-template [ngSwitchCase]="'date'">{{event[overviewKey.key] | date:'shortDate'}}</ng-template>
-					<ng-template ngSwitchDefault>{{event[overviewKey.key]}}</ng-template>
-				</div>
-				<div class="secondary-text">
-					{{overviewKey.label}}
-				</div>
-			</ng-template>
+<div class="centered-container">
+
+	<div class="object-overview-container" *ngIf="event">
+		<div class="object-info-container">
+			<div class="object-info" *ngFor="let overviewKey of overviewKeys">
+				<ng-template [ngIf]="event[overviewKey.key]">
+					<div [ngSwitch]="overviewKey.pipe">
+						<ng-template [ngSwitchCase]="'price'">{{event[overviewKey.key] + "€"}}</ng-template>
+						<ng-template [ngSwitchCase]="'date'">{{event[overviewKey.key] | date:'shortDate'}}</ng-template>
+						<ng-template ngSwitchDefault>{{event[overviewKey.key]}}</ng-template>
+					</div>
+					<div class="secondary-text">
+						{{overviewKey.label}}
+					</div>
+				</ng-template>
+			</div>
+		</div>
+		<hr/>
+		<div class="add-to-cart-container">
+			<form #addToCartForm="ngForm" (ngSubmit)="addToCart(event)">
+				<ng-template [ngIf]="isMerch">
+					<md-select [(ngModel)]="model.options.color"
+							   placeholder="Farbe"
+							   [required]="true"
+							   name="colorSelectionInput">
+						<md-option *ngFor="let color of colorSelection"
+								   [value]="color.value">
+							{{color.value}}
+						</md-option>
+					</md-select>
+					<md-select [(ngModel)]="model.options.size"
+							   placeholder="Größe"
+							   [required]="true"
+							   name="sizeSelectionInput">
+						<md-option *ngFor="let size of sizeSelection" [value]="size.value">
+							{{size.value}}
+						</md-option>
+					</md-select>
+				</ng-template>
+
+				<md-select placeholder="Anzahl" name="amount" [(ngModel)]="model.amount" [required]="true">
+					<md-option *ngFor="let number of [1,2,3,4,5,6,7,8,9]" [value]="number">
+						{{number}}
+					</md-option>
+				</md-select>
+
+				<button [disabled]="!addToCartForm.valid"
+						md-raised-button
+						color="accent"
+						type="submit"
+						class="add-to-cart-button">
+					In den Warenkorb
+				</button>
+			</form>
 		</div>
 	</div>
-	<hr/>
-	<div class="add-to-cart-container">
-		<form #addToCartForm="ngForm" (ngSubmit)="addToCart(event)">
-			<ng-template [ngIf]="isMerch">
-				<md-select [(ngModel)]="model.options.color"
-						   placeholder="Farbe"
-						   [required]="true"
-						   name="colorSelectionInput">
-					<md-option *ngFor="let color of colorSelection"
-							   [value]="color.value">
-						{{color.value}}
-					</md-option>
-				</md-select>
-				<md-select [(ngModel)]="model.options.size"
-						   placeholder="Größe"
-						   [required]="true"
-						   name="sizeSelectionInput">
-					<md-option *ngFor="let size of sizeSelection" [value]="size.value">
-						{{size.value}}
-					</md-option>
-				</md-select>
-			</ng-template>
 
-			<md-select placeholder="Anzahl" name="amount" [(ngModel)]="model.amount" [required]="true">
-				<md-option *ngFor="let number of [1,2,3,4,5,6,7,8,9]" [value]="number">
-					{{number}}
-				</md-option>
-			</md-select>
-
-			<button [disabled]="!addToCartForm.valid"
-					md-raised-button
-					color="accent"
-					type="submit"
-					class="add-to-cart-button">
-				In den Warenkorb
-			</button>
-		</form>
-	</div>
 </div>

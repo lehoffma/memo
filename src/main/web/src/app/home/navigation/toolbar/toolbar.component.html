@@ -1,0 +1,30 @@
+<md-toolbar color="primary">
+	<!--The left side-->
+	<div>
+		<!--The left side is hidden when the screen size is larger than small -->
+		<div class="menu ripple" (click)="sideBarChanged()">
+			<md-icon class="material-icons">menu</md-icon>
+		</div>
+	</div>
+
+	<span class="navigation-fill-remaining-space navigation-left-space"></span>
+
+	<div class="toolbar-actions">
+		<memo-search-input></memo-search-input>
+		<memo-badge [value]="shoppingCartContent | async">
+			<md-icon (click)="takeToPage('/cart')" class="cart-icon ripple">
+				shopping_cart
+			</md-icon>
+		</memo-badge>
+	</div>
+
+	<span class="navigation-fill-remaining-space navigation-right-space"></span>
+
+	<!--The right side-->
+	<div class="navigation-right-side">
+		<memo-toolbar-element *ngFor="let link of (links|async);" [link]="link">
+		</memo-toolbar-element>
+
+		<memo-toolbar-profile-link></memo-toolbar-profile-link>
+	</div>
+</md-toolbar>

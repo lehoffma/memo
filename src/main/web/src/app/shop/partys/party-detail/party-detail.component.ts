@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
 import {Participant} from "../../shared/model/participant";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 import {EventService} from "../../../shared/services/event.service";
-import {PartyStore} from "../../../shared/stores/party.store";
+import {EventType} from "../../shared/model/event-type";
 
 
 @Component({
@@ -15,17 +15,17 @@ import {PartyStore} from "../../../shared/stores/party.store";
 })
 
 export class PartyDetailComponent implements OnInit {
-	partyObservable: Observable<Party> = Observable.of(new Party());
-	overViewKeys: Observable<EventOverviewKey[]> = this.partyObservable.map(merch => this.eventService.getOverviewKeys(merch));
+	partyObservable: Observable<Party> = Observable.of(Party.create());
+	overViewKeys: Observable<EventOverviewKey[]> = this.partyObservable.map(party => party.overviewKeys);
 
 	constructor(private route: ActivatedRoute,
-				private partyStore: PartyStore,
 				private eventService: EventService) {
 
 	}
 
 	ngOnInit() {
-		this.partyObservable = this.route.params.flatMap(params => this.partyStore.getDataByID(+params["id"]));
+		this.partyObservable = this.route.params
+			.flatMap(params => this.eventService.getById(+params["id"], {eventType: EventType.partys}));
 	}
 
 	private getIds(participants: Participant[]) {

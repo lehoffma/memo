@@ -2,19 +2,18 @@
 div.overview-preview-container > .overview-preview-header {
 	display: flex;
 	justify-content: space-between;
-	padding: 4vw 4vw 4vw 4vw;
-}
+	padding: 1rem;
+	> a {
+		color: #2196F3;
+		text-decoration: none;
+	}
 
-div.overview-preview-container > .overview-preview-header > a {
-	color: #2196F3;
-	text-decoration: none;
-}
-
-div.overview-preview-container > .overview-preview-header > h4 {
-	margin-top: 0;
-	margin-bottom: 0;
-	font-weight: 600;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+	> h4 {
+		margin-top: 0;
+		margin-bottom: 0;
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }

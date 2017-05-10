@@ -1,5 +1,7 @@
 <div class="preview-container">
-	<md-card *ngFor="let event of (events | async)" (click)="showDetails(event)">
+	<md-card class="preview-card"
+			 *ngFor="let event of (events | async)"
+			 (click)="showDetails(event)">
 		<img md-card-image src="{{event.imagePath}}">
 		<md-card-content>
 			<div class="card-content-container">

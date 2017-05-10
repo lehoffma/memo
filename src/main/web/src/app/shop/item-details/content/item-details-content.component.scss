@@ -1,4 +1,5 @@
 @import "../../../../mixins";
+@import "../centered-container";
 
 .object-details-content-container {
 	@include card-like();

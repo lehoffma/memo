@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 @Component({
-	selector: "google-maps-redirect",
+	selector: "memo-google-maps-redirect",
 	template: "redirecting.."
 })
 export class GoogleMapsRedirectComponent implements OnInit {

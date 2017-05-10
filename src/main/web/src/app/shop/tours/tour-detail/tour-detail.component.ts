@@ -4,8 +4,8 @@ import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
 import {Participant} from "../../shared/model/participant";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
-import {TourStore} from "../../../shared/stores/tour.store";
 import {EventService} from "../../../shared/services/event.service";
+import {EventType} from "../../shared/model/event-type";
 
 
 @Component({
@@ -14,8 +14,8 @@ import {EventService} from "../../../shared/services/event.service";
 	styleUrls: ["./tour-detail.component.scss"]
 })
 export class TourDetailComponent implements OnInit {
-	tourObservable: Observable<Tour> = Observable.of(new Tour());
-	overViewKeys: Observable<EventOverviewKey[]> = this.tourObservable.map(merch => this.eventService.getOverviewKeys(merch));
+	tourObservable: Observable<Tour> = Observable.of(Tour.create());
+	overViewKeys: Observable<EventOverviewKey[]> = this.tourObservable.map(tour => tour.overviewKeys);
 
 
 	tourRoute = {
@@ -36,14 +36,13 @@ export class TourDetailComponent implements OnInit {
 	};
 
 	constructor(private activatedRoute: ActivatedRoute,
-				private tourStore: TourStore,
 				private eventService: EventService) {
 
 	}
 
 	ngOnInit() {
 		this.tourObservable = this.activatedRoute.params
-			.flatMap(params => this.tourStore.getDataByID(+params["id"]));
+			.flatMap(params => this.eventService.getById(+params["id"], {eventType: EventType.tours}));
 	}
 
 	private getIds(participants: Participant[]) {

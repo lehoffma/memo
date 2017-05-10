@@ -25,7 +25,7 @@
 				"name": "Kostenübersicht"
 			},
 			{
-				"route": "management/memberlist",
+				"route": "members",
 				"icon": "",
 				"name": "Mitgliederliste"
 			},
@@ -35,10 +35,5 @@
 				"name": "Bestand"
 			}
 		]
-	},
-	{
-		"route": "cart",
-		"icon": "shopping_cart",
-		"name": ""
 	}
 ]

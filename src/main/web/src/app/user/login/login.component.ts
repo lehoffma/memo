@@ -29,8 +29,7 @@ export class LoginComponent implements OnInit {
 					this.loading = false;
 					this.wrongInput = !loginWasSuccessful;
 					if (loginWasSuccessful) {
-						//todo save which page the user was looking at before logging in and direct him there?
-						this.navigationService.navigateByUrl("/")
+						this.navigationService.navigateByUrl(this.loginService.redirectUrl)
 					}
 				},
 				error => console.error(error) //todo remove?

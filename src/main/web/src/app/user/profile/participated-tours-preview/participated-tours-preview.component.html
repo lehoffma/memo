@@ -1,0 +1,16 @@
+<div class="profile-tours-container">
+	<md-list>
+            <span *ngFor="let recentEvent of (userEvents | async); let lastTour = last"
+				  (click)="showEvent(recentEvent)">
+                <md-list-item>
+                    <img md-list-avatar src="{{recentEvent?.imagePath}}"
+						 alt="picture of the {{recentEvent.title}} event">
+                    <h3 md-line> {{recentEvent.title}} </h3>
+                    <p md-line>
+                        <span class="secondary-text"> {{recentEvent.date|date}} </span>
+                    </p>
+                </md-list-item>
+                <md-divider *ngIf="!lastTour"></md-divider>
+            </span>
+	</md-list>
+</div>

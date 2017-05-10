@@ -1,0 +1,32 @@
+<div class="dialog-container">
+	<div>
+		<!--<h1 md-dialog-title>Füge eine weitere Farbe hinzu</h1>-->
+		<div md-dialog-content>
+
+			<span [(colorPicker)]="color"
+				  [cpWidth]="'230px'"
+				  [cpPositionOffset]="'0%'"
+				  [cpDialogDisplay]="'inline'"
+				  [style.background]="color"
+				  [cpToggle]="true"></span>
+
+
+			<md-input-container>
+				<input placeholder="Name der Farbe" [(ngModel)]="colorName" mdInput>
+			</md-input-container>
+		</div>
+
+	</div>
+	<div md-dialog-actions>
+		<button md-icon-button md-dialog-close (click)="color=''">
+			<md-icon>arrow_back</md-icon>
+		</button>
+		<button md-icon-button color="warn" *ngIf="isEditing" (click)="removeObjectFromList()">
+			<md-icon>delete</md-icon>
+		</button>
+		<button md-icon-button color="primary" (click)="emitDoneEvent()">
+			<md-icon>done</md-icon>
+		</button>
+	</div>
+
+</div>

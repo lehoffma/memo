@@ -1,24 +1,27 @@
-<md-card *ngIf="currentSection | async; let section">
-	<div class="account-signup-progress">
-		<ng-template ngFor let-item [ngForOf]="sections" let-i="index">
-			<div [ngClass]="{'active': item === section, 'completed': sections.indexOf(section) > i}"></div>
-			<span *ngIf="item !== sectionEnum.three"></span>
-		</ng-template>
-	</div>
-
-	<div [ngSwitch]="section">
-		<memo-account-data-form *ngSwitchCase="sectionEnum.AccountData"
-								(onSubmit)="onSubmit($event)"></memo-account-data-form>
-		<memo-user-data-form *ngSwitchCase="sectionEnum.PersonalData"
-							 (onSubmit)="onSubmit($event)">
-
-		</memo-user-data-form>
-		<div *ngSwitchCase="sectionEnum.three">
-
+<div class="login-container">
+	<md-card *ngIf="currentSection | async as section">
+		<div class="account-signup-progress">
+			<ng-template ngFor let-item [ngForOf]="sections" let-i="index">
+				<div [ngClass]="{'active': item === section, 'completed': sections.indexOf(section) > i}"></div>
+				<span *ngIf="item !== sectionEnum.three"></span>
+			</ng-template>
 		</div>
-		<div *ngSwitchDefault>
-			Something went wrong.
-		</div>
-	</div>
 
-</md-card>
+		<div [ngSwitch]="section">
+			<memo-account-data-form *ngSwitchCase="sectionEnum.AccountData"
+									(onSubmit)="onSubmit($event)"></memo-account-data-form>
+			<memo-user-data-form *ngSwitchCase="sectionEnum.PersonalData"
+								 (onSubmit)="onSubmit($event)">
+
+			</memo-user-data-form>
+			<div *ngSwitchCase="sectionEnum.three">
+
+			</div>
+			<div *ngSwitchDefault>
+				Something went wrong.
+			</div>
+		</div>
+
+	</md-card>
+
+</div>

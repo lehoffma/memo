@@ -1,70 +1,26 @@
-export class Address {
+import {ImmutableObject} from "./util/immutable-object";
+export class Address extends ImmutableObject<Address> {
 
-	constructor(private _addressID: number = 9999,
-				private _name: string = "default",
-				private _street: string = "default",
-				private _streetNr: string = "9999",
-				private _zip: string = "default",
-				private _city: string = "default",
-				private _country: string = "Germany",) {
-
-
+	/**
+	 * @param id Die ID der Adresse (nur zwischen adressen einzigartig, d.h. ein Event könnte die selber ID haben)
+	 * @param name Ein der Adresse zugewiesener Name, z.B. "Alte WG"
+	 * @param street Der Straßenname, z.B. Walther-Rathenau-Straße
+	 * @param streetNr Die Hausnummer, z.B. 57
+	 * @param zip Die Postleitzahl, z.B. 39104
+	 * @param city Die Stadt, z.B. Magdeburg
+	 * @param country Das Land, z.B. Deutschland
+	 */
+	constructor(public readonly id: number,
+				public readonly name: string,
+				public readonly street: string,
+				public readonly streetNr: string,
+				public readonly zip: string,
+				public readonly city: string,
+				public readonly country: string) {
+		super(id);
 	}
 
-	get id(): number {
-		return this._addressID;
+	static create() {
+		return new Address(-1, "", "", "", "", "", "");
 	}
-
-	get name(): string {
-		return this._name;
-	}
-
-	get street(): string {
-		return this._street;
-	}
-
-	get streetNr(): string {
-		return this._streetNr;
-	}
-
-	get zip(): string {
-		return this._zip;
-	}
-
-	get city(): string {
-		return this._city;
-	}
-
-	get country(): string {
-		return this._country;
-	}
-
-	set id(value: number) {
-		this._addressID = value;
-	}
-
-	set name(value: string) {
-		this._name = value;
-	}
-
-	set street(value: string) {
-		this._street = value;
-	}
-
-	set streetNr(value: string) {
-		this._streetNr = value;
-	}
-
-	set zip(value: string) {
-		this._zip = value;
-	}
-
-	set city(value: string) {
-		this._city = value;
-	}
-
-	set country(value: string) {
-		this._country = value;
-	}
-
 }

@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Observable} from "rxjs";
+import {EventOverviewKey} from "../container/overview/event-overview-key";
+import {Event} from "../../shared/model/event";
 
 @Component({
 	selector: "memo-item-table",
@@ -7,17 +8,15 @@ import {Observable} from "rxjs";
 	styleUrls: ["./item-table.component.scss"]
 })
 export class ItemTableComponent implements OnInit {
-	@Input() objectObservable: Observable<any> = Observable.of();
+	@Input() event: Event;
 
-	filteredAttributes = [];
+	get tableCategories(): EventOverviewKey[] {
+		return this.event ? this.event.detailsTableKeys : [];
+	}
 
 	constructor() {
 	}
 
 	ngOnInit() {
-		this.filteredAttributes = Object.assign([], [
-			"_id", "_title", "_description", "_expectedRole", "_imagePath", "_priceMember", "_participants",
-			"_meetingPoint", "_destination", "_colors", "_sizeTable"]);
 	}
-
 }

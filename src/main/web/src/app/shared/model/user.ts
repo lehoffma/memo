@@ -1,128 +1,46 @@
 import {ClubRole} from "./club-role";
 import {UserPermissions, visitorPermissions} from "./permission";
+import {ImmutableObject} from "./util/immutable-object";
 
 
-export class User {
-
-	constructor(private _id: number = -1,
-				private _firstName: string = "",
-				private _surname: string = "",
-				private _birthDate: Date = new Date(),
-				private _telephone: string = "",
-				private _clubRole: ClubRole = ClubRole.Mitglied,
-				private _permissions: UserPermissions = visitorPermissions,
-				private _miles: number = 0,
-				private _email: string = "",
-				private _passwordHash: string = "",
-				private _isStudent: boolean = false,
-				private _hasDebitAuth: boolean = false,
-				private _imagePath: string = "") {
+export class User extends ImmutableObject<User> {
+	/**
+	 *
+	 * @param id Die ID des Users (nur zwischen Usern einzigartig)
+	 * @param firstName Vorname des Users, z.B. "Le"
+	 * @param surname Nachname des Users, z.B. "Hoffmann"
+	 * @param birthDate Geburtstag des Users, z.B. "20.04.1889"
+	 * @param telephone Handy oder Festnetznummer mit oder ohne Trennzeichen zwischen Vorwahl und Rest, z.B. "0151/18656036"
+	 * @param clubRole Die Rolle des Users innerhalb des Vereins, z.B. Vorstand
+	 * @param permissions Auf was der User zugreifen darf (kosten, schreibrechte für events etc)
+	 * @param miles Die vom User bisher gefahreren Meilen
+	 * @param email die Email des Users, z.B. "gzae@gmx.net"
+	 * @param passwordHash /
+	 * @param isStudent ob der User ein Student is (Studenten bekommen einen Discount)
+	 * @param hasDebitAuth ob der User Lastschrift Verfahren als Bezahlmethode ausgewählt hat
+	 * @param imagePath der Pfad des Profilbild
+	 */
+	constructor(public readonly id: number,
+				public readonly firstName: string,
+				public readonly surname: string,
+				public readonly birthDate: Date,
+				public readonly telephone: string,
+				public readonly clubRole: ClubRole,
+				public readonly permissions: UserPermissions,
+				public readonly miles: number,
+				public readonly email: string,
+				public readonly passwordHash: string,
+				public readonly isStudent: boolean,
+				public readonly hasDebitAuth: boolean,
+				public readonly imagePath: string) {
+		super(id);
 	}
 
-
-	get id(): number {
-		return this._id;
+	static create() {
+		return new User(-1, "", "", null, "", ClubRole.None, visitorPermissions, 0, "", "", false, false, "");
 	}
 
-	get firstName(): string {
-		return this._firstName;
-	}
-
-	get surname(): string {
-		return this._surname;
-	}
-
-	get birthDate(): Date {
-		return this._birthDate;
-	}
-
-	get telephone(): string {
-		return this._telephone;
-	}
-
-	get clubRole(): ClubRole {
-		return this._clubRole;
-	}
-
-	get permissions(): UserPermissions {
-		return this._permissions;
-	}
-
-	get miles(): number {
-		return this._miles;
-	}
-
-	get email(): string {
-		return this._email;
-	}
-
-	get passwordHash(): string {
-		return this._passwordHash;
-	}
-
-	get isStudent(): boolean {
-		return this._isStudent;
-	}
-
-	get hasDebitAuth(): boolean {
-		return this._hasDebitAuth;
-	}
-
-	get imagePath(): string {
-		return this._imagePath;
-	}
-
-
-	set id(value: number) {
-		this._id = value;
-	}
-
-	set firstName(value: string) {
-		this._firstName = value;
-	}
-
-	set surname(value: string) {
-		this._surname = value;
-	}
-
-	set birthDate(value: Date) {
-		this._birthDate = value;
-	}
-
-	set telephone(value: string) {
-		this._telephone = value;
-	}
-
-	set clubRole(value: ClubRole) {
-		this._clubRole = value;
-	}
-
-	set permissions(permissions: UserPermissions) {
-		//clone object
-		this._permissions = Object.assign({}, permissions);
-	}
-
-	set miles(value: number) {
-		this._miles = value;
-	}
-
-	set email(value: string) {
-		this._email = value;
-	}
-
-	set passwordHash(value: string) {
-		this._passwordHash = value;
-	}
-
-	set isStudent(value: boolean) {
-		this._isStudent = value;
-	}
-
-	set hasDebitAuth(value: boolean) {
-		this._hasDebitAuth = value;
-	}
-
-	set imagePath(value: string) {
-		this._imagePath = value;
+	static isUser(user: any): user is User {
+		return user && (<User>user).email !== undefined;
 	}
 }

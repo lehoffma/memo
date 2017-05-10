@@ -1,7 +1,7 @@
 <div class="participants-container">
 	<div>
 		<md-list>
-            <span *ngFor="let participant of (getParticipants(participants) | async)">
+            <span *ngFor="let participant of (participants | async)">
                 <md-list-item (click)="showDetailsOfUser(participant)">
                     <img md-list-avatar src="{{participant?.imagePath}}" alt="...">
                     <h3 md-line> {{participant?.firstName + " " + participant?.surname}} </h3>

@@ -1,4 +1,8 @@
 import {Component} from "@angular/core";
+import {EventService} from "../../shared/services/event.service";
+import {Merchandise} from "../shared/model/merchandise";
+import {Observable} from "rxjs/Observable";
+import {EventType} from "../shared/model/event-type";
 
 
 @Component({
@@ -7,7 +11,9 @@ import {Component} from "@angular/core";
 	styleUrls: ["./merchandise.component.scss"]
 })
 export class MerchandiseComponent {
-	constructor() {
+	public merch: Observable<Merchandise[]> = this.eventService.search("", {eventType: EventType.merch});
+
+	constructor(private eventService: EventService) {
 
 	}
 }

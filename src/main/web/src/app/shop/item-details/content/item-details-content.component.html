@@ -1,10 +1,15 @@
-<div class="object-details-content-container">
-	<div class="object-details-content-title">
-		<span>{{title}}</span>
-		<a *ngIf="route" routerLink="{{route}}">MEHR</a>
+<div class="centered-container">
+
+	<div class="object-details-content-container">
+		<div class="object-details-content-title">
+			<span>{{title}}</span>
+			<a *ngIf="route" routerLink="{{route}}">MEHR</a>
+		</div>
+
+		<div class="object-details-content">
+			<ng-content select="[content]"></ng-content>
+		</div>
 	</div>
 
-	<div class="object-details-content">
-		<ng-content select="[content]"></ng-content>
-	</div>
+
 </div>

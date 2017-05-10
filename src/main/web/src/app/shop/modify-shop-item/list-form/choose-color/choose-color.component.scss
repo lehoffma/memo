@@ -1,0 +1,18 @@
+
+.dialog-container {
+	height: 400px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+
+	/deep/ .color-picker {
+		left: 0 !important;
+		margin-left: 3% !important;
+		top: 5rem !important;
+	}
+
+	.mat-dialog-actions {
+		display: flex;
+		justify-content: space-between;
+	}
+}

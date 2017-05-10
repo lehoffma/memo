@@ -1,14 +1,15 @@
 <div class="detail-container" *ngFor="let event of [eventObservable | async]">
-	<!--display image with overlayed title if present-->
-	<div class="image-container" *ngIf="event?.imagePath"
-		 (click)="showDetailedImage(event?.imagePath)"
-		 [attr.object-title]="event.title">
-		<img class="image-detail" src="{{event?.imagePath}}">
+
+	<div>
+		<!--display image with overlayed title if present-->
+		<div class="image-container" *ngIf="event?.imagePath"
+			 (click)="showDetailedImage(event?.imagePath)"
+			 [attr.object-title]="event.title">
+			<img class="image-detail" src="{{event?.imagePath}}">
+		</div>
+
+		<memo-item-details-overview [event]="event" [overviewKeys]="overviewKeys | async"></memo-item-details-overview>
 	</div>
 
-	<memo-item-details-overview [event]="event" [overviewKeys]="overviewKeys | async"></memo-item-details-overview>
-
-	<div class="content">
-		<ng-content select="[component-list]"></ng-content>
-	</div>
+	<ng-content></ng-content>
 </div>

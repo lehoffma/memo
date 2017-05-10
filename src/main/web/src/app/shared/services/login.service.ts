@@ -1,17 +1,33 @@
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Injectable} from "@angular/core";
 import {Http} from "@angular/http";
+import {Observable} from "rxjs/Observable";
+import {UserService} from "./user.service";
+import {User} from "../model/user";
+import {isNullOrUndefined} from "util";
+import {MdSnackBar} from "@angular/material";
 
 @Injectable()
 export class LogInService {
 	private accountSubject: BehaviorSubject<number> = new BehaviorSubject(null);
 	public accountObservable: Observable<number> = this.accountSubject.asObservable();
 
-	private readonly loginUrl = ""; //TODO
+	public redirectUrl = "/";
 
-	constructor(private http: Http) {
+	private readonly loginUrl = "/api/login";
+	private readonly logoutUrl = "/api/logout";
+
+	private readonly authTokenKey = "auth_token";
+	private readonly profileKey = "profile";
+
+	constructor(private http: Http,
+				private snackBar: MdSnackBar,
+				private userService: UserService) {
+		const currentUser = JSON.parse(localStorage.getItem(this.profileKey));
+		if (currentUser && !isNullOrUndefined(currentUser.id)) {
+			this.pushNewData(+currentUser.id);
+		}
 	}
-
 
 	/**
 	 * Sendet POST-Request an den Server mit den übergebenen Login-Daten
@@ -26,22 +42,36 @@ export class LogInService {
 		//todo remove
 		if (!password.includes("gzae")) {
 			return Observable.of(false).delay(2000).publish().refCount();
-		}
-		else if (password.includes("gzae")) {
-			this.pushNewData(0);
-			return Observable.of(true).delay(2000).publish().refCount();
+		} else if (password.includes("gzae")) {
+			return Observable.of(true).delay(2000)
+				.do(tick => {
+					localStorage.setItem(this.authTokenKey, "test");
+					//store profile data in local storage (so the user won't get logged out if he closes the tab)
+					this.userService.getById(0).first()
+						.subscribe(user => localStorage.setItem(this.profileKey, JSON.stringify(user)));
+					this.pushNewData(0);
+				})
+				.publish().refCount();
 		}
 
 		return this.http.post(this.loginUrl, {email, password})
 			.map(response => response.json())
 			.map(json => {
-				let {id, auth_token} = json;
+				const {id, auth_token} = json;
 				if (id !== null && id >= 0) {
-					localStorage.setItem("id_token", auth_token);
-					//todo store profile data in localStorage?
-					this.pushNewData(id)
+					localStorage.setItem(this.authTokenKey, auth_token);
+					//store profile data in local storage (so the user won't get logged out if he closes the tab)
+					this.userService.getById(id).first()
+						.subscribe(user => localStorage.setItem(this.profileKey, JSON.stringify(user)));
+
+					this.pushNewData(id);
 				}
 				return id !== null;
+			})
+			.retry(3)
+			.catch(error => {
+				console.error(error);
+				return Observable.of(false);
 			})
 			//convert the observable to a hot observable, i.e. immediately perform the http request
 			//instead of waiting for someone to subscribe
@@ -52,15 +82,42 @@ export class LogInService {
 	 *
 	 * @returns {boolean}
 	 */
-	logout() {
-		localStorage.removeItem("id_token");
-		//todo remove profile data from localStorage?
-
+	logout(): Observable<boolean> {
+		//todo remove
+		localStorage.removeItem("auth_token");
+		localStorage.removeItem("profile");
 		this.pushNewData(null);
+		if (this.logoutUrl === "/api/logout") {
+			this.snackBar.open("Du wurdest ausgeloggt.", "Schließen", {
+				duration: 2000
+			});
+			return Observable.of(true);
+		}
+
+		return this.http.post(this.logoutUrl, {auth_token: localStorage.getItem(this.authTokenKey)})
+			.map(() => {
+				localStorage.removeItem(this.authTokenKey);
+				localStorage.removeItem(this.profileKey);
+				this.pushNewData(null);
+				return true;
+			})
+			.retry(3)
+			.catch(error => {
+				console.error(error);
+				return Observable.of(false);
+			})
+			//convert the observable to a hot observable, i.e. immediately perform the http request
+			//instead of waiting for someone to subscribe
+			.publish().refCount();
 	}
 
 	isLoggedIn() {
 		return this.accountSubject.getValue() !== null;
+	}
+
+	currentUser(): Observable<User> {
+		const currentId = this.accountSubject.getValue();
+		return currentId !== null ? this.userService.getById(this.accountSubject.getValue()) : Observable.of(null);
 	}
 
 	isLoggedInObservable() {
