@@ -10,12 +10,14 @@ import {EventType} from "../../shared/model/event-type";
 	styleUrls: ["./cart.component.scss"]
 })
 export class CheckoutCartComponent implements OnInit {
+
 	public shoppingCartItems = this.shoppingCartService.content
 		.flatMap(content => {
 			let getEvenstfromShoppingCart= (contentkey: string, eventType: EventType) => {
 				var events = [];
 				for (let i = 0; i < content[contentkey].length; i++) {
 					events[i] = this.eventService.getById(content[contentkey][i].id, {eventType: eventType});
+
 				}
 				return Observable.combineLatest(events)
 

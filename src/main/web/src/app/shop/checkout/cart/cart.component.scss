@@ -4,8 +4,30 @@
 	@include card-like();
 }
 .cart-title{
-	font-size: 1.9rem;
+	font-size: 1.3rem;
+	margin-bottom: 2rem;
+	margin-top: 1.9rem;
+	margin-left: 1.2rem;
+	
 }
 .cart-total-price{
+	font-size: 1.3rem;
+	display:flex;
+	justify-content: space-between;
+	margin-right: 0.5rem;
+	margin-left: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+.btn-to-pay{
+	color: white;
+	background-color: #4caf50;
 	font-size: 1.5rem;
+	border-bottom-style: none;
+	margin-bottom: 1.05rem;
+
+}
+.btn-flexbox{
+	display: flex;
+	justify-content: flex-end;
+	margin-right: 1.05rem;
 }
