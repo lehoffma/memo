@@ -55,7 +55,6 @@ import {AccountingEntryComponent} from "./club-management/accounting/accounting-
 import {CheckoutComponent} from "./shop/checkout/checkout.component";
 import {AddressCheckComponent} from "./shop/checkout/address-check/address-check.component";
 import {PaymentComponent} from "./shop/checkout/payment/payment.component";
-import {CartEntryComponent} from "./shop/checkout/cart/cart-entry/cart-entry.component";
 import {ClubAdministrationComponent} from "./club-management/administration/club-administration.component";
 import {StockComponent} from "./club-management/administration/stock/stock.component";
 import {MemberListComponent} from "./club-management/administration/member-list/member-list.component";
@@ -96,6 +95,7 @@ import {ProfilePictureFormComponent} from "./user/signup/profile-picture-form/pr
 import {PaymentMethodsFormComponent} from "./user/signup/payment-methods-form/payment-methods-form.component";
 import {DebitInputFormComponent} from "./user/signup/payment-methods-form/debit-input-form/debit-input-form.component";
 import {ImageCropperModule} from "ng2-image-cropper";
+import { CartEntryComponent } from './shop/checkout/cart/cart-entry/cart-entry.component';
 
 @NgModule({
 	imports: [
@@ -157,7 +157,6 @@ import {ImageCropperModule} from "ng2-image-cropper";
 		CheckoutComponent,
 		AddressCheckComponent,
 		PaymentComponent,
-		CartEntryComponent,
 		ClubAdministrationComponent,
 		StockComponent,
 		MemberListComponent,
@@ -180,6 +179,8 @@ import {ImageCropperModule} from "ng2-image-cropper";
 		PageNotFoundComponent,
 		ListFormComponent,
 		TourRouteInputComponent,
+		ChooseColorComponent,
+		CartEntryComponent,
 		ChooseColorComponent,
 		ProfilePictureFormComponent,
 		PaymentMethodsFormComponent,

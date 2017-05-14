@@ -1,4 +1,5 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
+
 
 @Component({
 	selector: "memo-cart-entry",
@@ -6,6 +7,11 @@ import {Component, OnInit} from "@angular/core";
 	styleUrls: ["./cart-entry.component.scss"]
 })
 export class CartEntryComponent implements OnInit {
+	@Input() event;
+	amountOptions=[]
+		.map(amount => {
+
+		})
 
 	constructor() {
 	}
@@ -14,3 +20,4 @@ export class CartEntryComponent implements OnInit {
 	}
 
 }
+

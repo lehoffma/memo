@@ -1,5 +1,16 @@
 <div class="cart">
-	<div *ngFor="let item of (shoppingCartItems|async)">
-		<div></div>
+	<span class="cart-title">Warenkorb:</span>
+	<div *ngIf="shoppingCartItems|async as events">
+		<memo-cart-entry *ngFor="let tour of events.tours" [event]="tour">
+
+		</memo-cart-entry>
+		<memo-cart-entry *ngFor="let merch of events.merch" [event]="merch">
+
+		</memo-cart-entry>
+		<memo-cart-entry *ngFor="let party of events.partys" [event]="party">
+
+		</memo-cart-entry>
 	</div>
+	<div class="cart-total-price">Gesamtsumme: <span> €</span></div>
+	<div class="btn-flexbox"><button class="btn-to-pay"> Zur Kasse </button></div>
 </div>
