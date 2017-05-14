@@ -95,7 +95,7 @@ import {ProfilePictureFormComponent} from "./user/signup/profile-picture-form/pr
 import {PaymentMethodsFormComponent} from "./user/signup/payment-methods-form/payment-methods-form.component";
 import {DebitInputFormComponent} from "./user/signup/payment-methods-form/debit-input-form/debit-input-form.component";
 import {ImageCropperModule} from "ng2-image-cropper";
-import { CartEntryComponent } from './shop/checkout/cart/cart-entry/cart-entry.component';
+import {CartEntryComponent} from "./shop/checkout/cart/cart-entry/cart-entry.component";
 
 @NgModule({
 	imports: [

@@ -8,7 +8,7 @@ import {Component, Input, OnInit} from "@angular/core";
 })
 export class CartEntryComponent implements OnInit {
 	@Input() event;
-	amountOptions=[]
+	amountOptions = []
 		.map(amount => {
 
 		})
