@@ -1,0 +1,26 @@
+<input #fileInput type="file" (change)="emitFormData(); updatePreview($event)" [multiple]="multiple" hidden>
+
+<div class="image-preview-container">
+	<div>
+		<h5>Originalbild</h5>
+		<div class="image-container">
+			<img-cropper #cropper [image]="data" [settings]="imageCropperSettings"></img-cropper>
+			<button md-raised-button type="button"
+					(click)="fileInput.click()"
+					color="accent"
+					[style.width]="imageCropperSettings.width + 'px'">
+				<md-icon>photo_camera</md-icon>
+				Bild hochladen
+			</button>
+		</div>
+	</div>
+
+	<div>
+		<h5>Resultierendes Profilbild</h5>
+		<div class="image-container cropped-profile-picture">
+			<img [src]="data.image"
+				 [width]="imageCropperSettings.croppedWidth" [height]="imageCropperSettings.croppedHeight"
+				 (click)="fileInput.click()">
+		</div>
+	</div>
+</div>

@@ -1,0 +1,28 @@
+@import "../../login/login.component";
+@import "../../../../theme";
+
+form > button {
+	margin-bottom: 0;
+}
+
+.payment-method-choice {
+	display: flex;
+	justify-content: space-around;
+
+	.payment-method-option {
+		//border: 1px solid grey;
+
+		cursor: pointer;
+		height: 50px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 2%;
+		border: 2px solid #ededed;
+
+		&.selected-payment-method {
+			font-weight: bold;
+			border-color: mat-color($primary);
+		}
+	}
+}

@@ -44,7 +44,6 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ItemDetailsOverviewComponent} from "./shop/item-details/container/overview/item-details-overview.component";
 import {AccountDataFormComponent} from "./user/signup/account-data-form/account-data-form.component";
 import {UserDataFormComponent} from "./user/signup/user-data-form/user-data-form.component";
-import {ImageUploadPreviewComponent} from "./user/signup/user-data-form/image-upload-preview/image-upload-preview.component";
 import {ItemImagePopupComponent} from "./shop/item-details/container/image-popup/item-image-popup.component";
 import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-link/toolbar-profile-link.component";
 import {AccountDetailsComponent} from "./user/account-details/account-details.component";
@@ -93,6 +92,10 @@ import {ListFormComponent} from "./shop/modify-shop-item/list-form/list-form.com
 import {TourRouteInputComponent} from "./shop/modify-shop-item/tour-route-input/tour-route-input.component";
 import {ColorPickerModule} from "ngx-color-picker";
 import {ChooseColorComponent} from "./shop/modify-shop-item/list-form/choose-color/choose-color.component";
+import {ProfilePictureFormComponent} from "./user/signup/profile-picture-form/profile-picture-form.component";
+import {PaymentMethodsFormComponent} from "./user/signup/payment-methods-form/payment-methods-form.component";
+import {DebitInputFormComponent} from "./user/signup/payment-methods-form/debit-input-form/debit-input-form.component";
+import {ImageCropperModule} from "ng2-image-cropper";
 
 @NgModule({
 	imports: [
@@ -107,7 +110,8 @@ import {ChooseColorComponent} from "./shop/modify-shop-item/list-form/choose-col
 		}),
 		Md2Module,
 		ColorPickerModule,
-		PasswordStrengthBarModule
+		PasswordStrengthBarModule,
+		ImageCropperModule
 	],
 	declarations: [
 		AppComponent,
@@ -142,7 +146,6 @@ import {ChooseColorComponent} from "./shop/modify-shop-item/list-form/choose-col
 		ItemDetailsOverviewComponent,
 		AccountDataFormComponent,
 		UserDataFormComponent,
-		ImageUploadPreviewComponent,
 		ItemImagePopupComponent,
 		ToolbarProfileLinkComponent,
 		AccountDetailsComponent,
@@ -177,7 +180,10 @@ import {ChooseColorComponent} from "./shop/modify-shop-item/list-form/choose-col
 		PageNotFoundComponent,
 		ListFormComponent,
 		TourRouteInputComponent,
-		ChooseColorComponent
+		ChooseColorComponent,
+		ProfilePictureFormComponent,
+		PaymentMethodsFormComponent,
+		DebitInputFormComponent,
 	],
 	bootstrap: [
 		AppComponent

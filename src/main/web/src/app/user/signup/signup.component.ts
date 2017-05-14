@@ -5,6 +5,8 @@ import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs";
 import {SignUpSubmitEvent} from "./signup-submit-event";
 import {SignUpSection} from "./signup-section";
+import {PaymentInfo} from "./payment-methods-form/debit-input-form/payment-info";
+import {UserService} from "../../shared/services/user.service";
 
 @Component({
 	selector: "memo-signup",
@@ -14,12 +16,15 @@ import {SignUpSection} from "./signup-section";
 export class SignUpComponent implements OnInit {
 	private currentDate: Date = new Date();
 	private newUser: User = User.create();
+	private newUserProfilePicture;
+	private newUserDebitInfo: PaymentInfo;
 
 	sectionEnum = SignUpSection;
-	sections = [SignUpSection.AccountData, SignUpSection.PersonalData, SignUpSection.three];
+	sections = [SignUpSection.AccountData, SignUpSection.PersonalData, SignUpSection.PaymentMethods];
 	public currentSection: Observable<SignUpSection> = this.activatedRoute.params.map(params => params["step"]);
 
 	constructor(private navigationService: NavigationService,
+				private userService: UserService,
 				private activatedRoute: ActivatedRoute) {
 	}
 
@@ -30,7 +35,7 @@ export class SignUpComponent implements OnInit {
 			.filter(section => section !== SignUpSection.AccountData)
 			.filter(section => this.newUser.email === "" || this.newUser.passwordHash === "")
 			.subscribe(
-				section => this.navigateToSection(SignUpSection.AccountData)
+				// section => this.navigateToSection(SignUpSection.AccountData)
 			);
 	}
 
@@ -59,14 +64,14 @@ export class SignUpComponent implements OnInit {
 	 */
 	navigateToNextSection(currentSection: SignUpSection): boolean {
 		//done
-		if (currentSection === SignUpSection.three) {
-			return false
+		if (currentSection === SignUpSection.PaymentMethods) {
+			return true;
 		}
 		//next section
 		else {
 			let nextSection = this.getNextSection(currentSection);
 			this.navigateToSection(nextSection);
-			return true;
+			return false;
 		}
 	}
 
@@ -75,6 +80,7 @@ export class SignUpComponent implements OnInit {
 	 * @param event
 	 */
 	onSubmit(event: SignUpSubmitEvent) {
+		console.log(event);
 		//extract section, email and passwordHash properties
 		const {
 			section,
@@ -84,7 +90,9 @@ export class SignUpComponent implements OnInit {
 			surname,
 			birthday,
 			phoneNumber,
-			isStudent
+			isStudent,
+			profilePicture,
+			paymentInfo
 		} = event;
 
 		switch (section) {
@@ -93,14 +101,22 @@ export class SignUpComponent implements OnInit {
 				break;
 			case SignUpSection.PersonalData:
 				this.newUser.setProperties({firstName, surname, birthDate: birthday, telephone: phoneNumber, isStudent});
+				this.newUserProfilePicture = profilePicture;
 				break;
-			case SignUpSection.three:
+			case SignUpSection.PaymentMethods:
+				this.newUserDebitInfo = paymentInfo;
 				break;
 		}
 
 		//next section
 		let isLastScreen = this.navigateToNextSection(section);
 
-		//todo tu etwas wenn isLastScreen === true
+		if (isLastScreen) {
+			this.userService.addOrModify(this.newUser, {profilePicture: this.newUserProfilePicture, paymentInfo: this.newUserDebitInfo})
+				.subscribe(newUserId => {
+					//todo: show success page? ¯\_(ツ)_/¯
+					console.log(newUserId);
+				});
+		}
 	}
 }

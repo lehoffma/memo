@@ -16,6 +16,8 @@ export class ToolbarComponent implements OnInit {
 	 */
 	@Output() sideBarOpened = new EventEmitter();
 
+	//todo replace buttons with links (middle mouse doesnt work with buttons..)
+
 	//die links die vom User gesehen werden dürfen als observable
 	links: Observable<Link[]> = this.navigationService.toolbarLinks;
 

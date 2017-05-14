@@ -3,7 +3,7 @@
 		<div class="account-signup-progress">
 			<ng-template ngFor let-item [ngForOf]="sections" let-i="index">
 				<div [ngClass]="{'active': item === section, 'completed': sections.indexOf(section) > i}"></div>
-				<span *ngIf="item !== sectionEnum.three"></span>
+				<span *ngIf="item !== sectionEnum.PaymentMethods"></span>
 			</ng-template>
 		</div>
 
@@ -14,9 +14,12 @@
 								 (onSubmit)="onSubmit($event)">
 
 			</memo-user-data-form>
-			<div *ngSwitchCase="sectionEnum.three">
 
-			</div>
+			<memo-payment-methods-form *ngSwitchCase="sectionEnum.PaymentMethods"
+									   (onSubmit)="onSubmit($event)"
+									   [user]="newUser">
+
+			</memo-payment-methods-form>
 			<div *ngSwitchDefault>
 				Something went wrong.
 			</div>

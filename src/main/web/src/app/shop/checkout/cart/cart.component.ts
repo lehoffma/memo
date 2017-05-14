@@ -11,7 +11,6 @@ export class CheckoutCartComponent implements OnInit {
 		.map(content => [...content.merch, ...content.partys, ...content.tours]);
 
 	constructor(private shoppingCartService: ShoppingCartService) {
-
 	}
 
 	ngOnInit() {

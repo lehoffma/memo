@@ -1,0 +1,97 @@
+<form (ngSubmit)="emitOnChange(debitInputForm)" #debitInputForm="ngForm" novalidate>
+	<h3>Kontoinformationen</h3>
+	<md-input-container
+		[dividerColor]="(ibanInput.touched && (ibanInput.invalid || !isValidIBAN(model.iban))) ? 'warn'  : 'primary'">
+		<input
+			placeholder="IBAN"
+			name="ibanInput"
+			#ibanInput="ngModel"
+			[(ngModel)]="model.iban"
+			(blur)="emitOnChange(debitInputForm)"
+			mdInput required>
+		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
+		<md-hint align="end" class="error-message"
+				 *ngIf="ibanInput.touched && (ibanInput.invalid || !isValidIBAN(model.iban))">
+			{{model.iban.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist inkorrekt!"}}
+		</md-hint>
+	</md-input-container>
+
+	<h3>Kontoinhaber</h3>
+	<md-input-container>
+		<input placeholder="Name"
+			   name="nameInput"
+			   #nameInput="ngModel"
+			   [(ngModel)]="model.name"
+			   (blur)="emitOnChange(debitInputForm)"
+			   mdInput required>
+		<md-hint align="end" class="error-message" *ngIf="nameInput.touched && (nameInput.invalid)">
+			Dies ist ein Pflichtfeld!
+		</md-hint>
+	</md-input-container>
+	<md-input-container>
+		<input placeholder="Firma"
+			   name="companyInput"
+			   #companyInput="ngModel"
+			   [(ngModel)]="model.company"
+			   (blur)="emitOnChange(debitInputForm)"
+			   mdInput>
+	</md-input-container>
+
+	<md-input-container>
+		<input placeholder="Strasse / Nr."
+			   name="streetInput"
+			   #streetInput="ngModel"
+			   [(ngModel)]="model.street"
+			   (blur)="emitOnChange(debitInputForm)"
+			   mdInput required>
+		<md-hint align="end" class="error-message" *ngIf="streetInput.touched && (streetInput.invalid)">
+			Dies ist ein Pflichtfeld!
+			<!--todo validation?-->
+		</md-hint>
+	</md-input-container>
+
+	<md-input-container>
+		<input placeholder="PLZ"
+			   name="plzInput"
+			   #plzInput="ngModel"
+			   pattern="^([0]{1}[1-9]{1}|[1-9]{1}[0-9]{1})[0-9]{3}$"
+			   [(ngModel)]="model.plz"
+			   (blur)="emitOnChange(debitInputForm)"
+			   mdInput required>
+		<md-hint align="end" class="error-message" *ngIf="plzInput.touched && (plzInput.invalid)">
+			{{model.plz.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene PLZ ist nicht gültig!"}}
+		</md-hint>
+	</md-input-container>
+
+	<md-input-container>
+		<input placeholder="Ort"
+			   name="residenceInput"
+			   #residenceInput="ngModel"
+			   [(ngModel)]="model.residence"
+			   (blur)="emitOnChange(debitInputForm)"
+			   mdInput required>
+		<md-hint align="end" class="error-message" *ngIf="residenceInput.touched && (residenceInput.invalid)">
+			Dies ist ein Pflichtfeld!
+		</md-hint>
+	</md-input-container>
+
+	<!--todo: autocomplete with a list of countries-->
+	<md-input-container>
+		<input placeholder="Land"
+			   name="countryInput"
+			   #countryInput="ngModel"
+			   [(ngModel)]="model.country"
+			   (blur)="emitOnChange(debitInputForm)"
+			   mdInput required>
+		<md-hint align="end" class="error-message" *ngIf="countryInput.touched && (countryInput.invalid)">
+			Dies ist ein Pflichtfeld!
+		</md-hint>
+	</md-input-container>
+
+	<!--<button tyemitOnChangebmit"-->
+	<!--[disabled]="!debitInputForm.form.valid"-->
+	<!--md-raised-button-->
+	<!--color="primary">-->
+	<!--Speichern-->
+	<!--</button>-->
+</form>

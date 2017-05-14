@@ -14,14 +14,18 @@ export class UserDataFormComponent implements OnInit {
 		surname: undefined,
 		birthday: undefined,
 		phoneNumber: undefined,
-		isStudent: undefined
+		isStudent: undefined,
+		profilePicture: undefined
 	};
+
+	defaultImageUrl = "resources/images/Logo.png";
 
 	constructor() {
 	}
 
 	ngOnInit() {
 	}
+
 
 	submit() {
 		this.onSubmit.emit({
@@ -30,12 +34,12 @@ export class UserDataFormComponent implements OnInit {
 			surname: this.model.surname,
 			birthday: this.model.birthday,
 			phoneNumber: this.model.phoneNumber,
-			isStudent: this.model.isStudent
+			isStudent: this.model.isStudent,
+			profilePicture: this.model.profilePicture
 		});
 	}
 
-	imageUploaded(event) {
-		console.log(event);
+	profilePictureChanged(event: FormData) {
+		this.model.profilePicture = event;
 	}
-
 }
