@@ -11,8 +11,8 @@
 
 		</memo-cart-entry>
 	</div>
-	<div class="cart-total-price">Gesamtsumme: <span> €</span></div>
+	<div class="cart-total-price">Gesamtsumme: <span>{{totalAmount|async}} €</span></div>
 	<div class="btn-flexbox">
-		<button class="btn-to-pay"> Zur Kasse</button>
+		<a md-button class="btn-to-pay" routerLink="/checkout"> Zur Kasse </a>
 	</div>
 </div>
