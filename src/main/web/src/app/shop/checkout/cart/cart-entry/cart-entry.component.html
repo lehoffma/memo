@@ -4,9 +4,9 @@
 	{{event.amount}} x
 	{{event.event.tablesize}}
 	{{event.event.color}}
-	<md-select placeholder="amount">
-		<md-option *ngFor="let food of amountOptions" [value]="food.value">
-			{{ food.viewValue }}
+	<md-select [(ngModel)]="event.amount" (ngModelChange)="updateEventAmount()" placeholder="amount">
+		<md-option *ngFor="let amount of amountOptions" [value]="amount">
+			{{amount}}
 		</md-option>
 	</md-select>
 	<div class="cart-entry-price">{{event.event.price}} € </div>

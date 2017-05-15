@@ -25,7 +25,8 @@ export class CheckoutCartComponent implements OnInit {
 						for (var i = 0; i < events.length; i++) {
 							events[i] = {
 								event: events[i],
-								amount: content[contentkey][i].amount
+								amount: content[contentkey][i].amount,
+								options: content[contentkey][i].options
 							}
 						}
 						return events;
