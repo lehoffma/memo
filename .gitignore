@@ -60,4 +60,6 @@ fabric.properties
 
 target/
 /src/main/webapp/*
-/memo-server.iml
+/memo.iml
+/lib/
+
