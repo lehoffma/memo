@@ -78,13 +78,15 @@ export class UserService implements ServletService<User> {
 	 * Sendet ein User Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
 	 * gibt dann das erstellte Objekt wieder an den Client zurück
 	 * @param user
+	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	addOrModify(user: User): Observable<User> {
+	addOrModify(user: User, options?: any): Observable<User> {
+		const {profilePicture, paymentInfo} = options;
 		const headers = new Headers({"Content-Type": "application/json"});
-		const options = new RequestOptions({headers});
+		const requestOptions = new RequestOptions({headers});
 
-		return this.http.post(`/api/user`, {user}, options)
+		return this.http.post(`/api/user`, {user, profilePicture, paymentInfo}, requestOptions)
 			.map(response => response.json())
 			.flatMap(userId => this.getById(userId))
 			//retry 3 times before throwing an error

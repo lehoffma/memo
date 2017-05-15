@@ -16,7 +16,7 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 
 	/**
 	 * @param properties
-	 * @returns {Address} this
+	 * @returns {PaymentInfo} this
 	 */
 	setProperties(properties: Partial<T>) {
 		Object.keys(properties)

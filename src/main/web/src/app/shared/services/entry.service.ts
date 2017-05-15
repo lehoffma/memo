@@ -72,12 +72,13 @@ export class EntryService implements ServletService<Entry> {
 	/**
 	 *
 	 * @param entry
+	 * @param options
 	 */
-	addOrModify(entry: Entry): Observable<Entry> {
+	addOrModify(entry: Entry, options?: any): Observable<Entry> {
 		const headers = new Headers({"Content-Type": "application/json"});
-		const options = new RequestOptions({headers});
+		const requestOptions = new RequestOptions({headers});
 
-		return this.http.post(`/api/entry`, {entry}, options)
+		return this.http.post(`/api/entry`, {entry}, requestOptions)
 			.map(response => response.json())
 			//todo flatMap to this.get(id)
 			.map(userJson => Entry.create().setProperties(userJson))

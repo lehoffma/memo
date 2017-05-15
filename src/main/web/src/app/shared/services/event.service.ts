@@ -51,6 +51,7 @@ export class EventService implements ServletService<Event> {
 	 */
 	getById(eventId: number, options?: { eventType: EventType, refresh?: boolean }): Observable<Event> {
 		const {eventType, refresh} = options;
+
 		let url = `${this.baseUrl}?id=${eventId}&type=${eventType}`;
 
 		//return cached version if available to reduce number of http request necessary
@@ -145,9 +146,9 @@ export class EventService implements ServletService<Event> {
 	 * @param event
 	 * @returns {Observable<T>}
 	 */
-	addOrModify(event: Event): Observable<Event> {
+	addOrModify(event: Event, options?: any): Observable<Event> {
 		const headers = new Headers({"Content-Type": "application/json"});
-		const options = new RequestOptions({headers});
+		const requestOptions = new RequestOptions({headers});
 		const eventType = this.eventUtilService.getEventType(event);
 
 		//todo remove when backend is running
@@ -156,7 +157,7 @@ export class EventService implements ServletService<Event> {
 			return Observable.of(event);
 		}
 
-		return this.http.post(this.baseUrl, {event}, options)
+		return this.http.post(this.baseUrl, {event}, requestOptions)
 			.map(response => response.json())
 			.map(eventJson => this.eventFactoryService.build(eventType).setProperties(eventJson))
 			.do(event => this.cache.addOrModify(event))

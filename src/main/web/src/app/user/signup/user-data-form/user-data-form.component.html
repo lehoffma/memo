@@ -1,10 +1,17 @@
-<h4>Nutzerdaten</h4>
+<h3>Nutzerdaten</h3>
 <form (ngSubmit)="submit()" #userDataForm="ngForm" novalidate>
 	<!--Profilbild-->
-	<!--TODO-->
-	<!--<memo-image-upload-preview></memo-image-upload-preview>-->
+	<h4>Dein Profilbild</h4>
+	<memo-profile-picture-form
+		[image]="defaultImageUrl"
+		(onChange)="profilePictureChanged($event)">
+
+	</memo-profile-picture-form>
+
+	<div class="form-divider"></div>
 
 	<!--Vorname/Nachname-->
+	<h4>Deine Daten</h4>
 	<md-input-container
 		[dividerColor]="(firstName.touched && firstName.invalid) ? 'warn' : 'primary'">
 		<input mdInput

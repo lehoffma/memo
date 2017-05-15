@@ -9,6 +9,7 @@
 md-card {
 	margin: 1rem;
 	max-width: 500px;
+	width: 100%;
 }
 
 md-input-container {
@@ -24,7 +25,7 @@ form button {
 	margin-bottom: 2vh;
 }
 
-h4 {
+h4, h3 {
 	text-align: center;
 }
 
