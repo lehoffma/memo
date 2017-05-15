@@ -61,7 +61,7 @@ export const ROUTES = [
 	{path: "signup", redirectTo: "signup/account-data", pathMatch: "full"},
 	{path: "signup/:step", component: SignUpComponent},
 	{path: "cart", component: CheckoutCartComponent},
-	{path: "checkout", component: CheckoutComponent},
+	{path: "checkout", component: CheckoutComponent, canActivate: [AuthenticatedGuard]},
 
 	//nur eingeloggte User können diese Routen sehen
 	{path: "my-events", component: MyToursComponent},
