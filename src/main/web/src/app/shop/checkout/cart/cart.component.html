@@ -1,4 +1,5 @@
 <div class="cart">
+	<md-card>
 	<span class="cart-title">Warenkorb:</span>
 	<div *ngIf="shoppingCartItems|async as events">
 		<memo-cart-entry *ngFor="let tour of events.tours" [event]="tour">
@@ -15,4 +16,5 @@
 	<div class="btn-flexbox">
 		<a md-button class="btn-to-pay" routerLink="/checkout"> Zur Kasse </a>
 	</div>
+	</md-card>
 </div>

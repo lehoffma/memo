@@ -5,15 +5,17 @@
 .cart-entry-title {
 	margin-top: 0.5rem;
 	font-size: 1.1rem;
-	margin-left: 0.5rem;
+
+}
+.close{
+	display: flex;
+	justify-content: flex-end;
 }
 
 .cart-entry-price {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 0.5rem;
-	margin-right: 0.5rem;
-	margin-left: 0.5rem;
 	margin-top: 0.8rem;
 }
 
@@ -21,7 +23,7 @@
 	border: none;
 	border-top: 1px solid grey;
 	height: 1px;
-	margin: 0px 0px 0px 80%;
+	margin: 0px 0px 0px 70%;
 
 }
 
@@ -31,8 +33,10 @@
 	font-weight: bold;
 	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
-	margin-right: 0.5rem;
+
+
 }
 .amount{
-
+	margin: 0px 0px 0px 20%;
+	weight: 50%;
 }
