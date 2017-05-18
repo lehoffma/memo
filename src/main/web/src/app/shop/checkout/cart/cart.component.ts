@@ -25,15 +25,16 @@ export class CheckoutCartComponent implements OnInit {
 						for (var i = 0; i < events.length; i++) {
 							events[i] = {
 								event: events[i],
-								amount: content[contentkey][i].amount
+								amount: content[contentkey][i].amount,
+								options: content[contentkey][i].options
 							}
 						}
 						return events;
 					})
 			}
-			let tours = getEvenstfromShoppingCart("tours", EventType.tours);
-			let merch = getEvenstfromShoppingCart("merch", EventType.merch);
-			let partys = getEvenstfromShoppingCart("partys", EventType.partys);
+			let tours = getEvenstfromShoppingCart("tours", EventType.tours).defaultIfEmpty([]);
+			let merch = getEvenstfromShoppingCart("merch", EventType.merch).defaultIfEmpty([]);
+			let partys = getEvenstfromShoppingCart("partys", EventType.partys).defaultIfEmpty([]);
 			return Observable.combineLatest(tours, merch, partys).map(eventsArray => {
 				return {
 					tours: eventsArray[0],
@@ -42,7 +43,11 @@ export class CheckoutCartComponent implements OnInit {
 				}
 			})
 		});
-
+	public totalAmount = this.shoppingCartItems.map(items => {
+		return items.tours.reduce((prev, curr) => prev + curr.amount*curr.event.price, 0) +
+			items.merch.reduce((prev, curr) => prev + curr.amount*curr.event.price, 0) +
+			items.partys.reduce((prev, curr) => prev + curr.amount*curr.event.price, 0);
+	})
 
 	constructor(private shoppingCartService: ShoppingCartService, private eventService: EventService) {
 	}

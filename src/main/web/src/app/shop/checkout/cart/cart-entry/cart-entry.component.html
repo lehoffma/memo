@@ -1,15 +1,18 @@
 <div class="cart-entry-border">
 
 	<div class="cart-entry-title">{{event.event.title}}</div>
-	{{event.amount}} x
-	{{event.event.tablesize}}
-	{{event.event.color}}
-	<md-select placeholder="amount">
-		<md-option *ngFor="let food of amountOptions" [value]="food.value">
-			{{ food.viewValue }}
-		</md-option>
-	</md-select>
-	<div class="cart-entry-price">{{event.event.price}} €</div>
+
+	<div class="cart-entry-price">
+		<md-select class="amount" [(ngModel)]="event.amount" (ngModelChange)="updateEventAmount()" placeholder="Anzahl">
+			<md-option *ngFor="let amount of amountOptions" [value]="amount">
+				{{amount}}
+			</md-option>
+		</md-select>
+		{{event.event.price}} €
+	</div>
+	{{event.options.size}}
+	{{event.options.color}}
+
 	<hr class="cart-entry-price-border">
 	<div class="cart-entry-sum">{{event.event.price*event.amount}} €</div>
 </div>

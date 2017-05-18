@@ -35,10 +35,16 @@ export class ShoppingCartService implements OnInit {
 	 */
 	private remove(type: EventType, id: number, content: ShoppingCartContent) {
 		let itemIndex = content[type].findIndex(cardItem => cardItem.id === id);
-		if (itemIndex) {
+		if (itemIndex>=0) {
 			//remove
-			content[type].splice(itemIndex, 1);
+			if(content[type][itemIndex].amount===1){
+				content[type].splice(itemIndex, 1)
+			}
+			else {
+				content[type][itemIndex].amount--;
+			}
 		}
+
 		//das objekt gibt es nicht :(
 		return content;
 	}

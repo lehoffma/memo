@@ -30,6 +30,7 @@ import {ModifyShopItemComponent} from "./shop/modify-shop-item/modify-shop-item.
 import {IsOrganizerGuard} from "./shared/route-guards/is-organizer.guard";
 import {IsValidItemTypeGuard} from "./shared/route-guards/is-valid-itemtype.guard";
 import {PageNotFoundComponent} from "./util/page-not-found/page-not-found.component";
+import {CheckoutComponent} from "./shop/checkout/checkout.component";
 export const ROUTES = [
 	{path: "", component: HomeComponent},
 
@@ -60,6 +61,7 @@ export const ROUTES = [
 	{path: "signup", redirectTo: "signup/account-data", pathMatch: "full"},
 	{path: "signup/:step", component: SignUpComponent},
 	{path: "cart", component: CheckoutCartComponent},
+	{path: "checkout", component: CheckoutComponent, canActivate: [AuthenticatedGuard]},
 
 	//nur eingeloggte User können diese Routen sehen
 	{path: "my-events", component: MyToursComponent},
@@ -77,4 +79,5 @@ export const ROUTES = [
 	{path: "**", component: PageNotFoundComponent},
 	{path: "page-not-found", component: PageNotFoundComponent},
 	{path: "redirect", component: GoogleMapsRedirectComponent}
+
 ];

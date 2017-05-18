@@ -10,16 +10,18 @@
 
 .cart-entry-price {
 	display: flex;
-	justify-content: flex-end;
+	justify-content: space-between;
 	margin-bottom: 0.5rem;
 	margin-right: 0.5rem;
+	margin-left: 0.5rem;
+	margin-top: 0.8rem;
 }
 
 .cart-entry-price-border {
 	border: none;
 	border-top: 1px solid grey;
 	height: 1px;
-	margin: 0px 0px 0px 320px;
+	margin: 0px 0px 0px 80%;
 
 }
 
@@ -30,4 +32,7 @@
 	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
 	margin-right: 0.5rem;
+}
+.amount{
+
 }
