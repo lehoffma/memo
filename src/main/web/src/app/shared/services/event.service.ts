@@ -144,6 +144,7 @@ export class EventService implements ServletService<Event> {
 	 * Sendet ein Event Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
 	 * gibt dann das erstellte Objekt wieder an den Client zurück
 	 * @param event
+	 * @param options
 	 * @returns {Observable<T>}
 	 */
 	addOrModify(event: Event, options?: any): Observable<Event> {

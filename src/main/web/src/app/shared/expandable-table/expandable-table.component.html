@@ -1,0 +1,146 @@
+<div class="expandable-table-component-container">
+	<div class="expandable-table-header expandable-table-row"
+		 [ngClass]="{'items-selected-header': amountOfSelectedEntries > 0}">
+		<div *ngIf="amountOfSelectedEntries === 0; then header; else actionHeader">
+
+		</div>
+		<ng-template #header>
+			<div class="expandable-table-header-title">
+				<!--todo-->
+				Mitgliederliste
+			</div>
+
+			<div class="expandable-table-header-actions ">
+				<button md-button color="accent" (click)="addItem()">
+					HINZUFÜGEN
+				</button>
+			</div>
+		</ng-template>
+		<ng-template #actionHeader>
+			<div class="expandable-table-header-action-title">
+				{{amountOfSelectedEntries}} {{amountOfSelectedEntries > 1 ? 'Einträge' : 'Eintrag'}} ausgewählt.
+			</div>
+			<div class="expandable-table-header-actions">
+				<button md-icon-button (click)="deleteSelected()">
+					<md-icon>delete</md-icon>
+				</button>
+			</div>
+		</ng-template>
+	</div>
+
+	<div class="expandable-table-container">
+		<table class="expandable-table">
+			<thead>
+			<tr class="expandable-table-header-row expandable-table-row">
+				<th>
+					<!--empty because of expand icon-->
+				</th>
+				<!--todo tooltips-->
+				<!--mdTooltip="Tooltip!" [mdTooltipPosition]="'below'"-->
+				<th *ngFor="let columnKey of columnKeys"
+					class="sortable-column"
+					[ngClass]="{'sorted-column': sortedBy?.key === columnKey.key}"
+					(click)="sort(columnKey.key)">
+					<div>
+						{{columnKey.title}}
+						<md-icon [@expandedState]="sortedBy?.descending"
+								 [style.visibility]="sortedBy?.key === columnKey.key ? 'visible' : 'hidden'">
+							arrow_upward
+						</md-icon>
+					</div>
+				</th>
+				<th class="expandable-table-selectall-checkbox">
+					<md-checkbox [(ngModel)]="everythingIsSelected"
+								 (ngModel)="changeSelectedStatusOfAllItems(!everythingIsSelected)">
+
+					</md-checkbox>
+				</th>
+				<th>
+					<!--todo more empty columns if showActionsAsSeparateRows?-->
+					<!--empty because of the actions button-->
+				</th>
+			</tr>
+			</thead>
+			<ng-template ngFor let-dataObject
+						 [ngForOf]="data | slice:((currentPage-1)*rowsPerPage):(currentPage*rowsPerPage)">
+
+				<tbody class="expandable-table-body">
+				<tr class="expandable-table-body-main-row expandable-table-row"
+					[ngClass]="{'selected-row': selectedStatusList[dataObject.id]}"
+					(click)="toggleSelectedStatus(dataObject)">
+					<td>
+						<!--toggle expanded status of the row-->
+						<button md-icon-button type="button"
+								(click)="toggleExpandedStatus(dataObject); $event.stopPropagation()">
+							<md-icon [@expandedState]="expandStatusList[dataObject.id]">
+								expand_more
+							</md-icon>
+						</button>
+					</td>
+					<ng-template ngFor let-columnKey [ngForOf]="columnKeys">
+						<ng-template memoExpandableTableColumnContainer>
+						</ng-template>
+					</ng-template>
+					<td class="expandable-table-single-checkbox">
+						<md-checkbox [(ngModel)]="selectedStatusList[dataObject.id]"
+									 (ngModelChange)="updateEverythingIsSelected()"
+									 (click)="$event.stopPropagation()">
+
+						</md-checkbox>
+					</td>
+					<td class="expandable-table-actions">
+						<!--todo more columns if showActionsAsSeparateRows?-->
+						<button md-icon-button (click)="$event.stopPropagation()" [mdMenuTriggerFor]="menu">
+							<md-icon>more_vert</md-icon>
+
+						</button>
+						<md-menu #menu="mdMenu">
+							<button md-menu-item (click)="editItem(dataObject)">
+								<md-icon>edit</md-icon>
+								<span>Bearbeiten</span>
+							</button>
+							<button md-menu-item (click)="deleteItem(dataObject)">
+								<md-icon>delete</md-icon>
+								<span>Löschen</span>
+							</button>
+						</md-menu>
+					</td>
+				</tr>
+				</tbody>
+
+				<ng-template [ngIf]="expandStatusList[dataObject.id]">
+					<ng-template memoExpandedTableRowContainer>
+
+					</ng-template>
+				</ng-template>
+				<!--todo might be better but doesn't work quite as i want it to-->
+				<!--<ng-template memoExpandedTableRowContainer *ngIf="expandStatusList[dataObject.id]"></ng-template>-->
+				<!--<tr *ngIf="expandStatusList[dataObject.id]" class="expandable-table-body-expanded-row">-->
+				<!--<td [attr.colspan]="columnKeys.length + 2">-->
+				<!---->
+				<!--</td>-->
+				<!--</tr>-->
+			</ng-template>
+		</table>
+	</div>
+
+	<div class="expandable-table-footer expandable-table-row secondary-text">
+		<span>Zeilen pro Seite:</span>
+		<md-select [(ngModel)]="rowsPerPage">
+			<md-option *ngFor="let option of rowsPerPageOptions" [value]="option">{{option}}</md-option>
+		</md-select>
+		<span class="current-page-range">
+		{{1+(currentPage-1)*rowsPerPage +
+		'-' + (currentPage*rowsPerPage < data?.length ? currentPage*rowsPerPage : data?.length)
+		+ ' von ' + data?.length}}
+	</span>
+		<button md-icon-button (click)="currentPage = currentPage-1" [disabled]="(currentPage-2)*rowsPerPage < 0">
+			<md-icon>navigate_before</md-icon>
+		</button>
+		<button md-icon-button (click)="currentPage = currentPage+1"
+				[disabled]="(currentPage)*rowsPerPage > data?.length">
+			<md-icon>navigate_next</md-icon>
+		</button>
+	</div>
+
+</div>

@@ -1,6 +1,6 @@
 [
 	{
-		"addressID": 0,
+		"id": 0,
 		"name": "Sörens Haus",
 		"street": "Allerstraße",
 		"streetNr": "9",
@@ -9,7 +9,7 @@
 		"country": "Deutschland"
 	},
 	{
-		"addressID": 1,
+		"id": 1,
 		"name": "Alis Autoverleih",
 		"street": "Allerstraße",
 		"streetNr": "10",

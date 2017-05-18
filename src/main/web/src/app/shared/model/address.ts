@@ -23,4 +23,8 @@ export class Address extends ImmutableObject<Address> {
 	static create() {
 		return new Address(-1, "", "", "", "", "", "");
 	}
+
+	static isAddress(obj: any): obj is Address {
+		return obj.street !== undefined && obj.zip !== undefined;
+	}
 }
