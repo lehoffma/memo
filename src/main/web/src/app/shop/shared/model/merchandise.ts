@@ -3,6 +3,7 @@ import {ClubRole} from "../../../shared/model/club-role";
 import {SizeTable} from "./size-table";
 import {SelectionModel} from "../../../shared/model/selection-model";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
+import {EventRoute} from "./route";
 
 export class Merchandise extends Event {
 
@@ -11,21 +12,25 @@ export class Merchandise extends Event {
 				date: Date,
 				description: string,
 				expectedRole: ClubRole,
+				route: EventRoute,
 				imagePath: string,
 				capacity: number,
 				public colors: string[],
 				public material: string,
 				public sizeTable: SizeTable,
 				priceMember: number,
-				price: number,
-				meetingPoint: number) {
-		super(id, title, date, description, expectedRole, imagePath, capacity, priceMember, meetingPoint, price);
+				price: number) {
+		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember, price);
 	}
 
 	static create() {
-		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, "", -1, [], "", {}, -1, -1, -1);
+		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, {
+			meetingPoint: -1,
+			destination: -1
+		}, "", -1, [], "", {}, -1, -1);
 	}
-	getAmountOf(color: string, size: string){
+
+	getAmountOf(color: string, size: string) {
 		//todo:
 		return this.capacity;
 	}

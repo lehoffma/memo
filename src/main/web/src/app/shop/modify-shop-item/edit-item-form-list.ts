@@ -36,7 +36,7 @@ export const EditItemFormList: ItemFormList = {
 	partys: [
 		new ItemForm("title", "Name", ItemFormType.TEXT, true),
 		new ItemForm("description", "Beschreibung", ItemFormType.TEXT_AREA, true),
-		new ItemForm("meetingPoint", "Treffpunkt", ItemFormType.GOOGLE_MAPS_AUTOFILL, true),
+		new ItemForm("route", "Route", ItemFormType.GOOGLE_MAPS_AUTOFILL, true),
 		new ItemForm("date", "Datum", ItemFormType.DATE, true),
 		new ItemForm("expectedRole", "Wer darf dies sehen?", ItemFormType.ROLE_LIST, true),
 		new ItemForm("price", "Preis", ItemFormType.NUMBER, true),

@@ -9,6 +9,8 @@ export class Address extends ImmutableObject<Address> {
 	 * @param zip Die Postleitzahl, z.B. 39104
 	 * @param city Die Stadt, z.B. Magdeburg
 	 * @param country Das Land, z.B. Deutschland
+	 * @param latitude Breitengrad
+	 * @param longitude Längengrad
 	 */
 	constructor(public readonly id: number,
 				public readonly name: string,
@@ -16,12 +18,14 @@ export class Address extends ImmutableObject<Address> {
 				public readonly streetNr: string,
 				public readonly zip: string,
 				public readonly city: string,
-				public readonly country: string) {
+				public readonly country: string,
+				public readonly latitude: number,
+				public readonly longitude: number) {
 		super(id);
 	}
 
 	static create() {
-		return new Address(-1, "", "", "", "", "", "");
+		return new Address(-1, "", "", "", "", "", "", 0, 0);
 	}
 
 	static isAddress(obj: any): obj is Address {
