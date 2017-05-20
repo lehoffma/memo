@@ -4,8 +4,11 @@ import {SizeTable} from "./size-table";
 import {SelectionModel} from "../../../shared/model/selection-model";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
+import {MerchColor} from "./merch-color";
+import {MerchStock} from "./merch-stock";
 
 export class Merchandise extends Event {
+	public sizes: string[];
 
 	constructor(id: number,
 				title: string,
@@ -15,9 +18,10 @@ export class Merchandise extends Event {
 				route: EventRoute,
 				imagePath: string,
 				capacity: number,
-				public colors: string[],
+				public stock: MerchStock,
+				public colors: MerchColor[],
 				public material: string,
-				public sizeTable: SizeTable,
+				private _sizeTable: SizeTable,
 				priceMember: number,
 				price: number) {
 		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember, price);
@@ -27,12 +31,24 @@ export class Merchandise extends Event {
 		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, {
 			meetingPoint: -1,
 			destination: -1
-		}, "", -1, [], "", {}, -1, -1);
+		}, "", -1, [], [], "", {}, -1, -1);
 	}
 
-	getAmountOf(color: string, size: string) {
-		//todo:
-		return this.capacity;
+	getAmountOf(color: MerchColor, size: string) {
+		if (!color && !size) {
+			return undefined;
+		}
+		return this.stock.find(stockItem => stockItem.color.name === color.name &&
+		stockItem.color.hex === color.hex && stockItem.size === size).amount;
+	}
+
+	get sizeTable() {
+		return this._sizeTable;
+	}
+
+	set sizeTable(value) {
+		this._sizeTable = value;
+		this.sizes = this.clothesSizes;
 	}
 
 	get overviewKeys(): EventOverviewKey[] {
@@ -80,31 +96,8 @@ export class Merchandise extends Event {
 		]
 	}
 
-	get colorsAsHex() {
-		//TODO: weniger blöd machen
-		return this.colors.map(color => {
-			if (color === "Weiss") {
-				return "#ffffff"
-			}
-			if (color === "Blau") {
-				return "#0000ff"
-			}
-			if (color === "Grün") {
-				return "#00ff00";
-			}
-			return color;
-		})
-	}
-
 	get clothesSizes(): string[] {
 		return Object.keys(this.sizeTable);
-	}
-
-	get colorSelections(): SelectionModel[] {
-		return this.colors.map(color => ({
-			value: color,
-			color: color
-		}))
 	}
 
 	get clothesSizeSelections(): SelectionModel[] {

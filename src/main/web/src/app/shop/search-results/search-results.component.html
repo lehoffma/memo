@@ -5,18 +5,13 @@
 	<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
 </div>
 
-<div *ngIf="keywords | async; let searchTerm; else noTerm">
+<div *ngIf="(keywords | async).length >= 0">
 	<div class="search-results-header">
-		<!--Ergebnisse für {{searchTerm}}:-->
+		{{resultsTitle | async}}
 	</div>
 
 	<memo-results [events]="results | async"></memo-results>
 </div>
 
-<ng-template #noTerm>
-	<div class="nothing-entered">
-		Bitte geben Sie einen Suchbegriff ein
-	</div>
-</ng-template>
 
 <!--todo pagination-->

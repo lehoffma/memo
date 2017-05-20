@@ -43,11 +43,11 @@ export class EventUtilityService {
 	}
 
 	handleShopItem<T>(item: Event | User | Entry,
-					  merchCallback: (merch: Merchandise) => T,
-					  tourCallback: (tour: Tour) => T,
-					  partyCallback: (party: Party) => T,
-					  userCallback: (user: User) => T,
-					  entryCallback: (entry: Entry) => T,
+					  merchCallback: (merch: Merchandise) => T = () => null,
+					  tourCallback: (tour: Tour) => T = () => null,
+					  partyCallback: (party: Party) => T = () => null,
+					  userCallback: (user: User) => T = () => null,
+					  entryCallback: (entry: Entry) => T = () => null,
 					  defaultCallback: (event: typeof item) => T = () => null): T {
 		if (isNullOrUndefined(item)) {
 			return defaultCallback(item);

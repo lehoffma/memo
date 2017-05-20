@@ -15,13 +15,16 @@ import {Observable} from "rxjs/Observable";
 
 export class AddressTableCellComponent implements OnInit, ExpandableTableCellComponent {
 	//todo toString() methode für addressen oder lieber direkt google maps aufrufen? (könnte ein wenig datenvolumen wegballern)
-	@Input() data: number;
+	@Input() data: number[];
 	observableAddress: Observable<Address>;
 
 	constructor(private addressService: AddressService) {
 	}
 
 	ngOnInit() {
-		this.observableAddress = this.addressService.getById(this.data);
+		//todo multiple address support
+		console.log(this.data);
+		this.observableAddress = this.addressService.getById(this.data[0]);
 	}
+
 }

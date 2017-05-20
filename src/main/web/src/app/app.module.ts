@@ -4,7 +4,6 @@ import {BrowserModule} from "@angular/platform-browser";
 import {AppComponent} from "./app.component";
 import {RouterModule} from "@angular/router";
 import {HomeComponent} from "./home/home.component";
-import {MaterialModule} from "@angular/material";
 import {ToolbarComponent} from "./home/navigation/toolbar/toolbar.component";
 import {CategoryPreviewComponent} from "./home/category-preview/category-preview.component";
 import {ToursComponent} from "./shop/tours/tours.component";
@@ -107,17 +106,22 @@ import {BooleanCheckMarkCellComponent} from "./club-management/administration/me
 import {GenderCellComponent} from "./club-management/administration/member-list/member-list-table-cells/gender-cell.component";
 import {AddressService} from "./shared/services/address.service";
 import {AddressTableCellComponent} from "./club-management/administration/member-list/member-list-table-cells/address-table-cell.component";
+import {AutoSizeTextAreaDirective} from "./shop/modify-shop-item/autosize-textarea.directive";
+import {HttpModule} from "@angular/http";
+import {MemoMaterialModule} from "../material.module";
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		FormsModule,
+		HttpModule,
 		ReactiveFormsModule,
 		BrowserAnimationsModule,
-		MaterialModule,
+		MemoMaterialModule,
 		RouterModule.forRoot(ROUTES),
 		AgmCoreModule.forRoot({
-			apiKey: memoConfig.mapsApiKey
+			apiKey: memoConfig.mapsApiKey,
+			libraries: ["places"]
 		}),
 		Md2Module,
 		ColorPickerModule,
@@ -206,7 +210,9 @@ import {AddressTableCellComponent} from "./club-management/administration/member
 		ClubRoleTableCellComponent,
 		BooleanCheckMarkCellComponent,
 		GenderCellComponent,
-		AddressTableCellComponent
+		AddressTableCellComponent,
+
+		AutoSizeTextAreaDirective,
 	],
 	bootstrap: [
 		AppComponent

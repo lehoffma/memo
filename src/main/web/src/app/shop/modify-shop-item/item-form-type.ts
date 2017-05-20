@@ -2,6 +2,7 @@ export enum ItemFormType{
 	TEXT,
 	TEXT_AREA,
 	NUMBER,
+	BOOLEAN,
 	DATE,
 	DROPDOWN,
 	GOOGLE_MAPS_AUTOFILL,

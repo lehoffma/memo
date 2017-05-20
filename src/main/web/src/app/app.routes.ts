@@ -34,13 +34,14 @@ import {CheckoutComponent} from "./shop/checkout/checkout.component";
 export const ROUTES = [
 	{path: "", component: HomeComponent},
 
-	{path: "tours", component: ToursComponent},
-	{path: "tours/:id", component: TourDetailComponent},
-	{path: "tours/:id/participants", component: TourParticipantsComponent},
 	//todo implement
 	//nur eingeloggte user, die die Tour erstellt haben oder Organizer oder Admin sind
 	{path: ":itemType/:id/edit", component: ModifyShopItemComponent, canActivate: [IsOrganizerGuard, IsValidItemTypeGuard]},
 	{path: ":itemType/create", component: ModifyShopItemComponent, canActivate: [IsOrganizerGuard, IsValidItemTypeGuard]},
+
+	{path: "tours", component: ToursComponent},
+	{path: "tours/:id", component: TourDetailComponent},
+	{path: "tours/:id/participants", component: TourParticipantsComponent},
 
 	{path: "partys", component: PartysComponent},
 	{path: "partys/:id", component: PartyDetailComponent},
@@ -76,8 +77,8 @@ export const ROUTES = [
 	{path: "impressum", component: ImprintComponent},
 
 	{path: "not-allowed", component: UnauthorizedAccessComponent},
+	{path: "redirect", component: GoogleMapsRedirectComponent},
 	{path: "**", component: PageNotFoundComponent},
-	{path: "page-not-found", component: PageNotFoundComponent},
-	{path: "redirect", component: GoogleMapsRedirectComponent}
+	{path: "page-not-found", component: PageNotFoundComponent}
 
 ];

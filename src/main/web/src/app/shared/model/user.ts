@@ -15,7 +15,7 @@ export class User extends ImmutableObject<User> {
 	 * @param telephone Handy oder Festnetznummer mit oder ohne Trennzeichen zwischen Vorwahl und Rest, z.B. "0151/18656036"
 	 * @param clubRole Die Rolle des Users innerhalb des Vereins, z.B. Vorstand
 	 * @param joinDate das Eintrittsdatum des Users
-	 * @param address Die ID der Adresse des Nutzers
+	 * @param addresses Die ID der Adresse des Nutzers
 	 * @param permissions Auf was der User zugreifen darf (kosten, schreibrechte für events etc)
 	 * @param miles Die vom User bisher gefahreren Meilen
 	 * @param email die Email des Users, z.B. "gzae@gmx.net"
@@ -34,7 +34,7 @@ export class User extends ImmutableObject<User> {
 				public readonly telephone: string,
 				public readonly clubRole: ClubRole,
 				public readonly joinDate: Date,
-				public readonly address: number,
+				public readonly addresses: number[],
 				public readonly permissions: UserPermissions,
 				public readonly miles: number,
 				public readonly email: string,
@@ -48,7 +48,7 @@ export class User extends ImmutableObject<User> {
 	}
 
 	static create() {
-		return new User(-1, "", "", Gender.OTHER, null, "", ClubRole.None, null, -1,
+		return new User(-1, "", "", Gender.OTHER, null, "", ClubRole.None, null, [],
 			visitorPermissions, 0, "", "", false, false, false, false, "");
 	}
 
