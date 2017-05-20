@@ -19,10 +19,9 @@ export class MerchandiseDetailComponent implements OnInit {
 	clothesSizes: Observable<string[]> = this.merchObservable.map(merch => merch.clothesSizes);
 	sizeTableCategories: Observable<string[]> = this.merchObservable.map(merch => merch.sizeTableCategories);
 	overViewKeys: Observable<EventOverviewKey[]> = this.merchObservable.map(merch => merch.overviewKeys);
-	colorSelections: Observable<SelectionModel[]> = this.merchObservable.map(merch => merch.colorSelections);
 	clothesSizeSelections: Observable<SelectionModel[]> = this.merchObservable.map(merch => merch.clothesSizeSelections);
 
-	options: MerchandiseOptions = {size: "", color: ""};
+	options: MerchandiseOptions = {size: "", color: {name: "", hex: ""}};
 
 	constructor(private route: ActivatedRoute,
 				private eventService: EventService) {

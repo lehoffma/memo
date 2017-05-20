@@ -118,6 +118,7 @@
 	.current-page-range {
 		margin-left: 32px;
 		margin-right: 1rem;
+
 	}
 
 	/deep/ .mat-select-trigger {
@@ -130,6 +131,17 @@
 	/deep/ .mat-select-underline {
 		display: none;
 	}
+
+	@media all and (max-width: 365px) {
+		.current-page-range {
+			margin-left: 10px;
+			margin-right: 0;
+		}
+
+		md-select {
+			margin-left: 5px;
+		}
+	}
 }
 
 .expandable-table-component-container {
@@ -138,7 +150,6 @@
 		margin: 1rem;
 	}
 	@media all and (min-width: 1400px) {
-		@include card-like();
 		margin: 2rem;
 	}
 }

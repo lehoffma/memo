@@ -10,6 +10,128 @@
 		"priceMember": 19,
 		"price": 19,
 		"meetingPoint": 0,
+		"stock": [
+			{
+				"size": "XS",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 2
+			},
+			{
+				"size": "S",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 1
+			},
+			{
+				"size": "M",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 5
+			},
+			{
+				"size": "L",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 2
+			},
+			{
+				"size": "XL",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 4
+			},
+			{
+				"size": "XS",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 2
+			},
+			{
+				"size": "S",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 1
+			},
+			{
+				"size": "M",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 5
+			},
+			{
+				"size": "L",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 2
+			},
+			{
+				"size": "XL",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 4
+			},
+			{
+				"size": "XS",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 2
+			},
+			{
+				"size": "S",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 1
+			},
+			{
+				"size": "M",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 5
+			},
+			{
+				"size": "L",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 2
+			},
+			{
+				"size": "XL",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 4
+			}
+		],
 		"sizeTable": {
 			"XS": {
 				"Brustumfang": {
@@ -146,9 +268,21 @@
 		},
 		"material": "Baumwolle",
 		"colors": [
-			"Weiss",
-			"Grün",
-			"Blau"
+			{
+				"name": "Weiss",
+				"hex": "#ffffff"
+			},
+			{
+				"name": "Grün",
+				"hex": "#00ff00"
+			},
+			{
+				"name": "Blau",
+				"hex": "#0000ff"
+			}
+
+
+
 		]
 	},
 	{
@@ -162,6 +296,128 @@
 		"priceMember": 9,
 		"price": 9,
 		"meetingPoint": 1,
+		"stock": [
+			{
+				"size": "XS",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 2
+			},
+			{
+				"size": "S",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 1
+			},
+			{
+				"size": "M",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 5
+			},
+			{
+				"size": "L",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 2
+			},
+			{
+				"size": "XL",
+				"color": {
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				"amount": 4
+			},
+			{
+				"size": "XS",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 2
+			},
+			{
+				"size": "S",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 1
+			},
+			{
+				"size": "M",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 5
+			},
+			{
+				"size": "L",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 2
+			},
+			{
+				"size": "XL",
+				"color": {
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				"amount": 4
+			},
+			{
+				"size": "XS",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 2
+			},
+			{
+				"size": "S",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 1
+			},
+			{
+				"size": "M",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 5
+			},
+			{
+				"size": "L",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 2
+			},
+			{
+				"size": "XL",
+				"color": {
+					"name": "Blau",
+					"hex": "#0000ff"
+				},
+				"amount": 4
+			}
+		],
 		"sizeTable": {
 			"XS": {
 				"Brustumfang": {
@@ -298,9 +554,18 @@
 		},
 		"material": "Baumwolle",
 		"colors": [
-			"Weiss",
-			"Grün",
-			"Blau"
+			{
+				"name": "Weiss",
+				"hex": "#ffffff"
+			},
+			{
+				"name": "Grün",
+				"hex": "#00ff00"
+			},
+			{
+				"name": "Blau",
+				"hex": "#0000ff"
+			}
 		]
 	}
 ]

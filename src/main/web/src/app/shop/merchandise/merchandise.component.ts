@@ -1,8 +1,5 @@
 import {Component} from "@angular/core";
-import {EventService} from "../../shared/services/event.service";
-import {Merchandise} from "../shared/model/merchandise";
-import {Observable} from "rxjs/Observable";
-import {EventType} from "../shared/model/event-type";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -11,9 +8,7 @@ import {EventType} from "../shared/model/event-type";
 	styleUrls: ["./merchandise.component.scss"]
 })
 export class MerchandiseComponent {
-	public merch: Observable<Merchandise[]> = this.eventService.search("", {eventType: EventType.merch});
-
-	constructor(private eventService: EventService) {
-
+	constructor(private router: Router) {
+		this.router.navigate(["search"], {queryParams: {category: "merch"}, replaceUrl: true});
 	}
 }

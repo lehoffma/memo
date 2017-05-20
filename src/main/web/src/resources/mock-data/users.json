@@ -18,7 +18,10 @@
 			"accountManagement": 3
 		},
 		"miles": 1337,
-		"address": 0,
+		"addresses": [
+			0,
+			1
+		],
 		"email": "nils.poecking@hotmail.de",
 		"passwordHash": "tohuuihgrohujt0uiwe89jg7",
 		"isStudent": true,
@@ -44,7 +47,9 @@
 			"accountManagement": 3
 		},
 		"miles": 1337,
-		"address": 0,
+		"addresses": [
+			0
+		],
 		"email": "nils.poecking@hotmail.de",
 		"passwordHash": "tohuuihgrohujt0uiwe89jg7",
 		"isStudent": true,
@@ -72,7 +77,9 @@
 			"accountManagement": 3
 		},
 		"miles": 1337,
-		"address": 1,
+		"addresses": [
+			1
+		],
 		"email": "nils.poecking@hotmail.de",
 		"passwordHash": "tohuuihgrohujt0uiwe89jg7",
 		"isStudent": true,
@@ -98,7 +105,9 @@
 			"accountManagement": 3
 		},
 		"miles": 1337,
-		"address": 0,
+		"addresses": [
+			0
+		],
 		"email": "nils.poecking@hotmail.de",
 		"passwordHash": "tohuuihgrohujt0uiwe89jg7",
 		"isStudent": true,
@@ -125,7 +134,9 @@
 			"accountManagement": 3
 		},
 		"miles": 1337,
-		"address": 1,
+		"addresses": [
+			1
+		],
 		"email": "nils.poecking@hotmail.de",
 		"passwordHash": "tohuuihgrohujt0uiwe89jg7",
 		"isStudent": true,
@@ -152,7 +163,9 @@
 			"accountManagement": 3
 		},
 		"miles": 1337,
-		"address": 0,
+		"addresses": [
+			0
+		],
 		"email": "nils.poecking@hotmail.de",
 		"passwordHash": "tohuuihgrohujt0uiwe89jg7",
 		"isStudent": true,

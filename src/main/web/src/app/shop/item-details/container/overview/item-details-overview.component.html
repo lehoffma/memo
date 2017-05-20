@@ -17,18 +17,20 @@
 		</div>
 		<hr/>
 		<div class="add-to-cart-container">
-			<form #addToCartForm="ngForm" (ngSubmit)="addToCart(event)">
-				<ng-template [ngIf]="isMerch">
+			<form #addToCartForm="ngForm" (ngSubmit)="addOrDeleteFromCart(event)">
+				<ng-template [ngIf]="isMerch(event)">
 					<md-select [(ngModel)]="model.options.color"
+							   (change)="updateMaxAmount()"
 							   placeholder="Farbe"
 							   [required]="true"
 							   name="colorSelectionInput">
 						<md-option *ngFor="let color of colorSelection"
-								   [value]="color.value">
-							{{color.value}}
+								   [value]="color">
+							{{color.name}}
 						</md-option>
 					</md-select>
 					<md-select [(ngModel)]="model.options.size"
+							   (change)="updateMaxAmount()"
 							   placeholder="Größe"
 							   [required]="true"
 							   name="sizeSelectionInput">
@@ -38,18 +40,20 @@
 					</md-select>
 				</ng-template>
 
-				<md-select placeholder="Anzahl" name="amount" [(ngModel)]="model.amount" [required]="true">
-					<md-option *ngFor="let number of [1,2,3,4,5,6,7,8,9]" [value]="number">
+				<md-select placeholder="Anzahl" name="amount"
+						   [(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
+						   [required]="true">
+					<md-option *ngFor="let number of amountOptions" [value]="number">
 						{{number}}
 					</md-option>
 				</md-select>
 
-				<button [disabled]="!addToCartForm.valid"
+				<button [disabled]="!addToCartForm.valid || model.amount === 0"
 						md-raised-button
-						color="accent"
+						color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
 						type="submit"
 						class="add-to-cart-button">
-					In den Warenkorb
+					{{(isPartOfShoppingCart) ? 'Aus dem Warenkorb löschen' : 'In den Warenkorb'}}
 				</button>
 			</form>
 		</div>

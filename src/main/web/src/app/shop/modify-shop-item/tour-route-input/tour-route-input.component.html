@@ -1,12 +1,17 @@
-<!--todo https://plnkr.co/edit/LdKdSj?p=preview-->
 
 <div>
-	isRoute: {{isRoute}}
+	<span>Wohin?</span>
+
+	<md-input-container>
+		<input mdInput type="text" (keydown.enter)="$event.preventDefault()"
+			   #meetingPointInput placeholder="{{isRoute ? 'Treffpunkt' : 'Ort'}}">
+	</md-input-container>
+
+	<md-input-container *ngIf="isRoute">
+		<input mdInput type="text" (keydown.enter)="$event.preventDefault()"
+			   #destinationInput placeholder="Ziel">
+	</md-input-container>
+
 </div>
 
-
-<div>
-	Route:
-	{{route | json}}
-</div>
 

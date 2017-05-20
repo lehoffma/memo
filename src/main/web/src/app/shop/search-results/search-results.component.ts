@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {EventService} from "../../shared/services/event.service";
 import {EventType} from "../shared/model/event-type";
@@ -11,6 +11,8 @@ import {isNullOrUndefined} from "util";
 import {UserService} from "../../shared/services/user.service";
 import {eventFilterOptions} from "./event-filter-options";
 import {MultiLevelSelectParent} from "app/shared/multi-level-select/shared/multi-level-select-parent";
+import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
+import {EventUtilityService} from "../../shared/services/event-utility.service";
 
 type sortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -28,9 +30,15 @@ export class SearchResultComponent implements OnInit {
 		.map(paramMap => paramMap.has("sortBy") && paramMap.has("descending")
 			? {sortedBy: paramMap.get("sortBy"), descending: paramMap.get("descending")}
 			: {});
-	//todo
-	filteredBy: Observable<any> = Observable.of("");
+	filteredBy: Observable<any> = this.activatedRoute.queryParamMap
+		.map(paramMap => {
+			//todo...
+			let paramObject = {};
+			paramMap.keys.forEach(key => paramObject[key] = paramMap.get(key));
+			return paramObject;
+		});
 
+	resultsTitle: Observable<string>;
 	results: Observable<Event[]>;
 
 	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
@@ -39,8 +47,46 @@ export class SearchResultComponent implements OnInit {
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private userService: UserService,
+				private eventUtilityService: EventUtilityService,
+				private router: Router,
 				private eventService: EventService) {
 	}
+
+	ngOnInit() {
+		this.fetchResults();
+
+		//checks if the route includes query parameters and initializes the filtermenus checkboxes
+		this.activatedRoute.queryParamMap.first()
+			.subscribe(queryParamMap => {
+				this.filterOptions = this.filterOptions.map(filterOptionParent => {
+					let key = filterOptionParent.queryKey;
+					if (queryParamMap.has(key)) {
+						let values: string[] = queryParamMap.get(key).split("|"); //something like 'tours|partys|merch'
+						filterOptionParent.children.forEach(child => {
+							if (isMultiLevelSelectLeaf(child)) {
+								child.selected = values.includes(child.queryValue);
+							}
+						});
+					}
+					return filterOptionParent;
+				})
+			});
+
+		this.resultsTitle = this.router.events.filter(event => event instanceof NavigationEnd)
+			.flatMap(event => {
+				let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");
+				let selectedCategories: string[] = categoryFilterOption.children
+					.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
+					.map(child => child.name);
+
+				return Observable.combineLatest(this.results, this.keywords).map(([results, keywords]) =>
+					results.length + " " + selectedCategories.join(", ") + " Ergebnisse" +
+					(keywords === "" ? "" : " für '" + keywords + "'")
+				);
+			})
+		// this.activatedRoute.queryParamMap.flatMap(queryParamMap => )
+	}
+
 
 	fetchResults() {
 		Observable.combineLatest(this.keywords, this.sortedBy, this.filteredBy)
@@ -52,7 +98,7 @@ export class SearchResultComponent implements OnInit {
 						this.eventService.search(keywords, {eventType: EventType.tours}),
 						this.eventService.search(keywords, {eventType: EventType.partys}),
 						this.eventService.search(keywords, {eventType: EventType.merch}),
-						(tours, partys, merch, users) => [...tours, ...partys, ...merch]
+						(tours, partys, merch) => [...tours, ...partys, ...merch]
 					)
 					//todo replace with actual api call?
 						.map(events => {
@@ -63,17 +109,21 @@ export class SearchResultComponent implements OnInit {
 
 							return events;
 						})
-						//todo replace with actual api call..
-						.map(events => {
+						//todo replace with actual api call?
+						.map((events: Event[]) => {
+							//todo add filter-functions to filteroptions so its not as hardcoded anymore
+							let categoryFilters = filteredBy["category"];
+
+							if (categoryFilters) {
+								let categories: string[] = categoryFilters.split("|");
+								return events.filter(event => categories.includes(this.eventUtilityService.getEventType(event).toString()))
+							}
+
 							//filtere events
 							return events;
 						})
 				}
 			);
-	}
-
-	ngOnInit() {
-		this.fetchResults();
 	}
 
 }

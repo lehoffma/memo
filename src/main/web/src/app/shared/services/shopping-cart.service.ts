@@ -35,9 +35,9 @@ export class ShoppingCartService implements OnInit {
 	 */
 	private remove(type: EventType, id: number, content: ShoppingCartContent) {
 		let itemIndex = content[type].findIndex(cardItem => cardItem.id === id);
-		if (itemIndex>=0) {
+		if (itemIndex >= 0) {
 			//remove
-			if(content[type][itemIndex].amount===1){
+			if (content[type][itemIndex].amount === 1) {
 				content[type].splice(itemIndex, 1)
 			}
 			else {
@@ -93,6 +93,35 @@ export class ShoppingCartService implements OnInit {
 	public deleteItem(type: EventType, id: number) {
 		let newValue = this.remove(type, id, this._content.value);
 		this.pushNewValue(newValue);
+	}
+
+	/**
+	 * Holt das Item mit den übergebenen werten aus dem shopping cart
+	 * Gibt null zurück, wenn das Objekt nicht im Warenkorb vorhanden ist
+	 * @param type
+	 * @param id
+	 * @param options
+	 */
+	public getItem(type: EventType, id: number, options?: { size?: string, color?: string }) {
+		return this._content.getValue()[type].find((shoppingCartItem: ShoppingCartItem) =>
+			shoppingCartItem.id === id && ((!shoppingCartItem.options && !options) || (shoppingCartItem.options.size === options.size
+			&& shoppingCartItem.options.color))
+		)
+	}
+
+	/**
+	 * Returned ein Observable, welches das objekt mit der gegebenen ID + den gegebenen options beinhaltet.
+	 * Falls dieses nicht vorhanden sein sollte, beinhaltet das Observable null.
+	 * @param type
+	 * @param id
+	 * @param options
+	 * @returns {Observable<R>}
+	 */
+	public getItemAsObservable(type: EventType, id: number, options?: { size?: string, color?: string }) {
+		return this._content.map(content => content[type].find((shoppingCartItem: ShoppingCartItem) =>
+			shoppingCartItem.id === id && ((!shoppingCartItem.options && !options) || (shoppingCartItem.options.size === options.size
+			&& shoppingCartItem.options.color)))
+		);
 	}
 
 	/**

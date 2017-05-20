@@ -1,10 +1,10 @@
-<div *ngIf="type === ListFormType.COLOR">
-	<div class="title">{{title}} (Maximal 5)</div>
+<div *ngIf="type === ListFormType.COLOR; else textList">
+	<!--<div class="color-list-title">{{title}} (Maximal 5)</div>-->
 	<div class="color-list-container">
 		<div class="color-list">
 			<div *ngFor="let color of list"
 				 (click)="openColorDialog(color)"
-				 [style.background-color]="getHexFromString(color)">
+				 [style.background-color]="color.hex">
 			</div>
 		</div>
 		<button md-icon-button [disabled]="!list || list.length >= 5"
@@ -14,15 +14,8 @@
 	</div>
 </div>
 
-
-<!--<div>-->
-<!--{{title}}-->
-<!--</div>-->
-
-<!--<md-input-container>-->
-<!--<input type="text"-->
-<!--name="list"-->
-<!--mdInput-->
-<!--(keyup)="emitListChangedEvent()"-->
-<!--[(ngModel)]="list">-->
-<!--</md-input-container>-->
+<ng-template #textList>
+	<div>
+		{{list}}
+	</div>
+</ng-template>

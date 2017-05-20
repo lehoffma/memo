@@ -1,8 +1,5 @@
 import {Component} from "@angular/core";
-import {EventService} from "../../shared/services/event.service";
-import {Tour} from "../shared/model/tour";
-import {Observable} from "rxjs/Observable";
-import {EventType} from "../shared/model/event-type";
+import {Router} from "@angular/router";
 
 @Component({
 	selector: "memo-tours",
@@ -10,8 +7,7 @@ import {EventType} from "../shared/model/event-type";
 	styleUrls: ["./tours.component.scss"]
 })
 export class ToursComponent {
-	public tours: Observable<Tour[]> = this.eventService.search("", {eventType: EventType.tours});
-
-	constructor(private eventService: EventService) {
+	constructor(private router: Router) {
+		this.router.navigate(["search"], {queryParams: {category: "tours"}, replaceUrl: true});
 	}
 }

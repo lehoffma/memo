@@ -1,5 +1,6 @@
 import {ClubRole} from "../club-role";
 import {jsonToPermissions, UserPermissions} from "../permission";
+import {isArray} from "util";
 export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 
 	constructor(public readonly id: number) {
@@ -21,8 +22,10 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 	setProperties(properties: Partial<T>) {
 		Object.keys(properties)
 			.forEach(key => {
-				let value: (string | number | Date | UserPermissions) = (<any>properties)[key];
-				if (key.toLowerCase().includes("date") && this.isString(value)) {
+				let value: (string | number | number[] | Date | UserPermissions) = (<any>properties)[key];
+				if (isArray(value)) {
+
+				} else if (key.toLowerCase().includes("date") && this.isString(value)) {
 					value = Date.parse(value);
 				} else if (this.isNumber(value)) {
 					value = +value;

@@ -25,30 +25,10 @@ export class ListFormComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	getHexFromString(color: string) {
-		//TODO: weniger blöd machen
-		if (color === "Weiss") {
-			return "#ffffff"
-		}
-		if (color === "Blau") {
-			return "#0000ff"
-		}
-		if (color === "Grün") {
-			return "#00ff00";
-		}
-		return color;
-	}
-
 	openColorDialog(color) {
 		let data = {};
 		if (color) {
-			data = {
-				color: {
-					hex: this.getHexFromString(color),
-					//todo update once colors are stored as name/hex pair
-					name: color
-				}
-			}
+			data = color
 		}
 		const dialogRef = this.dialogService.open(ChooseColorComponent, {data});
 		dialogRef.afterClosed().first().subscribe(

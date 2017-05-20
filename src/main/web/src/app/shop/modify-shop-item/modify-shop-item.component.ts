@@ -20,6 +20,7 @@ import {Party} from "../shared/model/party";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {ListFormType} from "app/shop/modify-shop-item/list-form-type";
 import {Location} from "@angular/common";
+import {ItemChangeEvent} from "app/shop/modify-shop-item/item-change-event";
 
 type Item = User | Entry | Merchandise | Tour | Party;
 
@@ -33,6 +34,10 @@ export class ModifyShopItemComponent implements OnInit {
 	ItemFormType = ItemFormType;
 	ListFormType = ListFormType;
 	editItemFormList: ItemFormList = EditItemFormList;
+
+	log(event: any) {
+		console.log(event);
+	}
 
 	//either add or edit
 	mode: ModifyType;
@@ -56,12 +61,16 @@ export class ModifyShopItemComponent implements OnInit {
 				private activatedRoute: ActivatedRoute) {
 		this.activatedRoute.params.first().subscribe(
 			(params: Params) => {
+				console.log(params);
 				this.itemType = ShopItemType[ShopItemType[params["itemType"]]];
 				this.idOfObjectToModify = params["id"] ? +(params["id"]) : -1;
 			}
 		);
 	}
 
+	/**
+	 *
+	 */
 	ngOnInit() {
 		if (this.idOfObjectToModify !== -1) {
 			let objectToModifyObservable: Observable<Event | Entry | User> = this.eventUtilService.handleOptionalShopType(
@@ -76,7 +85,11 @@ export class ModifyShopItemComponent implements OnInit {
 
 			//initialize model with object
 			objectToModifyObservable.first().subscribe(objectToModify => {
-				Object.keys(objectToModify).forEach(key => this.model[key] = objectToModify[key]);
+				Object.keys(objectToModify).forEach(key => {
+					this.model[key] = objectToModify[key];
+				});
+				console.log(this.model);
+				// Object.keys(objectToModify).forEach(key => this.model[key] = objectToModify[key]);
 				//modus === EDIT
 				if (objectToModify && objectToModify.id !== -1) {
 					this.previousValue = objectToModify;
@@ -89,11 +102,27 @@ export class ModifyShopItemComponent implements OnInit {
 		}
 	}
 
+
+	/**
+	 *
+	 * @param model
+	 */
+	updateModel(model: ItemChangeEvent) {
+		Object.keys(model).forEach(key => {
+			this.model[key] = model[key].value;
+		});
+	}
+
+	/**
+	 * Cancel callback
+	 */
 	cancel() {
-		console.log("cancel");
 		this.location.back();
 	}
 
+	/**
+	 * Submit callback
+	 */
 	submitModifiedObject() {
 		let service: ServletService<User | Entry | Event> = this.eventUtilService.handleOptionalShopType<ServletService<User | Entry | Event>>(
 			this.itemType,
@@ -116,6 +145,7 @@ export class ModifyShopItemComponent implements OnInit {
 			}
 		);
 
+		//todo display "submitting..." while waiting for response from server
 		service.addOrModify(newObject)
 			.subscribe(
 				(result: Event) => {

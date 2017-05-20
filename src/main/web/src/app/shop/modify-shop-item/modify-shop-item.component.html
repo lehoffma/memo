@@ -2,37 +2,72 @@
 	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
 		<!--for each editItem in editItemList (stored in a constant somewhere since they don't really change)-->
 		<div *ngFor="let editItem of editItemFormList[itemType]">
+
 			<!--different types of inputs-->
-			<div [ngSwitch]="editItem.type">
+			<div [ngSwitch]="editItem.type" class="modify-shop-item-component-container">
 				<!--	1. text (name, title, description) -->
-				<md-input-container *ngSwitchCase="ItemFormType.TEXT">
-					<input mdInput name="{{editItem.key + 'Input'}}" type="text" [required]="editItem.required"
-						   placeholder="{{editItem.title}}" [(ngModel)]="model[editItem.key]">
-				</md-input-container>
-				<md-input-container *ngSwitchCase="ItemFormType.TEXT_AREA">
-						<textarea mdInput name="{{editItem.key + 'Input'}}"
+				<div *ngSwitchCase="ItemFormType.TEXT">
+					<span class="modify-shop-item-title" *ngIf="editItem.title">{{editItem.title}}</span>
+					<md-input-container>
+						<input mdInput name="{{editItem.key + 'Input'}}"
+							   type="text" [required]="editItem.required"
+							   placeholder="{{editItem.placeholder}}"
+							   #textInput="ngModel"
+							   [(ngModel)]="model[editItem.key]">
+						<md-hint *ngIf="textInput.touched && !textInput.valid" class="error-message" align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</md-hint>
+					</md-input-container>
+				</div>
+				<div *ngSwitchCase="ItemFormType.TEXT_AREA">
+					<span class="modify-shop-item-title" *ngIf="editItem.title">{{editItem.title}}</span>
+					<md-input-container>
+						<textarea autosize mdInput name="{{editItem.key + 'Input'}}"
 								  class="not-resizable-textarea"
 								  [required]="editItem.required"
-								  rows="10"
 								  type="text"
-								  placeholder="{{editItem.title}}" [(ngModel)]="model[editItem.key]">
+								  #textAreaInput="ngModel"
+								  placeholder="{{editItem.placeholder}}"
+								  [(ngModel)]="model[editItem.key]">
 						</textarea>
-				</md-input-container>
+						<md-hint *ngIf="textAreaInput.touched && !textAreaInput.valid" class="error-message"
+								 align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</md-hint>
+					</md-input-container>
+				</div>
 				<!--	2. number (capacity, priceMember, price) -->
-				<md-input-container *ngSwitchCase="ItemFormType.NUMBER">
-					<input mdInput name="{{editItem.key + 'Input'}}"
-						   type="number"
-						   [required]="editItem.required"
-						   placeholder="{{editItem.title}}" [(ngModel)]="model[editItem.key]">
-					<span mdSuffix *ngIf="editItem.key === 'price'">
-						€
-					</span>
-				</md-input-container>
+				<div *ngSwitchCase="ItemFormType.NUMBER">
+					<span class="modify-shop-item-title" *ngIf="editItem.title">{{editItem.title}}</span>
+					<md-input-container>
+						<input mdInput name="{{editItem.key + 'Input'}}"
+							   type="number"
+							   [required]="editItem.required"
+							   placeholder="{{editItem.placeholder}}"
+							   #numberInput="ngModel"
+							   [(ngModel)]="model[editItem.key]">
+						<span mdSuffix *ngIf="editItem.key === 'price'">€</span>
+						<md-hint *ngIf="numberInput.touched && !numberInput.valid" class="error-message" align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</md-hint>
+					</md-input-container>
+				</div>
 				<!--	3. date (date)--->
-				<div *ngSwitchCase="ItemFormType.DATE">
-					<md2-datepicker name="{{'datepicker' + editItem.title}}"
-									[required]="editItem.required"
-									[(ngModel)]="model[editItem.key]"></md2-datepicker>
+				<div *ngSwitchCase="ItemFormType.DATE"
+					 (keydown.enter)="$event.preventDefault(); $event.stopPropagation()">
+					<span class="modify-shop-item-title" *ngIf="editItem.title">{{editItem.title}}</span>
+					<md-input-container>
+						<input mdInput [mdDatepicker]="myDatepicker"
+							   [(ngModel)]="model[editItem.key]"
+							   #datePickerInput="ngModel"
+							   name="{{editItem.key}} input"
+							   [required]="editItem.required">
+						<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>
+					</md-input-container>
+					<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>
+					<!--<md2-datepicker name="{{'datepicker' + editItem.title}}"-->
+					<!--[required]="editItem.required"-->
+					<!--[(ngModel)]="model[editItem.key]"></md2-datepicker>-->
 				</div>
 				<!--	4. dropdown (todo remove?) -->
 				<div *ngSwitchCase="ItemFormType.DROPDOWN">
@@ -42,13 +77,16 @@
 				<!--isRoute steuert, ob jeweils ein Suchfeld für Von/Nach angezeigt wird oder nur ein Suchfeld-->
 				<memo-tour-route-input *ngSwitchCase="ItemFormType.GOOGLE_MAPS_AUTOFILL"
 									   [isRoute]="editItem.key === 'route'"
+									   (routeChange)="updateModel($event)"
 									   [route]="model.route"></memo-tour-route-input>
 				<!--	6. list of text (sizes) -->
-				<memo-list-form *ngSwitchCase="ItemFormType.TEXT_LIST"
-								(listChanged)="model[editItem.key]=$event"
-								[type]="ListFormType.TEXT"
-								[list]="model[editItem.key]"
-								[title]="editItem.title"></memo-list-form>
+				<div *ngSwitchCase="ItemFormType.TEXT_LIST">
+					<span class="modify-shop-item-title" *ngIf="editItem.title">{{editItem.title}}</span>
+					<memo-list-form (listChanged)="model[editItem.key]=$event;"
+									[type]="ListFormType.TEXT"
+									[list]="model[editItem.key]"
+									[title]="editItem.title"></memo-list-form>
+				</div>
 				<!--todo: permissions...-->
 				<!--<memo-list-form *ngSwitchCase="ItemFormType.ROLE_LIST"-->
 				<!--(listChanged)="model[editItem.key]=$event"-->
@@ -56,17 +94,21 @@
 				<!--[list]="model[editItem.key]"-->
 				<!--[title]="editItem.title"></memo-list-form>-->
 				<!--	7. list of colors? (colors)-->
-				<memo-list-form *ngSwitchCase="ItemFormType.COLOR_LIST"
-								(listChanged)="model[editItem.key]=$event"
-								[type]="ListFormType.COLOR"
-								[list]="model[editItem.key]"
-								[title]="editItem.title"></memo-list-form>
+				<div *ngSwitchCase="ItemFormType.COLOR_LIST">
+					<span class="modify-shop-item-title" *ngIf="editItem.title">{{editItem.title}}</span>
+					<memo-list-form (listChanged)="model[editItem.key]=$event;"
+									[type]="ListFormType.COLOR"
+									[list]="model[editItem.key]"
+									[title]="editItem.title"></memo-list-form>
+				</div>
 				<!--	8. sizeTable (sizeTable) -->
 				<div *ngSwitchCase="ItemFormType.SIZE_TABLE">
 					<!--todo -->
 				</div>
 				<div *ngSwitchDefault>Whoops..</div>
 			</div>
+
+
 		</div>
 
 		<!--a little to the side of the rest of the input forms: -->
@@ -80,7 +122,10 @@
 			<!--	cancel button-->
 			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
-			<button md-button color="primary" type="submit">{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+			<button md-button color="primary"
+					[disabled]="!modifyShopItemForm.form.valid"
+					type="submit">
+				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
 			</button>
 		</div>
 	</form>
