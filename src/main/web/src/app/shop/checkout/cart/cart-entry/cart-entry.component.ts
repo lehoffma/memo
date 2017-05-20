@@ -26,9 +26,10 @@ export class CartEntryComponent implements OnInit {
 		}else {
 			maxAmount=this.event.event.capacity;
 		}
-		for(let i=0;i<maxAmount;i++){
+		for(let i=0;i<=maxAmount;i++){
 			this.amountOptions.push(i);
 		}
+		console.log(this.event.amount)
 	}
 
 	resultIsMerch(result: Event) {
@@ -39,8 +40,7 @@ export class CartEntryComponent implements OnInit {
 	private updateAmount(content: ShoppingCartContent, eventType: EventType){
 		let item = content[eventType].find(item => item.id === this.event.event.id)
 		if (item) {
-			let diff: number;
-			diff = this.event.amount-item.amount;
+			let diff: number = this.event.amount-item.amount;
 			if (diff > 0) {
 				this.shoppingCartService.addItem(eventType, {
 					id: this.event.event.id,
@@ -52,8 +52,6 @@ export class CartEntryComponent implements OnInit {
 				for(let i=diff; i<0; i++){
 					this.shoppingCartService.deleteItem(eventType, this.event.event.id)
 				}
-
-
 			}
 
 		}

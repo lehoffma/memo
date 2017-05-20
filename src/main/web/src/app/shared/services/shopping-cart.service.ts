@@ -3,6 +3,7 @@ import {EventType} from "../../shop/shared/model/event-type";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ShoppingCartContent} from "../model/shopping-cart-content";
 import {ShoppingCartItem} from "../model/shopping-cart-item";
+import {MerchColor} from "../../shop/shared/model/merch-color";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -62,7 +63,8 @@ export class ShoppingCartService implements OnInit {
 			return cardItem.id === item.id
 				&& cardItem.options
 				&& cardItem.options.size === item.options.size
-				&& cardItem.options.color === item.options.color
+				&& cardItem.options.color.name === item.options.color.name
+				&& cardItem.options.color.hex === item.options.color.hex
 		});
 		//Wenn ja, wird die Anzahl erhöht..
 		if (itemIndex !== -1) {
@@ -102,10 +104,12 @@ export class ShoppingCartService implements OnInit {
 	 * @param id
 	 * @param options
 	 */
-	public getItem(type: EventType, id: number, options?: { size?: string, color?: string }) {
+	public getItem(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
 		return this._content.getValue()[type].find((shoppingCartItem: ShoppingCartItem) =>
-			shoppingCartItem.id === id && ((!shoppingCartItem.options && !options) || (shoppingCartItem.options.size === options.size
-			&& shoppingCartItem.options.color))
+			shoppingCartItem.id === id && ((!shoppingCartItem.options && !options) ||
+			(shoppingCartItem.options.size === options.size
+			&& shoppingCartItem.options.color.name === options.color.name
+			&& shoppingCartItem.options.color.hex === options.color.hex))
 		)
 	}
 

@@ -13,14 +13,12 @@ export class CheckoutCartComponent implements OnInit {
 
 	public shoppingCartItems = this.shoppingCartService.content
 		.flatMap(content => {
-			let getEvenstfromShoppingCart = (contentkey: string, eventType: EventType) => {
+			let getEventsfromShoppingCart = (contentkey: string, eventType: EventType) => {
 				var events = [];
 				for (let i = 0; i < content[contentkey].length; i++) {
 					events[i] = this.eventService.getById(content[contentkey][i].id, {eventType: eventType});
-
 				}
 				return Observable.combineLatest(events)
-
 					.map(events => {
 						for (var i = 0; i < events.length; i++) {
 							events[i] = {
@@ -32,9 +30,9 @@ export class CheckoutCartComponent implements OnInit {
 						return events;
 					})
 			}
-			let tours = getEvenstfromShoppingCart("tours", EventType.tours).defaultIfEmpty([]);
-			let merch = getEvenstfromShoppingCart("merch", EventType.merch).defaultIfEmpty([]);
-			let partys = getEvenstfromShoppingCart("partys", EventType.partys).defaultIfEmpty([]);
+			let tours = getEventsfromShoppingCart("tours", EventType.tours).defaultIfEmpty([]);
+			let merch = getEventsfromShoppingCart("merch", EventType.merch).defaultIfEmpty([]);
+			let partys = getEventsfromShoppingCart("partys", EventType.partys).defaultIfEmpty([]);
 			return Observable.combineLatest(tours, merch, partys).map(eventsArray => {
 				return {
 					tours: eventsArray[0],

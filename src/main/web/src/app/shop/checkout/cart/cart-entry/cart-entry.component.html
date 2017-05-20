@@ -17,14 +17,13 @@
 				</div>
 				<div *ngIf="resultIsMerch(event.event)" class="merch-available-colors-container">
 					<div>
-						<span *ngFor="let color of event.event.colorsAsHex"
+						<span *ngFor="let color of event.event.colors"
 							  class="merch-available-colors"
-							  [style.background-color]="color">
+							  [style.background-color]="color.hex">
 						</span>
 					</div>
 				</div>
 				{{event.options.size}}
-				{{event.options.color}}
 			</div>
 
 
