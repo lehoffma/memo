@@ -14,10 +14,12 @@ import {EventData} from "../model/event-data";
 import {ArrayObjectType} from "../model/util/array-object-type";
 import {InnerArrayObjectType} from "../model/util/inner-array-object-type";
 import {ImmutableObject} from "../model/util/immutable-object";
+import {Address} from "../model/address";
 
 export interface Cache extends EventData, ArrayObjectType<ImmutableObject<any>> {
 	users: User[];
 	entries: Entry[];
+	addresses: Address[]
 }
 
 //equivalent to InnerCacheType = User | Entry | Merchandise | Tour | Party
@@ -30,7 +32,8 @@ export class CacheStore {
 		tours: new BehaviorSubject<Tour[]>([]),
 		partys: new BehaviorSubject<Party[]>([]),
 		users: new BehaviorSubject<User[]>([]),
-		entries: new BehaviorSubject<Entry[]>([])
+		entries: new BehaviorSubject<Entry[]>([]),
+		addresses: new BehaviorSubject<Address[]>([])
 	};
 	public cache: ObservableType<Cache> = asObservableType(this._cache);
 
@@ -75,6 +78,9 @@ export class CacheStore {
 		}
 		if (Entry.isEntry(object)) {
 			return "entries";
+		}
+		if (Address.isAddress(object)) {
+			return "addresses";
 		}
 		return "";
 	}
@@ -156,8 +162,8 @@ export class CacheStore {
 		//no event type specified => return all objects matching the string
 		if (!key || isNullOrUndefined(key)) {
 			return Observable.combineLatest(
-				this.cache.tours, this.cache.partys, this.cache.merch, this.cache.users, this.cache.entries,
-				(tours, partys, merch, users, entries) => [...tours, ...partys, ...merch, ...users, ...entries])
+				this.cache.tours, this.cache.partys, this.cache.merch, this.cache.users, this.cache.entries, this.cache.addresses,
+				(tours, partys, merch, users, entries, addresses) => [...tours, ...partys, ...merch, ...users, ...entries, ...addresses])
 				.map(objects => objects.filter((cachedObject: InnerCacheType) => cachedObject.matchesSearchTerm(searchTerm)));
 		}
 

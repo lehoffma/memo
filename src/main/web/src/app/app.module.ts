@@ -96,6 +96,17 @@ import {PaymentMethodsFormComponent} from "./user/signup/payment-methods-form/pa
 import {DebitInputFormComponent} from "./user/signup/payment-methods-form/debit-input-form/debit-input-form.component";
 import {ImageCropperModule} from "ng2-image-cropper";
 import {CartEntryComponent} from "./shop/checkout/cart/cart-entry/cart-entry.component";
+import {ExpandableTableComponent} from "./shared/expandable-table/expandable-table.component";
+import {ExpandedTableRowContainerDirective} from "./shared/expandable-table/expanded-table-row-container.directive";
+import {MemberListExpandedRowComponent} from "./club-management/administration/member-list/member-list-expanded-row/member-list-expanded-row.component";
+import {ExpandableTableColumnContainerDirective} from "./shared/expandable-table/expandable-table-column-container.directive";
+import {DefaultExpandableTableCellComponent} from "./shared/expandable-table/default-expandable-table-cell.component";
+import {DateTableCellComponent} from "./club-management/administration/member-list/member-list-table-cells/date-table-cell.component";
+import {ClubRoleTableCellComponent} from "./club-management/administration/member-list/member-list-table-cells/clubrole-table-cell.component";
+import {BooleanCheckMarkCellComponent} from "./club-management/administration/member-list/member-list-table-cells/boolean-checkmark-cell.component";
+import {GenderCellComponent} from "./club-management/administration/member-list/member-list-table-cells/gender-cell.component";
+import {AddressService} from "./shared/services/address.service";
+import {AddressTableCellComponent} from "./club-management/administration/member-list/member-list-table-cells/address-table-cell.component";
 
 @NgModule({
 	imports: [
@@ -185,13 +196,24 @@ import {CartEntryComponent} from "./shop/checkout/cart/cart-entry/cart-entry.com
 		ProfilePictureFormComponent,
 		PaymentMethodsFormComponent,
 		DebitInputFormComponent,
+
+		ExpandableTableComponent,
+		ExpandedTableRowContainerDirective,
+		MemberListExpandedRowComponent,
+		ExpandableTableColumnContainerDirective,
+		DefaultExpandableTableCellComponent,
+		DateTableCellComponent,
+		ClubRoleTableCellComponent,
+		BooleanCheckMarkCellComponent,
+		GenderCellComponent,
+		AddressTableCellComponent
 	],
 	bootstrap: [
 		AppComponent
 	],
 	providers: [
 		NavigationService, UserService, CacheStore,
-		LogInService, ShoppingCartService, EventUtilityService, EventService,
+		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
 		EntryService, EventFactoryService, QueryParameterService,
 
 		//guards
@@ -201,7 +223,15 @@ import {CartEntryComponent} from "./shop/checkout/cart/cart-entry/cart-entry.com
 	],
 	entryComponents: [
 		ItemImagePopupComponent,
-		ChooseColorComponent
+		ChooseColorComponent,
+
+		MemberListExpandedRowComponent,
+		DefaultExpandableTableCellComponent,
+		DateTableCellComponent,
+		ClubRoleTableCellComponent,
+		BooleanCheckMarkCellComponent,
+		GenderCellComponent,
+		AddressTableCellComponent
 	]
 })
 export class AppModule {

@@ -22,7 +22,7 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 		Object.keys(properties)
 			.forEach(key => {
 				let value: (string | number | Date | UserPermissions) = (<any>properties)[key];
-				if (key === "date" && this.isString(value)) {
+				if (key.toLowerCase().includes("date") && this.isString(value)) {
 					value = Date.parse(value);
 				} else if (this.isNumber(value)) {
 					value = +value;
@@ -32,6 +32,8 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 					value = ClubRole[(<any>properties)["clubRole"]];
 				} else if (key === "permissions") {
 					value = jsonToPermissions((<any>properties)["permissions"]);
+				} else if (key === "gender") {
+
 				}
 				this[key] = value;
 			});

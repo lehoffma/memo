@@ -1,3 +1,12 @@
-<div *ngFor="let user of (users | async)">
-	{{user.firstName}} {{user.surname}}
-</div>
+<memo-expandable-table
+	[data]="users|async"
+	(onAdd)="addUser($event)"
+	(onSort)="updateSortingKey($event)"
+	(onDelete)="deleteUsers($event)"
+	(onEdit)="editUser($event)"
+	[expandedRowComponent]="rowComponent"
+	[columnKeys]="primaryColumnKeys | async"
+	[expandedRowKeys]="expandedRowKeys | async"
+>
+
+</memo-expandable-table>

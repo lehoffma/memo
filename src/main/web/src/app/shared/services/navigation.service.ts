@@ -30,12 +30,13 @@ export class NavigationService {
 			.map(response => response.json());
 	}
 
-	public navigateToItem(item: (Event | User | Entry)) {
-		this.navigateToItemWithId(this.eventUtilService.getShopItemType(item), item.id);
+	public navigateToItem(item: (Event | User | Entry), suffix?: string) {
+		this.navigateToItemWithId(this.eventUtilService.getShopItemType(item), item.id, suffix);
 	}
 
-	public navigateToItemWithId(category: ShopItemType, id: number) {
-		this.navigateByUrl(`${category}/${id}`);
+	public navigateToItemWithId(category: ShopItemType, id: number, suffix?: string) {
+		let url = `${category}/${id}${(suffix ? suffix : "")}`;
+		this.navigateByUrl(url);
 	}
 
 	//todo: do something other than just printing to console (show the error to the user or fallback to some default route)

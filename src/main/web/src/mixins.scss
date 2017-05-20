@@ -19,6 +19,14 @@
 	transform: $val;
 }
 
+@mixin transition($val) {
+	-webkit-transition: $val;
+	-moz-transition: $val;
+	-ms-transition: $val;
+	-o-transition: $val;
+	transition: $val;
+}
+
 @mixin animation($animate...) {
 	$max: length($animate);
 	$animations: '';

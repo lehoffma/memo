@@ -2,6 +2,7 @@ import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {Participant} from "./participant";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
+import {EventRoute} from "./route";
 export class Tour extends Event {
 
 	constructor(id: number,
@@ -9,21 +10,23 @@ export class Tour extends Event {
 				date: Date,
 				description: string,
 				expectedRole: ClubRole,
+				route: EventRoute,
 				imagePath: string,
 				capacity: number,
 				priceMember: number,
-				meetingPoint: number,
 				public vehicle: string,
 				public miles: number,
-				public destination: string,
 				public emptySeats: number,
 				public participants: Participant[]) {
 
-		super(id, title, date, description, expectedRole, imagePath, capacity, priceMember, meetingPoint);
+		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember);
 	}
 
 	static create() {
-		return new Tour(-1, "", new Date(1999, 9, 19), "", ClubRole.None, "", -1, -1, -1, "", -1, "", -1, []);
+		return new Tour(-1, "", new Date(1999, 9, 19), "", ClubRole.None, {
+			meetingPoint: -1,
+			destination: -1
+		}, "", -1, -1, "", -1, -1, []);
 	}
 
 	get overviewKeys(): EventOverviewKey[] {

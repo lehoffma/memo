@@ -1,0 +1,27 @@
+
+tr {
+	height: 56px;
+	text-align: left;
+
+	&:hover {
+		background-color: #EEEEEE;
+	}
+
+	td:nth-child(1) {
+		font-size: 0.75rem;
+		padding-left: 1rem;
+	}
+
+	/deep/ td:nth-child(2) {
+		//text-align: right;
+		padding-right: 1rem;
+	}
+
+	/deep/ .data-as-icon {
+		margin-left: 0;
+	}
+
+	&:last-child {
+		border-bottom: 8px solid #ededed;
+	}
+}

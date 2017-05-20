@@ -19,6 +19,7 @@ import {Merchandise} from "../shared/model/merchandise";
 import {Party} from "../shared/model/party";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {ListFormType} from "app/shop/modify-shop-item/list-form-type";
+import {Location} from "@angular/common";
 
 type Item = User | Entry | Merchandise | Tour | Party;
 
@@ -51,6 +52,7 @@ export class ModifyShopItemComponent implements OnInit {
 				private userService: UserService,
 				private navigationService: NavigationService,
 				private eventUtilService: EventUtilityService,
+				private location: Location,
 				private activatedRoute: ActivatedRoute) {
 		this.activatedRoute.params.first().subscribe(
 			(params: Params) => {
@@ -89,13 +91,7 @@ export class ModifyShopItemComponent implements OnInit {
 
 	cancel() {
 		console.log("cancel");
-		//navigate to object if editing, otherwise navigate to home
-		if (this.previousValue) {
-			this.navigationService.navigateToItem(this.previousValue);
-		}
-		else {
-			this.navigationService.navigateByUrl("/");
-		}
+		this.location.back();
 	}
 
 	submitModifiedObject() {
