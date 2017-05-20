@@ -31,6 +31,11 @@ export class CartEntryComponent implements OnInit {
 		}
 	}
 
+	resultIsMerch(result: Event) {
+		return this.eventUtilityService.isMerchandise(result);
+	}
+
+
 	private updateAmount(content: ShoppingCartContent, eventType: EventType){
 		let item = content[eventType].find(item => item.id === this.event.event.id)
 		if (item) {

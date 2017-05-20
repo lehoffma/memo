@@ -26,10 +26,12 @@ md-card {
 	border-top: 1px solid grey;
 	height: 1px;
 }
-.md-primary{
+.methode{
 	margin-bottom: 0.5rem;
+	display: flex;
+	flex-direction: column;
 }
-.bnk{
+.bank{
 	margin-bottom: 0.5rem;
 }
 .sum{
