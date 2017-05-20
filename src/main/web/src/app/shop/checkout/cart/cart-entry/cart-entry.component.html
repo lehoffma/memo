@@ -1,32 +1,32 @@
 <div class="cart-entry-border">
 	<!-- <div class="close"><a md-icons class="material-icons">close</a>-->
-	<div class="cart-entry-title">{{event.event.title}}
+	<div class="cart-entry-title">{{cartItem.item.title}}
 		<div>
-
 
 			<div class="cart-entry-price-scroll">
 				<div class="cart-entry-price">
-					<md-select class="amount" [(ngModel)]="event.amount" (ngModelChange)="updateEventAmount()"
+					<md-select class="amount" [(ngModel)]="cartItem.amount" (ngModelChange)="updateEventAmount()"
 							   placeholder="Anzahl">
 						<md-option *ngFor="let amount of amountOptions" [value]="amount">
 							{{amount}}
 						</md-option>
 					</md-select>
 
-					{{event.event.price}} €
+					{{cartItem.item.price}} €
 				</div>
-				<div *ngIf="resultIsMerch(event.event)" class="merch-available-colors-container">
+				<div *ngIf="itemIsMerch(cartItem.item)" class="merch-available-colors-container">
 					<div>
-						<span *ngFor="let color of event.event.colors"
+						<span *ngFor="let color of cartItem.item.colors"
 							  class="merch-available-colors"
 							  [style.background-color]="color.hex">
 						</span>
 					</div>
 				</div>
-				{{event.options.size}}
+				{{cartItem.options.size}}
 			</div>
 
-
 			<hr class="cart-entry-price-border">
-			<div class="cart-entry-sum">{{event.event.price*event.amount}} €</div>
+			<div class="cart-entry-sum">{{cartItem.item.price*cartItem.amount}} €</div>
 		</div>
+	</div>
+</div>

@@ -4,7 +4,6 @@ import {Merchandise} from "../../../shared/model/merchandise";
 import {ShoppingCartService} from "../../../../shared/services/shopping-cart.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {EventOverviewKey} from "./event-overview-key";
-import {ShoppingCartItem} from "../../../../shared/model/shopping-cart-item";
 
 
 @Component({
@@ -84,29 +83,22 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 *
 	 */
 	updateShoppingCart() {
-		let shoppingCartItem = this.shoppingCartService.getItem(this.eventUtilityService.getEventType(this.event),
+		const shoppingCartItem = this.shoppingCartService.getItem(this.eventUtilityService.getEventType(this.event),
 			this.event.id, Object.assign({}, this.model.options));
+		const eventType = this.eventUtilityService.getEventType(this.event);
+		const newItem = {
+			id: this.event.id,
+			amount: this.model.amount,
+			options: this.model.options
+		};
 
-		this.isPartOfShoppingCart = !!shoppingCartItem;
 		if (shoppingCartItem) {
-			let difference = this.model.amount - shoppingCartItem.amount;
-			if (difference < 0) {
-				for (let i = difference; i < 0; i++) {
-					this.shoppingCartService.deleteItem(this.eventUtilityService.getEventType(this.event), this.event.id);
-				}
-			}
-			else {
-				let newItem: ShoppingCartItem = {
-					id: shoppingCartItem.id,
-					options: shoppingCartItem.options,
-					amount: difference
-				};
-				this.shoppingCartService.addItem(this.eventUtilityService.getEventType(this.event), newItem);
-			}
+			this.shoppingCartService.pushItem(eventType, newItem)
+		}
 
-			if (this.model.amount === 0) {
-				this.isPartOfShoppingCart = false;
-			}
+		if (this.model.amount === 0) {
+			this.shoppingCartService.deleteItem(eventType, newItem.id, newItem.options);
+			this.isPartOfShoppingCart = false;
 		}
 	}
 
@@ -118,16 +110,13 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			this.event.id, Object.assign({}, this.model.options));
 
 		if (shoppingCartItem) {
-			//add
-			const amount = shoppingCartItem.amount;
-			for (let i = 0; i < amount; i++) {
-				this.shoppingCartService.deleteItem(this.eventUtilityService.getEventType(this.event), this.event.id);
-			}
+			//delete
+			this.shoppingCartService.deleteItem(this.eventUtilityService.getEventType(this.event), this.event.id, this.model.options);
 			this.isPartOfShoppingCart = false;
 		}
 		else {
-			//delete
-			this.shoppingCartService.addItem(this.eventUtilityService.getEventType(item), {
+			//add
+			this.shoppingCartService.pushItem(this.eventUtilityService.getEventType(item), {
 				id: item.id,
 				options: Object.assign({}, this.model.options),
 				amount: this.model.amount

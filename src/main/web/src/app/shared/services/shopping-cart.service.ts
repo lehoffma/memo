@@ -28,22 +28,32 @@ export class ShoppingCartService implements OnInit {
 	}
 
 	/**
+	 * Testet, ob die übergebenen items equal sind
+	 * @param itemA
+	 * @param itemB
+	 * @returns {boolean|{size?: string, color?: MerchColor}}
+	 */
+	itemsAreEqual(itemA: ShoppingCartItem, itemB: ShoppingCartItem) {
+		return itemA.id === itemB.id && (
+			(!itemA.options.size && !itemA.options.color && !itemB.options.size && !itemB.options.color) ||
+			(itemA.options.size === itemB.options.size
+			&& itemA.options.color.name === itemB.options.color.name
+			&& itemA.options.color.hex === itemB.options.color.hex))
+	}
+
+	/**
 	 *
 	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
 	 * @param id die ID des Items, welches entfernt werden soll
 	 * @param content das content-objekt, aus dem das Item entfernt werden soll
+	 * @param options
 	 * @returns {ShoppingCartContent}
 	 */
-	private remove(type: EventType, id: number, content: ShoppingCartContent) {
-		let itemIndex = content[type].findIndex(cardItem => cardItem.id === id);
+	private remove(content: ShoppingCartContent, type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
+		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, {id, options, amount: 0}));
 		if (itemIndex >= 0) {
 			//remove
-			if (content[type][itemIndex].amount === 1) {
-				content[type].splice(itemIndex, 1)
-			}
-			else {
-				content[type][itemIndex].amount--;
-			}
+			content[type].splice(itemIndex, 1);
 		}
 
 		//das objekt gibt es nicht :(
@@ -57,18 +67,17 @@ export class ShoppingCartService implements OnInit {
 	 * @param content das content-objekt, zu dem das Item hinzugefügt werden soll
 	 * @returns {ShoppingCartContent}
 	 */
-	private add(type: EventType, item: ShoppingCartItem, content: ShoppingCartContent) {
+	private push(type: EventType, item: ShoppingCartItem, content: ShoppingCartContent) {
 		//Vergleicht ob das Objekt den gleichen inhalt hat.
-		let itemIndex = content[type].findIndex(cardItem => {
-			return cardItem.id === item.id
-				&& cardItem.options
-				&& cardItem.options.size === item.options.size
-				&& cardItem.options.color.name === item.options.color.name
-				&& cardItem.options.color.hex === item.options.color.hex
-		});
-		//Wenn ja, wird die Anzahl erhöht..
+		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, item));
+		//Wenn ja, wird die Anzahl angepasst
 		if (itemIndex !== -1) {
-			content[type][itemIndex].amount += item.amount;
+			if (item.amount === 0) {
+				content[type].splice(itemIndex, 1);
+			}
+			else {
+				content[type][itemIndex].amount = item.amount;
+			}
 		}
 		//wenn nein, wird das item hinzugefügt
 		else {
@@ -82,8 +91,8 @@ export class ShoppingCartService implements OnInit {
 	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
 	 * @param item das Item welches hinzugefügt werden soll
 	 */
-	public addItem(type: EventType, item: ShoppingCartItem) {
-		let newValue = this.add(type, item, this._content.value);
+	public pushItem(type: EventType, item: ShoppingCartItem) {
+		let newValue = this.push(type, item, this._content.value);
 		this.pushNewValue(newValue);
 	}
 
@@ -91,9 +100,10 @@ export class ShoppingCartService implements OnInit {
 	 *
 	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
 	 * @param id die ID des Items, welches gelöscht werden soll
+	 * @param options
 	 */
-	public deleteItem(type: EventType, id: number) {
-		let newValue = this.remove(type, id, this._content.value);
+	public deleteItem(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
+		let newValue = this.remove(this._content.value, type, id, options);
 		this.pushNewValue(newValue);
 	}
 
@@ -106,10 +116,7 @@ export class ShoppingCartService implements OnInit {
 	 */
 	public getItem(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
 		return this._content.getValue()[type].find((shoppingCartItem: ShoppingCartItem) =>
-			shoppingCartItem.id === id && ((!shoppingCartItem.options && !options) ||
-			(shoppingCartItem.options.size === options.size
-			&& shoppingCartItem.options.color.name === options.color.name
-			&& shoppingCartItem.options.color.hex === options.color.hex))
+			this.itemsAreEqual(shoppingCartItem, {id, options, amount: 0})
 		)
 	}
 
@@ -121,10 +128,9 @@ export class ShoppingCartService implements OnInit {
 	 * @param options
 	 * @returns {Observable<R>}
 	 */
-	public getItemAsObservable(type: EventType, id: number, options?: { size?: string, color?: string }) {
+	public getItemAsObservable(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
 		return this._content.map(content => content[type].find((shoppingCartItem: ShoppingCartItem) =>
-			shoppingCartItem.id === id && ((!shoppingCartItem.options && !options) || (shoppingCartItem.options.size === options.size
-			&& shoppingCartItem.options.color)))
+			this.itemsAreEqual(shoppingCartItem, {id, options, amount: 0}))
 		);
 	}
 
