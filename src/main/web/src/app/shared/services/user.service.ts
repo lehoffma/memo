@@ -32,10 +32,10 @@ export class UserService implements ServletService<User> {
 		}
 
 		//todo remove when server is running todo demo
-		// if (userId !== -1) {
-		// 	return this.search("")
-		// 		.map(users => users.find(user => user.id === userId));
-		// }
+		if (userId !== -1) {
+			return this.search("")
+				.map(users => users.find(user => user.id === userId));
+		}
 
 		return this.http.get(`/api/user?id=${userId}`)
 			.map(response => response.json())
@@ -59,7 +59,7 @@ export class UserService implements ServletService<User> {
 	search(searchTerm: string, options?: any): Observable<User[]> {
 		let url = `/api/user?searchTerm=${searchTerm}`;
 		//todo remove when server is running todo demo
-		// url = `/resources/mock-data/users.json`;
+		url = `/resources/mock-data/users.json`;
 
 		return this.http.get(url)
 			.map(response => response.json())
@@ -81,7 +81,7 @@ export class UserService implements ServletService<User> {
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	addOrModify(user: User, options?: any): Observable<User> {
+	addOrModify(user: User, options: any = {profilePicture: null, paymentInfo: null}): Observable<User> {
 		const {profilePicture, paymentInfo} = options;
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
