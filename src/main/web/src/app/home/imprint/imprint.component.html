@@ -1,3 +1,15 @@
-<p>
-	imprint works!
-</p>
+<br/>
+<br/>
+
+<button md-raised-button color="accent" (click)="postUser()">User</button>
+
+<br/>
+<br/>
+
+<button md-raised-button color="accent" (click)="postTour()">Tour</button>
+<button md-raised-button color="accent" (click)="postMerch()">Merch</button>
+<button md-raised-button color="accent" (click)="postParty()">Party</button>
+
+
+<p>Response</p>
+{{result | async | json}}

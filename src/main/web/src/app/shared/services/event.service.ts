@@ -61,10 +61,10 @@ export class EventService implements ServletService<Event> {
 		}
 
 		//todo remove when backend is running todo demo
-		// if (!refresh) {
-		// 	return this.search("", options)
-		// 		.map(events => events.find(event => event.id === eventId));
-		// }
+		if (!refresh) {
+			return this.search("", options)
+				.map(events => events.find(event => event.id === eventId));
+		}
 
 		return this.http.get(url)
 			.map(response => response.json())
@@ -112,7 +112,7 @@ export class EventService implements ServletService<Event> {
 		let url = `${this.baseUrl}?searchTerm=${searchTerm}` + ((eventType !== null) ? `&type=${eventType}` : "");
 
 		//todo remove when backend is running todo demo
-		// url = `/resources/mock-data/${eventType}.json`;
+		url = `/resources/mock-data/${eventType}.json`;
 
 		const httpRequest = this.http.get(url)
 			.map(response => response.json())
@@ -127,8 +127,8 @@ export class EventService implements ServletService<Event> {
 			.publish().refCount();
 
 		//todo remove when backend is running todo demo
-		// const DEBUG_httpRequest = httpRequest.map(events => events.filter(event => event.matchesSearchTerm(searchTerm)));
-		let DEBUG_httpRequest = httpRequest;
+		const DEBUG_httpRequest = httpRequest.map(events => events.filter(event => event.matchesSearchTerm(searchTerm)));
+		// let DEBUG_httpRequest = httpRequest;
 
 		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, this.cacheKeyFromEventType(eventType));
 
@@ -161,8 +161,7 @@ export class EventService implements ServletService<Event> {
 
 		return this.http.post(this.baseUrl, {event}, requestOptions)
 			.map(response => response.json())
-			.map(eventJson => this.eventFactoryService.build(eventType).setProperties(eventJson))
-			.do(event => this.cache.addOrModify(event))
+			.map(id => this.getById(id, {eventType}))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
