@@ -52,6 +52,6 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 	 * @returns {string[]}
 	 */
 	matchesSearchTerm(searchTerm: string = ""): boolean {
-		return Object.keys(this).some(key => ("" + this[key]).includes(searchTerm));
+		return Object.keys(this).some(key => ("" + this[key]).toLowerCase().includes(searchTerm.toLowerCase()));
 	}
 }

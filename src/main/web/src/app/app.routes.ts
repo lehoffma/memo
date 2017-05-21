@@ -18,7 +18,6 @@ import {AccountDetailsComponent} from "./user/account-details/account-details.co
 import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {AccountingComponent} from "./club-management/accounting/accounting.component";
-import {StockComponent} from "./club-management/administration/stock/stock.component";
 import {MerchandiseComponent} from "./shop/merchandise/merchandise.component";
 import {TourParticipantsComponent} from "./shop/tours/tour-detail/tour-participants/tour-participants.component";
 import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
@@ -31,6 +30,7 @@ import {IsOrganizerGuard} from "./shared/route-guards/is-organizer.guard";
 import {IsValidItemTypeGuard} from "./shared/route-guards/is-valid-itemtype.guard";
 import {PageNotFoundComponent} from "./util/page-not-found/page-not-found.component";
 import {CheckoutComponent} from "./shop/checkout/checkout.component";
+import {MerchStockComponent} from "./club-management/administration/stock/merch-stock/merch-stock.component";
 export const ROUTES = [
 	{path: "", component: HomeComponent},
 
@@ -71,7 +71,10 @@ export const ROUTES = [
 
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
 	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
-	{path: "management/stock", component: StockComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
+
+	//todo update once there is more than one type of stock
+	{path: "management/stock", redirectTo: "management/stock/merch", pathMatch: "full"},
+	{path: "management/stock/merch", component: MerchStockComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
 
 	{path: "settings", component: SettingsComponent},
 	{path: "impressum", component: ImprintComponent},

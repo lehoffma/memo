@@ -60,11 +60,11 @@ export class EventService implements ServletService<Event> {
 				.map((events: Event[]) => events.find(event => event.id === eventId));
 		}
 
-		//todo remove when backend is running
-		if (!refresh) {
-			return this.search("", options)
-				.map(events => events.find(event => event.id === eventId));
-		}
+		//todo remove when backend is running todo demo
+		// if (!refresh) {
+		// 	return this.search("", options)
+		// 		.map(events => events.find(event => event.id === eventId));
+		// }
 
 		return this.http.get(url)
 			.map(response => response.json())
@@ -109,10 +109,10 @@ export class EventService implements ServletService<Event> {
 		const {eventType} = options;
 
 		//if no event type is specified, search for all kinds of events (the default value is 'ALL')
-		let url = `${this.baseUrl}?searchTerm=${searchTerm}` + eventType !== null ? `&type=${eventType}` : "";
+		let url = `${this.baseUrl}?searchTerm=${searchTerm}` + ((eventType !== null) ? `&type=${eventType}` : "");
 
-		//todo remove when backend is running
-		url = `/resources/mock-data/${eventType}.json`;
+		//todo remove when backend is running todo demo
+		// url = `/resources/mock-data/${eventType}.json`;
 
 		const httpRequest = this.http.get(url)
 			.map(response => response.json())
@@ -126,8 +126,9 @@ export class EventService implements ServletService<Event> {
 			//instead of waiting for someone to subscribe
 			.publish().refCount();
 
-		//todo remove when backend is running
-		const DEBUG_httpRequest = httpRequest.map(events => events.filter(event => event.matchesSearchTerm(searchTerm)));
+		//todo remove when backend is running todo demo
+		// const DEBUG_httpRequest = httpRequest.map(events => events.filter(event => event.matchesSearchTerm(searchTerm)));
+		let DEBUG_httpRequest = httpRequest;
 
 		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, this.cacheKeyFromEventType(eventType));
 
@@ -152,11 +153,11 @@ export class EventService implements ServletService<Event> {
 		const requestOptions = new RequestOptions({headers});
 		const eventType = this.eventUtilService.getEventType(event);
 
-		//todo remove when backend is running
-		if (eventType) {
-			this.cache.addOrModify(event);
-			return Observable.of(event);
-		}
+		//todo remove when backend is running todo demo
+		// if (eventType) {
+		// 	this.cache.addOrModify(event);
+		// 	return Observable.of(event);
+		// }
 
 		return this.http.post(this.baseUrl, {event}, requestOptions)
 			.map(response => response.json())

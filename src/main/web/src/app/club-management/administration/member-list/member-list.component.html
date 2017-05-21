@@ -4,6 +4,7 @@
 	(onSort)="updateSortingKey($event)"
 	(onDelete)="deleteUsers($event)"
 	(onEdit)="editUser($event)"
+	[title]="'Mitgliederliste'"
 	[expandedRowComponent]="rowComponent"
 	[columnKeys]="primaryColumnKeys | async"
 	[expandedRowKeys]="expandedRowKeys | async"

@@ -1,17 +1,16 @@
 import {AfterViewInit, Component, ComponentFactoryResolver, Input, OnInit, QueryList, ViewChildren} from "@angular/core";
-import {ExpandedRowComponent} from "../../../../shared/expandable-table/expanded-row.component";
-import {User} from "../../../../shared/model/user";
-import {ExpandableTableColumn} from "../../../../shared/expandable-table/expandable-table-column";
-import {ExpandableTableColumnContainerDirective} from "../../../../shared/expandable-table/expandable-table-column-container.directive";
+import {ExpandedRowComponent} from "../expanded-row.component";
+import {ExpandableTableColumn} from "../expandable-table-column";
+import {ExpandableTableColumnContainerDirective} from "../expandable-table-column-container.directive";
 
 @Component({
-	selector: "tbody [memberListExpandedRow]",
-	templateUrl: "./member-list-expanded-row.component.html",
-	styleUrls: ["./member-list-expanded-row.component.scss"]
+	selector: "tbody [singleValueListExpandedRow]",
+	templateUrl: "./single-value-expanded-row.component.html",
+	styleUrls: ["./single-value-expanded-row.component.scss"]
 })
-export class MemberListExpandedRowComponent implements OnInit, AfterViewInit, ExpandedRowComponent<User> {
-	@Input() data: User;
-	@Input() keys: ExpandableTableColumn<User>[];
+export class SingleValueListExpandedRowComponent<T> implements OnInit, AfterViewInit, ExpandedRowComponent<T> {
+	@Input() data: T;
+	@Input() keys: ExpandableTableColumn<T>[];
 
 	@ViewChildren(ExpandableTableColumnContainerDirective) tableCellList: QueryList<ExpandableTableColumnContainerDirective>;
 
@@ -31,7 +30,7 @@ export class MemberListExpandedRowComponent implements OnInit, AfterViewInit, Ex
 	 * @param tableCellList
 	 * @param keys
 	 */
-	initTableCells(tableCellList: QueryList<ExpandableTableColumnContainerDirective>, keys: ExpandableTableColumn<User>[]) {
+	initTableCells(tableCellList: QueryList<ExpandableTableColumnContainerDirective>, keys: ExpandableTableColumn<T>[]) {
 		let index = 0;
 		keys.forEach(columnKey => {
 			let componentFactory = this._componentFactoryResolver.resolveComponentFactory(columnKey.component);

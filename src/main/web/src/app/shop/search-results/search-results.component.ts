@@ -60,6 +60,8 @@ export class SearchResultComponent implements OnInit {
 			.subscribe(queryParamMap => {
 				this.filterOptions = this.filterOptions.map(filterOptionParent => {
 					let key = filterOptionParent.queryKey;
+					//if the key associated with the filter selection box is part of the query parameters,
+					//update the filterOption's selected values.
 					if (queryParamMap.has(key)) {
 						let values: string[] = queryParamMap.get(key).split("|"); //something like 'tours|partys|merch'
 						filterOptionParent.children.forEach(child => {
@@ -84,7 +86,6 @@ export class SearchResultComponent implements OnInit {
 					(keywords === "" ? "" : " für '" + keywords + "'")
 				);
 			})
-		// this.activatedRoute.queryParamMap.flatMap(queryParamMap => )
 	}
 
 

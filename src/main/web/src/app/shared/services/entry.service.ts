@@ -80,6 +80,7 @@ export class EntryService implements ServletService<Entry> {
 
 		return this.http.post(`/api/entry`, {entry}, requestOptions)
 			.map(response => response.json())
+			//todo warum eigentlich?
 			//todo flatMap to this.get(id)
 			.map(userJson => Entry.create().setProperties(userJson))
 			//retry 3 times before throwing an error
