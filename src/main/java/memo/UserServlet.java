@@ -83,15 +83,27 @@ public class UserServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		// get params
-		String Name = request.getParameter("name");
-		String State = request.getParameter("state");
+		// get email
+		String email = request.getParameter("email");
+
+
+
+
+
+		if (email == null){
+			// TODO: log error
+			response.setStatus(400);
+			response.getWriter().append("Email must not be empty!");
+		}
+		//check if email is in db
+		List<User> users;
+		users = DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u WHERE u.email = :email", User.class).setParameter("email", email).getResultList();
+
 
 
 		// save params to new user
 		User newUser = new User();
-		newUser.setLastName(Name);
-		newUser.setEmail(State);
+
 
 		// get JPA Entity Manager
 		EntityManager em = DatabaseManager.createEntityManager();
