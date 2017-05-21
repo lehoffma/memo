@@ -1,5 +1,5 @@
 import {Component, OnInit, Renderer, ViewChild} from "@angular/core";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {animate, style, transition, trigger} from "@angular/animations";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 
 export enum SearchInputState{
@@ -13,15 +13,19 @@ export enum SearchInputState{
 	styleUrls: ["./search-input.component.scss"],
 	animations: [
 		trigger("searchInputState", [
-			state("active", style({
-				width: "200px"
-			})),
+			// state("inactive", style({
+			// 	width: "200px"
+			// })),
+			// state("active", style({
+			// 	width: "200px"
+			// })),
+			//todo angular bug! 'width: *' würde normalerweise funktionieren, aber lässt animation rumspringen
 			transition(":enter", [
 				style({width: "0", opacity: "0"}),
-				animate("200ms ease-in", style({width: "200px", opacity: "1"}))
+				animate("200ms ease-in", style({width: "160px", opacity: "1"}))
 			]),
 			transition(":leave", [
-				style({width: "200px", opacity: "1"}),
+				style({width: "160px", opacity: "1"}),
 				animate("200ms ease-out", style({width: "0", opacity: "0"}))
 			]),
 		])

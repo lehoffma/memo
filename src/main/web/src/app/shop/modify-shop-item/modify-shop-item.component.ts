@@ -21,8 +21,8 @@ import {NavigationService} from "../../shared/services/navigation.service";
 import {ListFormType} from "app/shop/modify-shop-item/list-form-type";
 import {Location} from "@angular/common";
 import {ItemChangeEvent} from "app/shop/modify-shop-item/item-change-event";
+import {ShopItem} from "../../shared/model/shop-item";
 
-type Item = User | Entry | Merchandise | Tour | Party;
 
 @Component({
 	selector: "memo-modify-shop-item",
@@ -49,7 +49,7 @@ export class ModifyShopItemComponent implements OnInit {
 	//ansonsten wird das übergebene Objekt editiert
 	idOfObjectToModify: number;
 
-	previousValue: Item;
+	previousValue: ShopItem;
 	model: any = {};
 
 	constructor(private eventService: EventService,
@@ -73,7 +73,7 @@ export class ModifyShopItemComponent implements OnInit {
 	 */
 	ngOnInit() {
 		if (this.idOfObjectToModify !== -1) {
-			let objectToModifyObservable: Observable<Event | Entry | User> = this.eventUtilService.handleOptionalShopType(
+			let objectToModifyObservable: Observable<ShopItem> = this.eventUtilService.handleOptionalShopType<any>(
 				this.itemType,
 				{
 					merch: () => this.eventService.getById(this.idOfObjectToModify, {eventType: EventType.merch}),
@@ -124,7 +124,7 @@ export class ModifyShopItemComponent implements OnInit {
 	 * Submit callback
 	 */
 	submitModifiedObject() {
-		let service: ServletService<User | Entry | Event> = this.eventUtilService.handleOptionalShopType<ServletService<User | Entry | Event>>(
+		let service: ServletService<ShopItem> = this.eventUtilService.handleOptionalShopType<ServletService<User | Entry | Event>>(
 			this.itemType,
 			{
 				merch: () => this.eventService,
@@ -134,7 +134,7 @@ export class ModifyShopItemComponent implements OnInit {
 				entries: () => this.entryService
 			}
 		);
-		let newObject: User | Entry | Merchandise | Tour | Party = this.eventUtilService.handleOptionalShopType<User | Entry | Event>(
+		let newObject: ShopItem = this.eventUtilService.handleOptionalShopType<ShopItem>(
 			this.itemType,
 			{
 				merch: () => Merchandise.create().setProperties(this.model),
@@ -148,7 +148,7 @@ export class ModifyShopItemComponent implements OnInit {
 		//todo display "submitting..." while waiting for response from server
 		service.addOrModify(newObject)
 			.subscribe(
-				(result: Event) => {
+				(result: ShopItem) => {
 					//navigiere zum neu erstellten item
 					this.navigationService.navigateToItem(result);
 				},

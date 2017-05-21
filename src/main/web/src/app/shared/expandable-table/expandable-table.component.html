@@ -6,11 +6,10 @@
 		</div>
 		<ng-template #header>
 			<div class="expandable-table-header-title">
-				<!--todo-->
-				Mitgliederliste
+				{{title}}
 			</div>
 
-			<div class="expandable-table-header-actions ">
+			<div class="expandable-table-header-actions">
 				<button md-button color="accent" (click)="addItem()">
 					HINZUFÜGEN
 				</button>

@@ -31,11 +31,11 @@ export class UserService implements ServletService<User> {
 				.map(users => users.find(user => user.id === userId));
 		}
 
-		//todo remove when server is running
-		if (userId !== -1) {
-			return this.search("")
-				.map(users => users.find(user => user.id === userId));
-		}
+		//todo remove when server is running todo demo
+		// if (userId !== -1) {
+		// 	return this.search("")
+		// 		.map(users => users.find(user => user.id === userId));
+		// }
 
 		return this.http.get(`/api/user?id=${userId}`)
 			.map(response => response.json())
@@ -58,8 +58,8 @@ export class UserService implements ServletService<User> {
 	 */
 	search(searchTerm: string, options?: any): Observable<User[]> {
 		let url = `/api/user?searchTerm=${searchTerm}`;
-		//todo remove when server is running
-		url = `/resources/mock-data/users.json`;
+		//todo remove when server is running todo demo
+		// url = `/resources/mock-data/users.json`;
 
 		return this.http.get(url)
 			.map(response => response.json())

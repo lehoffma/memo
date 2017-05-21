@@ -97,7 +97,7 @@ import {ImageCropperModule} from "ng2-image-cropper";
 import {CartEntryComponent} from "./shop/checkout/cart/cart-entry/cart-entry.component";
 import {ExpandableTableComponent} from "./shared/expandable-table/expandable-table.component";
 import {ExpandedTableRowContainerDirective} from "./shared/expandable-table/expanded-table-row-container.directive";
-import {MemberListExpandedRowComponent} from "./club-management/administration/member-list/member-list-expanded-row/member-list-expanded-row.component";
+import {SingleValueListExpandedRowComponent} from "./shared/expandable-table/single-value-list-expanded-row/single-value-list-expanded-row.component";
 import {ExpandableTableColumnContainerDirective} from "./shared/expandable-table/expandable-table-column-container.directive";
 import {DefaultExpandableTableCellComponent} from "./shared/expandable-table/default-expandable-table-cell.component";
 import {DateTableCellComponent} from "./club-management/administration/member-list/member-list-table-cells/date-table-cell.component";
@@ -109,6 +109,9 @@ import {AddressTableCellComponent} from "./club-management/administration/member
 import {AutoSizeTextAreaDirective} from "./shop/modify-shop-item/autosize-textarea.directive";
 import {HttpModule} from "@angular/http";
 import {MemoMaterialModule} from "../material.module";
+import {MerchStockComponent} from "./club-management/administration/stock/merch-stock/merch-stock.component";
+import {MultiValueListExpandedRowComponent} from "./shared/expandable-table/multi-value-list-expanded-row/multi-value-list-expanded-row.component";
+import {MerchStockTotalTableCellComponent} from "./club-management/administration/stock/merch-stock/merch-stock-table-cells/merch-stock-total-table-cell.component";
 
 @NgModule({
 	imports: [
@@ -203,7 +206,7 @@ import {MemoMaterialModule} from "../material.module";
 
 		ExpandableTableComponent,
 		ExpandedTableRowContainerDirective,
-		MemberListExpandedRowComponent,
+		SingleValueListExpandedRowComponent,
 		ExpandableTableColumnContainerDirective,
 		DefaultExpandableTableCellComponent,
 		DateTableCellComponent,
@@ -213,6 +216,12 @@ import {MemoMaterialModule} from "../material.module";
 		AddressTableCellComponent,
 
 		AutoSizeTextAreaDirective,
+
+		MerchStockComponent,
+
+		MultiValueListExpandedRowComponent,
+
+		MerchStockTotalTableCellComponent,
 	],
 	bootstrap: [
 		AppComponent
@@ -231,13 +240,16 @@ import {MemoMaterialModule} from "../material.module";
 		ItemImagePopupComponent,
 		ChooseColorComponent,
 
-		MemberListExpandedRowComponent,
+		SingleValueListExpandedRowComponent,
 		DefaultExpandableTableCellComponent,
 		DateTableCellComponent,
 		ClubRoleTableCellComponent,
 		BooleanCheckMarkCellComponent,
 		GenderCellComponent,
-		AddressTableCellComponent
+		AddressTableCellComponent,
+
+		MultiValueListExpandedRowComponent,
+		MerchStockTotalTableCellComponent
 	]
 })
 export class AppModule {

@@ -15,6 +15,10 @@
 	@include transition(background-color 200ms ease-in);
 
 	.expandable-table-header-title {
+		width: 70%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 		font-size: 1.2rem;
 	}
 
@@ -63,6 +67,14 @@
 				md-icon {
 					display: inline-flex;
 					vertical-align: middle;
+				}
+			}
+
+			th:not(.sortable-column) {
+				width: 50px;
+
+				@media all and (min-width: 1000px) {
+					width: 60px;
 				}
 			}
 		}

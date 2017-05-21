@@ -1,0 +1,13 @@
+<memo-expandable-table
+	[expandedRowComponent]="expandedRowComponent"
+	[title]="'Bestand'"
+	[data]="merchList | async"
+	[columnKeys]="primaryColumnKeys | async"
+	[expandedRowKeys]="expandedRowKeys | async"
+	(onDelete)="deleteMerch($event)"
+	(onSort)="updateSortingKey($event)"
+	(onAdd)="addMerch($event)"
+	(onEdit)="edit($event)"
+>
+
+</memo-expandable-table>

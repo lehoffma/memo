@@ -37,6 +37,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	@Input() columnKeys: ExpandableTableColumn<T>[];
 	@Input() expandedRowComponent: Type<ExpandedRowComponent<T>>;
 	@Input() expandedRowKeys: ExpandableTableColumn<T>[];
+	@Input() title: string;
 
 	//todo remove..
 	@Input() showActionsAsSeparateColumns: boolean;
@@ -45,7 +46,6 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	@Output() onSort = new EventEmitter<ColumnSortingEvent<T>>();
 	@Output() onEdit = new EventEmitter<T>();
 	@Output() onDelete = new EventEmitter<T[]>();
-	//@Output() onDeleteSelected = new EventEmitter<T[]>();
 
 	tableRowHostList: QueryList<ExpandedTableRowContainerDirective>;
 	//using a setter because the ViewChildren() annotation doesn't update correctly if used with hidden elements
@@ -75,7 +75,6 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	}
 
 	ngOnInit() {
-
 	}
 
 	ngAfterViewInit(): void {

@@ -8,6 +8,7 @@ import {EventType} from "../../shop/shared/model/event-type";
 import {User} from "../model/user";
 import {Entry} from "../model/entry";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
+import {ShopItem} from "../model/shop-item";
 
 
 @Injectable()
@@ -29,7 +30,7 @@ export class EventUtilityService {
 			});
 	}
 
-	getShopItemType(item: Event | User | Entry): ShopItemType {
+	getShopItemType(item: ShopItem): ShopItemType {
 		return this.handleShopItem(item,
 			merch => ShopItemType.merch,
 			tour => ShopItemType.tour,
@@ -42,7 +43,7 @@ export class EventUtilityService {
 			});
 	}
 
-	handleShopItem<T>(item: Event | User | Entry,
+	handleShopItem<T>(item: ShopItem | Event,
 					  merchCallback: (merch: Merchandise) => T = () => null,
 					  tourCallback: (tour: Tour) => T = () => null,
 					  partyCallback: (party: Party) => T = () => null,

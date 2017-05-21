@@ -4,10 +4,8 @@ import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {Router} from "@angular/router";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
-import {Event} from "../../shop/shared/model/event";
-import {Entry} from "../model/entry";
-import {User} from "../model/user";
 import {EventUtilityService} from "./event-utility.service";
+import {ShopItem} from "../model/shop-item";
 
 @Injectable()
 export class NavigationService {
@@ -30,7 +28,7 @@ export class NavigationService {
 			.map(response => response.json());
 	}
 
-	public navigateToItem(item: (Event | User | Entry), suffix?: string) {
+	public navigateToItem(item: ShopItem, suffix?: string) {
 		this.navigateToItemWithId(this.eventUtilService.getShopItemType(item), item.id, suffix);
 	}
 

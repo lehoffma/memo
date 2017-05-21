@@ -3,7 +3,7 @@ import {UserService} from "../../../shared/services/user.service";
 import {User} from "../../../shared/model/user";
 import {Observable} from "rxjs/Observable";
 import {ExpandedRowComponent} from "../../../shared/expandable-table/expanded-row.component";
-import {MemberListExpandedRowComponent} from "./member-list-expanded-row/member-list-expanded-row.component";
+import {SingleValueListExpandedRowComponent} from "../../../shared/expandable-table/single-value-list-expanded-row/single-value-list-expanded-row.component";
 import {attributeSortingFunction} from "../../../util/util";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ColumnSortingEvent} from "../../../shared/expandable-table/column-sorting-event";
@@ -26,7 +26,7 @@ export class MemberListComponent implements OnInit {
 	users: Observable<User[]> = Observable.combineLatest(this.userService.search(""), this.sortBy)
 		.map(([users, sortBy]) => users.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 
-	rowComponent: Type<ExpandedRowComponent<User>> = MemberListExpandedRowComponent;
+	rowComponent: Type<ExpandedRowComponent<User>> = SingleValueListExpandedRowComponent;
 
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<User>[]> = new BehaviorSubject([]);
 	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<User>[]> = new BehaviorSubject([]);
@@ -90,9 +90,9 @@ export class MemberListComponent implements OnInit {
 	 * @param users
 	 */
 	deleteUsers(users: User[]) {
-		//todo entkommentieren wenn server läuft
-		// users.forEach(user => {
-		// 	this.userService.remove(user.id);
-		// });
+		users.forEach(user => this.userService.remove(user.id).subscribe(
+			value => value,
+			error => console.log(error)
+		));
 	}
 }
