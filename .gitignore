@@ -59,5 +59,7 @@ fabric.properties
 
 
 target/
-#/memo.iml
-src/main/webapp/
+/src/main/webapp/*
+/memo.iml
+/lib/
+
