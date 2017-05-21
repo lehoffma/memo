@@ -1,0 +1,73 @@
+package memo.model;
+
+import java.io.Serializable;
+import java.lang.Integer;
+import java.lang.String;
+import javax.persistence.*;
+import memo.model.Size;
+
+/**
+ * Entity implementation class for Entity: SizeTable
+ *
+ */
+@Entity
+@Table(name = "SIZE_TABLE")
+
+public class SizeTable implements Serializable {
+
+	@Id
+	private Integer id;
+	
+	@ManyToOne(cascade = { CascadeType.REMOVE })
+	@JoinColumn(name = "SIZE_ID")
+	private Size size;
+	private String name;
+	private Integer min;
+	private Integer max;
+	private static final long serialVersionUID = 1L;
+
+	public SizeTable() {
+		super();
+	}
+
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Size getSize() {
+		return this.size;
+	}
+
+	public void setSize(Size size) {
+		this.size = size;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getMin() {
+		return this.min;
+	}
+
+	public void setMin(Integer min) {
+		this.min = min;
+	}
+
+	public Integer getMax() {
+		return this.max;
+	}
+
+	public void setMax(Integer max) {
+		this.max = max;
+	}
+
+}
