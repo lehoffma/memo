@@ -1,7 +1,6 @@
 package memo;
 
 import java.io.IOException;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.servlet.ServletException;
@@ -17,8 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 public class EventServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	@PersistenceUnit
-	EntityManagerFactory emf;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -34,7 +31,7 @@ public class EventServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		//EntityManager em = emf.createEntityManager();
-		response.getWriter().append("Served at: ").append(request.getContextPath()).append(emf.toString());
+		response.getWriter().append("Served at: ").append(request.getContextPath()).append(DatabaseManager.createEntityManager().toString());
 	}
 
 	/**

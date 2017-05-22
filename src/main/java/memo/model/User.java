@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.lang.Boolean;
 import java.lang.Integer;
@@ -23,9 +25,11 @@ public class User implements Serializable {
 	private Integer id;
 
 	@Column(name = "FIRST_NAME", nullable = false)
+	@Expose
 	private String firstName;
 
 	@Column(name = "LAST_NAME", nullable = false)
+	@Expose
 	private String lastName;
 
 	@ManyToOne(cascade = { CascadeType.REMOVE })
@@ -39,19 +43,26 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private Date birthday;
 
+	@Expose
 	private String telephone;
+	@Expose
 	private String mobile;
 
+	@Expose
 	@Column(nullable = false)
 	private Integer miles = 0;
 
+	@Expose
 	@Column(nullable = false)
 	private String email;
 
+	@Expose
 	@Column(nullable = false)
 	private String password;
 
+	@Expose
 	private Boolean isStudent = false;
+	@Expose
 	private Boolean hasDebitAuth = false;
 	private String imagePath;
 	
@@ -62,7 +73,8 @@ public class User implements Serializable {
 	@Column(name = "JOIN_DATE", nullable = false)
 	private Date joinDate;
 
-	private char gender;
+	@Expose
+	private String gender;
 
 	private static final long serialVersionUID = 1L;
 
@@ -192,6 +204,30 @@ public class User implements Serializable {
 	
 	public boolean checkPassword(String password){
 		return this.password == password;
+	}
+
+	public Boolean getStudent() {
+		return isStudent;
+	}
+
+	public void setStudent(Boolean student) {
+		isStudent = student;
+	}
+
+	public Date getJoinDate() {
+		return joinDate;
+	}
+
+	public void setJoinDate(Date joinDate) {
+		this.joinDate = joinDate;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 }
