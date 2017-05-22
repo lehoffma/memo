@@ -40,9 +40,7 @@ public class LoginServlet extends HttpServlet {
 		if (users.size()>1) System.out.println("fehler!!! Doppelte Email Adresse!!!!!!!");
 		
 		User user = users.get(0);
-		
-		if (user.checkPassword(password)) response.getWriter().append("Authorisiert!!!"); response.setStatus(200);
-		  
+
 		
 		response.getWriter().append(email).append(password);
 		

@@ -1,5 +1,8 @@
 package memo.model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
@@ -28,9 +31,9 @@ public class User implements Serializable {
 	@Expose
 	private String firstName;
 
-	@Column(name = "LAST_NAME", nullable = false)
+	@Column( nullable = false)
 	@Expose
-	private String lastName;
+	private String surname;
 
 	@ManyToOne(cascade = { CascadeType.REMOVE })
 	@JoinColumn(name = "ROLE_ID")
@@ -57,8 +60,8 @@ public class User implements Serializable {
 	private String email;
 
 	@Expose
-	@Column(nullable = false)
-	private String password;
+	@Column(name = "PASSWORD", nullable = false)
+	private String passwordHash;
 
 	@Expose
 	private Boolean isStudent = false;
@@ -75,6 +78,14 @@ public class User implements Serializable {
 
 	@Expose
 	private String gender;
+
+	@Expose
+	@Column(name = "HAS_SEASON_TICKET")
+	private Boolean hasSeasonTicket = false;
+
+	@Expose
+	@Column(name = "IS_WOELFE_CLUB_MEMBER")
+	private Boolean isWoelfeClubMember = false;
 
 	private static final long serialVersionUID = 1L;
 
@@ -96,14 +107,6 @@ public class User implements Serializable {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	public ClubRole getRole() {
@@ -154,14 +157,6 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return this.password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public Boolean getIsStudent() {
 		return this.isStudent;
 	}
@@ -201,10 +196,6 @@ public class User implements Serializable {
 	public void setBankAccount(BankAcc bankAccount) {
 		this.bankAccount = bankAccount;
 	}
-	
-	public boolean checkPassword(String password){
-		return this.password == password;
-	}
 
 	public Boolean getStudent() {
 		return isStudent;
@@ -230,4 +221,58 @@ public class User implements Serializable {
 		this.gender = gender;
 	}
 
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
+
+	public Boolean getHasSeasonTicket() {
+		return hasSeasonTicket;
+	}
+
+	public void setHasSeasonTicket(Boolean hasSeasonTicket) {
+		this.hasSeasonTicket = hasSeasonTicket;
+	}
+
+	public Boolean getWoelfeClubMember() {
+		return isWoelfeClubMember;
+	}
+
+	public void setWoelfeClubMember(Boolean woelfeClubMember) {
+		isWoelfeClubMember = woelfeClubMember;
+	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + surname + '\'' +
+				", role=" + role +
+				", address=" + address +
+				", birthday=" + birthday +
+				", telephone='" + telephone + '\'' +
+				", mobile='" + mobile + '\'' +
+				", miles=" + miles +
+				", email='" + email + '\'' +
+				", password='" + passwordHash + '\'' +
+				", isStudent=" + isStudent +
+				", hasDebitAuth=" + hasDebitAuth +
+				", imagePath='" + imagePath + '\'' +
+				", bankAccount=" + bankAccount +
+				", joinDate=" + joinDate +
+				", gender='" + gender + '\'' +
+				'}';
+	}
 }

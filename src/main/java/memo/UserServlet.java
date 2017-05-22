@@ -2,10 +2,8 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
-import com.sun.media.jfxmediaimpl.platform.gstreamer.GSTPlatform;
 import memo.model.User;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
@@ -86,7 +84,8 @@ public class UserServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		request.setCharacterEncoding("UTF-8");
-		//response.setContentType("application/json;charset=UTF-8");
+		response.setContentType("application/json;charset=UTF-8");
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
 
 		String body = CharStreams.toString(request.getReader());
@@ -110,26 +109,81 @@ public class UserServlet extends HttpServlet {
 		List<User> users;
 		users = DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u WHERE u.email = :email", User.class).setParameter("email", email).getResultList();
 
+
+		// get JPA Entity Manager
+		EntityManager em = DatabaseManager.createEntityManager();
+
 		if (!users.isEmpty())
 		{
-			//TODO: Modify User
+			User user = users.get(0);
+			em.getTransaction().begin();
+			user = gson.fromJson(juser,User.class);
+
+			//TODO: ClubRole role;
+			// Als IDs
+
+			//TODO: private Address address;
+			// Adress IDs aus der Datenbank?
+
+			user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+
+
+			//TODO: private String imagePath;
+			// Als BLOB in die db
+
+			//TODO: private BankAcc bankAccount;
+			// keine Testdaten
+
+			user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
+
+
+			em.getTransaction().commit();
+			response.setStatus(200);
+
+			response.getWriter().append("{ id: " + user.getId()+ " }");
+
 
 		}
 		else
 		{
-			//TODO: Create User
 			// save params to new user
 			User newUser = new User();
 
-			updateUser(newUser,juser);
 
-			// get JPA Entity Manager
-			EntityManager em = DatabaseManager.createEntityManager();
+			newUser = gson.fromJson(juser,User.class);
+
+
+
+			//TODO: ClubRole role;
+			// Als IDs
+
+			//TODO: private Address address;
+			// Adress IDs aus der Datenbank?
+
+			newUser.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+
+
+			//TODO: private String imagePath;
+			// Als BLOB in die db
+
+			//TODO: private BankAcc bankAccount;
+			// keine Testdaten
+
+			newUser.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
+
+
+
 
 			// save new User
 			em.getTransaction().begin();
 			em.persist(newUser);
 			em.getTransaction().commit();
+			response.setStatus(201);
+			response.getWriter().append("{ id: " + newUser.getId()+ " }");
+
+
+
+			System.out.println(newUser.toString());
 		}
 
 
@@ -145,28 +199,9 @@ public class UserServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 	}
 
-	private void updateUser(User user,JsonObject juser){
-
-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		user = gson.fromJson(juser,User.class);
+	private void updateUser(User user, JsonObject juser){
 
 
-
-		//TODO: ClubRole role;
-		// Als IDs
-
-		//TODO: private Address address;
-		// Adress IDs aus der Datenbank?
-
-		user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
-
-		//TODO: private String imagePath;
-		// Als BLOB in die db
-
-		//TODO: private BankAcc bankAccount;
-		// keine Testdaten
-
-		user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
 
 
 	}
