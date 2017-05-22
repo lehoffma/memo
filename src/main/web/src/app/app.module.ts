@@ -112,6 +112,7 @@ import {MemoMaterialModule} from "../material.module";
 import {MerchStockComponent} from "./club-management/administration/stock/merch-stock/merch-stock.component";
 import {MultiValueListExpandedRowComponent} from "./shared/expandable-table/multi-value-list-expanded-row/multi-value-list-expanded-row.component";
 import {MerchStockTotalTableCellComponent} from "./club-management/administration/stock/merch-stock/merch-stock-table-cells/merch-stock-total-table-cell.component";
+import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address-change.component";
 
 @NgModule({
 	imports: [
@@ -203,6 +204,7 @@ import {MerchStockTotalTableCellComponent} from "./club-management/administratio
 		ProfilePictureFormComponent,
 		PaymentMethodsFormComponent,
 		DebitInputFormComponent,
+		AddressChangeComponent,
 
 		ExpandableTableComponent,
 		ExpandedTableRowContainerDirective,
