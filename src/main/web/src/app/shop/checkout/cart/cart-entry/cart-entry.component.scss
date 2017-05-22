@@ -1,3 +1,39 @@
+.cart-entry{
+	display: flex;
+	flex-direction: column;
+}
+.cart-entry-header{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	span{
+		width: 80%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		font-size: 1.2rem;
+
+	}
+}
+.cart-entry-info{
+	display: flex;
+	justify-content: space-between;
+	.cart-entry-details{
+		display: inline-block;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+/*
+
 .cart-entry-border {
 	border-bottom: 1px solid grey;
 }
@@ -40,17 +76,17 @@
 	margin: 0px 0px 0px 20%;
 	weight: 50%;
 }
-.merch-available-colors-container {
+.merch-color-container {
 	display: flex;
 
-	.merch-available-colors {
+	.merch-color {
+		display: block;
+		margin-left: 10px;
 		width: 20px;
 		height: 20px;
 		border-radius: 50%;
 		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
-
-		&:not(:first-child) {
-			margin-left: 10px;
-		}
 	}
 }
+*/
+
