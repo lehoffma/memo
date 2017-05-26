@@ -1,5 +1,10 @@
 package memo.model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.lang.Boolean;
 import java.lang.Integer;
@@ -23,10 +28,12 @@ public class User implements Serializable {
 	private Integer id;
 
 	@Column(name = "FIRST_NAME", nullable = false)
+	@Expose
 	private String firstName;
 
-	@Column(name = "LAST_NAME", nullable = false)
-	private String lastName;
+	@Column( nullable = false)
+	@Expose
+	private String surname;
 
 	@ManyToOne(cascade = { CascadeType.REMOVE })
 	@JoinColumn(name = "ROLE_ID")
@@ -39,19 +46,26 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private Date birthday;
 
+	@Expose
 	private String telephone;
+	@Expose
 	private String mobile;
 
+	@Expose
 	@Column(nullable = false)
 	private Integer miles = 0;
 
+	@Expose
 	@Column(nullable = false)
 	private String email;
 
-	@Column(nullable = false)
-	private String password;
+	@Expose
+	@Column(name = "PASSWORD", nullable = false)
+	private String passwordHash;
 
+	@Expose
 	private Boolean isStudent = false;
+	@Expose
 	private Boolean hasDebitAuth = false;
 	private String imagePath;
 	
@@ -62,7 +76,16 @@ public class User implements Serializable {
 	@Column(name = "JOIN_DATE", nullable = false)
 	private Date joinDate;
 
-	private char gender;
+	@Expose
+	private String gender;
+
+	@Expose
+	@Column(name = "HAS_SEASON_TICKET")
+	private Boolean hasSeasonTicket = false;
+
+	@Expose
+	@Column(name = "IS_WOELFE_CLUB_MEMBER")
+	private Boolean isWoelfeClubMember = false;
 
 	private static final long serialVersionUID = 1L;
 
@@ -84,14 +107,6 @@ public class User implements Serializable {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	public ClubRole getRole() {
@@ -142,14 +157,6 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return this.password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public Boolean getIsStudent() {
 		return this.isStudent;
 	}
@@ -189,9 +196,83 @@ public class User implements Serializable {
 	public void setBankAccount(BankAcc bankAccount) {
 		this.bankAccount = bankAccount;
 	}
-	
-	public boolean checkPassword(String password){
-		return this.password == password;
+
+	public Boolean getStudent() {
+		return isStudent;
 	}
 
+	public void setStudent(Boolean student) {
+		isStudent = student;
+	}
+
+	public Date getJoinDate() {
+		return joinDate;
+	}
+
+	public void setJoinDate(Date joinDate) {
+		this.joinDate = joinDate;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getPasswordHash() {
+		return passwordHash;
+	}
+
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
+	}
+
+	public Boolean getHasSeasonTicket() {
+		return hasSeasonTicket;
+	}
+
+	public void setHasSeasonTicket(Boolean hasSeasonTicket) {
+		this.hasSeasonTicket = hasSeasonTicket;
+	}
+
+	public Boolean getWoelfeClubMember() {
+		return isWoelfeClubMember;
+	}
+
+	public void setWoelfeClubMember(Boolean woelfeClubMember) {
+		isWoelfeClubMember = woelfeClubMember;
+	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + surname + '\'' +
+				", role=" + role +
+				", address=" + address +
+				", birthday=" + birthday +
+				", telephone='" + telephone + '\'' +
+				", mobile='" + mobile + '\'' +
+				", miles=" + miles +
+				", email='" + email + '\'' +
+				", password='" + passwordHash + '\'' +
+				", isStudent=" + isStudent +
+				", hasDebitAuth=" + hasDebitAuth +
+				", imagePath='" + imagePath + '\'' +
+				", bankAccount=" + bankAccount +
+				", joinDate=" + joinDate +
+				", gender='" + gender + '\'' +
+				'}';
+	}
 }

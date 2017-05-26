@@ -1,15 +1,15 @@
 package memo;
 
+import com.google.common.io.CharStreams;
+import com.google.gson.*;
 import memo.model.User;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceUnit;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -82,39 +82,113 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		// get email
-		String email = request.getParameter("email");
+
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json;charset=UTF-8");
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+
+		String body = CharStreams.toString(request.getReader());
+
+		JsonElement jElement = new JsonParser().parse(body);
+		JsonObject juser = jElement.getAsJsonObject().getAsJsonObject("user");
+
+
+		String email = juser.get("email").getAsString();
 
 
 
-
-
-		if (email == null){
-			// TODO: log error
+		if (email == null)
+		{
 			response.setStatus(400);
-			response.getWriter().append("Email must not be empty!");
+			response.getWriter().append("Email must not be empty");
+			return;
 		}
+
 		//check if email is in db
 		List<User> users;
 		users = DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u WHERE u.email = :email", User.class).setParameter("email", email).getResultList();
 
 
-
-		// save params to new user
-		User newUser = new User();
-
-
 		// get JPA Entity Manager
 		EntityManager em = DatabaseManager.createEntityManager();
 
-		// save new User
-		em.getTransaction().begin();
-		em.persist(newUser);
-		em.getTransaction().commit();
+		if (!users.isEmpty())
+		{
+			User user = users.get(0);
+			em.getTransaction().begin();
+			user = gson.fromJson(juser,User.class);
 
-		// return user object
-		response.getWriter().append(newUser.toString());
+			//TODO: ClubRole role;
+			// Als IDs
+
+			//TODO: private Address address;
+			// Adress IDs aus der Datenbank?
+
+			user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+
+
+			//TODO: private String imagePath;
+			// Als BLOB in die db
+
+			//TODO: private BankAcc bankAccount;
+			// keine Testdaten
+
+			user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
+
+
+			em.getTransaction().commit();
+			response.setStatus(200);
+
+			response.getWriter().append("{ id: " + user.getId()+ " }");
+
+
+		}
+		else
+		{
+			// save params to new user
+			User newUser = new User();
+
+
+			newUser = gson.fromJson(juser,User.class);
+
+
+
+			//TODO: ClubRole role;
+			// Als IDs
+
+			//TODO: private Address address;
+			// Adress IDs aus der Datenbank?
+
+			newUser.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+
+
+			//TODO: private String imagePath;
+			// Als BLOB in die db
+
+			//TODO: private BankAcc bankAccount;
+			// keine Testdaten
+
+			newUser.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
+
+
+
+
+			// save new User
+			em.getTransaction().begin();
+			em.persist(newUser);
+			em.getTransaction().commit();
+			response.setStatus(201);
+			response.getWriter().append("{ id: " + newUser.getId()+ " }");
+
+
+
+			System.out.println(newUser.toString());
+		}
+
+
+
+
 	}
 
 	/**
@@ -125,4 +199,10 @@ public class UserServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 	}
 
+	private void updateUser(User user, JsonObject juser){
+
+
+
+
+	}
 }
