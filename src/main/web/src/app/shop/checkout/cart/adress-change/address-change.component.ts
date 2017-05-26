@@ -1,4 +1,8 @@
 import {Component, OnInit} from "@angular/core";
+import {Observable} from "rxjs/Observable";
+import {User} from "../../../../shared/model/user";
+import {LogInService} from "../../../../shared/services/login.service";
+import {UserService} from "../../../../shared/services/user.service";
 
 @Component({
 	selector: "address-change",
@@ -7,12 +11,16 @@ import {Component, OnInit} from "@angular/core";
 })
 
 export class AddressChangeComponent implements OnInit {
+	userObservable: Observable<User>;
 
-	constructor() {
+	constructor(private userService: UserService, private logInService: LogInService) {
 	}
 
 	ngOnInit() {
-
+		const userId = this.logInService.accountObservable.map(user =>{
+			return user;
+		})
+		this.userObservable = userId.flatMap(id => this.userService.getById(id));
 	}
 }
 
