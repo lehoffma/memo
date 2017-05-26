@@ -6,16 +6,17 @@ import javax.persistence.Persistence;
 
 public class DatabaseManager {
 
-	EntityManagerFactory emf;
+	private static DatabaseManager dbm;
+	private EntityManager em;
 
 	private DatabaseManager(){
-		emf = Persistence.createEntityManagerFactory("memoPersistence");
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("memoPersistence");
+		em = emf.createEntityManager();
 	}
 	
 	public static EntityManager createEntityManager(){
 
-		DatabaseManager dbm = new DatabaseManager();
-		EntityManager em = dbm.emf.createEntityManager();
-		return em;
+		if (dbm==null) dbm = new DatabaseManager();
+		return dbm.em;
 	}
 }

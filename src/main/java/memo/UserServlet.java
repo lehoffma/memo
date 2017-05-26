@@ -5,8 +5,8 @@ import com.google.gson.*;
 import memo.model.User;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -38,44 +38,55 @@ public class UserServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.setContentType("application/json;charset=UTF-8");
-		Integer id;
+		request.setCharacterEncoding("UTF-8");
+		//response.setContentType("application/json;charset=UTF-8");
 
-		// get params from request
-		String idString = request.getParameter("id");
-		String Name = request.getParameter("name");
+		String Sid = request.getParameter("id");
 
-		// parse id to int
-		try{
-			id = Integer.parseInt(idString);
-		}catch (NumberFormatException e) {
-			id = null;
+		String searchTerm = request.getParameter("searchTerm");
+
+
+		List<User> users = new ArrayList<>();
+		if (Sid != null && !Sid.isEmpty()) {
+
+			try {
+				Integer id = Integer.parseInt(Sid);
+				users.add(DatabaseManager.createEntityManager().find(User.class,id));
+			}
+			catch (NumberFormatException e){
+				response.getWriter().append("Bad ID Value");
+				response.setStatus(400);
+			}
+
+
+
+		}else{
+			if (searchTerm != null && !searchTerm.isEmpty()){
+				users = DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
+						" WHERE UPPER(u.surname) LIKE UPPER(:searchTerm) OR UPPER(u.firstName) LIKE UPPER(:searchTerm)", User.class)
+						.setParameter("searchTerm","%"+ searchTerm + "%")
+						.getResultList();
+			}
+			else users = DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u",User.class).getResultList();
 		}
 
-		// get JPA Entity Manager
-		EntityManager em = DatabaseManager.createEntityManager();
-
-		// prepare list for results
-		List<User> users;
-
-
-		if (id != null)  									// if id requested
-			users = em.createQuery("SELECT u FROM User u WHERE u.ID = :id", User.class).setParameter("id", id).getResultList();
-
-		else if (Name != null && !Name.isEmpty()){  		// if name requested
-			users = em.createQuery("SELECT u FROM User u WHERE u.NAME = :name", User.class).setParameter("name",Name).getResultList();
-		}
-		else {												// if nothing requested -> get all
-			users = em.createQuery("SELECT u FROM User u", User.class).getResultList();
+		if (users.isEmpty())
+		{
+			response.setStatus(404);
+			response.getWriter().append("Not found");
+			return;
 		}
 
-		PrintWriter pw = response.getWriter();
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		String output = gson.toJson(users);
 
-		// write results to console
-		for (User user : users) {
-			pw.append(user.toString());
-			pw.append("<br/>");
+		/*
+		for (int i=0;i<users.size();++i) {
+			output += gson.toJson(users.get(i));
+			response.getWriter().append(users.get(i).toString() + "\n");
 		}
+		*/
+		response.getWriter().append(output);
 	}
 
 	/**
@@ -147,10 +158,7 @@ public class UserServlet extends HttpServlet {
 		else
 		{
 			// save params to new user
-			User newUser = new User();
-
-
-			newUser = gson.fromJson(juser,User.class);
+			User newUser = gson.fromJson(juser,User.class);
 
 
 
@@ -197,12 +205,40 @@ public class UserServlet extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+
+		request.setCharacterEncoding("UTF-8");
+		//response.setContentType("application/json;charset=UTF-8");
+
+		String Sid = request.getParameter("id");
+
+
+		boolean miss = false;
+		User u;
+			try {
+				Integer id = Integer.parseInt(Sid);
+				u = DatabaseManager.createEntityManager().find(User.class,id);
+
+
+			}
+			catch (NumberFormatException e){
+				response.getWriter().append("Bad ID Value");
+				response.setStatus(400);
+				return;
+			}
+
+		if (u==null)
+		{
+			response.setStatus(404);
+			response.getWriter().append("Not Found");
+			return;
+		}
+
+		DatabaseManager.createEntityManager().getTransaction().begin();
+			 u = DatabaseManager.createEntityManager().merge(u);
+			DatabaseManager.createEntityManager().remove(u);
+		DatabaseManager.createEntityManager().getTransaction().commit();
+
+
 	}
 
-	private void updateUser(User user, JsonObject juser){
-
-
-
-
-	}
 }

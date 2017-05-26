@@ -35,11 +35,11 @@ public class User implements Serializable {
 	@Expose
 	private String surname;
 
-	@ManyToOne(cascade = { CascadeType.REMOVE })
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(name = "ROLE_ID")
 	private ClubRole role;
 
-	@ManyToOne(cascade = { CascadeType.REMOVE })
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(name = "ADDRESS_ID")
 	private Address address;
 
@@ -69,7 +69,7 @@ public class User implements Serializable {
 	private Boolean hasDebitAuth = false;
 	private String imagePath;
 	
-	@OneToOne(cascade = { CascadeType.REFRESH })
+	@OneToOne(cascade = { CascadeType.REMOVE })
 	@JoinColumn(name ="BANK_ACCOUNT_ID")
 	private BankAcc bankAccount;
 
