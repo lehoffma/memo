@@ -24,22 +24,16 @@ public class UserServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+
     public UserServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
 		request.setCharacterEncoding("UTF-8");
-		//response.setContentType("application/json;charset=UTF-8");
+		response.setContentType("application/json;charset=UTF-8");
 
 		String Sid = request.getParameter("id");
 
@@ -89,9 +83,6 @@ public class UserServlet extends HttpServlet {
 		response.getWriter().append(output);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		request.setCharacterEncoding("UTF-8");
@@ -126,35 +117,11 @@ public class UserServlet extends HttpServlet {
 
 		if (!users.isEmpty())
 		{
-			User user = users.get(0);
-			em.getTransaction().begin();
-			user = gson.fromJson(juser,User.class);
-
-			//TODO: ClubRole role;
-			// Als IDs
-
-			//TODO: private Address address;
-			// Adress IDs aus der Datenbank?
-
-			user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
-
-
-			//TODO: private String imagePath;
-			// Als BLOB in die db
-
-			//TODO: private BankAcc bankAccount;
-			// keine Testdaten
-
-			user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
-
-
-			em.getTransaction().commit();
-			response.setStatus(200);
-
-			response.getWriter().append("{ id: " + user.getId()+ " }");
-
-
+			response.setStatus(400);
+			response.getWriter().append("email already taken");
+			return;
 		}
+
 		else
 		{
 			// save params to new user
@@ -162,13 +129,8 @@ public class UserServlet extends HttpServlet {
 
 
 
-			//TODO: ClubRole role;
-			// Als IDs
-
-			//TODO: private Address address;
-			// Adress IDs aus der Datenbank?
-
-			newUser.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+			if (juser.get("birthDate") != null)
+				newUser.setBirthday(new Date(juser.get("birthDate").getAsLong()));
 
 
 			//TODO: private String imagePath;
@@ -177,7 +139,8 @@ public class UserServlet extends HttpServlet {
 			//TODO: private BankAcc bankAccount;
 			// keine Testdaten
 
-			newUser.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
+			if (juser.get("joinDate") != null)
+				newUser.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
 
 
 
@@ -194,14 +157,130 @@ public class UserServlet extends HttpServlet {
 			System.out.println(newUser.toString());
 		}
 
-
-
-
 	}
 
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException	{
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("charset=UTF-8");
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+
+		String body = CharStreams.toString(request.getReader());
+
+		JsonElement jElement = new JsonParser().parse(body);
+		JsonObject juser = jElement.getAsJsonObject().getAsJsonObject("user");
+
+
+		String email = juser.get("email").getAsString();
+		Integer id = juser.get("id").getAsInt();
+
+		// get JPA Entity Manager
+		EntityManager em = DatabaseManager.createEntityManager();
+
+		User user;
+
+		if (id==null){
+			//only use email
+			if (!(email != null && !email.isEmpty()))
+			{
+				// neither email nor id
+				response.setStatus(400);
+				response.getWriter().append("Bad Data");
+				return;
+			}
+
+			List<User> users;
+			users = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class).setParameter("email", email).getResultList();
+
+
+			if (!users.isEmpty()) {
+
+				user = users.get(0);
+				em.getTransaction().begin();
+				user = gson.fromJson(juser, User.class);
+
+				//TODO: ClubRole role;
+				// Als IDs
+
+				//TODO: private Address address;
+				// Adress IDs aus der Datenbank?
+
+
+
+				if (juser.get("birthDate") != null)
+					user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+
+
+				//TODO: private String imagePath;
+				// Als BLOB in die db
+
+				//TODO: private BankAcc bankAccount;
+				// keine Testdaten
+
+				if (juser.get("joinDate") != null)
+					user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
+
+
+				em.getTransaction().commit();
+				response.setStatus(200);
+				response.setContentType("application/json;charset=UTF-8");
+				response.getWriter().append("{ id: " + user.getId() + " }");
+				return;
+
+
+			} else {
+				//no user with that email
+				response.getWriter().append("Not found");
+				response.setStatus(404);
+				return;
+			}
+		}else
+		{
+			user = em.find(User.class,id);
+			List<User> users;
+			users = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class).setParameter("email", email).getResultList();
+
+			if (user==null) {
+				response.getWriter().append("Not found");
+				response.setStatus(404);
+				return;
+			}
+
+
+
+			em.getTransaction().begin();
+			user = gson.fromJson(juser, User.class);
+
+			//TODO: ClubRole role;
+			// Als IDs
+
+			//TODO: private Address address;
+			// Adress IDs aus der Datenbank?
+
+
+
+			if (juser.get("birthDate") != null)
+				user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+
+
+			//TODO: private String imagePath;
+			// Als BLOB in die db
+
+			//TODO: private BankAcc bankAccount;
+			// keine Testdaten
+
+			if (juser.get("joinDate") != null)
+				user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
+
+
+			em.getTransaction().commit();
+			response.setStatus(200);
+			response.setContentType("application/json;charset=UTF-8");
+			response.getWriter().append("{ id: " + user.getId() + " }");
+			return;
+		}
+
+	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
