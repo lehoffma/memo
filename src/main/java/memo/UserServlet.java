@@ -2,9 +2,12 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import memo.model.PermissionState;
 import memo.model.User;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,21 +135,38 @@ public class UserServlet extends HttpServlet {
 			if (juser.get("birthDate") != null)
 				newUser.setBirthday(new Date(juser.get("birthDate").getAsLong()));
 
+			if (juser.has("addresses"))
+			{
+				Type collectionType = new TypeToken<List<Integer>>() {}.getType();
+				List<Integer> addresses = gson.fromJson(juser.getAsJsonArray("addresses"),collectionType);
+				newUser.setAdresses(addresses);
+			}
 
-			//TODO: private String imagePath;
-			// Als BLOB in die db
 
-			//TODO: private BankAcc bankAccount;
-			// keine Testdaten
+			if (juser.has("bankAccounts"))
+			{
+				Type collectionType = new TypeToken<List<Integer>>() {}.getType();
+				List<Integer> bankAccounts = gson.fromJson(juser.getAsJsonArray("bankAccounts"),collectionType);
+				newUser.setAdresses(bankAccounts);
+			}
 
 			if (juser.get("joinDate") != null)
 				newUser.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
 
 
+			em.getTransaction().begin();
+			if (juser.has("permissions"))
+			{
+				JsonObject jPermissions = juser.getAsJsonObject("permissions");
+				PermissionState permissions = gson.fromJson(jPermissions, PermissionState.class);
+				newUser.setPermissions(permissions);
+				em.persist(permissions);
+			}
+
 
 
 			// save new User
-			em.getTransaction().begin();
+
 			em.persist(newUser);
 			em.getTransaction().commit();
 			response.setStatus(201);
@@ -199,28 +219,48 @@ public class UserServlet extends HttpServlet {
 				em.getTransaction().begin();
 				user = gson.fromJson(juser, User.class);
 
-				//TODO: ClubRole role;
-				// Als IDs
+				if (juser.has("addresses"))
+				{
+					Type collectionType = new TypeToken<List<Integer>>() {}.getType();
+					List<Integer> addresses = gson.fromJson(juser.getAsJsonArray("addresses"),collectionType);
+					user.setAdresses(addresses);
+				}
 
-				//TODO: private Address address;
-				// Adress IDs aus der Datenbank?
+
+				if (juser.has("bankAccounts"))
+				{
+					Type collectionType = new TypeToken<List<Integer>>() {}.getType();
+					List<Integer> bankAccounts = gson.fromJson(juser.getAsJsonArray("bankAccounts"),collectionType);
+					user.setAdresses(bankAccounts);
+				}
 
 
 
-				if (juser.get("birthDate") != null)
+				if (juser.has("birthDate"))
 					user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
 
 
-				//TODO: private String imagePath;
-				// Als BLOB in die db
 
-				//TODO: private BankAcc bankAccount;
-				// keine Testdaten
 
-				if (juser.get("joinDate") != null)
+
+				if (juser.has("joinDate"))
 					user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
 
 
+
+				em.getTransaction().begin();
+				if (!juser.has("permissions")) {
+
+
+					JsonObject jPer = juser.getAsJsonObject("permissions");
+					PermissionState permission = gson.fromJson(jPer, PermissionState.class);
+					user.setPermissions(permission);
+					em.persist(permission);
+				}
+
+				// save new User
+
+				em.persist(user);
 				em.getTransaction().commit();
 				response.setStatus(200);
 				response.setContentType("application/json;charset=UTF-8");
@@ -251,27 +291,39 @@ public class UserServlet extends HttpServlet {
 			em.getTransaction().begin();
 			user = gson.fromJson(juser, User.class);
 
-			//TODO: ClubRole role;
-			// Als IDs
-
-			//TODO: private Address address;
-			// Adress IDs aus der Datenbank?
 
 
 
-			if (juser.get("birthDate") != null)
+			if (juser.has("birthDate") )
 				user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
 
+			if (juser.has("addresses"))
+			{
+				Type collectionType = new TypeToken<List<Integer>>() {}.getType();
+				List<Integer> addresses = gson.fromJson(juser.getAsJsonArray("addresses"),collectionType);
+				user.setAdresses(addresses);
+			}
 
-			//TODO: private String imagePath;
-			// Als BLOB in die db
 
-			//TODO: private BankAcc bankAccount;
-			// keine Testdaten
+			if (juser.has("bankAccounts"))
+			{
+				Type collectionType = new TypeToken<List<Integer>>() {}.getType();
+				List<Integer> bankAccounts = gson.fromJson(juser.getAsJsonArray("bankAccounts"),collectionType);
+				user.setAdresses(bankAccounts);
+			}
 
-			if (juser.get("joinDate") != null)
+			if (juser.has("joinDate"))
 				user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
 
+			if (juser.has("permissions")) {
+
+				JsonObject jPer = juser.getAsJsonObject("permissions");
+				PermissionState permission;
+				permission = gson.fromJson(jPer, PermissionState.class);
+				user.setPermissions(permission);
+				em.persist(permission);
+
+			}
 
 			em.getTransaction().commit();
 			response.setStatus(200);

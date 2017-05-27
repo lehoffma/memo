@@ -1,46 +1,33 @@
 package memo.model;
 
-import java.io.Serializable;
-import java.lang.Integer;
-import java.lang.String;
-import javax.persistence.*;
 
-/**
- * Entity implementation class for Entity: ClubRole
- *
- */
-@Entity
-@Table(name="CLUBROLES")
-@NamedQueries({ 
-	@NamedQuery(name = "getClubRoleById", query = "SELECT c FROM ClubRole c WHERE c.id = :id"), 
-	@NamedQuery(name = "getClubRole", query = "SELECT c FROM ClubRole c") 
-})
-public class ClubRole implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	@Column(nullable=false)
-	private String name;
-	private static final long serialVersionUID = 1L;
+	/*
+	 0 : none,
+	 1 : member,
+	 2 : board,
+	 3 : secretary,
+	 4 : funds,
+	 5 : organizer,
+	 6 : admin
+	  */
 
-	public ClubRole() {
-		super();
-	}   
-	public Integer getId() {
-		return this.id;
-	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}   
-	public String getName() {
-		return this.name;
-	}
+import com.google.gson.annotations.SerializedName;
 
-	public void setName(String name) {
-		this.name = name;
-	}
-   
+public enum ClubRole {
+	@SerializedName("0")
+	none,
+	@SerializedName("1")
+	Mitglied,
+	@SerializedName("2")
+	Vorstand,
+	@SerializedName("3")
+	Schriftführer,
+	@SerializedName("4")
+	Kassenwart,
+	@SerializedName("5")
+	Organisator,
+	@SerializedName("6")
+	Admin
 }

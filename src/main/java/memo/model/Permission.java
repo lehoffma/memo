@@ -1,42 +1,29 @@
 package memo.model;
 
-import java.io.Serializable;
-import java.lang.Integer;
-import java.lang.String;
-import javax.persistence.*;
+/*
+	 0 : none,
+	 1 : read,
+	 2 : write,
+	 3 : create,
+	 4 : delete,
+	 5 : admin
+	  */
 
-/**
- * Entity implementation class for Entity: Permission
- *
- */
-@Entity
-@Table(name="PERMISSIONS")
-public class Permission implements Serializable {
+import com.google.gson.annotations.SerializedName;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	@Column(nullable=false)
-	private String name;
-	private static final long serialVersionUID = 1L;
-
-	public Permission() {
-		super();
-	}   
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}   
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-   
+public enum Permission {
+	@SerializedName("0")
+	none,
+	@SerializedName("1")
+	read,
+	@SerializedName("2")
+	write,
+	@SerializedName("3")
+	create,
+	@SerializedName("4")
+	delete,
+	@SerializedName("5")
+	admin
 }
+
+

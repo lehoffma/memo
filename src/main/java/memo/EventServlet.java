@@ -3,9 +3,11 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
+import memo.model.ClubRole;
 import memo.model.Event;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -65,6 +67,42 @@ public class EventServlet extends HttpServlet {
 
 
 		// TODO: Inner Objects
+
+		if (jEvent.get("date")!= null)
+		newEvent.setDate(new Timestamp(jEvent.get("date").getAsLong()));
+
+
+		/*
+		@ManyToOne(cascade = { CascadeType.REFRESH })
+		@JoinColumn(name = "EXPECTED_READ_ROLE", nullable = false)
+		private ClubRole expectedReadRole;
+
+		*/
+
+		/* TODO: roles
+		if (jEvent.get("expectedRole")!= null){
+			newEvent.setExpectedCheckinRole(em.find(ClubRole.class,jEvent.get("expectedRole")));
+		}
+		*/
+
+		if (jEvent.get("expectedWriteRole")!= null)
+			newEvent.setExpectedWriteRole(em.find(ClubRole.class,jEvent.get("expectedWriteRole")));
+		/*
+		@ManyToOne(cascade = { CascadeType.REFRESH })
+		@JoinColumn(name = "EXPECTED_WRITE_ROLE", nullable = false)
+		private ClubRole expectedWriteRole;
+		*/
+
+		/* TODO: adresses
+		@ManyToOne
+		@JoinColumn(name = "MEETING_POINT_ID", nullable = false)
+		private Address meetingPoint;
+
+		@ManyToOne
+		@JoinColumn(name = "DESTINATION_ID")
+		private Address destination;
+		*/
+
 
 		em.getTransaction().begin();
 		em.persist(newEvent);

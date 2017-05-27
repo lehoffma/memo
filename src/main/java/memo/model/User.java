@@ -7,6 +7,8 @@ import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.String;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
 /**
@@ -33,13 +35,14 @@ public class User implements Serializable {
 	@Expose
 	private String surname;
 
-	@ManyToOne(cascade = { CascadeType.REFRESH })
-	@JoinColumn(name = "ROLE_ID")
-	private ClubRole role;
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
+	private ClubRole clubRole;
 
-	@ManyToOne(cascade = { CascadeType.REFRESH })
-	@JoinColumn(name = "ADDRESS_ID")
-	private Address address;
+	@ElementCollection
+	@CollectionTable(name ="USER_ADRESSES")
+	@Expose
+	private List<Integer> adresses = new ArrayList<Integer>();
 
 	@Column(nullable = false)
 	private Date birthday;
@@ -69,10 +72,12 @@ public class User implements Serializable {
 	@Expose
 	@Column(name="IMAGE_PATH")
 	private String imagePath;
-	
-	@OneToOne(cascade = { CascadeType.REMOVE })
-	@JoinColumn(name ="BANK_ACCOUNT_ID")
-	private BankAcc bankAccount;
+
+	@ElementCollection
+	@CollectionTable(name ="USER_BANK_ACCOUNTS")
+	@Expose
+	private List<Integer> bankAccounts = new ArrayList<>();
+
 
 	@Column(name = "JOIN_DATE", nullable = false)
 	private Date joinDate;
@@ -87,6 +92,10 @@ public class User implements Serializable {
 	@Expose
 	@Column(name = "IS_WOELFE_CLUB_MEMBER")
 	private Boolean isWoelfeClubMember = false;
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "PERMISSIONS_ID")
+	private PermissionState permissions;
 
 	private static final long serialVersionUID = 1L;
 
@@ -111,19 +120,11 @@ public class User implements Serializable {
 	}
 
 	public ClubRole getRole() {
-		return this.role;
+		return this.clubRole;
 	}
 
 	public void setRole(ClubRole role) {
-		this.role = role;
-	}
-
-	public Address getAddress() {
-		return this.address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
+		this.clubRole = role;
 	}
 
 	public Date getBirthday() {
@@ -190,14 +191,6 @@ public class User implements Serializable {
 		this.mobile = mobile;
 	}
 
-	public BankAcc getBankAccount() {
-		return bankAccount;
-	}
-
-	public void setBankAccount(BankAcc bankAccount) {
-		this.bankAccount = bankAccount;
-	}
-
 	public Boolean getStudent() {
 		return isStudent;
 	}
@@ -254,26 +247,65 @@ public class User implements Serializable {
 		isWoelfeClubMember = woelfeClubMember;
 	}
 
+	public PermissionState getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(PermissionState permissions) {
+		this.permissions = permissions;
+	}
+
+	public ClubRole getClubRole() {
+		return clubRole;
+	}
+
+	public void setClubRole(ClubRole clubRole) {
+		this.clubRole = clubRole;
+	}
+
+	public List<Integer> getAdresses() {
+		return adresses;
+	}
+
+	public void setAdresses(List<Integer> adresses) {
+		for (Integer a : adresses) {
+			this.adresses.add(a);
+		}
+	}
+
+	public List<Integer> getBankAccounts() {
+		return bankAccounts;
+	}
+
+	public void setBankAccounts(List<Integer> bankAccounts) {
+		for (Integer a : bankAccounts) {
+			this.bankAccounts.add(a);
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "User{" +
 				"id=" + id +
 				", firstName='" + firstName + '\'' +
-				", lastName='" + surname + '\'' +
-				", role=" + role +
-				", address=" + address +
+				", surname='" + surname + '\'' +
+				", clubRole=" + clubRole +
+				", Adresses=" + adresses.toString() +
 				", birthday=" + birthday +
 				", telephone='" + telephone + '\'' +
 				", mobile='" + mobile + '\'' +
 				", miles=" + miles +
 				", email='" + email + '\'' +
-				", password='" + passwordHash + '\'' +
+				", passwordHash='" + passwordHash + '\'' +
 				", isStudent=" + isStudent +
 				", hasDebitAuth=" + hasDebitAuth +
 				", imagePath='" + imagePath + '\'' +
-				", bankAccount=" + bankAccount +
+				", BankAccounts=" + bankAccounts.toString() +
 				", joinDate=" + joinDate +
 				", gender='" + gender + '\'' +
+				", hasSeasonTicket=" + hasSeasonTicket +
+				", isWoelfeClubMember=" + isWoelfeClubMember +
+				", permissions=" + permissions +
 				'}';
 	}
 }

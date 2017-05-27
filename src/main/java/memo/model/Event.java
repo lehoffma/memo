@@ -3,7 +3,6 @@ package memo.model;
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
-import java.lang.Byte;
 import java.lang.Integer;
 import java.lang.String;
 import java.sql.Timestamp;
@@ -36,12 +35,13 @@ public class Event implements Serializable {
 	@Column(nullable = false)
 	private String description;
 
-	@ManyToOne(cascade = { CascadeType.REFRESH })
-	@JoinColumn(name = "EXPECTED_READ_ROLE", nullable = false)
+	@Enumerated(EnumType.ORDINAL)
 	private ClubRole expectedReadRole;
 
-	@ManyToOne(cascade = { CascadeType.REFRESH })
-	@JoinColumn(name = "EXPECTED_WRITE_ROLE", nullable = false)
+	@Enumerated(EnumType.ORDINAL)
+	private ClubRole expectedCheckinRole;
+
+	@Enumerated(EnumType.ORDINAL)
 	private ClubRole expectedWriteRole;
 
 	@Expose
@@ -205,6 +205,22 @@ public class Event implements Serializable {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public ClubRole getExpectedCheckinRole() {
+		return expectedCheckinRole;
+	}
+
+	public void setExpectedCheckinRole(ClubRole expectedCheckinRole) {
+		this.expectedCheckinRole = expectedCheckinRole;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 	@Override
