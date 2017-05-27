@@ -1,8 +1,5 @@
 package memo.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
@@ -22,6 +19,7 @@ import javax.persistence.*;
 
 public class User implements Serializable {
 
+	@Expose
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false)
@@ -67,6 +65,9 @@ public class User implements Serializable {
 	private Boolean isStudent = false;
 	@Expose
 	private Boolean hasDebitAuth = false;
+
+	@Expose
+	@Column(name="IMAGE_PATH")
 	private String imagePath;
 	
 	@OneToOne(cascade = { CascadeType.REMOVE })

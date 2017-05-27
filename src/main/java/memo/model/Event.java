@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.lang.Byte;
 import java.lang.Integer;
@@ -14,27 +16,22 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "EVENTS")
-
-@NamedQueries({ 
-	@NamedQuery(name = "getMerch", query = "SELECT e FROM Event e WHERE e.type = 3"), 
-	@NamedQuery(name = "getPartys", query = "SELECT e FROM Event e WHERE e.type = 2"),
-	@NamedQuery(name = "getTours", query = "SELECT e FROM Event e WHERE e.type = 1"),
-	@NamedQuery(name = "getEventByType", query = "SELECT e FROM Event e WHERE e.type = :type"),
-	@NamedQuery(name = "getEventById", query = "SELECT e FROM Event e WHERE e.id = :id"),
-	@NamedQuery(name = "getEvent", query = "SELECT e FROM Event e") 
-})
 public class Event implements Serializable {
 
+	@Expose
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Expose
 	@Column(nullable = false)
 	private String title;
+
 
 	@Column(nullable = false)
 	private Timestamp date;
 
+	@Expose
 	@Lob
 	@Column(nullable = false)
 	private String description;
@@ -47,14 +44,21 @@ public class Event implements Serializable {
 	@JoinColumn(name = "EXPECTED_WRITE_ROLE", nullable = false)
 	private ClubRole expectedWriteRole;
 
-	@Lob
-	private Byte[] pic;
+	@Expose
+	@Column(name="IMAGE_PATH")
+	private String imagePath;
 
+	@Expose
 	@Column(nullable = false)
 	private Integer capacity;
 
+	@Expose
 	@Column(name = "PRICE_MEMBER", nullable = false)
 	private Integer priceMember;
+
+	@Expose
+	@Column(nullable = false)
+	private Integer price;
 
 	@ManyToOne
 	@JoinColumn(name = "MEETING_POINT_ID", nullable = false)
@@ -64,15 +68,17 @@ public class Event implements Serializable {
 	@JoinColumn(name = "DESTINATION_ID")
 	private Address destination;
 
-	@Column(nullable = false)
-	private Integer price;
 
+
+
+	@Expose
 	private String material;
+	@Expose
 	private String vehicle;
+	@Expose
 	private Integer miles = 0;
 
-	private Integer stock;
-
+	@Expose
 	@Column(nullable=false)
 	private Integer type;
 	private static final long serialVersionUID = 1L;
@@ -127,14 +133,6 @@ public class Event implements Serializable {
 
 	public void setExpectedWriteRole(ClubRole expectedWriteRole) {
 		this.expectedWriteRole = expectedWriteRole;
-	}
-
-	public Byte[] getPic() {
-		return this.pic;
-	}
-
-	public void setPic(Byte[] pic) {
-		this.pic = pic;
 	}
 
 	public Integer getCapacity() {
@@ -209,4 +207,25 @@ public class Event implements Serializable {
 		this.type = type;
 	}
 
+	@Override
+	public String toString() {
+		return "Event{" +
+				"id=" + id +
+				", title='" + title + '\'' +
+				", date=" + date +
+				", description='" + description + '\'' +
+				", expectedReadRole=" + expectedReadRole +
+				", expectedWriteRole=" + expectedWriteRole +
+				", imagePath='" + imagePath + '\'' +
+				", capacity=" + capacity +
+				", priceMember=" + priceMember +
+				", price=" + price +
+				", meetingPoint=" + meetingPoint +
+				", destination=" + destination +
+				", material='" + material + '\'' +
+				", vehicle='" + vehicle + '\'' +
+				", miles=" + miles +
+				", type=" + type +
+				'}';
+	}
 }

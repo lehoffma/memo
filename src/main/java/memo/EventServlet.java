@@ -1,8 +1,12 @@
 package memo;
 
+
+import com.google.common.io.CharStreams;
+import com.google.gson.*;
+import memo.model.Event;
+
 import java.io.IOException;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,37 +20,59 @@ import javax.servlet.http.HttpServletResponse;
 public class EventServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public EventServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+    public EventServlet() {super();}
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 
-		//EntityManager em = emf.createEntityManager();
-		response.getWriter().append("Served at: ").append(request.getContextPath()).append(DatabaseManager.createEntityManager().toString());
+    	request.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json;charset=UTF-8");
+
+		String Sid = request.getParameter("id");
+		String searchTerm = request.getParameter("searchTerm");
+		String type = request.getParameter("type");
+
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
 
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
+		request.setCharacterEncoding("UTF-8");
 
+		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+
+		String body = CharStreams.toString(request.getReader());
+
+		JsonElement jElement = new JsonParser().parse(body);
+		JsonObject jEvent = jElement.getAsJsonObject().getAsJsonObject("event");
+
+		Integer id = jEvent.get("id").getAsInt();
+		EntityManager em = DatabaseManager.createEntityManager();
+
+
+		if (id>0)
+		{
+			Event e = em.find(Event.class,id);
+			if (e!=null)
+			{
+				response.setStatus(400);
+				response.getWriter().append("Id is already Taken. Update with PUT");
+				return;
+			}
+		}
+
+		Event newEvent = gson.fromJson(jEvent,Event.class);
+
+
+		// TODO: Inner Objects
+
+		em.getTransaction().begin();
+		em.persist(newEvent);
+		em.getTransaction().commit();
+		response.setStatus(201);
+		response.getWriter().append("{ id: " + newEvent.getId()+ " }");
+
+		System.out.println(newEvent.toString());
+
+	}
 }
