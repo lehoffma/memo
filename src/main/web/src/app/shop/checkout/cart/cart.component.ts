@@ -49,7 +49,7 @@ export class CheckoutCartComponent implements OnInit {
 	);
 
 	constructor(private shoppingCartService: ShoppingCartService, private eventService: EventService) {
-	}
+}
 
 	ngOnInit() {
 

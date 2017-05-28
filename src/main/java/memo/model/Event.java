@@ -1,10 +1,13 @@
 package memo.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
-import java.lang.Byte;
 import java.lang.Integer;
 import java.lang.String;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -14,67 +17,71 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "EVENTS")
-
-@NamedQueries({ 
-	@NamedQuery(name = "getMerch", query = "SELECT e FROM Event e WHERE e.type = 3"), 
-	@NamedQuery(name = "getPartys", query = "SELECT e FROM Event e WHERE e.type = 2"),
-	@NamedQuery(name = "getTours", query = "SELECT e FROM Event e WHERE e.type = 1"),
-	@NamedQuery(name = "getEventByType", query = "SELECT e FROM Event e WHERE e.type = :type"),
-	@NamedQuery(name = "getEventById", query = "SELECT e FROM Event e WHERE e.id = :id"),
-	@NamedQuery(name = "getEvent", query = "SELECT e FROM Event e") 
-})
 public class Event implements Serializable {
 
+	@Expose
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Expose
 	@Column(nullable = false)
 	private String title;
+
 
 	@Column(nullable = false)
 	private Timestamp date;
 
+	@Expose
 	@Lob
 	@Column(nullable = false)
 	private String description;
 
-	@ManyToOne(cascade = { CascadeType.REFRESH })
-	@JoinColumn(name = "EXPECTED_READ_ROLE", nullable = false)
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
 	private ClubRole expectedReadRole;
 
-	@ManyToOne(cascade = { CascadeType.REFRESH })
-	@JoinColumn(name = "EXPECTED_WRITE_ROLE", nullable = false)
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
+	private ClubRole expectedCheckInRole;
+
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
 	private ClubRole expectedWriteRole;
 
-	@Lob
-	private Byte[] pic;
+	@Expose
+	@Column(name="IMAGE_PATH")
+	private String imagePath;
 
+	@Expose
 	@Column(nullable = false)
 	private Integer capacity;
 
+	@Expose
 	@Column(name = "PRICE_MEMBER", nullable = false)
 	private Integer priceMember;
 
-	@ManyToOne
-	@JoinColumn(name = "MEETING_POINT_ID", nullable = false)
-	private Address meetingPoint;
-
-	@ManyToOne
-	@JoinColumn(name = "DESTINATION_ID")
-	private Address destination;
-
+	@Expose
 	@Column(nullable = false)
 	private Integer price;
 
+    @ElementCollection
+    @CollectionTable(name ="EVENT_ROUTES")
+    @Expose
+    private List<Integer> route = new ArrayList<>();
+
+
+	@Expose
 	private String material;
+	@Expose
 	private String vehicle;
+	@Expose
 	private Integer miles = 0;
 
-	private Integer stock;
-
+	@Expose
 	@Column(nullable=false)
 	private Integer type;
+
 	private static final long serialVersionUID = 1L;
 
 	public Event() {
@@ -129,14 +136,6 @@ public class Event implements Serializable {
 		this.expectedWriteRole = expectedWriteRole;
 	}
 
-	public Byte[] getPic() {
-		return this.pic;
-	}
-
-	public void setPic(Byte[] pic) {
-		this.pic = pic;
-	}
-
 	public Integer getCapacity() {
 		return this.capacity;
 	}
@@ -151,14 +150,6 @@ public class Event implements Serializable {
 
 	public void setPriceMember(Integer priceMember) {
 		this.priceMember = priceMember;
-	}
-
-	public Address getMeetingPoint() {
-		return this.meetingPoint;
-	}
-
-	public void setMeetingPoint(Address meetingPoint) {
-		this.meetingPoint = meetingPoint;
 	}
 
 	public Integer getPrice() {
@@ -193,14 +184,6 @@ public class Event implements Serializable {
 		this.miles = miles;
 	}
 
-	public Address getDestination() {
-		return this.destination;
-	}
-
-	public void setDestination(Address destination) {
-		this.destination = destination;
-	}
-
 	public Integer getType() {
 		return type;
 	}
@@ -209,4 +192,51 @@ public class Event implements Serializable {
 		this.type = type;
 	}
 
+	public ClubRole getExpectedCheckInRole() {
+		return expectedCheckInRole;
+	}
+
+	public void setExpectedCheckInRole(ClubRole expectedCheckinRole) {
+		this.expectedCheckInRole = expectedCheckinRole;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
+    public List<Integer> getRoute() {
+        return route;
+    }
+
+    public void setRoute(List<Integer> route) {
+        for (Integer a : route) {
+            this.route.add(a);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", date=" + date +
+                ", description='" + description + '\'' +
+                ", expectedReadRole=" + expectedReadRole +
+                ", expectedCheckInRole=" + expectedCheckInRole +
+                ", expectedWriteRole=" + expectedWriteRole +
+                ", imagePath='" + imagePath + '\'' +
+                ", capacity=" + capacity +
+                ", priceMember=" + priceMember +
+                ", price=" + price +
+                ", route=" + route +
+                ", material='" + material + '\'' +
+                ", vehicle='" + vehicle + '\'' +
+                ", miles=" + miles +
+                ", type=" + type +
+                '}';
+    }
 }

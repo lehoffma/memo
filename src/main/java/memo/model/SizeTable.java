@@ -16,6 +16,7 @@ import memo.model.Size;
 public class SizeTable implements Serializable {
 
 	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
 	@ManyToOne(cascade = { CascadeType.REMOVE })
@@ -29,6 +30,13 @@ public class SizeTable implements Serializable {
 	public SizeTable() {
 		super();
 	}
+
+	public SizeTable(Size size, String name, Integer min, Integer max)   {
+        this.size = size;
+        this.name = name;
+        this.min = min;
+        this.max = max;
+    }
 
 	public Integer getId() {
 		return this.id;
@@ -70,4 +78,14 @@ public class SizeTable implements Serializable {
 		this.max = max;
 	}
 
+    @Override
+    public String toString() {
+        return "SizeTable{" +
+                "id=" + id +
+                ", size=" + size +
+                ", name='" + name + '\'' +
+                ", min=" + min +
+                ", max=" + max +
+                '}';
+    }
 }

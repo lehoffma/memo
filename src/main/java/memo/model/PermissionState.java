@@ -1,85 +1,135 @@
 package memo.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.lang.Integer;
 import javax.persistence.*;
-import memo.model.Division;
-import memo.model.Permission;
-import memo.model.User;
 
 /**
  * Entity implementation class for Entity: PermissionState
  *
  */
 @Entity
-@Table(name = "HAS_PERMISSION")
+@Table(name = "PERMISSION_STATES")
 
-@IdClass(PermissionStatePK.class)
 public class PermissionState implements Serializable {
 
-	@Id
-	@Column(name = "DIVISION_ID")
-	private Integer divisionID;
 
 	@Id
-	@Column(name = "USER_ID")
-	private Integer userID;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-	@ManyToOne(cascade = { CascadeType.REMOVE })
-	@PrimaryKeyJoinColumn(name = "DIVISION_ID", referencedColumnName = "ID")
-	private Division division;
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
+	private Permission funds;
 
-	@ManyToOne(cascade = { CascadeType.REMOVE })
-	@PrimaryKeyJoinColumn(name = "USER_ID", referencedColumnName = "ID")
-	private User user;
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
+	private Permission party;
 
-	@ManyToOne
-	@JoinColumn(nullable = false, name = "PERMISSION_STATE_ID", referencedColumnName = "ID")
-	private Permission permissionState;
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
+	private Permission user;
+
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
+	private Permission merch;
+
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
+	private Permission tour;
+
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
+	private Permission stock;
+
+	@Expose
+	@Enumerated(EnumType.ORDINAL)
+	private Permission account;
+
 	private static final long serialVersionUID = 1L;
 
 	public PermissionState() {
 		super();
 	}
 
-	public Division getDivision() {
-		return this.division;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setDivision(Division division) {
-		this.division = division;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public User getUser() {
-		return this.user;
+	public Permission getFunds() {
+		return funds;
 	}
 
-	public void setUser(User user) {
+	public void setFunds(Permission funds) {
+		this.funds = funds;
+	}
+
+	public Permission getParty() {
+		return party;
+	}
+
+	public void setParty(Permission party) {
+		this.party = party;
+	}
+
+	public Permission getUser() {
+		return user;
+	}
+
+	public void setUser(Permission user) {
 		this.user = user;
 	}
 
-	public Integer getDivisionID() {
-		return this.divisionID;
+	public Permission getMerch() {
+		return merch;
 	}
 
-	public void setDivisionID(Integer divisionID) {
-		this.divisionID = divisionID;
+	public void setMerch(Permission merch) {
+		this.merch = merch;
 	}
 
-	public Integer getUserID() {
-		return this.userID;
+	public Permission getTour() {
+		return tour;
 	}
 
-	public void setUserID(Integer userID) {
-		this.userID = userID;
+	public void setTour(Permission tour) {
+		this.tour = tour;
 	}
 
-	public Permission getPermissionState() {
-		return this.permissionState;
+	public Permission getStock() {
+		return stock;
 	}
 
-	public void setPermissionState(Permission permissionState) {
-		this.permissionState = permissionState;
+	public void setStock(Permission stock) {
+		this.stock = stock;
 	}
 
+	public Permission getAccount() {
+		return account;
+	}
+
+	public void setAccount(Permission account) {
+		this.account = account;
+	}
+
+	@Override
+	public String toString() {
+		return "PermissionState{" +
+				"id=" + id +
+				", funds=" + funds +
+				", party=" + party +
+				", user=" + user +
+				", merch=" + merch +
+				", tour=" + tour +
+				", stock=" + stock +
+				", account=" + account +
+				'}';
+	}
 }

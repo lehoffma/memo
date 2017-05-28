@@ -31,6 +31,7 @@ import {IsValidItemTypeGuard} from "./shared/route-guards/is-valid-itemtype.guar
 import {PageNotFoundComponent} from "./util/page-not-found/page-not-found.component";
 import {CheckoutComponent} from "./shop/checkout/checkout.component";
 import {MerchStockComponent} from "./club-management/administration/stock/merch-stock/merch-stock.component";
+import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address-change.component";
 export const ROUTES = [
 	{path: "", component: HomeComponent},
 
@@ -63,6 +64,7 @@ export const ROUTES = [
 	{path: "signup/:step", component: SignUpComponent},
 	{path: "cart", component: CheckoutCartComponent},
 	{path: "checkout", component: CheckoutComponent, canActivate: [AuthenticatedGuard]},
+	{path: "address", component: AddressChangeComponent},
 
 	//nur eingeloggte User können diese Routen sehen
 	{path: "my-events", component: MyToursComponent},

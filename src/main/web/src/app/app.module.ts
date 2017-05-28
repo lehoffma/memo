@@ -119,6 +119,7 @@ import {ModifyEntryComponent} from "./shop/modify-shop-item/modify-entry/modify-
 import {ModifyMerchStockComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock.component";
 import {MerchColorCellComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/merch-color-cell/merch-color-cell.component";
 import {ModifyMerchStockItemComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
+import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address-change.component";
 
 @NgModule({
 	imports: [
@@ -206,6 +207,7 @@ import {ModifyMerchStockItemComponent} from "./shop/modify-shop-item/modify-merc
 		ProfilePictureFormComponent,
 		PaymentMethodsFormComponent,
 		DebitInputFormComponent,
+		AddressChangeComponent,
 
 		ExpandableTableComponent,
 		ExpandedTableRowContainerDirective,
