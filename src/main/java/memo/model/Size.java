@@ -19,17 +19,31 @@ public class Size implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@ManyToOne(cascade = { CascadeType.REMOVE })
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	@JoinColumn(name = "EVENT_ID")
 	private Event event;
 	private String name;
+
 	@Column(name = "STOCK")
 	private Integer NumInStock;
+
+	@ManyToOne(cascade = {CascadeType.REFRESH})
+    @JoinColumn(name = "COLOR_ID")
+	private Color color;
+
 	private static final long serialVersionUID = 1L;
 
 	public Size() {
 		super();
 	}
+
+	public Size(Event event, String name, Integer NumInStock, Color color)
+    {
+        this.event = event;
+        this.name = name;
+        this.NumInStock = NumInStock;
+        this.color = color;
+    }
 
 	public Integer getId() {
 		return this.id;
@@ -63,4 +77,22 @@ public class Size implements Serializable {
 		this.NumInStock = NumInStock;
 	}
 
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return "Size{" +
+                "id=" + id +
+                ", event=" + event +
+                ", name='" + name + '\'' +
+                ", NumInStock=" + NumInStock +
+                ", color=" + color +
+                '}';
+    }
 }

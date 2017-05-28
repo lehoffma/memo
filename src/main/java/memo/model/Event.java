@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.lang.Integer;
 import java.lang.String;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -35,12 +37,15 @@ public class Event implements Serializable {
 	@Column(nullable = false)
 	private String description;
 
+	@Expose
 	@Enumerated(EnumType.ORDINAL)
 	private ClubRole expectedReadRole;
 
+	@Expose
 	@Enumerated(EnumType.ORDINAL)
-	private ClubRole expectedCheckinRole;
+	private ClubRole expectedCheckInRole;
 
+	@Expose
 	@Enumerated(EnumType.ORDINAL)
 	private ClubRole expectedWriteRole;
 
@@ -60,15 +65,10 @@ public class Event implements Serializable {
 	@Column(nullable = false)
 	private Integer price;
 
-	@ManyToOne
-	@JoinColumn(name = "MEETING_POINT_ID", nullable = false)
-	private Address meetingPoint;
-
-	@ManyToOne
-	@JoinColumn(name = "DESTINATION_ID")
-	private Address destination;
-
-
+    @ElementCollection
+    @CollectionTable(name ="EVENT_ROUTES")
+    @Expose
+    private List<Integer> route = new ArrayList<>();
 
 
 	@Expose
@@ -81,6 +81,7 @@ public class Event implements Serializable {
 	@Expose
 	@Column(nullable=false)
 	private Integer type;
+
 	private static final long serialVersionUID = 1L;
 
 	public Event() {
@@ -151,14 +152,6 @@ public class Event implements Serializable {
 		this.priceMember = priceMember;
 	}
 
-	public Address getMeetingPoint() {
-		return this.meetingPoint;
-	}
-
-	public void setMeetingPoint(Address meetingPoint) {
-		this.meetingPoint = meetingPoint;
-	}
-
 	public Integer getPrice() {
 		return this.price;
 	}
@@ -191,14 +184,6 @@ public class Event implements Serializable {
 		this.miles = miles;
 	}
 
-	public Address getDestination() {
-		return this.destination;
-	}
-
-	public void setDestination(Address destination) {
-		this.destination = destination;
-	}
-
 	public Integer getType() {
 		return type;
 	}
@@ -207,12 +192,12 @@ public class Event implements Serializable {
 		this.type = type;
 	}
 
-	public ClubRole getExpectedCheckinRole() {
-		return expectedCheckinRole;
+	public ClubRole getExpectedCheckInRole() {
+		return expectedCheckInRole;
 	}
 
-	public void setExpectedCheckinRole(ClubRole expectedCheckinRole) {
-		this.expectedCheckinRole = expectedCheckinRole;
+	public void setExpectedCheckInRole(ClubRole expectedCheckinRole) {
+		this.expectedCheckInRole = expectedCheckinRole;
 	}
 
 	public String getImagePath() {
@@ -223,25 +208,35 @@ public class Event implements Serializable {
 		this.imagePath = imagePath;
 	}
 
-	@Override
-	public String toString() {
-		return "Event{" +
-				"id=" + id +
-				", title='" + title + '\'' +
-				", date=" + date +
-				", description='" + description + '\'' +
-				", expectedReadRole=" + expectedReadRole +
-				", expectedWriteRole=" + expectedWriteRole +
-				", imagePath='" + imagePath + '\'' +
-				", capacity=" + capacity +
-				", priceMember=" + priceMember +
-				", price=" + price +
-				", meetingPoint=" + meetingPoint +
-				", destination=" + destination +
-				", material='" + material + '\'' +
-				", vehicle='" + vehicle + '\'' +
-				", miles=" + miles +
-				", type=" + type +
-				'}';
-	}
+    public List<Integer> getRoute() {
+        return route;
+    }
+
+    public void setRoute(List<Integer> route) {
+        for (Integer a : route) {
+            this.route.add(a);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", date=" + date +
+                ", description='" + description + '\'' +
+                ", expectedReadRole=" + expectedReadRole +
+                ", expectedCheckInRole=" + expectedCheckInRole +
+                ", expectedWriteRole=" + expectedWriteRole +
+                ", imagePath='" + imagePath + '\'' +
+                ", capacity=" + capacity +
+                ", priceMember=" + priceMember +
+                ", price=" + price +
+                ", route=" + route +
+                ", material='" + material + '\'' +
+                ", vehicle='" + vehicle + '\'' +
+                ", miles=" + miles +
+                ", type=" + type +
+                '}';
+    }
 }

@@ -22,6 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class UserServlet
  */
+
+//TODO: checks for address and bankaccout in database
+
 @WebServlet("/api/user")
 public class UserServlet extends HttpServlet {
 
@@ -335,7 +338,6 @@ public class UserServlet extends HttpServlet {
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 
 		request.setCharacterEncoding("UTF-8");
 		//response.setContentType("application/json;charset=UTF-8");

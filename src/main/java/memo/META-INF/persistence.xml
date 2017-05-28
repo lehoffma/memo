@@ -6,7 +6,6 @@
         <class>memo.model.Address</class>
         <class>memo.model.BankAcc</class>
         <class>memo.model.ClubRole</class>
-        <class>memo.model.Division</class>
         <class>memo.model.Entry</class>
         <class>memo.model.Event</class>
         <class>memo.model.HasEntry</class>
@@ -17,7 +16,6 @@
         <class>memo.model.SizeTable</class>
         <class>memo.model.User</class>
         <class>memo.model.Color</class>
-        <class>memo.model.HasColor</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>

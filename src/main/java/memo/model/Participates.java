@@ -5,6 +5,8 @@ import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.String;
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+
 import memo.model.Event;
 import memo.model.User;
 
@@ -36,8 +38,12 @@ public class Participates implements Serializable {
 	@Column(name = "IS_DRIVER")
 	private Boolean isDriver = false;
 
-	@Column(nullable = false, name = "OUTSTANDING_PAYMENT")
-	private Integer outstandingPayment;
+	@Column(nullable = false, name = "PAYMENT_STATE")
+	private Integer paymentState;
+	// 0 = reserved
+    // 1 = payed
+    // 2 = accepted
+    // 3 = participated
 
 	@Column(nullable = false, name = "TICKETS")
 	private Integer numOfTickets;
@@ -54,6 +60,17 @@ public class Participates implements Serializable {
 
 	public Participates() {
 		super();
+	}
+
+	public Participates(User user, Event event, Boolean isDriver, Integer paymentState, Integer numOfTickets, Integer numOfParticipants, String comment, boolean isAuthor) {
+        this.user = user;
+        this.event = event;
+        this.isDriver = isDriver;
+        this.paymentState = paymentState;
+        this.numOfTickets = numOfTickets;
+        this.numOfParticipants = numOfParticipants;
+        this.comment = comment;
+        this.isAuthor = isAuthor;
 	}
 
 	public Integer getUserID() {
@@ -96,15 +113,15 @@ public class Participates implements Serializable {
 		this.isDriver = isDriver;
 	}
 
-	public Integer getOutstandingPayment() {
-		return this.outstandingPayment;
-	}
+    public Integer getPaymentState() {
+        return paymentState;
+    }
 
-	public void setOutstandingPayment(Integer outstandingPayment) {
-		this.outstandingPayment = outstandingPayment;
-	}
+    public void setPaymentState(Integer paymentState) {
+        this.paymentState = paymentState;
+    }
 
-	public Integer getNumOfTickets() {
+    public Integer getNumOfTickets() {
 		return this.numOfTickets;
 	}
 
@@ -136,4 +153,19 @@ public class Participates implements Serializable {
 		this.isAuthor = isAuthor;
 	}
 
+    public Boolean getDriver() {
+        return isDriver;
+    }
+
+    public void setDriver(Boolean driver) {
+        isDriver = driver;
+    }
+
+    public Boolean getAuthor() {
+        return isAuthor;
+    }
+
+    public void setAuthor(Boolean author) {
+        isAuthor = author;
+    }
 }

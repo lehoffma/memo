@@ -1,4 +1,4 @@
-package memo.model;
+package memo;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
