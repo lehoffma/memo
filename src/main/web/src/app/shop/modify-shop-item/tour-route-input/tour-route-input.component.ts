@@ -1,6 +1,7 @@
 import {Component, ElementRef, EventEmitter, Input, NgZone, OnInit, Output, ViewChild} from "@angular/core";
 import {EventRoute} from "../../shared/model/route";
 import {MapsAPILoader} from "@agm/core";
+import {Address} from "../../../shared/model/address";
 
 declare var google;
 
@@ -11,7 +12,13 @@ declare var google;
 })
 export class TourRouteInputComponent implements OnInit {
 	@Input() isRoute: boolean = false;
-	@Input() route: EventRoute;
+	@Input() route: {
+		meetingPoint: Address,
+		destination: Address
+	} = {
+		meetingPoint: Address.create(),
+		destination: Address.create()
+	};
 
 	@Output() routeChange = new EventEmitter<EventRoute>();
 
@@ -32,6 +39,12 @@ export class TourRouteInputComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		if(!this.route){
+			this.route = {
+				meetingPoint: Address.create(),
+				destination: Address.create()
+			};
+		}
 		this.mapsAPILoader.load().then(() => {
 			this.initAutoComplete(this.meetingPointInput.nativeElement, "meetingPoint");
 			if (this.isRoute) {
@@ -49,6 +62,8 @@ export class TourRouteInputComponent implements OnInit {
 			this.ngZone.run(() => {
 				//get the place result
 				let place = autocomplete.getPlace();
+				this.route[validityKey].latitude = place.geometry.location.lat();
+				this.route[validityKey].longitude = place.geometry.location.lng();
 
 				//verify result
 				if (place.geometry === undefined || place.geometry === null) {
@@ -59,5 +74,18 @@ export class TourRouteInputComponent implements OnInit {
 				this.positionValidity[validityKey] = true;
 			});
 		});
+	}
+
+	getCenterOfTour() {
+		if(this.isRoute){
+			return {
+				latitude: ((this.route.meetingPoint.latitude + this.route.destination.latitude) / 2),
+				longitude: ((this.route.meetingPoint.longitude + this.route.destination.longitude) / 2)
+			}
+		}
+		return {
+			latitude: this.route.meetingPoint.latitude,
+			longitude: this.route.meetingPoint.longitude
+		}
 	}
 }

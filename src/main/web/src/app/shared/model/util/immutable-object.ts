@@ -1,6 +1,8 @@
 import {ClubRole} from "../club-role";
 import {jsonToPermissions, UserPermissions} from "../permission";
 import {isArray} from "util";
+import {EntryCategory} from "../entry-category";
+import {Gender} from "../gender";
 export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 
 	constructor(public readonly id: number) {
@@ -36,7 +38,9 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 				} else if (key === "permissions") {
 					value = jsonToPermissions((<any>properties)["permissions"]);
 				} else if (key === "gender") {
-
+					value = Gender[Gender[(<any>properties)[key]]];
+				} else if (key === "category"){
+					value = EntryCategory[(<any>properties)[key]];
 				}
 				this[key] = value;
 			});

@@ -1,7 +1,9 @@
-@import "../../login/login.component";
+//@import "../../login/login.component";
 
-md2-datepicker {
-	width: 100%;
+h3 {
+	font-weight: 200;
+	margin: 0;
+	text-align: center;
 }
 
 .name-container {
@@ -12,16 +14,89 @@ md2-datepicker {
 	}
 }
 
+.aligned-md-select {
+	margin-top: -8px;
+	/deep/ .mat-select-placeholder.mat-floating-placeholder {
+		top: -16px !important;
+	}
+
+}
+
+.personal-data {
+
+	.user-personal-data-input-container {
+		display: flex;
+		flex-direction: column;
+		margin-top: 15px;
+		margin-bottom: 10px;
+
+		.name-input,
+		.date-and-gender-input {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-top: 10px;
+
+			md-input-container,
+			md-select,
+			> div {
+				width: 45%;
+				> md-input-container {
+					width: 100%;
+				}
+			}
+		}
+
+	}
+
+	.checkboxes-container {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		@media all and (max-width: 800px) {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+}
+
+.club-information {
+	.club-information-forms {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 15px;
+
+		md-select,
+		> div {
+			width: 45%;
+
+			> md-input-container {
+				width: 100%;
+			}
+		}
+	}
+}
+
 .form-divider {
-	margin-top: 10px;
-	color: #ededed;
-	background-color: #ededed;
+	margin-top: 25px;
+	margin-bottom: 25px;
+	//color: #ededed;
+	//background-color: #ededed;
 	width: 100%;
 	height: 2px;
 }
 
-.isStudent-container {
-	width: 100%;
-	display: flex;
-	justify-content: flex-end;
+.error-message {
+	color: red;
+}
+
+.submit-button {
+	float: right;
+}
+
+.form-actions {
+	margin-top: 15px;
 }

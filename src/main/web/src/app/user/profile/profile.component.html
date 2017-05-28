@@ -26,8 +26,8 @@
 			<img class="profile-picture" src={{user.imagePath}}>
 		</div>
 		<div class="profile-title-container">
-			<div class="profile-name">{{user.firstName}} {{user.surname}}</div>
-			<div class="profile-role">{{user.clubRole}}</div>
+			<h1 class="profile-name">{{user.firstName}} {{user.surname}}</h1>
+			<h3 class="profile-role">{{user.clubRole}}</h3>
 		</div>
 		<div class="profile-info-container">
 			<div *ngFor="let category of profileCategories;">
@@ -56,17 +56,18 @@
 		</div>
 	</div>
 	<div class="profile-component">
-		<h3 class="profile-tours-title">Hat teilgenommen an</h3>
+		<h2 class="profile-tours-title">Hat teilgenommen an</h2>
 		<!-- Touren die Member mitgefahren ist -->
 		<memo-participated-tours-preview [userEvents]="userEvents"></memo-participated-tours-preview>
 	</div>
-	<div class="profile-component" *ngIf="userEvents | async; let participatedTours;">
-		<h3 class="profile-tours-title">Karte</h3>
-		<!--todo: update once the tours have longitude/latitude data stored in them-->
+	<div class="profile-component" *ngIf="userDestinations | async; let destinations;">
+		<h2 class="profile-tours-title">Karte</h2>
+		<!--todo center() method-->
 		<agm-map [zoom]="7" [latitude]="53" [longitude]="10.78">
-			<agm-marker *ngFor="let tour of participatedTours; let i = index;"
-						[latitude]="52.422650 + i*0.5"
-						[longitude]="10.786546">
+			<agm-marker *ngFor="let destination of destinations; let i = index;"
+						[latitude]="destination.latitude"
+						[longitude]="destination.longitude">
+
 			</agm-marker>
 		</agm-map>
 

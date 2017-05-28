@@ -3,10 +3,12 @@ import {ServletService} from "../model/servlet-service";
 import {Entry} from "../model/entry";
 import {Headers, Http, RequestOptions, Response} from "@angular/http";
 import {Observable} from "rxjs/Observable";
+import {CacheStore} from "../stores/cache.store";
 
 @Injectable()
 export class EntryService implements ServletService<Entry> {
-	constructor(private http: Http) {
+	constructor(private http: Http,
+				private cache: CacheStore) {
 	}
 
 
@@ -21,7 +23,11 @@ export class EntryService implements ServletService<Entry> {
 	 * @param options
 	 */
 	getById(entryId: number, options?: any): Observable<Entry> {
-		const {eventId} = options;
+		let eventId;
+		if(options && options.eventId){
+			eventId = options.eventId;
+		}
+
 		let url = `/api/entry?`;
 		if (entryId) {
 			url += `entryId=${entryId}`
@@ -33,9 +39,17 @@ export class EntryService implements ServletService<Entry> {
 			url += `eventId=${eventId}`
 		}
 
+
+		//todo remove when server is running todo demo
+		if (entryId !== -1) {
+			return this.search("")
+				.map(entries => entries.find(entry => entry.id === entryId));
+		}
+
 		return this.http.get(url)
 			.map(response => response.json())
 			.map(json => Entry.create().setProperties(json))
+			.do(entry => this.cache.addOrModify(entry))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
@@ -50,12 +64,19 @@ export class EntryService implements ServletService<Entry> {
 	 * @param searchTerm
 	 * @param options
 	 */
-	search(searchTerm: string, options?: any): Observable<Entry[]> {
-		const {dateRange: {minDate, maxDate}} = options;
+	search(searchTerm: string, options?: any): Observable<Entry[]>{
+		let minDate, maxDate;
+		if(options && options.dateRange && options.dateRange.minDate && options.dateRange.maxDate){
+			minDate = options.dateRange.minDate;
+			maxDate = options.dateRange.maxDate;
+		}
 		let url = `/api/entry?searchTerm=${searchTerm}`;
 		if (minDate && maxDate) {
 			url += `&minDate=${minDate}&maxDate=${maxDate}`
 		}
+
+		//todo remove when server is running todo demo
+		url = `/resources/mock-data/entries.json`;
 
 		return this.http.get(url)
 			.map(response => response.json())
@@ -80,9 +101,7 @@ export class EntryService implements ServletService<Entry> {
 
 		return this.http.post(`/api/entry`, {entry}, requestOptions)
 			.map(response => response.json())
-			//todo warum eigentlich?
-			//todo flatMap to this.get(id)
-			.map(userJson => Entry.create().setProperties(userJson))
+			.map(id => this.getById(id))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors

@@ -1,4 +1,8 @@
 import {MultiLevelSelectParent} from "../../shared/multi-level-select/shared/multi-level-select-parent";
+import {ShopItem} from "../../shared/model/shop-item";
+import {Tour} from "../shared/model/tour";
+import {Merchandise} from "../shared/model/merchandise";
+import {Party} from "../shared/model/party";
 export const eventFilterOptions: MultiLevelSelectParent[] = [
 	{
 		name: "Kategorie",
@@ -76,3 +80,27 @@ export const eventFilterOptions: MultiLevelSelectParent[] = [
 		]
 	},
 ];
+
+function isMerchandise(event: any): event is Merchandise {
+	return event && (<Merchandise>event).colors !== undefined;
+}
+
+function isTour(event: any): event is Tour {
+	return event && (<Tour>event).vehicle !== undefined
+}
+
+function isParty(event: any): event is Party {
+	return event && (<Party>event).emptySeats !== undefined && (<Tour>event).vehicle === undefined;
+}
+
+export const filterFunctions: {
+	[key: string]: (obj:ShopItem, filterValue:any) => boolean
+} = {
+	"category": (item,filterValue) => {
+		if(isMerchandise(item) || isTour(item) || isParty(item)){
+			return //todo
+		}
+		return true;
+	}
+
+}

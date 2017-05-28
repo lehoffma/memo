@@ -5,6 +5,7 @@ export class Entry extends ImmutableObject<Entry> {
 	constructor(public id: number,
 				public name: string,
 				public value: number,
+				//todo entry date
 				public category: EntryCategory) {
 		super(id);
 	}

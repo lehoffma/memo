@@ -66,9 +66,9 @@ export class EventUtilityService {
 			return userCallback(item);
 		}
 		//todo implement isEntry
-		// if (this.isEntry(item)) {
-		// 	return entryCallback(item);
-		// }
+		if (this.isEntry(item)) {
+			return entryCallback(item);
+		}
 		return defaultCallback(item);
 	}
 
@@ -125,6 +125,10 @@ export class EventUtilityService {
 	isUser(event: any): event is User {
 		return event && (<User>event).email !== undefined;
 	}
+	isEntry(event: any): event is Entry{
+		return event && (<Entry>event).category !== undefined;
+	}
+
 
 	isMerchandise(event: any): event is Merchandise {
 		return event && (<Merchandise>event).colors !== undefined;

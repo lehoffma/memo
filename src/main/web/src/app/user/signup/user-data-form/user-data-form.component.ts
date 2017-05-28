@@ -1,6 +1,9 @@
-import {Component, EventEmitter, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {SignUpSubmitEvent} from "../signup-submit-event";
 import {SignUpSection} from "../signup-section";
+import {Gender} from "../../../shared/model/gender";
+import {ClubRole} from "../../../shared/model/club-role";
+import {LogInService} from "../../../shared/services/login.service";
 
 @Component({
 	selector: "memo-user-data-form",
@@ -8,8 +11,9 @@ import {SignUpSection} from "../signup-section";
 	styleUrls: ["./user-data-form.component.scss"]
 })
 export class UserDataFormComponent implements OnInit {
-	@Output() onSubmit = new EventEmitter<SignUpSubmitEvent>();
-	model = {
+	@Output() onSubmit = new EventEmitter<any>();
+	@Input() withSubmitButton = true;
+	@Input() model = {
 		firstName: undefined,
 		surname: undefined,
 		birthday: undefined,
@@ -17,10 +21,28 @@ export class UserDataFormComponent implements OnInit {
 		isStudent: undefined,
 		profilePicture: undefined
 	};
+	@Output() modelChange = new EventEmitter();
+	@Output() onCancel = new EventEmitter();
+
+	get userModel(){
+		return this.model;
+	}
+
+	set userModel(model){
+		this.model = model;
+		this.modelChange.emit(this.model);
+	}
+
+	genderOptions = [Gender.FEMALE, Gender.MALE, Gender.OTHER];
+	clubRoleOptions = [ClubRole.Organizer, ClubRole.Admin, ClubRole.Vorstand, ClubRole.Kasse, ClubRole.Mitglied, ClubRole.None];
+
+	isAdmin = this.loginService.currentUser().map(user => {
+		return user !== null && user.clubRole === ClubRole.Admin;
+	});
 
 	defaultImageUrl = "resources/images/Logo.png";
 
-	constructor() {
+	constructor(public loginService: LogInService) {
 	}
 
 	ngOnInit() {
@@ -28,18 +50,14 @@ export class UserDataFormComponent implements OnInit {
 
 
 	submit() {
-		this.onSubmit.emit({
-			section: SignUpSection.PersonalData,
-			firstName: this.model.firstName,
-			surname: this.model.surname,
-			birthday: this.model.birthday,
-			phoneNumber: this.model.phoneNumber,
-			isStudent: this.model.isStudent,
-			profilePicture: this.model.profilePicture
-		});
+		this.onSubmit.emit(this.model);
 	}
 
 	profilePictureChanged(event: FormData) {
 		this.model.profilePicture = event;
+	}
+
+	cancel(){
+		this.onCancel.emit(true);
 	}
 }

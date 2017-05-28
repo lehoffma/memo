@@ -10,7 +10,7 @@
 			</div>
 
 			<div class="expandable-table-header-actions">
-				<button md-button color="accent" (click)="addItem()">
+				<button md-button type="button" color="accent" (click)="addItem()">
 					HINZUFÜGEN
 				</button>
 			</div>
@@ -20,7 +20,7 @@
 				{{amountOfSelectedEntries}} {{amountOfSelectedEntries > 1 ? 'Einträge' : 'Eintrag'}} ausgewählt.
 			</div>
 			<div class="expandable-table-header-actions">
-				<button md-icon-button (click)="deleteSelected()">
+				<button md-icon-button type="button" (click)="deleteSelected()">
 					<md-icon>delete</md-icon>
 				</button>
 			</div>
@@ -31,7 +31,7 @@
 		<table class="expandable-table">
 			<thead>
 			<tr class="expandable-table-header-row expandable-table-row">
-				<th>
+				<th *ngIf="expandable">
 					<!--empty because of expand icon-->
 				</th>
 				<!--todo tooltips-->
@@ -67,7 +67,7 @@
 				<tr class="expandable-table-body-main-row expandable-table-row"
 					[ngClass]="{'selected-row': selectedStatusList[dataObject.id]}"
 					(click)="toggleSelectedStatus(dataObject)">
-					<td>
+					<td *ngIf="expandable" class="expand-icon">
 						<!--toggle expanded status of the row-->
 						<button md-icon-button type="button"
 								(click)="toggleExpandedStatus(dataObject); $event.stopPropagation()">
@@ -89,16 +89,16 @@
 					</td>
 					<td class="expandable-table-actions">
 						<!--todo more columns if showActionsAsSeparateRows?-->
-						<button md-icon-button (click)="$event.stopPropagation()" [mdMenuTriggerFor]="menu">
+						<button md-icon-button type="button" (click)="$event.stopPropagation()" [mdMenuTriggerFor]="menu">
 							<md-icon>more_vert</md-icon>
 
 						</button>
 						<md-menu #menu="mdMenu">
-							<button md-menu-item (click)="editItem(dataObject)">
+							<button md-menu-item type="button" (click)="editItem(dataObject)">
 								<md-icon>edit</md-icon>
 								<span>Bearbeiten</span>
 							</button>
-							<button md-menu-item (click)="deleteItem(dataObject)">
+							<button md-menu-item type="button" (click)="deleteItem(dataObject)">
 								<md-icon>delete</md-icon>
 								<span>Löschen</span>
 							</button>
@@ -112,13 +112,6 @@
 
 					</ng-template>
 				</ng-template>
-				<!--todo might be better but doesn't work quite as i want it to-->
-				<!--<ng-template memoExpandedTableRowContainer *ngIf="expandStatusList[dataObject.id]"></ng-template>-->
-				<!--<tr *ngIf="expandStatusList[dataObject.id]" class="expandable-table-body-expanded-row">-->
-				<!--<td [attr.colspan]="columnKeys.length + 2">-->
-				<!---->
-				<!--</td>-->
-				<!--</tr>-->
 			</ng-template>
 		</table>
 	</div>
@@ -133,10 +126,10 @@
 		'-' + (currentPage*rowsPerPage < data?.length ? currentPage*rowsPerPage : data?.length)
 		+ ' von ' + data?.length}}
 	</span>
-		<button md-icon-button (click)="currentPage = currentPage-1" [disabled]="(currentPage-2)*rowsPerPage < 0">
+		<button md-icon-button type="button" (click)="currentPage = currentPage-1" [disabled]="(currentPage-2)*rowsPerPage < 0">
 			<md-icon>navigate_before</md-icon>
 		</button>
-		<button md-icon-button (click)="currentPage = currentPage+1"
+		<button md-icon-button type="button" (click)="currentPage = currentPage+1"
 				[disabled]="(currentPage)*rowsPerPage > data?.length">
 			<md-icon>navigate_next</md-icon>
 		</button>

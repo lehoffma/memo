@@ -3,3 +3,17 @@
 	text-align: center;
 	margin-top: 20px;
 }
+
+@media all and (min-width: 650px) {
+	.results-container {
+		display: flex;
+		width: 650px;
+		flex-wrap: wrap;
+	}
+}
+
+@media all and (min-width: 1000px){
+	.results-container{
+		width: 950px;
+	}
+}

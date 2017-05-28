@@ -1,0 +1,64 @@
+<div class="modify-shop-item-container">
+	<h2>Posten {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
+	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
+
+		<div class="entry-info-container">
+			<md-input-container>
+				<input mdInput name="titleInput"
+					   type="text" required
+					   placeholder="Titel"
+					   #titleInput="ngModel"
+					   [(ngModel)]="entryModel['name']">
+				<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+					Dieses Feld darf nicht leer bleiben!
+				</md-hint>
+			</md-input-container>
+			<md-select [(ngModel)]="entryModel['category']" placeholder="Kategorie" #categorySelect="ngModel" name="categorySelect">
+				<md-option *ngFor="let option of entryCategories" [value]="option">
+					{{option}}
+				</md-option>
+			</md-select>
+		</div>
+
+		<div class="entry-info-container">
+			<!--todo entry date-->
+			<!--<div>-->
+				<!--<md-input-container>-->
+					<!--<input mdInput [mdDatepicker]="myDatepicker"-->
+						   <!--placeholder="Datum"-->
+						   <!--[(ngModel)]="entryModel['date']"-->
+						   <!--#dateInput="ngModel"-->
+						   <!--name="dateInput" required>-->
+					<!--<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>-->
+				<!--</md-input-container>-->
+				<!--<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>-->
+			<!--</div>-->
+			<div>
+				<md-input-container>
+					<input mdInput name="valueInput"
+						   type="number" required
+						   placeholder="Wert"
+						   #valueInput="ngModel"
+						   [(ngModel)]="entryModel['value']">
+					<span mdSuffix>€</span>
+					<md-hint *ngIf="valueInput.touched && !valueInput.valid" class="error-message" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</md-hint>
+				</md-input-container>
+			</div>
+		</div>
+
+
+		<!--below all that-->
+		<div class="form-buttons">
+			<!--	cancel button-->
+			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<!--	save button-->
+			<button md-button color="primary"
+					[disabled]="!modifyShopItemForm.form.valid"
+					type="submit">
+				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+			</button>
+		</div>
+	</form>
+</div>

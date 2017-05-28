@@ -102,7 +102,7 @@
 		@media all and (min-width: 1000px) {
 			th.sortable-column,
 			th.expandable-table-selectall-checkbox,
-			.expandable-table-body-main-row /deep/ td:not(.expandable-table-actions):not(:first-child) {
+			.expandable-table-body-main-row /deep/ td:not(.expandable-table-actions):not(.expand-icon) {
 				padding-left: 30px;
 			}
 

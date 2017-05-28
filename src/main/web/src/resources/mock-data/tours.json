@@ -13,7 +13,10 @@
 		"emptySeats": 46,
 		"vehicle": "Bus",
 		"miles": 300,
-		"destination": 1,
+		"route": {
+			"meetingPoint": 0,
+			"destination": 1
+		},
 		"participants": [
 			{
 				"id": 0,
@@ -51,7 +54,10 @@
 		"emptySeats": 28,
 		"vehicle": "Bulli",
 		"miles": 200,
-		"destination": 1,
+		"route": {
+			"meetingPoint": 1,
+			"destination": 0
+		},
 		"participants": [
 			{
 				"id": 0,

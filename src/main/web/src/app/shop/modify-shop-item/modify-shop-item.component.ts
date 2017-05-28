@@ -5,8 +5,6 @@ import {Event} from "../shared/model/event";
 import {Entry} from "../../shared/model/entry";
 import {ShopItemType} from "../shared/model/shop-item-type";
 import {ModifyType} from "./modify-type";
-import {ItemFormType} from "./item-form-type";
-import {EditItemFormList, ItemFormList} from "./edit-item-form-list";
 import {User} from "../../shared/model/user";
 import {EventType} from "../shared/model/event-type";
 import {Observable} from "rxjs/Observable";
@@ -18,9 +16,7 @@ import {Tour} from "../shared/model/tour";
 import {Merchandise} from "../shared/model/merchandise";
 import {Party} from "../shared/model/party";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {ListFormType} from "app/shop/modify-shop-item/list-form-type";
 import {Location} from "@angular/common";
-import {ItemChangeEvent} from "app/shop/modify-shop-item/item-change-event";
 import {ShopItem} from "../../shared/model/shop-item";
 
 
@@ -31,13 +27,7 @@ import {ShopItem} from "../../shared/model/shop-item";
 })
 export class ModifyShopItemComponent implements OnInit {
 	ModifyType = ModifyType;
-	ItemFormType = ItemFormType;
-	ListFormType = ListFormType;
-	editItemFormList: ItemFormList = EditItemFormList;
-
-	log(event: any) {
-		console.log(event);
-	}
+	ItemType = ShopItemType;
 
 	//either add or edit
 	mode: ModifyType;
@@ -61,7 +51,6 @@ export class ModifyShopItemComponent implements OnInit {
 				private activatedRoute: ActivatedRoute) {
 		this.activatedRoute.params.first().subscribe(
 			(params: Params) => {
-				console.log(params);
 				this.itemType = ShopItemType[ShopItemType[params["itemType"]]];
 				this.idOfObjectToModify = params["id"] ? +(params["id"]) : -1;
 			}
@@ -88,8 +77,6 @@ export class ModifyShopItemComponent implements OnInit {
 				Object.keys(objectToModify).forEach(key => {
 					this.model[key] = objectToModify[key];
 				});
-				console.log(this.model);
-				// Object.keys(objectToModify).forEach(key => this.model[key] = objectToModify[key]);
 				//modus === EDIT
 				if (objectToModify && objectToModify.id !== -1) {
 					this.previousValue = objectToModify;
@@ -102,16 +89,6 @@ export class ModifyShopItemComponent implements OnInit {
 		}
 	}
 
-
-	/**
-	 *
-	 * @param model
-	 */
-	updateModel(model: ItemChangeEvent) {
-		Object.keys(model).forEach(key => {
-			this.model[key] = model[key].value;
-		});
-	}
 
 	/**
 	 * Cancel callback

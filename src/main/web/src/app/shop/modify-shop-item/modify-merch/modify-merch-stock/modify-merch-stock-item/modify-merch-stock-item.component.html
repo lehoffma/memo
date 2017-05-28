@@ -1,0 +1,55 @@
+<form #modifyStockItemForm="ngForm" class="dialog-container" (ngSubmit)="emitDoneEvent()">
+	<div>
+		<!--<h1 md-dialog-title>Füge eine weitere Farbe hinzu</h1>-->
+		<div md-dialog-content class="dialog-content-container">
+			<md-input-container>
+				<input placeholder="Größe"
+					   #sizeInput="ngModel"
+					   name="sizeInput" required
+					   [(ngModel)]="size" mdInput>
+				<md-hint *ngIf="sizeInput.touched && !sizeInput.valid" class="error-message">
+					Dieses Feld darf nicht leer bleiben!
+				</md-hint>
+			</md-input-container>
+			<md-input-container>
+				<input placeholder="Anzahl"
+					   type="number" min="0" step="1" required
+					   (keypress)="($event.charCode == 8 || $event.charCode == 0) ? null : $event.charCode >= 48 && $event.charCode <= 57"
+					   #amountInput="ngModel"
+					   name="amountInput"
+					   [(ngModel)]="amount" mdInput>
+				<md-hint *ngIf="amountInput.touched && !amountInput.valid" class="error-message">
+					Dieses Feld darf nicht leer bleiben!
+				</md-hint>
+			</md-input-container>
+
+			<span [(colorPicker)]="color"
+				  [cpWidth]="'230px'"
+				  [cpPositionOffset]="'0%'"
+				  [cpDialogDisplay]="'inline'"
+				  [style.background]="color"
+				  [cpToggle]="true"></span>
+
+
+			<md-input-container>
+				<input placeholder="Name der Farbe"
+					   #colorInput="ngModel" required
+					   name="colorInput"
+					   [(ngModel)]="colorName" mdInput>
+				<md-hint *ngIf="colorInput.touched && !colorInput.valid" class="error-message">
+					Dieses Feld darf nicht leer bleiben!
+				</md-hint>
+			</md-input-container>
+		</div>
+
+	</div>
+	<div md-dialog-actions>
+		<button md-icon-button type="button" md-dialog-close (click)="color=''">
+			<md-icon>arrow_back</md-icon>
+		</button>
+		<button md-icon-button [disabled]="!modifyStockItemForm.form.valid" type="submit" color="primary">
+			<md-icon>done</md-icon>
+		</button>
+	</div>
+
+</form>

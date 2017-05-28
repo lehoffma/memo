@@ -2,7 +2,7 @@
 	<tr *ngFor="let category of (tableCategories)">
 		<td align="left" class="row">{{category.label}}</td>
 		<td [ngSwitch]="category.pipe" align="right" class="row secondary-text">
-			<ng-template [ngSwitchCase]="'price'">{{event[category.key] + "€"}}</ng-template>
+			<ng-template [ngSwitchCase]="'price'">{{event[category.key] | currency:'EUR':true}}</ng-template>
 			<ng-template [ngSwitchCase]="'date'">{{event[category.key] | date:'shortDate'}}</ng-template>
 			<ng-template ngSwitchDefault>{{event[category.key]}}</ng-template>
 		</td>
