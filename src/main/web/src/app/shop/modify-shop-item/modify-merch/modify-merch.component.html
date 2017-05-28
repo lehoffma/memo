@@ -1,0 +1,87 @@
+<div class="modify-shop-item-container">
+	<h2>Merch {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
+	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
+
+		<md-input-container>
+			<input mdInput name="titleInput"
+				   type="text" required
+				   placeholder="Titel"
+				   #titleInput="ngModel"
+				   [(ngModel)]="merchModel['title']">
+			<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+				Dieses Feld darf nicht leer bleiben!
+			</md-hint>
+		</md-input-container>
+
+		<div class="merch-info-container">
+			<md-input-container>
+				<input mdInput name="priceInput"
+					   type="number" required
+					   pattern="^[\d]+((\.|\,)[\d]{1,2})?$"
+					   placeholder="Preis (max. 2 Nachkommastellen)"
+					   (input)="checkValidityOfPrice()"
+					   #priceInput="ngModel"
+					   [(ngModel)]="merchModel['price']">
+				<span mdSuffix>€</span>
+				<md-hint *ngIf="priceInput.touched && !priceInput.valid && priceInput.value === ''"
+						 class="error-message" align="end">
+					Dieses Feld darf nicht leer bleiben!
+				</md-hint>
+				<md-hint *ngIf="!priceIsValid"
+						 class="error-message" align="end">
+					Der Preis ist inkorrekt formatiert!
+				</md-hint>
+			</md-input-container>
+			<md-input-container>
+				<input mdInput name="materialInput"
+					   type="text" required
+					   placeholder="Material"
+					   #materialInput="ngModel"
+					   [(ngModel)]="merchModel['material']">
+				<md-hint *ngIf="materialInput.touched && !materialInput.valid" class="error-message" align="end">
+					Dieses Feld darf nicht leer bleiben!
+				</md-hint>
+			</md-input-container>
+		</div>
+
+		<md-input-container class="description-input">
+			<textarea autosize mdInput name="descriptionInput"
+					  class="not-resizable-textarea" required
+					  type="text"
+					  #descriptionInput="ngModel"
+					  placeholder="Beschreibung"
+					  [(ngModel)]="merchModel['description']">
+			</textarea>
+			<md-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
+					 align="end">
+				Dieses Feld darf nicht leer bleiben!
+			</md-hint>
+		</md-input-container>
+
+		<!--todo? date: Date,-->
+
+		<div>
+			<memo-modify-merch-stock [(stock)]="merchModel['stock']">
+			</memo-modify-merch-stock>
+		</div>
+
+		<div>
+			<!--todo size table-->
+
+			<!--{{merchModel["_sizeTable"] | json}}-->
+		</div>
+
+
+		<!--below all that-->
+		<div class="form-buttons">
+			<!--	cancel button-->
+			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<!--	save button-->
+			<button md-button color="primary"
+					[disabled]="!modifyShopItemForm.form.valid"
+					type="submit">
+				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+			</button>
+		</div>
+	</form>
+</div>

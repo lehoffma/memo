@@ -8,6 +8,10 @@ import {UserService} from "../../shared/services/user.service";
 import {Event} from "../../shop/shared/model/event";
 import {LogInService} from "../../shared/services/login.service";
 import {NavigationService} from "../../shared/services/navigation.service";
+import {AddressService} from "../../shared/services/address.service";
+import {EventRoute} from "../../shop/shared/model/route";
+import {Address} from "../../shared/model/address";
+import {isNull, isNullOrUndefined} from "util";
 
 
 @Component({
@@ -19,6 +23,7 @@ import {NavigationService} from "../../shared/services/navigation.service";
 export class ProfileComponent implements OnInit {
 	userObservable: Observable<User>;
 	userEvents: Observable<Event[]>;
+	userDestinations: Observable<Address[]>;
 
 	profileCategories = profileCategories;
 
@@ -26,6 +31,7 @@ export class ProfileComponent implements OnInit {
 
 	constructor(private route: ActivatedRoute,
 				private navigationService: NavigationService,
+				private addressService: AddressService,
 				private eventService: EventService,
 				private loginService: LogInService,
 				private userService: UserService) {
@@ -40,6 +46,13 @@ export class ProfileComponent implements OnInit {
 		this.userObservable = userId.flatMap(id => this.userService.getById(id));
 		this.userEvents = this.userObservable
 			.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}));
+
+		this.userDestinations = this.userEvents.flatMap(events => {
+			return Observable.combineLatest(events
+				.map(event => event.route)
+				.filter(route => !isNullOrUndefined(route.destination))
+				.map((route: EventRoute) => this.addressService.getById(route.destination)));
+		});
 	}
 
 	editProfile() {

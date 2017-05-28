@@ -5,7 +5,7 @@
 			<div class="object-info" *ngFor="let overviewKey of overviewKeys">
 				<ng-template [ngIf]="event[overviewKey.key]">
 					<div [ngSwitch]="overviewKey.pipe">
-						<ng-template [ngSwitchCase]="'price'">{{event[overviewKey.key] + "€"}}</ng-template>
+						<ng-template [ngSwitchCase]="'price'">{{event[overviewKey.key] | currency:'EUR':true}}</ng-template>
 						<ng-template [ngSwitchCase]="'date'">{{event[overviewKey.key] | date:'shortDate'}}</ng-template>
 						<ng-template ngSwitchDefault>{{event[overviewKey.key]}}</ng-template>
 					</div>

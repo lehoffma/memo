@@ -1,18 +1,27 @@
 
 .dialog-container {
-	height: 400px;
+	height: 500px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 
+	.dialog-content-container{
+		display: flex;
+		flex-direction: column;
+	}
+
 	/deep/ .color-picker {
 		left: 0 !important;
 		margin-left: 3% !important;
-		top: 5rem !important;
+		top: 12rem !important;
 	}
 
 	.mat-dialog-actions {
 		display: flex;
 		justify-content: space-between;
 	}
+}
+
+.error-message{
+	color: red;
 }

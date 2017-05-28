@@ -9,14 +9,14 @@
 
 		<div [ngSwitch]="section">
 			<memo-account-data-form *ngSwitchCase="sectionEnum.AccountData"
-									(onSubmit)="onSubmit($event)"></memo-account-data-form>
+									(onSubmit)="onSubmit(sectionEnum.AccountData, $event)"></memo-account-data-form>
 			<memo-user-data-form *ngSwitchCase="sectionEnum.PersonalData"
-								 (onSubmit)="onSubmit($event)">
+								 (onSubmit)="onSubmit(sectionEnum.PersonalData, $event)">
 
 			</memo-user-data-form>
 
 			<memo-payment-methods-form *ngSwitchCase="sectionEnum.PaymentMethods"
-									   (onSubmit)="onSubmit($event)"
+									   (onSubmit)="onSubmit(sectionEnum.PaymentMethods, $event)"
 									   [user]="newUser">
 
 			</memo-payment-methods-form>

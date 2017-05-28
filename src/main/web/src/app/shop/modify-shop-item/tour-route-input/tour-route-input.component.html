@@ -1,17 +1,28 @@
+<md-input-container>
+	<input mdInput type="text" (keydown.enter)="$event.preventDefault()"
+		   #meetingPointInput placeholder="{{isRoute ? 'Treffpunkt' : 'Ort'}}">
+</md-input-container>
 
-<div>
-	<span>Wohin?</span>
+<md-input-container *ngIf="isRoute">
+	<input mdInput type="text" (keydown.enter)="$event.preventDefault()"
+		   #destinationInput placeholder="Ziel">
+</md-input-container>
 
-	<md-input-container>
-		<input mdInput type="text" (keydown.enter)="$event.preventDefault()"
-			   #meetingPointInput placeholder="{{isRoute ? 'Treffpunkt' : 'Ort'}}">
-	</md-input-container>
+<agm-map [latitude]="getCenterOfTour().latitude" [longitude]="getCenterOfTour().longitude">
+	<agm-marker [latitude]="route.meetingPoint.latitude" [longitude]="route.meetingPoint.longitude">
 
-	<md-input-container *ngIf="isRoute">
-		<input mdInput type="text" (keydown.enter)="$event.preventDefault()"
-			   #destinationInput placeholder="Ziel">
-	</md-input-container>
+	</agm-marker>
+	<agm-marker *ngIf="isRoute" [latitude]="route.destination.latitude" [longitude]="route.destination.longitude">
 
-</div>
+	</agm-marker>
 
+	<agm-polyline *ngIf="isRoute">
+		<agm-polyline-point [latitude]="route.meetingPoint.latitude"
+							[longitude]="route.meetingPoint.longitude">
+		</agm-polyline-point>
+		<agm-polyline-point [latitude]="route.destination.latitude"
+							[longitude]="route.destination.longitude">
+		</agm-polyline-point>
+	</agm-polyline>
+</agm-map>
 

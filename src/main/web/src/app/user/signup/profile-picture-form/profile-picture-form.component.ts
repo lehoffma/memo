@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from "@angular/core";
 import {CropperSettings, ImageCropperComponent} from "ng2-image-cropper";
 
 @Component({
@@ -6,7 +6,8 @@ import {CropperSettings, ImageCropperComponent} from "ng2-image-cropper";
 	templateUrl: "./profile-picture-form.component.html",
 	styleUrls: ["./profile-picture-form.component.scss"]
 })
-export class ProfilePictureFormComponent implements OnInit {
+export class ProfilePictureFormComponent implements OnInit, OnChanges{
+
 	@Input() multiple: boolean = false;
 	@Input() image;
 	@Output() onChange = new EventEmitter<FormData>();
@@ -28,6 +29,16 @@ export class ProfilePictureFormComponent implements OnInit {
 		});
 	}
 
+	ngOnChanges(changes: SimpleChanges): void {
+		if(changes["image"]){
+			let image = new Image();
+			image.src = this.image + '?' + new Date().getTime();
+			image.setAttribute('crossOrigin', '');
+			image.addEventListener("load", (data) => {
+				this.cropper.setImage(image);
+			});
+		}
+	}
 
 	initImageCropperSettings() {
 		this.imageCropperSettings = new CropperSettings();

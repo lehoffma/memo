@@ -77,13 +77,13 @@ export class SignUpComponent implements OnInit {
 
 	/**
 	 *
+	 * @param section
 	 * @param event
 	 */
-	onSubmit(event: SignUpSubmitEvent) {
+	onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
 		console.log(event);
 		//extract section, email and passwordHash properties
 		const {
-			section,
 			email,
 			passwordHash,
 			firstName,

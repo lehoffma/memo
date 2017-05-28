@@ -1,3 +1,19 @@
-<p>
-	accounting works!
-</p>
+
+<div class="accounting-table-container">
+	<memo-expandable-table
+		[data]="entries | async"
+		[expandedRowKeys]="expandedRowKeys | async"
+		[expandable]="false"
+		[expandedRowComponent]="expandedRowComponent"
+		[columnKeys]="primaryColumnKeys | async"
+		[title]="'Kostenübersicht'"
+		(onSort)="updateSortingKey($event)"
+		(onAdd)="addEntry($event)"
+		(onEdit)="editEntry($event)"
+		(onDelete)="deleteEntries($event)"
+	>
+		<!--todo title mit aktuellem datum updaten: Kostenübersicht Mai 2016 - Juni 2017?-->
+
+	</memo-expandable-table>
+
+</div>

@@ -54,7 +54,15 @@ export class SearchResultComponent implements OnInit {
 
 	ngOnInit() {
 		this.fetchResults();
+		this.initFilterMenu();
+		this.setTitle();
+	}
 
+	/**
+	 * Schaut, ob die Route query parameter beinhaltet und initialisiert die filter menü checkboxen mit den
+	 * jeweiligen werten
+	 */
+	initFilterMenu(){
 		//checks if the route includes query parameters and initializes the filtermenus checkboxes
 		this.activatedRoute.queryParamMap.first()
 			.subscribe(queryParamMap => {
@@ -73,7 +81,12 @@ export class SearchResultComponent implements OnInit {
 					return filterOptionParent;
 				})
 			});
+	}
 
+	/**
+	 * Updated den Suchergebnisse Titel anhand der ausgewählten Kategorien und der Menge an Ergebnissen.
+	 */
+	setTitle(){
 		this.resultsTitle = this.router.events.filter(event => event instanceof NavigationEnd)
 			.flatMap(event => {
 				let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");
@@ -88,7 +101,10 @@ export class SearchResultComponent implements OnInit {
 			})
 	}
 
-
+	/**
+	 * Holt die Suchergebnisse aus den jeweiligen Services und sortiert und filtert sie anhand der
+	 * sortedBy und filteredBy werte.
+	 */
 	fetchResults() {
 		Observable.combineLatest(this.keywords, this.sortedBy, this.filteredBy)
 			.subscribe(([keywords, sortedBy, filteredBy]) => {

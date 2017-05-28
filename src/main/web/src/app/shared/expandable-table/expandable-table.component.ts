@@ -1,6 +1,6 @@
 import {
 	AfterViewInit,
-	ChangeDetectionStrategy,
+	ChangeDetectionStrategy, ChangeDetectorRef,
 	Component,
 	ComponentFactoryResolver,
 	EventEmitter,
@@ -38,6 +38,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	@Input() expandedRowComponent: Type<ExpandedRowComponent<T>>;
 	@Input() expandedRowKeys: ExpandableTableColumn<T>[];
 	@Input() title: string;
+	@Input() expandable: boolean = true;
 
 	//todo remove..
 	@Input() showActionsAsSeparateColumns: boolean;
@@ -78,6 +79,9 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	}
 
 	ngAfterViewInit(): void {
+		if(this.data){
+			this.initTableCells(this.tableCellList, this.data);
+		}
 		this.tableCellList.changes.subscribe(tableCellList => this.initTableCells(tableCellList, this.data));
 	}
 
@@ -235,6 +239,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	 */
 	deleteItem(data: T) {
 		this.onDelete.emit([data]);
+		this.selectedStatusList[data.id] = false;
 	}
 
 	/**
@@ -244,6 +249,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 		this.onDelete.emit(
 			Object.keys(this.selectedStatusList).filter(key => this.selectedStatusList[key])
 				.map(id => this.data.find(dataObject => dataObject.id === +id))
-		)
+		);
+		this.selectedStatusList = {};
 	}
 }

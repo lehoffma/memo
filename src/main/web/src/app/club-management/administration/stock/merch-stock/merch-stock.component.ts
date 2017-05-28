@@ -28,8 +28,8 @@ export class MerchStockComponent implements OnInit {
 	sortBy: Observable<ColumnSortingEvent<Merchandise>> = this._sortBy.asObservable();
 
 	merchList: Observable<any[]> = Observable.combineLatest(this.eventService.search("", {eventType: EventType.merch})
-			.map((merchList: Merchandise[]) => {
-				let options = this.getOptions(merchList);
+			.do((merchList:Merchandise[]) => {
+				let options = Merchandise.getStockOptions(merchList);
 
 				this.primaryColumnKeys.next([
 					new ExpandableTableColumn<any>("Name", "title"),
@@ -39,24 +39,8 @@ export class MerchStockComponent implements OnInit {
 				]);
 				this.expandedRowKeys.next([...options.color
 					.map((color: string) => new ExpandableTableColumn<any>(color, color))]);
-
-				return merchList.map(merchObject => {
-					let transformedMerch: any = {id: merchObject.id};
-					options.size.forEach(size => {
-						transformedMerch[size] = this.getStockAmountList(merchObject, options, "size", "color", size);
-					});
-					options.color.forEach(color => {
-						transformedMerch[color] = this.getStockAmountList(merchObject, options, "color", "size", color);
-					});
-					transformedMerch["title"] = merchObject.title;
-					transformedMerch["total"] = options.size.reduce(
-						(acc, size) => acc + transformedMerch[size][transformedMerch[size].length - 1]
-						, 0
-					);
-
-					return transformedMerch;
-				})
 			})
+			.map((merchList: Merchandise[]) => Merchandise.mapToStockObject(merchList))
 		, this.sortBy)
 		.map(([merch, sortBy]) => merch.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 
@@ -109,59 +93,5 @@ export class MerchStockComponent implements OnInit {
 				error => console.error(error)
 			));
 	}
-
-
-	/**
-	 *
-	 * @param merchList
-	 * @returns {{size: Array, color: Array}}
-	 */
-	getOptions(merchList: Merchandise[]) {
-		return {
-			size: merchList.reduce((sizes, current) => {
-				current.stock
-					.forEach(stock => {
-						if (!sizes.includes(stock.size)) {
-							sizes.push(stock.size);
-						}
-					});
-				return sizes;
-			}, []),
-			color: merchList.reduce((colors, current) => {
-				current.stock
-					.forEach(stock => {
-						if (!colors.find(color => color === stock.color.name)) {
-							colors.push(stock.color.name);
-						}
-					});
-				return colors;
-			}, [])
-		};
-	}
-
-	/**
-	 *
-	 * @param merch
-	 * @param options
-	 * @param stockKey
-	 * @param optionsKey
-	 * @param stockValue
-	 * @returns {Array}
-	 */
-	getStockAmountList(merch: Merchandise, options: { [key: string]: string[] }, stockKey: string, optionsKey: string, stockValue: string) {
-		let list = merch.stock
-			.filter(stock => stock[stockKey] === stockValue || stock[stockKey].name === stockValue)
-			.reduce((acc, stock) => {
-				let index = options[optionsKey].findIndex(option =>
-					option === stock[optionsKey] || option === stock[optionsKey].name
-				);
-				acc[index] = stock.amount;
-				return acc;
-			}, []);
-
-		list.push(list.reduce((acc, val) => acc + val, 0));
-
-		return list;
-	};
 
 }

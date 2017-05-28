@@ -1,0 +1,13 @@
+
+<memo-expandable-table
+	[data]="merchStockObservable | async"
+	[title]="'Bestand'"
+	[expandable]="false"
+	[columnKeys]="primaryColumnKeys"
+	(onEdit)="editStock($event)"
+	(onAdd)="addStock()"
+	(onSort)="updateSortBy($event)"
+	(onDelete)="deleteStock($event)"
+>
+
+</memo-expandable-table>

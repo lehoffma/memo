@@ -50,7 +50,6 @@ import {MyToursComponent} from "./user/my-tours/my-tours.component";
 import {MyToursEntryComponent} from "./user/my-tours/entry/my-tours-entry.component";
 import {PasswordRecoveryComponent} from "./user/password-recovery/password-recovery.component";
 import {AccountingComponent} from "./club-management/accounting/accounting.component";
-import {AccountingEntryComponent} from "./club-management/accounting/accounting-entry/accounting-entry.component";
 import {CheckoutComponent} from "./shop/checkout/checkout.component";
 import {AddressCheckComponent} from "./shop/checkout/address-check/address-check.component";
 import {PaymentComponent} from "./shop/checkout/payment/payment.component";
@@ -86,10 +85,8 @@ import {QueryParameterService} from "./shared/services/query-parameter.service";
 import {ModifyShopItemComponent} from "./shop/modify-shop-item/modify-shop-item.component";
 import {IsValidItemTypeGuard} from "./shared/route-guards/is-valid-itemtype.guard";
 import {PageNotFoundComponent} from "./util/page-not-found/page-not-found.component";
-import {ListFormComponent} from "./shop/modify-shop-item/list-form/list-form.component";
 import {TourRouteInputComponent} from "./shop/modify-shop-item/tour-route-input/tour-route-input.component";
 import {ColorPickerModule} from "ngx-color-picker";
-import {ChooseColorComponent} from "./shop/modify-shop-item/list-form/choose-color/choose-color.component";
 import {ProfilePictureFormComponent} from "./user/signup/profile-picture-form/profile-picture-form.component";
 import {PaymentMethodsFormComponent} from "./user/signup/payment-methods-form/payment-methods-form.component";
 import {DebitInputFormComponent} from "./user/signup/payment-methods-form/debit-input-form/debit-input-form.component";
@@ -112,6 +109,16 @@ import {MemoMaterialModule} from "../material.module";
 import {MerchStockComponent} from "./club-management/administration/stock/merch-stock/merch-stock.component";
 import {MultiValueListExpandedRowComponent} from "./shared/expandable-table/multi-value-list-expanded-row/multi-value-list-expanded-row.component";
 import {MerchStockTotalTableCellComponent} from "./club-management/administration/stock/merch-stock/merch-stock-table-cells/merch-stock-total-table-cell.component";
+import {CostValueTableCellComponent} from "./club-management/accounting/accounting-table-cells/cost-value-table-cell.component";
+import {CostCategoryTableCellComponent} from "./club-management/accounting/accounting-table-cells/cost-category-table-cell.component";
+import {ModifyTourComponent} from "./shop/modify-shop-item/modify-tour/modify-tour.component";
+import {ModifyPartyComponent} from "./shop/modify-shop-item/modify-party/modify-party.component";
+import {ModifyMerchComponent} from "./shop/modify-shop-item/modify-merch/modify-merch.component";
+import {ModifyUserComponent} from "./shop/modify-shop-item/modify-user/modify-user.component";
+import {ModifyEntryComponent} from "./shop/modify-shop-item/modify-entry/modify-entry.component";
+import {ModifyMerchStockComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock.component";
+import {MerchColorCellComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/merch-color-cell/merch-color-cell.component";
+import {ModifyMerchStockItemComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
 
 @NgModule({
 	imports: [
@@ -171,7 +178,6 @@ import {MerchStockTotalTableCellComponent} from "./club-management/administratio
 		MyToursEntryComponent,
 		PasswordRecoveryComponent,
 		AccountingComponent,
-		AccountingEntryComponent,
 		CheckoutComponent,
 		AddressCheckComponent,
 		PaymentComponent,
@@ -195,11 +201,8 @@ import {MerchStockTotalTableCellComponent} from "./club-management/administratio
 		MultiLevelSelectEntryComponent,
 		ModifyShopItemComponent,
 		PageNotFoundComponent,
-		ListFormComponent,
 		TourRouteInputComponent,
-		ChooseColorComponent,
 		CartEntryComponent,
-		ChooseColorComponent,
 		ProfilePictureFormComponent,
 		PaymentMethodsFormComponent,
 		DebitInputFormComponent,
@@ -216,12 +219,19 @@ import {MerchStockTotalTableCellComponent} from "./club-management/administratio
 		AddressTableCellComponent,
 
 		AutoSizeTextAreaDirective,
-
 		MerchStockComponent,
-
 		MultiValueListExpandedRowComponent,
-
 		MerchStockTotalTableCellComponent,
+		CostValueTableCellComponent,
+		CostCategoryTableCellComponent,
+		ModifyTourComponent,
+		ModifyPartyComponent,
+		ModifyMerchComponent,
+		ModifyUserComponent,
+		ModifyEntryComponent,
+		ModifyMerchStockComponent,
+		MerchColorCellComponent,
+		ModifyMerchStockItemComponent
 	],
 	bootstrap: [
 		AppComponent
@@ -238,7 +248,7 @@ import {MerchStockTotalTableCellComponent} from "./club-management/administratio
 	],
 	entryComponents: [
 		ItemImagePopupComponent,
-		ChooseColorComponent,
+		ModifyMerchStockItemComponent,
 
 		SingleValueListExpandedRowComponent,
 		DefaultExpandableTableCellComponent,
@@ -249,7 +259,10 @@ import {MerchStockTotalTableCellComponent} from "./club-management/administratio
 		AddressTableCellComponent,
 
 		MultiValueListExpandedRowComponent,
-		MerchStockTotalTableCellComponent
+		MerchStockTotalTableCellComponent,
+		CostValueTableCellComponent,
+		CostCategoryTableCellComponent,
+		MerchColorCellComponent
 	]
 })
 export class AppModule {

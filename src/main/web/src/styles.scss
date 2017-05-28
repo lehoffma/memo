@@ -49,18 +49,6 @@ main {
 	color: #757575;
 }
 
-.md2-datepicker-header {
-	background: mat-color($primary) !important;
-}
-
-md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-input {
-	color: mat-color($primary) !important;
-	border-color: mat-color($primary) !important;
-}
-
-md2-datepicker:focus:not(.md2-datepicker-disabled) .md2-datepicker-arrow {
-	color: mat-color($primary) !important;
-}
 
 .ripple {
 	position: relative;

@@ -6,7 +6,9 @@
 		"streetNr": "9",
 		"zip": "38448",
 		"city": "Wolfsburg",
-		"country": "Deutschland"
+		"country": "Deutschland",
+		"latitude": 57,
+		"longitude": 11
 	},
 	{
 		"id": 1,
@@ -15,6 +17,8 @@
 		"streetNr": "10",
 		"zip": "38448",
 		"city": "Wolfsburg",
-		"country": "Deutschland"
+		"country": "Deutschland",
+		"latitude": 57.5,
+		"longitude": 11.5
 	}
 ]

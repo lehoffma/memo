@@ -1,7 +1,6 @@
 
 md-toolbar {
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-	padding: 0;
 }
 
 md-toolbar, :host /deep/ md-toolbar-row {
@@ -65,6 +64,10 @@ md-toolbar, :host /deep/ md-toolbar-row {
 
 	.desktop-toolbar {
 		display: flex;
+	}
+
+	md-toolbar{
+		padding: 0;
 	}
 
 	.cart {
