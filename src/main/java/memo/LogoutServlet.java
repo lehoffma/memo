@@ -14,31 +14,27 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebServlet("/api/entry")
-public class EntryServlet extends HttpServlet {
+@WebServlet("/api/logout")
+public class LogoutServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: implement
+    public LogoutServlet() {
+        super();
+
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: implement
-
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("charset=UTF-8");
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
 
         String body = CharStreams.toString(request.getReader());
 
         JsonElement jElement = new JsonParser().parse(body);
+
+        //token check
+        // logout
+
+
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: implement
-    }
-
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: implement
-    }
 }
