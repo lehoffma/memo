@@ -9,41 +9,58 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.io.CharStreams;
+import com.google.gson.*;
 import memo.model.User;
 
-/**
- * Servlet implementation class LoginServlet
- */
+
 @WebServlet("/api/login")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+
     public LoginServlet() {
         super();
 
     }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Implement
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
-		
+        request.setCharacterEncoding("UTF-8");
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+
+        String body = CharStreams.toString(request.getReader());
+
+        JsonElement jElement = new JsonParser().parse(body);
+        String email = jElement.getAsJsonObject().get("email").getAsString();
+        String password = jElement.getAsJsonObject().get("email").getAsString();
+
 		
 		List<User> users = DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u WHERE u.email = :email",User.class).setParameter("email", email).getResultList();
 		
-		if (users.size()>1) System.out.println("fehler!!! Doppelte Email Adresse!!!!!!!");
+		if (users.isEmpty())
+        {
+            response.setStatus(404);
+            response.getWriter().append("Not Found");
+            return;
+        }
 		
 		User user = users.get(0);
 
-		
-		response.getWriter().append(email).append(password);
-		
+		if (user.getPasswordHash().equals(password))
+        {
+            response.setStatus(202);
+            response.getWriter().append("{ 'id': "+ user.getId()+", 'auth_token': null }");
+        }
+        else
+        {
+            response.setStatus(404);
+            response.getWriter().append("Not Found");
+            return;
+        }
+
+
 	}
 
 }
+
+

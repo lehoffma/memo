@@ -21,33 +21,33 @@ public class PermissionState implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private Permission funds;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private Permission funds;
 
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private Permission party;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private Permission party;
 
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private Permission user;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private Permission user;
 
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private Permission merch;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private Permission merch;
 
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private Permission tour;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private Permission tour;
 
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private Permission stock;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private Permission stock;
 
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private Permission account;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private Permission settings;
 
 	private static final long serialVersionUID = 1L;
 
@@ -112,11 +112,11 @@ public class PermissionState implements Serializable {
 	}
 
 	public Permission getAccount() {
-		return account;
+		return settings;
 	}
 
 	public void setAccount(Permission account) {
-		this.account = account;
+		this.settings = account;
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class PermissionState implements Serializable {
 				", merch=" + merch +
 				", tour=" + tour +
 				", stock=" + stock +
-				", account=" + account +
+				", settings=" + settings +
 				'}';
 	}
 }

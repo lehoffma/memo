@@ -9,12 +9,13 @@ import {CartItem} from "../cart-item";
 	templateUrl: "./cart-entry.component.html",
 	styleUrls: ["./cart-entry.component.scss"]
 })
-export class CartEntryComponent implements OnInit {
+export class CartEntryComponent implements OnInit{
 	@Input() cartItem: CartItem;
 	amountOptions = [];
 
 	constructor(private shoppingCartService: ShoppingCartService, private eventUtilityService: EventUtilityService) {
 	}
+
 
 	ngOnInit() {
 		let maxAmount: number;
@@ -30,6 +31,17 @@ export class CartEntryComponent implements OnInit {
 
 	itemIsMerch(result: Event) {
 		return this.eventUtilityService.isMerchandise(result);
+	}
+	deleteItem(){
+		const eventType = this.eventUtilityService.getEventType(this.cartItem.item);
+		if (this.cartItem.amount > 0) {
+			this.shoppingCartService.pushItem(eventType, {
+				id: this.cartItem.item.id,
+				amount: this.cartItem.amount=0,
+				options: this.cartItem.options
+			})
+		}
+
 	}
 
 
