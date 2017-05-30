@@ -1,571 +1,574 @@
-[
-	{
-		"id": 0,
-		"title": "Polo-Shirt",
-		"date": "2016-12-31T23:00:00.000Z",
-		"description": "Cooles Polo-Shirt für den echten Fan!",
-		"expectedRole": "Mitglied",
-		"imagePath": "https://placekitten.com/505/1000",
-		"capacity": 20,
-		"priceMember": 19,
-		"price": 19,
-		"meetingPoint": 0,
-		"stock": [
-			{
-				"size": "XS",
-				"color": {
+{
+	"events": [
+		{
+			"id": 0,
+			"title": "Polo-Shirt",
+			"date": "2016-12-31T23:00:00.000Z",
+			"description": "Cooles Polo-Shirt für den echten Fan!",
+			"expectedRole": "Mitglied",
+			"imagePath": "https://placekitten.com/505/1000",
+			"capacity": 20,
+			"priceMember": 19,
+			"price": 19,
+			"meetingPoint": 0,
+			"stock": [
+				{
+					"size": "XS",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 2
+				},
+				{
+					"size": "S",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 1
+				},
+				{
+					"size": "M",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 5
+				},
+				{
+					"size": "L",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 2
+				},
+				{
+					"size": "XL",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 4
+				},
+				{
+					"size": "XS",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 2
+				},
+				{
+					"size": "S",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 1
+				},
+				{
+					"size": "M",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 5
+				},
+				{
+					"size": "L",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 2
+				},
+				{
+					"size": "XL",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 4
+				},
+				{
+					"size": "XS",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 2
+				},
+				{
+					"size": "S",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 1
+				},
+				{
+					"size": "M",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 5
+				},
+				{
+					"size": "L",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 2
+				},
+				{
+					"size": "XL",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 4
+				}
+			],
+			"sizeTable": {
+				"XS": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"S": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"M": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"L": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"XL": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"XXL": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				}
+			},
+			"material": "Baumwolle",
+			"colors": [
+				{
 					"name": "Weiss",
 					"hex": "#ffffff"
 				},
-				"amount": 2
-			},
-			{
-				"size": "S",
-				"color": {
-					"name": "Weiss",
-					"hex": "#ffffff"
-				},
-				"amount": 1
-			},
-			{
-				"size": "M",
-				"color": {
-					"name": "Weiss",
-					"hex": "#ffffff"
-				},
-				"amount": 5
-			},
-			{
-				"size": "L",
-				"color": {
-					"name": "Weiss",
-					"hex": "#ffffff"
-				},
-				"amount": 2
-			},
-			{
-				"size": "XL",
-				"color": {
-					"name": "Weiss",
-					"hex": "#ffffff"
-				},
-				"amount": 4
-			},
-			{
-				"size": "XS",
-				"color": {
+				{
 					"name": "Grün",
 					"hex": "#00ff00"
 				},
-				"amount": 2
-			},
-			{
-				"size": "S",
-				"color": {
-					"name": "Grün",
-					"hex": "#00ff00"
-				},
-				"amount": 1
-			},
-			{
-				"size": "M",
-				"color": {
-					"name": "Grün",
-					"hex": "#00ff00"
-				},
-				"amount": 5
-			},
-			{
-				"size": "L",
-				"color": {
-					"name": "Grün",
-					"hex": "#00ff00"
-				},
-				"amount": 2
-			},
-			{
-				"size": "XL",
-				"color": {
-					"name": "Grün",
-					"hex": "#00ff00"
-				},
-				"amount": 4
-			},
-			{
-				"size": "XS",
-				"color": {
+				{
 					"name": "Blau",
 					"hex": "#0000ff"
-				},
-				"amount": 2
-			},
-			{
-				"size": "S",
-				"color": {
-					"name": "Blau",
-					"hex": "#0000ff"
-				},
-				"amount": 1
-			},
-			{
-				"size": "M",
-				"color": {
-					"name": "Blau",
-					"hex": "#0000ff"
-				},
-				"amount": 5
-			},
-			{
-				"size": "L",
-				"color": {
-					"name": "Blau",
-					"hex": "#0000ff"
-				},
-				"amount": 2
-			},
-			{
-				"size": "XL",
-				"color": {
-					"name": "Blau",
-					"hex": "#0000ff"
-				},
-				"amount": 4
-			}
-		],
-		"sizeTable": {
-			"XS": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
 				}
-			},
-			"S": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			},
-			"M": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			},
-			"L": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			},
-			"XL": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			},
-			"XXL": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			}
+
+
+
+			]
 		},
-		"material": "Baumwolle",
-		"colors": [
-			{
-				"name": "Weiss",
-				"hex": "#ffffff"
+		{
+			"id": 1,
+			"title": "Meilenwölfe-Schal",
+			"date": "2016-12-31T23:00:00.000Z",
+			"description": "Cooles Schal für den echten Fan!",
+			"expectedRole": "Mitglied",
+			"imagePath": "https://placekitten.com/505/503",
+			"capacity": 20,
+			"priceMember": 9,
+			"price": 9,
+			"meetingPoint": 1,
+			"stock": [
+				{
+					"size": "XS",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 2
+				},
+				{
+					"size": "S",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 1
+				},
+				{
+					"size": "M",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 5
+				},
+				{
+					"size": "L",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 2
+				},
+				{
+					"size": "XL",
+					"color": {
+						"name": "Weiss",
+						"hex": "#ffffff"
+					},
+					"amount": 4
+				},
+				{
+					"size": "XS",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 2
+				},
+				{
+					"size": "S",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 1
+				},
+				{
+					"size": "M",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 5
+				},
+				{
+					"size": "L",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 2
+				},
+				{
+					"size": "XL",
+					"color": {
+						"name": "Grün",
+						"hex": "#00ff00"
+					},
+					"amount": 4
+				},
+				{
+					"size": "XS",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 2
+				},
+				{
+					"size": "S",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 1
+				},
+				{
+					"size": "M",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 5
+				},
+				{
+					"size": "L",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 2
+				},
+				{
+					"size": "XL",
+					"color": {
+						"name": "Blau",
+						"hex": "#0000ff"
+					},
+					"amount": 4
+				}
+			],
+			"sizeTable": {
+				"XS": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"S": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"M": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"L": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"XL": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"XXL": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				}
 			},
-			{
-				"name": "Grün",
-				"hex": "#00ff00"
-			},
-			{
-				"name": "Blau",
-				"hex": "#0000ff"
-			}
+			"material": "Baumwolle",
+			"colors": [
+				{
+					"name": "Weiss",
+					"hex": "#ffffff"
+				},
+				{
+					"name": "Grün",
+					"hex": "#00ff00"
+				},
+				{
+					"name": "Blau",
+					"hex": "#0000ff"
+				}
+			]
+		}
+	]
 
-
-
-		]
-	},
-	{
-		"id": 1,
-		"title": "Meilenwölfe-Schal",
-		"date": "2016-12-31T23:00:00.000Z",
-		"description": "Cooles Schal für den echten Fan!",
-		"expectedRole": "Mitglied",
-		"imagePath": "https://placekitten.com/505/503",
-		"capacity": 20,
-		"priceMember": 9,
-		"price": 9,
-		"meetingPoint": 1,
-		"stock": [
-			{
-				"size": "XS",
-				"color": {
-					"name": "Weiss",
-					"hex": "#ffffff"
-				},
-				"amount": 2
-			},
-			{
-				"size": "S",
-				"color": {
-					"name": "Weiss",
-					"hex": "#ffffff"
-				},
-				"amount": 1
-			},
-			{
-				"size": "M",
-				"color": {
-					"name": "Weiss",
-					"hex": "#ffffff"
-				},
-				"amount": 5
-			},
-			{
-				"size": "L",
-				"color": {
-					"name": "Weiss",
-					"hex": "#ffffff"
-				},
-				"amount": 2
-			},
-			{
-				"size": "XL",
-				"color": {
-					"name": "Weiss",
-					"hex": "#ffffff"
-				},
-				"amount": 4
-			},
-			{
-				"size": "XS",
-				"color": {
-					"name": "Grün",
-					"hex": "#00ff00"
-				},
-				"amount": 2
-			},
-			{
-				"size": "S",
-				"color": {
-					"name": "Grün",
-					"hex": "#00ff00"
-				},
-				"amount": 1
-			},
-			{
-				"size": "M",
-				"color": {
-					"name": "Grün",
-					"hex": "#00ff00"
-				},
-				"amount": 5
-			},
-			{
-				"size": "L",
-				"color": {
-					"name": "Grün",
-					"hex": "#00ff00"
-				},
-				"amount": 2
-			},
-			{
-				"size": "XL",
-				"color": {
-					"name": "Grün",
-					"hex": "#00ff00"
-				},
-				"amount": 4
-			},
-			{
-				"size": "XS",
-				"color": {
-					"name": "Blau",
-					"hex": "#0000ff"
-				},
-				"amount": 2
-			},
-			{
-				"size": "S",
-				"color": {
-					"name": "Blau",
-					"hex": "#0000ff"
-				},
-				"amount": 1
-			},
-			{
-				"size": "M",
-				"color": {
-					"name": "Blau",
-					"hex": "#0000ff"
-				},
-				"amount": 5
-			},
-			{
-				"size": "L",
-				"color": {
-					"name": "Blau",
-					"hex": "#0000ff"
-				},
-				"amount": 2
-			},
-			{
-				"size": "XL",
-				"color": {
-					"name": "Blau",
-					"hex": "#0000ff"
-				},
-				"amount": 4
-			}
-		],
-		"sizeTable": {
-			"XS": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			},
-			"S": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			},
-			"M": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			},
-			"L": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			},
-			"XL": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			},
-			"XXL": {
-				"Brustumfang": {
-					"min": 78,
-					"max": 81
-				},
-				"Tailenumfang": {
-					"min": 82,
-					"max": 85
-				},
-				"Hüftumfang": {
-					"min": 86,
-					"max": 89
-				},
-				"Modelllänge": {
-					"min": 90,
-					"max": 93
-				},
-				"Schulterbreite": {
-					"min": 94,
-					"max": 97
-				}
-			}
-		},
-		"material": "Baumwolle",
-		"colors": [
-			{
-				"name": "Weiss",
-				"hex": "#ffffff"
-			},
-			{
-				"name": "Grün",
-				"hex": "#00ff00"
-			},
-			{
-				"name": "Blau",
-				"hex": "#0000ff"
-			}
-		]
-	}
-]
+}

@@ -36,7 +36,7 @@ export class AddressService implements ServletService<Address> {
 		}
 
 		return this.http.get(`/api/address?id=${id}`)
-			.map(response => response.json())
+			.map(response => response.json().addresses)
 			.map(json => Address.create().setProperties(json))
 			.do((address: Address) => this.cache.addOrModify(address))
 			//retry 3 times before throwing an error
@@ -60,7 +60,7 @@ export class AddressService implements ServletService<Address> {
 		url = `/resources/mock-data/addresses.json`;
 
 		return this.http.get(url)
-			.map(response => response.json())
+			.map(response => response.json().addresses)
 			.map((jsonArray: any[]) => jsonArray.map(json => Address.create().setProperties(json)))
 			.do((addresses: Address[]) => this.cache.addMultiple(...addresses))
 			//retry 3 times before throwing an error
