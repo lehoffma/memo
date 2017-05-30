@@ -23,8 +23,34 @@
 		display: inline-block;
 	}
 }
+.color{
+	margin-bottom: 0.7rem;
+}
 
+.cart-entry-amount{
+	margin-top: 0.7rem;
+	margin-bottom: 0.7rem;
 
+}
+
+.amount{
+	margin-left: 0.2rem;
+	height: 5px;
+
+}
+.price{
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 0.3rem;
+	margin-bottom: 0.3rem;
+}
+.line{
+	border: none;
+	border-top: 1px solid grey;
+	height: 1px;
+	margin: 0px 0px 0px 70%;
+
+}
 
 
 

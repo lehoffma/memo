@@ -1,36 +1,34 @@
 <div class="cart-entry">
 	<div class="cart-entry-header">
 		<span>{{cartItem.item.title}}</span>
-		<md-icon md-icon-button>close</md-icon>
+		<md-icon md-icon-button (click)="deleteItem()">close</md-icon>
 	</div>
 	<div class="cart-entry-info">
 		<div class="cart-entry-details">
-			<div *ngIf="itemIsMerch(cartItem.item)" class="merch-color-container">
-				<div>Farbe:
-				<span
-					class="merch-color"
-					[style.background-color]="cartItem.options.color.hex">
-						</span>
-				</div>
-				<div>Größe: {{cartItem.options.size}}</div>
-			</div>
-		</div>
-		<div class="cart-entry-price">
-			<div>
+			<div class="cart-entry-amount"><span class="amount-title">Anzahl:</span>
 				<md-select class="amount" [(ngModel)]="cartItem.amount" (ngModelChange)="updateEventAmount()"
-						   placeholder="Anzahl">
+						   placeholder=" ">
 					<md-option *ngFor="let amount of amountOptions" [value]="amount">
 						{{amount}}
 					</md-option>
 				</md-select>
-				<div>{{cartItem.item.price}} €</div>
+
+			</div>
+			<div *ngIf="itemIsMerch(cartItem.item)" class="merch-color-container">
+				<div class="color">Farbe: {{cartItem.options.color.name}}
+				<!--<span
+					class="merch-color"
+					[style.background-color]="cartItem.options.color.hex">
+						</span>-->
+				</div>
+				<div>Größe: {{cartItem.options.size}}</div>
 			</div>
 		</div>
-		<div>
-			{{cartItem.item.price*cartItem.amount}} €
-		</div>
-
 	</div>
-</div>
 
+	<div class="price">{{cartItem.item.price}} €</div>
+		<div class="line"></div>
+	<div class="price">{{cartItem.item.price*cartItem.amount}} €</div>
+
+</div>
 
