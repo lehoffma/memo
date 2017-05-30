@@ -1,13 +1,14 @@
 <div class="participants-container">
 	<div>
 		<md-list>
-            <span *ngFor="let participant of (participants | async)">
-                <md-list-item (click)="showDetailsOfUser(participant)">
-                    <img md-list-avatar src="{{participant?.imagePath}}" alt="...">
-                    <h3 md-line> {{participant?.firstName + " " + participant?.surname}} </h3>
+            <span *ngFor="let participant of participants">
+                <md-list-item (click)="showDetailsOfUser(participant.user)">
+                    <img md-list-avatar src="{{participant?.user?.imagePath}}"
+						 alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
+                    <h3 md-line> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
                     <p md-line>
-                        <span> {{participant.clubRole}} </span>
-                        <span class="secondary-text"> -- {{participant?.miles}} Meilen </span>
+                        <span> {{participant?.user?.clubRole}} </span>
+                        <span class="secondary-text"> -- {{participant?.user?.miles}} Meilen </span>
                     </p>
                 </md-list-item>
                 <md-divider></md-divider>

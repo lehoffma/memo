@@ -18,6 +18,7 @@ import {Party} from "../shared/model/party";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Location} from "@angular/common";
 import {ShopItem} from "../../shared/model/shop-item";
+import {ItemTableComponent} from "../item-details/details-table/item-table.component";
 
 
 @Component({
@@ -32,12 +33,15 @@ export class ModifyShopItemComponent implements OnInit {
 	//either add or edit
 	mode: ModifyType;
 
-	//either merch, tour, party or entry (maybe even user?)
+	//either merch, tour, party, user or entry
 	itemType: ShopItemType;
+	eventType: (ShopItemType);
 
 	//wenn id === -1 oder undefined, ist mode === ADD (da ein leeres Objekt übergeben wurde),
 	//ansonsten wird das übergebene Objekt editiert
 	idOfObjectToModify: number;
+	modifyingCostOfEvent = false;
+	eventId:number = -1;
 
 	previousValue: ShopItem;
 	model: any = {};
@@ -52,6 +56,12 @@ export class ModifyShopItemComponent implements OnInit {
 		this.activatedRoute.params.first().subscribe(
 			(params: Params) => {
 				this.itemType = ShopItemType[ShopItemType[params["itemType"]]];
+				this.eventId = +params["eventId"];
+				if(this.eventId >= 0){
+					this.eventType = this.itemType;
+					this.itemType = ShopItemType.entry;
+				}
+
 				this.idOfObjectToModify = params["id"] ? +(params["id"]) : -1;
 			}
 		);
@@ -122,18 +132,36 @@ export class ModifyShopItemComponent implements OnInit {
 			}
 		);
 
+		let options:any = this.eventUtilService.handleOptionalShopType(this.itemType,
+			{
+				entries: () => ({eventId: this.eventId})
+			});
+
+
 		//todo display "submitting..." while waiting for response from server
-		service.addOrModify(newObject)
-			.subscribe(
-				(result: ShopItem) => {
-					//navigiere zum neu erstellten item
-					this.navigationService.navigateToItem(result);
-				},
-				error => {
-					console.log("adding or editing object went wrong");
-					console.error(error);
-					console.log(newObject);
-				}
-			);
+		if(this.mode === ModifyType.EDIT){
+
+		}
+		if(this.mode === ModifyType.ADD){
+			service.add(newObject, options)
+				.subscribe(
+					(result: ShopItem) => {
+						if(!this.eventType && !this.eventId){
+							//navigiere zum neu erstellten item
+							this.navigationService.navigateToItem(result);
+						}
+						else{
+							console.log(result);
+							//todo
+							this.navigationService.navigateToItemWithId(this.eventType, this.eventId);
+						}
+					},
+					error => {
+						console.log("adding or editing object went wrong");
+						console.error(error);
+						console.log(newObject);
+					}
+				);
+		}
 	}
 }

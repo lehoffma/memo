@@ -1,24 +1,21 @@
 <agm-map *ngIf="tourRoute"
-		 [latitude]="tourRoute.center().latitude"
-		 [longitude]="tourRoute.center().longitude"
+		 [latitude]="getCenterOfRoute().latitude"
+		 [longitude]="getCenterOfRoute().longitude"
 		 [mapDraggable]="false"
 		 [scrollwheel]="false"
 		 [zoomControl]="false"
 		 [zoom]="7"
 		 (tap)="openRouteOnGoogleMaps(tourRoute)">
-	<agm-marker [latitude]="tourRoute.from.latitude"
-				[longitude]="tourRoute.from.longitude">
-	</agm-marker>
+	<agm-marker *ngFor="let tourStop of tourRoute"
+				[latitude]="tourStop.latitude"
+				[longitude]="tourStop.longitude">
 
-	<agm-marker [latitude]="tourRoute.to.latitude"
-				[longitude]="tourRoute.to.longitude">
 	</agm-marker>
 	<agm-polyline>
-		<agm-polyline-point [latitude]="tourRoute.from.latitude"
-							[longitude]="tourRoute.from.longitude">
-		</agm-polyline-point>
-		<agm-polyline-point [latitude]="tourRoute.to.latitude"
-							[longitude]="tourRoute.to.longitude">
+		<agm-polyline-point *ngFor="let tourStop of tourRoute"
+					[latitude]="tourStop.latitude"
+					[longitude]="tourStop.longitude">
+
 		</agm-polyline-point>
 	</agm-polyline>
 </agm-map>

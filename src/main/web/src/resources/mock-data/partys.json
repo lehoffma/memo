@@ -8,9 +8,7 @@
 		"imagePath": "https://placekitten.com/505/504",
 		"capacity": 20,
 		"priceMember": 5,
-		"route": {
-			"meetingPoint": 0
-		},
+		"route": [0],
 		"price": 10,
 		"emptySeats": 18,
 		"participants": [
@@ -35,9 +33,7 @@
 		"imagePath": "https://placekitten.com/505/506",
 		"capacity": 20,
 		"priceMember": 5,
-		"route": {
-			"meetingPoint": 1
-		},
+		"route": [1],
 		"price": 10,
 		"emptySeats": 18,
 		"participants": [

@@ -11,6 +11,7 @@ export class IsTreasurerGuard implements CanActivate {
 	}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+		//todo auf neues permission system updaten
 		return this.loginService.currentUser()
 			.map(user => {
 				if (user === null) {
@@ -18,7 +19,7 @@ export class IsTreasurerGuard implements CanActivate {
 					this.router.navigate(["login"]);
 					return false;
 				}
-				if (isAuthenticated(user.clubRole, ClubRole.Kasse)) {
+				if (isAuthenticated(user.clubRole, ClubRole.Kassenwart)) {
 					return true;
 				}
 				this.router.navigate(["not-allowed"]);

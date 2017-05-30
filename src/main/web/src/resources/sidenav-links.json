@@ -23,14 +23,15 @@
 		"route": "",
 		"icon": "",
 		"name": "Accountverwaltung",
+		"loginNeeded": true,
 		"minimumPermission": {
-			"userManagement": 0,
+			"user": 1,
 			"merch": 1,
 			"tour": 1,
 			"party": 1,
 			"funds": 0,
 			"stock": 0,
-			"accountManagement": 3
+			"settings": 0
 		},
 		"children": [
 			{
@@ -59,14 +60,15 @@
 		"route": "management",
 		"icon": "",
 		"name": "Vereinsverwaltung",
+		"loginNeeded": true,
 		"minimumPermission": {
-			"userManagement": 1,
+			"user": 1,
 			"merch": 1,
 			"tour": 1,
 			"party": 1,
 			"funds": 0,
 			"stock": 0,
-			"accountManagement": 0
+			"settings": 0
 		},
 		"children": [
 			{
@@ -74,7 +76,7 @@
 				"icon": "payment",
 				"name": "Kostenübersicht",
 				"minimumPermission": {
-					"userManagement": 1,
+					"user": 1,
 					"merch": 1,
 					"tour": 1,
 					"party": 1,
@@ -93,7 +95,7 @@
 				"icon": "local_shipping",
 				"name": "Bestand",
 				"minimumPermission": {
-					"userManagement": 1,
+					"user": 1,
 					"merch": 1,
 					"tour": 1,
 					"party": 1,

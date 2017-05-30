@@ -11,7 +11,7 @@
 		</memo-item-details-content>
 
 		<memo-item-details-content [title]="'Teilnehmer'" [route]="'partys/' + party?.id + '/participants'">
-			<memo-participants [participantIds]="getIds(party?.participants).slice(0,3)" content></memo-participants>
+			<memo-participants [participants]="participants | async | slice:0:3" content></memo-participants>
 		</memo-item-details-content>
 	<!--</div>-->
 </memo-item-details-container>

@@ -28,10 +28,7 @@ export class Merchandise extends Event {
 	}
 
 	static create() {
-		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, {
-			meetingPoint: -1,
-			destination: -1
-		}, "", -1, [], [], "", {}, -1, -1);
+		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "", -1, [], [], "", {}, -1, -1);
 	}
 
 	static getStockOptions(merchList: Merchandise[]){

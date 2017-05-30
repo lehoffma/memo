@@ -11,7 +11,6 @@ import {NavigationService} from "../../shared/services/navigation.service";
 import {AddressService} from "../../shared/services/address.service";
 import {EventRoute} from "../../shop/shared/model/route";
 import {Address} from "../../shared/model/address";
-import {isNull, isNullOrUndefined} from "util";
 
 
 @Component({
@@ -21,13 +20,21 @@ import {isNull, isNullOrUndefined} from "util";
 })
 
 export class ProfileComponent implements OnInit {
-	userObservable: Observable<User>;
-	userEvents: Observable<Event[]>;
-	userDestinations: Observable<Address[]>;
+	userId = this.route.params.map(params => +params["id"]);
+	userObservable: Observable<User> = this.userId.flatMap(id => this.userService.getById(id));
+	userEvents: Observable<Event[]> = this.userObservable
+		.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}));
+	userDestinations: Observable<Address[]> = this.userEvents.flatMap(events => {
+		return Observable.combineLatest(events
+			.map(event => event.route)
+			.filter(route => route.length > 1)
+			.map((route: EventRoute) => this.addressService.getById(route[route.length - 1])));
+	});
 
 	profileCategories = profileCategories;
 
-	isOwnProfile: Observable<boolean>;
+	isOwnProfile: Observable<boolean> = this.userId.combineLatest(this.loginService.accountObservable,
+		(profileId, currentUserId) => profileId === currentUserId);
 
 	constructor(private route: ActivatedRoute,
 				private navigationService: NavigationService,
@@ -39,20 +46,6 @@ export class ProfileComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		const userId = this.route.params.map(params => +params["id"]);
-
-		this.isOwnProfile = userId.combineLatest(this.loginService.accountObservable,
-			(profileId, currentUserId) => profileId === currentUserId);
-		this.userObservable = userId.flatMap(id => this.userService.getById(id));
-		this.userEvents = this.userObservable
-			.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}));
-
-		this.userDestinations = this.userEvents.flatMap(events => {
-			return Observable.combineLatest(events
-				.map(event => event.route)
-				.filter(route => !isNullOrUndefined(route.destination))
-				.map((route: EventRoute) => this.addressService.getById(route.destination)));
-		});
 	}
 
 	editProfile() {

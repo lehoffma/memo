@@ -1,4 +1,4 @@
-import {isNullOrUndefined, isNumber} from "util";
+import {isNullOrUndefined} from "util";
 
 export type SortingFunction<T> = (a: T, b: T) => number;
 
@@ -34,6 +34,10 @@ export function sortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => a
 
 export function isString(value: any): value is string {
 	return value && (<string>value).toLowerCase !== undefined;
+}
+
+export function isNumber(value: any): value is number{
+	return !isNaN(parseFloat(value)) && isFinite(value);
 }
 
 

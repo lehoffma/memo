@@ -14,13 +14,13 @@ export class Party extends Event {
 				imagePath: string,
 				capacity: number,
 				priceMember: number,
-				public emptySeats: number,
-				public participants: Participant[]) {
+				public emptySeats: number) {
 		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember);
 	}
 
+
 	static create() {
-		return new Party(-1, "", new Date(1999, 9, 19), "", ClubRole.None, {meetingPoint: -1, destination: -1}, "", -1, -1, -1, []);
+		return new Party(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "", -1, -1, -1);
 	}
 
 	get overviewKeys(): EventOverviewKey[] {

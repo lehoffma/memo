@@ -13,10 +13,7 @@
 		"emptySeats": 46,
 		"vehicle": "Bus",
 		"miles": 300,
-		"route": {
-			"meetingPoint": 0,
-			"destination": 1
-		},
+		"route": [0,1],
 		"participants": [
 			{
 				"id": 0,
@@ -54,10 +51,7 @@
 		"emptySeats": 28,
 		"vehicle": "Bulli",
 		"miles": 200,
-		"route": {
-			"meetingPoint": 1,
-			"destination": 0
-		},
+		"route": [0,1],
 		"participants": [
 			{
 				"id": 0,
@@ -80,12 +74,11 @@
 		"imagePath": "https://placekitten.com/503/505",
 		"capacity": 25,
 		"priceMember": 65,
-		"meetingPoint": 1,
 		"price": 65,
 		"emptySeats": 22,
 		"vehicle": "Zug",
 		"miles": 10,
-		"destination": 1,
+		"route": [0,1],
 		"participants": [
 			{
 				"id": 1,

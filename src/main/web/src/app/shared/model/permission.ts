@@ -1,48 +1,42 @@
 export enum Permission{
-	owner = 3,
+	admin = 5,
+		//	todo: umbenennen, da delete ein reserved keyword in javascript is/sein wird
+	delete = 4,
+	create = 3,
 	write = 2,
 	read = 1,
 	none = 0
 }
 
 export interface UserPermissions {
-	readonly userManagement: Permission,
-	readonly tour: Permission,
-	readonly party: Permission,
-	readonly merch: Permission,
 	readonly funds: Permission,
+	readonly party: Permission,
+	readonly user: Permission,
+	readonly merch: Permission,
+	readonly tour: Permission,
 	readonly stock: Permission,
-	readonly accountManagement: Permission
+	readonly settings: Permission
 }
 
 export function jsonToPermissions(jsonPermissions): UserPermissions {
 	return {
 		funds: jsonPermissions["funds"],
 		party: jsonPermissions["party"],
-		userManagement: jsonPermissions["userManagement"],
+		user: jsonPermissions["user"],
 		merch: jsonPermissions["merch"],
 		tour: jsonPermissions["tour"],
 		stock: jsonPermissions["stock"],
-		accountManagement: jsonPermissions["accountManagement"]
+		settings: jsonPermissions["settings"]
 	};
 }
 
-export const adminPermissions: UserPermissions = {
-	userManagement: Permission.write,
-	tour: Permission.write,
-	party: Permission.write,
-	merch: Permission.write,
-	funds: Permission.write,
-	stock: Permission.write,
-	accountManagement: Permission.owner
-};
 
 export const visitorPermissions: UserPermissions = {
-	userManagement: Permission.none,
+	user: Permission.none,
 	tour: Permission.read,
 	party: Permission.read,
 	merch: Permission.read,
 	funds: Permission.none,
 	stock: Permission.none,
-	accountManagement: Permission.none
+	settings: Permission.none
 };

@@ -18,6 +18,7 @@
 		"route": "management",
 		"icon": "",
 		"name": "Vereinsverwaltung",
+		"loginNeeded": true,
 		"children": [
 			{
 				"route": "management/costs",

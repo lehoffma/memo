@@ -20,22 +20,22 @@ export class ImprintComponent implements OnInit {
 
 	postUser() {
 		this.result = this.userService.getById(0)
-			.flatMap(user => this.userService.addOrModify(user));
+			.flatMap(user => this.userService.add(user));
 	}
 
 	postMerch() {
 		this.result = this.eventService.getById(0, {eventType: EventType.merch})
-			.flatMap(merch => this.eventService.addOrModify(merch));
+			.flatMap(merch => this.eventService.add(merch));
 	}
 
 	postTour() {
 		this.result = this.eventService.getById(0, {eventType: EventType.tours})
-			.flatMap(tour => this.eventService.addOrModify(tour));
+			.flatMap(tour => this.eventService.add(tour));
 	}
 
 	postParty() {
 		this.result = this.eventService.getById(0, {eventType: EventType.tours})
-			.flatMap(party => this.eventService.addOrModify(party));
+			.flatMap(party => this.eventService.add(party));
 	}
 
 }

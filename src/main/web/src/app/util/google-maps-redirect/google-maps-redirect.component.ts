@@ -1,38 +1,28 @@
 import {Component, OnInit} from "@angular/core";
+import {NavigationService} from "../../shared/services/navigation.service";
+import {isNullOrUndefined} from "util";
 @Component({
 	selector: "memo-google-maps-redirect",
 	template: "redirecting.."
 })
 export class GoogleMapsRedirectComponent implements OnInit {
 
-	constructor() {
+	constructor(private navigationService: NavigationService) {
 
 	}
 
 
 	ngOnInit(): void {
-		//todo
-		const tourRoute = {
-			from: {
-				latitude: 52.422650,
-				longitude: 10.786546
-			},
-			to: {
-				latitude: 53.0664330,
-				longitude: 8.837605
-			},
-			center: function () {
-				return {
-					latitude: (this.from.latitude + this.to.latitude) / 2,
-					longitude: (this.from.longitude + this.to.longitude) / 2
-				}
-			}
-		};
-		window.location.href =
-			`https://www.google.de/maps/dir/${tourRoute.from.latitude},${tourRoute.from.longitude}
-            /${tourRoute.to.latitude},${tourRoute.to.longitude}`
+		if(isNullOrUndefined(this.navigationService.redirectToTour) || this.navigationService.redirectToTour.length === 0){
+			this.navigationService.navigateByUrl("");
+			return;
+		}
 
+		let directionsUrl = this.navigationService.redirectToTour
+			.map(tourStop => tourStop.latitude + "," + tourStop.longitude)
+			.join("/");
 
+		window.location.href = `https://www.google.de/maps/dir/${directionsUrl}`;
 	}
 
 }

@@ -34,7 +34,6 @@ import {LogInService} from "./shared/services/login.service";
 import {LoginComponent} from "./user/login/login.component";
 import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {SignUpComponent} from "./user/signup/signup.component";
-import {Md2Module} from "md2";
 import {ShoppingCartService} from "./shared/services/shopping-cart.service";
 import {CheckoutCartComponent} from "./shop/checkout/cart/cart.component";
 import {BadgeComponent} from "./util/badge/badge.component";
@@ -68,10 +67,10 @@ import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {UserService} from "app/shared/services/user.service";
 import {ParticipatedToursPreviewComponent} from "./user/profile/participated-tours-preview/participated-tours-preview.component";
-import {TourParticipantsComponent} from "./shop/tours/tour-detail/tour-participants/tour-participants.component";
+import {ParticipantListComponent} from "./shop/item-details/participants/participant-list/participant-list.component";
 import {CacheStore} from "./shared/stores/cache.store";
 import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
-import {IsOrganizerGuard} from "./shared/route-guards/is-organizer.guard";
+import {CanModifyItemGuard} from "./shared/route-guards/can-modify-item-guard";
 import {IsTreasurerGuard} from "./shared/route-guards/is-treasurer.guard";
 import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthorized-access.component";
 import {ProfileEditComponent} from "./user/profile/profile-edit/profile-edit.component";
@@ -120,6 +119,7 @@ import {ModifyMerchStockComponent} from "./shop/modify-shop-item/modify-merch/mo
 import {MerchColorCellComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/merch-color-cell/merch-color-cell.component";
 import {ModifyMerchStockItemComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
 import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address-change.component";
+import {ParticipantsService} from "./shared/services/participants.service";
 
 @NgModule({
 	imports: [
@@ -134,7 +134,6 @@ import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address
 			apiKey: memoConfig.mapsApiKey,
 			libraries: ["places"]
 		}),
-		Md2Module,
 		ColorPickerModule,
 		PasswordStrengthBarModule,
 		ImageCropperModule
@@ -193,7 +192,7 @@ import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address
 		SettingsComponent,
 		ImprintComponent,
 		ParticipatedToursPreviewComponent,
-		TourParticipantsComponent,
+		ParticipantListComponent,
 		UnauthorizedAccessComponent,
 		ProfileEditComponent,
 		SortingDropdownComponent,
@@ -239,12 +238,12 @@ import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address
 		AppComponent
 	],
 	providers: [
-		NavigationService, UserService, CacheStore,
+		NavigationService, UserService, CacheStore, ParticipantsService,
 		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
 		EntryService, EventFactoryService, QueryParameterService,
 
 		//guards
-		AuthenticatedGuard, IsOrganizerGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,
+		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,
 
 		{provide: LOCALE_ID, useValue: "de-DE"}
 	],

@@ -19,14 +19,14 @@ import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {AccountingComponent} from "./club-management/accounting/accounting.component";
 import {MerchandiseComponent} from "./shop/merchandise/merchandise.component";
-import {TourParticipantsComponent} from "./shop/tours/tour-detail/tour-participants/tour-participants.component";
+import {ParticipantListComponent} from "./shop/item-details/participants/participant-list/participant-list.component";
 import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
 import {IsTreasurerGuard} from "./shared/route-guards/is-treasurer.guard";
 import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthorized-access.component";
 import {ProfileEditComponent} from "./user/profile/profile-edit/profile-edit.component";
 import {IsOwnProfileGuard} from "./shared/route-guards/is-own-profile.guard";
 import {ModifyShopItemComponent} from "./shop/modify-shop-item/modify-shop-item.component";
-import {IsOrganizerGuard} from "./shared/route-guards/is-organizer.guard";
+import {CanModifyItemGuard} from "./shared/route-guards/can-modify-item-guard";
 import {IsValidItemTypeGuard} from "./shared/route-guards/is-valid-itemtype.guard";
 import {PageNotFoundComponent} from "./util/page-not-found/page-not-found.component";
 import {CheckoutComponent} from "./shop/checkout/checkout.component";
@@ -37,15 +37,21 @@ export const ROUTES = [
 
 	//todo implement
 	//nur eingeloggte user, die die Tour erstellt haben oder Organizer oder Admin sind
-	{path: ":itemType/:id/edit", component: ModifyShopItemComponent, canActivate: [IsOrganizerGuard, IsValidItemTypeGuard]},
-	{path: ":itemType/create", component: ModifyShopItemComponent, canActivate: [IsOrganizerGuard, IsValidItemTypeGuard]},
+	{path: ":itemType/:id/edit", component: ModifyShopItemComponent, canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]},
+	{path: ":itemType/create", component: ModifyShopItemComponent, canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]},
+
+	{path: ":itemType/:eventId/costs", component: AccountingComponent, canActivate: [/*todo is-event guard*/ IsTreasurerGuard]},
+	{path: ":itemType/:eventId/costs/:id/edit", component: ModifyShopItemComponent, canActivate: [/*todo is-event guard*/ CanModifyItemGuard]},
+	{path: ":itemType/:eventId/costs/create", component: ModifyShopItemComponent, canActivate: [/*todo is-event guard*/ CanModifyItemGuard]},
+
 
 	{path: "tours", component: ToursComponent},
 	{path: "tours/:id", component: TourDetailComponent},
-	{path: "tours/:id/participants", component: TourParticipantsComponent},
+	{path: "tours/:id/participants", component: ParticipantListComponent},
 
 	{path: "partys", component: PartysComponent},
 	{path: "partys/:id", component: PartyDetailComponent},
+	{path: "partys/:id/participants", component: ParticipantListComponent},
 
 	{path: "merch", component: MerchandiseComponent},
 	{path: "merch/:id", component: MerchandiseDetailComponent},

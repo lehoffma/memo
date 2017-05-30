@@ -3,19 +3,13 @@ import {jsonToPermissions, UserPermissions} from "../permission";
 import {isArray} from "util";
 import {EntryCategory} from "../entry-category";
 import {Gender} from "../gender";
+import {isNumber, isString} from "../../../util/util";
 export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 
 	constructor(public readonly id: number) {
 
 	}
 
-	isString(value: any): value is string {
-		return typeof value === "string";
-	}
-
-	isNumber(value: any): value is number {
-		return !isNaN(parseFloat(value)) && isFinite(value);
-	}
 
 	/**
 	 * @param properties
@@ -27,9 +21,9 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 				let value: (string | number | number[] | Date | UserPermissions) = (<any>properties)[key];
 				if (isArray(value)) {
 
-				} else if (key.toLowerCase().includes("date") && this.isString(value)) {
+				} else if (key.toLowerCase().includes("date") && isString(value)) {
 					value = Date.parse(value);
-				} else if (this.isNumber(value)) {
+				} else if (isNumber(value)) {
 					value = +value;
 				} else if (key === "expectedRole") {
 					value = ClubRole[(<any>properties)["expectedRole"]]

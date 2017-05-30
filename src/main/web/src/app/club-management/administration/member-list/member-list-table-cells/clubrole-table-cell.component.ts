@@ -31,7 +31,7 @@ export class ClubRoleTableCellComponent implements OnInit, OnChanges, Expandable
 		switch (role) {
 			case ClubRole.Admin:
 				return "grade";
-			case ClubRole.Kasse:
+			case ClubRole.Kassenwart:
 				return "attach_money";
 			case ClubRole.Mitglied:
 				return "account_box";

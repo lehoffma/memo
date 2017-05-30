@@ -1,4 +1,1 @@
-export interface EventRoute {
-	meetingPoint: number,
-	destination: number
-}
+export type EventRoute = number[];

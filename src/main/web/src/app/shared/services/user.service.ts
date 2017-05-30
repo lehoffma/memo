@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, Response} from "@angular/http";
+import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
 import {User} from "../model/user";
 import {ServletService} from "../model/servlet-service";
 import {CacheStore} from "../stores/cache.store";
@@ -38,7 +38,7 @@ export class UserService implements ServletService<User> {
 		}
 
 		return this.http.get(`/api/user?id=${userId}`)
-			.map(response => response.json())
+			.map(response => response.json().users)
 			.map(json => User.create().setProperties(json))
 			.do((user: User) => this.cache.addOrModify(user))
 			//retry 3 times before throwing an error
@@ -62,7 +62,7 @@ export class UserService implements ServletService<User> {
 		url = `/resources/mock-data/users.json`;
 
 		return this.http.get(url)
-			.map(response => response.json())
+			.map(response => response.json().users)
 			.map((jsonArray: any[]) => jsonArray.map(json => User.create().setProperties(json)))
 			.do((users: User[]) => this.cache.addMultiple(...users))
 			//retry 3 times before throwing an error
@@ -74,21 +74,23 @@ export class UserService implements ServletService<User> {
 			.publish().refCount();
 	}
 
+
 	/**
-	 * Sendet ein User Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
-	 * gibt dann das erstellte Objekt wieder an den Client zurück
+	 * Hilfsmethode um den code übersichtlicher zu gestalten
+	 * @param requestMethod
 	 * @param user
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	addOrModify(user: User, options: any = {profilePicture: null, paymentInfo: null}): Observable<User> {
+	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+						user: User, options?: any): Observable<User>{
 		const {profilePicture, paymentInfo} = options;
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 
-		return this.http.post(`/api/user`, {user, profilePicture, paymentInfo}, requestOptions)
-			.map(response => response.json())
-			.flatMap(userId => this.getById(userId))
+		return requestMethod("/api/user", {user, profilePicture, paymentInfo}, requestOptions)
+			.map(response => response.json().id as number)
+			.map(id => this.getById(id))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
@@ -97,6 +99,29 @@ export class UserService implements ServletService<User> {
 			//instead of waiting for someone to subscribe
 			.publish().refCount();
 	}
+
+
+	/**
+	 * Sendet ein User Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
+	 * gibt dann das erstellte Objekt wieder an den Client zurück
+	 * @param user
+	 * @param options
+	 * @returns {Observable<T>}
+	 */
+	add(user: User, options: any = {profilePicture: null, paymentInfo: null}): Observable<User> {
+		return this.addOrModify(this.http.post, user, options);
+	}
+
+	/**
+	 *
+	 * @param user
+	 * @param options
+	 * @returns {Observable<User>}
+	 */
+	modify(user: User, options: any = {profilePicture: null, paymentInfo: null}): Observable<User> {
+		return this.addOrModify(this.http.put, user, options);
+	}
+
 
 	/**
 	 * Löscht den User mit der gegebenen ID aus der Datenbank
