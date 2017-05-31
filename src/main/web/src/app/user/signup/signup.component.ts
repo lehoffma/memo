@@ -112,7 +112,7 @@ export class SignUpComponent implements OnInit {
 		let isLastScreen = this.navigateToNextSection(section);
 
 		if (isLastScreen) {
-			this.userService.addOrModify(this.newUser, {profilePicture: this.newUserProfilePicture, paymentInfo: this.newUserDebitInfo})
+			this.userService.add(this.newUser, {profilePicture: this.newUserProfilePicture, paymentInfo: this.newUserDebitInfo})
 				.subscribe(newUserId => {
 					//todo: show success page? ¯\_(ツ)_/¯
 					console.log(newUserId);

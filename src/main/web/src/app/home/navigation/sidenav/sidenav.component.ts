@@ -8,6 +8,7 @@ import {NavigationService} from "../../../shared/services/navigation.service";
 import {LogInService} from "../../../shared/services/login.service";
 import {UserService} from "../../../shared/services/user.service";
 import {Location} from "@angular/common";
+import {rolePermissions} from "../../../shared/model/club-role";
 @Component({
 	selector: "memo-sidenav",
 	templateUrl: "./sidenav.component.html",
@@ -23,8 +24,12 @@ export class SideNavComponent implements OnInit {
 
 	public links = Observable.combineLatest(this.user, this.navigationService.sidenavLinks)
 		.map(([user, links]) => {
-			const linksCopy = Object.assign([], links);
-			const permissions = user === null ? visitorPermissions : user.permissions;
+			const linksCopy = [...links];
+			const permissions = user === null
+				? visitorPermissions
+				: user.permissions
+					? user.permissions
+					: rolePermissions[user.clubRole];
 			const setId = (link: Link): Link => {
 				if (link.children) {
 					link.children = link.children.map(childLink => setId(childLink))
@@ -34,9 +39,10 @@ export class SideNavComponent implements OnInit {
 				}
 				return link;
 			};
+
 			return linksCopy.map(setId)
-				.filter(link => this.checkPermissions(link.minimumPermission, permissions))
-		});
+				.filter(link => (!link.loginNeeded || user !== null) && this.checkPermissions(link.minimumPermission, permissions))
+	});
 
 	constructor(private navigationService: NavigationService,
 				private logInService: LogInService,
@@ -73,9 +79,11 @@ export class SideNavComponent implements OnInit {
 			userPermissions = visitorPermissions;
 		}
 
-		return Object.keys(minimumPermissions).every(
-			(key: string) => userPermissions[key] >= minimumPermissions[key]
-		);
+		return Object.keys(minimumPermissions)
+			.every(
+				(key: string) => !isNullOrUndefined(userPermissions[key]) && !isNullOrUndefined(minimumPermissions[key])
+				&& userPermissions[key] >= minimumPermissions[key]
+			);
 	}
 
 	logout() {

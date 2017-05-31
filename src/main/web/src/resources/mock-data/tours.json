@@ -1,107 +1,103 @@
-[
-	{
-		"id": 0,
-		"title": "BER",
-		"date": "2016-8-24:00:00.000Z",
-		"description": "ushfgifg",
-		"expectedRole": "Mitglied",
-		"imagePath": "https://placekitten.com/504/505",
-		"capacity": 50,
-		"priceMember": 10,
-		"meetingPoint": 0,
-		"price": 10,
-		"emptySeats": 46,
-		"vehicle": "Bus",
-		"miles": 300,
-		"route": {
+{
+	"events": [
+		{
+			"id": 0,
+			"title": "BER",
+			"date": "2016-8-24:00:00.000Z",
+			"description": "ushfgifg",
+			"expectedRole": "Mitglied",
+			"imagePath": "https://placekitten.com/504/505",
+			"capacity": 50,
+			"priceMember": 10,
 			"meetingPoint": 0,
-			"destination": 1
+			"price": 10,
+			"emptySeats": 46,
+			"vehicle": "Bus",
+			"miles": 300,
+			"route": [0,1],
+			"participants": [
+				{
+					"id": 0,
+					"isDriver": true,
+					"hasPaid": false
+				},
+				{
+					"id": 1,
+					"isDriver": true,
+					"hasPaid": false
+				},
+				{
+					"id": 2,
+					"isDriver": true,
+					"hasPaid": false
+				},
+				{
+					"id": 3,
+					"isDriver": true,
+					"hasPaid": false
+				}
+			]
 		},
-		"participants": [
-			{
-				"id": 0,
-				"isDriver": true,
-				"hasPaid": false
-			},
-			{
-				"id": 1,
-				"isDriver": true,
-				"hasPaid": false
-			},
-			{
-				"id": 2,
-				"isDriver": true,
-				"hasPaid": false
-			},
-			{
-				"id": 3,
-				"isDriver": true,
-				"hasPaid": false
-			}
-		]
-	},
-	{
-		"id": 1,
-		"title": "Bullitour nach Bremen",
-		"date": "2016-9-12:00:00.000Z",
-		"description": "Ein Streifenwagen verfolgte den Polo mit Blaulicht und Martinshorn über die Hiddeser Straße und die Stoddartstraße in Richtung Lage. In Höhe der Donoper Teiche hatte die Polizei zwischenzeitlich eine Teilsperre eingerichtet, die der Polo-Fahrer jedoch umkurvte und dann trotz Rotlicht über die Kreuzung Oerlinghauser Straße weiter in Richtung Bielefelder Straße fuhr. Von dort aus ging es über die Pivitsheider Straße nach links auf die Lagesche Straße (B239) und dann nach rechts über den Papendiek in Richtung Heiden.",
-		"expectedRole": "Mitglied",
-		"imagePath": "https://placekitten.com/506/505",
-		"capacity": 30,
-		"priceMember": 20,
-		"meetingPoint": 1,
-		"price": 20,
-		"emptySeats": 28,
-		"vehicle": "Bulli",
-		"miles": 200,
-		"route": {
+		{
+			"id": 1,
+			"title": "Bullitour nach Bremen",
+			"date": "2016-9-12:00:00.000Z",
+			"description": "Ein Streifenwagen verfolgte den Polo mit Blaulicht und Martinshorn über die Hiddeser Straße und die Stoddartstraße in Richtung Lage. In Höhe der Donoper Teiche hatte die Polizei zwischenzeitlich eine Teilsperre eingerichtet, die der Polo-Fahrer jedoch umkurvte und dann trotz Rotlicht über die Kreuzung Oerlinghauser Straße weiter in Richtung Bielefelder Straße fuhr. Von dort aus ging es über die Pivitsheider Straße nach links auf die Lagesche Straße (B239) und dann nach rechts über den Papendiek in Richtung Heiden.",
+			"expectedRole": "Mitglied",
+			"imagePath": "https://placekitten.com/506/505",
+			"capacity": 30,
+			"priceMember": 20,
 			"meetingPoint": 1,
-			"destination": 0
+			"price": 20,
+			"emptySeats": 28,
+			"vehicle": "Bulli",
+			"miles": 200,
+			"route": [0,1],
+			"participants": [
+				{
+					"id": 0,
+					"isDriver": true,
+					"hasPaid": false
+				},
+				{
+					"id": 3,
+					"isDriver": true,
+					"hasPaid": false
+				}
+			]
 		},
-		"participants": [
-			{
-				"id": 0,
-				"isDriver": true,
-				"hasPaid": false
-			},
-			{
-				"id": 3,
-				"isDriver": true,
-				"hasPaid": false
-			}
-		]
-	},
-	{
-		"id": 2,
-		"title": "ganz ganz tolle Tour zu meinem absoluten lieblingsspiel",
-		"date": "2016-9-12:00:00.000Z",
-		"description": "Während der Verfolgung fuhr der 31-Jährige über mehrere rote Ampeln. Es stellte sich zudem heraus, dass die an dem VW angebrachten Kennzeichen als gestohlen gemeldet sind. Außerdem wurde ein Streifenwagen bei einem Zusammenstoß mit dem Polo leicht beschädigt.Der 31-Jährige wurde am Montag in die JVA zur Verbüßung seiner Strafe eingeliefert. Die Polizei leitete zusätzlich ein neues Verfahren gegen ihn ein. Die anderen Insassen des Fahrzeugs wurden nach einer Überprüfung wieder entlassen.",
-		"expectedRole": "Mitglied",
-		"imagePath": "https://placekitten.com/503/505",
-		"capacity": 25,
-		"priceMember": 65,
-		"meetingPoint": 1,
-		"price": 65,
-		"emptySeats": 22,
-		"vehicle": "Zug",
-		"miles": 10,
-		"destination": 1,
-		"participants": [
-			{
-				"id": 1,
-				"isDriver": true,
-				"hasPaid": false
-			},
-			{
-				"id": 2,
-				"isDriver": true,
-				"hasPaid": false
-			},
-			{
-				"id": 3,
-				"isDriver": true,
-				"hasPaid": false
-			}
-		]
-	}
-]
+		{
+			"id": 2,
+			"title": "ganz ganz tolle Tour zu meinem absoluten lieblingsspiel",
+			"date": "2016-9-12:00:00.000Z",
+			"description": "Während der Verfolgung fuhr der 31-Jährige über mehrere rote Ampeln. Es stellte sich zudem heraus, dass die an dem VW angebrachten Kennzeichen als gestohlen gemeldet sind. Außerdem wurde ein Streifenwagen bei einem Zusammenstoß mit dem Polo leicht beschädigt.Der 31-Jährige wurde am Montag in die JVA zur Verbüßung seiner Strafe eingeliefert. Die Polizei leitete zusätzlich ein neues Verfahren gegen ihn ein. Die anderen Insassen des Fahrzeugs wurden nach einer Überprüfung wieder entlassen.",
+			"expectedRole": "Mitglied",
+			"imagePath": "https://placekitten.com/503/505",
+			"capacity": 25,
+			"priceMember": 65,
+			"price": 65,
+			"emptySeats": 22,
+			"vehicle": "Zug",
+			"miles": 10,
+			"route": [0,1],
+			"participants": [
+				{
+					"id": 1,
+					"isDriver": true,
+					"hasPaid": false
+				},
+				{
+					"id": 2,
+					"isDriver": true,
+					"hasPaid": false
+				},
+				{
+					"id": 3,
+					"isDriver": true,
+					"hasPaid": false
+				}
+			]
+		}
+	]
+
+}

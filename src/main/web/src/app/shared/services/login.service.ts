@@ -99,6 +99,9 @@ export class LogInService {
 				localStorage.removeItem(this.authTokenKey);
 				localStorage.removeItem(this.profileKey);
 				this.pushNewData(null);
+				this.snackBar.open("Du wurdest ausgeloggt.", "Schließen", {
+					duration: 2000
+				});
 				return true;
 			})
 			.retry(3)

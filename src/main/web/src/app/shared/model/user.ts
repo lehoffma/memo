@@ -49,7 +49,7 @@ export class User extends ImmutableObject<User> {
 
 	static create() {
 		return new User(-1, "", "", Gender.OTHER, null, "", ClubRole.None, null, [],
-			visitorPermissions, 0, "", "", false, false, false, false, "");
+			null, 0, "", "", false, false, false, false, "");
 	}
 
 	static isUser(user: any): user is User {

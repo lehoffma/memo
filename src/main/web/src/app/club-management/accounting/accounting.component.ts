@@ -13,6 +13,8 @@ import {isNullOrUndefined} from "util";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {CostCategoryTableCellComponent} from "./accounting-table-cells/cost-category-table-cell.component";
+import {ActivatedRoute, Router} from "@angular/router";
+import {EventType} from "../../shop/shared/model/event-type";
 
 @Component({
 	selector: "memo-accounting",
@@ -26,7 +28,16 @@ export class AccountingComponent implements OnInit {
 	});
 	sortBy: Observable<ColumnSortingEvent<Entry>> = this._sortBy.asObservable();
 
-	entries = Observable.combineLatest(this.entryService.search(""), this.sortBy)
+	entries = Observable.combineLatest(this.activatedRoute.paramMap
+		.flatMap(paramMap => {
+			console.log(paramMap);
+			if (paramMap.has("itemType") && paramMap.has("eventId")) {
+				let itemType: EventType = EventType[paramMap.get("itemType")];
+				let eventId = +paramMap.get("eventId");
+				return this.entryService.getEntriesOfEvent(eventId, itemType);
+			}
+			return this.entryService.search("");
+		}), this.sortBy)
 		.map(([entries, sortBy]) => entries.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);
@@ -37,7 +48,9 @@ export class AccountingComponent implements OnInit {
 	//todo filter menu options: date (range), cost category, ...?
 
 	constructor(private entryService: EntryService,
-				private navigationService: NavigationService){
+				private activatedRoute: ActivatedRoute,
+				private router: Router,
+				private navigationService: NavigationService) {
 		this.primaryColumnKeys.next([
 			new ExpandableTableColumn<Entry>("Kostenart", "category", CostCategoryTableCellComponent),
 			new ExpandableTableColumn<Entry>("Name", "name"),
@@ -64,7 +77,7 @@ export class AccountingComponent implements OnInit {
 	 * @param event
 	 */
 	addEntry(event: any) {
-		this.navigationService.navigateByUrl("entries/create");
+		this.router.navigate(["create"], {relativeTo: this.activatedRoute});
 	}
 
 	/**
@@ -73,7 +86,7 @@ export class AccountingComponent implements OnInit {
 	 */
 	editEntry(entryObj: Entry) {
 		if (!isNullOrUndefined(entryObj.id) && entryObj.id >= 0) {
-			this.navigationService.navigateToItemWithId(ShopItemType.entry, entryObj.id, "/edit");
+			this.router.navigate(["edit"], {relativeTo: this.activatedRoute});
 		}
 	}
 
@@ -87,7 +100,6 @@ export class AccountingComponent implements OnInit {
 				error => console.error(error)
 			));
 	}
-
 
 
 }

@@ -11,6 +11,8 @@ declare var google;
 	styleUrls: ["./tour-route-input.component.scss"]
 })
 export class TourRouteInputComponent implements OnInit {
+
+	//TODO an neues routen modell anpassen....
 	@Input() isRoute: boolean = false;
 	@Input() route: {
 		meetingPoint: Address,

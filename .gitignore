@@ -60,7 +60,6 @@ fabric.properties
 
 target/
 /src/main/webapp/*
-/memo.iml
 /lib/
 
 .idea/dataSources/
