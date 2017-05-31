@@ -1,4 +1,3 @@
-import {Component, EventEmitter, Input, OnInit} from "@angular/core";
 import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {UserService} from "../../shared/services/user.service";
@@ -21,9 +20,7 @@ export class CheckoutComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		const userId = this.logInService.accountObservable.map(user => {
-			return user;
-		})
+		const userId = this.logInService.accountObservable;
 		this.userObservable = userId.flatMap(id => this.userService.getById(id));
 
 	}
