@@ -6,7 +6,7 @@
 			<div>Große Diesdorfer Str. 26</div>
 			<div>39108 Magdeburg</div>
 		</div>
-		<a md-button class="click-adress" routerLink="/address">Adresse ändern</a>
+		<!-- <a md-button class="click-adress" routerLink="/address">Adresse ändern</a> -->
 		<hr class="cart-entry-price-border">
 
 		<div class="title">Wähle die Bezahlart:</div>
@@ -23,11 +23,11 @@
 			</div>
 		</md-radio-group>
 
-		<a md-button class="click-adress">Bankdaten ändern</a>
+		<!--<a md-button class="click-adress">Bankdaten ändern</a>-->
 		<hr class="cart-entry-price-border">
 
 		<div class="sum">Gesamtsumme: <span>200 €</span></div>
 
-		<a md-button class="click-adress">Bezahlen</a>
+		<a md-button class="click-adress" (click)="deleteCart()" routerLink="/">Bezahlen</a>
 	</md-card>
 </div>

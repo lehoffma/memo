@@ -1,3 +1,4 @@
+import {Component, EventEmitter, Input, OnInit} from "@angular/core";
 import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {UserService} from "../../shared/services/user.service";
@@ -24,6 +25,10 @@ export class CheckoutComponent implements OnInit {
 			return user;
 		})
 		this.userObservable = userId.flatMap(id => this.userService.getById(id));
+
+	}
+	deleteCart(){
+		/** hier sollten alle items im warenkorb gelöscht werden */
 
 	}
 
