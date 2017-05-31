@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
-import {Gender} from "../../../shared/model/gender";
+import {Location} from "@angular/common";
 
 @Component({
 	selector: "memo-modify-user",
@@ -25,13 +25,17 @@ export class ModifyUserComponent implements OnInit {
 		this.modelChange.emit(this.model);
 	}
 
-	constructor() {
+	constructor(private location: Location) {
 	}
 
 	ngOnInit() {
 	}
 
-	submitModifiedObject(event){
+	cancel() {
+		this.location.back();
+	}
+
+	submitModifiedObject(event) {
 		console.log(event);
 		this.onSubmit.emit(this.model);
 	}

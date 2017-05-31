@@ -58,12 +58,14 @@
 	<div class="profile-component">
 		<h2 class="profile-tours-title">Hat teilgenommen an</h2>
 		<!-- Touren die Member mitgefahren ist -->
-		<memo-participated-tours-preview [userEvents]="userEvents"></memo-participated-tours-preview>
+		<memo-participated-tours-preview [userEvents]="userEvents | async"></memo-participated-tours-preview>
 	</div>
+
 	<div class="profile-component" *ngIf="userDestinations | async; let destinations;">
 		<h2 class="profile-tours-title">Karte</h2>
-		<!--todo center() method-->
-		<agm-map [zoom]="7" [latitude]="53" [longitude]="10.78">
+		<agm-map [zoom]="7"
+				 [latitude]="(centerOfUserDestinations|async)?.latitude"
+				 [longitude]="(centerOfUserDestinations|async)?.longitude">
 			<agm-marker *ngFor="let destination of destinations; let i = index;"
 						[latitude]="destination.latitude"
 						[longitude]="destination.longitude">

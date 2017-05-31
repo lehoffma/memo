@@ -14,7 +14,7 @@ import {EntryCategory} from "../../../shared/model/entry-category";
 	`,
 	styleUrls: ["../../administration/member-list/member-list-table-cells/icon-data-table-cell.component.scss"]
 })
-export class CostCategoryTableCellComponent implements OnInit, OnChanges, ExpandableTableCellComponent{
+export class CostCategoryTableCellComponent implements OnInit, OnChanges, ExpandableTableCellComponent {
 	@Input() data: EntryCategory;
 	icon: string;
 
@@ -26,13 +26,13 @@ export class CostCategoryTableCellComponent implements OnInit, OnChanges, Expand
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if(changes["data"]){
+		if (changes["data"]) {
 			this.icon = this.getIcon(this.data);
 		}
 	}
 
-	getIcon(category: EntryCategory){
-		switch(category){
+	getIcon(category: EntryCategory) {
+		switch (category) {
 			case EntryCategory.Food:
 				return "restaurant";
 			case EntryCategory.Fuel:

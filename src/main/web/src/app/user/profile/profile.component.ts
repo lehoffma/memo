@@ -25,11 +25,29 @@ export class ProfileComponent implements OnInit {
 	userEvents: Observable<Event[]> = this.userObservable
 		.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}));
 	userDestinations: Observable<Address[]> = this.userEvents.flatMap(events => {
-		return Observable.combineLatest(events
+		return Observable.combineLatest(...events
 			.map(event => event.route)
 			.filter(route => route.length > 1)
 			.map((route: EventRoute) => this.addressService.getById(route[route.length - 1])));
 	});
+
+	centerOfUserDestinations: Observable<any> = this.userDestinations
+		.map(addresses => {
+			let longitude = 0;
+			let latitude = 0;
+			addresses.forEach(tourRoute => {
+				longitude += tourRoute.longitude;
+				latitude += tourRoute.latitude;
+			});
+			longitude /= addresses.length;
+			latitude /= addresses.length;
+
+			return {longitude, latitude};
+		})
+		.defaultIfEmpty({
+			longitude: 0,
+			latitude: 0
+		});
 
 	profileCategories = profileCategories;
 

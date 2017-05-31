@@ -16,10 +16,10 @@
 			</div>
 			<div *ngIf="itemIsMerch(cartItem.item)" class="merch-color-container">
 				<div class="color">Farbe: {{cartItem.options.color.name}}
-				<!--<span
-					class="merch-color"
-					[style.background-color]="cartItem.options.color.hex">
-						</span>-->
+					<!--<span
+                        class="merch-color"
+                        [style.background-color]="cartItem.options.color.hex">
+                            </span>-->
 				</div>
 				<div>Größe: {{cartItem.options.size}}</div>
 			</div>
@@ -27,7 +27,7 @@
 	</div>
 
 	<div class="price">{{cartItem.item.price}} €</div>
-		<div class="line"></div>
+	<div class="line"></div>
 	<div class="price">{{cartItem.item.price*cartItem.amount}} €</div>
 
 </div>

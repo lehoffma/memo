@@ -94,10 +94,10 @@ function isParty(event: any): event is Party {
 }
 
 export const filterFunctions: {
-	[key: string]: (obj:ShopItem, filterValue:any) => boolean
+	[key: string]: (obj: ShopItem, filterValue: any) => boolean
 } = {
-	"category": (item,filterValue) => {
-		if(isMerchandise(item) || isTour(item) || isParty(item)){
+	"category": (item, filterValue) => {
+		if (isMerchandise(item) || isTour(item) || isParty(item)) {
 			return //todo
 		}
 		return true;

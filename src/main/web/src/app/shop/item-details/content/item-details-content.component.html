@@ -3,7 +3,10 @@
 	<div class="object-details-content-container">
 		<div class="object-details-content-title">
 			<h3>{{title}}</h3>
-			<a *ngIf="route" routerLink="{{route}}">MEHR</a>
+			<a *ngIf="route" title="Teilnehmer-Details"
+			   routerLink="{{route}}">
+				<md-icon>list</md-icon>
+			</a>
 		</div>
 
 		<div class="object-details-content">

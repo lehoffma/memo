@@ -31,7 +31,7 @@ export class Merchandise extends Event {
 		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "", -1, [], [], "", {}, -1, -1);
 	}
 
-	static getStockOptions(merchList: Merchandise[]){
+	static getStockOptions(merchList: Merchandise[]) {
 		return {
 			size: merchList.reduce((sizes, current) => {
 				current.stock
@@ -54,7 +54,7 @@ export class Merchandise extends Event {
 		};
 	}
 
-	static mapToStockObject(merchList:Merchandise[]){
+	static mapToStockObject(merchList: Merchandise[]) {
 		let options = Merchandise.getStockOptions(merchList);
 
 		/**
@@ -66,7 +66,7 @@ export class Merchandise extends Event {
 		 * @param stockValue
 		 * @returns {Array}
 		 */
-		let getStockAmountList = function(merch: Merchandise, options: { [key: string]: string[] }, stockKey: string, optionsKey: string, stockValue: string) {
+		let getStockAmountList = function (merch: Merchandise, options: { [key: string]: string[] }, stockKey: string, optionsKey: string, stockValue: string) {
 			let list = merch.stock
 				.filter(stock => stock[stockKey] === stockValue || stock[stockKey].name === stockValue)
 				.reduce((acc, stock) => {

@@ -73,7 +73,6 @@ export class AddressService implements ServletService<Address> {
 	}
 
 
-
 	/**
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
@@ -82,7 +81,7 @@ export class AddressService implements ServletService<Address> {
 	 * @returns {Observable<T>}
 	 */
 	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						address: Address, options?: any): Observable<Address>{
+						address: Address, options?: any): Observable<Address> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 
@@ -106,7 +105,7 @@ export class AddressService implements ServletService<Address> {
 	 * @returns {Observable<T>}
 	 */
 	add(address: Address, options?: any): Observable<Address> {
-		return this.addOrModify(this.http.post, address, options);
+		return this.addOrModify(this.http.post.bind(this.http), address, options);
 	}
 
 	/**
@@ -116,7 +115,7 @@ export class AddressService implements ServletService<Address> {
 	 * @returns {Observable<Address>}
 	 */
 	modify(address: Address, options?: any): Observable<Address> {
-		return this.addOrModify(this.http.put, address, options);
+		return this.addOrModify(this.http.put.bind(this.http), address, options);
 	}
 
 	/**

@@ -7,6 +7,8 @@ import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {EventUtilityService} from "./event-utility.service";
 import {ShopItem} from "../model/shop-item";
 import {Address} from "../model/address";
+import {EventType} from "../../shop/shared/model/event-type";
+import {Event} from "../../shop/shared/model/event";
 
 @Injectable()
 export class NavigationService {
@@ -14,7 +16,7 @@ export class NavigationService {
 	public sidenavLinks: Observable<Link[]>;
 	public accountLinks: Observable<Link[]>;
 
-	public redirectToTour:Address[] = [];
+	public redirectToTour: Address[] = [];
 
 	constructor(private http: Http,
 				private eventUtilService: EventUtilityService,
@@ -31,11 +33,11 @@ export class NavigationService {
 			.map(response => response.json());
 	}
 
-	public navigateToItem(item: ShopItem, suffix?: string) {
+	public navigateToItem(item: ShopItem | Event, suffix?: string) {
 		this.navigateToItemWithId(this.eventUtilService.getShopItemType(item), item.id, suffix);
 	}
 
-	public navigateToItemWithId(category: ShopItemType, id: number, suffix?: string) {
+	public navigateToItemWithId(category: ShopItemType | EventType, id: number, suffix?: string) {
 		let url = `${category}/${id}${(suffix ? suffix : "")}`;
 		this.navigateByUrl(url);
 	}

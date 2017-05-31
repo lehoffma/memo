@@ -1,6 +1,6 @@
 <div class="profile-tours-container">
 	<md-list>
-            <span *ngFor="let recentEvent of (userEvents | async); let lastTour = last"
+            <span *ngFor="let recentEvent of (userEvents | slice:0:amountOfEventsShown); let lastTour = last"
 				  (click)="showEvent(recentEvent)">
                 <md-list-item>
                     <img md-list-avatar src="{{recentEvent?.imagePath}}"
@@ -13,4 +13,10 @@
                 <md-divider *ngIf="!lastTour"></md-divider>
             </span>
 	</md-list>
+
+	<button md-button *ngIf="userEvents.length > 3" type="button" (click)="expandedStatus = !expandedStatus">
+		<span>{{expandedStatus ? 'Weniger' : 'Mehr'}}</span>
+		<md-icon [@expandedState]="expandedStatus">expand_more</md-icon>
+	</button>
+
 </div>

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {UserService} from "../../shared/services/user.service";
 import {Observable} from "rxjs/Observable";
@@ -12,14 +12,15 @@ import {LogInService} from "../../shared/services/login.service";
 })
 export class CheckoutComponent implements OnInit {
 	paymentMethod: string;
-	paymentMethodOptions: string []= ["Paypal", "Barzahlung", "Überweisung", "Lastschrift"];
+	paymentMethodOptions: string [] = ["Paypal", "Barzahlung", "Überweisung", "Lastschrift"];
 	userObservable: Observable<User>;
+
 	constructor(private route: ActivatedRoute, private userService: UserService, private logInService: LogInService) {
 
 	}
 
 	ngOnInit() {
-		const userId = this.logInService.accountObservable.map(user =>{
+		const userId = this.logInService.accountObservable.map(user => {
 			return user;
 		})
 		this.userObservable = userId.flatMap(id => this.userService.getById(id));

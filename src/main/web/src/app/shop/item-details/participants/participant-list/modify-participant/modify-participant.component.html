@@ -1,0 +1,55 @@
+<form #modifyParticipantForm="ngForm" class="dialog-container" (ngSubmit)="emitDoneEvent()">
+	<div>
+		<h1 md-dialog-title>{{isEditing ? 'Teilnehmer modifizieren' : 'Füge einen Teilnehmer hinzu'}}</h1>
+		<div md-dialog-content class="dialog-content-container">
+			<div>
+				<md-input-container
+					[dividerColor]="(autocompleteFormControl.dirty && participant.id === -1) ? 'warn' : 'primary'">
+					<input type="text"
+						   mdInput
+						   tabindex="-1"
+						   placeholder="Nutzer"
+						   name="userInput"
+						   [formControl]="autocompleteFormControl"
+						   [mdAutocomplete]="auto">
+					<md-hint *ngIf="autocompleteFormControl.dirty && participant.id === -1" class="error-message">
+						Bitte wähle einen Nutzer aus der Liste!
+					</md-hint>
+				</md-input-container>
+				<md-autocomplete #auto="mdAutocomplete" [displayWith]="displayFn">
+					<md-option *ngFor="let option of filteredOptions | async" [value]="option">
+						{{ option.firstName + " " + option.surname }}
+					</md-option>
+				</md-autocomplete>
+			</div>
+
+			<md-input-container>
+				<textarea placeholder="Kommentar" autosize
+						  #commentInput="ngModel"
+						  name="commentInput"
+						  [(ngModel)]="participant.comments" mdInput>
+				</textarea>
+			</md-input-container>
+
+			<div class="participant-checkboxes">
+				<md-checkbox name="isDriverCheckbox" #isDriverCheckbox="ngModel" [(ngModel)]="participant.isDriver">
+					Ist Fahrer
+				</md-checkbox>
+				<md-checkbox name="hasPaidCheckbox" #hasPaidCheckbox="ngModel" [(ngModel)]="participant.hasPaid">
+					Hat bezahlt
+				</md-checkbox>
+			</div>
+		</div>
+
+	</div>
+	<div md-dialog-actions>
+		<button md-icon-button type="button" md-dialog-close>
+			<md-icon>arrow_back</md-icon>
+		</button>
+		<button md-icon-button [disabled]="!modifyParticipantForm.form.valid || participant.id === -1"
+				type="submit" color="primary">
+			<md-icon>done</md-icon>
+		</button>
+	</div>
+
+</form>

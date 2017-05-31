@@ -56,7 +56,7 @@
 		</div>
 
 
-		<memo-tour-route-input [isRoute]="false" (routeChange)="updateRoute($event)"></memo-tour-route-input>
+		<memo-tour-route-input [(route)]="partyModel['route']"></memo-tour-route-input>
 
 		<md-input-container class="description-input">
 			<textarea autosize mdInput name="descriptionInput"

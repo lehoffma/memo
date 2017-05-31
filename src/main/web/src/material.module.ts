@@ -1,5 +1,6 @@
 import {NgModule} from "@angular/core";
 import {
+	MdAutocompleteModule,
 	MdButtonModule,
 	MdCardModule,
 	MdCheckboxModule,
@@ -23,11 +24,13 @@ import {
 	imports: [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepickerModule,
 		MdMenuModule, MdSidenavModule, MdToolbarModule, MdCardModule,
 		MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
-		MdListModule, MdSelectModule, MdInputModule, MdRadioModule],
+		MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
+		MdAutocompleteModule],
 	exports: [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepickerModule,
 		MdMenuModule, MdSidenavModule, MdToolbarModule, MdCardModule,
 		MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
-		MdListModule, MdSelectModule, MdInputModule, MdRadioModule],
+		MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
+		MdAutocompleteModule],
 })
 export class MemoMaterialModule {
 }

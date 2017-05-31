@@ -1,4 +1,4 @@
-<div class="detail-container" *ngFor="let event of [eventObservable | async]">
+<div class="detail-container">
 
 	<div>
 		<!--display image with overlayed title if present-->
@@ -7,6 +7,12 @@
 			 [attr.object-title]="event.title">
 			<img class="image-detail" src="{{event?.imagePath}}">
 		</div>
+
+		<a md-icon-button
+		   *ngIf="userCanEditEvent | async"
+		   routerLink="./edit">
+			<md-icon>edit</md-icon>
+		</a>
 
 		<memo-item-details-overview [event]="event" [overviewKeys]="overviewKeys | async"></memo-item-details-overview>
 	</div>

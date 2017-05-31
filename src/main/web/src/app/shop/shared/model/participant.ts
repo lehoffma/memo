@@ -6,9 +6,6 @@ export interface Participant {
 	comments: string
 }
 
-export interface ParticipantUser{
-	user: User,
-	isDriver: boolean,
-	hasPaid: boolean,
-	comments: string
+export interface ParticipantUser extends Participant {
+	user: User
 }

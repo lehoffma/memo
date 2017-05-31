@@ -1,28 +1,33 @@
-<md-input-container>
-	<input mdInput type="text" (keydown.enter)="$event.preventDefault()"
-		   #meetingPointInput placeholder="{{isRoute ? 'Treffpunkt' : 'Ort'}}">
+<md-input-container *ngFor="let tourStop of modelRoute; let i = index;">
+	<input mdInput type="text" (keydown.enter)="$event.preventDefault()" #routeInput
+		   placeholder="{{i === 0 ? 'Treffpunkt' : ((i===modelRoute.length - 1) ? 'Ziel' : 'Zwischenstop')}}">
+
+	<md-icon mdSuffix (click)="removeStop(i)" *ngIf="i > 0 && (i < modelRoute.length - 1)">close</md-icon>
+
 </md-input-container>
 
-<md-input-container *ngIf="isRoute">
-	<input mdInput type="text" (keydown.enter)="$event.preventDefault()"
-		   #destinationInput placeholder="Ziel">
-</md-input-container>
+<button md-button
+		color="primary"
+		type="button"
+		*ngIf="modelRoute && modelRoute.length > 1"
+		(click)="addNewStop()"
+		[style.marginBottom]="'5px'"
+		[style.float]="'right'">Zwischenstopp hinzufügen
+</button>
+<!--todo dont use [style] -->
 
-<agm-map [latitude]="getCenterOfTour().latitude" [longitude]="getCenterOfTour().longitude">
-	<agm-marker [latitude]="route.meetingPoint.latitude" [longitude]="route.meetingPoint.longitude">
 
-	</agm-marker>
-	<agm-marker *ngIf="isRoute" [latitude]="route.destination.latitude" [longitude]="route.destination.longitude">
+<!--<agm-map [latitude]="getCenterOfTour().latitude" [longitude]="getCenterOfTour().longitude">-->
+<!--<agm-marker *ngFor="let tourStop of modelRoute"-->
+<!--[latitude]="tourStop.latitude"-->
+<!--[longitude]="tourStop.longitude">-->
 
-	</agm-marker>
-
-	<agm-polyline *ngIf="isRoute">
-		<agm-polyline-point [latitude]="route.meetingPoint.latitude"
-							[longitude]="route.meetingPoint.longitude">
-		</agm-polyline-point>
-		<agm-polyline-point [latitude]="route.destination.latitude"
-							[longitude]="route.destination.longitude">
-		</agm-polyline-point>
-	</agm-polyline>
-</agm-map>
+<!--</agm-marker>-->
+<!--<agm-polyline *ngIf="modelRoute && modelRoute.length > 1">-->
+<!--<agm-polyline-point *ngFor="let tourStop of modelRoute"-->
+<!--[latitude]="tourStop.latitude"-->
+<!--[longitude]="tourStop.longitude">-->
+<!--</agm-polyline-point>-->
+<!--</agm-polyline>-->
+<!--</agm-map>-->
 

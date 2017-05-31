@@ -6,7 +6,7 @@ import {CropperSettings, ImageCropperComponent} from "ng2-image-cropper";
 	templateUrl: "./profile-picture-form.component.html",
 	styleUrls: ["./profile-picture-form.component.scss"]
 })
-export class ProfilePictureFormComponent implements OnInit, OnChanges{
+export class ProfilePictureFormComponent implements OnInit, OnChanges {
 
 	@Input() multiple: boolean = false;
 	@Input() image;
@@ -30,10 +30,11 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges{
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if(changes["image"]){
+		console.log(changes);
+		if (changes["image"] && changes["image"].currentValue && !changes["image"].currentValue.toString().includes("resources")) {
 			let image = new Image();
-			image.src = this.image + '?' + new Date().getTime();
-			image.setAttribute('crossOrigin', '');
+			image.src = this.image + "?" + new Date().getTime();
+			image.setAttribute("crossOrigin", "");
 			image.addEventListener("load", (data) => {
 				this.cropper.setImage(image);
 			});
@@ -73,6 +74,7 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges{
 
 	updatePreview(event) {
 		if (event.target.files && event.target.files[0]) {
+			console.log(event);
 			const reader = new FileReader();
 			let image = new Image();
 

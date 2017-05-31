@@ -59,14 +59,20 @@ export class EntryService implements ServletService<Entry> {
 	 * @param eventId
 	 * @param eventType
 	 */
-	getEntriesOfEvent(eventId:number, eventType: EventType):Observable<Entry[]>{
+	getEntriesOfEvent(eventId: number, eventType: EventType): Observable<Entry[]> {
 		let params = new URLSearchParams();
 		params.set("eventId", eventId.toString());
 		params.set("eventType", eventType.toString());
 
+
+		//todo demo
+		if (eventId >= 0) {
+			return this.getById(0).map(entry => [entry]);
+		}
+
 		return this.http.get("/api/entry", {search: params})
 			.map(response => response.json().entries)
-			.map((jsonArray:any[]) => jsonArray.map(json => Entry.create().setProperties(json)))
+			.map((jsonArray: any[]) => jsonArray.map(json => Entry.create().setProperties(json)))
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
@@ -81,10 +87,10 @@ export class EntryService implements ServletService<Entry> {
 	 * @param searchTerm
 	 * @param options
 	 */
-	search(searchTerm: string, options?: any): Observable<Entry[]>{
+	search(searchTerm: string, options?: any): Observable<Entry[]> {
 		let params = new URLSearchParams();
 		params.set("searchTerm", searchTerm);
-		if(options && options.dateRange && options.dateRange.minDate && options.dateRange.maxDate){
+		if (options && options.dateRange && options.dateRange.minDate && options.dateRange.maxDate) {
 			params.set("minDate", options.dateRange.minDate);
 			params.set("maxDate", options.dateRange.maxDate);
 		}
@@ -106,7 +112,6 @@ export class EntryService implements ServletService<Entry> {
 	}
 
 
-
 	/**
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
@@ -115,7 +120,7 @@ export class EntryService implements ServletService<Entry> {
 	 * @returns {Observable<T>}
 	 */
 	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						entry: Entry, options?: any): Observable<Entry>{
+						entry: Entry, options?: any): Observable<Entry> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 
@@ -138,7 +143,7 @@ export class EntryService implements ServletService<Entry> {
 	 * @param options
 	 */
 	add(entry: Entry, options?: any): Observable<Entry> {
-		return this.addOrModify(this.http.post, entry, options);
+		return this.addOrModify(this.http.post.bind(this.http), entry, options);
 	}
 
 	/**
@@ -148,7 +153,7 @@ export class EntryService implements ServletService<Entry> {
 	 * @returns {Observable<Entry>}
 	 */
 	modify(entry: Entry, options?: any): Observable<Entry> {
-		return this.addOrModify(this.http.put, entry, options);
+		return this.addOrModify(this.http.put.bind(this.http), entry, options);
 	}
 
 	/**

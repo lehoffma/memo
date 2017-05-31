@@ -1,6 +1,6 @@
 
 .dialog-container {
-	height: 500px;
+	max-height: 500px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -8,20 +8,24 @@
 	.dialog-content-container {
 		display: flex;
 		flex-direction: column;
-	}
 
-	/deep/ .color-picker {
-		left: 0 !important;
-		margin-left: 3% !important;
-		top: 12rem !important;
+		md-input-container {
+			width: 100%;
+		}
+
+		textarea {
+			resize: none;
+		}
+
+		.participant-checkboxes {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 15px;
+		}
 	}
 
 	.mat-dialog-actions {
 		display: flex;
 		justify-content: space-between;
 	}
-}
-
-.error-message {
-	color: red;
 }

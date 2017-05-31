@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {Address} from "../../../shared/model/address";
 
@@ -7,7 +7,7 @@ import {Address} from "../../../shared/model/address";
 	templateUrl: "./route.component.html",
 	styleUrls: ["./route.component.scss"]
 })
-export class RouteComponent implements OnInit{
+export class RouteComponent implements OnInit {
 	@Input() tourRoute: Address[];
 
 	constructor(private navigationService: NavigationService) {
@@ -16,7 +16,7 @@ export class RouteComponent implements OnInit{
 	ngOnInit() {
 	}
 
-	getCenterOfRoute(){
+	getCenterOfRoute() {
 		let longitude = 0;
 		let latitude = 0;
 		this.tourRoute.forEach(tourRoute => {

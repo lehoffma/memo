@@ -13,7 +13,8 @@
 					Dieses Feld darf nicht leer bleiben!
 				</md-hint>
 			</md-input-container>
-			<md-select [(ngModel)]="entryModel['category']" placeholder="Kategorie" #categorySelect="ngModel" name="categorySelect">
+			<md-select [(ngModel)]="entryModel['category']" placeholder="Kategorie" #categorySelect="ngModel"
+					   name="categorySelect">
 				<md-option *ngFor="let option of entryCategories" [value]="option">
 					{{option}}
 				</md-option>
@@ -23,15 +24,15 @@
 		<div class="entry-info-container">
 			<!--todo entry date-->
 			<!--<div>-->
-				<!--<md-input-container>-->
-					<!--<input mdInput [mdDatepicker]="myDatepicker"-->
-						   <!--placeholder="Datum"-->
-						   <!--[(ngModel)]="entryModel['date']"-->
-						   <!--#dateInput="ngModel"-->
-						   <!--name="dateInput" required>-->
-					<!--<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>-->
-				<!--</md-input-container>-->
-				<!--<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>-->
+			<!--<md-input-container>-->
+			<!--<input mdInput [mdDatepicker]="myDatepicker"-->
+			<!--placeholder="Datum"-->
+			<!--[(ngModel)]="entryModel['date']"-->
+			<!--#dateInput="ngModel"-->
+			<!--name="dateInput" required>-->
+			<!--<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>-->
+			<!--</md-input-container>-->
+			<!--<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>-->
 			<!--</div>-->
 			<div>
 				<md-input-container>

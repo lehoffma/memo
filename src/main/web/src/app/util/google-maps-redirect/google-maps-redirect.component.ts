@@ -13,7 +13,7 @@ export class GoogleMapsRedirectComponent implements OnInit {
 
 
 	ngOnInit(): void {
-		if(isNullOrUndefined(this.navigationService.redirectToTour) || this.navigationService.redirectToTour.length === 0){
+		if (isNullOrUndefined(this.navigationService.redirectToTour) || this.navigationService.redirectToTour.length === 0) {
 			this.navigationService.navigateByUrl("");
 			return;
 		}

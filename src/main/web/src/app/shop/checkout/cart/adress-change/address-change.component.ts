@@ -17,7 +17,7 @@ export class AddressChangeComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		const userId = this.logInService.accountObservable.map(user =>{
+		const userId = this.logInService.accountObservable.map(user => {
 			return user;
 		})
 		this.userObservable = userId.flatMap(id => this.userService.getById(id));

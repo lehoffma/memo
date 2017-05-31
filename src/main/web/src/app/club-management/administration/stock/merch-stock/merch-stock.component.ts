@@ -28,7 +28,7 @@ export class MerchStockComponent implements OnInit {
 	sortBy: Observable<ColumnSortingEvent<Merchandise>> = this._sortBy.asObservable();
 
 	merchList: Observable<any[]> = Observable.combineLatest(this.eventService.search("", {eventType: EventType.merch})
-			.do((merchList:Merchandise[]) => {
+			.do((merchList: Merchandise[]) => {
 				let options = Merchandise.getStockOptions(merchList);
 
 				this.primaryColumnKeys.next([

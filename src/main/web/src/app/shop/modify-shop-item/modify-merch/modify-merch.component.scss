@@ -1,11 +1,10 @@
-
 @import "../modify-shop-item.component";
 
-.merch-info-container{
+.merch-info-container {
 	display: flex;
 	justify-content: space-between;
 
-	> md-input-container{
+	> md-input-container {
 		width: 45%;
 	}
 }

@@ -1,17 +1,16 @@
 @import "../../../../mixins";
 @import "../modify-shop-item.component";
 
-
-.additional-tour-info-container{
+.additional-tour-info-container {
 	display: flex;
 	justify-content: space-between;
 
-	> div{
+	> div {
 		width: 45%;
 	}
 }
 
-.description-input{
+.description-input {
 	margin-top: 15px;
 
 }

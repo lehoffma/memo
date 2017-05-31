@@ -120,6 +120,8 @@ import {MerchColorCellComponent} from "./shop/modify-shop-item/modify-merch/modi
 import {ModifyMerchStockItemComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
 import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address-change.component";
 import {ParticipantsService} from "./shared/services/participants.service";
+import {FullNameTableCellComponent} from "./shop/item-details/participants/participant-list/full-name-table-cell.component";
+import {ModifyParticipantComponent} from "./shop/item-details/participants/participant-list/modify-participant/modify-participant.component";
 
 @NgModule({
 	imports: [
@@ -232,7 +234,9 @@ import {ParticipantsService} from "./shared/services/participants.service";
 		ModifyEntryComponent,
 		ModifyMerchStockComponent,
 		MerchColorCellComponent,
-		ModifyMerchStockItemComponent
+		ModifyMerchStockItemComponent,
+		FullNameTableCellComponent,
+		ModifyParticipantComponent
 	],
 	bootstrap: [
 		AppComponent
@@ -263,7 +267,9 @@ import {ParticipantsService} from "./shared/services/participants.service";
 		MerchStockTotalTableCellComponent,
 		CostValueTableCellComponent,
 		CostCategoryTableCellComponent,
-		MerchColorCellComponent
+		MerchColorCellComponent,
+		FullNameTableCellComponent,
+		ModifyParticipantComponent
 	]
 })
 export class AppModule {

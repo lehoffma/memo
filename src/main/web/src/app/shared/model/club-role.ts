@@ -61,7 +61,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 		stock: 3,
 		settings: 1
 	},
-	"Organizer":{
+	"Organizer": {
 		funds: 3,
 		party: 4,
 		user: 3,

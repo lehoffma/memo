@@ -1,4 +1,16 @@
+<div class="participant-table-container">
+	<memo-expandable-table
+		[data]="participants | async"
+		[expandable]="isExpandable | async"
+		[title]="'Teilnehmer von ' + (eventTitle | async)"
+		[columnKeys]="columnKeys | async"
+		[expandedRowComponent]="expandedRowComponent"
+		[expandedRowKeys]="expandedKeys | async"
+		(onSort)="updateSortBy($event)"
+		(onAdd)="addParticipant()"
+		(onEdit)="editParticipant($event)"
+		(onDelete)="deleteParticipant($event)"
+	>
 
-<div *ngFor="let participant of (participants | async)">
-	{{participant.user.firstName}}
+	</memo-expandable-table>
 </div>

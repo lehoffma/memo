@@ -18,7 +18,7 @@ import {MerchColor} from "../../../../shared/model/merch-color";
 })
 export class MerchColorCellComponent implements OnInit, OnChanges, ExpandableTableCellComponent {
 	@Input() data: MerchColor;
-	textColor:string = "black";
+	textColor: string = "black";
 
 	constructor() {
 	}
@@ -28,13 +28,13 @@ export class MerchColorCellComponent implements OnInit, OnChanges, ExpandableTab
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if(changes["data"]){
+		if (changes["data"]) {
 			this.textColor = this.getColor(this.hexToRgb(this.data.hex));
 		}
 	}
 
-	hexToRgb(hex:string) {
-		hex = hex.replace(/^#/, '');
+	hexToRgb(hex: string) {
+		hex = hex.replace(/^#/, "");
 
 		if (hex.length === 3) {
 			hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];

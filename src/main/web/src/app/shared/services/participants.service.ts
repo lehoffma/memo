@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {EventType} from "../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {Participant, ParticipantUser} from "../../shop/shared/model/participant";
-import {Http} from "@angular/http";
+import {Http, RequestOptionsArgs} from "@angular/http";
 import {UserService} from "./user.service";
 
 @Injectable()
@@ -52,6 +52,18 @@ export class ParticipantsService {
 					isDriver: false,
 					hasPaid: false,
 					comments: ""
+				},
+				{
+					id: 4,
+					isDriver: false,
+					hasPaid: false,
+					comments: ""
+				},
+				{
+					id: 5,
+					isDriver: false,
+					hasPaid: true,
+					comments: ""
 				}
 			])
 		}
@@ -77,6 +89,7 @@ export class ParticipantsService {
 			.flatMap(participants => {
 				return Observable.combineLatest(...participants.map(participant => this.userService.getById(participant.id)
 					.map(user => ({
+						id: participant.id,
 						user,
 						isDriver: participant.isDriver,
 						hasPaid: participant.hasPaid,
@@ -87,12 +100,16 @@ export class ParticipantsService {
 
 	/**
 	 *
+	 * @param requestMethod
 	 * @param eventId
 	 * @param eventType
 	 * @param participant
+	 * @returns {Observable<T>}
 	 */
-	updateParticipant(eventId:number, eventType: EventType, participant: Participant):Observable<any>{
-		return this.http.post("/api/participants", {eventId, eventType, participant})
+	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+				eventId: number, eventType: EventType, participant: Participant): Observable<any> {
+
+		return requestMethod("/api/participants", {eventId, eventType, participant})
 			.map(response => response.json() as any)
 			//retry 3 times before throwing an error
 			.retry(3)
@@ -107,9 +124,30 @@ export class ParticipantsService {
 	 *
 	 * @param eventId
 	 * @param eventType
+	 * @param participant
+	 */
+	updateParticipant(eventId: number, eventType: EventType, participant: Participant): Observable<any> {
+		return this.addOrModify(this.http.put.bind(this.http), eventId, eventType, participant);
+	}
+
+	/**
+	 *
+	 * @param eventId
+	 * @param eventType
+	 * @param participant
+	 * @returns {Observable<any>}
+	 */
+	addParticipant(eventId: number, eventType: EventType, participant: Participant): Observable<any> {
+		return this.addOrModify(this.http.post.bind(this.http), eventId, eventType, participant);
+	}
+
+	/**
+	 *
+	 * @param eventId
+	 * @param eventType
 	 * @param participantId
 	 */
-	deleteParticipant(eventId:number, eventType: EventType, participantId: number):Observable<any>{
+	deleteParticipant(eventId: number, eventType: EventType, participantId: number): Observable<any> {
 		return this.http.delete("/api/participants", {body: {eventId, eventType, participantId}})
 			.map(response => response.json() as any)
 			//retry 3 times before throwing an error

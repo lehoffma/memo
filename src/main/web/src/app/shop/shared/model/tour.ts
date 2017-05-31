@@ -1,6 +1,5 @@
 import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
-import {Participant} from "./participant";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
 export class Tour extends Event {

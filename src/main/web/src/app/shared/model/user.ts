@@ -1,5 +1,5 @@
 import {ClubRole} from "./club-role";
-import {UserPermissions, visitorPermissions} from "./permission";
+import {UserPermissions} from "./permission";
 import {ImmutableObject} from "./util/immutable-object";
 import {Gender} from "./gender";
 

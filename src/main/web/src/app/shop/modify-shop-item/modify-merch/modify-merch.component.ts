@@ -32,15 +32,15 @@ export class ModifyMerchComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	checkValidityOfPrice(){
+	checkValidityOfPrice() {
 		this.priceIsValid = new RegExp(/^[\d]+(([.,])[\d]{1,2})?$/).test(this.merchModel["price"])
 	}
 
-	cancel(){
+	cancel() {
 		this.location.back();
 	}
 
-	submitModifiedObject(){
+	submitModifiedObject() {
 		this.onSubmit.emit(this.model);
 	}
 }

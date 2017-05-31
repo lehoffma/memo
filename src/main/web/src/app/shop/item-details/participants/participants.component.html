@@ -1,8 +1,9 @@
 <div class="participants-container">
 	<div>
 		<md-list>
-            <span *ngFor="let participant of participants">
-                <md-list-item (click)="showDetailsOfUser(participant.user)">
+            <span *ngFor="let participant of (participants | slice:0:amountOfParticipantsShown)">
+                <md-list-item
+					(click)="showDetailsOfUser(participant.user)">
                     <img md-list-avatar src="{{participant?.user?.imagePath}}"
 						 alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
                     <h3 md-line> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
@@ -14,6 +15,12 @@
                 <md-divider></md-divider>
             </span>
 		</md-list>
+
+		<button md-button type="button" (click)="expandedStatus = !expandedStatus">
+			<span>{{expandedStatus ? 'Weniger' : 'Mehr'}}</span>
+			<md-icon [@expandedState]="expandedStatus">expand_more</md-icon>
+		</button>
+
 	</div>
 </div>
 

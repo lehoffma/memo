@@ -1,40 +1,48 @@
-.checkout-container{
+.checkout-container {
 	display: flex;
 	justify-content: center;
 }
+
 md-card {
 	margin: 1rem;
 	max-width: 500px;
 	width: 100%;
 }
-.title{
+
+.title {
 	margin-bottom: 0.5rem;
 }
-.click-adress{
+
+.click-adress {
 	background-color: #4caf50;
 	color: white;
 	display: flex;
 	justify-content: center;
 }
-.adress{
+
+.adress {
 	margin-bottom: 0.5rem;
 	margin-top: 0.5rem;
 }
+
 .cart-entry-price-border {
 	margin-top: 0.5rem;
 	border: none;
 	border-top: 1px solid grey;
 	height: 1px;
 }
-.methode{
+
+.methode {
 	margin-bottom: 0.5rem;
 	display: flex;
 	flex-direction: column;
 }
-.bank{
+
+.bank {
 	margin-bottom: 0.5rem;
 }
-.sum{
+
+.sum {
 	margin-bottom: 0.5rem;
 	display: flex;
 	justify-content: space-between;

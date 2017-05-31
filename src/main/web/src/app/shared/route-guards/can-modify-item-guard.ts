@@ -41,7 +41,7 @@ export class CanModifyItemGuard implements CanActivate {
 						}
 						permissionKey = "tour";
 						break;
-					case "party":
+					case "partys":
 						if (id >= 0) {
 							shopItem = this.eventService.getById(id, {eventType: EventType.partys});
 						}

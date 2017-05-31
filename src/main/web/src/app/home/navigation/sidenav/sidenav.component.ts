@@ -42,7 +42,7 @@ export class SideNavComponent implements OnInit {
 
 			return linksCopy.map(setId)
 				.filter(link => (!link.loginNeeded || user !== null) && this.checkPermissions(link.minimumPermission, permissions))
-	});
+		});
 
 	constructor(private navigationService: NavigationService,
 				private logInService: LogInService,

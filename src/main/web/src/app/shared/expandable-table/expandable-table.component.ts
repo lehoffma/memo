@@ -1,6 +1,6 @@
 import {
 	AfterViewInit,
-	ChangeDetectionStrategy, ChangeDetectorRef,
+	ChangeDetectionStrategy,
 	Component,
 	ComponentFactoryResolver,
 	EventEmitter,
@@ -79,7 +79,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	}
 
 	ngAfterViewInit(): void {
-		if(this.data){
+		if (this.data) {
 			this.initTableCells(this.tableCellList, this.data);
 		}
 		this.tableCellList.changes.subscribe(tableCellList => this.initTableCells(tableCellList, this.data));

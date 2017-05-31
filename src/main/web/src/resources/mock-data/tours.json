@@ -14,7 +14,10 @@
 			"emptySeats": 46,
 			"vehicle": "Bus",
 			"miles": 300,
-			"route": [0,1],
+			"route": [
+				0,
+				1
+			],
 			"participants": [
 				{
 					"id": 0,
@@ -52,7 +55,10 @@
 			"emptySeats": 28,
 			"vehicle": "Bulli",
 			"miles": 200,
-			"route": [0,1],
+			"route": [
+				0,
+				1
+			],
 			"participants": [
 				{
 					"id": 0,
@@ -79,7 +85,10 @@
 			"emptySeats": 22,
 			"vehicle": "Zug",
 			"miles": 10,
-			"route": [0,1],
+			"route": [
+				0,
+				1
+			],
 			"participants": [
 				{
 					"id": 1,
@@ -99,5 +108,4 @@
 			]
 		}
 	]
-
 }

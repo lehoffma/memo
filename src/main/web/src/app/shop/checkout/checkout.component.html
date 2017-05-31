@@ -11,15 +11,16 @@
 
 		<div class="title">Wähle die Bezahlart:</div>
 		<md-radio-group [(ngModel)]="paymentMethod">
-				<md-radio-button *ngFor="let method of paymentMethodOptions" value="{{method}}" class="methode">{{method}}</md-radio-button>
-				<div *ngIf="paymentMethod==='Lastschrift'" class="bank">
-					<div>Inhaber: Max Musti</div>
-					<div>IBAN: DE27100777770209299700</div>
-					<div>BIC: INGDDEFF</div>
-				</div>
-				<div *ngIf="paymentMethod==='Überweisung'" class="bank">
-					Die Überweisungsdaten werden dir per Email zugeschickt.
-				</div>
+			<md-radio-button *ngFor="let method of paymentMethodOptions" value="{{method}}" class="methode">{{method}}
+			</md-radio-button>
+			<div *ngIf="paymentMethod==='Lastschrift'" class="bank">
+				<div>Inhaber: Max Musti</div>
+				<div>IBAN: DE27100777770209299700</div>
+				<div>BIC: INGDDEFF</div>
+			</div>
+			<div *ngIf="paymentMethod==='Überweisung'" class="bank">
+				Die Überweisungsdaten werden dir per Email zugeschickt.
+			</div>
 		</md-radio-group>
 
 		<a md-button class="click-adress">Bankdaten ändern</a>

@@ -1,6 +1,5 @@
 {
-	"addresses":
-	[
+	"addresses": [
 		{
 			"id": 0,
 			"name": "Sörens Haus",
@@ -24,5 +23,4 @@
 			"longitude": 11.5
 		}
 	]
-
 }

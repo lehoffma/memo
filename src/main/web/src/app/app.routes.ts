@@ -41,8 +41,16 @@ export const ROUTES = [
 	{path: ":itemType/create", component: ModifyShopItemComponent, canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]},
 
 	{path: ":itemType/:eventId/costs", component: AccountingComponent, canActivate: [/*todo is-event guard*/ IsTreasurerGuard]},
-	{path: ":itemType/:eventId/costs/:id/edit", component: ModifyShopItemComponent, canActivate: [/*todo is-event guard*/ CanModifyItemGuard]},
-	{path: ":itemType/:eventId/costs/create", component: ModifyShopItemComponent, canActivate: [/*todo is-event guard*/ CanModifyItemGuard]},
+	{
+		path: ":itemType/:eventId/costs/:id/edit",
+		component: ModifyShopItemComponent,
+		canActivate: [/*todo is-event guard*/ CanModifyItemGuard]
+	},
+	{
+		path: ":itemType/:eventId/costs/create",
+		component: ModifyShopItemComponent,
+		canActivate: [/*todo is-event guard*/ CanModifyItemGuard]
+	},
 
 
 	{path: "tours", component: ToursComponent},
@@ -83,6 +91,7 @@ export const ROUTES = [
 	//todo update once there is more than one type of stock
 	{path: "management/stock", redirectTo: "management/stock/merch", pathMatch: "full"},
 	{path: "management/stock/merch", component: MerchStockComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
+
 
 	{path: "settings", component: SettingsComponent},
 	{path: "impressum", component: ImprintComponent},

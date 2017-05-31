@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
+import {Location} from "@angular/common";
 
 @Component({
 	selector: "memo-modify-party",
@@ -23,19 +24,17 @@ export class ModifyPartyComponent implements OnInit {
 		this.modelChange.emit(this.model);
 	}
 
-	constructor() {
+	constructor(private location: Location) {
 	}
 
 	ngOnInit() {
 	}
 
-
-	updateRoute(event: any) {
-		//todo
-		console.log(event);
+	cancel() {
+		this.location.back();
 	}
 
-	submitModifiedObject(){
+	submitModifiedObject() {
 		this.onSubmit.emit(this.model);
 	}
 }

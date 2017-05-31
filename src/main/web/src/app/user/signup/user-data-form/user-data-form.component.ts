@@ -1,6 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {SignUpSubmitEvent} from "../signup-submit-event";
-import {SignUpSection} from "../signup-section";
 import {Gender} from "../../../shared/model/gender";
 import {ClubRole} from "../../../shared/model/club-role";
 import {LogInService} from "../../../shared/services/login.service";
@@ -16,6 +14,7 @@ export class UserDataFormComponent implements OnInit {
 	@Input() model = {
 		firstName: undefined,
 		surname: undefined,
+		gender: undefined,
 		birthday: undefined,
 		phoneNumber: undefined,
 		isStudent: undefined,
@@ -24,11 +23,11 @@ export class UserDataFormComponent implements OnInit {
 	@Output() modelChange = new EventEmitter();
 	@Output() onCancel = new EventEmitter();
 
-	get userModel(){
+	get userModel() {
 		return this.model;
 	}
 
-	set userModel(model){
+	set userModel(model) {
 		this.model = model;
 		this.modelChange.emit(this.model);
 	}
@@ -57,7 +56,7 @@ export class UserDataFormComponent implements OnInit {
 		this.model.profilePicture = event;
 	}
 
-	cancel(){
+	cancel() {
 		this.onCancel.emit(true);
 	}
 }

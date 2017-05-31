@@ -12,7 +12,7 @@
 
 		<!--Vorname/Nachname-->
 		<h3>Persönliche Daten</h3>
-		<div class="user-personal-data-input-container">
+		<div class="user-personal-data-input-container" *ngIf="userModel">
 			<div class="name-input">
 				<md-input-container>
 					<input mdInput name="firstNameInput"

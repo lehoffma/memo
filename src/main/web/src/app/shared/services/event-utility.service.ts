@@ -30,7 +30,7 @@ export class EventUtilityService {
 			});
 	}
 
-	getShopItemType(item: ShopItem): ShopItemType {
+	getShopItemType(item: ShopItem | Event): ShopItemType {
 		return this.handleShopItem(item,
 			merch => ShopItemType.merch,
 			tour => ShopItemType.tour,
@@ -65,7 +65,6 @@ export class EventUtilityService {
 		if (this.isUser(item)) {
 			return userCallback(item);
 		}
-		//todo implement isEntry
 		if (this.isEntry(item)) {
 			return entryCallback(item);
 		}
@@ -125,7 +124,8 @@ export class EventUtilityService {
 	isUser(event: any): event is User {
 		return event && (<User>event).email !== undefined;
 	}
-	isEntry(event: any): event is Entry{
+
+	isEntry(event: any): event is Entry {
 		return event && (<Entry>event).category !== undefined;
 	}
 

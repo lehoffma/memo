@@ -11,7 +11,6 @@ export class ItemDetailsContentComponent implements OnInit {
 	@Input() route: string;
 
 	constructor() {
-
 	}
 
 	ngOnInit() {

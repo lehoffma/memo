@@ -103,8 +103,8 @@ export class EventService implements ServletService<Event> {
 									participantIds
 								}))))
 							.map(resultWithParticipants => resultWithParticipants
-									.filter(result => result.participantIds.find(participant => participant.id === userId))
-									.map(result => result.result))
+								.filter(result => result.participantIds.find(participant => participant.id === userId))
+								.map(result => result.result))
 						)
 				}
 
@@ -175,8 +175,8 @@ export class EventService implements ServletService<Event> {
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						event: Event, options?: any): Observable<Event>{
+	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+				event: Event, options?: any): Observable<Event> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 		const eventType = this.eventUtilService.getEventType(event);
@@ -201,7 +201,7 @@ export class EventService implements ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	add(event: Event, options?: any): Observable<Event> {
-		return this.addOrModify(this.http.post, event, options);
+		return this.addOrModify(this.http.post.bind(this.http), event, options);
 	}
 
 	/**
@@ -212,10 +212,8 @@ export class EventService implements ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	modify(event: Event, options?: any): Observable<Event> {
-		return this.addOrModify(this.http.put, event, options);
+		return this.addOrModify(this.http.put.bind(this.http), event, options);
 	}
-
-
 
 
 	/**

@@ -33,7 +33,7 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 					value = jsonToPermissions((<any>properties)["permissions"]);
 				} else if (key === "gender") {
 					value = Gender[Gender[(<any>properties)[key]]];
-				} else if (key === "category"){
+				} else if (key === "category") {
 					value = EntryCategory[(<any>properties)[key]];
 				}
 				this[key] = value;

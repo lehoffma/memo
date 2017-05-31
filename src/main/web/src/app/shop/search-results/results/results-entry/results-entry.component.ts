@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
-import {ShopItem} from "../../../../shared/model/shop-item";
+import {Event} from "../../../shared/model/event";
 
 @Component({
 	selector: "memo-results-entry",
@@ -9,7 +9,7 @@ import {ShopItem} from "../../../../shared/model/shop-item";
 	styleUrls: ["./results-entry.component.scss"]
 })
 export class ResultsEntryComponent implements OnInit {
-	@Input() result: ShopItem;
+	@Input() result: Event;
 
 	constructor(private eventUtilService: EventUtilityService,
 				private navigationService: NavigationService) {
@@ -18,11 +18,11 @@ export class ResultsEntryComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	resultIsMerch(result: ShopItem) {
+	resultIsMerch(result: Event) {
 		return this.eventUtilService.isMerchandise(result);
 	}
 
-	showResult(result: ShopItem) {
+	showResult(result: Event) {
 		this.navigationService.navigateToItemWithId(this.eventUtilService.getShopItemType(result), result.id);
 	}
 

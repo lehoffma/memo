@@ -10,7 +10,6 @@ import {SingleValueListExpandedRowComponent} from "../../shared/expandable-table
 import {ExpandedRowComponent} from "../../shared/expandable-table/expanded-row.component";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {isNullOrUndefined} from "util";
-import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {CostCategoryTableCellComponent} from "./accounting-table-cells/cost-category-table-cell.component";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -30,7 +29,6 @@ export class AccountingComponent implements OnInit {
 
 	entries = Observable.combineLatest(this.activatedRoute.paramMap
 		.flatMap(paramMap => {
-			console.log(paramMap);
 			if (paramMap.has("itemType") && paramMap.has("eventId")) {
 				let itemType: EventType = EventType[paramMap.get("itemType")];
 				let eventId = +paramMap.get("eventId");
@@ -77,7 +75,15 @@ export class AccountingComponent implements OnInit {
 	 * @param event
 	 */
 	addEntry(event: any) {
-		this.router.navigate(["create"], {relativeTo: this.activatedRoute});
+		this.activatedRoute.paramMap
+			.first()
+			.subscribe(paramMap => {
+				if (paramMap.has("itemType") && paramMap.has("eventId")) {
+					this.router.navigate(["create"], {relativeTo: this.activatedRoute});
+					return;
+				}
+				this.router.navigate(["entries", "create"]);
+			});
 	}
 
 	/**
@@ -86,7 +92,15 @@ export class AccountingComponent implements OnInit {
 	 */
 	editEntry(entryObj: Entry) {
 		if (!isNullOrUndefined(entryObj.id) && entryObj.id >= 0) {
-			this.router.navigate(["edit"], {relativeTo: this.activatedRoute});
+			this.activatedRoute.paramMap
+				.first()
+				.subscribe(paramMap => {
+					if (paramMap.has("itemType") && paramMap.has("eventId")) {
+						this.router.navigate([entryObj.id, "edit"], {relativeTo: this.activatedRoute});
+						return;
+					}
+					this.router.navigate(["entries", entryObj.id, "edit"]);
+				});
 		}
 	}
 

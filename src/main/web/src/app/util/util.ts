@@ -36,18 +36,18 @@ export function isString(value: any): value is string {
 	return value && (<string>value).toLowerCase !== undefined;
 }
 
-export function isNumber(value: any): value is number{
+export function isNumber(value: any): value is number {
 	return !isNaN(parseFloat(value)) && isFinite(value);
 }
 
 
-export function getId(object:any):number{
-	let getHashOfString = (stringValue:string) => {
+export function getId(object: any): number {
+	let getHashOfString = (stringValue: string) => {
 		let hash = 0;
 		if (stringValue.length == 0) return hash;
 		for (let i = 0; i < stringValue.length; i++) {
 			const character = stringValue.charCodeAt(i);
-			hash = ((hash<<5)-hash)+character;
+			hash = ((hash << 5) - hash) + character;
 			hash = hash & hash; // Convert to 32bit integer
 		}
 		return hash;
@@ -56,7 +56,7 @@ export function getId(object:any):number{
 	let getHashOfObject = (obj) => {
 		return Object.keys(obj)
 			.reduce((acc, objectKey) => {
-				if(isString(obj[objectKey]) || isNumber(obj[objectKey])){
+				if (isString(obj[objectKey]) || isNumber(obj[objectKey])) {
 					return acc + getHashOfString(obj[objectKey] + "")
 				}
 				return acc + getHashOfObject(obj[objectKey]);

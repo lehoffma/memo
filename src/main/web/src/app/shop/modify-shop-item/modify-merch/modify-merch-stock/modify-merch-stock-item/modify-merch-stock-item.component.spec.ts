@@ -1,25 +1,25 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 
-import { ModifyMerchStockItemComponent } from './modify-merch-stock-item.component';
+import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item.component";
 
-describe('ModifyMerchStockItemComponent', () => {
-  let component: ModifyMerchStockItemComponent;
-  let fixture: ComponentFixture<ModifyMerchStockItemComponent>;
+describe("ModifyMerchStockItemComponent", () => {
+	let component: ModifyMerchStockItemComponent;
+	let fixture: ComponentFixture<ModifyMerchStockItemComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ModifyMerchStockItemComponent ]
-    })
-    .compileComponents();
-  }));
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [ModifyMerchStockItemComponent]
+		})
+			.compileComponents();
+	}));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ModifyMerchStockItemComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ModifyMerchStockItemComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it("should create", () => {
+		expect(component).toBeTruthy();
+	});
 });

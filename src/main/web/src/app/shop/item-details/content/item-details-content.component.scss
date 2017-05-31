@@ -1,4 +1,6 @@
 @import "../../../../mixins";
+@import "../../../../theme";
+@import "~@angular/material/theming";
 @import "../centered-container";
 
 .object-details-content-container {
@@ -11,14 +13,14 @@
 	display: flex;
 	justify-content: space-between;
 
-	> h3{
+	> h3 {
 		margin: 0;
 		font-weight: 200;
 	}
 
 	> a {
 		text-decoration: none;
-		color: #2196F3;
+		color: rgba(0, 0, 0, 0.87);
 		font-weight: 400;
 	}
 }

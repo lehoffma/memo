@@ -18,7 +18,7 @@ import {Party} from "../shared/model/party";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Location} from "@angular/common";
 import {ShopItem} from "../../shared/model/shop-item";
-import {ItemTableComponent} from "../item-details/details-table/item-table.component";
+import {AddressService} from "../../shared/services/address.service";
 
 
 @Component({
@@ -41,7 +41,7 @@ export class ModifyShopItemComponent implements OnInit {
 	//ansonsten wird das übergebene Objekt editiert
 	idOfObjectToModify: number;
 	modifyingCostOfEvent = false;
-	eventId:number = -1;
+	eventId: number = -1;
 
 	previousValue: ShopItem;
 	model: any = {};
@@ -49,6 +49,7 @@ export class ModifyShopItemComponent implements OnInit {
 	constructor(private eventService: EventService,
 				private entryService: EntryService,
 				private userService: UserService,
+				private addressService: AddressService,
 				private navigationService: NavigationService,
 				private eventUtilService: EventUtilityService,
 				private location: Location,
@@ -57,7 +58,7 @@ export class ModifyShopItemComponent implements OnInit {
 			(params: Params) => {
 				this.itemType = ShopItemType[ShopItemType[params["itemType"]]];
 				this.eventId = +params["eventId"];
-				if(this.eventId >= 0){
+				if (this.eventId >= 0) {
 					this.eventType = this.itemType;
 					this.itemType = ShopItemType.entry;
 				}
@@ -87,6 +88,15 @@ export class ModifyShopItemComponent implements OnInit {
 				Object.keys(objectToModify).forEach(key => {
 					this.model[key] = objectToModify[key];
 				});
+
+				//todo remove falls es ne bessere möglichkeit gibt..
+				if (this.itemType === ShopItemType.tour || this.itemType === ShopItemType.party) {
+					let event: (Party | Tour) = (<(Party | Tour)>objectToModify);
+					Observable.combineLatest(...event.route.map(routeStop => this.addressService.getById(routeStop)))
+						.first()
+						.subscribe(tourStops => this.model["route"] = tourStops);
+				}
+
 				//modus === EDIT
 				if (objectToModify && objectToModify.id !== -1) {
 					this.previousValue = objectToModify;
@@ -132,36 +142,35 @@ export class ModifyShopItemComponent implements OnInit {
 			}
 		);
 
-		let options:any = this.eventUtilService.handleOptionalShopType(this.itemType,
+		let options: any = this.eventUtilService.handleOptionalShopType(this.itemType,
 			{
 				entries: () => ({eventId: this.eventId})
 			});
 
 
 		//todo display "submitting..." while waiting for response from server
-		if(this.mode === ModifyType.EDIT){
-
+		let requestMethod = service.add.bind(service);
+		if (this.mode === ModifyType.EDIT) {
+			requestMethod = service.modify.bind(service);
 		}
-		if(this.mode === ModifyType.ADD){
-			service.add(newObject, options)
-				.subscribe(
-					(result: ShopItem) => {
-						if(!this.eventType && !this.eventId){
-							//navigiere zum neu erstellten item
-							this.navigationService.navigateToItem(result);
-						}
-						else{
-							console.log(result);
-							//todo
-							this.navigationService.navigateToItemWithId(this.eventType, this.eventId);
-						}
-					},
-					error => {
-						console.log("adding or editing object went wrong");
-						console.error(error);
-						console.log(newObject);
+		requestMethod(newObject, options)
+			.subscribe(
+				(result: ShopItem) => {
+					if (!this.eventType && !this.eventId) {
+						//navigiere zum neu erstellten item
+						this.navigationService.navigateToItem(result);
 					}
-				);
-		}
+					else {
+						console.log(result);
+						//todo
+						this.navigationService.navigateToItemWithId(this.eventType, this.eventId);
+					}
+				},
+				error => {
+					console.log("adding or editing object went wrong");
+					console.error(error);
+					console.log(newObject);
+				}
+			);
 	}
 }

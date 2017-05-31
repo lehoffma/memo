@@ -83,7 +83,7 @@ export class UserService implements ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						user: User, options?: any): Observable<User>{
+						user: User, options?: any): Observable<User> {
 		const {profilePicture, paymentInfo} = options;
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
@@ -109,7 +109,7 @@ export class UserService implements ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	add(user: User, options: any = {profilePicture: null, paymentInfo: null}): Observable<User> {
-		return this.addOrModify(this.http.post, user, options);
+		return this.addOrModify(this.http.post.bind(this.http), user, options);
 	}
 
 	/**
@@ -119,7 +119,7 @@ export class UserService implements ServletService<User> {
 	 * @returns {Observable<User>}
 	 */
 	modify(user: User, options: any = {profilePicture: null, paymentInfo: null}): Observable<User> {
-		return this.addOrModify(this.http.put, user, options);
+		return this.addOrModify(this.http.put.bind(this.http), user, options);
 	}
 
 
