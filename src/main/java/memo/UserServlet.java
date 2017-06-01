@@ -51,11 +51,13 @@ public class UserServlet extends HttpServlet {
 
 			try {
 				Integer id = Integer.parseInt(Sid);
+				//ToDo: gibt null aus wenn id nicht vergeben
 				users.add(DatabaseManager.createEntityManager().find(User.class,id));
 			}
 			catch (NumberFormatException e){
 				response.getWriter().append("Bad ID Value");
 				response.setStatus(400);
+				return;
 			}
 
 
@@ -186,13 +188,13 @@ public class UserServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("charset=UTF-8");
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
+		//ToDo: refactor
 
 		String body = CharStreams.toString(request.getReader());
 
 		JsonElement jElement = new JsonParser().parse(body);
 		JsonObject juser = jElement.getAsJsonObject().getAsJsonObject("user");
-
+		//ToDo: delete email
 
 		String email = juser.get("email").getAsString();
 		Integer id = juser.get("id").getAsInt();

@@ -2,7 +2,7 @@
 	"events": [
 		{
 			"id": 0,
-			"title": "Weihachtsfeier",
+			"title": "Weihnachtsfeier",
 			"date": "2016-12-31T23:00:00.000Z",
 			"description": "Ansprache, die - gefürchteter Programmpunkt bei Weihnachtsfeiern, die von oben angeordnet werden. In guten Zeiten kann sich der Chef, wenn er krawattenlos ans Mikro tritt, als Mensch präsentieren, für den die Firma wie eine Familie ist. In schlechten Zeiten sollte sich der Redner noch mehr auf Allgemeinplätze zurückziehen, mindestens drei Mal das Wort Verantwortung fallen lassen und dann schnell zur Büfett-Eröffnung schreiten (siehe Essen).",
 			"expectedRole": "Mitglied",

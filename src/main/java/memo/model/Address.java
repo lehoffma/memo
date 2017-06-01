@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.lang.Integer;
 import java.lang.String;
@@ -15,26 +17,29 @@ import javax.persistence.*;
 @NamedQuery(name = "getAddressById", query = "SELECT a FROM Address a WHERE a.id = :id")
 public class Address implements Serializable {
 
-	
+    @Expose
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+    @Expose
 	private String name;
-	
+    @Expose
 	@Column(nullable=false)
 	private String street;
-	
+    @Expose
 	@Column(nullable=false)
 	private String streetNr;
-	
+    @Expose
 	@Column(nullable=false)
-	private String zipCode;
-	
+	private String zip;
+    @Expose
 	@Column(nullable=false)
 	private String city;
+    @Expose
 	private String country = "Germany";
-
+    @Expose
 	private double latitude;
+    @Expose
 	private double longitude;
 
 	private static final long serialVersionUID = 1L;
@@ -70,12 +75,12 @@ public class Address implements Serializable {
 	public void setStreetNr(String streetNr) {
 		this.streetNr = streetNr;
 	}   
-	public String getZipCode() {
-		return this.zipCode;
+	public String getZip() {
+		return this.zip;
 	}
 
-	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+	public void setZip(String zip) {
+		this.zip = zip;
 	}   
 	public String getCity() {
 		return this.city;
@@ -91,5 +96,19 @@ public class Address implements Serializable {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-   
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", street='" + street + '\'' +
+                ", streetNr='" + streetNr + '\'' +
+                ", zip='" + zip + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }
