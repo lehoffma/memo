@@ -34,15 +34,3 @@ h4, h3 {
 	text-align: center;
 }
 
-.loading-spinner {
-	@include animation(spin 0.5s infinite linear);
-}
-
-@include keyframes(spin) {
-	from {
-		transform: rotate(0deg)
-	}
-	to {
-		transform: rotate(360deg)
-	}
-}

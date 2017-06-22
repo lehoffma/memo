@@ -8,11 +8,9 @@ import {SortingOption} from "../../shared/model/sorting-option";
 import {eventSortingOptions} from "./sorting-options";
 import {attributeSortingFunction} from "../../util/util";
 import {isNullOrUndefined} from "util";
-import {UserService} from "../../shared/services/user.service";
-import {eventFilterOptions} from "./event-filter-options";
 import {MultiLevelSelectParent} from "app/shared/multi-level-select/shared/multi-level-select-parent";
 import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
-import {EventUtilityService} from "../../shared/services/event-utility.service";
+import {SearchFilterService} from "../../shared/services/search-filter.service";
 
 type sortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -32,7 +30,6 @@ export class SearchResultComponent implements OnInit {
 			: {});
 	filteredBy: Observable<any> = this.activatedRoute.queryParamMap
 		.map(paramMap => {
-			//todo...
 			let paramObject = {};
 			paramMap.keys.forEach(key => paramObject[key] = paramMap.get(key));
 			return paramObject;
@@ -42,12 +39,11 @@ export class SearchResultComponent implements OnInit {
 	results: Observable<Event[]>;
 
 	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
-	filterOptions: MultiLevelSelectParent[] = eventFilterOptions;
+	filterOptions: MultiLevelSelectParent[] = this.searchFilterService.eventFilterOptions;
 
 
 	constructor(private activatedRoute: ActivatedRoute,
-				private userService: UserService,
-				private eventUtilityService: EventUtilityService,
+				private searchFilterService: SearchFilterService,
 				private router: Router,
 				private eventService: EventService) {
 	}
@@ -112,9 +108,9 @@ export class SearchResultComponent implements OnInit {
 					this.results = Observable.empty();
 
 					this.results = Observable.combineLatest(
-						this.eventService.search(keywords, {eventType: EventType.tours}),
-						this.eventService.search(keywords, {eventType: EventType.partys}),
-						this.eventService.search(keywords, {eventType: EventType.merch}),
+						this.eventService.search(keywords, EventType.tours),
+						this.eventService.search(keywords, EventType.partys),
+						this.eventService.search(keywords, EventType.merch),
 						(tours, partys, merch) => [...tours, ...partys, ...merch]
 					)
 					//todo replace with actual api call?
@@ -127,18 +123,9 @@ export class SearchResultComponent implements OnInit {
 							return events;
 						})
 						//todo replace with actual api call?
-						.map((events: Event[]) => {
-							//todo add filter-functions to filteroptions so its not as hardcoded anymore
-							let categoryFilters = filteredBy["category"];
-
-							if (categoryFilters) {
-								let categories: string[] = categoryFilters.split("|");
-								return events.filter(event => categories.includes(this.eventUtilityService.getEventType(event).toString()))
-							}
-
-							//filtere events
-							return events;
-						})
+						.map((events: Event[]) =>
+							events.filter(event => this.searchFilterService.satisfiesFilters(event, filteredBy))
+						)
 				}
 			);
 	}

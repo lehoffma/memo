@@ -13,6 +13,7 @@ import {MerchStockTotalTableCellComponent} from "app/club-management/administrat
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {ShopItemType} from "../../../../shop/shared/model/shop-item-type";
 import {isNullOrUndefined} from "util";
+import {StockService} from "../../../../shared/services/stock.service";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -27,20 +28,23 @@ export class MerchStockComponent implements OnInit {
 	});
 	sortBy: Observable<ColumnSortingEvent<Merchandise>> = this._sortBy.asObservable();
 
-	merchList: Observable<any[]> = Observable.combineLatest(this.eventService.search("", {eventType: EventType.merch})
+	merchList: Observable<any[]> = Observable.combineLatest(this.eventService.search("", EventType.merch)
 			.do((merchList: Merchandise[]) => {
-				let options = Merchandise.getStockOptions(merchList);
-
-				this.primaryColumnKeys.next([
-					new ExpandableTableColumn<any>("Name", "title"),
-					...options.size
-						.map((size: string) => new ExpandableTableColumn<any>(size, size, MerchStockTotalTableCellComponent)),
-					new ExpandableTableColumn<any>("Gesamt", "total")
-				]);
-				this.expandedRowKeys.next([...options.color
-					.map((color: string) => new ExpandableTableColumn<any>(color, color))]);
+				Observable.combineLatest(...merchList.map(merch => this.stockService.getByEventId(merch.id)))
+					.first()
+					.subscribe(stockList => {
+						let options = this.stockService.getStockOptions(stockList);
+						this.primaryColumnKeys.next([
+							new ExpandableTableColumn<any>("Name", "title"),
+							...options.size
+								.map((size: string) => new ExpandableTableColumn<any>(size, size, MerchStockTotalTableCellComponent)),
+							new ExpandableTableColumn<any>("Gesamt", "total")
+						]);
+						this.expandedRowKeys.next([...options.color
+							.map((color: string) => new ExpandableTableColumn<any>(color, color))]);
+					});
 			})
-			.map((merchList: Merchandise[]) => Merchandise.mapToStockObject(merchList))
+			.flatMap((merchList: Merchandise[]) => this.stockService.mapToStockTableObject(merchList))
 		, this.sortBy)
 		.map(([merch, sortBy]) => merch.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 
@@ -50,6 +54,7 @@ export class MerchStockComponent implements OnInit {
 	expandedRowComponent: Type<ExpandedRowComponent<any>> = MultiValueListExpandedRowComponent;
 
 	constructor(private eventService: EventService,
+				private stockService: StockService,
 				private navigationService: NavigationService) {
 	}
 
@@ -87,7 +92,7 @@ export class MerchStockComponent implements OnInit {
 	 * @param merchObjects
 	 */
 	deleteMerch(merchObjects: any[]) {
-		merchObjects.forEach(merchObject => this.eventService.remove(merchObject.id, {eventType: EventType.merch})
+		merchObjects.forEach(merchObject => this.eventService.remove(merchObject.id, EventType.merch)
 			.subscribe(
 				value => value,
 				error => console.error(error)

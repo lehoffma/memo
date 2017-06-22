@@ -2,11 +2,11 @@ import {ImmutableObject} from "./util/immutable-object";
 import {EntryCategory} from "./entry-category";
 export class Entry extends ImmutableObject<Entry> {
 
-	constructor(public id: number,
-				public name: string,
-				public value: number,
+	constructor(public readonly id: number,
+				public readonly name: string,
+				public readonly value: number,
 				//todo entry date
-				public category: EntryCategory) {
+				public readonly category: EntryCategory) {
 		super(id);
 	}
 

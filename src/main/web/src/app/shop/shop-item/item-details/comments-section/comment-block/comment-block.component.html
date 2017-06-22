@@ -1,0 +1,104 @@
+<!--todo etwas anzeigen wenn keine comments vorhanden-->
+
+<div class="comment-block-container" *ngIf="comment$ | async; let commentObject">
+	<div class="main-comment-container" *ngIf="author$ | async; let author">
+		<a class="comment-image-container" routerLink="/members/{{author.id}}">
+			<img class="comment-image" src="{{author.imagePath}}"/>
+		</a>
+		<div class="comment-container">
+			<div class="comment-header">
+				<div class="comment-header-info">
+					<a class="comment-author-name" routerLink="/members/{{author.id}}">{{author.firstName + ' ' +
+						author.surname}}</a>
+
+					<div class="comment-timestamp secondary-text">
+						<!--todo specify date format (maybe even something like "vor 4 stunden"?)-->
+						{{commentObject.timeStamp | date}}
+					</div>
+				</div>
+			</div>
+			<div class="comment-body">
+				<!--todo directive that transforms @Username mentions to links?-->
+				{{commentObject.text}}
+			</div>
+			<div class="comment-footer">
+				<span (click)="replyToComment(commentObject)">Antworten</span>
+			</div>
+		</div>
+
+
+		<!--todo only show if logged in user is author of comment or admin-->
+		<!--todo edit => inline editing-->
+		<!--todo remove => display warning before deleting-->
+		<div class="comment-options"
+			 [style.visibility]="(loggedInUser$ | async)?.id === author.id ? 'visible' : 'hidden'"
+			 [ngClass]="{'show-element': isTouchDevice()}">
+
+			<md-icon
+				[mdMenuTriggerFor]="menu">
+				more_horiz
+			</md-icon>
+			<!--todo md-menu-->
+			<!--(loggedInUser$ | async)?.id === author.id-->
+
+			<md-menu #menu="mdMenu" xPosition="before">
+				<button md-menu-item type="button" (click)="editComment()">
+					<md-icon>edit</md-icon>
+					<span>Bearbeiten</span>
+				</button>
+				<button md-menu-item type="button" (click)="deleteComment()">
+					<md-icon>delete</md-icon>
+					<span>Löschen</span>
+				</button>
+			</md-menu>
+		</div>
+	</div>
+
+
+	<div class="reply-form-container child-comments-container"
+		 *ngIf="loggedInUser !== null && showReplyBox && !(children$ | async)">
+		<memo-comment-input (submitComment)="addComment($event, commentObject.id)"
+							[author]="loggedInUser"
+							[focus]="true"
+							[commentText]="''">
+
+		</memo-comment-input>
+	</div>
+
+	<ng-template ngFor let-children [ngForOf]="[children$ | async]">
+		<div class="child-comments-container">
+			<div class="show-children-button-container" *ngIf="children?.length > 0">
+				<span (click)="showChildren = !showChildren">
+
+					<span *ngIf="!showChildren; else hideChildren">
+						Zeige {{children?.length}} Antwort{{children?.length > 1 ? 'en' : ''}}
+					</span>
+					<ng-template #hideChildren>
+						<span>Verstecke {{children?.length}} Antwort{{children?.length > 1 ? 'en' : ''}}</span>
+					</ng-template>
+				</span>
+			</div>
+			<div *ngIf="showChildren">
+				<div>
+					<memo-comment-block *ngFor="let child of children"
+										[comment]="child"></memo-comment-block>
+
+					<div class="reply-form-container" *ngIf="loggedInUser !== null">
+						<memo-comment-input (submitComment)="addComment($event, commentObject.id)"
+											[author]="loggedInUser"
+											[focus]="true"
+											[commentText]="''">
+
+						</memo-comment-input>
+					</div>
+				</div>
+
+				<!--todo wieder einbauen-->
+				<ng-template #loadingChildren>
+					<span><md-icon class="loading-spinner">refresh</md-icon></span>
+				</ng-template>
+			</div>
+		</div>
+	</ng-template>
+
+</div>

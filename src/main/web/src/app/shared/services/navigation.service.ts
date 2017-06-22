@@ -47,10 +47,16 @@ export class NavigationService {
 		this.router.navigateByUrl(url)
 			.then(
 				_ => _, //navigation was successful
-				reason => console.error(`navigation failed, reason: ${reason}`)
+				reason => {
+					console.error(`navigation failed, reason: ${reason}`);
+					throw new Error();
+				}
 			)
 			.catch(
-				error => console.error(`error occurred while navigating, error message: ${error}`)
+				error => {
+					console.error(`error occurred while navigating, error message: ${error}`)
+					throw new Error();
+				}
 			)
 	}
 }

@@ -14,7 +14,6 @@ import {rolePermissions} from "../model/club-role";
 @Injectable()
 export class CanModifyItemGuard implements CanActivate {
 	constructor(private loginService: LogInService,
-				private eventUtilityService: EventUtilityService,
 				private eventService: EventService,
 				private entryService: EntryService,
 				private userService: UserService,
@@ -37,19 +36,19 @@ export class CanModifyItemGuard implements CanActivate {
 				switch (route.paramMap.get("itemType")) {
 					case "tours":
 						if (id >= 0) {
-							shopItem = this.eventService.getById(id, {eventType: EventType.tours});
+							shopItem = this.eventService.getById(id, EventType.tours);
 						}
 						permissionKey = "tour";
 						break;
 					case "partys":
 						if (id >= 0) {
-							shopItem = this.eventService.getById(id, {eventType: EventType.partys});
+							shopItem = this.eventService.getById(id, EventType.partys);
 						}
 						permissionKey = "party";
 						break;
 					case "merch":
 						if (id >= 0) {
-							shopItem = this.eventService.getById(id, {eventType: EventType.merch});
+							shopItem = this.eventService.getById(id, EventType.merch);
 						}
 						permissionKey = "merch";
 						break;

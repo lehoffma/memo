@@ -114,19 +114,35 @@ export class LogInService {
 			.publish().refCount();
 	}
 
+	/**
+	 *
+	 * @returns {boolean}
+	 */
 	isLoggedIn() {
 		return this.accountSubject.getValue() !== null;
 	}
 
+	/**
+	 *
+	 * @returns {Observable<User>}
+	 */
 	currentUser(): Observable<User> {
 		const currentId = this.accountSubject.getValue();
 		return currentId !== null ? this.userService.getById(this.accountSubject.getValue()) : Observable.of(null);
 	}
 
+	/**
+	 *
+	 * @returns {Observable<R>}
+	 */
 	isLoggedInObservable() {
 		return this.accountObservable.map(id => id !== null);
 	}
 
+	/**
+	 *
+	 * @param id
+	 */
 	pushNewData(id: number) {
 		this.accountSubject.next(id);
 	}

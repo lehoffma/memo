@@ -17,8 +17,9 @@ export class EventUtilityService {
 	constructor() {
 	}
 
-	getEventType(event: Event): EventType {
-		return this.handleShopItem(event,
+	//todo make static
+	static getEventType(event: Event): EventType {
+		return EventUtilityService.handleShopItem(event,
 			merch => EventType.merch,
 			tour => EventType.tours,
 			party => EventType.partys,
@@ -31,7 +32,7 @@ export class EventUtilityService {
 	}
 
 	getShopItemType(item: ShopItem | Event): ShopItemType {
-		return this.handleShopItem(item,
+		return EventUtilityService.handleShopItem(item,
 			merch => ShopItemType.merch,
 			tour => ShopItemType.tour,
 			party => ShopItemType.party,
@@ -43,35 +44,35 @@ export class EventUtilityService {
 			});
 	}
 
-	handleShopItem<T>(item: ShopItem | Event,
-					  merchCallback: (merch: Merchandise) => T = () => null,
-					  tourCallback: (tour: Tour) => T = () => null,
-					  partyCallback: (party: Party) => T = () => null,
-					  userCallback: (user: User) => T = () => null,
-					  entryCallback: (entry: Entry) => T = () => null,
-					  defaultCallback: (event: typeof item) => T = () => null): T {
+	static handleShopItem<T>(item: ShopItem | Event,
+							 merchCallback: (merch: Merchandise) => T = () => null,
+							 tourCallback: (tour: Tour) => T = () => null,
+							 partyCallback: (party: Party) => T = () => null,
+							 userCallback: (user: User) => T = () => null,
+							 entryCallback: (entry: Entry) => T = () => null,
+							 defaultCallback: (event: typeof item) => T = () => null): T {
 		if (isNullOrUndefined(item)) {
 			return defaultCallback(item);
 		}
-		if (this.isMerchandise(item)) {
+		if (EventUtilityService.isMerchandise(item)) {
 			return merchCallback(item);
 		}
-		if (this.isTour(item)) {
+		if (EventUtilityService.isTour(item)) {
 			return tourCallback(item);
 		}
-		if (this.isParty(item)) {
+		if (EventUtilityService.isParty(item)) {
 			return partyCallback(item);
 		}
-		if (this.isUser(item)) {
+		if (EventUtilityService.isUser(item)) {
 			return userCallback(item);
 		}
-		if (this.isEntry(item)) {
+		if (EventUtilityService.isEntry(item)) {
 			return entryCallback(item);
 		}
 		return defaultCallback(item);
 	}
 
-	handleOptionalShopType<T>(type: ShopItemType, callbacks: {
+	static handleOptionalShopType<T>(type: ShopItemType, callbacks: {
 		merch?: () => T,
 		tours?: () => T,
 		partys?: () => T,
@@ -93,16 +94,16 @@ export class EventUtilityService {
 		if (!callbacks.entries) {
 			callbacks.entries = () => null;
 		}
-		return this.handleShopType(type, callbacks.merch, callbacks.tours, callbacks.partys, callbacks.members, callbacks.entries);
+		return EventUtilityService.handleShopType(type, callbacks.merch, callbacks.tours, callbacks.partys, callbacks.members, callbacks.entries);
 	}
 
-	handleShopType<T>(type: ShopItemType,
-					  merchCallback: () => T,
-					  tourCallback: () => T,
-					  partyCallback: () => T,
-					  userCallback: () => T,
-					  entryCallback: () => T,
-					  defaultCallback: () => T = () => null): T {
+	static handleShopType<T>(type: ShopItemType,
+							 merchCallback: () => T,
+							 tourCallback: () => T,
+							 partyCallback: () => T,
+							 userCallback: () => T,
+							 entryCallback: () => T,
+							 defaultCallback: () => T = () => null): T {
 		if (isNullOrUndefined(type)) {
 			return defaultCallback();
 		}
@@ -121,24 +122,24 @@ export class EventUtilityService {
 		return defaultCallback();
 	}
 
-	isUser(event: any): event is User {
+	static isUser(event: any): event is User {
 		return event && (<User>event).email !== undefined;
 	}
 
-	isEntry(event: any): event is Entry {
+	static isEntry(event: any): event is Entry {
 		return event && (<Entry>event).category !== undefined;
 	}
 
 
-	isMerchandise(event: any): event is Merchandise {
+	static isMerchandise(event: any): event is Merchandise {
 		return event && (<Merchandise>event).colors !== undefined;
 	}
 
-	isTour(event: any): event is Tour {
+	static isTour(event: any): event is Tour {
 		return event && (<Tour>event).vehicle !== undefined
 	}
 
-	isParty(event: any): event is Party {
+	static isParty(event: any): event is Party {
 		return event && (<Party>event).emptySeats !== undefined && (<Tour>event).vehicle === undefined;
 	}
 }

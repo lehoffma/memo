@@ -28,17 +28,17 @@ export class HomeComponent implements OnInit {
 			{
 				title: "Touren",
 				route: "tours",
-				events: this.eventService.search("", {eventType: EventType.tours}).map(tours => tours.slice(0, 7))
+				events: this.eventService.search("", EventType.tours).map(tours => tours.slice(0, 7))
 			},
 			{
 				title: "Veranstaltungen",
 				route: "partys",
-				events: this.eventService.search("", {eventType: EventType.partys}).map(partys => partys.slice(0, 7))
+				events: this.eventService.search("", EventType.partys).map(partys => partys.slice(0, 7))
 			},
 			{
 				title: "Merchandise",
 				route: "merch",
-				events: this.eventService.search("", {eventType: EventType.merch}).map(merch => merch.slice(0, 7))
+				events: this.eventService.search("", EventType.merch).map(merch => merch.slice(0, 7))
 			},
 		];
 	}

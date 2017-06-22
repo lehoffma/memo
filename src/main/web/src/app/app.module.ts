@@ -6,29 +6,26 @@ import {RouterModule} from "@angular/router";
 import {HomeComponent} from "./home/home.component";
 import {ToolbarComponent} from "./home/navigation/toolbar/toolbar.component";
 import {CategoryPreviewComponent} from "./home/category-preview/category-preview.component";
-import {ToursComponent} from "./shop/tours/tours.component";
+import {ToursComponent} from "./shop/shop-item/tours/tours.component";
 import {AccountComponent} from "./user/account.component";
-import {PartysComponent} from "./shop/partys/partys.component";
+import {PartysComponent} from "./shop/shop-item/partys/partys.component";
 import {ProfileComponent} from "./user/profile/profile.component";
-import {TourDetailComponent} from "./shop/tours/tour-detail/tour-detail.component";
+import {TourDetailComponent} from "./shop/shop-item/tours/tour-detail/tour-detail.component";
 import {NavigationService} from "./shared/services/navigation.service";
 import {ToolbarElementComponent} from "./home/navigation/toolbar/element/toolbar-element.component";
 import {SideNavComponent} from "./home/navigation/sidenav/sidenav.component";
-import {PartyDetailComponent} from "./shop/partys/party-detail/party-detail.component";
-import {MerchandiseDetailComponent} from "./shop/merchandise/merchandise-detail/merchandise-detail.component";
-import {ClothesSizePipe} from "./shop/merchandise/merchandise-detail/clothes-size.pipe";
+import {PartyDetailComponent} from "./shop/shop-item/partys/party-detail/party-detail.component";
+import {MerchandiseDetailComponent} from "./shop/shop-item/merchandise/merchandise-detail/merchandise-detail.component";
+import {ClothesSizePipe} from "./shop/shop-item/merchandise/merchandise-detail/clothes-size.pipe";
 import {ROUTES} from "./app.routes";
 import {GoogleMapsRedirectComponent} from "./util/google-maps-redirect/google-maps-redirect.component";
-import {MerchandiseComponent} from "./shop/merchandise/merchandise.component";
-import {ItemDetailsContainerComponent} from "./shop/item-details/container/item-details-container.component";
-import {ItemDetailsContentComponent} from "./shop/item-details/content/item-details-content.component";
-import {KeysOfObjectPipe} from "./shared/pipes/keys-of-object.pipe";
-import {ItemTableComponent} from "./shop/item-details/details-table/item-table.component";
-import {ConvertCamelCaseToTitleCasePipe} from "./shared/pipes/convert-camelcase-to-titlecase.pipe";
-import {ParticipantsComponent} from "./shop/item-details/participants/participants.component";
-import {RouteComponent} from "./shop/item-details/route/route.component";
-import {FilterPipe} from "./shared/pipes/filter.pipe";
-import {SizeTableComponent} from "./shop/item-details/size-table/size-table.component";
+import {MerchandiseComponent} from "./shop/shop-item/merchandise/merchandise.component";
+import {ItemDetailsContainerComponent} from "./shop/shop-item/item-details/container/item-details-container.component";
+import {ItemDetailsContentComponent} from "./shop/shop-item/item-details/content/item-details-content.component";
+import {ItemTableComponent} from "./shop/shop-item/item-details/details-table/item-table.component";
+import {ParticipantsComponent} from "./shop/shop-item/item-details/participants/participants.component";
+import {RouteComponent} from "./shop/shop-item/item-details/route/route.component";
+import {SizeTableComponent} from "./shop/shop-item/item-details/size-table/size-table.component";
 import {memoConfig} from "./app.config";
 import {LogInService} from "./shared/services/login.service";
 import {LoginComponent} from "./user/login/login.component";
@@ -39,10 +36,10 @@ import {CheckoutCartComponent} from "./shop/checkout/cart/cart.component";
 import {BadgeComponent} from "./util/badge/badge.component";
 import {EventUtilityService} from "./shared/services/event-utility.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {ItemDetailsOverviewComponent} from "./shop/item-details/container/overview/item-details-overview.component";
+import {ItemDetailsOverviewComponent} from "./shop/shop-item/item-details/container/overview/item-details-overview.component";
 import {AccountDataFormComponent} from "./user/signup/account-data-form/account-data-form.component";
 import {UserDataFormComponent} from "./user/signup/user-data-form/user-data-form.component";
-import {ItemImagePopupComponent} from "./shop/item-details/container/image-popup/item-image-popup.component";
+import {ItemImagePopupComponent} from "./shop/shop-item/item-details/container/image-popup/item-image-popup.component";
 import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-link/toolbar-profile-link.component";
 import {AccountDetailsComponent} from "./user/account-details/account-details.component";
 import {MyToursComponent} from "./user/my-tours/my-tours.component";
@@ -67,7 +64,7 @@ import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {UserService} from "app/shared/services/user.service";
 import {ParticipatedToursPreviewComponent} from "./user/profile/participated-tours-preview/participated-tours-preview.component";
-import {ParticipantListComponent} from "./shop/item-details/participants/participant-list/participant-list.component";
+import {ParticipantListComponent} from "./shop/shop-item/item-details/participants/participant-list/participant-list.component";
 import {CacheStore} from "./shared/stores/cache.store";
 import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
 import {CanModifyItemGuard} from "./shared/route-guards/can-modify-item-guard";
@@ -81,10 +78,10 @@ import {AgmCoreModule} from "@agm/core";
 import {MultiLevelSelectComponent} from "./shared/multi-level-select/multi-level-select.component";
 import {MultiLevelSelectEntryComponent} from "./shared/multi-level-select/multi-level-select-entry/multi-level-select-entry.component";
 import {QueryParameterService} from "./shared/services/query-parameter.service";
-import {ModifyShopItemComponent} from "./shop/modify-shop-item/modify-shop-item.component";
+import {ModifyShopItemComponent} from "./shop/shop-item/modify-shop-item/modify-shop-item.component";
 import {IsValidItemTypeGuard} from "./shared/route-guards/is-valid-itemtype.guard";
 import {PageNotFoundComponent} from "./util/page-not-found/page-not-found.component";
-import {TourRouteInputComponent} from "./shop/modify-shop-item/tour-route-input/tour-route-input.component";
+import {TourRouteInputComponent} from "./shop/shop-item/modify-shop-item/tour-route-input/tour-route-input.component";
 import {ColorPickerModule} from "ngx-color-picker";
 import {ProfilePictureFormComponent} from "./user/signup/profile-picture-form/profile-picture-form.component";
 import {PaymentMethodsFormComponent} from "./user/signup/payment-methods-form/payment-methods-form.component";
@@ -102,7 +99,7 @@ import {BooleanCheckMarkCellComponent} from "./club-management/administration/me
 import {GenderCellComponent} from "./club-management/administration/member-list/member-list-table-cells/gender-cell.component";
 import {AddressService} from "./shared/services/address.service";
 import {AddressTableCellComponent} from "./club-management/administration/member-list/member-list-table-cells/address-table-cell.component";
-import {AutoSizeTextAreaDirective} from "./shop/modify-shop-item/autosize-textarea.directive";
+import {AutoSizeTextAreaDirective} from "./shared/autosize-textarea.directive";
 import {HttpModule} from "@angular/http";
 import {MemoMaterialModule} from "../material.module";
 import {MerchStockComponent} from "./club-management/administration/stock/merch-stock/merch-stock.component";
@@ -110,18 +107,27 @@ import {MultiValueListExpandedRowComponent} from "./shared/expandable-table/mult
 import {MerchStockTotalTableCellComponent} from "./club-management/administration/stock/merch-stock/merch-stock-table-cells/merch-stock-total-table-cell.component";
 import {CostValueTableCellComponent} from "./club-management/accounting/accounting-table-cells/cost-value-table-cell.component";
 import {CostCategoryTableCellComponent} from "./club-management/accounting/accounting-table-cells/cost-category-table-cell.component";
-import {ModifyTourComponent} from "./shop/modify-shop-item/modify-tour/modify-tour.component";
-import {ModifyPartyComponent} from "./shop/modify-shop-item/modify-party/modify-party.component";
-import {ModifyMerchComponent} from "./shop/modify-shop-item/modify-merch/modify-merch.component";
-import {ModifyUserComponent} from "./shop/modify-shop-item/modify-user/modify-user.component";
-import {ModifyEntryComponent} from "./shop/modify-shop-item/modify-entry/modify-entry.component";
-import {ModifyMerchStockComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock.component";
-import {MerchColorCellComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/merch-color-cell/merch-color-cell.component";
-import {ModifyMerchStockItemComponent} from "./shop/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
+import {ModifyTourComponent} from "./shop/shop-item/modify-shop-item/modify-tour/modify-tour.component";
+import {ModifyPartyComponent} from "./shop/shop-item/modify-shop-item/modify-party/modify-party.component";
+import {ModifyMerchComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch.component";
+import {ModifyUserComponent} from "./shop/shop-item/modify-shop-item/modify-user/modify-user.component";
+import {ModifyEntryComponent} from "./shop/shop-item/modify-shop-item/modify-entry/modify-entry.component";
+import {ModifyMerchStockComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock.component";
+import {MerchColorCellComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch-stock/merch-color-cell/merch-color-cell.component";
+import {ModifyMerchStockItemComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
 import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address-change.component";
 import {ParticipantsService} from "./shared/services/participants.service";
-import {FullNameTableCellComponent} from "./shop/item-details/participants/participant-list/full-name-table-cell.component";
-import {ModifyParticipantComponent} from "./shop/item-details/participants/participant-list/modify-participant/modify-participant.component";
+import {FullNameTableCellComponent} from "./shop/shop-item/item-details/participants/participant-list/full-name-table-cell.component";
+import {ModifyParticipantComponent} from "./shop/shop-item/item-details/participants/participant-list/modify-participant/modify-participant.component";
+import {StockService} from "./shared/services/stock.service";
+import {CommentService} from "app/shared/services/comment.service";
+import {CommentsSectionComponent} from "./shop/shop-item/item-details/comments-section/comments-section.component";
+import {CommentBlockComponent} from "./shop/shop-item/item-details/comments-section/comment-block/comment-block.component";
+import {CommentInputComponent} from "./shop/shop-item/item-details/comments-section/comment-block/comment-input/comment-input.component";
+import {SearchFilterService} from "./shared/services/search-filter.service";
+import {EventCalendarComponent} from "./shared/event-calendar/event-calendar.component";
+import {ScheduleModule} from "primeng/primeng";
+import {EventCalendarContainerComponent} from "./shop/event-calendar-container/event-calendar-container.component";
 
 @NgModule({
 	imports: [
@@ -138,15 +144,13 @@ import {ModifyParticipantComponent} from "./shop/item-details/participants/parti
 		}),
 		ColorPickerModule,
 		PasswordStrengthBarModule,
-		ImageCropperModule
+		ImageCropperModule,
+		ScheduleModule
 	],
 	declarations: [
 		AppComponent,
 		GoogleMapsRedirectComponent,
 		ClothesSizePipe,
-		KeysOfObjectPipe,
-		FilterPipe,
-		ConvertCamelCaseToTitleCasePipe,
 		SideNavComponent,
 		ToolbarComponent,
 		ToolbarElementComponent,
@@ -236,15 +240,20 @@ import {ModifyParticipantComponent} from "./shop/item-details/participants/parti
 		MerchColorCellComponent,
 		ModifyMerchStockItemComponent,
 		FullNameTableCellComponent,
-		ModifyParticipantComponent
+		ModifyParticipantComponent,
+		CommentsSectionComponent,
+		CommentBlockComponent,
+		CommentInputComponent,
+		EventCalendarComponent,
+		EventCalendarContainerComponent,
 	],
 	bootstrap: [
 		AppComponent
 	],
 	providers: [
-		NavigationService, UserService, CacheStore, ParticipantsService,
+		NavigationService, UserService, CacheStore, ParticipantsService, CommentService,
 		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
-		EntryService, EventFactoryService, QueryParameterService,
+		EntryService, EventFactoryService, QueryParameterService, StockService, SearchFilterService,
 
 		//guards
 		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,

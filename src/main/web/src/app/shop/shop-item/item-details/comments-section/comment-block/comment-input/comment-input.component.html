@@ -1,0 +1,25 @@
+<div class="comment-input-container">
+	<div class="author-image-container">
+		<img src="{{author.imagePath}}"/>
+	</div>
+
+	<form #commentInputForm="ngForm" (ngSubmit)="submit(); commentInputForm.reset()">
+
+		<textarea autosize
+				  placeholder="Kommentar posten..."
+				  rows="2"
+				  name="commentInput"
+				  #commentInput="ngModel"
+				  [(ngModel)]="commentText">
+
+		</textarea>
+
+		<button md-icon-button
+				mdSuffix
+				color="primary"
+				[disabled]="!commentText || commentText.length === 0"
+				type="submit">
+			<md-icon>send</md-icon>
+		</button>
+	</form>
+</div>

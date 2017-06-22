@@ -19,7 +19,10 @@ import {Address} from "../model/address";
 export interface Cache extends EventData, ArrayObjectType<ImmutableObject<any>> {
 	users: User[];
 	entries: Entry[];
-	addresses: Address[]
+	addresses: Address[];
+	//todo update cache (participant + merchstoch have to be converted to immutableObject-classes)
+	// participants: Participant[];
+	// stocks: MerchStockList[];
 }
 
 //equivalent to InnerCacheType = User | Entry | Merchandise | Tour | Party
@@ -33,7 +36,10 @@ export class CacheStore {
 		partys: new BehaviorSubject<Party[]>([]),
 		users: new BehaviorSubject<User[]>([]),
 		entries: new BehaviorSubject<Entry[]>([]),
-		addresses: new BehaviorSubject<Address[]>([])
+		addresses: new BehaviorSubject<Address[]>([]),
+		//todo update cache (participant + merchstoch have to be converted to immutableObject-classes)
+		// participants: new BehaviorSubject<Participant[]>([]),
+		// stocks: new BehaviorSubject<MerchStockList[]>([])
 	};
 	public cache: ObservableType<Cache> = asObservableType(this._cache);
 
@@ -64,13 +70,13 @@ export class CacheStore {
 	 * @param object
 	 */
 	getCacheKeyFromObject(object: InnerCacheType) {
-		if (this.eventUtilService.isMerchandise(object)) {
+		if (EventUtilityService.isMerchandise(object)) {
 			return "merch";
 		}
-		if (this.eventUtilService.isParty(object)) {
+		if (EventUtilityService.isParty(object)) {
 			return "partys";
 		}
-		if (this.eventUtilService.isTour(object)) {
+		if (EventUtilityService.isTour(object)) {
 			return "tours";
 		}
 		if (User.isUser(object)) {

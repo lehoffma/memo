@@ -21,8 +21,14 @@ export class LoginComponent implements OnInit {
 	ngOnInit() {
 	}
 
+	/**
+	 * Performs a POST request to the server with the entered email and password.
+	 * While waiting for the response, a loading icon is displayed (this.loading = true).
+	 * If the login was successful, the user is redirected to the url he visited before entering the login process
+	 */
 	checkLogin() {
 		this.loading = true;
+		//todo better error handling than "something went wrong"?
 		this.loginService.login(this.email, this.password)
 			.subscribe(
 				loginWasSuccessful => {

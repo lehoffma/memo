@@ -54,15 +54,21 @@ export class MultiLevelSelectEntryComponent implements OnInit {
 			option.selected = !option.selected;
 		}
 		else {
-			//act like a radio button, i.e. selects the clicked option but sets every other option to false
-			option.selected = true;
-			this.option.children
-				.filter(child => child !== option)
-				.forEach(child => {
-					if (isMultiLevelSelectLeaf(child)) {
-						child.selected = false;
-					}
-				});
+			//toggle if already selected
+			if(option.selected){
+				option.selected = false;
+			}
+			else{
+				//act like a radio button, i.e. selects the clicked option but sets every other option to false
+				option.selected = true;
+				this.option.children
+					.filter(child => child !== option)
+					.forEach(child => {
+						if (isMultiLevelSelectLeaf(child)) {
+							child.selected = false;
+						}
+					});
+			}
 		}
 		this.emitItemSelectedEvent(this.option);
 	}

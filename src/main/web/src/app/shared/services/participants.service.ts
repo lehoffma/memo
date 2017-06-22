@@ -13,6 +13,8 @@ export class ParticipantsService {
 
 	}
 
+	//todo von servletService erben lassen
+
 	handleError(error: any) {
 		console.error(error);
 		return Observable.empty();

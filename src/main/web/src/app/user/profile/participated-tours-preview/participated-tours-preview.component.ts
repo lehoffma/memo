@@ -41,8 +41,7 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 		return DEFAULT_AMOUNT_SHOWN;
 	}
 
-	constructor(private navigationService: NavigationService,
-				private eventUtilService: EventUtilityService) {
+	constructor(private navigationService: NavigationService) {
 	}
 
 	ngOnInit() {
@@ -50,7 +49,7 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 
 
 	showEvent(recentEvent: Event) {
-		const eventType: EventType = this.eventUtilService.getEventType(recentEvent);
+		const eventType: EventType = EventUtilityService.getEventType(recentEvent);
 		this.navigationService.navigateByUrl(`${eventType}/${recentEvent.id}`);
 	}
 

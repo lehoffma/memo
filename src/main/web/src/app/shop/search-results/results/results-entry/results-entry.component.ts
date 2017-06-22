@@ -19,7 +19,7 @@ export class ResultsEntryComponent implements OnInit {
 	}
 
 	resultIsMerch(result: Event) {
-		return this.eventUtilService.isMerchandise(result);
+		return EventUtilityService.isMerchandise(result);
 	}
 
 	showResult(result: Event) {

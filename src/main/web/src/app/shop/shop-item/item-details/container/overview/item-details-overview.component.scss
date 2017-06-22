@@ -1,0 +1,39 @@
+@import "../../../../../../mixins";
+@import "../../centered-container";
+
+.object-overview-container {
+	@include card-like();
+	padding: 1.5rem;
+
+	.object-info-container {
+		display: flex;
+		justify-content: space-between;
+
+		.object-info {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+
+			div:first-child {
+				font-size: 1.1rem;
+			}
+			div:not(:first-child) {
+				font-size: 0.9rem;
+			}
+		}
+	}
+
+	.add-to-cart-container {
+		padding-top: 1rem;
+		padding-left: 3rem;
+		padding-right: 3rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+
+		form > * {
+			margin-bottom: 1.5rem;
+			width: 100%;
+		}
+	}
+}

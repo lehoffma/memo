@@ -4,6 +4,9 @@ import {isArray} from "util";
 import {EntryCategory} from "../entry-category";
 import {Gender} from "../gender";
 import {isNumber, isString} from "../../../util/util";
+import * as moment from "moment";
+
+
 export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 
 	constructor(public readonly id: number) {
@@ -22,7 +25,7 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 				if (isArray(value)) {
 
 				} else if (key.toLowerCase().includes("date") && isString(value)) {
-					value = Date.parse(value);
+					value = moment(value).toDate();
 				} else if (isNumber(value)) {
 					value = +value;
 				} else if (key === "expectedRole") {

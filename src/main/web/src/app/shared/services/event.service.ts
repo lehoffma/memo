@@ -3,36 +3,33 @@ import {EventType, getEventTypes} from "../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shop/shared/model/event";
 import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
-import {ServletService} from "../model/servlet-service";
 import {EventUtilityService} from "./event-utility.service";
 import {EventFactoryService} from "./event-factory.service";
 import {Tour} from "../../shop/shared/model/tour";
 import {Party} from "../../shop/shared/model/party";
 import {CacheStore} from "../stores/cache.store";
 import {ParticipantsService} from "./participants.service";
+import {ServletService} from "./servlet.service";
 
 @Injectable()
-export class EventService implements ServletService<Event> {
+export class EventService extends ServletService<Event> {
 	constructor(private http: Http,
 				private cache: CacheStore,
 				private participantsService: ParticipantsService,
 				private eventUtilService: EventUtilityService,
 				private eventFactoryService: EventFactoryService) {
+		super();
 	}
 
-	handleError(error: Error): Observable<any> {
-		console.error(error);
-		return Observable.empty();
-	}
+	//TODO! eventType wird nicht mehr benötigt, da Ids global unique sind. (nur search sollte es behalten)
 
 	private readonly baseUrl = `/api/event`;
 
 	/**
 	 * Helper method for accessing the cache
 	 * @param eventType
-	 * @param id
 	 */
-	cacheKeyFromEventType(eventType: EventType): "tours" | "partys" | "merch" {
+	private static cacheKeyFromEventType(eventType: EventType): "tours" | "partys" | "merch" {
 		switch (eventType) {
 			case EventType.tours:
 				return "tours";
@@ -47,37 +44,29 @@ export class EventService implements ServletService<Event> {
 	/**
 	 * Requested das Event (mit einem bestimmten Event-Typen) vom Server, welches die gegebene ID besitzt
 	 * @param eventId
-	 * @param options
+	 * @param eventType
+	 * @param refresh
 	 * @returns {Observable<T>}
 	 */
-	getById(eventId: number, options?: { eventType: EventType, refresh?: boolean }): Observable<Event> {
-		const {eventType, refresh} = options;
-
+	getById(eventId: number, eventType: EventType, refresh?: boolean): Observable<Event> {
 		let url = `${this.baseUrl}?id=${eventId}&type=${eventType}`;
 
 		//return cached version if available to reduce number of http request necessary
-		if (this.cache.isCached(this.cacheKeyFromEventType(eventType), eventId) && !refresh) {
+		if (this.cache.isCached(EventService.cacheKeyFromEventType(eventType), eventId) && !refresh) {
 			return this.cache.cache[eventType]
 				.map((events: Event[]) => events.find(event => event.id === eventId));
 		}
 
 		//todo remove when backend is running todo demo
 		if (!refresh) {
-			return this.search("", options)
+			return this.search("", eventType)
 				.map(events => events.find(event => event.id === eventId));
 		}
 
-		return this.http.get(url)
+		return this.performRequest(this.http.get(url))
 			.map(response => response.json().events)
 			.map(json => this.eventFactoryService.build(eventType).setProperties(json[0]))
-			.do(event => this.cache.addOrModify(event))
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.do(event => this.cache.addOrModify(event));
 	}
 
 	/**
@@ -95,7 +84,7 @@ export class EventService implements ServletService<Event> {
 
 				//todo remove demo
 				if (eventType) {
-					return this.search("", {eventType})
+					return this.search("", eventType)
 						.flatMap(results => Observable.combineLatest(...results.map(result =>
 							this.participantsService.getParticipantIdsByEvent(result.id, eventType)
 								.map(participantIds => ({
@@ -108,15 +97,8 @@ export class EventService implements ServletService<Event> {
 						)
 				}
 
-				return this.http.get("/api/event", {search: params})
-					.map(response => response.json().events as (Party | Tour)[])
-					//retry 3 times before throwing an error
-					.retry(3)
-					//log any errors
-					.catch(this.handleError)
-					//convert the observable to a hot observable, i.e. immediately perform the http request
-					//instead of waiting for someone to subscribe
-					.publish().refCount();
+				return this.performRequest(this.http.get("/api/event", {search: params}))
+					.map(response => response.json().events as (Party | Tour)[]);
 			});
 
 		return Observable.combineLatest(searchQueries)
@@ -128,35 +110,26 @@ export class EventService implements ServletService<Event> {
 	/**
 	 * Requested alle Events (mit dem gegebenen event typen), die auf den search term matchen
 	 * @param searchTerm
-	 * @param options
+	 * @param eventType
 	 * @returns {Observable<T>}
 	 */
-	search(searchTerm: string, options?: { eventType: EventType }): Observable<Event[]> {
-		const {eventType} = options;
-
+	search(searchTerm: string, eventType: EventType): Observable<Event[]> {
 		//if no event type is specified, search for all kinds of events (the default value is 'ALL')
 		let url = `${this.baseUrl}?searchTerm=${searchTerm}` + ((eventType !== null) ? `&type=${eventType}` : "");
 
 		//todo remove when backend is running todo demo
 		url = `/resources/mock-data/${eventType}.json`;
 
-		const httpRequest = this.http.get(url)
+		const httpRequest = this.performRequest(this.http.get(url))
 			.map(response => response.json().events)
 			.map((jsonArray: any[]) => jsonArray.map(json => this.eventFactoryService.build(eventType).setProperties(json)))
-			.do(events => this.cache.addMultiple(...events))
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.do(events => this.cache.addMultiple(...events));
 
 		//todo remove when backend is running todo demo
 		const DEBUG_httpRequest = httpRequest.map(events => events.filter(event => event.matchesSearchTerm(searchTerm)));
 		// let DEBUG_httpRequest = httpRequest;
 
-		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, this.cacheKeyFromEventType(eventType));
+		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, EventService.cacheKeyFromEventType(eventType));
 
 		//if any of the cached events match the search term, combine these with the ones loaded from the server
 		return Observable.combineLatest(cachedObservable, DEBUG_httpRequest,
@@ -172,71 +145,54 @@ export class EventService implements ServletService<Event> {
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
 	 * @param event
-	 * @param options
 	 * @returns {Observable<T>}
 	 */
 	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-				event: Event, options?: any): Observable<Event> {
+				event: Event): Observable<Event> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
-		const eventType = this.eventUtilService.getEventType(event);
+		const eventType = EventUtilityService.getEventType(event);
 
-		return requestMethod(this.baseUrl, {event}, requestOptions)
+		return this.performRequest(requestMethod(this.baseUrl, {event}, requestOptions))
 			.map(response => response.json().id)
-			.map(id => this.getById(id, {eventType}))
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.flatMap(id => this.getById(id, eventType));
 	}
 
 	/**
 	 * Sendet ein Event Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
 	 * gibt dann das erstellte Objekt wieder an den Client zurück
 	 * @param event
-	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	add(event: Event, options?: any): Observable<Event> {
-		return this.addOrModify(this.http.post.bind(this.http), event, options);
+	add(event: Event): Observable<Event> {
+		//todo if merch => update stockService
+		return this.addOrModify(this.http.post.bind(this.http), event);
 	}
 
 	/**
 	 * Sendet ein Event Objekt an den Server, welcher dieses mit den übergebeben Daten updaten soll. Der Server
 	 * gibt dann das geupdatete Objekt wieder an den Client zurück
 	 * @param event
-	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	modify(event: Event, options?: any): Observable<Event> {
-		return this.addOrModify(this.http.put.bind(this.http), event, options);
+	modify(event: Event): Observable<Event> {
+		//todo if merch => update stockService
+		return this.addOrModify(this.http.put.bind(this.http), event);
 	}
 
 
 	/**
 	 * Löscht das Event mit der gegebenen ID aus der Datenbank
 	 * @param eventId
-	 * @param options
+	 * @param eventType
 	 * @returns {Observable<T>}
 	 */
-	remove(eventId: number, options?: { eventType: EventType }): Observable<Response> {
-		const {eventType} = options;
-
-		return this.http.delete(this.baseUrl, {body: {id: eventId, type: eventType}})
+	remove(eventId: number, eventType: EventType): Observable<Response> {
+		return this.performRequest(this.http.delete(this.baseUrl, {body: {id: eventId, type: eventType}}))
 			.do((removeResponse: Response) => {
 				const eventId: number = removeResponse.json().id;
-				this.cache.remove(this.cacheKeyFromEventType(eventType), eventId);
-			})
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.publish().refCount();
+				this.cache.remove(EventService.cacheKeyFromEventType(eventType), eventId);
+			});
 	}
 
 

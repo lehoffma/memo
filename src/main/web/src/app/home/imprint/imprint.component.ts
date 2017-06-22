@@ -24,17 +24,17 @@ export class ImprintComponent implements OnInit {
 	}
 
 	postMerch() {
-		this.result = this.eventService.getById(0, {eventType: EventType.merch})
+		this.result = this.eventService.getById(0, EventType.merch)
 			.flatMap(merch => this.eventService.add(merch));
 	}
 
 	postTour() {
-		this.result = this.eventService.getById(0, {eventType: EventType.tours})
+		this.result = this.eventService.getById(0, EventType.tours)
 			.flatMap(tour => this.eventService.add(tour));
 	}
 
 	postParty() {
-		this.result = this.eventService.getById(0, {eventType: EventType.tours})
+		this.result = this.eventService.getById(0, EventType.tours)
 			.flatMap(party => this.eventService.add(party));
 	}
 

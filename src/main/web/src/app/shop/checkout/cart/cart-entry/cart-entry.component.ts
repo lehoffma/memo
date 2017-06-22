@@ -3,6 +3,8 @@ import {ShoppingCartService} from "../../../../shared/services/shopping-cart.ser
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {CartItem} from "../cart-item";
 import {Event} from "../../../shared/model/event";
+import {StockService} from "../../../../shared/services/stock.service";
+import {Observable} from "rxjs/Observable";
 
 
 @Component({
@@ -14,51 +16,64 @@ export class CartEntryComponent implements OnInit {
 	@Input() cartItem: CartItem;
 	amountOptions = [];
 
-	constructor(private shoppingCartService: ShoppingCartService, private eventUtilityService: EventUtilityService) {
+	constructor(private shoppingCartService: ShoppingCartService,
+				private stockService: StockService,
+				private eventUtilityService: EventUtilityService) {
 	}
 
 
 	ngOnInit() {
-		let maxAmount: number;
-		if (this.eventUtilityService.isMerchandise(this.cartItem.item)) {
-			maxAmount = this.cartItem.item.getAmountOf(this.cartItem.options.color, this.cartItem.options.size)
+		let maxAmount: Observable<number>;
+		//if the cart item is a merchandise object,
+		//we have to extract the number from the item's stock (by calling the stockservice function)
+		if (EventUtilityService.isMerchandise(this.cartItem.item)) {
+			maxAmount = this.stockService.getByEventId(this.cartItem.item.id)
+				.map(stock => stock
+					// we have to consider the selected color and size attributes
+					.filter(stockItem =>
+						stockItem.color.hex === this.cartItem.options.color.hex
+						&& stockItem.size === this.cartItem.options.size
+					)
+					.reduce((acc, stockItem) => acc + stockItem.amount, 0));
 		} else {
-			maxAmount = this.cartItem.item.capacity;
+			maxAmount = Observable.of(this.cartItem.item.capacity);
 		}
-		for (let i = 0; i <= maxAmount; i++) {
-			this.amountOptions.push(i);
-		}
+		maxAmount.subscribe(maxAmount => {
+			for (let i = 0; i <= maxAmount; i++) {
+				this.amountOptions.push(i);
+			}
+		})
 	}
 
+	/**
+	 * Delegates the call to the isMerchandise function of the util service (so we can use it in the template)
+	 * @param result
+	 * @returns {boolean}
+	 */
 	itemIsMerch(result: Event) {
-		return this.eventUtilityService.isMerchandise(result);
+		return EventUtilityService.isMerchandise(result);
 	}
 
+	/**
+	 * Callback of the remove icon
+	 * Removes the item from the shopping cart service completely
+	 */
 	deleteItem() {
-		const eventType = this.eventUtilityService.getEventType(this.cartItem.item);
-		if (this.cartItem.amount > 0) {
-			this.shoppingCartService.pushItem(eventType, {
-				id: this.cartItem.item.id,
-				amount: this.cartItem.amount = 0,
-				options: this.cartItem.options
-			})
-		}
-
+		const eventType = EventUtilityService.getEventType(this.cartItem.item);
+		this.shoppingCartService.deleteItem(eventType, this.cartItem.item.id, this.cartItem.options);
 	}
 
-
+	/**
+	 * Callback of the amount dropdown
+	 * Pushes a new amount value to the cart service
+	 */
 	updateEventAmount() {
-		const eventType = this.eventUtilityService.getEventType(this.cartItem.item);
-		if (this.cartItem.amount > 0) {
-			this.shoppingCartService.pushItem(eventType, {
-				id: this.cartItem.item.id,
-				amount: this.cartItem.amount,
-				options: this.cartItem.options
-			})
-		}
-		else {
-			this.shoppingCartService.deleteItem(eventType, this.cartItem.item.id, this.cartItem.options);
-		}
+		const eventType = EventUtilityService.getEventType(this.cartItem.item);
+		this.shoppingCartService.pushItem(eventType, {
+			id: this.cartItem.item.id,
+			amount: this.cartItem.amount,
+			options: this.cartItem.options
+		});
 	}
 }
 

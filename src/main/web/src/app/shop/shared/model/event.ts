@@ -1,6 +1,6 @@
 import {ClubRole} from "../../../shared/model/club-role";
 import {ImmutableObject} from "../../../shared/model/util/immutable-object";
-import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
+import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
 
 

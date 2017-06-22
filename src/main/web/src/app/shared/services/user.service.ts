@@ -2,20 +2,15 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
 import {User} from "../model/user";
-import {ServletService} from "../model/servlet-service";
 import {CacheStore} from "../stores/cache.store";
+import {ServletService} from "./servlet.service";
 
 @Injectable()
-export class UserService implements ServletService<User> {
+export class UserService extends ServletService<User> {
 
 	constructor(private http: Http,
 				private cache: CacheStore) {
-
-	}
-
-	handleError(error: Error): Observable<any> {
-		console.error(error);
-		return Observable.empty();
+		super();
 	}
 
 	/**
@@ -37,17 +32,10 @@ export class UserService implements ServletService<User> {
 				.map(users => users.find(user => user.id === userId));
 		}
 
-		return this.http.get(`/api/user?id=${userId}`)
+		return this.performRequest(this.http.get(`/api/user?id=${userId}`))
 			.map(response => response.json().users)
 			.map(json => User.create().setProperties(json))
-			.do((user: User) => this.cache.addOrModify(user))
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.do((user: User) => this.cache.addOrModify(user));
 	}
 
 	/**
@@ -61,17 +49,10 @@ export class UserService implements ServletService<User> {
 		//todo remove when server is running todo demo
 		url = `/resources/mock-data/users.json`;
 
-		return this.http.get(url)
+		return this.performRequest(this.http.get(url))
 			.map(response => response.json().users)
 			.map((jsonArray: any[]) => jsonArray.map(json => User.create().setProperties(json)))
-			.do((users: User[]) => this.cache.addMultiple(...users))
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.do((users: User[]) => this.cache.addMultiple(...users));
 	}
 
 
@@ -79,25 +60,18 @@ export class UserService implements ServletService<User> {
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
 	 * @param user
-	 * @param options
+	 * @param profilePicture todo type
+	 * @param paymentInfo todo type
 	 * @returns {Observable<T>}
 	 */
 	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						user: User, options?: any): Observable<User> {
-		const {profilePicture, paymentInfo} = options;
+						user: User, profilePicture?:any, paymentInfo?:any): Observable<User> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 
-		return requestMethod("/api/user", {user, profilePicture, paymentInfo}, requestOptions)
+		return this.performRequest(requestMethod("/api/user", {user, profilePicture, paymentInfo}, requestOptions))
 			.map(response => response.json().id as number)
-			.map(id => this.getById(id))
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.flatMap(id => this.getById(id))
 	}
 
 
@@ -105,40 +79,34 @@ export class UserService implements ServletService<User> {
 	 * Sendet ein User Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
 	 * gibt dann das erstellte Objekt wieder an den Client zurück
 	 * @param user
-	 * @param options
+	 * @param profilePicture todo type
+	 * @param paymentInfo todo type
 	 * @returns {Observable<T>}
 	 */
-	add(user: User, options: any = {profilePicture: null, paymentInfo: null}): Observable<User> {
-		return this.addOrModify(this.http.post.bind(this.http), user, options);
+	add(user: User, profilePicture?: any, paymentInfo?: any): Observable<User> {
+		return this.addOrModify(this.http.post.bind(this.http), user, profilePicture, paymentInfo);
 	}
 
 	/**
 	 *
 	 * @param user
-	 * @param options
+	 * @param profilePicture todo type
+	 * @param paymentInfo todo type
 	 * @returns {Observable<User>}
 	 */
-	modify(user: User, options: any = {profilePicture: null, paymentInfo: null}): Observable<User> {
-		return this.addOrModify(this.http.put.bind(this.http), user, options);
+	modify(user: User, profilePicture?: any, paymentInfo?: any): Observable<User> {
+		return this.addOrModify(this.http.put.bind(this.http), user, profilePicture, paymentInfo);
 	}
 
 
 	/**
 	 * Löscht den User mit der gegebenen ID aus der Datenbank
 	 * @param userId
-	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	remove(userId: number, options?: any): Observable<Response> {
-		return this.http.delete("/api/user", {body: {id: userId}})
-			.do((response: Response) => this.cache.remove("users", response.json()))
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.publish().refCount();
+	remove(userId: number): Observable<Response> {
+		return this.performRequest(this.http.delete("/api/user", {body: {id: userId}}))
+			.do((response: Response) => this.cache.remove("users", response.json()));
 	}
 
 }

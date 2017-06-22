@@ -1,0 +1,38 @@
+@import "~@angular/material/theming";
+@import "../../../../../../../theme";
+
+
+.comment-input-container {
+	display: flex;
+	align-items: flex-start;
+
+	.author-image-container {
+		margin-right: 10px;
+		@media all and (max-width: 800px){
+			margin-left: 5px;
+		}
+		img {
+			width: 30px;
+			height: 30px;
+			//border-radius: 50%;
+		}
+	}
+
+	form {
+		display: flex;
+		align-items: flex-end;
+		width: 100%;
+		textarea {
+			flex-grow: 1;
+			resize: none;
+			min-height: 2rem;
+			padding: 0.4rem;
+
+			&:focus{
+				border-color: mat-color($primary);
+				outline-color: mat-color($primary);
+			}
+		}
+	}
+
+}

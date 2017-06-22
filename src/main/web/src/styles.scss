@@ -1,4 +1,5 @@
 @import "theme";
+@import "mixins";
 
 html, body, main, app {
 	min-height: 100%;
@@ -51,6 +52,20 @@ main {
 
 .secondary-text {
 	color: #757575;
+}
+
+
+.loading-spinner {
+	@include animation(spin 0.5s infinite linear);
+}
+
+@include keyframes(spin) {
+	from {
+		transform: rotate(0deg)
+	}
+	to {
+		transform: rotate(360deg)
+	}
 }
 
 .ripple {

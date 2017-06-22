@@ -30,7 +30,12 @@
 		"ng2-password-strength-bar": "1.1.2",
 		"ngx-color-picker": "4.0.0",
 		"ng2-image-cropper": "0.0.3",
-		"iban": "0.0.8"
+		"iban": "0.0.8",
+		"jquery": "3.2.1",
+		"fullcalendar": "3.4.0",
+		"moment": "2.18.1",
+		"primeng": "4.1.0-rc.2",
+		"font-awesome": "^4.7.0"
 	},
 	"devDependencies": {
 		"@angular/cli": "1.0.0",

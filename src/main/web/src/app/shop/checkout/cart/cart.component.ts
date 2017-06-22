@@ -17,7 +17,7 @@ export class CheckoutCartComponent implements OnInit {
 			let getEventsFromShoppingCart = (contentKey: string, eventType: EventType): Observable<CartItem[]> => {
 				const events = [];
 				for (let i = 0; i < content[contentKey].length; i++) {
-					events[i] = this.eventService.getById(content[contentKey][i].id, {eventType: eventType});
+					events[i] = this.eventService.getById(content[contentKey][i].id, eventType);
 				}
 				return Observable.combineLatest(events)
 					.map(events => {
