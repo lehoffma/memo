@@ -47,7 +47,7 @@ import {MyToursEntryComponent} from "./user/my-tours/entry/my-tours-entry.compon
 import {PasswordRecoveryComponent} from "./user/password-recovery/password-recovery.component";
 import {AccountingComponent} from "./club-management/accounting/accounting.component";
 import {CheckoutComponent} from "./shop/checkout/checkout.component";
-import {AddressCheckComponent} from "./shop/checkout/address-check/address-check.component";
+import {AddressSelectionComponent} from "./shop/checkout/address-selection/address-selection.component";
 import {PaymentComponent} from "./shop/checkout/payment/payment.component";
 import {ClubAdministrationComponent} from "./club-management/administration/club-administration.component";
 import {StockComponent} from "./club-management/administration/stock/stock.component";
@@ -128,6 +128,7 @@ import {SearchFilterService} from "./shared/services/search-filter.service";
 import {EventCalendarComponent} from "./shared/event-calendar/event-calendar.component";
 import {ScheduleModule} from "primeng/primeng";
 import {EventCalendarContainerComponent} from "./shop/event-calendar-container/event-calendar-container.component";
+import {AccountingOptionsComponent} from "./club-management/accounting/accounting-options/accounting-options.component";
 
 @NgModule({
 	imports: [
@@ -185,7 +186,7 @@ import {EventCalendarContainerComponent} from "./shop/event-calendar-container/e
 		PasswordRecoveryComponent,
 		AccountingComponent,
 		CheckoutComponent,
-		AddressCheckComponent,
+		AddressSelectionComponent,
 		PaymentComponent,
 		ClubAdministrationComponent,
 		StockComponent,
@@ -246,6 +247,7 @@ import {EventCalendarContainerComponent} from "./shop/event-calendar-container/e
 		CommentInputComponent,
 		EventCalendarComponent,
 		EventCalendarContainerComponent,
+		AccountingOptionsComponent,
 	],
 	bootstrap: [
 		AppComponent

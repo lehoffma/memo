@@ -5,6 +5,60 @@
 			"name": "Getränke",
 			"value": -20.04,
 			"category": "Food"
+		},
+		{
+			"id": 1,
+			"name": "DFB Pokal Tickets",
+			"value": -200.50,
+			"category": "Tickets"
+		},
+		{
+			"id": 2,
+			"name": "DFB Pokal Sprit",
+			"value": -50,
+			"category": "Fuel"
+		},
+		{
+			"id": 3,
+			"name": "SIXT Transporter",
+			"value": -150,
+			"category": "LeasingCar"
+		},
+		{
+			"id": 4,
+			"name": "DFB Pokal Tickets",
+			"value": -200.50,
+			"category": "Tickets"
+		},
+		{
+			"id": 5,
+			"name": "DFB Pokal Sprit",
+			"value": -50,
+			"category": "Fuel"
+		},
+		{
+			"id": 6,
+			"name": "SIXT Transporter",
+			"value": -150,
+			"category": "LeasingCar"
+		},
+		{
+			"id": 7,
+			"name": "DFB Pokal Tickets",
+			"value": -200.50,
+			"category": "Tickets"
+		},
+		{
+			"id": 8,
+			"name": "DFB Pokal Sprit",
+			"value": -50,
+			"category": "Fuel"
+		},
+		{
+			"id": 9,
+			"name": "SIXT Transporter",
+			"value": -150,
+			"category": "LeasingCar"
 		}
 	]
 }

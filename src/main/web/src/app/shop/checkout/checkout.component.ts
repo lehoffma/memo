@@ -4,6 +4,8 @@ import {UserService} from "../../shared/services/user.service";
 import {Observable} from "rxjs/Observable";
 import {ActivatedRoute} from "@angular/router";
 import {LogInService} from "../../shared/services/login.service";
+import {AddressService} from "../../shared/services/address.service";
+import {Address} from "../../shared/model/address";
 
 @Component({
 	selector: "memo-checkout",
@@ -12,19 +14,25 @@ import {LogInService} from "../../shared/services/login.service";
 })
 export class CheckoutComponent implements OnInit {
 	paymentMethod: string;
-	paymentMethodOptions: string [] = ["Paypal", "Barzahlung", "Überweisung", "Lastschrift"];
-	userObservable: Observable<User>;
+	paymentMethodOptions: string[] = ["Paypal", "Barzahlung", "Überweisung", "Lastschrift"];
+	user$: Observable<User> = this.logInService.accountObservable
+		.flatMap(id => this.userService.getById(id));
+	userAddresses$: Observable<Address[]> = this.user$
+		.flatMap(user => Observable.combineLatest(
+			user.addresses.map(addressId => this.addressService.getById(addressId))
+		));
 
-	constructor(private route: ActivatedRoute, private userService: UserService, private logInService: LogInService) {
+	constructor(private route: ActivatedRoute,
+				private userService: UserService,
+				private addressService: AddressService,
+				private logInService: LogInService) {
 
 	}
 
 	ngOnInit() {
-		const userId = this.logInService.accountObservable;
-		this.userObservable = userId.flatMap(id => this.userService.getById(id));
-
 	}
-	deleteCart(){
+
+	deleteCart() {
 		/** hier sollten alle items im warenkorb gelöscht werden */
 
 	}

@@ -1,0 +1,16 @@
+
+<md-radio-group [(ngModel)]="selectedAddress">
+	<div *ngFor="let address of addresses">
+		<md-radio-button [value]="address">
+
+			<div class="address-information">
+				<!--todo name of the recipient-->
+				<b>{{address.name}}</b>
+				<span>{{address.street}} {{address.streetNr}}</span>
+				<span>{{address.city}}, {{address.zip}}</span>
+				<span>{{address.country}}</span>
+			</div>
+		</md-radio-button>
+	</div>
+</md-radio-group>
+<button md-button>Neue Addresse hinzufügen</button>

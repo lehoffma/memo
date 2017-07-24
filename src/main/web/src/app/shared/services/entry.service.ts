@@ -108,7 +108,6 @@ export class EntryService extends ServletService<Entry> {
 	/**
 	 *
 	 * @param entry
-	 * @param options
 	 */
 	add(entry: Entry): Observable<Entry> {
 		return this.addOrModify(this.http.post.bind(this.http), entry);
@@ -117,7 +116,6 @@ export class EntryService extends ServletService<Entry> {
 	/**
 	 *
 	 * @param entry
-	 * @param options
 	 * @returns {Observable<Entry>}
 	 */
 	modify(entry: Entry): Observable<Entry> {
@@ -127,9 +125,8 @@ export class EntryService extends ServletService<Entry> {
 	/**
 	 *
 	 * @param id
-	 * @param options
 	 */
-	remove(id: number, options?: any): Observable<Response> {
+	remove(id: number): Observable<Response> {
 		return this.performRequest(this.http.delete("/api/entry", {body: {id: id}}));
 	}
 

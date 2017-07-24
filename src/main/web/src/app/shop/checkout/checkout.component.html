@@ -1,33 +1,43 @@
-<div *ngIf="userObservable | async as user" class="checkout-container">
-	<md-card>
-		<div class="title"> Wähle die Rechnungsadresse:</div>
-		<div class="adress">
-			<div>{{user.firstName}} {{user.surname}}</div>
-			<div>Große Diesdorfer Str. 26</div>
-			<div>39108 Magdeburg</div>
-		</div>
-		<!-- <a md-button class="click-adress" routerLink="/address">Adresse ändern</a> -->
-		<hr class="cart-entry-price-border">
+<md-card>
+	<h2 class="checkout-title mat-headline">{{'Addresse'|uppercase}}</h2>
 
-		<div class="title">Wähle die Bezahlart:</div>
-		<md-radio-group [(ngModel)]="paymentMethod">
-			<md-radio-button *ngFor="let method of paymentMethodOptions" value="{{method}}" class="methode">{{method}}
-			</md-radio-button>
-			<div *ngIf="paymentMethod==='Lastschrift'" class="bank">
-				<div>Inhaber: Max Musti</div>
-				<div>IBAN: DE27100777770209299700</div>
-				<div>BIC: INGDDEFF</div>
-			</div>
-			<div *ngIf="paymentMethod==='Überweisung'" class="bank">
-				Die Überweisungsdaten werden dir per Email zugeschickt.
-			</div>
-		</md-radio-group>
+	<memo-address-selection [addresses]="(userAddresses$ | async)">
+	</memo-address-selection>
 
-		<!--<a md-button class="click-adress">Bankdaten ändern</a>-->
-		<hr class="cart-entry-price-border">
+</md-card>
 
-		<div class="sum">Gesamtsumme: <span>200 €</span></div>
+<md-card>
+	<h2 class="checkout-title mat-headline">{{'Bezahlmethode'|uppercase}}</h2>
 
-		<a md-button class="click-adress" (click)="deleteCart()" routerLink="/">Bezahlen</a>
-	</md-card>
-</div>
+	<div>
+		<div>Paypal</div>
+		<div>Bar</div>
+		<div>Überweisung</div>
+		<div>Lastschrift</div>
+	</div>
+</md-card>
+
+<!--todo: payment method selection-->
+
+
+<!--<div class="title">Wähle die Bezahlart:</div>-->
+<!--<md-radio-group [(ngModel)]="paymentMethod">-->
+<!--<md-radio-button *ngFor="let method of paymentMethodOptions" value="{{method}}" class="methode">-->
+<!--{{method}}-->
+<!--</md-radio-button>-->
+<!--<div *ngIf="paymentMethod==='Lastschrift'" class="bank">-->
+<!--<div>Inhaber: Max Musti</div>-->
+<!--<div>IBAN: DE27100777770209299700</div>-->
+<!--<div>BIC: INGDDEFF</div>-->
+<!--</div>-->
+<!--<div *ngIf="paymentMethod==='Überweisung'" class="bank">-->
+<!--Die Überweisungsdaten werden dir per Email zugeschickt.-->
+<!--</div>-->
+<!--</md-radio-group>-->
+
+<!--&lt;!&ndash;<a md-button class="click-adress">Bankdaten ändern</a>&ndash;&gt;-->
+<!--<hr class="cart-entry-price-border">-->
+
+<!--<div class="sum">Gesamtsumme: <span>200 €</span></div>-->
+
+<!--<a md-button class="click-adress" (click)="deleteCart()" routerLink="/">Bezahlen</a>-->

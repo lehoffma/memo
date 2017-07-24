@@ -14,6 +14,7 @@ export class Address extends ImmutableObject<Address> {
 	 */
 	constructor(public readonly id: number,
 				public readonly name: string,
+				//todo: name des menschen an den die rechnung geht, oder ist das "name"?
 				public readonly street: string,
 				public readonly streetNr: string,
 				public readonly zip: string,

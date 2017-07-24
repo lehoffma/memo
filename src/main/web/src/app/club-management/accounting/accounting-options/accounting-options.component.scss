@@ -1,0 +1,19 @@
+
+div{
+	display: flex;
+	flex-direction: column;
+}
+
+.account-options-title{
+	font-weight: 200;
+	border-bottom: 1px solid #E0E0E0;
+	background-color: #0d47a1;
+	color: white;
+	padding: 24px 16px 10px 24px;
+	margin: -16px -16px 10px !important;
+
+	@media all and (max-width: 600px){
+		margin-left: -16px !important;
+		margin-right: -16px !important;
+	}
+}

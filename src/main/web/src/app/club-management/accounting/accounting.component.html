@@ -1,11 +1,17 @@
+<!--todo only on desktop/tablet-->
+<memo-accounting-options>
+
+</memo-accounting-options>
+
 <div class="accounting-table-container">
 	<memo-expandable-table
-		[data]="entries | async"
+		[data]="entries$ | async"
 		[expandedRowKeys]="expandedRowKeys | async"
 		[expandable]="false"
 		[expandedRowComponent]="expandedRowComponent"
 		[columnKeys]="primaryColumnKeys | async"
 		[title]="'Kostenübersicht'"
+		[rowsPerPage]="5"
 		(onSort)="updateSortingKey($event)"
 		(onAdd)="addEntry($event)"
 		(onEdit)="editEntry($event)"
@@ -15,4 +21,9 @@
 
 	</memo-expandable-table>
 
+
+	<!--<div class="total-amount">-->
+	<!--<span>Gesamt</span>-->
+	<!--<span>{{total$ | async}}</span>-->
+	<!--</div>-->
 </div>

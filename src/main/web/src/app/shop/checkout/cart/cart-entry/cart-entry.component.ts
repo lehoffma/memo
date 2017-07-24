@@ -5,6 +5,7 @@ import {CartItem} from "../cart-item";
 import {Event} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/stock.service";
 import {Observable} from "rxjs/Observable";
+import {NavigationService} from "../../../../shared/services/navigation.service";
 
 
 @Component({
@@ -17,8 +18,8 @@ export class CartEntryComponent implements OnInit {
 	amountOptions = [];
 
 	constructor(private shoppingCartService: ShoppingCartService,
-				private stockService: StockService,
-				private eventUtilityService: EventUtilityService) {
+				private navigationService: NavigationService,
+				private stockService: StockService) {
 	}
 
 
@@ -43,6 +44,11 @@ export class CartEntryComponent implements OnInit {
 				this.amountOptions.push(i);
 			}
 		})
+	}
+
+	get linkToItem(){
+		let category = EventUtilityService.getEventType(this.cartItem.item);
+		return `/${category}/${this.cartItem.item.id}`
 	}
 
 	/**

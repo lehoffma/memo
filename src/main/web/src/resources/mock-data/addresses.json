@@ -14,10 +14,10 @@
 		{
 			"id": 1,
 			"name": "Alis Autoverleih",
-			"street": "Allerstraße",
-			"streetNr": "10",
-			"zip": "38448",
-			"city": "Wolfsburg",
+			"street": "Otto-von-Guericke-Str.",
+			"streetNr": "46a",
+			"zip": "39104",
+			"city": "Magdeburg",
 			"country": "Deutschland",
 			"latitude": 57.5,
 			"longitude": 11.5

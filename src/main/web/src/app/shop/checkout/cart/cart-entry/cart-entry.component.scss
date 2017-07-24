@@ -1,108 +1,84 @@
-.cart-entry {
+:host {
 	display: flex;
-	flex-direction: column;
-	border-bottom: 1px solid grey;
+	flex-direction: row;
+	align-items: center;
+	border-bottom: 1px solid #E0E0E0;
+	justify-content: space-between;
+	margin: 10px 0;
+	padding: 10px 0;
+
+	> div,
+	> a{
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+	}
+}
+
+*{
+	font-size: 0.95em;
+}
+
+.cart-entry-picture > img{
+	width: 45px;
+	height: 45px;
+	margin-right: 1rem;
+	object-fit: cover;
 }
 
 .cart-entry-header {
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
-	span {
-		width: 80%;
+	flex-direction: column;
+	h3 {
+		font-weight: bold;
 		white-space: nowrap;
 		overflow: hidden;
+		margin: 0;
 		text-overflow: ellipsis;
-		font-size: 1.2rem;
-
+		color: rgba(0,0,0,0.70);
 	}
 }
 
-.cart-entry-info {
-	display: flex;
-	justify-content: space-between;
-	.cart-entry-details {
-		display: inline-block;
+.cart-entry-amount{
+
+	/deep/ .mat-select-trigger{
+		min-width: 50px;
+		width: 50px;
+		text-align: center;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		border: 1px solid #eaeaea;
+	}
+
+	/deep/ .mat-select-value{
+		top: auto;
+		left: auto;
+		bottom: auto;
+
+	}
+
+	/deep/ .mat-select-arrow{
+		display: none;
+	}
+
+	/deep/ .mat-select-underline{
+		display: none;
 	}
 }
 
-.color {
-	margin-bottom: 0.7rem;
-}
-
-.cart-entry-amount {
-	margin-top: 0.7rem;
-	margin-bottom: 0.7rem;
-
-}
-
-.amount {
-	margin-left: 0.2rem;
-	height: 5px;
-
-}
-
-.price {
-	display: flex;
-	justify-content: flex-end;
-	margin-top: 0.3rem;
-	margin-bottom: 0.3rem;
-}
-
-.line {
-	border: none;
-	border-top: 1px solid grey;
-	height: 1px;
-	margin: 0px 0px 0px 70%;
-
-}
-
-/*
-
-.cart-entry-border {
-	border-bottom: 1px solid grey;
-}
-
-.cart-entry-title {
-	margin-top: 0.5rem;
-	font-size: 1.1rem;
-
-}
-.close{
-	display: flex;
-	justify-content: flex-end;
-}
-
-.cart-entry-price {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 0.5rem;
-	margin-top: 0.8rem;
-}
-
-.cart-entry-price-border {
-	border: none;
-	border-top: 1px solid grey;
-	height: 1px;
-	margin: 0px 0px 0px 70%;
-
-}
-
-.cart-entry-sum {
-	display: flex;
-	justify-content: flex-end;
+.price{
 	font-weight: bold;
-	margin-top: 0.5rem;
-	margin-bottom: 0.5rem;
-
-
+	color: rgba(0,0,0,0.70);
+	text-align: end;
+	font-size: 1rem;
+	width: 5rem;
 }
-.amount{
-	margin: 0px 0px 0px 20%;
-	weight: 50%;
-}
+
 .merch-color-container {
 	display: flex;
+	color: #9E9E9E;
 
 	.merch-color {
 		display: block;
@@ -113,5 +89,4 @@
 		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
 	}
 }
-*/
 

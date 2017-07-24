@@ -14,7 +14,7 @@
             </span>
 	</md-list>
 
-	<button md-button *ngIf="userEvents.length > 3" type="button" (click)="expandedStatus = !expandedStatus">
+	<button md-button *ngIf="userEvents?.length > 3" type="button" (click)="expandedStatus = !expandedStatus">
 		<span>{{expandedStatus ? 'Weniger' : 'Mehr'}}</span>
 		<md-icon [@expandedState]="expandedStatus">expand_more</md-icon>
 	</button>

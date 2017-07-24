@@ -1,50 +1,32 @@
-.checkout-container {
+@import "../../../theme";
+@import "~@angular/material/theming";
+
+:host {
 	display: flex;
 	justify-content: center;
-}
-
-md-card {
-	margin: 1rem;
-	max-width: 500px;
-	width: 100%;
-}
-
-.title {
-	margin-bottom: 0.5rem;
-}
-
-.click-adress {
-	background-color: #4caf50;
-	color: white;
-	display: flex;
-	justify-content: center;
-}
-
-.adress {
-	margin-bottom: 0.5rem;
-	margin-top: 0.5rem;
-}
-
-.cart-entry-price-border {
-	margin-top: 0.5rem;
-	border: none;
-	border-top: 1px solid grey;
-	height: 1px;
-}
-
-.methode {
-	margin-bottom: 0.5rem;
-	display: flex;
 	flex-direction: column;
 }
 
-.bank {
-	margin-bottom: 0.5rem;
+md-card{
+	max-width: 500px;
+	width: 100%;
+	//padding: 0 0 10px;
+	&:not(:first-child){
+		margin-top: 20px;
+	}
 }
 
-.sum {
-	margin-bottom: 0.5rem;
-	display: flex;
-	justify-content: space-between;
-	font-weight: bold;
+
+.checkout-title {
+	font-weight: 200;
+	border-bottom: 1px solid #E0E0E0;
+	background-color: #0d47a1;
+	color: white;
+	padding: 24px 16px 10px 24px;
+	margin: -24px -24px 10px !important;
+
+	@media all and (max-width: 600px){
+		margin-left: -16px;
+		margin-right: -16px;
+	}
 }

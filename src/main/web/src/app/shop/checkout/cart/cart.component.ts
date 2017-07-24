@@ -11,7 +11,7 @@ import {CartItem} from "./cart-item";
 	styleUrls: ["./cart.component.scss"]
 })
 export class CheckoutCartComponent implements OnInit {
-
+	//todo als funktion auslagern
 	public shoppingCartItems: Observable<{ tours: CartItem[], merch: CartItem[], partys: CartItem[] }> =
 		this.shoppingCartService.content.flatMap(content => {
 			let getEventsFromShoppingCart = (contentKey: string, eventType: EventType): Observable<CartItem[]> => {

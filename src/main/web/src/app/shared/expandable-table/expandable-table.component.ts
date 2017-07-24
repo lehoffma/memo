@@ -40,9 +40,6 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	@Input() title: string;
 	@Input() expandable: boolean = true;
 
-	//todo remove..
-	@Input() showActionsAsSeparateColumns: boolean;
-
 	@Output() onAdd = new EventEmitter<any>();
 	@Output() onSort = new EventEmitter<ColumnSortingEvent<T>>();
 	@Output() onEdit = new EventEmitter<T>();
@@ -68,7 +65,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 
 	//pagination variables
 	currentPage = 1;
-	rowsPerPage = 50;
+	@Input() rowsPerPage = 50;
 	rowsPerPageOptions = [5, 10, 25, 50];
 
 	constructor(private _componentFactoryResolver: ComponentFactoryResolver) {
