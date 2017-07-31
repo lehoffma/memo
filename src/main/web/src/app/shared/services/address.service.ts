@@ -98,4 +98,5 @@ export class AddressService extends ServletService<Address> {
 			.do((response: Response) => this.cache.remove("addresses", id));
 	}
 
+	redirectUrl: string;
 }

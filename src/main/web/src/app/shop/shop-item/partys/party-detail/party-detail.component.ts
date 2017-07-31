@@ -59,7 +59,7 @@ export class PartyDetailComponent implements OnInit {
 	 * @param commentText
 	 * @param parentId
 	 */
-	addComment({commentText, parentId}){
+	addComment({commentText, parentId}) {
 		Observable.combineLatest(this.loginService.currentUser(), this.party$)
 			.subscribe(([user, party]) => {
 				let comment = new Comment(party.id, -1, new Date(), user.id, commentText);
@@ -67,6 +67,8 @@ export class PartyDetailComponent implements OnInit {
 					.subscribe(addResult => {
 						//todo do something with result
 						console.log(addResult);
+					}, error => {
+						console.error("adding the comment went wrong");
 					})
 			})
 	}

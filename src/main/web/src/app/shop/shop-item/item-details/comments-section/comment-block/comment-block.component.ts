@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Comment} from "../../../../shared/model/comment";
 import {CommentService} from "../../../../../shared/services/comment.service";
 import {Observable} from "rxjs/Observable";
@@ -8,6 +8,8 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {LogInService} from "../../../../../shared/services/login.service";
 import {NavigationService} from "../../../../../shared/services/navigation.service";
 import {Router} from "@angular/router";
+import {MdDialog} from "@angular/material";
+import {EditCommentDialogComponent} from "../edit-comment-dialog/edit-comment-dialog.component";
 
 @Component({
 	selector: "memo-comment-block",
@@ -19,12 +21,15 @@ export class CommentBlockComponent implements OnInit {
 	comment$ = this._comment$.asObservable()
 		.filter(comment => comment !== null);
 
-
-	@Input() set comment(comment: Comment) {
+	@Input()
+	set comment(comment: Comment) {
 		this._comment$.next(comment);
 	}
 
-	@Output() onAddComment = new EventEmitter<{commentText: string, parentCommentId:number}>();
+
+	@Input() parentId: number;
+
+	@Output() onAddComment = new EventEmitter<{ commentText: string, parentCommentId: number }>();
 
 	author$: Observable<User> = this.comment$
 		.flatMap(comment => this.userService.getById(comment.authorId));
@@ -41,6 +46,8 @@ export class CommentBlockComponent implements OnInit {
 	constructor(private commentsService: CommentService,
 				private loginService: LogInService,
 				private navigationService: NavigationService,
+				private dialogService: MdDialog,
+				private changeDetectorRef: ChangeDetectorRef,
 				private router: Router,
 				private userService: UserService) {
 	}
@@ -67,9 +74,9 @@ export class CommentBlockComponent implements OnInit {
 	/**
 	 *
 	 */
-	replyToComment(parent:Comment) {
+	replyToComment(parent: Comment) {
 		if (this.loginService.isLoggedIn()) {
-			if(parent.children && parent.children.length > 0){
+			if (parent.children && parent.children.length > 0) {
 				this.showChildren = true;
 			}
 			this.showReplyBox = true;
@@ -84,8 +91,28 @@ export class CommentBlockComponent implements OnInit {
 	/**
 	 *
 	 */
-	editComment() {
-		console.log("edit");
+	editComment(comment: Comment) {
+		let dialogRef = this.dialogService.open(EditCommentDialogComponent, {
+			data: {
+				comment
+			}
+		});
+		dialogRef.afterClosed()
+			.flatMap((newComment: Comment) => {
+				if (newComment && newComment.text) {
+					this.changeDetectorRef.detectChanges();
+					return this.commentsService.modify(newComment, this.parentId);
+				}
+				//otherwise, the user clicked close/cancel
+				return Observable.empty()
+			})
+			.subscribe(response => {
+					//todo
+					console.log(response);
+				},
+				error => {
+					console.error(error);
+				})
 	}
 
 	/**

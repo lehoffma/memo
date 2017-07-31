@@ -16,7 +16,6 @@
 				</ng-template>
 			</div>
 		</div>
-		<hr/>
 		<div class="add-to-cart-container">
 			<form #addToCartForm="ngForm" (ngSubmit)="addOrDeleteFromCart(event)">
 				<ng-template [ngIf]="isMerch(event)">
@@ -52,12 +51,26 @@
 				<button [disabled]="!addToCartForm.valid || model.amount === 0"
 						md-raised-button
 						color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
-						type="submit"
 						class="add-to-cart-button">
 					{{(isPartOfShoppingCart) ? 'Aus dem Warenkorb löschen' : 'In den Warenkorb'}}
 				</button>
 			</form>
 		</div>
+
+		<!--todo nils/pia's meinung einholen-->
+		<share-buttons
+			[title]="event.title"
+			[image]="event.imagePath"
+			[description]="event.description"
+			[tags]="['Meilenwoelfe', 'Meilenwoelfe-Shop']"
+			[pinterest]="false"
+			[linkedIn]="false"
+			[tumblr]="false"
+			[reddit]="false"
+			[stumbleUpOn]="false">
+
+		</share-buttons>
 	</div>
+
 
 </div>

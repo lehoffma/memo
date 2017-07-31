@@ -1,4 +1,4 @@
-import {Component, OnInit, Type} from "@angular/core";
+import {Component, HostListener, OnInit, Type} from "@angular/core";
 import {EntryService} from "../../shared/services/entry.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
@@ -39,6 +39,9 @@ export class AccountingComponent implements OnInit {
 	total$ = this.entries$
 		.map(entries => entries.reduce((acc, entry) => acc + entry.value, 0));
 
+	showOptions = true;
+	mobile = false;
+
 	constructor(private entryService: EntryService,
 				private activatedRoute: ActivatedRoute,
 				private router: Router) {
@@ -46,10 +49,22 @@ export class AccountingComponent implements OnInit {
 			new ExpandableTableColumn<Entry>("Kostenart", "category", CostCategoryTableCellComponent),
 			new ExpandableTableColumn<Entry>("Name", "name"),
 			new ExpandableTableColumn<Entry>("Kosten", "value", CostValueTableCellComponent),
-		])
+		]);
+
+
+		let mobile = window.innerWidth < 850;
+		this.showOptions = !mobile;
+		this.mobile = mobile;
 	}
 
 	ngOnInit() {
+	}
+
+	@HostListener("window:resize", ["$event"])
+	onResize(event) {
+		let mobile = event.target.innerWidth < 850;
+		this.showOptions = !mobile;
+		this.mobile = mobile;
 	}
 
 
@@ -140,7 +155,7 @@ export class AccountingComponent implements OnInit {
 	 * @param {ColumnSortingEvent<any>} sortBy
 	 * @returns {Observable<any>}
 	 */
-	getEntries([paramMap, queryParamMap, sortBy]: [ParamMap, ParamMap, ColumnSortingEvent<any>]):Observable<Entry[]>{
+	getEntries([paramMap, queryParamMap, sortBy]: [ParamMap, ParamMap, ColumnSortingEvent<any>]): Observable<Entry[]> {
 		//we're looking at an event's accounting table
 		if (paramMap.has("itemType") && paramMap.has("eventId")) {
 			let itemType: EventType = EventType[paramMap.get("itemType")];

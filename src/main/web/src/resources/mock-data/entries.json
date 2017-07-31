@@ -9,7 +9,7 @@
 		{
 			"id": 1,
 			"name": "DFB Pokal Tickets",
-			"value": -200.50,
+			"value": 200.50,
 			"category": "Tickets"
 		},
 		{
@@ -27,7 +27,7 @@
 		{
 			"id": 4,
 			"name": "DFB Pokal Tickets",
-			"value": -200.50,
+			"value": 200.50,
 			"category": "Tickets"
 		},
 		{
@@ -45,7 +45,7 @@
 		{
 			"id": 7,
 			"name": "DFB Pokal Tickets",
-			"value": -200.50,
+			"value": 200.50,
 			"category": "Tickets"
 		},
 		{
@@ -59,6 +59,12 @@
 			"name": "SIXT Transporter",
 			"value": -150,
 			"category": "LeasingCar"
+		},
+		{
+			"id": 10,
+			"name": "Europapokal Tickets",
+			"value": 200.50,
+			"category": "Tickets"
 		}
 	]
 }

@@ -48,7 +48,7 @@ import {PasswordRecoveryComponent} from "./user/password-recovery/password-recov
 import {AccountingComponent} from "./club-management/accounting/accounting.component";
 import {CheckoutComponent} from "./shop/checkout/checkout.component";
 import {AddressSelectionComponent} from "./shop/checkout/address-selection/address-selection.component";
-import {PaymentComponent} from "./shop/checkout/payment/payment.component";
+import {PaymentMethodSelectionComponent} from "./shop/checkout/payment/payment-method-selection.component";
 import {ClubAdministrationComponent} from "./club-management/administration/club-administration.component";
 import {StockComponent} from "./club-management/administration/stock/stock.component";
 import {MemberListComponent} from "./club-management/administration/member-list/member-list.component";
@@ -115,7 +115,7 @@ import {ModifyEntryComponent} from "./shop/shop-item/modify-shop-item/modify-ent
 import {ModifyMerchStockComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock.component";
 import {MerchColorCellComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch-stock/merch-color-cell/merch-color-cell.component";
 import {ModifyMerchStockItemComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
-import {AddressChangeComponent} from "./shop/checkout/cart/adress-change/address-change.component";
+import {AddressModificationComponent} from "./shop/checkout/address-selection/address-modification/address-modification.component";
 import {ParticipantsService} from "./shared/services/participants.service";
 import {FullNameTableCellComponent} from "./shop/shop-item/item-details/participants/participant-list/full-name-table-cell.component";
 import {ModifyParticipantComponent} from "./shop/shop-item/item-details/participants/participant-list/modify-participant/modify-participant.component";
@@ -129,6 +129,10 @@ import {EventCalendarComponent} from "./shared/event-calendar/event-calendar.com
 import {ScheduleModule} from "primeng/primeng";
 import {EventCalendarContainerComponent} from "./shop/event-calendar-container/event-calendar-container.component";
 import {AccountingOptionsComponent} from "./club-management/accounting/accounting-options/accounting-options.component";
+import {EditCommentDialogComponent} from "./shop/shop-item/item-details/comments-section/edit-comment-dialog/edit-comment-dialog.component";
+import {PaymentComponent} from "./shop/checkout/payment/payment.component";
+import {ShareButtonsModule} from "ngx-sharebuttons";
+
 
 @NgModule({
 	imports: [
@@ -146,7 +150,8 @@ import {AccountingOptionsComponent} from "./club-management/accounting/accountin
 		ColorPickerModule,
 		PasswordStrengthBarModule,
 		ImageCropperModule,
-		ScheduleModule
+		ScheduleModule,
+		ShareButtonsModule.forRoot()
 	],
 	declarations: [
 		AppComponent,
@@ -187,7 +192,7 @@ import {AccountingOptionsComponent} from "./club-management/accounting/accountin
 		AccountingComponent,
 		CheckoutComponent,
 		AddressSelectionComponent,
-		PaymentComponent,
+		PaymentMethodSelectionComponent,
 		ClubAdministrationComponent,
 		StockComponent,
 		MemberListComponent,
@@ -213,7 +218,7 @@ import {AccountingOptionsComponent} from "./club-management/accounting/accountin
 		ProfilePictureFormComponent,
 		PaymentMethodsFormComponent,
 		DebitInputFormComponent,
-		AddressChangeComponent,
+		AddressModificationComponent,
 
 		ExpandableTableComponent,
 		ExpandedTableRowContainerDirective,
@@ -248,6 +253,8 @@ import {AccountingOptionsComponent} from "./club-management/accounting/accountin
 		EventCalendarComponent,
 		EventCalendarContainerComponent,
 		AccountingOptionsComponent,
+		EditCommentDialogComponent,
+		PaymentComponent,
 	],
 	bootstrap: [
 		AppComponent
@@ -280,7 +287,8 @@ import {AccountingOptionsComponent} from "./club-management/accounting/accountin
 		CostCategoryTableCellComponent,
 		MerchColorCellComponent,
 		FullNameTableCellComponent,
-		ModifyParticipantComponent
+		ModifyParticipantComponent,
+		EditCommentDialogComponent
 	]
 })
 export class AppModule {

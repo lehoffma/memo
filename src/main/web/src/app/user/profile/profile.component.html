@@ -40,19 +40,14 @@
 		</div>
 		<div class="profile-action-container">
 			<!--todo buttons don't do anything-->
-			<button md-raised-button color="accent">
+			<a href="tel:{{user.telephone}}" md-raised-button color="accent" [disabled]="!user.telephone">
 				<md-icon>local_phone</md-icon>
-				<span class="action-text">
-				Anrufen
-				</span>
-
-			</button>
-			<button md-raised-button color="accent">
+				<span class="action-text">Anrufen</span>
+			</a>
+			<a href="mailto:{{user.email}}" md-raised-button color="accent" [disabled]="!user.email">
 				<md-icon>local_post_office</md-icon>
-				<span class="action-text">
-				Email
-				</span>
-			</button>
+				<span class="action-text">Email</span>
+			</a>
 		</div>
 	</div>
 	<div class="profile-component">

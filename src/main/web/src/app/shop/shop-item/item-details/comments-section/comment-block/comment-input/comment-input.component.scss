@@ -1,8 +1,7 @@
 @import "~@angular/material/theming";
 @import "../../../../../../../theme";
 
-
-.comment-input-container {
+:host {
 	display: flex;
 	align-items: flex-start;
 

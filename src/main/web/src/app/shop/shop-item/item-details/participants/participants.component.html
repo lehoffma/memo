@@ -1,6 +1,5 @@
-<div class="participants-container">
-	<div>
-		<md-list>
+<!--<div>-->
+<md-list>
             <span *ngFor="let participant of (participants | slice:0:amountOfParticipantsShown)">
                 <md-list-item
 					(click)="showDetailsOfUser(participant.user)">
@@ -14,13 +13,12 @@
                 </md-list-item>
                 <md-divider></md-divider>
             </span>
-		</md-list>
+</md-list>
 
-		<button md-button type="button" (click)="expandedStatus = !expandedStatus">
-			<span>{{expandedStatus ? 'Weniger' : 'Mehr'}}</span>
-			<md-icon [@expandedState]="expandedStatus">expand_more</md-icon>
-		</button>
+<button md-button type="button" (click)="expandedStatus = !expandedStatus">
+	<span>{{expandedStatus ? 'Weniger' : 'Mehr'}}</span>
+	<md-icon [@expandedState]="expandedStatus">expand_more</md-icon>
+</button>
 
-	</div>
-</div>
+<!--</div>-->
 

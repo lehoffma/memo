@@ -1,20 +1,14 @@
 <md-card>
 	<h2 class="checkout-title mat-headline">{{'Addresse'|uppercase}}</h2>
 
-	<memo-address-selection [addresses]="(userAddresses$ | async)">
+	<memo-address-selection [addresses]="(userAddresses$ | async)" (addressChange)="onAddressChange($event)">
 	</memo-address-selection>
 
 </md-card>
 
 <md-card>
 	<h2 class="checkout-title mat-headline">{{'Bezahlmethode'|uppercase}}</h2>
-
-	<div>
-		<div>Paypal</div>
-		<div>Bar</div>
-		<div>Überweisung</div>
-		<div>Lastschrift</div>
-	</div>
+	<memo-payment (done)="paymentSelectionDone($event)"></memo-payment>
 </md-card>
 
 <!--todo: payment method selection-->

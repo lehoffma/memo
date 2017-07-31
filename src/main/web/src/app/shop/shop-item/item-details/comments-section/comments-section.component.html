@@ -1,22 +1,20 @@
+<memo-comment-block *ngFor="let comment of comments | slice:0:amountOfCommentsShown"
+					(onAddComment)="addComment($event.commentText, $event.parentCommentId)"
+					[comment]="comment">
+</memo-comment-block>
 
-<div class="comments-section-container">
-	<memo-comment-block *ngFor="let comment of comments | slice:0:amountOfCommentsShown"
-						(onAddComment)="addComment($event.commentText, $event.parentCommentId)"
-						[comment]="comment">
-	</memo-comment-block>
-
-	<button md-button (click)="expandState = !expandState" *ngIf="comments?.length > DEFAULT_AMOUNT_OF_COMMENTS_SHOWN">
+<button md-button (click)="expandState = !expandState" *ngIf="comments?.length > DEFAULT_AMOUNT_OF_COMMENTS_SHOWN">
 		<span>
 			{{amountOfCommentsShown === DEFAULT_AMOUNT_OF_COMMENTS_SHOWN ? 'Mehr Kommentare' : 'Weniger Kommentare'}}
 		</span>
-		<md-icon [@expandedState]="expandState">
-			expand_more
-		</md-icon>
-	</button>
+	<md-icon [@expandedState]="expandState">
+		expand_more
+	</md-icon>
+</button>
 
-	<hr/>
+<hr/>
 
-	<div class="reply-form-container"  *ngIf="loggedInUser$ | async; let loggedInUser">
-		<memo-comment-input (submitComment)="addComment($event, -1)" [author]="loggedInUser" [commentText]="''"></memo-comment-input>
-	</div>
+<div class="reply-form-container" *ngIf="loggedInUser$ | async; let loggedInUser">
+	<memo-comment-input (submitComment)="addComment($event, -1)" [author]="loggedInUser"
+						[commentText]="''"></memo-comment-input>
 </div>

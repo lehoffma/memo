@@ -1,21 +1,27 @@
-<div class="detail-container">
+<div>
+	<div class="item-details-card">
+		<div class="image-overlay-container">
+			<!--display image with overlayed title if present-->
+			<div class="image-container" *ngIf="event?.imagePath"
+				 (click)="showDetailedImage(event?.imagePath)"
+				 [attr.object-title]="event.title">
+				<img class="image-detail" src="{{event?.imagePath}}">
+			</div>
 
-	<div>
-		<!--display image with overlayed title if present-->
-		<div class="image-container" *ngIf="event?.imagePath"
-			 (click)="showDetailedImage(event?.imagePath)"
-			 [attr.object-title]="event.title">
-			<img class="image-detail" src="{{event?.imagePath}}">
+			<a md-icon-button
+			   *ngIf="userCanEditEvent | async"
+			   routerLink="./edit">
+				<md-icon>edit</md-icon>
+			</a>
+
 		</div>
-
-		<a md-icon-button
-		   *ngIf="userCanEditEvent | async"
-		   routerLink="./edit">
-			<md-icon>edit</md-icon>
-		</a>
 
 		<memo-item-details-overview [event]="event" [overviewKeys]="overviewKeys | async"></memo-item-details-overview>
 	</div>
 
-	<ng-content></ng-content>
+	<div class="item-details-container">
+		<ng-content></ng-content>
+	</div>
+
+
 </div>

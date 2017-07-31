@@ -34,8 +34,42 @@ export class AccountingOptionsComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.readQueryParams();
 		//todo read query params and init options accordingly
 		this.updateQueryParams();
+	}
+
+	/**
+	 *
+	 * @param object
+	 * @param keys
+	 */
+	readBinaryValuesFromQueryParams(object: {
+		[key: string]: boolean
+	}, keys: string[]) {
+		Object.keys(object)
+			.filter(key => keys.indexOf(key) === -1)
+			.forEach(key => object[key] = false);
+		keys.forEach(key => object[key] = true);
+	}
+
+	/**
+	 * Updates the values by extracting them from the url query parameters
+	 */
+	readQueryParams() {
+		this.activatedRoute.queryParamMap
+			.subscribe(queryParamMap => {
+				if (queryParamMap.has("eventTypes")) {
+					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.get("eventTypes").split("|"));
+				}
+				if (queryParamMap.has("costTypes")) {
+					this.readBinaryValuesFromQueryParams(this.costTypes, queryParamMap.get("costTypes").split("|"));
+				}
+				if (queryParamMap.has("from") && queryParamMap.has("to")) {
+					this.dateOptions.from = moment(queryParamMap.get("from")).toDate();
+					this.dateOptions.to = moment(queryParamMap.get("to")).toDate();
+				}
+			})
 	}
 
 	/**
@@ -56,16 +90,20 @@ export class AccountingOptionsComponent implements OnInit {
 	 */
 	updateQueryParams() {
 		let params: Params = {};
+		let assignType = (paramKey: string, object: {
+			[key: string]: boolean
+		}) => {
+			params[paramKey] = "";
+			if (!Object.keys(object).every(key => object[key])) {
+				params[paramKey] = this.getBinaryQueryParamValue(object);
+				if (params[paramKey] === "") {
+					params[paramKey] = "none";
+				}
+			}
+		};
 
-		params["eventTypes"] = "";
-		if (!Object.keys(this.eventTypes).every(key => this.eventTypes[key])) {
-			params["eventTypes"] = this.getBinaryQueryParamValue(this.eventTypes);
-		}
-
-		params["costTypes"] = "";
-		if (!Object.keys(this.costTypes).every(key => this.costTypes[key])) {
-			params["costTypes"] = this.getBinaryQueryParamValue(this.costTypes);
-		}
+		assignType("eventTypes", this.eventTypes);
+		assignType("costTypes", this.costTypes);
 
 		params["from"] = this.dateOptions.from.toISOString();
 		params["to"] = this.dateOptions.to.toISOString();

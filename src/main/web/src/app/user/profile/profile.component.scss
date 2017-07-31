@@ -113,11 +113,13 @@
 			justify-content: space-around;
 			margin-top: 2rem;
 
-			button {
+			a {
 				width: 45%;
 
 				.action-text {
 					margin-left: 1rem;
+					text-decoration: none;
+					color: white;
 				}
 			}
 		}

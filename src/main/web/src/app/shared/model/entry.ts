@@ -1,5 +1,6 @@
 import {ImmutableObject} from "./util/immutable-object";
 import {EntryCategory} from "./entry-category";
+
 export class Entry extends ImmutableObject<Entry> {
 
 	constructor(public readonly id: number,
@@ -24,6 +25,9 @@ export class Entry extends ImmutableObject<Entry> {
 	 * @returns {boolean}
 	 */
 	categoryMatchesQueryParameter(queryParameterValue: string){
+		if (queryParameterValue === "none") {
+			return false;
+		}
 		return queryParameterValue.split("|")
 			.some(type => type.toLowerCase() === EntryCategory[this.category].toLowerCase());
 	}

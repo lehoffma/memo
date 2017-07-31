@@ -23,7 +23,10 @@ md-card{
 	background-color: #0d47a1;
 	color: white;
 	padding: 24px 16px 10px 24px;
-	margin: -24px -24px 10px !important;
+	margin-top: -24px !important;
+	margin-left: -24px;
+	margin-right: -24px;
+	margin-bottom: 10px;
 
 	@media all and (max-width: 600px){
 		margin-left: -16px;

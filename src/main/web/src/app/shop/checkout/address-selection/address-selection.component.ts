@@ -1,5 +1,7 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Address} from "../../../shared/model/address";
+import {Router} from "@angular/router";
+import {AddressService} from "../../../shared/services/address.service";
 
 @Component({
 	selector: "memo-address-selection",
@@ -8,9 +10,9 @@ import {Address} from "../../../shared/model/address";
 })
 export class AddressSelectionComponent implements OnInit{
 
-	//todo emit event when selection changes
 	//todo edit/remove functionality
-	//todo "add address" button
+	// => mobile: long press opens menu?
+	// => desktop: show options icon, which opens menu
 	private _addresses: Address[] = [];
 
 	@Input() set addresses(addresses: Address[]){
@@ -23,12 +25,30 @@ export class AddressSelectionComponent implements OnInit{
 		return this._addresses;
 	}
 
-	selectedAddress: Address;
+	_selectedAddress: Address;
 
-	constructor() {
+	get selectedAddress() {
+		return this._selectedAddress;
+	}
+
+	set selectedAddress(address: Address) {
+		this._selectedAddress = address;
+		this.addressChange.emit(address);
+	}
+
+	@Output() addressChange = new EventEmitter<Address>();
+
+	constructor(private router: Router,
+				private addressService: AddressService) {
 	}
 
 	ngOnInit() {
 	}
 
+	/**
+	 *
+	 */
+	redirectToAddNewAddress() {
+		this.addressService.redirectUrl = this.router.url;
+	}
 }

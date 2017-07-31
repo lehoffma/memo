@@ -6,6 +6,7 @@ import {ActivatedRoute} from "@angular/router";
 import {LogInService} from "../../shared/services/login.service";
 import {AddressService} from "../../shared/services/address.service";
 import {Address} from "../../shared/model/address";
+import {PaymentMethod} from "./payment/payment-method";
 
 @Component({
 	selector: "memo-checkout",
@@ -14,7 +15,6 @@ import {Address} from "../../shared/model/address";
 })
 export class CheckoutComponent implements OnInit {
 	paymentMethod: string;
-	paymentMethodOptions: string[] = ["Paypal", "Barzahlung", "Überweisung", "Lastschrift"];
 	user$: Observable<User> = this.logInService.accountObservable
 		.flatMap(id => this.userService.getById(id));
 	userAddresses$: Observable<Address[]> = this.user$
@@ -37,4 +37,16 @@ export class CheckoutComponent implements OnInit {
 
 	}
 
+	onAddressChange(address: Address) {
+		console.log(address);
+		//todo save as preferred address or something
+	}
+
+	paymentSelectionDone(event: {
+		method: PaymentMethod,
+		data: any
+	}) {
+		console.log(event);
+		//todo proceed to final screen?
+	}
 }

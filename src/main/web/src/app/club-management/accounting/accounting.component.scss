@@ -1,37 +1,102 @@
+@import "~@angular/material/theming";
+@import "../../../theme";
+@import "../../../mixins";
+
 $breakpoint: 600px;
 $options-breakpoint: 850px;
 
 //todo mobile version
-:host{
+:host {
 	display: flex;
 	position: absolute;
 	height: calc(100% - 64px);
 	width: 100%;
 
-	memo-accounting-options{
+	@media all and (max-width: $options-breakpoint) {
+		flex-direction: column;
+	}
+
+	.options-button {
+		width: 100%;
+		background-color: #4caf50;
+		color: white;
+		@media all and (min-width: $options-breakpoint) {
+			display: none;
+		}
+	}
+
+	.accounting-options {
 		height: 100%;
 		width: 30%;
 		padding: 1rem;
 		background-color: white;
-		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+		box-shadow: 0 4px 2px 2px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(0, 0, 0, 0.14), 0 1px 0 0 rgba(0, 0, 0, 0.12);
 
-		@media all and (max-width: $options-breakpoint){
-			display: none;
+		@media all and (max-width: $options-breakpoint) {
+			height: auto;
+			&:not(.showOptions) {
+				padding: 0;
+			}
+			&.showOptions {
+				height: calc(100% - 64px);
+				overflow-y: auto;
+
+				.options-button {
+					width: calc(100% + 2rem);
+					margin-left: -1rem;
+					margin-bottom: -1rem;
+					margin-top: 1rem;
+				}
+			}
+			width: 100%;
+		}
+
+		memo-accounting-options {
+
+		}
+	}
+
+	.accounting-table-container {
+		width: 70%;
+		height: calc(100% - 74px);
+		overflow-y: auto;
+
+		@media all and (max-width: $options-breakpoint) {
+			height: calc(100% - 110px);
+			width: 100%;
 		}
 
 	}
 
-	.accounting-table-container{
+	.total-amount {
+		display: flex;
+		justify-content: space-between;
+		color: white;
+		@include transition(background-color 0.3s ease-in);
+		padding: 1.5rem;
+		position: absolute;
+		bottom: 0;
 		width: 70%;
-		height: 100%;
-		overflow-y: auto;
+		left: 30%;
+		font-size: 1.3rem;
+		font-weight: 200;
 
-		@media all and (max-width: $options-breakpoint){
+		@media all and (max-width: $options-breakpoint) {
 			width: 100%;
+			left: 0;
+		}
+
+		&.positive {
+			background-color: mat-color($primary);
+		}
+		&.negative {
+			background-color: mat-color($warn);
+		}
+		&:not(.positive):not(.negative) {
+			background-color: mat-color($accent);
 		}
 	}
 }
-
 
 memo-expandable-table {
 	/deep/ .expandable-table-component-container {

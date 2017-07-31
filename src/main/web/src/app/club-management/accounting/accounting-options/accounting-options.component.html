@@ -10,7 +10,7 @@
 			   name="startingDateInput" required>
 		<button type="button" mdSuffix [mdDatepickerToggle]="startingDatePicker"></button>
 	</md-input-container>
-	<md-datepicker #startingDatePicker></md-datepicker>
+	<md-datepicker #startingDatePicker [touchUi]="true"></md-datepicker>
 
 	<md-input-container>
 		<input mdInput [mdDatepicker]="endDatePicker"
@@ -21,7 +21,7 @@
 			   name="endDateInput" required>
 		<button type="button" mdSuffix [mdDatepickerToggle]="endDatePicker"></button>
 	</md-input-container>
-	<md-datepicker #endDatePicker></md-datepicker>
+	<md-datepicker #endDatePicker [touchUi]="true"></md-datepicker>
 </div>
 <div>
 	<h3>Event-Typen</h3>

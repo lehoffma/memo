@@ -72,6 +72,8 @@ export class TourDetailComponent implements OnInit {
 					.subscribe(addResult => {
 						//todo do something with result
 						console.log(addResult);
+					}, error => {
+						console.error("adding the comment went wrong");
 					});
 			})
 	}

@@ -3,8 +3,10 @@ md-list > span:last-child > md-divider {
 	display: none;
 }
 
-.participants-container {
-	margin-top: -1rem;
+:host {
+	> md-list {
+		margin-top: -1rem;
+	}
 
 	button {
 		width: 100%;
