@@ -6,6 +6,7 @@
 		"production": "ng serve --proxy-config proxy.conf.json --prod --host 192.168.188.75",
 		"build": "ng build --prod",
 		"test": "ng test",
+		"test-once": "ng test --single-run=true --browsers Chrome",
 		"lint": "ng lint",
 		"e2e": "ng e2e"
 	},
