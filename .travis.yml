@@ -12,7 +12,7 @@ matrix:
       dist: trusty
       language: node_js
       node_js:
-        - '4.2'
+        - '7.0.0'
 
       addons:
       apt:
