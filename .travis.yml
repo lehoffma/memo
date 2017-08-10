@@ -34,5 +34,5 @@ matrix:
         - npm install
 
       script:
-        - npm run ng test -- --single-run=true --browsers Chrome
+        - npm run test --single-run=true --browsers Chrome
         - npm run build

@@ -1,4 +1,5 @@
 import {ImmutableObject} from "./util/immutable-object";
+
 export class Address extends ImmutableObject<Address> {
 
 	/**
@@ -12,16 +13,16 @@ export class Address extends ImmutableObject<Address> {
 	 * @param latitude Breitengrad
 	 * @param longitude Längengrad
 	 */
-	constructor(public readonly id: number,
-				public readonly name: string,
+	constructor(public id: number,
+				public name: string,
 				//todo: name des menschen an den die rechnung geht, oder ist das "name"?
-				public readonly street: string,
-				public readonly streetNr: string,
-				public readonly zip: string,
-				public readonly city: string,
-				public readonly country: string,
-				public readonly latitude: number,
-				public readonly longitude: number) {
+				public street: string,
+				public streetNr: string,
+				public zip: string,
+				public city: string,
+				public country: string,
+				public latitude: number,
+				public longitude: number) {
 		super(id);
 	}
 
