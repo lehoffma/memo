@@ -36,10 +36,18 @@ export class SearchResultComponent implements OnInit {
 		});
 
 	resultsTitle: Observable<string>;
-	results: Observable<Event[]>;
+	_results$: Observable<Event[]>;
+
+	get results$() {
+		return this._results$;
+	}
+
+	set results$(results: Observable<Event[]>) {
+		this._results$ = results;
+	}
 
 	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
-	filterOptions: MultiLevelSelectParent[] = this.searchFilterService.eventFilterOptions;
+	filterOptions: MultiLevelSelectParent[] = [];
 
 
 	constructor(private activatedRoute: ActivatedRoute,
@@ -50,7 +58,6 @@ export class SearchResultComponent implements OnInit {
 
 	ngOnInit() {
 		this.fetchResults();
-		this.initFilterMenu();
 		this.setTitle();
 	}
 
@@ -90,7 +97,7 @@ export class SearchResultComponent implements OnInit {
 					.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
 					.map(child => child.name);
 
-				return Observable.combineLatest(this.results, this.keywords).map(([results, keywords]) =>
+				return Observable.combineLatest(this.results$, this.keywords).map(([results, keywords]) =>
 					results.length + " " + selectedCategories.join(", ") + " Ergebnisse" +
 					(keywords === "" ? "" : " für '" + keywords + "'")
 				);
@@ -105,14 +112,16 @@ export class SearchResultComponent implements OnInit {
 		Observable.combineLatest(this.keywords, this.sortedBy, this.filteredBy)
 			.subscribe(([keywords, sortedBy, filteredBy]) => {
 					//reset results so the result screen can show a loading screen while the http call is performed
-					this.results = Observable.empty();
+				this.results$ = Observable.empty();
 
-					this.results = Observable.combineLatest(
+				this.results$ = Observable.combineLatest(
 						this.eventService.search(keywords, EventType.tours),
 						this.eventService.search(keywords, EventType.partys),
 						this.eventService.search(keywords, EventType.merch),
 						(tours, partys, merch) => [...tours, ...partys, ...merch]
 					)
+					.do(events => this.filterOptions = this.searchFilterService.getEventFilterOptionsFromResults(events))
+					.do(events => this.initFilterMenu())
 					//todo replace with actual api call?
 						.map(events => {
 							//sortiere events

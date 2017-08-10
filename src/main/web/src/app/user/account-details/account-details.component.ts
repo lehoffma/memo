@@ -6,6 +6,8 @@ import {Component, OnInit} from "@angular/core";
 	styleUrls: ["./account-details.component.scss"]
 })
 export class AccountDetailsComponent implements OnInit {
+	//todo email/passwort ändern
+	//todo ansonsten fällt mir nich mehr ein..?
 
 	constructor() {
 	}

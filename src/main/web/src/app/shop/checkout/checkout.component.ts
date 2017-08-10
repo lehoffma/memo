@@ -7,6 +7,8 @@ import {LogInService} from "../../shared/services/login.service";
 import {AddressService} from "../../shared/services/address.service";
 import {Address} from "../../shared/model/address";
 import {PaymentMethod} from "./payment/payment-method";
+import {ShoppingCartService} from "../../shared/services/shopping-cart.service";
+import {EventService} from "../../shared/services/event.service";
 
 @Component({
 	selector: "memo-checkout",
@@ -21,9 +23,12 @@ export class CheckoutComponent implements OnInit {
 		.flatMap(user => Observable.combineLatest(
 			user.addresses.map(addressId => this.addressService.getById(addressId))
 		));
+	total$ = this.cartService.total;
 
 	constructor(private route: ActivatedRoute,
 				private userService: UserService,
+				private cartService: ShoppingCartService,
+				private eventService: EventService,
 				private addressService: AddressService,
 				private logInService: LogInService) {
 
@@ -47,6 +52,6 @@ export class CheckoutComponent implements OnInit {
 		data: any
 	}) {
 		console.log(event);
-		//todo proceed to final screen?
+		//todo proceed to final screen!
 	}
 }

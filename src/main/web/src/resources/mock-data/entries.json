@@ -4,66 +4,77 @@
 			"id": 0,
 			"name": "Getränke",
 			"value": -20.04,
+			"date": "2017-07-31T16:59:29.104Z",
 			"category": "Food"
 		},
 		{
 			"id": 1,
 			"name": "DFB Pokal Tickets",
 			"value": 200.50,
+			"date": "2017-06-30T16:59:29.104Z",
 			"category": "Tickets"
 		},
 		{
 			"id": 2,
 			"name": "DFB Pokal Sprit",
 			"value": -50,
+			"date": "2017-07-15T16:59:29.104Z",
 			"category": "Fuel"
 		},
 		{
 			"id": 3,
 			"name": "SIXT Transporter",
 			"value": -150,
+			"date": "2017-07-14T16:59:29.104Z",
 			"category": "LeasingCar"
 		},
 		{
 			"id": 4,
 			"name": "DFB Pokal Tickets",
 			"value": 200.50,
+			"date": "2017-05-22T16:59:29.104Z",
 			"category": "Tickets"
 		},
 		{
 			"id": 5,
 			"name": "DFB Pokal Sprit",
 			"value": -50,
+			"date": "2017-06-05T16:59:29.104Z",
 			"category": "Fuel"
 		},
 		{
 			"id": 6,
 			"name": "SIXT Transporter",
 			"value": -150,
+			"date": "2017-06-24T16:59:29.104Z",
 			"category": "LeasingCar"
 		},
 		{
 			"id": 7,
 			"name": "DFB Pokal Tickets",
 			"value": 200.50,
+			"date": "2017-07-15T16:59:29.104Z",
 			"category": "Tickets"
 		},
 		{
 			"id": 8,
 			"name": "DFB Pokal Sprit",
 			"value": -50,
+			"date": "2017-07-10T16:59:29.104Z",
 			"category": "Fuel"
 		},
 		{
 			"id": 9,
 			"name": "SIXT Transporter",
 			"value": -150,
+			"date": "2017-07-05T16:59:29.104Z",
 			"category": "LeasingCar"
 		},
 		{
 			"id": 10,
 			"name": "Europapokal Tickets",
 			"value": 200.50,
+			"date": "2017-06-22T16:59:29.104Z",
 			"category": "Tickets"
 		}
 	]

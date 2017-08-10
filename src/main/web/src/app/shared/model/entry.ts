@@ -6,13 +6,13 @@ export class Entry extends ImmutableObject<Entry> {
 	constructor(public readonly id: number,
 				public readonly name: string,
 				public readonly value: number,
-				//todo entry date
+				public readonly date: Date,
 				public readonly category: EntryCategory) {
 		super(id);
 	}
 
 	static create() {
-		return new Entry(-1, "", 0, null);
+		return new Entry(-1, "", 0, new Date(), null);
 	}
 
 	static isEntry(entry: any): entry is Entry {

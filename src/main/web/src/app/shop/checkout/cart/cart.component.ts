@@ -2,8 +2,9 @@ import {Component, OnInit} from "@angular/core";
 import {ShoppingCartService} from "../../../shared/services/shopping-cart.service";
 import {EventService} from "../../../shared/services/event.service";
 import {Observable} from "rxjs/Observable";
-import {EventType} from "../../shared/model/event-type";
 import {CartItem} from "./cart-item";
+import {ShoppingCartContent} from "../../../shared/model/shopping-cart-content";
+import {ShoppingCartItem} from "app/shared/model/shopping-cart-item";
 
 @Component({
 	selector: "checkout-cart",
@@ -11,37 +12,19 @@ import {CartItem} from "./cart-item";
 	styleUrls: ["./cart.component.scss"]
 })
 export class CheckoutCartComponent implements OnInit {
-	//todo als funktion auslagern
 	public shoppingCartItems: Observable<{ tours: CartItem[], merch: CartItem[], partys: CartItem[] }> =
-		this.shoppingCartService.content.flatMap(content => {
-			let getEventsFromShoppingCart = (contentKey: string, eventType: EventType): Observable<CartItem[]> => {
-				const events = [];
-				for (let i = 0; i < content[contentKey].length; i++) {
-					events[i] = this.eventService.getById(content[contentKey][i].id, eventType);
-				}
-				return Observable.combineLatest(events)
-					.map(events => {
-						for (let i = 0; i < events.length; i++) {
-							events[i] = {
-								item: events[i],
-								amount: content[contentKey][i].amount,
-								options: content[contentKey][i].options
-							}
-						}
-						return events;
-					})
-			};
-			let tours = getEventsFromShoppingCart("tours", EventType.tours).defaultIfEmpty([]);
-			let merch = getEventsFromShoppingCart("merch", EventType.merch).defaultIfEmpty([]);
-			let partys = getEventsFromShoppingCart("partys", EventType.partys).defaultIfEmpty([]);
-			return Observable.combineLatest(tours, merch, partys).map(eventsArray => {
-				return {
-					tours: eventsArray[0],
-					merch: eventsArray[1],
-					partys: eventsArray[2]
-				}
-			})
+		this.shoppingCartService.content.flatMap((content: ShoppingCartContent) => {
+			let tours = this.getEventsFromShoppingCart(content, "tours").defaultIfEmpty([]);
+			let merch = this.getEventsFromShoppingCart(content, "merch").defaultIfEmpty([]);
+			let partys = this.getEventsFromShoppingCart(content, "partys").defaultIfEmpty([]);
+			return Observable.combineLatest(tours, merch, partys)
+				.map(([tours, merch, partys]) => ({
+					tours,
+					merch,
+					partys
+				}));
 		});
+
 	public totalAmount: Observable<number> = this.shoppingCartItems.map(items =>
 		items.tours.reduce((prev, curr) => prev + curr.amount * curr.item.price, 0) +
 		items.merch.reduce((prev, curr) => prev + curr.amount * curr.item.price, 0) +
@@ -55,4 +38,19 @@ export class CheckoutCartComponent implements OnInit {
 
 	}
 
+	/**
+	 *
+	 * @param {ShoppingCartContent} content
+	 * @param {string} contentKey
+	 * @returns {Observable<CartItem[]>}
+	 */
+	getEventsFromShoppingCart(content: ShoppingCartContent, contentKey: string): Observable<CartItem[]> {
+		return Observable.combineLatest(...content[contentKey]
+			.map((item: ShoppingCartItem) => this.eventService.getById(item.id)
+				.map(event => ({
+					item: event,
+					amount: item.amount,
+					options: item.options
+				}))));
+	};
 }

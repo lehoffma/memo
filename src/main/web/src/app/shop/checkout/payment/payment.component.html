@@ -5,7 +5,7 @@
 	<div *ngSwitchCase="paymentMethodEnum.CASH">
 		<p>Die Rechnung wird dir per Email zugeschickt.</p>
 		<p>Gib das Geld bitte bei der nächsten Gelegenheit an eine zuständige Person.</p>
-		<button md-raised-button color="primary" (click)="emitDoneEvent()">Weiter</button>
+		<button md-raised-button color="accent" (click)="emitDoneEvent()">Weiter</button>
 	</div>
 	<div *ngSwitchCase="paymentMethodEnum.DEBIT">
 		<form #debitInputForm="ngForm" (ngSubmit)="emitDoneEvent()">
@@ -37,8 +37,8 @@
 					   required>
 				<md-hint align="end" class="error-message"
 						 *ngIf="ibanInput.touched && (ibanInput.invalid || !isValidIBAN(dataModel.IBAN))">
-					{{dataModel.IBAN.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist
-					inkorrekt!"}}
+					{{dataModel.IBAN.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist" +
+					" inkorrekt!"}}
 				</md-hint>
 			</md-input-container>
 			<md-input-container>
@@ -49,14 +49,14 @@
 					   name="bicInput"
 					   required>
 			</md-input-container>
-			<button md-raised-button color="primary" [disabled]="!debitInputForm.form.valid">
+			<button md-raised-button color="accent" [disabled]="!debitInputForm.form.valid">
 				Weiter
 			</button>
 		</form>
 	</div>
 	<div *ngSwitchCase="paymentMethodEnum.TRANSFER">
 		<p>Die Überweisungsdaten werden dir per Email zugeschickt.</p>
-		<button md-raised-button color="primary" (click)="emitDoneEvent()">Weiter</button>
+		<button md-raised-button color="accent" (click)="emitDoneEvent()">Weiter</button>
 	</div>
 	<div *ngSwitchCase="paymentMethodEnum.PAYPAL">
 
@@ -64,8 +64,8 @@
 	<div *ngSwitchDefault>
 		<p>Bitte wähle eine Bezahlmethode aus!</p>
 	</div>
-	<div [style.visibility]="selectedMethod === paymentMethodEnum.PAYPAL ? 'visible': 'hidden'"
-		 [style.height]="selectedMethod === paymentMethodEnum.PAYPAL ? 'auto': '0'">
+	<div class="paypal-button-container"
+		 [ngClass]="{'paypal-selected': selectedMethod === paymentMethodEnum.PAYPAL}">
 
 		<div id="paypal-button"></div>
 	</div>

@@ -5,11 +5,15 @@ import {LogInService} from "../../../../shared/services/login.service";
 import {Observable} from "rxjs/Observable";
 import {UserService} from "../../../../shared/services/user.service";
 import {AddressService} from "../../../../shared/services/address.service";
+import {Wiggle} from "app/util/animation-util";
 
 @Component({
 	selector: "memo-address-modification",
 	templateUrl: "./address-modification.component.html",
-	styleUrls: ["./address-modification.component.scss"]
+	styleUrls: ["./address-modification.component.scss"],
+	animations: [
+		Wiggle
+	]
 })
 
 export class AddressModificationComponent implements OnInit {

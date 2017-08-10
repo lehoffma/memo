@@ -10,6 +10,7 @@ import {Party} from "../../shop/shared/model/party";
 import {CacheStore} from "../stores/cache.store";
 import {ParticipantsService} from "./participants.service";
 import {ServletService} from "./servlet.service";
+import {Merchandise} from "app/shop/shared/model/merchandise";
 
 @Injectable()
 export class EventService extends ServletService<Event> {
@@ -20,8 +21,6 @@ export class EventService extends ServletService<Event> {
 				private eventFactoryService: EventFactoryService) {
 		super();
 	}
-
-	//TODO! eventType wird nicht mehr benötigt, da Ids global unique sind. (nur search sollte es behalten)
 
 	private readonly baseUrl = `/api/event`;
 
@@ -41,6 +40,7 @@ export class EventService extends ServletService<Event> {
 		return "tours";
 	}
 
+
 	/**
 	 * Requested das Event (mit einem bestimmten Event-Typen) vom Server, welches die gegebene ID besitzt
 	 * @param eventId
@@ -48,24 +48,31 @@ export class EventService extends ServletService<Event> {
 	 * @param refresh
 	 * @returns {Observable<T>}
 	 */
-	getById(eventId: number, eventType: EventType, refresh?: boolean): Observable<Event> {
-		let url = `${this.baseUrl}?id=${eventId}&type=${eventType}`;
+	getById(eventId: number, refresh?: boolean): Observable<Event> {
+		let url = `${this.baseUrl}?id=${eventId}`;
 
 		//return cached version if available to reduce number of http request necessary
-		if (this.cache.isCached(EventService.cacheKeyFromEventType(eventType), eventId) && !refresh) {
-			return this.cache.cache[eventType]
-				.map((events: Event[]) => events.find(event => event.id === eventId));
+		//todo test: maybe just switch to rxjs solution instead
+		let cachedEvent = this.cache.getEventById(eventId);
+		if (cachedEvent && !refresh) {
+			return Observable.of(cachedEvent);
 		}
 
 		//todo remove when backend is running todo demo
 		if (!refresh) {
-			return this.search("", eventType)
-				.map(events => events.find(event => event.id === eventId));
+			return Observable.combineLatest(
+				this.search("", EventType.merch),
+				this.search("", EventType.partys),
+				this.search("", EventType.tours)
+			).map(([merch, partys, tours]: [Merchandise[], Party[], Tour[]]) => {
+				return [...merch, ...partys, ...tours]
+					.find(event => event.id === eventId);
+			})
 		}
 
 		return this.performRequest(this.http.get(url))
 			.map(response => response.json().events)
-			.map(json => this.eventFactoryService.build(eventType).setProperties(json[0]))
+			.map(json => Event.create().setProperties(json[0]))
 			.do(event => this.cache.addOrModify(event));
 	}
 
@@ -151,11 +158,10 @@ export class EventService extends ServletService<Event> {
 				event: Event): Observable<Event> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
-		const eventType = EventUtilityService.getEventType(event);
 
 		return this.performRequest(requestMethod(this.baseUrl, {event}, requestOptions))
 			.map(response => response.json().id)
-			.flatMap(id => this.getById(id, eventType));
+			.flatMap(id => this.getById(id));
 	}
 
 	/**
@@ -184,14 +190,13 @@ export class EventService extends ServletService<Event> {
 	/**
 	 * Löscht das Event mit der gegebenen ID aus der Datenbank
 	 * @param eventId
-	 * @param eventType
 	 * @returns {Observable<T>}
 	 */
-	remove(eventId: number, eventType: EventType): Observable<Response> {
-		return this.performRequest(this.http.delete(this.baseUrl, {body: {id: eventId, type: eventType}}))
+	remove(eventId: number): Observable<Response> {
+		return this.performRequest(this.http.delete(this.baseUrl, {body: {id: eventId}}))
 			.do((removeResponse: Response) => {
 				const eventId: number = removeResponse.json().id;
-				this.cache.remove(EventService.cacheKeyFromEventType(eventType), eventId);
+				this.cache.remove(EventService.cacheKeyFromEventType(EventType.merch), eventId);
 			});
 	}
 

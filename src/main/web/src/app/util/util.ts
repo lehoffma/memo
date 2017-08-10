@@ -1,10 +1,30 @@
 import {isNullOrUndefined} from "util";
+import * as moment from "moment";
 
 export type SortingFunction<T> = (a: T, b: T) => number;
 
 
 export function attributeSortingFunction<ObjectType>(attribute: string, descending: boolean): SortingFunction<ObjectType> {
 	return sortingFunction(obj => obj[attribute], descending);
+}
+
+export function dateSortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => Date, descending: boolean): SortingFunction<ObjectType> {
+	return (a, b) => {
+		let dateA = moment(getAttribute(a)),
+			dateB = moment(getAttribute(b));
+
+		if (dateA.isValid() && dateB.isValid()) {
+			const descendingMultiplier = descending ? -1 : 1;
+			if (dateA.isBefore(dateB)) {
+				return -1 * descendingMultiplier;
+			}
+			if (dateA.isAfter(dateB)) {
+				return descendingMultiplier;
+			}
+		}
+
+		return 0;
+	};
 }
 
 export function sortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => any,

@@ -1,3 +1,8 @@
+
+:host {
+	overflow-y: auto;
+}
+
 md-radio-group{
 	font-size: 0.95em;
 	display: flex;
@@ -10,7 +15,7 @@ md-radio-group{
 	}
 
 	md-radio-button{
-		width: 100%;
+		width: 90%;
 
 		/deep/ .mat-radio-label{
 			width: 100%;
@@ -31,9 +36,15 @@ md-radio-group{
 			margin-right: 10px;
 		}
 	}
+
+	button {
+		position: absolute;
+	}
 }
 
-button{
+a {
 	width: 100%;
 	//margin-top: 20px;
 }
+
+

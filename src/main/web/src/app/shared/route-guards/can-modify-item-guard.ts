@@ -6,8 +6,6 @@ import {EventService} from "../services/event.service";
 import {EntryService} from "../services/entry.service";
 import {UserService} from "../services/user.service";
 import {Permission} from "../model/permission";
-import {EventType} from "../../shop/shared/model/event-type";
-import {EventUtilityService} from "../services/event-utility.service";
 import {ShopItem} from "../model/shop-item";
 import {rolePermissions} from "../model/club-role";
 
@@ -36,19 +34,19 @@ export class CanModifyItemGuard implements CanActivate {
 				switch (route.paramMap.get("itemType")) {
 					case "tours":
 						if (id >= 0) {
-							shopItem = this.eventService.getById(id, EventType.tours);
+							shopItem = this.eventService.getById(id);
 						}
 						permissionKey = "tour";
 						break;
 					case "partys":
 						if (id >= 0) {
-							shopItem = this.eventService.getById(id, EventType.partys);
+							shopItem = this.eventService.getById(id);
 						}
 						permissionKey = "party";
 						break;
 					case "merch":
 						if (id >= 0) {
-							shopItem = this.eventService.getById(id, EventType.merch);
+							shopItem = this.eventService.getById(id);
 						}
 						permissionKey = "merch";
 						break;

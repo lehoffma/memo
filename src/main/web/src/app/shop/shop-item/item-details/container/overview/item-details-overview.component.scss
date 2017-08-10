@@ -28,11 +28,16 @@
 
 	.add-to-cart-container {
 		padding-top: 1rem;
-		padding-left: 3rem;
-		padding-right: 3rem;
 		display: flex;
+		padding-left: 2rem;
+		padding-right: 2rem;
 		flex-direction: column;
 		justify-content: space-around;
+
+		@media all and (min-width: 600px) {
+			padding-left: 3rem;
+			padding-right: 3rem;
+		}
 
 		form > * {
 			margin-bottom: 1.5rem;

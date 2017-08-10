@@ -67,6 +67,19 @@ export class CacheStore {
 
 	/**
 	 *
+	 * @param {number} id
+	 * @returns {Merchandise | Tour | Party}
+	 */
+	getEventById(id: number): Merchandise | Tour | Party {
+		return [
+			...this.values.tours,
+			...this.values.merch,
+			...this.values.partys
+		].find(event => event.id === id);
+	}
+
+	/**
+	 *
 	 * @param object
 	 */
 	getCacheKeyFromObject(object: InnerCacheType) {

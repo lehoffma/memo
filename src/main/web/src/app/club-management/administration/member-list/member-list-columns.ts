@@ -16,5 +16,5 @@ export const memberListColumns = {
 	"isWoelfeClubMember": new ExpandableTableColumn<User>("Wölfecard", "isWoelfeClubMember", BooleanCheckMarkCellComponent),
 	"gender": new ExpandableTableColumn<User>("Geschlecht", "gender", GenderCellComponent),
 	"joinDate": new ExpandableTableColumn<User>("Eintrittsjahr", "joinDate", DateTableCellComponent),
-	"address": new ExpandableTableColumn<User>("Addresse", "addresses", AddressTableCellComponent)
+	"address": new ExpandableTableColumn<User>("Addressen", "addresses", AddressTableCellComponent)
 };

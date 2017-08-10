@@ -31,17 +31,43 @@ export class MemberListComponent implements OnInit {
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<User>[]> = new BehaviorSubject([]);
 	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<User>[]> = new BehaviorSubject([]);
 
+	/**
+	 * Updates the primary and secondary table keys according to the given screen width (higher width = more primary columns)
+	 * @param {number} screenWidth
+	 */
 	updateColumnKeys(screenWidth: number) {
-		let newColumns: ExpandableTableColumn<User>[] = [
-			memberListColumns.firstName, memberListColumns.surname, memberListColumns.clubRole
+		let breakPoints = [
+			{
+				width: 0,
+				columns: [memberListColumns.firstName, memberListColumns.surname, memberListColumns.clubRole]
+			},
+			{
+				width: 500,
+				columns: [memberListColumns.joinDate]
+			},
+			{
+				width: 600,
+				columns: [memberListColumns.birthDate]
+			},
+			{
+				width: 700,
+				columns: [memberListColumns.hasSeasonTicket, memberListColumns.isWoelfeClubMember]
+			},
+			{
+				width: 900,
+				columns: [memberListColumns.gender]
+			},
+			{
+				width: 1100,
+				columns: [memberListColumns.telephone]
+			}
 		];
-		if (screenWidth > 500) {
-			//todo abstufungen?
-			newColumns.push(
-				memberListColumns.birthDate, memberListColumns.telephone, memberListColumns.hasSeasonTicket,
-				memberListColumns.isWoelfeClubMember, memberListColumns.gender, memberListColumns.joinDate
-			)
-		}
+
+		let newColumns: ExpandableTableColumn<User>[] = breakPoints
+			.filter(breakPoint => screenWidth > breakPoint.width)
+			.reduce((acc, breakPoint) => [...acc, ...breakPoint.columns], []);
+
+
 		this.primaryColumnKeys.next(newColumns);
 		this.expandedRowKeys.next(Object.keys(memberListColumns)
 			.filter(key => !newColumns.includes(memberListColumns[key]))

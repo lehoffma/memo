@@ -1,5 +1,4 @@
-<!--todo: filter component-->
-<!--      dropdown welches ab bestimmter größe zu seitenmenü wird-->
+
 <div class="sorting-results-modifier-container">
 	<memo-filtering-menu [filterOptions]="filterOptions"></memo-filtering-menu>
 	<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
@@ -16,8 +15,8 @@
 		</div>
 	</div>
 
-	<memo-results [events]="results | async"></memo-results>
+	<memo-results [events]="results$ | async"></memo-results>
 </div>
 
 
-<!--todo pagination-->
+<!--todo pagination?-->

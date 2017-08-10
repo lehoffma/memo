@@ -92,7 +92,7 @@ export class MerchStockComponent implements OnInit {
 	 * @param merchObjects
 	 */
 	deleteMerch(merchObjects: any[]) {
-		merchObjects.forEach(merchObject => this.eventService.remove(merchObject.id, EventType.merch)
+		merchObjects.forEach(merchObject => this.eventService.remove(merchObject.id)
 			.subscribe(
 				value => value,
 				error => console.error(error)

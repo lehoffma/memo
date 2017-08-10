@@ -2,15 +2,28 @@
 <md-radio-group [(ngModel)]="selectedAddress">
 	<div *ngFor="let address of addresses">
 		<md-radio-button [value]="address">
-
 			<div class="address-information">
-				<!--todo name of the recipient-->
 				<b>{{address.name}}</b>
 				<span>{{address.street}} {{address.streetNr}}</span>
 				<span>{{address.city}}, {{address.zip}}</span>
 				<span>{{address.country}}</span>
 			</div>
 		</md-radio-button>
+		<button md-icon-button
+				[mdMenuTriggerFor]="menu">
+			<md-icon>more_vert</md-icon>
+		</button>
+		<md-menu #menu="mdMenu">
+			<a md-menu-item (click)="navigateToAddressModifications()"
+			   routerLink="/checkout/address" [queryParams]="{'id': address.id}">
+				<md-icon>edit</md-icon>
+				<span>Bearbeiten</span>
+			</a>
+			<button md-menu-item (click)="initDeletingProcess(address.id)">
+				<md-icon>delete</md-icon>
+				<span>Löschen</span>
+			</button>
+		</md-menu>
 	</div>
 </md-radio-group>
-<a md-button (click)="redirectToAddNewAddress()" routerLink="/checkout/address">Neue Addresse hinzufügen</a>
+<a md-button (click)="navigateToAddressModifications()" routerLink="/checkout/address">Neue Addresse hinzufügen</a>

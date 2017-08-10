@@ -7,24 +7,29 @@ import {Observable} from "rxjs/Observable";
 @Component({
 	selector: "td [addressTableCell]",
 	template: `
-		<span *ngIf="observableAddress | async as address">
-			{{address.name}}
-		</span>
+		<table *ngIf="addresses$ | async as addresses">
+			<tbody *ngFor="let address of addresses; let i = index" [style.marginBottom]="'10px'">
+			<th>Addresse {{i + 1}}</th>
+			<tr>{{address.name}}</tr>
+			<tr>{{address.street}} {{address.streetNr}}</tr>
+			<tr>{{address.zip}}</tr>
+			<tr>{{address.city}}</tr>
+			<tr>{{address.country}}</tr>
+
+			</tbody>
+		</table>
 	`
 })
 
 export class AddressTableCellComponent implements OnInit, ExpandableTableCellComponent {
-	//todo toString() methode für addressen oder lieber direkt google maps aufrufen? (könnte ein wenig datenvolumen wegballern)
 	@Input() data: number[];
-	observableAddress: Observable<Address>;
+	addresses$: Observable<Address[]>;
 
 	constructor(private addressService: AddressService) {
 	}
 
 	ngOnInit() {
-		//todo multiple address support
-		console.log(this.data);
-		this.observableAddress = this.addressService.getById(this.data[0]);
+		this.addresses$ = Observable.combineLatest(...this.data.map(id => this.addressService.getById(id)));
 	}
 
 }

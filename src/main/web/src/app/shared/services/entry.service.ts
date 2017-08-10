@@ -5,6 +5,7 @@ import {Observable} from "rxjs/Observable";
 import {CacheStore} from "../stores/cache.store";
 import {EventType} from "../../shop/shared/model/event-type";
 import {ServletService} from "app/shared/services/servlet.service";
+import * as moment from "moment";
 
 @Injectable()
 export class EntryService extends ServletService<Entry> {
@@ -84,7 +85,16 @@ export class EntryService extends ServletService<Entry> {
 
 		return this.performRequest(this.http.get(url, {search: params}))
 			.map(response => response.json().entries)
-			.map((jsonArray: any[]) => jsonArray.map(json => Entry.create().setProperties(json)));
+			.map((jsonArray: any[]) => jsonArray.map(json => Entry.create().setProperties(json)))
+
+			//todo remove when server is running todo demo
+			.map(entries => entries.filter(entry => {
+				if (dateRange) {
+					return moment(dateRange.minDate).isBefore(entry.date)
+						&& moment(dateRange.maxDate).isAfter(entry.date);
+				}
+				return true;
+			}))
 	}
 
 

@@ -21,7 +21,7 @@ import {Comment} from "../../../shared/model/comment";
 
 export class PartyDetailComponent implements OnInit {
 	party$: Observable<Party> = this.route.params
-		.flatMap(params => this.eventService.getById(+params["id"], EventType.partys));
+		.flatMap(params => this.eventService.getById(+params["id"]));
 
 	overViewKeys$: Observable<EventOverviewKey[]> = this.party$.map(party => party.overviewKeys);
 

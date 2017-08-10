@@ -14,6 +14,7 @@ import {CostCategoryTableCellComponent} from "./accounting-table-cells/cost-cate
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {EventType} from "../../shop/shared/model/event-type";
 import * as moment from "moment";
+import {DateTableCellComponent} from "../administration/member-list/member-list-table-cells/date-table-cell.component";
 
 @Component({
 	selector: "memo-accounting",
@@ -42,19 +43,21 @@ export class AccountingComponent implements OnInit {
 	showOptions = true;
 	mobile = false;
 
+	columns = {
+		date: new ExpandableTableColumn<Entry>("Datum", "date", DateTableCellComponent),
+		category: new ExpandableTableColumn<Entry>("Kostenart", "category", CostCategoryTableCellComponent),
+		name: new ExpandableTableColumn<Entry>("Name", "name"),
+		value: new ExpandableTableColumn<Entry>("Kosten", "value", CostValueTableCellComponent)
+	};
+
 	constructor(private entryService: EntryService,
 				private activatedRoute: ActivatedRoute,
 				private router: Router) {
 		this.primaryColumnKeys.next([
-			new ExpandableTableColumn<Entry>("Kostenart", "category", CostCategoryTableCellComponent),
-			new ExpandableTableColumn<Entry>("Name", "name"),
-			new ExpandableTableColumn<Entry>("Kosten", "value", CostValueTableCellComponent),
+			this.columns.date, this.columns.category, this.columns.name, this.columns.value
 		]);
 
-
-		let mobile = window.innerWidth < 850;
-		this.showOptions = !mobile;
-		this.mobile = mobile;
+		this.onResize({target: {innerWidth: window.innerWidth}});
 	}
 
 	ngOnInit() {
@@ -65,6 +68,17 @@ export class AccountingComponent implements OnInit {
 		let mobile = event.target.innerWidth < 850;
 		this.showOptions = !mobile;
 		this.mobile = mobile;
+		if (mobile) {
+			this.primaryColumnKeys.next([
+				this.columns.name, this.columns.value
+			]);
+			this.expandedRowKeys.next([this.columns.category, this.columns.date])
+		}
+		else {
+			this.primaryColumnKeys.next([
+				this.columns.date, this.columns.category, this.columns.name, this.columns.value
+			]);
+		}
 	}
 
 

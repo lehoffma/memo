@@ -6,6 +6,7 @@ import {EventUtilityService} from "../../../../../shared/services/event-utility.
 import {EventOverviewKey} from "./event-overview-key";
 import {StockService} from "../../../../../shared/services/stock.service";
 import {Observable} from "rxjs/Observable";
+import * as moment from "moment";
 
 
 @Component({
@@ -29,6 +30,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	public amountOptions: number[] = [];
 	public maxAmount: number = 0;
 	public isPartOfShoppingCart: boolean;
+	public isPastEvent: boolean = false;
 
 	constructor(private eventUtilityService: EventUtilityService,
 				private stockService: StockService,
@@ -42,6 +44,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				//todo mache farben/größen abhängig vom stock/voneinander
 				this.colorSelection = (<Merchandise>this.event).colors;
 				this.sizeSelection = (<Merchandise>this.event).clothesSizeSelections;
+			}
+			if (this.event.date) {
+				this.isPastEvent = moment(this.event.date).isBefore(moment());
 			}
 		}
 	}

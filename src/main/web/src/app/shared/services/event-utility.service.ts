@@ -17,7 +17,6 @@ export class EventUtilityService {
 	constructor() {
 	}
 
-	//todo make static
 	static getEventType(event: Event): EventType {
 		return EventUtilityService.handleShopItem(event,
 			merch => EventType.merch,

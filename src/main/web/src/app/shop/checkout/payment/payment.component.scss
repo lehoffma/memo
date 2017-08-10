@@ -9,3 +9,21 @@ form {
 		flex-wrap: wrap;
 	}
 }
+
+button {
+	width: 100%;
+}
+
+.paypal-button-container {
+	visibility: hidden;
+	height: 0;
+
+	&.paypal-selected {
+		visibility: visible;
+		height: auto;
+		display: flex;
+		justify-content: center;
+		margin-top: 25px;
+	}
+}
+

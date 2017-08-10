@@ -42,21 +42,21 @@ a {
 	}
 
 	.image-overlay-container {
-		height: 360px;
+		height: 400px;
 		width: 500px;
 	}
 
 	.image-container {
 		z-index: -1;
-		height: 360px;
+		height: 400px;
 		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 		.image-detail {
-			height: 360px;
+			height: 400px;
 		}
 	}
 
 	.image-container::after {
-		height: calc(360px - 3rem);
+		height: calc(400px - 3rem);
 	}
 
 	a {
@@ -65,7 +65,7 @@ a {
 	}
 
 	memo-item-details-overview /deep/ .centered-container {
-		height: 360px;
+		height: 400px;
 	}
 
 	memo-item-details-overview /deep/ .object-overview-container {

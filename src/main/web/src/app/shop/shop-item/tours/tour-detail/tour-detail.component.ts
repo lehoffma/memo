@@ -21,7 +21,7 @@ import {Comment} from "../../../shared/model/comment";
 })
 export class TourDetailComponent implements OnInit {
 	tour$: Observable<Tour> = this.activatedRoute.params
-		.flatMap(params => this.eventService.getById(+params["id"], EventType.tours));
+		.flatMap(params => this.eventService.getById(+params["id"]));
 
 	overViewKeys$: Observable<EventOverviewKey[]> = this.tour$.map(tour => tour.overviewKeys);
 

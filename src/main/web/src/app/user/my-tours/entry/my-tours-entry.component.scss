@@ -1,0 +1,102 @@
+@import "../../../../theme";
+@import "~@angular/material/theming";
+
+a {
+	text-decoration: none;
+}
+
+:host {
+	max-width: 500px;
+	display: block;
+	width: 100%;
+}
+
+md-card {
+	padding: 0;
+	margin-bottom: 20px;
+
+	&:hover {
+		box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+	}
+
+	@media all and (min-width: 500px) {
+		min-width: 500px;
+	}
+
+	.mat-card-image {
+		margin-top: 0;
+		height: 10rem;
+		object-fit: cover;
+		width: 100%;
+		margin-bottom: 0;
+		margin-left: 0;
+	}
+
+	md-card-content {
+		display: flex;
+		padding: 1rem;
+
+		.event-date {
+			//padding: 1rem;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+
+			&:not(.past-event) {
+				.event-date-top {
+					color: mat-color($primary);
+				}
+				.event-date-bottom {
+					color: mat-color($accent);
+				}
+			}
+
+			&.past-event {
+				.event-date-top,
+				.event-date-bottom {
+					color: grey;
+				}
+			}
+
+			.event-date-top {
+				font-size: 1.5rem;
+			}
+			.event-date-bottom {
+				font-size: 1.7rem;
+			}
+		}
+
+		.event-other-info {
+			width: 100%;
+			max-width: calc(100% - 50px);
+			margin-left: 20px;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			font-size: 1.1rem;
+			border-left: 1px solid grey;
+			padding-left: 15px;
+
+			h3 {
+				margin: 0;
+				max-width: 100%;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+			}
+
+			.event-route {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				max-width: 100%;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				overflow: hidden;
+			}
+		}
+
+	}
+}
+

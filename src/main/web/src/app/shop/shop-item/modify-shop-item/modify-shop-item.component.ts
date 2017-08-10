@@ -6,7 +6,6 @@ import {Entry} from "../../../shared/model/entry";
 import {ShopItemType} from "../../shared/model/shop-item-type";
 import {ModifyType} from "./modify-type";
 import {User} from "../../../shared/model/user";
-import {EventType} from "../../shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {ActivatedRoute, Params} from "@angular/router";
 import {UserService} from "../../../shared/services/user.service";
@@ -77,9 +76,9 @@ export class ModifyShopItemComponent implements OnInit {
 			let objectToModifyObservable: Observable<ShopItem> = EventUtilityService.handleOptionalShopType<any>(
 				this.itemType,
 				{
-					merch: () => this.eventService.getById(this.idOfObjectToModify, EventType.merch),
-					tours: () => this.eventService.getById(this.idOfObjectToModify, EventType.tours),
-					partys: () => this.eventService.getById(this.idOfObjectToModify, EventType.partys),
+					merch: () => this.eventService.getById(this.idOfObjectToModify),
+					tours: () => this.eventService.getById(this.idOfObjectToModify),
+					partys: () => this.eventService.getById(this.idOfObjectToModify),
 					members: () => this.userService.getById(this.idOfObjectToModify),
 					entries: () => this.entryService.getById(this.idOfObjectToModify),
 				});

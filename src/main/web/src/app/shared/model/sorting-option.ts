@@ -3,5 +3,4 @@ export interface SortingOption<T> {
 	queryParameters: {
 		[param: string]: string;
 	};
-	sortingFunction: (a: T, b: T) => number;
 }

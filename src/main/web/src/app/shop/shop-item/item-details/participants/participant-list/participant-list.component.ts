@@ -45,7 +45,7 @@ export class ParticipantListComponent implements OnInit {
 	});
 
 	eventTitle = this.eventInfo
-		.flatMap(eventInfo => this.eventService.getById(eventInfo.eventId, eventInfo.eventType))
+		.flatMap(eventInfo => this.eventService.getById(eventInfo.eventId))
 		.map(event => event.title);
 
 	private _columnKeys: BehaviorSubject<ExpandableTableColumn<ParticipantUser>[]> = new BehaviorSubject([
@@ -62,16 +62,18 @@ export class ParticipantListComponent implements OnInit {
 
 	isExpandable = this.expandedKeys.map(keys => keys.length > 0);
 
-	private _sortBy: BehaviorSubject<ColumnSortingEvent<ParticipantUser>> =
+	private _sortBy$: BehaviorSubject<ColumnSortingEvent<ParticipantUser>> =
 		new BehaviorSubject<ColumnSortingEvent<ParticipantUser>>({
 			key: "user",
 			descending: true
 		});
 
-	sortBy = this._sortBy.asObservable();
+	sortBy$ = this._sortBy$.asObservable();
+
+
 
 	participants: Observable<ParticipantUser[]> =
-		Observable.combineLatest(this.sortBy, this.activatedRoute.url
+		Observable.combineLatest(this.sortBy$, this.activatedRoute.url
 			.flatMap((urls: UrlSegment[]) => {
 				// "tours/:id/participants"
 				// "partys/:id/participants"
@@ -132,7 +134,7 @@ export class ParticipantListComponent implements OnInit {
 	}
 
 	updateSortBy(event: ColumnSortingEvent<ParticipantUser>) {
-		this._sortBy.next(event);
+		this._sortBy$.next(event);
 	}
 
 	/**

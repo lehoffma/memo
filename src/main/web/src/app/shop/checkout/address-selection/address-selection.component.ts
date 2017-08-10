@@ -10,7 +10,7 @@ import {AddressService} from "../../../shared/services/address.service";
 })
 export class AddressSelectionComponent implements OnInit{
 
-	//todo edit/remove functionality
+	//todo remove functionality
 	// => mobile: long press opens menu?
 	// => desktop: show options icon, which opens menu
 	private _addresses: Address[] = [];
@@ -48,7 +48,11 @@ export class AddressSelectionComponent implements OnInit{
 	/**
 	 *
 	 */
-	redirectToAddNewAddress() {
+	navigateToAddressModifications() {
 		this.addressService.redirectUrl = this.router.url;
+	}
+
+	initDeletingProcess() {
+		console.error("todo implement delete");
 	}
 }

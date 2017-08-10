@@ -6,7 +6,6 @@ import {isNullOrUndefined} from "util";
 import {MerchandiseOptions} from "./merchandise-options";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 import {EventService} from "../../../../shared/services/event.service";
-import {EventType} from "../../../shared/model/event-type";
 import {CommentService} from "../../../../shared/services/comment.service";
 import {LogInService} from "../../../../shared/services/login.service";
 import {Comment} from "../../../shared/model/comment";
@@ -18,7 +17,7 @@ import {Comment} from "../../../shared/model/comment";
 })
 export class MerchandiseDetailComponent implements OnInit {
 	merch$: Observable<Merchandise> = this.route.params
-		.flatMap(params => this.eventService.getById(+params["id"], EventType.merch));
+		.flatMap(params => this.eventService.getById(+params["id"]));
 	clothesSizes$: Observable<string[]> = this.merch$.map(merch => merch.clothesSizes);
 	overViewKeys$: Observable<EventOverviewKey[]> = this.merch$.map(merch => merch.overviewKeys);
 

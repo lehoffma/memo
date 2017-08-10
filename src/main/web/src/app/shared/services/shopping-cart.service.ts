@@ -4,6 +4,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {ShoppingCartContent} from "../model/shopping-cart-content";
 import {ShoppingCartItem} from "../model/shopping-cart-item";
 import {MerchColor} from "../../shop/shared/model/merch-color";
+import {EventService} from "./event.service";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -15,7 +16,7 @@ export class ShoppingCartService implements OnInit {
 	public content = this._content.asObservable();
 
 
-	constructor() {
+	constructor(private eventService: EventService,) {
 		this.initFromLocalStorage();
 	}
 
@@ -25,6 +26,17 @@ export class ShoppingCartService implements OnInit {
 	get amountOfCartItems(): Observable<number> {
 		return this.content.map(content => [...content.merch, ...content.partys, ...content.tours]
 			.reduce((previousValue, currentValue) => previousValue + currentValue.amount, 0))
+	}
+
+	get total(): Observable<number> {
+		return this.content
+			.flatMap(content =>
+				Observable.combineLatest(
+					...[...content.merch, ...content.partys, ...content.tours]
+						.map(item => this.eventService.getById(item.id)
+							.map(event => event.price * item.amount)))
+			)
+			.map(prices => prices.reduce((acc, price) => acc + price, 0));
 	}
 
 	/**
@@ -37,8 +49,8 @@ export class ShoppingCartService implements OnInit {
 		return itemA.id === itemB.id && (
 			(!itemA.options.size && !itemA.options.color && !itemB.options.size && !itemB.options.color) ||
 			(itemA.options.size === itemB.options.size
-			&& itemA.options.color.name === itemB.options.color.name
-			&& itemA.options.color.hex === itemB.options.color.hex))
+				&& itemA.options.color.name === itemB.options.color.name
+				&& itemA.options.color.hex === itemB.options.color.hex))
 	}
 
 	/**

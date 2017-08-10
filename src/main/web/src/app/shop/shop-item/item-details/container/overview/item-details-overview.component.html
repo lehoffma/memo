@@ -42,13 +42,14 @@
 
 				<md-select placeholder="Anzahl" name="amount"
 						   [(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
+						   [disabled]="!isMerch(event) && isPastEvent"
 						   [required]="true">
 					<md-option *ngFor="let number of amountOptions" [value]="number">
 						{{number}}
 					</md-option>
 				</md-select>
 
-				<button [disabled]="!addToCartForm.valid || model.amount === 0"
+				<button [disabled]="(!addToCartForm.valid || model.amount === 0) || (!isMerch(event) && isPastEvent)"
 						md-raised-button
 						color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
 						class="add-to-cart-button">

@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {UserService} from "../../shared/services/user.service";
 import {EventService} from "../../shared/services/event.service";
-import {EventType} from "../../shop/shared/model/event-type";
 
 @Component({
 	selector: "memo-imprint",
@@ -24,17 +23,17 @@ export class ImprintComponent implements OnInit {
 	}
 
 	postMerch() {
-		this.result = this.eventService.getById(0, EventType.merch)
+		this.result = this.eventService.getById(0)
 			.flatMap(merch => this.eventService.add(merch));
 	}
 
 	postTour() {
-		this.result = this.eventService.getById(0, EventType.tours)
+		this.result = this.eventService.getById(0)
 			.flatMap(tour => this.eventService.add(tour));
 	}
 
 	postParty() {
-		this.result = this.eventService.getById(0, EventType.tours)
+		this.result = this.eventService.getById(0)
 			.flatMap(party => this.eventService.add(party));
 	}
 
