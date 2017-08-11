@@ -2,9 +2,11 @@
 	"name": "memo-web",
 	"version": "0.0.2",
 	"scripts": {
-		"start": "ng serve --proxy-config proxy.conf.json --host 192.168.188.75",
-		"production": "ng serve --proxy-config proxy.conf.json --prod --host 192.168.188.75",
+		"start": "ng serve --proxy-config proxy.conf.json",
+		"start-mobile": "ng serve --proxy-config proxy.conf.json --host 192.168.188.75",
+		"production": "ng serve --proxy-config proxy.conf.json --prod",
 		"build": "ng build --prod",
+		"build-optimized": "ng build --prod --build-optimizer",
 		"test": "ng test",
 		"test-once": "ng test --single-run=true --browsers Chrome",
 		"lint": "ng lint",

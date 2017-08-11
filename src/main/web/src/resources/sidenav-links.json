@@ -86,6 +86,20 @@
 				}
 			},
 			{
+				"route": "management/events",
+				"icon": "event",
+				"name": "Veranstaltungsübersicht",
+				"minimumPermission": {
+					"user": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
+					"stock": 0,
+					"accountManagement": 0
+				}
+			},
+			{
 				"route": "members",
 				"icon": "view_list",
 				"name": "Mitgliederliste"

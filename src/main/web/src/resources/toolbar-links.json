@@ -26,6 +26,11 @@
 				"name": "Kostenübersicht"
 			},
 			{
+				"route": "management/events",
+				"icon": "",
+				"name": "Veranstaltungsübersicht"
+			},
+			{
 				"route": "members",
 				"icon": "",
 				"name": "Mitgliederliste"

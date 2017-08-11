@@ -17,9 +17,9 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="EclipseLink" />
         <datasource-mapping>
-          <factory-entry name="memoPersistence" value="a559abd5-bd56-45f5-aa1a-5a0b18a67a59" />
+          <factory-entry name="memoPersistence" value="898949e9-5fb2-412d-b70e-13aef7749066" />
         </datasource-mapping>
-        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/java/memo/META-INF/persistence.xml" />
+        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>
     </facet>
   </component>
@@ -30,6 +30,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/target/maven-shared-archive-resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/web/dist" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/web/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/target" />

@@ -63,3 +63,4 @@ target/
 /lib/
 
 .idea/dataSources/
+/src/main/web/coverage/
