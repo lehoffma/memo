@@ -18,7 +18,12 @@
 		</div>
 
 		<div class="btn-flexbox">
-			<a md-raised-button color="accent" routerLink="/checkout">{{'Zur Kasse'|uppercase}}</a>
+			<a md-raised-button color="accent"
+			   [disabled]="(totalAmount|async) === 0"
+			   [class.disabled]="(totalAmount|async) === 0"
+			   routerLink="/checkout">
+				{{'Zur Kasse'|uppercase}}
+			</a>
 		</div>
 	</md-card>
 </div>

@@ -132,7 +132,8 @@ import {AccountingOptionsComponent} from "./club-management/accounting/accountin
 import {EditCommentDialogComponent} from "./shop/shop-item/item-details/comments-section/edit-comment-dialog/edit-comment-dialog.component";
 import {PaymentComponent} from "./shop/checkout/payment/payment.component";
 import {ShareButtonsModule} from "ngx-sharebuttons";
-
+import {CreateEventContextMenuComponent} from "./shop/event-calendar-container/create-event-context-menu/create-event-context-menu.component";
+import {EventContextMenuComponent} from "./shop/event-calendar-container/event-context-menu/event-context-menu.component";
 
 @NgModule({
 	imports: [
@@ -255,6 +256,8 @@ import {ShareButtonsModule} from "ngx-sharebuttons";
 		AccountingOptionsComponent,
 		EditCommentDialogComponent,
 		PaymentComponent,
+		EventContextMenuComponent,
+		CreateEventContextMenuComponent,
 	],
 	bootstrap: [
 		AppComponent
@@ -288,7 +291,9 @@ import {ShareButtonsModule} from "ngx-sharebuttons";
 		MerchColorCellComponent,
 		FullNameTableCellComponent,
 		ModifyParticipantComponent,
-		EditCommentDialogComponent
+		EditCommentDialogComponent,
+		CreateEventContextMenuComponent,
+		EventContextMenuComponent,
 	]
 })
 export class AppModule {

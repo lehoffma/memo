@@ -1,4 +1,4 @@
-import {ClubRole} from "./club-role";
+import {ClubRole, rolePermissions} from "./club-role";
 import {UserPermissions} from "./permission";
 import {ImmutableObject} from "./util/immutable-object";
 import {Gender} from "./gender";
@@ -54,5 +54,12 @@ export class User extends ImmutableObject<User> {
 
 	static isUser(user: any): user is User {
 		return user && (<User>user).email !== undefined;
+	}
+
+	get userPermissions() {
+		if (this.permissions) {
+			return this.permissions;
+		}
+		return rolePermissions[this.clubRole];
 	}
 }

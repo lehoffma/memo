@@ -4,7 +4,9 @@
 
 	<p-schedule [events]="calendarEvents$ | async"
 				locale="de"
-				(onEventClick)="dayClickHandler($event);"
+				[editable]="true"
+				[height]="'auto'"
+				(onEventClick)="eventClickHandler($event);"
 				(onDayClick)="dayClickHandler($event)"
 
 	>

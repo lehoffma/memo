@@ -28,6 +28,11 @@ main {
 	height: 100%;
 }
 
+a.disabled {
+	pointer-events: none;
+	cursor: default;
+}
+
 .search-input {
 	.mat-input-underline {
 		border-color: white !important;

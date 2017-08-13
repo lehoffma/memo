@@ -15,6 +15,11 @@
 		"name": "Merchandise"
 	},
 	{
+		"route": "calendar",
+		"icon": "",
+		"name": "Kalender"
+	},
+	{
 		"route": "management",
 		"icon": "",
 		"name": "Vereinsverwaltung",
@@ -24,11 +29,6 @@
 				"route": "management/costs",
 				"icon": "",
 				"name": "Kostenübersicht"
-			},
-			{
-				"route": "management/events",
-				"icon": "",
-				"name": "Veranstaltungsübersicht"
 			},
 			{
 				"route": "members",

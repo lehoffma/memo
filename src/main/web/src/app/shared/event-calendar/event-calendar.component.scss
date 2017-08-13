@@ -22,11 +22,24 @@
 	/deep/ .fc th{
 		border-left: 0;
 		border-right: 0;
+
+	}
+
+	/deep/ .fc td.fc-day {
+		cursor: pointer;
+		&:not(.ui-state-highlight):hover {
+			background-color: mat-color($primary, 200);
+		}
 	}
 
 	/deep/ .fc-event{
 		background-color: mat-color($accent);
 		border-color: mat-color($accent);
+		cursor: pointer;
+
+		&:hover {
+			background-color: darken(mat-color($accent), 5%);
+		}
 	}
 
 	/deep/ .ui-widget-header .ui-state-highlight,

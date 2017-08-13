@@ -19,7 +19,7 @@ import {Location} from "@angular/common";
 import {ShopItem} from "../../../shared/model/shop-item";
 import {AddressService} from "../../../shared/services/address.service";
 import {StockService} from "../../../shared/services/stock.service";
-
+import * as moment from "moment";
 
 @Component({
 	selector: "memo-modify-shop-item",
@@ -66,6 +66,11 @@ export class ModifyShopItemComponent implements OnInit {
 				this.idOfObjectToModify = params["id"] ? +(params["id"]) : -1;
 			}
 		);
+		this.activatedRoute.queryParamMap.first().subscribe(queryParamMap => {
+			if (queryParamMap.has("date")) {
+				this.model["date"] = moment(queryParamMap.get("date")).toDate();
+			}
+		})
 	}
 
 	/**
@@ -96,7 +101,7 @@ export class ModifyShopItemComponent implements OnInit {
 						.first()
 						.subscribe(tourStops => this.model["route"] = tourStops);
 				}
-				else if(this.itemType === ShopItemType.merch){
+				else if (this.itemType === ShopItemType.merch) {
 					let merch: Merchandise = (<Merchandise>objectToModify);
 					this.stockService.getByEventId(merch.id)
 						.first()
