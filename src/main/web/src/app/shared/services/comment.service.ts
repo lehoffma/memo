@@ -19,17 +19,6 @@ import {Comment} from "../../shop/shared/model/comment";
 		let params = new URLSearchParams();
 		params.set("id", "" + id);
 
-		//todo demo
-		switch(id){
-			case 0: return Observable.of(new Comment(0, 0, new Date(), 0, "Hallo wie gehts euch?", [1,2,3]));
-			case 1: return Observable.of(new Comment(0, 1, new Date(), 1, "Ganz okay und dir?"));
-			case 2: return Observable.of(new Comment(0, 2, new Date(), 0, "Ja auch gut.", [5]));
-			case 3: return Observable.of(new Comment(0, 3, new Date(), 1, "Gutes Gespräch."));
-			case 4: return Observable.of(new Comment(0, 4, new Date(), 2, "le funi comment"));
-			case 5: return Observable.of(new Comment(0, 5, new Date(), 3, "jo what the fuck"))
-		}
-
-		console.log(id);
 		return this.performRequest(this.http.get("/api/comment", {search: params}))
 			.map(response => response.json().comments as any)
 			.map(json => Comment.create().setProperties(json))
@@ -43,14 +32,6 @@ import {Comment} from "../../shop/shared/model/comment";
 	getByEventId(eventId: number): Observable<Comment[]> {
 		let params = new URLSearchParams();
 		params.set("eventId", "" + eventId);
-
-		//todo demo
-		if(eventId >= 0){
-			return Observable.of([
-				new Comment(0, 0, new Date(), 0, "Hallo wie gehts euch?", [1,2,3]),
-				new Comment(0, 4, new Date(), 2, "le funi comment")
-			])
-		}
 
 		return this.performRequest(this.http.get("/api/comment", {search: params}))
 			.map(response => response.json().comments as any[])

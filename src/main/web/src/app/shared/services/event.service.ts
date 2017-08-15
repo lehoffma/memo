@@ -10,7 +10,6 @@ import {Party} from "../../shop/shared/model/party";
 import {CacheStore} from "../stores/cache.store";
 import {ParticipantsService} from "./participants.service";
 import {ServletService} from "./servlet.service";
-import {Merchandise} from "app/shop/shared/model/merchandise";
 
 @Injectable()
 export class EventService extends ServletService<Event> {
@@ -56,18 +55,6 @@ export class EventService extends ServletService<Event> {
 		let cachedEvent = this.cache.getEventById(eventId);
 		if (cachedEvent && !refresh) {
 			return Observable.of(cachedEvent);
-		}
-
-		//todo remove when backend is running todo demo
-		if (!refresh) {
-			return Observable.combineLatest(
-				this.search("", EventType.merch),
-				this.search("", EventType.partys),
-				this.search("", EventType.tours)
-			).map(([merch, partys, tours]: [Merchandise[], Party[], Tour[]]) => {
-				return [...merch, ...partys, ...tours]
-					.find(event => event.id === eventId);
-			})
 		}
 
 		return this.performRequest(this.http.get(url))
@@ -124,22 +111,15 @@ export class EventService extends ServletService<Event> {
 		//if no event type is specified, search for all kinds of events (the default value is 'ALL')
 		let url = `${this.baseUrl}?searchTerm=${searchTerm}` + ((eventType !== null) ? `&type=${eventType}` : "");
 
-		//todo remove when backend is running todo demo
-		url = `/resources/mock-data/${eventType}.json`;
-
 		const httpRequest = this.performRequest(this.http.get(url))
 			.map(response => response.json().events)
 			.map((jsonArray: any[]) => jsonArray.map(json => this.eventFactoryService.build(eventType).setProperties(json)))
 			.do(events => this.cache.addMultiple(...events));
 
-		//todo remove when backend is running todo demo
-		const DEBUG_httpRequest = httpRequest.map(events => events.filter(event => event.matchesSearchTerm(searchTerm)));
-		// let DEBUG_httpRequest = httpRequest;
-
 		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, EventService.cacheKeyFromEventType(eventType));
 
 		//if any of the cached events match the search term, combine these with the ones loaded from the server
-		return Observable.combineLatest(cachedObservable, DEBUG_httpRequest,
+		return Observable.combineLatest(cachedObservable, httpRequest,
 			(cachedEvents, loadedEvents) => [...cachedEvents, ...loadedEvents]
 				.filter((value, index, array) =>
 						//removes duplicate entries

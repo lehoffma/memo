@@ -145,11 +145,6 @@ export class StockService extends ServletService<MerchStockList> {
 		params.set("id", "" + id);
 		params.set("eventId", "" + eventId);
 
-		//todo demo
-		if(id >= 0){
-			return Observable.of(stockMockData);
-		}
-
 
 		return this.performRequest(this.http.get("/api/stock", {search: params}))
 		//todo update when merchstock is a class
