@@ -1,3 +1,6 @@
+@import "../../../../../theme";
+@import "~@angular/material/theming";
+
 $breakpoint: 750px;
 
 :host {
@@ -47,7 +50,7 @@ $breakpoint: 750px;
 		h2 {
 			font-weight: 200;
 			border-bottom: 1px solid #E0E0E0;
-			background-color: #0d47a1;
+			background-color: mat-color($primary);
 			color: white;
 			padding: 24px 16px 10px 24px;
 			margin: -1rem -1rem 1rem;

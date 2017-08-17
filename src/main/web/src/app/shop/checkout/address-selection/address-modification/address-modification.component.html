@@ -88,7 +88,7 @@
 			<button md-raised-button type="button" (click)="goBack()">
 				Zurück
 			</button>
-			<button md-raised-button color="primary" [disabled]="!addressModificationForm.form.valid">
+			<button md-raised-button color="accent" [disabled]="!addressModificationForm.form.valid">
 				{{model.id === -1 ? 'Speichern' : 'Änderungen speichern'}}
 			</button>
 		</div>

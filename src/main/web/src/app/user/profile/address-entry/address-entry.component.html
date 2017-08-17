@@ -1,0 +1,25 @@
+<div class="address-entry-container">
+	<div class="address-information">
+		<b>{{address.name}}</b>
+		<span>{{address.street}} {{address.streetNr}}</span>
+		<span>{{address.city}}, {{address.zip}}</span>
+		<span>{{address.country}}</span>
+	</div>
+
+	<button md-icon-button type="button"
+			(click)="$event.stopPropagation(); false"
+			[mdMenuTriggerFor]="menu">
+		<md-icon>more_vert</md-icon>
+	</button>
+</div>
+<md-menu #menu="mdMenu">
+	<a md-menu-item (click)="navigateToAddressModifications()"
+	   routerLink="{{editUrl}}" [queryParams]="{'id': address.id}">
+		<md-icon>edit</md-icon>
+		<span>Bearbeiten</span>
+	</a>
+	<button md-menu-item type="button" (click)="deleteAddress()">
+		<md-icon>delete</md-icon>
+		<span>Löschen</span>
+	</button>
+</md-menu>

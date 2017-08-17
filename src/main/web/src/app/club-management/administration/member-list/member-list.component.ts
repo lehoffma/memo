@@ -26,6 +26,8 @@ export class MemberListComponent implements OnInit {
 	users: Observable<User[]> = Observable.combineLatest(this.userService.search(""), this.sortBy)
 		.map(([users, sortBy]) => users.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 
+	userSubject$: BehaviorSubject<User[]> = new BehaviorSubject([]);
+
 	rowComponent: Type<ExpandedRowComponent<User>> = SingleValueListExpandedRowComponent;
 
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<User>[]> = new BehaviorSubject([]);
@@ -83,6 +85,7 @@ export class MemberListComponent implements OnInit {
 				private navigationService: NavigationService) {
 		this.updateColumnKeys(window.innerWidth);
 		//todo wrap window in service
+		this.users.subscribe(users => this.userSubject$.next(users));
 	}
 
 	ngOnInit() {
@@ -117,7 +120,12 @@ export class MemberListComponent implements OnInit {
 	 */
 	deleteUsers(users: User[]) {
 		users.forEach(user => this.userService.remove(user.id).subscribe(
-			value => value,
+			value => {
+				this.userSubject$.next(
+					this.userSubject$.value
+						.filter(user => !users.some(deletedUser => deletedUser.id === user.id))
+				)
+			},
 			error => console.log(error)
 		));
 	}

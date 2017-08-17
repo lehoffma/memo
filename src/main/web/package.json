@@ -6,7 +6,10 @@
 		"start-mobile": "ng serve --proxy-config proxy.conf.json --host 192.168.188.75",
 		"production": "ng serve --proxy-config proxy.conf.json --prod",
 		"build": "ng build --prod",
+		"build-with-stats": "ng build --prod --stats-json",
 		"build-optimized": "ng build --prod --build-optimizer",
+		"build-optimized-with-stats": "ng build --prod --build-optimizer --stats-json",
+		"bundle-report": "webpack-bundle-analyzer ../webapp/stats.json",
 		"test": "ng test",
 		"test-once": "ng test --single-run=true --browsers Chrome",
 		"lint": "ng lint",
@@ -14,8 +17,8 @@
 	},
 	"dependencies": {
 		"@agm/core": "1.0.0-beta.0",
-		"@angular/cdk": "^2.0.0-beta.8",
 		"@angular/animations": "^4.3.2",
+		"@angular/cdk": "^2.0.0-beta.8",
 		"@angular/common": "^4.3.2",
 		"@angular/compiler": "^4.3.2",
 		"@angular/core": "^4.3.2",
@@ -25,6 +28,7 @@
 		"@angular/platform-browser": "^4.3.2",
 		"@angular/platform-browser-dynamic": "^4.3.2",
 		"@angular/router": "^4.3.2",
+		"@angular/service-worker": "^1.0.0-beta.16",
 		"core-js": "^2.4.1",
 		"font-awesome": "^4.7.0",
 		"fullcalendar": "3.4.0",
@@ -60,6 +64,7 @@
 		"protractor": "~5.1.2",
 		"ts-node": "~3.2.0",
 		"tslint": "~5.3.2",
-		"typescript": "~2.3.3"
+		"typescript": "~2.3.3",
+		"webpack-bundle-analyzer": "^2.9.0"
 	}
 }

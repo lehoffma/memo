@@ -13,6 +13,8 @@ export class ModifyTourComponent implements OnInit {
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
 	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
 
+	defaultImageUrl = "resources/images/Logo.png";
+
 	ModifyType = ModifyType;
 
 	get tourModel() {
@@ -32,6 +34,10 @@ export class ModifyTourComponent implements OnInit {
 
 	cancel() {
 		this.location.back();
+	}
+
+	profilePictureChanged(event) {
+		console.log(event);
 	}
 
 	submitModifiedObject() {

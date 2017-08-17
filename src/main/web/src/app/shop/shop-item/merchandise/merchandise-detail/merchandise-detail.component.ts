@@ -9,6 +9,7 @@ import {EventService} from "../../../../shared/services/event.service";
 import {CommentService} from "../../../../shared/services/comment.service";
 import {LogInService} from "../../../../shared/services/login.service";
 import {Comment} from "../../../shared/model/comment";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Component({
 	selector: "memo-merchandise-details",
@@ -28,6 +29,7 @@ export class MerchandiseDetailComponent implements OnInit {
 		.filter(merch => merch.id >= 0)
 		.flatMap(merch => this.commentService.getByEventId(merch.id));
 
+	commentsSubject$ = new BehaviorSubject<Comment[]>([]);
 
 	constructor(private route: ActivatedRoute,
 				private commentService: CommentService,
@@ -38,6 +40,7 @@ export class MerchandiseDetailComponent implements OnInit {
 
 	ngOnInit() {
 		this.initialize();
+		this.comments$.subscribe(comments => this.commentsSubject$.next(comments));
 	}
 
 	initialize() {
@@ -64,12 +67,31 @@ export class MerchandiseDetailComponent implements OnInit {
 				let comment = new Comment(merch.id, -1, new Date(), user.id, commentText);
 				this.commentService.add(comment, parentId)
 					.subscribe(addResult => {
-						//todo do something with result
-						console.log(addResult);
+						this.merch$
+							.filter(tour => tour.id >= 0)
+							.flatMap(tour => this.commentService.getByEventId(tour.id))
+							.first()
+							.subscribe(comments => {
+								this.commentsSubject$.next(comments);
+							})
 					}, error => {
 						console.error("adding the comment went wrong");
 					})
 			})
 	}
 
+	deleteComment({comment, parentId}: { comment: Comment, parentId: number }) {
+		this.commentService.remove(comment.id, parentId)
+			.subscribe(result => {
+				//todo das reloaded alles immer, lieber am anfang direkt die kommentare in die childs rein laden statt ids
+				//dann kann man auch vernünftig kommentare löschen lokal...
+				this.merch$
+					.filter(tour => tour.id >= 0)
+					.flatMap(tour => this.commentService.getByEventId(tour.id))
+					.first()
+					.subscribe(comments => {
+						this.commentsSubject$.next(comments);
+					})
+			})
+	}
 }

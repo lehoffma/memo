@@ -9,6 +9,7 @@ import {LogInService} from "../../../shared/services/login.service";
 import {UserService} from "../../../shared/services/user.service";
 import {Location} from "@angular/common";
 import {rolePermissions} from "../../../shared/model/club-role";
+
 @Component({
 	selector: "memo-sidenav",
 	templateUrl: "./sidenav.component.html",
@@ -34,9 +35,7 @@ export class SideNavComponent implements OnInit {
 				if (link.children) {
 					link.children = link.children.map(childLink => setId(childLink))
 				}
-				if (link.route.startsWith("members/")) {
-					link.route = "members/" + user.id;
-				}
+				link.route = link.route.replace("PROFILE_ID", "" + user.id);
 				return link;
 			};
 

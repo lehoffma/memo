@@ -15,6 +15,7 @@ export class ModifyMerchComponent implements OnInit {
 
 	ModifyType = ModifyType;
 	priceIsValid = true;
+	defaultImageUrl = "resources/images/Logo.png";
 
 	get merchModel() {
 		return this.model;
@@ -41,5 +42,10 @@ export class ModifyMerchComponent implements OnInit {
 
 	submitModifiedObject() {
 		this.onSubmit.emit(this.model);
+	}
+
+	profilePictureChanged(event) {
+		console.error("todo implement");
+		console.log(event);
 	}
 }

@@ -2,6 +2,7 @@ import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
+
 export class Party extends Event {
 
 	constructor(id: number,
@@ -38,10 +39,11 @@ export class Party extends Event {
 				key: "emptySeats",
 				label: "Freie Plätze"
 			},
-			{
-				key: "expectedRole",
-				label: "Für"
-			},
+			//todo besseres label oder komplett weg?
+			// {
+			// 	key: "expectedRole",
+			// 	label: "Für"
+			// },
 		];
 	}
 

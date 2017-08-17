@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
+import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, ResponseOptions} from "@angular/http";
 import {User} from "../model/user";
 import {CacheStore} from "../stores/cache.store";
 import {ServletService} from "./servlet.service";
@@ -105,6 +105,11 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	remove(userId: number): Observable<Response> {
+		//todo remove demo
+		if (userId >= 0) {
+			return Observable.of(new Response(new ResponseOptions()));
+		}
+
 		return this.performRequest(this.http.delete("/api/user", {body: {id: userId}}))
 			.do((response: Response) => this.cache.remove("users", response.json()));
 	}

@@ -21,6 +21,7 @@ import {Observable} from "rxjs/Observable";
 export class CommentsSectionComponent implements OnInit {
 	@Input() comments: Comment[];
 	@Output() onAddComment = new EventEmitter<{commentText:string, parentId:number}>();
+	@Output() onDeleteComment = new EventEmitter<{ comment: Comment, parentId: number }>();
 	readonly DEFAULT_AMOUNT_OF_COMMENTS_SHOWN = 3;
 	amountOfCommentsShown = 3;
 
@@ -42,5 +43,14 @@ export class CommentsSectionComponent implements OnInit {
 	 */
 	addComment(commentText:string, parentId:number){
 		this.onAddComment.emit({commentText, parentId});
+	}
+
+	/**
+	 *
+	 * @param {Comment} comment
+	 * @param parentId
+	 */
+	deleteComment({comment, parentId}: { comment: Comment, parentId: number }) {
+		this.onDeleteComment.emit({comment, parentId});
 	}
 }

@@ -2,9 +2,18 @@
 	<h2>Merch {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
 	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
 
+		<h2>Bild</h2>
+		<memo-profile-picture-form
+			[image]="merchModel['imagePath'] ? merchModel['imagePath'] : defaultImageUrl"
+			(onChange)="profilePictureChanged($event)">
+
+		</memo-profile-picture-form>
+
+		<h2>Merch-Informationen</h2>
+
 		<md-input-container>
 			<input mdInput name="titleInput"
-				   type="text" required
+				   required
 				   placeholder="Titel"
 				   #titleInput="ngModel"
 				   [(ngModel)]="merchModel['title']">
@@ -60,11 +69,14 @@
 
 		<!--todo? date: Date,-->
 
+
+		<h2>Bestand</h2>
 		<div>
 			<memo-modify-merch-stock [(stock)]="merchModel['stock']">
 			</memo-modify-merch-stock>
 		</div>
 
+		<!--<h2>Grössentabelle</h2>-->
 		<div>
 			<!--todo size table-->
 
@@ -77,7 +89,7 @@
 			<!--	cancel button-->
 			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
-			<button md-button color="primary"
+			<button md-raised-button color="accent"
 					[disabled]="!modifyShopItemForm.form.valid"
 					type="submit">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}

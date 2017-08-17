@@ -17,6 +17,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {ColumnSortingEvent} from "./column-sorting-event";
 import {ExpandableTableColumn} from "./expandable-table-column";
 import {ExpandableTableColumnContainerDirective} from "./expandable-table-column-container.directive";
+import {ConfirmationDialogService} from "../services/confirmation-dialog.service";
 
 @Component({
 	selector: "memo-expandable-table",
@@ -68,7 +69,8 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	@Input() rowsPerPage = 50;
 	rowsPerPageOptions = [5, 10, 25, 50];
 
-	constructor(private _componentFactoryResolver: ComponentFactoryResolver) {
+	constructor(private _componentFactoryResolver: ComponentFactoryResolver,
+				private confirmationDialogService: ConfirmationDialogService) {
 
 	}
 
@@ -235,18 +237,34 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	 * @param data
 	 */
 	deleteItem(data: T) {
-		this.onDelete.emit([data]);
-		this.selectedStatusList[data.id] = false;
+		this.confirmationDialogService.openDialog(
+			"Wollen Sie diesen Eintrag wirklich löschen?"
+		)
+			.subscribe(accepted => {
+				if (accepted) {
+					this.onDelete.emit([data]);
+					this.selectedStatusList[data.id] = false;
+				}
+			});
 	}
 
 	/**
 	 *
 	 */
 	deleteSelected() {
-		this.onDelete.emit(
-			Object.keys(this.selectedStatusList).filter(key => this.selectedStatusList[key])
-				.map(id => this.data.find(dataObject => dataObject.id === +id))
-		);
-		this.selectedStatusList = {};
+		const entriesToDelete = Object.keys(this.selectedStatusList).filter(key => this.selectedStatusList[key])
+			.map(id => this.data.find(dataObject => dataObject.id === +id));
+		this.confirmationDialogService.openDialog(
+			entriesToDelete.length > 1
+				? `Wollen Sie diese ${entriesToDelete.length} Einträge wirklich löschen?`
+				: `Wollen Sie diesen Eintrag wirklich löschen?`
+		)
+			.subscribe(accepted => {
+				if (accepted) {
+					this.onDelete.emit(entriesToDelete);
+					this.selectedStatusList = {};
+				}
+			});
+
 	}
 }

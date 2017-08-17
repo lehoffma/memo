@@ -1,4 +1,10 @@
 
+:host {
+	display: block;
+	width: 500px;
+	max-width: 65vw;
+}
+
 .dialog-container {
 	height: 500px;
 	display: flex;
@@ -10,10 +16,16 @@
 		flex-direction: column;
 	}
 
+	/deep/ color-picker {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding-top: 130px;
+	}
+
 	/deep/ .color-picker {
-		left: 0 !important;
-		margin-left: 3% !important;
-		top: 12rem !important;
+		left: auto !important;
+		top: auto !important;
 	}
 
 	.mat-dialog-actions {

@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Address} from "../../../shared/model/address";
 import {Router} from "@angular/router";
 import {AddressService} from "../../../shared/services/address.service";
+import {LogInService} from "../../../shared/services/login.service";
 
 @Component({
 	selector: "memo-address-selection",
@@ -10,7 +11,6 @@ import {AddressService} from "../../../shared/services/address.service";
 })
 export class AddressSelectionComponent implements OnInit{
 
-	//todo remove functionality
 	// => mobile: long press opens menu?
 	// => desktop: show options icon, which opens menu
 	private _addresses: Address[] = [];
@@ -36,9 +36,15 @@ export class AddressSelectionComponent implements OnInit{
 		this.addressChange.emit(address);
 	}
 
+	editUrl$ = this.loginService.accountObservable
+		.map(id => id === null
+			? "/address"
+			: `/members/${id}/address`);
+
 	@Output() addressChange = new EventEmitter<Address>();
 
 	constructor(private router: Router,
+				private loginService: LogInService,
 				private addressService: AddressService) {
 	}
 
@@ -52,7 +58,7 @@ export class AddressSelectionComponent implements OnInit{
 		this.addressService.redirectUrl = this.router.url;
 	}
 
-	initDeletingProcess() {
+	deleteAddress(address: Address) {
 		console.error("todo implement delete");
 	}
 }

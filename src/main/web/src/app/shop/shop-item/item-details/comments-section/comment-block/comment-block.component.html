@@ -82,6 +82,7 @@
 				<div>
 					<memo-comment-block *ngFor="let child of children"
 										[parentId]="commentObject.id"
+										(onDelete)="deleteChildComment($event)"
 										[comment]="child"></memo-comment-block>
 
 					<div class="reply-form-container" *ngIf="loggedInUser !== null">

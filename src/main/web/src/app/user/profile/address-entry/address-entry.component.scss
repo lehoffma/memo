@@ -1,0 +1,20 @@
+
+.address-entry-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+.address-information {
+	display: flex;
+	flex-direction: column;
+}
+
+.address-actions {
+	display: flex;
+	justify-content: center;
+	padding: 10px;
+
+	button:first-child {
+		margin-right: 10px;
+	}
+}

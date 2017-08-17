@@ -55,7 +55,7 @@
 				"name": "Deine Bestellungen"
 			},
 			{
-				"route": "account-details",
+				"route": "members/PROFILE_ID/edit",
 				"icon": "description",
 				"name": "Dein Account"
 			}

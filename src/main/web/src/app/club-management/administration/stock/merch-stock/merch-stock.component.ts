@@ -48,6 +48,8 @@ export class MerchStockComponent implements OnInit {
 		, this.sortBy)
 		.map(([merch, sortBy]) => merch.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 
+	merchListSubject$: BehaviorSubject<any[]> = new BehaviorSubject([]);
+
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
 	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
 
@@ -56,6 +58,7 @@ export class MerchStockComponent implements OnInit {
 	constructor(private eventService: EventService,
 				private stockService: StockService,
 				private navigationService: NavigationService) {
+		this.merchList.subscribe(merchList => this.merchListSubject$.next(merchList));
 	}
 
 	ngOnInit() {
@@ -94,7 +97,11 @@ export class MerchStockComponent implements OnInit {
 	deleteMerch(merchObjects: any[]) {
 		merchObjects.forEach(merchObject => this.eventService.remove(merchObject.id)
 			.subscribe(
-				value => value,
+				value => {
+					this.merchListSubject$.next(this.merchListSubject$.value
+						.filter(object => merchObject.id !== object.id)
+					);
+				},
 				error => console.error(error)
 			));
 	}

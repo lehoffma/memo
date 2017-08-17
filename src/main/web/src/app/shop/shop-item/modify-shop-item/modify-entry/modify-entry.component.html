@@ -55,7 +55,7 @@
 			<!--	cancel button-->
 			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
-			<button md-button color="primary"
+			<button md-raised-button color="accent"
 					[disabled]="!modifyShopItemForm.form.valid"
 					type="submit">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}

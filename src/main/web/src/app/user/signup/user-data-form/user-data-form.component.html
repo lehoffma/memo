@@ -105,13 +105,71 @@
 		<!--ngFor für jede Adresse: ein Listeneintrag anzeigen -->
 		<!--dadrunter form für das hinzufügen einer neuen addresse mit speichern button-->
 		<!--die form ist fürs erste leer und wird mit daten geupdated wenn der nutzer auf eine der ngFor addressen klickt-->
+		<h3>Addressen</h3>
+		<memo-address-entry *ngFor="let address of (addressesSubject$ | async)"
+							[address]="address"
+							[editUrl]="editUrl$ | async"
+							(onDelete)="deleteAddress(address)"
+		>
+		</memo-address-entry>
+		<a md-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">Neue Addresse
+			hinzufügen</a>
+
 	</div>
 
-	<div class="account-information">
+	<div class="account-information" *ngIf="withEmailAndPassword">
 		<!--todo?-->
 		<!--3. Accountinformationen-->
 		<!--public readonly email: string,-->
 		<!--public readonly passwordHash: string,-->
+		<h3>Account Informationen</h3>
+
+		<md-input-container
+			[dividerColor]="(email.touched && email.invalid) ? 'warn' : 'primary'">
+			<input mdInput
+				   placeholder="Email"
+				   type="email"
+				   name="email"
+				   [ngClass]="{'has-error': email.touched && email.invalid}"
+				   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+				   [(ngModel)]="userModel['email']"
+				   #email="ngModel"
+				   required>
+			<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
+			<md-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
+				Email-Adresse muss in der Form <i>test@email.de</i> sein
+			</md-hint>
+		</md-input-container>
+
+
+		<md-input-container>
+			<input mdInput
+				   placeholder="Neues Passwort"
+				   type="password"
+				   name="password"
+				   [(ngModel)]="userModel['password']"
+				   #passwordInput="ngModel">
+			<md-hint align="end">
+				<ng2-password-strength-bar
+					[passwordToCheck]="userModel['password']"
+					[barLabel]="''">
+				</ng2-password-strength-bar>
+			</md-hint>
+		</md-input-container>
+		<md-input-container
+			[dividerColor]="(confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)) ? 'warn' : 'primary'">
+			<input mdInput
+				   placeholder="Passwort bestätigen"
+				   type="password"
+				   name="confirm-password-input"
+				   #confirmPasswordInput="ngModel"
+				   [(ngModel)]="confirmedPassword">
+			<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
+			<md-hint align="end" class="error-message"
+					 *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)">
+				Passwörter stimmen nicht überein
+			</md-hint>
+		</md-input-container>
 
 	</div>
 
@@ -155,10 +213,11 @@
 
 	<div class="form-actions">
 		<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
-		<button type="submit"
-				color="primary"
-				[disabled]="!userDataForm.form.valid"
-				md-button>
+		<button color="accent"
+				[disabled]="!userDataForm.form.valid
+				|| (previousValue && modelHasNotChanged())
+				|| (userModel['password'] && userModel['password'].length > 0 && userModel['password'] !== confirmedPassword)"
+				md-raised-button>
 			Speichern
 		</button>
 	</div>

@@ -41,7 +41,6 @@ import {AccountDataFormComponent} from "./user/signup/account-data-form/account-
 import {UserDataFormComponent} from "./user/signup/user-data-form/user-data-form.component";
 import {ItemImagePopupComponent} from "./shop/shop-item/item-details/container/image-popup/item-image-popup.component";
 import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-link/toolbar-profile-link.component";
-import {AccountDetailsComponent} from "./user/account-details/account-details.component";
 import {MyToursComponent} from "./user/my-tours/my-tours.component";
 import {MyToursEntryComponent} from "./user/my-tours/entry/my-tours-entry.component";
 import {PasswordRecoveryComponent} from "./user/password-recovery/password-recovery.component";
@@ -49,8 +48,6 @@ import {AccountingComponent} from "./club-management/accounting/accounting.compo
 import {CheckoutComponent} from "./shop/checkout/checkout.component";
 import {AddressSelectionComponent} from "./shop/checkout/address-selection/address-selection.component";
 import {PaymentMethodSelectionComponent} from "./shop/checkout/payment/payment-method-selection.component";
-import {ClubAdministrationComponent} from "./club-management/administration/club-administration.component";
-import {StockComponent} from "./club-management/administration/stock/stock.component";
 import {MemberListComponent} from "./club-management/administration/member-list/member-list.component";
 import {SearchResultComponent} from "./shop/search-results/search-results.component";
 import {SearchInputComponent} from "./home/navigation/toolbar/search-input/search-input.component";
@@ -70,7 +67,6 @@ import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
 import {CanModifyItemGuard} from "./shared/route-guards/can-modify-item-guard";
 import {IsTreasurerGuard} from "./shared/route-guards/is-treasurer.guard";
 import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthorized-access.component";
-import {ProfileEditComponent} from "./user/profile/profile-edit/profile-edit.component";
 import {IsOwnProfileGuard} from "./shared/route-guards/is-own-profile.guard";
 import {SortingDropdownComponent} from "./shop/search-results/sorting-dropdown/sorting-dropdown.component";
 import {FilteringMenuComponent} from "./shop/search-results/filtering-menu/filtering-menu.component";
@@ -134,6 +130,9 @@ import {PaymentComponent} from "./shop/checkout/payment/payment.component";
 import {ShareButtonsModule} from "ngx-sharebuttons";
 import {CreateEventContextMenuComponent} from "./shop/event-calendar-container/create-event-context-menu/create-event-context-menu.component";
 import {EventContextMenuComponent} from "./shop/event-calendar-container/event-context-menu/event-context-menu.component";
+import {ConfirmationDialogComponent} from "./shared/confirmation-dialog/confirmation-dialog.component";
+import {ConfirmationDialogService} from "app/shared/services/confirmation-dialog.service";
+import {AddressEntryComponent} from "./user/profile/address-entry/address-entry.component";
 
 @NgModule({
 	imports: [
@@ -186,7 +185,6 @@ import {EventContextMenuComponent} from "./shop/event-calendar-container/event-c
 		UserDataFormComponent,
 		ItemImagePopupComponent,
 		ToolbarProfileLinkComponent,
-		AccountDetailsComponent,
 		MyToursComponent,
 		MyToursEntryComponent,
 		PasswordRecoveryComponent,
@@ -194,8 +192,6 @@ import {EventContextMenuComponent} from "./shop/event-calendar-container/event-c
 		CheckoutComponent,
 		AddressSelectionComponent,
 		PaymentMethodSelectionComponent,
-		ClubAdministrationComponent,
-		StockComponent,
 		MemberListComponent,
 		SearchResultComponent,
 		SearchInputComponent,
@@ -207,7 +203,6 @@ import {EventContextMenuComponent} from "./shop/event-calendar-container/event-c
 		ParticipatedToursPreviewComponent,
 		ParticipantListComponent,
 		UnauthorizedAccessComponent,
-		ProfileEditComponent,
 		SortingDropdownComponent,
 		FilteringMenuComponent,
 		MultiLevelSelectComponent,
@@ -258,6 +253,9 @@ import {EventContextMenuComponent} from "./shop/event-calendar-container/event-c
 		PaymentComponent,
 		EventContextMenuComponent,
 		CreateEventContextMenuComponent,
+		ConfirmationDialogComponent,
+		AddressEntryComponent,
+
 	],
 	bootstrap: [
 		AppComponent
@@ -266,6 +264,7 @@ import {EventContextMenuComponent} from "./shop/event-calendar-container/event-c
 		NavigationService, UserService, CacheStore, ParticipantsService, CommentService,
 		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
 		EntryService, EventFactoryService, QueryParameterService, StockService, SearchFilterService,
+		ConfirmationDialogService,
 
 		//guards
 		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,
@@ -294,6 +293,7 @@ import {EventContextMenuComponent} from "./shop/event-calendar-container/event-c
 		EditCommentDialogComponent,
 		CreateEventContextMenuComponent,
 		EventContextMenuComponent,
+		ConfirmationDialogComponent
 	]
 })
 export class AppModule {

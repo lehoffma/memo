@@ -1,17 +1,23 @@
-<div [ngSwitch]="itemType">
-	<memo-modify-tour *ngSwitchCase="ItemType.tour" [(model)]="model" [mode]="mode"
-					  (onSubmit)="submitModifiedObject($event)">
-	</memo-modify-tour>
-	<memo-modify-party *ngSwitchCase="ItemType.party" [(model)]="model" [mode]="mode"
-					   (onSubmit)="submitModifiedObject($event)">
-	</memo-modify-party>
-	<memo-modify-entry *ngSwitchCase="ItemType.entry" [(model)]="model" [mode]="mode"
-					   (onSubmit)="submitModifiedObject($event)">
-	</memo-modify-entry>
-	<memo-modify-user *ngSwitchCase="ItemType.user" [(model)]="model" [mode]="mode"
-					  (onSubmit)="submitModifiedObject($event)">
-	</memo-modify-user>
-	<memo-modify-merch *ngSwitchCase="ItemType.merch" [(model)]="model" [mode]="mode"
-					   (onSubmit)="submitModifiedObject($event)">
-	</memo-modify-merch>
+<div id="loader-wrapper" *ngIf="idOfObjectToModify !== -1 && !previousValue; else modifyItemContainer">
+	<div id="loader"></div>
 </div>
+<ng-template #modifyItemContainer>
+	<div [ngSwitch]="itemType">
+		<memo-modify-tour *ngSwitchCase="ItemType.tour" [(model)]="model" [mode]="mode"
+						  (onSubmit)="submitModifiedObject($event)">
+		</memo-modify-tour>
+		<memo-modify-party *ngSwitchCase="ItemType.party" [(model)]="model" [mode]="mode"
+						   (onSubmit)="submitModifiedObject($event)">
+		</memo-modify-party>
+		<memo-modify-entry *ngSwitchCase="ItemType.entry" [(model)]="model" [mode]="mode"
+						   (onSubmit)="submitModifiedObject($event)">
+		</memo-modify-entry>
+		<memo-modify-user *ngSwitchCase="ItemType.user" [(model)]="model" [mode]="mode"
+						  (onSubmit)="submitModifiedObject($event)">
+		</memo-modify-user>
+		<memo-modify-merch *ngSwitchCase="ItemType.merch" [(model)]="model" [mode]="mode"
+						   (onSubmit)="submitModifiedObject($event)">
+		</memo-modify-merch>
+	</div>
+
+</ng-template>
