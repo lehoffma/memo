@@ -39,20 +39,6 @@ export class LogInService {
 	 * sonst false
 	 */
 	login(email: string, password: string): Observable<boolean> {
-		//todo remove
-		if (!password.includes("gzae")) {
-			return Observable.of(false).delay(2000).publish().refCount();
-		} else if (password.includes("gzae")) {
-			return Observable.of(true).delay(2000)
-				.do(tick => {
-					localStorage.setItem(this.authTokenKey, "test");
-					//store profile data in local storage (so the user won't get logged out if he closes the tab)
-					this.userService.getById(0).first()
-						.subscribe(user => localStorage.setItem(this.profileKey, JSON.stringify(user)));
-					this.pushNewData(0);
-				})
-				.publish().refCount();
-		}
 
 		return this.http.post(this.loginUrl, {email, password})
 			.map(response => response.json())
@@ -83,17 +69,6 @@ export class LogInService {
 	 * @returns {boolean}
 	 */
 	logout(): Observable<boolean> {
-		//todo remove
-		localStorage.removeItem("auth_token");
-		localStorage.removeItem("profile");
-		this.pushNewData(null);
-		if (this.logoutUrl === "/api/logout") {
-			this.snackBar.open("Du wurdest ausgeloggt.", "Schließen", {
-				duration: 2000
-			});
-			return Observable.of(true);
-		}
-
 		return this.http.post(this.logoutUrl, {auth_token: localStorage.getItem(this.authTokenKey)})
 			.map(() => {
 				localStorage.removeItem(this.authTokenKey);

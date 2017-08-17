@@ -29,7 +29,6 @@
 
 		<!--todo only show if logged in user is author of comment or admin-->
 		<!--todo edit => inline editing-->
-		<!--todo remove => display warning before deleting-->
 		<div class="comment-options"
 			 [style.visibility]="(loggedInUser$ | async)?.id === author.id ? 'visible' : 'hidden'"
 			 [ngClass]="{'show-element': isTouchDevice()}">

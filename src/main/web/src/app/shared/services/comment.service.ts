@@ -62,11 +62,6 @@ import {Comment} from "../../shop/shared/model/comment";
 	 */
 	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
 				comment: Comment, parentId?: number): Observable<Comment> {
-		//todo remove demo
-		if (comment.id >= -2) {
-			return Observable.of(comment);
-		}
-
 		return this.performRequest(requestMethod("/api/comment", {comment, parentId}))
 			.map(response => response.json().comment)
 			.map(commentJson => Comment.create().setProperties(commentJson))

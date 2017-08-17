@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {EventType, getEventTypes} from "../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shop/shared/model/event";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, ResponseOptions} from "@angular/http";
+import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
 import {EventUtilityService} from "./event-utility.service";
 import {EventFactoryService} from "./event-factory.service";
 import {Tour} from "../../shop/shared/model/tour";
@@ -75,21 +75,6 @@ export class EventService extends ServletService<Event> {
 				let params = new URLSearchParams();
 				params.set("userId", userId.toString());
 				params.set("type", eventType.toString());
-
-				//todo remove demo
-				if (eventType) {
-					return this.search("", eventType)
-						.flatMap(results => Observable.combineLatest(...results.map(result =>
-							this.participantsService.getParticipantIdsByEvent(result.id, eventType)
-								.map(participantIds => ({
-									result,
-									participantIds
-								}))))
-							.map(resultWithParticipants => resultWithParticipants
-								.filter(result => result.participantIds.find(participant => participant.id === userId))
-								.map(result => result.result))
-						)
-				}
 
 				return this.performRequest(this.http.get("/api/event", {search: params}))
 					.map(response => response.json().events as (Party | Tour)[]);
@@ -173,11 +158,6 @@ export class EventService extends ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	remove(eventId: number): Observable<Response> {
-		//todo remove demo
-		if (eventId >= 0) {
-			return Observable.of(new Response(new ResponseOptions()));
-		}
-
 		return this.performRequest(this.http.delete(this.baseUrl, {body: {id: eventId}}))
 			.do((removeResponse: Response) => {
 				const eventId: number = removeResponse.json().id;

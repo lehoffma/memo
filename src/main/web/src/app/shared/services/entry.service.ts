@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Entry} from "../model/entry";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, ResponseOptions} from "@angular/http";
+import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {CacheStore} from "../stores/cache.store";
 import {EventType} from "../../shop/shared/model/event-type";
@@ -112,10 +112,6 @@ export class EntryService extends ServletService<Entry> {
 	 * @param id
 	 */
 	remove(id: number): Observable<Response> {
-		//todo demo remove
-		if (id >= 0) {
-			return Observable.of(new Response(new ResponseOptions()));
-		}
 		return this.performRequest(this.http.delete("/api/entry", {body: {id: id}}));
 	}
 

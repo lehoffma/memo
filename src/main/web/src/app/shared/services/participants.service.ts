@@ -34,42 +34,6 @@ export class ParticipantsService {
 		params.set("eventId", eventId.toString());
 		params.set("eventType", eventType.toString());
 
-		//todo remove after demo
-		if (eventId >= 0) {
-			return Observable.of([
-				{
-					id: 0,
-					isDriver: false,
-					hasPaid: true,
-					comments: ""
-				},
-				{
-					id: 2,
-					isDriver: true,
-					hasPaid: false,
-					comments: "cooler typ"
-				},
-				{
-					id: 3,
-					isDriver: false,
-					hasPaid: false,
-					comments: ""
-				},
-				{
-					id: 4,
-					isDriver: false,
-					hasPaid: false,
-					comments: ""
-				},
-				{
-					id: 5,
-					isDriver: false,
-					hasPaid: true,
-					comments: ""
-				}
-			])
-		}
-
 		this.http.get("/api/participants", {search: params})
 			.map(response => response.json().participants as Participant[])
 			//retry 3 times before throwing an error

@@ -24,12 +24,6 @@ export class AddressService extends ServletService<Address> {
 				.map(addresses => addresses.find(address => address.id === id));
 		}
 
-		//todo remove when server is running
-		if (id !== -1) {
-			return this.search("")
-				.map(addresses => addresses.find(address => address.id === id));
-		}
-
 		return this.performRequest(this.http.get(`/api/address?id=${id}`))
 			.map(response => response.json().addresses)
 			.map(json => Address.create().setProperties(json))
@@ -44,8 +38,6 @@ export class AddressService extends ServletService<Address> {
 	 */
 	search(searchTerm: string, options?: any): Observable<Address[]> {
 		let url = `/api/addresses?searchTerm=${searchTerm}`;
-		//todo remove when server is running
-		url = `/resources/mock-data/addresses.json`;
 
 		return this.performRequest(this.http.get(url))
 			.map(response => response.json().addresses)
