@@ -18,6 +18,7 @@ import {Wiggle} from "app/util/animation-util";
 
 export class AddressModificationComponent implements OnInit {
 	model: Address = Address.create();
+	modifyingExistingAddress = false;
 
 
 	constructor(private activatedRoute: ActivatedRoute,
@@ -40,6 +41,7 @@ export class AddressModificationComponent implements OnInit {
 						.subscribe(addresses => {
 							addresses.filter(address => address.id === +queryParamMap.get("id"))
 								.forEach(address => this.model = address);
+							this.modifyingExistingAddress = true;
 						})
 				}
 			})
@@ -61,10 +63,18 @@ export class AddressModificationComponent implements OnInit {
 	 * if there is no saved url)
 	 */
 	submitNewAddress() {
-		this.addressService.add(this.model)
-			.subscribe(address => {
-				this.goBack();
-			});
+		if (this.modifyingExistingAddress) {
+			this.addressService.modify(this.model)
+				.subscribe(address => {
+					this.goBack();
+				});
+		}
+		else {
+			this.addressService.add(this.model)
+				.subscribe(address => {
+					this.goBack();
+				});
+		}
 	}
 }
 

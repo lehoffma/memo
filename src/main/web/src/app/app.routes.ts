@@ -14,7 +14,6 @@ import {SearchResultComponent} from "./shop/search-results/search-results.compon
 import {MemberListComponent} from "./club-management/administration/member-list/member-list.component";
 import {MyToursComponent} from "./user/my-tours/my-tours.component";
 import {OrderHistoryComponent} from "./user/order-history/order-history.component";
-import {AccountDetailsComponent} from "./user/account-details/account-details.component";
 import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {AccountingComponent} from "./club-management/accounting/accounting.component";
@@ -23,7 +22,6 @@ import {ParticipantListComponent} from "./shop/shop-item/item-details/participan
 import {AuthenticatedGuard} from "./shared/route-guards/authenticated.guard";
 import {IsTreasurerGuard} from "./shared/route-guards/is-treasurer.guard";
 import {UnauthorizedAccessComponent} from "./user/unauthorized-access/unauthorized-access.component";
-import {ProfileEditComponent} from "./user/profile/profile-edit/profile-edit.component";
 import {IsOwnProfileGuard} from "./shared/route-guards/is-own-profile.guard";
 import {ModifyShopItemComponent} from "./shop/shop-item/modify-shop-item/modify-shop-item.component";
 import {CanModifyItemGuard} from "./shared/route-guards/can-modify-item-guard";
@@ -33,6 +31,7 @@ import {CheckoutComponent} from "./shop/checkout/checkout.component";
 import {MerchStockComponent} from "./club-management/administration/stock/merch-stock/merch-stock.component";
 import {AddressModificationComponent} from "./shop/checkout/address-selection/address-modification/address-modification.component";
 import {EventCalendarContainerComponent} from "./shop/event-calendar-container/event-calendar-container.component";
+import {ModifyUserComponent} from "./shop/shop-item/modify-shop-item/modify-user/modify-user.component";
 
 export const ROUTES = [
 	{path: "", component: HomeComponent},
@@ -74,7 +73,7 @@ export const ROUTES = [
 
 	{path: "members", component: MemberListComponent},
 	{path: "members/:id", component: ProfileComponent},
-	{path: "members/:id/edit", component: ProfileEditComponent, canActivate: [AuthenticatedGuard, IsOwnProfileGuard]},
+	{path: "members/:id/edit", component: ModifyUserComponent, canActivate: [AuthenticatedGuard, IsOwnProfileGuard]},
 
 	{path: "search", component: SearchResultComponent},
 
@@ -83,12 +82,12 @@ export const ROUTES = [
 	{path: "signup/:step", component: SignUpComponent},
 	{path: "cart", component: CheckoutCartComponent},
 	{path: "checkout", component: CheckoutComponent, canActivate: [AuthenticatedGuard]},
-	{path: "checkout/address", component: AddressModificationComponent, canActivate: [AuthenticatedGuard]},
+	{path: "address", component: AddressModificationComponent},
+	{path: "members/:id/address", component: AddressModificationComponent, canActivate: [AuthenticatedGuard]},
 
 	//nur eingeloggte User können diese Routen sehen
 	{path: "my-events", component: MyToursComponent},
 	{path: "order-history", component: OrderHistoryComponent},
-	{path: "account-details", component: AccountDetailsComponent},
 
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
 	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},

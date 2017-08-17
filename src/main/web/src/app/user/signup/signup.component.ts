@@ -7,6 +7,8 @@ import {SignUpSubmitEvent} from "./signup-submit-event";
 import {SignUpSection} from "./signup-section";
 import {PaymentInfo} from "./payment-methods-form/debit-input-form/payment-info";
 import {UserService} from "../../shared/services/user.service";
+import {MdSnackBar} from "@angular/material";
+import {LogInService} from "../../shared/services/login.service";
 
 @Component({
 	selector: "memo-signup",
@@ -25,6 +27,8 @@ export class SignUpComponent implements OnInit {
 
 	constructor(private navigationService: NavigationService,
 				private userService: UserService,
+				private loginService: LogInService,
+				private snackBar: MdSnackBar,
 				private activatedRoute: ActivatedRoute) {
 	}
 
@@ -114,9 +118,13 @@ export class SignUpComponent implements OnInit {
 		if (isLastScreen) {
 			this.userService.add(this.newUser, {profilePicture: this.newUserProfilePicture, paymentInfo: this.newUserDebitInfo})
 				.subscribe(newUserId => {
-					//todo: show success page? ¯\_(ツ)_/¯
-					console.log(newUserId);
-				});
+						this.snackBar.open("Die Registrierung war erfolgreich!");
+						this.navigationService.navigateByUrl("/");
+						this.loginService.login(this.newUser.email, this.newUser.passwordHash);
+					},
+					error => {
+						this.snackBar.open("Bei der Registrierung ist leider ein Fehler aufgetreten!")
+					})
 		}
 	}
 }

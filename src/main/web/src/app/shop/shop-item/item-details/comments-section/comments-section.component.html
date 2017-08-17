@@ -1,5 +1,6 @@
 <memo-comment-block *ngFor="let comment of comments | slice:0:amountOfCommentsShown"
 					(onAddComment)="addComment($event.commentText, $event.parentCommentId)"
+					(onDelete)="deleteComment($event)"
 					[comment]="comment">
 </memo-comment-block>
 

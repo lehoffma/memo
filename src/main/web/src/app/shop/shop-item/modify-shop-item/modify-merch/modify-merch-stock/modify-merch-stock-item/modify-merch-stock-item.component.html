@@ -23,13 +23,6 @@
 				</md-hint>
 			</md-input-container>
 
-			<span [(colorPicker)]="color"
-				  [cpWidth]="'230px'"
-				  [cpPositionOffset]="'0%'"
-				  [cpDialogDisplay]="'inline'"
-				  [style.background]="color"
-				  [cpToggle]="true"></span>
-
 
 			<md-input-container>
 				<input placeholder="Name der Farbe"
@@ -40,6 +33,13 @@
 					Dieses Feld darf nicht leer bleiben!
 				</md-hint>
 			</md-input-container>
+
+			<span [(colorPicker)]="color"
+				  [cpWidth]="'230px'"
+				  [cpDialogDisplay]="'inline'"
+				  [style.background]="color"
+				  [cpToggle]="true"></span>
+
 		</div>
 
 	</div>

@@ -31,13 +31,14 @@ export class AccountingComponent implements OnInit {
 	entries$ = Observable.combineLatest(this.activatedRoute.paramMap, this.activatedRoute.queryParamMap, this.sortBy$)
 		.flatMap(([paramMap, queryParamMap, sortBy]) => this.getEntries([paramMap, queryParamMap, sortBy]));
 
+	entriesSubject$: BehaviorSubject<Entry[]> = new BehaviorSubject([]);
 
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);
 	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);
 
 	expandedRowComponent: Type<ExpandedRowComponent<any>> = SingleValueListExpandedRowComponent;
 
-	total$ = this.entries$
+	total$ = this.entriesSubject$
 		.map(entries => entries.reduce((acc, entry) => acc + entry.value, 0));
 
 	showOptions = true;
@@ -57,6 +58,7 @@ export class AccountingComponent implements OnInit {
 			this.columns.date, this.columns.category, this.columns.name, this.columns.value
 		]);
 
+		this.entries$.subscribe(entries => this.entriesSubject$.next(entries));
 		this.onResize({target: {innerWidth: window.innerWidth}});
 	}
 
@@ -129,9 +131,13 @@ export class AccountingComponent implements OnInit {
 	 * @param entries
 	 */
 	deleteEntries(entries: Entry[]) {
+
 		entries.forEach(merchObject => this.entryService.remove(merchObject.id)
 			.subscribe(
-				value => value,
+				value => {
+					this.entriesSubject$.next(this.entriesSubject$.value
+						.filter(entry => !entries.some(deletedEntry => deletedEntry.id === entry.id)))
+				},
 				error => console.error(error)
 			));
 	}

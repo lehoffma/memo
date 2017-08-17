@@ -8,3 +8,20 @@
 		width: 45%;
 	}
 }
+
+.modify-shop-item-container {
+	> h2:first-child {
+		margin-bottom: 1rem;
+	}
+
+	form {
+		> h2:not(:first-child) {
+			margin-top: 1.5rem;
+		}
+
+		memo-tour-route-input {
+			display: block;
+			margin-bottom: 1.5rem;
+		}
+	}
+}

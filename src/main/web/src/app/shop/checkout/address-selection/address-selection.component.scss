@@ -15,25 +15,14 @@ md-radio-group{
 	}
 
 	md-radio-button{
-		width: 90%;
+		width: 100%;
 
 		/deep/ .mat-radio-label{
 			width: 100%;
-		}
-	}
 
-	.address-information{
-		display: flex;
-		flex-direction: column;
-	}
-
-	.address-actions{
-		display: flex;
-		justify-content: center;
-		padding: 10px;
-
-		button:first-child{
-			margin-right: 10px;
+			.mat-radio-label-content {
+				width: 100%;
+			}
 		}
 	}
 

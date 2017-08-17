@@ -99,18 +99,30 @@ export class ModifyShopItemComponent implements OnInit {
 					let event: (Party | Tour) = (<(Party | Tour)>objectToModify);
 					Observable.combineLatest(...event.route.map(routeStop => this.addressService.getById(routeStop)))
 						.first()
-						.subscribe(tourStops => this.model["route"] = tourStops);
+						.do(console.log)
+						.subscribe(tourStops => {
+							this.model["route"] = tourStops;
+							if (objectToModify && objectToModify.id !== -1) {
+								this.previousValue = objectToModify;
+							}
+						});
 				}
 				else if (this.itemType === ShopItemType.merch) {
 					let merch: Merchandise = (<Merchandise>objectToModify);
 					this.stockService.getByEventId(merch.id)
 						.first()
-						.subscribe(stockList => this.model["stock"] = stockList);
+						.subscribe(stockList => {
+							this.model["stock"] = stockList;
+							if (objectToModify && objectToModify.id !== -1) {
+								this.previousValue = objectToModify;
+							}
+						});
 				}
-
-				//modus === EDIT
-				if (objectToModify && objectToModify.id !== -1) {
-					this.previousValue = objectToModify;
+				else {
+					//modus === EDIT
+					if (objectToModify && objectToModify.id !== -1) {
+						this.previousValue = objectToModify;
+					}
 				}
 			});
 			this.mode = ModifyType.EDIT;

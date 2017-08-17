@@ -1,5 +1,8 @@
 <md-input-container *ngFor="let tourStop of modelRoute; let i = index;">
-	<input mdInput type="text" (keydown.enter)="$event.preventDefault()" #routeInput
+	<!--Format: "Alexanderpl. 2, 10178 Berlin, Deutschland"-->
+
+	<input mdInput (keydown.enter)="$event.preventDefault()" #routeInput
+		   [(ngModel)]="transformedRoutes[i]"
 		   placeholder="{{i === 0 ? 'Treffpunkt' : ((i===modelRoute.length - 1) ? 'Ziel' : 'Zwischenstop')}}">
 
 	<md-icon mdSuffix (click)="removeStop(i)" *ngIf="i > 0 && (i < modelRoute.length - 1)">close</md-icon>
@@ -9,25 +12,24 @@
 <button md-button
 		color="primary"
 		type="button"
+		class="add-stop-button"
 		*ngIf="modelRoute && modelRoute.length > 1"
-		(click)="addNewStop()"
-		[style.marginBottom]="'5px'"
-		[style.float]="'right'">Zwischenstopp hinzufügen
+		(click)="addNewStop()">
+	Zwischenstopp hinzufügen
 </button>
-<!--todo dont use [style] -->
 
 
-<!--<agm-map [latitude]="getCenterOfTour().latitude" [longitude]="getCenterOfTour().longitude">-->
-<!--<agm-marker *ngFor="let tourStop of modelRoute"-->
-<!--[latitude]="tourStop.latitude"-->
-<!--[longitude]="tourStop.longitude">-->
+<agm-map [latitude]="getCenterOfTour().latitude" [longitude]="getCenterOfTour().longitude">
+	<agm-marker *ngFor="let tourStop of modelRoute"
+				[latitude]="tourStop.latitude"
+				[longitude]="tourStop.longitude">
 
-<!--</agm-marker>-->
-<!--<agm-polyline *ngIf="modelRoute && modelRoute.length > 1">-->
-<!--<agm-polyline-point *ngFor="let tourStop of modelRoute"-->
-<!--[latitude]="tourStop.latitude"-->
-<!--[longitude]="tourStop.longitude">-->
-<!--</agm-polyline-point>-->
-<!--</agm-polyline>-->
-<!--</agm-map>-->
+	</agm-marker>
+	<agm-polyline *ngIf="modelRoute && modelRoute.length > 1">
+		<agm-polyline-point *ngFor="let tourStop of modelRoute"
+							[latitude]="tourStop.latitude"
+							[longitude]="tourStop.longitude">
+		</agm-polyline-point>
+	</agm-polyline>
+</agm-map>
 

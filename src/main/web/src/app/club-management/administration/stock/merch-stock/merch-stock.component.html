@@ -2,7 +2,7 @@
 	<memo-expandable-table
 		[expandedRowComponent]="expandedRowComponent"
 		[title]="'Bestand'"
-		[data]="merchList | async"
+		[data]="merchListSubject$ | async"
 		[columnKeys]="primaryColumnKeys | async"
 		[expandedRowKeys]="expandedRowKeys | async"
 		(onDelete)="deleteMerch($event)"

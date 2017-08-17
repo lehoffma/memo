@@ -23,8 +23,10 @@ declare var google;
 	styleUrls: ["./tour-route-input.component.scss"]
 })
 export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit {
-	//todo put address data in input fields..
+	@Input() isTour: boolean = false;
 	@Input() route: Address[] = [];
+
+	@Output() routeChange = new EventEmitter<Address[]>();
 
 	get modelRoute() {
 		return this.route;
@@ -32,10 +34,12 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 
 	set modelRoute(newRoute: Address[]) {
 		this.route = newRoute;
+		this.updateTransformedRoute(newRoute);
 		this.routeChange.emit(this.route);
 	}
 
-	@Output() routeChange = new EventEmitter<Address[]>();
+	transformedRoutes: string[] = [];
+
 
 	@ViewChildren("routeInput") inputs: QueryList<ElementRef>;
 
@@ -44,16 +48,31 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 	}
 
 	ngOnInit() {
-
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes["route"] && !this.route) {
-			this.route = [Address.create()];
+		if (changes["route"] && !this.modelRoute) {
+			if (this.isTour) {
+				this.modelRoute = [Address.create(), Address.create()];
+			}
+			else {
+				this.modelRoute = [Address.create()];
+			}
 		}
 	}
 
 	ngAfterViewInit() {
+		//if the route is pre-configured (i.e. we're editing something), the transformedRoute will be initialized.
+		//otherwise, nothing happens
+		this.modelRoute = this.modelRoute;
+
+		if (this.inputs.length > 0) {
+			this.mapsAPILoader.load().then(() => {
+				this.inputs.forEach((input, index) => {
+					this.initAutoComplete(input.nativeElement, index);
+				})
+			})
+		}
 		this.inputs.changes.subscribe(queryList => {
 			if (queryList) {
 				this.mapsAPILoader.load().then(() => {
@@ -65,12 +84,24 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 		});
 	}
 
+	updateTransformedRoute(newRoute: Address[]) {
+		this.transformedRoutes = newRoute
+			.map(tourStop =>
+				tourStop.street
+					//Format: "Alexanderpl. 2, 10178 Berlin, Deutschland"
+					? `${tourStop.street}${tourStop.streetNr ? " " + tourStop.streetNr : ""}, ${tourStop.zip} ${tourStop.city}, ${tourStop.country}`
+					: ""
+			);
+	}
+
 	addNewStop() {
 		this.modelRoute.splice(this.modelRoute.length - 1, 0, Address.create());
+		this.updateTransformedRoute(this.modelRoute);
 	}
 
 	removeStop(index) {
 		this.modelRoute.splice(index, 1);
+		this.updateTransformedRoute(this.modelRoute);
 	}
 
 	initAutoComplete(inputElement: any, index: number) {
@@ -88,7 +119,7 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 						//"Alexanderpl. 2, 10178 Berlin, Deutschland"
 						let address = place.formatted_address;
 						//lets hope that the format stays the same.. (todo test)
-						let regexMatches = address.match(/([^\s]+)(?:\s([\d]+))?,\s(\d+)\s([^\s]+),\s([^\s]+)/);
+						let regexMatches = address.match(/([^\s]+)(?:\s([\d\w]+))?,\s(\d+)\s([^\s]+),\s([^\s]+)/);
 						if (regexMatches !== null) {
 							/*
 							 0:"Alexanderpl. 2, 10178 Berlin, Deutschland"

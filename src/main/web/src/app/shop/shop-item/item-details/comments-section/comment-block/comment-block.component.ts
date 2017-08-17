@@ -10,6 +10,7 @@ import {NavigationService} from "../../../../../shared/services/navigation.servi
 import {Router} from "@angular/router";
 import {MdDialog} from "@angular/material";
 import {EditCommentDialogComponent} from "../edit-comment-dialog/edit-comment-dialog.component";
+import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
 
 @Component({
 	selector: "memo-comment-block",
@@ -30,6 +31,7 @@ export class CommentBlockComponent implements OnInit {
 	@Input() parentId: number;
 
 	@Output() onAddComment = new EventEmitter<{ commentText: string, parentCommentId: number }>();
+	@Output() onDelete = new EventEmitter<{ comment: Comment, parentId: number }>();
 
 	author$: Observable<User> = this.comment$
 		.flatMap(comment => this.userService.getById(comment.authorId));
@@ -46,6 +48,7 @@ export class CommentBlockComponent implements OnInit {
 	constructor(private commentsService: CommentService,
 				private loginService: LogInService,
 				private navigationService: NavigationService,
+				private confirmationDialogService: ConfirmationDialogService,
 				private dialogService: MdDialog,
 				private changeDetectorRef: ChangeDetectorRef,
 				private router: Router,
@@ -119,6 +122,21 @@ export class CommentBlockComponent implements OnInit {
 	 *
 	 */
 	deleteComment() {
-		console.log("delete");
+		this.confirmationDialogService.openDialog(
+			"Möchtest du diesen Kommentar wirklich löschen?"
+		).subscribe(accepted => {
+			if (accepted) {
+				this.onDelete.emit({comment: this._comment$.value, parentId: this.parentId});
+			}
+		})
+	}
+
+	/**
+	 *
+	 * @param {Comment} comment
+	 * @param parentId
+	 */
+	deleteChildComment({comment, parentId}: { comment: Comment, parentId: number }) {
+		this.onDelete.emit({comment, parentId});
 	}
 }

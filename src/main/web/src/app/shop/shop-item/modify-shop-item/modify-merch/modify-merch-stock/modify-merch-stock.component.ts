@@ -133,7 +133,6 @@ export class ModifyMerchStockComponent implements OnInit {
 	 * @param stockEntriesToDelete
 	 */
 	deleteStock(stockEntriesToDelete: MerchStock[]) {
-		//todo popup 'are you sure?'
 		this.merchStock = this.merchStock
 			.filter(stock =>
 				!stockEntriesToDelete

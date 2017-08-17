@@ -1,4 +1,6 @@
 @import "../../../mixins";
+@import "../../../theme";
+@import "~@angular/material/theming";
 
 .profile-container {
 	display: flex;
@@ -69,29 +71,31 @@
 			height: 40px;
 			margin-top: -20px;
 			margin-right: -20px;
+			color: white;
 		}
 
 		.profile-title-container {
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			margin-top: 10px;
 			flex-direction: column;
-			//font-size: 1.1em;
+			margin-top: -62px;
+			margin-left: -1.5rem;
+			margin-right: -1.5rem;
+			padding-bottom: 1rem;
+			padding-top: 72px;
+			background-color: mat-color($primary);
+			color: white;
 
 			.profile-name {
 				margin: 0;
 				font-weight: 200;
 				text-align: center;
-				//font-size: 1.5rem;
-				//color: rgba(0, 0, 0, 0.8);
 			}
 
 			.profile-role {
 				margin: 0;
 				font-weight: 200;
-				//font-size: 1.2rem;
-				color: grey;
 			}
 		}
 
@@ -126,8 +130,14 @@
 	}
 
 	.profile-tours-title {
-		margin: 0;
 		font-weight: 200;
+		background-color: mat-color($primary);
+		margin: 0 -1.5rem;
+		margin-top: -1.5rem;
+		margin-bottom: 1.5rem;
+		color: white;
+
+		padding: 1rem 1.5rem;
 	}
 
 	agm-map {

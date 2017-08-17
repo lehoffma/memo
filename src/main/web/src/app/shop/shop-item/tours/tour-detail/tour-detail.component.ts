@@ -12,6 +12,7 @@ import {Permission} from "../../../../shared/model/permission";
 import {rolePermissions} from "../../../../shared/model/club-role";
 import {CommentService} from "../../../../shared/services/comment.service";
 import {Comment} from "../../../shared/model/comment";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 
 @Component({
@@ -46,13 +47,15 @@ export class TourDetailComponent implements OnInit {
 		.filter(tour => tour.id >= 0)
 		.flatMap(tour => this.commentService.getByEventId(tour.id));
 
+	commentsSubject$ = new BehaviorSubject<Comment[]>([]);
+
 	constructor(private activatedRoute: ActivatedRoute,
 				private participantService: ParticipantsService,
 				private loginService: LogInService,
 				private commentService: CommentService,
 				private addressService: AddressService,
 				private eventService: EventService) {
-
+		this.comments$.subscribe(comments => this.commentsSubject$.next(comments));
 	}
 
 	ngOnInit() {
@@ -69,12 +72,35 @@ export class TourDetailComponent implements OnInit {
 			.subscribe(([user, tour]) => {
 				let comment = new Comment(tour.id, -1, new Date(), user.id, commentText);
 				this.commentService.add(comment, parentId)
-					.subscribe(addResult => {
-						//todo do something with result
-						console.log(addResult);
+					.subscribe((addResult: Comment) => {
+						this.tour$
+							.filter(tour => tour.id >= 0)
+							.flatMap(tour => this.commentService.getByEventId(tour.id))
+							.first()
+							.subscribe(comments => {
+								this.commentsSubject$.next(comments);
+							})
 					}, error => {
 						console.error("adding the comment went wrong");
 					});
+			})
+	}
+
+	/**
+	 *
+	 * @param {Comment} comment
+	 * @param {number} parentId
+	 */
+	deleteComment({comment, parentId}: { comment: Comment, parentId: number }) {
+		this.commentService.remove(comment.id, parentId)
+			.subscribe(response => {
+				this.tour$
+					.filter(tour => tour.id >= 0)
+					.flatMap(tour => this.commentService.getByEventId(tour.id))
+					.first()
+					.subscribe(comments => {
+						this.commentsSubject$.next(comments);
+					})
 			})
 	}
 }

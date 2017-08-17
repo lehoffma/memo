@@ -15,6 +15,8 @@ export class ModifyPartyComponent implements OnInit {
 
 	ModifyType = ModifyType;
 
+	defaultImageUrl = "resources/images/Logo.png";
+
 	get partyModel() {
 		return this.model;
 	}
@@ -36,5 +38,10 @@ export class ModifyPartyComponent implements OnInit {
 
 	submitModifiedObject() {
 		this.onSubmit.emit(this.model);
+	}
+
+	profilePictureChanged(event) {
+		console.error("todo implement");
+		console.log(event);
 	}
 }

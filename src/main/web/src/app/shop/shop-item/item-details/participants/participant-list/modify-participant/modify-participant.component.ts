@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit} from "@angular/core";
 import {MD_DIALOG_DATA, MdDialogRef} from "@angular/material";
-import {ModifyMerchStockItemComponent} from "../../../../modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
 import {ParticipantUser} from "../../../../../shared/model/participant";
 import {ModifyType} from "../../../../modify-shop-item/modify-type";
 import {FormControl} from "@angular/forms";
@@ -32,7 +31,7 @@ export class ModifyParticipantComponent implements OnInit {
 	autocompleteFormControl = new FormControl();
 	filteredOptions: Observable<User[]>;
 
-	constructor(private dialogRef: MdDialogRef<ModifyMerchStockItemComponent>,
+	constructor(private dialogRef: MdDialogRef<ModifyParticipantComponent>,
 				private eventUtilityService: EventUtilityService,
 				private participantsService: ParticipantsService,
 				private userService: UserService,

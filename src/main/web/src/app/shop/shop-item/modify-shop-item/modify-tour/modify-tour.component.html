@@ -2,13 +2,37 @@
 	<h2>Tour {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
 	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
 
+		<h2>Bild</h2>
+		<memo-profile-picture-form
+			[image]="tourModel['imagePath'] ? tourModel['imagePath'] : defaultImageUrl"
+			(onChange)="profilePictureChanged($event)">
+
+		</memo-profile-picture-form>
+
+
+		<h2>Tour-Informationen</h2>
 		<md-input-container>
 			<input mdInput name="titleInput"
-				   type="text" required
+				   required
 				   placeholder="Titel"
 				   #titleInput="ngModel"
 				   [(ngModel)]="tourModel['title']">
 			<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+				Dieses Feld darf nicht leer bleiben!
+			</md-hint>
+		</md-input-container>
+
+
+		<md-input-container class="description-input">
+			<textarea autosize mdInput name="descriptionInput"
+					  class="not-resizable-textarea" required
+					  type="text"
+					  #descriptionInput="ngModel"
+					  placeholder="Beschreibung"
+					  [(ngModel)]="tourModel['description']">
+			</textarea>
+			<md-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
+					 align="end">
 				Dieses Feld darf nicht leer bleiben!
 			</md-hint>
 		</md-input-container>
@@ -65,31 +89,8 @@
 			</div>
 		</div>
 
-		<memo-tour-route-input [(route)]="tourModel['route']"></memo-tour-route-input>
-
-
-		<md-input-container class="description-input">
-			<textarea autosize mdInput name="descriptionInput"
-					  class="not-resizable-textarea" required
-					  type="text"
-					  #descriptionInput="ngModel"
-					  placeholder="Beschreibung"
-					  [(ngModel)]="tourModel['description']">
-			</textarea>
-			<md-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
-					 align="end">
-				Dieses Feld darf nicht leer bleiben!
-			</md-hint>
-		</md-input-container>
-
-		<!--new ItemForm("title", "Name", "", ItemFormType.TEXT, true),-->
-		<!--new ItemForm("price", "Preis", "", ItemFormType.NUMBER, true),-->
-		<!--new ItemForm("capacity", "Maximale Anzahl an Teilnehmern", "", ItemFormType.NUMBER, true),-->
-		<!--new ItemForm("vehicle", "Fahrzeug", "", ItemFormType.TEXT, true),-->
-		<!--new ItemForm("date", "Datum", "", ItemFormType.DATE, true),-->
-
-		<!--new ItemForm("description", "Beschreibung", "", ItemFormType.TEXT_AREA, true),-->
-		<!--new ItemForm("route", "Route", "", ItemFormType.GOOGLE_MAPS_AUTOFILL, true),-->
+		<h2>Route</h2>
+		<memo-tour-route-input [(route)]="tourModel['route']" [isTour]="true"></memo-tour-route-input>
 
 
 		<!--below all that-->
@@ -97,9 +98,8 @@
 			<!--	cancel button-->
 			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
-			<button md-button color="primary"
-					[disabled]="!modifyShopItemForm.form.valid"
-					type="submit">
+			<button md-raised-button color="accent"
+					[disabled]="!modifyShopItemForm.form.valid">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
 			</button>
 		</div>

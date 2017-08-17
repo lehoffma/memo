@@ -11,6 +11,7 @@ import {Permission} from "../../../../shared/model/permission";
 import {rolePermissions} from "../../../../shared/model/club-role";
 import {CommentService} from "../../../../shared/services/comment.service";
 import {Comment} from "../../../shared/model/comment";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 
 @Component({
@@ -43,6 +44,8 @@ export class PartyDetailComponent implements OnInit {
 		.filter(party => party.id >= 0)
 		.flatMap(party => this.commentService.getByEventId(party.id));
 
+	commentsSubject$ = new BehaviorSubject<Comment[]>([]);
+
 	constructor(private route: ActivatedRoute,
 				private participantService: ParticipantsService,
 				private commentService: CommentService,
@@ -52,6 +55,7 @@ export class PartyDetailComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.comments$.subscribe(comments => this.commentsSubject$.next(comments));
 	}
 
 	/**
@@ -65,10 +69,28 @@ export class PartyDetailComponent implements OnInit {
 				let comment = new Comment(party.id, -1, new Date(), user.id, commentText);
 				this.commentService.add(comment, parentId)
 					.subscribe(addResult => {
-						//todo do something with result
-						console.log(addResult);
+						this.party$
+							.filter(tour => tour.id >= 0)
+							.flatMap(tour => this.commentService.getByEventId(tour.id))
+							.first()
+							.subscribe(comments => {
+								this.commentsSubject$.next(comments);
+							})
 					}, error => {
 						console.error("adding the comment went wrong");
+					})
+			})
+	}
+
+	deleteComment({comment, parentId}: { comment: Comment, parentId: number }) {
+		this.commentService.remove(comment.id, parentId)
+			.subscribe(result => {
+				this.party$
+					.filter(tour => tour.id >= 0)
+					.flatMap(tour => this.commentService.getByEventId(tour.id))
+					.first()
+					.subscribe(comments => {
+						this.commentsSubject$.next(comments);
 					})
 			})
 	}
