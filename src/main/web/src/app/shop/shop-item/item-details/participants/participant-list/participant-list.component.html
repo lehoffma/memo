@@ -1,4 +1,4 @@
-<div class="participant-table-container" *ngIf="(participantList | async);let participants; else loading">
+<div class="participant-table-container" *ngIf="(participantList | async); let participants; else loading">
 	<memo-expandable-table
 		[data]="participants"
 		[expandable]="isExpandable | async"
@@ -6,6 +6,7 @@
 		[columnKeys]="columnKeys | async"
 		[expandedRowComponent]="expandedRowComponent"
 		[expandedRowKeys]="expandedKeys | async"
+		[permissions]="permissions$ | async"
 		(onSort)="updateSortBy($event)"
 		(onAdd)="addParticipant()"
 		(onEdit)="editParticipant($event)"

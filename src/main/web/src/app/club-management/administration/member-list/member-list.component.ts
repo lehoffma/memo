@@ -10,6 +10,8 @@ import {ColumnSortingEvent} from "../../../shared/expandable-table/column-sortin
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {ExpandableTableColumn} from "../../../shared/expandable-table/expandable-table-column";
 import {memberListColumns} from "./member-list-columns";
+import {ActionPermissions} from "../../../shared/expandable-table/expandable-table.component";
+import {LogInService} from "../../../shared/services/login.service";
 
 @Component({
 	selector: "memo-member-list",
@@ -32,6 +34,21 @@ export class MemberListComponent implements OnInit {
 
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<User>[]> = new BehaviorSubject([]);
 	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<User>[]> = new BehaviorSubject([]);
+
+	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("user");
+
+
+	constructor(private userService: UserService,
+				private loginService: LogInService,
+				private navigationService: NavigationService) {
+		this.updateColumnKeys(window.innerWidth);
+		//todo wrap window in service
+		this.users.subscribe(users => this.userSubject$.next(users));
+	}
+
+	ngOnInit() {
+	}
+
 
 	/**
 	 * Updates the primary and secondary table keys according to the given screen width (higher width = more primary columns)
@@ -79,16 +96,6 @@ export class MemberListComponent implements OnInit {
 	@HostListener("window:resize", ["$event"])
 	onResize(event) {
 		this.updateColumnKeys(event.target.innerWidth);
-	}
-
-	constructor(private userService: UserService,
-				private navigationService: NavigationService) {
-		this.updateColumnKeys(window.innerWidth);
-		//todo wrap window in service
-		this.users.subscribe(users => this.userSubject$.next(users));
-	}
-
-	ngOnInit() {
 	}
 
 	/**

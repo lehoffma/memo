@@ -18,6 +18,7 @@
 		[expandedRowComponent]="expandedRowComponent"
 		[columnKeys]="primaryColumnKeys | async"
 		[title]="'Kostenübersicht'"
+		[permissions]="permissions$ | async"
 		(onSort)="updateSortingKey($event)"
 		(onAdd)="addEntry($event)"
 		(onEdit)="editEntry($event)"

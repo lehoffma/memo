@@ -48,7 +48,7 @@ export class User extends ImmutableObject<User> {
 	}
 
 	static create() {
-		return new User(-1, "", "", Gender.OTHER, null, "", ClubRole.None, null, [],
+		return new User(-1, "", "", Gender.OTHER, null, "", ClubRole.None, new Date(), [],
 			null, 0, "", "", false, false, false, false, "");
 	}
 

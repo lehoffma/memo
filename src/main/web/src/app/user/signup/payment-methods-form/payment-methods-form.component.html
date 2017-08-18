@@ -18,6 +18,7 @@
 	</memo-debit-input-form>
 
 	<button md-raised-button type="submit" color="{{debitFormIsValid ? 'primary' : 'accent'}}">
+		<md-icon *ngIf="loading" class="loading-spinner">refresh</md-icon>
 		{{debitFormIsValid ? 'Registrierung abschließen' :'Überspringen und abschließen'}}
 	</button>
 </form>

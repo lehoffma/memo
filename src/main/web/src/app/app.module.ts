@@ -135,6 +135,8 @@ import {ConfirmationDialogService} from "app/shared/services/confirmation-dialog
 import {AddressEntryComponent} from "./user/profile/address-entry/address-entry.component";
 import {DateAdapter, MD_DATE_FORMATS} from "@angular/material";
 import {MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-config/moment-adapter";
+import {CanViewStockGuard} from "./shared/route-guards/can-view-stock.guard";
+import {SignUpService} from "./user/signup/shared/signup.service";
 
 @NgModule({
 	imports: [
@@ -266,10 +268,11 @@ import {MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-config
 		NavigationService, UserService, CacheStore, ParticipantsService, CommentService,
 		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
 		EntryService, EventFactoryService, QueryParameterService, StockService, SearchFilterService,
-		ConfirmationDialogService,
+		ConfirmationDialogService, SignUpService,
 
 		//guards
 		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,
+		CanViewStockGuard,
 
 		{provide: LOCALE_ID, useValue: "de-DE"},
 		{provide: DateAdapter, useClass: MomentDateAdapter},

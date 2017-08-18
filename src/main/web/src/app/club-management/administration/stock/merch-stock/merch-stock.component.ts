@@ -14,6 +14,8 @@ import {NavigationService} from "../../../../shared/services/navigation.service"
 import {ShopItemType} from "../../../../shop/shared/model/shop-item-type";
 import {isNullOrUndefined} from "util";
 import {StockService} from "../../../../shared/services/stock.service";
+import {ActionPermissions} from "../../../../shared/expandable-table/expandable-table.component";
+import {LogInService} from "../../../../shared/services/login.service";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -50,12 +52,15 @@ export class MerchStockComponent implements OnInit {
 
 	merchListSubject$: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
+	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("merch");
+
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
 	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
 
 	expandedRowComponent: Type<ExpandedRowComponent<any>> = MultiValueListExpandedRowComponent;
 
 	constructor(private eventService: EventService,
+				private loginService: LogInService,
 				private stockService: StockService,
 				private navigationService: NavigationService) {
 		this.merchList.subscribe(merchList => this.merchListSubject$.next(merchList));

@@ -56,10 +56,10 @@ export class ModifyParticipantComponent implements OnInit {
 		this.autocompleteFormControl.valueChanges
 			.subscribe(value => {
 				if (EventUtilityService.isUser(value)) {
-					this.participant.id = value.id;
+					this.participant.user = value;
 				}
 				else {
-					this.participant.id = -1;
+					this.participant.user = null;
 				}
 			});
 
@@ -113,6 +113,9 @@ export class ModifyParticipantComponent implements OnInit {
 	emitDoneEvent() {
 		let modifyType: ModifyType = this.isEditing ? ModifyType.EDIT : ModifyType.ADD;
 		let modifiedParticipant: number = this.isEditing ? this.data.participant : null;
+		if (this.participant.id === -1) {
+			this.participant.id = this.participant.user.id;
+		}
 		this.dialogRef.close({
 			participant: this.participant,
 			modifyType,

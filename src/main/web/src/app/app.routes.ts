@@ -32,6 +32,7 @@ import {MerchStockComponent} from "./club-management/administration/stock/merch-
 import {AddressModificationComponent} from "./shop/checkout/address-selection/address-modification/address-modification.component";
 import {EventCalendarContainerComponent} from "./shop/event-calendar-container/event-calendar-container.component";
 import {ModifyUserComponent} from "./shop/shop-item/modify-shop-item/modify-user/modify-user.component";
+import {CanViewStockGuard} from "./shared/route-guards/can-view-stock.guard";
 
 export const ROUTES = [
 	{path: "", component: HomeComponent},
@@ -65,7 +66,6 @@ export const ROUTES = [
 	{path: "merch", component: MerchandiseComponent},
 	{path: "merch/:id", component: MerchandiseDetailComponent},
 
-	//todo: navlinks.json / toolbarlinks.json anpassen
 	{path: "calendar", component: EventCalendarContainerComponent},
 
 	//todo wird das überhaupt benutzt?
@@ -94,7 +94,7 @@ export const ROUTES = [
 
 	//todo update once there is more than one type of stock
 	{path: "management/stock", redirectTo: "management/stock/merch", pathMatch: "full"},
-	{path: "management/stock/merch", component: MerchStockComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
+	{path: "management/stock/merch", component: MerchStockComponent, canActivate: [AuthenticatedGuard, CanViewStockGuard]},
 
 
 	{path: "settings", component: SettingsComponent},

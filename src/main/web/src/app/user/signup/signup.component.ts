@@ -1,14 +1,9 @@
 import {Component, OnInit} from "@angular/core";
-import {User} from "../../shared/model/user";
 import {ActivatedRoute} from "@angular/router";
-import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs";
 import {SignUpSubmitEvent} from "./signup-submit-event";
 import {SignUpSection} from "./signup-section";
-import {PaymentInfo} from "./payment-methods-form/debit-input-form/payment-info";
-import {UserService} from "../../shared/services/user.service";
-import {MdSnackBar} from "@angular/material";
-import {LogInService} from "../../shared/services/login.service";
+import {SignUpService} from "./shared/signup.service";
 
 @Component({
 	selector: "memo-signup",
@@ -16,19 +11,10 @@ import {LogInService} from "../../shared/services/login.service";
 	styleUrls: ["./signup.component.scss"]
 })
 export class SignUpComponent implements OnInit {
-	private currentDate: Date = new Date();
-	private newUser: User = User.create();
-	private newUserProfilePicture;
-	private newUserDebitInfo: PaymentInfo;
-
 	sectionEnum = SignUpSection;
-	sections = [SignUpSection.AccountData, SignUpSection.PersonalData, SignUpSection.PaymentMethods];
 	public currentSection: Observable<SignUpSection> = this.activatedRoute.params.map(params => params["step"]);
 
-	constructor(private navigationService: NavigationService,
-				private userService: UserService,
-				private loginService: LogInService,
-				private snackBar: MdSnackBar,
+	constructor(public signUpService: SignUpService,
 				private activatedRoute: ActivatedRoute) {
 	}
 
@@ -37,46 +23,17 @@ export class SignUpComponent implements OnInit {
 		//wurde, wird er zur ersten weitergeleitet
 		this.currentSection
 			.filter(section => section !== SignUpSection.AccountData)
-			.filter(section => this.newUser.email === "" || this.newUser.passwordHash === "")
+			.filter(section => this.signUpService.newUser.email === "" || this.signUpService.newUser.passwordHash === "")
 			.subscribe(
-				// section => this.navigateToSection(SignUpSection.AccountData)
+				section => this.signUpService.navigateToSection(SignUpSection.AccountData)
 			);
 	}
 
 	/**
 	 *
-	 * @param section
 	 */
-	navigateToSection(section: SignUpSection) {
-		this.navigationService.navigateByUrl(`signup/${section}`)
-	}
-
-	/**
-	 *
-	 * @param section
-	 * @returns {SignUpSection|SignUpSection|SignUpSection}
-	 */
-	getNextSection(section: SignUpSection): SignUpSection {
-		let indexOfSection = this.sections.indexOf(section);
-		return this.sections[indexOfSection + 1];
-	}
-
-	/**
-	 *
-	 * @param currentSection
-	 * @returns {boolean}
-	 */
-	navigateToNextSection(currentSection: SignUpSection): boolean {
-		//done
-		if (currentSection === SignUpSection.PaymentMethods) {
-			return true;
-		}
-		//next section
-		else {
-			let nextSection = this.getNextSection(currentSection);
-			this.navigateToSection(nextSection);
-			return false;
-		}
+	watchForAddressModification(model: any) {
+		this.signUpService.watchForAddressModification(model);
 	}
 
 	/**
@@ -85,50 +42,6 @@ export class SignUpComponent implements OnInit {
 	 * @param event
 	 */
 	onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
-		console.log(event);
-		//extract section, email and passwordHash properties
-		const {
-			email,
-			passwordHash,
-			firstName,
-			surname,
-			birthday,
-			phoneNumber,
-			isStudent,
-			profilePicture,
-			paymentInfo
-		} = event;
-
-		switch (section) {
-			case SignUpSection.AccountData:
-				this.newUser.setProperties({email, passwordHash});
-				break;
-			case SignUpSection.PersonalData:
-				this.newUser.setProperties({firstName, surname, birthDate: birthday, telephone: phoneNumber, isStudent});
-				this.newUserProfilePicture = profilePicture;
-				break;
-			case SignUpSection.PaymentMethods:
-				this.newUserDebitInfo = paymentInfo;
-				break;
-		}
-
-		//next section
-		let isLastScreen = this.navigateToNextSection(section);
-
-		if (isLastScreen) {
-			this.userService.add(this.newUser, {profilePicture: this.newUserProfilePicture, paymentInfo: this.newUserDebitInfo})
-				.subscribe(newUserId => {
-						this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
-							duration: 1000
-						});
-						this.navigationService.navigateByUrl("/");
-						this.loginService.login(this.newUser.email, this.newUser.passwordHash);
-					},
-					error => {
-						this.snackBar.open("Bei der Registrierung ist leider ein Fehler aufgetreten!", "Schließen", {
-							duration: 2000
-						});
-					})
-		}
+		this.signUpService.onSubmit(section, event);
 	}
 }

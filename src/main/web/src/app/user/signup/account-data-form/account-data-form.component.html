@@ -9,11 +9,15 @@
 			   [ngClass]="{'has-error': email.touched && email.invalid}"
 			   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
 			   [(ngModel)]="userEmail"
+			   (ngModelChange)="emailIsAlreadyUsed = false"
 			   #email="ngModel"
 			   required>
 		<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
 		<md-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
 			Email-Adresse muss in der Form <i>test@email.de</i> sein
+		</md-hint>
+		<md-hint align="end" class="error-message" *ngIf="emailIsAlreadyUsed">
+			Die angegebene Email-Adresse wird bereits verwendet. <a routerLink="/login">Weiter zum Login?</a>
 		</md-hint>
 	</md-input-container>
 	<md-input-container>
@@ -49,8 +53,9 @@
 
 	<button type="submit"
 			color="primary"
-			[disabled]="!accountDataForm.form.valid || (password !== confirmedPassword)"
+			[disabled]="!accountDataForm.form.valid || (password !== confirmedPassword) || emailIsAlreadyUsed"
 			md-raised-button>
+		<md-icon *ngIf="loading" class="loading-spinner">refresh</md-icon>
 		Weiter
 	</button>
 </form>

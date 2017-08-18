@@ -28,11 +28,11 @@ export class UserDataFormComponent implements OnInit {
 		birthday: undefined,
 		phoneNumber: undefined,
 		isStudent: undefined,
-		profilePicture: undefined
 	};
+	@Input() profilePicture: any = "resources/images/Logo.png";
 	@Output() modelChange = new EventEmitter();
 	@Output() onCancel = new EventEmitter();
-
+	@Output() onAddressModification = new EventEmitter();
 
 	editUrl$ = this.loginService.accountObservable
 		.map(id => id === null
@@ -61,9 +61,12 @@ export class UserDataFormComponent implements OnInit {
 			: Observable.forkJoin(...user.addresses.map(addressId => this.addressService.getById(addressId)));
 	});
 
-	addressesSubject$ = new BehaviorSubject<Address[]>([]);
+	@Input()
+	set addresses(addresses: Address[]) {
+		this.addressesSubject$.next(addresses);
+	}
 
-	defaultImageUrl = "resources/images/Logo.png";
+	addressesSubject$ = new BehaviorSubject<Address[]>([]);
 
 	constructor(public loginService: LogInService,
 				public router: Router,
@@ -75,7 +78,10 @@ export class UserDataFormComponent implements OnInit {
 	}
 
 	submit() {
-		this.onSubmit.emit(this.model);
+		this.onSubmit.emit({
+			...this.model,
+			profilePicture: this.profilePicture
+		});
 	}
 
 	/**
@@ -95,7 +101,7 @@ export class UserDataFormComponent implements OnInit {
 	 * @param {FormData} event
 	 */
 	profilePictureChanged(event: FormData) {
-		this.model.profilePicture = event;
+		this.profilePicture = event;
 	}
 
 	/**
@@ -103,6 +109,10 @@ export class UserDataFormComponent implements OnInit {
 	 */
 	navigateToAddressModifications() {
 		this.addressService.redirectUrl = this.router.url;
+		this.onAddressModification.emit({
+			...this.model,
+			profilePicture: this.profilePicture
+		});
 	}
 
 	/**
@@ -114,6 +124,7 @@ export class UserDataFormComponent implements OnInit {
 			this.addressesSubject$.value
 				.filter(_address => _address.id !== address.id)
 		);
+		this.onAddressModification.emit({action: "delete", address});
 	}
 
 	cancel() {

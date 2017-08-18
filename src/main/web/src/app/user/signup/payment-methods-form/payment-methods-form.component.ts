@@ -10,6 +10,7 @@ import {SignUpSection} from "../signup-section";
 })
 export class PaymentMethodsFormComponent implements OnInit {
 	@Input() user: any;
+	@Input() loading: boolean = false;
 	paymentMethod: { value: string, name: string };
 	paymentMethods = [
 		{

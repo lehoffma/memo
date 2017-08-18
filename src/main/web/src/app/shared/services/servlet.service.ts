@@ -12,7 +12,7 @@ export abstract class ServletService<T> implements ServletServiceInterface<T>{
 	 */
 	handleError(error: Error): Observable<any> {
 		console.error(error);
-		return Observable.empty();
+		return Observable.of(error);
 	}
 
 	constructor() {

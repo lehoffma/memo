@@ -15,6 +15,8 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {EventType} from "../../shop/shared/model/event-type";
 import * as moment from "moment";
 import {DateTableCellComponent} from "../administration/member-list/member-list-table-cells/date-table-cell.component";
+import {LogInService} from "../../shared/services/login.service";
+import {ActionPermissions} from "../../shared/expandable-table/expandable-table.component";
 
 @Component({
 	selector: "memo-accounting",
@@ -28,15 +30,21 @@ export class AccountingComponent implements OnInit {
 	});
 	sortBy$: Observable<ColumnSortingEvent<Entry>> = this._sortBy$.asObservable();
 
-	entries$ = Observable.combineLatest(this.activatedRoute.paramMap, this.activatedRoute.queryParamMap, this.sortBy$)
-		.flatMap(([paramMap, queryParamMap, sortBy]) => this.getEntries([paramMap, queryParamMap, sortBy]));
-
+	entries$ = Observable.combineLatest(
+		this.activatedRoute.paramMap,
+		this.activatedRoute.queryParamMap,
+		this.sortBy$
+	)
+		.flatMap(([paramMap, queryParamMap, sortBy]) =>
+			this.getEntries([paramMap, queryParamMap, sortBy]));
 	entriesSubject$: BehaviorSubject<Entry[]> = new BehaviorSubject([]);
 
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);
 	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);
 
 	expandedRowComponent: Type<ExpandedRowComponent<any>> = SingleValueListExpandedRowComponent;
+
+	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("funds");
 
 	total$ = this.entriesSubject$
 		.map(entries => entries.reduce((acc, entry) => acc + entry.value, 0));
@@ -53,6 +61,7 @@ export class AccountingComponent implements OnInit {
 
 	constructor(private entryService: EntryService,
 				private activatedRoute: ActivatedRoute,
+				private loginService: LogInService,
 				private router: Router) {
 		this.primaryColumnKeys.next([
 			this.columns.date, this.columns.category, this.columns.name, this.columns.value

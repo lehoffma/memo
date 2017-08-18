@@ -47,6 +47,24 @@ export class UserService extends ServletService<User> {
 			.do((users: User[]) => this.cache.addMultiple(...users));
 	}
 
+	/**
+	 * Checkt ob die gegebene Email adresse von einem User verwendet wird oder nicht
+	 * @param {string} email
+	 * @returns {Observable<boolean>}
+	 */
+	isUserEmailAlreadyInUse(email: string): Observable<boolean> {
+		//todo demo remove
+		if (email) {
+			return Observable.of(false)
+				.delay(2000);
+		}
+
+		let params: URLSearchParams = new URLSearchParams();
+		params.set("email", email);
+		return this.performRequest(this.http.get("/api/user", {search: params}))
+			.map(response => response.json());
+	}
+
 
 	/**
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
