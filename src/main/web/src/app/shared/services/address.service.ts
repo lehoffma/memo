@@ -60,12 +60,6 @@ export class AddressService extends ServletService<Address> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 
-		//todo remove demo
-		if (address.id !== -1000) {
-			this.addressModificationDone.emit(address);
-			return Observable.of(address);
-		}
-
 		return this.performRequest(requestMethod("/api/address", {address}, requestOptions))
 			.map(response => response.json().id)
 			.flatMap(id => this.getById(id))

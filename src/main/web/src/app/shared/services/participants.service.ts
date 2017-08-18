@@ -75,11 +75,6 @@ export class ParticipantsService {
 	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
 				eventId: number, eventType: EventType, participant: Participant): Observable<any> {
 
-		//todo remove demo
-		if (eventId >= 0) {
-			return Observable.of(participant);
-		}
-
 		return requestMethod("/api/participants", {eventId, eventType, participant})
 			.map(response => response.json() as any)
 			//retry 3 times before throwing an error
@@ -119,10 +114,6 @@ export class ParticipantsService {
 	 * @param participantId
 	 */
 	deleteParticipant(eventId: number, eventType: EventType, participantId: number): Observable<any> {
-		//todo remove demo
-		if (eventId >= 0) {
-			return Observable.of(null);
-		}
 
 		return this.http.delete("/api/participants", {body: {eventId, eventType, participantId}})
 			.map(response => response.json() as any)
