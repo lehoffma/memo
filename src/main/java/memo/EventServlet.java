@@ -126,7 +126,7 @@ public class EventServlet extends HttpServlet {
         Gson gson = new GsonBuilder().serializeNulls().create();
         String output = gson.toJson(results);
 
-        response.getWriter().append(output);
+        response.getWriter().append("{ \"events\": "+ output +" }");
 
 
 	}

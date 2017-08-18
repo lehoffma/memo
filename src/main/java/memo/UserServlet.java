@@ -3,6 +3,7 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import memo.model.ClubRole;
 import memo.model.PermissionState;
 import memo.model.User;
 
@@ -89,7 +90,7 @@ public class UserServlet extends HttpServlet {
 			response.getWriter().append(users.get(i).toString() + "\n");
 		}
 		*/
-		response.getWriter().append(output);
+		response.getWriter().append("{ \"users\": "+ output +" }");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -177,7 +178,7 @@ public class UserServlet extends HttpServlet {
 			{
 
 
-                PermissionState permissions = new PermissionState();
+                PermissionState permissions = new PermissionState(ClubRole.Admin);
 
 
                 //If null, use a default value
