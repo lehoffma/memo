@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {ServletService} from "./servlet.service";
 import {Observable} from "rxjs/Observable";
-import {Http, RequestOptionsArgs, Response} from "@angular/http";
+import {Http, RequestOptionsArgs, Response, ResponseOptions} from "@angular/http";
 import {Comment} from "../../shop/shared/model/comment";
 
 @Injectable()
@@ -26,13 +26,15 @@ import {Comment} from "../../shop/shared/model/comment";
 			case 2: return Observable.of(new Comment(0, 2, new Date(), 0, "Ja auch gut.", [5]));
 			case 3: return Observable.of(new Comment(0, 3, new Date(), 1, "Gutes Gespräch."));
 			case 4: return Observable.of(new Comment(0, 4, new Date(), 2, "le funi comment"));
-			case 5: return Observable.of(new Comment(0, 5, new Date(), 3, "jo what the fuck"))
+			case 5:
+				return Observable.of(new Comment(0, 5, new Date(), 3, "jo what the fuck"));
+			default:
+				return Observable.of(new Comment(0, id, new Date(), 0, "test"));
 		}
 
-		console.log(id);
-		return this.performRequest(this.http.get("/api/comment", {search: params}))
-			.map(response => response.json().comments as any)
-			.map(json => Comment.create().setProperties(json))
+		// return this.performRequest(this.http.get("/api/comment", {search: params}))
+		// 	.map(response => response.json().comments as any)
+		// 	.map(json => Comment.create().setProperties(json))
 	}
 
 	/**
@@ -83,6 +85,7 @@ import {Comment} from "../../shop/shared/model/comment";
 				comment: Comment, parentId?: number): Observable<Comment> {
 		//todo remove demo
 		if (comment.id >= -2) {
+			comment.setProperties({id: Math.random() * (2 ** 32)});
 			return Observable.of(comment);
 		}
 
@@ -115,6 +118,11 @@ import {Comment} from "../../shop/shared/model/comment";
 	 * @param parentId
 	 */
 	remove(id: number, parentId?: number): Observable<Response> {
+		//todo remove demo
+		if (id >= 0) {
+			return Observable.of(new Response(new ResponseOptions()));
+		}
+
 		return this.performRequest(this.http.delete("/api/delete", {body: {id, parentId}}));
 	}
 

@@ -118,12 +118,16 @@ export class SignUpComponent implements OnInit {
 		if (isLastScreen) {
 			this.userService.add(this.newUser, {profilePicture: this.newUserProfilePicture, paymentInfo: this.newUserDebitInfo})
 				.subscribe(newUserId => {
-						this.snackBar.open("Die Registrierung war erfolgreich!");
+						this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
+							duration: 1000
+						});
 						this.navigationService.navigateByUrl("/");
 						this.loginService.login(this.newUser.email, this.newUser.passwordHash);
 					},
 					error => {
-						this.snackBar.open("Bei der Registrierung ist leider ein Fehler aufgetreten!")
+						this.snackBar.open("Bei der Registrierung ist leider ein Fehler aufgetreten!", "Schließen", {
+							duration: 2000
+						});
 					})
 		}
 	}

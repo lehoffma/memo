@@ -1,10 +1,20 @@
-<memo-comment-block *ngFor="let comment of comments | slice:0:amountOfCommentsShown"
+<memo-comment-block *ngFor="let comment of comments | slice:0:amountOfCommentsShown; trackBy:trackCommentBy"
 					(onAddComment)="addComment($event.commentText, $event.parentCommentId)"
 					(onDelete)="deleteComment($event)"
+					[eventId]="eventId"
+					[parentId]="-1"
 					[comment]="comment">
 </memo-comment-block>
+<memo-comment-block *ngIf="loadingAddedComment"
+					[eventId]="eventId"
+					[parentId]="-1"
+					[dummy]="true"
+					[comment]="dummyComment"
+>
 
-<button md-button (click)="expandState = !expandState" *ngIf="comments?.length > DEFAULT_AMOUNT_OF_COMMENTS_SHOWN">
+</memo-comment-block>
+
+<button md-button (click)="toggleShowMore()" *ngIf="comments?.length > DEFAULT_AMOUNT_OF_COMMENTS_SHOWN">
 		<span>
 			{{amountOfCommentsShown === DEFAULT_AMOUNT_OF_COMMENTS_SHOWN ? 'Mehr Kommentare' : 'Weniger Kommentare'}}
 		</span>

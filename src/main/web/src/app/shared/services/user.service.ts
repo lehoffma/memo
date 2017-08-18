@@ -26,6 +26,7 @@ export class UserService extends ServletService<User> {
 				.map(users => users.find(user => user.id === userId));
 		}
 
+
 		//todo remove when server is running todo demo
 		if (userId !== -1) {
 			return this.search("")

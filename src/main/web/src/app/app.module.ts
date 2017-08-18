@@ -133,6 +133,8 @@ import {EventContextMenuComponent} from "./shop/event-calendar-container/event-c
 import {ConfirmationDialogComponent} from "./shared/confirmation-dialog/confirmation-dialog.component";
 import {ConfirmationDialogService} from "app/shared/services/confirmation-dialog.service";
 import {AddressEntryComponent} from "./user/profile/address-entry/address-entry.component";
+import {DateAdapter, MD_DATE_FORMATS} from "@angular/material";
+import {MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-config/moment-adapter";
 
 @NgModule({
 	imports: [
@@ -269,7 +271,9 @@ import {AddressEntryComponent} from "./user/profile/address-entry/address-entry.
 		//guards
 		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,
 
-		{provide: LOCALE_ID, useValue: "de-DE"}
+		{provide: LOCALE_ID, useValue: "de-DE"},
+		{provide: DateAdapter, useClass: MomentDateAdapter},
+		{provide: MD_DATE_FORMATS, useValue: MOMENT_DATE_FORMATS},
 	],
 	entryComponents: [
 		ItemImagePopupComponent,
