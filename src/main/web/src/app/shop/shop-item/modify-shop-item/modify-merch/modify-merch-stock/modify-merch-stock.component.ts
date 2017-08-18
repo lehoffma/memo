@@ -10,6 +10,8 @@ import {MdDialog} from "@angular/material";
 import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-merch-stock-item.component";
 import {ModifyStockItemEvent} from "./modify-merch-stock-item/modify-stock-item-event";
 import {ModifyType} from "../../modify-type";
+import {ActionPermissions} from "../../../../../shared/expandable-table/expandable-table.component";
+import {LogInService} from "../../../../../shared/services/login.service";
 
 @Component({
 	selector: "memo-modify-merch-stock",
@@ -54,13 +56,16 @@ export class ModifyMerchStockComponent implements OnInit {
 					: attributeSortingFunction(sortBy.key, sortBy.descending));
 		});
 
+	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("stock");
+
 	primaryColumnKeys: ExpandableTableColumn<MerchStock>[] = [
 		new ExpandableTableColumn<MerchStock>("Größe", "size"),
 		new ExpandableTableColumn<MerchStock>("Farbe", "color", MerchColorCellComponent),
 		new ExpandableTableColumn<MerchStock>("Anzahl", "amount")
 	];
 
-	constructor(private mdDialog: MdDialog) {
+	constructor(private mdDialog: MdDialog,
+				private loginService: LogInService) {
 	}
 
 	ngOnInit() {

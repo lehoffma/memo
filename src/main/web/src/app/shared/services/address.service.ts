@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import {EventEmitter, Injectable} from "@angular/core";
 import {Address} from "../model/address";
 import {Observable} from "rxjs/Observable";
 import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
@@ -7,6 +7,8 @@ import {ServletService} from "./servlet.service";
 
 @Injectable()
 export class AddressService extends ServletService<Address> {
+	addressModificationDone: EventEmitter<Address> = new EventEmitter();
+
 	constructor(private http: Http,
 				private cache: CacheStore,) {
 		super();
@@ -66,9 +68,16 @@ export class AddressService extends ServletService<Address> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 
+		//todo remove demo
+		if (address.id !== -1000) {
+			this.addressModificationDone.emit(address);
+			return Observable.of(address);
+		}
+
 		return this.performRequest(requestMethod("/api/address", {address}, requestOptions))
 			.map(response => response.json().id)
-			.flatMap(id => this.getById(id));
+			.flatMap(id => this.getById(id))
+			.do(address => this.addressModificationDone.emit(address));
 	}
 
 	/**

@@ -1,12 +1,12 @@
 import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
-import {Observable} from "rxjs/Observable";
 import {LogInService} from "../services/login.service";
+import {Observable} from "rxjs/Observable";
 import {ClubRole, isAuthenticated, rolePermissions} from "../model/club-role";
 import {Permission} from "../model/permission";
 
 @Injectable()
-export class IsTreasurerGuard implements CanActivate {
+export class CanViewStockGuard implements CanActivate {
 	constructor(private loginService: LogInService,
 				private router: Router) {
 	}
@@ -22,7 +22,7 @@ export class IsTreasurerGuard implements CanActivate {
 				let defaultPermissions = rolePermissions[user.clubRole];
 				let userPermissions = user.userPermissions;
 
-				if (defaultPermissions.funds > Permission.read || userPermissions.funds > Permission.read) {
+				if (defaultPermissions.stock > Permission.read || userPermissions.stock > Permission.read) {
 					return true;
 				}
 				if (isAuthenticated(user.clubRole, ClubRole.Kassenwart)) {

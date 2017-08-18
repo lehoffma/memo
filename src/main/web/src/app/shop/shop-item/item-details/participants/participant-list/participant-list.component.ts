@@ -18,6 +18,8 @@ import {
 	ModifyParticipantEvent
 } from "app/shop/shop-item/item-details/participants/participant-list/modify-participant/modify-participant.component";
 import {EventService} from "../../../../../shared/services/event.service";
+import {ActionPermissions} from "../../../../../shared/expandable-table/expandable-table.component";
+import {LogInService} from "../../../../../shared/services/login.service";
 
 const participantListColumns = {
 	name: new ExpandableTableColumn<ParticipantUser>("Name", "user", FullNameTableCellComponent),
@@ -71,11 +73,13 @@ export class ParticipantListComponent implements OnInit {
 	sortBy$ = this._sortBy$.asObservable();
 
 	participants$ = new BehaviorSubject<ParticipantUser[]>([]);
-	participantList = this.participants$
-		.scan(this.mergeParticipants.bind(this), []);
+	participantList = this.participants$;
+
+	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("party", "tour");
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private dialog: MdDialog,
+				private loginService: LogInService,
 				private eventService: EventService,
 				private participantService: ParticipantsService) {
 	}
@@ -149,35 +153,6 @@ export class ParticipantListComponent implements OnInit {
 
 	/**
 	 *
-	 * @param {ParticipantUser[]} acc
-	 * @param {ParticipantUser[]} participants
-	 * @returns {ParticipantUser[]}
-	 */
-	mergeParticipants(acc: ParticipantUser[], participants: ParticipantUser[]) {
-		console.log(acc);
-		console.log(participants);
-		if (!acc || participants.length === 0) {
-			return participants;
-		}
-		//todo
-		//remove values that are not part of the array anymore
-		for (let i = acc.length - 1; i >= 0; i--) {
-			if (participants.findIndex(participant => participant.id === acc[i].id) === -1) {
-				acc.splice(i, 1);
-			}
-		}
-
-		//add comments that arent yet part of the array to the array
-		acc.push(
-			...participants.filter(comment =>
-				!acc.find(prevParticipant => prevParticipant.id === comment.id)
-			)
-		);
-		return acc;
-	}
-
-	/**
-	 *
 	 */
 	addParticipant() {
 		this.eventInfo.first().subscribe(eventInfo => {
@@ -218,7 +193,7 @@ export class ParticipantListComponent implements OnInit {
 									...this.participants$.value.slice(0, indexOfParticipant),
 									result.participant,
 									...this.participants$.value.slice(indexOfParticipant + 1)
-								])
+								]);
 							});
 					}
 				})
@@ -241,7 +216,7 @@ export class ParticipantListComponent implements OnInit {
 						this.participants$.next([
 							...this.participants$.value.slice(0, indexOfParticipant),
 							...this.participants$.value.slice(indexOfParticipant + 1)
-						])
+						]);
 					});
 			});
 		})

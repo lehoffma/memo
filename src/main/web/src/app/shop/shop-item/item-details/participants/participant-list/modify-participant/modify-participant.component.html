@@ -4,7 +4,8 @@
 		<div md-dialog-content class="dialog-content-container">
 			<div>
 				<md-input-container
-					[dividerColor]="(autocompleteFormControl.dirty && participant.id === -1) ? 'warn' : 'primary'">
+					[dividerColor]="(autocompleteFormControl.dirty && participant.user === null ||
+					participant.user?.id === -1) ? 'warn' : 'primary'">
 					<input type="text"
 						   mdInput
 						   tabindex="-1"
@@ -12,7 +13,8 @@
 						   name="userInput"
 						   [formControl]="autocompleteFormControl"
 						   [mdAutocomplete]="auto">
-					<md-hint *ngIf="autocompleteFormControl.dirty && participant.id === -1" class="error-message">
+					<md-hint *ngIf="autocompleteFormControl.dirty && participant.user === null ||
+					participant.user?.id === -1" class="error-message">
 						Bitte wähle einen Nutzer aus der Liste!
 					</md-hint>
 				</md-input-container>
@@ -46,7 +48,8 @@
 		<button md-icon-button type="button" md-dialog-close>
 			<md-icon>arrow_back</md-icon>
 		</button>
-		<button md-icon-button [disabled]="!modifyParticipantForm.form.valid || participant.id === -1"
+		<button md-icon-button [disabled]="!modifyParticipantForm.form.valid || participant.user === null ||
+					participant.user?.id === -1"
 				type="submit" color="primary">
 			<md-icon>done</md-icon>
 		</button>

@@ -19,6 +19,12 @@ import {ExpandableTableColumn} from "./expandable-table-column";
 import {ExpandableTableColumnContainerDirective} from "./expandable-table-column-container.directive";
 import {ConfirmationDialogService} from "../services/confirmation-dialog.service";
 
+export interface ActionPermissions {
+	add: boolean;
+	edit: boolean;
+	remove: boolean;
+};
+
 @Component({
 	selector: "memo-expandable-table",
 	templateUrl: "./expandable-table.component.html",
@@ -40,6 +46,8 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	@Input() expandedRowKeys: ExpandableTableColumn<T>[];
 	@Input() title: string;
 	@Input() expandable: boolean = true;
+
+	@Input() permissions: ActionPermissions;
 
 	@Output() onAdd = new EventEmitter<any>();
 	@Output() onSort = new EventEmitter<ColumnSortingEvent<T>>();

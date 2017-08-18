@@ -6,6 +6,8 @@ import {UserService} from "./user.service";
 import {User} from "../model/user";
 import {isNullOrUndefined} from "util";
 import {MdSnackBar} from "@angular/material";
+import {ActionPermissions} from "../expandable-table/expandable-table.component";
+import {Permission, UserPermissions} from "../model/permission";
 
 @Injectable()
 export class LogInService {
@@ -113,6 +115,30 @@ export class LogInService {
 			//instead of waiting for someone to subscribe
 			.publish().refCount();
 	}
+
+	/**
+	 *
+	 * @param permissionsKeys
+	 * @returns {Observable<ActionPermissions>}
+	 */
+	getActionPermissions(...permissionsKeys: (keyof UserPermissions)[]): Observable<ActionPermissions> {
+		return this.currentUser()
+			.map(user => user === null
+				? {
+					add: false,
+					edit: false,
+					remove: false,
+				}
+				: {
+					add: permissionsKeys.some(permissionsKey =>
+						user.userPermissions[permissionsKey] >= Permission.create),
+					edit: permissionsKeys.some(permissionsKey =>
+						user.userPermissions[permissionsKey] >= Permission.write),
+					remove: permissionsKeys.some(permissionsKey =>
+						user.userPermissions[permissionsKey] >= Permission.delete)
+				});
+	}
+
 
 	/**
 	 *

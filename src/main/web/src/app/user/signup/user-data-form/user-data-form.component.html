@@ -3,7 +3,9 @@
 		<!--Profilbild-->
 		<h3>Profilbild</h3>
 		<memo-profile-picture-form
-			[image]="loginService.isLoggedIn() ? userModel['imagePath'] : defaultImageUrl"
+			[image]="loginService.isLoggedIn()
+			? userModel['imagePath']
+			: profilePicture"
 			(onChange)="profilePictureChanged($event)">
 
 		</memo-profile-picture-form>

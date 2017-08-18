@@ -33,6 +33,9 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges {
 		console.log(changes);
 		if (changes["image"] && changes["image"].currentValue && !changes["image"].currentValue.toString().includes("resources")) {
 			let image = new Image();
+			if (this.image instanceof FormData) {
+				this.image.getAll("file[]").forEach(string => console.log(string));
+			}
 			image.src = this.image + "?" + new Date().getTime();
 			image.setAttribute("crossOrigin", "");
 			image.addEventListener("load", (data) => {
@@ -73,6 +76,7 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges {
 	}
 
 	updatePreview(event) {
+		//todo emit event or image so the picture can be reconstructed
 		if (event.target.files && event.target.files[0]) {
 			console.log(event);
 			const reader = new FileReader();
