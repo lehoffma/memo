@@ -32,7 +32,7 @@ public class LoginServlet extends HttpServlet {
 
         JsonElement jElement = new JsonParser().parse(body);
         String email = jElement.getAsJsonObject().get("email").getAsString();
-        String password = jElement.getAsJsonObject().get("email").getAsString();
+        String password = jElement.getAsJsonObject().get("password").getAsString();
 
 		
 		List<User> users = DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u WHERE u.email = :email",User.class).setParameter("email", email).getResultList();

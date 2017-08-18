@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  * Servlet implementation class UserServlet
  */
 
-//TODO: checks for address and bankaccout in database
+//TODO: checks for address and bank account in database
 
 @WebServlet("/api/user")
 public class UserServlet extends HttpServlet {
@@ -137,7 +138,7 @@ public class UserServlet extends HttpServlet {
 
 
 
-			if (juser.get("birthDate") != null)
+			if (juser.has("birthDate"))
 				newUser.setBirthday(new Date(juser.get("birthDate").getAsLong()));
 
 			if (juser.has("addresses"))
@@ -155,17 +156,41 @@ public class UserServlet extends HttpServlet {
 				newUser.setAdresses(bankAccounts);
 			}
 
-			if (juser.get("joinDate") != null)
-				newUser.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
+			if (juser.has("joinDate"))
+            {
+                Date joinDate = new Date(Calendar.getInstance().getTime().getTime());
+
+                try {
+                    joinDate = new Date(juser.get("joinDate").getAsLong());
+                }catch (Exception e)
+                {
+                    // TODO: Log Error
+                    System.out.println(e);
+                }
+                newUser.setJoinDate(joinDate);
+            }
+
 
 
 			em.getTransaction().begin();
 			if (juser.has("permissions"))
 			{
-				JsonObject jPermissions = juser.getAsJsonObject("permissions");
-				PermissionState permissions = gson.fromJson(jPermissions, PermissionState.class);
-				newUser.setPermissions(permissions);
-				em.persist(permissions);
+
+
+                PermissionState permissions = new PermissionState();
+
+
+                //If null, use a default value
+                JsonElement nullableText = juser.get("permissions");
+                if (!(nullableText instanceof JsonNull))
+                {
+                    JsonObject jPermissions = juser.getAsJsonObject("permissions");
+                    permissions = gson.fromJson(jPermissions, PermissionState.class);
+
+                }
+
+                newUser.setPermissions(permissions);
+                em.persist(permissions);
 			}
 
 

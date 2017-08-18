@@ -8,6 +8,7 @@ import java.lang.Integer;
 import java.lang.String;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import javax.persistence.*;
 
@@ -37,7 +38,7 @@ public class User implements Serializable {
 
 	@Expose
 	@Enumerated(EnumType.ORDINAL)
-	private ClubRole clubRole;
+	private ClubRole clubRole = ClubRole.none;
 
 	@ElementCollection
 	@CollectionTable(name ="USER_ADRESSES")
@@ -45,7 +46,7 @@ public class User implements Serializable {
 	private List<Integer> adresses = new ArrayList<Integer>();
 
 	@Column(nullable = false)
-	private Date birthday;
+	private Date birthday = new Date(0);
 
 	@Expose
 	private String telephone;
@@ -80,7 +81,7 @@ public class User implements Serializable {
 
 
 	@Column(name = "JOIN_DATE", nullable = false)
-	private Date joinDate;
+	private Date joinDate = new Date(Calendar.getInstance().getTime().getTime());
 
 	@Expose
 	private String gender;

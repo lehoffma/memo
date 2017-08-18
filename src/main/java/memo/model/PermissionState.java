@@ -51,8 +51,96 @@ public class PermissionState implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public PermissionState(ClubRole role)
+    {
+        switch (role){
+            case none:
+
+                this.funds = Permission.none;
+                this.party = Permission.read;
+                this.user = Permission.none;
+                this.merch = Permission.none;
+                this.tour = Permission.read;
+                this.stock = Permission.none;
+                this.settings = Permission.none;
+
+                break;
+
+            case Mitglied:
+
+                this.funds = Permission.none;
+                this.party = Permission.read;
+                this.user = Permission.none;
+                this.merch = Permission.read;
+                this.tour = Permission.read;
+                this.stock = Permission.none;
+                this.settings = Permission.none;
+
+                break;
+
+            case Vorstand:
+
+                this.funds = Permission.read;
+                this.party = Permission.write;
+                this.user = Permission.create;
+                this.merch = Permission.write;
+                this.tour = Permission.read;
+                this.stock = Permission.create;
+                this.settings = Permission.read;
+
+                break;
+
+            case Schriftführer:
+
+                this.funds = Permission.read;
+                this.party = Permission.write;
+                this.user = Permission.create;
+                this.merch = Permission.write;
+                this.tour = Permission.read;
+                this.stock = Permission.create;
+                this.settings = Permission.read;
+
+                break;
+
+            case Kassenwart:
+
+                this.funds = Permission.delete;
+                this.party = Permission.write;
+                this.user = Permission.create;
+                this.merch = Permission.write;
+                this.tour = Permission.read;
+                this.stock = Permission.create;
+                this.settings = Permission.read;
+
+                break;
+
+            case Organisator:
+
+                this.funds = Permission.create;
+                this.party = Permission.delete;
+                this.user = Permission.create;
+                this.merch = Permission.delete;
+                this.tour = Permission.delete;
+                this.stock = Permission.delete;
+                this.settings = Permission.read;
+
+                break;
+
+            case Admin:
+
+                this.funds = Permission.admin;
+                this.party = Permission.admin;
+                this.user = Permission.admin;
+                this.merch = Permission.admin;
+                this.tour = Permission.admin;
+                this.stock = Permission.admin;
+                this.settings = Permission.admin;
+
+                break;
+        }
+    }
 	public PermissionState() {
-		super();
+		this(ClubRole.none);
 	}
 
 	public Integer getId() {
