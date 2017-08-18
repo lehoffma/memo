@@ -70,30 +70,24 @@ export class ParticipantListComponent implements OnInit {
 
 	sortBy$ = this._sortBy$.asObservable();
 
+	participants$ = new BehaviorSubject<ParticipantUser[]>([]);
+	participantList = this.participants$
+		.scan(this.mergeParticipants.bind(this), []);
 
+	constructor(private activatedRoute: ActivatedRoute,
+				private dialog: MdDialog,
+				private eventService: EventService,
+				private participantService: ParticipantsService) {
+	}
 
-	participants: Observable<ParticipantUser[]> =
-		Observable.combineLatest(this.sortBy$, this.activatedRoute.url
-			.flatMap((urls: UrlSegment[]) => {
-				// "tours/:id/participants"
-				// "partys/:id/participants"
-				let eventType = EventType[urls[0].path];
-				let eventId = +urls[1].path;
+	ngOnInit() {
+		this.updateColumnKeys(window.innerWidth);
+		this.getParticipants().subscribe(participants => this.participants$.next(participants));
+	}
 
-				return this.participantService.getParticipantUsersByEvent(eventId, eventType);
-			}))
-			.map(([sortBy, participants]) => {
-				if (sortBy) {
-					if (sortBy.key === "user") {
-						return [...participants
-							.sort(sortingFunction<ParticipantUser>(participant =>
-								participant.user.surname, sortBy.descending))];
-					}
-					return [...participants
-						.sort(attributeSortingFunction(sortBy.key, sortBy.descending))];
-				}
-				return [...participants];
-			});
+	updateSortBy(event: ColumnSortingEvent<ParticipantUser>) {
+		this._sortBy$.next(event);
+	}
 
 
 	/**
@@ -123,36 +117,85 @@ export class ParticipantListComponent implements OnInit {
 	}
 
 
-	constructor(private activatedRoute: ActivatedRoute,
-				private dialog: MdDialog,
-				private eventService: EventService,
-				private participantService: ParticipantsService) {
+	/**
+	 *
+	 * @returns {Observable<any>}
+	 */
+	getParticipants() {
+		return Observable.combineLatest(
+			this.sortBy$,
+			this.activatedRoute.url
+				.flatMap((urls: UrlSegment[]) => {
+					// "tours/:id/participants"
+					// "partys/:id/participants"
+					let eventType = EventType[urls[0].path];
+					let eventId = +urls[1].path;
+
+					return this.participantService.getParticipantUsersByEvent(eventId, eventType);
+				}))
+			.map(([sortBy, participants]) => {
+				if (sortBy) {
+					if (sortBy.key === "user") {
+						return [...participants
+							.sort(sortingFunction<ParticipantUser>(participant =>
+								participant.user.surname, sortBy.descending))];
+					}
+					return [...participants
+						.sort(attributeSortingFunction(sortBy.key, sortBy.descending))];
+				}
+				return [...participants];
+			});
 	}
 
-	ngOnInit() {
-		this.updateColumnKeys(window.innerWidth);
-	}
+	/**
+	 *
+	 * @param {ParticipantUser[]} acc
+	 * @param {ParticipantUser[]} participants
+	 * @returns {ParticipantUser[]}
+	 */
+	mergeParticipants(acc: ParticipantUser[], participants: ParticipantUser[]) {
+		console.log(acc);
+		console.log(participants);
+		if (!acc || participants.length === 0) {
+			return participants;
+		}
+		//todo
+		//remove values that are not part of the array anymore
+		for (let i = acc.length - 1; i >= 0; i--) {
+			if (participants.findIndex(participant => participant.id === acc[i].id) === -1) {
+				acc.splice(i, 1);
+			}
+		}
 
-	updateSortBy(event: ColumnSortingEvent<ParticipantUser>) {
-		this._sortBy$.next(event);
+		//add comments that arent yet part of the array to the array
+		acc.push(
+			...participants.filter(comment =>
+				!acc.find(prevParticipant => prevParticipant.id === comment.id)
+			)
+		);
+		return acc;
 	}
 
 	/**
 	 *
 	 */
 	addParticipant() {
-		this.eventInfo.first()
-			.subscribe(eventInfo => {
-				this.dialog.open(ModifyParticipantComponent, {data: {associatedEventInfo: eventInfo}})
-					.afterClosed()
-					.subscribe((result: ModifyParticipantEvent) => {
-						if (result) {
-							this.participantService.addParticipant(eventInfo.eventId, eventInfo.eventType, result.participant)
-							//todo do something other than logging the result
-								.subscribe(response => console.log(response));
-						}
-					})
-			})
+		this.eventInfo.first().subscribe(eventInfo => {
+			this.dialog.open(ModifyParticipantComponent, {data: {associatedEventInfo: eventInfo}})
+				.afterClosed()
+				.subscribe((result: ModifyParticipantEvent) => {
+					if (result) {
+						this.participantService
+							.addParticipant(eventInfo.eventId, eventInfo.eventType, result.participant)
+							.subscribe(response => {
+								this.participants$.next([
+									...this.participants$.getValue(),
+									result.participant
+								]);
+							});
+					}
+				})
+		})
 	}
 
 	/**
@@ -160,18 +203,26 @@ export class ParticipantListComponent implements OnInit {
 	 * @param event
 	 */
 	editParticipant(event) {
-		this.eventInfo.first()
-			.subscribe(eventInfo => {
-				this.dialog.open(ModifyParticipantComponent, {data: {participant: event, associatedEventInfo: eventInfo}})
-					.afterClosed()
-					.subscribe((result: ModifyParticipantEvent) => {
-						if (result) {
-							this.participantService.updateParticipant(eventInfo.eventId, eventInfo.eventType, result.participant)
-							//todo do something other than logging the result
-								.subscribe(response => console.log(response));
-						}
-					})
-			})
+		this.eventInfo.first().subscribe(eventInfo => {
+			this.dialog.open(ModifyParticipantComponent, {data: {participant: event, associatedEventInfo: eventInfo}})
+				.afterClosed()
+				.subscribe((result: ModifyParticipantEvent) => {
+					if (result) {
+						this.participantService
+							.updateParticipant(eventInfo.eventId, eventInfo.eventType, result.participant)
+							.subscribe(response => {
+								let indexOfParticipant = this.participants$.value.findIndex(
+									participant => participant.id === result.participant.id
+								);
+								this.participants$.next([
+									...this.participants$.value.slice(0, indexOfParticipant),
+									result.participant,
+									...this.participants$.value.slice(indexOfParticipant + 1)
+								])
+							});
+					}
+				})
+		})
 	}
 
 	/**
@@ -179,12 +230,20 @@ export class ParticipantListComponent implements OnInit {
 	 * @param event
 	 */
 	deleteParticipant(event: ParticipantUser[]) {
-		this.eventInfo.first()
-			.subscribe(eventInfo => {
-				event.forEach(participantUser => {
-					this.participantService.deleteParticipant(eventInfo.eventId, eventInfo.eventType, participantUser.id)
-						.subscribe(result => console.log(result));
-				});
-			})
+		this.eventInfo.first().subscribe(eventInfo => {
+			event.forEach(participantUser => {
+				this.participantService
+					.deleteParticipant(eventInfo.eventId, eventInfo.eventType, participantUser.id)
+					.subscribe(response => {
+						let indexOfParticipant = this.participants$.value.findIndex(
+							participant => participant.id === participantUser.id
+						);
+						this.participants$.next([
+							...this.participants$.value.slice(0, indexOfParticipant),
+							...this.participants$.value.slice(indexOfParticipant + 1)
+						])
+					});
+			});
+		})
 	}
 }

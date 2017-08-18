@@ -1,5 +1,5 @@
-<div id="loader-wrapper" *ngIf="idOfObjectToModify !== -1 && !previousValue; else modifyItemContainer">
-	<div id="loader"></div>
+<div class="loader-wrapper" *ngIf="idOfObjectToModify !== -1 && !previousValue; else modifyItemContainer">
+	<div class="loader"></div>
 </div>
 <ng-template #modifyItemContainer>
 	<div [ngSwitch]="itemType">

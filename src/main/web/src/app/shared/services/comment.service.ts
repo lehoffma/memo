@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {ServletService} from "./servlet.service";
 import {Observable} from "rxjs/Observable";
-import {Http, RequestOptionsArgs, Response} from "@angular/http";
+import {Http, RequestOptionsArgs, Response, ResponseOptions} from "@angular/http";
 import {Comment} from "../../shop/shared/model/comment";
 
 @Injectable()

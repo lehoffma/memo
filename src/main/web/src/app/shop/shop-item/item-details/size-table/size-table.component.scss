@@ -1,6 +1,12 @@
 
 .size-table-container {
 	overflow-y: auto;
+	display: flex;
+	justify-content: flex-start;
+
+	@media all and (min-width: 1050px) {
+		justify-content: center;
+	}
 
 	.table-size-clothes {
 		border-collapse: collapse;

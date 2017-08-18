@@ -1,6 +1,6 @@
-<div class="participant-table-container">
+<div class="participant-table-container" *ngIf="(participantList | async);let participants; else loading">
 	<memo-expandable-table
-		[data]="participants | async"
+		[data]="participants"
 		[expandable]="isExpandable | async"
 		[title]="'Teilnehmer von ' + (eventTitle | async)"
 		[columnKeys]="columnKeys | async"
@@ -14,3 +14,8 @@
 
 	</memo-expandable-table>
 </div>
+<ng-template #loading>
+	<div class="loader-wrapper">
+		<div class="loader"></div>
+	</div>
+</ng-template>

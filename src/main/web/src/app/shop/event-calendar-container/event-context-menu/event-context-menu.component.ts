@@ -35,6 +35,6 @@ export class EventContextMenuComponent implements OnInit {
 
 	deleteEvent() {
 		this.eventService.remove(this.data.id)
-			.subscribe(result => console.log(result));
+			.subscribe(result => this.dialogRef.close("deleted"));
 	}
 }

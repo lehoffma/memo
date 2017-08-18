@@ -4,7 +4,7 @@ import {Party} from "../shared/model/party";
 import {Tour} from "../shared/model/tour";
 import {EventService} from "../../shared/services/event.service";
 import {EventType} from "../shared/model/event-type";
-import {MdDialog} from "@angular/material";
+import {MdDialog, MdSnackBar} from "@angular/material";
 import {EventContextMenuComponent} from "./event-context-menu/event-context-menu.component";
 import {CreateEventContextMenuComponent} from "./create-event-context-menu/create-event-context-menu.component";
 import {LogInService} from "../../shared/services/login.service";
@@ -19,15 +19,12 @@ import {isNullOrUndefined} from "util";
 	styleUrls: ["./event-calendar-container.component.scss"]
 })
 export class EventCalendarContainerComponent implements OnInit {
-	events: Observable<(Party | Tour)[]> = Observable.combineLatest(
-		this.eventService.search("", EventType.tours),
-		this.eventService.search("", EventType.partys),
-		(tours, partys) => [...tours, ...partys]
-	);
+	events: Observable<(Party | Tour)[]> = this.getUpdatedEvents();
 	editable: Observable<boolean> = Observable.of(false); //todo true if permissions of tour/party >= write, else false
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
+				private snackBar: MdSnackBar,
 				private userService: UserService,
 				private mdDialog: MdDialog) {
 	}
@@ -35,17 +32,19 @@ export class EventCalendarContainerComponent implements OnInit {
 	ngOnInit() {
 	}
 
+	getUpdatedEvents(): Observable<(Party | Tour)[]> {
+		return Observable.combineLatest(
+			this.eventService.search("", EventType.tours),
+			this.eventService.search("", EventType.partys),
+			(tours, partys) => [...tours, ...partys]
+		);
+	}
+
 	/**
 	 *
 	 * @param eventId
 	 */
 	onEventClick(eventId: number) {
-		//todo
-		//falls permissions ausreichen:
-		//			dialog: ansehen, editieren, löschen
-		//sonst:
-		// 			zur detailseite des angeklickten events weiterleiten
-
 		let observable = Observable.combineLatest(
 			this.loginService.currentUser()
 				.filter(user => user !== null)
@@ -82,7 +81,12 @@ export class EventCalendarContainerComponent implements OnInit {
 
 		dialogRef.afterClosed()
 			.subscribe(value => {
-					console.log(value);
+				if (value === "deleted") {
+					this.events = this.getUpdatedEvents();
+					this.snackBar.open("Löschen erfolgreich.", "Schließen", {
+						duration: 1000
+					});
+				}
 				}, console.error
 			)
 	}
@@ -92,12 +96,6 @@ export class EventCalendarContainerComponent implements OnInit {
 	 * @param date
 	 */
 	onDayClick(date: Date) {
-		//todo
-		//falls permissions ausreichen:
-		// 			auswahl fenster, was an diesem tag erstellt werden soll (party oder event)
-		//sonst:
-		//			nix
-
 		let permissions$ = this.loginService.currentUser()
 			.filter(user => user !== null)
 			.map(user => user.userPermissions)
@@ -113,7 +111,7 @@ export class EventCalendarContainerComponent implements OnInit {
 		});
 		dialogRef.afterClosed()
 			.subscribe(value => {
-				console.log(value);
+
 			}, console.error)
 	}
 }

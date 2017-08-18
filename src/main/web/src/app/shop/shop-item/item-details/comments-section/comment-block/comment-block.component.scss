@@ -1,6 +1,7 @@
 @import "../../../../../../theme";
 @import "~@angular/material/theming";
 
+
 .comment-block-container{
 	margin: 12px 0;
 }
@@ -27,6 +28,10 @@
 			//border-radius: 50%;
 			width: 30px;
 			height: 30px;
+
+			&.dummy {
+				filter: grayscale(100%);
+			}
 		}
 
 	}
@@ -88,6 +93,13 @@
 				&:hover{
 					text-decoration: underline;
 					cursor: pointer;
+				}
+			}
+
+			&.dummy {
+				span {
+					color: grey;
+					cursor: not-allowed;
 				}
 			}
 		}
