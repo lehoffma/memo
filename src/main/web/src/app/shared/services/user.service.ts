@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
+import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, ResponseOptions} from "@angular/http";
 import {User} from "../model/user";
 import {CacheStore} from "../stores/cache.store";
 import {ServletService} from "./servlet.service";

@@ -6,6 +6,14 @@ md-list > span:last-child > md-divider {
 :host {
 	> md-list {
 		margin-top: -1rem;
+
+		md-list-item {
+			cursor: pointer;
+
+			&:hover {
+				background-color: #ededed;
+			}
+		}
 	}
 
 	button {

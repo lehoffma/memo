@@ -1,4 +1,6 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
+import {DateAdapter} from "@angular/material";
+import {Moment} from "moment";
 
 @Component({
 	selector: "app",
@@ -7,8 +9,9 @@ import {Component, OnInit} from "@angular/core";
 })
 export class AppComponent implements OnInit {
 
-	constructor() {
-
+	constructor(private dateAdapter: DateAdapter<Moment>,
+				@Inject(LOCALE_ID) public locale: any) {
+		dateAdapter.setLocale(locale); // DD.MM.YYYY
 	}
 
 	ngOnInit() {

@@ -30,11 +30,11 @@
 </div>
 
 
-<div class="total-amount" *ngIf="(total$ | async) as total"
+<div class="total-amount"
 	 [ngClass]="{
-			positive: total >= 0,
-			negative: total < 0
+			positive: (total$ | async) >= 0,
+			negative: (total$ | async) < 0
 		}">
 	<span>Gesamt</span>
-	<span>{{total | currency:'EUR':true}}</span>
+	<span>{{(total$ | async) | currency:'EUR':true}}</span>
 </div>
