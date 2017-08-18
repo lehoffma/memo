@@ -54,7 +54,24 @@ public class EventServlet extends HttpServlet {
             if (searchTerm != null && !searchTerm.isEmpty()) {
                 if (sType != null && !sType.isEmpty()) {
                     // searchTerm & Type
-                    Integer type = Integer.parseInt(sType);
+
+
+                    Integer type = 0;
+
+                    switch (sType)
+                    {
+                        case "tours":
+                            type = 1;
+                            break;
+                        case "partys":
+                            type = 3;
+                            break;
+                        case "merch":
+                            type = 2;
+                            break;
+
+                    }
+
                     results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ AND UPPER(e.title LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
                             .setParameter("searchTerm","%"+ searchTerm + "%").setParameter("typ",type).getResultList();
 
@@ -70,7 +87,23 @@ public class EventServlet extends HttpServlet {
             } else {
                 if (sType != null && !sType.isEmpty()) {
                     //  Type
-                    Integer type = Integer.parseInt(sType);
+
+                    Integer type = 0;
+
+                    switch (sType)
+                    {
+                        case "tours":
+                            type = 1;
+                            break;
+                        case "merch":
+                            type = 2;
+                            break;
+                        case "partys":
+                            type = 3;
+                            break;
+
+                    }
+
                     results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ", Event.class).setParameter("typ",type).getResultList();
 
                 }else {
