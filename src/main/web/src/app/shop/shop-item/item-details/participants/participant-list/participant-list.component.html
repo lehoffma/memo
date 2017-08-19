@@ -1,0 +1,22 @@
+<div class="participant-table-container" *ngIf="(participantList | async); let participants; else loading">
+	<memo-expandable-table
+		[data]="participants"
+		[expandable]="isExpandable | async"
+		[title]="'Teilnehmer von ' + (eventTitle | async)"
+		[columnKeys]="columnKeys | async"
+		[expandedRowComponent]="expandedRowComponent"
+		[expandedRowKeys]="expandedKeys | async"
+		[permissions]="permissions$ | async"
+		(onSort)="updateSortBy($event)"
+		(onAdd)="addParticipant()"
+		(onEdit)="editParticipant($event)"
+		(onDelete)="deleteParticipant($event)"
+	>
+
+	</memo-expandable-table>
+</div>
+<ng-template #loading>
+	<div class="loader-wrapper">
+		<div class="loader"></div>
+	</div>
+</ng-template>

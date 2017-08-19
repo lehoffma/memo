@@ -1,0 +1,80 @@
+
+md-toolbar {
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+
+md-toolbar, :host /deep/ md-toolbar-row {
+	transition: height 0.5s;
+	height: 64px;
+}
+
+.menu.ripple {
+	cursor: pointer;
+}
+
+.navigation-fill-remaining-space {
+	/*This fills the remaining space, by using flexbox.*/
+	/*Every toolbar row uses a flexbox row layout.*/
+	flex: 1 1 auto;
+}
+
+.toolbar-actions {
+	display: flex;
+	align-items: center;
+
+	*:not(:first-child) {
+		margin-left: 10px
+	}
+}
+
+/*change size of hamburger menu*/
+.material-icons {
+	height: 1.7rem;
+	width: 1.7rem;
+	font-size: 1.7rem;
+	vertical-align: middle;
+}
+
+.meilenwoelfe-logo {
+	display: flex;
+	align-items: center;
+
+	a {
+		padding: 7px;
+		width: 50px;
+	}
+	img {
+		height: 50px;
+	}
+
+}
+
+.mobile-toolbar {
+	display: flex;
+}
+
+.desktop-toolbar {
+	display: none;
+}
+
+@media all and (min-width: 1000px) {
+	md-toolbar, :host /deep/ md-toolbar-row {
+		height: 64px;
+	}
+
+	.mobile-toolbar {
+		display: none;
+	}
+
+	.desktop-toolbar {
+		display: flex;
+	}
+
+	md-toolbar {
+		padding: 0;
+	}
+
+	.cart {
+		margin-right: 10px;
+	}
+}

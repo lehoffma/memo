@@ -1,0 +1,40 @@
+<div class="login-container">
+	<md-card *ngIf="currentSection | async as section">
+		<div class="account-signup-progress">
+			<ng-template ngFor let-item [ngForOf]="signUpService.sections" let-i="index">
+				<div [ngClass]="{
+					'active': item === section,
+					'completed': signUpService.sections.indexOf(section) > i
+				}">
+
+				</div>
+				<span *ngIf="item !== sectionEnum.PaymentMethods"></span>
+			</ng-template>
+		</div>
+
+		<div [ngSwitch]="section">
+			<memo-account-data-form *ngSwitchCase="sectionEnum.AccountData"
+									(onSubmit)="onSubmit(sectionEnum.AccountData, $event)"></memo-account-data-form>
+			<memo-user-data-form *ngSwitchCase="sectionEnum.PersonalData"
+								 [model]="signUpService.newUser"
+								 [addresses]="signUpService.newUserAddresses"
+								 [profilePicture]="signUpService.newUserProfilePicture"
+								 (onAddressModification)="watchForAddressModification($event)"
+								 (onSubmit)="onSubmit(sectionEnum.PersonalData, $event)">
+
+			</memo-user-data-form>
+
+			<memo-payment-methods-form *ngSwitchCase="sectionEnum.PaymentMethods"
+									   (onSubmit)="onSubmit(sectionEnum.PaymentMethods, $event)"
+									   [loading]="signUpService.submittingFinalUser"
+									   [user]="signUpService.newUser">
+
+			</memo-payment-methods-form>
+			<div *ngSwitchDefault>
+				Something went wrong.
+			</div>
+		</div>
+
+	</md-card>
+
+</div>

@@ -1,33 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <base href="/">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="decorator" content="default"/>
-
-    <!--TODO: theme-farben für mobile-->
-     <!--Chrome, Firefox OS, Opera and Vivaldi-->
-    <!--<meta name="theme-color" content="#607D8B">-->
-     <!--&lt;!&ndash;Windows Phone&ndash;&gt;-->
-    <!--<meta name="msapplication-navbutton-color" content="#607D8B">-->
-     <!--&lt;!&ndash;iOS Safari&ndash;&gt;-->
-    <!--<meta name="apple-mobile-web-app-status-bar-style" content="#607D8B">-->
-
-    <!--TODO favicon-->
-    <link rel="icon" href="resources/images/favicon.png">
+	<base href="/">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="decorator" content="default"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-    <!--Material icons-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!--TODO: theme-farben für mobile-->
+	<!--Chrome, Firefox OS, Opera and Vivaldi-->
+	<meta name="theme-color" content="#4caf50">
+	<!--&lt;!&ndash;Windows Phone&ndash;&gt;-->
+	<meta name="msapplication-navbutton-color" content="#4caf50">
+	<!--&lt;!&ndash;iOS Safari&ndash;&gt;-->
+	<meta name="apple-mobile-web-app-status-bar-style" content="#4caf50">
+
+	<!--todo meta tags anpassen-->
+	<meta property="og:url" content="http://meilenwoelfe.de"/>
+	<meta property="og:type" content="website"/>
+	<meta property="og:title" content="Der Meilenwoelfe Online Shop"/>
+	<meta property="og:description" content="Deine Anlaufstelle für Meilenwoelfe Events und Merchandise!"/>
+	<meta property="og:image" content="resources/images/favicon.png"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="resources/icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="resources/icons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="resources/icons/favicon-16x16.png">
+	<link rel="manifest" href="manifest.json">
+	<link rel="mask-icon" href="resources/icons/safari-pinned-tab.svg" color="#4caf50">
 
 
-    <title>Meilenwölfe Online Shop</title>
+	<!--TODO favicon-->
+	<!--<link rel="icon" href="resources/images/favicon.png">-->
+
+	<!--Roboto fonts-->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+	<!--Material icons-->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<script src="https://www.paypalobjects.com/api/checkout.min.js"></script>
+
+
+	<title>Meilenwölfe Online Shop</title>
 </head>
 <body>
 
 <main>
-    <app>Loading...</app>
+	<app>
+		<div class="loader-wrapper">
+			<div class="loader"></div>
+		</div>
+	</app>
 </main>
 
+
 </body>
+
+
 </html>

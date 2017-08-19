@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/memo.iml" filepath="$PROJECT_DIR$/memo.iml" />
       <module fileurl="file://$PROJECT_DIR$/memo-server.iml" filepath="$PROJECT_DIR$/memo-server.iml" />
     </modules>
   </component>

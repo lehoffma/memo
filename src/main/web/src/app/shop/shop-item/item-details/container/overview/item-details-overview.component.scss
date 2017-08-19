@@ -1,0 +1,53 @@
+@import "../../../../../../mixins";
+@import "../../centered-container";
+
+.object-overview-container {
+	@include card-like();
+	padding: 1.5rem;
+
+	.object-info-container {
+		display: flex;
+		justify-content: space-between;
+		padding-bottom: 15px;
+		margin-bottom: 15px;
+		border-bottom: 1px solid #9E9E9E;
+
+		.object-info {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+
+			div:first-child {
+				font-size: 1.1rem;
+			}
+			div:not(:first-child) {
+				font-size: 0.9rem;
+			}
+		}
+	}
+
+	.add-to-cart-container {
+		padding-top: 1rem;
+		display: flex;
+		padding-left: 2rem;
+		padding-right: 2rem;
+		flex-direction: column;
+		justify-content: space-around;
+
+		@media all and (min-width: 600px) {
+			padding-left: 3rem;
+			padding-right: 3rem;
+		}
+
+		form > * {
+			margin-bottom: 1.5rem;
+			width: 100%;
+		}
+	}
+}
+
+//todo nils/pia zeigen
+:host /deep/ .sb-buttons.sb-style.sb-style-colors {
+	justify-content: center;
+	width: 100%;
+}

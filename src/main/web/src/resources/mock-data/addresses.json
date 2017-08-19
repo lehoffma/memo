@@ -1,0 +1,37 @@
+{
+	"addresses": [
+		{
+			"id": 0,
+			"name": "Sörens Haus",
+			"street": "Allerstraße",
+			"streetNr": "9",
+			"zip": "38448",
+			"city": "Wolfsburg",
+			"country": "Deutschland",
+			"latitude": 57,
+			"longitude": 11
+		},
+		{
+			"id": 1,
+			"name": "Alis Autoverleih",
+			"street": "Otto-von-Guericke-Str.",
+			"streetNr": "46a",
+			"zip": "39104",
+			"city": "Magdeburg",
+			"country": "Deutschland",
+			"latitude": 57.5,
+			"longitude": 11.5
+		},
+		{
+			"id": 2,
+			"name": "Lennart Hoffmann",
+			"street": "Otto-von-Guericke-Str.",
+			"streetNr": "46a",
+			"zip": "39104",
+			"city": "Magdeburg",
+			"country": "Deutschland",
+			"latitude": 57.5,
+			"longitude": 11.5
+		}
+	]
+}

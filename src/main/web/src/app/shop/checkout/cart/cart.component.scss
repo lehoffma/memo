@@ -1,0 +1,69 @@
+@import "../../../../mixins";
+@import "../../../../theme";
+@import "~@angular/material/theming";
+
+.cart {
+	> md-card {
+		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 0px 0 rgba(0, 0, 0, .12) !important;
+	}
+
+	@media all and (min-width: 600px) {
+		display: flex;
+		justify-content: center;
+		margin-top: 25px;
+
+		> md-card {
+			max-width: 500px;
+			width: 500px;
+			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12) !important;
+		}
+	}
+}
+
+.cart-title {
+	//padding-bottom: 10px;
+	//margin: 0 0 10px;
+	//font-weight: 200;
+	//border-bottom: 1px solid #E0E0E0;
+
+	font-weight: 200;
+	border-bottom: 1px solid #E0E0E0;
+	background-color: mat-color($primary);
+	color: white;
+	padding: 24px 16px 10px 24px;
+	margin: -24px -24px 10px !important;
+
+	@media all and (max-width: 600px) {
+		margin-left: -16px !important;
+		margin-right: -16px !important;
+	}
+}
+
+.cart-total-price {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 2.5rem;
+	margin-top: 1.5rem;
+
+	span:not(.total-amount-value) {
+		font-weight: 500;
+	}
+
+	span {
+		font-size: 1.2rem;
+	}
+
+	.total-amount-value {
+		font-weight: bold;
+	}
+}
+
+.btn-flexbox {
+
+	> a {
+		width: 100%;
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+}
+

@@ -1,138 +1,65 @@
-import {ClubRole} from "./club-role";
-import {UserPermissions, VisitorPermissions} from "./permission";
-import {Tour} from "./tour";
+import {ClubRole, rolePermissions} from "./club-role";
+import {UserPermissions} from "./permission";
+import {BaseObject} from "./util/base-object";
+import {Gender} from "./gender";
 
 
-export class User {
+export class User extends BaseObject<User> {
+	/**
+	 *
+	 * @param id Die ID des Users (nur zwischen Usern einzigartig)
+	 * @param firstName Vorname des Users, z.B. "Le"
+	 * @param surname Nachname des Users, z.B. "Hoffmann"
+	 * @param gender Das Geschlecht des Users, z.B. Gender.MALE
+	 * @param birthday Geburtstag des Users, z.B. "20.04.1889"
+	 * @param telephone Handy oder Festnetznummer mit oder ohne Trennzeichen zwischen Vorwahl und Rest, z.B. "0151/18656036"
+	 * @param clubRole Die Rolle des Users innerhalb des Vereins, z.B. Vorstand
+	 * @param joinDate das Eintrittsdatum des Users
+	 * @param addresses Die ID der Adresse des Nutzers
+	 * @param permissions Auf was der User zugreifen darf (kosten, schreibrechte für events etc)
+	 * @param miles Die vom User bisher gefahreren Meilen
+	 * @param email die Email des Users, z.B. "gzae@gmx.net"
+	 * @param passwordHash /
+	 * @param isWoelfeClubMember ob der User Woelfemitglied ist
+	 * @param hasSeasonTicket ob der User eine Dauerkarte besitzt
+	 * @param isStudent ob der User ein Student is (Studenten bekommen einen Discount)
+	 * @param hasDebitAuth ob der User Lastschrift Verfahren als Bezahlmethode ausgewählt hat
+	 * @param imagePath der Pfad des Profilbild
+	 */
+	constructor(public readonly id: number,
+				public readonly firstName: string,
+				public readonly surname: string,
+				public readonly gender: Gender,
+				public readonly birthday: Date,
+				public readonly telephone: string,
+				public readonly clubRole: ClubRole,
+				public readonly joinDate: Date,
+				public readonly addresses: number[],
+				public readonly permissions: UserPermissions,
+				public readonly miles: number,
+				public readonly email: string,
+				public readonly passwordHash: string,
+				public readonly isWoelfeClubMember: boolean,
+				public readonly hasSeasonTicket: boolean,
+				public readonly isStudent: boolean,
+				public readonly hasDebitAuth: boolean,
+				public readonly imagePath: string) {
+		super(id);
+	}
 
-    constructor(private _id: number = 9999,
-                private _firstName: string = "default",
-                private _surname: string = "default",
-                private _birthDate: Date = new Date(1999, 9, 19),
-                private _telephone: string = "default",
-                private _clubRole: ClubRole = ClubRole.Mitglied,
-                private _permissions: UserPermissions = VisitorPermissions,
-                private _miles: number = 9999,
-                private _email: string = "default",
-                private _passwordHash: string = "default",
-                private _isStudent: boolean = false,
-                private _hasDebitAuth: boolean = false,
-                private _imagePath: string = "default",
-                private _recentActivity: Tour[] = []) {
-    }
+	static create() {
+		return new User(-1, "", "", Gender.OTHER, null, "", ClubRole.None, new Date(), [],
+			null, 0, "", "", false, false, false, false, "");
+	}
 
+	static isUser(user: any): user is User {
+		return user && (<User>user).email !== undefined;
+	}
 
-    get recentActivity(): Tour[] {
-        return this._recentActivity;
-    }
-
-    set recentActivity(value: Tour[]) {
-        this._recentActivity = value;
-    }
-
-    get id(): number {
-        return this._id;
-    }
-
-    get firstName(): string {
-        return this._firstName;
-    }
-
-    get surname(): string {
-        return this._surname;
-    }
-
-    get birthDate(): Date {
-        return this._birthDate;
-    }
-
-    get telephone(): string {
-        return this._telephone;
-    }
-
-    get clubRole(): ClubRole {
-        return this._clubRole;
-    }
-
-    get permissions(): UserPermissions {
-        return this._permissions;
-    }
-
-    get miles(): number {
-        return this._miles;
-    }
-
-    get email(): string {
-        return this._email;
-    }
-
-    get passwordHash(): string {
-        return this._passwordHash;
-    }
-
-    get isStudent(): boolean {
-        return this._isStudent;
-    }
-
-    get hasDebitAuth(): boolean {
-        return this._hasDebitAuth;
-    }
-
-    get imagePath(): string {
-        return this._imagePath;
-    }
-
-
-    set id(value: number) {
-        this._id = value;
-    }
-
-    set firstName(value: string) {
-        this._firstName = value;
-    }
-
-    set surname(value: string) {
-        this._surname = value;
-    }
-
-    set birthDate(value: Date) {
-        this._birthDate = value;
-    }
-
-    set telephone(value: string) {
-        this._telephone = value;
-    }
-
-    set clubRole(value: ClubRole) {
-        this._clubRole = value;
-    }
-
-    set permissions(permissions: UserPermissions) {
-        //clone object
-        this._permissions = Object.assign({}, permissions);
-    }
-
-    set miles(value: number) {
-        this._miles = value;
-    }
-
-    set email(value: string) {
-        this._email = value;
-    }
-
-    set passwordHash(value: string) {
-        this._passwordHash = value;
-    }
-
-    set isStudent(value: boolean) {
-        this._isStudent = value;
-    }
-
-    set hasDebitAuth(value: boolean) {
-        this._hasDebitAuth = value;
-    }
-
-    set imagePath(value: string) {
-        this._imagePath = value;
-    }
+	get userPermissions() {
+		if (this.permissions) {
+			return this.permissions;
+		}
+		return rolePermissions[this.clubRole];
+	}
 }

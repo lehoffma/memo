@@ -1,0 +1,10 @@
+@import "../../../../theme";
+@import "~@angular/material/theming";
+
+span {
+	color: mat-color($warn);
+
+	&.positive {
+		color: mat-color($primary);
+	}
+}

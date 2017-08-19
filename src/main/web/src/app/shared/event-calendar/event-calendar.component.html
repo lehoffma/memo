@@ -1,0 +1,15 @@
+
+
+<div class="calendar-container mat-elevation-z4">
+
+	<p-schedule [events]="calendarEvents$ | async"
+				locale="de"
+				[editable]="true"
+				[height]="'auto'"
+				(onEventClick)="eventClickHandler($event);"
+				(onDayClick)="dayClickHandler($event)"
+
+	>
+
+	</p-schedule>
+</div>

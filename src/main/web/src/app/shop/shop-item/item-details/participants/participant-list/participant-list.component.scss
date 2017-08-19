@@ -1,0 +1,41 @@
+$breakpoint: 600px;
+
+.participant-table-container {
+
+	@media all and (min-width: $breakpoint) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+
+memo-expandable-table {
+	/deep/ .expandable-table-component-container {
+		max-width: 800px;
+
+		th.sortable-column,
+		th.expandable-table-selectall-checkbox,
+		.expandable-table-body-main-row /deep/ td:not(.expandable-table-actions):not(.expand-icon) {
+			padding-left: 10px;
+		}
+
+		@media all and (min-width: 400px) {
+			th.sortable-column,
+			th.expandable-table-selectall-checkbox,
+			.expandable-table-body-main-row /deep/ td:not(.expandable-table-actions):not(.expand-icon) {
+				padding-left: 30px;
+			}
+		}
+
+		@media all and (min-width: $breakpoint) {
+			margin: 2rem;
+			min-width: 500px;
+			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+		}
+
+		@media all and (min-width: 900px) {
+			min-width: 800px;
+		}
+	}
+
+}

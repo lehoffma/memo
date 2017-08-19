@@ -1,0 +1,46 @@
+@import "../../../../../theme.scss";
+@import '~@angular/material/theming';
+
+.data-as-icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: mat-color($accent);
+	color: white;
+	padding: 7px;
+	border-radius: 50%;
+	width: 35px;
+	height: 35px;
+	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+	> md-icon {
+		height: 1.1rem;
+		width: 1.1rem;
+		font-size: 1.1rem;
+	}
+}
+
+.data-as-text {
+	display: none;
+}
+
+@media all and (max-width: 500px) {
+	.data-as-icon {
+		width: 30px;
+		height: 30px;
+		> md-icon {
+			height: 1rem;
+			width: 1rem;
+			font-size: 1rem;
+		}
+	}
+}
+
+@media all and (min-width: 1200px) {
+	.data-as-icon {
+		display: none;
+	}
+	.data-as-text {
+		display: flex;
+	}
+}

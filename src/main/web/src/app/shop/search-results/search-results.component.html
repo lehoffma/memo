@@ -1,0 +1,22 @@
+
+<div class="sorting-results-modifier-container">
+	<memo-filtering-menu [filterOptions]="filterOptions"></memo-filtering-menu>
+	<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
+</div>
+
+<div *ngIf="(keywords | async).length >= 0" class="search-results-container">
+	<div class="search-results-header">
+		<span>
+		{{resultsTitle | async}}
+		</span>
+		<div class="search-results-actions">
+			<memo-filtering-menu [filterOptions]="filterOptions"></memo-filtering-menu>
+			<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
+		</div>
+	</div>
+
+	<memo-results [events]="results$ | async"></memo-results>
+</div>
+
+
+<!--todo pagination?-->

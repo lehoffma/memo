@@ -1,0 +1,25 @@
+.search-input {
+	font-size: 1rem;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 5px;
+	width: 200px;
+
+	@media all and (max-width: 340px) {
+		width: 160px;
+	}
+
+	.cart-icon {
+		height: 1.5rem;
+		width: 1.5rem;
+		font-size: 1.5rem;
+	}
+}
+
+/*change size of hamburger menu*/
+.material-icons {
+	height: 1.7rem;
+	width: 1.7rem;
+	font-size: 1.7rem;
+	vertical-align: middle;
+}

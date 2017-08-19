@@ -1,0 +1,11 @@
+:host > md-dialog-content {
+	display: flex;
+	flex-direction: column;
+}
+
+md-dialog-actions {
+	justify-content: center;
+	button {
+		width: 100%;
+	}
+}

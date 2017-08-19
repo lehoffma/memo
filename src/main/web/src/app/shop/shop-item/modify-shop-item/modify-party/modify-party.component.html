@@ -1,0 +1,98 @@
+<div class="modify-shop-item-container">
+	<h2>Party {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
+	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
+
+		<h2>Bild</h2>
+		<memo-profile-picture-form
+			[image]="partyModel['imagePath'] ? partyModel['imagePath'] : defaultImageUrl"
+			(onChange)="profilePictureChanged($event)">
+
+		</memo-profile-picture-form>
+
+
+		<h2>Party-Informationen</h2>
+		<md-input-container>
+			<input mdInput name="titleInput"
+				   type="text" required
+				   placeholder="Titel"
+				   #titleInput="ngModel"
+				   [(ngModel)]="partyModel['title']">
+			<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+				Dieses Feld darf nicht leer bleiben!
+			</md-hint>
+		</md-input-container>
+
+		<md-input-container class="description-input">
+			<textarea autosize mdInput name="descriptionInput"
+					  class="not-resizable-textarea" required
+					  type="text"
+					  #descriptionInput="ngModel"
+					  placeholder="Beschreibung"
+					  [(ngModel)]="partyModel['description']">
+			</textarea>
+			<md-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
+					 align="end">
+				Dieses Feld darf nicht leer bleiben!
+			</md-hint>
+		</md-input-container>
+
+		<div class="additional-party-info-container">
+
+			<div>
+				<div>
+					<md-input-container>
+						<input mdInput [mdDatepicker]="myDatepicker"
+							   placeholder="Datum"
+							   [(ngModel)]="partyModel['date']"
+							   #dateInput="ngModel"
+							   name="dateInput" required>
+						<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>
+					</md-input-container>
+					<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>
+				</div>
+			</div>
+			<div>
+				<md-input-container>
+					<input mdInput name="priceInput"
+						   type="number" required
+						   placeholder="Preis"
+						   #priceInput="ngModel"
+						   [(ngModel)]="partyModel['price']">
+					<span mdSuffix>€</span>
+					<md-hint *ngIf="priceInput.touched && !priceInput.valid" class="error-message" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</md-hint>
+				</md-input-container>
+
+				<md-input-container>
+					<input mdInput name="capacityInput"
+						   type="number" required
+						   placeholder="Kapazität"
+						   #capacityInput="ngModel"
+						   [(ngModel)]="partyModel['capacity']">
+					<md-hint *ngIf="capacityInput.touched && !capacityInput.valid" class="error-message" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</md-hint>
+				</md-input-container>
+			</div>
+
+		</div>
+
+
+		<h2>Treffpunkt</h2>
+		<memo-tour-route-input [(route)]="partyModel['route']"></memo-tour-route-input>
+
+
+		<!--below all that-->
+		<div class="form-buttons">
+			<!--	cancel button-->
+			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<!--	save button-->
+			<button md-raised-button color="accent"
+					[disabled]="!modifyShopItemForm.form.valid"
+					type="submit">
+				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+			</button>
+		</div>
+	</form>
+</div>

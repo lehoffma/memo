@@ -1,0 +1,41 @@
+
+<div class="accounting-options" [ngClass]="{showOptions: showOptions}">
+	<memo-accounting-options *ngIf="!mobile || showOptions">
+	</memo-accounting-options>
+
+	<button md-button color="primary" class="options-button" (click)="showOptions = !showOptions">
+		<md-icon>{{showOptions ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</md-icon>
+	</button>
+</div>
+
+
+<div class="accounting-table-container"
+	 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 110px)' : 'calc(100% - 74px)')">
+	<memo-expandable-table
+		[data]="entriesSubject$ | async"
+		[expandedRowKeys]="expandedRowKeys | async"
+		[expandable]="mobile"
+		[expandedRowComponent]="expandedRowComponent"
+		[columnKeys]="primaryColumnKeys | async"
+		[title]="'Kostenübersicht'"
+		[permissions]="permissions$ | async"
+		(onSort)="updateSortingKey($event)"
+		(onAdd)="addEntry($event)"
+		(onEdit)="editEntry($event)"
+		(onDelete)="deleteEntries($event)"
+	>
+
+	</memo-expandable-table>
+
+
+</div>
+
+
+<div class="total-amount"
+	 [ngClass]="{
+			positive: (total$ | async) >= 0,
+			negative: (total$ | async) < 0
+		}">
+	<span>Gesamt</span>
+	<span>{{(total$ | async) | currency:'EUR':true}}</span>
+</div>

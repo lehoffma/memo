@@ -1,0 +1,39 @@
+
+:host {
+	display: block;
+	width: 500px;
+	max-width: 65vw;
+}
+
+.dialog-container {
+	height: 500px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+
+	.dialog-content-container {
+		display: flex;
+		flex-direction: column;
+	}
+
+	/deep/ color-picker {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding-top: 130px;
+	}
+
+	/deep/ .color-picker {
+		left: auto !important;
+		top: auto !important;
+	}
+
+	.mat-dialog-actions {
+		display: flex;
+		justify-content: space-between;
+	}
+}
+
+.error-message {
+	color: red;
+}

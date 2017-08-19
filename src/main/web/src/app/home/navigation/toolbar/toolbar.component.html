@@ -1,0 +1,47 @@
+<md-toolbar color="primary">
+	<div class="mobile-toolbar">
+		<!--The left side-->
+		<div>
+			<!--The left side is hidden when the screen size is larger than small -->
+			<div class="menu ripple" (click)="sideBarChanged()">
+				<md-icon class="material-icons">menu</md-icon>
+			</div>
+		</div>
+	</div>
+	<div class="desktop-toolbar meilenwoelfe-logo">
+		<a md-button routerLink="/">
+			<img src="../../../../resources/images/Logo.png"/>
+		</a>
+		<span>
+			<!--todo -->
+			<!--Meilenwölfe e.V.-->
+		</span>
+	</div>
+
+	<span class="navigation-fill-remaining-space navigation-left-space"></span>
+
+	<div class="toolbar-actions">
+		<memo-search-input></memo-search-input>
+	</div>
+
+	<div class="desktop-toolbar">
+		<!--The right side-->
+		<memo-toolbar-element *ngFor="let link of (links|async);" [link]="link">
+		</memo-toolbar-element>
+	</div>
+
+	<div class="toolbar-action cart">
+		<memo-badge [value]="shoppingCartContent | async">
+			<a md-icon-button routerLink="/cart">
+				<md-icon class="cart-icon ">
+					shopping_cart
+				</md-icon>
+			</a>
+		</memo-badge>
+	</div>
+
+	<div class="desktop-toolbar">
+		<memo-toolbar-profile-link></memo-toolbar-profile-link>
+	</div>
+
+</md-toolbar>

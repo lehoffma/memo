@@ -1,0 +1,24 @@
+<a routerLink="{{linkToItem}}">
+	<div class="cart-entry-picture">
+		<img src="{{cartItem.item.imagePath}}"/>
+	</div>
+	<div class="cart-entry-header">
+		<h3 class="mat-h4">{{cartItem.item.title}}</h3>
+		<div *ngIf="itemIsMerch(cartItem.item)" class="merch-color-container mat-body-1">
+			{{cartItem.options.color.name}}, {{cartItem.options.size}}
+		</div>
+	</div>
+</a>
+<div>
+	<div class="cart-entry-amount">
+		<md-select class="amount" [(ngModel)]="cartItem.amount" (ngModelChange)="updateEventAmount()"
+				   placeholder=" ">
+			<md-option *ngFor="let amount of amountOptions" [value]="amount">
+				{{amount}}
+			</md-option>
+		</md-select>
+	</div>
+
+	<div class="price">{{(cartItem.item.price*cartItem.amount).toFixed(2)}} €</div>
+	<!--<md-icon md-icon-button (click)="deleteItem()">close</md-icon>-->
+</div>

@@ -1,0 +1,107 @@
+<div class="modify-shop-item-container">
+	<h2>Tour {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
+	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
+
+		<h2>Bild</h2>
+		<memo-profile-picture-form
+			[image]="tourModel['imagePath'] ? tourModel['imagePath'] : defaultImageUrl"
+			(onChange)="profilePictureChanged($event)">
+
+		</memo-profile-picture-form>
+
+
+		<h2>Tour-Informationen</h2>
+		<md-input-container>
+			<input mdInput name="titleInput"
+				   required
+				   placeholder="Titel"
+				   #titleInput="ngModel"
+				   [(ngModel)]="tourModel['title']">
+			<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+				Dieses Feld darf nicht leer bleiben!
+			</md-hint>
+		</md-input-container>
+
+
+		<md-input-container class="description-input">
+			<textarea autosize mdInput name="descriptionInput"
+					  class="not-resizable-textarea" required
+					  type="text"
+					  #descriptionInput="ngModel"
+					  placeholder="Beschreibung"
+					  [(ngModel)]="tourModel['description']">
+			</textarea>
+			<md-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
+					 align="end">
+				Dieses Feld darf nicht leer bleiben!
+			</md-hint>
+		</md-input-container>
+
+		<div class="additional-tour-info-container">
+			<div>
+				<md-input-container>
+					<input mdInput name="priceInput"
+						   type="number" required
+						   placeholder="Preis"
+						   #priceInput="ngModel"
+						   [(ngModel)]="tourModel['price']">
+					<span mdSuffix>€</span>
+					<md-hint *ngIf="priceInput.touched && !priceInput.valid" class="error-message" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</md-hint>
+				</md-input-container>
+
+				<md-input-container>
+					<input mdInput name="capacityInput"
+						   type="number" required
+						   placeholder="Kapazität"
+						   #capacityInput="ngModel"
+						   [(ngModel)]="tourModel['capacity']">
+					<md-hint *ngIf="capacityInput.touched && !capacityInput.valid" class="error-message" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</md-hint>
+				</md-input-container>
+			</div>
+
+			<div>
+				<md-input-container>
+					<input mdInput name="vehicleInput"
+						   type="text" required
+						   placeholder="Fahrzeug"
+						   #vehicleInput="ngModel"
+						   [(ngModel)]="tourModel['vehicle']">
+					<md-hint *ngIf="vehicleInput.touched && !vehicleInput.valid" class="error-message" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</md-hint>
+				</md-input-container>
+
+				<div>
+					<md-input-container>
+						<input mdInput [mdDatepicker]="myDatepicker"
+							   placeholder="Datum"
+							   [(ngModel)]="tourModel['date']"
+							   #dateInput="ngModel"
+							   name="dateInput" required>
+						<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>
+					</md-input-container>
+					<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>
+				</div>
+			</div>
+		</div>
+
+		<h2>Route</h2>
+		<memo-tour-route-input [(route)]="tourModel['route']" [isTour]="true"></memo-tour-route-input>
+
+
+		<!--below all that-->
+		<div class="form-buttons">
+			<!--	cancel button-->
+			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<!--	save button-->
+			<button md-raised-button color="accent"
+					[disabled]="!modifyShopItemForm.form.valid">
+				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+			</button>
+		</div>
+	</form>
+</div>

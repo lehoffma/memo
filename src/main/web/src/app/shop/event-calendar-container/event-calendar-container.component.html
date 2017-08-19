@@ -1,0 +1,11 @@
+
+<div class="calendar-container">
+	<memo-event-calendar [events]="events | async"
+						 [editable]="editable | async"
+						 (onDayClick)="onDayClick($event)"
+						 (onEventClick)="onEventClick($event)"
+
+	>
+
+	</memo-event-calendar>
+</div>

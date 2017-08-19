@@ -1,0 +1,19 @@
+<div>
+	<!--<div><img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg"/></div>-->
+	<div *ngFor="let paymentMethod of paymentMethods" (click)="selectedMethod = paymentMethod"
+		 [ngClass]="{
+			'selected': selectedMethod === paymentMethod,
+			'badge-container': selectedMethod === paymentMethod
+		}">
+		<label for="{{'radioButton' + paymentMethod}}">
+			<img *ngIf="paymentMethod === paymentMethodEnum.PAYPAL; else textBox"
+				 src="https://www.paypalobjects.com/webstatic/de_DE/i/de-pp-logo-100px.png"/>
+			<ng-template #textBox>
+				<span>{{paymentMethod}}</span>
+			</ng-template>
+		</label>
+		<input type="radio" name="method" [(ngModel)]="selectedMethod" id="{{'radioButton' + paymentMethod}}"
+			   [value]="paymentMethod" [hidden]="true">
+	</div>
+
+</div>

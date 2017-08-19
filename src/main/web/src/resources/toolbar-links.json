@@ -1,44 +1,45 @@
 [
-  {
-    "route": "tours",
-    "icon": "",
-    "name": "Fahrten"
-  },
-  {
-    "route": "partys",
-    "icon": "",
-    "name": "Veranstaltungen"
-  },
-  {
-    "route": "merch",
-    "icon": "",
-    "name": "Merchandise"
-  },
-  {
-    "route": "management",
-    "icon": "",
-    "name": "Vereinsverwaltung",
-    "children": [
-      {
-        "route": "management/costs",
-        "icon": "",
-        "name": "Kostenübersicht"
-      },
-      {
-        "route": "management/memberlist",
-        "icon": "",
-        "name": "Mitgliederliste"
-      },
-      {
-        "route": "management/stock",
-        "icon": "",
-        "name": "Bestand"
-      }
-    ]
-  },
-  {
-    "route": "cart",
-    "icon": "shopping_cart",
-    "name": ""
-  }
+	{
+		"route": "tours",
+		"icon": "",
+		"name": "Fahrten"
+	},
+	{
+		"route": "partys",
+		"icon": "",
+		"name": "Veranstaltungen"
+	},
+	{
+		"route": "merch",
+		"icon": "",
+		"name": "Merchandise"
+	},
+	{
+		"route": "calendar",
+		"icon": "",
+		"name": "Kalender"
+	},
+	{
+		"route": "management",
+		"icon": "",
+		"name": "Vereinsverwaltung",
+		"loginNeeded": true,
+		"children": [
+			{
+				"route": "management/costs",
+				"icon": "",
+				"name": "Kostenübersicht"
+			},
+			{
+				"route": "members",
+				"icon": "",
+				"name": "Mitgliederliste"
+			},
+			{
+				"route": "management/stock",
+				"icon": "",
+				"name": "Bestand"
+			}
+		]
+	}
 ]

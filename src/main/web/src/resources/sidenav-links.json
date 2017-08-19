@@ -1,87 +1,125 @@
 [
-  {
-    "route": "",
-    "icon": "home",
-    "name": "Startseite"
-  },
-  {
-    "route": "tours",
-    "icon": "drive_eta",
-    "name": "Fahrten"
-  },
-  {
-    "route": "partys",
-    "icon": "local_bar",
-    "name": "Veranstaltungen"
-  },
-  {
-    "route": "merch",
-    "icon": "local_offer",
-    "name": "Merchandise"
-  },
-  {
-    "route": "",
-    "icon": "",
-    "name": "Accountverwaltung",
-    "children": [
-      {
-        "route": "profile",
-        "icon": "account_circle",
-        "name": "Dein Profil"
-      },
-      {
-        "route": "profile/events",
-        "icon": "event",
-        "name": "Deine Events"
-      },
-      {
-        "route": "profile/history",
-        "icon": "history",
-        "name": "Deine Bestellungen"
-      },
-      {
-        "route": "profile/details",
-        "icon": "description",
-        "name": "Dein Account"
-      }
-    ]
-  },
-  {
-    "route": "management",
-    "icon": "",
-    "name": "Vereinsverwaltung",
-    "children": [
-      {
-        "route": "management/costs",
-        "icon": "payment",
-        "name": "Kostenübersicht"
-      },
-      {
-        "route": "management/memberlist",
-        "icon": "view_list",
-        "name": "Mitgliederliste"
-      },
-      {
-        "route": "management/stock",
-        "icon": "local_shipping",
-        "name": "Bestand"
-      }
-    ]
-  },
-  {
-    "route": "settings",
-    "icon": "settings",
-    "name": "Einstellungen",
-    "drawLineAbove": true
-  },
-  {
-    "route": "impressum",
-    "icon": "info",
-    "name": "Impressum"
-  },
-  {
-    "route": "logout",
-    "icon": "exit_to_app",
-    "name": "Logout"
-  }
+	{
+		"route": "",
+		"icon": "home",
+		"name": "Startseite"
+	},
+	{
+		"route": "tours",
+		"icon": "drive_eta",
+		"name": "Fahrten"
+	},
+	{
+		"route": "partys",
+		"icon": "local_bar",
+		"name": "Veranstaltungen"
+	},
+	{
+		"route": "merch",
+		"icon": "local_offer",
+		"name": "Merchandise"
+	},
+	{
+		"route": "calendar",
+		"icon": "event",
+		"name": "Kalender"
+	},
+	{
+		"route": "",
+		"icon": "",
+		"name": "Accountverwaltung",
+		"loginNeeded": true,
+		"minimumPermission": {
+			"user": 1,
+			"merch": 1,
+			"tour": 1,
+			"party": 1,
+			"funds": 0,
+			"stock": 0,
+			"settings": 0
+		},
+		"children": [
+			{
+				"route": "members/PROFILE_ID",
+				"icon": "account_circle",
+				"name": "Dein Profil"
+			},
+			{
+				"route": "my-events",
+				"icon": "event",
+				"name": "Deine Events"
+			},
+			{
+				"route": "order-history",
+				"icon": "history",
+				"name": "Deine Bestellungen"
+			},
+			{
+				"route": "members/PROFILE_ID/edit",
+				"icon": "description",
+				"name": "Dein Account"
+			}
+		]
+	},
+	{
+		"route": "management",
+		"icon": "",
+		"name": "Vereinsverwaltung",
+		"loginNeeded": true,
+		"minimumPermission": {
+			"user": 1,
+			"merch": 1,
+			"tour": 1,
+			"party": 1,
+			"funds": 0,
+			"stock": 0,
+			"settings": 0
+		},
+		"children": [
+			{
+				"route": "management/costs",
+				"icon": "payment",
+				"name": "Kostenübersicht",
+				"minimumPermission": {
+					"user": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
+					"stock": 0,
+					"accountManagement": 0
+				}
+			},
+			{
+				"route": "members",
+				"icon": "view_list",
+				"name": "Mitgliederliste"
+			},
+			{
+				"route": "management/stock",
+				"icon": "local_shipping",
+				"name": "Bestand",
+				"minimumPermission": {
+					"user": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 0,
+					"stock": 1,
+					"accountManagement": 0
+				}
+			}
+		]
+	},
+	{
+		"route": "settings",
+		"icon": "settings",
+		"name": "Einstellungen",
+		"drawLineAbove": true
+	},
+	{
+		"route": "impressum",
+		"icon": "info",
+		"name": "Impressum"
+	}
 ]

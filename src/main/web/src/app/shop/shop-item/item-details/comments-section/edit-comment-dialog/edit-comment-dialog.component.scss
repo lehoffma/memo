@@ -1,0 +1,22 @@
+
+form {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+
+	.input-container {
+		display: flex;
+		flex-direction: column;
+	}
+
+	textarea {
+		min-height: 200px;
+	}
+
+	div {
+		display: flex;
+		justify-content: space-between;
+
+	}
+}

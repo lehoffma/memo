@@ -60,4 +60,7 @@ fabric.properties
 
 target/
 /src/main/webapp/*
-/memo-server.iml
+/lib/
+
+.idea/dataSources/
+/src/main/web/coverage/

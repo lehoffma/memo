@@ -1,0 +1,52 @@
+<!--header (link to profile)-->
+<div *ngIf="user | async; let account;">
+	<div class="account-header">
+		<div *ngIf="account.id !== -1; else loggedOutHeader;">
+			<img src="{{account.imagePath}}" class="profile-picture">
+			<div>
+				<span class="profile-name">{{account.firstName}}</span>
+				<div class="profile-email-container">
+					<span class="profile-email">{{account.email}}</span>
+				</div>
+			</div>
+		</div>
+		<ng-template #loggedOutHeader>
+			<div class="account-header-logged-out">
+				<div>
+					<img src="../../../resources/images/Logo.png">
+				</div>
+			</div>
+		</ng-template>
+	</div>
+	<!--navigation links-->
+	<nav class="navigation-links" (click)="closeSideNav()">
+		<a md-button style="height: 0; position: absolute;"> <!-- 'absorbs' the focus behavior -->
+		</a>
+		<div id="navigation-links-login" *ngIf="account.id === -1">
+			<a routerLink="login" (click)="saveUrl()">
+				<span>Anmelden</span>
+			</a>
+		</div>
+		<div *ngFor="let link of (links | async);">
+			<hr *ngIf="link.drawLineAbove || link.children">
+			<!--"main" link-->
+			<a routerLink="{{link.route}}">
+				<md-icon class="md-dark" *ngIf="!link.children">{{link.icon}}</md-icon>
+				<span>{{link.name}}</span>
+			</a>
+			<!--child links-->
+			<a *ngFor="let childLink of link.children"
+			   routerLink="{{childLink.route}}">
+				<md-icon class="md-dark">{{childLink.icon}}</md-icon>
+				<span>{{childLink.name}}</span>
+			</a>
+		</div>
+		<div *ngIf="account.id !== -1">
+			<a routerLink="/" (click)="logout()">
+				<md-icon class="md-dark">exit_to_app</md-icon>
+				<span>Logout</span>
+			</a>
+		</div>
+	</nav>
+
+</div>

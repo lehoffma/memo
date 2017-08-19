@@ -1,0 +1,29 @@
+<div class="cart">
+	<md-card>
+		<h2 class="cart-title mat-headline">{{'Warenkorb'|uppercase}}</h2>
+		<div *ngIf="shoppingCartItems|async as events">
+			<memo-cart-entry *ngFor="let tour of events.tours" [cartItem]="tour">
+
+			</memo-cart-entry>
+			<memo-cart-entry *ngFor="let merch of events.merch" [cartItem]="merch">
+
+			</memo-cart-entry>
+			<memo-cart-entry *ngFor="let party of events.partys" [cartItem]="party">
+
+			</memo-cart-entry>
+		</div>
+		<div class="cart-total-price">
+			<span>Gesamt</span>
+			<span class="total-amount-value">{{(totalAmount|async)?.toFixed(2)}} €</span>
+		</div>
+
+		<div class="btn-flexbox">
+			<a md-raised-button color="accent"
+			   [disabled]="(totalAmount|async) === 0"
+			   [class.disabled]="(totalAmount|async) === 0"
+			   routerLink="/checkout">
+				{{'Zur Kasse'|uppercase}}
+			</a>
+		</div>
+	</md-card>
+</div>

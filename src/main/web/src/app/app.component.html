@@ -1,15 +1,18 @@
 <div class="background">
 
-    <md-sidenav-container>
-        <md-sidenav #sidenav>
-            <navigation-sidenav (sideBarClosed)="sidenav.close()"></navigation-sidenav>
-        </md-sidenav>
+	<md-sidenav-container>
+		<md-sidenav #sidenav>
+			<memo-sidenav (sideBarClosed)="sidenav.close()"></memo-sidenav>
+		</md-sidenav>
 
-        <!--main content-->
-        <div>
-            <!--output: sidebar button wurde angeklickt -> callback in AppComponent -->
-            <navigation-toolbar (sideBarOpened)="sidenav.open()"></navigation-toolbar>
-            <router-outlet></router-outlet>
-        </div>
-    </md-sidenav-container>
+		<!--main content-->
+		<div>
+			<!--output: sidebar button wurde angeklickt -> callback in AppComponent -->
+			<memo-toolbar (sideBarOpened)="sidenav.open()"></memo-toolbar>
+			<router-outlet></router-outlet>
+		</div>
+
+	</md-sidenav-container>
 </div>
+
+

@@ -1,0 +1,36 @@
+@import "../../../theme";
+@import "../../../mixins.scss";
+
+.login-container {
+	display: flex;
+	justify-content: center;
+}
+
+md-card {
+	margin: 1rem;
+	max-width: 500px;
+	width: 100%;
+}
+
+md-input-container {
+	width: 100%;
+}
+
+button, a {
+	width: 100%;
+}
+
+form button {
+	margin-top: 4vh;
+	margin-bottom: 2vh;
+}
+
+h4, h3 {
+	text-align: center;
+}
+
+.wrong-input {
+	margin-top: 1rem;
+	text-align: center;
+}
+

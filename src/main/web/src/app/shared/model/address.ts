@@ -1,58 +1,36 @@
+import {BaseObject} from "./util/base-object";
 
-export class Address {
+export class Address extends BaseObject<Address> {
 
-    constructor(private _addressID: number = 9999,
-                private _name:string = "default",
-                private _street: string = "default",
-                private _streetNr: string = "9999",
-                private _zip: string = "default",
-                private _city: string = "default",
-                private _country: string = "Germany",) {
+	/**
+	 * @param id Die ID der Adresse (nur zwischen adressen einzigartig, d.h. ein Event könnte die selber ID haben)
+	 * @param name Ein der Adresse zugewiesener Name, z.B. "Alte WG"
+	 * @param street Der Straßenname, z.B. Walther-Rathenau-Straße
+	 * @param streetNr Die Hausnummer, z.B. 57
+	 * @param zip Die Postleitzahl, z.B. 39104
+	 * @param city Die Stadt, z.B. Magdeburg
+	 * @param country Das Land, z.B. Deutschland
+	 * @param latitude Breitengrad
+	 * @param longitude Längengrad
+	 */
+	constructor(public id: number,
+				public name: string,
+				//todo: name des menschen an den die rechnung geht, oder ist das "name"?
+				public street: string,
+				public streetNr: string,
+				public zip: string,
+				public city: string,
+				public country: string,
+				public latitude: number,
+				public longitude: number) {
+		super(id);
+	}
 
+	static create() {
+		return new Address(-1, "", "", "", "", "", "", 0, 0);
+	}
 
-    }
-
-    get id(): number {
-        return this._addressID;
-    }
-    get name(): string {
-        return this._name;
-    }
-    get street(): string {
-        return this._street;
-    }
-    get streetNr(): string {
-        return this._streetNr;
-    }
-    get zip(): string {
-        return this._zip;
-    }
-    get city(): string {
-        return this._city;
-    }
-    get country(): string {
-        return this._country;
-    }
-    set id(value: number) {
-        this._addressID = value;
-    }
-    set name(value: string) {
-        this._name = value;
-    }
-    set street(value: string) {
-        this._street = value;
-    }
-    set streetNr(value: string) {
-        this._streetNr = value;
-    }
-    set zip(value: string) {
-        this._zip = value;
-    }
-    set city(value: string) {
-        this._city = value;
-    }
-    set country(value: string) {
-        this._country = value;
-    }
-
+	static isAddress(obj: any): obj is Address {
+		return obj.street !== undefined && obj.zip !== undefined;
+	}
 }

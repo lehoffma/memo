@@ -1,0 +1,35 @@
+<div md-menu-item
+	 class="multi-level-select-entry-parent"
+	 (click)="parentOnClick(option, $event)">
+
+	{{option.name}}
+	<md-icon *ngIf="option.children" [@expandedState]="option.expanded">
+		expand_more
+	</md-icon>
+</div>
+
+<ng-template [ngIf]="option.expanded">
+	<ng-template ngFor let-child [ngForOf]="option.children">
+		<div *ngIf="isLeaf(child); else nestedLayer"
+			 class="multi-level-select-entry-child"
+			 (click)="childOnClick(child, $event)"
+			 md-menu-item>
+
+			{{child.name}}
+			<md-checkbox *ngIf="option.selectType === 'multiple'"
+						 class="multi-level-select-checkbox"
+						 [(ngModel)]="child.selected"
+						 name="multiSelectCheckbox"
+						 #multiSelectCheckbox="ngModel">
+
+			</md-checkbox>
+		</div>
+
+		<ng-template #nestedLayer>
+			<memo-multi-level-select-entry [option]="child" [selectType]="child.selectType">
+
+			</memo-multi-level-select-entry>
+		</ng-template>
+	</ng-template>
+
+</ng-template>

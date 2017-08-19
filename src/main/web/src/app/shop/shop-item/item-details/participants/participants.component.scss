@@ -1,0 +1,22 @@
+
+md-list > span:last-child > md-divider {
+	display: none;
+}
+
+:host {
+	> md-list {
+		margin-top: -1rem;
+
+		md-list-item {
+			cursor: pointer;
+
+			&:hover {
+				background-color: #ededed;
+			}
+		}
+	}
+
+	button {
+		width: 100%;
+	}
+}

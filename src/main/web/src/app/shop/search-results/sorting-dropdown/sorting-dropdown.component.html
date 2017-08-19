@@ -1,0 +1,11 @@
+<div class="sorting-dropdown" [mdMenuTriggerFor]="menu">
+	<span>Sortieren</span>
+	<md-icon>expand_more</md-icon>
+</div>
+<md-menu #menu="mdMenu">
+	<button md-menu-item
+			*ngFor="let sortingOption of sortingOptions"
+			(click)="updateQueryParams(sortingOption.queryParameters)">
+		{{sortingOption.name}}
+	</button>
+</md-menu>

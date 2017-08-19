@@ -1,0 +1,20 @@
+<div class="checkout-options-container">
+
+	<md-card>
+		<h2 class="checkout-title mat-headline">{{'Addresse'|uppercase}}</h2>
+
+		<memo-address-selection [addresses]="(userAddresses$ | async)" (addressChange)="onAddressChange($event)">
+		</memo-address-selection>
+
+	</md-card>
+
+	<md-card>
+		<h2 class="checkout-title mat-headline">{{'Bezahlmethode'|uppercase}}</h2>
+		<memo-payment (done)="paymentSelectionDone($event)"></memo-payment>
+	</md-card>
+</div>
+
+<a class="checkout-total mat-elevation-z6" routerLink="/cart">
+	<h3>Gesamt</h3>
+	<span>{{total$ | async | currency:'EUR':2}}</span>
+</a>

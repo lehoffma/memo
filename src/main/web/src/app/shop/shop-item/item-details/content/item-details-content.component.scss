@@ -1,0 +1,35 @@
+@import "../../../../../mixins";
+@import "../../../../../theme";
+@import "../../../../../../node_modules/@angular/material/_theming";
+@import "../centered-container";
+
+.object-details-content-container {
+	@include card-like();
+}
+
+.object-details-content-title {
+	display: flex;
+	justify-content: space-between;
+
+	background-color: mat-color($primary);
+	padding: 1rem 1rem 0.5rem;
+	color: white;
+	font-size: 1.3rem;
+
+	> h3 {
+		margin: 0;
+		font-weight: 200;
+	}
+
+	> a {
+		text-decoration: none;
+		//color: rgba(0, 0, 0, 0.87);
+		color: white;
+		font-weight: 400;
+	}
+}
+
+.object-details-content {
+	padding: 1rem;
+	background-color: white;
+}

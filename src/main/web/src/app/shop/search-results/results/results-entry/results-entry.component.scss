@@ -1,0 +1,98 @@
+@import "../../../../../mixins";
+
+.result-entry-container {
+	@include card-like();
+	padding: 10px;
+
+	> div {
+		display: flex;
+
+		.result-entry-info-container {
+			width: 80%;
+			display: flex;
+			justify-content: space-between;
+			padding-right: 10px;
+			flex-direction: column;
+
+			.result-title {
+				font-size: 1.1rem;
+			}
+			.result-info {
+				display: flex;
+				justify-content: space-between;
+				font-size: 0.9rem;
+				align-items: flex-end;
+
+				div:not(.result-title) {
+					margin-top: 20px;
+				}
+			}
+
+			.result-price {
+				font-size: 1.1rem;
+				color: red;
+			}
+
+		}
+
+		.result-entry-image-container {
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+
+			img {
+				width: 70px;
+				height: 70px;
+				object-fit: cover;
+			}
+		}
+	}
+}
+
+.merch-available-colors-container {
+	display: flex;
+
+	.merch-available-colors {
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+
+		&:not(:first-child) {
+			margin-left: 10px;
+		}
+	}
+}
+
+@media all and (min-width: 650px) {
+	.result-entry-container {
+		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+		margin: 0.5rem;
+		background-color: white;
+		padding: 0;
+		width: 300px;
+		cursor: pointer;
+		transition: box-shadow 0.5s;
+
+		> div {
+			flex-direction: column-reverse;
+
+			.result-entry-info-container {
+				width: auto;
+				padding: 10px;
+				flex-direction: column;
+				height: 100px;
+			}
+
+			.result-entry-image-container img {
+				width: auto;
+				height: 250px;
+			}
+
+		}
+
+		&:hover {
+			box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+		}
+	}
+}

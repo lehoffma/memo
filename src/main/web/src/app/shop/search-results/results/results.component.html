@@ -1,0 +1,17 @@
+<div *ngIf="events && events.length > 0" class="results-container">
+	<memo-results-entry
+		*ngFor="let result of events"
+		[result]="result">
+
+	</memo-results-entry>
+</div>
+<div *ngIf="events && events.length === 0" class="no-results">
+	Keine Ergebnisse!
+</div>
+<div *ngIf="!events">
+	<!--todo: loading animation-->
+
+	<div class="loader-wrapper">
+		<div class="loader"></div>
+	</div>
+</div>

@@ -1,0 +1,30 @@
+img {
+	//background-color: grey;
+}
+
+.image-preview-container {
+	display: flex;
+	justify-content: space-around;
+	//align-items: center;
+	flex-wrap: wrap;
+	text-align: center;
+
+	> div {
+		position: relative;
+		.image-container {
+			display: flex;
+			justify-content: center;
+			flex-direction: column;
+			align-items: center;
+		}
+		.cropped-profile-picture {
+			cursor: pointer;
+		}
+	}
+}
+
+@media all and (max-width: 600px) {
+	.image-preview-container > div {
+		width: 100%;
+	}
+}

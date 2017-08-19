@@ -1,0 +1,28 @@
+<h2 md-dialog-title>{{data?.title | async}}</h2>
+
+<md-dialog-content>
+	<a md-button routerLink="{{data?.eventType | async}}/{{data?.id}}"
+	   (click)="close()"
+	   [disabled]="!(data?.view | async)"
+	   [class.disabled]="!(data?.view | async)">
+		<md-icon>view_list</md-icon>
+		Details ansehen
+	</a>
+	<a md-button routerLink="{{data?.eventType | async}}/{{data?.id}}/edit"
+	   (click)="close()"
+	   [disabled]="!(data?.edit | async)"
+	   [class.disabled]="!(data?.edit | async)">
+		<md-icon>edit</md-icon>
+		Bearbeiten
+	</a>
+	<button md-raised-button color="warn"
+			[disabled]="!(data?.remove | async)"
+			(click)="deleteEvent()">
+		<md-icon>delete</md-icon>
+		Löschen
+	</button>
+
+</md-dialog-content>
+<md-dialog-actions>
+	<button md-button md-dialog-close>Schließen</button>
+</md-dialog-actions>

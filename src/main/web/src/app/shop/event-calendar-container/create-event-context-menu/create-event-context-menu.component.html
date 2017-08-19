@@ -1,0 +1,19 @@
+<h2 md-dialog-title>Was für eine Veranstaltung möchtest du hinzufügen?</h2>
+<md-dialog-content>
+	<a md-button routerLink="/tours/create" [queryParams]="{date: isoDate}"
+	   (click)="close()"
+	   [disabled]="!(data?.tours | async)">
+		<md-icon>directions_bus</md-icon>
+		Tour
+	</a>
+	<a md-button routerLink="/partys/create" [queryParams]="{date: isoDate}"
+	   (click)="close()"
+	   [disabled]="!(data?.partys | async)">
+		<md-icon>event</md-icon>
+		Event
+	</a>
+</md-dialog-content>
+
+<md-dialog-actions>
+	<button md-button md-dialog-close>Schließen</button>
+</md-dialog-actions>

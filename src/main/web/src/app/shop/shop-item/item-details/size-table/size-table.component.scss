@@ -1,0 +1,37 @@
+
+.size-table-container {
+	overflow-y: auto;
+	display: flex;
+	justify-content: flex-start;
+
+	@media all and (min-width: 1050px) {
+		justify-content: center;
+	}
+
+	.table-size-clothes {
+		border-collapse: collapse;
+
+		th, td {
+			min-width: 5rem;
+			padding-right: 2rem;
+			height: 2.5rem;
+		}
+
+		tr:not(:last-child) > td, th {
+			border-bottom: 1px solid #cccccc;
+		}
+
+		td {
+			color: rgba(0, 0, 0, .87)
+		}
+
+		th {
+			color: rgba(0, 0, 0, .54);
+			font-weight: 600;
+		}
+
+		td:not(:first-child) {
+			text-align: center;
+		}
+	}
+}

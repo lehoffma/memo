@@ -1,0 +1,76 @@
+<div class="centered-container">
+
+	<div class="object-overview-container" *ngIf="event">
+		<div class="object-info-container">
+			<div class="object-info" *ngFor="let overviewKey of overviewKeys">
+				<ng-template [ngIf]="event[overviewKey.key]">
+					<div [ngSwitch]="overviewKey.pipe">
+						<ng-template [ngSwitchCase]="'price'">{{event[overviewKey.key] | currency:'EUR':true}}
+						</ng-template>
+						<ng-template [ngSwitchCase]="'date'">{{event[overviewKey.key] | date:'shortDate'}}</ng-template>
+						<ng-template ngSwitchDefault>{{event[overviewKey.key]}}</ng-template>
+					</div>
+					<div class="secondary-text">
+						{{overviewKey.label}}
+					</div>
+				</ng-template>
+			</div>
+		</div>
+		<div class="add-to-cart-container">
+			<form #addToCartForm="ngForm" (ngSubmit)="addOrDeleteFromCart(event)">
+				<ng-template [ngIf]="isMerch(event)">
+					<md-select [(ngModel)]="model.options.color"
+							   (change)="updateMaxAmount()"
+							   placeholder="Farbe"
+							   [required]="true"
+							   name="colorSelectionInput">
+						<md-option *ngFor="let color of colorSelection"
+								   [value]="color">
+							{{color.name}}
+						</md-option>
+					</md-select>
+					<md-select [(ngModel)]="model.options.size"
+							   (change)="updateMaxAmount()"
+							   placeholder="Größe"
+							   [required]="true"
+							   name="sizeSelectionInput">
+						<md-option *ngFor="let size of sizeSelection" [value]="size.value">
+							{{size.value}}
+						</md-option>
+					</md-select>
+				</ng-template>
+
+				<md-select placeholder="Anzahl" name="amount"
+						   [(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
+						   [disabled]="!isMerch(event) && isPastEvent"
+						   [required]="true">
+					<md-option *ngFor="let number of amountOptions" [value]="number">
+						{{number}}
+					</md-option>
+				</md-select>
+
+				<button [disabled]="(!addToCartForm.valid || model.amount === 0) || (!isMerch(event) && isPastEvent)"
+						md-raised-button
+						color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
+						class="add-to-cart-button">
+					{{(isPartOfShoppingCart) ? 'Aus dem Warenkorb löschen' : 'In den Warenkorb'}}
+				</button>
+			</form>
+		</div>
+
+		<share-buttons
+			[title]="event.title"
+			[image]="event.imagePath"
+			[description]="event.description"
+			[tags]="['Meilenwoelfe', 'Meilenwoelfe-Shop']"
+			[pinterest]="false"
+			[linkedIn]="false"
+			[tumblr]="false"
+			[reddit]="false"
+			[stumbleUpOn]="false">
+
+		</share-buttons>
+	</div>
+
+
+</div>
