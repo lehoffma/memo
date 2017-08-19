@@ -1,6 +1,6 @@
 
 <div class="accounting-options" [ngClass]="{showOptions: showOptions}">
-	<memo-accounting-options *ngIf="!mobile || showOptions">
+	<memo-accounting-options [hidden]="!(!mobile || showOptions)">
 	</memo-accounting-options>
 
 	<button md-button color="primary" class="options-button" (click)="showOptions = !showOptions">

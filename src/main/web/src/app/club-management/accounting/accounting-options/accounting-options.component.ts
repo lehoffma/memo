@@ -1,7 +1,14 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import * as moment from "moment";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
+import {Event} from "../../../shop/shared/model/event";
+import {EventService} from "../../../shared/services/event.service";
+import {EventType} from "../../../shop/shared/model/event-type";
+import {Observable} from "rxjs/Observable";
+import {FormControl} from "@angular/forms";
+import {EventUtilityService} from "../../../shared/services/event-utility.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Component({
 	selector: "memo-accounting-options",
@@ -9,6 +16,7 @@ import {QueryParameterService} from "../../../shared/services/query-parameter.se
 	styleUrls: ["./accounting-options.component.scss"]
 })
 export class AccountingOptionsComponent implements OnInit {
+	@Input() hidden: boolean = false;
 	eventTypes = {
 		tours: true,
 		events: true,
@@ -23,20 +31,122 @@ export class AccountingOptionsComponent implements OnInit {
 		food: true
 	};
 
+	events: Event[] = [];
+
+	availableEvents$ = new BehaviorSubject<Event[]>([]);
+	get availableEvents(){
+		return this.availableEvents$.value;
+	}
+	set availableEvents(events: Event[]){
+		this.availableEvents$.next(events);
+	}
+
 	dateOptions = {
-		from: moment().startOf("month").toDate(),
-		to: moment().endOf("month").toDate()
+		from: undefined,
+		to: undefined
 	};
+
+
+	autocompleteFormControl: FormControl = new FormControl();
+	filteredOptions: Observable<Event[]>;
 
 	constructor(private queryParameterService: QueryParameterService,
 				private router: Router,
+				private eventService: EventService,
 				private activatedRoute: ActivatedRoute) {
 	}
 
-	ngOnInit() {
+	async ngOnInit() {
+		await this.getAvailableEvents();
 		this.readQueryParams();
-		//todo read query params and init options accordingly
-		this.updateQueryParams();
+		// this.updateQueryParams();
+		this.initEventAutoComplete();
+	}
+
+	/**
+	 *
+	 */
+	initEventAutoComplete() {
+		this.autocompleteFormControl.valueChanges
+			.subscribe(value => {
+				if (EventUtilityService.isTour(value) || EventUtilityService.isParty(value)) {
+					this.events.push(value);
+					this.autocompleteFormControl.reset();
+					this.updateQueryParams();
+				}
+			});
+
+
+		this.filteredOptions = this.autocompleteFormControl.valueChanges
+			.startWith("")
+			.map(event => event && typeof event === "object" ? event.title : event)
+			.map(title => {
+				let availableEvents = this.availableEvents
+					.filter(event => !this.events.find(selectedEvent => selectedEvent.id === event.id));
+				return title
+					? this.filter(availableEvents, title)
+					: availableEvents.slice()
+			})
+	}
+
+	/**
+	 * Defines how the event will be presented in the autocomplete box
+	 * @returns {any}
+	 * @param event
+	 */
+	displayFn(event: Event): string {
+		if (event) {
+			return event.title;
+		}
+		return "";
+	}
+
+	/**
+	 *
+	 * @param {Event} event
+	 * @returns {EventType}
+	 */
+	getEventType(event: Event): EventType {
+		return EventUtilityService.getEventType(event);
+	}
+
+
+	/**
+	 * Filters the options array by checking the events title
+	 * @param options
+	 * @param name
+	 * @returns {any[]}
+	 */
+	filter(options: Event[], name: string): Event[] {
+		return options.filter(option => {
+			const regex = new RegExp(`${name}`, "gi");
+			return regex.test(option.title);
+		});
+	}
+
+
+	/**
+	 *
+	 */
+	async getAvailableEvents() {
+		await Observable.combineLatest(
+			this.eventService.search("", EventType.tours),
+			this.eventService.search("", EventType.partys)
+		)
+			.first()
+			.toPromise()
+			.then(([tours, partys]) => {
+				this.availableEvents = [...tours, ...partys]
+					.filter(event => {
+						let from = !this.dateOptions.from ? moment("1970-01-01") : this.dateOptions.from;
+						let to = !this.dateOptions.to ? moment("2100-01-01") : this.dateOptions.to;
+
+						return moment(event.date)
+							.isBetween(moment(from), moment(to));
+					});
+				this.autocompleteFormControl.setValue("", {emitEvent: true});
+			})
+
 	}
 
 	/**
@@ -57,18 +167,33 @@ export class AccountingOptionsComponent implements OnInit {
 	 * Updates the values by extracting them from the url query parameters
 	 */
 	readQueryParams() {
-		this.activatedRoute.queryParamMap
-			.subscribe(queryParamMap => {
+		Observable.combineLatest(
+			this.activatedRoute.paramMap,
+			this.activatedRoute.queryParamMap
+		)
+			.subscribe(async ([paramMap, queryParamMap]) => {
+				this.dateOptions.from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : undefined;
+				this.dateOptions.to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : undefined;
+				await this.getAvailableEvents();
 				if (queryParamMap.has("eventTypes")) {
 					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.get("eventTypes").split("|"));
 				}
 				if (queryParamMap.has("costTypes")) {
 					this.readBinaryValuesFromQueryParams(this.costTypes, queryParamMap.get("costTypes").split("|"));
 				}
-				if (queryParamMap.has("from") && queryParamMap.has("to")) {
-					this.dateOptions.from = moment(queryParamMap.get("from")).toDate();
-					this.dateOptions.to = moment(queryParamMap.get("to")).toDate();
+				//in case the route is something like /tours/:eventId/costs, extract the event id
+				if (paramMap.has("eventId")) {
+					this.events = this.availableEvents.findIndex(event => event.id === +paramMap.get("eventId")) !== -1
+						? [this.availableEvents.find(event => event.id === +paramMap.get("eventId"))]
+						: [];
 				}
+				if (queryParamMap.has("eventIds")) {
+					this.events = queryParamMap.get("eventIds")
+						.split(",")
+						.filter(eventId => this.availableEvents.findIndex(event => event.id === +eventId) !== -1)
+						.map(eventId => this.availableEvents.find(event => event.id === +eventId));
+				}
+				this.updateQueryParams();
 			})
 	}
 
@@ -105,12 +230,15 @@ export class AccountingOptionsComponent implements OnInit {
 		assignType("eventTypes", this.eventTypes);
 		assignType("costTypes", this.costTypes);
 
-		params["from"] = this.dateOptions.from.toISOString();
-		params["to"] = this.dateOptions.to.toISOString();
+		params["eventIds"] = this.events.map(event => "" + event.id).join(",");
+
+		params["from"] = !this.dateOptions.from ? "" : this.dateOptions.from.toISOString();
+		params["to"] = !this.dateOptions.to ? "" : this.dateOptions.to.toISOString();
 
 		this.activatedRoute.queryParamMap.first()
 			.map(queryParamMap =>
 				this.queryParameterService.updateQueryParams(queryParamMap, params))
-			.subscribe(newQueryParams => this.router.navigate(["management", "costs"], {queryParams: newQueryParams}));
+			.subscribe(newQueryParams =>
+				this.router.navigate(["management", "costs"], {queryParams: newQueryParams, replaceUrl: true}));
 	}
 }

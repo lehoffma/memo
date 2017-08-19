@@ -101,6 +101,9 @@ export class MomentDateAdapter extends DateAdapter<Moment> {
 	}
 
 	parse(value: any, parseFormat: any): Moment {
+		if(value === undefined){
+			return value;
+		}
 		let m = moment(value, parseFormat, this.locale, true);
 		if (!m.isValid()) {
 			// try again, forgiving. will get warning if not ISO8601 or RFC2822

@@ -1,6 +1,6 @@
 @import "../centered-container";
 
-a {
+.item-actions {
 	color: white;
 	position: absolute;
 	right: 4%;
@@ -59,7 +59,7 @@ a {
 		height: calc(400px - 3rem);
 	}
 
-	a {
+	.item-actions {
 		left: 44%;
 		right: 0;
 	}
@@ -77,38 +77,4 @@ a {
 		margin: 0;
 	}
 
-	////erster versuch
-	//.image-overlay-container{
-	//	position: absolute;
-	//	left: 0.5rem;
-	//	top: 9.5%;
-	//	display: flex;
-	//	width: 500px;
-	//}
-	//
-	//memo-item-details-overview{
-	//	position: absolute;
-	//	left: 0;
-	//	top: calc(9.5% + 270px);
-	//}
-	//
-	//.item-details-container{
-	//	display: flex;
-	//	flex-direction: column;
-	//	width: 50%;
-	//	margin-left: 50%;
-	//	overflow: auto;
-	//	height: 43rem;
-	//}
-	//
-	//.image-container{
-	//	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-	//	.image-detail{
-	//		height: 300px;
-	//	}
-	//}
-	//
-	//.image-container::after{
-	//	height: 300px;
-	//}
 }

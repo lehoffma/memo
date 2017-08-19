@@ -70,6 +70,9 @@ export class ModifyShopItemComponent implements OnInit {
 			if (queryParamMap.has("date")) {
 				this.model["date"] = moment(queryParamMap.get("date")).toDate();
 			}
+			if(queryParamMap.has("eventId")){
+				this.eventId = +queryParamMap.get("eventId");
+			}
 		})
 	}
 
@@ -95,11 +98,11 @@ export class ModifyShopItemComponent implements OnInit {
 				});
 
 				//todo remove falls es ne bessere möglichkeit gibt..
+				//extract addresses if we're editing a tour or a party
 				if (this.itemType === ShopItemType.tour || this.itemType === ShopItemType.party) {
 					let event: (Party | Tour) = (<(Party | Tour)>objectToModify);
 					Observable.combineLatest(...event.route.map(routeStop => this.addressService.getById(routeStop)))
 						.first()
-						.do(console.log)
 						.subscribe(tourStops => {
 							this.model["route"] = tourStops;
 							if (objectToModify && objectToModify.id !== -1) {
@@ -107,6 +110,7 @@ export class ModifyShopItemComponent implements OnInit {
 							}
 						});
 				}
+				//extract the stock if we're editing a merchandise object
 				else if (this.itemType === ShopItemType.merch) {
 					let merch: Merchandise = (<Merchandise>objectToModify);
 					this.stockService.getByEventId(merch.id)
@@ -143,7 +147,7 @@ export class ModifyShopItemComponent implements OnInit {
 	/**
 	 * Submit callback
 	 */
-	submitModifiedObject() {
+	submitModifiedObject(result:any) {
 		let service: ServletServiceInterface<ShopItem> = EventUtilityService.handleOptionalShopType<ServletServiceInterface<User | Entry | Event>>(
 			this.itemType,
 			{
@@ -168,7 +172,7 @@ export class ModifyShopItemComponent implements OnInit {
 
 		let options: any = EventUtilityService.handleOptionalShopType(this.itemType,
 			{
-				entries: () => ({eventId: this.eventId})
+				entries: () => ({eventId: result["eventId"]})
 			});
 
 
@@ -180,6 +184,9 @@ export class ModifyShopItemComponent implements OnInit {
 		requestMethod(newObject, options)
 			.subscribe(
 				(result: ShopItem) => {
+					if(this.itemType === ShopItemType.entry){
+						this.location.back();
+					}
 					if (!this.eventType && !this.eventId) {
 						//navigiere zum neu erstellten item
 						this.navigationService.navigateToItem(result);

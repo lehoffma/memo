@@ -8,11 +8,20 @@
 				<img class="image-detail" src="{{event?.imagePath}}">
 			</div>
 
-			<a md-icon-button
-			   *ngIf="userCanEditEvent | async"
-			   routerLink="./edit">
-				<md-icon>edit</md-icon>
-			</a>
+			<div class="item-actions">
+				<a md-icon-button
+				   *ngIf="userCanAccessEntries$ | async"
+				   mdTooltip="Kosten dieses Events anzeigen"
+				   routerLink="./costs">
+					<md-icon>payment</md-icon>
+				</a>
+				<a md-icon-button
+				   *ngIf="userCanEditEvent | async"
+				   mdTooltip="Dieses Event bearbeiten"
+				   routerLink="./edit">
+					<md-icon>edit</md-icon>
+				</a>
+			</div>
 
 		</div>
 

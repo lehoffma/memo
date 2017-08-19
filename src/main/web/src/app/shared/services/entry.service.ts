@@ -9,6 +9,7 @@ import * as moment from "moment";
 
 @Injectable()
 export class EntryService extends ServletService<Entry> {
+	redirectUrl:string;
 
 	constructor(private http: Http,
 				private cache: CacheStore) {
@@ -47,12 +48,10 @@ export class EntryService extends ServletService<Entry> {
 	/**
 	 *
 	 * @param eventId
-	 * @param eventType
 	 */
-	getEntriesOfEvent(eventId: number, eventType: EventType): Observable<Entry[]> {
+	getEntriesOfEvent(eventId: number): Observable<Entry[]> {
 		let params = new URLSearchParams();
 		params.set("eventId", eventId.toString());
-		params.set("eventType", eventType.toString());
 
 
 		//todo demo
@@ -102,12 +101,24 @@ export class EntryService extends ServletService<Entry> {
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
 	 * @param entry
+	 * @param options
 	 * @returns {Observable<T>}
 	 */
 	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						entry: Entry): Observable<Entry> {
+						entry: Entry, options?:any): Observable<Entry> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
+		requestOptions.body = {};
+
+		if(options){
+			Object.keys(options)
+				.forEach(key => requestOptions.body[key] = options[key]);
+		}
+
+		//todo remove demo
+		if(entry){
+			return Observable.of(entry);
+		}
 
 		return this.performRequest(requestMethod("/api/entry", {entry}, requestOptions))
 			.map(response => response.json().id)
@@ -118,25 +129,28 @@ export class EntryService extends ServletService<Entry> {
 	/**
 	 *
 	 * @param entry
+	 * @param options
 	 */
-	add(entry: Entry): Observable<Entry> {
-		return this.addOrModify(this.http.post.bind(this.http), entry);
+	add(entry: Entry, options?:any): Observable<Entry> {
+		return this.addOrModify(this.http.post.bind(this.http), entry, options);
 	}
 
 	/**
 	 *
 	 * @param entry
+	 * @param options
 	 * @returns {Observable<Entry>}
 	 */
-	modify(entry: Entry): Observable<Entry> {
-		return this.addOrModify(this.http.put.bind(this.http), entry);
+	modify(entry: Entry,options?:any): Observable<Entry> {
+		return this.addOrModify(this.http.put.bind(this.http), entry, options);
 	}
 
 	/**
 	 *
 	 * @param id
+	 * @param options
 	 */
-	remove(id: number): Observable<Response> {
+	remove(id: number, options?:any): Observable<Response> {
 		//todo demo remove
 		if (id >= 0) {
 			return Observable.of(new Response(new ResponseOptions()));

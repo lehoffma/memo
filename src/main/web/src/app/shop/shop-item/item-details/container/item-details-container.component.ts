@@ -6,8 +6,8 @@ import {Event} from "../../../shared/model/event";
 import {EventOverviewKey} from "./overview/event-overview-key";
 import {LogInService} from "../../../../shared/services/login.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
-import {rolePermissions} from "../../../../shared/model/club-role";
 import {Permission} from "../../../../shared/model/permission";
+import {EventType} from "../../../shared/model/event-type";
 
 
 @Component({
@@ -21,8 +21,8 @@ export class ItemDetailsContainerComponent implements OnInit {
 
 	userCanEditEvent: Observable<boolean> = this.loginService.currentUser()
 		.map((user) => {
-			if (user !== null && event !== null) {
-				let permissions = user.permissions ? user.permissions : rolePermissions[user.clubRole];
+			if (user !== null && this.event !== null) {
+				let permissions = user.userPermissions;
 				let permissionKey = EventUtilityService.handleShopItem(this.event,
 					merch => "merch",
 					tour => "tour",
@@ -33,6 +33,18 @@ export class ItemDetailsContainerComponent implements OnInit {
 				}
 			}
 
+			return false;
+		});
+
+	userCanAccessEntries$: Observable<boolean> = this.loginService.currentUser()
+		.map((user) => {
+			if(user !== null && this.event !== null){
+				let eventType = EventUtilityService.getEventType(this.event);
+				if(eventType === EventType.partys || eventType === EventType.tours){
+					let permissions = user.userPermissions;
+					return permissions.funds >= Permission.read;
+				}
+			}
 			return false;
 		});
 
