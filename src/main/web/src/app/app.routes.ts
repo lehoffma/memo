@@ -33,8 +33,9 @@ import {AddressModificationComponent} from "./shop/checkout/address-selection/ad
 import {EventCalendarContainerComponent} from "./shop/event-calendar-container/event-calendar-container.component";
 import {ModifyUserComponent} from "./shop/shop-item/modify-shop-item/modify-user/modify-user.component";
 import {CanViewStockGuard} from "./shared/route-guards/can-view-stock.guard";
+import {Route} from "@angular/router";
 
-export const ROUTES = [
+export const ROUTES:Route[] = [
 	{path: "", component: HomeComponent},
 
 	//todo implement

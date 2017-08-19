@@ -138,9 +138,8 @@ public class UserServlet extends HttpServlet {
 			User newUser = gson.fromJson(juser,User.class);
 
 
-
-			if (juser.has("birthDate"))
-				newUser.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+            if (juser.has("birthday"))
+                newUser.setBirthday(new Date(juser.get("birthday").getAsLong()));
 
 			if (juser.has("addresses"))
 			{
@@ -266,9 +265,8 @@ public class UserServlet extends HttpServlet {
 				}
 
 
-
-				if (juser.has("birthDate"))
-					user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+                if (juser.has("birthday"))
+                    user.setBirthday(new Date(juser.get("birthday").getAsLong()));
 
 
 
@@ -323,10 +321,8 @@ public class UserServlet extends HttpServlet {
 			user = gson.fromJson(juser, User.class);
 
 
-
-
-			if (juser.has("birthDate") )
-				user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+            if (juser.has("birthday"))
+                user.setBirthday(new Date(juser.get("birthday").getAsLong()));
 
 			if (juser.has("addresses"))
 			{

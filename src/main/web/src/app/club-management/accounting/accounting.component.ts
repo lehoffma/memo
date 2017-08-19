@@ -12,7 +12,6 @@ import {isNullOrUndefined} from "util";
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {CostCategoryTableCellComponent} from "./accounting-table-cells/cost-category-table-cell.component";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
-import {EventType} from "../../shop/shared/model/event-type";
 import * as moment from "moment";
 import {DateTableCellComponent} from "../administration/member-list/member-list-table-cells/date-table-cell.component";
 import {LogInService} from "../../shared/services/login.service";
@@ -107,14 +106,15 @@ export class AccountingComponent implements OnInit {
 	 * @param event
 	 */
 	addEntry(event: any) {
-		this.activatedRoute.paramMap
-			.first()
-			.subscribe(paramMap => {
-				if (paramMap.has("itemType") && paramMap.has("eventId")) {
-					this.router.navigate(["create"], {relativeTo: this.activatedRoute});
-					return;
+		this.activatedRoute.queryParamMap
+			.subscribe(queryParamMap => {
+				const eventIds = queryParamMap.has("eventIds") ? queryParamMap.get("eventIds").split(",") : [];
+				const queryParams = {};
+				if (eventIds.length === 1) {
+					queryParams["eventId"] = eventIds[0];
 				}
-				this.router.navigate(["entries", "create"]);
+
+				this.router.navigate(["entries", "create"], {queryParams});
 			});
 	}
 
@@ -123,24 +123,26 @@ export class AccountingComponent implements OnInit {
 	 * @param entryObj
 	 */
 	editEntry(entryObj: Entry) {
-		if (!isNullOrUndefined(entryObj.id) && entryObj.id >= 0) {
-			this.activatedRoute.paramMap
-				.first()
-				.subscribe(paramMap => {
-					if (paramMap.has("itemType") && paramMap.has("eventId")) {
-						this.router.navigate([entryObj.id, "edit"], {relativeTo: this.activatedRoute});
-						return;
-					}
-					this.router.navigate(["entries", entryObj.id, "edit"]);
-				});
-		}
+
+		this.activatedRoute.queryParamMap
+			.subscribe(queryParamMap => {
+				const eventIds = queryParamMap.has("eventIds") ? queryParamMap.get("eventIds").split(",") : [];
+				const queryParams = {};
+				if (eventIds.length === 1) {
+					queryParams["eventId"] = eventIds[0];
+				}
+
+				if (!isNullOrUndefined(entryObj.id) && entryObj.id >= 0) {
+					this.router.navigate(["entries", entryObj.id, "edit"], {queryParams});
+				}
+			});
+
 	}
 
 	/**
 	 * @param entries
 	 */
 	deleteEntries(entries: Entry[]) {
-
 		entries.forEach(merchObject => this.entryService.remove(merchObject.id)
 			.subscribe(
 				value => {
@@ -156,25 +158,14 @@ export class AccountingComponent implements OnInit {
 	 * @returns {{minDate: Date; maxDate: Date}}
 	 */
 	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Date, maxDate: Date } {
+		const from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : moment("1970-01-01");
+		const to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : moment("2100-01-01");
+
 		//default: this month
-		let dateRange: { minDate: Date, maxDate: Date } = {
-			minDate: moment().startOf("month").toDate(),
-			maxDate: moment().endOf("month").toDate()
+		return {
+			minDate: from.toDate(),
+			maxDate: to.toDate()
 		};
-		//if the user specified anything, use these values instead
-		if (queryParamMap.has("from") && queryParamMap.has("to")) {
-			let from = moment(queryParamMap.get("from"));
-			let to = moment(queryParamMap.get("to"));
-			//swap them if their order is incorrect
-			if (from.isAfter(to)) {
-				[to, from] = [from, to];
-			}
-			dateRange = {
-				minDate: from.toDate(),
-				maxDate: to.toDate()
-			};
-		}
-		return dateRange;
 	}
 
 	/**
@@ -185,17 +176,21 @@ export class AccountingComponent implements OnInit {
 	 * @returns {Observable<any>}
 	 */
 	getEntries([paramMap, queryParamMap, sortBy]: [ParamMap, ParamMap, ColumnSortingEvent<any>]): Observable<Entry[]> {
+		let dateRange = this.extractDateRangeFromQueryParams(queryParamMap);
+
 		//we're looking at an event's accounting table
-		if (paramMap.has("itemType") && paramMap.has("eventId")) {
-			let itemType: EventType = EventType[paramMap.get("itemType")];
-			let eventId = +paramMap.get("eventId");
-			return this.entryService.getEntriesOfEvent(eventId, itemType)
+		if (queryParamMap.has("eventIds")) {
+			let eventIds: string[] = queryParamMap.get("eventIds")
+				.split(",");
+
+			return Observable.combineLatest(
+				...eventIds.map(id => this.entryService.getEntriesOfEvent(+id))
+			)
+				.map((eventEntries: Entry[][]) => eventEntries.reduce((acc, current) => [...acc, ...current], []))
 				.map(entries => entries.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 		}
 
 		//otherwise, we're looking at the general club accounting table
-		let dateRange = this.extractDateRangeFromQueryParams(queryParamMap);
-
 		return this.entryService.search("", dateRange)
 			.map(entries => entries
 				.filter(entry => {
