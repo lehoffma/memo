@@ -53,9 +53,6 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<boolean>}
 	 */
 	isUserEmailAlreadyInUse(email: string): Observable<boolean> {
-		if (email) {
-			return Observable.of(false);
-		}
 		let params: URLSearchParams = new URLSearchParams();
 		params.set("email", email);
 		return this.performRequest(this.http.get("/api/user", {search: params}))
