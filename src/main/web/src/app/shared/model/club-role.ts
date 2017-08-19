@@ -1,4 +1,5 @@
 import {UserPermissions} from "./permission";
+
 export enum ClubRole{
 	Admin = <any> "Admin",
 	Kassenwart = <any> "Kassenwart",
@@ -8,6 +9,8 @@ export enum ClubRole{
 	Mitglied = <any> "Mitglied",
 	None = <any> "None"
 }
+
+//todo clubrole with 0-5 values
 
 function clubRoles() {
 	return [ClubRole.None, ClubRole.Mitglied, ClubRole.Vorstand, ClubRole.Schriftfuehrer,

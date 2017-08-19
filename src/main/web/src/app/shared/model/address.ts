@@ -1,6 +1,6 @@
-import {ImmutableObject} from "./util/immutable-object";
+import {BaseObject} from "./util/base-object";
 
-export class Address extends ImmutableObject<Address> {
+export class Address extends BaseObject<Address> {
 
 	/**
 	 * @param id Die ID der Adresse (nur zwischen adressen einzigartig, d.h. ein Event könnte die selber ID haben)

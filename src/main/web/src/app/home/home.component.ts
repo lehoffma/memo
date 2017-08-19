@@ -4,6 +4,7 @@ import {Event} from "../shop/shared/model/event";
 import {Observable} from "rxjs";
 import {EventService} from "../shared/services/event.service";
 import {EventType} from "../shop/shared/model/event-type";
+import * as moment from "moment";
 
 interface EventsPreview {
 	title: string,
@@ -28,12 +29,16 @@ export class HomeComponent implements OnInit {
 			{
 				title: "Touren",
 				route: "tours",
-				events: this.eventService.search("", EventType.tours).map(tours => tours.slice(0, 7))
+				events: this.eventService.search("", EventType.tours)
+					.map(tours => this.removePastEvents(tours))
+					.map(tours => tours.slice(0, 7))
 			},
 			{
 				title: "Veranstaltungen",
 				route: "partys",
-				events: this.eventService.search("", EventType.partys).map(partys => partys.slice(0, 7))
+				events: this.eventService.search("", EventType.partys)
+					.map(tours => this.removePastEvents(tours))
+					.map(partys => partys.slice(0, 7))
 			},
 			{
 				title: "Merchandise",
@@ -43,4 +48,13 @@ export class HomeComponent implements OnInit {
 		];
 	}
 
+
+	/**
+	 * Filters events out that have already happened
+	 * @param {Event[]} events
+	 * @returns {Event[]}
+	 */
+	removePastEvents(events: Event[]): Event[] {
+		return events.filter(event => moment(event.date).isAfter(moment()));
+	}
 }

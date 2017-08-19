@@ -123,7 +123,6 @@ export class SignUpService {
 	 * @param event
 	 */
 	onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
-		console.log(event);
 		//extract section, email and passwordHash properties
 		const {
 			email,
@@ -142,9 +141,8 @@ export class SignUpService {
 				this.newUser.setProperties({email, passwordHash});
 				break;
 			case SignUpSection.PersonalData:
-				this.newUser.setProperties({firstName, surname, birthDate: birthday, telephone: phoneNumber, isStudent});
+				this.newUser.setProperties({firstName, surname, birthday, telephone: phoneNumber, isStudent});
 				this.newUserProfilePicture = profilePicture;
-				console.log(profilePicture);
 				break;
 			case SignUpSection.PaymentMethods:
 				this.newUserDebitInfo = paymentInfo;
@@ -157,15 +155,25 @@ export class SignUpService {
 		if (isLastScreen) {
 			this.submittingFinalUser = true;
 			this.userService.add(this.newUser, this.newUserProfilePicture, this.newUserDebitInfo)
-				.defaultIfEmpty(new Error())
 				.subscribe(newUserId => {
 						this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
 							duration: 1000
 						});
-						this.navigationService.navigateByUrl("/");
-						this.loginService.login(this.newUser.email, this.newUser.passwordHash);
-						this.reset();
-						this.submittingFinalUser = false;
+						this.loginService.login(this.newUser.email, this.newUser.passwordHash)
+							.subscribe(wereCorrect => {
+								if (wereCorrect) {
+									this.navigationService.navigateByUrl("/");
+									this.reset();
+									this.submittingFinalUser = false;
+								}
+								else {
+									this.snackBar.open("Bei der Registrierung ist leider ein Fehler aufgetreten!",
+										"Schließen",
+										{
+											duration: 1000
+										});
+								}
+							})
 					},
 					(error: Error) => {
 						this.snackBar.open(

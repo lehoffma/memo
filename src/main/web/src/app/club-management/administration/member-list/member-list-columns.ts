@@ -10,7 +10,7 @@ export const memberListColumns = {
 	"firstName": new ExpandableTableColumn<User>("Vorname", "firstName"),
 	"surname": new ExpandableTableColumn<User>("Nachname", "surname"),
 	"clubRole": new ExpandableTableColumn<User>("Rolle", "clubRole", ClubRoleTableCellComponent),
-	"birthDate": new ExpandableTableColumn<User>("Geburtstag", "birthDate", DateTableCellComponent),
+	"birthday": new ExpandableTableColumn<User>("Geburtstag", "birthday", DateTableCellComponent),
 	"telephone": new ExpandableTableColumn<User>("Telefon", "telephone"),
 	"hasSeasonTicket": new ExpandableTableColumn<User>("Dauerkarte", "hasSeasonTicket", BooleanCheckMarkCellComponent),
 	"isWoelfeClubMember": new ExpandableTableColumn<User>("Wölfecard", "isWoelfeClubMember", BooleanCheckMarkCellComponent),

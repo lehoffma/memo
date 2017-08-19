@@ -1,17 +1,17 @@
 import {ClubRole, rolePermissions} from "./club-role";
 import {UserPermissions} from "./permission";
-import {ImmutableObject} from "./util/immutable-object";
+import {BaseObject} from "./util/base-object";
 import {Gender} from "./gender";
 
 
-export class User extends ImmutableObject<User> {
+export class User extends BaseObject<User> {
 	/**
 	 *
 	 * @param id Die ID des Users (nur zwischen Usern einzigartig)
 	 * @param firstName Vorname des Users, z.B. "Le"
 	 * @param surname Nachname des Users, z.B. "Hoffmann"
 	 * @param gender Das Geschlecht des Users, z.B. Gender.MALE
-	 * @param birthDate Geburtstag des Users, z.B. "20.04.1889"
+	 * @param birthday Geburtstag des Users, z.B. "20.04.1889"
 	 * @param telephone Handy oder Festnetznummer mit oder ohne Trennzeichen zwischen Vorwahl und Rest, z.B. "0151/18656036"
 	 * @param clubRole Die Rolle des Users innerhalb des Vereins, z.B. Vorstand
 	 * @param joinDate das Eintrittsdatum des Users
@@ -30,7 +30,7 @@ export class User extends ImmutableObject<User> {
 				public readonly firstName: string,
 				public readonly surname: string,
 				public readonly gender: Gender,
-				public readonly birthDate: Date,
+				public readonly birthday: Date,
 				public readonly telephone: string,
 				public readonly clubRole: ClubRole,
 				public readonly joinDate: Date,
@@ -49,7 +49,7 @@ export class User extends ImmutableObject<User> {
 
 	static create() {
 		return new User(-1, "", "", Gender.OTHER, null, "", ClubRole.None, new Date(), [],
-			null, 0, "", "", false, false, false, false, "");
+			null, 0, "", "", false, false, false, false, "resources/images/Logo.png");
 	}
 
 	static isUser(user: any): user is User {

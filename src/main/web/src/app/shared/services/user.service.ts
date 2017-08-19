@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, ResponseOptions} from "@angular/http";
+import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
 import {User} from "../model/user";
 import {CacheStore} from "../stores/cache.store";
 import {ServletService} from "./servlet.service";
@@ -28,7 +28,7 @@ export class UserService extends ServletService<User> {
 
 		return this.performRequest(this.http.get(`/api/user?id=${userId}`))
 			.map(response => response.json().users)
-			.map(json => User.create().setProperties(json))
+			.map(json => User.create().setProperties(json[0]))
 			.do((user: User) => this.cache.addOrModify(user));
 	}
 
@@ -53,12 +53,9 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<boolean>}
 	 */
 	isUserEmailAlreadyInUse(email: string): Observable<boolean> {
-		//todo demo remove
 		if (email) {
-			return Observable.of(false)
-				.delay(2000);
+			return Observable.of(false);
 		}
-
 		let params: URLSearchParams = new URLSearchParams();
 		params.set("email", email);
 		return this.performRequest(this.http.get("/api/user", {search: params}))
@@ -75,7 +72,7 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						user: User, profilePicture?:any, paymentInfo?:any): Observable<User> {
+						user: User, profilePicture?: any, paymentInfo?: any): Observable<User> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 

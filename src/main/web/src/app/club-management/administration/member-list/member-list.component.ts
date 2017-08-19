@@ -66,7 +66,7 @@ export class MemberListComponent implements OnInit {
 			},
 			{
 				width: 600,
-				columns: [memberListColumns.birthDate]
+				columns: [memberListColumns.birthday]
 			},
 			{
 				width: 700,

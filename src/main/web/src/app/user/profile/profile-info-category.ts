@@ -12,7 +12,7 @@ export const profileCategories: ProfileCategory[] = [
 		{
 			name: "Geburtstag",
 			icon: "cake",
-			key: "birthDate",
+			key: "birthday",
 			isDate: true
 		},
 		{

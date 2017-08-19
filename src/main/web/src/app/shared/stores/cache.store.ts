@@ -13,10 +13,10 @@ import {isNullOrUndefined} from "util";
 import {EventData} from "../model/event-data";
 import {ArrayObjectType} from "../model/util/array-object-type";
 import {InnerArrayObjectType} from "../model/util/inner-array-object-type";
-import {ImmutableObject} from "../model/util/immutable-object";
+import {BaseObject} from "../model/util/base-object";
 import {Address} from "../model/address";
 
-export interface Cache extends EventData, ArrayObjectType<ImmutableObject<any>> {
+export interface Cache extends EventData, ArrayObjectType<BaseObject<any>> {
 	users: User[];
 	entries: Entry[];
 	addresses: Address[];

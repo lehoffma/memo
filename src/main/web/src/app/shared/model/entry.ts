@@ -1,7 +1,7 @@
-import {ImmutableObject} from "./util/immutable-object";
+import {BaseObject} from "./util/base-object";
 import {EntryCategory} from "./entry-category";
 
-export class Entry extends ImmutableObject<Entry> {
+export class Entry extends BaseObject<Entry> {
 
 	constructor(public readonly id: number,
 				public readonly name: string,

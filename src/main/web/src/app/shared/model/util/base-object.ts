@@ -7,7 +7,7 @@ import {isNumber, isString} from "../../../util/util";
 import * as moment from "moment";
 
 
-export abstract class ImmutableObject<T extends ImmutableObject<T>> {
+export abstract class BaseObject<T extends BaseObject<T>> {
 
 	constructor(public readonly id: number) {
 
@@ -18,9 +18,9 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 	 * @param properties
 	 * @returns {PaymentInfo} this
 	 */
-	setProperties(properties: Partial<T>) {
+	setProperties(properties: Partial<this>) {
 		Object.keys(properties)
-			.forEach(key => {
+			.forEach((key: keyof this) => {
 				let value: (string | number | number[] | Date | UserPermissions) = (<any>properties)[key];
 				if (isArray(value)) {
 
@@ -29,15 +29,15 @@ export abstract class ImmutableObject<T extends ImmutableObject<T>> {
 				} else if (isNumber(value)) {
 					value = +value;
 				} else if (key === "expectedRole") {
-					value = ClubRole[(<any>properties)["expectedRole"]]
+					value = ClubRole[properties[key]]
 				} else if (key === "clubRole") {
-					value = ClubRole[(<any>properties)["clubRole"]];
+					value = ClubRole[properties[key]];
 				} else if (key === "permissions") {
-					value = jsonToPermissions((<any>properties)["permissions"]);
+					value = jsonToPermissions(properties[key]);
 				} else if (key === "gender") {
-					value = Gender[Gender[(<any>properties)[key]]];
+					value = Gender[Gender[(<any>properties[key])]];
 				} else if (key === "category") {
-					value = EntryCategory[(<any>properties)[key]];
+					value = EntryCategory[properties[key]];
 				}
 				this[key] = value;
 			});

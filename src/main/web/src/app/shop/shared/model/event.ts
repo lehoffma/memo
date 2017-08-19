@@ -1,10 +1,10 @@
 import {ClubRole} from "../../../shared/model/club-role";
-import {ImmutableObject} from "../../../shared/model/util/immutable-object";
+import {BaseObject} from "../../../shared/model/util/base-object";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
 
 
-export class Event extends ImmutableObject<Event> {
+export class Event extends BaseObject<Event> {
 	constructor(public id: number,
 				public title: string,
 				public date: Date,

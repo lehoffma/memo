@@ -1,6 +1,6 @@
-import {ImmutableObject} from "../../../shared/model/util/immutable-object";
+import {BaseObject} from "../../../shared/model/util/base-object";
 
-export class Comment extends ImmutableObject<Comment> {
+export class Comment extends BaseObject<Comment> {
 	constructor(public readonly eventId: number,
 				public readonly id: number,
 				public readonly timeStamp: Date,
