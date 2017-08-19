@@ -6,18 +6,17 @@ import com.google.gson.reflect.TypeToken;
 import memo.model.PermissionState;
 import memo.model.User;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Servlet implementation class UserServlet
@@ -136,9 +135,8 @@ public class UserServlet extends HttpServlet {
 			User newUser = gson.fromJson(juser,User.class);
 
 
-
-			if (juser.get("birthDate") != null)
-				newUser.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+            if (juser.get("birthday") != null)
+                newUser.setBirthday(new Date(juser.get("birthday").getAsLong()));
 
 			if (juser.has("addresses"))
 			{
@@ -240,9 +238,8 @@ public class UserServlet extends HttpServlet {
 				}
 
 
-
-				if (juser.has("birthDate"))
-					user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+                if (juser.has("birthday"))
+                    user.setBirthday(new Date(juser.get("birthday").getAsLong()));
 
 
 
@@ -297,10 +294,8 @@ public class UserServlet extends HttpServlet {
 			user = gson.fromJson(juser, User.class);
 
 
-
-
-			if (juser.has("birthDate") )
-				user.setBirthday(new Date(juser.get("birthDate").getAsLong()));
+            if (juser.has("birthday"))
+                user.setBirthday(new Date(juser.get("birthday").getAsLong()));
 
 			if (juser.has("addresses"))
 			{

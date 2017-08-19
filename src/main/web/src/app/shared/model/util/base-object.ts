@@ -7,7 +7,7 @@ import {isNumber, isString} from "../../../util/util";
 import * as moment from "moment";
 
 
-export abstract class ImmutableObject<T extends ImmutableObject<T>> {
+export abstract class BaseObject<T extends BaseObject<T>> {
 
 	constructor(public readonly id: number) {
 
