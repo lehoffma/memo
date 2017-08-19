@@ -90,11 +90,6 @@ export class EntryService extends ServletService<Entry> {
 				.forEach(key => requestOptions.body[key] = options[key]);
 		}
 
-		//todo remove demo
-		if(entry){
-			return Observable.of(entry);
-		}
-
 		return this.performRequest(requestMethod("/api/entry", {entry}, requestOptions))
 			.map(response => response.json().id)
 			.flatMap(id => this.getById(id));
