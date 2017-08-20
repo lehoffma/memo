@@ -41,16 +41,6 @@ export class EntryCategoryService extends ServletService<EntryCategory>{
 		let params = new URLSearchParams();
 		params.set("searchTerm", searchTerm);
 
-		//todo remove demo
-		if(searchTerm !== null){
-			return Observable.of([
-				new EntryCategory(0, "Tickets"),
-				new EntryCategory(2, "Sprit"),
-				new EntryCategory(3, "Mietwagen"),
-				new EntryCategory(4, "Verpflegung"),
-			])
-		}
-
 		return this.http.get(this.baseUrl, {search: params})
 			.map(response => response.json().entryCategories as EntryCategory[]);
 	}
