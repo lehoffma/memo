@@ -170,10 +170,12 @@ export class ModifyShopItemComponent implements OnInit {
 			}
 		);
 
-		let options: any = EventUtilityService.handleOptionalShopType(this.itemType,
+		let options: any = EventUtilityService.handleOptionalShopType<any>(this.itemType,
 			{
 				entries: () => ({eventId: result["eventId"]})
 			});
+
+		//todo upload image seperately
 
 
 		//todo display "submitting..." while waiting for response from server

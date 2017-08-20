@@ -19,6 +19,8 @@ export class PaymentComponent implements OnInit {
 		BIC: ""
 	};
 
+	loading = false;
+
 	@Output() done: EventEmitter<{
 		method: PaymentMethod,
 		data: any
@@ -88,6 +90,7 @@ export class PaymentComponent implements OnInit {
 	 *
 	 */
 	emitDoneEvent() {
+		this.loading = true;
 		this.done.emit({
 			method: this.selectedMethod,
 			data: this.dataModel
