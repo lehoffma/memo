@@ -9,6 +9,7 @@ import {Observable} from "rxjs/Observable";
 import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {EntryCategoryService} from "../../../shared/services/entry-category.service";
 
 @Component({
 	selector: "memo-accounting-options",
@@ -24,12 +25,9 @@ export class AccountingOptionsComponent implements OnInit {
 	};
 
 	costTypes = {
-		tickets: true,
-		tours: true,
-		fuel: true,
-		leasingCar: true,
-		food: true
 	};
+
+	costCategories$ = this.entryCategoryService.getCategories();
 
 	events: Event[] = [];
 
@@ -52,14 +50,18 @@ export class AccountingOptionsComponent implements OnInit {
 
 	constructor(private queryParameterService: QueryParameterService,
 				private router: Router,
+				private entryCategoryService: EntryCategoryService,
 				private eventService: EventService,
 				private activatedRoute: ActivatedRoute) {
 	}
 
 	async ngOnInit() {
+		this.costCategories$.first().subscribe(categories => {
+			categories.forEach(category => this.costTypes[category.name] = true);
+			this.updateQueryParams();
+		});
 		await this.getAvailableEvents();
 		this.readQueryParams();
-		// this.updateQueryParams();
 		this.initEventAutoComplete();
 	}
 
@@ -131,12 +133,13 @@ export class AccountingOptionsComponent implements OnInit {
 	async getAvailableEvents() {
 		await Observable.combineLatest(
 			this.eventService.search("", EventType.tours),
-			this.eventService.search("", EventType.partys)
+			this.eventService.search("", EventType.partys),
+			this.eventService.search("", EventType.merch)
 		)
 			.first()
 			.toPromise()
-			.then(([tours, partys]) => {
-				this.availableEvents = [...tours, ...partys]
+			.then(([tours, partys, merch]) => {
+				this.availableEvents = [...tours, ...partys, ...merch]
 					.filter(event => {
 						let from = !this.dateOptions.from ? moment("1970-01-01") : this.dateOptions.from;
 						let to = !this.dateOptions.to ? moment("2100-01-01") : this.dateOptions.to;

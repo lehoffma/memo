@@ -102,7 +102,6 @@ import {MerchStockComponent} from "./club-management/administration/stock/merch-
 import {MultiValueListExpandedRowComponent} from "./shared/expandable-table/multi-value-list-expanded-row/multi-value-list-expanded-row.component";
 import {MerchStockTotalTableCellComponent} from "./club-management/administration/stock/merch-stock/merch-stock-table-cells/merch-stock-total-table-cell.component";
 import {CostValueTableCellComponent} from "./club-management/accounting/accounting-table-cells/cost-value-table-cell.component";
-import {CostCategoryTableCellComponent} from "./club-management/accounting/accounting-table-cells/cost-category-table-cell.component";
 import {ModifyTourComponent} from "./shop/shop-item/modify-shop-item/modify-tour/modify-tour.component";
 import {ModifyPartyComponent} from "./shop/shop-item/modify-shop-item/modify-party/modify-party.component";
 import {ModifyMerchComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch.component";
@@ -137,6 +136,8 @@ import {DateAdapter, MD_DATE_FORMATS} from "@angular/material";
 import {MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-config/moment-adapter";
 import {CanViewStockGuard} from "./shared/route-guards/can-view-stock.guard";
 import {SignUpService} from "./user/signup/shared/signup.service";
+import {EntryCategoryService} from "./shared/services/entry-category.service";
+import {EntryCategoryCellComponent} from "./club-management/accounting/accounting-table-cells/entry-category-cell.component";
 
 @NgModule({
 	imports: [
@@ -236,7 +237,6 @@ import {SignUpService} from "./user/signup/shared/signup.service";
 		MultiValueListExpandedRowComponent,
 		MerchStockTotalTableCellComponent,
 		CostValueTableCellComponent,
-		CostCategoryTableCellComponent,
 		ModifyTourComponent,
 		ModifyPartyComponent,
 		ModifyMerchComponent,
@@ -259,7 +259,7 @@ import {SignUpService} from "./user/signup/shared/signup.service";
 		CreateEventContextMenuComponent,
 		ConfirmationDialogComponent,
 		AddressEntryComponent,
-
+		EntryCategoryCellComponent
 	],
 	bootstrap: [
 		AppComponent
@@ -268,7 +268,7 @@ import {SignUpService} from "./user/signup/shared/signup.service";
 		NavigationService, UserService, CacheStore, ParticipantsService, CommentService,
 		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
 		EntryService, EventFactoryService, QueryParameterService, StockService, SearchFilterService,
-		ConfirmationDialogService, SignUpService,
+		ConfirmationDialogService, SignUpService, EntryCategoryService,
 
 		//guards
 		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,
@@ -293,14 +293,14 @@ import {SignUpService} from "./user/signup/shared/signup.service";
 		MultiValueListExpandedRowComponent,
 		MerchStockTotalTableCellComponent,
 		CostValueTableCellComponent,
-		CostCategoryTableCellComponent,
 		MerchColorCellComponent,
 		FullNameTableCellComponent,
 		ModifyParticipantComponent,
 		EditCommentDialogComponent,
 		CreateEventContextMenuComponent,
 		EventContextMenuComponent,
-		ConfirmationDialogComponent
+		ConfirmationDialogComponent,
+		EntryCategoryCellComponent
 	]
 })
 export class AppModule {

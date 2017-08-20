@@ -7,6 +7,8 @@ export class Entry extends BaseObject<Entry> {
 				public readonly name: string,
 				public readonly value: number,
 				public readonly date: Date,
+				//todo public readonly comment:string,
+				//todo public readonly imagePath:string,
 				public readonly category: EntryCategory) {
 		super(id);
 	}
@@ -29,6 +31,6 @@ export class Entry extends BaseObject<Entry> {
 			return false;
 		}
 		return queryParameterValue.split("|")
-			.some(type => type.toLowerCase() === EntryCategory[this.category].toLowerCase());
+			.some(type => type.toLowerCase() === this.category.name.toLowerCase());
 	}
 }

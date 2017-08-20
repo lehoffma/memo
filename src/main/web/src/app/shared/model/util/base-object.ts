@@ -1,7 +1,6 @@
 import {ClubRole} from "../club-role";
 import {jsonToPermissions, UserPermissions} from "../permission";
 import {isArray} from "util";
-import {EntryCategory} from "../entry-category";
 import {Gender} from "../gender";
 import {isNumber, isString} from "../../../util/util";
 import * as moment from "moment";
@@ -18,10 +17,10 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 	 * @param properties
 	 * @returns {PaymentInfo} this
 	 */
-	setProperties(properties: Partial<this>) {
+	setProperties(properties: Partial<T>) {
 		Object.keys(properties)
-			.forEach((key: keyof this) => {
-				let value: (string | number | number[] | Date | UserPermissions) = (<any>properties)[key];
+			.forEach((key:keyof (T|this)) => {
+				let value: (string | number | number[] | Date | UserPermissions | any) = (<any>properties)[key];
 				if (isArray(value)) {
 
 				} else if (key.toLowerCase().includes("date") && isString(value)) {
@@ -37,7 +36,9 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 				} else if (key === "gender") {
 					value = Gender[Gender[(<any>properties[key])]];
 				} else if (key === "category") {
-					value = EntryCategory[properties[key]];
+					//todo category update
+					// value =
+					// console.log(value);
 				}
 				this[key] = value;
 			});

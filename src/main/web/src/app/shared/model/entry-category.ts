@@ -1,7 +1,13 @@
-export enum EntryCategory{
-	Tickets = <any> "Tickets",
-	Tours = <any> "Touren",
-	Fuel = <any> "Sprit",
-	LeasingCar = <any> "Mietwagen",
-	Food = <any> "Verpflegung"
+import {BaseObject} from "./util/base-object";
+
+export class EntryCategory extends BaseObject<EntryCategory>{
+	constructor(public readonly id:number,
+				public readonly name:string,
+	){
+		super(id);
+	}
+
+	static create(){
+		return new EntryCategory(-1, "");
+	}
 }

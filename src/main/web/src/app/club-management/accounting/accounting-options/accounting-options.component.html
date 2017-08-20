@@ -43,7 +43,6 @@
 	</md-chip-list>
 
 
-
 	<md-input-container>
 		<input mdInput
 			   tabindex="-1"
@@ -61,43 +60,28 @@
 
 <!--todo?-->
 <!--<div *ngIf="!hidden">-->
-	<!--<h3>Event-Typen</h3>-->
-	<!--<md-checkbox [(ngModel)]="eventTypes['tours']"-->
-				 <!--(ngModelChange)="updateQueryParams()">-->
-		<!--Fahrten-->
-	<!--</md-checkbox>-->
-	<!--<md-checkbox [(ngModel)]="eventTypes['events']"-->
-				 <!--(ngModelChange)="updateQueryParams()">-->
-		<!--Veranstaltungen-->
-	<!--</md-checkbox>-->
-	<!--&lt;!&ndash;todo macht merchandise überhaupt sinn?&ndash;&gt;-->
-	<!--<md-checkbox [(ngModel)]="eventTypes['merch']"-->
-				 <!--(ngModelChange)="updateQueryParams()">-->
-		<!--Merchandise-->
-	<!--</md-checkbox>-->
+<!--<h3>Event-Typen</h3>-->
+<!--<md-checkbox [(ngModel)]="eventTypes['tours']"-->
+<!--(ngModelChange)="updateQueryParams()">-->
+<!--Fahrten-->
+<!--</md-checkbox>-->
+<!--<md-checkbox [(ngModel)]="eventTypes['events']"-->
+<!--(ngModelChange)="updateQueryParams()">-->
+<!--Veranstaltungen-->
+<!--</md-checkbox>-->
+<!--&lt;!&ndash;todo macht merchandise überhaupt sinn?&ndash;&gt;-->
+<!--<md-checkbox [(ngModel)]="eventTypes['merch']"-->
+<!--(ngModelChange)="updateQueryParams()">-->
+<!--Merchandise-->
+<!--</md-checkbox>-->
 <!--</div>-->
 <div *ngIf="!hidden">
 	<h3>Kostenarten</h3>
 
-	<md-checkbox [(ngModel)]="costTypes['tickets']"
+	<md-checkbox *ngFor="let costType of (costCategories$|async)"
+				 [(ngModel)]="costTypes[costType.name]"
 				 (ngModelChange)="updateQueryParams()">
-		Tickets
-	</md-checkbox>
-	<md-checkbox [(ngModel)]="costTypes['tours']"
-				 (ngModelChange)="updateQueryParams()">
-		Touren
-	</md-checkbox>
-	<md-checkbox [(ngModel)]="costTypes['fuel']"
-				 (ngModelChange)="updateQueryParams()">
-		Sprit
-	</md-checkbox>
-	<md-checkbox [(ngModel)]="costTypes['leasingCar']"
-				 (ngModelChange)="updateQueryParams()">
-		Mietwagen
-	</md-checkbox>
-	<md-checkbox [(ngModel)]="costTypes['food']"
-				 (ngModelChange)="updateQueryParams()">
-		Verpflegung
+		{{costType.name}}
 	</md-checkbox>
 </div>
 <!--todo andere optionen?-->
