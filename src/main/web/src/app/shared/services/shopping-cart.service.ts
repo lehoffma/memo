@@ -40,6 +40,13 @@ export class ShoppingCartService implements OnInit {
 	}
 
 	/**
+	 * Resets the cart content
+	 */
+	reset(){
+		this._content.next({tours: [], partys: [], merch:[]});
+	}
+
+	/**
 	 * Testet, ob die übergebenen items equal sind
 	 * @param itemA
 	 * @param itemB

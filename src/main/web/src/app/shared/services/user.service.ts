@@ -55,8 +55,10 @@ export class UserService extends ServletService<User> {
 	isUserEmailAlreadyInUse(email: string): Observable<boolean> {
 		let params: URLSearchParams = new URLSearchParams();
 		params.set("email", email);
-		return this.performRequest(this.http.get("/api/user", {search: params}))
-			.map(response => response.json());
+		return this.http.head("/api/user", {search: params})
+			.retry(3)
+			.catch(error => Observable.of(false))
+			.map(value => value !== false)
 	}
 
 

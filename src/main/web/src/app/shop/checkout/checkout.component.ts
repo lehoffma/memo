@@ -2,13 +2,14 @@ import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {UserService} from "../../shared/services/user.service";
 import {Observable} from "rxjs/Observable";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {LogInService} from "../../shared/services/login.service";
 import {AddressService} from "../../shared/services/address.service";
 import {Address} from "../../shared/model/address";
 import {PaymentMethod} from "./payment/payment-method";
 import {ShoppingCartService} from "../../shared/services/shopping-cart.service";
 import {EventService} from "../../shared/services/event.service";
+import {MdSnackBar} from "@angular/material";
 
 @Component({
 	selector: "memo-checkout",
@@ -25,10 +26,10 @@ export class CheckoutComponent implements OnInit {
 		));
 	total$ = this.cartService.total;
 
-	constructor(private route: ActivatedRoute,
-				private userService: UserService,
+	constructor(private userService: UserService,
 				private cartService: ShoppingCartService,
-				private eventService: EventService,
+				private snackBar: MdSnackBar,
+				private router: Router,
 				private addressService: AddressService,
 				private logInService: LogInService) {
 
@@ -44,14 +45,25 @@ export class CheckoutComponent implements OnInit {
 
 	onAddressChange(address: Address) {
 		console.log(address);
-		//todo save as preferred address or something
+		//todo maybe save as preferred address or something
 	}
 
 	paymentSelectionDone(event: {
 		method: PaymentMethod,
 		data: any
 	}) {
-		console.log(event);
-		//todo proceed to final screen!
+		//todo: shopService or orderService or something
+		//example call: this.orderService.order(method, cartContent, userId, data)
+		//todo remove demo
+		Observable.of(null)
+			.delay(2000)
+			.subscribe(value => {
+				this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
+			}, error => {
+				this.snackBar.open(error, "Schließen", {duration: 2000});
+			}, () => {
+				this.cartService.reset();
+				this.router.navigateByUrl("/");
+			})
 	}
 }
