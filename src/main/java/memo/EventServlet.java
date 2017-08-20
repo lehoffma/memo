@@ -278,7 +278,7 @@ public class EventServlet extends HttpServlet {
 
         em.getTransaction().commit();
 		response.setStatus(201);
-		response.getWriter().append("{ id: " + newEvent.getId()+ " }");
+		response.getWriter().append("{ \"id\": " + newEvent.getId()+ " }");
 
 
 	}
@@ -321,7 +321,7 @@ public class EventServlet extends HttpServlet {
         em.persist(e);
         em.getTransaction().commit();
         response.setStatus(200);
-        response.getWriter().append("{ id: " + e.getId()+ " }");
+        response.getWriter().append("{ \"id\": " + e.getId()+ " }");
         }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
