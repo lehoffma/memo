@@ -5,7 +5,7 @@
 		<input mdInput [mdDatepicker]="startingDatePicker"
 			   placeholder="Von"
 			   [(ngModel)]="dateOptions.from"
-			   (ngModelChange)="updateQueryParams()"
+			   (blur)="updateQueryParams()"
 			   #startingDateInput="ngModel"
 			   name="startingDateInput">
 		<button type="button" mdSuffix [mdDatepickerToggle]="startingDatePicker"></button>
@@ -16,7 +16,7 @@
 		<input mdInput [mdDatepicker]="endDatePicker"
 			   placeholder="Bis"
 			   [(ngModel)]="dateOptions.to"
-			   (ngModelChange)="updateQueryParams()"
+			   (blur)="updateQueryParams()"
 			   #endDateInput="ngModel"
 			   name="endDateInput">
 		<button type="button" mdSuffix [mdDatepickerToggle]="endDatePicker"></button>

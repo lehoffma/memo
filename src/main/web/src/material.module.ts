@@ -3,7 +3,8 @@ import {
 	MdAutocompleteModule,
 	MdButtonModule,
 	MdCardModule,
-	MdCheckboxModule, MdChipsModule,
+	MdCheckboxModule,
+	MdChipsModule,
 	MdDatepickerModule,
 	MdDialogModule,
 	MdIconModule,
@@ -11,6 +12,7 @@ import {
 	MdListModule,
 	MdMenuModule,
 	MdNativeDateModule,
+	MdProgressSpinnerModule,
 	MdRadioModule,
 	MdSelectModule,
 	MdSidenavModule,
@@ -25,12 +27,12 @@ import {
 		MdMenuModule, MdSidenavModule, MdToolbarModule, MdCardModule,
 		MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
 		MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
-		MdAutocompleteModule, MdChipsModule],
+		MdAutocompleteModule, MdChipsModule, MdProgressSpinnerModule],
 	exports: [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepickerModule,
 		MdMenuModule, MdSidenavModule, MdToolbarModule, MdCardModule,
 		MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
 		MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
-		MdAutocompleteModule, MdChipsModule],
+		MdAutocompleteModule, MdChipsModule, MdProgressSpinnerModule],
 })
 export class MemoMaterialModule {
 }

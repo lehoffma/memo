@@ -152,12 +152,20 @@ export class EventService extends ServletService<Event> {
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
 	 * @param event
+	 * @param options
 	 * @returns {Observable<T>}
 	 */
 	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-				event: Event): Observable<Event> {
+				event: Event, options?:any): Observable<Event> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
+		requestOptions.body = {};
+
+		if(options){
+			Object.keys(options)
+				.filter(key => key !== "uploadedImage")
+				.forEach(key => requestOptions.body[key] = options[key]);
+		}
 
 		return this.performRequest(requestMethod(this.baseUrl, {event}, requestOptions))
 			.map(response => response.json().id)
@@ -168,22 +176,24 @@ export class EventService extends ServletService<Event> {
 	 * Sendet ein Event Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
 	 * gibt dann das erstellte Objekt wieder an den Client zurück
 	 * @param event
+	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	add(event: Event): Observable<Event> {
+	add(event: Event, options?:any): Observable<Event> {
 		//todo if merch => update stockService
-		return this.addOrModify(this.http.post.bind(this.http), event);
+		return this.addOrModify(this.http.post.bind(this.http), event, options);
 	}
 
 	/**
 	 * Sendet ein Event Objekt an den Server, welcher dieses mit den übergebeben Daten updaten soll. Der Server
 	 * gibt dann das geupdatete Objekt wieder an den Client zurück
 	 * @param event
+	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	modify(event: Event): Observable<Event> {
+	modify(event: Event, options?:any): Observable<Event> {
 		//todo if merch => update stockService
-		return this.addOrModify(this.http.put.bind(this.http), event);
+		return this.addOrModify(this.http.put.bind(this.http), event, options);
 	}
 
 

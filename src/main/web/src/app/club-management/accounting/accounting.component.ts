@@ -170,6 +170,24 @@ export class AccountingComponent implements OnInit {
 
 	/**
 	 *
+	 * @param {Entry} entry
+	 * @param queryParamMap
+	 * @returns {boolean}
+	 */
+	entryMatchesFilterCriteria(entry:Entry, queryParamMap:ParamMap):boolean{
+		let entryRemains = true;
+		if (queryParamMap.has("eventTypes")) {
+			//todo link entry to event somehow?
+		}
+		if (queryParamMap.has("costTypes")) {
+			entryRemains = entryRemains && entry.categoryMatchesQueryParameter(queryParamMap.get("costTypes"));
+		}
+
+		return entryRemains;
+	}
+
+	/**
+	 *
 	 * @param {ParamMap} paramMap
 	 * @param {ParamMap} queryParamMap
 	 * @param {ColumnSortingEvent<any>} sortBy
@@ -187,23 +205,15 @@ export class AccountingComponent implements OnInit {
 				...eventIds.map(id => this.entryService.getEntriesOfEvent(+id))
 			)
 				.map((eventEntries: Entry[][]) => eventEntries.reduce((acc, current) => [...acc, ...current], []))
-				.map(entries => entries.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
+				.map(entries => entries
+					.filter(entry => this.entryMatchesFilterCriteria(entry, queryParamMap))
+					.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 		}
 
 		//otherwise, we're looking at the general club accounting table
 		return this.entryService.search("", dateRange)
 			.map(entries => entries
-				.filter(entry => {
-					let entryRemains = true;
-					if (queryParamMap.has("eventTypes")) {
-						//todo link entry to event somehow
-					}
-					if (queryParamMap.has("costTypes")) {
-						entryRemains = entryRemains && entry.categoryMatchesQueryParameter(queryParamMap.get("costTypes"));
-					}
-
-					return entryRemains;
-				})
+				.filter(entry => this.entryMatchesFilterCriteria(entry, queryParamMap))
 				.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 	}
 }

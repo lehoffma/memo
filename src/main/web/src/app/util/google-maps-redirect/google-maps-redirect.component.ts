@@ -22,7 +22,7 @@ export class GoogleMapsRedirectComponent implements OnInit {
 			.map(tourStop => tourStop.latitude + "," + tourStop.longitude)
 			.join("/");
 
-		window.location.href = `https://www.google.de/maps/dir/${directionsUrl}`;
+		window.location.replace(`https://www.google.de/maps/dir/${directionsUrl}`);
 	}
 
 }
