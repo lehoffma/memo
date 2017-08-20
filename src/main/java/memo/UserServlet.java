@@ -62,6 +62,24 @@ public class UserServlet extends HttpServlet {
 
 	}
 
+    protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        setContentType(request,response);
+
+        String Sid = request.getParameter("id");
+        String email = request.getParameter("email");
+        String searchTerm = request.getParameter("searchTerm");
+
+        List<User> users = getUsersFromDatabase(Sid,email,searchTerm,response);
+
+        if (users.isEmpty()) {
+            response.setStatus(404);
+            response.getWriter().append("Not found");
+            return;
+        }
+
+    }
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		setContentType(request,response);
