@@ -5,7 +5,7 @@
 		<div class="entry-info-container">
 			<md-input-container>
 				<input mdInput name="titleInput"
-					   type="text" required
+					   required
 					   placeholder="Titel"
 					   #titleInput="ngModel"
 					   [(ngModel)]="entryModel['name']">
@@ -15,8 +15,8 @@
 			</md-input-container>
 			<md-select [(ngModel)]="entryModel['category']" placeholder="Kategorie" #categorySelect="ngModel"
 					   name="categorySelect">
-				<md-option *ngFor="let option of entryCategories" [value]="option">
-					{{option}}
+				<md-option *ngFor="let option of (entryCategories$ | async)" [value]="option">
+					{{option.name}}
 				</md-option>
 			</md-select>
 		</div>

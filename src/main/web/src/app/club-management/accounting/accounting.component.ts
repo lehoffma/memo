@@ -10,12 +10,13 @@ import {SingleValueListExpandedRowComponent} from "../../shared/expandable-table
 import {ExpandedRowComponent} from "../../shared/expandable-table/expanded-row.component";
 import {isNullOrUndefined} from "util";
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
-import {CostCategoryTableCellComponent} from "./accounting-table-cells/cost-category-table-cell.component";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import * as moment from "moment";
 import {DateTableCellComponent} from "../administration/member-list/member-list-table-cells/date-table-cell.component";
 import {LogInService} from "../../shared/services/login.service";
 import {ActionPermissions} from "../../shared/expandable-table/expandable-table.component";
+import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
+import {EventService} from "../../shared/services/event.service";
 
 @Component({
 	selector: "memo-accounting",
@@ -53,12 +54,13 @@ export class AccountingComponent implements OnInit {
 
 	columns = {
 		date: new ExpandableTableColumn<Entry>("Datum", "date", DateTableCellComponent),
-		category: new ExpandableTableColumn<Entry>("Kostenart", "category", CostCategoryTableCellComponent),
+		category: new ExpandableTableColumn<Entry>("Kostenart", "category", EntryCategoryCellComponent),
 		name: new ExpandableTableColumn<Entry>("Name", "name"),
 		value: new ExpandableTableColumn<Entry>("Kosten", "value", CostValueTableCellComponent)
 	};
 
 	constructor(private entryService: EntryService,
+				private eventService: EventService,
 				private activatedRoute: ActivatedRoute,
 				private loginService: LogInService,
 				private router: Router) {
@@ -112,9 +114,15 @@ export class AccountingComponent implements OnInit {
 				const queryParams = {};
 				if (eventIds.length === 1) {
 					queryParams["eventId"] = eventIds[0];
+					this.eventService.getById(+eventIds[0])
+						.subscribe(event => {
+							queryParams["date"] = event.date.toISOString();
+							this.router.navigate(["entries", "create"], {queryParams});
+						})
 				}
-
-				this.router.navigate(["entries", "create"], {queryParams});
+				else{
+					this.router.navigate(["entries", "create"], {queryParams});
+				}
 			});
 	}
 

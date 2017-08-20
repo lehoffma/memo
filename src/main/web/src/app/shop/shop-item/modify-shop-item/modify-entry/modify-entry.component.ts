@@ -1,6 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
-import {EntryCategory} from "../../../../shared/model/entry-category";
 import {Location} from "@angular/common";
 import {Observable} from "rxjs/Observable";
 import {FormControl} from "@angular/forms";
@@ -9,6 +8,7 @@ import {EventService} from "../../../../shared/services/event.service";
 import {Event} from "../../../shared/model/event";
 import {EventType} from "../../../shared/model/event-type";
 import {ActivatedRoute} from "@angular/router";
+import {EntryCategoryService} from "../../../../shared/services/entry-category.service";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -23,9 +23,8 @@ export class ModifyEntryComponent implements OnInit {
 	associatedEvent:Event;
 
 	ModifyType = ModifyType;
-	EntryCategory = EntryCategory;
 
-	entryCategories = [EntryCategory.Food, EntryCategory.Fuel, EntryCategory.LeasingCar, EntryCategory.Tickets, EntryCategory.Tours];
+	entryCategories$ = this.entryCategoryService.getCategories();
 
 	autocompleteFormControl: FormControl = new FormControl();
 	filteredOptions: Observable<Event[]>;
@@ -41,6 +40,7 @@ export class ModifyEntryComponent implements OnInit {
 
 	constructor(private location: Location,
 				private activatedRoute: ActivatedRoute,
+				private entryCategoryService: EntryCategoryService,
 				private eventService: EventService) {
 	}
 
