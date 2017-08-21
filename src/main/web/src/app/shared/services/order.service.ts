@@ -48,39 +48,6 @@ export class OrderService extends ServletService<Order>{
 		let queryParams = new URLSearchParams();
 		queryParams.set("userId", ""+userId);
 
-		//todo remove demo
-		if(userId >= 0){
-			return Observable.of([
-				new Order(0, userId, {method: PaymentMethod.CASH}, [
-					{
-						id: 0,
-						amount: 3,
-						options: {
-							color: {
-								name: "Weiss",
-								hex: "#ffffff"
-							},
-							size: "M"
-						}
-					},
-					{
-						id: 3,
-						amount: 2,
-					}
-				]),
-				new Order(1, userId, {method: PaymentMethod.DEBIT}, [
-					{
-						id: 4,
-						amount: 1,
-					},
-					{
-						id: 5,
-						amount: 5
-					}
-				])
-			])
-		}
-
 		return this.http.get(this.baseUrl, {search: queryParams})
 			.map(response => response.json().orders as Order[]);
 	}
