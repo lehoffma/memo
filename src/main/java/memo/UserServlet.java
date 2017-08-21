@@ -79,10 +79,15 @@ public class UserServlet extends HttpServlet {
         List<User> users = getUsersFromDatabase(Sid,email,searchTerm,response);
 
         if (users.isEmpty()) {
-            response.setStatus(404);
-            response.getWriter().append("Not found");
+            response.setStatus(200);
+            response.getWriter().append("Okay");
             return;
         }
+        else{
+			response.setStatus(409);
+			response.getWriter().append("Email already taken");
+			return;
+		}
 
     }
 
