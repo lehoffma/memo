@@ -2,20 +2,8 @@
 
 
 <memo-order-history-entry *ngFor="let order of orders$|async" [orderEntry]="order">
-	<!--<div class="method">-->
-		<!--{{order.payment.method}}-->
-	<!--</div>-->
-	<!--<div class="ordered-items">-->
-		<!--<div class="ordered-item" *ngFor="let item of order.orderedItems">-->
-			<!--<span class="item-title">-->
-				<!--&lt;!&ndash;todo id is doch kacke&ndash;&gt;-->
-				<!--{{item.id}}-->
-			<!--</span>-->
-			<!--<span class="item-options" *ngIf="item.options">-->
-				<!--<span class="item-size">{{item.size}}</span>,-->
-				<!--<span class="item-color">{{item.color.name}}</span>-->
-			<!--</span>-->
-			<!--<span class="item-amount">x {{item.amount}}</span>-->
-		<!--</div>-->
-	<!--</div>-->
 </memo-order-history-entry>
+
+<div *ngIf="(orders$|async).length === 0">
+	Du hast bisher keine Bestellungen getätigt.
+</div>

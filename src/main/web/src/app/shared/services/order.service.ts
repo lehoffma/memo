@@ -4,6 +4,7 @@ import {Order} from "../model/order";
 import {Observable} from "rxjs/Observable";
 import {Headers, Http, RequestOptions, Response} from "@angular/http";
 import {PaymentMethod} from "../../shop/checkout/payment/payment-method";
+import {OrderStatus} from "../model/order-status";
 
 @Injectable()
 export class OrderService extends ServletService<Order>{
