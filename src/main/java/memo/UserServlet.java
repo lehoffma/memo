@@ -351,6 +351,44 @@ public class UserServlet extends HttpServlet {
 		User newUser = gson.fromJson(jUser, User.class);
 
 
+		if (jUser.has("clubRole")){
+			String srole = jUser.get("clubRole").getAsString();
+			switch (srole)
+			{
+				case "none":
+					newUser.setClubRole(ClubRole.none);
+					break;
+
+				case "mitglied":
+					newUser.setClubRole(ClubRole.Mitglied);
+					break;
+
+				case "vorstand":
+					newUser.setClubRole(ClubRole.Vorstand);
+					break;
+
+				case "schriftfuehrer":
+					newUser.setClubRole(ClubRole.Schriftführer);
+					break;
+
+				case "kassenwart":
+					newUser.setClubRole(ClubRole.Kassenwart);
+					break;
+
+				case "organizer":
+					newUser.setClubRole(ClubRole.Organisator);
+					break;
+
+				case "admin":
+					newUser.setClubRole(ClubRole.Admin);
+					break;
+
+				default:
+					newUser.setClubRole(ClubRole.none);
+			}
+		}
+
+
 		if (jUser.has("birthday")){
 			//todo rest der date parser an ISO format anpassen
 			TemporalAccessor birthday = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
@@ -375,14 +413,14 @@ public class UserServlet extends HttpServlet {
 		}
 
 		if (jUser.has("joinDate")) {
-			Date joinDate = new Date(Calendar.getInstance().getTime().getTime());
 
-			try {
-				joinDate = new Date(jUser.get("joinDate").getAsLong());
-			} catch (Exception e) {
-				// TODO: Log Error
-				System.out.println(e);
-			}
+			TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
+			LocalDate jDate = LocalDate.from(join);
+			newUser.setBirthday(Date.valueOf(jDate));
+
+		}else
+		{
+			Date joinDate = new Date(Calendar.getInstance().getTime().getTime());
 			newUser.setJoinDate(joinDate);
 		}
 
@@ -390,8 +428,7 @@ public class UserServlet extends HttpServlet {
 		if (jUser.has("permissions")) {
 
 
-			PermissionState permissions = new PermissionState(ClubRole.Admin);
-
+			PermissionState permissions = new PermissionState(newUser.getClubRole());
 
 			//If null, use a default value
 			JsonElement nullableText = jUser.get("permissions");

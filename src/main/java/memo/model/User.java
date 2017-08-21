@@ -36,7 +36,6 @@ public class User implements Serializable {
 	@Expose
 	private String surname;
 
-	@Expose
 	@Enumerated(EnumType.ORDINAL)
 	private ClubRole clubRole = ClubRole.none;
 
@@ -118,14 +117,6 @@ public class User implements Serializable {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
-	}
-
-	public ClubRole getRole() {
-		return this.clubRole;
-	}
-
-	public void setRole(ClubRole role) {
-		this.clubRole = role;
 	}
 
 	public Date getBirthday() {
