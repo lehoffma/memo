@@ -291,7 +291,7 @@ public class UserServlet extends HttpServlet {
 			Type collectionType = new TypeToken<List<Integer>>() {
 			}.getType();
 			List<Integer> addresses = gson.fromJson(jUser.getAsJsonArray("addresses"), collectionType);
-			u.setAdresses(addresses);
+			u.setAddresses(addresses);
 		}
 
 
@@ -299,7 +299,7 @@ public class UserServlet extends HttpServlet {
 			Type collectionType = new TypeToken<List<Integer>>() {
 			}.getType();
 			List<Integer> bankAccounts = gson.fromJson(jUser.getAsJsonArray("bankAccounts"), collectionType);
-			u.setAdresses(bankAccounts);
+			u.setAddresses(bankAccounts);
 		}
 
 		if (jUser.has("joinDate")) {

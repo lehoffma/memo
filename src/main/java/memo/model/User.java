@@ -40,9 +40,9 @@ public class User implements Serializable {
 	private ClubRole clubRole = ClubRole.none;
 
 	@ElementCollection
-	@CollectionTable(name ="USER_ADRESSES")
+	@CollectionTable(name ="USER_ADDRESSES")
 	@Expose
-	private List<Integer> adresses = new ArrayList<Integer>();
+	private List<Integer> addresses = new ArrayList<Integer>();
 
 	@Column(nullable = false)
 	private Date birthday = new Date(0);
@@ -255,13 +255,13 @@ public class User implements Serializable {
 		this.clubRole = clubRole;
 	}
 
-	public List<Integer> getAdresses() {
-		return adresses;
+	public List<Integer> getAddresses() {
+		return addresses;
 	}
 
-	public void setAdresses(List<Integer> adresses) {
-		for (Integer a : adresses) {
-			this.adresses.add(a);
+	public void setAddresses(List<Integer> addresses) {
+		for (Integer a : addresses) {
+			this.addresses.add(a);
 		}
 	}
 
@@ -282,7 +282,7 @@ public class User implements Serializable {
 				", firstName='" + firstName + '\'' +
 				", surname='" + surname + '\'' +
 				", clubRole=" + clubRole +
-				", Adresses=" + adresses.toString() +
+				", Adresses=" + addresses.toString() +
 				", birthday=" + birthday +
 				", telephone='" + telephone + '\'' +
 				", mobile='" + mobile + '\'' +
