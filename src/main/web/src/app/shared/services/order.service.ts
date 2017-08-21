@@ -4,6 +4,7 @@ import {Order} from "../model/order";
 import {Observable} from "rxjs/Observable";
 import {Headers, Http, RequestOptions, Response} from "@angular/http";
 import {PaymentMethod} from "../../shop/checkout/payment/payment-method";
+import {OrderStatus} from "../model/order-status";
 
 @Injectable()
 export class OrderService extends ServletService<Order>{
@@ -51,9 +52,11 @@ export class OrderService extends ServletService<Order>{
 		//todo remove demo
 		if(userId >= 0){
 			return Observable.of([
-				new Order(0, userId, {method: PaymentMethod.CASH}, [
+				new Order(0, userId, new Date(), {method: PaymentMethod.CASH}, [
 					{
 						id: 0,
+						price: 10.00,
+						status: OrderStatus.DONE,
 						amount: 3,
 						options: {
 							color: {
@@ -65,16 +68,22 @@ export class OrderService extends ServletService<Order>{
 					},
 					{
 						id: 3,
+						price: 10.00,
+						status: OrderStatus.PROCESSING,
 						amount: 2,
 					}
 				]),
-				new Order(1, userId, {method: PaymentMethod.DEBIT}, [
+				new Order(1, userId, new Date(), {method: PaymentMethod.DEBIT}, [
 					{
 						id: 4,
+						price: 5.00,
+						status: OrderStatus.PROCESSING,
 						amount: 1,
 					},
 					{
 						id: 5,
+						price: 15.00,
+						status: OrderStatus.PROCESSING,
 						amount: 5
 					}
 				])
