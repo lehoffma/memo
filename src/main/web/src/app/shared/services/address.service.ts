@@ -27,7 +27,7 @@ export class AddressService extends ServletService<Address> {
 		}
 
 		return this.performRequest(this.http.get(`/api/address?id=${id}`))
-			.map(response => response.json().addresses)
+			.map(response => response.json().addresses[0])
 			.map(json => Address.create().setProperties(json))
 			.do((address: Address) => this.cache.addOrModify(address));
 	}

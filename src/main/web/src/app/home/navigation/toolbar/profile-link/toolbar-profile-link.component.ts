@@ -40,7 +40,8 @@ export class ToolbarProfileLinkComponent implements OnInit {
 	}
 
 	logout() {
-		this.loginService.logout();
+		this.loginService.logout()
+			.subscribe(logout => null);
 	}
 
 

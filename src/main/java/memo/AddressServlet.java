@@ -35,7 +35,7 @@ public class AddressServlet extends HttpServlet {
 
         Gson gson = new GsonBuilder().serializeNulls().create();
         String output=gson.toJson(addresses);
-        response.getWriter().append("{ \"adresses\": "+ output + " }");
+        response.getWriter().append("{ \"addresses\": "+ output + " }");
 
     }
 

@@ -13,6 +13,7 @@ export class DebitInputFormComponent implements OnInit, OnChanges {
 	@Output() onChange = new EventEmitter<{ formIsValid: boolean, paymentInfo: PaymentInfo }>();
 	model: PaymentInfo = {
 		iban: "",
+		bic: "",
 		name: this.name,
 		company: "",
 		street: "",

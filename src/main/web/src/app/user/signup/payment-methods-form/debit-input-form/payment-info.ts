@@ -1,5 +1,6 @@
 export interface PaymentInfo {
 	iban: string,
+	bic: string,
 	name: string,
 	company: string,
 	street: string,

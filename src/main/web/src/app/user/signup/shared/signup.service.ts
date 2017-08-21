@@ -9,6 +9,8 @@ import {MdSnackBar} from "@angular/material";
 import {LogInService} from "../../../shared/services/login.service";
 import {Address} from "../../../shared/model/address";
 import {AddressService} from "../../../shared/services/address.service";
+import {UserBankAccountService} from "../../../shared/services/user-bank-account.service";
+import {BankAccount} from "../../../shared/model/bank-account";
 
 @Injectable()
 export class SignUpService {
@@ -22,6 +24,7 @@ export class SignUpService {
 
 	constructor(private navigationService: NavigationService,
 				private addressService: AddressService,
+				private bankAccountService: UserBankAccountService,
 				private userService: UserService,
 				private snackBar: MdSnackBar,
 				private loginService: LogInService) {
@@ -155,7 +158,13 @@ export class SignUpService {
 
 		if (isLastScreen) {
 			this.submittingFinalUser = true;
-			this.userService.add(this.newUser, this.newUserProfilePicture, this.newUserDebitInfo)
+			this.userService.add(this.newUser, this.newUserProfilePicture)
+				.flatMap(newUserId => this.bankAccountService.add(BankAccount.create()
+					.setProperties({
+						bic: this.newUserDebitInfo.bic,
+						iban: this.newUserDebitInfo.iban,
+						name: this.newUserDebitInfo.name
+					})))
 				.subscribe(newUserId => {
 						this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
 							duration: 1000
