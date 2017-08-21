@@ -87,7 +87,8 @@ export class SideNavComponent implements OnInit {
 	}
 
 	logout() {
-		this.logInService.logout();
+		this.logInService.logout()
+			.subscribe(logout => null);
 	}
 
 	saveUrl() {

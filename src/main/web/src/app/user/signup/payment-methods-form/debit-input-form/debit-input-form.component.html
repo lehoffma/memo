@@ -15,6 +15,22 @@
 			{{model.iban.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist inkorrekt!"}}
 		</md-hint>
 	</md-input-container>
+	<md-input-container
+		[dividerColor]="(bicInput.touched && bicInput.invalid) ? 'warn'  : 'primary'">
+		<input
+			placeholder="BIC"
+			name="bicInput"
+			#bicInput="ngModel"
+			pattern="[a-zA-Z]{6}[a-zA-Z2-9][a-nA-Np-zP-Z0-9]([a-wyzA-WYZ0-9][a-zA-Z0-9]{2})?([xX]{3})?"
+			[(ngModel)]="model.bic"
+			(blur)="emitOnChange(debitInputForm)"
+			mdInput required>
+		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
+		<md-hint align="end" class="error-message"
+				 *ngIf="bicInput.touched && bicInput.invalid">
+			{{model.bic.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene BIC ist inkorrekt!"}}
+		</md-hint>
+	</md-input-container>
 
 	<h3>Kontoinhaber</h3>
 	<md-input-container>
