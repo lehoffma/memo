@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 //TODO: checks for address and bank account in database
 //TODO: REFACTORING - response is passed around just for IO
 
-@WebServlet("/api/user")
+@WebServlet(name = "UserServlet", value= "/api/user")
 public class UserServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;

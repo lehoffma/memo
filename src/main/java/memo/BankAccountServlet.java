@@ -2,8 +2,7 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
-import memo.model.Address;
-import org.eclipse.persistence.internal.sessions.DirectCollectionChangeRecord;
+import memo.model.BankAcc;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -15,8 +14,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name= "AddressServlet",value = "/api/address")
-public class AddressServlet extends HttpServlet {
+// TODO: Testing (mostly Copy n Paste)
+
+
+@WebServlet(name = "BankAccountServlet", value = "/api/bankaccount")
+public class BankAccountServlet extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,17 +27,17 @@ public class AddressServlet extends HttpServlet {
 
         String Sid = request.getParameter("id");
 
-        List <Address> addresses = getAddressesFromDatabase(Sid,response);
+        List<BankAcc> accList = getAccountsFromDatabase(Sid,response);
 
-        if(addresses.isEmpty()){
+        if(accList.isEmpty()){
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
 
         Gson gson = new GsonBuilder().serializeNulls().create();
-        String output=gson.toJson(addresses);
-        response.getWriter().append("{ \"adresses\": "+ output + " }");
+        String output=gson.toJson(accList);
+        response.getWriter().append("{ \"bankAccounts\": "+ output + " }");
 
     }
 
@@ -43,12 +45,12 @@ public class AddressServlet extends HttpServlet {
 
         setContentType(request,response);
 
-        JsonObject jAddress = getJsonAddress(request,response);
+        JsonObject jAccount = getJsonAccount(request,response);
 
         //ToDo: find Duplicates
 
-        Address a = createAddressFromJson(jAddress);
-        saveAddressToDatabase(a);
+        BankAcc a = createAccountFromJson(jAccount);
+        saveAccountToDatabase(a);
 
         response.setStatus(201);
         response.getWriter().append("{\"id\": "+a.getId()+"}");
@@ -59,16 +61,16 @@ public class AddressServlet extends HttpServlet {
 
         setContentType(request,response);
 
-        JsonObject jAddress = getJsonAddress(request,response);
+        JsonObject jAccount = getJsonAccount(request,response);
 
 
-        if(!jAddress.getAsJsonObject().has("id")){
+        if(!jAccount.getAsJsonObject().has("id")){
             response.setStatus(400);
             response.getWriter().append("invalid data");
             return;
         }
 
-        Address a = getAddressByID(jAddress.get("id").getAsString(),response);
+        BankAcc a = getAccountByID(jAccount.get("id").getAsString(),response);
 
         if(a==null){
             response.setStatus(404);
@@ -77,8 +79,8 @@ public class AddressServlet extends HttpServlet {
         }
 
 
-        a = updateAddressFromJson(jAddress,a);
-        saveAddressToDatabase(a);
+        a = updateAccountFromJson(jAccount,a);
+        saveAccountToDatabase(a);
 
         response.setStatus(201);
         response.getWriter().append("{\"id\": "+a.getId()+"}");
@@ -91,7 +93,7 @@ public class AddressServlet extends HttpServlet {
 
         String Sid = request.getParameter("id");
 
-        Address a = getAddressByID(Sid,response);
+        BankAcc a = getAccountByID(Sid,response);
 
         if (a == null) {
             response.setStatus(404);
@@ -99,7 +101,7 @@ public class AddressServlet extends HttpServlet {
             return;
         }
 
-        removeAddressFromDatabase(a);
+        removeAccountsFromDatabase(a);
 
     }
 
@@ -114,27 +116,29 @@ public class AddressServlet extends HttpServlet {
         return (s != null && !s.isEmpty());
     }
 
-    private List<Address> getAddressesFromDatabase(String Sid, HttpServletResponse response) throws IOException {
-        
+    private List<BankAcc> getAccountsFromDatabase(String Sid, HttpServletResponse response) throws IOException {
+
+        List<BankAcc> accounts = new ArrayList<>();
+
         // if ID is submitted
         if (isStringNotEmpty(Sid)) {
-            Address a = getAddressByID(Sid, response);
+
+            BankAcc a = getAccountByID(Sid, response);
             if (a != null) {
-                List<Address> addresses = new ArrayList<>();
-                addresses.add(a);
-                return addresses;
+                accounts.add(a);
+                return accounts;
             }
         }
 
-        return getAddresses();
+        return getAccounts();
 
     }
 
-    private Address getAddressByID(String Sid, HttpServletResponse response) throws IOException {
+    private BankAcc getAccountByID(String Sid, HttpServletResponse response) throws IOException {
         try {
             Integer id = Integer.parseInt(Sid);
             //ToDo: gibt null aus wenn id nicht vergeben
-            return DatabaseManager.createEntityManager().find(Address.class, id);
+            return DatabaseManager.createEntityManager().find(BankAcc.class, id);
         } catch (NumberFormatException e) {
             response.getWriter().append("Bad ID Value");
             response.setStatus(400);
@@ -142,41 +146,41 @@ public class AddressServlet extends HttpServlet {
         return null;
     }
 
-    private List<Address> getAddresses() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT a FROM Address a", Address.class).getResultList();
+    private List<BankAcc> getAccounts() {
+        return DatabaseManager.createEntityManager().createQuery("SELECT a FROM BankAcc a", BankAcc.class).getResultList();
     }
 
-    private JsonObject getJsonAddress(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private JsonObject getJsonAccount(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String body = CharStreams.toString(request.getReader());
 
         JsonElement jElement = new JsonParser().parse(body);
-        return jElement.getAsJsonObject().getAsJsonObject("address");
+        return jElement.getAsJsonObject().getAsJsonObject("bankAccount");
     }
 
-    private Address createAddressFromJson(JsonObject jAddress) {
+    private BankAcc createAccountFromJson(JsonObject jAccount) {
 
-        return updateAddressFromJson(jAddress,new Address());
+        return updateAccountFromJson(jAccount,new BankAcc());
     }
 
-    private Address updateAddressFromJson(JsonObject jAddress, Address a) {
+    private BankAcc updateAccountFromJson(JsonObject jAccount, BankAcc a) {
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        a = gson.fromJson(jAddress, Address.class);
+        a = gson.fromJson(jAccount, BankAcc.class);
 
         return a;
     }
 
-    private void saveAddressToDatabase(Address newAddress) {
+    private void saveAccountToDatabase(BankAcc newAccount) {
 
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
-        em.persist(newAddress);
+        em.persist(newAccount);
         em.getTransaction().commit();
     }
 
-    private void removeAddressFromDatabase(Address u)	{
+    private void removeAccountsFromDatabase(BankAcc u)	{
 
         DatabaseManager.createEntityManager().getTransaction().begin();
         u = DatabaseManager.createEntityManager().merge(u);
