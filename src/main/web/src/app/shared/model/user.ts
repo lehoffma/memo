@@ -3,6 +3,29 @@ import {UserPermissions} from "./permission";
 import {BaseObject} from "./util/base-object";
 import {Gender} from "./gender";
 
+/*
+adresses			:[]
+bankAccounts		:[]
+birthday			:"Jul 31, 2017"
+clubRole			:null
+email				:"lennarthoffmann@gmx.de"
+firstName			:"aa"
+gender				:"Männlich"
+hasDebitAuth		:false
+hasSeasonTicket		:false
+id					:1
+imagePath			:"resources/images/Logo.png"
+isStudent			:true
+isWoelfeClubMember	:false
+joinDate			:"Aug 21, 2017"
+miles				:0
+mobile				:null
+passwordHash		:"gzae"
+permissions			:{id: 1, funds: "5", party: "5", user: "5", merch: "5", tour: "5", stock: "5", settings: "5"}
+surname				:"aa"
+telephone			:""
+ */
+
 
 export class User extends BaseObject<User> {
 	/**

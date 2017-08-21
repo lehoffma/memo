@@ -56,7 +56,6 @@ export class UserService extends ServletService<User> {
 		let params: URLSearchParams = new URLSearchParams();
 		params.set("email", email);
 		return this.http.head("/api/user", {search: params})
-			.retry(3)
 			.catch(error => Observable.of(false))
 			.map(value => value !== false)
 	}

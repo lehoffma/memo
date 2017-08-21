@@ -49,7 +49,7 @@ public class LoginServlet extends HttpServlet {
 		if (user.getPasswordHash().equals(password))
         {
             response.setStatus(202);
-            response.getWriter().append("{ 'id': "+ user.getId()+", 'auth_token': null }");
+            response.getWriter().append("{ \"id\": "+ user.getId()+", \"auth_token\": null }");
         }
         else
         {

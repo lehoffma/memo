@@ -10,6 +10,12 @@ import memo.model.User;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -345,8 +351,13 @@ public class UserServlet extends HttpServlet {
 		User newUser = gson.fromJson(jUser, User.class);
 
 
-		if (jUser.has("birthday"))
-			newUser.setBirthday(new Date(jUser.get("birthday").getAsLong()));
+		if (jUser.has("birthday")){
+			//todo rest der date parser an ISO format anpassen
+			TemporalAccessor birthday = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
+			LocalDate date = LocalDate.from(birthday);
+			newUser.setBirthday(Date.valueOf(date));
+		}
+
 
 		if (jUser.has("addresses")) {
 			Type collectionType = new TypeToken<List<Integer>>() {
