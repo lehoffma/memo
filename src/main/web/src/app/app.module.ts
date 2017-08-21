@@ -138,6 +138,10 @@ import {CanViewStockGuard} from "./shared/route-guards/can-view-stock.guard";
 import {SignUpService} from "./user/signup/shared/signup.service";
 import {EntryCategoryService} from "./shared/services/entry-category.service";
 import {EntryCategoryCellComponent} from "./club-management/accounting/accounting-table-cells/entry-category-cell.component";
+import {UserBankAccountService} from "./shared/services/user-bank-account.service";
+import {OrderService} from "./shared/services/order.service";
+import {ErrorPageComponent} from "./util/error-page/error-page.component";
+import {OrderHistoryEntryComponent} from "./user/order-history/order-history-entry/order-history-entry.component";
 
 @NgModule({
 	imports: [
@@ -259,7 +263,9 @@ import {EntryCategoryCellComponent} from "./club-management/accounting/accountin
 		CreateEventContextMenuComponent,
 		ConfirmationDialogComponent,
 		AddressEntryComponent,
-		EntryCategoryCellComponent
+		EntryCategoryCellComponent,
+		ErrorPageComponent,
+		OrderHistoryEntryComponent
 	],
 	bootstrap: [
 		AppComponent
@@ -268,7 +274,7 @@ import {EntryCategoryCellComponent} from "./club-management/accounting/accountin
 		NavigationService, UserService, CacheStore, ParticipantsService, CommentService,
 		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
 		EntryService, EventFactoryService, QueryParameterService, StockService, SearchFilterService,
-		ConfirmationDialogService, SignUpService, EntryCategoryService,
+		ConfirmationDialogService, SignUpService, EntryCategoryService, UserBankAccountService, OrderService,
 
 		//guards
 		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,

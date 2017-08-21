@@ -1,7 +1,22 @@
+@import "~@angular/material/theming";
+@import "../../../../theme";
 
 .sorting-dropdown {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	cursor: pointer;
+}
+
+button.selected{
+	background-color: mat-color($accent, 700);
+	color: white;
+
+	&:focus{
+		background-color: mat-color($accent, 800) !important;
+	}
+
+	&:hover{
+		background-color: mat-color($accent, 900) !important;
+	}
 }

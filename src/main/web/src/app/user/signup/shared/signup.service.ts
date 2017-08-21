@@ -131,7 +131,8 @@ export class SignUpService {
 			firstName,
 			surname,
 			birthday,
-			phoneNumber,
+			telephone,
+			mobile,
 			isStudent,
 			profilePicture,
 			paymentInfo
@@ -142,7 +143,7 @@ export class SignUpService {
 				this.newUser.setProperties({email, passwordHash});
 				break;
 			case SignUpSection.PersonalData:
-				this.newUser.setProperties({firstName, surname, birthday: birthday, telephone: phoneNumber, isStudent});
+				this.newUser.setProperties({firstName, surname, birthday, telephone, mobile, isStudent});
 				this.newUserProfilePicture = profilePicture;
 				console.log(profilePicture);
 				break;

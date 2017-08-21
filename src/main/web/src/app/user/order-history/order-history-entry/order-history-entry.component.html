@@ -1,0 +1,29 @@
+<div class="method">
+	{{orderEntry?.payment.method}}
+</div>
+<div *ngFor="let item of orderEntry?.orderedItems" class="ordered-items">
+	<a routerLink="{{linkToItem}}">
+		<div class="cart-entry-picture">
+			<!--todo order entry objekt-->
+			<!--<img src="{{item.imagePath}}"/>-->
+		</div>
+		<div class="cart-entry-header">
+			<h3 class="mat-h4">
+				<!--todo order entry objekt-->
+				<!--{{item.title}}-->
+				Bestellung
+			</h3>
+			<div *ngIf="item.options" class="merch-color-container mat-body-1">
+				{{item.options.color.name}}, {{item.options.size}}
+			</div>
+		</div>
+	</a>
+	<div>
+		<div class="cart-entry-amount">
+			{{item.amount}}
+		</div>
+
+		<div class="price">{{'20.00' | currency:'EUR':2}}</div>
+		<!--<div class="price">{{(orderEntry.item.price*orderEntry.amount).toFixed(2)}} €</div>-->
+	</div>
+</div>

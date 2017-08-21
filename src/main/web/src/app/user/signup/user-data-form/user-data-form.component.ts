@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {Gender} from "../../../shared/model/gender";
 import {ClubRole} from "../../../shared/model/club-role";
 import {LogInService} from "../../../shared/services/login.service";
@@ -7,28 +7,21 @@ import {Observable} from "rxjs/Observable";
 import {Address} from "../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Router} from "@angular/router";
+import {UserService} from "../../../shared/services/user.service";
+import {FormControlDirective} from "@angular/forms";
 
 @Component({
 	selector: "memo-user-data-form",
 	templateUrl: "./user-data-form.component.html",
 	styleUrls: ["./user-data-form.component.scss"]
 })
-export class UserDataFormComponent implements OnInit {
+export class UserDataFormComponent implements OnInit, OnChanges {
 	@Output() onSubmit = new EventEmitter<any>();
 	@Input() withSubmitButton = true;
 	@Input() withEmailAndPassword = false;
 	@Input() previousValue = {};
 	confirmedPassword = "";
-	@Input() model = {
-		email: undefined,
-		password: undefined,
-		firstName: undefined,
-		surname: undefined,
-		gender: undefined,
-		birthday: undefined,
-		phoneNumber: undefined,
-		isStudent: undefined,
-	};
+	@Input() model = {};
 	@Input() profilePicture: any = "resources/images/Logo.png";
 	@Output() modelChange = new EventEmitter();
 	@Output() onCancel = new EventEmitter();
@@ -55,12 +48,6 @@ export class UserDataFormComponent implements OnInit {
 		return user !== null && user.clubRole === ClubRole.Admin;
 	});
 
-	addresses$ = this.loginService.currentUser().flatMap(user => {
-		return user === null
-			? Observable.of([])
-			: Observable.forkJoin(...user.addresses.map(addressId => this.addressService.getById(addressId)));
-	});
-
 	@Input()
 	set addresses(addresses: Address[]) {
 		this.addressesSubject$.next(addresses);
@@ -69,14 +56,34 @@ export class UserDataFormComponent implements OnInit {
 	addressesSubject$ = new BehaviorSubject<Address[]>([]);
 
 	constructor(public loginService: LogInService,
+				public userService: UserService,
 				public router: Router,
 				public addressService: AddressService) {
-		this.addresses$.subscribe(addresses => this.addressesSubject$.next(addresses));
 	}
 
 	ngOnInit() {
 	}
 
+	/**
+	 *
+	 * @param {SimpleChanges} changes
+	 */
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes["model"] && this.model["id"] !== undefined && this.model["id"] !== -1) {
+			this.userService.getById(this.model["id"])
+				.flatMap(user => {
+					return user === null
+						? Observable.of([])
+						: Observable.forkJoin(...user.addresses.map(addressId => this.addressService.getById(addressId)));
+				})
+				.first()
+				.subscribe(addresses => this.addressesSubject$.next(addresses));
+		}
+	}
+
+	/**
+	 *
+	 */
 	submit() {
 		this.onSubmit.emit({
 			...this.model,
@@ -85,11 +92,32 @@ export class UserDataFormComponent implements OnInit {
 	}
 
 	/**
+	 *
+	 * @param {FormControlDirective} userDataForm
+	 * @returns {boolean}
+	 */
+	userCanSaveChanges(userDataForm: FormControlDirective): boolean {
+		return userDataForm.form.valid
+			&& (this.previousValueIsEmpty() || !this.modelHasNotChanged())
+			&& (!this.userModel['password'] || this.userModel['password'].length === 0
+				|| this.userModel['password'] === this.confirmedPassword)
+	}
+
+	/**
+	 * Checks whether the previous value is set at all
+	 * @returns {boolean}
+	 */
+	previousValueIsEmpty() {
+		return Object.keys(this.previousValue).length === 0;
+	}
+
+	/**
 	 * Checks whether the previous values are identical to the ones currently entered into the form
 	 *  => the user hasnt changed the values at all (or entered the ones that were saved previously)
 	 * @returns {{} | boolean}
 	 */
 	modelHasNotChanged() {
+		console.log(this.previousValue);
 		return this.previousValue
 			&& Object.keys(this.previousValue).length > 0
 			&& Object.keys(this.previousValue).every(key => this.model[key] === this.previousValue[key])
@@ -124,6 +152,10 @@ export class UserDataFormComponent implements OnInit {
 			this.addressesSubject$.value
 				.filter(_address => _address.id !== address.id)
 		);
+		if (this.model["addresses"]) {
+			const addressIndex = this.model["addresses"].findIndex(addressId => addressId === address.id);
+			this.model["addresses"] = this.model["addresses"].splice(addressIndex, 1);
+		}
 		this.onAddressModification.emit({action: "delete", address});
 	}
 
