@@ -123,149 +123,37 @@ public class UserServlet extends HttpServlet {
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO: refactor
 
-		request.setCharacterEncoding("UTF-8");
-		response.setContentType("charset=UTF-8");
-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		//ToDo: refactor
+		setContentType(request,response);
 
-		String body = CharStreams.toString(request.getReader());
+		JsonObject jUser = getJsonUser(request,response);
 
-		JsonElement jElement = new JsonParser().parse(body);
-		JsonObject juser = jElement.getAsJsonObject().getAsJsonObject("user");
-		//ToDo: delete email
+		String email = jUser.get("email").getAsString();
+		Integer id = jUser.get("id").getAsInt();
 
-		String email = juser.get("email").getAsString();
-		Integer id = juser.get("id").getAsInt();
+		List<User> users = getUsersFromDatabase(id.toString(),email,null,response);
 
-		// get JPA Entity Manager
-		EntityManager em = DatabaseManager.createEntityManager();
-
-		User user;
-
-		if (id == null) {
-			//only use email
-			if (!(email != null && !email.isEmpty())) {
-				// neither email nor id
-				response.setStatus(400);
-				response.getWriter().append("Bad Data");
-				return;
-			}
-
-			List<User> users;
-			users = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class).setParameter("email", email).getResultList();
-
-
-			if (!users.isEmpty()) {
-
-				user = users.get(0);
-				em.getTransaction().begin();
-				user = gson.fromJson(juser, User.class);
-
-				if (juser.has("addresses")) {
-					Type collectionType = new TypeToken<List<Integer>>() {
-					}.getType();
-					List<Integer> addresses = gson.fromJson(juser.getAsJsonArray("addresses"), collectionType);
-					user.setAdresses(addresses);
-				}
-
-
-				if (juser.has("bankAccounts")) {
-					Type collectionType = new TypeToken<List<Integer>>() {
-					}.getType();
-					List<Integer> bankAccounts = gson.fromJson(juser.getAsJsonArray("bankAccounts"), collectionType);
-					user.setAdresses(bankAccounts);
-				}
-
-
-				if (juser.has("birthday"))
-					user.setBirthday(new Date(juser.get("birthday").getAsLong()));
-
-
-				if (juser.has("joinDate"))
-					user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
-
-
-				em.getTransaction().begin();
-				if (!juser.has("permissions")) {
-
-
-					JsonObject jPer = juser.getAsJsonObject("permissions");
-					PermissionState permission = gson.fromJson(jPer, PermissionState.class);
-					user.setPermissions(permission);
-					em.persist(permission);
-				}
-
-				// save new User
-
-				em.persist(user);
-				em.getTransaction().commit();
-				response.setStatus(200);
-				response.setContentType("application/json;charset=UTF-8");
-				response.getWriter().append("{ id: " + user.getId() + " }");
-				return;
-
-
-			} else {
-				//no user with that email
-				response.getWriter().append("Not found");
-				response.setStatus(404);
-				return;
-			}
-		} else {
-			user = em.find(User.class, id);
-			List<User> users;
-			users = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class).setParameter("email", email).getResultList();
-
-			if (user == null) {
-				response.getWriter().append("Not found");
-				response.setStatus(404);
-				return;
-			}
-
-
-			em.getTransaction().begin();
-			user = gson.fromJson(juser, User.class);
-
-
-			if (juser.has("birthday"))
-				user.setBirthday(new Date(juser.get("birthday").getAsLong()));
-
-			if (juser.has("addresses")) {
-				Type collectionType = new TypeToken<List<Integer>>() {
-				}.getType();
-				List<Integer> addresses = gson.fromJson(juser.getAsJsonArray("addresses"), collectionType);
-				user.setAdresses(addresses);
-			}
-
-
-			if (juser.has("bankAccounts")) {
-				Type collectionType = new TypeToken<List<Integer>>() {
-				}.getType();
-				List<Integer> bankAccounts = gson.fromJson(juser.getAsJsonArray("bankAccounts"), collectionType);
-				user.setAdresses(bankAccounts);
-			}
-
-			if (juser.has("joinDate"))
-				user.setJoinDate(new Date(juser.get("joinDate").getAsLong()));
-
-			if (juser.has("permissions")) {
-
-				JsonObject jPer = juser.getAsJsonObject("permissions");
-				PermissionState permission;
-				permission = gson.fromJson(jPer, PermissionState.class);
-				user.setPermissions(permission);
-				em.persist(permission);
-
-			}
-
-			em.getTransaction().commit();
-			response.setStatus(200);
-			response.setContentType("application/json;charset=UTF-8");
-			response.getWriter().append("{ \"id\": " + user.getId() + " }");
+		if (users.isEmpty())
+		{
+			response.getWriter().append("Not found");
+			response.setStatus(404);
 			return;
 		}
+
+		if (users.size()>1)
+		{
+			response.getWriter().append("Ambiguous results");
+			response.setStatus(400);
+			return;
+		}
+
+		User u = users.get(0);
+
+		updateUserFromJson(jUser,u);
+		saveUserToDatabase(u);
+
+		response.setStatus(200);
+		response.getWriter().append("{ \"id\": " + u.getId() + " }");
 
 	}
 
@@ -346,9 +234,14 @@ public class UserServlet extends HttpServlet {
 
 	private User createUserFromJson(JsonObject jUser) {
 
+		return updateUserFromJson(jUser,new User());
+	}
+
+	private User updateUserFromJson(JsonObject jUser, User u) {
+
 		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		// save params to new user
-		User newUser = gson.fromJson(jUser, User.class);
+		u = gson.fromJson(jUser, User.class);
 
 
 		if (jUser.has("clubRole")){
@@ -356,35 +249,35 @@ public class UserServlet extends HttpServlet {
 			switch (srole)
 			{
 				case "none":
-					newUser.setClubRole(ClubRole.none);
+					u.setClubRole(ClubRole.none);
 					break;
 
 				case "mitglied":
-					newUser.setClubRole(ClubRole.Mitglied);
+					u.setClubRole(ClubRole.Mitglied);
 					break;
 
 				case "vorstand":
-					newUser.setClubRole(ClubRole.Vorstand);
+					u.setClubRole(ClubRole.Vorstand);
 					break;
 
 				case "schriftfuehrer":
-					newUser.setClubRole(ClubRole.Schriftführer);
+					u.setClubRole(ClubRole.Schriftführer);
 					break;
 
 				case "kassenwart":
-					newUser.setClubRole(ClubRole.Kassenwart);
+					u.setClubRole(ClubRole.Kassenwart);
 					break;
 
 				case "organizer":
-					newUser.setClubRole(ClubRole.Organisator);
+					u.setClubRole(ClubRole.Organisator);
 					break;
 
 				case "admin":
-					newUser.setClubRole(ClubRole.Admin);
+					u.setClubRole(ClubRole.Admin);
 					break;
 
 				default:
-					newUser.setClubRole(ClubRole.none);
+					u.setClubRole(ClubRole.none);
 			}
 		}
 
@@ -393,7 +286,7 @@ public class UserServlet extends HttpServlet {
 			//todo rest der date parser an ISO format anpassen
 			TemporalAccessor birthday = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
 			LocalDate date = LocalDate.from(birthday);
-			newUser.setBirthday(Date.valueOf(date));
+			u.setBirthday(Date.valueOf(date));
 		}
 
 
@@ -401,7 +294,7 @@ public class UserServlet extends HttpServlet {
 			Type collectionType = new TypeToken<List<Integer>>() {
 			}.getType();
 			List<Integer> addresses = gson.fromJson(jUser.getAsJsonArray("addresses"), collectionType);
-			newUser.setAdresses(addresses);
+			u.setAdresses(addresses);
 		}
 
 
@@ -409,26 +302,26 @@ public class UserServlet extends HttpServlet {
 			Type collectionType = new TypeToken<List<Integer>>() {
 			}.getType();
 			List<Integer> bankAccounts = gson.fromJson(jUser.getAsJsonArray("bankAccounts"), collectionType);
-			newUser.setAdresses(bankAccounts);
+			u.setAdresses(bankAccounts);
 		}
 
 		if (jUser.has("joinDate")) {
 
 			TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
 			LocalDate jDate = LocalDate.from(join);
-			newUser.setBirthday(Date.valueOf(jDate));
+			u.setBirthday(Date.valueOf(jDate));
 
 		}else
 		{
 			Date joinDate = new Date(Calendar.getInstance().getTime().getTime());
-			newUser.setJoinDate(joinDate);
+			u.setJoinDate(joinDate);
 		}
 
 
 		if (jUser.has("permissions")) {
 
 
-			PermissionState permissions = new PermissionState(newUser.getClubRole());
+			PermissionState permissions = new PermissionState(u.getClubRole());
 
 			//If null, use a default value
 			JsonElement nullableText = jUser.get("permissions");
@@ -438,10 +331,10 @@ public class UserServlet extends HttpServlet {
 
 			}
 
-			newUser.setPermissions(permissions);
+			u.setPermissions(permissions);
 		}
 
-		return newUser;
+		return u;
 	}
 
 	private void saveUserToDatabase(User newUser) {
