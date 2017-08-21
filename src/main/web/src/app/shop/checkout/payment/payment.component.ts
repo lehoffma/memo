@@ -19,10 +19,13 @@ export class PaymentComponent implements OnInit {
 		BIC: ""
 	};
 
+	chosenBankAccount = -1;
+
 	loading = false;
 
 	@Output() done: EventEmitter<{
 		method: PaymentMethod,
+		chosenBankAccount: number,
 		data: any
 	}> = new EventEmitter();
 
@@ -93,6 +96,7 @@ export class PaymentComponent implements OnInit {
 		this.loading = true;
 		this.done.emit({
 			method: this.selectedMethod,
+			chosenBankAccount: this.chosenBankAccount,
 			data: this.dataModel
 		})
 	}

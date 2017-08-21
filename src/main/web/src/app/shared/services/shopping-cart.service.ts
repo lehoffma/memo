@@ -13,7 +13,7 @@ export class ShoppingCartService implements OnInit {
 		partys: [],
 		tours: []
 	});
-	public content = this._content.asObservable();
+	public content:Observable<ShoppingCartContent> = this._content.asObservable();
 
 
 	constructor(private eventService: EventService,) {

@@ -2,8 +2,12 @@ import {Component, OnInit} from "@angular/core";
 
 @Component({
 	selector: "memo-unauthorized-access",
-	templateUrl: "./unauthorized-access.component.html",
-	styleUrls: ["./unauthorized-access.component.scss"]
+	template: `
+		<memo-error-page [errorCode]="403"
+						 [errorMessage]="'Du hast nicht genügend Privilegien, um die angeforderte Seite zu betrachten.'">
+
+		</memo-error-page>
+	`,
 })
 export class UnauthorizedAccessComponent implements OnInit {
 

@@ -24,18 +24,19 @@ export class AccountingOptionsComponent implements OnInit {
 		merch: true
 	};
 
-	costTypes = {
-	};
+	costTypes = {};
 
 	costCategories$ = this.entryCategoryService.getCategories();
 
 	events: Event[] = [];
 
 	availableEvents$ = new BehaviorSubject<Event[]>([]);
-	get availableEvents(){
+
+	get availableEvents() {
 		return this.availableEvents$.value;
 	}
-	set availableEvents(events: Event[]){
+
+	set availableEvents(events: Event[]) {
 		this.availableEvents$.next(events);
 	}
 
@@ -71,7 +72,7 @@ export class AccountingOptionsComponent implements OnInit {
 	initEventAutoComplete() {
 		this.autocompleteFormControl.valueChanges
 			.subscribe(value => {
-				if (EventUtilityService.isTour(value) || EventUtilityService.isParty(value)) {
+				if (EventUtilityService.isTour(value) || EventUtilityService.isParty(value) || EventUtilityService.isMerchandise(value)) {
 					this.events.push(value);
 					this.autocompleteFormControl.reset();
 					this.updateQueryParams();

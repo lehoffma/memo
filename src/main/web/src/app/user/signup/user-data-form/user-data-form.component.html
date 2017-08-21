@@ -58,17 +58,34 @@
 			</div>
 			<div>
 				<md-input-container
-					[dividerColor]="(phoneNumber.touched && phoneNumber.invalid) ? 'warn' : 'primary'">
+					[dividerColor]="(telephone.touched && telephone.invalid) ? 'warn' : 'primary'">
 					<input mdInput
 						   placeholder="Telefon"
 						   type="tel"
 						   pattern="^[0-9\-\+\s\(\)]*$"
-						   name="phoneNumber"
-						   #phoneNumber="ngModel"
-						   [(ngModel)]="userModel['phoneNumber']"
+						   name="telephone"
+						   #telephone="ngModel"
+						   [(ngModel)]="userModel['telephone']"
 					>
 					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-					<md-hint align="end" class="error-message" *ngIf="phoneNumber.touched && (phoneNumber.invalid)">
+					<md-hint align="end" class="error-message" *ngIf="telephone.touched && (telephone.invalid)">
+						Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
+					</md-hint>
+				</md-input-container>
+			</div>
+			<div>
+				<md-input-container
+					[dividerColor]="(mobile.touched && mobile.invalid) ? 'warn' : 'primary'">
+					<input mdInput
+						   placeholder="Mobiltelefon"
+						   type="tel"
+						   pattern="^[0-9\-\+\s\(\)]*$"
+						   name="mobile"
+						   #mobile="ngModel"
+						   [(ngModel)]="userModel['mobile']"
+					>
+					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
+					<md-hint align="end" class="error-message" *ngIf="mobile.touched && (mobile.invalid)">
 						Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
 					</md-hint>
 				</md-input-container>
@@ -114,8 +131,9 @@
 							(onDelete)="deleteAddress(address)"
 		>
 		</memo-address-entry>
-		<a md-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">Neue Addresse
-			hinzufügen</a>
+		<a md-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">
+			Neue Addresse hinzufügen
+		</a>
 
 	</div>
 
@@ -216,9 +234,7 @@
 	<div class="form-actions">
 		<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 		<button color="accent"
-				[disabled]="!userDataForm.form.valid
-				|| (previousValue && modelHasNotChanged())
-				|| (userModel['password'] && userModel['password'].length > 0 && userModel['password'] !== confirmedPassword)"
+				[disabled]="!userCanSaveChanges(userDataForm)"
 				md-raised-button>
 			Speichern
 		</button>

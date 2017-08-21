@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Tour} from "../../../shared/model/tour";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 import {EventService} from "../../../../shared/services/event.service";
@@ -13,6 +13,7 @@ import {rolePermissions} from "../../../../shared/model/club-role";
 import {CommentService} from "../../../../shared/services/comment.service";
 import {Comment} from "../../../shared/model/comment";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 
 
 @Component({
@@ -22,7 +23,11 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 })
 export class TourDetailComponent implements OnInit {
 	tour$: Observable<Tour> = this.activatedRoute.params
-		.flatMap(params => this.eventService.getById(+params["id"]));
+		.flatMap(params => this.eventService.getById(+params["id"]))
+		.flatMap(event => event === undefined || !EventUtilityService.isTour(event)
+			? Observable.throw(new Error())
+			: Observable.of(event))
+		.catch(error => this.router.navigateByUrl("page-not-found", {skipLocationChange: true, replaceUrl: true}));
 
 	overViewKeys$: Observable<EventOverviewKey[]> = this.tour$.map(tour => tour.overviewKeys);
 
@@ -50,6 +55,7 @@ export class TourDetailComponent implements OnInit {
 	commentsSubject$ = new BehaviorSubject<Comment[]>([]);
 
 	constructor(private activatedRoute: ActivatedRoute,
+				private router: Router,
 				private participantService: ParticipantsService,
 				private loginService: LogInService,
 				private commentService: CommentService,

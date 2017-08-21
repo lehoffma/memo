@@ -12,6 +12,8 @@
 	<ng-template ngFor let-child [ngForOf]="option.children">
 		<div *ngIf="isLeaf(child); else nestedLayer"
 			 class="multi-level-select-entry-child"
+			 title="{{child.selected ? 'Filter löschen' : 'Filter auswählen'}}"
+			 [ngClass]="{'selected': option.selectType === 'single' && child.selected}"
 			 (click)="childOnClick(child, $event)"
 			 md-menu-item>
 

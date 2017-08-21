@@ -35,10 +35,6 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 					value = jsonToPermissions(properties[key]);
 				} else if (key === "gender") {
 					value = Gender[Gender[(<any>properties[key])]];
-				} else if (key === "category") {
-					//todo category update
-					// value =
-					// console.log(value);
 				}
 				this[key] = value;
 			});
