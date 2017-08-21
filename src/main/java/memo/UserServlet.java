@@ -149,7 +149,7 @@ public class UserServlet extends HttpServlet {
 
 		User u = users.get(0);
 
-		updateUserFromJson(jUser,u);
+		u = updateUserFromJson(jUser,u);
 		saveUserToDatabase(u);
 
 		response.setStatus(200);
@@ -163,8 +163,6 @@ public class UserServlet extends HttpServlet {
 
 		String Sid = request.getParameter("id");
 
-
-		boolean miss = false;
 		User u = getUserByID(Sid,response);
 
 		if (u == null) {
@@ -174,7 +172,6 @@ public class UserServlet extends HttpServlet {
 		}
 
 		removeUserFromDatabase(u);
-
 
 	}
 

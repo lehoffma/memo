@@ -17,156 +17,171 @@ import java.util.List;
 
 @WebServlet("/api/address")
 public class AddressServlet extends HttpServlet {
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
-        EntityManager em = DatabaseManager.createEntityManager();
-        //bearbeiten, im body ist die neue address
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        String body = CharStreams.toString(request.getReader());
-        JsonElement jElement = new JsonParser().parse(body);
-        if(!jElement.getAsJsonObject().has("address")){
-            response.setStatus(400);
-            response.getWriter().append("invalid data");
-            return;
-        }
-        JsonObject jaddress = jElement.getAsJsonObject().getAsJsonObject("address");
-        Address address;
-        if(jaddress.has("id")){
-            Integer id = jaddress.get("id").getAsInt(); //Id der zu aendernden Adresse
-            //gibt es die id schon?
-            if(id>0){
-                address = em.find(Address.class, id);
-                if(address==null){
-                    response.setStatus(404);
-                    response.getWriter().append("not found");
-                    return;
-                }
 
-                em.getTransaction().begin();
-                address=gson.fromJson(jaddress, Address.class);
-                em.merge(address);
-                System.out.println(address);
-                em.getTransaction().commit();
-                System.out.println(address);
-
-
-
-            }else{
-                response.setStatus(400);
-                response.getWriter().append("invalid data");
-                return;
-            }
-        }
-
-
-    }
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
-
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-        String body = CharStreams.toString(request.getReader());
-
-        JsonElement jElement = new JsonParser().parse(body);
-        if(!jElement.getAsJsonObject().has("address")){
-            response.setStatus(400);
-            response.getWriter().append("invalid data");
-            return;
-        }
-        JsonObject jaddress = jElement.getAsJsonObject().getAsJsonObject("address");
-
-        Address address;
-        if(jaddress.has("id")){
-
-            Integer id = jaddress.get("id").getAsInt();
-
-            if(id>0){
-                address = DatabaseManager.createEntityManager().find(Address.class, id);
-                    if(address!=null){
-                response.setStatus(400);
-                response.getWriter().append("id already taken");
-                return;
-                }
-            }
-         }
-        address=new Address();
-        address=gson.fromJson(jaddress, Address.class);
-        address.setId(null);
-
-        DatabaseManager.createEntityManager().getTransaction().begin();
-        DatabaseManager.createEntityManager().persist(address);
-        DatabaseManager.createEntityManager().getTransaction().commit();
-
-        response.setStatus(201);
-        response.getWriter().append("{'id': "+address.getId()+"}");
-
-    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
 
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        List <Address> addresses = new ArrayList<>();
+        setContentType(request,response);
+
         String Sid = request.getParameter("id");
-        if(Sid!=null && !Sid.isEmpty()){
-            try{
-                Integer id= Integer.parseInt(Sid);
-                Address address = DatabaseManager.createEntityManager().find(Address.class, id);
-                if(address!=null)addresses.add(address);
 
-            }catch (Exception e){
-                response.setStatus(400);
-                response.getWriter().append("id not a number");
-                return;
-            }
-        }else {
-            addresses = DatabaseManager.createEntityManager().createQuery("SELECT a FROM Address a", Address.class).getResultList();
-        }
+        List <Address> addresses = getAddressesFromDatabase(Sid,response);
+
         if(addresses.isEmpty()){
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
+
+        Gson gson = new GsonBuilder().serializeNulls().create();
         String output=gson.toJson(addresses);
-        response.getWriter().append(output);
+        response.getWriter().append("{ \"adresses\": "+ output + " }");
+
     }
 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
+        setContentType(request,response);
 
-        String Sid = request.getParameter("id");
-        if(Sid!=null && !Sid.isEmpty()){
-            try{
-                Integer id= Integer.parseInt(Sid);
+        JsonObject jAddress = getJsonAddress(request,response);
 
-                Address address = DatabaseManager.createEntityManager().find(Address.class, id);
-                if(address==null){
-                    response.setStatus(404);
-                    response.getWriter().append("not found");
-                    return;
-                }
-                DatabaseManager.createEntityManager().getTransaction().begin();
-                DatabaseManager.createEntityManager().remove(address);
-                DatabaseManager.createEntityManager().getTransaction().commit();
+        //ToDo: find Duplicates
 
-            }catch(Exception e){
-                response.setStatus(400);
-                response.getWriter().append("id not a number");
-                return;
-            }
+        Address a = createAddressFromJson(jAddress);
+        saveAddressToDatabase(a);
 
-        }else{
+        response.setStatus(201);
+        response.getWriter().append("{\"id\": "+a.getId()+"}");
+
+    }
+
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        setContentType(request,response);
+
+        JsonObject jAddress = getJsonAddress(request,response);
+
+
+        if(!jAddress.getAsJsonObject().has("id")){
+            response.setStatus(400);
+            response.getWriter().append("invalid data");
+            return;
+        }
+
+        Address a = getAddressByID(jAddress.get("id").getAsString(),response);
+
+        if(a==null){
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
 
+
+        a = updateAddressFromJson(jAddress,a);
+        saveAddressToDatabase(a);
+
+        response.setStatus(201);
+        response.getWriter().append("{\"id\": "+a.getId()+"}");
+
     }
 
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        setContentType(request,response);
+
+        String Sid = request.getParameter("id");
+
+        Address a = getAddressByID(Sid,response);
+
+        if (a == null) {
+            response.setStatus(404);
+            response.getWriter().append("Not Found");
+            return;
+        }
+
+        removeAddressFromDatabase(a);
+
+    }
+
+
+
+    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+    }
+
+    private boolean isStringNotEmpty(String s) {
+        return (s != null && !s.isEmpty());
+    }
+
+    private List<Address> getAddressesFromDatabase(String Sid, HttpServletResponse response) throws IOException {
+        List<Address> users = new ArrayList<>();
+
+        // if ID is submitted
+        if (isStringNotEmpty(Sid)) {
+
+            Address a = getAddressByID(Sid, response);
+            if (a != null) {
+                users.add(a);
+                return users;
+            }
+        }
+
+        return getAddresses();
+
+    }
+
+    private Address getAddressByID(String Sid, HttpServletResponse response) throws IOException {
+        try {
+            Integer id = Integer.parseInt(Sid);
+            //ToDo: gibt null aus wenn id nicht vergeben
+            return DatabaseManager.createEntityManager().find(Address.class, id);
+        } catch (NumberFormatException e) {
+            response.getWriter().append("Bad ID Value");
+            response.setStatus(400);
+        }
+        return null;
+    }
+
+    private List<Address> getAddresses() {
+        return DatabaseManager.createEntityManager().createQuery("SELECT a FROM Address a", Address.class).getResultList();
+    }
+
+    private JsonObject getJsonAddress(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String body = CharStreams.toString(request.getReader());
+
+        JsonElement jElement = new JsonParser().parse(body);
+        return jElement.getAsJsonObject().getAsJsonObject("address");
+    }
+
+    private Address createAddressFromJson(JsonObject jAddress) {
+
+        return updateAddressFromJson(jAddress,new Address());
+    }
+
+    private Address updateAddressFromJson(JsonObject jAddress, Address a) {
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        a = gson.fromJson(jAddress, Address.class);
+
+        return a;
+    }
+
+    private void saveAddressToDatabase(Address newAddress) {
+
+        EntityManager em = DatabaseManager.createEntityManager();
+
+        em.getTransaction().begin();
+        em.persist(newAddress);
+        em.getTransaction().commit();
+    }
+
+    private void removeAddressFromDatabase(Address u)	{
+
+        DatabaseManager.createEntityManager().getTransaction().begin();
+        u = DatabaseManager.createEntityManager().merge(u);
+        DatabaseManager.createEntityManager().remove(u);
+        DatabaseManager.createEntityManager().getTransaction().commit();
+    }
 }
