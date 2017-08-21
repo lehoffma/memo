@@ -5,6 +5,7 @@ import {ShopItem} from "../model/shop-item";
 import {Event} from "../../shop/shared/model/event";
 import {Merchandise} from "../../shop/shared/model/merchandise";
 import {MultiLevelSelectLeaf} from "../multi-level-select/shared/multi-level-select-leaf";
+import * as moment from "moment";
 
 @Injectable()
 export class SearchFilterService {
@@ -70,6 +71,24 @@ export class SearchFilterService {
 					}
 				]
 			},
+			{
+				name: "Datum",
+				selectType: "single",
+				expanded: false,
+				queryKey: "date",
+				children: [
+					{
+						name: "Vergangene Events",
+						queryValue: "past",
+						selected: false
+					},
+					{
+						name: "Zukünftige Events",
+						queryValue: "upcoming",
+						selected: false
+					}
+				]
+			}
 		];
 
 		let colorChildren: MultiLevelSelectLeaf[] = results
@@ -145,6 +164,17 @@ export class SearchFilterService {
 				}
 			}
 			return true;
+		},
+		"date": (item, filterValue:string) => {
+			if(EventUtilityService.isParty(item) || EventUtilityService.isTour(item)){
+				switch(filterValue){
+					case "past":
+						return moment().startOf("day").isAfter(moment(item.date));
+					case "upcoming":
+						return moment().startOf("day").isSameOrBefore(moment(item.date));
+				}
+			}
+			return false;
 		},
 		"color": (item, filterValue: string) => {
 			if (EventUtilityService.isMerchandise(item)) {

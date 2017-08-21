@@ -52,6 +52,7 @@ export class EventService extends ServletService<Event> {
 
 		//return cached version if available to reduce number of http request necessary
 		//todo test: maybe just switch to rxjs solution instead
+		//todo cache test
 		let cachedEvent = this.cache.getEventById(eventId);
 		if (cachedEvent && !refresh) {
 			return Observable.of(cachedEvent);
@@ -101,7 +102,9 @@ export class EventService extends ServletService<Event> {
 			.map((jsonArray: any[]) => jsonArray.map(json => this.eventFactoryService.build(eventType).setProperties(json)))
 			.do(events => this.cache.addMultiple(...events));
 
-		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, EventService.cacheKeyFromEventType(eventType));
+		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, EventService.cacheKeyFromEventType(eventType))
+			//todo cache test
+			// .map(result => []);
 
 		//if any of the cached events match the search term, combine these with the ones loaded from the server
 		return Observable.combineLatest(cachedObservable, httpRequest,

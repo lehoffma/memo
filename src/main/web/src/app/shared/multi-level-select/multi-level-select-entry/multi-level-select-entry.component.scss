@@ -1,3 +1,6 @@
+@import "~@angular/material/theming";
+@import "../../../../theme";
+
 
 .multi-level-select-entry-parent,
 .multi-level-select-entry-child {
@@ -17,6 +20,20 @@
 .multi-level-select-entry-child {
 	text-align: right;
 	background-color: darken(#ffffff, 10%);
+
+	&:hover{
+		background-color: darken(white, 15%) !important;
+	}
+
+	&.selected{
+		background-color: mat-color($accent, 700);
+		color: white;
+
+		&:hover{
+			background-color: mat-color($accent) !important;
+
+		}
+	}
 }
 
 .multi-level-select-checkbox {

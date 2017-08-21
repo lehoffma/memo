@@ -5,7 +5,8 @@
 <md-menu #menu="mdMenu">
 	<button md-menu-item
 			*ngFor="let sortingOption of sortingOptions"
-			(click)="updateQueryParams(sortingOption.queryParameters)">
+			[ngClass]="{'selected': selectedOption === sortingOption.name}"
+			(click)="selectedOption !== sortingOption.name ? updateQueryParams(sortingOption.queryParameters) : $event.stopPropagation()">
 		{{sortingOption.name}}
 	</button>
 </md-menu>

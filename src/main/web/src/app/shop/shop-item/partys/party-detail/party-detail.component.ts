@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Party} from "../../../shared/model/party";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
 import {EventService} from "../../../../shared/services/event.service";
@@ -12,6 +12,7 @@ import {rolePermissions} from "../../../../shared/model/club-role";
 import {CommentService} from "../../../../shared/services/comment.service";
 import {Comment} from "../../../shared/model/comment";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 
 
 @Component({
@@ -22,7 +23,11 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 export class PartyDetailComponent implements OnInit {
 	party$: Observable<Party> = this.route.params
-		.flatMap(params => this.eventService.getById(+params["id"]));
+		.flatMap(params => this.eventService.getById(+params["id"]))
+		.flatMap(event => event === undefined || !EventUtilityService.isParty(event)
+			? Observable.throw(new Error())
+			: Observable.of(event))
+		.catch(error => this.router.navigateByUrl("page-not-found", {skipLocationChange: true, replaceUrl: true}));
 
 	overViewKeys$: Observable<EventOverviewKey[]> = this.party$.map(party => party.overviewKeys);
 
@@ -47,6 +52,7 @@ export class PartyDetailComponent implements OnInit {
 	commentsSubject$ = new BehaviorSubject<Comment[]>([]);
 
 	constructor(private route: ActivatedRoute,
+				private router: Router,
 				private participantService: ParticipantsService,
 				private commentService: CommentService,
 				private loginService: LogInService,

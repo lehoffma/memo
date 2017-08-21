@@ -11,6 +11,7 @@ import {isNullOrUndefined} from "util";
 import {MultiLevelSelectParent} from "app/shared/multi-level-select/shared/multi-level-select-parent";
 import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
 import {SearchFilterService} from "../../shared/services/search-filter.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 type sortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -35,7 +36,7 @@ export class SearchResultComponent implements OnInit {
 			return paramObject;
 		});
 
-	resultsTitle: Observable<string>;
+	resultsTitle: BehaviorSubject<string> = new BehaviorSubject("");
 	_results$: Observable<Event[]>;
 
 	get results$() {
@@ -58,7 +59,6 @@ export class SearchResultComponent implements OnInit {
 
 	ngOnInit() {
 		this.fetchResults();
-		this.setTitle();
 	}
 
 	/**
@@ -86,23 +86,6 @@ export class SearchResultComponent implements OnInit {
 			});
 	}
 
-	/**
-	 * Updated den Suchergebnisse Titel anhand der ausgewählten Kategorien und der Menge an Ergebnissen.
-	 */
-	setTitle() {
-		this.resultsTitle = this.router.events.filter(event => event instanceof NavigationEnd)
-			.flatMap(event => {
-				let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");
-				let selectedCategories: string[] = categoryFilterOption.children
-					.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
-					.map(child => child.name);
-
-				return Observable.combineLatest(this.results$, this.keywords).map(([results, keywords]) =>
-					results.length + " " + selectedCategories.join(", ") + " Ergebnisse" +
-					(keywords === "" ? "" : " für '" + keywords + "'")
-				);
-			})
-	}
 
 	/**
 	 * Holt die Suchergebnisse aus den jeweiligen Services und sortiert und filtert sie anhand der
@@ -112,17 +95,17 @@ export class SearchResultComponent implements OnInit {
 		Observable.combineLatest(this.keywords, this.sortedBy, this.filteredBy)
 			.subscribe(([keywords, sortedBy, filteredBy]) => {
 					//reset results so the result screen can show a loading screen while the http call is performed
-				this.results$ = Observable.empty();
+					this.results$ = Observable.empty();
 
-				this.results$ = Observable.combineLatest(
+					this.results$ = Observable.combineLatest(
 						this.eventService.search(keywords, EventType.tours),
 						this.eventService.search(keywords, EventType.partys),
 						this.eventService.search(keywords, EventType.merch),
 						(tours, partys, merch) => [...tours, ...partys, ...merch]
 					)
-					.do(events => this.filterOptions = this.searchFilterService.getEventFilterOptionsFromResults(events))
-					.do(events => this.initFilterMenu())
-					//todo replace with actual api call?
+						.do(events => this.filterOptions = this.searchFilterService.getEventFilterOptionsFromResults(events))
+						.do(events => this.initFilterMenu())
+						//todo replace with actual api call?
 						.map(events => {
 							//sortiere events
 							if (sortedBy && sortedBy.sortedBy && !isNullOrUndefined(sortedBy)) {
@@ -135,6 +118,18 @@ export class SearchResultComponent implements OnInit {
 						.map((events: Event[]) =>
 							events.filter(event => this.searchFilterService.satisfiesFilters(event, filteredBy))
 						)
+						//Updated den Suchergebnisse Titel anhand der ausgewählten Kategorien und der Menge an Ergebnissen.
+						.do(events => {
+							let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");
+							let selectedCategories: string[] = categoryFilterOption.children
+								.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
+								.map(child => child.name);
+
+							//todo ausgewählte filter optionen in den title reintun
+							this.resultsTitle.next(events.length + " " + selectedCategories.join(", ") +
+								" Ergebnisse" + (keywords === "" ? "" : " für '" + keywords + "'") +
+								"");
+						})
 				}
 			);
 	}

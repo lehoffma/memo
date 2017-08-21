@@ -11,6 +11,7 @@ import {QueryParameterService} from "../../../shared/services/query-parameter.se
 export class SortingDropdownComponent implements OnInit {
 	//TODO: update text if sort selection changes. or at least highlight which one is selected at the moment?
 	@Input() sortingOptions: SortingOption<any>[];
+	selectedOption: string = "";
 
 	constructor(private router: Router,
 				private activatedRoute: ActivatedRoute,
@@ -18,6 +19,20 @@ export class SortingDropdownComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.activatedRoute.queryParamMap
+			.subscribe(queryParamMap => {
+				this.selectedOption = "";
+				this.sortingOptions.some(option => {
+					const optionKeys = Object.keys(option.queryParameters);
+
+					if (optionKeys.every(key => queryParamMap.has(key))
+						&& optionKeys.every(key => queryParamMap.get(key) === option.queryParameters[key])) {
+						this.selectedOption = option.name;
+					}
+
+					return this.selectedOption !== "";
+				});
+			})
 	}
 
 	updateQueryParams(queryParams: Params) {

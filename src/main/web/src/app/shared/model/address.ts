@@ -15,7 +15,6 @@ export class Address extends BaseObject<Address> {
 	 */
 	constructor(public id: number,
 				public name: string,
-				//todo: name des menschen an den die rechnung geht, oder ist das "name"?
 				public street: string,
 				public streetNr: string,
 				public zip: string,

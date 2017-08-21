@@ -49,6 +49,7 @@ export class LogInService {
 				if (id !== null && id >= 0) {
 					localStorage.setItem(this.authTokenKey, auth_token);
 					//store profile data in local storage (so the user won't get logged out if he closes the tab)
+					//todo use cookie instead
 					this.userService.getById(id).first()
 						.subscribe(user => localStorage.setItem(this.profileKey, JSON.stringify(user)));
 

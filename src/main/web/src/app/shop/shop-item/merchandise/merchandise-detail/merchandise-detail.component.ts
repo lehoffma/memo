@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Merchandise} from "../../../shared/model/merchandise";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {isNullOrUndefined} from "util";
 import {MerchandiseOptions} from "./merchandise-options";
@@ -9,6 +9,7 @@ import {EventService} from "../../../../shared/services/event.service";
 import {CommentService} from "../../../../shared/services/comment.service";
 import {LogInService} from "../../../../shared/services/login.service";
 import {Comment} from "../../../shared/model/comment";
+import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 
 @Component({
 	selector: "memo-merchandise-details",
@@ -17,7 +18,12 @@ import {Comment} from "../../../shared/model/comment";
 })
 export class MerchandiseDetailComponent implements OnInit {
 	merch$: Observable<Merchandise> = this.route.params
-		.flatMap(params => this.eventService.getById(+params["id"]));
+		.flatMap(params => this.eventService.getById(+params["id"]))
+		.flatMap(event => event === undefined || !EventUtilityService.isMerchandise(event)
+			? Observable.throw(new Error())
+			: Observable.of(event))
+		.catch(error => this.router.navigateByUrl("page-not-found", {skipLocationChange: true, replaceUrl: true}));
+
 	clothesSizes$: Observable<string[]> = this.merch$.map(merch => merch.clothesSizes);
 	overViewKeys$: Observable<EventOverviewKey[]> = this.merch$.map(merch => merch.overviewKeys);
 
@@ -29,6 +35,7 @@ export class MerchandiseDetailComponent implements OnInit {
 		.first();
 
 	constructor(private route: ActivatedRoute,
+				private router: Router,
 				private commentService: CommentService,
 				private loginService: LogInService,
 				private eventService: EventService) {
