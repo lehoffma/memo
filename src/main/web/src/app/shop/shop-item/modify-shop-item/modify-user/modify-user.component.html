@@ -1,10 +1,11 @@
 <div class="modify-shop-item-container">
 	<h2>Nutzer {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
 
-	<memo-user-data-form [(model)]="userModel"
+	<memo-user-data-form [model]="model$ | async" (modelChange)="model = $event; modelChange.emit($event)"
 						 [withSubmitButton]="false"
 						 [withEmailAndPassword]="true"
 						 (onCancel)="cancel()"
+						 (onAddressModification)="emitWatchForAddressModification($event)"
 						 (onSubmit)="submitModifiedObject($event)">
 
 	</memo-user-data-form>

@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Component({
 	selector: "memo-modify-user",
@@ -8,10 +9,23 @@ import {Location} from "@angular/common";
 	styleUrls: ["./modify-user.component.scss"]
 })
 export class ModifyUserComponent implements OnInit {
-	@Input() model: any;
+	private _model$ = new BehaviorSubject<any>({});
+	public model$ = this._model$.asObservable();
+
+	get model() {
+		return this._model$.getValue();
+	}
+
+	@Input()
+	set model(model: any) {
+		this._model$.next(model);
+	}
+
+
 	@Input() mode: ModifyType;
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
 	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
+	@Output() watchForAddressModification: EventEmitter<any> = new EventEmitter();
 
 	ModifyType = ModifyType;
 
@@ -38,5 +52,9 @@ export class ModifyUserComponent implements OnInit {
 	submitModifiedObject(event) {
 		console.log(event);
 		this.onSubmit.emit(this.model);
+	}
+
+	emitWatchForAddressModification(model: any) {
+		this.watchForAddressModification.emit(model);
 	}
 }
