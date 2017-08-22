@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.lang.Integer;
 import java.lang.String;
 import javax.persistence.*;
+
+import com.google.gson.annotations.Expose;
 import memo.model.Event;
 
 /**
@@ -17,18 +19,23 @@ public class Size implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Expose
 	private Integer id;
 
 	@ManyToOne(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "EVENT_ID")
+	@Expose
 	private Event event;
+	@Expose
 	private String name;
 
 	@Column(name = "STOCK")
+	@Expose
 	private Integer NumInStock;
 
 	@ManyToOne(cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "COLOR_ID")
+	@Expose
 	private Color color;
 
 	private static final long serialVersionUID = 1L;

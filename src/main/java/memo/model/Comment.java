@@ -17,18 +17,12 @@ public class Comment implements Serializable{
     @PrimaryKeyJoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
     private Event event;
 
-    @Column(name= "EVENT_ID")
-    private Integer eventID;
-
     @Column(nullable=false)
     private Timestamp timeStamp;   //muss jetzt unbedingt nich 'Date' sein, aber halt nen Datumstyp
 
     @ManyToOne(cascade = { CascadeType.PERSIST })
     @PrimaryKeyJoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID")
     private User author;
-
-    @Column(name = "AUTHOR_ID")
-    private int authorID;
 
     private String text;
 
@@ -50,14 +44,6 @@ public class Comment implements Serializable{
         this.event = event;
     }
 
-    public Integer getEventID() {
-        return eventID;
-    }
-
-    public void setEventID(Integer eventID) {
-        this.eventID = eventID;
-    }
-
     public Timestamp getTimeStamp() {
         return timeStamp;
     }
@@ -72,14 +58,6 @@ public class Comment implements Serializable{
 
     public void setAuthor(User author) {
         this.author = author;
-    }
-
-    public int getAuthorID() {
-        return authorID;
-    }
-
-    public void setAuthorID(int authorID) {
-        this.authorID = authorID;
     }
 
     public String getText() {

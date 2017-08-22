@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -10,13 +12,16 @@ public class Color implements Serializable{
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Expose
     private Integer id;
 
     @Column(nullable=false)
+    @Expose
     private String name;
 
     @Column(nullable=false)
-    private String HexCode;
+    @Expose
+    private String hex;
 
 
     private static final long serialVersionUID = 1L;
@@ -25,7 +30,7 @@ public class Color implements Serializable{
 
     public Color(String name,String hex){
         this.name = name;
-        this.HexCode = hex;
+        this.hex = hex;
     }
 
     public Integer getId() {
@@ -44,12 +49,12 @@ public class Color implements Serializable{
         this.name = name;
     }
 
-    public String getHexCode() {
-        return HexCode;
+    public String getHex() {
+        return hex;
     }
 
-    public void setHexCode(String hexCode) {
-        HexCode = hexCode;
+    public void setHex(String hex) {
+        hex = hex;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class Color implements Serializable{
         return "Color{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", HexCode='" + HexCode + '\'' +
+                ", HexCode='" + hex + '\'' +
                 '}';
     }
 }

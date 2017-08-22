@@ -168,12 +168,31 @@ public class EventServlet extends HttpServlet {
 
 		if (jEvent.has("stock"))
         {
+            e.setType(3);
             JsonArray stock = jEvent.getAsJsonArray("stock");
             JsonArray colors = jEvent.getAsJsonArray("colors");
             JsonObject sizeTable = jEvent.getAsJsonObject("_sizeTable");
             JsonArray sizes = jEvent.getAsJsonArray("sizes");
 
 
+            for (int i=0;i<stock.size();++i)
+            {
+                JsonObject st = stock.get(i).getAsJsonObject();
+                JsonObject color = st.get("color").getAsJsonObject();
+                Color c = gson.fromJson(color,Color.class);
+                Size s = new Size();
+                s.setColor(c);
+                s.setEvent(e);
+                s.setName(st.get("size").getAsString());
+                s.setNumInStock(st.get("amount").getAsInt());
+                colorList.add(c);
+                sizeList.add(s);
+
+            }
+
+            //ToDo: alles
+            //ToDo: Size Table hinzufügen bzw abfangen
+/*
 
             // get Color List
             for (int i=0;i<colors.size();++i)
@@ -219,8 +238,8 @@ public class EventServlet extends HttpServlet {
                 sizeList.add(size);
 
 
-                //ToDo: Size Table hinzufügen bzw abfangen
-/*
+
+
 
 
                 JsonArray table = sizeTable.getAsJsonArray(size.getName());
@@ -232,12 +251,15 @@ public class EventServlet extends HttpServlet {
                     SizeTable t = new SizeTable(size, name, min, max);
                     sizeTableList.add(t);
                 }
-*/
+
             }
+
+            */
 
         }
         else
         {
+            e.setType(1);
             JsonArray participants =jEvent.getAsJsonArray("participants");
             for (int i=0;i<participants.size();++i)
             {
