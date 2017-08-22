@@ -166,7 +166,7 @@ public class EventServlet extends HttpServlet {
         List<SizeTable> sizeTableList = new ArrayList<>();
         List<Participates> participatesList = new ArrayList<>();
 
-		if (e.getType()==3)
+		if (jEvent.has("stock"))
         {
             JsonArray stock = jEvent.getAsJsonArray("stock");
             JsonArray colors = jEvent.getAsJsonArray("colors");
@@ -218,6 +218,11 @@ public class EventServlet extends HttpServlet {
                 Size size = new Size(e,name,num,color);
                 sizeList.add(size);
 
+
+                //ToDo: Size Table hinzufügen bzw abfangen
+/*
+
+
                 JsonArray table = sizeTable.getAsJsonArray(size.getName());
                 for (int j =0;j<table.size();++j) {
                     JsonObject tb = table.get(j).getAsJsonObject();
@@ -227,7 +232,7 @@ public class EventServlet extends HttpServlet {
                     SizeTable t = new SizeTable(size, name, min, max);
                     sizeTableList.add(t);
                 }
-
+*/
             }
 
         }
@@ -262,11 +267,12 @@ public class EventServlet extends HttpServlet {
 
 
         em.getTransaction().begin();
-		em.persist(e);
-        for (Color i: colorList) em.persist(i);
+
+        for (Color i: colorList) {System.out.println(i); em.persist(i);}
         for (Size i: sizeList) em.persist(i);
         for (SizeTable i: sizeTableList) em.persist(i);
         for (Participates i: participatesList) em.persist(i);
+        em.persist(e);
 
         em.getTransaction().commit();
 		response.setStatus(201);

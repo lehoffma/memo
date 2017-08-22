@@ -70,5 +70,16 @@ public class BankAcc implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Override
+	public String toString() {
+		return "BankAcc{" +
+				"id=" + id +
+				", bankName='" + bankName + '\'' +
+				", iban='" + iban + '\'' +
+				", bic='" + bic + '\'' +
+				", name='" + name + '\'' +
+				'}';
+	}
    
 }

@@ -50,6 +50,8 @@ public class BankAccountServlet extends HttpServlet {
         //ToDo: find Duplicates
 
         BankAcc a = createAccountFromJson(jAccount);
+
+        System.out.println(a.toString());
         saveAccountToDatabase(a);
 
         response.setStatus(201);
@@ -165,7 +167,7 @@ public class BankAccountServlet extends HttpServlet {
 
     private BankAcc updateAccountFromJson(JsonObject jAccount, BankAcc a) {
 
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Gson gson = new GsonBuilder().create();
         a = gson.fromJson(jAccount, BankAcc.class);
 
         return a;
