@@ -359,4 +359,11 @@ public class EventServlet extends HttpServlet {
 
     }
 
+
+    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+    }
+
+
 }

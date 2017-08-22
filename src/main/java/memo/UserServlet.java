@@ -72,11 +72,9 @@ public class UserServlet extends HttpServlet {
 
         setContentType(request,response);
 
-        String Sid = request.getParameter("id");
         String email = request.getParameter("email");
-        String searchTerm = request.getParameter("searchTerm");
 
-        List<User> users = getUsersFromDatabase(Sid,email,searchTerm,response);
+        List<User> users = getUserByEmail(email);
 
         if (users.isEmpty()) {
             response.setStatus(200);
