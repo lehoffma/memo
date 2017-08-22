@@ -57,7 +57,6 @@ export class SignUpService {
 
 			this.newUserAddresses = [...currentAddresses];
 			this.newUser.setProperties({addresses: currentAddresses.map(it => it.id)})
-
 		}
 		if (model && model.profilePicture) {
 			this.newUserProfilePicture = model.profilePicture;

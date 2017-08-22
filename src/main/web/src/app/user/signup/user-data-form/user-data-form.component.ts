@@ -69,16 +69,8 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 * @param {SimpleChanges} changes
 	 */
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes["model"] && this.model["id"] !== undefined && this.model["id"] !== -1) {
-			console.log(changes);
-			this.userService.getById(this.model["id"])
-				.flatMap(user => {
-					return user === null
-						? Observable.of([])
-						: Observable.forkJoin(...user.addresses.map(addressId => this.addressService.getById(addressId)));
-				})
-				.first()
-				.subscribe(addresses => this.addressesSubject$.next(addresses));
+		if(changes["model"] && !changes["addresses"]){
+			this.addressesSubject$.next(this.model["addresses"]);
 		}
 	}
 

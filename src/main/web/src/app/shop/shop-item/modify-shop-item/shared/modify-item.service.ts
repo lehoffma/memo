@@ -21,6 +21,7 @@ import {NavigationService} from "../../../../shared/services/navigation.service"
 import {ParamMap, Params} from "@angular/router";
 import * as moment from "moment";
 import {Address} from "../../../../shared/model/address";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class ModifyItemService {
@@ -37,7 +38,16 @@ export class ModifyItemService {
 	eventId: number = -1;
 
 	previousValue: ShopItem;
-	model: any = {};
+
+	private _model$ = new BehaviorSubject<any>({});
+	public model$ = this._model$.asObservable();
+
+	get model(){
+		return this._model$.getValue();
+	}
+	set model(model:any){
+		this._model$.next(model);
+	}
 
 
 	constructor(public eventService: EventService,
@@ -106,6 +116,7 @@ export class ModifyItemService {
 			.first()
 			.subscribe(addresses => {
 				this.model[addressKey] = [...addresses];
+				this.model = {...this.model};
 				if (objectToModify && objectToModify.id !== -1) {
 					this.previousValue = objectToModify;
 				}
@@ -122,6 +133,7 @@ export class ModifyItemService {
 			.first()
 			.subscribe(stockList => {
 				this.model["stock"] = stockList;
+				this.model = {...this.model};
 				if (objectToModify && objectToModify.id !== -1) {
 					this.previousValue = objectToModify;
 				}
@@ -159,16 +171,7 @@ export class ModifyItemService {
 				}
 				else if (this.itemType === ShopItemType.user) {
 					if ((<User>objectToModify).addresses.length > 0) {
-						Observable.combineLatest(...(<User>objectToModify).addresses
-							.map(addressId => this.addressService.getById(addressId))
-						)
-							.first()
-							.subscribe(addresses => {
-								this.model["addresses"] = [...addresses];
-								if (objectToModify && objectToModify.id !== -1) {
-									this.previousValue = objectToModify;
-								}
-							});
+						this.extractAddresses(objectToModify, "addresses");
 					}
 				}
 				//extract the stock if we're editing a merchandise object
@@ -195,39 +198,45 @@ export class ModifyItemService {
 	watchForAddressModification(model: any) {
 		if (model.action && model.action === "delete") {
 			const addressToDelete: Address = model.address;
-			const currentAddresses: number[] = this.model["addresses"];
+			const currentAddresses: Address[] = this.model["addresses"];
 			const deletedAddressId: number = currentAddresses
-				.findIndex(currentAddress => currentAddress === addressToDelete.id);
+				.findIndex(currentAddress => currentAddress.id === addressToDelete.id);
 
 			if (deletedAddressId >= 0) {
 				currentAddresses.splice(deletedAddressId, 1);
 			}
 
 			this.model["addresses"] = [...currentAddresses];
+			this.model = {...this.model};
 		}
 		this.addressService.addressModificationDone
 			.first()
 			.subscribe(address => {
 				if (address) {
-					const currentAddresses: number[] = this.model["addresses"];
+					const currentAddresses: Address[] = this.model["addresses"];
 					const modifiedAddressIndex = currentAddresses
-						.findIndex(currentAddress => currentAddress === address.id);
+						.findIndex(currentAddress => currentAddress.id === address.id);
 					//address was added
 					if (modifiedAddressIndex === -1) {
-						currentAddresses.push(address.id);
+						currentAddresses.push(address);
 					}
 					//address was modified => dont do anything
 
 					this.model["addresses"] = [...currentAddresses];
+					this.model = {...this.model};
 				}
 			})
+	}
+
+	isAddressArray(value:any[]):value is Address[]{
+		return value[0].latitude !== undefined;
 	}
 
 	/**
 	 *
 	 * @param model
 	 */
-	submitModifiedEvent(model: any) {
+	async submitModifiedEvent(model: any) {
 		let service: ServletServiceInterface<ShopItem> = EventUtilityService.handleOptionalShopType<ServletServiceInterface<User | Entry | Event>>(
 			this.itemType,
 			{
@@ -254,6 +263,21 @@ export class ModifyItemService {
 			{
 				entries: () => ({eventId: model["eventId"]})
 			});
+
+		if (EventUtilityService.isUser(newObject)) {
+			newObject.setProperties({addresses: newObject.addresses.map((it: any) => it.id)});
+		}
+		if(EventUtilityService.isTour(newObject) || EventUtilityService.isParty(newObject)){
+			if(this.isAddressArray(newObject.route)){
+				let addressIds = await Observable.combineLatest(
+					...newObject.route.map((route:Address) => this.addressService.add(route))
+				)
+					.map((addresses:Address[]) => addresses.map(address => address.id))
+					.toPromise();
+
+				newObject.setProperties({route: [...addressIds]});
+			}
+		}
 
 		//todo upload image seperately
 
