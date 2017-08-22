@@ -30,11 +30,12 @@ export class SideNavComponent implements OnInit {
 				: user.userPermissions;
 
 			const setId = (link: Link): Link => {
-				if (link.children) {
-					link.children = link.children.map(childLink => setId(childLink))
+				let newLink = {...link};
+				if (newLink.children) {
+					newLink.children = newLink.children.map(childLink => setId(childLink))
 				}
-				link.route = link.route.replace("PROFILE_ID", "" + user.id);
-				return link;
+				newLink.route = newLink.route.replace("PROFILE_ID", "" + user.id);
+				return newLink;
 			};
 
 			return linksCopy.map(setId)

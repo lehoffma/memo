@@ -142,6 +142,7 @@ import {UserBankAccountService} from "./shared/services/user-bank-account.servic
 import {OrderService} from "./shared/services/order.service";
 import {ErrorPageComponent} from "./util/error-page/error-page.component";
 import {OrderHistoryEntryComponent} from "./user/order-history/order-history-entry/order-history-entry.component";
+import {ModifyItemService} from "./shop/shop-item/modify-shop-item/shared/modify-item.service";
 
 @NgModule({
 	imports: [
@@ -275,6 +276,7 @@ import {OrderHistoryEntryComponent} from "./user/order-history/order-history-ent
 		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
 		EntryService, EventFactoryService, QueryParameterService, StockService, SearchFilterService,
 		ConfirmationDialogService, SignUpService, EntryCategoryService, UserBankAccountService, OrderService,
+		ModifyItemService,
 
 		//guards
 		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,

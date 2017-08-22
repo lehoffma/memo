@@ -69,15 +69,8 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 * @param {SimpleChanges} changes
 	 */
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes["model"] && this.model["id"] !== undefined && this.model["id"] !== -1) {
-			this.userService.getById(this.model["id"])
-				.flatMap(user => {
-					return user === null
-						? Observable.of([])
-						: Observable.forkJoin(...user.addresses.map(addressId => this.addressService.getById(addressId)));
-				})
-				.first()
-				.subscribe(addresses => this.addressesSubject$.next(addresses));
+		if(changes["model"] && !changes["addresses"]){
+			this.addressesSubject$.next(this.model["addresses"]);
 		}
 	}
 
@@ -152,9 +145,9 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 			this.addressesSubject$.value
 				.filter(_address => _address.id !== address.id)
 		);
-		if (this.model["addresses"]) {
-			const addressIndex = this.model["addresses"].findIndex(addressId => addressId === address.id);
-			this.model["addresses"] = this.model["addresses"].splice(addressIndex, 1);
+		if (this.userModel["addresses"]) {
+			const addressIndex = this.userModel["addresses"].findIndex(addressId => addressId === address.id);
+			this.userModel["addresses"] = this.userModel["addresses"].splice(addressIndex, 1);
 		}
 		this.onAddressModification.emit({action: "delete", address});
 	}
