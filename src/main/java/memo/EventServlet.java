@@ -149,9 +149,9 @@ public class EventServlet extends HttpServlet {
         //ToDo: Duplicate Events
 
 
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-
-		Event e = createEventFromJson(jEvent);
+		Event e = gson.fromJson(jEvent,Event.class);
 
 
 		if (jEvent.has("date")) {
