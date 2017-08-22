@@ -103,14 +103,14 @@ export class EventService extends ServletService<Event> {
 			.do(events => this.cache.addMultiple(...events));
 
 		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, EventService.cacheKeyFromEventType(eventType))
-			//todo cache test
-			// .map(result => []);
+		//todo cache test
+		// .map(result => []);
 
 		//if any of the cached events match the search term, combine these with the ones loaded from the server
 		return Observable.combineLatest(cachedObservable, httpRequest,
 			(cachedEvents, loadedEvents) => [...cachedEvents, ...loadedEvents]
 				.filter((value, index, array) =>
-						//removes duplicate entries
+					//removes duplicate entries
 					array.findIndex((event: Event) => event.id === value.id && event.title === value.title) === index
 				));
 	}
@@ -124,12 +124,12 @@ export class EventService extends ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-				event: Event, options?:any): Observable<Event> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
+				event: Event, options?: any): Observable<Event> {
+		const requestOptions = new RequestOptions();
 		requestOptions.body = {};
+		requestOptions.body["event"] = event;
 
-		if(options){
+		if (options) {
 			Object.keys(options)
 				.filter(key => key !== "uploadedImage")
 				.forEach(key => requestOptions.body[key] = options[key]);
@@ -147,7 +147,7 @@ export class EventService extends ServletService<Event> {
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	add(event: Event, options?:any): Observable<Event> {
+	add(event: Event, options?: any): Observable<Event> {
 		//todo if merch => update stockService
 		return this.addOrModify(this.http.post.bind(this.http), event, options);
 	}
@@ -159,7 +159,7 @@ export class EventService extends ServletService<Event> {
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	modify(event: Event, options?:any): Observable<Event> {
+	modify(event: Event, options?: any): Observable<Event> {
 		//todo if merch => update stockService
 		return this.addOrModify(this.http.put.bind(this.http), event, options);
 	}

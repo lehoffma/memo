@@ -25,7 +25,7 @@ export class SideNavComponent implements OnInit {
 	public links = Observable.combineLatest(this.user, this.navigationService.sidenavLinks)
 		.map(([user, links]) => {
 			const linksCopy = [...links];
-			const permissions = user === null
+			const permissions = user === null || user.id === -1
 				? visitorPermissions
 				: user.userPermissions;
 
@@ -38,7 +38,7 @@ export class SideNavComponent implements OnInit {
 			};
 
 			return linksCopy.map(setId)
-				.filter(link => (!link.loginNeeded || user !== null)
+				.filter(link => (!link.loginNeeded || user !== null || user.id !== -1)
 					&& this.checkPermissions(link.minimumPermission, permissions))
 		});
 

@@ -1,7 +1,6 @@
 import {MerchandiseDetailComponent} from "./shop/shop-item/merchandise/merchandise-detail/merchandise-detail.component";
 import {ProfileComponent} from "./user/profile/profile.component";
 import {PartysComponent} from "./shop/shop-item/partys/partys.component";
-import {AccountComponent} from "./user/account.component";
 import {TourDetailComponent} from "./shop/shop-item/tours/tour-detail/tour-detail.component";
 import {ToursComponent} from "./shop/shop-item/tours/tours.component";
 import {HomeComponent} from "./home/home.component";
@@ -69,12 +68,11 @@ export const ROUTES:Route[] = [
 
 	{path: "calendar", component: EventCalendarContainerComponent},
 
-	//todo wird das überhaupt benutzt?
-	{path: "account", component: AccountComponent},
-
 	{path: "members", component: MemberListComponent},
 	{path: "members/:id", component: ProfileComponent},
 	{path: "members/:id/edit", component: ModifyUserComponent, canActivate: [AuthenticatedGuard, IsOwnProfileGuard]},
+	{path: "members/:id/address", component: AddressModificationComponent, canActivate: [AuthenticatedGuard]},
+	{path: "address", component: AddressModificationComponent},
 
 	{path: "search", component: SearchResultComponent},
 
@@ -83,8 +81,6 @@ export const ROUTES:Route[] = [
 	{path: "signup/:step", component: SignUpComponent},
 	{path: "cart", component: CheckoutCartComponent},
 	{path: "checkout", component: CheckoutComponent, canActivate: [AuthenticatedGuard]},
-	{path: "address", component: AddressModificationComponent},
-	{path: "members/:id/address", component: AddressModificationComponent, canActivate: [AuthenticatedGuard]},
 
 	//nur eingeloggte User können diese Routen sehen
 	{path: "my-events", component: MyToursComponent},

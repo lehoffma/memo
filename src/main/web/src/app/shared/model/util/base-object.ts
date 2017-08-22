@@ -1,4 +1,4 @@
-import {ClubRole} from "../club-role";
+import {ClubRole, idToClubRoleEnum} from "../club-role";
 import {jsonToPermissions, UserPermissions} from "../permission";
 import {isArray} from "util";
 import {Gender} from "../gender";
@@ -19,18 +19,21 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 	 */
 	setProperties(properties: Partial<T>) {
 		Object.keys(properties)
-			.forEach((key:keyof (T|this)) => {
+			.forEach((key: keyof (T | this)) => {
 				let value: (string | number | number[] | Date | UserPermissions | any) = (<any>properties)[key];
 				if (isArray(value)) {
 
-				} else if (key.toLowerCase().includes("date") && isString(value)) {
+				} else if ((key.toLowerCase().includes("date") || key.toLowerCase().includes("day"))
+					&& isString(value)) {
 					value = moment(value).toDate();
 				} else if (isNumber(value)) {
 					value = +value;
-				} else if (key === "expectedRole") {
+				}
+
+				if (key === "expectedRole") {
 					value = ClubRole[properties[key]]
 				} else if (key === "clubRole") {
-					value = ClubRole[properties[key]];
+					value = isNumber(value) ? idToClubRoleEnum(value) : ClubRole[properties[key]];
 				} else if (key === "permissions") {
 					value = jsonToPermissions(properties[key]);
 				} else if (key === "gender") {

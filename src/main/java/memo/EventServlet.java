@@ -149,7 +149,6 @@ public class EventServlet extends HttpServlet {
 
 
 
-
 		if (id>0)
 		{
 			Event e = em.find(Event.class,id);

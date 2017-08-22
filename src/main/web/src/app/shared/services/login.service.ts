@@ -72,7 +72,6 @@ export class LogInService {
 	 * @returns {boolean}
 	 */
 	logout(): Observable<boolean> {
-		console.log("lel");
 		return this.http.post(this.logoutUrl, {auth_token: localStorage.getItem(this.authTokenKey)})
 			.map(() => {
 				localStorage.removeItem(this.authTokenKey);

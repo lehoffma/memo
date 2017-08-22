@@ -8,7 +8,7 @@ import {ServletService} from "app/shared/services/servlet.service";
 
 @Injectable()
 export class EntryService extends ServletService<Entry> {
-	redirectUrl:string;
+	redirectUrl: string;
 
 	constructor(private http: Http,
 				private cache: CacheStore) {
@@ -80,12 +80,13 @@ export class EntryService extends ServletService<Entry> {
 	 * @returns {Observable<T>}
 	 */
 	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						entry: Entry, options?:any): Observable<Entry> {
+						entry: Entry, options?: any): Observable<Entry> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 		requestOptions.body = {};
+		requestOptions.body["entry"] = entry;
 
-		if(options){
+		if (options) {
 			Object.keys(options)
 				.forEach(key => requestOptions.body[key] = options[key]);
 		}
@@ -101,7 +102,7 @@ export class EntryService extends ServletService<Entry> {
 	 * @param entry
 	 * @param options
 	 */
-	add(entry: Entry, options?:any): Observable<Entry> {
+	add(entry: Entry, options?: any): Observable<Entry> {
 		return this.addOrModify(this.http.post.bind(this.http), entry, options);
 	}
 
@@ -111,7 +112,7 @@ export class EntryService extends ServletService<Entry> {
 	 * @param options
 	 * @returns {Observable<Entry>}
 	 */
-	modify(entry: Entry,options?:any): Observable<Entry> {
+	modify(entry: Entry, options?: any): Observable<Entry> {
 		return this.addOrModify(this.http.put.bind(this.http), entry, options);
 	}
 
@@ -120,7 +121,7 @@ export class EntryService extends ServletService<Entry> {
 	 * @param id
 	 * @param options
 	 */
-	remove(id: number, options?:any): Observable<Response> {
+	remove(id: number, options?: any): Observable<Response> {
 		return this.performRequest(this.http.delete("/api/entry", {body: {id: id}}));
 	}
 

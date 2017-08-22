@@ -28,7 +28,9 @@ export class CanModifyItemGuard implements CanActivate {
 					return Observable.of(false);
 				}
 
-				let id = +route.paramMap.get("id");
+
+				let id = route.paramMap.has("id") ? +route.paramMap.get("id") : -1;
+
 				let permissionKey = "";
 				let shopItem = Observable.of(null);
 				switch (route.paramMap.get("itemType")) {
