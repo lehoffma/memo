@@ -290,15 +290,6 @@ public class UserServlet extends HttpServlet {
 			u.setBirthday(Date.valueOf(date));
 		}
 
-
-		if (jUser.has("addresses")) {
-			Type collectionType = new TypeToken<List<Integer>>() {
-			}.getType();
-			List<Integer> addresses = gson.fromJson(jUser.getAsJsonArray("addresses"), collectionType);
-			u.setAddresses(addresses);
-		}
-
-
 		if (jUser.has("bankAccounts")) {
 			Type collectionType = new TypeToken<List<Integer>>() {
 			}.getType();
