@@ -18,7 +18,7 @@ public class BankAcc implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	private String bankName;
 	
 	@Column(nullable= false)
