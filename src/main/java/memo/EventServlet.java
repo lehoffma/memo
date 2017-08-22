@@ -78,7 +78,7 @@ public class EventServlet extends HttpServlet {
                     }
 
                     results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ AND UPPER(e.title LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
-                            .setParameter("searchTerm","%"+ searchTerm + "%").setParameter("typ",type).getResultList();
+                            .setParameter("searchTerm","%"+ type + "%").setParameter("typ",type).getResultList();
 
                 } else {
 
@@ -100,16 +100,23 @@ public class EventServlet extends HttpServlet {
                         case "tours":
                             type = 1;
                             break;
-                        case "merch":
+                        case "partys":
                             type = 2;
                             break;
-                        case "partys":
+                        case "merch":
                             type = 3;
                             break;
+
+
 
                     }
 
                     results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ", Event.class).setParameter("typ",type).getResultList();
+
+                    for (Event e: results) {
+
+                        System.out.println(e);
+                    }
 
                 }else {
                     // get all
