@@ -19,7 +19,7 @@ public class Size implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@ManyToOne(cascade = { CascadeType.REFRESH })
+	@ManyToOne(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "EVENT_ID")
 	private Event event;
 	private String name;
@@ -27,7 +27,7 @@ public class Size implements Serializable {
 	@Column(name = "STOCK")
 	private Integer NumInStock;
 
-	@ManyToOne(cascade = {CascadeType.REFRESH})
+	@ManyToOne(cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "COLOR_ID")
 	private Color color;
 
