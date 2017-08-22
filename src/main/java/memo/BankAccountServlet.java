@@ -17,7 +17,7 @@ import java.util.List;
 // TODO: Testing (mostly Copy n Paste)
 
 
-@WebServlet(name = "BankAccountServlet", value = "/api/bankaccount")
+@WebServlet(name = "BankAccountServlet", value = "/api/bankAccount")
 public class BankAccountServlet extends HttpServlet {
 
 

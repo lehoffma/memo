@@ -280,7 +280,8 @@ public class UserServlet extends HttpServlet {
 					u.setClubRole(ClubRole.none);
 			}
 		}
-
+		//todo remove demo
+		u.setClubRole(ClubRole.Admin);
 
 		if (jUser.has("birthday")){
 			//todo rest der date parser an ISO format anpassen

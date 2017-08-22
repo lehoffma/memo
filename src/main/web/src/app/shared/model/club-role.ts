@@ -10,6 +10,33 @@ export enum ClubRole{
 	None = <any> "None"
 }
 
+/*
+
+	@SerializedName("2")
+	Vorstand,
+	@SerializedName("3")
+	Schriftführer,
+	@SerializedName("4")
+	Kassenwart,
+	@SerializedName("5")
+	Organisator,
+	@SerializedName("6")
+	Admin
+
+ */
+
+export function idToClubRoleEnum(clubRole:number):ClubRole{
+	switch(clubRole){
+		case 0: return ClubRole.None;
+		case 1: return ClubRole.Mitglied;
+		case 2: return ClubRole.Vorstand;
+		case 3: return ClubRole.Schriftfuehrer;
+		case 4: return ClubRole.Kassenwart;
+		case 5: return ClubRole.Organizer;
+		case 6: return ClubRole.Admin;
+	}
+}
+
 //todo clubrole with 0-5 values
 
 function clubRoles() {
