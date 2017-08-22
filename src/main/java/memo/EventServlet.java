@@ -6,7 +6,12 @@ import com.google.gson.*;
 import memo.model.*;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -133,47 +138,35 @@ public class EventServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		request.setCharacterEncoding("UTF-8");
-
-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+		setContentType(request,response);
 
 
-		String body = CharStreams.toString(request.getReader());
 
-		JsonElement jElement = new JsonParser().parse(body);
-		JsonObject jEvent = jElement.getAsJsonObject().getAsJsonObject("event");
+		JsonObject jEvent = getJsonEvent(request,response);
 
-		Integer id = jEvent.get("id").getAsInt();
 		EntityManager em = DatabaseManager.createEntityManager();
 
+        //ToDo: Duplicate Events
 
 
 
-		if (id>0)
-		{
-			Event e = em.find(Event.class,id);
-			if (e!=null)
-			{
-				response.setStatus(400);
-				response.getWriter().append("Id is already Taken. Update with PUT");
-				return;
-			}
-		}
 
-		Event newEvent = gson.fromJson(jEvent,Event.class);
+		Event e = createEventFromJson(jEvent);
 
 
-		if (jEvent.has("date"))
-		newEvent.setDate(new Timestamp(jEvent.get("date").getAsLong()));
+		if (jEvent.has("date")) {
+            TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEvent.get("date").getAsString());
+            LocalDateTime date = LocalDateTime.from(day);
+            e.setDate(Timestamp.valueOf(date));
 
-
+        }
 
         List<Color> colorList = new ArrayList<>();
         List<Size> sizeList = new ArrayList<>();
         List<SizeTable> sizeTableList = new ArrayList<>();
         List<Participates> participatesList = new ArrayList<>();
 
-		if (newEvent.getType()==3)
+		if (e.getType()==3)
         {
             JsonArray stock = jEvent.getAsJsonArray("stock");
             JsonArray colors = jEvent.getAsJsonArray("colors");
@@ -222,7 +215,7 @@ public class EventServlet extends HttpServlet {
                     }
                 }
 
-                Size size = new Size(newEvent,name,num,color);
+                Size size = new Size(e,name,num,color);
                 sizeList.add(size);
 
                 JsonArray table = sizeTable.getAsJsonArray(size.getName());
@@ -259,7 +252,7 @@ public class EventServlet extends HttpServlet {
                 if(p.has("comment")) comment = p.get("comment").getAsString();
 
 
-                Participates par = new Participates(user,newEvent,isDriver,paymentState,numOfTickets,numOfParticipants,comment,isAuthor);
+                Participates par = new Participates(user,e,isDriver,paymentState,numOfTickets,numOfParticipants,comment,isAuthor);
                 participatesList.add(par);
 
             }
@@ -269,7 +262,7 @@ public class EventServlet extends HttpServlet {
 
 
         em.getTransaction().begin();
-		em.persist(newEvent);
+		em.persist(e);
         for (Color i: colorList) em.persist(i);
         for (Size i: sizeList) em.persist(i);
         for (SizeTable i: sizeTableList) em.persist(i);
@@ -277,7 +270,7 @@ public class EventServlet extends HttpServlet {
 
         em.getTransaction().commit();
 		response.setStatus(201);
-		response.getWriter().append("{ \"id\": " + newEvent.getId()+ " }");
+		response.getWriter().append("{ \"id\": " + e.getId()+ " }");
 
 
 	}
@@ -325,43 +318,64 @@ public class EventServlet extends HttpServlet {
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        request.setCharacterEncoding("UTF-8");
+        setContentType(request,response);
 
         String Sid = request.getParameter("id");
+        Event e = getEventByID(Sid,response);
 
-
-        Event e;
-        try {
-            Integer id = Integer.parseInt(Sid);
-            e = DatabaseManager.createEntityManager().find(Event.class,id);
-
-
-        }
-        catch (NumberFormatException ex){
-            response.getWriter().append("Bad ID Value");
-            response.setStatus(400);
-            return;
-        }
-
-        if (e==null)
-        {
+        if (e==null){
             response.setStatus(404);
             response.getWriter().append("Not Found");
-            return;
-        }
+            return; }
 
-        DatabaseManager.createEntityManager().getTransaction().begin();
-        e = DatabaseManager.createEntityManager().merge(e);
-        DatabaseManager.createEntityManager().remove(e);
-        DatabaseManager.createEntityManager().getTransaction().commit();
+        removeEventFromDatabase(e);
 
 
     }
 
 
+
+
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
+    }
+
+    private JsonObject getJsonEvent(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String body = CharStreams.toString(request.getReader());
+
+        JsonElement jElement = new JsonParser().parse(body);
+        return jElement.getAsJsonObject().getAsJsonObject("event");
+    }
+
+    private Event getEventByID(String Sid, HttpServletResponse response) throws IOException {
+
+        try {
+            Integer id = Integer.parseInt(Sid);
+            //ToDo: gibt null aus wenn id nicht vergeben
+            return DatabaseManager.createEntityManager().find(Event.class, id);
+        } catch (NumberFormatException e) {
+            response.getWriter().append("Bad ID Value");
+            response.setStatus(400);
+        }
+        return null;
+    }
+
+    private Event createEventFromJson(JsonObject jEvent) {
+        return updateEventFromJson(jEvent,new Event());
+    }
+
+    private Event updateEventFromJson(JsonObject jEvent, Event e){
+        return e;
+    }
+
+    private void removeEventFromDatabase(Event e)	{
+
+        DatabaseManager.createEntityManager().getTransaction().begin();
+        e = DatabaseManager.createEntityManager().merge(e);
+        DatabaseManager.createEntityManager().remove(e);
+        DatabaseManager.createEntityManager().getTransaction().commit();
     }
 
 

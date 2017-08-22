@@ -155,7 +155,7 @@ public class BankAccountServlet extends HttpServlet {
         String body = CharStreams.toString(request.getReader());
 
         JsonElement jElement = new JsonParser().parse(body);
-        return jElement.getAsJsonObject().getAsJsonObject("bankAccount");
+        return jElement.getAsJsonObject().getAsJsonObject("account");
     }
 
     private BankAcc createAccountFromJson(JsonObject jAccount) {
