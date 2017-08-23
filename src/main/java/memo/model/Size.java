@@ -6,7 +6,6 @@ import java.lang.String;
 import javax.persistence.*;
 
 import com.google.gson.annotations.Expose;
-import memo.model.Event;
 
 /**
  * Entity implementation class for Entity: Size
@@ -27,11 +26,11 @@ public class Size implements Serializable {
 	@Expose
 	private Event event;
 	@Expose
-	private String name;
+	private String size;
 
 	@Column(name = "STOCK")
 	@Expose
-	private Integer NumInStock;
+	private Integer amount;
 
 	@ManyToOne(cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "COLOR_ID")
@@ -44,11 +43,11 @@ public class Size implements Serializable {
 		super();
 	}
 
-	public Size(Event event, String name, Integer NumInStock, Color color)
+	public Size(Event event, String size, Integer amount, Color color)
     {
         this.event = event;
-        this.name = name;
-        this.NumInStock = NumInStock;
+        this.size = size;
+        this.amount = amount;
         this.color = color;
     }
 
@@ -68,20 +67,20 @@ public class Size implements Serializable {
 		this.event = event;
 	}
 
-	public String getName() {
-		return this.name;
+	public String getSize() {
+		return this.size;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setSize(String name) {
+		this.size = name;
 	}
 
-	public Integer getNumInStock() {
-		return this.NumInStock;
+	public Integer getAmount() {
+		return this.amount;
 	}
 
-	public void setNumInStock(Integer NumInStock) {
-		this.NumInStock = NumInStock;
+	public void setAmount(Integer NumInStock) {
+		this.amount = NumInStock;
 	}
 
     public Color getColor() {
@@ -97,8 +96,8 @@ public class Size implements Serializable {
         return "Size{" +
                 "id=" + id +
                 ", event=" + event +
-                ", name='" + name + '\'' +
-                ", NumInStock=" + NumInStock +
+                ", name='" + size + '\'' +
+                ", amount=" + amount +
                 ", color=" + color +
                 '}';
     }

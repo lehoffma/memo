@@ -2,6 +2,7 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
+import memo.model.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +17,7 @@ public class EntryServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
+        setContentType(request,response);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -23,20 +25,29 @@ public class EntryServlet extends HttpServlet {
 
         setContentType(request,response);
 
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        JsonObject jEntry = getJsonEntry(request,response);
 
+        Entry e = createEntryFromJson(jEntry);
 
-        String body = CharStreams.toString(request.getReader());
+        saveOrderToDatabase(e);
 
-        JsonElement jElement = new JsonParser().parse(body);
+        response.setStatus(201);
+        response.getWriter().append("{ \"id\": " + e.getId() + " }");
+
+        System.out.println(e.toString());
+
     }
+
+
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
+        setContentType(request,response);
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
+        setContentType(request,response);
     }
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -54,6 +65,22 @@ public class EntryServlet extends HttpServlet {
 
         JsonElement jElement = new JsonParser().parse(body);
         return jElement.getAsJsonObject().getAsJsonObject("entry");
+    }
+
+    private Entry createEntryFromJson(JsonObject jEntry) {
+        return updateEntryFromJson(jEntry,new Entry());
+    }
+
+    private Entry updateEntryFromJson(JsonObject jEntry, Entry entry){
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        // save params to new user
+        entry = gson.fromJson(jEntry, Entry.class);
+
+        return entry;
+    }
+
+    private void saveOrderToDatabase(Entry e) {
     }
 
 }

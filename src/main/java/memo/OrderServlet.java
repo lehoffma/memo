@@ -2,8 +2,6 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import memo.model.*;
 
 import javax.persistence.EntityManager;
@@ -13,15 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 @WebServlet(name = "OrderServlet",value = "/api/order")
@@ -292,12 +283,12 @@ public class OrderServlet extends HttpServlet {
                 item.setColor(c);
 
                 List<Size> sizes = em.createQuery("SELECT s FROM Size s " +
-                        " WHERE s.name = :name AND s.color.hex = :hex", Size.class)
+                        " WHERE s.size = :name AND s.color.hex = :hex", Size.class)
                         .setParameter("name", item.getSize()).setParameter("hex", c.getHex())
                         .getResultList();
 
                 Size size = sizes.get(0);
-                size.setNumInStock(size.getNumInStock() - 1);
+                size.setAmount(size.getAmount() - 1);
                 updatedSizes.add(size);
             }
 
@@ -312,12 +303,12 @@ public class OrderServlet extends HttpServlet {
                     if (item.getColor()!=null) {
 
                         List<Size> sizes = em.createQuery("SELECT s FROM Size s " +
-                                " WHERE s.name = :name AND s.color.hex = :hex", Size.class)
+                                " WHERE s.size = :name AND s.color.hex = :hex", Size.class)
                                 .setParameter("name", item.getSize()).setParameter("hex", item.getColor().getHex())
                                 .getResultList();
 
                         Size size = sizes.get(0);
-                        size.setNumInStock(size.getNumInStock() + 1);
+                        size.setAmount(size.getAmount() + 1);
                         updatedSizes.add(size);
                     }
                 }

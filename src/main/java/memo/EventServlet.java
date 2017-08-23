@@ -6,9 +6,7 @@ import com.google.gson.*;
 import memo.model.*;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -162,8 +160,8 @@ public class EventServlet extends HttpServlet {
                 Size s = new Size();
                 s.setColor(c);
                 s.setEvent(e);
-                s.setName(st.get("size").getAsString());
-                s.setNumInStock(st.get("amount").getAsInt());
+                s.setSize(st.get("size").getAsString());
+                s.setAmount(st.get("amount").getAsInt());
                 colorList.add(c);
                 sizeList.add(s);
 
