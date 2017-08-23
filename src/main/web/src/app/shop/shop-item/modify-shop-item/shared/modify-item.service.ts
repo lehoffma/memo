@@ -145,7 +145,8 @@ export class ModifyItemService {
 	 */
 	init() {
 		//service was already initialized. reset() needs to be called before the user can use it any further
-		if (Object.keys(this.model).length > 0) {
+		if (this.mode !== undefined) {
+			console.log(this.model);
 			return;
 		}
 		if (this.idOfObjectToModify !== -1) {
@@ -189,6 +190,7 @@ export class ModifyItemService {
 		else {
 			this.mode = ModifyType.ADD;
 		}
+		console.log(this.mode);
 	}
 
 	/**
@@ -268,6 +270,7 @@ export class ModifyItemService {
 			newObject.setProperties({addresses: newObject.addresses.map((it: any) => it.id)});
 		}
 		if(EventUtilityService.isTour(newObject) || EventUtilityService.isParty(newObject)){
+			//todo instead of combineLatest: add routes one after another (to avoid transaction errors)
 			if(this.isAddressArray(newObject.route)){
 				let addressIds = await Observable.combineLatest(
 					...newObject.route.map((route:Address) => this.addressService.add(route))
