@@ -1,10 +1,7 @@
 package memo;
 
 import com.google.common.io.CharStreams;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,8 +21,8 @@ public class EntryServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
 
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("charset=UTF-8");
+        setContentType(request,response);
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
 
@@ -41,4 +38,22 @@ public class EntryServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
     }
+
+    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+    }
+
+    private boolean isStringNotEmpty(String s) {
+        return (s != null && !s.isEmpty());
+    }
+
+    private JsonObject getJsonEntry(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String body = CharStreams.toString(request.getReader());
+
+        JsonElement jElement = new JsonParser().parse(body);
+        return jElement.getAsJsonObject().getAsJsonObject("entry");
+    }
+
 }
