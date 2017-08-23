@@ -77,6 +77,8 @@ public class EntryServlet extends HttpServlet {
         // save params to new user
         entry = gson.fromJson(jEntry, Entry.class);
 
+        entry.setEntryCategoryID(jEntry.get("category").getAsJsonObject().get("id").getAsInt());
+
         return entry;
     }
 

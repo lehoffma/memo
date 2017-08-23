@@ -27,7 +27,6 @@ public class Address implements Serializable {
 	@Column(nullable=false)
 	private String street;
     @Expose
-	@Column(nullable=false)
 	private String streetNr;
     @Expose
 	@Column(nullable=false)
