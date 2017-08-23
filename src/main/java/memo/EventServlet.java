@@ -132,6 +132,7 @@ public class EventServlet extends HttpServlet {
 
 		Event e = gson.fromJson(jEvent,Event.class);
 
+		e.setPriceMember(e.getPrice());
 
 		if (jEvent.has("date")) {
             TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEvent.get("date").getAsString());
