@@ -27,7 +27,7 @@ export class UserBankAccountService extends ServletService<BankAccount>{
 		queryParams.set("id", ""+id);
 
 		return this.http.get(this.baseUrl, {search: queryParams})
-			.map(response => response.json().accounts[0] as BankAccount);
+			.map(response => response.json().bankAccounts[0] as BankAccount);
 	}
 
 	/**
