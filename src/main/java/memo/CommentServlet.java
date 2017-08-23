@@ -28,11 +28,13 @@ public class CommentServlet extends HttpServlet {
 
         List<Comment> comments = getCommentsFromDatabase(Sid,SEventID, SAuthorID, response);
 
+        /*
         if(comments.isEmpty()){
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
+        */
 
         Gson gson = new GsonBuilder().serializeNulls().create();
         String output=gson.toJson(comments);
@@ -189,7 +191,7 @@ public class CommentServlet extends HttpServlet {
             Integer eventID = Integer.parseInt(SEventID);
             //ToDo: gibt null aus wenn id nicht vergeben
             return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
-                    " WHERE c.eventID = :eventID", Comment.class)
+                    " WHERE c.event.id = :eventID", Comment.class)
                     .setParameter("eventID", "%" + eventID + "%")
                     .getResultList();
         } catch (NumberFormatException e) {

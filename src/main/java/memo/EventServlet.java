@@ -61,21 +61,8 @@ public class EventServlet extends HttpServlet {
                     // searchTerm & Type
 
 
-                    Integer type = 0;
+                    Integer type = getType(sType);
 
-                    switch (sType)
-                    {
-                        case "tours":
-                            type = 1;
-                            break;
-                        case "partys":
-                            type = 3;
-                            break;
-                        case "merch":
-                            type = 2;
-                            break;
-
-                    }
 
                     results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ AND UPPER(e.title) LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
                             .setParameter("searchTerm","%"+ type + "%").setParameter("typ",type).getResultList();
@@ -93,23 +80,8 @@ public class EventServlet extends HttpServlet {
                 if (sType != null && !sType.isEmpty()) {
                     //  Type
 
-                    Integer type = 0;
+                    Integer type = getType(sType);
 
-                    switch (sType)
-                    {
-                        case "tours":
-                            type = 1;
-                            break;
-                        case "partys":
-                            type = 2;
-                            break;
-                        case "merch":
-                            type = 3;
-                            break;
-
-
-
-                    }
 
                     results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ", Event.class).setParameter("typ",type).getResultList();
 
@@ -160,6 +132,7 @@ public class EventServlet extends HttpServlet {
 
 		Event e = gson.fromJson(jEvent,Event.class);
 
+		e.setPriceMember(e.getPrice());
 
 		if (jEvent.has("date")) {
             TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEvent.get("date").getAsString());
@@ -265,7 +238,7 @@ public class EventServlet extends HttpServlet {
         }
         else
         {
-            e.setType(1);
+            if (e.getVehicle()==null) e.setType(2); else e.setType(1);
 
            /*
             JsonArray participants =jEvent.getAsJsonArray("participants");
@@ -413,6 +386,24 @@ public class EventServlet extends HttpServlet {
         e = DatabaseManager.createEntityManager().merge(e);
         DatabaseManager.createEntityManager().remove(e);
         DatabaseManager.createEntityManager().getTransaction().commit();
+    }
+
+    static Integer getType(String sType) {
+        switch (sType)
+        {
+            case "tours":
+                return 1;
+
+            case "partys":
+                return 2;
+
+            case "merch":
+                return 3;
+
+            default:
+                return 0;
+
+        }
     }
 
 
