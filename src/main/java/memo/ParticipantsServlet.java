@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "ParticipantsServlet")
+@WebServlet(name = "ParticipantsServlet",value = "/api/participants")
 public class ParticipantsServlet extends HttpServlet {
 
 
