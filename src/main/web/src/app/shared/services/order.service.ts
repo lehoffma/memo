@@ -64,7 +64,7 @@ export class OrderService extends ServletService<Order>{
 		const requestOptions = new RequestOptions({headers});
 
 		return this.http.post(this.baseUrl, {order}, requestOptions)
-			.map(response => response.json() as number)
+			.map(response => response.json().id as number)
 			.flatMap(accountId => this.getById(accountId));
 	}
 

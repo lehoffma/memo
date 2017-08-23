@@ -20,8 +20,8 @@ export class EntryCategoryService extends ServletService<EntryCategory>{
 	 */
 	getById(id: number): Observable<EntryCategory> {
 		return this.http.get(this.baseUrl, {body: id})
-			.map(response => response.json())
-			.map(json => EntryCategory.create().setProperties(json));
+			.map(response => response.json().categories)
+			.map(json => EntryCategory.create().setProperties(json[0]));
 	}
 
 	/**
