@@ -1,7 +1,7 @@
 package memo;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.common.io.CharStreams;
+import com.google.gson.*;
 import memo.model.Size;
 
 import javax.servlet.ServletException;
@@ -37,5 +37,10 @@ public class StockServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
     }
+
+    private boolean isStringNotEmpty(String s) {
+        return (s != null && !s.isEmpty());
+    }
+
 
 }

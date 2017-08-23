@@ -53,6 +53,8 @@ public class CommentServlet extends HttpServlet {
         Comment c = createCommentFromJson(jComment);
         saveCommentToDatabase(c);
 
+        System.out.println(c);
+
         response.setStatus(201);
         response.getWriter().append("{\"id\": "+c.getId()+"}");
 
@@ -81,9 +83,10 @@ public class CommentServlet extends HttpServlet {
 
 
         c = updateCommentFromJson(jComment,c);
-        saveCommentToDatabase(c);
+        c = saveCommentToDatabase(c);
 
         System.out.println(c);
+
         response.setStatus(201);
         response.getWriter().append("{\"id\": "+c.getId()+"}");
 
@@ -174,13 +177,14 @@ public class CommentServlet extends HttpServlet {
         return c;
     }
 
-    private void saveCommentToDatabase(Comment c) {
+    private Comment saveCommentToDatabase(Comment c) {
 
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
         em.merge(c);
         em.getTransaction().commit();
+        return c;
     }
 
     private void removeCommentFromDatabase(Comment c)	{

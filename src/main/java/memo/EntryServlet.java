@@ -48,12 +48,12 @@ public class EntryServlet extends HttpServlet {
         return (s != null && !s.isEmpty());
     }
 
-    private JsonObject getJsonComment(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private JsonObject getJsonEntry(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String body = CharStreams.toString(request.getReader());
 
         JsonElement jElement = new JsonParser().parse(body);
-        return jElement.getAsJsonObject().getAsJsonObject("comment");
+        return jElement.getAsJsonObject().getAsJsonObject("entry");
     }
 
 }
