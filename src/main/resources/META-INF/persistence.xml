@@ -10,7 +10,7 @@
         <class>memo.model.Comment</class>
         <class>memo.model.EntryCategory</class>
         <class>memo.model.Event</class>
-        <class>memo.model.HasEntry</class>
+        <class>memo.model.Entry</class>
         <class>memo.model.Order</class>
         <class>memo.model.OrderedItem</class>
         <class>memo.model.Permission</class>

@@ -2,7 +2,7 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
-import memo.model.HasEntry;
+import memo.model.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,7 +27,7 @@ public class EntryServlet extends HttpServlet {
 
         JsonObject jEntry = getJsonEntry(request,response);
 
-        HasEntry e = createEntryFromJson(jEntry);
+        Entry e = createEntryFromJson(jEntry);
 
         saveOrderToDatabase(e);
 
@@ -65,11 +65,11 @@ public class EntryServlet extends HttpServlet {
         return jElement.getAsJsonObject().getAsJsonObject("entry");
     }
 
-    private HasEntry createEntryFromJson(JsonObject jEntry) {
-        return updateEntryFromJson(jEntry,new HasEntry());
+    private Entry createEntryFromJson(JsonObject jEntry) {
+        return updateEntryFromJson(jEntry,new Entry());
     }
 
-    private HasEntry updateEntryFromJson(JsonObject jEntry, HasEntry entry){
+    private Entry updateEntryFromJson(JsonObject jEntry, Entry entry){
 
     }
 

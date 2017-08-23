@@ -10,7 +10,7 @@ import javax.persistence.*;
  *
  */
 @Entity
-@Table(name="ENTRIES")
+@Table(name="ENTRY_CATEGORIES")
 
 @NamedQueries({ 
 	@NamedQuery(name = "getEntryById", query = "SELECT e FROM EntryCategory e WHERE e.id = :id"),

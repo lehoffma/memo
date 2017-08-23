@@ -7,13 +7,13 @@ import java.lang.String;
 import javax.persistence.*;
 
 /**
- * Entity implementation class for Entity: HasEntry
+ * Entity implementation class for Entity: Entry
  *
  */
 @Entity
-@Table(name="HAS_ENTRY")
+@Table(name="ENTRY")
 
-public class HasEntry implements Serializable {
+public class Entry implements Serializable {
 
 
 	@Id
@@ -39,7 +39,7 @@ public class HasEntry implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public HasEntry() {
+	public Entry() {
 		super();
 	}   
 	public Integer getEventID() {
