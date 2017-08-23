@@ -100,9 +100,10 @@ public class EntryServlet extends HttpServlet {
 
         if (isStringNotEmpty(SeventId)) return getEntriesByEventId(SeventId,response);
 
+        if (isStringNotEmpty(sType)) return getEntriesByEventType(sType,response);
+
         return getEntries();
     }
-
 
 
     private JsonObject getJsonEntry(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -143,6 +144,9 @@ public class EntryServlet extends HttpServlet {
     private Entry getEntryByID(String sid, HttpServletResponse response) {
         return null;
     }
+
+    private List<Entry> getEntriesByEventType(String sType, HttpServletResponse response) {
+    return null;}
 
     private List<Entry> getEntries() {
         return null;
