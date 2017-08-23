@@ -27,12 +27,13 @@ public class ParticipantsServlet extends HttpServlet {
 
         List<OrderedItem> participants = getParticipantsFromDatabase(SeventId,sType,response);
 
+        /*
         if (participants.isEmpty()) {
             response.setStatus(404);
             response.getWriter().append("Not found");
             return;
         }
-
+*/
         Gson gson = new GsonBuilder().serializeNulls().create();
         String output = gson.toJson(participants);
 
