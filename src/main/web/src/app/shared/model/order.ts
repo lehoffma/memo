@@ -6,7 +6,7 @@ import {OrderedItem} from "./ordered-item";
 export class Order extends BaseObject<Order> {
 	constructor(public readonly id: number,
 				public readonly userId: number,
-				public readonly date: Date,
+				public readonly timeStamp: Date,
 				//todo link to bank account
 				public readonly payment: {
 					method: PaymentMethod,

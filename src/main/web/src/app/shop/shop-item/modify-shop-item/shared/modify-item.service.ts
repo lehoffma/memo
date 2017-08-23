@@ -264,6 +264,7 @@ export class ModifyItemService {
 				entries: () => ({eventId: model["eventId"]})
 			});
 
+		//handle addresses correctly
 		if (EventUtilityService.isUser(newObject)) {
 			newObject.setProperties({addresses: newObject.addresses.map((it: any) => it.id)});
 		}
@@ -278,6 +279,9 @@ export class ModifyItemService {
 
 				newObject.setProperties({route: [...addressIds]});
 			}
+		}
+		if(EventUtilityService.isTour(newObject)){
+			newObject.setProperties((<Partial<Tour>>{emptySeats: newObject.capacity}));
 		}
 
 		//todo upload image seperately
@@ -302,6 +306,7 @@ export class ModifyItemService {
 						//todo
 						this.navigationService.navigateToItemWithId(this.eventType, this.eventId);
 					}
+					this.reset();
 				},
 				error => {
 					console.log("adding or editing object went wrong");
