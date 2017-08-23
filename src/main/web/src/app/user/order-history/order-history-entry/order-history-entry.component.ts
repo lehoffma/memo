@@ -38,7 +38,7 @@ export class OrderHistoryEntryComponent implements OnInit {
 			.subscribe(events => {
 				this.orderedEventItems = events;
 				this.total = events
-					.reduce((acc, event) => acc + event.amount * event.price, 0);
+					.reduce((acc, event) => acc + event.price, 0);
 			})
 	}
 }
