@@ -37,13 +37,23 @@ public class OrderServlet extends HttpServlet {
         }
 
         //ToDo: OrderedItems
-
-
         Gson gson = new GsonBuilder().serializeNulls().create();
-        String output = gson.toJson(orders);
+        response.getWriter().append("{ \"orders\": [");
 
-        response.getWriter().append("{ \"orders\": " + output + " }");
+        for (int i=0;i<orders.size();++i) {
+            if (i!=0) response.getWriter().append(",");
 
+            Order o = orders.get(i);
+
+            List<OrderedItem> itemList = getOrderedItemsByOrderId(o.getId());
+
+        String output = gson.toJson(o);
+        String items = gson.toJson(itemList);
+
+        response.getWriter().append("{ "+output + ", \"orderedItems\":"+ items + "}");
+
+        }
+        response.getWriter().append("]}");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -52,10 +62,12 @@ public class OrderServlet extends HttpServlet {
 
         JsonObject jOrder = getJsonOrder(request,response);
 
-
+        System.out.println(jOrder);
         // ToDo: find multiple
 
         Order newOrder = createOrderFromJson(jOrder);
+
+        System.out.println(newOrder);
 
         // update Dependencies
 
@@ -255,16 +267,15 @@ public class OrderServlet extends HttpServlet {
 
             JsonObject jItem = jOrderItems.get(i).getAsJsonObject();
 
-            Integer jId;
-            try
-            {
-                 jId = jItem.get("event").getAsJsonObject().get("id").getAsInt();
-            }catch (Exception e){
-                jId=-1;
-            }
-                OrderedItem item = em.find(OrderedItem.class,jId);
+            OrderedItem item = new OrderedItem();
 
-                item = UpdateOrderedItemFromJson(jItem,item,o);
+              if (jItem.has("id")) {
+                  Integer jId = jItem.get("id").getAsInt();
+
+                  item = em.find(OrderedItem.class, jId);
+              }
+
+                item = updateOrderedItemFromJson(jItem,item,o);
                 items.add(item);
 
 
@@ -274,7 +285,7 @@ public class OrderServlet extends HttpServlet {
         return items;
     }
 
-    private OrderedItem UpdateOrderedItemFromJson(JsonObject jItem, OrderedItem item, Order o) {
+    private OrderedItem updateOrderedItemFromJson(JsonObject jItem, OrderedItem item, Order o) {
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         EntityManager em = DatabaseManager.createEntityManager();
@@ -326,6 +337,15 @@ public class OrderServlet extends HttpServlet {
         }
 
         return item;
+    }
+
+    private List<OrderedItem> getOrderedItemsByOrderId(Integer id) {
+
+        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
+                " WHERE o.order.id = :Id", OrderedItem.class)
+                .setParameter("Id", id)
+                .getResultList();
+
     }
 
 }
