@@ -70,9 +70,12 @@ export class AddressModificationComponent implements OnInit {
 		}
 		else {
 			this.addressService.add(this.model)
-				.flatMap(address => this.loginService.currentUser()
-					.map(user => user.setProperties({addresses: [...user.addresses, address.id]}))
-					.flatMap(user => this.userService.modify(user)))
+				.flatMap(address => this.loginService.isLoggedIn() ?
+					this.loginService.currentUser()
+						.map(user => user.setProperties({addresses: [...user.addresses, address.id]}))
+						.flatMap(user => this.userService.modify(user))
+					: Observable.of(null)
+				)
 				.first()
 				.subscribe(address => {
 					console.log(address);
