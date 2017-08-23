@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.lang.Boolean;
 import java.lang.Integer;
@@ -19,22 +21,28 @@ public class Entry implements Serializable {
 	@Id
 	private Integer id;
 
-
+	@Expose
 	@Column(name= "EVENT_ID")
 	private Integer eventID;
-	
+
 
 	@Column(name= "ENTRY_ID")
 	private Integer entryID;
 
+	@Expose
+	private String name;
 
+	@Expose
 	private Integer value;
-	
+
+	@Expose
 	@Column(name= "IS_INCOME")
 	private Boolean isIncome;
 
+	@Expose
 	private String comment;
 
+	@Expose
 	private String picPath;
 
 	private static final long serialVersionUID = 1L;
@@ -49,8 +57,6 @@ public class Entry implements Serializable {
 	public void setEventID(Integer eventID) {
 		this.eventID = eventID;
 	}   
-
-
 
 	public Integer getEntryID() {
 		return this.entryID;
@@ -97,6 +103,22 @@ public class Entry implements Serializable {
 
 	public void setPicPath(String picPath) {
 		this.picPath = picPath;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 

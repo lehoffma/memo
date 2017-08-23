@@ -38,6 +38,8 @@ public class EntryServlet extends HttpServlet {
 
     }
 
+
+
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
         setContentType(request,response);
@@ -71,6 +73,14 @@ public class EntryServlet extends HttpServlet {
 
     private Entry updateEntryFromJson(JsonObject jEntry, Entry entry){
 
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        // save params to new user
+        entry = gson.fromJson(jEntry, Entry.class);
+
+        return entry;
+    }
+
+    private void saveOrderToDatabase(Entry e) {
     }
 
 }
