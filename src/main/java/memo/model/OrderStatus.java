@@ -9,7 +9,7 @@ public enum OrderStatus {
     @SerializedName("1")
     Ordered,
     @SerializedName("2")
-    Payed,
+    Paid,
     @SerializedName("3")
     Sent,
     @SerializedName("4")

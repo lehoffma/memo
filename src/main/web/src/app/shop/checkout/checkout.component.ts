@@ -116,21 +116,20 @@ export class CheckoutComponent implements OnInit {
 					.flatMap(events => {
 						let orderedItems: OrderedItem[] = events
 							.map(event => ({
-								id: event.id,
+								id: undefined,
+								event: event.event,
 								price: event.event.price,
-								status: OrderStatus.NONE,
+								status: OrderStatus.RESERVED,
 								amount: event.amount,
-								options: event.options
+								options: event.options,
 							}));
 
 						return this.orderService.add(Order.create()
 							.setProperties({
 								userId,
 								timeStamp: new Date(),
-								payment: {
-									method: event.method,
-									bankAccount: bankAccountId
-								},
+								method: event.method,
+								bankAccount: bankAccountId,
 								orderedItems
 							}));
 					})
