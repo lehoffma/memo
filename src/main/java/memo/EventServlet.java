@@ -77,13 +77,13 @@ public class EventServlet extends HttpServlet {
 
                     }
 
-                    results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ AND UPPER(e.title LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
+                    results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ AND UPPER(e.title) LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
                             .setParameter("searchTerm","%"+ type + "%").setParameter("typ",type).getResultList();
 
                 } else {
 
                     // only search term
-                    results = em.createQuery("SELECT e FROM Event e WHERE UPPER(e.title LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
+                    results = em.createQuery("SELECT e FROM Event e WHERE UPPER(e.title) LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
                             .setParameter("searchTerm","%"+ searchTerm + "%").getResultList();
 
                 }
@@ -171,7 +171,6 @@ public class EventServlet extends HttpServlet {
         List<Color> colorList = new ArrayList<>();
         List<Size> sizeList = new ArrayList<>();
         List<SizeTable> sizeTableList = new ArrayList<>();
-        List<Participates> participatesList = new ArrayList<>();
 
 		if (jEvent.has("stock"))
         {
@@ -267,7 +266,10 @@ public class EventServlet extends HttpServlet {
         else
         {
             e.setType(1);
+
+           /*
             JsonArray participants =jEvent.getAsJsonArray("participants");
+
             for (int i=0;i<participants.size();++i)
             {
                 JsonObject p = participants.get(i).getAsJsonObject();
@@ -290,6 +292,7 @@ public class EventServlet extends HttpServlet {
                 participatesList.add(par);
 
             }
+            */
 
         }
 
@@ -300,7 +303,6 @@ public class EventServlet extends HttpServlet {
         for (Color i: colorList) {System.out.println(i); em.persist(i);}
         for (Size i: sizeList) em.persist(i);
         for (SizeTable i: sizeTableList) em.persist(i);
-        for (Participates i: participatesList) em.persist(i);
         em.persist(e);
 
         em.getTransaction().commit();

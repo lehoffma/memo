@@ -34,6 +34,7 @@ public class HasEntry implements Serializable {
 	@ManyToOne(cascade = { CascadeType.PERSIST})
 	@PrimaryKeyJoinColumn(name = "ENTRY_ID", referencedColumnName = "ID")
 	private Entry entry;
+
 	private Integer value;
 	
 	@Column(name= "IS_INCOME")

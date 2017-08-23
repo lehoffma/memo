@@ -14,14 +14,14 @@ public class Comment implements Serializable{
     private int id;   //globale unique ID
 
     @ManyToOne(cascade = { CascadeType.PERSIST })
-    @PrimaryKeyJoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
     private Event event;
 
     @Column(nullable=false)
     private Timestamp timeStamp;   //muss jetzt unbedingt nich 'Date' sein, aber halt nen Datumstyp
 
     @ManyToOne(cascade = { CascadeType.PERSIST })
-    @PrimaryKeyJoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID")
     private User author;
 
     private String text;

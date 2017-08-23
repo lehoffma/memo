@@ -299,7 +299,7 @@ public class UserServlet extends HttpServlet {
 
 		if (jUser.has("joinDate")) {
 
-			TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
+			TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("joinDate").getAsString());
 			LocalDate jDate = LocalDate.from(join);
 			u.setBirthday(Date.valueOf(jDate));
 

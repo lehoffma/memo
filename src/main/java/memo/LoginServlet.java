@@ -14,7 +14,7 @@ import com.google.gson.*;
 import memo.model.User;
 
 
-@WebServlet("/api/login")
+@WebServlet(name = "LoginServlet", value = "/api/login")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
