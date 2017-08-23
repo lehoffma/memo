@@ -70,10 +70,11 @@ export class ModifyEntryComponent implements OnInit {
 			.flatMap(title => {
 				return Observable.combineLatest(
 					this.eventService.search("", EventType.tours),
-					this.eventService.search("", EventType.partys)
+					this.eventService.search("", EventType.partys),
+					this.eventService.search("", EventType.merch)
 				)
-					.map(([tours, partys]) => {
-						let availableEvents = [...tours, ...partys];
+					.map(([tours, partys, merch]) => {
+						let availableEvents = [...tours, ...partys, ...merch];
 						return title
 							? this.filter(availableEvents, title)
 							: availableEvents.slice()

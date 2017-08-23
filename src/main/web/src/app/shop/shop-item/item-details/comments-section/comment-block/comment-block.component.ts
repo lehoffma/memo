@@ -126,7 +126,8 @@ export class CommentBlockComponent implements OnInit {
 							this.comment = Object.assign({}, currentComment);
 							this.loadingChildren = false;
 						}, error => {
-							console.error("adding the comment went wrong", error);
+							console.error("adding the comment went wrong");
+							console.error(error);
 						})
 				});
 		}
@@ -195,6 +196,7 @@ export class CommentBlockComponent implements OnInit {
 						this.showChildren = false;
 					}
 					this.comment = Object.assign({}, currentComment);
+					this.changeDetectorRef.detectChanges();
 				}, error => {
 					console.error("removing the comment went wrong", error);
 				})
