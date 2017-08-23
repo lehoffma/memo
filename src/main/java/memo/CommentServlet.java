@@ -28,11 +28,13 @@ public class CommentServlet extends HttpServlet {
 
         List<Comment> comments = getCommentsFromDatabase(Sid,SEventID, SAuthorID, response);
 
+        /*
         if(comments.isEmpty()){
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
+        */
 
         Gson gson = new GsonBuilder().serializeNulls().create();
         String output=gson.toJson(comments);
