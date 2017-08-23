@@ -83,6 +83,7 @@ public class CommentServlet extends HttpServlet {
         c = updateCommentFromJson(jComment,c);
         saveCommentToDatabase(c);
 
+        System.out.println(c);
         response.setStatus(201);
         response.getWriter().append("{\"id\": "+c.getId()+"}");
 
