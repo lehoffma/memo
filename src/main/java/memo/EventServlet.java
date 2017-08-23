@@ -238,7 +238,7 @@ public class EventServlet extends HttpServlet {
         }
         else
         {
-            e.setType(1);
+            if (e.getVehicle()==null) e.setType(2); else e.setType(1);
 
            /*
             JsonArray participants =jEvent.getAsJsonArray("participants");

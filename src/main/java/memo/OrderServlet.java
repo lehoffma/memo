@@ -45,6 +45,7 @@ public class OrderServlet extends HttpServlet {
             return;
         }
 
+        
         Gson gson = new GsonBuilder().serializeNulls().create();
         String output = gson.toJson(orders);
 
