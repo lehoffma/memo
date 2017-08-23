@@ -4,7 +4,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
 import {ColumnSortingEvent} from "../../../../../shared/expandable-table/column-sorting-event";
 import {Observable} from "rxjs/Observable";
-import {attributeSortingFunction, getId, sortingFunction} from "../../../../../util/util";
+import {attributeSortingFunction, sortingFunction} from "../../../../../util/util";
 import {MerchColorCellComponent} from "./merch-color-cell/merch-color-cell.component";
 import {MdDialog} from "@angular/material";
 import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-merch-stock-item.component";
@@ -43,10 +43,11 @@ export class ModifyMerchStockComponent implements OnInit {
 	}
 
 	merchStockObservable = Observable.combineLatest(this.merchStockSubject, this.sortBy)
+		.do(([stock, sort]) => console.log(stock))
 		.map(([merchStock, sortBy]) => {
 			return [...merchStock]
 				.map((stock) => ({
-					id: getId(stock),
+					id: stock["id"],
 					size: stock.size,
 					color: Object.assign({}, stock.color),
 					amount: stock.amount,
@@ -99,7 +100,7 @@ export class ModifyMerchStockComponent implements OnInit {
 						break;
 					case ModifyType.EDIT:
 						this.merchStock = this.merchStock.map(stock => {
-							if (getId(stock) === event.modifiedStock["id"]) {
+							if (stock["id"] === event.modifiedStock["id"]) {
 								return {
 									size: event.size,
 									color: Object.assign({}, event.color),

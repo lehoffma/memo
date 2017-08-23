@@ -11,11 +11,14 @@ import {CacheStore} from "../stores/cache.store";
 import {ParticipantsService} from "./participants.service";
 import {ServletService} from "./servlet.service";
 import {Merchandise} from "../../shop/shared/model/merchandise";
+import {StockService} from "./stock.service";
+import {MerchStockList} from "../../shop/shared/model/merch-stock";
 
 @Injectable()
 export class EventService extends ServletService<Event> {
 	constructor(private http: Http,
 				private cache: CacheStore,
+				private stockService: StockService,
 				private participantsService: ParticipantsService,
 				private eventUtilService: EventUtilityService,
 				private eventFactoryService: EventFactoryService) {
@@ -162,7 +165,6 @@ export class EventService extends ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	add(event: Event, options?: any): Observable<Event> {
-		//todo if merch => update stockService
 		return this.addOrModify(this.http.post.bind(this.http), event, options);
 	}
 
@@ -174,7 +176,6 @@ export class EventService extends ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	modify(event: Event, options?: any): Observable<Event> {
-		//todo if merch => update stockService
 		return this.addOrModify(this.http.put.bind(this.http), event, options);
 	}
 

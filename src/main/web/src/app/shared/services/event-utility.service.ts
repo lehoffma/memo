@@ -131,14 +131,15 @@ export class EventUtilityService {
 
 
 	static isMerchandise(event: any): event is Merchandise {
-		return event && (<Merchandise>event).material !== undefined;
+		return event && (<Merchandise>event).material !== undefined && (<Merchandise>event).material !== null;
 	}
 
 	static isTour(event: any): event is Tour {
-		return event && (<Tour>event).vehicle !== undefined
+		return event && (<Tour>event).vehicle !== undefined && (<Tour>event).vehicle !== null
 	}
 
 	static isParty(event: any): event is Party {
-		return event && (<Party>event).emptySeats !== undefined && (<Tour>event).vehicle === undefined;
+		return event && (<Party>event).emptySeats !== undefined && (<Party>event).emptySeats !== null
+			&& ((<Tour>event).vehicle === undefined || (<Tour>event).vehicle === null);
 	}
 }

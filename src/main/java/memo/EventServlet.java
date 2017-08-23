@@ -314,8 +314,11 @@ public class EventServlet extends HttpServlet {
             e = gson.fromJson(jEvent,Event.class);
 
 
-        if (jEvent.has("date"))
-            e.setDate(new Timestamp(jEvent.get("date").getAsLong()));
+        if (jEvent.has("date")){
+            TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEvent.get("date").getAsString());
+            LocalDateTime date = LocalDateTime.from(day);
+            e.setDate(Timestamp.valueOf(date));
+        }
 
 
         em.merge(e);
