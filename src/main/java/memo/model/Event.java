@@ -59,11 +59,11 @@ public class Event implements Serializable {
 
 	@Expose
 	@Column(name = "PRICE_MEMBER", nullable = false)
-	private Integer priceMember;
+	private float priceMember;
 
 	@Expose
 	@Column(nullable = false)
-	private Integer price;
+	private float price;
 
     @ElementCollection
     @CollectionTable(name ="EVENT_ROUTES")
@@ -144,19 +144,19 @@ public class Event implements Serializable {
 		this.capacity = capacity;
 	}
 
-	public Integer getPriceMember() {
+	public float getPriceMember() {
 		return this.priceMember;
 	}
 
-	public void setPriceMember(Integer priceMember) {
+	public void setPriceMember(float priceMember) {
 		this.priceMember = priceMember;
 	}
 
-	public Integer getPrice() {
+	public float getPrice() {
 		return this.price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(float price) {
 		this.price = price;
 	}
 
