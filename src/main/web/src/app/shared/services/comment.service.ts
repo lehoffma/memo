@@ -63,8 +63,8 @@ import {Comment} from "../../shop/shared/model/comment";
 	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
 				comment: Comment, parentId?: number): Observable<Comment> {
 		return this.performRequest(requestMethod("/api/comment", {comment, parentId}))
-			.map(response => response.json().comment)
-			.map(commentJson => Comment.create().setProperties(commentJson))
+			.map(response => response.json().id)
+			.flatMap(commentId => this.getById(commentId))
 	}
 
 	/**
@@ -91,7 +91,7 @@ import {Comment} from "../../shop/shared/model/comment";
 	 * @param parentId
 	 */
 	remove(id: number, parentId?: number): Observable<Response> {
-		return this.performRequest(this.http.delete("/api/delete", {body: {id, parentId}}));
+		return this.performRequest(this.http.delete("/api/comment?id=" + id));
 	}
 
 }

@@ -42,7 +42,7 @@ export class EntryCategoryService extends ServletService<EntryCategory>{
 		params.set("searchTerm", searchTerm);
 
 		return this.http.get(this.baseUrl, {search: params})
-			.map(response => response.json().entryCategories as EntryCategory[]);
+			.map(response => response.json().categories as EntryCategory[]);
 	}
 
 	/**

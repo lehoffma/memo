@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+	Component,
+	EventEmitter,
+	Input,
+	OnInit,
+	Output
+} from "@angular/core";
 import {Comment} from "../../../shared/model/comment";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {LogInService} from "../../../../shared/services/login.service";
@@ -66,7 +74,6 @@ export class CommentsSectionComponent implements OnInit {
 					this.loadingAddedComment = true;
 					this.changeDetectorRef.detectChanges();
 
-					console.log(comment);
 					this.commentService.add(comment, parentId)
 						.subscribe(addResult => {
 							this.comments.push(addResult);
@@ -74,6 +81,7 @@ export class CommentsSectionComponent implements OnInit {
 							this.changeDetectorRef.detectChanges();
 						}, error => {
 							console.error("adding the comment went wrong");
+							console.error(error);
 						})
 				})
 		}
@@ -91,6 +99,8 @@ export class CommentsSectionComponent implements OnInit {
 				if (indexOfChildId >= 0) {
 					this.comments.splice(indexOfChildId, 1);
 				}
+				this.comments = [...this.comments];
+				this.changeDetectorRef.detectChanges();
 			}, error => {
 				console.error("removing the comment went wrong", error);
 			})
