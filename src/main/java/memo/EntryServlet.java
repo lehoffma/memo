@@ -23,9 +23,9 @@ public class EntryServlet extends HttpServlet {
 
         String Sid = request.getParameter("id");
         String SeventId = request.getParameter("eventId");
-        String sType;
+        String sType = request.getParameter("eventType");
 
-        List<Entry> entries = getEntriesFromDatabase(Sid,SuserId,response);
+        List<Entry> entries = getEntriesFromDatabase(Sid,SeventId,sType, response);
 
         if (entries.isEmpty()) {
             response.setStatus(404);
@@ -39,6 +39,7 @@ public class EntryServlet extends HttpServlet {
 
         response.getWriter().append("{ \"entries\": " + output + " }");
     }
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
@@ -80,6 +81,10 @@ public class EntryServlet extends HttpServlet {
 
     private boolean isStringNotEmpty(String s) {
         return (s != null && !s.isEmpty());
+    }
+
+    private List<Entry> getEntriesFromDatabase(String Sid, String seventId, String sType, HttpServletResponse response) {
+        if (isStringNotEmpty(Sid)) return null;
     }
 
     private JsonObject getJsonEntry(HttpServletRequest request, HttpServletResponse response) throws IOException {
