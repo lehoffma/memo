@@ -254,12 +254,20 @@ public class OrderServlet extends HttpServlet {
         for (int i = 0; i<jOrderItems.size();++i) {
 
             JsonObject jItem = jOrderItems.get(i).getAsJsonObject();
-            Integer jId = jItem.get("id").getAsInt();
 
-            OrderedItem item = em.find(OrderedItem.class,jId);
+            Integer jId;
+            try
+            {
+                 jId = jItem.get("id").getAsInt();
+            }catch (Exception e){
+                jId=-1;
+            }
+                OrderedItem item = em.find(OrderedItem.class,jId);
 
                 item = UpdateOrderedItemFromJson(jItem,item,o);
                 items.add(item);
+
+
 
         }
 

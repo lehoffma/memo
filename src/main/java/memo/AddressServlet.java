@@ -172,7 +172,7 @@ public class AddressServlet extends HttpServlet {
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
-        em.merge(newAddress);
+        em.persist(newAddress);
         em.getTransaction().commit();
     }
 

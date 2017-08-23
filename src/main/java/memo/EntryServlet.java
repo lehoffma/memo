@@ -4,12 +4,15 @@ import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import memo.model.Entry;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @WebServlet(name = "EntryServlet",value = "/api/entry")
@@ -18,7 +21,26 @@ public class EntryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
         setContentType(request,response);
+
+        String Sid = request.getParameter("id");
+        String SeventId = request.getParameter("eventId");
+        String sType = request.getParameter("eventType");
+
+        List<Entry> entries = getEntriesFromDatabase(Sid,SeventId,sType, response);
+
+        if (entries.isEmpty()) {
+            response.setStatus(404);
+            response.getWriter().append("Not found");
+            return;
+        }
+        //ToDo: OrderedItems
+
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        String output = gson.toJson(entries);
+
+        response.getWriter().append("{ \"entries\": " + output + " }");
     }
+
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
@@ -29,7 +51,7 @@ public class EntryServlet extends HttpServlet {
 
         Entry e = createEntryFromJson(jEntry);
 
-        saveOrderToDatabase(e);
+        saveEntryToDatabase(e);
 
         response.setStatus(201);
         response.getWriter().append("{ \"id\": " + e.getId() + " }");
@@ -43,6 +65,9 @@ public class EntryServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
         setContentType(request,response);
+
+        JsonObject jEntry = getJsonEntry(request,response);
+
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -58,6 +83,28 @@ public class EntryServlet extends HttpServlet {
     private boolean isStringNotEmpty(String s) {
         return (s != null && !s.isEmpty());
     }
+
+    private List<Entry> getEntriesFromDatabase(String Sid, String SeventId, String sType, HttpServletResponse response) {
+
+        List<Entry> orders = new ArrayList<>();
+
+        // if ID is submitted
+        if (isStringNotEmpty(Sid)) {
+
+            Entry e = getEntryByID(Sid, response);
+            if (e != null) {
+                orders.add(e);
+                return orders;
+            }
+        }
+
+        if (isStringNotEmpty(SeventId)) return getEntriesByEventId(SeventId,response);
+
+        if (isStringNotEmpty(sType)) return getEntriesByEventType(sType,response);
+
+        return getEntries();
+    }
+
 
     private JsonObject getJsonEntry(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -77,10 +124,32 @@ public class EntryServlet extends HttpServlet {
         // save params to new user
         entry = gson.fromJson(jEntry, Entry.class);
 
+        entry.setEntryCategoryID(jEntry.get("category").getAsJsonObject().get("id").getAsInt());
+
         return entry;
     }
 
-    private void saveOrderToDatabase(Entry e) {
+    private void saveEntryToDatabase(Entry e) {
+        EntityManager em = DatabaseManager.createEntityManager();
+
+        em.getTransaction().begin();
+        em.merge(e);
+        em.getTransaction().commit();
+    }
+
+    private List<Entry> getEntriesByEventId(String seventId, HttpServletResponse response) {
+        return null;
+    }
+
+    private Entry getEntryByID(String sid, HttpServletResponse response) {
+        return null;
+    }
+
+    private List<Entry> getEntriesByEventType(String sType, HttpServletResponse response) {
+    return null;}
+
+    private List<Entry> getEntries() {
+        return null;
     }
 
 }

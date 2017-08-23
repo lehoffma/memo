@@ -21,13 +21,13 @@ public class Entry implements Serializable {
 	@Id
 	private Integer id;
 
-	@Expose
-	@Column(name= "EVENT_ID")
-	private Integer eventID;
+	@ManyToOne
+	@JoinColumn(name= "EVENT_ID",referencedColumnName = "ID")
+	private Event event;
 
 
-	@Column(name= "ENTRY_ID")
-	private Integer entryID;
+	@Column(name= "ENTRY_CATEGORY_ID")
+	private Integer entryCategoryID;
 
 	@Expose
 	private String name;
@@ -50,20 +50,20 @@ public class Entry implements Serializable {
 	public Entry() {
 		super();
 	}   
-	public Integer getEventID() {
-		return this.eventID;
+	public Event getEvent() {
+		return this.event;
 	}
 
-	public void setEventID(Integer eventID) {
-		this.eventID = eventID;
+	public void setEvent(Event event) {
+		this.event = event;
 	}   
 
-	public Integer getEntryID() {
-		return this.entryID;
+	public Integer getEntryCategoryID() {
+		return this.entryCategoryID;
 	}
 
-	public void setEntryID(Integer entryID) {
-		this.entryID = entryID;
+	public void setEntryCategoryID(Integer entryID) {
+		this.entryCategoryID = entryID;
 	}   
 
 	public Integer getValue() {
