@@ -16,7 +16,7 @@ import javax.persistence.*;
 
 @NamedQuery(name = "getAddressById", query = "SELECT a FROM Address a WHERE a.id = :id")
 public class Address implements Serializable {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;

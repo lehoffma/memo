@@ -23,7 +23,7 @@ public class EntryServlet extends HttpServlet {
 
         String Sid = request.getParameter("id");
         String SeventId = request.getParameter("eventId");
-        String sType = request.
+        String sType;
 
         List<Entry> entries = getEntriesFromDatabase(Sid,SuserId,response);
 
