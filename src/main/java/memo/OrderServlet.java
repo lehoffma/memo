@@ -45,8 +45,7 @@ public class OrderServlet extends HttpServlet {
             return;
         }
 
-
-
+        //ToDo: OrderedItems
 
 
         Gson gson = new GsonBuilder().serializeNulls().create();
@@ -245,12 +244,12 @@ public class OrderServlet extends HttpServlet {
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
-        em.persist(newOrder);
+        em.merge(newOrder);
         for (OrderedItem o: items) {
-            em.persist(o);
+            em.merge(o);
         }
         for (Size s: updatedSizes){
-            em.persist(s);
+            em.merge(s);
         }
         em.getTransaction().commit();
     }

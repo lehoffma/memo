@@ -174,7 +174,7 @@ public class CommentServlet extends HttpServlet {
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
-        em.persist(c);
+        em.merge(c);
         em.getTransaction().commit();
     }
 

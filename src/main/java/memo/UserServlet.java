@@ -334,8 +334,8 @@ public class UserServlet extends HttpServlet {
 		EntityManager em = DatabaseManager.createEntityManager();
 
 		em.getTransaction().begin();
-		em.persist(newUser.getPermissions());
-		em.persist(newUser);
+		em.merge(newUser.getPermissions());
+		em.merge(newUser);
 		em.getTransaction().commit();
 	}
 
