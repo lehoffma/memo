@@ -178,7 +178,7 @@ public class BankAccountServlet extends HttpServlet {
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
-        em.persist(newAccount);
+        em.merge(newAccount);
         em.getTransaction().commit();
     }
 

@@ -320,7 +320,7 @@ public class EventServlet extends HttpServlet {
             e.setDate(new Timestamp(jEvent.get("date").getAsLong()));
 
 
-        em.persist(e);
+        em.merge(e);
         em.getTransaction().commit();
         response.setStatus(200);
         response.getWriter().append("{ \"id\": " + e.getId()+ " }");
