@@ -131,7 +131,7 @@ export class EventUtilityService {
 
 
 	static isMerchandise(event: any): event is Merchandise {
-		return event && (<Merchandise>event).colors !== undefined;
+		return event && (<Merchandise>event).material !== undefined;
 	}
 
 	static isTour(event: any): event is Tour {

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ServletService} from "./servlet.service";
 import {Order} from "../model/order";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, Response} from "@angular/http";
+import {Headers, Http, RequestOptions, Response, URLSearchParams} from "@angular/http";
 import {PaymentMethod} from "../../shop/checkout/payment/payment-method";
 import {OrderStatus} from "../model/order-status";
 

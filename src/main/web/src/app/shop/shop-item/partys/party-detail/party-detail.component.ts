@@ -64,30 +64,6 @@ export class PartyDetailComponent implements OnInit {
 		this.comments$.subscribe(comments => this.commentsSubject$.next(comments));
 	}
 
-	/**
-	 *
-	 * @param commentText
-	 * @param parentId
-	 */
-	addComment({commentText, parentId}) {
-		Observable.combineLatest(this.loginService.currentUser(), this.party$)
-			.subscribe(([user, party]) => {
-				let comment = new Comment(party.id, -1, new Date(), user.id, commentText);
-				this.commentService.add(comment, parentId)
-					.subscribe(addResult => {
-						this.party$
-							.filter(tour => tour.id >= 0)
-							.flatMap(tour => this.commentService.getByEventId(tour.id))
-							.first()
-							.subscribe(comments => {
-								this.commentsSubject$.next(comments);
-							})
-					}, error => {
-						console.error("adding the comment went wrong");
-					})
-			})
-	}
-
 	deleteComment({comment, parentId}: { comment: Comment, parentId: number }) {
 		this.commentService.remove(comment.id, parentId)
 			.subscribe(result => {

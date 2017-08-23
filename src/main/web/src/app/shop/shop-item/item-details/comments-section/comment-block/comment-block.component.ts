@@ -106,9 +106,11 @@ export class CommentBlockComponent implements OnInit {
 	 * @param parentCommentId
 	 */
 	addComment(commentText: string, parentCommentId: number) {
+		console.log(commentText, parentCommentId);
 		let currentComment: Comment = this._comment$.value;
 		if (parentCommentId === currentComment.id) {
 			this.loginService.currentUser()
+				.first()
 				.subscribe((user) => {
 					let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText);
 					this.dummyComment = this.dummyComment.setProperties({

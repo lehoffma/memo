@@ -6,11 +6,13 @@ import {Event} from "../../shop/shared/model/event";
 import {Merchandise} from "../../shop/shared/model/merchandise";
 import {MultiLevelSelectLeaf} from "../multi-level-select/shared/multi-level-select-leaf";
 import * as moment from "moment";
+import {StockService} from "./stock.service";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class SearchFilterService {
 
-	constructor() {
+	constructor(private stockService: StockService) {
 	}
 
 
@@ -18,7 +20,7 @@ export class SearchFilterService {
 	 * todo date: date range picker?
 	 * @param {Event[]} results
 	 */
-	getEventFilterOptionsFromResults(results: Event[]) {
+	async getEventFilterOptionsFromResults(results: Event[]) {
 		let eventFilterOptions: MultiLevelSelectParent[] = [
 			{
 				name: "Kategorie",
@@ -91,17 +93,22 @@ export class SearchFilterService {
 			}
 		];
 
-		let colorChildren: MultiLevelSelectLeaf[] = results
+		//colors aus dem stock raus holen
+		let colorChildren: MultiLevelSelectLeaf[] = await Observable.combineLatest(...results
 			.filter(event => EventUtilityService.isMerchandise(event))
 			.map(event => (<Merchandise>event))
-			.map(merch => merch.colors)
-			.reduce((acc, colors) => [...acc,
-				...colors.filter(color => !acc.find(it => it.name === color.name))], [])
-			.map(color => ({
-				name: color.name,
-				queryValue: color.name,
-				selected: false
-			}));
+			.map(merch => this.stockService.getByEventId(merch.id))
+		)
+			.map(nestedStockList => nestedStockList
+				.map(stockList => stockList.map(stockItem => stockItem.color))
+				.reduce((acc, colors) => [...acc, ...colors.filter(color => !acc.find(it => it.name === color.name))],
+					[])
+				.map(color => ({
+					name: color.name,
+					queryValue: color.name,
+					selected: false
+				})))
+			.toPromise();
 
 		eventFilterOptions.push({
 			name: "Farben",
@@ -165,9 +172,9 @@ export class SearchFilterService {
 			}
 			return true;
 		},
-		"date": (item, filterValue:string) => {
-			if(EventUtilityService.isParty(item) || EventUtilityService.isTour(item)){
-				switch(filterValue){
+		"date": (item, filterValue: string) => {
+			if (EventUtilityService.isParty(item) || EventUtilityService.isTour(item)) {
+				switch (filterValue) {
 					case "past":
 						return moment().startOf("day").isAfter(moment(item.date));
 					case "upcoming":
@@ -199,11 +206,11 @@ export class SearchFilterService {
 	 * @param filteredBy
 	 * @returns {boolean}
 	 */
-	satisfiesFilters(event: Event, filteredBy:any){
+	satisfiesFilters(event: Event, filteredBy: any) {
 		return Object.keys(filteredBy)
-				.filter(filterKey => this.eventFilterFunctions[filterKey] !== undefined)
-				.filter(filterKey => filteredBy[filterKey] !== undefined)
-				.every(filterKey => this.eventFilterFunctions[filterKey](event, filteredBy[filterKey]));
+			.filter(filterKey => this.eventFilterFunctions[filterKey] !== undefined)
+			.filter(filterKey => filteredBy[filterKey] !== undefined)
+			.every(filterKey => this.eventFilterFunctions[filterKey](event, filteredBy[filterKey]));
 	}
 
 }

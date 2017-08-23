@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {EventType, getEventTypes} from "../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shop/shared/model/event";
-import {Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
+import {Http, RequestOptions, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
 import {EventUtilityService} from "./event-utility.service";
 import {EventFactoryService} from "./event-factory.service";
 import {Tour} from "../../shop/shared/model/tour";

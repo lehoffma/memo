@@ -115,14 +115,15 @@ export class CheckoutComponent implements OnInit {
 					})
 					.flatMap(events => {
 						let orderedItems: OrderedItem[] = events
-							.map(event => ({
-								id: undefined,
-								event: event.event,
-								price: event.event.price,
-								status: OrderStatus.RESERVED,
-								amount: event.amount,
-								options: event.options,
-							}));
+							.reduce((acc, event) => [...acc, ...new Array(event.amount)
+								.fill(({
+									id: undefined,
+									event: event.event,
+									price: event.event.price,
+									status: OrderStatus.RESERVED,
+									size: event.options ? event.options.size : undefined,
+									color: event.options ? event.options.color : undefined,
+								}))], []);
 
 						return this.orderService.add(Order.create()
 							.setProperties({

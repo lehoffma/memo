@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ServletService} from "./servlet.service";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, Response} from "@angular/http";
+import {Headers, Http, RequestOptions, Response, URLSearchParams} from "@angular/http";
 import {BankAccount} from "../model/bank-account";
 import {UserService} from "./user.service";
 

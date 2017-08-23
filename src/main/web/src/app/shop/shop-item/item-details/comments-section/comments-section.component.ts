@@ -30,7 +30,6 @@ import {CommentService} from "../../../../shared/services/comment.service";
 export class CommentsSectionComponent implements OnInit {
 	@Input() comments: Comment[];
 	@Input() eventId: number;
-	@Output() onAddComment = new EventEmitter<{ commentText: string, parentId: number }>();
 	@Output() onDeleteComment = new EventEmitter<{ comment: Comment, parentId: number }>();
 	readonly DEFAULT_AMOUNT_OF_COMMENTS_SHOWN = 3;
 
@@ -61,8 +60,10 @@ export class CommentsSectionComponent implements OnInit {
 	 * @param parentId
 	 */
 	addComment(commentText: string, parentId: number) {
+		console.log(commentText, parentId);
 		if (parentId === -1) {
 			this.loginService.currentUser()
+				.first()
 				.subscribe((user) => {
 					let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText);
 					this.dummyComment = this.dummyComment.setProperties({

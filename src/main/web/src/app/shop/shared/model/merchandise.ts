@@ -89,14 +89,6 @@ export class Merchandise extends Event {
 		return Object.keys(this.sizeTable);
 	}
 
-	get clothesSizeSelections(): SelectionModel[] {
-		return this.clothesSizes.map(size => ({
-			value: size,
-			color: "white",
-			text: size
-		}));
-	}
-
 	get sizeTableCategories(): string[] {
 		return Object.keys(this.sizeTable).reduce((previousValue, currentValue) =>
 				previousValue.concat(...Object.keys(this.sizeTable[currentValue])
