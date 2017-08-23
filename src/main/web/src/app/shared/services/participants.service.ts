@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {EventType} from "../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {Participant, ParticipantUser} from "../../shop/shared/model/participant";
-import {Http, RequestOptionsArgs} from "@angular/http";
+import {Http, RequestOptionsArgs, URLSearchParams} from "@angular/http";
 import {UserService} from "./user.service";
 
 @Injectable()

@@ -10,7 +10,7 @@
 					<span *ngIf="!resultIsMerch(result)">{{result.date | date}}</span>
 					<!--todo: if merch: show color options-->
 					<span *ngIf="resultIsMerch(result)" class="merch-available-colors-container">
-						<span *ngFor="let color of result.colors"
+						<span *ngFor="let color of colors"
 							  class="merch-available-colors"
 							  [style.background-color]="color.hex">
 						</span>

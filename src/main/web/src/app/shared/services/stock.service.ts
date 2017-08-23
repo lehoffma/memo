@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {MerchStockList} from "../../shop/shared/model/merch-stock";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
+import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
 import {ServletService} from "./servlet.service";
 import {Merchandise} from "../../shop/shared/model/merchandise";
 

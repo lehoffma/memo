@@ -7,7 +7,6 @@ export class Order extends BaseObject<Order> {
 				public readonly userId: number,
 				public readonly timeStamp: Date,
 				public method: PaymentMethod,
-				//todo link to bank account
 				public readonly orderedItems: OrderedItem[],
 				public bankAccount?: number) {
 		super(id);

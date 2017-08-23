@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {EventService} from "../../shared/services/event.service";
 import {EventType} from "../shared/model/event-type";
@@ -103,7 +103,6 @@ export class SearchResultComponent implements OnInit {
 						this.eventService.search(keywords, EventType.merch),
 						(tours, partys, merch) => [...tours, ...partys, ...merch]
 					)
-						.do(events => this.filterOptions = this.searchFilterService.getEventFilterOptionsFromResults(events))
 						.do(events => this.initFilterMenu())
 						//todo replace with actual api call?
 						.map(events => {
@@ -119,7 +118,8 @@ export class SearchResultComponent implements OnInit {
 							events.filter(event => this.searchFilterService.satisfiesFilters(event, filteredBy))
 						)
 						//Updated den Suchergebnisse Titel anhand der ausgewählten Kategorien und der Menge an Ergebnissen.
-						.do(events => {
+						.do(async events => {
+							this.filterOptions = await this.searchFilterService.getEventFilterOptionsFromResults(events);
 							let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");
 							let selectedCategories: string[] = categoryFilterOption.children
 								.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)

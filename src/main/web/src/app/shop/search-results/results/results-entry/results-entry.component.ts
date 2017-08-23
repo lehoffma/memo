@@ -2,6 +2,8 @@ import {Component, Input, OnInit} from "@angular/core";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {Event} from "../../../shared/model/event";
+import {MerchColor} from "../../../shared/model/merch-color";
+import {StockService} from "../../../../shared/services/stock.service";
 
 @Component({
 	selector: "memo-results-entry",
@@ -9,9 +11,25 @@ import {Event} from "../../../shared/model/event";
 	styleUrls: ["./results-entry.component.scss"]
 })
 export class ResultsEntryComponent implements OnInit {
-	@Input() result: Event;
+	_result: Event;
+
+	get result(){
+		return this._result;
+	}
+	@Input() set result(result: Event){
+		this._result = result;
+		if(this.resultIsMerch(result)){
+			this.stockService
+				.getByEventId(result.id)
+				.map(stockList => stockList.map(stockItem => stockItem.color))
+				.subscribe(colors => this.colors = [...colors]);
+		}
+	}
+
+	colors: MerchColor[] = [];
 
 	constructor(private eventUtilService: EventUtilityService,
+				private stockService: StockService,
 				private navigationService: NavigationService) {
 	}
 

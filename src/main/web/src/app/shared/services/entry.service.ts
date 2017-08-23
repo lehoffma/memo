@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Entry} from "../model/entry";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
+import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {CacheStore} from "../stores/cache.store";
 import {EventType} from "../../shop/shared/model/event-type";

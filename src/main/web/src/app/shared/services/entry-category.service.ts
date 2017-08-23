@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ServletService} from "./servlet.service";
 import {EntryCategory} from "../model/entry-category";
 import {Observable} from "rxjs/Observable";
-import {Http, Response} from "@angular/http";
+import {Http, Response, URLSearchParams} from "@angular/http";
 
 @Injectable()
 export class EntryCategoryService extends ServletService<EntryCategory>{

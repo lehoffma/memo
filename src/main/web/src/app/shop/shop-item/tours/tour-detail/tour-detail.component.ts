@@ -68,31 +68,6 @@ export class TourDetailComponent implements OnInit {
 	ngOnInit() {
 	}
 
-
-	/**
-	 *
-	 * @param commentText
-	 * @param parentId
-	 */
-	addComment({commentText, parentId}){
-		Observable.combineLatest(this.loginService.currentUser(), this.tour$)
-			.subscribe(([user, tour]) => {
-				let comment = new Comment(tour.id, -1, new Date(), user.id, commentText);
-				this.commentService.add(comment, parentId)
-					.subscribe((addResult: Comment) => {
-						this.tour$
-							.filter(tour => tour.id >= 0)
-							.flatMap(tour => this.commentService.getByEventId(tour.id))
-							.first()
-							.subscribe(comments => {
-								this.commentsSubject$.next(comments);
-							})
-					}, error => {
-						console.error("adding the comment went wrong");
-					});
-			})
-	}
-
 	/**
 	 *
 	 * @param {Comment} comment

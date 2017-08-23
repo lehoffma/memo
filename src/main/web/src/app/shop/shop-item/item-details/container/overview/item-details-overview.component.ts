@@ -7,6 +7,9 @@ import {EventOverviewKey} from "./event-overview-key";
 import {StockService} from "../../../../../shared/services/stock.service";
 import {Observable} from "rxjs/Observable";
 import * as moment from "moment";
+import {MerchColor} from "../../../../shared/model/merch-color";
+import {MerchStock, MerchStockList} from "../../../../shared/model/merch-stock";
+import {SelectionModel} from "../../../../../shared/model/selection-model";
 
 
 @Component({
@@ -25,8 +28,8 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		amount: undefined
 	};
 
-	public colorSelection = [];
-	public sizeSelection = [];
+	public colorSelection:MerchColor[] = [];
+	public sizeSelection:SelectionModel[] = [];
 	public amountOptions: number[] = [];
 	public maxAmount: number = 0;
 	public isPartOfShoppingCart: boolean;
@@ -41,9 +44,15 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		if (this.event) {
 			this.updateMaxAmount();
 			if (this.isMerch(this.event)) {
-				//todo mache farben/größen abhängig vom stock/voneinander
-				this.colorSelection = (<Merchandise>this.event).colors;
-				this.sizeSelection = (<Merchandise>this.event).clothesSizeSelections;
+				this.stockService.getByEventId(this.event.id)
+					.subscribe((stock:MerchStockList) => {
+						this.colorSelection = stock
+							.map(stockItem => stockItem.color);
+						this.sizeSelection = stock
+							.map(stockItem => ({
+								value: stockItem.size
+							}))
+					})
 			}
 			if (this.event.date) {
 				this.isPastEvent = moment(this.event.date).isBefore(moment());
