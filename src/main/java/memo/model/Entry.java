@@ -21,9 +21,9 @@ public class Entry implements Serializable {
 	@Id
 	private Integer id;
 
-	@Expose
-	@Column(name= "EVENT_ID")
-	private Integer eventID;
+	@ManyToOne
+	@JoinColumn(name= "EVENT_ID",referencedColumnName = "ID")
+	private Event event;
 
 
 	@Column(name= "ENTRY_CATEGORY_ID")
@@ -50,12 +50,12 @@ public class Entry implements Serializable {
 	public Entry() {
 		super();
 	}   
-	public Integer getEventID() {
-		return this.eventID;
+	public Event getEvent() {
+		return this.event;
 	}
 
-	public void setEventID(Integer eventID) {
-		this.eventID = eventID;
+	public void setEvent(Event event) {
+		this.event = event;
 	}   
 
 	public Integer getEntryCategoryID() {
