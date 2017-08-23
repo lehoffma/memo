@@ -281,7 +281,7 @@ public class OrderServlet extends HttpServlet {
             item = gson.fromJson(jItem,OrderedItem.class);
             // update event,order, color
 
-            item.setEvent(em.find(Event.class,jItem.get("id").getAsString()));
+            item.setEvent(em.find(Event.class,jItem.get("id").getAsInt()));
             item.setOrder(o);
 
             if (jItem.has("color")) {
