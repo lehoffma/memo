@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-@WebServlet("/api/logout")
+@WebServlet(name = "LogoutServlet", value = "/api/logout")
 public class LogoutServlet extends HttpServlet {
 
     public LogoutServlet() {

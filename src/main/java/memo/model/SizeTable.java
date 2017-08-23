@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.lang.Integer;
 import java.lang.String;
 import javax.persistence.*;
+
+import com.google.gson.annotations.Expose;
 import memo.model.Size;
 
 /**
@@ -21,9 +23,13 @@ public class SizeTable implements Serializable {
 	
 	@ManyToOne(cascade = { CascadeType.REMOVE })
 	@JoinColumn(name = "SIZE_ID")
+	@Expose
 	private Size size;
+	@Expose
 	private String name;
+	@Expose
 	private Integer min;
+	@Expose
 	private Integer max;
 	private static final long serialVersionUID = 1L;
 

@@ -7,10 +7,12 @@
         <class>memo.model.BankAcc</class>
         <class>memo.model.ClubRole</class>
         <class>memo.model.Color</class>
+        <class>memo.model.Comment</class>
         <class>memo.model.Entry</class>
         <class>memo.model.Event</class>
         <class>memo.model.HasEntry</class>
-        <class>memo.model.Participates</class>
+        <class>memo.model.Order</class>
+        <class>memo.model.OrderedItem</class>
         <class>memo.model.Permission</class>
         <class>memo.model.PermissionState</class>
         <class>memo.model.Size</class>

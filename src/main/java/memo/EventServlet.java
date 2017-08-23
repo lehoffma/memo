@@ -77,13 +77,13 @@ public class EventServlet extends HttpServlet {
 
                     }
 
-                    results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ AND UPPER(e.title LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
-                            .setParameter("searchTerm","%"+ searchTerm + "%").setParameter("typ",type).getResultList();
+                    results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ AND UPPER(e.title) LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
+                            .setParameter("searchTerm","%"+ type + "%").setParameter("typ",type).getResultList();
 
                 } else {
 
                     // only search term
-                    results = em.createQuery("SELECT e FROM Event e WHERE UPPER(e.title LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
+                    results = em.createQuery("SELECT e FROM Event e WHERE UPPER(e.title) LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
                             .setParameter("searchTerm","%"+ searchTerm + "%").getResultList();
 
                 }
@@ -100,16 +100,23 @@ public class EventServlet extends HttpServlet {
                         case "tours":
                             type = 1;
                             break;
-                        case "merch":
+                        case "partys":
                             type = 2;
                             break;
-                        case "partys":
+                        case "merch":
                             type = 3;
                             break;
+
+
 
                     }
 
                     results = em.createQuery("SELECT e FROM Event e WHERE e.type = :typ", Event.class).setParameter("typ",type).getResultList();
+
+                    for (Event e: results) {
+
+                        System.out.println(e);
+                    }
 
                 }else {
                     // get all
@@ -164,16 +171,34 @@ public class EventServlet extends HttpServlet {
         List<Color> colorList = new ArrayList<>();
         List<Size> sizeList = new ArrayList<>();
         List<SizeTable> sizeTableList = new ArrayList<>();
-        List<Participates> participatesList = new ArrayList<>();
 
 		if (jEvent.has("stock"))
         {
+            e.setType(3);
             JsonArray stock = jEvent.getAsJsonArray("stock");
             JsonArray colors = jEvent.getAsJsonArray("colors");
             JsonObject sizeTable = jEvent.getAsJsonObject("_sizeTable");
             JsonArray sizes = jEvent.getAsJsonArray("sizes");
 
 
+            for (int i=0;i<stock.size();++i)
+            {
+                JsonObject st = stock.get(i).getAsJsonObject();
+                JsonObject color = st.get("color").getAsJsonObject();
+                Color c = gson.fromJson(color,Color.class);
+                Size s = new Size();
+                s.setColor(c);
+                s.setEvent(e);
+                s.setName(st.get("size").getAsString());
+                s.setNumInStock(st.get("amount").getAsInt());
+                colorList.add(c);
+                sizeList.add(s);
+
+            }
+
+            //ToDo: alles
+            //ToDo: Size Table hinzufügen bzw abfangen
+/*
 
             // get Color List
             for (int i=0;i<colors.size();++i)
@@ -219,8 +244,8 @@ public class EventServlet extends HttpServlet {
                 sizeList.add(size);
 
 
-                //ToDo: Size Table hinzufügen bzw abfangen
-/*
+
+
 
 
                 JsonArray table = sizeTable.getAsJsonArray(size.getName());
@@ -232,13 +257,19 @@ public class EventServlet extends HttpServlet {
                     SizeTable t = new SizeTable(size, name, min, max);
                     sizeTableList.add(t);
                 }
-*/
+
             }
+
+            */
 
         }
         else
         {
+            e.setType(1);
+
+           /*
             JsonArray participants =jEvent.getAsJsonArray("participants");
+
             for (int i=0;i<participants.size();++i)
             {
                 JsonObject p = participants.get(i).getAsJsonObject();
@@ -261,6 +292,7 @@ public class EventServlet extends HttpServlet {
                 participatesList.add(par);
 
             }
+            */
 
         }
 
@@ -271,7 +303,6 @@ public class EventServlet extends HttpServlet {
         for (Color i: colorList) {System.out.println(i); em.persist(i);}
         for (Size i: sizeList) em.persist(i);
         for (SizeTable i: sizeTableList) em.persist(i);
-        for (Participates i: participatesList) em.persist(i);
         em.persist(e);
 
         em.getTransaction().commit();
