@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -83,9 +84,26 @@ public class EntryServlet extends HttpServlet {
         return (s != null && !s.isEmpty());
     }
 
-    private List<Entry> getEntriesFromDatabase(String Sid, String seventId, String sType, HttpServletResponse response) {
-        if (isStringNotEmpty(Sid)) return null;
+    private List<Entry> getEntriesFromDatabase(String Sid, String SeventId, String sType, HttpServletResponse response) {
+
+        List<Entry> orders = new ArrayList<>();
+
+        // if ID is submitted
+        if (isStringNotEmpty(Sid)) {
+
+            Entry e = getEntryByID(Sid, response);
+            if (e != null) {
+                orders.add(e);
+                return orders;
+            }
+        }
+
+        if (isStringNotEmpty(SeventId)) return getEntriesByEventId(SeventId,response);
+
+        return getEntries();
     }
+
+
 
     private JsonObject getJsonEntry(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -116,6 +134,18 @@ public class EntryServlet extends HttpServlet {
         em.getTransaction().begin();
         em.merge(e);
         em.getTransaction().commit();
+    }
+
+    private List<Entry> getEntriesByEventId(String seventId, HttpServletResponse response) {
+        return null;
+    }
+
+    private Entry getEntryByID(String sid, HttpServletResponse response) {
+        return null;
+    }
+
+    private List<Entry> getEntries() {
+        return null;
     }
 
 }
