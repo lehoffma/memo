@@ -24,7 +24,7 @@ public class StockServlet extends HttpServlet {
         String sType = request.getParameter("type");
 
 
-        List<Size> stock = new ArrayList<>();
+        List<Size> stock = getStockFromDatabase(SeventId,sType,response);
 
 
         Gson gson = new GsonBuilder().serializeNulls().create();
@@ -40,6 +40,46 @@ public class StockServlet extends HttpServlet {
 
     private boolean isStringNotEmpty(String s) {
         return (s != null && !s.isEmpty());
+    }
+
+    private List<Size> getStockFromDatabase(String SeventId, String sType, HttpServletResponse response) throws IOException {
+
+        if (isStringNotEmpty(SeventId)) { return getStockByEventId(SeventId,response);}
+
+        if (isStringNotEmpty(sType))
+        {
+            Integer type = EventServlet.getType(sType);
+            return getStockByEventType(type);
+        }
+        return getStock();
+
+    }
+
+    private List<Size> getStock() {
+        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Size s ",Size.class)
+                .getResultList();
+    }
+
+    private List<Size> getStockByEventType(Integer type) {
+        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Size s " +
+                " WHERE s.event.type = :typ", Size.class)
+                .setParameter("typ", type)
+                .getResultList();
+    }
+
+    private List<Size> getStockByEventId(String SeventId, HttpServletResponse response)throws IOException{
+        try {
+            Integer id = Integer.parseInt(SeventId);
+            //ToDo: gibt null aus wenn id nicht vergeben
+            return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Size s " +
+                    " WHERE s.event.id = :id", Size.class)
+                    .setParameter("id", id)
+                    .getResultList();
+        } catch (NumberFormatException e) {
+            response.getWriter().append("Bad ID Value");
+            response.setStatus(400);
+        }
+        return null;
     }
 
 
