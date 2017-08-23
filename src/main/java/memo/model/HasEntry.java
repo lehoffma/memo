@@ -5,8 +5,6 @@ import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.String;
 import javax.persistence.*;
-import memo.model.Entry;
-import memo.model.Event;
 
 /**
  * Entity implementation class for Entity: HasEntry
@@ -15,31 +13,28 @@ import memo.model.Event;
 @Entity
 @Table(name="HAS_ENTRY")
 
-@IdClass(HasEntryPK.class)
 public class HasEntry implements Serializable {
 
-	   
+
 	@Id
+	private Integer id;
+
+
 	@Column(name= "EVENT_ID")
 	private Integer eventID;
 	
-	@ManyToOne(cascade = { CascadeType.PERSIST })
-	@PrimaryKeyJoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
-	private Event event;
-	
-	@Id
+
 	@Column(name= "ENTRY_ID")
 	private Integer entryID;
-	
-	@ManyToOne(cascade = { CascadeType.PERSIST})
-	@PrimaryKeyJoinColumn(name = "ENTRY_ID", referencedColumnName = "ID")
-	private Entry entry;
+
 
 	private Integer value;
 	
 	@Column(name= "IS_INCOME")
 	private Boolean isIncome;
+
 	private String comment;
+
 	private String picPath;
 
 	private static final long serialVersionUID = 1L;
@@ -54,13 +49,9 @@ public class HasEntry implements Serializable {
 	public void setEventID(Integer eventID) {
 		this.eventID = eventID;
 	}   
-	public Event getEvent() {
-		return this.event;
-	}
 
-	public void setEvent(Event event) {
-		this.event = event;
-	}   
+
+
 	public Integer getEntryID() {
 		return this.entryID;
 	}
@@ -68,13 +59,7 @@ public class HasEntry implements Serializable {
 	public void setEntryID(Integer entryID) {
 		this.entryID = entryID;
 	}   
-	public Entry getEntry() {
-		return this.entry;
-	}
 
-	public void setEntry(Entry entry) {
-		this.entry = entry;
-	}   
 	public Integer getValue() {
 		return this.value;
 	}

@@ -6,17 +6,17 @@ import java.lang.String;
 import javax.persistence.*;
 
 /**
- * Entity implementation class for Entity: Entry
+ * Entity implementation class for Entity: EntryCategory
  *
  */
 @Entity
 @Table(name="ENTRIES")
 
 @NamedQueries({ 
-	@NamedQuery(name = "getEntryById", query = "SELECT e FROM Entry e WHERE e.id = :id"), 
-	@NamedQuery(name = "getEntry", query = "SELECT e FROM Entry e") 
+	@NamedQuery(name = "getEntryById", query = "SELECT e FROM EntryCategory e WHERE e.id = :id"),
+	@NamedQuery(name = "getEntry", query = "SELECT e FROM EntryCategory e")
 })
-public class Entry implements Serializable {
+public class EntryCategory implements Serializable {
 
 
 	@Id
@@ -25,7 +25,7 @@ public class Entry implements Serializable {
 	private Integer category;
 	private static final long serialVersionUID = 1L;
 
-	public Entry() {
+	public EntryCategory() {
 		super();
 	}   
 	public Integer getId() {

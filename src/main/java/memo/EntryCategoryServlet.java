@@ -2,7 +2,7 @@ package memo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import memo.model.Entry;
+import memo.model.EntryCategory;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +19,7 @@ public class EntryCategoryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         setContentType(request,response);
-        List<Entry> entries = createTestData();
+        List<EntryCategory> entries = createTestData();
 
 
 
@@ -36,26 +36,26 @@ public class EntryCategoryServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
     }
 
-    private List<Entry> createTestData()
+    private List<EntryCategory> createTestData()
     {
-        List<Entry> entries = new ArrayList<>();
+        List<EntryCategory> entries = new ArrayList<>();
 
-        Entry a = new Entry();
+        EntryCategory a = new EntryCategory();
         a.setName("Verpflegung");
         a.setCategory(1);
         a.setId(1);
         entries.add(a);
-        Entry b = new Entry();
+        EntryCategory b = new EntryCategory();
         b.setName("Tickets");
         b.setCategory(1);
         b.setId(2);
         entries.add(b);
-        Entry c = new Entry();
+        EntryCategory c = new EntryCategory();
         c.setName("Mietkosten");
         c.setCategory(1);
         c.setId(3);
         entries.add(c);
-        Entry d = new Entry();
+        EntryCategory d = new EntryCategory();
         d.setName("Steuern");
         d.setCategory(1);
         d.setId(3);
