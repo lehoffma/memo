@@ -74,6 +74,9 @@ export class UserService extends ServletService<User> {
 		const headers = new Headers({"Content-Type": "application/json"});
 		const requestOptions = new RequestOptions({headers});
 
+
+		console.log(user);
+		console.log(user.addresses);
 		return this.performRequest(requestMethod("/api/user", {user, profilePicture, paymentInfo}, requestOptions))
 			.map(response => response.json().id as number)
 			.flatMap(id => this.getById(id))

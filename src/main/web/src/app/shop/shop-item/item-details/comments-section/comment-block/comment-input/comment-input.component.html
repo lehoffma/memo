@@ -1,5 +1,5 @@
 <div class="author-image-container">
-	<img src="{{author.imagePath}}"/>
+	<img src="{{!!author.imagePath ? author.imagePath : 'resources/images/Logo.png'}}"/>
 </div>
 
 <form #commentInputForm="ngForm" (ngSubmit)="submit(); commentInputForm.reset()">

@@ -14,6 +14,10 @@
 
 </memo-comment-block>
 
+<div *ngIf="comments?.length === 0" class="no-comments">
+	Bisher keine Kommentare vorhanden.
+</div>
+
 <button md-button (click)="toggleShowMore()" *ngIf="comments?.length > DEFAULT_AMOUNT_OF_COMMENTS_SHOWN">
 		<span>
 			{{amountOfCommentsShown === DEFAULT_AMOUNT_OF_COMMENTS_SHOWN ? 'Mehr Kommentare' : 'Weniger Kommentare'}}

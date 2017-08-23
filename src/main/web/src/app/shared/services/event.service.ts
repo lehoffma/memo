@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {EventType, getEventTypes} from "../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shop/shared/model/event";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
+import {Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
 import {EventUtilityService} from "./event-utility.service";
 import {EventFactoryService} from "./event-factory.service";
 import {Tour} from "../../shop/shared/model/tour";
@@ -10,6 +10,7 @@ import {Party} from "../../shop/shared/model/party";
 import {CacheStore} from "../stores/cache.store";
 import {ParticipantsService} from "./participants.service";
 import {ServletService} from "./servlet.service";
+import {Merchandise} from "../../shop/shared/model/merchandise";
 
 @Injectable()
 export class EventService extends ServletService<Event> {
@@ -60,7 +61,20 @@ export class EventService extends ServletService<Event> {
 
 		return this.performRequest(this.http.get(url))
 			.map(response => response.json().events)
-			.map(json => Event.create().setProperties(json[0]))
+			.map(json => {
+				if (json[0]["type"]) {
+					switch (json[0]["type"]) {
+						case 1:
+							return Tour.create().setProperties(json[0]);
+						case 2:
+							return Party.create().setProperties(json[0]);
+						case 3:
+							return Merchandise.create().setProperties(json[0]);
+					}
+				}
+
+				return Event.create().setProperties(json[0])
+			})
 			.do(event => this.cache.addOrModify(event));
 	}
 

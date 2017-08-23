@@ -19,7 +19,7 @@ export class Event extends BaseObject<Event> {
 	}
 
 	static create() {
-		return new Event(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "", -1, -1, -1);
+		return new Event(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, -1, -1);
 	}
 
 

@@ -24,6 +24,7 @@ import {EventUtilityService} from "../../../../shared/services/event-utility.ser
 export class TourDetailComponent implements OnInit {
 	tour$: Observable<Tour> = this.activatedRoute.params
 		.flatMap(params => this.eventService.getById(+params["id"]))
+		.do(console.log)
 		.flatMap(event => event === undefined || !EventUtilityService.isTour(event)
 			? Observable.throw(new Error())
 			: Observable.of(event))

@@ -1,6 +1,7 @@
 <a routerLink="/{{eventType}}/{{event?.id}}">
 	<md-card>
-		<img mat-card-image src="{{event?.imagePath}}" [ngClass]="{'past-event-image': eventIsInThePast}">
+		<img mat-card-image src="{{!!event?.imagePath ? event?.imagePath : 'resources/images/Logo.png'}}"
+			 [ngClass]="{'past-event-image': eventIsInThePast}">
 		<md-card-content>
 			<div class="event-date" [ngClass]="{'past-event': eventIsInThePast}">
 				<span class="event-date-top">

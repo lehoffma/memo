@@ -26,7 +26,7 @@ export class Merchandise extends Event {
 	}
 
 	static create() {
-		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "", -1, [], "", {}, -1, -1);
+		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, [], "", {}, -1, -1);
 	}
 
 

@@ -58,7 +58,12 @@ export class AddressSelectionComponent implements OnInit{
 		this.addressService.redirectUrl = this.router.url;
 	}
 
+	/**
+	 *
+	 * @param {Address} address
+	 */
 	deleteAddress(address: Address) {
-		console.error("todo implement delete");
+		this.addressService.remove(address.id)
+			.subscribe(console.log, console.error);
 	}
 }

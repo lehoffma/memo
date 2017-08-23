@@ -70,7 +70,7 @@ export class MerchandiseDetailComponent implements OnInit {
 				let comment = new Comment(merch.id, -1, new Date(), user.id, commentText);
 				this.commentService.add(comment, parentId)
 					.subscribe(addResult => {
-						console.log(addResult);
+						// console.log(addResult);
 					}, error => {
 						console.error("adding the comment went wrong");
 					})
@@ -80,7 +80,7 @@ export class MerchandiseDetailComponent implements OnInit {
 	deleteComment({comment, parentId}: { comment: Comment, parentId: number }) {
 		this.commentService.remove(comment.id, parentId)
 			.subscribe(result => {
-				console.log(result);
+				// console.log(result);
 			})
 	}
 }

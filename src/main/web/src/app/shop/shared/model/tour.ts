@@ -21,7 +21,7 @@ export class Tour extends Event {
 	}
 
 	static create() {
-		return new Tour(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "", -1, -1, "", -1, -1);
+		return new Tour(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, -1, "", -1, -1);
 	}
 
 	get overviewKeys(): EventOverviewKey[] {

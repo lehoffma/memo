@@ -50,7 +50,6 @@ export class ModifyUserComponent implements OnInit {
 	}
 
 	submitModifiedObject(event) {
-		console.log(event);
 		this.onSubmit.emit(this.model);
 	}
 

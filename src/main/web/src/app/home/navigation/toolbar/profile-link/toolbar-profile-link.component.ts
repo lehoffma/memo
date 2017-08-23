@@ -20,7 +20,6 @@ export class ToolbarProfileLinkComponent implements OnInit {
 			if (user === null) {
 				return links;
 			}
-			console.log(user);
 			const setId = (link: Link): Link => {
 				if (link.children) {
 					link.children = link.children.map(childLink => setId(childLink))

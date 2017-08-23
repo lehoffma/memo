@@ -15,7 +15,6 @@ import {Wiggle} from "app/util/animation-util";
 		Wiggle
 	]
 })
-
 export class AddressModificationComponent implements OnInit {
 	model: Address = Address.create();
 	modifyingExistingAddress = false;
@@ -71,7 +70,12 @@ export class AddressModificationComponent implements OnInit {
 		}
 		else {
 			this.addressService.add(this.model)
+				.flatMap(address => this.loginService.currentUser()
+					.map(user => user.setProperties({addresses: [...user.addresses, address.id]}))
+					.flatMap(user => this.userService.modify(user)))
+				.first()
 				.subscribe(address => {
+					console.log(address);
 					this.goBack();
 				});
 		}

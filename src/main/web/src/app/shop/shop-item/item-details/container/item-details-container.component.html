@@ -2,10 +2,10 @@
 	<div class="item-details-card">
 		<div class="image-overlay-container">
 			<!--display image with overlayed title if present-->
-			<div class="image-container" *ngIf="event?.imagePath"
-				 (click)="showDetailedImage(event?.imagePath)"
+			<div class="image-container"
+				 (click)="showDetailedImage(!!event?.imagePath ? event.imagePath : 'resources/images/Logo.png')"
 				 [attr.object-title]="event.title">
-				<img class="image-detail" src="{{event?.imagePath}}">
+				<img class="image-detail" src="{{!!event?.imagePath ? event.imagePath : 'resources/images/Logo.png'}}">
 			</div>
 
 			<div class="item-actions">

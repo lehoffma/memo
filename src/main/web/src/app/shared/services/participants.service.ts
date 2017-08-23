@@ -34,7 +34,7 @@ export class ParticipantsService {
 		params.set("eventId", eventId.toString());
 		params.set("eventType", eventType.toString());
 
-		this.http.get("/api/participants", {search: params})
+		return this.http.get("/api/participants", {search: params})
 			.map(response => response.json().participants as Participant[])
 			//retry 3 times before throwing an error
 			.retry(3)

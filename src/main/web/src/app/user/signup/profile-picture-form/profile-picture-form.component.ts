@@ -30,7 +30,6 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges {
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		console.log(changes);
 		if (changes["image"] && changes["image"].currentValue && !changes["image"].currentValue.toString().includes("resources")) {
 			let image = new Image();
 			if (this.image instanceof FormData) {
@@ -78,7 +77,6 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges {
 	updatePreview(event) {
 		//todo emit event or image so the picture can be reconstructed
 		if (event.target.files && event.target.files[0]) {
-			console.log(event);
 			const reader = new FileReader();
 			let image = new Image();
 

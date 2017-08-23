@@ -54,7 +54,6 @@ export class CheckoutComponent implements OnInit {
 	}
 
 	onAddressChange(address: Address) {
-		console.log(address);
 		//todo maybe save as preferred address or something
 	}
 
@@ -69,7 +68,6 @@ export class CheckoutComponent implements OnInit {
 		let bankAccount: (null | BankAccount) = null;
 		if (method === PaymentMethod.DEBIT && chosenBankAccount === -1) {
 			//add the bank account to the database if it doesn't exist yet
-			console.log(data);
 			bankAccount = await this.bankAccountService.add(BankAccount.create()
 				.setProperties({
 					name: data.firstName + " " + data.surname,
@@ -138,7 +136,6 @@ export class CheckoutComponent implements OnInit {
 					})
 			})
 			.subscribe(value => {
-				console.log(value);
 				this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
 			}, error => {
 				this.snackBar.open(error, "Schließen", {duration: 2000});

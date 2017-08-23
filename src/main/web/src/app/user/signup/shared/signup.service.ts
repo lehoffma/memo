@@ -44,7 +44,6 @@ export class SignUpService {
 	 *
 	 */
 	watchForAddressModification(model: any) {
-		console.log(model);
 		if (model.action && model.action === "delete") {
 			const addressToDelete = model.address;
 			const currentAddresses = this.newUserAddresses;

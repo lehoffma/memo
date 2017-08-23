@@ -110,7 +110,6 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 * @returns {{} | boolean}
 	 */
 	modelHasNotChanged() {
-		console.log(this.previousValue);
 		return this.previousValue
 			&& Object.keys(this.previousValue).length > 0
 			&& Object.keys(this.previousValue).every(key => this.model[key] === this.previousValue[key])

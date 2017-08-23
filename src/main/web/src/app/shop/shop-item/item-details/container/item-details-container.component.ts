@@ -7,7 +7,6 @@ import {EventOverviewKey} from "./overview/event-overview-key";
 import {LogInService} from "../../../../shared/services/login.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {Permission} from "../../../../shared/model/permission";
-import {EventType} from "../../../shared/model/event-type";
 
 
 @Component({
@@ -38,12 +37,9 @@ export class ItemDetailsContainerComponent implements OnInit {
 
 	userCanAccessEntries$: Observable<boolean> = this.loginService.currentUser()
 		.map((user) => {
-			if(user !== null && this.event !== null){
-				let eventType = EventUtilityService.getEventType(this.event);
-				if(eventType === EventType.partys || eventType === EventType.tours){
-					let permissions = user.userPermissions;
-					return permissions.funds >= Permission.read;
-				}
+			if (user !== null && this.event !== null) {
+				let permissions = user.userPermissions;
+				return permissions.funds >= Permission.read;
 			}
 			return false;
 		});
