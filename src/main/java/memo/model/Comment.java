@@ -1,6 +1,8 @@
 package memo.model;
 
 
+import com.google.gson.annotations.Expose;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -13,17 +15,18 @@ public class Comment implements Serializable{
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;   //globale unique ID
 
-    @ManyToOne(cascade = { CascadeType.PERSIST })
-    @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
-    private Event event;
+    @Expose
+    @Column(name = "EVENT_ID")
+    private Integer eventId;
 
     @Column(nullable=false)
     private Timestamp timeStamp;   //muss jetzt unbedingt nich 'Date' sein, aber halt nen Datumstyp
 
-    @ManyToOne(cascade = { CascadeType.PERSIST })
-    @JoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID")
-    private User author;
+    @Expose
+    @Column(name = "AUTHOR_ID")
+    private Integer authorId;
 
+    @Expose
     private String text;
 
 
@@ -36,12 +39,12 @@ public class Comment implements Serializable{
         this.id = id;
     }
 
-    public Event getEvent() {
-        return event;
+    public Integer getEvent() {
+        return eventId;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setEvent(Integer event) {
+        this.eventId = event;
     }
 
     public Timestamp getTimeStamp() {
@@ -52,12 +55,12 @@ public class Comment implements Serializable{
         this.timeStamp = timeStamp;
     }
 
-    public User getAuthor() {
-        return author;
+    public Integer getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(User author) {
-        this.author = author;
+    public void setAuthorId(Integer author) {
+        this.authorId = author;
     }
 
     public String getText() {

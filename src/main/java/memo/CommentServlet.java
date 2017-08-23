@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @WebServlet(name = "CommentServlet", value = "/api/comment")
@@ -166,6 +168,8 @@ public class CommentServlet extends HttpServlet {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         c = gson.fromJson(jComment, Comment.class);
 
+        c.setTimeStamp(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+
         return c;
     }
 
@@ -191,7 +195,7 @@ public class CommentServlet extends HttpServlet {
             Integer eventID = Integer.parseInt(SEventID);
             //ToDo: gibt null aus wenn id nicht vergeben
             return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
-                    " WHERE c.event.id = :eventID", Comment.class)
+                    " WHERE c.eventId = :eventID", Comment.class)
                     .setParameter("eventID", "%" + eventID + "%")
                     .getResultList();
         } catch (NumberFormatException e) {
@@ -206,7 +210,7 @@ public class CommentServlet extends HttpServlet {
             Integer authorID = Integer.parseInt(SAuthorID);
             //ToDo: gibt null aus wenn id nicht vergeben
             return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
-                    " WHERE c.authorID = :authorID", Comment.class)
+                    " WHERE c.authorId = :authorID", Comment.class)
                     .setParameter("authorID", "%" + authorID + "%")
                     .getResultList();
         } catch (NumberFormatException e) {
