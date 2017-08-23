@@ -126,7 +126,7 @@ export class CheckoutComponent implements OnInit {
 						return this.orderService.add(Order.create()
 							.setProperties({
 								userId,
-								date: new Date(),
+								timeStamp: new Date(),
 								payment: {
 									method: event.method,
 									bankAccount: bankAccountId
