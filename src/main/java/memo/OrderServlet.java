@@ -258,7 +258,7 @@ public class OrderServlet extends HttpServlet {
             Integer jId;
             try
             {
-                 jId = jItem.get("id").getAsInt();
+                 jId = jItem.get("event").getAsJsonObject().get("id").getAsInt();
             }catch (Exception e){
                 jId=-1;
             }
@@ -283,7 +283,8 @@ public class OrderServlet extends HttpServlet {
             item = gson.fromJson(jItem,OrderedItem.class);
             // update event,order, color
 
-            item.setEvent(em.find(Event.class,jItem.get("id").getAsInt()));
+
+            item.setEvent(em.find(Event.class,jItem.get("event").getAsJsonObject().get("id").getAsInt()));
             item.setOrder(o);
 
             if (jItem.has("color")) {

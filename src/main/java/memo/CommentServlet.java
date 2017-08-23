@@ -201,7 +201,7 @@ public class CommentServlet extends HttpServlet {
             //ToDo: gibt null aus wenn id nicht vergeben
             return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
                     " WHERE c.eventId = :eventID", Comment.class)
-                    .setParameter("eventID", "%" + eventID + "%")
+                    .setParameter("eventID",  eventID)
                     .getResultList();
         } catch (NumberFormatException e) {
             response.getWriter().append("Bad ID Value");

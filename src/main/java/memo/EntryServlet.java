@@ -3,8 +3,10 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import memo.model.Entry;
+import memo.model.Event;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,19 +30,19 @@ public class EntryServlet extends HttpServlet {
 
         List<Entry> entries = getEntriesFromDatabase(Sid,SeventId,sType, response);
 
+        /*
         if (entries.isEmpty()) {
             response.setStatus(404);
             response.getWriter().append("Not found");
             return;
         }
-        //ToDo: OrderedItems
+        */
 
         Gson gson = new GsonBuilder().serializeNulls().create();
         String output = gson.toJson(entries);
 
         response.getWriter().append("{ \"entries\": " + output + " }");
     }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
@@ -63,16 +65,48 @@ public class EntryServlet extends HttpServlet {
 
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: implement
+
         setContentType(request,response);
 
         JsonObject jEntry = getJsonEntry(request,response);
+
+        String jId = jEntry.get("id").getAsString();
+
+        Entry e = getEntryByID(jId,response);
+
+        if (e == null)
+        {
+            response.getWriter().append("Not found");
+            response.setStatus(404);
+            return;
+        }
+
+         e = updateEntryFromJson(jEntry,e);
+
+        saveEntryToDatabase(e);
+
+        response.setStatus(201);
+        response.getWriter().append("{ \"id\": " + e.getId() + " }");
+
+        System.out.println(e.toString());
 
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
         setContentType(request,response);
+
+        String Sid = request.getParameter("id");
+
+        Entry e = getEntryByID(Sid,response);
+
+        if (e == null) {
+            response.setStatus(404);
+            response.getWriter().append("Not Found");
+            return;
+        }
+
+        removeEntryFromDatabase(e);
     }
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -84,7 +118,7 @@ public class EntryServlet extends HttpServlet {
         return (s != null && !s.isEmpty());
     }
 
-    private List<Entry> getEntriesFromDatabase(String Sid, String SeventId, String sType, HttpServletResponse response) {
+    private List<Entry> getEntriesFromDatabase(String Sid, String SeventId, String sType, HttpServletResponse response) throws IOException {
 
         List<Entry> orders = new ArrayList<>();
 
@@ -100,7 +134,7 @@ public class EntryServlet extends HttpServlet {
 
         if (isStringNotEmpty(SeventId)) return getEntriesByEventId(SeventId,response);
 
-        if (isStringNotEmpty(sType)) return getEntriesByEventType(sType,response);
+        if (isStringNotEmpty(sType)) return getEntriesByEventType(EventServlet.getType(sType),response);
 
         return getEntries();
     }
@@ -137,19 +171,54 @@ public class EntryServlet extends HttpServlet {
         em.getTransaction().commit();
     }
 
-    private List<Entry> getEntriesByEventId(String seventId, HttpServletResponse response) {
+    private List<Entry> getEntriesByEventId(String SeventId, HttpServletResponse response) throws IOException{
+        try {
+            Integer id = Integer.parseInt(SeventId);
+
+            return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e " +
+                    " WHERE e.event.id = :Id", Entry.class)
+                    .setParameter("Id", id)
+                    .getResultList();
+
+        } catch (NumberFormatException e) {
+            response.getWriter().append("Bad ID Value");
+            response.setStatus(400);
+        }
         return null;
     }
 
-    private Entry getEntryByID(String sid, HttpServletResponse response) {
+    private Entry getEntryByID(String Sid, HttpServletResponse response) throws IOException{
+        try {
+            Integer id = Integer.parseInt(Sid);
+            return DatabaseManager.createEntityManager().find(Entry.class, id);
+        } catch (NumberFormatException e) {
+            response.getWriter().append("Bad ID Value");
+            response.setStatus(400);
+        }
         return null;
     }
 
-    private List<Entry> getEntriesByEventType(String sType, HttpServletResponse response) {
-    return null;}
+    private List<Entry> getEntriesByEventType(Integer type, HttpServletResponse response) {
+        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e " +
+                " WHERE e.event.type = :typ", Entry.class)
+                .setParameter("typ", type)
+                .getResultList();
+    }
 
     private List<Entry> getEntries() {
-        return null;
+        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e", Entry.class).getResultList();
     }
+
+    private void removeEntryFromDatabase(Entry e) {
+
+        DatabaseManager.createEntityManager().getTransaction().begin();
+        e = DatabaseManager.createEntityManager().merge(e);
+        DatabaseManager.createEntityManager().remove(e);
+        DatabaseManager.createEntityManager().getTransaction().commit();
+
+    }
+
+
+
 
 }
