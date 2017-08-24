@@ -6,6 +6,143 @@ import {EventOverviewKey} from "../../shop-item/item-details/container/overview/
 import {EventRoute} from "./route";
 import {MerchColor} from "./merch-color";
 
+//todo remove demo
+const sizeTable = `{
+				"XS": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"S": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"M": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"L": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"XL": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"XXL": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				}
+			}`;
+
+
 export class Merchandise extends Event {
 	public sizes: string[];
 
@@ -26,7 +163,8 @@ export class Merchandise extends Event {
 	}
 
 	static create() {
-		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, [], "", {}, -1, -1);
+		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, [], "",
+			JSON.parse(sizeTable), -1, -1);
 	}
 
 

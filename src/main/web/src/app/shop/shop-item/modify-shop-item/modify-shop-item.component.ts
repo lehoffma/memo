@@ -4,6 +4,7 @@ import {ModifyType} from "./modify-type";
 import {ActivatedRoute, Params} from "@angular/router";
 import {Location} from "@angular/common";
 import {ModifyItemService} from "./shared/modify-item.service";
+import {Observable} from "rxjs/Observable";
 
 @Component({
 	selector: "memo-modify-shop-item",
@@ -32,21 +33,22 @@ export class ModifyShopItemComponent implements OnInit {
 	constructor(public modifyItemService: ModifyItemService,
 				private location: Location,
 				private activatedRoute: ActivatedRoute) {
-		this.activatedRoute.params.first().subscribe(
-			(params: Params) => {
+		Observable.combineLatest(
+			this.activatedRoute.params.first(),
+			this.activatedRoute.queryParamMap.first()
+		)
+			.subscribe(([params, queryParamMap]) => {
 				this.modifyItemService.readParams(params);
-			}
-		);
-		this.activatedRoute.queryParamMap.first().subscribe(queryParamMap => {
-			this.modifyItemService.readQueryParams(queryParamMap);
-		})
+				this.modifyItemService.readQueryParams(queryParamMap);
+				this.modifyItemService.init();
+			});
 	}
 
 	/**
 	 *
 	 */
 	ngOnInit() {
-		this.modifyItemService.init();
+		// this.modifyItemService.init();
 	}
 
 

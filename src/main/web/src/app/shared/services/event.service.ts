@@ -186,7 +186,9 @@ export class EventService extends ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	remove(eventId: number): Observable<Response> {
-		return this.performRequest(this.http.delete(this.baseUrl, {body: {id: eventId}}))
+		let params = new URLSearchParams();
+		params.set("id", ""+eventId);
+		return this.performRequest(this.http.delete(this.baseUrl, {search: params}))
 			.do((removeResponse: Response) => {
 				const eventId: number = removeResponse.json().id;
 				this.cache.remove(EventService.cacheKeyFromEventType(EventType.merch), eventId);

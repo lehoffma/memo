@@ -259,9 +259,7 @@ public class User implements Serializable {
 	}
 
 	public void setAddresses(List<Integer> addresses) {
-		for (Integer a : addresses) {
-			this.addresses.add(a);
-		}
+		this.addresses = addresses;
 	}
 
 	public List<Integer> getBankAccounts() {
@@ -269,9 +267,7 @@ public class User implements Serializable {
 	}
 
 	public void setBankAccounts(List<Integer> bankAccounts) {
-		for (Integer a : bankAccounts) {
-			this.bankAccounts.add(a);
-		}
+		this.bankAccounts = bankAccounts;
 	}
 
 	@Override

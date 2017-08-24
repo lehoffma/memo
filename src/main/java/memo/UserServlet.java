@@ -3,6 +3,7 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import memo.model.Address;
 import memo.model.ClubRole;
 import memo.model.PermissionState;
 import memo.model.User;
@@ -19,6 +20,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -54,6 +56,15 @@ public class UserServlet extends HttpServlet {
 		String searchTerm = request.getParameter("searchTerm");
 
 		List<User> users = getUsersFromDatabase(Sid,email,searchTerm,response);
+		//todo no idea why this even happens but this fixes it for the time
+		//oh i know what the problem is. shitty eclipse list implementations
+		users = users.stream()
+				.peek(user -> user.setAddresses(new ArrayList<>(user.getAddresses())
+						.stream()
+						.distinct()
+						.collect(Collectors.toList())
+				))
+				.collect(Collectors.toList());
 
 		if (users.isEmpty()) {
 			response.setStatus(404);
@@ -210,7 +221,7 @@ public class UserServlet extends HttpServlet {
 
 		return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
 				" WHERE u.email = :email", User.class)
-				.setParameter("email", "%" + email + "%")
+				.setParameter("email", email)
 				.getResultList();
 	}
 
@@ -292,11 +303,17 @@ public class UserServlet extends HttpServlet {
 			u.setBirthday(Date.valueOf(date));
 		}
 
+		if(jUser.has("addresses")){
+			Type collectionType = new TypeToken<List<Integer>>() {
+			}.getType();
+			List<Integer> addresses = gson.fromJson(jUser.getAsJsonArray("addresses"), collectionType);
+			u.setAddresses(addresses.stream().distinct().collect(Collectors.toList()));
+		}
 		if (jUser.has("bankAccounts")) {
 			Type collectionType = new TypeToken<List<Integer>>() {
 			}.getType();
 			List<Integer> bankAccounts = gson.fromJson(jUser.getAsJsonArray("bankAccounts"), collectionType);
-			u.setAddresses(bankAccounts);
+			u.setBankAccounts(bankAccounts);
 		}
 
 		if (jUser.has("joinDate")) {

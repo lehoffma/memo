@@ -20,7 +20,7 @@ export class ModifyEntryComponent implements OnInit {
 	@Input() mode: ModifyType;
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
 	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
-	associatedEvent:Event;
+	associatedEvent: Event;
 
 	ModifyType = ModifyType;
 
@@ -45,10 +45,17 @@ export class ModifyEntryComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		if (this.model["event"] && this.model["event"] !== null &&
+			(EventUtilityService.isMerchandise(this.model["event"]) ||
+				EventUtilityService.isTour(this.model["event"]) ||
+				EventUtilityService.isParty(this.model["event"]))) {
+			this.associatedEvent = this.model["event"];
+			this.autocompleteFormControl.setValue(this.model["event"]);
+		}
 		this.activatedRoute.queryParamMap
 			.first()
 			.subscribe(queryParamMap => {
-				if(queryParamMap.has("eventId")){
+				if (queryParamMap.has("eventId")) {
 					this.eventService.getById(+queryParamMap.get("eventId"))
 						.first()
 						.subscribe(event => {
@@ -59,7 +66,7 @@ export class ModifyEntryComponent implements OnInit {
 			});
 		this.autocompleteFormControl.valueChanges
 			.subscribe(value => {
-				if (EventUtilityService.isTour(value) || EventUtilityService.isParty(value)) {
+				if (EventUtilityService.isTour(value) || EventUtilityService.isParty(value) || EventUtilityService.isMerchandise(value)) {
 					this.associatedEvent = value;
 				}
 			});

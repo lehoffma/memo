@@ -77,6 +77,7 @@ export class CommentsSectionComponent implements OnInit {
 
 					this.commentService.add(comment, parentId)
 						.subscribe(addResult => {
+							console.log(addResult);
 							this.comments.push(addResult);
 							this.loadingAddedComment = false;
 							this.changeDetectorRef.detectChanges();

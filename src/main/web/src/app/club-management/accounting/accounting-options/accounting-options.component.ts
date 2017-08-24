@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnInit} from "@angular/core";
 import * as moment from "moment";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
@@ -51,6 +51,7 @@ export class AccountingOptionsComponent implements OnInit {
 
 	constructor(private queryParameterService: QueryParameterService,
 				private router: Router,
+				private changeDetectorRef: ChangeDetectorRef,
 				private entryCategoryService: EntryCategoryService,
 				private eventService: EventService,
 				private activatedRoute: ActivatedRoute) {
@@ -59,7 +60,7 @@ export class AccountingOptionsComponent implements OnInit {
 	async ngOnInit() {
 		this.costCategories$.first().subscribe(categories => {
 			categories.forEach(category => this.costTypes[category.name] = true);
-			this.updateQueryParams();
+			// this.updateQueryParams();
 		});
 		await this.getAvailableEvents();
 		this.readQueryParams();
@@ -218,6 +219,7 @@ export class AccountingOptionsComponent implements OnInit {
 	 * Updates the query parameters based on the values chosen by the user
 	 */
 	updateQueryParams() {
+		console.log(this.dateOptions);
 		let params: Params = {};
 		let assignType = (paramKey: string, object: {
 			[key: string]: boolean
@@ -236,8 +238,8 @@ export class AccountingOptionsComponent implements OnInit {
 
 		params["eventIds"] = this.events.map(event => "" + event.id).join(",");
 
-		params["from"] = !this.dateOptions.from ? "" : this.dateOptions.from.toISOString();
-		params["to"] = !this.dateOptions.to ? "" : this.dateOptions.to.toISOString();
+		params["from"] = (!this.dateOptions.from || !this.dateOptions.from.isValid()) ? "" : this.dateOptions.from.toISOString();
+		params["to"] = (!this.dateOptions.to || !this.dateOptions.to.isValid()) ? "" : this.dateOptions.to.toISOString();
 
 		this.activatedRoute.queryParamMap.first()
 			.map(queryParamMap =>

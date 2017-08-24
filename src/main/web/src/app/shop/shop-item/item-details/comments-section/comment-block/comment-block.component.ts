@@ -113,20 +113,20 @@ export class CommentBlockComponent implements OnInit {
 				.first()
 				.subscribe((user) => {
 					let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText);
-					this.dummyComment = this.dummyComment.setProperties({
-						text: "",
-						authorId: user.id,
-						timeStamp: comment.timeStamp,
-						eventId: this.eventId,
-					});
+					// this.dummyComment = this.dummyComment.setProperties({
+					// 	text: "",
+					// 	authorId: user.id,
+					// 	timeStamp: comment.timeStamp,
+					// 	eventId: this.eventId,
+					// });
 					this.showChildren = true;
-					this.loadingChildren = true;
+					// this.loadingChildren = true;
 					this.changeDetectorRef.detectChanges();
 					this.commentService.add(comment, currentComment.id)
 						.subscribe(addResult => {
 							currentComment.children.push(addResult.id);
 							this.comment = Object.assign({}, currentComment);
-							this.loadingChildren = false;
+							// this.loadingChildren = false;
 						}, error => {
 							console.error("adding the comment went wrong");
 							console.error(error);

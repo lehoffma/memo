@@ -5,7 +5,7 @@ import {EntryCategory} from "../../../shared/model/entry-category";
 @Component({
 	selector: 'td [entryCategoryCellComponent]',
 	template: `
-		{{data.name}}
+		{{data?.name}}
 	`
 })
 

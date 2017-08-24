@@ -7,14 +7,14 @@ export class Entry extends BaseObject<Entry> {
 				public readonly name: string,
 				public readonly value: number,
 				public readonly date: Date,
-				//todo public readonly comment:string,
+				public readonly comment:string,
 				//todo public readonly imagePath:string,
 				public readonly category: EntryCategory) {
 		super(id);
 	}
 
 	static create() {
-		return new Entry(-1, "", 0, new Date(), null);
+		return new Entry(-1, "", 0, new Date(), "", null);
 	}
 
 	static isEntry(entry: any): entry is Entry {

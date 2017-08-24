@@ -36,7 +36,8 @@ export class AccountingComponent implements OnInit {
 		this.sortBy$
 	)
 		.flatMap(([paramMap, queryParamMap, sortBy]) =>
-			this.getEntries([paramMap, queryParamMap, sortBy]));
+			this.getEntries([paramMap, queryParamMap, sortBy]))
+		.map(entries => [...entries]);
 	entriesSubject$: BehaviorSubject<Entry[]> = new BehaviorSubject([]);
 
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);

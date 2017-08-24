@@ -5,23 +5,25 @@
 		<input mdInput [mdDatepicker]="startingDatePicker"
 			   placeholder="Von"
 			   [(ngModel)]="dateOptions.from"
+			   (ngModel)="updateQueryParams()"
 			   (blur)="updateQueryParams()"
 			   #startingDateInput="ngModel"
 			   name="startingDateInput">
 		<button type="button" mdSuffix [mdDatepickerToggle]="startingDatePicker"></button>
 	</md-input-container>
-	<md-datepicker #startingDatePicker [touchUi]="true"></md-datepicker>
+	<md-datepicker #startingDatePicker (selectedChanged)="updateQueryParams()" [touchUi]="true"></md-datepicker>
 
 	<md-input-container>
 		<input mdInput [mdDatepicker]="endDatePicker"
 			   placeholder="Bis"
 			   [(ngModel)]="dateOptions.to"
+			   (ngModel)="updateQueryParams()"
 			   (blur)="updateQueryParams()"
 			   #endDateInput="ngModel"
 			   name="endDateInput">
 		<button type="button" mdSuffix [mdDatepickerToggle]="endDatePicker"></button>
 	</md-input-container>
-	<md-datepicker #endDatePicker [touchUi]="true"></md-datepicker>
+	<md-datepicker #endDatePicker  (selectedChanged)="updateQueryParams()" [touchUi]="true"></md-datepicker>
 </div>
 
 

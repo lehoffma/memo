@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "EntryCategoryServlet",value = "/api/entryCategory")
 public class EntryCategoryServlet extends HttpServlet {
@@ -21,7 +23,11 @@ public class EntryCategoryServlet extends HttpServlet {
         setContentType(request,response);
         List<EntryCategory> entries = createTestData();
 
-
+        if(request.getParameter("categoryId") != null){
+            entries = entries.stream()
+                    .filter(entryCategory -> Objects.equals(entryCategory.getId().toString(), request.getParameter("categoryId")))
+                    .collect(Collectors.toList());
+        }
 
         Gson gson = new GsonBuilder().serializeNulls().create();
         String output = gson.toJson(entries);

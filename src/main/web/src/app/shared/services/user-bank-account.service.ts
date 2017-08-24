@@ -73,7 +73,7 @@ export class UserBankAccountService extends ServletService<BankAccount>{
 		const requestOptions = new RequestOptions({headers});
 
 		return this.http.post(this.baseUrl, {account}, requestOptions)
-			.map(response => response.json() as number)
+			.map(response => response.json().id as number)
 			.flatMap(accountId => this.getById(accountId));
 	}
 
@@ -88,7 +88,7 @@ export class UserBankAccountService extends ServletService<BankAccount>{
 		const requestOptions = new RequestOptions({headers});
 
 		return this.http.put(this.baseUrl, {account}, requestOptions)
-			.map(response => response.json() as number)
+			.map(response => response.json().id as number)
 			.flatMap(accountId => this.getById(accountId));
 	}
 
@@ -99,6 +99,8 @@ export class UserBankAccountService extends ServletService<BankAccount>{
 	 * @returns {Observable<Response>}
 	 */
 	remove(id: number, ...args: any[]): Observable<Response> {
-		return this.http.delete(this.baseUrl, {body: id});
+		let params = new URLSearchParams();
+		params.set("id", ""+id);
+		return this.http.delete(this.baseUrl, {search: params});
 	}
 }

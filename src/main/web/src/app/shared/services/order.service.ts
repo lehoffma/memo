@@ -88,6 +88,8 @@ export class OrderService extends ServletService<Order>{
 	 * @returns {Observable<Response>}
 	 */
 	remove(id: number): Observable<Response> {
-		return this.http.delete(this.baseUrl, {body: id});
+		let params = new URLSearchParams();
+		params.set("id", ""+id);
+		return this.http.delete(this.baseUrl, {search: params});
 	}
 }

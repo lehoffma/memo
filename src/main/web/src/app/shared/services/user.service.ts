@@ -20,11 +20,12 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	getById(userId: number, options?: any): Observable<User> {
+		//todo remove cache
 		//if the user is stored in the cache, return that object instead of performing the http request
-		if (this.cache.isCached("users", userId)) {
-			return this.cache.cache.users
-				.map(users => users.find(user => user.id === userId));
-		}
+		// if (this.cache.isCached("users", userId)) {
+		// 	return this.cache.cache.users
+		// 		.map(users => users.find(user => user.id === userId));
+		// }
 
 		return this.performRequest(this.http.get(`/api/user?id=${userId}`))
 			.map(response => response.json().users)
@@ -113,7 +114,9 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	remove(userId: number): Observable<Response> {
-		return this.performRequest(this.http.delete("/api/user", {body: {id: userId}}))
+		let params = new URLSearchParams();
+		params.set("id", ""+userId);
+		return this.performRequest(this.http.delete("/api/user", {search: params}))
 			.do((response: Response) => this.cache.remove("users", response.json()));
 	}
 

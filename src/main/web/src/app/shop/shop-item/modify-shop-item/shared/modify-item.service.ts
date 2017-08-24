@@ -34,7 +34,7 @@ export class ModifyItemService {
 
 	//wenn id === -1 oder undefined, ist mode === ADD (da ein leeres Objekt übergeben wurde),
 	//ansonsten wird das übergebene Objekt editiert
-	idOfObjectToModify: number;
+	idOfObjectToModify: number = -1;
 	eventId: number = -1;
 
 	previousValue: ShopItem;

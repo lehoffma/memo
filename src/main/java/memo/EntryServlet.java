@@ -15,10 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //Tested
 
@@ -34,6 +36,32 @@ public class EntryServlet extends HttpServlet {
         String sType = request.getParameter("eventType");
 
         List<Entry> entries = getEntriesFromDatabase(Sid,SeventId,sType, response);
+
+
+        //todo durch sql ersetzen keine ahnung
+        if(request.getParameter("minDate") != null){
+            entries = entries.stream()
+                    .filter(entry -> {
+                        TemporalAccessor minDateTemporalAccessor = DateTimeFormatter.ISO_DATE_TIME
+                                .parse(request.getParameter("minDate"));
+                        LocalDateTime minDate = LocalDateTime.from(minDateTemporalAccessor);
+                        LocalDate date = entry.getDate().toLocalDate();
+                        return minDate.isBefore(date.atStartOfDay()) || minDate.isEqual(date.atStartOfDay());
+                    })
+                    .collect(Collectors.toList());
+        }
+        if(request.getParameter("maxDate") != null){
+            entries = entries.stream()
+                    .filter(entry -> {
+                        TemporalAccessor minDateTemporalAccessor = DateTimeFormatter.ISO_DATE_TIME
+                                .parse(request.getParameter("maxDate"));
+                        LocalDateTime maxDate = LocalDateTime.from(minDateTemporalAccessor);
+                        LocalDate date = entry.getDate().toLocalDate();
+                        return maxDate.isAfter(date.atStartOfDay()) || maxDate.isEqual(date.atStartOfDay());
+                    })
+                    .collect(Collectors.toList());
+        }
+
 
         /*
         if (entries.isEmpty()) {

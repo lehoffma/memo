@@ -1,7 +1,7 @@
 import {EventEmitter, Injectable} from "@angular/core";
 import {Address} from "../model/address";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response} from "@angular/http";
+import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
 import {CacheStore} from "../stores/cache.store";
 import {ServletService} from "./servlet.service";
 
@@ -89,7 +89,10 @@ export class AddressService extends ServletService<Address> {
 	 * @returns {Observable<T>}
 	 */
 	remove(id: number): Observable<Response> {
-		return this.performRequest(this.http.delete("/api/address", {body: {id: id}}))
+		let params = new URLSearchParams();
+		params.set("id", ""+id);
+
+		return this.performRequest(this.http.delete("/api/address", {search: params}))
 			.do((response: Response) => this.cache.remove("addresses", id));
 	}
 

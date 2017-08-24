@@ -4,6 +4,7 @@ import {isArray} from "util";
 import {Gender} from "../gender";
 import {isNumber, isString} from "../../../util/util";
 import * as moment from "moment";
+import {EntryCategory} from "../entry-category";
 
 
 export abstract class BaseObject<T extends BaseObject<T>> {
@@ -39,6 +40,7 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 				} else if (key === "gender") {
 					value = Gender[Gender[(<any>properties[key])]];
 				}
+
 				this[key] = value;
 			});
 		return this;

@@ -20,8 +20,8 @@ import {Comment} from "../../shop/shared/model/comment";
 		params.set("id", "" + id);
 
 		return this.performRequest(this.http.get("/api/comment", {search: params}))
-			.map(response => response.json().comments as any)
-			.map(json => Comment.create().setProperties(json))
+			.map(response => response.json().comments as any[])
+			.map(json => Comment.create().setProperties(json[0]))
 	}
 
 	/**
