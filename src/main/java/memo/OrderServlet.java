@@ -50,7 +50,7 @@ public class OrderServlet extends HttpServlet {
         String output = gson.toJson(o);
         String items = gson.toJson(itemList);
 
-        response.getWriter().append("{ "+output + ", \"orderedItems\":"+ items + "}");
+        response.getWriter().append(output + ", \"orderedItems\""+ items );
 
         }
         response.getWriter().append("]}");
@@ -76,8 +76,6 @@ public class OrderServlet extends HttpServlet {
         JsonArray jOrderItems = jOrder.get("orderedItems").getAsJsonArray();
 
         List<OrderedItem> items = updateOrderedItemsFromJson(jOrderItems,newOrder);
-
-        // ToDo: Update Capacities
 
 
         saveOrderToDatabase(newOrder, items);
@@ -109,16 +107,17 @@ public class OrderServlet extends HttpServlet {
 
 
         o = updateOrderFromJson(jOrder,o);
-
+        o.setId(jOrder.get("id").getAsInt());
 
         updatedSizes = new ArrayList<>();
 
+        List<OrderedItem> items = new ArrayList<>();
+        if (jOrder.has("orderdItems")){
         JsonArray jOrderItems = jOrder.get("orderedItems").getAsJsonArray();
-        List<OrderedItem> items = updateOrderedItemsFromJson(jOrderItems,o);
+        items = updateOrderedItemsFromJson(jOrderItems,o);}
 
-        // ToDo: Update Capacities
 
-        saveOrderToDatabase(o,items);
+        updateOrderAtDatabase(o,items);
 
         response.setStatus(200);
         response.getWriter().append("{ \"id\": " + o.getId() + " }");
@@ -234,15 +233,47 @@ public class OrderServlet extends HttpServlet {
         // save params to new user
         o = gson.fromJson(jOrder, Order.class);
 
-        if (jOrder.has("userId"))
-            o.setUser(DatabaseManager.createEntityManager().find(User.class,jOrder.get("userId").getAsInt()));
-
         o.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+
+        String method = jOrder.get("method").getAsString();
+
+        switch (method)
+        {
+
+            case "Bar":
+                o.setMethod(PaymentMethod.Bar);
+                break;
+            case "Lastschrift":
+                o.setMethod(PaymentMethod.Lastschrift);
+                break;
+            case "Uebrerweisung":
+                o.setMethod(PaymentMethod.Ueberweisung);
+                break;
+            case "Paypal":
+                o.setMethod(PaymentMethod.Paypal);
+                break;
+        }
+
 
         return o;
     }
 
     private void saveOrderToDatabase(Order newOrder,List<OrderedItem> items) {
+
+        EntityManager em = DatabaseManager.createEntityManager();
+
+        em.getTransaction().begin();
+        em.persist(newOrder);
+        for (OrderedItem o: items) {
+            em.persist(o);
+        }
+        for (Size s: updatedSizes){
+            em.persist(s);
+        }
+        em.getTransaction().commit();
+    }
+
+    private void updateOrderAtDatabase(Order newOrder,List<OrderedItem> items) {
 
         EntityManager em = DatabaseManager.createEntityManager();
 
@@ -290,13 +321,12 @@ public class OrderServlet extends HttpServlet {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         EntityManager em = DatabaseManager.createEntityManager();
 
-        if (item==null) {
+        if (!jItem.has("id")) {
             item = gson.fromJson(jItem,OrderedItem.class);
             // update event,order, color
 
 
             item.setEvent(em.find(Event.class,jItem.get("event").getAsJsonObject().get("id").getAsInt()));
-            item.setOrder(o);
 
             if (jItem.has("color")) {
                 Color c = gson.fromJson(jItem.get("color").getAsJsonObject(), Color.class);
@@ -313,8 +343,10 @@ public class OrderServlet extends HttpServlet {
             }
 
         }else{
+
             OrderStatus oldState = item.getStatus();
             item = gson.fromJson(jItem,OrderedItem.class);
+            item.setId(jItem.get("id").getAsInt());
 
             if ((oldState != OrderStatus.Cancelled) && (oldState != OrderStatus.Refused)) {
 
@@ -342,7 +374,7 @@ public class OrderServlet extends HttpServlet {
     private List<OrderedItem> getOrderedItemsByOrderId(Integer id) {
 
         return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                " WHERE o.order.id = :Id", OrderedItem.class)
+                " WHERE o.orderId = :Id", OrderedItem.class)
                 .setParameter("Id", id)
                 .getResultList();
 

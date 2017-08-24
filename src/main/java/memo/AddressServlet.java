@@ -18,6 +18,8 @@ import java.util.List;
 @WebServlet(name= "AddressServlet",value = "/api/address")
 public class AddressServlet extends HttpServlet {
 
+    //Tested
+
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -45,6 +47,7 @@ public class AddressServlet extends HttpServlet {
 
         JsonObject jAddress = getJsonAddress(request,response);
 
+
         //ToDo: find Duplicates
 
         Address a = createAddressFromJson(jAddress);
@@ -70,6 +73,7 @@ public class AddressServlet extends HttpServlet {
 
         Address a = getAddressByID(jAddress.get("id").getAsString(),response);
 
+
         if(a==null){
             response.setStatus(404);
             response.getWriter().append("not found");
@@ -77,8 +81,11 @@ public class AddressServlet extends HttpServlet {
         }
 
 
+
         a = updateAddressFromJson(jAddress,a);
-        saveAddressToDatabase(a);
+        a.setId(jAddress.get("id").getAsInt());
+
+        updateAddressAtDatabase(a);
 
         response.setStatus(201);
         response.getWriter().append("{\"id\": "+a.getId()+"}");
@@ -90,7 +97,7 @@ public class AddressServlet extends HttpServlet {
         setContentType(request,response);
 
         String Sid = request.getParameter("id");
-
+        
         Address a = getAddressByID(Sid,response);
 
         if (a == null) {
@@ -176,6 +183,14 @@ public class AddressServlet extends HttpServlet {
         em.getTransaction().commit();
     }
 
+    private void updateAddressAtDatabase(Address newAddress) {
+
+        EntityManager em = DatabaseManager.createEntityManager();
+
+        em.getTransaction().begin();
+        em.merge(newAddress);
+        em.getTransaction().commit();
+    }
     private void removeAddressFromDatabase(Address u)	{
 
         DatabaseManager.createEntityManager().getTransaction().begin();

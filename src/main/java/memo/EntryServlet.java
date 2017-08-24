@@ -13,9 +13,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 
+//Tested
 
 @WebServlet(name = "EntryServlet",value = "/api/entry")
 public class EntryServlet extends HttpServlet {
@@ -58,8 +63,6 @@ public class EntryServlet extends HttpServlet {
         response.setStatus(201);
         response.getWriter().append("{ \"id\": " + e.getId() + " }");
 
-        System.out.println(e.toString());
-
     }
 
 
@@ -81,14 +84,14 @@ public class EntryServlet extends HttpServlet {
             return;
         }
 
-         e = updateEntryFromJson(jEntry,e);
+        e = updateEntryFromJson(jEntry,e);
+        e.setId(jEntry.get("id").getAsInt());
 
-        saveEntryToDatabase(e);
+        updateEntryAtDatabase(e);
 
         response.setStatus(201);
         response.getWriter().append("{ \"id\": " + e.getId() + " }");
 
-        System.out.println(e.toString());
 
     }
 
@@ -139,7 +142,6 @@ public class EntryServlet extends HttpServlet {
         return getEntries();
     }
 
-
     private JsonObject getJsonEntry(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String body = CharStreams.toString(request.getReader());
@@ -160,6 +162,10 @@ public class EntryServlet extends HttpServlet {
 
         entry.setEntryCategoryID(jEntry.get("category").getAsJsonObject().get("id").getAsInt());
 
+        TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEntry.get("date").getAsString());
+        LocalDate date = LocalDate.from(day);
+        entry.setDate(Date.valueOf(date));
+
         return entry;
     }
 
@@ -167,9 +173,19 @@ public class EntryServlet extends HttpServlet {
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
-        em.merge(e);
+        em.persist(e);
         em.getTransaction().commit();
     }
+
+    private void updateEntryAtDatabase(Entry newEntry) {
+
+        EntityManager em = DatabaseManager.createEntityManager();
+
+        em.getTransaction().begin();
+        em.merge(newEntry);
+        em.getTransaction().commit();
+    }
+
 
     private List<Entry> getEntriesByEventId(String SeventId, HttpServletResponse response) throws IOException{
         try {

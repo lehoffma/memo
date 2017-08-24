@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+//TESTED
+
 @WebServlet(name = "CommentServlet", value = "/api/comment")
 public class CommentServlet extends HttpServlet {
 
@@ -53,7 +55,6 @@ public class CommentServlet extends HttpServlet {
         Comment c = createCommentFromJson(jComment);
         saveCommentToDatabase(c);
 
-        System.out.println(c);
 
         response.setStatus(201);
         response.getWriter().append("{\"id\": "+c.getId()+"}");
@@ -83,9 +84,9 @@ public class CommentServlet extends HttpServlet {
 
 
         c = updateCommentFromJson(jComment,c);
-        c = saveCommentToDatabase(c);
+        c.setId(jComment.get("id").getAsInt());
 
-        System.out.println(c);
+        updateCommentAtDatabase(c);
 
         response.setStatus(201);
         response.getWriter().append("{\"id\": "+c.getId()+"}");
@@ -182,9 +183,18 @@ public class CommentServlet extends HttpServlet {
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
-        em.merge(c);
+        em.persist(c);
         em.getTransaction().commit();
         return c;
+    }
+
+    private void updateCommentAtDatabase(Comment newComment) {
+
+        EntityManager em = DatabaseManager.createEntityManager();
+
+        em.getTransaction().begin();
+        em.merge(newComment);
+        em.getTransaction().commit();
     }
 
     private void removeCommentFromDatabase(Comment c)	{

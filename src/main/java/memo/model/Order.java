@@ -16,9 +16,9 @@ public class Order {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;   //globale unique ID
 
-    @ManyToOne(cascade = { CascadeType.PERSIST })
-    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
-    private User user;
+    @Expose
+    @Column(name = "USER_ID")
+    private Integer userId;
 
     @Column(nullable=false)
     private Timestamp timeStamp;
@@ -37,12 +37,12 @@ public class Order {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Integer userId) {
+        this.userId = userId;
     }
 
     public Timestamp getTimeStamp() {
@@ -73,7 +73,7 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", user=" + user +
+                ", user=" + userId +
                 ", timeStamp=" + timeStamp +
                 ", method=" + method +
                 ", text='" + text + '\'' +

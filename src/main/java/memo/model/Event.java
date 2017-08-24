@@ -19,7 +19,6 @@ import javax.persistence.*;
 @Table(name = "EVENTS")
 public class Event implements Serializable {
 
-	@Expose
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

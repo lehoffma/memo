@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.lang.Boolean;
 import java.lang.Integer;
 import java.lang.String;
+import java.sql.Date;
 import javax.persistence.*;
 
 /**
@@ -19,6 +20,7 @@ public class Entry implements Serializable {
 
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@ManyToOne
@@ -44,6 +46,8 @@ public class Entry implements Serializable {
 
 	@Expose
 	private String picPath;
+
+	private Date date;
 
 	private static final long serialVersionUID = 1L;
 
@@ -121,5 +125,11 @@ public class Entry implements Serializable {
 		this.name = name;
 	}
 
+	public Date getDate() {
+		return date;
+	}
 
+	public void setDate(Date date) {
+		this.date = date;
+	}
 }

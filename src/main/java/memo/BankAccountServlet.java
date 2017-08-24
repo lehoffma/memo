@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Testing (mostly Copy n Paste)
+// Tested
 
 
 @WebServlet(name = "BankAccountServlet", value = "/api/bankAccount")
@@ -51,7 +51,6 @@ public class BankAccountServlet extends HttpServlet {
 
         BankAcc a = createAccountFromJson(jAccount);
 
-        System.out.println(a.toString());
         saveAccountToDatabase(a);
 
         response.setStatus(201);
@@ -82,7 +81,8 @@ public class BankAccountServlet extends HttpServlet {
 
 
         a = updateAccountFromJson(jAccount,a);
-        saveAccountToDatabase(a);
+        a.setId(jAccount.get("id").getAsInt());
+        updateAccountAtDatabase(a);
 
         response.setStatus(201);
         response.getWriter().append("{\"id\": "+a.getId()+"}");
@@ -167,13 +167,22 @@ public class BankAccountServlet extends HttpServlet {
 
     private BankAcc updateAccountFromJson(JsonObject jAccount, BankAcc a) {
 
-        Gson gson = new GsonBuilder().create();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         a = gson.fromJson(jAccount, BankAcc.class);
 
         return a;
     }
 
     private void saveAccountToDatabase(BankAcc newAccount) {
+
+        EntityManager em = DatabaseManager.createEntityManager();
+
+        em.getTransaction().begin();
+        em.persist(newAccount);
+        em.getTransaction().commit();
+    }
+
+    private void updateAccountAtDatabase(BankAcc newAccount) {
 
         EntityManager em = DatabaseManager.createEntityManager();
 

@@ -153,7 +153,9 @@ public class UserServlet extends HttpServlet {
 		User u = users.get(0);
 
 		u = updateUserFromJson(jUser,u);
-		saveUserToDatabase(u);
+		u.setId(jUser.get("id").getAsInt());
+
+		updateUserAtDatabase(u);
 
 		response.setStatus(200);
 		response.getWriter().append("{ \"id\": " + u.getId() + " }");
@@ -301,7 +303,7 @@ public class UserServlet extends HttpServlet {
 
 			TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("joinDate").getAsString());
 			LocalDate jDate = LocalDate.from(join);
-			u.setJoinDate(Date.valueOf(jDate));
+			u.setBirthday(Date.valueOf(jDate));
 
 		}else
 		{
@@ -334,9 +336,19 @@ public class UserServlet extends HttpServlet {
 		EntityManager em = DatabaseManager.createEntityManager();
 
 		em.getTransaction().begin();
-		em.merge(newUser.getPermissions());
-		em.merge(newUser);
+		em.persist(newUser.getPermissions());
+		em.persist(newUser);
 		em.getTransaction().commit();
+	}
+
+	private void updateUserAtDatabase(User newUser) {
+
+
+
+		DatabaseManager.createEntityManager().getTransaction().begin();
+		DatabaseManager.createEntityManager().merge(newUser.getPermissions());
+		DatabaseManager.createEntityManager().merge(newUser);
+		DatabaseManager.createEntityManager().getTransaction().commit();
 	}
 
 	private void removeUserFromDatabase(User u)	{

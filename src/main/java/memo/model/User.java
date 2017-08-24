@@ -22,7 +22,6 @@ import javax.persistence.*;
 
 public class User implements Serializable {
 
-	@Expose
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false)

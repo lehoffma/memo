@@ -17,10 +17,10 @@ public class OrderedItem {
     @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
     private Event event;
 
-    @ManyToOne
-    @JoinColumn(name = "ORDER_ID", referencedColumnName = "ID")
-    private Order order;
 
+    @Expose
+    @Column(name = "ORDER_ID")
+    private Integer orderId;
 
     // Without Driver reduction
     @Expose
@@ -60,12 +60,12 @@ public class OrderedItem {
         this.event = event;
     }
 
-    public Order getOrder() {
-        return order;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public int getPrice() {
@@ -121,7 +121,7 @@ public class OrderedItem {
         return "OrderedItem{" +
                 "id=" + id +
                 ", event=" + event +
-                ", order=" + order +
+                ", order=" + orderId +
                 ", price=" + price +
                 ", status=" + status +
                 ", size='" + size + '\'' +

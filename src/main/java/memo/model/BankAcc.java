@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.lang.Integer;
 import java.lang.String;
@@ -19,14 +21,18 @@ public class BankAcc implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@Expose
 	private String bankName;
-	
+
+	@Expose
 	@Column(nullable= false)
 	private String iban;
-	
+
+	@Expose
 	@Column(nullable= false)
 	private String bic;
-	
+
+	@Expose
 	@Column(nullable= false)
 	private String name;
 	
