@@ -1,4 +1,4 @@
-:host{
+:host {
 	display: flex;
 	justify-content: center;
 	max-width: 500px;
@@ -8,13 +8,13 @@
 	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
 	margin: 20px auto auto;
 
-	&:last-child{
+	&:last-child {
 		margin-bottom: 20px;
 
 	}
 }
 
-.method{
+.method {
 	border-bottom: 1px solid #E0E0E0;
 	padding-bottom: 1rem;
 	display: flex;
@@ -30,7 +30,6 @@
 	margin: 10px 0;
 	padding: 10px 0;
 	border-bottom: 1px solid #E0E0E0;
-
 
 	> div,
 	> a {
@@ -49,7 +48,7 @@
 
 }
 
-h2.header{
+h2.header {
 	background-color: #4caf50;
 	color: white;
 	margin: -1rem -1rem 1rem;
@@ -108,14 +107,14 @@ h2.header{
 	}
 }
 
-.order-total-price{
+.order-total-price {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 0.5rem;
 	margin-top: 0.5rem;
 	font-size: 1.2rem;
 
-	.order-total-price-amount{
+	.order-total-price-amount {
 		font-weight: bold;
 	}
 }

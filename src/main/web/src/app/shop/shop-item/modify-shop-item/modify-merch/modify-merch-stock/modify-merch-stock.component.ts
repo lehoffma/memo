@@ -4,7 +4,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
 import {ColumnSortingEvent} from "../../../../../shared/expandable-table/column-sorting-event";
 import {Observable} from "rxjs/Observable";
-import {attributeSortingFunction, sortingFunction} from "../../../../../util/util";
+import {attributeSortingFunction, getId, sortingFunction} from "../../../../../util/util";
 import {MerchColorCellComponent} from "./merch-color-cell/merch-color-cell.component";
 import {MdDialog} from "@angular/material";
 import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-merch-stock-item.component";
@@ -26,24 +26,7 @@ export class ModifyMerchStockComponent implements OnInit {
 	sortBy = this._sortBy.asObservable();
 
 	merchStockSubject: BehaviorSubject<MerchStock[]> = new BehaviorSubject([]);
-
-	@Input() set stock(value) {
-		this.merchStockSubject.next(value ? value : []);
-	}
-
-	@Output() stockChange = new EventEmitter();
-
-	get merchStock() {
-		return this.merchStockSubject.getValue();
-	}
-
-	set merchStock(value: MerchStock[]) {
-		this.stock = value;
-		this.stockChange.emit(value);
-	}
-
 	merchStockObservable = Observable.combineLatest(this.merchStockSubject, this.sortBy)
-		.do(([stock, sort]) => console.log(stock))
 		.map(([merchStock, sortBy]) => {
 			return [...merchStock]
 				.map((stock) => ({
@@ -56,9 +39,8 @@ export class ModifyMerchStockComponent implements OnInit {
 					? sortingFunction<MerchStock>(obj => obj.color.name, sortBy.descending)
 					: attributeSortingFunction(sortBy.key, sortBy.descending));
 		});
-
+	@Output() stockChange = new EventEmitter();
 	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("stock");
-
 	primaryColumnKeys: ExpandableTableColumn<MerchStock>[] = [
 		new ExpandableTableColumn<MerchStock>("Größe", "size"),
 		new ExpandableTableColumn<MerchStock>("Farbe", "color", MerchColorCellComponent),
@@ -67,6 +49,20 @@ export class ModifyMerchStockComponent implements OnInit {
 
 	constructor(private mdDialog: MdDialog,
 				private loginService: LogInService) {
+	}
+
+	@Input()
+	set stock(value) {
+		this.merchStockSubject.next(value ? value : []);
+	}
+
+	get merchStock() {
+		return this.merchStockSubject.getValue();
+	}
+
+	set merchStock(value: MerchStock[]) {
+		this.stock = value;
+		this.stockChange.emit(value);
 	}
 
 	ngOnInit() {
@@ -92,16 +88,35 @@ export class ModifyMerchStockComponent implements OnInit {
 			.subscribe((event: ModifyStockItemEvent) => {
 				switch (event.modifyType) {
 					case ModifyType.ADD:
-						this.merchStock = this.merchStock.concat({
-							size: event.size,
-							color: Object.assign({}, event.color),
-							amount: event.amount
-						});
+						let index = this.merchStock
+							.findIndex(stockItem => stockItem.color.name === event.color.name
+								&& stockItem.size === event.size);
+						if (index === -1) {
+							this.merchStock = [...this.merchStock, {
+								id: getId(event.size + event.color.name),
+								size: event.size,
+								color: Object.assign({}, event.color),
+								amount: event.amount
+							}];
+						}
+						else {
+							this.merchStock = [
+								...this.merchStock.slice(0, index),
+								{
+									...this.merchStock[index],
+									amount: this.merchStock[index].amount + event.amount
+								},
+								...this.merchStock.slice(index + 1)
+							]
+						}
+
+
 						break;
 					case ModifyType.EDIT:
 						this.merchStock = this.merchStock.map(stock => {
 							if (stock["id"] === event.modifiedStock["id"]) {
 								return {
+									id: event.modifiedStock.id,
 									size: event.size,
 									color: Object.assign({}, event.color),
 									amount: event.amount

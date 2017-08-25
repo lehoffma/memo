@@ -3,7 +3,6 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import memo.model.Address;
-import org.eclipse.persistence.internal.sessions.DirectCollectionChangeRecord;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -15,7 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name= "AddressServlet",value = "/api/address")
+@WebServlet(name = "AddressServlet", value = "/api/address")
 public class AddressServlet extends HttpServlet {
 
     //Tested
@@ -23,29 +22,29 @@ public class AddressServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
 
-        List <Address> addresses = getAddressesFromDatabase(Sid,response);
+        List<Address> addresses = getAddressesFromDatabase(Sid, response);
 
-        if(addresses.isEmpty()){
+        if (addresses.isEmpty()) {
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
 
         Gson gson = new GsonBuilder().serializeNulls().create();
-        String output=gson.toJson(addresses);
-        response.getWriter().append("{ \"addresses\": "+ output + " }");
+        String output = gson.toJson(addresses);
+        response.getWriter().append("{ \"addresses\": " + output + " }");
 
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jAddress = getJsonAddress(request,response);
+        JsonObject jAddress = getJsonAddress(request, response);
 
 
         //ToDo: find Duplicates
@@ -54,51 +53,50 @@ public class AddressServlet extends HttpServlet {
         saveAddressToDatabase(a);
 
         response.setStatus(201);
-        response.getWriter().append("{\"id\": "+a.getId()+"}");
+        response.getWriter().append("{\"id\": " + a.getId() + "}");
 
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jAddress = getJsonAddress(request,response);
+        JsonObject jAddress = getJsonAddress(request, response);
 
 
-        if(!jAddress.getAsJsonObject().has("id")){
+        if (!jAddress.getAsJsonObject().has("id")) {
             response.setStatus(400);
             response.getWriter().append("invalid data");
             return;
         }
 
-        Address a = getAddressByID(jAddress.get("id").getAsString(),response);
+        Address a = getAddressByID(jAddress.get("id").getAsString(), response);
 
 
-        if(a==null){
+        if (a == null) {
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
 
 
-
-        a = updateAddressFromJson(jAddress,a);
+        a = updateAddressFromJson(jAddress, a);
         a.setId(jAddress.get("id").getAsInt());
 
         updateAddressAtDatabase(a);
 
         response.setStatus(201);
-        response.getWriter().append("{\"id\": "+a.getId()+"}");
+        response.getWriter().append("{\"id\": " + a.getId() + "}");
 
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
-        
-        Address a = getAddressByID(Sid,response);
+
+        Address a = getAddressByID(Sid, response);
 
         if (a == null) {
             response.setStatus(404);
@@ -111,7 +109,6 @@ public class AddressServlet extends HttpServlet {
     }
 
 
-
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
@@ -122,7 +119,7 @@ public class AddressServlet extends HttpServlet {
     }
 
     private List<Address> getAddressesFromDatabase(String Sid, HttpServletResponse response) throws IOException {
-        
+
         // if ID is submitted
         if (isStringNotEmpty(Sid)) {
             Address a = getAddressByID(Sid, response);
@@ -163,7 +160,7 @@ public class AddressServlet extends HttpServlet {
 
     private Address createAddressFromJson(JsonObject jAddress) {
 
-        return updateAddressFromJson(jAddress,new Address());
+        return updateAddressFromJson(jAddress, new Address());
     }
 
     private Address updateAddressFromJson(JsonObject jAddress, Address a) {
@@ -191,7 +188,8 @@ public class AddressServlet extends HttpServlet {
         em.merge(newAddress);
         em.getTransaction().commit();
     }
-    private void removeAddressFromDatabase(Address u)	{
+
+    private void removeAddressFromDatabase(Address u) {
 
         DatabaseManager.createEntityManager().getTransaction().begin();
         u = DatabaseManager.createEntityManager().merge(u);

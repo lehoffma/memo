@@ -48,11 +48,9 @@ export class ProfileComponent implements OnInit {
 			longitude: 0,
 			latitude: 0
 		});
-
-	profileCategories = profileCategories;
-
 	isOwnProfile: Observable<boolean> = this.userId.combineLatest(this.loginService.accountObservable,
 		(profileId, currentUserId) => profileId === currentUserId);
+	profileCategories = profileCategories;
 
 	constructor(private route: ActivatedRoute,
 				private navigationService: NavigationService,

@@ -38,6 +38,10 @@ export class ModifyParticipantComponent implements OnInit {
 				@Inject(MD_DIALOG_DATA) public data: any) {
 	}
 
+	get isEditing() {
+		return this.data && this.data.participant;
+	}
+
 	ngOnInit() {
 		this.associatedEventInfo = this.data.associatedEventInfo;
 		if (this.isEditing) {
@@ -100,11 +104,6 @@ export class ModifyParticipantComponent implements OnInit {
 			return user.firstName + " " + user.surname;
 		}
 		return "";
-	}
-
-
-	get isEditing() {
-		return this.data && this.data.participant;
 	}
 
 	/**

@@ -101,7 +101,7 @@ export class MomentDateAdapter extends DateAdapter<Moment> {
 	}
 
 	parse(value: any, parseFormat: any): Moment {
-		if(value === undefined){
+		if (value === undefined) {
 			return value;
 		}
 		let m = moment(value, parseFormat, this.locale, true);

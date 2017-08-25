@@ -23,29 +23,29 @@ public class BankAccountServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
 
-        List<BankAcc> accList = getAccountsFromDatabase(Sid,response);
+        List<BankAcc> accList = getAccountsFromDatabase(Sid, response);
 
-        if(accList.isEmpty()){
+        if (accList.isEmpty()) {
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
 
         Gson gson = new GsonBuilder().serializeNulls().create();
-        String output=gson.toJson(accList);
-        response.getWriter().append("{ \"bankAccounts\": "+ output + " }");
+        String output = gson.toJson(accList);
+        response.getWriter().append("{ \"bankAccounts\": " + output + " }");
 
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jAccount = getJsonAccount(request,response);
+        JsonObject jAccount = getJsonAccount(request, response);
 
         //ToDo: find Duplicates
 
@@ -54,48 +54,48 @@ public class BankAccountServlet extends HttpServlet {
         saveAccountToDatabase(a);
 
         response.setStatus(201);
-        response.getWriter().append("{\"id\": "+a.getId()+"}");
+        response.getWriter().append("{\"id\": " + a.getId() + "}");
 
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jAccount = getJsonAccount(request,response);
+        JsonObject jAccount = getJsonAccount(request, response);
 
 
-        if(!jAccount.getAsJsonObject().has("id")){
+        if (!jAccount.getAsJsonObject().has("id")) {
             response.setStatus(400);
             response.getWriter().append("invalid data");
             return;
         }
 
-        BankAcc a = getAccountByID(jAccount.get("id").getAsString(),response);
+        BankAcc a = getAccountByID(jAccount.get("id").getAsString(), response);
 
-        if(a==null){
+        if (a == null) {
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
 
 
-        a = updateAccountFromJson(jAccount,a);
+        a = updateAccountFromJson(jAccount, a);
         a.setId(jAccount.get("id").getAsInt());
         updateAccountAtDatabase(a);
 
         response.setStatus(201);
-        response.getWriter().append("{\"id\": "+a.getId()+"}");
+        response.getWriter().append("{\"id\": " + a.getId() + "}");
 
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
 
-        BankAcc a = getAccountByID(Sid,response);
+        BankAcc a = getAccountByID(Sid, response);
 
         if (a == null) {
             response.setStatus(404);
@@ -106,7 +106,6 @@ public class BankAccountServlet extends HttpServlet {
         removeAccountsFromDatabase(a);
 
     }
-
 
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -162,7 +161,7 @@ public class BankAccountServlet extends HttpServlet {
 
     private BankAcc createAccountFromJson(JsonObject jAccount) {
 
-        return updateAccountFromJson(jAccount,new BankAcc());
+        return updateAccountFromJson(jAccount, new BankAcc());
     }
 
     private BankAcc updateAccountFromJson(JsonObject jAccount, BankAcc a) {
@@ -191,7 +190,7 @@ public class BankAccountServlet extends HttpServlet {
         em.getTransaction().commit();
     }
 
-    private void removeAccountsFromDatabase(BankAcc u)	{
+    private void removeAccountsFromDatabase(BankAcc u) {
 
         DatabaseManager.createEntityManager().getTransaction().begin();
         u = DatabaseManager.createEntityManager().merge(u);

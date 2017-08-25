@@ -1,15 +1,12 @@
 package memo.model;
 
 import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-import java.lang.Integer;
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Entity implementation class for Entity: PermissionState
- *
  */
 @Entity
 @Table(name = "PERMISSION_STATES")
@@ -17,43 +14,34 @@ import javax.persistence.*;
 public class PermissionState implements Serializable {
 
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission funds;
-
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission party;
-
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission user;
-
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission merch;
-
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission tour;
-
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission stock;
-
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission settings;
 
-	private static final long serialVersionUID = 1L;
-
-	public PermissionState(ClubRole role)
-    {
-        switch (role){
+    public PermissionState(ClubRole role) {
+        switch (role) {
             case none:
 
                 this.funds = Permission.none;
@@ -139,85 +127,86 @@ public class PermissionState implements Serializable {
                 break;
         }
     }
-	public PermissionState() {
-		this(ClubRole.none);
-	}
 
-	public Integer getId() {
-		return id;
-	}
+    public PermissionState() {
+        this(ClubRole.none);
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public Permission getFunds() {
-		return funds;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setFunds(Permission funds) {
-		this.funds = funds;
-	}
+    public Permission getFunds() {
+        return funds;
+    }
 
-	public Permission getParty() {
-		return party;
-	}
+    public void setFunds(Permission funds) {
+        this.funds = funds;
+    }
 
-	public void setParty(Permission party) {
-		this.party = party;
-	}
+    public Permission getParty() {
+        return party;
+    }
 
-	public Permission getUser() {
-		return user;
-	}
+    public void setParty(Permission party) {
+        this.party = party;
+    }
 
-	public void setUser(Permission user) {
-		this.user = user;
-	}
+    public Permission getUser() {
+        return user;
+    }
 
-	public Permission getMerch() {
-		return merch;
-	}
+    public void setUser(Permission user) {
+        this.user = user;
+    }
 
-	public void setMerch(Permission merch) {
-		this.merch = merch;
-	}
+    public Permission getMerch() {
+        return merch;
+    }
 
-	public Permission getTour() {
-		return tour;
-	}
+    public void setMerch(Permission merch) {
+        this.merch = merch;
+    }
 
-	public void setTour(Permission tour) {
-		this.tour = tour;
-	}
+    public Permission getTour() {
+        return tour;
+    }
 
-	public Permission getStock() {
-		return stock;
-	}
+    public void setTour(Permission tour) {
+        this.tour = tour;
+    }
 
-	public void setStock(Permission stock) {
-		this.stock = stock;
-	}
+    public Permission getStock() {
+        return stock;
+    }
 
-	public Permission getAccount() {
-		return settings;
-	}
+    public void setStock(Permission stock) {
+        this.stock = stock;
+    }
 
-	public void setAccount(Permission account) {
-		this.settings = account;
-	}
+    public Permission getAccount() {
+        return settings;
+    }
 
-	@Override
-	public String toString() {
-		return "PermissionState{" +
-				"id=" + id +
-				", funds=" + funds +
-				", party=" + party +
-				", user=" + user +
-				", merch=" + merch +
-				", tour=" + tour +
-				", stock=" + stock +
-				", settings=" + settings +
-				'}';
-	}
+    public void setAccount(Permission account) {
+        this.settings = account;
+    }
+
+    @Override
+    public String toString() {
+        return "PermissionState{" +
+                "id=" + id +
+                ", funds=" + funds +
+                ", party=" + party +
+                ", user=" + user +
+                ", merch=" + merch +
+                ", tour=" + tour +
+                ", stock=" + stock +
+                ", settings=" + settings +
+                '}';
+    }
 }

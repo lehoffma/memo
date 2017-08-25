@@ -3,21 +3,21 @@
 	overflow-y: auto;
 }
 
-md-radio-group{
+md-radio-group {
 	font-size: 0.95em;
 	display: flex;
 	flex-direction: column;
 
-	> div{
+	> div {
 		border-bottom: 1px solid #BDBDBD;
 		margin-bottom: 10px;
 		padding-bottom: 10px;
 	}
 
-	md-radio-button{
+	md-radio-button {
 		width: 100%;
 
-		/deep/ .mat-radio-label{
+		/deep/ .mat-radio-label {
 			width: 100%;
 
 			.mat-radio-label-content {

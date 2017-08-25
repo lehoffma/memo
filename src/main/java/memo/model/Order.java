@@ -13,14 +13,14 @@ public class Order {
 
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;   //globale unique ID
 
     @Expose
     @Column(name = "USER_ID")
     private Integer userId;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Timestamp timeStamp;
 
     @Expose

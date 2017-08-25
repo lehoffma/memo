@@ -9,17 +9,17 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "COMMENTS")
-public class Comment implements Serializable{
+public class Comment implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;   //globale unique ID
 
     @Expose
     @Column(name = "EVENT_ID")
     private Integer eventId;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Timestamp timeStamp;   //muss jetzt unbedingt nich 'Date' sein, aber halt nen Datumstyp
 
     @Expose
@@ -28,7 +28,6 @@ public class Comment implements Serializable{
 
     @Expose
     private String text;
-
 
 
     public int getId() {

@@ -17,6 +17,9 @@ export class ModifyMerchComponent implements OnInit {
 	priceIsValid = true;
 	defaultImageUrl = "resources/images/Logo.png";
 
+	constructor(private location: Location) {
+	}
+
 	get merchModel() {
 		return this.model;
 	}
@@ -24,9 +27,6 @@ export class ModifyMerchComponent implements OnInit {
 	set merchModel(model: any) {
 		this.model = model;
 		this.modelChange.emit(this.model);
-	}
-
-	constructor(private location: Location) {
 	}
 
 	ngOnInit() {

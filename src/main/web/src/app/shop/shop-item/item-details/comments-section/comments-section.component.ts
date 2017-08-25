@@ -32,16 +32,8 @@ export class CommentsSectionComponent implements OnInit {
 	@Input() eventId: number;
 	@Output() onDeleteComment = new EventEmitter<{ comment: Comment, parentId: number }>();
 	readonly DEFAULT_AMOUNT_OF_COMMENTS_SHOWN = 3;
-
-	get amountOfCommentsShown() {
-		return this.expandState
-			? this.comments.length
-			: this.DEFAULT_AMOUNT_OF_COMMENTS_SHOWN;
-	}
-
 	loggedInUser$ = this.loginService.currentUser()
 		.flatMap(user => user === null ? Observable.empty() : Observable.of(user));
-
 	expandState = false;
 	dummyComment = Comment.create();
 	loadingAddedComment = false;
@@ -49,6 +41,12 @@ export class CommentsSectionComponent implements OnInit {
 	constructor(private loginService: LogInService,
 				private changeDetectorRef: ChangeDetectorRef,
 				private commentService: CommentService) {
+	}
+
+	get amountOfCommentsShown() {
+		return this.expandState
+			? this.comments.length
+			: this.DEFAULT_AMOUNT_OF_COMMENTS_SHOWN;
 	}
 
 	ngOnInit() {

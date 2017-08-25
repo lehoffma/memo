@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "OrderServlet",value = "/api/order")
+@WebServlet(name = "OrderServlet", value = "/api/order")
 public class OrderServlet extends HttpServlet {
 
     List<Size> updatedSizes;
@@ -23,12 +23,12 @@ public class OrderServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
         String SuserId = request.getParameter("userId");
 
-        List<Order> orders = getOrdersFromDatabase(Sid,SuserId,response);
+        List<Order> orders = getOrdersFromDatabase(Sid, SuserId, response);
 
         if (orders.isEmpty()) {
             response.setStatus(404);
@@ -40,17 +40,17 @@ public class OrderServlet extends HttpServlet {
         Gson gson = new GsonBuilder().serializeNulls().create();
         response.getWriter().append("{ \"orders\": [");
 
-        for (int i=0;i<orders.size();++i) {
-            if (i!=0) response.getWriter().append(",");
+        for (int i = 0; i < orders.size(); ++i) {
+            if (i != 0) response.getWriter().append(",");
 
             Order o = orders.get(i);
 
             List<OrderedItem> itemList = getOrderedItemsByOrderId(o.getId());
 
-        String output = gson.toJson(o);
-        String items = gson.toJson(itemList);
+            String output = gson.toJson(o);
+            String items = gson.toJson(itemList);
 
-        response.getWriter().append(output + ", \"orderedItems\""+ items );
+            response.getWriter().append(output + ", \"orderedItems\"" + items);
 
         }
         response.getWriter().append("]}");
@@ -58,9 +58,9 @@ public class OrderServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jOrder = getJsonOrder(request,response);
+        JsonObject jOrder = getJsonOrder(request, response);
 
         System.out.println(jOrder);
         // ToDo: find multiple
@@ -75,7 +75,7 @@ public class OrderServlet extends HttpServlet {
 
         JsonArray jOrderItems = jOrder.get("orderedItems").getAsJsonArray();
 
-        List<OrderedItem> items = updateOrderedItemsFromJson(jOrderItems,newOrder);
+        List<OrderedItem> items = updateOrderedItemsFromJson(jOrderItems, newOrder);
 
 
         saveOrderToDatabase(newOrder, items);
@@ -89,35 +89,34 @@ public class OrderServlet extends HttpServlet {
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jOrder = getJsonOrder(request,response);
+        JsonObject jOrder = getJsonOrder(request, response);
 
         Integer id = jOrder.get("id").getAsInt();
 
-        Order o = getOrderByID(id.toString(),response);
+        Order o = getOrderByID(id.toString(), response);
 
-        if (o == null)
-        {
+        if (o == null) {
             response.getWriter().append("Not found");
             response.setStatus(404);
             return;
         }
 
 
-
-        o = updateOrderFromJson(jOrder,o);
+        o = updateOrderFromJson(jOrder, o);
         o.setId(jOrder.get("id").getAsInt());
 
         updatedSizes = new ArrayList<>();
 
         List<OrderedItem> items = new ArrayList<>();
-        if (jOrder.has("orderdItems")){
-        JsonArray jOrderItems = jOrder.get("orderedItems").getAsJsonArray();
-        items = updateOrderedItemsFromJson(jOrderItems,o);}
+        if (jOrder.has("orderdItems")) {
+            JsonArray jOrderItems = jOrder.get("orderedItems").getAsJsonArray();
+            items = updateOrderedItemsFromJson(jOrderItems, o);
+        }
 
 
-        updateOrderAtDatabase(o,items);
+        updateOrderAtDatabase(o, items);
 
         response.setStatus(200);
         response.getWriter().append("{ \"id\": " + o.getId() + " }");
@@ -126,11 +125,11 @@ public class OrderServlet extends HttpServlet {
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
 
-        Order o = getOrderByID(Sid,response);
+        Order o = getOrderByID(Sid, response);
 
         if (o == null) {
             response.setStatus(404);
@@ -141,8 +140,6 @@ public class OrderServlet extends HttpServlet {
         removeOrderFromDatabase(o);
 
     }
-
-
 
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -162,7 +159,7 @@ public class OrderServlet extends HttpServlet {
         return jElement.getAsJsonObject().getAsJsonObject("order");
     }
 
-    private List<Order> getOrdersFromDatabase(String Sid, String SuserId,HttpServletResponse response) throws IOException {
+    private List<Order> getOrdersFromDatabase(String Sid, String SuserId, HttpServletResponse response) throws IOException {
 
         List<Order> orders = new ArrayList<>();
 
@@ -176,7 +173,7 @@ public class OrderServlet extends HttpServlet {
             }
         }
 
-        if (isStringNotEmpty(SuserId)) return getOrderByUserId(SuserId,response);
+        if (isStringNotEmpty(SuserId)) return getOrderByUserId(SuserId, response);
 
         return getOrders();
 
@@ -224,7 +221,7 @@ public class OrderServlet extends HttpServlet {
 
     private Order createOrderFromJson(JsonObject jOrder) {
 
-        return updateOrderFromJson(jOrder,new Order());
+        return updateOrderFromJson(jOrder, new Order());
     }
 
     private Order updateOrderFromJson(JsonObject jOrder, Order o) {
@@ -237,8 +234,7 @@ public class OrderServlet extends HttpServlet {
 
         String method = jOrder.get("method").getAsString();
 
-        switch (method)
-        {
+        switch (method) {
 
             case "Bar":
                 o.setMethod(PaymentMethod.Bar);
@@ -258,57 +254,56 @@ public class OrderServlet extends HttpServlet {
         return o;
     }
 
-    private void saveOrderToDatabase(Order newOrder,List<OrderedItem> items) {
+    private void saveOrderToDatabase(Order newOrder, List<OrderedItem> items) {
 
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
         em.persist(newOrder);
-        for (OrderedItem o: items) {
+        for (OrderedItem o : items) {
             em.persist(o);
         }
-        for (Size s: updatedSizes){
+        for (Size s : updatedSizes) {
             em.persist(s);
         }
         em.getTransaction().commit();
     }
 
-    private void updateOrderAtDatabase(Order newOrder,List<OrderedItem> items) {
+    private void updateOrderAtDatabase(Order newOrder, List<OrderedItem> items) {
 
         EntityManager em = DatabaseManager.createEntityManager();
 
         em.getTransaction().begin();
         em.merge(newOrder);
-        for (OrderedItem o: items) {
+        for (OrderedItem o : items) {
             em.merge(o);
         }
-        for (Size s: updatedSizes){
+        for (Size s : updatedSizes) {
             em.merge(s);
         }
         em.getTransaction().commit();
     }
 
-    private List<OrderedItem> updateOrderedItemsFromJson(JsonArray jOrderItems,Order o) {
+    private List<OrderedItem> updateOrderedItemsFromJson(JsonArray jOrderItems, Order o) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         EntityManager em = DatabaseManager.createEntityManager();
 
         List<OrderedItem> items = new ArrayList<>();
 
-        for (int i = 0; i<jOrderItems.size();++i) {
+        for (int i = 0; i < jOrderItems.size(); ++i) {
 
             JsonObject jItem = jOrderItems.get(i).getAsJsonObject();
 
             OrderedItem item = new OrderedItem();
 
-              if (jItem.has("id")) {
-                  Integer jId = jItem.get("id").getAsInt();
+            if (jItem.has("id")) {
+                Integer jId = jItem.get("id").getAsInt();
 
-                  item = em.find(OrderedItem.class, jId);
-              }
+                item = em.find(OrderedItem.class, jId);
+            }
 
-                item = updateOrderedItemFromJson(jItem,item,o);
-                items.add(item);
-
+            item = updateOrderedItemFromJson(jItem, item, o);
+            items.add(item);
 
 
         }
@@ -322,11 +317,11 @@ public class OrderServlet extends HttpServlet {
         EntityManager em = DatabaseManager.createEntityManager();
 
         if (!jItem.has("id")) {
-            item = gson.fromJson(jItem,OrderedItem.class);
+            item = gson.fromJson(jItem, OrderedItem.class);
             // update event,order, color
 
 
-            item.setEvent(em.find(Event.class,jItem.get("event").getAsJsonObject().get("id").getAsInt()));
+            item.setEvent(em.find(Event.class, jItem.get("event").getAsJsonObject().get("id").getAsInt()));
 
             if (jItem.has("color")) {
                 Color c = gson.fromJson(jItem.get("color").getAsJsonObject(), Color.class);
@@ -342,17 +337,17 @@ public class OrderServlet extends HttpServlet {
                 updatedSizes.add(size);
             }
 
-        }else{
+        } else {
 
             OrderStatus oldState = item.getStatus();
-            item = gson.fromJson(jItem,OrderedItem.class);
+            item = gson.fromJson(jItem, OrderedItem.class);
             item.setId(jItem.get("id").getAsInt());
 
             if ((oldState != OrderStatus.Cancelled) && (oldState != OrderStatus.Refused)) {
 
-                if(item.getStatus() == OrderStatus.Cancelled || item.getStatus() == OrderStatus.Refused) {
+                if (item.getStatus() == OrderStatus.Cancelled || item.getStatus() == OrderStatus.Refused) {
 
-                    if (item.getColor()!=null) {
+                    if (item.getColor() != null) {
 
                         List<Size> sizes = em.createQuery("SELECT s FROM Size s " +
                                 " WHERE s.size = :name AND s.color.hex = :hex", Size.class)

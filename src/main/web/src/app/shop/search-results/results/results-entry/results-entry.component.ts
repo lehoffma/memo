@@ -11,26 +11,28 @@ import {StockService} from "../../../../shared/services/stock.service";
 	styleUrls: ["./results-entry.component.scss"]
 })
 export class ResultsEntryComponent implements OnInit {
-	_result: Event;
-
-	get result(){
-		return this._result;
-	}
-	@Input() set result(result: Event){
-		this._result = result;
-		if(this.resultIsMerch(result)){
-			this.stockService
-				.getByEventId(result.id)
-				.map(stockList => stockList.map(stockItem => stockItem.color))
-				.subscribe(colors => this.colors = [...colors]);
-		}
-	}
-
 	colors: MerchColor[] = [];
 
 	constructor(private eventUtilService: EventUtilityService,
 				private stockService: StockService,
 				private navigationService: NavigationService) {
+	}
+
+	_result: Event;
+
+	get result() {
+		return this._result;
+	}
+
+	@Input()
+	set result(result: Event) {
+		this._result = result;
+		if (this.resultIsMerch(result)) {
+			this.stockService
+				.getByEventId(result.id)
+				.map(stockList => stockList.map(stockItem => stockItem.color))
+				.subscribe(colors => this.colors = [...colors]);
+		}
 	}
 
 	ngOnInit() {

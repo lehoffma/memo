@@ -9,12 +9,12 @@ export class BadgeComponent implements OnInit {
 
 	@Input() value = 0;
 
-	get amount(): string {
-		return this.value > 99 ? "99+" : this.value + "";
-	}
-
 	constructor() {
 
+	}
+
+	get amount(): string {
+		return this.value > 99 ? "99+" : this.value + "";
 	}
 
 	ngOnInit() {

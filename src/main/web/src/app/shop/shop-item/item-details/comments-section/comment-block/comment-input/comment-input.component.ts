@@ -1,6 +1,5 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
 import {User} from "../../../../../../shared/model/user";
-import {MdInputDirective} from "@angular/material";
 import {AutoSizeTextAreaDirective} from "../../../../../../shared/autosize-textarea.directive";
 
 @Component({
@@ -11,7 +10,7 @@ import {AutoSizeTextAreaDirective} from "../../../../../../shared/autosize-texta
 export class CommentInputComponent implements OnInit, AfterViewInit {
 	@Input() commentText: string;
 	@Input() author: User;
-	@Input() focus:boolean;
+	@Input() focus: boolean;
 
 	@Output() submitComment: EventEmitter<string> = new EventEmitter();
 
@@ -24,13 +23,13 @@ export class CommentInputComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		if(this.focus){
+		if (this.focus) {
 			this.commentInput.elementRef.nativeElement.focus();
 		}
 	}
 
 
-	submit(){
+	submit() {
 		this.submitComment.emit(this.commentText);
 	}
 }

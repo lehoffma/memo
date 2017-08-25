@@ -81,12 +81,12 @@ export class EventCalendarContainerComponent implements OnInit {
 
 		dialogRef.afterClosed()
 			.subscribe(value => {
-				if (value === "deleted") {
-					this.events = this.getUpdatedEvents();
-					this.snackBar.open("Löschen erfolgreich.", "Schließen", {
-						duration: 1000
-					});
-				}
+					if (value === "deleted") {
+						this.events = this.getUpdatedEvents();
+						this.snackBar.open("Löschen erfolgreich.", "Schließen", {
+							duration: 1000
+						});
+					}
 				}, console.error
 			)
 	}

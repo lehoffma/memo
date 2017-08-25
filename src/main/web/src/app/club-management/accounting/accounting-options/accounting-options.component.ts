@@ -31,21 +31,10 @@ export class AccountingOptionsComponent implements OnInit {
 	events: Event[] = [];
 
 	availableEvents$ = new BehaviorSubject<Event[]>([]);
-
-	get availableEvents() {
-		return this.availableEvents$.value;
-	}
-
-	set availableEvents(events: Event[]) {
-		this.availableEvents$.next(events);
-	}
-
 	dateOptions = {
 		from: undefined,
 		to: undefined
 	};
-
-
 	autocompleteFormControl: FormControl = new FormControl();
 	filteredOptions: Observable<Event[]>;
 
@@ -57,11 +46,17 @@ export class AccountingOptionsComponent implements OnInit {
 				private activatedRoute: ActivatedRoute) {
 	}
 
+	get availableEvents() {
+		return this.availableEvents$.value;
+	}
+
+	set availableEvents(events: Event[]) {
+		this.availableEvents$.next(events);
+	}
+
 	async ngOnInit() {
-		this.costCategories$.first().subscribe(categories => {
-			categories.forEach(category => this.costTypes[category.name] = true);
-			// this.updateQueryParams();
-		});
+		let categories = await this.costCategories$.first().toPromise();
+		categories.forEach(category => this.costTypes[category.name] = true);
 		await this.getAvailableEvents();
 		this.readQueryParams();
 		this.initEventAutoComplete();

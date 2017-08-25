@@ -33,15 +33,14 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 	@Input() userEvents: Event[] = [];
 	expandedStatus = false;
 
+	constructor(private navigationService: NavigationService) {
+	}
 
 	get amountOfEventsShown() {
 		if (this.expandedStatus) {
 			return this.userEvents.length;
 		}
 		return DEFAULT_AMOUNT_SHOWN;
-	}
-
-	constructor(private navigationService: NavigationService) {
 	}
 
 	ngOnInit() {

@@ -1,4 +1,5 @@
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+
 export type BehaviorSubjectType<T> = {
 	[P in keyof T]: BehaviorSubject<T[P]>;
 	};

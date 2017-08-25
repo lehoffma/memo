@@ -8,6 +8,7 @@ import {ServletService} from "./servlet.service";
 @Injectable()
 export class AddressService extends ServletService<Address> {
 	addressModificationDone: EventEmitter<Address> = new EventEmitter();
+	redirectUrl: string;
 
 	constructor(private http: Http,
 				private cache: CacheStore,) {
@@ -47,25 +48,6 @@ export class AddressService extends ServletService<Address> {
 			.do((addresses: Address[]) => this.cache.addMultiple(...addresses));
 	}
 
-
-	/**
-	 * Hilfsmethode um den code übersichtlicher zu gestalten
-	 * @param requestMethod
-	 * @param address
-	 * @param options
-	 * @returns {Observable<T>}
-	 */
-	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						address: Address): Observable<Address> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
-
-		return this.performRequest(requestMethod("/api/address", {address}, requestOptions))
-			.map(response => response.json().id)
-			.flatMap(id => this.getById(id))
-			.do(address => this.addressModificationDone.emit(address));
-	}
-
 	/**
 	 * @param address
 	 * @returns {Observable<T>}
@@ -90,11 +72,27 @@ export class AddressService extends ServletService<Address> {
 	 */
 	remove(id: number): Observable<Response> {
 		let params = new URLSearchParams();
-		params.set("id", ""+id);
+		params.set("id", "" + id);
 
 		return this.performRequest(this.http.delete("/api/address", {search: params}))
 			.do((response: Response) => this.cache.remove("addresses", id));
 	}
 
-	redirectUrl: string;
+	/**
+	 * Hilfsmethode um den code übersichtlicher zu gestalten
+	 * @param requestMethod
+	 * @param address
+	 * @param options
+	 * @returns {Observable<T>}
+	 */
+	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+						address: Address): Observable<Address> {
+		const headers = new Headers({"Content-Type": "application/json"});
+		const requestOptions = new RequestOptions({headers});
+
+		return this.performRequest(requestMethod("/api/address", {address}, requestOptions))
+			.map(response => response.json().id)
+			.flatMap(id => this.getById(id))
+			.do(address => this.addressModificationDone.emit(address));
+	}
 }

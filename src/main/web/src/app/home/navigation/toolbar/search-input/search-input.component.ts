@@ -2,7 +2,7 @@ import {Component, OnInit, Renderer, ViewChild} from "@angular/core";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 
-export enum SearchInputState{
+export enum SearchInputState {
 	ACTIVE = <any> "active",
 	INACTIVE = <any> "inactive"
 }

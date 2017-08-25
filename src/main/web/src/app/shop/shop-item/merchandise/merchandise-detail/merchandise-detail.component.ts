@@ -26,13 +26,11 @@ export class MerchandiseDetailComponent implements OnInit {
 
 	clothesSizes$: Observable<string[]> = this.merch$.map(merch => merch.clothesSizes);
 	overViewKeys$: Observable<EventOverviewKey[]> = this.merch$.map(merch => merch.overviewKeys);
-
-	options: MerchandiseOptions = {size: "", color: {name: "", hex: ""}};
-
 	comments$ = this.merch$
 		.filter(merch => merch.id >= 0)
 		.flatMap(merch => this.commentService.getByEventId(merch.id))
 		.first();
+	options: MerchandiseOptions = {size: "", color: {name: "", hex: ""}};
 
 	constructor(private route: ActivatedRoute,
 				private router: Router,
@@ -56,7 +54,6 @@ export class MerchandiseDetailComponent implements OnInit {
 			.filter(colors => !this.options.color && colors && colors.length > 0)
 			.subscribe(colors => this.options.color = colors[0]);
 	}
-
 
 
 	deleteComment({comment, parentId}: { comment: Comment, parentId: number }) {

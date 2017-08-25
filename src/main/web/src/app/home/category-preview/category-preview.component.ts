@@ -3,6 +3,7 @@ import {Event} from "../../shop/shared/model/event";
 import {Merchandise} from "../../shop/shared/model/merchandise";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs";
+
 @Component({
 	selector: "memo-category-preview",
 	templateUrl: "./category-preview.component.html",

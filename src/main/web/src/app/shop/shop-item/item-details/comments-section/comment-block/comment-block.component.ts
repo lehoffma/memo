@@ -20,19 +20,6 @@ export class CommentBlockComponent implements OnInit {
 	_comment$ = new BehaviorSubject<Comment>(null);
 	comment$ = this._comment$.asObservable()
 		.filter(comment => comment !== null);
-
-	@Input()
-	set comment(comment: Comment) {
-		this._comment$.next(comment);
-	}
-
-
-	@Input() parentId: number;
-	@Input() eventId: number;
-	@Input() dummy: boolean = false;
-	@Output() onAddComment = new EventEmitter<{ commentText: string, parentCommentId: number }>();
-	@Output() onDelete = new EventEmitter<{ comment: Comment, parentId: number }>();
-
 	author$: Observable<User> = this.comment$
 		.flatMap(comment => this.userService.getById(comment.authorId));
 	children$: Observable<Comment[]> = this.comment$
@@ -42,14 +29,16 @@ export class CommentBlockComponent implements OnInit {
 		)
 		//merge comments via scan to avoid a complete reload every time someones adds a comment
 		.scan(this.mergeValues.bind(this), []);
-
+	@Input() parentId: number;
+	@Input() eventId: number;
+	@Input() dummy: boolean = false;
+	@Output() onAddComment = new EventEmitter<{ commentText: string, parentCommentId: number }>();
+	@Output() onDelete = new EventEmitter<{ comment: Comment, parentId: number }>();
 	loggedInUser: User | null = null;
 	loggedInUser$: Observable<User> = this.loginService.currentUser()
 		.flatMap(user => user === null ? Observable.empty() : Observable.of(user));
-
 	showChildren = false;
 	showReplyBox = false;
-
 	dummyComment: Comment = Comment.create();
 	loadingChildren: boolean = false;
 
@@ -60,6 +49,11 @@ export class CommentBlockComponent implements OnInit {
 				private changeDetectorRef: ChangeDetectorRef,
 				private router: Router,
 				private userService: UserService) {
+	}
+
+	@Input()
+	set comment(comment: Comment) {
+		this._comment$.next(comment);
 	}
 
 	ngOnInit() {

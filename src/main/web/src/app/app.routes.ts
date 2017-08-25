@@ -5,7 +5,6 @@ import {TourDetailComponent} from "./shop/shop-item/tours/tour-detail/tour-detai
 import {ToursComponent} from "./shop/shop-item/tours/tours.component";
 import {HomeComponent} from "./home/home.component";
 import {PartyDetailComponent} from "./shop/shop-item/partys/party-detail/party-detail.component";
-import {GoogleMapsRedirectComponent} from "./util/google-maps-redirect/google-maps-redirect.component";
 import {LoginComponent} from "./user/login/login.component";
 import {SignUpComponent} from "./user/signup/signup.component";
 import {CheckoutCartComponent} from "./shop/checkout/cart/cart.component";
@@ -34,15 +33,27 @@ import {ModifyUserComponent} from "./shop/shop-item/modify-shop-item/modify-user
 import {CanViewStockGuard} from "./shared/route-guards/can-view-stock.guard";
 import {Route} from "@angular/router";
 
-export const ROUTES:Route[] = [
+export const ROUTES: Route[] = [
 	{path: "", component: HomeComponent},
 
 	//todo implement
 	//nur eingeloggte user, die die Tour erstellt haben oder Organizer oder Admin sind
-	{path: ":itemType/:id/edit", component: ModifyShopItemComponent, canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]},
-	{path: ":itemType/create", component: ModifyShopItemComponent, canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]},
+	{
+		path: ":itemType/:id/edit",
+		component: ModifyShopItemComponent,
+		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
+	},
+	{
+		path: ":itemType/create",
+		component: ModifyShopItemComponent,
+		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
+	},
 
-	{path: ":itemType/:eventId/costs", component: AccountingComponent, canActivate: [/*todo is-event guard*/ IsTreasurerGuard]},
+	{
+		path: ":itemType/:eventId/costs",
+		component: AccountingComponent,
+		canActivate: [/*todo is-event guard*/ IsTreasurerGuard]
+	},
 	{
 		path: ":itemType/:eventId/costs/:id/edit",
 		component: ModifyShopItemComponent,
@@ -91,14 +102,17 @@ export const ROUTES:Route[] = [
 
 	//todo update once there is more than one type of stock
 	{path: "management/stock", redirectTo: "management/stock/merch", pathMatch: "full"},
-	{path: "management/stock/merch", component: MerchStockComponent, canActivate: [AuthenticatedGuard, CanViewStockGuard]},
+	{
+		path: "management/stock/merch",
+		component: MerchStockComponent,
+		canActivate: [AuthenticatedGuard, CanViewStockGuard]
+	},
 
 
 	{path: "settings", component: SettingsComponent},
 	{path: "impressum", component: ImprintComponent},
 
 	{path: "not-allowed", component: UnauthorizedAccessComponent},
-	{path: "redirect", component: GoogleMapsRedirectComponent},
 	{path: "**", component: PageNotFoundComponent},
 	{path: "page-not-found", component: PageNotFoundComponent}
 

@@ -10,16 +10,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 })
 export class EventCalendarComponent implements OnInit {
 	events$: BehaviorSubject<(Tour | Party)[]> = new BehaviorSubject<(Tour | Party)[]>([]);
-
-	@Input() set events(events: (Tour | Party)[]) {
-		this.events$.next(events);
-	}
-
 	@Input() editable: boolean; //todo mit options verknüpfen
-
-	@Output() onDayClick: EventEmitter<Date> = new EventEmitter();
-	@Output() onEventClick: EventEmitter<number> = new EventEmitter();
-
 	calendarEvents$ = this.events$
 		.filter(events => events !== null)
 		.map(events => {
@@ -32,9 +23,15 @@ export class EventCalendarComponent implements OnInit {
 			}))
 		})
 		.defaultIfEmpty([]);
-
+	@Output() onDayClick: EventEmitter<Date> = new EventEmitter();
+	@Output() onEventClick: EventEmitter<number> = new EventEmitter();
 
 	constructor() {
+	}
+
+	@Input()
+	set events(events: (Tour | Party)[]) {
+		this.events$.next(events);
 	}
 
 	ngOnInit() {
@@ -44,10 +41,10 @@ export class EventCalendarComponent implements OnInit {
 	 *
 	 * @param event
 	 */
-	dayClickHandler(event){
-		if(event.date){
-			let clickEventDate:any = event.date;
-			let date:Date = clickEventDate.toDate();
+	dayClickHandler(event) {
+		if (event.date) {
+			let clickEventDate: any = event.date;
+			let date: Date = clickEventDate.toDate();
 			this.onDayClick.emit(date);
 		}
 	}
@@ -56,9 +53,9 @@ export class EventCalendarComponent implements OnInit {
 	 *
 	 * @param event
 	 */
-	eventClickHandler(event){
-		if(event.calEvent){
-			let calendarEvent:any = event.calEvent;
+	eventClickHandler(event) {
+		if (event.calEvent) {
+			let calendarEvent: any = event.calEvent;
 			let id = calendarEvent.id;
 			this.onEventClick.emit(id);
 		}

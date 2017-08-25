@@ -33,8 +33,11 @@ export class RouteComponent implements OnInit {
 	}
 
 	openRouteOnGoogleMaps() {
-		this.navigationService.redirectToTour = this.tourRoute;
-		this.navigationService.navigateByUrl("redirect");
+		let directionsUrl = this.tourRoute
+			.map(tourStop => tourStop.latitude + "," + tourStop.longitude)
+			.join("/");
+
+		window.open(`https://www.google.de/maps/dir/${directionsUrl}`, "_blank");
 	}
 
 }

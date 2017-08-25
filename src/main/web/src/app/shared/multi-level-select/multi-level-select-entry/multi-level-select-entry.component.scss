@@ -1,7 +1,6 @@
 @import "~@angular/material/theming";
 @import "../../../../theme";
 
-
 .multi-level-select-entry-parent,
 .multi-level-select-entry-child {
 	min-width: 200px;
@@ -21,15 +20,15 @@
 	text-align: right;
 	background-color: darken(#ffffff, 10%);
 
-	&:hover{
+	&:hover {
 		background-color: darken(white, 15%) !important;
 	}
 
-	&.selected{
+	&.selected {
 		background-color: mat-color($accent, 700);
 		color: white;
 
-		&:hover{
+		&:hover {
 			background-color: mat-color($accent) !important;
 
 		}

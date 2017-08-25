@@ -12,9 +12,68 @@ import {Observable} from "rxjs/Observable";
 @Injectable()
 export class SearchFilterService {
 
+	readonly eventFilterFunctions: {
+		[key: string]: (obj: ShopItem | Event, filterValue: any) => boolean
+	} = {
+		"category": (item, filterValue: string) => {
+			if (EventUtilityService.isMerchandise(item) || EventUtilityService.isTour(item) || EventUtilityService.isParty(item)) {
+				const values = filterValue.split("|");
+				return values.includes(EventUtilityService.getEventType(item).toString());
+			}
+			return true;
+		},
+		"price": (item, filterValue: string) => {
+			const belowRegex = /below([\d]+)/;
+			const rangeRegex = /between([\d]+)and([\d]+)/;
+			const moreThanRegex = /moreThan([\d]+)/;
+			const price: number = (<Event>item).price;
+
+			if (price) {
+				if (belowRegex.test(filterValue)) {
+					const result = belowRegex.exec(filterValue);
+					return price < +result[1];
+				}
+				else if (rangeRegex.test(filterValue)) {
+					const result = rangeRegex.exec(filterValue);
+					return price >= +result[1] && price <= +result[2];
+				}
+				else if (moreThanRegex.test(filterValue)) {
+					const result = moreThanRegex.exec(filterValue);
+					return price > +result[1];
+				}
+			}
+			return true;
+		},
+		"date": (item, filterValue: string) => {
+			if (EventUtilityService.isParty(item) || EventUtilityService.isTour(item)) {
+				switch (filterValue) {
+					case "past":
+						return moment().startOf("day").isAfter(moment(item.date));
+					case "upcoming":
+						return moment().startOf("day").isSameOrBefore(moment(item.date));
+				}
+			}
+			return false;
+		},
+		"color": (item, filterValue: string) => {
+			if (EventUtilityService.isMerchandise(item)) {
+				let selectedColors = filterValue.split("|");
+				//todo lieber hex nehmen?
+				return item.colors.some(color => selectedColors.includes(color.name));
+			}
+			return false;
+		},
+		"material": (item, filterValue: string) => {
+			if (EventUtilityService.isMerchandise(item)) {
+				let selectedMaterials = filterValue.split("|");
+				return selectedMaterials.includes(item.material);
+			}
+			return false;
+		}
+	};
+
 	constructor(private stockService: StockService) {
 	}
-
 
 	/**
 	 * todo date: date range picker?
@@ -139,66 +198,6 @@ export class SearchFilterService {
 
 		return eventFilterOptions;
 	}
-
-	readonly eventFilterFunctions: {
-		[key: string]: (obj: ShopItem | Event, filterValue: any) => boolean
-	} = {
-		"category": (item, filterValue: string) => {
-			if (EventUtilityService.isMerchandise(item) || EventUtilityService.isTour(item) || EventUtilityService.isParty(item)) {
-				const values = filterValue.split("|");
-				return values.includes(EventUtilityService.getEventType(item).toString());
-			}
-			return true;
-		},
-		"price": (item, filterValue: string) => {
-			const belowRegex = /below([\d]+)/;
-			const rangeRegex = /between([\d]+)and([\d]+)/;
-			const moreThanRegex = /moreThan([\d]+)/;
-			const price: number = (<Event>item).price;
-
-			if (price) {
-				if (belowRegex.test(filterValue)) {
-					const result = belowRegex.exec(filterValue);
-					return price < +result[1];
-				}
-				else if (rangeRegex.test(filterValue)) {
-					const result = rangeRegex.exec(filterValue);
-					return price >= +result[1] && price <= +result[2];
-				}
-				else if (moreThanRegex.test(filterValue)) {
-					const result = moreThanRegex.exec(filterValue);
-					return price > +result[1];
-				}
-			}
-			return true;
-		},
-		"date": (item, filterValue: string) => {
-			if (EventUtilityService.isParty(item) || EventUtilityService.isTour(item)) {
-				switch (filterValue) {
-					case "past":
-						return moment().startOf("day").isAfter(moment(item.date));
-					case "upcoming":
-						return moment().startOf("day").isSameOrBefore(moment(item.date));
-				}
-			}
-			return false;
-		},
-		"color": (item, filterValue: string) => {
-			if (EventUtilityService.isMerchandise(item)) {
-				let selectedColors = filterValue.split("|");
-				//todo lieber hex nehmen?
-				return item.colors.some(color => selectedColors.includes(color.name));
-			}
-			return false;
-		},
-		"material": (item, filterValue: string) => {
-			if (EventUtilityService.isMerchandise(item)) {
-				let selectedMaterials = filterValue.split("|");
-				return selectedMaterials.includes(item.material);
-			}
-			return false;
-		}
-	};
 
 	/**
 	 *

@@ -9,7 +9,7 @@ import {EntryCategory} from "../../../shared/model/entry-category";
 	`
 })
 
-export class EntryCategoryCellComponent implements OnInit,ExpandableTableCellComponent {
+export class EntryCategoryCellComponent implements OnInit, ExpandableTableCellComponent {
 	data: EntryCategory;
 
 	constructor() {

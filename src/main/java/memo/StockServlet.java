@@ -1,7 +1,7 @@
 package memo;
 
-import com.google.common.io.CharStreams;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import memo.model.Size;
 
 import javax.servlet.ServletException;
@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "StockServlet", value = "/api/stock")
@@ -18,13 +17,13 @@ public class StockServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String SeventId = request.getParameter("eventId");
         String sType = request.getParameter("type");
 
 
-        List<Size> stock = getStockFromDatabase(SeventId,sType,response);
+        List<Size> stock = getStockFromDatabase(SeventId, sType, response);
 
 
         Gson gson = new GsonBuilder().serializeNulls().create();
@@ -44,10 +43,11 @@ public class StockServlet extends HttpServlet {
 
     private List<Size> getStockFromDatabase(String SeventId, String sType, HttpServletResponse response) throws IOException {
 
-        if (isStringNotEmpty(SeventId)) { return getStockByEventId(SeventId,response);}
+        if (isStringNotEmpty(SeventId)) {
+            return getStockByEventId(SeventId, response);
+        }
 
-        if (isStringNotEmpty(sType))
-        {
+        if (isStringNotEmpty(sType)) {
             Integer type = EventServlet.getType(sType);
             return getStockByEventType(type);
         }
@@ -56,7 +56,7 @@ public class StockServlet extends HttpServlet {
     }
 
     private List<Size> getStock() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Size s ",Size.class)
+        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Size s ", Size.class)
                 .getResultList();
     }
 
@@ -67,10 +67,10 @@ public class StockServlet extends HttpServlet {
                 .getResultList();
     }
 
-    private List<Size> getStockByEventId(String SeventId, HttpServletResponse response)throws IOException{
+    private List<Size> getStockByEventId(String SeventId, HttpServletResponse response) throws IOException {
         try {
             Integer id = Integer.parseInt(SeventId);
-            //ToDo: gibt null aus wenn id nicht vergeben
+            //ToDo: gibt null aus wenn id nicht vergeben (ich bin für optionals)
             return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Size s " +
                     " WHERE s.event.id = :id", Size.class)
                     .setParameter("id", id)

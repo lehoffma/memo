@@ -1,6 +1,6 @@
-export enum Permission{
+export enum Permission {
 	admin = 5,
-		//	todo: umbenennen, da delete ein reserved keyword in javascript is/sein wird
+	//	todo: umbenennen, da delete ein reserved keyword in javascript is/sein wird
 	delete = 4,
 	create = 3,
 	write = 2,

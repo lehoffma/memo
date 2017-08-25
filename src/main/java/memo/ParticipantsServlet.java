@@ -2,7 +2,6 @@ package memo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import memo.model.Event;
 import memo.model.OrderedItem;
 
 import javax.servlet.ServletException;
@@ -13,19 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "ParticipantsServlet",value = "/api/participants")
+@WebServlet(name = "ParticipantsServlet", value = "/api/participants")
 public class ParticipantsServlet extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String SeventId = request.getParameter("eventId");
         String sType = request.getParameter("type");
 
 
-        List<OrderedItem> participants = getParticipantsFromDatabase(SeventId,sType,response);
+        List<OrderedItem> participants = getParticipantsFromDatabase(SeventId, sType, response);
 
         /*
         if (participants.isEmpty()) {
@@ -42,8 +41,6 @@ public class ParticipantsServlet extends HttpServlet {
     }
 
 
-
-
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
@@ -55,10 +52,11 @@ public class ParticipantsServlet extends HttpServlet {
 
     private List<OrderedItem> getParticipantsFromDatabase(String SeventId, String sType, HttpServletResponse response) throws IOException {
 
-        if (isStringNotEmpty(SeventId)) { return getParticipantsByEventId(SeventId,response);}
+        if (isStringNotEmpty(SeventId)) {
+            return getParticipantsByEventId(SeventId, response);
+        }
 
-        if (isStringNotEmpty(sType))
-        {
+        if (isStringNotEmpty(sType)) {
             Integer type = EventServlet.getType(sType);
             return getParticipantsByEventType(type);
         }
@@ -67,7 +65,7 @@ public class ParticipantsServlet extends HttpServlet {
     }
 
     private List<OrderedItem> getParticipants() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o ",OrderedItem.class)
+        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o ", OrderedItem.class)
                 .getResultList();
     }
 
@@ -78,7 +76,7 @@ public class ParticipantsServlet extends HttpServlet {
                 .getResultList();
     }
 
-    private List<OrderedItem> getParticipantsByEventId(String SeventId, HttpServletResponse response)throws IOException{
+    private List<OrderedItem> getParticipantsByEventId(String SeventId, HttpServletResponse response) throws IOException {
         try {
             Integer id = Integer.parseInt(SeventId);
             //ToDo: gibt null aus wenn id nicht vergeben

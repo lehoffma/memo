@@ -1,16 +1,16 @@
 @import "../../../theme";
 @import "~@angular/material/theming";
 
-.calendar-container{
+.calendar-container {
 	height: 100%;
 
-	/deep/ .fc-toolbar.fc-header-toolbar{
+	/deep/ .fc-toolbar.fc-header-toolbar {
 		padding: 1rem;
 		background-color: white;
 		margin-bottom: 0;
 	}
 
-	/deep/ .fc th{
+	/deep/ .fc th {
 		height: 30px;
 		vertical-align: middle;
 		color: grey;
@@ -19,7 +19,7 @@
 	}
 
 	/deep/ .fc td,
-	/deep/ .fc th{
+	/deep/ .fc th {
 		border-left: 0;
 		border-right: 0;
 
@@ -32,7 +32,7 @@
 		}
 	}
 
-	/deep/ .fc-event{
+	/deep/ .fc-event {
 		background-color: mat-color($accent);
 		border-color: mat-color($accent);
 		cursor: pointer;
@@ -43,11 +43,10 @@
 	}
 
 	/deep/ .ui-widget-header .ui-state-highlight,
-	/deep/ .ui-widget-content .ui-state-highlight, .ui-state-highlight{
+	/deep/ .ui-widget-content .ui-state-highlight, .ui-state-highlight {
 		background-color: mat-color($primary);
 		border-color: mat-color($primary);
 	}
-
 
 	/deep/ *:not(.fc-button-group) > .ui-button,
 	/deep/ .fc-button-group {
@@ -55,16 +54,16 @@
 		//transition: background .4s cubic-bezier(.25,.8,.25,1),box-shadow 280ms cubic-bezier(.4,0,.2,1);
 		//border-radius: 8%;
 	}
-	/deep/ .fc-button-group{
+	/deep/ .fc-button-group {
 		background-color: transparent;
 	}
-	/deep/ .ui-button{
+	/deep/ .ui-button {
 		background-color: white;
 		color: grey;
 		//background-color: mat-color($primary);
 		border: 0;
 
-		:hover{
+		:hover {
 
 		}
 

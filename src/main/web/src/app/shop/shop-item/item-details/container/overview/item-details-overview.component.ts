@@ -8,8 +8,8 @@ import {StockService} from "../../../../../shared/services/stock.service";
 import {Observable} from "rxjs/Observable";
 import * as moment from "moment";
 import {MerchColor} from "../../../../shared/model/merch-color";
-import {MerchStock, MerchStockList} from "../../../../shared/model/merch-stock";
-import {SelectionModel} from "../../../../../shared/model/selection-model";
+import {MerchStockList} from "../../../../shared/model/merch-stock";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 
 @Component({
@@ -18,18 +18,26 @@ import {SelectionModel} from "../../../../../shared/model/selection-model";
 	styleUrls: ["./item-details-overview.component.scss"]
 })
 export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
-	@Input() event: Event = Event.create();
+	_event$: BehaviorSubject<Event> = new BehaviorSubject(Event.create());
+	public colorSelection$: Observable<MerchColor[]> =
+		Observable.combineLatest(
+			this._event$
+				.filter(event => EventUtilityService.isMerchandise(event)),
+		)
+			.flatMap(([merch]) => this.getColorSelection(<Merchandise>merch, ""));
 	@Input() overviewKeys: EventOverviewKey[] = [];
+	_color$: BehaviorSubject<MerchColor> = new BehaviorSubject(undefined);
+	public sizeSelection$: Observable<string[]> =
+		Observable.combineLatest(
+			this._event$
+				.filter(event => EventUtilityService.isMerchandise(event)),
+			this._color$
+		)
+			.flatMap(([merch, color]) => this.getSizeSelection(<Merchandise>merch, color));
+	_size$: BehaviorSubject<string> = new BehaviorSubject(undefined);
 	model = {
-		options: {
-			color: undefined,
-			size: undefined
-		},
 		amount: undefined
 	};
-
-	public colorSelection:MerchColor[] = [];
-	public sizeSelection:SelectionModel[] = [];
 	public amountOptions: number[] = [];
 	public maxAmount: number = 0;
 	public isPartOfShoppingCart: boolean;
@@ -40,34 +48,84 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				private shoppingCartService: ShoppingCartService) {
 	}
 
+	get event() {
+		return this._event$.getValue();
+	}
+
+	@Input()
+	set event(event: Event) {
+		this._event$.next(event);
+	}
+
+	get color() {
+		return this._color$.getValue();
+	}
+
+	set color(color: MerchColor) {
+		this._color$.next(color);
+	}
+
+	get size() {
+		return this._size$.getValue();
+	}
+
+	set size(size: string) {
+		this._size$.next(size);
+	}
+
 	ngOnChanges() {
 		if (this.event) {
 			this.updateMaxAmount();
-			if (this.isMerch(this.event)) {
-				this.stockService.getByEventId(this.event.id)
-					.subscribe((stock:MerchStockList) => {
-						this.colorSelection = stock
-							.map(stockItem => stockItem.color);
-						this.sizeSelection = stock
-							.map(stockItem => ({
-								value: stockItem.size
-							}))
-					})
-			}
 			if (this.event.date) {
+				//todo as observable
 				this.isPastEvent = moment(this.event.date).isBefore(moment());
 			}
 		}
 	}
 
 	ngOnInit() {
-		if (this.isMerch(this.event) && this.colorSelection.length > 0 && this.sizeSelection.length > 0) {
-			this.model.options.color = this.colorSelection[0];
-			this.model.options.size = this.sizeSelection[0].value;
-		}
 		if (this.event) {
 			this.updateMaxAmount();
 		}
+	}
+
+	/**
+	 *
+	 * @param {Merchandise} merch
+	 * @param {string} size
+	 * @returns {Observable<MerchColor[]>}
+	 */
+	getColorSelection(merch: Merchandise, size: string): Observable<MerchColor[]> {
+		return this.stockService.getByEventId(merch.id)
+			.map((stock: MerchStockList) => {
+				return stock
+				//remove values that aren't possible with the current size selection
+					.filter(stockItem => !size ? true : stockItem.size === size)
+					.map(stockItem => stockItem.color)
+					//remove duplicates
+					.filter((stockColor, index, array) => array
+						.findIndex(color => stockColor.name === color.name) === index);
+			})
+	}
+
+
+	/**
+	 *
+	 * @param {Merchandise} merch
+	 * @param {string} color
+	 * @returns {Observable<MerchColor[]>}
+	 */
+	getSizeSelection(merch: Merchandise, color: MerchColor): Observable<string[]> {
+		return this.stockService.getByEventId(merch.id)
+			.map((stock: MerchStockList) => {
+				return stock
+				//remove values that aren't possible with the current color selection
+					.filter(stockItem => !color ? true : stockItem.color.name === color.name)
+					.map(stockItem => stockItem.size)
+					//remove duplicates
+					.filter((stockSize, index, array) => array
+						.findIndex(size => size === stockSize) === index);
+			})
 	}
 
 	/**
@@ -79,9 +137,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				.map(stock => stock
 				// we have to consider the selected color and size attributes
 					.filter(stockItem =>
-						this.model.options.color &&
-						stockItem.color.hex === this.model.options.color.hex
-						&& stockItem.size === this.model.options.size
+						this.color &&
+						stockItem.color.hex === this.color.hex
+						&& stockItem.size === this.size
 					)
 					.reduce((acc, stockItem) => acc + stockItem.amount, 0))
 			: Observable.of(this.event.capacity);
@@ -93,7 +151,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			this.amountOptions = Array((this.maxAmount === undefined) ? 0 : this.maxAmount + 1).fill(0).map((_, i) => i);
 
 			let shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-				this.event.id, Object.assign({}, this.model.options));
+				this.event.id, {color: this.color, size: this.size});
 
 			if (shoppingCartItem) {
 				this.model.amount = shoppingCartItem.amount;
@@ -115,12 +173,12 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	updateShoppingCart() {
 		const shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-			this.event.id, Object.assign({}, this.model.options));
+			this.event.id, {color: this.color, size: this.size});
 		const eventType = EventUtilityService.getEventType(this.event);
 		const newItem = {
 			id: this.event.id,
 			amount: this.model.amount,
-			options: this.model.options
+			options: {color: this.color, size: this.size}
 		};
 
 		if (shoppingCartItem) {
@@ -138,18 +196,21 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	addOrDeleteFromCart(item: Event) {
 		let shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-			this.event.id, Object.assign({}, this.model.options));
+			this.event.id, {color: this.color, size: this.size});
 
 		if (shoppingCartItem) {
 			//delete
-			this.shoppingCartService.deleteItem(EventUtilityService.getEventType(this.event), this.event.id, this.model.options);
+			this.shoppingCartService.deleteItem(EventUtilityService.getEventType(this.event), this.event.id, {
+				color: this.color,
+				size: this.size
+			});
 			this.isPartOfShoppingCart = false;
 		}
 		else {
 			//add
 			this.shoppingCartService.pushItem(EventUtilityService.getEventType(item), {
 				id: item.id,
-				options: Object.assign({}, this.model.options),
+				options: {color: this.color, size: this.size},
 				amount: this.model.amount
 			});
 			this.isPartOfShoppingCart = true;

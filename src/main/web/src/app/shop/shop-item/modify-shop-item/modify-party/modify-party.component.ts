@@ -17,6 +17,9 @@ export class ModifyPartyComponent implements OnInit {
 
 	defaultImageUrl = "resources/images/Logo.png";
 
+	constructor(private location: Location) {
+	}
+
 	get partyModel() {
 		return this.model;
 	}
@@ -24,9 +27,6 @@ export class ModifyPartyComponent implements OnInit {
 	set partyModel(model: any) {
 		this.model = model;
 		this.modelChange.emit(this.model);
-	}
-
-	constructor(private location: Location) {
 	}
 
 	ngOnInit() {

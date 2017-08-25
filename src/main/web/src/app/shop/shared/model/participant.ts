@@ -1,4 +1,5 @@
 import {User} from "../../../shared/model/user";
+
 export interface Participant {
 	id: number,
 	isDriver: boolean,

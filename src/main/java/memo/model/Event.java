@@ -2,210 +2,190 @@ package memo.model;
 
 import com.google.gson.annotations.Expose;
 
+import javax.persistence.*;
 import java.io.Serializable;
-import java.lang.Integer;
-import java.lang.String;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
-
 /**
  * Entity implementation class for Entity: Event
- *
  */
 @Entity
 @Table(name = "EVENTS")
 public class Event implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
-	@Expose
-	@Column(nullable = false)
-	private String title;
-
-
-	@Column(nullable = false)
-	private Timestamp date;
-
-	@Expose
-	@Lob
-	@Column(nullable = false)
-	private String description;
-
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private ClubRole expectedReadRole;
-
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private ClubRole expectedCheckInRole;
-
-	@Expose
-	@Enumerated(EnumType.ORDINAL)
-	private ClubRole expectedWriteRole;
-
-	@Expose
-	@Column(name="IMAGE_PATH")
-	private String imagePath;
-
-	@Expose
-	@Column(nullable = false)
-	private Integer capacity;
-
-	@Expose
-	@Column(name = "PRICE_MEMBER", nullable = false)
-	private float priceMember;
-
-	@Expose
-	@Column(nullable = false)
-	private float price;
-
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @Expose
+    @Column(nullable = false)
+    private String title;
+    @Column(nullable = false)
+    private Timestamp date;
+    @Expose
+    @Lob
+    @Column(nullable = false)
+    private String description;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private ClubRole expectedReadRole;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private ClubRole expectedCheckInRole;
+    @Expose
+    @Enumerated(EnumType.ORDINAL)
+    private ClubRole expectedWriteRole;
+    @Expose
+    @Column(name = "IMAGE_PATH")
+    private String imagePath;
+    @Expose
+    @Column(nullable = false)
+    private Integer capacity;
+    @Expose
+    @Column(name = "PRICE_MEMBER", nullable = false)
+    private float priceMember;
+    @Expose
+    @Column(nullable = false)
+    private float price;
     @ElementCollection
-    @CollectionTable(name ="EVENT_ROUTES")
+    @CollectionTable(name = "EVENT_ROUTES")
     @Expose
     private List<Integer> route = new ArrayList<>();
+    @Expose
+    private String material;
+    @Expose
+    private String vehicle;
+    @Expose
+    private Integer miles = 0;
+    @Expose
+    @Column(nullable = false)
+    private Integer type;
 
+    public Event() {
+        super();
+    }
 
-	@Expose
-	private String material;
-	@Expose
-	private String vehicle;
-	@Expose
-	private Integer miles = 0;
+    public Integer getId() {
+        return this.id;
+    }
 
-	@Expose
-	@Column(nullable=false)
-	private Integer type;
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	private static final long serialVersionUID = 1L;
+    public String getTitle() {
+        return this.title;
+    }
 
-	public Event() {
-		super();
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Timestamp getDate() {
+        return this.date;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
 
-	public String getTitle() {
-		return this.title;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Timestamp getDate() {
-		return this.date;
-	}
+    public ClubRole getExpectedReadRole() {
+        return this.expectedReadRole;
+    }
 
-	public void setDate(Timestamp date) {
-		this.date = date;
-	}
+    public void setExpectedReadRole(ClubRole expectedReadRole) {
+        this.expectedReadRole = expectedReadRole;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public ClubRole getExpectedWriteRole() {
+        return this.expectedWriteRole;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setExpectedWriteRole(ClubRole expectedWriteRole) {
+        this.expectedWriteRole = expectedWriteRole;
+    }
 
-	public ClubRole getExpectedReadRole() {
-		return this.expectedReadRole;
-	}
+    public Integer getCapacity() {
+        return this.capacity;
+    }
 
-	public void setExpectedReadRole(ClubRole expectedReadRole) {
-		this.expectedReadRole = expectedReadRole;
-	}
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
 
-	public ClubRole getExpectedWriteRole() {
-		return this.expectedWriteRole;
-	}
+    public float getPriceMember() {
+        return this.priceMember;
+    }
 
-	public void setExpectedWriteRole(ClubRole expectedWriteRole) {
-		this.expectedWriteRole = expectedWriteRole;
-	}
+    public void setPriceMember(float priceMember) {
+        this.priceMember = priceMember;
+    }
 
-	public Integer getCapacity() {
-		return this.capacity;
-	}
+    public float getPrice() {
+        return this.price;
+    }
 
-	public void setCapacity(Integer capacity) {
-		this.capacity = capacity;
-	}
+    public void setPrice(float price) {
+        this.price = price;
+    }
 
-	public float getPriceMember() {
-		return this.priceMember;
-	}
+    public String getMaterial() {
+        return this.material;
+    }
 
-	public void setPriceMember(float priceMember) {
-		this.priceMember = priceMember;
-	}
+    public void setMaterial(String material) {
+        this.material = material;
+    }
 
-	public float getPrice() {
-		return this.price;
-	}
+    public String getVehicle() {
+        return this.vehicle;
+    }
 
-	public void setPrice(float price) {
-		this.price = price;
-	}
+    public void setVehicle(String vehicle) {
+        this.vehicle = vehicle;
+    }
 
-	public String getMaterial() {
-		return this.material;
-	}
+    public Integer getMiles() {
+        return this.miles;
+    }
 
-	public void setMaterial(String material) {
-		this.material = material;
-	}
+    public void setMiles(Integer miles) {
+        this.miles = miles;
+    }
 
-	public String getVehicle() {
-		return this.vehicle;
-	}
+    public Integer getType() {
+        return type;
+    }
 
-	public void setVehicle(String vehicle) {
-		this.vehicle = vehicle;
-	}
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
-	public Integer getMiles() {
-		return this.miles;
-	}
+    public ClubRole getExpectedCheckInRole() {
+        return expectedCheckInRole;
+    }
 
-	public void setMiles(Integer miles) {
-		this.miles = miles;
-	}
+    public void setExpectedCheckInRole(ClubRole expectedCheckinRole) {
+        this.expectedCheckInRole = expectedCheckinRole;
+    }
 
-	public Integer getType() {
-		return type;
-	}
+    public String getImagePath() {
+        return imagePath;
+    }
 
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
-	public ClubRole getExpectedCheckInRole() {
-		return expectedCheckInRole;
-	}
-
-	public void setExpectedCheckInRole(ClubRole expectedCheckinRole) {
-		this.expectedCheckInRole = expectedCheckinRole;
-	}
-
-	public String getImagePath() {
-		return imagePath;
-	}
-
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
-	}
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 
     public List<Integer> getRoute() {
         return route;

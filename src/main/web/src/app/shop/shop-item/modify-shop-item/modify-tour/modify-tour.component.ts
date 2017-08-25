@@ -14,9 +14,12 @@ export class ModifyTourComponent implements OnInit {
 	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
 
 	defaultImageUrl = "resources/images/Logo.png";
-	uploadedImage:FormData;
+	uploadedImage: FormData;
 
 	ModifyType = ModifyType;
+
+	constructor(private location: Location) {
+	}
 
 	get tourModel() {
 		return this.model;
@@ -25,9 +28,6 @@ export class ModifyTourComponent implements OnInit {
 	set tourModel(model: any) {
 		this.model = model;
 		this.modelChange.emit(this.model);
-	}
-
-	constructor(private location: Location) {
 	}
 
 	ngOnInit() {

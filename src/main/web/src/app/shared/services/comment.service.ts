@@ -1,11 +1,11 @@
 import {Injectable} from "@angular/core";
 import {ServletService} from "./servlet.service";
 import {Observable} from "rxjs/Observable";
-import {Http, RequestOptionsArgs, Response, ResponseOptions, URLSearchParams} from "@angular/http";
+import {Http, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
 import {Comment} from "../../shop/shared/model/comment";
 
 @Injectable()
-	export class CommentService extends ServletService<Comment> {
+export class CommentService extends ServletService<Comment> {
 
 	constructor(private http: Http) {
 		super();

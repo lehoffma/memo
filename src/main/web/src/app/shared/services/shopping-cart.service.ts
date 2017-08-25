@@ -13,14 +13,15 @@ export class ShoppingCartService implements OnInit {
 		partys: [],
 		tours: []
 	});
-	public content:Observable<ShoppingCartContent> = this._content.asObservable();
-
+	public content: Observable<ShoppingCartContent> = this._content.asObservable();
+	/**
+	 * Der Key, der für das Speichern des ShoppingCartContents im LocalStorage verwendet wird
+	 * @type {string}
+	 */
+	private readonly localStorageKey = "shoppingCart";
 
 	constructor(private eventService: EventService,) {
 		this.initFromLocalStorage();
-	}
-
-	ngOnInit() {
 	}
 
 	get amountOfCartItems(): Observable<number> {
@@ -39,11 +40,14 @@ export class ShoppingCartService implements OnInit {
 			.map(prices => prices.reduce((acc, price) => acc + price, 0));
 	}
 
+	ngOnInit() {
+	}
+
 	/**
 	 * Resets the cart content
 	 */
-	reset(){
-		this._content.next({tours: [], partys: [], merch:[]});
+	reset() {
+		this._content.next({tours: [], partys: [], merch: []});
 	}
 
 	/**
@@ -58,51 +62,6 @@ export class ShoppingCartService implements OnInit {
 			(itemA.options.size === itemB.options.size
 				&& itemA.options.color.name === itemB.options.color.name
 				&& itemA.options.color.hex === itemB.options.color.hex))
-	}
-
-	/**
-	 *
-	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
-	 * @param id die ID des Items, welches entfernt werden soll
-	 * @param content das content-objekt, aus dem das Item entfernt werden soll
-	 * @param options
-	 * @returns {ShoppingCartContent}
-	 */
-	private remove(content: ShoppingCartContent, type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
-		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, {id, options, amount: 0}));
-		if (itemIndex >= 0) {
-			//remove
-			content[type].splice(itemIndex, 1);
-		}
-
-		//das objekt gibt es nicht :(
-		return content;
-	}
-
-	/**
-	 *
-	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
-	 * @param item das Item, welches hinzugefügt werden soll
-	 * @param content das content-objekt, zu dem das Item hinzugefügt werden soll
-	 * @returns {ShoppingCartContent}
-	 */
-	private push(type: EventType, item: ShoppingCartItem, content: ShoppingCartContent) {
-		//Vergleicht ob das Objekt den gleichen inhalt hat.
-		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, item));
-		//Wenn ja, wird die Anzahl angepasst
-		if (itemIndex !== -1) {
-			if (item.amount === 0) {
-				content[type].splice(itemIndex, 1);
-			}
-			else {
-				content[type][itemIndex].amount = item.amount;
-			}
-		}
-		//wenn nein, wird das item hinzugefügt
-		else {
-			content[type].push(item);
-		}
-		return content;
 	}
 
 	/**
@@ -154,6 +113,51 @@ export class ShoppingCartService implements OnInit {
 	}
 
 	/**
+	 *
+	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
+	 * @param id die ID des Items, welches entfernt werden soll
+	 * @param content das content-objekt, aus dem das Item entfernt werden soll
+	 * @param options
+	 * @returns {ShoppingCartContent}
+	 */
+	private remove(content: ShoppingCartContent, type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
+		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, {id, options, amount: 0}));
+		if (itemIndex >= 0) {
+			//remove
+			content[type].splice(itemIndex, 1);
+		}
+
+		//das objekt gibt es nicht :(
+		return content;
+	}
+
+	/**
+	 *
+	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
+	 * @param item das Item, welches hinzugefügt werden soll
+	 * @param content das content-objekt, zu dem das Item hinzugefügt werden soll
+	 * @returns {ShoppingCartContent}
+	 */
+	private push(type: EventType, item: ShoppingCartItem, content: ShoppingCartContent) {
+		//Vergleicht ob das Objekt den gleichen inhalt hat.
+		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, item));
+		//Wenn ja, wird die Anzahl angepasst
+		if (itemIndex !== -1) {
+			if (item.amount === 0) {
+				content[type].splice(itemIndex, 1);
+			}
+			else {
+				content[type][itemIndex].amount = item.amount;
+			}
+		}
+		//wenn nein, wird das item hinzugefügt
+		else {
+			content[type].push(item);
+		}
+		return content;
+	}
+
+	/**
 	 * Pusht die gegebenen Daten in das interne Content Object, so dass alle Subscriber
 	 * Methoden mit den neuen Daten aufgerufen werden
 	 * @param newValue
@@ -169,12 +173,6 @@ export class ShoppingCartService implements OnInit {
 	private initFromLocalStorage() {
 		this.pushNewValue(this.getContentFromLocalStorage());
 	}
-
-	/**
-	 * Der Key, der für das Speichern des ShoppingCartContents im LocalStorage verwendet wird
-	 * @type {string}
-	 */
-	private readonly localStorageKey = "shoppingCart";
 
 	/**
 	 * Speichert das gegebene ShoppingCartContent objekt im LocalStorage

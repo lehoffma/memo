@@ -22,8 +22,8 @@ export class EntryService extends ServletService<Entry> {
 	 * @param json
 	 * @returns {Observable<Entry>}
 	 */
-	getEntryFromJSON(json:any):Observable<Entry>{
-		if(json["entryCategoryID"]){
+	getEntryFromJSON(json: any): Observable<Entry> {
+		if (json["entryCategoryID"]) {
 			return this.entryCategoryService.getById(json["entryCategoryID"])
 				.map(entryCategory => Entry.create().setProperties(json).setProperties({category: entryCategory}))
 		}
@@ -35,7 +35,7 @@ export class EntryService extends ServletService<Entry> {
 	 * @param {any[]} jsonArray
 	 * @returns {Observable<Entry[]>}
 	 */
-	getEntriesFromJSON(jsonArray:any[]):Observable<Entry[]>{
+	getEntriesFromJSON(jsonArray: any[]): Observable<Entry[]> {
 		return Observable.combineLatest(...jsonArray.map(json => this.getEntryFromJSON(json)))
 	}
 
@@ -96,6 +96,42 @@ export class EntryService extends ServletService<Entry> {
 			.flatMap((jsonArray: any[]) => this.getEntriesFromJSON(jsonArray));
 	}
 
+	/**
+	 *
+	 * @param entry
+	 * @param options
+	 */
+	add(entry: Entry, options?: any): Observable<Entry> {
+		if (!entry["entryCategoryID"]) {
+			entry["entryCategoryID"] = entry.category.id;
+		}
+
+		return this.addOrModify(this.http.post.bind(this.http), entry, options);
+	}
+
+	/**
+	 *
+	 * @param entry
+	 * @param options
+	 * @returns {Observable<Entry>}
+	 */
+	modify(entry: Entry, options?: any): Observable<Entry> {
+		if (!entry["entryCategoryID"]) {
+			entry["entryCategoryID"] = entry.category.id;
+		}
+		return this.addOrModify(this.http.put.bind(this.http), entry, options);
+	}
+
+	/**
+	 *
+	 * @param id
+	 * @param options
+	 */
+	remove(id: number, options?: any): Observable<Response> {
+		let params = new URLSearchParams();
+		params.set("id", "" + id);
+		return this.performRequest(this.http.delete("/api/entry", {search: params}));
+	}
 
 	/**
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
@@ -119,44 +155,6 @@ export class EntryService extends ServletService<Entry> {
 		return this.performRequest(requestMethod("/api/entry", {entry}, requestOptions))
 			.map(response => response.json().id)
 			.flatMap(id => this.getById(id));
-	}
-
-
-	/**
-	 *
-	 * @param entry
-	 * @param options
-	 */
-	add(entry: Entry, options?: any): Observable<Entry> {
-		if(!entry["entryCategoryID"]){
-			entry["entryCategoryID"] = entry.category.id;
-		}
-
-		return this.addOrModify(this.http.post.bind(this.http), entry, options);
-	}
-
-	/**
-	 *
-	 * @param entry
-	 * @param options
-	 * @returns {Observable<Entry>}
-	 */
-	modify(entry: Entry, options?: any): Observable<Entry> {
-		if(!entry["entryCategoryID"]){
-			entry["entryCategoryID"] = entry.category.id;
-		}
-		return this.addOrModify(this.http.put.bind(this.http), entry, options);
-	}
-
-	/**
-	 *
-	 * @param id
-	 * @param options
-	 */
-	remove(id: number, options?: any): Observable<Response> {
-		let params = new URLSearchParams();
-		params.set("id", ""+id);
-		return this.performRequest(this.http.delete("/api/entry", {search: params}));
 	}
 
 }

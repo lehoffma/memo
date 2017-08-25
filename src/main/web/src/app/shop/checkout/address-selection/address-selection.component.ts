@@ -9,20 +9,33 @@ import {LogInService} from "../../../shared/services/login.service";
 	templateUrl: "./address-selection.component.html",
 	styleUrls: ["./address-selection.component.scss"]
 })
-export class AddressSelectionComponent implements OnInit{
+export class AddressSelectionComponent implements OnInit {
 
 	// => mobile: long press opens menu?
+	editUrl$ = this.loginService.accountObservable
+		.map(id => id === null
+			? "/address"
+			: `/members/${id}/address`);
+	@Output() addressChange = new EventEmitter<Address>();
+
+	constructor(private router: Router,
+				private loginService: LogInService,
+				private addressService: AddressService) {
+	}
+
 	// => desktop: show options icon, which opens menu
 	private _addresses: Address[] = [];
 
-	@Input() set addresses(addresses: Address[]){
+	get addresses(): Address[] {
+		return this._addresses;
+	}
+
+	@Input()
+	set addresses(addresses: Address[]) {
 		this._addresses = addresses;
-		if(addresses && addresses.length > 0){
+		if (addresses && addresses.length > 0) {
 			this.selectedAddress = addresses[0];
 		}
-	}
-	get addresses():Address[]{
-		return this._addresses;
 	}
 
 	_selectedAddress: Address;
@@ -34,18 +47,6 @@ export class AddressSelectionComponent implements OnInit{
 	set selectedAddress(address: Address) {
 		this._selectedAddress = address;
 		this.addressChange.emit(address);
-	}
-
-	editUrl$ = this.loginService.accountObservable
-		.map(id => id === null
-			? "/address"
-			: `/members/${id}/address`);
-
-	@Output() addressChange = new EventEmitter<Address>();
-
-	constructor(private router: Router,
-				private loginService: LogInService,
-				private addressService: AddressService) {
 	}
 
 	ngOnInit() {

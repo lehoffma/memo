@@ -1,4 +1,5 @@
 import {UserPermissions} from "./permission";
+
 export class Link {
 	constructor(public route: string,
 				public icon: string,

@@ -8,27 +8,25 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "COLORS")
-public class Color implements Serializable{
+public class Color implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Expose
     private Integer id;
-
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Expose
     private String name;
-
-    @Column(nullable=false)
+    @Column(nullable = false)
     @Expose
     private String hex;
 
+    public Color() {
+        super();
+    }
 
-    private static final long serialVersionUID = 1L;
-
-    public Color(){super();}
-
-    public Color(String name,String hex){
+    public Color(String name, String hex) {
         this.name = name;
         this.hex = hex;
     }

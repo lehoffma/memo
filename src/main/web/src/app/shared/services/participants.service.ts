@@ -115,9 +115,9 @@ export class ParticipantsService {
 	 */
 	deleteParticipant(eventId: number, eventType: EventType, participantId: number): Observable<any> {
 		let params = new URLSearchParams();
-		params.set("eventId", ""+eventId);
-		params.set("eventType", ""+eventType);
-		params.set("id", ""+participantId);
+		params.set("eventId", "" + eventId);
+		params.set("eventType", "" + eventType);
+		params.set("id", "" + participantId);
 
 
 		return this.http.delete("/api/participants", {search: params})

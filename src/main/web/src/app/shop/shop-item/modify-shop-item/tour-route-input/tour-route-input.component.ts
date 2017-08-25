@@ -27,6 +27,12 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 	@Input() route: Address[] = [];
 
 	@Output() routeChange = new EventEmitter<Address[]>();
+	transformedRoutes: string[] = [];
+	@ViewChildren("routeInput") inputs: QueryList<ElementRef>;
+
+	constructor(private mapsAPILoader: MapsAPILoader,
+				private ngZone: NgZone) {
+	}
 
 	get modelRoute() {
 		return this.route;
@@ -36,15 +42,6 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 		this.route = newRoute;
 		this.updateTransformedRoute(newRoute);
 		this.routeChange.emit(this.route);
-	}
-
-	transformedRoutes: string[] = [];
-
-
-	@ViewChildren("routeInput") inputs: QueryList<ElementRef>;
-
-	constructor(private mapsAPILoader: MapsAPILoader,
-				private ngZone: NgZone) {
 	}
 
 	ngOnInit() {

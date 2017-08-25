@@ -18,11 +18,6 @@ export class Party extends Event {
 		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember);
 	}
 
-
-	static create() {
-		return new Party(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, -1, -1);
-	}
-
 	get overviewKeys(): EventOverviewKey[] {
 		return [
 			{
@@ -68,5 +63,9 @@ export class Party extends Event {
 				pipe: "price"
 			}
 		]
+	}
+
+	static create() {
+		return new Party(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, -1, -1);
 	}
 }

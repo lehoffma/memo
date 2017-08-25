@@ -18,16 +18,15 @@ export class Event extends BaseObject<Event> {
 		super(id);
 	}
 
-	static create() {
-		return new Event(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, -1, -1);
-	}
-
-
 	get overviewKeys(): EventOverviewKey[] {
 		return [];
 	}
 
 	get detailsTableKeys(): EventOverviewKey[] {
 		return [];
+	}
+
+	static create() {
+		return new Event(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, -1, -1);
 	}
 }

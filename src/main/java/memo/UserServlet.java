@@ -3,24 +3,9 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import memo.model.Address;
 import memo.model.ClubRole;
 import memo.model.PermissionState;
 import memo.model.User;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.sql.Date;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -28,6 +13,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Servlet implementation class UserServlet
@@ -36,52 +31,52 @@ import javax.servlet.http.HttpServletResponse;
 //TODO: checks for address and bank account in database
 //TODO: REFACTORING - response is passed around just for IO
 
-@WebServlet(name = "UserServlet", value= "/api/user")
+@WebServlet(name = "UserServlet", value = "/api/user")
 public class UserServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 
-	public UserServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    public UserServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		setContentType(request,response);
+        setContentType(request, response);
 
-		String Sid = request.getParameter("id");
-		String email = request.getParameter("email");
-		String searchTerm = request.getParameter("searchTerm");
+        String Sid = request.getParameter("id");
+        String email = request.getParameter("email");
+        String searchTerm = request.getParameter("searchTerm");
 
-		List<User> users = getUsersFromDatabase(Sid,email,searchTerm,response);
-		//todo no idea why this even happens but this fixes it for the time
-		//oh i know what the problem is. shitty eclipse list implementations
-		users = users.stream()
-				.peek(user -> user.setAddresses(new ArrayList<>(user.getAddresses())
-						.stream()
-						.distinct()
-						.collect(Collectors.toList())
-				))
-				.collect(Collectors.toList());
+        List<User> users = getUsersFromDatabase(Sid, email, searchTerm, response);
+        //todo no idea why this even happens but this fixes it for the time
+        //oh i know what the problem is. shitty eclipse list implementations
+        users = users.stream()
+                .peek(user -> user.setAddresses(new ArrayList<>(user.getAddresses())
+                        .stream()
+                        .distinct()
+                        .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
 
-		if (users.isEmpty()) {
-			response.setStatus(404);
-			response.getWriter().append("Not found");
-			return;
-		}
+        if (users.isEmpty()) {
+            response.setStatus(404);
+            response.getWriter().append("Not found");
+            return;
+        }
 
-		Gson gson = new GsonBuilder().serializeNulls().create();
-		String output = gson.toJson(users);
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        String output = gson.toJson(users);
 
-		response.getWriter().append("{ \"users\": " + output + " }");
+        response.getWriter().append("{ \"users\": " + output + " }");
 
-	}
+    }
 
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String email = request.getParameter("email");
 
@@ -91,309 +86,300 @@ public class UserServlet extends HttpServlet {
             response.setStatus(200);
             response.getWriter().append("Okay");
             return;
+        } else {
+            response.setStatus(409);
+            response.getWriter().append("Email already taken");
+            return;
         }
-        else{
-			response.setStatus(409);
-			response.getWriter().append("Email already taken");
-			return;
-		}
 
     }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		setContentType(request,response);
+        setContentType(request, response);
 
-		JsonObject jUser = getJsonUser(request,response);
+        JsonObject jUser = getJsonUser(request, response);
 
 
-		String email = jUser.get("email").getAsString();
+        String email = jUser.get("email").getAsString();
 
 
-		if (email == null) {
-			response.setStatus(400);
-			response.getWriter().append("Email must not be empty");
-			return;
-		}
+        if (email == null) {
+            response.setStatus(400);
+            response.getWriter().append("Email must not be empty");
+            return;
+        }
 
-		//check if email is in db
-		List<User> users = getUserByEmail(email);
+        //check if email is in db
+        List<User> users = getUserByEmail(email);
 
 
-		if (!users.isEmpty()) {
-			response.setStatus(400);
-			response.getWriter().append("email already taken");
-			return;
-		}
+        if (!users.isEmpty()) {
+            response.setStatus(400);
+            response.getWriter().append("email already taken");
+            return;
+        }
 
-		User newUser = createUserFromJson(jUser);
-		saveUserToDatabase(newUser);
+        User newUser = createUserFromJson(jUser);
+        saveUserToDatabase(newUser);
 
-		response.setStatus(201);
-		response.getWriter().append("{ \"id\": " + newUser.getId() + " }");
+        response.setStatus(201);
+        response.getWriter().append("{ \"id\": " + newUser.getId() + " }");
 
-		System.out.println(newUser.toString());
+        System.out.println(newUser.toString());
 
-	}
+    }
 
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		setContentType(request,response);
+        setContentType(request, response);
 
-		JsonObject jUser = getJsonUser(request,response);
+        JsonObject jUser = getJsonUser(request, response);
 
-		String email = jUser.get("email").getAsString();
-		Integer id = jUser.get("id").getAsInt();
+        String email = jUser.get("email").getAsString();
+        Integer id = jUser.get("id").getAsInt();
 
-		List<User> users = getUsersFromDatabase(id.toString(),email,null,response);
+        List<User> users = getUsersFromDatabase(id.toString(), email, null, response);
 
-		if (users.isEmpty())
-		{
-			response.getWriter().append("Not found");
-			response.setStatus(404);
-			return;
-		}
+        if (users.isEmpty()) {
+            response.getWriter().append("Not found");
+            response.setStatus(404);
+            return;
+        }
 
-		if (users.size()>1)
-		{
-			response.getWriter().append("Ambiguous results");
-			response.setStatus(400);
-			return;
-		}
+        if (users.size() > 1) {
+            response.getWriter().append("Ambiguous results");
+            response.setStatus(400);
+            return;
+        }
 
-		User u = users.get(0);
+        User u = users.get(0);
 
-		u = updateUserFromJson(jUser,u);
-		u.setId(jUser.get("id").getAsInt());
+        u = updateUserFromJson(jUser, u);
+        u.setId(jUser.get("id").getAsInt());
 
-		updateUserAtDatabase(u);
+        updateUserAtDatabase(u);
 
-		response.setStatus(200);
-		response.getWriter().append("{ \"id\": " + u.getId() + " }");
+        response.setStatus(200);
+        response.getWriter().append("{ \"id\": " + u.getId() + " }");
 
-	}
+    }
 
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		setContentType(request,response);
+        setContentType(request, response);
 
-		String Sid = request.getParameter("id");
+        String Sid = request.getParameter("id");
 
-		User u = getUserByID(Sid,response);
+        User u = getUserByID(Sid, response);
 
-		if (u == null) {
-			response.setStatus(404);
-			response.getWriter().append("Not Found");
-			return;
-		}
+        if (u == null) {
+            response.setStatus(404);
+            response.getWriter().append("Not Found");
+            return;
+        }
 
-		removeUserFromDatabase(u);
+        removeUserFromDatabase(u);
 
-	}
+    }
 
 
+    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+    }
 
+    private boolean isStringNotEmpty(String s) {
+        return (s != null && !s.isEmpty());
+    }
 
+    private User getUserByID(String Sid, HttpServletResponse response) throws IOException {
 
-	private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json;charset=UTF-8");
-	}
+        try {
+            Integer id = Integer.parseInt(Sid);
+            //ToDo: gibt null aus wenn id nicht vergeben
+            return DatabaseManager.createEntityManager().find(User.class, id);
+        } catch (NumberFormatException e) {
+            response.getWriter().append("Bad ID Value");
+            response.setStatus(400);
+        }
+        return null;
+    }
+
+    private List<User> getUserByEmail(String email) {
+
+        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
+                " WHERE u.email = :email", User.class)
+                .setParameter("email", email)
+                .getResultList();
+    }
+
+    private List<User> getUserBySearchterm(String searchTerm) {
+
+        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
+                " WHERE UPPER(u.surname) LIKE UPPER(:searchTerm) OR UPPER(u.firstName) LIKE UPPER(:searchTerm)", User.class)
+                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .getResultList();
+    }
 
-	private boolean isStringNotEmpty(String s) {
-		return (s != null && !s.isEmpty());
-	}
-
-	private User getUserByID(String Sid, HttpServletResponse response) throws IOException {
-
-		try {
-			Integer id = Integer.parseInt(Sid);
-			//ToDo: gibt null aus wenn id nicht vergeben
-			return DatabaseManager.createEntityManager().find(User.class, id);
-		} catch (NumberFormatException e) {
-			response.getWriter().append("Bad ID Value");
-			response.setStatus(400);
-		}
-		return null;
-	}
-
-	private List<User> getUserByEmail(String email) {
-
-		return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
-				" WHERE u.email = :email", User.class)
-				.setParameter("email", email)
-				.getResultList();
-	}
-
-	private List<User> getUserBySearchterm(String searchTerm) {
-
-		return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
-				" WHERE UPPER(u.surname) LIKE UPPER(:searchTerm) OR UPPER(u.firstName) LIKE UPPER(:searchTerm)", User.class)
-				.setParameter("searchTerm", "%" + searchTerm + "%")
-				.getResultList();
-	}
-
-	private List<User> getUsers() {
-		return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u", User.class).getResultList();
-	}
-
-	private JsonObject getJsonUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-		String body = CharStreams.toString(request.getReader());
-
-		JsonElement jElement = new JsonParser().parse(body);
-		return jElement.getAsJsonObject().getAsJsonObject("user");
-	}
-
-	private User createUserFromJson(JsonObject jUser) {
-
-		return updateUserFromJson(jUser,new User());
-	}
-
-	private User updateUserFromJson(JsonObject jUser, User u) {
+    private List<User> getUsers() {
+        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u", User.class).getResultList();
+    }
+
+    private JsonObject getJsonUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String body = CharStreams.toString(request.getReader());
 
-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		// save params to new user
-		u = gson.fromJson(jUser, User.class);
+        JsonElement jElement = new JsonParser().parse(body);
+        return jElement.getAsJsonObject().getAsJsonObject("user");
+    }
 
+    private User createUserFromJson(JsonObject jUser) {
 
-		if (jUser.has("clubRole")){
-			String srole = jUser.get("clubRole").getAsString();
-			switch (srole)
-			{
-				case "none":
-					u.setClubRole(ClubRole.none);
-					break;
+        return updateUserFromJson(jUser, new User());
+    }
 
-				case "mitglied":
-					u.setClubRole(ClubRole.Mitglied);
-					break;
+    private User updateUserFromJson(JsonObject jUser, User u) {
 
-				case "vorstand":
-					u.setClubRole(ClubRole.Vorstand);
-					break;
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        // save params to new user
+        u = gson.fromJson(jUser, User.class);
 
-				case "schriftfuehrer":
-					u.setClubRole(ClubRole.Schriftführer);
-					break;
 
-				case "kassenwart":
-					u.setClubRole(ClubRole.Kassenwart);
-					break;
+        if (jUser.has("clubRole")) {
+            String srole = jUser.get("clubRole").getAsString();
+            switch (srole) {
+                case "none":
+                    u.setClubRole(ClubRole.none);
+                    break;
 
-				case "organizer":
-					u.setClubRole(ClubRole.Organisator);
-					break;
+                case "mitglied":
+                    u.setClubRole(ClubRole.Mitglied);
+                    break;
 
-				case "admin":
-					u.setClubRole(ClubRole.Admin);
-					break;
+                case "vorstand":
+                    u.setClubRole(ClubRole.Vorstand);
+                    break;
 
-				default:
-					u.setClubRole(ClubRole.none);
-			}
-		}
-		//todo remove demo
-		u.setClubRole(ClubRole.Admin);
+                case "schriftfuehrer":
+                    u.setClubRole(ClubRole.Schriftführer);
+                    break;
 
-		if (jUser.has("birthday")){
-			//todo rest der date parser an ISO format anpassen
-			TemporalAccessor birthday = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
-			LocalDate date = LocalDate.from(birthday);
-			u.setBirthday(Date.valueOf(date));
-		}
+                case "kassenwart":
+                    u.setClubRole(ClubRole.Kassenwart);
+                    break;
 
-		if(jUser.has("addresses")){
-			Type collectionType = new TypeToken<List<Integer>>() {
-			}.getType();
-			List<Integer> addresses = gson.fromJson(jUser.getAsJsonArray("addresses"), collectionType);
-			u.setAddresses(addresses.stream().distinct().collect(Collectors.toList()));
-		}
-		if (jUser.has("bankAccounts")) {
-			Type collectionType = new TypeToken<List<Integer>>() {
-			}.getType();
-			List<Integer> bankAccounts = gson.fromJson(jUser.getAsJsonArray("bankAccounts"), collectionType);
-			u.setBankAccounts(bankAccounts);
-		}
+                case "organizer":
+                    u.setClubRole(ClubRole.Organisator);
+                    break;
 
-		if (jUser.has("joinDate")) {
+                case "admin":
+                    u.setClubRole(ClubRole.Admin);
+                    break;
 
-			TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("joinDate").getAsString());
-			LocalDate jDate = LocalDate.from(join);
-			u.setBirthday(Date.valueOf(jDate));
+                default:
+                    u.setClubRole(ClubRole.none);
+            }
+        }
+        //todo remove demo
+        u.setClubRole(ClubRole.Admin);
 
-		}else
-		{
-			Date joinDate = new Date(Calendar.getInstance().getTime().getTime());
-			u.setJoinDate(joinDate);
-		}
+        if (jUser.has("birthday")) {
+            //todo rest der date parser an ISO format anpassen
+            TemporalAccessor birthday = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
+            LocalDate date = LocalDate.from(birthday);
+            u.setBirthday(Date.valueOf(date));
+        }
 
+        if (jUser.has("addresses")) {
+            Type collectionType = new TypeToken<List<Integer>>() {
+            }.getType();
+            List<Integer> addresses = gson.fromJson(jUser.getAsJsonArray("addresses"), collectionType);
+            u.setAddresses(addresses.stream().distinct().collect(Collectors.toList()));
+        }
+        if (jUser.has("bankAccounts")) {
+            Type collectionType = new TypeToken<List<Integer>>() {
+            }.getType();
+            List<Integer> bankAccounts = gson.fromJson(jUser.getAsJsonArray("bankAccounts"), collectionType);
+            u.setBankAccounts(bankAccounts);
+        }
 
-		if (jUser.has("permissions")) {
+        if (jUser.has("joinDate")) {
 
+            TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("joinDate").getAsString());
+            LocalDate jDate = LocalDate.from(join);
+            u.setBirthday(Date.valueOf(jDate));
 
-			PermissionState permissions = new PermissionState(u.getClubRole());
+        } else {
+            Date joinDate = new Date(Calendar.getInstance().getTime().getTime());
+            u.setJoinDate(joinDate);
+        }
 
-			//If null, use a default value
-			JsonElement nullableText = jUser.get("permissions");
-			if (!(nullableText instanceof JsonNull)) {
-				JsonObject jPermissions = jUser.getAsJsonObject("permissions");
-				permissions = gson.fromJson(jPermissions, PermissionState.class);
 
-			}
+        if (jUser.has("permissions")) {
 
-			u.setPermissions(permissions);
-		}
 
-		return u;
-	}
+            PermissionState permissions = new PermissionState(u.getClubRole());
 
-	private void saveUserToDatabase(User newUser) {
+            //If null, use a default value
+            JsonElement nullableText = jUser.get("permissions");
+            if (!(nullableText instanceof JsonNull)) {
+                JsonObject jPermissions = jUser.getAsJsonObject("permissions");
+                permissions = gson.fromJson(jPermissions, PermissionState.class);
 
-		EntityManager em = DatabaseManager.createEntityManager();
+            }
 
-		em.getTransaction().begin();
-		em.persist(newUser.getPermissions());
-		em.persist(newUser);
-		em.getTransaction().commit();
-	}
+            u.setPermissions(permissions);
+        }
 
-	private void updateUserAtDatabase(User newUser) {
+        return u;
+    }
 
+    private void saveUserToDatabase(User newUser) {
 
+        EntityManager em = DatabaseManager.createEntityManager();
 
-		DatabaseManager.createEntityManager().getTransaction().begin();
-		DatabaseManager.createEntityManager().merge(newUser.getPermissions());
-		DatabaseManager.createEntityManager().merge(newUser);
-		DatabaseManager.createEntityManager().getTransaction().commit();
-	}
+        em.getTransaction().begin();
+        em.persist(newUser.getPermissions());
+        em.persist(newUser);
+        em.getTransaction().commit();
+    }
 
-	private void removeUserFromDatabase(User u)	{
+    private void updateUserAtDatabase(User newUser) {
 
-		DatabaseManager.createEntityManager().getTransaction().begin();
-		u = DatabaseManager.createEntityManager().merge(u);
-		DatabaseManager.createEntityManager().remove(u);
-		DatabaseManager.createEntityManager().getTransaction().commit();
-	}
 
-	private List<User> getUsersFromDatabase(String Sid, String email, String searchTerm,HttpServletResponse response) throws IOException {
-		List<User> users = new ArrayList<>();
+        DatabaseManager.createEntityManager().getTransaction().begin();
+        DatabaseManager.createEntityManager().merge(newUser.getPermissions());
+        DatabaseManager.createEntityManager().merge(newUser);
+        DatabaseManager.createEntityManager().getTransaction().commit();
+    }
 
-		// if ID is submitted
-		if (isStringNotEmpty(Sid)) {
+    private void removeUserFromDatabase(User u) {
 
-			User u = getUserByID(Sid, response);
-			if (u != null) {
-				users.add(u);
-				return users;
-			}
-		}
+        DatabaseManager.createEntityManager().getTransaction().begin();
+        u = DatabaseManager.createEntityManager().merge(u);
+        DatabaseManager.createEntityManager().remove(u);
+        DatabaseManager.createEntityManager().getTransaction().commit();
+    }
 
-			if (isStringNotEmpty(email)) return getUserByEmail(email);
+    private List<User> getUsersFromDatabase(String Sid, String email, String searchTerm, HttpServletResponse response) throws IOException {
+        List<User> users = new ArrayList<>();
 
-			if (isStringNotEmpty(searchTerm)) return getUserBySearchterm(searchTerm);
+        // if ID is submitted
+        if (isStringNotEmpty(Sid)) {
 
-			return getUsers();
+            User u = getUserByID(Sid, response);
+            if (u != null) {
+                users.add(u);
+                return users;
+            }
+        }
 
-	}
+        if (isStringNotEmpty(email)) return getUserByEmail(email);
+
+        if (isStringNotEmpty(searchTerm)) return getUserBySearchterm(searchTerm);
+
+        return getUsers();
+
+    }
 }

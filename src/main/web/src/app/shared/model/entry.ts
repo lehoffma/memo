@@ -7,7 +7,7 @@ export class Entry extends BaseObject<Entry> {
 				public readonly name: string,
 				public readonly value: number,
 				public readonly date: Date,
-				public readonly comment:string,
+				public readonly comment: string,
 				//todo public readonly imagePath:string,
 				public readonly category: EntryCategory) {
 		super(id);
@@ -26,7 +26,7 @@ export class Entry extends BaseObject<Entry> {
 	 * @param {string} queryParameterValue
 	 * @returns {boolean}
 	 */
-	categoryMatchesQueryParameter(queryParameterValue: string){
+	categoryMatchesQueryParameter(queryParameterValue: string) {
 		if (queryParameterValue === "none") {
 			return false;
 		}

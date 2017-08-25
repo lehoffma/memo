@@ -4,7 +4,10 @@ import {Observable} from "rxjs/Observable";
 import {Response} from "@angular/http";
 
 @Injectable()
-export abstract class ServletService<T> implements ServletServiceInterface<T>{
+export abstract class ServletService<T> implements ServletServiceInterface<T> {
+	constructor() {
+	}
+
 	/**
 	 *
 	 * @param error
@@ -15,17 +18,14 @@ export abstract class ServletService<T> implements ServletServiceInterface<T>{
 		return Observable.of(error);
 	}
 
-	constructor() {
-	}
-
 	/**
 	 *
 	 * @param requestObservable
 	 * @returns {Observable<T>}
 	 */
-	performRequest<T>(requestObservable: Observable<T>): Observable<T>{
+	performRequest<T>(requestObservable: Observable<T>): Observable<T> {
 		return requestObservable
-			//retry 3 times before throwing an error
+		//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
 			.catch(this.handleError)
@@ -35,13 +35,13 @@ export abstract class ServletService<T> implements ServletServiceInterface<T>{
 	}
 
 
-	abstract getById(id: number, ...args:any[]): Observable<T>;
+	abstract getById(id: number, ...args: any[]): Observable<T>;
 
-	abstract search(searchTerm: string, ...args:any[]): Observable<T[]>;
+	abstract search(searchTerm: string, ...args: any[]): Observable<T[]>;
 
-	abstract add(object: T, ...args:any[]): Observable<T>;
+	abstract add(object: T, ...args: any[]): Observable<T>;
 
-	abstract modify(object: T, ...args:any[]): Observable<T>;
+	abstract modify(object: T, ...args: any[]): Observable<T>;
 
-	abstract remove(id: number, ...args:any[]): Observable<Response>;
+	abstract remove(id: number, ...args: any[]): Observable<Response>;
 }

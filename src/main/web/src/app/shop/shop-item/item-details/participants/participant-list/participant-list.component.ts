@@ -49,33 +49,24 @@ export class ParticipantListComponent implements OnInit {
 	eventTitle = this.eventInfo
 		.flatMap(eventInfo => this.eventService.getById(eventInfo.eventId))
 		.map(event => event.title);
-
+	expandedRowComponent: Type<ExpandedRowComponent<any>> = SingleValueListExpandedRowComponent;
+	participants$ = new BehaviorSubject<ParticipantUser[]>([]);
+	participantList = this.participants$;
+	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("party", "tour");
 	private _columnKeys: BehaviorSubject<ExpandableTableColumn<ParticipantUser>[]> = new BehaviorSubject([
 		participantListColumns.name, participantListColumns.isDriver,
 		participantListColumns.hasPaid, participantListColumns.comments
 	]);
-
 	columnKeys = this._columnKeys.asObservable();
-
 	private _expandedKeys: BehaviorSubject<ExpandableTableColumn<ParticipantUser>[]> = new BehaviorSubject([]);
-
 	expandedKeys = this._expandedKeys.asObservable();
-	expandedRowComponent: Type<ExpandedRowComponent<any>> = SingleValueListExpandedRowComponent;
-
 	isExpandable = this.expandedKeys.map(keys => keys.length > 0);
-
 	private _sortBy$: BehaviorSubject<ColumnSortingEvent<ParticipantUser>> =
 		new BehaviorSubject<ColumnSortingEvent<ParticipantUser>>({
 			key: "user",
 			descending: true
 		});
-
 	sortBy$ = this._sortBy$.asObservable();
-
-	participants$ = new BehaviorSubject<ParticipantUser[]>([]);
-	participantList = this.participants$;
-
-	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("party", "tour");
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private dialog: MdDialog,

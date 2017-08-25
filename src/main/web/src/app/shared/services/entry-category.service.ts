@@ -5,10 +5,10 @@ import {Observable} from "rxjs/Observable";
 import {Http, Response, URLSearchParams} from "@angular/http";
 
 @Injectable()
-export class EntryCategoryService extends ServletService<EntryCategory>{
+export class EntryCategoryService extends ServletService<EntryCategory> {
 	baseUrl = "/api/entryCategory";
 
-	constructor(public http:Http) {
+	constructor(public http: Http) {
 		super();
 	}
 
@@ -20,7 +20,7 @@ export class EntryCategoryService extends ServletService<EntryCategory>{
 	 */
 	getById(id: number): Observable<EntryCategory> {
 		let params = new URLSearchParams();
-		params.set("categoryId", ""+id);
+		params.set("categoryId", "" + id);
 
 		return this.http.get(this.baseUrl, {search: params})
 			.map(response => response.json().categories)
@@ -31,7 +31,7 @@ export class EntryCategoryService extends ServletService<EntryCategory>{
 	 *
 	 * @returns {Observable<EntryCategory[]>}
 	 */
-	getCategories():Observable<EntryCategory[]>{
+	getCategories(): Observable<EntryCategory[]> {
 		return this.search("");
 	}
 

@@ -8,15 +8,15 @@
 	cursor: pointer;
 }
 
-button.selected{
+button.selected {
 	background-color: mat-color($accent, 700);
 	color: white;
 
-	&:focus{
+	&:focus {
 		background-color: mat-color($accent, 800) !important;
 	}
 
-	&:hover{
+	&:hover {
 		background-color: mat-color($accent, 900) !important;
 	}
 }

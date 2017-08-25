@@ -37,6 +37,15 @@ export class SearchResultComponent implements OnInit {
 		});
 
 	resultsTitle: BehaviorSubject<string> = new BehaviorSubject("");
+	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
+	filterOptions: MultiLevelSelectParent[] = [];
+
+	constructor(private activatedRoute: ActivatedRoute,
+				private searchFilterService: SearchFilterService,
+				private router: Router,
+				private eventService: EventService) {
+	}
+
 	_results$: Observable<Event[]>;
 
 	get results$() {
@@ -45,16 +54,6 @@ export class SearchResultComponent implements OnInit {
 
 	set results$(results: Observable<Event[]>) {
 		this._results$ = results;
-	}
-
-	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
-	filterOptions: MultiLevelSelectParent[] = [];
-
-
-	constructor(private activatedRoute: ActivatedRoute,
-				private searchFilterService: SearchFilterService,
-				private router: Router,
-				private eventService: EventService) {
 	}
 
 	ngOnInit() {

@@ -10,11 +10,11 @@ import {Event} from "../../../shared/model/event";
 export class ItemTableComponent implements OnInit {
 	@Input() event: Event;
 
-	get tableCategories(): EventOverviewKey[] {
-		return this.event ? this.event.detailsTableKeys : [];
+	constructor() {
 	}
 
-	constructor() {
+	get tableCategories(): EventOverviewKey[] {
+		return this.event ? this.event.detailsTableKeys : [];
 	}
 
 	ngOnInit() {

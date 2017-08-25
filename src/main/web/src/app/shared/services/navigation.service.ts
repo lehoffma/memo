@@ -24,15 +24,6 @@ export class NavigationService {
 		this.initialize();
 	}
 
-	private initialize() {
-		this.toolbarLinks = this.http.get("/resources/toolbar-links.json")
-			.map(response => response.json());
-		this.sidenavLinks = this.http.get("/resources/sidenav-links.json")
-			.map(response => response.json());
-		this.accountLinks = this.http.get("/resources/account-links.json")
-			.map(response => response.json());
-	}
-
 	public navigateToItem(item: ShopItem | Event, suffix?: string) {
 		this.navigateToItemWithId(this.eventUtilService.getShopItemType(item), item.id, suffix);
 	}
@@ -58,5 +49,14 @@ export class NavigationService {
 					throw new Error();
 				}
 			)
+	}
+
+	private initialize() {
+		this.toolbarLinks = this.http.get("/resources/toolbar-links.json")
+			.map(response => response.json());
+		this.sidenavLinks = this.http.get("/resources/sidenav-links.json")
+			.map(response => response.json());
+		this.accountLinks = this.http.get("/resources/account-links.json")
+			.map(response => response.json());
 	}
 }

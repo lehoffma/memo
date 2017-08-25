@@ -30,6 +30,7 @@ type InnerCacheType = InnerArrayObjectType<Cache>;
 
 @Injectable()
 export class CacheStore {
+	protected cacheSize: number = 100;
 	private _cache: BehaviorSubjectType<Cache> = {
 		merch: new BehaviorSubject<Merchandise[]>([]),
 		tours: new BehaviorSubject<Tour[]>([]),
@@ -42,8 +43,6 @@ export class CacheStore {
 		// stocks: new BehaviorSubject<MerchStockList[]>([])
 	};
 	public cache: ObservableType<Cache> = asObservableType(this._cache);
-
-	protected cacheSize: number = 100;
 
 	constructor(private eventUtilService: EventUtilityService) {
 	}

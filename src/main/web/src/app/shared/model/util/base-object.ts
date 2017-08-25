@@ -4,7 +4,6 @@ import {isArray} from "util";
 import {Gender} from "../gender";
 import {isNumber, isString} from "../../../util/util";
 import * as moment from "moment";
-import {EntryCategory} from "../entry-category";
 
 
 export abstract class BaseObject<T extends BaseObject<T>> {

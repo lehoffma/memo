@@ -42,14 +42,6 @@ export class ModifyItemService {
 	private _model$ = new BehaviorSubject<any>({});
 	public model$ = this._model$.asObservable();
 
-	get model(){
-		return this._model$.getValue();
-	}
-	set model(model:any){
-		this._model$.next(model);
-	}
-
-
 	constructor(public eventService: EventService,
 				public userService: UserService,
 				public location: Location,
@@ -57,6 +49,14 @@ export class ModifyItemService {
 				public entryService: EntryService,
 				public addressService: AddressService,
 				public stockService: StockService) {
+	}
+
+	get model() {
+		return this._model$.getValue();
+	}
+
+	set model(model: any) {
+		this._model$.next(model);
 	}
 
 	/**
@@ -228,7 +228,7 @@ export class ModifyItemService {
 			})
 	}
 
-	isAddressArray(value:any[]):value is Address[]{
+	isAddressArray(value: any[]): value is Address[] {
 		return value[0].latitude !== undefined;
 	}
 
@@ -268,19 +268,19 @@ export class ModifyItemService {
 		if (EventUtilityService.isUser(newObject)) {
 			newObject.setProperties({addresses: newObject.addresses.map((it: any) => it.id)});
 		}
-		if(EventUtilityService.isTour(newObject) || EventUtilityService.isParty(newObject)){
+		if (EventUtilityService.isTour(newObject) || EventUtilityService.isParty(newObject)) {
 			//todo instead of combineLatest: add routes one after another (to avoid transaction errors)
-			if(this.isAddressArray(newObject.route)){
+			if (this.isAddressArray(newObject.route)) {
 				let addressIds = await Observable.combineLatest(
-					...newObject.route.map((route:Address) => this.addressService.add(route))
+					...newObject.route.map((route: Address) => this.addressService.add(route))
 				)
-					.map((addresses:Address[]) => addresses.map(address => address.id))
+					.map((addresses: Address[]) => addresses.map(address => address.id))
 					.toPromise();
 
 				newObject.setProperties({route: [...addressIds]});
 			}
 		}
-		if(EventUtilityService.isTour(newObject)){
+		if (EventUtilityService.isTour(newObject)) {
 			newObject.setProperties((<Partial<Tour>>{emptySeats: newObject.capacity}));
 		}
 

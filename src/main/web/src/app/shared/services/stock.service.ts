@@ -164,9 +164,9 @@ export class StockService extends ServletService<MerchStockList> {
 	 *
 	 * @param merchList
 	 */
-	mapToStockTableObject(merchList: Merchandise[]):Observable<any>{
+	mapToStockTableObject(merchList: Merchandise[]): Observable<any> {
 		return Observable.combineLatest(merchList.map(merch => this.getByEventId(merch.id)))
-			.map((stockList:MerchStockList[]) => {
+			.map((stockList: MerchStockList[]) => {
 				let options = this.getStockOptions(stockList);
 
 				/**

@@ -3,11 +3,16 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import memo.model.Color;
 import memo.model.Event;
 import memo.model.Size;
 
+import javax.persistence.EntityManager;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -15,19 +20,13 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Servlet implementation class EventServlet
  */
 // Tested
 
-@WebServlet(name = "EventServlet",value = "/api/event")
+@WebServlet(name = "EventServlet", value = "/api/event")
 public class EventServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -36,16 +35,33 @@ public class EventServlet extends HttpServlet {
         super();
     }
 
+    static Integer getType(String sType) {
+        switch (sType) {
+            case "tours":
+                return 1;
+
+            case "partys":
+                return 2;
+
+            case "merch":
+                return 3;
+
+            default:
+                return 0;
+
+        }
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
         String searchTerm = request.getParameter("searchTerm");
         String sType = request.getParameter("type");
 
 
-        List<Event> events = getEventsFromDatabase(Sid,searchTerm,sType,response);
+        List<Event> events = getEventsFromDatabase(Sid, searchTerm, sType, response);
 
         /*
         if (events.isEmpty()) {
@@ -64,7 +80,6 @@ public class EventServlet extends HttpServlet {
 
     }
 
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         setContentType(request, response);
@@ -80,7 +95,7 @@ public class EventServlet extends HttpServlet {
 
         if (e.getType() == 3) fillSizesFromJson(jEvent, colorList, sizeList, e);
 
-        saveEventToDatabase(e,colorList,sizeList);
+        saveEventToDatabase(e, colorList, sizeList);
 
         response.setStatus(201);
         response.getWriter().append("{ \"id\": " + e.getId() + " }");
@@ -88,33 +103,35 @@ public class EventServlet extends HttpServlet {
 
     }
 
-
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jEvent = getJsonEvent(request,response);
+        JsonObject jEvent = getJsonEvent(request, response);
 
         Integer jId = jEvent.get("id").getAsInt();
 
-        Event e = DatabaseManager.createEntityManager().find(Event.class,jId);
+        Event e = DatabaseManager.createEntityManager().find(Event.class, jId);
 
-        if (e == null)
-        {
+        if (e == null) {
             response.getWriter().append("Not found");
             response.setStatus(404);
             return;
         }
 
-        e = updateEventFromJson(jEvent,e);
+        e = updateEventFromJson(jEvent, e);
         e.setId(jEvent.get("id").getAsInt());
+        List<Color> colorList = new ArrayList<>();
+        List<Size> sizeList = new ArrayList<>();
 
-        updateEventAtDatabase(e);
+        if (e.getType() == 3) fillSizesFromJson(jEvent, colorList, sizeList, e);
+
+        //todo lel
+        updateEventAtDatabase(e, colorList, sizeList);
 
         response.setStatus(201);
         response.getWriter().append("{ \"id\": " + e.getId() + " }");
     }
-
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -133,7 +150,6 @@ public class EventServlet extends HttpServlet {
 
 
     }
-
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -203,23 +219,6 @@ public class EventServlet extends HttpServlet {
         DatabaseManager.createEntityManager().getTransaction().commit();
     }
 
-    static Integer getType(String sType) {
-        switch (sType) {
-            case "tours":
-                return 1;
-
-            case "partys":
-                return 2;
-
-            case "merch":
-                return 3;
-
-            default:
-                return 0;
-
-        }
-    }
-
     private void fillSizesFromJson(JsonObject jEvent, List<Color> colorList, List<Size> sizeList, Event e) {
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
@@ -247,14 +246,18 @@ public class EventServlet extends HttpServlet {
 
         em.getTransaction().begin();
 
-        for (Color i : colorList) { em.persist(i);}
-        for (Size i : sizeList) {em.persist(i);}
+        for (Color i : colorList) {
+            em.persist(i);
+        }
+        for (Size i : sizeList) {
+            em.persist(i);
+        }
         em.persist(newEvent);
 
         em.getTransaction().commit();
     }
 
-    private List<Event> getEventsFromDatabase(String Sid, String searchTerm, String sType, HttpServletResponse response) throws IOException{
+    private List<Event> getEventsFromDatabase(String Sid, String searchTerm, String sType, HttpServletResponse response) throws IOException {
 
         List<Event> events = new ArrayList<>();
 
@@ -293,10 +296,10 @@ public class EventServlet extends HttpServlet {
         return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Event e", Event.class).getResultList();
     }
 
-    private void updateEventAtDatabase(Event e) {
-
+    private void updateEventAtDatabase(Event e, List<Color> colorList, List<Size> sizeList) {
         EntityManager em = DatabaseManager.createEntityManager();
 
+        //todo lel
         em.getTransaction().begin();
         em.merge(e);
         em.getTransaction().commit();

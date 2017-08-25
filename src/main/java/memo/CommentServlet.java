@@ -24,13 +24,13 @@ public class CommentServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
         String SEventID = request.getParameter("eventId");
         String SAuthorID = request.getParameter("authorId");
 
-        List<Comment> comments = getCommentsFromDatabase(Sid,SEventID, SAuthorID, response);
+        List<Comment> comments = getCommentsFromDatabase(Sid, SEventID, SAuthorID, response);
 
         /*
         if(comments.isEmpty()){
@@ -41,65 +41,65 @@ public class CommentServlet extends HttpServlet {
         */
 
         Gson gson = new GsonBuilder().serializeNulls().create();
-        String output=gson.toJson(comments);
-        response.getWriter().append("{ \"comments\": "+ output + " }");
+        String output = gson.toJson(comments);
+        response.getWriter().append("{ \"comments\": " + output + " }");
 
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jComment = getJsonComment(request,response);
+        JsonObject jComment = getJsonComment(request, response);
 
         Comment c = createCommentFromJson(jComment);
         saveCommentToDatabase(c);
 
 
         response.setStatus(201);
-        response.getWriter().append("{\"id\": "+c.getId()+"}");
+        response.getWriter().append("{\"id\": " + c.getId() + "}");
 
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jComment = getJsonComment(request,response);
+        JsonObject jComment = getJsonComment(request, response);
 
 
-        if(!jComment.getAsJsonObject().has("id")){
+        if (!jComment.getAsJsonObject().has("id")) {
             response.setStatus(400);
             response.getWriter().append("invalid data");
             return;
         }
 
-        Comment c = getCommentByID(jComment.get("id").getAsString(),response);
+        Comment c = getCommentByID(jComment.get("id").getAsString(), response);
 
-        if(c==null){
+        if (c == null) {
             response.setStatus(404);
             response.getWriter().append("not found");
             return;
         }
 
 
-        c = updateCommentFromJson(jComment,c);
+        c = updateCommentFromJson(jComment, c);
         c.setId(jComment.get("id").getAsInt());
 
         updateCommentAtDatabase(c);
 
         response.setStatus(201);
-        response.getWriter().append("{\"id\": "+c.getId()+"}");
+        response.getWriter().append("{\"id\": " + c.getId() + "}");
 
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
 
-        Comment c = getCommentByID(Sid,response);
+        Comment c = getCommentByID(Sid, response);
 
         if (c == null) {
             response.setStatus(404);
@@ -132,8 +132,8 @@ public class CommentServlet extends HttpServlet {
             }
         }
 
-        if (isStringNotEmpty(SEventID)) return getCommentsByEventID(SEventID,response);
-        if (isStringNotEmpty(SAuthorID)) return getCommentsByAuthorID(SAuthorID,response);
+        if (isStringNotEmpty(SEventID)) return getCommentsByEventID(SEventID, response);
+        if (isStringNotEmpty(SAuthorID)) return getCommentsByAuthorID(SAuthorID, response);
 
         return getComments();
 
@@ -165,7 +165,7 @@ public class CommentServlet extends HttpServlet {
 
     private Comment createCommentFromJson(JsonObject jComment) {
 
-        return updateCommentFromJson(jComment,new Comment());
+        return updateCommentFromJson(jComment, new Comment());
     }
 
     private Comment updateCommentFromJson(JsonObject jComment, Comment c) {
@@ -197,7 +197,7 @@ public class CommentServlet extends HttpServlet {
         em.getTransaction().commit();
     }
 
-    private void removeCommentFromDatabase(Comment c)	{
+    private void removeCommentFromDatabase(Comment c) {
 
         DatabaseManager.createEntityManager().getTransaction().begin();
         c = DatabaseManager.createEntityManager().merge(c);
@@ -211,7 +211,7 @@ public class CommentServlet extends HttpServlet {
             //ToDo: gibt null aus wenn id nicht vergeben
             return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
                     " WHERE c.eventId = :eventID", Comment.class)
-                    .setParameter("eventID",  eventID)
+                    .setParameter("eventID", eventID)
                     .getResultList();
         } catch (NumberFormatException e) {
             response.getWriter().append("Bad ID Value");

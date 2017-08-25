@@ -29,6 +29,12 @@ export class ModifyEntryComponent implements OnInit {
 	autocompleteFormControl: FormControl = new FormControl();
 	filteredOptions: Observable<Event[]>;
 
+	constructor(private location: Location,
+				private activatedRoute: ActivatedRoute,
+				private entryCategoryService: EntryCategoryService,
+				private eventService: EventService) {
+	}
+
 	get entryModel() {
 		return this.model;
 	}
@@ -36,12 +42,6 @@ export class ModifyEntryComponent implements OnInit {
 	set entryModel(model: any) {
 		this.model = model;
 		this.modelChange.emit(this.model);
-	}
-
-	constructor(private location: Location,
-				private activatedRoute: ActivatedRoute,
-				private entryCategoryService: EntryCategoryService,
-				private eventService: EventService) {
 	}
 
 	ngOnInit() {

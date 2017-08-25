@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {ShopItemType} from "../../shared/model/shop-item-type";
 import {ModifyType} from "./modify-type";
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
 import {ModifyItemService} from "./shared/modify-item.service";
 import {Observable} from "rxjs/Observable";
@@ -17,16 +17,16 @@ export class ModifyShopItemComponent implements OnInit {
 
 	// //either add or edit
 	// mode: ModifyType;
-    //
+	//
 	// //either merch, tour, party, user or entry
 	// itemType: ShopItemType;
 	// eventType: (ShopItemType);
-    //
+	//
 	// //wenn id === -1 oder undefined, ist mode === ADD (da ein leeres Objekt übergeben wurde),
 	// //ansonsten wird das übergebene Objekt editiert
 	// idOfObjectToModify: number;
 	// eventId: number = -1;
-    //
+	//
 	// previousValue: ShopItem;
 	// model: any = {};
 
@@ -63,11 +63,11 @@ export class ModifyShopItemComponent implements OnInit {
 	/**
 	 * Submit callback
 	 */
-	submitModifiedObject(result:any) {
+	submitModifiedObject(result: any) {
 		this.modifyItemService.submitModifiedEvent(result);
 	}
 
-	watchForAddressModification(event:any){
+	watchForAddressModification(event: any) {
 		this.modifyItemService.watchForAddressModification(event);
 	}
 }

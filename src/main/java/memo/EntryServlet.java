@@ -3,10 +3,8 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import memo.model.Entry;
-import memo.model.Event;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,22 +22,22 @@ import java.util.stream.Collectors;
 
 //Tested
 
-@WebServlet(name = "EntryServlet",value = "/api/entry")
+@WebServlet(name = "EntryServlet", value = "/api/entry")
 public class EntryServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
         String SeventId = request.getParameter("eventId");
         String sType = request.getParameter("eventType");
 
-        List<Entry> entries = getEntriesFromDatabase(Sid,SeventId,sType, response);
+        List<Entry> entries = getEntriesFromDatabase(Sid, SeventId, sType, response);
 
 
         //todo durch sql ersetzen keine ahnung
-        if(request.getParameter("minDate") != null){
+        if (request.getParameter("minDate") != null) {
             entries = entries.stream()
                     .filter(entry -> {
                         TemporalAccessor minDateTemporalAccessor = DateTimeFormatter.ISO_DATE_TIME
@@ -50,7 +48,7 @@ public class EntryServlet extends HttpServlet {
                     })
                     .collect(Collectors.toList());
         }
-        if(request.getParameter("maxDate") != null){
+        if (request.getParameter("maxDate") != null) {
             entries = entries.stream()
                     .filter(entry -> {
                         TemporalAccessor minDateTemporalAccessor = DateTimeFormatter.ISO_DATE_TIME
@@ -80,9 +78,9 @@ public class EntryServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jEntry = getJsonEntry(request,response);
+        JsonObject jEntry = getJsonEntry(request, response);
 
         Entry e = createEntryFromJson(jEntry);
 
@@ -94,25 +92,23 @@ public class EntryServlet extends HttpServlet {
     }
 
 
-
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
 
-        JsonObject jEntry = getJsonEntry(request,response);
+        JsonObject jEntry = getJsonEntry(request, response);
 
         String jId = jEntry.get("id").getAsString();
 
-        Entry e = getEntryByID(jId,response);
+        Entry e = getEntryByID(jId, response);
 
-        if (e == null)
-        {
+        if (e == null) {
             response.getWriter().append("Not found");
             response.setStatus(404);
             return;
         }
 
-        e = updateEntryFromJson(jEntry,e);
+        e = updateEntryFromJson(jEntry, e);
         e.setId(jEntry.get("id").getAsInt());
 
         updateEntryAtDatabase(e);
@@ -125,11 +121,11 @@ public class EntryServlet extends HttpServlet {
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //TODO: implement
-        setContentType(request,response);
+        setContentType(request, response);
 
         String Sid = request.getParameter("id");
 
-        Entry e = getEntryByID(Sid,response);
+        Entry e = getEntryByID(Sid, response);
 
         if (e == null) {
             response.setStatus(404);
@@ -163,9 +159,9 @@ public class EntryServlet extends HttpServlet {
             }
         }
 
-        if (isStringNotEmpty(SeventId)) return getEntriesByEventId(SeventId,response);
+        if (isStringNotEmpty(SeventId)) return getEntriesByEventId(SeventId, response);
 
-        if (isStringNotEmpty(sType)) return getEntriesByEventType(EventServlet.getType(sType),response);
+        if (isStringNotEmpty(sType)) return getEntriesByEventType(EventServlet.getType(sType), response);
 
         return getEntries();
     }
@@ -179,10 +175,10 @@ public class EntryServlet extends HttpServlet {
     }
 
     private Entry createEntryFromJson(JsonObject jEntry) {
-        return updateEntryFromJson(jEntry,new Entry());
+        return updateEntryFromJson(jEntry, new Entry());
     }
 
-    private Entry updateEntryFromJson(JsonObject jEntry, Entry entry){
+    private Entry updateEntryFromJson(JsonObject jEntry, Entry entry) {
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         // save params to new user
@@ -215,7 +211,7 @@ public class EntryServlet extends HttpServlet {
     }
 
 
-    private List<Entry> getEntriesByEventId(String SeventId, HttpServletResponse response) throws IOException{
+    private List<Entry> getEntriesByEventId(String SeventId, HttpServletResponse response) throws IOException {
         try {
             Integer id = Integer.parseInt(SeventId);
 
@@ -231,7 +227,7 @@ public class EntryServlet extends HttpServlet {
         return null;
     }
 
-    private Entry getEntryByID(String Sid, HttpServletResponse response) throws IOException{
+    private Entry getEntryByID(String Sid, HttpServletResponse response) throws IOException {
         try {
             Integer id = Integer.parseInt(Sid);
             return DatabaseManager.createEntityManager().find(Entry.class, id);
@@ -261,8 +257,6 @@ public class EntryServlet extends HttpServlet {
         DatabaseManager.createEntityManager().getTransaction().commit();
 
     }
-
-
 
 
 }

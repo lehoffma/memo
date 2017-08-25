@@ -18,7 +18,6 @@ import {PartyDetailComponent} from "./shop/shop-item/partys/party-detail/party-d
 import {MerchandiseDetailComponent} from "./shop/shop-item/merchandise/merchandise-detail/merchandise-detail.component";
 import {ClothesSizePipe} from "./shop/shop-item/merchandise/merchandise-detail/clothes-size.pipe";
 import {ROUTES} from "./app.routes";
-import {GoogleMapsRedirectComponent} from "./util/google-maps-redirect/google-maps-redirect.component";
 import {MerchandiseComponent} from "./shop/shop-item/merchandise/merchandise.component";
 import {ItemDetailsContainerComponent} from "./shop/shop-item/item-details/container/item-details-container.component";
 import {ItemDetailsContentComponent} from "./shop/shop-item/item-details/content/item-details-content.component";
@@ -165,7 +164,6 @@ import {ModifyItemService} from "./shop/shop-item/modify-shop-item/shared/modify
 	],
 	declarations: [
 		AppComponent,
-		GoogleMapsRedirectComponent,
 		ClothesSizePipe,
 		SideNavComponent,
 		ToolbarComponent,

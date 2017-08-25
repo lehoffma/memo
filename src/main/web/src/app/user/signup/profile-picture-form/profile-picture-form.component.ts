@@ -1,4 +1,14 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from "@angular/core";
+import {
+	Component,
+	ElementRef,
+	EventEmitter,
+	Input,
+	OnChanges,
+	OnInit,
+	Output,
+	SimpleChanges,
+	ViewChild
+} from "@angular/core";
 import {CropperSettings, ImageCropperComponent} from "ng2-image-cropper";
 
 @Component({

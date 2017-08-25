@@ -1,6 +1,7 @@
 import {ExpandableTableCellComponent} from "./expandable-table-cell.component";
 import {Type} from "@angular/core";
 import {DefaultExpandableTableCellComponent} from "./default-expandable-table-cell.component";
+
 export class ExpandableTableColumn<T> {
 	//todo tooltip
 

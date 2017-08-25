@@ -3,7 +3,6 @@ import {Gender} from "../../../shared/model/gender";
 import {ClubRole} from "../../../shared/model/club-role";
 import {LogInService} from "../../../shared/services/login.service";
 import {AddressService} from "../../../shared/services/address.service";
-import {Observable} from "rxjs/Observable";
 import {Address} from "../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Router} from "@angular/router";
@@ -31,6 +30,18 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 		.map(id => id === null
 			? "/address"
 			: `/members/${id}/address`);
+	genderOptions = [Gender.FEMALE, Gender.MALE, Gender.OTHER];
+	clubRoleOptions = [ClubRole.Organizer, ClubRole.Admin, ClubRole.Vorstand, ClubRole.Kassenwart, ClubRole.Mitglied, ClubRole.None];
+	isAdmin = this.loginService.currentUser().map(user => {
+		return user !== null && user.clubRole === ClubRole.Admin;
+	});
+	addressesSubject$ = new BehaviorSubject<Address[]>([]);
+
+	constructor(public loginService: LogInService,
+				public userService: UserService,
+				public router: Router,
+				public addressService: AddressService) {
+	}
 
 	get userModel() {
 		return this.model;
@@ -41,24 +52,9 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 		this.modelChange.emit(this.model);
 	}
 
-	genderOptions = [Gender.FEMALE, Gender.MALE, Gender.OTHER];
-	clubRoleOptions = [ClubRole.Organizer, ClubRole.Admin, ClubRole.Vorstand, ClubRole.Kassenwart, ClubRole.Mitglied, ClubRole.None];
-
-	isAdmin = this.loginService.currentUser().map(user => {
-		return user !== null && user.clubRole === ClubRole.Admin;
-	});
-
 	@Input()
 	set addresses(addresses: Address[]) {
 		this.addressesSubject$.next(addresses);
-	}
-
-	addressesSubject$ = new BehaviorSubject<Address[]>([]);
-
-	constructor(public loginService: LogInService,
-				public userService: UserService,
-				public router: Router,
-				public addressService: AddressService) {
 	}
 
 	ngOnInit() {
@@ -69,7 +65,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 * @param {SimpleChanges} changes
 	 */
 	ngOnChanges(changes: SimpleChanges): void {
-		if(changes["model"] && !changes["addresses"]){
+		if (changes["model"] && !changes["addresses"]) {
 			this.addressesSubject$.next(this.model["addresses"]);
 		}
 	}

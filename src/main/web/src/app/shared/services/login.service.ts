@@ -11,11 +11,9 @@ import {Permission, UserPermissions} from "../model/permission";
 
 @Injectable()
 export class LogInService {
+	public redirectUrl = "/";
 	private accountSubject: BehaviorSubject<number> = new BehaviorSubject(null);
 	public accountObservable: Observable<number> = this.accountSubject.asObservable();
-
-	public redirectUrl = "/";
-
 	private readonly loginUrl = "/api/login";
 	private readonly logoutUrl = "/api/logout";
 

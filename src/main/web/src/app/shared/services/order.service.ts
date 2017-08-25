@@ -3,14 +3,12 @@ import {ServletService} from "./servlet.service";
 import {Order} from "../model/order";
 import {Observable} from "rxjs/Observable";
 import {Headers, Http, RequestOptions, Response, URLSearchParams} from "@angular/http";
-import {PaymentMethod} from "../../shop/checkout/payment/payment-method";
-import {OrderStatus} from "../model/order-status";
 
 @Injectable()
-export class OrderService extends ServletService<Order>{
-	baseUrl= "/api/order";
+export class OrderService extends ServletService<Order> {
+	baseUrl = "/api/order";
 
-	constructor(public http:Http) {
+	constructor(public http: Http) {
 		super();
 	}
 
@@ -21,7 +19,7 @@ export class OrderService extends ServletService<Order>{
 	 */
 	getById(id: number): Observable<Order> {
 		let queryParams = new URLSearchParams();
-		queryParams.set("id", ""+id);
+		queryParams.set("id", "" + id);
 
 		return this.http.get(this.baseUrl, {search: queryParams})
 			.map(response => response.json().orders[0] as Order);
@@ -45,9 +43,9 @@ export class OrderService extends ServletService<Order>{
 	 * @param {number} userId
 	 * @returns {Observable<Order[]>}
 	 */
-	getByUserId(userId:number): Observable<Order[]>{
+	getByUserId(userId: number): Observable<Order[]> {
 		let queryParams = new URLSearchParams();
-		queryParams.set("userId", ""+userId);
+		queryParams.set("userId", "" + userId);
 
 		return this.http.get(this.baseUrl, {search: queryParams})
 			.map(response => response.json().orders as Order[]);
@@ -89,7 +87,7 @@ export class OrderService extends ServletService<Order>{
 	 */
 	remove(id: number): Observable<Response> {
 		let params = new URLSearchParams();
-		params.set("id", ""+id);
+		params.set("id", "" + id);
 		return this.http.delete(this.baseUrl, {search: params});
 	}
 }

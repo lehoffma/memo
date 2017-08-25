@@ -61,29 +61,6 @@ export class UserService extends ServletService<User> {
 			.catch(error => Observable.of(true))
 	}
 
-
-	/**
-	 * Hilfsmethode um den code übersichtlicher zu gestalten
-	 * @param requestMethod
-	 * @param user
-	 * @param profilePicture todo type
-	 * @param paymentInfo todo type
-	 * @returns {Observable<T>}
-	 */
-	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-						user: User, profilePicture?: any, paymentInfo?: any): Observable<User> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
-
-
-		console.log(user);
-		console.log(user.addresses);
-		return this.performRequest(requestMethod("/api/user", {user, profilePicture, paymentInfo}, requestOptions))
-			.map(response => response.json().id as number)
-			.flatMap(id => this.getById(id))
-	}
-
-
 	/**
 	 * Sendet ein User Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
 	 * gibt dann das erstellte Objekt wieder an den Client zurück
@@ -107,7 +84,6 @@ export class UserService extends ServletService<User> {
 		return this.addOrModify(this.http.put.bind(this.http), user, profilePicture, paymentInfo);
 	}
 
-
 	/**
 	 * Löscht den User mit der gegebenen ID aus der Datenbank
 	 * @param userId
@@ -115,9 +91,30 @@ export class UserService extends ServletService<User> {
 	 */
 	remove(userId: number): Observable<Response> {
 		let params = new URLSearchParams();
-		params.set("id", ""+userId);
+		params.set("id", "" + userId);
 		return this.performRequest(this.http.delete("/api/user", {search: params}))
 			.do((response: Response) => this.cache.remove("users", response.json()));
+	}
+
+	/**
+	 * Hilfsmethode um den code übersichtlicher zu gestalten
+	 * @param requestMethod
+	 * @param user
+	 * @param profilePicture todo type
+	 * @param paymentInfo todo type
+	 * @returns {Observable<T>}
+	 */
+	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+						user: User, profilePicture?: any, paymentInfo?: any): Observable<User> {
+		const headers = new Headers({"Content-Type": "application/json"});
+		const requestOptions = new RequestOptions({headers});
+
+
+		console.log(user);
+		console.log(user.addresses);
+		return this.performRequest(requestMethod("/api/user", {user, profilePicture, paymentInfo}, requestOptions))
+			.map(response => response.json().id as number)
+			.flatMap(id => this.getById(id))
 	}
 
 }

@@ -1,88 +1,83 @@
 package memo.model;
 
-import java.io.Serializable;
-import java.lang.Integer;
-import java.lang.String;
-import javax.persistence.*;
-
 import com.google.gson.annotations.Expose;
-import memo.model.Size;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Entity implementation class for Entity: SizeTable
- *
  */
 @Entity
 @Table(name = "SIZE_TABLE")
 
 public class SizeTable implements Serializable {
 
-	@Id
+    private static final long serialVersionUID = 1L;
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	@ManyToOne(cascade = { CascadeType.REMOVE })
-	@JoinColumn(name = "SIZE_ID")
-	@Expose
-	private Size size;
-	@Expose
-	private String name;
-	@Expose
-	private Integer min;
-	@Expose
-	private Integer max;
-	private static final long serialVersionUID = 1L;
+    private Integer id;
+    @ManyToOne(cascade = {CascadeType.REMOVE})
+    @JoinColumn(name = "SIZE_ID")
+    @Expose
+    private Size size;
+    @Expose
+    private String name;
+    @Expose
+    private Integer min;
+    @Expose
+    private Integer max;
 
-	public SizeTable() {
-		super();
-	}
+    public SizeTable() {
+        super();
+    }
 
-	public SizeTable(Size size, String name, Integer min, Integer max)   {
+    public SizeTable(Size size, String name, Integer min, Integer max) {
         this.size = size;
         this.name = name;
         this.min = min;
         this.max = max;
     }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Size getSize() {
-		return this.size;
-	}
+    public Size getSize() {
+        return this.size;
+    }
 
-	public void setSize(Size size) {
-		this.size = size;
-	}
+    public void setSize(Size size) {
+        this.size = size;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Integer getMin() {
-		return this.min;
-	}
+    public Integer getMin() {
+        return this.min;
+    }
 
-	public void setMin(Integer min) {
-		this.min = min;
-	}
+    public void setMin(Integer min) {
+        this.min = min;
+    }
 
-	public Integer getMax() {
-		return this.max;
-	}
+    public Integer getMax() {
+        return this.max;
+    }
 
-	public void setMax(Integer max) {
-		this.max = max;
-	}
+    public void setMax(Integer max) {
+        this.max = max;
+    }
 
     @Override
     public String toString() {

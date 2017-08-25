@@ -22,6 +22,10 @@ export class CartEntryComponent implements OnInit {
 				private stockService: StockService) {
 	}
 
+	get linkToItem() {
+		let category = EventUtilityService.getEventType(this.cartItem.item);
+		return `/${category}/${this.cartItem.item.id}`
+	}
 
 	ngOnInit() {
 		let maxAmount: Observable<number>;
@@ -30,7 +34,7 @@ export class CartEntryComponent implements OnInit {
 		if (EventUtilityService.isMerchandise(this.cartItem.item)) {
 			maxAmount = this.stockService.getByEventId(this.cartItem.item.id)
 				.map(stock => stock
-					// we have to consider the selected color and size attributes
+				// we have to consider the selected color and size attributes
 					.filter(stockItem =>
 						stockItem.color.hex === this.cartItem.options.color.hex
 						&& stockItem.size === this.cartItem.options.size
@@ -44,11 +48,6 @@ export class CartEntryComponent implements OnInit {
 				this.amountOptions.push(i);
 			}
 		})
-	}
-
-	get linkToItem(){
-		let category = EventUtilityService.getEventType(this.cartItem.item);
-		return `/${category}/${this.cartItem.item.id}`
 	}
 
 	/**

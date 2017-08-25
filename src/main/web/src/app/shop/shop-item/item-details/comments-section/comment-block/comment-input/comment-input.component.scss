@@ -7,7 +7,7 @@
 
 	.author-image-container {
 		margin-right: 10px;
-		@media all and (max-width: 800px){
+		@media all and (max-width: 800px) {
 			margin-left: 5px;
 		}
 		img {
@@ -27,7 +27,7 @@
 			min-height: 2rem;
 			padding: 0.4rem;
 
-			&:focus{
+			&:focus {
 				border-color: mat-color($primary);
 				outline-color: mat-color($primary);
 			}

@@ -12,10 +12,11 @@ import {ParticipantsService} from "./participants.service";
 import {ServletService} from "./servlet.service";
 import {Merchandise} from "../../shop/shared/model/merchandise";
 import {StockService} from "./stock.service";
-import {MerchStockList} from "../../shop/shared/model/merch-stock";
 
 @Injectable()
 export class EventService extends ServletService<Event> {
+	private readonly baseUrl = `/api/event`;
+
 	constructor(private http: Http,
 				private cache: CacheStore,
 				private stockService: StockService,
@@ -24,8 +25,6 @@ export class EventService extends ServletService<Event> {
 				private eventFactoryService: EventFactoryService) {
 		super();
 	}
-
-	private readonly baseUrl = `/api/event`;
 
 	/**
 	 * Helper method for accessing the cache
@@ -187,7 +186,7 @@ export class EventService extends ServletService<Event> {
 	 */
 	remove(eventId: number): Observable<Response> {
 		let params = new URLSearchParams();
-		params.set("id", ""+eventId);
+		params.set("id", "" + eventId);
 		return this.performRequest(this.http.delete(this.baseUrl, {search: params}))
 			.do((removeResponse: Response) => {
 				const eventId: number = removeResponse.json().id;

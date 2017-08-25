@@ -51,6 +51,13 @@ export class User extends BaseObject<User> {
 		super(id);
 	}
 
+	get userPermissions() {
+		if (this.permissions) {
+			return this.permissions;
+		}
+		return rolePermissions[this.clubRole];
+	}
+
 	static create() {
 		return new User(-1, "", "", Gender.OTHER, null, "", "", ClubRole.None, new Date(), [], [],
 			null, 0, "", "", false, false, false, false, "resources/images/Logo.png");
@@ -58,12 +65,5 @@ export class User extends BaseObject<User> {
 
 	static isUser(user: any): user is User {
 		return user && (<User>user).email !== undefined;
-	}
-
-	get userPermissions() {
-		if (this.permissions) {
-			return this.permissions;
-		}
-		return rolePermissions[this.clubRole];
 	}
 }

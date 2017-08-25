@@ -55,23 +55,14 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	@Output() onDelete = new EventEmitter<T[]>();
 
 	tableRowHostList: QueryList<ExpandedTableRowContainerDirective>;
-	//using a setter because the ViewChildren() annotation doesn't update correctly if used with hidden elements
-	@ViewChildren(ExpandedTableRowContainerDirective) set tableRowHosts(content: QueryList<ExpandedTableRowContainerDirective>) {
-		this.tableRowHostList = content;
-	}
-
 	@ViewChildren(ExpandableTableColumnContainerDirective) tableCellList: QueryList<ExpandableTableColumnContainerDirective>;
-
 	expandStatusList: {
 		[id: number]: boolean
 	} = {};
 	selectedStatusList: {
 		[id: number]: boolean
 	} = {};
-	_everythingIsSelected = false;
-
 	sortedBy: ColumnSortingEvent<T>;
-
 	//pagination variables
 	currentPage = 1;
 	@Input() rowsPerPage = 50;
@@ -80,6 +71,28 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	constructor(private _componentFactoryResolver: ComponentFactoryResolver,
 				private confirmationDialogService: ConfirmationDialogService) {
 
+	}
+
+	//using a setter because the ViewChildren() annotation doesn't update correctly if used with hidden elements
+	@ViewChildren(ExpandedTableRowContainerDirective)
+	set tableRowHosts(content: QueryList<ExpandedTableRowContainerDirective>) {
+		this.tableRowHostList = content;
+	}
+
+	_everythingIsSelected = false;
+
+	get everythingIsSelected() {
+		return this._everythingIsSelected;
+	}
+
+	set everythingIsSelected(value) {
+		this._everythingIsSelected = value;
+		this.changeSelectedStatusOfAllItems(value);
+	}
+
+	//todo falls performance zu scheiße => observables
+	get amountOfSelectedEntries() {
+		return Object.keys(this.selectedStatusList).filter(key => this.selectedStatusList[key]).length;
 	}
 
 	ngOnInit() {
@@ -91,7 +104,6 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 		}
 		this.tableCellList.changes.subscribe(tableCellList => this.initTableCells(tableCellList, this.data));
 	}
-
 
 	/**
 	 * Initializes the table cell components
@@ -160,20 +172,6 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 		this.data.forEach(dataObject => {
 			this.selectedStatusList[dataObject.id] = newStatus;
 		});
-	}
-
-	get everythingIsSelected() {
-		return this._everythingIsSelected;
-	}
-
-	set everythingIsSelected(value) {
-		this._everythingIsSelected = value;
-		this.changeSelectedStatusOfAllItems(value);
-	}
-
-	//todo falls performance zu scheiße => observables
-	get amountOfSelectedEntries() {
-		return Object.keys(this.selectedStatusList).filter(key => this.selectedStatusList[key]).length;
 	}
 
 	/**

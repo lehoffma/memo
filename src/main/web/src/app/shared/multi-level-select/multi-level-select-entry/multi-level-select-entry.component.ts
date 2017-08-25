@@ -1,5 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {isMultiLevelSelectLeaf, isMultiLevelSelectParent, MultiLevelSelectOption} from "../shared/multi-level-select-option";
+import {
+	isMultiLevelSelectLeaf,
+	isMultiLevelSelectParent,
+	MultiLevelSelectOption
+} from "../shared/multi-level-select-option";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {MultiLevelSelectParent} from "../shared/multi-level-select-parent";
 import {MultiLevelSelectLeaf} from "../shared/multi-level-select-leaf";
@@ -55,10 +59,10 @@ export class MultiLevelSelectEntryComponent implements OnInit {
 		}
 		else {
 			//toggle if already selected
-			if(option.selected){
+			if (option.selected) {
 				option.selected = false;
 			}
-			else{
+			else {
 				//act like a radio button, i.e. selects the clicked option but sets every other option to false
 				option.selected = true;
 				this.option.children

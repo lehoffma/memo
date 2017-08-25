@@ -2,134 +2,122 @@ package memo.model;
 
 import com.google.gson.annotations.Expose;
 
-import java.io.Serializable;
-import java.lang.Boolean;
-import java.lang.Integer;
-import java.lang.String;
-import java.sql.Date;
 import javax.persistence.*;
+import java.io.Serializable;
+import java.sql.Date;
 
 /**
  * Entity implementation class for Entity: Entry
- *
  */
 @Entity
-@Table(name="ENTRIES")
+@Table(name = "ENTRIES")
 
 public class Entry implements Serializable {
 
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    @ManyToOne
+    @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
+    private Event event;
+    @Column(name = "ENTRY_CATEGORY_ID")
+    private Integer entryCategoryID;
+    @Expose
+    private String name;
+    @Expose
+    private Integer value;
+    @Expose
+    @Column(name = "IS_INCOME")
+    private Boolean isIncome;
+    @Expose
+    private String comment;
+    @Expose
+    private String picPath;
+    private Date date;
 
-	@ManyToOne
-	@JoinColumn(name= "EVENT_ID",referencedColumnName = "ID")
-	private Event event;
+    public Entry() {
+        super();
+    }
 
+    public Event getEvent() {
+        return this.event;
+    }
 
-	@Column(name= "ENTRY_CATEGORY_ID")
-	private Integer entryCategoryID;
+    public void setEvent(Event event) {
+        this.event = event;
+    }
 
-	@Expose
-	private String name;
+    public Integer getEntryCategoryID() {
+        return this.entryCategoryID;
+    }
 
-	@Expose
-	private Integer value;
+    public void setEntryCategoryID(Integer entryID) {
+        this.entryCategoryID = entryID;
+    }
 
-	@Expose
-	@Column(name= "IS_INCOME")
-	private Boolean isIncome;
+    public Integer getValue() {
+        return this.value;
+    }
 
-	@Expose
-	private String comment;
+    public void setValue(Integer amount) {
+        this.value = amount;
+    }
 
-	@Expose
-	private String picPath;
+    public Boolean getIsIncome() {
+        return this.isIncome;
+    }
 
-	private Date date;
+    public void setIsIncome(Boolean isIncome) {
+        this.isIncome = isIncome;
+    }
 
-	private static final long serialVersionUID = 1L;
+    public Boolean getIncome() {
+        return isIncome;
+    }
 
-	public Entry() {
-		super();
-	}   
-	public Event getEvent() {
-		return this.event;
-	}
+    public void setIncome(Boolean income) {
+        isIncome = income;
+    }
 
-	public void setEvent(Event event) {
-		this.event = event;
-	}   
+    public String getComment() {
+        return comment;
+    }
 
-	public Integer getEntryCategoryID() {
-		return this.entryCategoryID;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-	public void setEntryCategoryID(Integer entryID) {
-		this.entryCategoryID = entryID;
-	}   
+    public String getPicPath() {
+        return picPath;
+    }
 
-	public Integer getValue() {
-		return this.value;
-	}
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
 
-	public void setValue(Integer amount) {
-		this.value = amount;
-	}   
-	public Boolean getIsIncome() {
-		return this.isIncome;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setIsIncome(Boolean isIncome) {
-		this.isIncome = isIncome;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Boolean getIncome() {
-		return isIncome;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setIncome(Boolean income) {
-		isIncome = income;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getComment() {
-		return comment;
-	}
+    public Date getDate() {
+        return date;
+    }
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
-	public String getPicPath() {
-		return picPath;
-	}
-
-	public void setPicPath(String picPath) {
-		this.picPath = picPath;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }

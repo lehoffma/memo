@@ -1,5 +1,6 @@
 import {MultiLevelSelectOption} from "./multi-level-select-option";
 import {SelectNode} from "./select-node";
+
 export interface MultiLevelSelectParent extends SelectNode {
 	queryKey: string;
 	expanded: boolean;

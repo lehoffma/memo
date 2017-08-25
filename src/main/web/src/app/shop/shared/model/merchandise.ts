@@ -1,7 +1,6 @@
 import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {SizeTable} from "./size-table";
-import {SelectionModel} from "../../../shared/model/selection-model";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
 import {MerchColor} from "./merch-color";
@@ -162,12 +161,6 @@ export class Merchandise extends Event {
 		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember, price);
 	}
 
-	static create() {
-		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, [], "",
-			JSON.parse(sizeTable), -1, -1);
-	}
-
-
 	get sizeTable() {
 		return this._sizeTable;
 	}
@@ -232,5 +225,10 @@ export class Merchandise extends Event {
 				previousValue.concat(...Object.keys(this.sizeTable[currentValue])
 					.filter(category => previousValue.indexOf(category) === -1)),
 			[])
+	}
+
+	static create() {
+		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, [], "",
+			JSON.parse(sizeTable), -1, -1);
 	}
 }

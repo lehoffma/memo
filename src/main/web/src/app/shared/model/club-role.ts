@@ -1,6 +1,6 @@
 import {UserPermissions} from "./permission";
 
-export enum ClubRole{
+export enum ClubRole {
 	Admin = <any> "Admin",
 	Kassenwart = <any> "Kassenwart",
 	Organizer = <any> "Organizer", //todo umbenennen?
@@ -25,15 +25,22 @@ export enum ClubRole{
 
  */
 
-export function idToClubRoleEnum(clubRole:number):ClubRole{
-	switch(clubRole){
-		case 0: return ClubRole.None;
-		case 1: return ClubRole.Mitglied;
-		case 2: return ClubRole.Vorstand;
-		case 3: return ClubRole.Schriftfuehrer;
-		case 4: return ClubRole.Kassenwart;
-		case 5: return ClubRole.Organizer;
-		case 6: return ClubRole.Admin;
+export function idToClubRoleEnum(clubRole: number): ClubRole {
+	switch (clubRole) {
+		case 0:
+			return ClubRole.None;
+		case 1:
+			return ClubRole.Mitglied;
+		case 2:
+			return ClubRole.Vorstand;
+		case 3:
+			return ClubRole.Schriftfuehrer;
+		case 4:
+			return ClubRole.Kassenwart;
+		case 5:
+			return ClubRole.Organizer;
+		case 6:
+			return ClubRole.Admin;
 	}
 }
 

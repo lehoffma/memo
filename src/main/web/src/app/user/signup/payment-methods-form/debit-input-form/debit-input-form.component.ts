@@ -10,7 +10,6 @@ declare var IBAN;
 })
 export class DebitInputFormComponent implements OnInit, OnChanges {
 	@Input() name: string = "";
-	@Output() onChange = new EventEmitter<{ formIsValid: boolean, paymentInfo: PaymentInfo }>();
 	model: PaymentInfo = {
 		iban: "",
 		bic: "",
@@ -21,6 +20,7 @@ export class DebitInputFormComponent implements OnInit, OnChanges {
 		residence: "",
 		country: ""
 	};
+	@Output() onChange = new EventEmitter<{ formIsValid: boolean, paymentInfo: PaymentInfo }>();
 
 	constructor() {
 	}

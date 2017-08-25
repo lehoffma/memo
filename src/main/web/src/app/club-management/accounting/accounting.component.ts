@@ -39,17 +39,12 @@ export class AccountingComponent implements OnInit {
 			this.getEntries([paramMap, queryParamMap, sortBy]))
 		.map(entries => [...entries]);
 	entriesSubject$: BehaviorSubject<Entry[]> = new BehaviorSubject([]);
-
-	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);
-	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);
-
-	expandedRowComponent: Type<ExpandedRowComponent<any>> = SingleValueListExpandedRowComponent;
-
-	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("funds");
-
 	total$ = this.entriesSubject$
 		.map(entries => entries.reduce((acc, entry) => acc + entry.value, 0));
-
+	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);
+	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<Entry>[]> = new BehaviorSubject([]);
+	expandedRowComponent: Type<ExpandedRowComponent<any>> = SingleValueListExpandedRowComponent;
+	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("funds");
 	showOptions = true;
 	mobile = false;
 
@@ -121,7 +116,7 @@ export class AccountingComponent implements OnInit {
 							this.router.navigate(["entries", "create"], {queryParams});
 						})
 				}
-				else{
+				else {
 					this.router.navigate(["entries", "create"], {queryParams});
 				}
 			});
@@ -163,27 +158,12 @@ export class AccountingComponent implements OnInit {
 	}
 
 	/**
-	 * Extracts the dateRange from the queryParameters so it can be used in the API call
-	 * @returns {{minDate: Date; maxDate: Date}}
-	 */
-	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Date, maxDate: Date } {
-		const from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : moment("1970-01-01");
-		const to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : moment("2100-01-01");
-
-		//default: this month
-		return {
-			minDate: from.toDate(),
-			maxDate: to.toDate()
-		};
-	}
-
-	/**
 	 *
 	 * @param {Entry} entry
 	 * @param queryParamMap
 	 * @returns {boolean}
 	 */
-	entryMatchesFilterCriteria(entry:Entry, queryParamMap:ParamMap):boolean{
+	entryMatchesFilterCriteria(entry: Entry, queryParamMap: ParamMap): boolean {
 		let entryRemains = true;
 		if (queryParamMap.has("eventTypes")) {
 			//todo link entry to event somehow?
@@ -216,13 +196,30 @@ export class AccountingComponent implements OnInit {
 				.map((eventEntries: Entry[][]) => eventEntries.reduce((acc, current) => [...acc, ...current], []))
 				.map(entries => entries
 					.filter(entry => this.entryMatchesFilterCriteria(entry, queryParamMap))
-					.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
+					.sort(attributeSortingFunction(sortBy.key, sortBy.descending)))
+				.defaultIfEmpty([]);
 		}
 
 		//otherwise, we're looking at the general club accounting table
 		return this.entryService.search("", dateRange)
 			.map(entries => entries
 				.filter(entry => this.entryMatchesFilterCriteria(entry, queryParamMap))
-				.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
+				.sort(attributeSortingFunction(sortBy.key, sortBy.descending)))
+			.defaultIfEmpty([]);
+	}
+
+	/**
+	 * Extracts the dateRange from the queryParameters so it can be used in the API call
+	 * @returns {{minDate: Date; maxDate: Date}}
+	 */
+	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Date, maxDate: Date } {
+		const from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : moment("1970-01-01");
+		const to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : moment("2100-01-01");
+
+		//default: this month
+		return {
+			minDate: from.toDate(),
+			maxDate: to.toDate()
+		};
 	}
 }

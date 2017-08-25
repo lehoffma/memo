@@ -15,15 +15,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@WebServlet(name = "EntryCategoryServlet",value = "/api/entryCategory")
+@WebServlet(name = "EntryCategoryServlet", value = "/api/entryCategory")
 public class EntryCategoryServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request,response);
+        setContentType(request, response);
         List<EntryCategory> entries = createTestData();
 
-        if(request.getParameter("categoryId") != null){
+        if (request.getParameter("categoryId") != null) {
             entries = entries.stream()
                     .filter(entryCategory -> Objects.equals(entryCategory.getId().toString(), request.getParameter("categoryId")))
                     .collect(Collectors.toList());
@@ -42,8 +42,7 @@ public class EntryCategoryServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
     }
 
-    private List<EntryCategory> createTestData()
-    {
+    private List<EntryCategory> createTestData() {
         List<EntryCategory> entries = new ArrayList<>();
 
         EntryCategory a = new EntryCategory();

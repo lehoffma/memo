@@ -1,4 +1,5 @@
 import {SizeRanges} from "./size-range";
+
 export interface SizeTable {
 	[string: string]: SizeRanges;
 }

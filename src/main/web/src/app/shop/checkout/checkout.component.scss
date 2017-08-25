@@ -30,13 +30,13 @@
 	}
 }
 
-md-card{
+md-card {
 	max-width: 500px;
 	width: 100%;
 	margin: auto;
 	//padding: 0 0 10px;
 
-	&:not(:first-child){
+	&:not(:first-child) {
 		margin-top: 20px;
 	}
 
@@ -52,7 +52,6 @@ md-card{
 	}
 }
 
-
 .checkout-title {
 	font-weight: 200;
 	border-bottom: 1px solid #E0E0E0;
@@ -64,7 +63,7 @@ md-card{
 	margin-right: -24px;
 	margin-bottom: 10px;
 
-	@media all and (max-width: 600px){
+	@media all and (max-width: 600px) {
 		margin-left: -16px;
 		margin-right: -16px;
 	}

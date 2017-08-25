@@ -16,23 +16,23 @@
 		<div class="add-to-cart-container">
 			<form #addToCartForm="ngForm" (ngSubmit)="addOrDeleteFromCart(event)">
 				<ng-template [ngIf]="isMerch(event)">
-					<md-select [(ngModel)]="model.options.color"
+					<md-select [(ngModel)]="color"
 							   (change)="updateMaxAmount()"
 							   placeholder="Farbe"
 							   [required]="true"
 							   name="colorSelectionInput">
-						<md-option *ngFor="let color of colorSelection"
+						<md-option *ngFor="let color of colorSelection$ | async"
 								   [value]="color">
 							{{color.name}}
 						</md-option>
 					</md-select>
-					<md-select [(ngModel)]="model.options.size"
+					<md-select [(ngModel)]="size"
 							   (change)="updateMaxAmount()"
 							   placeholder="Größe"
 							   [required]="true"
 							   name="sizeSelectionInput">
-						<md-option *ngFor="let size of sizeSelection" [value]="size.value">
-							{{size.value}}
+						<md-option *ngFor="let size of sizeSelection$ | async" [value]="size">
+							{{size}}
 						</md-option>
 					</md-select>
 				</ng-template>

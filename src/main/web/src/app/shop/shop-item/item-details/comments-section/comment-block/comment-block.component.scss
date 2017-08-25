@@ -1,8 +1,7 @@
 @import "../../../../../../theme";
 @import "~@angular/material/theming";
 
-
-.comment-block-container{
+.comment-block-container {
 	margin: 12px 0;
 }
 
@@ -10,17 +9,16 @@
 	display: flex;
 	position: relative;
 
-	.comment-options{
+	.comment-options {
 		cursor: pointer;
 		position: absolute;
 		right: 0;
 		top: 0;
 	}
 
-
 	.comment-image-container {
 
-		@media all and (max-width: 800px){
+		@media all and (max-width: 800px) {
 			margin-left: 5px;
 		}
 
@@ -44,7 +42,7 @@
 			justify-content: space-between;
 			align-items: center;
 
-			> .comment-header-info{
+			> .comment-header-info {
 				display: flex;
 				align-items: center;
 				margin-right: 5px;
@@ -60,19 +58,19 @@
 					text-overflow: ellipsis;
 					color: black;
 
-					&:hover{
+					&:hover {
 						text-decoration: underline;
 					}
 				}
 
-				.comment-timestamp{
+				.comment-timestamp {
 					margin-left: 10px;
 					font-size: 0.7rem;
 				}
 			}
 		}
 
-		.comment-body{
+		.comment-body {
 			font-size: 0.85rem;
 			margin: 3px 0 8px;
 		}
@@ -86,11 +84,11 @@
 			span {
 				margin-left: 5px;
 
-				&:first-child{
+				&:first-child {
 					margin-left: 0;
 				}
 
-				&:hover{
+				&:hover {
 					text-decoration: underline;
 					cursor: pointer;
 				}
@@ -106,14 +104,14 @@
 	}
 }
 
-.show-children-button-container{
+.show-children-button-container {
 	color: mat-color($accent);
 	//margin-top: -10px;
 	//margin-bottom: 5px;
 	font-size: 0.85rem;
 	margin: 6px 0 0;
 
-	> span > span:hover{
+	> span > span:hover {
 		text-decoration: underline;
 		cursor: pointer;
 	}
@@ -122,12 +120,12 @@
 .child-comments-container {
 	margin-left: 40px;
 
-	@media all and (max-width: 800px){
+	@media all and (max-width: 800px) {
 		border-left: 5px solid mat-color($primary);
 		margin: 0 0 10px;
 	}
 
-	&.reply-form-container{
+	&.reply-form-container {
 		margin-top: 12px;
 		margin-bottom: 12px;
 	}

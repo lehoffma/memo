@@ -29,7 +29,10 @@ export class MerchStockComponent implements OnInit {
 		descending: false
 	});
 	sortBy: Observable<ColumnSortingEvent<Merchandise>> = this._sortBy.asObservable();
-
+	merchListSubject$: BehaviorSubject<any[]> = new BehaviorSubject([]);
+	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("merch");
+	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
+	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
 	merchList: Observable<any[]> = Observable.combineLatest(this.eventService.search("", EventType.merch)
 			.do((merchList: Merchandise[]) => {
 				Observable.combineLatest(...merchList.map(merch => this.stockService.getByEventId(merch.id)))
@@ -49,14 +52,6 @@ export class MerchStockComponent implements OnInit {
 			.flatMap((merchList: Merchandise[]) => this.stockService.mapToStockTableObject(merchList))
 		, this.sortBy)
 		.map(([merch, sortBy]) => merch.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
-
-	merchListSubject$: BehaviorSubject<any[]> = new BehaviorSubject([]);
-
-	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("merch");
-
-	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
-	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
-
 	expandedRowComponent: Type<ExpandedRowComponent<any>> = MultiValueListExpandedRowComponent;
 
 	constructor(private eventService: EventService,

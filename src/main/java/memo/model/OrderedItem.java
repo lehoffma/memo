@@ -33,7 +33,7 @@ public class OrderedItem {
     private String size;
 
     @ManyToOne
-    @JoinColumn(name = "COLOR_ID",referencedColumnName = "ID")
+    @JoinColumn(name = "COLOR_ID", referencedColumnName = "ID")
     private Color color;
 
     @Expose

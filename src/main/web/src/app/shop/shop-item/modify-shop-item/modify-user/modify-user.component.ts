@@ -9,8 +9,16 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 	styleUrls: ["./modify-user.component.scss"]
 })
 export class ModifyUserComponent implements OnInit {
+	@Input() mode: ModifyType;
+	@Output() modelChange: EventEmitter<any> = new EventEmitter();
+	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
+	@Output() watchForAddressModification: EventEmitter<any> = new EventEmitter();
+	ModifyType = ModifyType;
 	private _model$ = new BehaviorSubject<any>({});
 	public model$ = this._model$.asObservable();
+
+	constructor(private location: Location) {
+	}
 
 	get model() {
 		return this._model$.getValue();
@@ -21,15 +29,6 @@ export class ModifyUserComponent implements OnInit {
 		this._model$.next(model);
 	}
 
-
-	@Input() mode: ModifyType;
-	@Output() modelChange: EventEmitter<any> = new EventEmitter();
-	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
-	@Output() watchForAddressModification: EventEmitter<any> = new EventEmitter();
-
-	ModifyType = ModifyType;
-
-
 	get userModel() {
 		return this.model;
 	}
@@ -37,9 +36,6 @@ export class ModifyUserComponent implements OnInit {
 	set userModel(model: any) {
 		this.model = model;
 		this.modelChange.emit(this.model);
-	}
-
-	constructor(private location: Location) {
 	}
 
 	ngOnInit() {

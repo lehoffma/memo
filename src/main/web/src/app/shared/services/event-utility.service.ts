@@ -30,19 +30,6 @@ export class EventUtilityService {
 			});
 	}
 
-	getShopItemType(item: ShopItem | Event): ShopItemType {
-		return EventUtilityService.handleShopItem(item,
-			merch => ShopItemType.merch,
-			tour => ShopItemType.tour,
-			party => ShopItemType.party,
-			user => ShopItemType.user,
-			entry => ShopItemType.entry,
-			error => {
-				console.error(`Could not deduce type from event ${error}`);
-				return null;
-			});
-	}
-
 	static handleShopItem<T>(item: ShopItem | Event,
 							 merchCallback: (merch: Merchandise) => T = () => null,
 							 tourCallback: (tour: Tour) => T = () => null,
@@ -129,7 +116,6 @@ export class EventUtilityService {
 		return event && (<Entry>event).category !== undefined;
 	}
 
-
 	static isMerchandise(event: any): event is Merchandise {
 		return event && (<Merchandise>event).material !== undefined && (<Merchandise>event).material !== null;
 	}
@@ -141,5 +127,18 @@ export class EventUtilityService {
 	static isParty(event: any): event is Party {
 		return event && (<Party>event).emptySeats !== undefined && (<Party>event).emptySeats !== null
 			&& ((<Tour>event).vehicle === undefined || (<Tour>event).vehicle === null);
+	}
+
+	getShopItemType(item: ShopItem | Event): ShopItemType {
+		return EventUtilityService.handleShopItem(item,
+			merch => ShopItemType.merch,
+			tour => ShopItemType.tour,
+			party => ShopItemType.party,
+			user => ShopItemType.user,
+			entry => ShopItemType.entry,
+			error => {
+				console.error(`Could not deduce type from event ${error}`);
+				return null;
+			});
 	}
 }
