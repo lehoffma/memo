@@ -1,6 +1,5 @@
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Injectable} from "@angular/core";
-import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {UserService} from "./user.service";
 import {User} from "../model/user";
@@ -8,6 +7,12 @@ import {isNullOrUndefined} from "util";
 import {MdSnackBar} from "@angular/material";
 import {ActionPermissions} from "../expandable-table/expandable-table.component";
 import {Permission, UserPermissions} from "../model/permission";
+import {HttpClient} from "@angular/common/http";
+
+interface LoginApiResponse{
+	id: number;
+	auth_token: string;
+}
 
 @Injectable()
 export class LogInService {
@@ -20,7 +25,7 @@ export class LogInService {
 	private readonly authTokenKey = "auth_token";
 	private readonly profileKey = "profile";
 
-	constructor(private http: Http,
+	constructor(private http: HttpClient,
 				private snackBar: MdSnackBar,
 				private userService: UserService) {
 		const currentUser = JSON.parse(localStorage.getItem(this.profileKey));
@@ -40,8 +45,7 @@ export class LogInService {
 	 */
 	login(email: string, password: string): Observable<boolean> {
 
-		return this.http.post(this.loginUrl, {email, password})
-			.map(response => response.json())
+		return this.http.post<LoginApiResponse>(this.loginUrl, {email, password})
 			.map(json => {
 				const {id, auth_token} = json;
 				if (id !== null && id >= 0) {
@@ -58,11 +62,12 @@ export class LogInService {
 			.retry(3)
 			.catch(error => {
 				console.error(error);
+				//todo better error handling
 				return Observable.of(false);
 			})
 			//convert the observable to a hot observable, i.e. immediately perform the http request
 			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.share();
 	}
 
 	/**
@@ -70,7 +75,7 @@ export class LogInService {
 	 * @returns {boolean}
 	 */
 	logout(): Observable<boolean> {
-		return this.http.post(this.logoutUrl, {auth_token: localStorage.getItem(this.authTokenKey)})
+		return this.http.post<{}>(this.logoutUrl, {auth_token: localStorage.getItem(this.authTokenKey)})
 			.map(() => {
 				localStorage.removeItem(this.authTokenKey);
 				localStorage.removeItem(this.profileKey);
@@ -83,11 +88,12 @@ export class LogInService {
 			.retry(3)
 			.catch(error => {
 				console.error(error);
+				//todo better error handling
 				return Observable.of(false);
 			})
 			//convert the observable to a hot observable, i.e. immediately perform the http request
 			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.share();
 	}
 
 	/**

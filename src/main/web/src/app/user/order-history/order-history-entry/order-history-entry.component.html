@@ -3,7 +3,7 @@
 </h2>
 <div class="method">
 	<span>Bezahlmethode</span>
-	<span>{{orderEntry?.payment.method}}</span>
+	<span>{{orderEntry?.method}}</span>
 </div>
 <div *ngFor="let item of orderedEventItems" class="ordered-items">
 	<a routerLink="{{item.link}}">
@@ -15,8 +15,8 @@
 				<!--todo order entry objekt-->
 				{{item.event.title}}
 			</h3>
-			<div *ngIf="item.options" class="merch-color-container mat-body-1">
-				{{item.options.color.name}}, {{item.options.size}}
+			<div *ngIf="item.color && item.size" class="merch-color-container mat-body-1">
+				{{item.color.name}}, {{item.size}}
 			</div>
 		</div>
 	</a>

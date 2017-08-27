@@ -1,19 +1,26 @@
 import {EventEmitter, Injectable} from "@angular/core";
 import {Address} from "../model/address";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
+import {Response} from "@angular/http";
 import {CacheStore} from "../stores/cache.store";
-import {ServletService} from "./servlet.service";
+import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+
+interface AddressApiResponse {
+	addresses: Partial<Address>[]
+}
 
 @Injectable()
 export class AddressService extends ServletService<Address> {
+	baseUrl = "/api/address";
 	addressModificationDone: EventEmitter<Address> = new EventEmitter();
 	redirectUrl: string;
 
-	constructor(private http: Http,
+	constructor(private http: HttpClient,
 				private cache: CacheStore,) {
 		super();
 	}
+
 
 	/**
 	 * Requested die Addresse vom Server, welche die gegebene ID besitzt
@@ -23,13 +30,17 @@ export class AddressService extends ServletService<Address> {
 	getById(id: number): Observable<Address> {
 		//if the user is stored in the cache, return that object instead of performing the http request
 		if (this.cache.isCached("addresses", id)) {
+			console.log(`addressId ${id} is cached`);
 			return this.cache.cache.addresses
 				.map(addresses => addresses.find(address => address.id === id));
 		}
+		console.log(`addressId ${id} is not cached, retrieving from db`);
 
-		return this.performRequest(this.http.get(`/api/address?id=${id}`))
-			.map(response => response.json().addresses[0])
-			.map(json => Address.create().setProperties(json))
+		return this
+			.performRequest(this.http.get<AddressApiResponse>(this.baseUrl,
+				{params: new HttpParams().set("id", "" + id)})
+			)
+			.map(json => Address.create().setProperties(json.addresses[0]))
 			.do((address: Address) => this.cache.addOrModify(address));
 	}
 
@@ -40,11 +51,11 @@ export class AddressService extends ServletService<Address> {
 	 * @returns {Observable<T>}
 	 */
 	search(searchTerm: string, options?: any): Observable<Address[]> {
-		let url = `/api/addresses?searchTerm=${searchTerm}`;
-
-		return this.performRequest(this.http.get(url))
-			.map(response => response.json().addresses)
-			.map((jsonArray: any[]) => jsonArray.map(json => Address.create().setProperties(json)))
+		return this
+			.performRequest(this.http.get<AddressApiResponse>(this.baseUrl,
+				{params: new HttpParams().set("searchTerm", "" + searchTerm)})
+			)
+			.map((json) => json.addresses.map(json => Address.create().setProperties(json)))
 			.do((addresses: Address[]) => this.cache.addMultiple(...addresses));
 	}
 
@@ -71,10 +82,9 @@ export class AddressService extends ServletService<Address> {
 	 * @returns {Observable<T>}
 	 */
 	remove(id: number): Observable<Response> {
-		let params = new URLSearchParams();
-		params.set("id", "" + id);
-
-		return this.performRequest(this.http.delete("/api/address", {search: params}))
+		return this.performRequest(this.http.delete(this.baseUrl, {
+			params: new HttpParams().set("id", "" + id)
+		}))
 			.do((response: Response) => this.cache.remove("addresses", id));
 	}
 
@@ -85,14 +95,13 @@ export class AddressService extends ServletService<Address> {
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+	private addOrModify(requestMethod: AddOrModifyRequest,
 						address: Address): Observable<Address> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
 
-		return this.performRequest(requestMethod("/api/address", {address}, requestOptions))
-			.map(response => response.json().id)
-			.flatMap(id => this.getById(id))
+		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/address", {address}, {
+			headers: new HttpHeaders().set("Content-Type", "application/json")
+		}))
+			.flatMap(json => this.getById(json.id))
 			.do(address => this.addressModificationDone.emit(address));
 	}
 }

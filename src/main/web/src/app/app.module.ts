@@ -95,7 +95,6 @@ import {GenderCellComponent} from "./club-management/administration/member-list/
 import {AddressService} from "./shared/services/address.service";
 import {AddressTableCellComponent} from "./club-management/administration/member-list/member-list-table-cells/address-table-cell.component";
 import {AutoSizeTextAreaDirective} from "./shared/autosize-textarea.directive";
-import {HttpModule} from "@angular/http";
 import {MemoMaterialModule} from "../material.module";
 import {MerchStockComponent} from "./club-management/administration/stock/merch-stock/merch-stock.component";
 import {MultiValueListExpandedRowComponent} from "./shared/expandable-table/multi-value-list-expanded-row/multi-value-list-expanded-row.component";
@@ -142,12 +141,13 @@ import {OrderService} from "./shared/services/order.service";
 import {ErrorPageComponent} from "./util/error-page/error-page.component";
 import {OrderHistoryEntryComponent} from "./user/order-history/order-history-entry/order-history-entry.component";
 import {ModifyItemService} from "./shop/shop-item/modify-shop-item/shared/modify-item.service";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		FormsModule,
-		HttpModule,
+		HttpClientModule,
 		ReactiveFormsModule,
 		BrowserAnimationsModule,
 		MemoMaterialModule,

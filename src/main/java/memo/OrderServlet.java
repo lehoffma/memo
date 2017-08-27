@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @WebServlet(name = "OrderServlet", value = "/api/order")
 public class OrderServlet extends HttpServlet {
 
@@ -31,13 +32,34 @@ public class OrderServlet extends HttpServlet {
         List<Order> orders = getOrdersFromDatabase(Sid, SuserId, response);
 
         if (orders.isEmpty()) {
-            response.setStatus(404);
+            //todo in den anderen servlets HttpResponse codes statt magic numbers benutzen
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.getWriter().append("Not found");
             return;
         }
 
+
         //ToDo: OrderedItems
+
         Gson gson = new GsonBuilder().serializeNulls().create();
+
+        //todo: das hier wäre ne weniger fehler anfällige variante.
+        //(man muss sich nich mehr manuell um die kommas/""/whatever kümmern)
+//        List<String> orderedItems = orders.stream()
+//                .map(order -> {
+//                    JsonObject jsonOrder = gson.toJsonTree(order).getAsJsonObject();
+//                    //add the ordered items property to the json object
+//                    jsonOrder.addProperty("orderedItems", gson.toJson(getOrderedItemsByOrderId(order.getId())));
+//                    return jsonOrder;
+//                })
+//                .map(JsonElement::toString)
+//                .collect(Collectors.toList());
+//
+//        JsonObject jsonResponse = new JsonObject();
+//        jsonResponse.addProperty("orders", gson.toJson(orderedItems));
+//        response.getWriter().append(jsonResponse.toString());
+
+
         response.getWriter().append("{ \"orders\": [");
 
         for (int i = 0; i < orders.size(); ++i) {

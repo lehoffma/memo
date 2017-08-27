@@ -2,16 +2,22 @@ import {Injectable} from '@angular/core';
 import {ServletService} from "./servlet.service";
 import {EntryCategory} from "../model/entry-category";
 import {Observable} from "rxjs/Observable";
-import {Http, Response, URLSearchParams} from "@angular/http";
+import {Response} from "@angular/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
+
+interface EntryCategoryApiResponse {
+	categories: EntryCategory[]
+}
 
 @Injectable()
 export class EntryCategoryService extends ServletService<EntryCategory> {
 	baseUrl = "/api/entryCategory";
 
-	constructor(public http: Http) {
+	constructor(public http: HttpClient) {
 		super();
 	}
 
+	//todo cache
 	/**
 	 *
 	 * @param {number} id
@@ -19,12 +25,10 @@ export class EntryCategoryService extends ServletService<EntryCategory> {
 	 * @returns {Observable<EntryCategory>}
 	 */
 	getById(id: number): Observable<EntryCategory> {
-		let params = new URLSearchParams();
-		params.set("categoryId", "" + id);
-
-		return this.http.get(this.baseUrl, {search: params})
-			.map(response => response.json().categories)
-			.map(json => EntryCategory.create().setProperties(json[0]));
+		return this.http.get<EntryCategoryApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("categoryId", "" + id)
+		})
+			.map(json => EntryCategory.create().setProperties(json.categories[0]));
 	}
 
 	/**
@@ -41,11 +45,10 @@ export class EntryCategoryService extends ServletService<EntryCategory> {
 	 * @returns {Observable<EntryCategory[]>}
 	 */
 	search(searchTerm: string): Observable<EntryCategory[]> {
-		let params = new URLSearchParams();
-		params.set("searchTerm", searchTerm);
-
-		return this.http.get(this.baseUrl, {search: params})
-			.map(response => response.json().categories as EntryCategory[]);
+		return this.http.get<EntryCategoryApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("searchTerm", "" + searchTerm)
+		})
+			.map(response => response.categories);
 	}
 
 	/**

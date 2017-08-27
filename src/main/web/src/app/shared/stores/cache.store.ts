@@ -15,11 +15,18 @@ import {ArrayObjectType} from "../model/util/array-object-type";
 import {InnerArrayObjectType} from "../model/util/inner-array-object-type";
 import {BaseObject} from "../model/util/base-object";
 import {Address} from "../model/address";
+import {Comment} from "../../shop/shared/model/comment";
+import {Order} from "../model/order";
+import {BankAccount} from "../model/bank-account";
 
 export interface Cache extends EventData, ArrayObjectType<BaseObject<any>> {
 	users: User[];
 	entries: Entry[];
 	addresses: Address[];
+	comments: Comment[];
+	orders: Order[];
+	bankAccounts: BankAccount[];
+
 	//todo update cache (participant + merchstoch have to be converted to immutableObject-classes)
 	// participants: Participant[];
 	// stocks: MerchStockList[];
@@ -38,13 +45,16 @@ export class CacheStore {
 		users: new BehaviorSubject<User[]>([]),
 		entries: new BehaviorSubject<Entry[]>([]),
 		addresses: new BehaviorSubject<Address[]>([]),
+		comments: new BehaviorSubject<Comment[]>([]),
+		orders: new BehaviorSubject<Order[]>([]),
+		bankAccounts: new BehaviorSubject<BankAccount[]>([])
 		//todo update cache (participant + merchstoch have to be converted to immutableObject-classes)
 		// participants: new BehaviorSubject<Participant[]>([]),
 		// stocks: new BehaviorSubject<MerchStockList[]>([])
 	};
 	public cache: ObservableType<Cache> = asObservableType(this._cache);
 
-	constructor(private eventUtilService: EventUtilityService) {
+	constructor() {
 	}
 
 
@@ -100,6 +110,15 @@ export class CacheStore {
 		if (Address.isAddress(object)) {
 			return "addresses";
 		}
+		if (Comment.isComment(object)) {
+			return "comments";
+		}
+		if (Order.isOrder(object)) {
+			return "orders";
+		}
+		if (BankAccount.isBankAccount(object)) {
+			return "bankAccounts";
+		}
 		return "";
 	}
 
@@ -112,22 +131,19 @@ export class CacheStore {
 		const value: InnerCacheType[] = this.values[key];
 		const cachedObjectIndex = value.findIndex(innerValue => innerValue.id === object.id);
 
+		let newValue: InnerCacheType[] = [];
 		//and event isn't already part of the cache
 		if (cachedObjectIndex === -1) {
 			//todo throw oldest values away when size > cacheSize?
-			const newValue: InnerCacheType[] = [...value, object];
+			newValue = [...value, object];
 
-			//cast is necessary because typescript is complaining otherwise
-			(<BehaviorSubject<InnerCacheType[]>>this._cache[key]).next(newValue);
 		}
 		//update if it is already part of the cache
 		else {
-			const newValue: InnerCacheType[] = [...value];
+			newValue = [...value];
 			newValue.splice(cachedObjectIndex, 1, object);
-
-			//cast is necessary because typescript is complaining otherwise
-			(<BehaviorSubject<InnerCacheType[]>>this._cache[key]).next(newValue);
 		}
+		this._cache[key].next(newValue);
 	}
 
 
@@ -165,7 +181,7 @@ export class CacheStore {
 		const index = (<any[]>values[key]).findIndex(cachedObject => cachedObject.id === id);
 
 		if (index !== -1) {
-			(<BehaviorSubject<any[]>>this._cache[key]).next(values[key].splice(index, 1));
+			this._cache[key].next(values[key].splice(index, 1));
 		}
 	}
 
@@ -177,6 +193,7 @@ export class CacheStore {
 	 * @param searchTerm
 	 */
 	search(searchTerm: string, key: keyof Cache): Observable<InnerCacheType[]> {
+		//todo doesnt really make sense
 		//no event type specified => return all objects matching the string
 		if (!key || isNullOrUndefined(key)) {
 			return Observable.combineLatest(

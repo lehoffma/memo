@@ -2,13 +2,19 @@ import {Injectable} from "@angular/core";
 import {EventType} from "../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {Participant, ParticipantUser} from "../../shop/shared/model/participant";
-import {Http, RequestOptionsArgs, URLSearchParams} from "@angular/http";
 import {UserService} from "./user.service";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {AddOrModifyRequest, AddOrModifyResponse} from "./servlet.service";
+
+interface ParticipantApiResponse {
+	participants: Participant[]
+}
 
 @Injectable()
 export class ParticipantsService {
+	baseUrl = "/api/participants";
 
-	constructor(private http: Http,
+	constructor(private http: HttpClient,
 				private userService: UserService) {
 
 	}
@@ -30,19 +36,19 @@ export class ParticipantsService {
 		if (eventType === EventType.merch) {
 			return Observable.of([]);
 		}
-		let params = new URLSearchParams();
-		params.set("eventId", eventId.toString());
-		params.set("eventType", eventType.toString());
 
-		return this.http.get("/api/participants", {search: params})
-			.map(response => response.json().participants as Participant[])
+		return this.http.get<ParticipantApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("eventId", "" + eventId)
+				.set("type", "" + eventType)
+		})
+			.map(response => response.participants)
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
 			.catch(this.handleError)
 			//convert the observable to a hot observable, i.e. immediately perform the http request
 			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.share();
 	}
 
 	/**
@@ -72,18 +78,18 @@ export class ParticipantsService {
 	 * @param participant
 	 * @returns {Observable<T>}
 	 */
-	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
-				eventId: number, eventType: EventType, participant: Participant): Observable<any> {
+	addOrModify(requestMethod: AddOrModifyRequest,
+				eventId: number, eventType: EventType, participant: Participant): Observable<number> {
 
-		return requestMethod("/api/participants", {eventId, eventType, participant})
-			.map(response => response.json() as any)
+		return requestMethod<AddOrModifyResponse>(this.baseUrl, {eventId, eventType, participant})
+			.map(response => response.id)
 			//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
 			.catch(this.handleError)
 			//convert the observable to a hot observable, i.e. immediately perform the http request
 			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.share();
 	}
 
 	/**
@@ -92,7 +98,7 @@ export class ParticipantsService {
 	 * @param eventType
 	 * @param participant
 	 */
-	updateParticipant(eventId: number, eventType: EventType, participant: Participant): Observable<any> {
+	updateParticipant(eventId: number, eventType: EventType, participant: Participant): Observable<number> {
 		return this.addOrModify(this.http.put.bind(this.http), eventId, eventType, participant);
 	}
 
@@ -103,7 +109,7 @@ export class ParticipantsService {
 	 * @param participant
 	 * @returns {Observable<any>}
 	 */
-	addParticipant(eventId: number, eventType: EventType, participant: Participant): Observable<any> {
+	addParticipant(eventId: number, eventType: EventType, participant: Participant): Observable<number> {
 		return this.addOrModify(this.http.post.bind(this.http), eventId, eventType, participant);
 	}
 
@@ -114,20 +120,17 @@ export class ParticipantsService {
 	 * @param participantId
 	 */
 	deleteParticipant(eventId: number, eventType: EventType, participantId: number): Observable<any> {
-		let params = new URLSearchParams();
-		params.set("eventId", "" + eventId);
-		params.set("eventType", "" + eventType);
-		params.set("id", "" + participantId);
-
-
-		return this.http.delete("/api/participants", {search: params})
-			.map(response => response.json() as any)
-			//retry 3 times before throwing an error
+		return this.http.delete("/api/participants", {
+			params: new HttpParams().set("eventId", "" + eventId)
+				.set("type", "" + eventType)
+				.set("id", "" + participantId)
+		})
+		//retry 3 times before throwing an error
 			.retry(3)
 			//log any errors
 			.catch(this.handleError)
 			//convert the observable to a hot observable, i.e. immediately perform the http request
 			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.share();
 	}
 }

@@ -1,13 +1,20 @@
 import {Injectable} from "@angular/core";
-import {ServletService} from "./servlet.service";
+import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Observable} from "rxjs/Observable";
-import {Http, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
 import {Comment} from "../../shop/shared/model/comment";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {CacheStore} from "../stores/cache.store";
+
+interface CommentApiResponse {
+	comments: Comment[];
+}
 
 @Injectable()
 export class CommentService extends ServletService<Comment> {
+	baseUrl = "/api/comment";
 
-	constructor(private http: Http) {
+	constructor(private http: HttpClient,
+				private cache: CacheStore) {
 		super();
 	}
 
@@ -16,12 +23,19 @@ export class CommentService extends ServletService<Comment> {
 	 * @param id
 	 */
 	getById(id: number): Observable<Comment> {
-		let params = new URLSearchParams();
-		params.set("id", "" + id);
+		if (this.cache.isCached("comments", id)) {
+			console.log(`commentId ${id} is cached`);
+			return this.cache.cache.comments
+				.map(comments => comments.find(cachedComment => cachedComment.id === id))
+		}
+		console.log(`commentId ${id} is not cached, retrieving from db`);
 
-		return this.performRequest(this.http.get("/api/comment", {search: params}))
-			.map(response => response.json().comments as any[])
+		return this.performRequest(this.http.get<CommentApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("id", "" + id)
+		}))
+			.map(response => response.comments)
 			.map(json => Comment.create().setProperties(json[0]))
+			.do(comment => this.cache.addOrModify(comment))
 	}
 
 	/**
@@ -30,13 +44,12 @@ export class CommentService extends ServletService<Comment> {
 	 * @returns {Observable<Comment[]>}
 	 */
 	getByEventId(eventId: number): Observable<Comment[]> {
-		let params = new URLSearchParams();
-		params.set("eventId", "" + eventId);
-
-		return this.performRequest(this.http.get("/api/comment", {search: params}))
-			.map(response => response.json().comments as any[])
+		return this.performRequest(this.http.get<CommentApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("eventId", "" + eventId)
+		}))
+			.map(response => response.comments)
 			.map(commentJson => commentJson.map(json => Comment.create().setProperties(json)))
-		//todo cache?
+			.do(comments => this.cache.addMultiple(...comments))
 	}
 
 	/**
@@ -44,13 +57,12 @@ export class CommentService extends ServletService<Comment> {
 	 * @param searchTerm
 	 */
 	search(searchTerm: string): Observable<Comment[]> {
-		let params = new URLSearchParams();
-		params.set("searchTerm", searchTerm);
-
-		return this.performRequest(this.http.get("/api/comment", {search: params}))
-			.map(response => response.json().comments as any[])
-			.map(commentJson => commentJson.map(json => Comment.create().setProperties(json)))
-		//todo cache?
+		return this.performRequest(this.http.get<CommentApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("searchTerm", searchTerm)
+		}))
+			.map(response => response.comments)
+			.map(comments => comments.map(json => Comment.create().setProperties(json)))
+			.do(comments => this.cache.addMultiple(...comments))
 	}
 
 	/**
@@ -60,11 +72,10 @@ export class CommentService extends ServletService<Comment> {
 	 * @param parentId
 	 * @returns {Observable<R>}
 	 */
-	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+	addOrModify(requestMethod: AddOrModifyRequest,
 				comment: Comment, parentId?: number): Observable<Comment> {
-		return this.performRequest(requestMethod("/api/comment", {comment, parentId}))
-			.map(response => response.json().id)
-			.flatMap(commentId => this.getById(commentId))
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {comment, parentId}))
+			.flatMap(response => this.getById(response.id))
 	}
 
 	/**
@@ -90,8 +101,11 @@ export class CommentService extends ServletService<Comment> {
 	 * @param id
 	 * @param parentId
 	 */
-	remove(id: number, parentId?: number): Observable<Response> {
-		return this.performRequest(this.http.delete("/api/comment?id=" + id));
+	remove(id: number, parentId?: number): Observable<Object> {
+		return this.performRequest(this.http.delete(this.baseUrl, {
+			params: new HttpParams().set("id", "" + id).set("parentId", "" + parentId)
+		}))
+			.do(response => this.cache.remove("comments", id))
 	}
 
 }

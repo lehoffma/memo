@@ -1,17 +1,22 @@
 import {Injectable} from "@angular/core";
 import {Entry} from "../model/entry";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
+import {Response} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {CacheStore} from "../stores/cache.store";
-import {EventType} from "../../shop/shared/model/event-type";
-import {ServletService} from "app/shared/services/servlet.service";
+import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/servlet.service";
 import {EntryCategoryService} from "./entry-category.service";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+
+interface EntryApiResponse {
+	entries: Entry[];
+}
 
 @Injectable()
 export class EntryService extends ServletService<Entry> {
 	redirectUrl: string;
+	baseUrl = "/api/entry";
 
-	constructor(private http: Http,
+	constructor(private http: HttpClient,
 				private entryCategoryService: EntryCategoryService,
 				private cache: CacheStore) {
 		super();
@@ -23,6 +28,7 @@ export class EntryService extends ServletService<Entry> {
 	 * @returns {Observable<Entry>}
 	 */
 	getEntryFromJSON(json: any): Observable<Entry> {
+		//todo...
 		if (json["entryCategoryID"]) {
 			return this.entryCategoryService.getById(json["entryCategoryID"])
 				.map(entryCategory => Entry.create().setProperties(json).setProperties({category: entryCategory}))
@@ -42,23 +48,19 @@ export class EntryService extends ServletService<Entry> {
 	/**
 	 *
 	 * @param entryId
-	 * @param eventId
-	 * @param eventType
 	 */
-	getById(entryId: number, eventId?: number, eventType?: EventType): Observable<Entry> {
-		let params = new URLSearchParams();
-		if (entryId) {
-			params.set("entryId", entryId.toString());
+	getById(entryId: number): Observable<Entry> {
+		if (this.cache.isCached("entries", entryId)) {
+			console.log(`entryId ${entryId} is cached`);
+			return this.cache.cache.entries
+				.map(entries => entries.find(entry => entry.id === entryId));
 		}
-		if (eventId && eventType) {
-			params.set("eventId", eventId.toString());
-			params.set("eventType", eventType.toString());
-		}
+		console.log(`entryId ${entryId} is not cached, retrieving from db`);
 
-		return this.performRequest(this.http.get("/api/entry", {search: params}))
-			.map(response => response.json().entries)
-			.flatMap(json => this.getEntryFromJSON(json[0]))
-			.do(entry => console.log(entry))
+		return this.performRequest(this.http.get<EntryApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("entryId", "" + entryId)
+		}))
+			.flatMap(json => this.getEntryFromJSON(json.entries[0]))
 			.do(entry => this.cache.addOrModify(entry));
 	}
 
@@ -67,13 +69,10 @@ export class EntryService extends ServletService<Entry> {
 	 * @param eventId
 	 */
 	getEntriesOfEvent(eventId: number): Observable<Entry[]> {
-		let params = new URLSearchParams();
-		params.set("eventId", eventId.toString());
-
-
-		return this.performRequest(this.http.get("/api/entry", {search: params}))
-			.map(response => response.json().entries)
-			.flatMap((jsonArray: any[]) => this.getEntriesFromJSON(jsonArray));
+		return this.performRequest(this.http.get<EntryApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("eventId", "" + eventId)
+		}))
+			.flatMap((json) => this.getEntriesFromJSON(json.entries));
 	}
 
 	/**
@@ -82,18 +81,15 @@ export class EntryService extends ServletService<Entry> {
 	 * @param dateRange
 	 */
 	search(searchTerm: string, dateRange?: { minDate: Date, maxDate: Date }): Observable<Entry[]> {
-		let params = new URLSearchParams();
-		params.set("searchTerm", searchTerm);
+		let params = new HttpParams().set("searchTerm", searchTerm);
 		if (dateRange && dateRange.minDate && dateRange.maxDate) {
 			//TODO date format
 			params.set("minDate", dateRange.minDate.toISOString());
 			params.set("maxDate", dateRange.maxDate.toISOString());
 		}
-		let url = `/api/entry`;
 
-		return this.performRequest(this.http.get(url, {search: params}))
-			.map(response => response.json().entries)
-			.flatMap((jsonArray: any[]) => this.getEntriesFromJSON(jsonArray));
+		return this.performRequest(this.http.get<EntryApiResponse>(this.baseUrl, {params}))
+			.flatMap(json => this.getEntriesFromJSON(json.entries));
 	}
 
 	/**
@@ -128,9 +124,9 @@ export class EntryService extends ServletService<Entry> {
 	 * @param options
 	 */
 	remove(id: number, options?: any): Observable<Response> {
-		let params = new URLSearchParams();
-		params.set("id", "" + id);
-		return this.performRequest(this.http.delete("/api/entry", {search: params}));
+		return this.performRequest(this.http.delete(this.baseUrl, {
+			params: new HttpParams().set("id", "" + id)
+		}));
 	}
 
 	/**
@@ -140,21 +136,19 @@ export class EntryService extends ServletService<Entry> {
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+	private addOrModify(requestMethod: AddOrModifyRequest,
 						entry: Entry, options?: any): Observable<Entry> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
-		requestOptions.body = {};
-		requestOptions.body["entry"] = entry;
+		let body = {};
 
 		if (options) {
 			Object.keys(options)
-				.forEach(key => requestOptions.body[key] = options[key]);
+				.forEach(key => body[key] = options[key]);
 		}
 
-		return this.performRequest(requestMethod("/api/entry", {entry}, requestOptions))
-			.map(response => response.json().id)
-			.flatMap(id => this.getById(id));
+		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/entry", {entry, ...body}, {
+			headers: new HttpHeaders().set("Content-Type", "application/json"),
+		}))
+			.flatMap(response => this.getById(response.id));
 	}
 
 }

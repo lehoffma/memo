@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {Link} from "../model/link";
-import {Http} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {Router} from "@angular/router";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
@@ -9,6 +8,7 @@ import {ShopItem} from "../model/shop-item";
 import {Address} from "../model/address";
 import {EventType} from "../../shop/shared/model/event-type";
 import {Event} from "../../shop/shared/model/event";
+import {HttpClient} from "@angular/common/http";
 
 @Injectable()
 export class NavigationService {
@@ -18,7 +18,7 @@ export class NavigationService {
 
 	public redirectToTour: Address[] = [];
 
-	constructor(private http: Http,
+	constructor(private http: HttpClient,
 				private eventUtilService: EventUtilityService,
 				private router: Router) {
 		this.initialize();
@@ -52,11 +52,8 @@ export class NavigationService {
 	}
 
 	private initialize() {
-		this.toolbarLinks = this.http.get("/resources/toolbar-links.json")
-			.map(response => response.json());
-		this.sidenavLinks = this.http.get("/resources/sidenav-links.json")
-			.map(response => response.json());
-		this.accountLinks = this.http.get("/resources/account-links.json")
-			.map(response => response.json());
+		this.toolbarLinks = this.http.get<Link[]>("/resources/toolbar-links.json");
+		this.sidenavLinks = this.http.get<Link[]>("/resources/sidenav-links.json");
+		this.accountLinks = this.http.get<Link[]>("/resources/account-links.json");
 	}
 }

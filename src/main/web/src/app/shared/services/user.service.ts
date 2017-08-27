@@ -1,14 +1,19 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
 import {User} from "../model/user";
 import {CacheStore} from "../stores/cache.store";
-import {ServletService} from "./servlet.service";
+import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+
+interface UserApiResponse {
+	users: User[];
+}
 
 @Injectable()
 export class UserService extends ServletService<User> {
+	baseUrl = "/api/user";
 
-	constructor(private http: Http,
+	constructor(private http: HttpClient,
 				private cache: CacheStore) {
 		super();
 	}
@@ -20,16 +25,18 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	getById(userId: number, options?: any): Observable<User> {
-		//todo remove cache
 		//if the user is stored in the cache, return that object instead of performing the http request
-		// if (this.cache.isCached("users", userId)) {
-		// 	return this.cache.cache.users
-		// 		.map(users => users.find(user => user.id === userId));
-		// }
+		if (this.cache.isCached("users", userId)) {
+			console.log(`userId ${userId} is cached`);
+			return this.cache.cache.users
+				.map(users => users.find(user => user.id === userId));
+		}
+		console.log(`userId ${userId} is not cached: fetching from DB`);
 
-		return this.performRequest(this.http.get(`/api/user?id=${userId}`))
-			.map(response => response.json().users)
-			.map(json => User.create().setProperties(json[0]))
+		return this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("id", "" + userId)
+		}))
+			.map(json => User.create().setProperties(json.users[0]))
 			.do((user: User) => this.cache.addOrModify(user));
 	}
 
@@ -40,11 +47,10 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	search(searchTerm: string, options?: any): Observable<User[]> {
-		let url = `/api/user?searchTerm=${searchTerm}`;
-
-		return this.performRequest(this.http.get(url))
-			.map(response => response.json().users)
-			.map((jsonArray: any[]) => jsonArray.map(json => User.create().setProperties(json)))
+		return this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("searchTerm", searchTerm)
+		}))
+			.map(json => json.users.map(jsonUser => User.create().setProperties(jsonUser)))
 			.do((users: User[]) => this.cache.addMultiple(...users));
 	}
 
@@ -54,9 +60,9 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<boolean>}
 	 */
 	isUserEmailAlreadyInUse(email: string): Observable<boolean> {
-		let params: URLSearchParams = new URLSearchParams();
-		params.set("email", email);
-		return this.http.head("/api/user", {search: params})
+		return this.http.head(this.baseUrl, {
+			params: new HttpParams().set("email", email)
+		})
 			.map(value => false)
 			.catch(error => Observable.of(true))
 	}
@@ -89,11 +95,11 @@ export class UserService extends ServletService<User> {
 	 * @param userId
 	 * @returns {Observable<T>}
 	 */
-	remove(userId: number): Observable<Response> {
-		let params = new URLSearchParams();
-		params.set("id", "" + userId);
-		return this.performRequest(this.http.delete("/api/user", {search: params}))
-			.do((response: Response) => this.cache.remove("users", response.json()));
+	remove(userId: number): Observable<Object> {
+		return this.performRequest(this.http.delete<{ id: number }>(this.baseUrl, {
+			params: new HttpParams().set("id", "" + userId)
+		}))
+			.do(response => this.cache.remove("users", response.id));
 	}
 
 	/**
@@ -104,17 +110,16 @@ export class UserService extends ServletService<User> {
 	 * @param paymentInfo todo type
 	 * @returns {Observable<T>}
 	 */
-	private addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+	private addOrModify(requestMethod: AddOrModifyRequest,
 						user: User, profilePicture?: any, paymentInfo?: any): Observable<User> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
-
-
-		console.log(user);
-		console.log(user.addresses);
-		return this.performRequest(requestMethod("/api/user", {user, profilePicture, paymentInfo}, requestOptions))
-			.map(response => response.json().id as number)
-			.flatMap(id => this.getById(id))
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {
+			user,
+			profilePicture,
+			paymentInfo
+		}, {
+			headers: new HttpHeaders().set("Content-Type", "application/json")
+		}))
+			.flatMap(response => this.getById(response.id))
 	}
 
 }

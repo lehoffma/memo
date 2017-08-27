@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
-import {MerchStockList} from "../../shop/shared/model/merch-stock";
+import {MerchStock, MerchStockList} from "../../shop/shared/model/merch-stock";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
-import {ServletService} from "./servlet.service";
+import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Merchandise} from "../../shop/shared/model/merchandise";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 
 const stockMockData = [
 	{
@@ -128,10 +128,15 @@ const stockMockData = [
 	}
 ];
 
+interface StockApiResponse {
+	stock: MerchStockList;
+}
+
 @Injectable()
 export class StockService extends ServletService<MerchStockList> {
+	baseUrl = "/api/stock";
 
-	constructor(protected http: Http) {
+	constructor(protected http: HttpClient) {
 		super();
 	}
 
@@ -141,14 +146,12 @@ export class StockService extends ServletService<MerchStockList> {
 	 * @param eventId
 	 */
 	getById(id: number, eventId: number): Observable<MerchStockList> {
-		let params = new URLSearchParams();
-		params.set("id", "" + id);
-		params.set("eventId", "" + eventId);
-
-
-		return this.performRequest(this.http.get("/api/stock", {search: params}))
-		//todo update when merchstock is a class
-			.map(response => response.json().stock as MerchStockList);
+		return this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("id", "" + id)
+				.set("eventId", "" + eventId)
+		}))
+		//todo update when merchstock is a class?
+			.map(response => response.stock);
 	}
 
 	/**
@@ -246,13 +249,12 @@ export class StockService extends ServletService<MerchStockList> {
 	 * @param searchTerm
 	 */
 	search(searchTerm: string): Observable<MerchStockList[]> {
-		let url = `/api/stock?searchTerm=${searchTerm}`;
-
-		//todo mock data
-
-		return this.performRequest(this.http.get(url))
+		//todo könnte buggy sein, wird aber grad eh nich benutzt
+		return this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("searchTerm", searchTerm)
+		}))
 		//todo update when merchstock is a class
-			.map(response => response.json().stock as MerchStockList[]);
+			.map(response => [response.stock]);
 	}
 
 	/**
@@ -261,14 +263,12 @@ export class StockService extends ServletService<MerchStockList> {
 	 * @param stock
 	 * @param eventId
 	 */
-	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+	addOrModify(requestMethod: AddOrModifyRequest,
 				stock: MerchStockList, eventId: number): Observable<MerchStockList> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
-
-		return this.performRequest(requestMethod("/api/stock", {stock}, requestOptions))
-			.map(response => response.json().id as number)
-			.flatMap(id => this.getById(id, eventId));
+		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/stock", {stock}, {
+			headers: new HttpHeaders().set("Content-Type", "application/json")
+		}))
+			.flatMap(response => this.getById(response.id, eventId));
 	}
 
 	/**
@@ -294,10 +294,10 @@ export class StockService extends ServletService<MerchStockList> {
 	 * @param id
 	 * @param options
 	 */
-	remove(id: number): Observable<Response> {
-		let params = new URLSearchParams();
-		params.set("id", "" + id);
-		return this.performRequest(this.http.delete("/api/stock", {search: params}));
+	remove(id: number): Observable<Object> {
+		return this.performRequest(this.http.delete("/api/stock", {
+			params: new HttpParams().set("id", "" + id)
+		}));
 	}
 
 }

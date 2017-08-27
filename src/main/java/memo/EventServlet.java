@@ -73,9 +73,13 @@ public class EventServlet extends HttpServlet {
 
 
         Gson gson = new GsonBuilder().serializeNulls().create();
-        String output = gson.toJson(events);
 
-        response.getWriter().append("{ \"events\": " + output + " }");
+        //todo sowas ähnliches in den anderen servlets auch machen
+        JsonObject responseJson = new JsonObject();
+        responseJson.add("events", gson.toJsonTree(events));
+        response.getWriter().append(responseJson.toString());
+
+//        response.getWriter().append("{ \"events\": " + output + " }");
 
 
     }

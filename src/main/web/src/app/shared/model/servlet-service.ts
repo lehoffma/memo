@@ -12,5 +12,5 @@ export interface ServletServiceInterface<T> {
 
 	modify(object: T, options?: any): Observable<T>,
 
-	remove(id: number, options?: any): Observable<Response>
+	remove(id: number, options?: any): Observable<Object>
 }

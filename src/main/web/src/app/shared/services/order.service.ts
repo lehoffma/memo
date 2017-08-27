@@ -1,14 +1,20 @@
 import {Injectable} from '@angular/core';
-import {ServletService} from "./servlet.service";
+import {AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Order} from "../model/order";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, Response, URLSearchParams} from "@angular/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {CacheStore} from "app/shared/stores/cache.store";
+
+interface OrderApiResponse {
+	orders: Order[];
+}
 
 @Injectable()
 export class OrderService extends ServletService<Order> {
 	baseUrl = "/api/order";
 
-	constructor(public http: Http) {
+	constructor(public http: HttpClient,
+				private cache: CacheStore) {
 		super();
 	}
 
@@ -18,11 +24,19 @@ export class OrderService extends ServletService<Order> {
 	 * @returns {Observable<Order>}
 	 */
 	getById(id: number): Observable<Order> {
-		let queryParams = new URLSearchParams();
-		queryParams.set("id", "" + id);
+		if(this.cache.isCached("orders", id)){
+			console.log(`orderId ${id} is cached`);
+			return this.cache.cache.orders
+				.map(orders => orders.find(order => order.id === id));
+		}
+		console.log(`orderId ${id} is not cached, retrieving from db`);
 
-		return this.http.get(this.baseUrl, {search: queryParams})
-			.map(response => response.json().orders[0] as Order);
+		return this.http.get<OrderApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("id", "" + id)
+		})
+		//todo error handling
+			.map(response => response.orders[0])
+			.do(order => this.cache.addOrModify(order))
 	}
 
 	/**
@@ -31,11 +45,11 @@ export class OrderService extends ServletService<Order> {
 	 * @returns {Observable<Order[]>}
 	 */
 	search(searchTerm: string): Observable<Order[]> {
-		let queryParams = new URLSearchParams();
-		queryParams.set("searchTerm", searchTerm);
-
-		return this.http.get(this.baseUrl, {search: queryParams})
-			.map(response => response.json().orders as Order[]);
+		return this.http.get<OrderApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("searchTerm", searchTerm)
+		})
+			.map(response => response.orders)
+			.do(orders => this.cache.addMultiple(...orders));
 	}
 
 	/**
@@ -44,11 +58,11 @@ export class OrderService extends ServletService<Order> {
 	 * @returns {Observable<Order[]>}
 	 */
 	getByUserId(userId: number): Observable<Order[]> {
-		let queryParams = new URLSearchParams();
-		queryParams.set("userId", "" + userId);
-
-		return this.http.get(this.baseUrl, {search: queryParams})
-			.map(response => response.json().orders as Order[]);
+		return this.http.get<OrderApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("userId", "" + userId)
+		})
+			.map(response => response.orders)
+			.do(orders => this.cache.addMultiple(...orders));
 	}
 
 	/**
@@ -58,12 +72,10 @@ export class OrderService extends ServletService<Order> {
 	 * @returns {Observable<Order>}
 	 */
 	add(order: Order): Observable<Order> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
-
-		return this.http.post(this.baseUrl, {order}, requestOptions)
-			.map(response => response.json().id as number)
-			.flatMap(accountId => this.getById(accountId));
+		return this.http.post<AddOrModifyResponse>(this.baseUrl, {order}, {
+			headers: new HttpHeaders().set("Content-Type", "application/json")
+		})
+			.flatMap(response => this.getById(response.id));
 	}
 
 	/**
@@ -72,22 +84,21 @@ export class OrderService extends ServletService<Order> {
 	 * @returns {Observable<Order>}
 	 */
 	modify(order: Order): Observable<Order> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
-
-		return this.http.put(this.baseUrl, {order}, requestOptions)
-			.map(response => response.json() as number)
-			.flatMap(accountId => this.getById(accountId));
+		return this.http.put<AddOrModifyResponse>(this.baseUrl, {order}, {
+			headers: new HttpHeaders().set("Content-Type", "application/json")
+		})
+			.flatMap(response => this.getById(response.id));
 	}
 
 	/**
 	 *
 	 * @param {number} id
-	 * @returns {Observable<Response>}
+	 * @returns {Observable<Object>}
 	 */
-	remove(id: number): Observable<Response> {
-		let params = new URLSearchParams();
-		params.set("id", "" + id);
-		return this.http.delete(this.baseUrl, {search: params});
+	remove(id: number): Observable<Object> {
+		return this.http.delete(this.baseUrl, {
+			params: new HttpParams().set("id", "" + id)
+		})
+			.do(response => this.cache.remove("orders", id))
 	}
 }

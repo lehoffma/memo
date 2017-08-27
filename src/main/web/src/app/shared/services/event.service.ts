@@ -2,28 +2,43 @@ import {Injectable} from "@angular/core";
 import {EventType, getEventTypes} from "../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shop/shared/model/event";
-import {Http, RequestOptions, RequestOptionsArgs, Response, URLSearchParams} from "@angular/http";
-import {EventUtilityService} from "./event-utility.service";
 import {EventFactoryService} from "./event-factory.service";
 import {Tour} from "../../shop/shared/model/tour";
 import {Party} from "../../shop/shared/model/party";
 import {CacheStore} from "../stores/cache.store";
-import {ParticipantsService} from "./participants.service";
-import {ServletService} from "./servlet.service";
+import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Merchandise} from "../../shop/shared/model/merchandise";
-import {StockService} from "./stock.service";
+import {HttpClient, HttpParams} from "@angular/common/http";
+
+interface EventApiResponse {
+	events: (Party | Merchandise | Tour)[];
+}
 
 @Injectable()
 export class EventService extends ServletService<Event> {
 	private readonly baseUrl = `/api/event`;
 
-	constructor(private http: Http,
+	constructor(private http: HttpClient,
 				private cache: CacheStore,
-				private stockService: StockService,
-				private participantsService: ParticipantsService,
-				private eventUtilService: EventUtilityService,
 				private eventFactoryService: EventFactoryService) {
 		super();
+	}
+
+	/**
+	 * Helper method to convert the type value to the appropriate factory function
+	 * @param {any | any | any} type
+	 * @returns {(() => Party) | (() => Tour) | (() => Merchandise) | (() => Event)}
+	 */
+	private getFactoryFromType(type: 1 | 2 | 3): (() => Party) | (() => Tour) | (() => Merchandise) | (() => Event) {
+		switch (type) {
+			case 1:
+				return Tour.create;
+			case 2:
+				return Party.create;
+			case 3:
+				return Merchandise.create;
+		}
+		return Event.create;
 	}
 
 	/**
@@ -46,37 +61,23 @@ export class EventService extends ServletService<Event> {
 	/**
 	 * Requested das Event (mit einem bestimmten Event-Typen) vom Server, welches die gegebene ID besitzt
 	 * @param eventId
-	 * @param eventType
 	 * @param refresh
 	 * @returns {Observable<T>}
 	 */
 	getById(eventId: number, refresh?: boolean): Observable<Event> {
-		let url = `${this.baseUrl}?id=${eventId}`;
-
 		//return cached version if available to reduce number of http request necessary
-		//todo test: maybe just switch to rxjs solution instead
 		//todo cache test
 		let cachedEvent = this.cache.getEventById(eventId);
 		if (cachedEvent && !refresh) {
+			console.log(`eventId ${eventId} is cached`);
 			return Observable.of(cachedEvent);
 		}
+		console.log(`eventId ${eventId} is not cached, retrieving from db`);
 
-		return this.performRequest(this.http.get(url))
-			.map(response => response.json().events)
-			.map(json => {
-				if (json[0]["type"]) {
-					switch (json[0]["type"]) {
-						case 1:
-							return Tour.create().setProperties(json[0]);
-						case 2:
-							return Party.create().setProperties(json[0]);
-						case 3:
-							return Merchandise.create().setProperties(json[0]);
-					}
-				}
-
-				return Event.create().setProperties(json[0])
-			})
+		return this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("id", "" + eventId)
+		}))
+			.map(json => this.getFactoryFromType(json.events[0]["type"])().setProperties(json.events[0]))
 			.do(event => this.cache.addOrModify(event));
 	}
 
@@ -88,14 +89,12 @@ export class EventService extends ServletService<Event> {
 	getEventsOfUser(userId: number, eventTypes: { tours?: boolean, partys?: boolean }): Observable<(Tour | Party)[]> {
 		let searchQueries: Observable<Event[]>[] = getEventTypes()
 			.filter(type => eventTypes[type])
-			.map(eventType => {
-				let params = new URLSearchParams();
-				params.set("userId", userId.toString());
-				params.set("type", eventType.toString());
-
-				return this.performRequest(this.http.get("/api/event", {search: params}))
-					.map(response => response.json().events as (Party | Tour)[]);
-			});
+			.map(eventType => this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {
+					params: new HttpParams().set("userId", "" + userId)
+						.set("type", "" + eventType)
+				}))
+					.map(response => response.events)
+			);
 
 		return Observable.combineLatest(searchQueries)
 		//combine two observable arrays (one for tours, one for partys) into one
@@ -110,17 +109,18 @@ export class EventService extends ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	search(searchTerm: string, eventType: EventType): Observable<Event[]> {
-		//if no event type is specified, search for all kinds of events (the default value is 'ALL')
-		let url = `${this.baseUrl}?searchTerm=${searchTerm}` + ((eventType !== null) ? `&type=${eventType}` : "");
-
-		const httpRequest = this.performRequest(this.http.get(url))
-			.map(response => response.json().events)
-			.map((jsonArray: any[]) => jsonArray.map(json => this.eventFactoryService.build(eventType).setProperties(json)))
+		const httpRequest = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("searchTerm", searchTerm).set("type", "" + eventType)
+		}))
+			.map(json => json.events.map(event =>
+				this.eventFactoryService.build(eventType).setProperties(event)))
 			.do(events => this.cache.addMultiple(...events));
 
-		const cachedObservable: Observable<Event[]> = this.cache.search(searchTerm, EventService.cacheKeyFromEventType(eventType))
-		//todo cache test
-		// .map(result => []);
+		//todo just use the cached one instead of combining them?
+		//todo cache search result instead of searching cached events?
+		const cachedObservable: Observable<Event[]> = this.cache
+			.search(searchTerm, EventService.cacheKeyFromEventType(eventType));
+
 
 		//if any of the cached events match the search term, combine these with the ones loaded from the server
 		return Observable.combineLatest(cachedObservable, httpRequest,
@@ -139,21 +139,18 @@ export class EventService extends ServletService<Event> {
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	addOrModify(requestMethod: (url: string, body: any, options?: RequestOptionsArgs) => Observable<Response>,
+	addOrModify(requestMethod: AddOrModifyRequest,
 				event: Event, options?: any): Observable<Event> {
-		const requestOptions = new RequestOptions();
-		requestOptions.body = {};
-		requestOptions.body["event"] = event;
+		let body = {};
 
 		if (options) {
 			Object.keys(options)
 				.filter(key => key !== "uploadedImage")
-				.forEach(key => requestOptions.body[key] = options[key]);
+				.forEach(key => body[key] = options[key]);
 		}
 
-		return this.performRequest(requestMethod(this.baseUrl, {event}, requestOptions))
-			.map(response => response.json().id)
-			.flatMap(id => this.getById(id));
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {event, ...body}))
+			.flatMap(response => this.getById(response.id));
 	}
 
 	/**
@@ -184,13 +181,12 @@ export class EventService extends ServletService<Event> {
 	 * @param eventId
 	 * @returns {Observable<T>}
 	 */
-	remove(eventId: number): Observable<Response> {
-		let params = new URLSearchParams();
-		params.set("id", "" + eventId);
-		return this.performRequest(this.http.delete(this.baseUrl, {search: params}))
-			.do((removeResponse: Response) => {
-				const eventId: number = removeResponse.json().id;
-				this.cache.remove(EventService.cacheKeyFromEventType(EventType.merch), eventId);
+	remove(eventId: number): Observable<AddOrModifyResponse> {
+		return this.performRequest(this.http.delete<AddOrModifyResponse>(this.baseUrl, {
+			params: new HttpParams().set("id", "" + eventId)
+		}))
+			.do(response => {
+				this.cache.remove(EventService.cacheKeyFromEventType(EventType.merch), response.id);
 			});
 	}
 

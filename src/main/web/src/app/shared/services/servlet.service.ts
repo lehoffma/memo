@@ -2,6 +2,20 @@ import {Injectable} from "@angular/core";
 import {ServletServiceInterface} from "../model/servlet-service";
 import {Observable} from "rxjs/Observable";
 import {Response} from "@angular/http";
+import {HttpHeaders, HttpParams} from "@angular/common/http";
+
+export type AddOrModifyRequest = <T>(url: string, body: any | null, options?: {
+	headers?: HttpHeaders;
+	observe?: 'body';
+	params?: HttpParams;
+	reportProgress?: boolean;
+	responseType?: 'json';
+	withCredentials?: boolean;
+}) => Observable<T>
+
+export interface AddOrModifyResponse {
+	id: number
+}
 
 @Injectable()
 export abstract class ServletService<T> implements ServletServiceInterface<T> {
@@ -23,15 +37,15 @@ export abstract class ServletService<T> implements ServletServiceInterface<T> {
 	 * @param requestObservable
 	 * @returns {Observable<T>}
 	 */
-	performRequest<T>(requestObservable: Observable<T>): Observable<T> {
+	performRequest<U>(requestObservable: Observable<U>): Observable<U> {
 		return requestObservable
-		//retry 3 times before throwing an error
-			.retry(3)
+		//retry 2 times before throwing an error
+			.retry(2)
 			//log any errors
 			.catch(this.handleError)
 			//convert the observable to a hot observable, i.e. immediately perform the http request
 			//instead of waiting for someone to subscribe
-			.publish().refCount();
+			.share();
 	}
 
 
@@ -43,5 +57,5 @@ export abstract class ServletService<T> implements ServletServiceInterface<T> {
 
 	abstract modify(object: T, ...args: any[]): Observable<T>;
 
-	abstract remove(id: number, ...args: any[]): Observable<Response>;
+	abstract remove(id: number, ...args: any[]): Observable<Object>;
 }

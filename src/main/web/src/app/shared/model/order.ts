@@ -16,4 +16,8 @@ export class Order extends BaseObject<Order> {
 	static create(): Order {
 		return new Order(-1, -1, null, PaymentMethod.CASH, []);
 	}
+
+	static isOrder(object:any):object is Order{
+		return (<Order>object).method !== undefined && (<Order>object).method !== null;
+	}
 }

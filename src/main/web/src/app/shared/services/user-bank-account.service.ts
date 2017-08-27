@@ -1,9 +1,15 @@
 import {Injectable} from '@angular/core';
-import {ServletService} from "./servlet.service";
+import {AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Observable} from "rxjs/Observable";
-import {Headers, Http, RequestOptions, Response, URLSearchParams} from "@angular/http";
+import {Response} from "@angular/http";
 import {BankAccount} from "../model/bank-account";
 import {UserService} from "./user.service";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {CacheStore} from "../stores/cache.store";
+
+interface UserBankAccountApiResponse {
+	bankAccounts: BankAccount[];
+}
 
 @Injectable()
 export class UserBankAccountService extends ServletService<BankAccount> {
@@ -11,23 +17,31 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 
 	//todo select from bank account list when ordering (similar to address-selection maybe)
 	//todo manage bank accounts somewhere (on user edit page?)
-	constructor(public http: Http,
-				public userService: UserService) {
+	constructor(public http: HttpClient,
+				public userService: UserService,
+				public cache: CacheStore) {
 		super();
 	}
 
 	/**
 	 *
 	 * @param {number} id
-	 * @param args
 	 * @returns {Observable<BankAccount>}
 	 */
-	getById(id: number, ...args: any[]): Observable<BankAccount> {
-		let queryParams = new URLSearchParams();
-		queryParams.set("id", "" + id);
+	getById(id: number): Observable<BankAccount> {
+		if (this.cache.isCached("bankAccounts", id)) {
+			console.log(`bankAccountId ${id} is cached`);
+			return this.cache.cache.bankAccounts
+				.map(bankAccounts => bankAccounts.find(bankAccount => bankAccount.id === id));
+		}
+		console.log(`bankAccountId ${id} is not cached, retrieving from db`);
 
-		return this.http.get(this.baseUrl, {search: queryParams})
-			.map(response => response.json().bankAccounts[0] as BankAccount);
+
+		return this.http.get<UserBankAccountApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("id", "" + id)
+		})
+			.map(response => response.bankAccounts[0])
+			.do(bankAccount => this.cache.addOrModify(bankAccount))
 	}
 
 	/**
@@ -45,11 +59,11 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 			return this.getBankAccountsByUserId(options.userId);
 		}
 
-		let queryParams = new URLSearchParams();
-		queryParams.set("searchTerm", searchTerm);
-
-		return this.http.get(this.baseUrl, {search: queryParams})
-			.map(response => response.json().accounts as BankAccount[]);
+		return this.http.get<UserBankAccountApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("searchTerm", searchTerm)
+		})
+			.map(response => response.bankAccounts)
+			.do(bankAccounts => this.cache.addMultiple(...bankAccounts))
 	}
 
 	/**
@@ -68,13 +82,11 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 	 * @param args
 	 * @returns {Observable<BankAccount>}
 	 */
-	add(account: BankAccount, ...args: any[]): Observable<BankAccount> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
-
-		return this.http.post(this.baseUrl, {account}, requestOptions)
-			.map(response => response.json().id as number)
-			.flatMap(accountId => this.getById(accountId));
+	add(account: BankAccount): Observable<BankAccount> {
+		return this.http.post<AddOrModifyResponse>(this.baseUrl, {account}, {
+			headers: new HttpHeaders().set("Content-Type", "application/json")
+		})
+			.flatMap(response => this.getById(response.id));
 	}
 
 	/**
@@ -83,13 +95,11 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 	 * @param args
 	 * @returns {Observable<BankAccount>}
 	 */
-	modify(account: BankAccount, ...args: any[]): Observable<BankAccount> {
-		const headers = new Headers({"Content-Type": "application/json"});
-		const requestOptions = new RequestOptions({headers});
-
-		return this.http.put(this.baseUrl, {account}, requestOptions)
-			.map(response => response.json().id as number)
-			.flatMap(accountId => this.getById(accountId));
+	modify(account: BankAccount): Observable<BankAccount> {
+		return this.http.put<AddOrModifyResponse>(this.baseUrl, {account}, {
+			headers: new HttpHeaders().set("Content-Type", "application/json")
+		})
+			.flatMap(response => this.getById(response.id));
 	}
 
 	/**
@@ -98,9 +108,9 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 	 * @param args
 	 * @returns {Observable<Response>}
 	 */
-	remove(id: number, ...args: any[]): Observable<Response> {
-		let params = new URLSearchParams();
-		params.set("id", "" + id);
-		return this.http.delete(this.baseUrl, {search: params});
+	remove(id: number): Observable<Response> {
+		return this.http.delete(this.baseUrl, {
+			params: new HttpParams().set("id", "" + id)
+		});
 	}
 }
