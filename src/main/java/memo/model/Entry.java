@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
  * Entity implementation class for Entity: Entry
@@ -35,7 +35,7 @@ public class Entry implements Serializable {
     private String comment;
     @Expose
     private String picPath;
-    private Date date;
+    private LocalDateTime date;
 
     public Entry() {
         super();
@@ -113,11 +113,11 @@ public class Entry implements Serializable {
         this.name = name;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 }

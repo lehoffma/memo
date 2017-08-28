@@ -15,12 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -286,8 +285,8 @@ public class UserServlet extends HttpServlet {
         if (jUser.has("birthday")) {
             //todo rest der date parser an ISO format anpassen
             TemporalAccessor birthday = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
-            LocalDate date = LocalDate.from(birthday);
-            u.setBirthday(Date.valueOf(date));
+            LocalDateTime date = LocalDateTime.from(birthday);
+            u.setBirthday(date);
         }
 
         if (jUser.has("addresses")) {
@@ -306,12 +305,11 @@ public class UserServlet extends HttpServlet {
         if (jUser.has("joinDate")) {
 
             TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("joinDate").getAsString());
-            LocalDate jDate = LocalDate.from(join);
-            u.setJoinDate(Date.valueOf(jDate));
+            LocalDateTime jDate = LocalDateTime.from(join);
+            u.setJoinDate(jDate);
 
         } else {
-            Date joinDate = new Date(Calendar.getInstance().getTime().getTime());
-            u.setJoinDate(joinDate);
+            u.setJoinDate(LocalDateTime.now());
         }
 
 

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -173,7 +174,7 @@ public class CommentServlet extends HttpServlet {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         c = gson.fromJson(jComment, Comment.class);
 
-        c.setTimeStamp(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        c.setTimeStamp(LocalDateTime.now());
 
         return c;
     }

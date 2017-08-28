@@ -7,10 +7,10 @@ import {isMoment, Moment} from "moment";
 
 export const MOMENT_DATE_FORMATS: MdDateFormats = {
 	parse: {
-		dateInput: "ll"
+		dateInput: "l"
 	},
 	display: {
-		dateInput: "ll",
+		dateInput: "l",
 		monthYearLabel: "MMMM Y",
 		dateA11yLabel: "LL",
 		monthYearA11yLabel: "MMMM Y"

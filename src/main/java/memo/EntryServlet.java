@@ -187,8 +187,8 @@ public class EntryServlet extends HttpServlet {
         entry.setEntryCategoryID(jEntry.get("category").getAsJsonObject().get("id").getAsInt());
 
         TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEntry.get("date").getAsString());
-        LocalDate date = LocalDate.from(day);
-        entry.setDate(Date.valueOf(date));
+        LocalDateTime date = LocalDateTime.from(day);
+        entry.setDate(date);
 
         return entry;
     }

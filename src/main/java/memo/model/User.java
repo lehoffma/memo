@@ -4,9 +4,9 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -36,7 +36,7 @@ public class User implements Serializable {
     @Expose
     private List<Integer> addresses = new ArrayList<Integer>();
     @Column(nullable = false)
-    private Date birthday = new Date(0);
+    private LocalDateTime birthday = LocalDateTime.now();
     @Expose
     private String telephone;
     @Expose
@@ -62,7 +62,7 @@ public class User implements Serializable {
     @Expose
     private List<Integer> bankAccounts = new ArrayList<>();
     @Column(name = "JOIN_DATE", nullable = false)
-    private Date joinDate = new Date(Calendar.getInstance().getTime().getTime());
+    private LocalDateTime joinDate = LocalDateTime.now();
     @Expose
     private String gender;
     @Expose
@@ -95,11 +95,11 @@ public class User implements Serializable {
         this.firstName = firstName;
     }
 
-    public Date getBirthday() {
+    public LocalDateTime getBirthday() {
         return this.birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDateTime birthday) {
         this.birthday = birthday;
     }
 
@@ -167,11 +167,11 @@ public class User implements Serializable {
         isStudent = student;
     }
 
-    public Date getJoinDate() {
+    public LocalDateTime getJoinDate() {
         return joinDate;
     }
 
-    public void setJoinDate(Date joinDate) {
+    public void setJoinDate(LocalDateTime joinDate) {
         this.joinDate = joinDate;
     }
 

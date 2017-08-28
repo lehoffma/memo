@@ -39,7 +39,7 @@ export class AuthService {
 	 */
 	initRefreshToken() {
 		//attempt to refresh the token once on startup
-		if (!!this.getRefreshToken()) {
+		if (!!this.getRefreshToken() && this.getRefreshToken() !== undefined) {
 			this.refreshRefreshToken()
 				.subscribe(console.log, console.error);
 		}
@@ -47,7 +47,7 @@ export class AuthService {
 		//attempt to refresh after the specified interval
 		setInterval(() => {
 			console.log("refreshing refreshToken");
-			if (!!this.getRefreshToken()) {
+			if (!!this.getRefreshToken() && this.getRefreshToken() !== undefined) {
 				this.refreshRefreshToken()
 					.subscribe(console.log, console.error);
 			}

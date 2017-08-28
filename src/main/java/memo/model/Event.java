@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class Event implements Serializable {
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
-    private Timestamp date;
+    private LocalDateTime date;
     @Expose
     @Lob
     @Column(nullable = false)
@@ -83,11 +83,11 @@ public class Event implements Serializable {
         this.title = title;
     }
 
-    public Timestamp getDate() {
+    public LocalDateTime getDate() {
         return this.date;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -192,9 +192,7 @@ public class Event implements Serializable {
     }
 
     public void setRoute(List<Integer> route) {
-        for (Integer a : route) {
-            this.route.add(a);
-        }
+        this.route = route;
     }
 
     @Override

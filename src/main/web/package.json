@@ -37,6 +37,7 @@
 		"iban": "0.0.8",
 		"jquery": "3.2.1",
 		"moment": "2.18.1",
+		"moment-timezone": "^0.5.13",
 		"ng2-image-cropper": "0.0.3",
 		"ng2-password-strength-bar": "1.1.2",
 		"ngx-color-picker": "4.3.0",

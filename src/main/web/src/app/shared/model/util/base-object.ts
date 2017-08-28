@@ -2,8 +2,8 @@ import {ClubRole, idToClubRoleEnum} from "../club-role";
 import {jsonToPermissions, UserPermissions} from "../permission";
 import {isArray} from "util";
 import {Gender} from "../gender";
-import {isNumber, isString} from "../../../util/util";
-import * as moment from "moment";
+import {isNumber} from "../../../util/util";
+import * as moment from "moment-timezone";
 
 
 export abstract class BaseObject<T extends BaseObject<T>> {
@@ -12,6 +12,17 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 
 	}
 
+
+	private getIsoDateFromDateTimeObject({date: {day, month, year}, time: {hour, minute, second}}): string {
+		return year + "-" +
+			((+month < 10) ? '0' + month : month) + "-" +
+			((+day < 10) ? '0' + day : day) + "T" +
+			((+hour < 10) ? '0' + hour : hour) + ":" +
+			((+minute < 10) ? '0' + minute : minute) + ":" +
+			((+second < 10) ? '0' + second : second) + "Z";
+
+
+	}
 
 	/**
 	 * @param properties
@@ -23,13 +34,11 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 				let value: (string | number | number[] | Date | UserPermissions | any) = (<any>properties)[key];
 				if (isArray(value)) {
 
-				} else if ((key.toLowerCase().includes("date") || key.toLowerCase().includes("day"))
-					&& isString(value)) {
-					value = moment(value).toDate();
+				} else if ((key.toLowerCase().includes("date") || key.toLowerCase().includes("day"))) {
+					value = moment.tz(this.getIsoDateFromDateTimeObject(value), "Europe/Berlin").toDate();
 				} else if (isNumber(value)) {
 					value = +value;
 				}
-
 				if (key === "expectedRole") {
 					value = ClubRole[properties[key]]
 				} else if (key === "clubRole") {

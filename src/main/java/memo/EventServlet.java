@@ -199,8 +199,7 @@ public class EventServlet extends HttpServlet {
         if (jEvent.has("date")) {
             TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEvent.get("date").getAsString());
             LocalDateTime date = LocalDateTime.from(day);
-            e.setDate(Timestamp.valueOf(date));
-
+            e.setDate(date);
         }
 
 

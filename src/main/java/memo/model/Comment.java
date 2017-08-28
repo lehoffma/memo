@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "COMMENTS")
@@ -20,7 +20,7 @@ public class Comment implements Serializable {
     private Integer eventId;
 
     @Column(nullable = false)
-    private Timestamp timeStamp;   //muss jetzt unbedingt nich 'Date' sein, aber halt nen Datumstyp
+    private LocalDateTime timeStamp;   //muss jetzt unbedingt nich 'Date' sein, aber halt nen Datumstyp
 
     @Expose
     @Column(name = "AUTHOR_ID")
@@ -46,11 +46,11 @@ public class Comment implements Serializable {
         this.eventId = event;
     }
 
-    public Timestamp getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(Timestamp timeStamp) {
+    public void setTimeStamp(LocalDateTime timeStamp) {
         this.timeStamp = timeStamp;
     }
 

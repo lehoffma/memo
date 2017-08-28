@@ -4,7 +4,7 @@ package memo.model;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -21,7 +21,7 @@ public class Order {
     private Integer userId;
 
     @Column(nullable = false)
-    private Timestamp timeStamp;
+    private LocalDateTime timeStamp;
 
     @Expose
     private PaymentMethod method;
@@ -45,11 +45,11 @@ public class Order {
         this.userId = userId;
     }
 
-    public Timestamp getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(Timestamp timeStamp) {
+    public void setTimeStamp(LocalDateTime timeStamp) {
         this.timeStamp = timeStamp;
     }
 

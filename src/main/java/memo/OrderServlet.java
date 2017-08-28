@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -252,7 +253,7 @@ public class OrderServlet extends HttpServlet {
         // save params to new user
         o = gson.fromJson(jOrder, Order.class);
 
-        o.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+        o.setTimeStamp(LocalDateTime.now());
 
         String method = jOrder.get("method").getAsString();
 
