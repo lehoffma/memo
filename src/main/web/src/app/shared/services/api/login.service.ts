@@ -8,10 +8,12 @@ import {MdSnackBar} from "@angular/material";
 import {ActionPermissions} from "../../expandable-table/expandable-table.component";
 import {Permission, UserPermissions} from "../../model/permission";
 import {HttpClient} from "@angular/common/http";
+import {AuthService} from "./auth.service";
 
-interface LoginApiResponse{
+interface LoginApiResponse {
 	id: number;
 	auth_token: string;
+	refresh_token: string;
 }
 
 @Injectable()
@@ -22,15 +24,15 @@ export class LogInService {
 	private readonly loginUrl = "/api/login";
 	private readonly logoutUrl = "/api/logout";
 
-	private readonly authTokenKey = "auth_token";
-	private readonly profileKey = "profile";
+	private readonly profileKey = "profileId";
 
 	constructor(private http: HttpClient,
+				private authService: AuthService,
 				private snackBar: MdSnackBar,
 				private userService: UserService) {
-		const currentUser = JSON.parse(localStorage.getItem(this.profileKey));
-		if (currentUser && !isNullOrUndefined(currentUser.id)) {
-			this.pushNewData(+currentUser.id);
+		const currentUserId = JSON.parse(localStorage.getItem(this.profileKey));
+		if (currentUserId && !isNullOrUndefined(currentUserId) && this.authService.isAuthenticated()) {
+			this.pushNewData(+currentUserId);
 		}
 	}
 
@@ -47,13 +49,13 @@ export class LogInService {
 
 		return this.http.post<LoginApiResponse>(this.loginUrl, {email, password})
 			.map(json => {
-				const {id, auth_token} = json;
+				const {id, auth_token, refresh_token} = json;
 				if (id !== null && id >= 0) {
-					localStorage.setItem(this.authTokenKey, auth_token);
+					this.authService.setAccessToken(auth_token);
+					this.authService.setRefreshToken(refresh_token);
 					//store profile data in local storage (so the user won't get logged out if he closes the tab)
 					//todo use cookie instead
-					this.userService.getById(id).first()
-						.subscribe(user => localStorage.setItem(this.profileKey, JSON.stringify(user)));
+					localStorage.setItem(this.profileKey, "" + id);
 
 					this.pushNewData(id);
 				}
@@ -75,9 +77,10 @@ export class LogInService {
 	 * @returns {boolean}
 	 */
 	logout(): Observable<boolean> {
-		return this.http.post<{}>(this.logoutUrl, {auth_token: localStorage.getItem(this.authTokenKey)})
+		return this.http.post<{}>(this.logoutUrl, {auth_token: this.authService.getToken()})
 			.map(() => {
-				localStorage.removeItem(this.authTokenKey);
+				this.authService.setAccessToken(null);
+				this.authService.setRefreshToken("");
 				localStorage.removeItem(this.profileKey);
 				this.pushNewData(null);
 				this.snackBar.open("Du wurdest ausgeloggt.", "Schließen", {

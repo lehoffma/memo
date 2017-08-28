@@ -1,5 +1,4 @@
 import {Observable} from "rxjs/Observable";
-import {Response} from "@angular/http";
 
 export interface ServletServiceInterface<T> {
 	handleError(error: Error): Observable<any>,

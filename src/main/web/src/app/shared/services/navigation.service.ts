@@ -9,6 +9,7 @@ import {Address} from "../model/address";
 import {EventType} from "../../shop/shared/model/event-type";
 import {Event} from "../../shop/shared/model/event";
 import {HttpClient} from "@angular/common/http";
+import {LogInService} from "./api/login.service";
 
 @Injectable()
 export class NavigationService {
@@ -20,8 +21,14 @@ export class NavigationService {
 
 	constructor(private http: HttpClient,
 				private eventUtilService: EventUtilityService,
+				private loginService: LogInService,
 				private router: Router) {
 		this.initialize();
+	}
+
+	navigateToLogin() {
+		this.loginService.redirectUrl = this.router.url;
+		this.navigateByUrl("/login");
 	}
 
 	public navigateToItem(item: ShopItem | Event, suffix?: string) {

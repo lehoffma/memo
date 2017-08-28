@@ -1,6 +1,7 @@
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {DateAdapter} from "@angular/material";
 import {Moment} from "moment";
+import {AuthService} from "./shared/services/api/auth.service";
 
 @Component({
 	selector: "app",
@@ -9,11 +10,13 @@ import {Moment} from "moment";
 })
 export class AppComponent implements OnInit {
 
-	constructor(private dateAdapter: DateAdapter<Moment>,
+	constructor(private authService: AuthService,
+				private dateAdapter: DateAdapter<Moment>,
 				@Inject(LOCALE_ID) public locale: any) {
 		dateAdapter.setLocale(locale); // DD.MM.YYYY
 	}
 
 	ngOnInit() {
+		this.authService.initRefreshToken();
 	}
 }

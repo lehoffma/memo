@@ -141,8 +141,10 @@ import {OrderService} from "./shared/services/api/order.service";
 import {ErrorPageComponent} from "./util/error-page/error-page.component";
 import {OrderHistoryEntryComponent} from "./user/order-history/order-history-entry/order-history-entry.component";
 import {ModifyItemService} from "./shop/shop-item/modify-shop-item/shared/modify-item.service";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {ImageUploadService} from "./shared/services/api/image-upload.service";
+import {AuthService} from "./shared/services/api/auth.service";
+import {AuthInterceptor} from "./shared/interceptors/auth.interceptor";
 
 @NgModule({
 	imports: [
@@ -275,7 +277,7 @@ import {ImageUploadService} from "./shared/services/api/image-upload.service";
 		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
 		EntryService, EventFactoryService, QueryParameterService, StockService, SearchFilterService,
 		ConfirmationDialogService, SignUpService, EntryCategoryService, UserBankAccountService, OrderService,
-		ModifyItemService, ImageUploadService,
+		ModifyItemService, ImageUploadService, AuthService,
 
 		//guards
 		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,
@@ -284,6 +286,7 @@ import {ImageUploadService} from "./shared/services/api/image-upload.service";
 		{provide: LOCALE_ID, useValue: "de-DE"},
 		{provide: DateAdapter, useClass: MomentDateAdapter},
 		{provide: MD_DATE_FORMATS, useValue: MOMENT_DATE_FORMATS},
+		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
 	],
 	entryComponents: [
 		ItemImagePopupComponent,
