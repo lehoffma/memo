@@ -4,7 +4,7 @@ import {ColumnSortingEvent} from "../../../../shared/expandable-table/column-sor
 import {Observable} from "rxjs/Observable";
 import {attributeSortingFunction} from "../../../../util/util";
 import {Merchandise} from "../../../../shop/shared/model/merchandise";
-import {EventService} from "../../../../shared/services/event.service";
+import {EventService} from "../../../../shared/services/api/event.service";
 import {EventType} from "../../../../shop/shared/model/event-type";
 import {ExpandableTableColumn} from "../../../../shared/expandable-table/expandable-table-column";
 import {ExpandedRowComponent} from "../../../../shared/expandable-table/expanded-row.component";
@@ -13,9 +13,9 @@ import {MerchStockTotalTableCellComponent} from "app/club-management/administrat
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {ShopItemType} from "../../../../shop/shared/model/shop-item-type";
 import {isNullOrUndefined} from "util";
-import {StockService} from "../../../../shared/services/stock.service";
+import {StockService} from "../../../../shared/services/api/stock.service";
 import {ActionPermissions} from "../../../../shared/expandable-table/expandable-table.component";
-import {LogInService} from "../../../../shared/services/login.service";
+import {LogInService} from "../../../../shared/services/api/login.service";
 
 @Component({
 	selector: "memo-merch-stock",

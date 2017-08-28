@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
-import {Entry} from "../model/entry";
+import {Entry} from "../../model/entry";
 import {Response} from "@angular/http";
 import {Observable} from "rxjs/Observable";
-import {CacheStore} from "../stores/cache.store";
-import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/servlet.service";
+import {CacheStore} from "../../stores/cache.store";
+import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/api/servlet.service";
 import {EntryCategoryService} from "./entry-category.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 

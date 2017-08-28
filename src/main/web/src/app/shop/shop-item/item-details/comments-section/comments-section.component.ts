@@ -9,9 +9,9 @@ import {
 } from "@angular/core";
 import {Comment} from "../../../shared/model/comment";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {LogInService} from "../../../../shared/services/login.service";
+import {LogInService} from "../../../../shared/services/api/login.service";
 import {Observable} from "rxjs/Observable";
-import {CommentService} from "../../../../shared/services/comment.service";
+import {CommentService} from "../../../../shared/services/api/comment.service";
 
 @Component({
 	selector: "memo-comments-section",

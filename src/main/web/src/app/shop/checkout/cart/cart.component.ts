@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {ShoppingCartService} from "../../../shared/services/shopping-cart.service";
-import {EventService} from "../../../shared/services/event.service";
+import {EventService} from "../../../shared/services/api/event.service";
 import {Observable} from "rxjs/Observable";
 import {CartItem} from "./cart-item";
 import {ShoppingCartContent} from "../../../shared/model/shopping-cart-content";

@@ -3,12 +3,12 @@ import {User} from "../../shared/model/user";
 import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
 import {profileCategories} from "./profile-info-category";
-import {EventService} from "../../shared/services/event.service";
-import {UserService} from "../../shared/services/user.service";
+import {EventService} from "../../shared/services/api/event.service";
+import {UserService} from "../../shared/services/api/user.service";
 import {Event} from "../../shop/shared/model/event";
-import {LogInService} from "../../shared/services/login.service";
+import {LogInService} from "../../shared/services/api/login.service";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {AddressService} from "../../shared/services/address.service";
+import {AddressService} from "../../shared/services/api/address.service";
 import {EventRoute} from "../../shop/shared/model/route";
 import {Address} from "../../shared/model/address";
 

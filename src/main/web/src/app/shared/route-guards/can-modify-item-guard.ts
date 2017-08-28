@@ -1,10 +1,10 @@
 import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 import {Observable} from "rxjs/Observable";
-import {LogInService} from "../services/login.service";
-import {EventService} from "../services/event.service";
-import {EntryService} from "../services/entry.service";
-import {UserService} from "../services/user.service";
+import {LogInService} from "../services/api/login.service";
+import {EventService} from "../services/api/event.service";
+import {EntryService} from "../services/api/entry.service";
+import {UserService} from "../services/api/user.service";
 import {Permission} from "../model/permission";
 import {ShopItem} from "../model/shop-item";
 import {rolePermissions} from "../model/club-role";

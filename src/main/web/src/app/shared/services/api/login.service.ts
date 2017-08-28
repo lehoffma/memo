@@ -2,11 +2,11 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {UserService} from "./user.service";
-import {User} from "../model/user";
+import {User} from "../../model/user";
 import {isNullOrUndefined} from "util";
 import {MdSnackBar} from "@angular/material";
-import {ActionPermissions} from "../expandable-table/expandable-table.component";
-import {Permission, UserPermissions} from "../model/permission";
+import {ActionPermissions} from "../../expandable-table/expandable-table.component";
+import {Permission, UserPermissions} from "../../model/permission";
 import {HttpClient} from "@angular/common/http";
 
 interface LoginApiResponse{

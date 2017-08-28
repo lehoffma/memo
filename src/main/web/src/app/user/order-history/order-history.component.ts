@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
-import {LogInService} from "../../shared/services/login.service";
-import {OrderService} from "../../shared/services/order.service";
+import {LogInService} from "../../shared/services/api/login.service";
+import {OrderService} from "../../shared/services/api/order.service";
 import {Observable} from "rxjs/Observable";
 import {Order} from "../../shared/model/order";
 

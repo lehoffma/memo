@@ -1,12 +1,12 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {Gender} from "../../../shared/model/gender";
 import {ClubRole} from "../../../shared/model/club-role";
-import {LogInService} from "../../../shared/services/login.service";
-import {AddressService} from "../../../shared/services/address.service";
+import {LogInService} from "../../../shared/services/api/login.service";
+import {AddressService} from "../../../shared/services/api/address.service";
 import {Address} from "../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Router} from "@angular/router";
-import {UserService} from "../../../shared/services/user.service";
+import {UserService} from "../../../shared/services/api/user.service";
 import {FormControlDirective} from "@angular/forms";
 
 @Component({

@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
+import {ModifyItemEvent} from "../shared/modify-item-event";
 
 @Component({
 	selector: "memo-modify-merch",
@@ -11,10 +12,11 @@ export class ModifyMerchComponent implements OnInit {
 	@Input() model: any = {stock: []};
 	@Input() mode: ModifyType;
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
-	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
+	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 
 	ModifyType = ModifyType;
 	priceIsValid = true;
+	uploadedImage: FormData;
 	defaultImageUrl = "resources/images/Logo.png";
 
 	constructor(private location: Location) {
@@ -41,11 +43,13 @@ export class ModifyMerchComponent implements OnInit {
 	}
 
 	submitModifiedObject() {
-		this.onSubmit.emit(this.model);
+		this.onSubmit.emit({
+			model: this.model,
+			uploadedImage: this.uploadedImage
+		});
 	}
 
 	profilePictureChanged(event) {
-		console.error("todo implement");
-		console.log(event);
+		this.uploadedImage = event;
 	}
 }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Order} from "../model/order";
+import {Order} from "../../model/order";
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {CacheStore} from "app/shared/stores/cache.store";

@@ -51,8 +51,7 @@ public class UserServlet extends HttpServlet {
         String searchTerm = request.getParameter("searchTerm");
 
         List<User> users = getUsersFromDatabase(Sid, email, searchTerm, response);
-        //todo no idea why this even happens but this fixes it for the time
-        //oh i know what the problem is. shitty eclipse list implementations
+        //todo probably not needed anymore
         users = users.stream()
                 .peek(user -> user.setAddresses(new ArrayList<>(user.getAddresses())
                         .stream()
@@ -308,7 +307,7 @@ public class UserServlet extends HttpServlet {
 
             TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("joinDate").getAsString());
             LocalDate jDate = LocalDate.from(join);
-            u.setBirthday(Date.valueOf(jDate));
+            u.setJoinDate(Date.valueOf(jDate));
 
         } else {
             Date joinDate = new Date(Calendar.getInstance().getTime().getTime());

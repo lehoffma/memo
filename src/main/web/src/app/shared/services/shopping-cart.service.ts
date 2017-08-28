@@ -4,7 +4,7 @@ import {BehaviorSubject, Observable} from "rxjs";
 import {ShoppingCartContent} from "../model/shopping-cart-content";
 import {ShoppingCartItem} from "../model/shopping-cart-item";
 import {MerchColor} from "../../shop/shared/model/merch-color";
-import {EventService} from "./event.service";
+import {EventService} from "./api/event.service";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {

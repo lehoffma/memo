@@ -4,14 +4,15 @@ import {PaymentInfo} from "../payment-methods-form/debit-input-form/payment-info
 import {SignUpSection} from "../signup-section";
 import {SignUpSubmitEvent} from "../signup-submit-event";
 import {NavigationService} from "../../../shared/services/navigation.service";
-import {UserService} from "../../../shared/services/user.service";
+import {UserService} from "../../../shared/services/api/user.service";
 import {MdSnackBar} from "@angular/material";
-import {LogInService} from "../../../shared/services/login.service";
+import {LogInService} from "../../../shared/services/api/login.service";
 import {Address} from "../../../shared/model/address";
-import {AddressService} from "../../../shared/services/address.service";
-import {UserBankAccountService} from "../../../shared/services/user-bank-account.service";
+import {AddressService} from "../../../shared/services/api/address.service";
+import {UserBankAccountService} from "../../../shared/services/api/user-bank-account.service";
 import {BankAccount} from "../../../shared/model/bank-account";
 import {Observable} from "rxjs/Observable";
+import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 
 @Injectable()
 export class SignUpService {
@@ -25,6 +26,7 @@ export class SignUpService {
 
 	constructor(private navigationService: NavigationService,
 				private addressService: AddressService,
+				private imageUploadService: ImageUploadService,
 				private bankAccountService: UserBankAccountService,
 				private userService: UserService,
 				private snackBar: MdSnackBar,
@@ -118,13 +120,26 @@ export class SignUpService {
 		}
 	}
 
+	/**
+	 *
+	 * @param {User} user
+	 * @param {FormData} picture
+	 * @returns {Promise<User>}
+	 */
+	async uploadProfilePicture(user:User, picture: FormData):Promise<User>{
+		let imagePath = await this.imageUploadService.uploadImage(picture)
+			.map(response => response.imagePath)
+			.toPromise();
+
+		return user.setProperties({imagePath});
+	}
 
 	/**
 	 *
 	 * @param section
 	 * @param event
 	 */
-	onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
+	async onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
 		//extract section, email and passwordHash properties
 		const {
 			email,
@@ -157,6 +172,7 @@ export class SignUpService {
 
 		if (isLastScreen) {
 			this.submittingFinalUser = true;
+			this.newUser = await this.uploadProfilePicture(this.newUser, this.newUserProfilePicture);
 			this.userService.add(this.newUser, this.newUserProfilePicture)
 				.flatMap(newUser => this.newUserDebitInfo && this.newUserDebitInfo.bic !== undefined
 					? this.bankAccountService.add(BankAccount.create()

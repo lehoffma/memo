@@ -3,7 +3,7 @@ import {ShoppingCartService} from "../../../../shared/services/shopping-cart.ser
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {CartItem} from "../cart-item";
 import {Event} from "../../../shared/model/event";
-import {StockService} from "../../../../shared/services/stock.service";
+import {StockService} from "../../../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 

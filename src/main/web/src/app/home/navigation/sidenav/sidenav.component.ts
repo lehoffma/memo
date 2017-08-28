@@ -5,8 +5,8 @@ import {User} from "../../../shared/model/user";
 import {Link} from "../../../shared/model/link";
 import {UserPermissions, visitorPermissions} from "../../../shared/model/permission";
 import {NavigationService} from "../../../shared/services/navigation.service";
-import {LogInService} from "../../../shared/services/login.service";
-import {UserService} from "../../../shared/services/user.service";
+import {LogInService} from "../../../shared/services/api/login.service";
+import {UserService} from "../../../shared/services/api/user.service";
 import {Location} from "@angular/common";
 
 @Component({

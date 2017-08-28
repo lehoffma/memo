@@ -5,6 +5,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
 import {ModifyItemService} from "./shared/modify-item.service";
 import {Observable} from "rxjs/Observable";
+import {ModifyItemEvent} from "./shared/modify-item-event";
 
 @Component({
 	selector: "memo-modify-shop-item",
@@ -63,7 +64,7 @@ export class ModifyShopItemComponent implements OnInit {
 	/**
 	 * Submit callback
 	 */
-	submitModifiedObject(result: any) {
+	submitModifiedObject(result: ModifyItemEvent) {
 		this.modifyItemService.submitModifiedEvent(result);
 	}
 

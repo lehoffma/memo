@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
 import {Event} from "../../../shop/shared/model/event";
-import {AddressService} from "../../../shared/services/address.service";
+import {AddressService} from "../../../shared/services/api/address.service";
 import {Address} from "../../../shared/model/address";
 import {Observable} from "rxjs/Observable";
 import {EventType} from "../../../shop/shared/model/event-type";

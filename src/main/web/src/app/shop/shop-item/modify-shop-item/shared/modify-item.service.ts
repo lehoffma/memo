@@ -4,14 +4,14 @@ import {ShopItemType} from "../../../shared/model/shop-item-type";
 import {ShopItem} from "../../../../shared/model/shop-item";
 import {Observable} from "rxjs/Observable";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
-import {EventService} from "../../../../shared/services/event.service";
-import {UserService} from "../../../../shared/services/user.service";
-import {EntryService} from "../../../../shared/services/entry.service";
+import {EventService} from "../../../../shared/services/api/event.service";
+import {UserService} from "../../../../shared/services/api/user.service";
+import {EntryService} from "../../../../shared/services/api/entry.service";
 import {Party} from "../../../shared/model/party";
 import {Tour} from "../../../shared/model/tour";
-import {AddressService} from "../../../../shared/services/address.service";
+import {AddressService} from "../../../../shared/services/api/address.service";
 import {Merchandise} from "../../../shared/model/merchandise";
-import {StockService} from "../../../../shared/services/stock.service";
+import {StockService} from "../../../../shared/services/api/stock.service";
 import {User} from "app/shared/model/user";
 import {ServletServiceInterface} from "../../../../shared/model/servlet-service";
 import {Entry} from "../../../../shared/model/entry";
@@ -22,6 +22,8 @@ import {ParamMap, Params} from "@angular/router";
 import * as moment from "moment";
 import {Address} from "../../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {ImageUploadApiResponse, ImageUploadService} from "../../../../shared/services/api/image-upload.service";
+import {ModifyItemEvent} from "./modify-item-event";
 
 @Injectable()
 export class ModifyItemService {
@@ -43,6 +45,7 @@ export class ModifyItemService {
 	public model$ = this._model$.asObservable();
 
 	constructor(public eventService: EventService,
+				public imageUploadService: ImageUploadService,
 				public userService: UserService,
 				public location: Location,
 				public navigationService: NavigationService,
@@ -234,9 +237,65 @@ export class ModifyItemService {
 
 	/**
 	 *
+	 * @param {ShopItem} newObject
+	 * @returns {Promise<ShopItem>}
+	 */
+	async addAddresses(newObject:ShopItem):Promise<ShopItem>{
+		if (EventUtilityService.isTour(newObject) || EventUtilityService.isParty(newObject)) {
+			//todo instead of combineLatest: add routes one after another (to avoid transaction errors)
+			if (this.isAddressArray(newObject.route)) {
+				let addressIds = await Observable.combineLatest(
+					...newObject.route.map((route: Address) => this.addressService.add(route))
+				)
+					.map((addresses: Address[]) => addresses.map(address => address.id))
+					.toPromise();
+
+				newObject.setProperties({route: [...addressIds]});
+			}
+		}
+		return newObject
+	}
+
+	/**
+	 *
+	 * @param {ShopItem} newObject
+	 * @returns {ShopItem}
+	 */
+	setDefaultValues(newObject:ShopItem){
+		if (EventUtilityService.isTour(newObject)) {
+			newObject.setProperties((<Partial<Tour>>{emptySeats: newObject.capacity}));
+		}
+		return newObject;
+	}
+
+	/**
+	 *
+	 * @param newObject
+	 * @param {FormData} uploadedImage
+	 */
+	async uploadImage(newObject:ShopItem, uploadedImage:FormData):Promise<ShopItem>{
+		if(EventUtilityService.isMerchandise(newObject) || EventUtilityService.isTour(newObject) ||
+			EventUtilityService.isUser(newObject) || EventUtilityService.isParty(newObject)){
+			//todo: error handling, progress report
+			let imagePath = await this.imageUploadService.uploadImage(uploadedImage)
+				.map(response => response.imagePath)
+				.toPromise();
+
+			//thanks typescript..
+			if(EventUtilityService.isUser(newObject)){
+				return newObject.setProperties({imagePath: imagePath});
+			}
+			return newObject.setProperties({imagePath: imagePath});
+		}
+
+		return newObject;
+	}
+
+	/**
+	 *
 	 * @param model
 	 */
-	async submitModifiedEvent(model: any) {
+	async submitModifiedEvent(model: ModifyItemEvent) {
 		let service: ServletServiceInterface<ShopItem> = EventUtilityService.handleOptionalShopType<ServletServiceInterface<User | Entry | Event>>(
 			this.itemType,
 			{
@@ -261,30 +320,17 @@ export class ModifyItemService {
 
 		let options: any = EventUtilityService.handleOptionalShopType<any>(this.itemType,
 			{
-				entries: () => ({eventId: model["eventId"]})
+				entries: () => ({eventId: model.eventId})
 			});
 
 		//handle addresses correctly
 		if (EventUtilityService.isUser(newObject)) {
 			newObject.setProperties({addresses: newObject.addresses.map((it: any) => it.id)});
 		}
-		if (EventUtilityService.isTour(newObject) || EventUtilityService.isParty(newObject)) {
-			//todo instead of combineLatest: add routes one after another (to avoid transaction errors)
-			if (this.isAddressArray(newObject.route)) {
-				let addressIds = await Observable.combineLatest(
-					...newObject.route.map((route: Address) => this.addressService.add(route))
-				)
-					.map((addresses: Address[]) => addresses.map(address => address.id))
-					.toPromise();
-
-				newObject.setProperties({route: [...addressIds]});
-			}
-		}
-		if (EventUtilityService.isTour(newObject)) {
-			newObject.setProperties((<Partial<Tour>>{emptySeats: newObject.capacity}));
-		}
-
-		//todo upload image seperately
+		newObject = await this.addAddresses(newObject);
+		newObject = this.setDefaultValues(newObject);
+		//todo display progress-bar while uploading
+		newObject = await this.uploadImage(newObject, model.uploadedImage);
 
 
 		//todo display "submitting..." while waiting for response from server

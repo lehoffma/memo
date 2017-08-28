@@ -1,21 +1,21 @@
 import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
-import {UserService} from "../../shared/services/user.service";
+import {UserService} from "../../shared/services/api/user.service";
 import {Observable} from "rxjs/Observable";
 import {Router} from "@angular/router";
-import {LogInService} from "../../shared/services/login.service";
-import {AddressService} from "../../shared/services/address.service";
+import {LogInService} from "../../shared/services/api/login.service";
+import {AddressService} from "../../shared/services/api/address.service";
 import {Address} from "../../shared/model/address";
 import {PaymentMethod} from "./payment/payment-method";
 import {ShoppingCartService} from "../../shared/services/shopping-cart.service";
 import {MdSnackBar} from "@angular/material";
-import {OrderService} from "../../shared/services/order.service";
+import {OrderService} from "../../shared/services/api/order.service";
 import {Order} from "../../shared/model/order";
 import {ShoppingCartContent} from "../../shared/model/shopping-cart-content";
-import {UserBankAccountService} from "../../shared/services/user-bank-account.service";
+import {UserBankAccountService} from "../../shared/services/api/user-bank-account.service";
 import {BankAccount} from "../../shared/model/bank-account";
 import {OrderedItem} from "../../shared/model/ordered-item";
-import {EventService} from "../../shared/services/event.service";
+import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
 
 @Component({

@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from "@angular/core";
 import {MD_DIALOG_DATA, MdDialogRef} from "@angular/material";
 import {EventType} from "../../shared/model/event-type";
 import {Observable} from "rxjs/Observable";
-import {EventService} from "../../../shared/services/event.service";
+import {EventService} from "../../../shared/services/api/event.service";
 
 @Component({
 	selector: "memo-event-context-menu",

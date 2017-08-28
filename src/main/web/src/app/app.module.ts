@@ -26,7 +26,7 @@ import {ParticipantsComponent} from "./shop/shop-item/item-details/participants/
 import {RouteComponent} from "./shop/shop-item/item-details/route/route.component";
 import {SizeTableComponent} from "./shop/shop-item/item-details/size-table/size-table.component";
 import {memoConfig} from "./app.config";
-import {LogInService} from "./shared/services/login.service";
+import {LogInService} from "./shared/services/api/login.service";
 import {LoginComponent} from "./user/login/login.component";
 import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {SignUpComponent} from "./user/signup/signup.component";
@@ -52,13 +52,13 @@ import {SearchResultComponent} from "./shop/search-results/search-results.compon
 import {SearchInputComponent} from "./home/navigation/toolbar/search-input/search-input.component";
 import {ResultsComponent} from "./shop/search-results/results/results.component";
 import {ResultsEntryComponent} from "./shop/search-results/results/results-entry/results-entry.component";
-import {EventService} from "./shared/services/event.service";
-import {EntryService} from "./shared/services/entry.service";
+import {EventService} from "./shared/services/api/event.service";
+import {EntryService} from "./shared/services/api/entry.service";
 import {EventFactoryService} from "./shared/services/event-factory.service";
 import {OrderHistoryComponent} from "./user/order-history/order-history.component";
 import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
-import {UserService} from "app/shared/services/user.service";
+import {UserService} from "app/shared/services/api/user.service";
 import {ParticipatedToursPreviewComponent} from "./user/profile/participated-tours-preview/participated-tours-preview.component";
 import {ParticipantListComponent} from "./shop/shop-item/item-details/participants/participant-list/participant-list.component";
 import {CacheStore} from "./shared/stores/cache.store";
@@ -92,7 +92,7 @@ import {DateTableCellComponent} from "./club-management/administration/member-li
 import {ClubRoleTableCellComponent} from "./club-management/administration/member-list/member-list-table-cells/clubrole-table-cell.component";
 import {BooleanCheckMarkCellComponent} from "./club-management/administration/member-list/member-list-table-cells/boolean-checkmark-cell.component";
 import {GenderCellComponent} from "./club-management/administration/member-list/member-list-table-cells/gender-cell.component";
-import {AddressService} from "./shared/services/address.service";
+import {AddressService} from "./shared/services/api/address.service";
 import {AddressTableCellComponent} from "./club-management/administration/member-list/member-list-table-cells/address-table-cell.component";
 import {AutoSizeTextAreaDirective} from "./shared/autosize-textarea.directive";
 import {MemoMaterialModule} from "../material.module";
@@ -109,11 +109,11 @@ import {ModifyMerchStockComponent} from "./shop/shop-item/modify-shop-item/modif
 import {MerchColorCellComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch-stock/merch-color-cell/merch-color-cell.component";
 import {ModifyMerchStockItemComponent} from "./shop/shop-item/modify-shop-item/modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
 import {AddressModificationComponent} from "./shop/checkout/address-selection/address-modification/address-modification.component";
-import {ParticipantsService} from "./shared/services/participants.service";
+import {ParticipantsService} from "./shared/services/api/participants.service";
 import {FullNameTableCellComponent} from "./shop/shop-item/item-details/participants/participant-list/full-name-table-cell.component";
 import {ModifyParticipantComponent} from "./shop/shop-item/item-details/participants/participant-list/modify-participant/modify-participant.component";
-import {StockService} from "./shared/services/stock.service";
-import {CommentService} from "app/shared/services/comment.service";
+import {StockService} from "./shared/services/api/stock.service";
+import {CommentService} from "app/shared/services/api/comment.service";
 import {CommentsSectionComponent} from "./shop/shop-item/item-details/comments-section/comments-section.component";
 import {CommentBlockComponent} from "./shop/shop-item/item-details/comments-section/comment-block/comment-block.component";
 import {CommentInputComponent} from "./shop/shop-item/item-details/comments-section/comment-block/comment-input/comment-input.component";
@@ -134,14 +134,15 @@ import {DateAdapter, MD_DATE_FORMATS} from "@angular/material";
 import {MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-config/moment-adapter";
 import {CanViewStockGuard} from "./shared/route-guards/can-view-stock.guard";
 import {SignUpService} from "./user/signup/shared/signup.service";
-import {EntryCategoryService} from "./shared/services/entry-category.service";
+import {EntryCategoryService} from "./shared/services/api/entry-category.service";
 import {EntryCategoryCellComponent} from "./club-management/accounting/accounting-table-cells/entry-category-cell.component";
-import {UserBankAccountService} from "./shared/services/user-bank-account.service";
-import {OrderService} from "./shared/services/order.service";
+import {UserBankAccountService} from "./shared/services/api/user-bank-account.service";
+import {OrderService} from "./shared/services/api/order.service";
 import {ErrorPageComponent} from "./util/error-page/error-page.component";
 import {OrderHistoryEntryComponent} from "./user/order-history/order-history-entry/order-history-entry.component";
 import {ModifyItemService} from "./shop/shop-item/modify-shop-item/shared/modify-item.service";
 import {HttpClientModule} from "@angular/common/http";
+import {ImageUploadService} from "./shared/services/api/image-upload.service";
 
 @NgModule({
 	imports: [
@@ -274,7 +275,7 @@ import {HttpClientModule} from "@angular/common/http";
 		LogInService, ShoppingCartService, EventUtilityService, EventService, AddressService,
 		EntryService, EventFactoryService, QueryParameterService, StockService, SearchFilterService,
 		ConfirmationDialogService, SignUpService, EntryCategoryService, UserBankAccountService, OrderService,
-		ModifyItemService,
+		ModifyItemService, ImageUploadService,
 
 		//guards
 		AuthenticatedGuard, CanModifyItemGuard, IsTreasurerGuard, IsOwnProfileGuard, IsValidItemTypeGuard,

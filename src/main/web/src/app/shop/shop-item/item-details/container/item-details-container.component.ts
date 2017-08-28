@@ -4,7 +4,7 @@ import {MdDialog} from "@angular/material";
 import {ItemImagePopupComponent} from "./image-popup/item-image-popup.component";
 import {Event} from "../../../shared/model/event";
 import {EventOverviewKey} from "./overview/event-overview-key";
-import {LogInService} from "../../../../shared/services/login.service";
+import {LogInService} from "../../../../shared/services/api/login.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {Permission} from "../../../../shared/model/permission";
 

@@ -1,13 +1,13 @@
 import {Injectable} from "@angular/core";
-import {EventType, getEventTypes} from "../../shop/shared/model/event-type";
+import {EventType, getEventTypes} from "../../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
-import {Event} from "../../shop/shared/model/event";
-import {EventFactoryService} from "./event-factory.service";
-import {Tour} from "../../shop/shared/model/tour";
-import {Party} from "../../shop/shared/model/party";
-import {CacheStore} from "../stores/cache.store";
+import {Event} from "../../../shop/shared/model/event";
+import {EventFactoryService} from "../event-factory.service";
+import {Tour} from "../../../shop/shared/model/tour";
+import {Party} from "../../../shop/shared/model/party";
+import {CacheStore} from "../../stores/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Merchandise} from "../../shop/shared/model/merchandise";
+import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpParams} from "@angular/common/http";
 
 interface EventApiResponse {

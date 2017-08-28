@@ -1,8 +1,8 @@
 import {Component, OnInit} from "@angular/core";
-import {LogInService} from "../../shared/services/login.service";
+import {LogInService} from "../../shared/services/api/login.service";
 import {Tour} from "../../shop/shared/model/tour";
 import {Observable} from "rxjs/Observable";
-import {EventService} from "../../shared/services/event.service";
+import {EventService} from "../../shared/services/api/event.service";
 import {Party} from "../../shop/shared/model/party";
 import {dateSortingFunction} from "../../util/util";
 

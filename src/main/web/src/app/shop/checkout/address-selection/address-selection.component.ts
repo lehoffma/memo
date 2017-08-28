@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Address} from "../../../shared/model/address";
 import {Router} from "@angular/router";
-import {AddressService} from "../../../shared/services/address.service";
-import {LogInService} from "../../../shared/services/login.service";
+import {AddressService} from "../../../shared/services/api/address.service";
+import {LogInService} from "../../../shared/services/api/login.service";
 
 @Component({
 	selector: "memo-address-selection",

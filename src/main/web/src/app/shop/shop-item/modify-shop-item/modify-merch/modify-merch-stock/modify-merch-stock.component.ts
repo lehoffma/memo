@@ -11,7 +11,7 @@ import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-me
 import {ModifyStockItemEvent} from "./modify-merch-stock-item/modify-stock-item-event";
 import {ModifyType} from "../../modify-type";
 import {ActionPermissions} from "../../../../../shared/expandable-table/expandable-table.component";
-import {LogInService} from "../../../../../shared/services/login.service";
+import {LogInService} from "../../../../../shared/services/api/login.service";
 
 @Component({
 	selector: "memo-modify-merch-stock",

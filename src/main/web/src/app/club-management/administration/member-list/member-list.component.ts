@@ -1,5 +1,5 @@
 import {Component, HostListener, OnInit, Type} from "@angular/core";
-import {UserService} from "../../../shared/services/user.service";
+import {UserService} from "../../../shared/services/api/user.service";
 import {User} from "../../../shared/model/user";
 import {Observable} from "rxjs/Observable";
 import {ExpandedRowComponent} from "../../../shared/expandable-table/expanded-row.component";
@@ -11,7 +11,7 @@ import {NavigationService} from "../../../shared/services/navigation.service";
 import {ExpandableTableColumn} from "../../../shared/expandable-table/expandable-table-column";
 import {memberListColumns} from "./member-list-columns";
 import {ActionPermissions} from "../../../shared/expandable-table/expandable-table.component";
-import {LogInService} from "../../../shared/services/login.service";
+import {LogInService} from "../../../shared/services/api/login.service";
 
 @Component({
 	selector: "memo-member-list",

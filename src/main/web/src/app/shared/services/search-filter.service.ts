@@ -6,7 +6,7 @@ import {Event} from "../../shop/shared/model/event";
 import {Merchandise} from "../../shop/shared/model/merchandise";
 import {MultiLevelSelectLeaf} from "../multi-level-select/shared/multi-level-select-leaf";
 import * as moment from "moment";
-import {StockService} from "./stock.service";
+import {StockService} from "./api/stock.service";
 import {Observable} from "rxjs/Observable";
 
 @Injectable()

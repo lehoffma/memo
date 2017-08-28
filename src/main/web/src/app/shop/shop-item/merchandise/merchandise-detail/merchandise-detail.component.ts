@@ -5,9 +5,9 @@ import {Observable} from "rxjs";
 import {isNullOrUndefined} from "util";
 import {MerchandiseOptions} from "./merchandise-options";
 import {EventOverviewKey} from "../../item-details/container/overview/event-overview-key";
-import {EventService} from "../../../../shared/services/event.service";
-import {CommentService} from "../../../../shared/services/comment.service";
-import {LogInService} from "../../../../shared/services/login.service";
+import {EventService} from "../../../../shared/services/api/event.service";
+import {CommentService} from "../../../../shared/services/api/comment.service";
+import {LogInService} from "../../../../shared/services/api/login.service";
 import {Comment} from "../../../shared/model/comment";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 

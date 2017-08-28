@@ -4,7 +4,7 @@ import {Merchandise} from "../../../../shared/model/merchandise";
 import {ShoppingCartService} from "../../../../../shared/services/shopping-cart.service";
 import {EventUtilityService} from "../../../../../shared/services/event-utility.service";
 import {EventOverviewKey} from "./event-overview-key";
-import {StockService} from "../../../../../shared/services/stock.service";
+import {StockService} from "../../../../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
 import * as moment from "moment";
 import {MerchColor} from "../../../../shared/model/merch-color";

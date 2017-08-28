@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Merchandise} from "../shop/shared/model/merchandise";
 import {Event} from "../shop/shared/model/event";
 import {Observable} from "rxjs";
-import {EventService} from "../shared/services/event.service";
+import {EventService} from "../shared/services/api/event.service";
 import {EventType} from "../shop/shared/model/event-type";
 import * as moment from "moment";
 

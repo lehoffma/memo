@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
+import {ModifyItemEvent} from "../shared/modify-item-event";
 
 @Component({
 	selector: "memo-modify-tour",
@@ -11,7 +12,7 @@ export class ModifyTourComponent implements OnInit {
 	@Input() model: any;
 	@Input() mode: ModifyType;
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
-	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
+	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 
 	defaultImageUrl = "resources/images/Logo.png";
 	uploadedImage: FormData;

@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Observable} from "rxjs";
-import {EventService} from "../../shared/services/event.service";
+import {EventService} from "../../shared/services/api/event.service";
 import {EventType} from "../shared/model/event-type";
 import {Event} from "../shared/model/event";
 import {SortingOption} from "../../shared/model/sorting-option";

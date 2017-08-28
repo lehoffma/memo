@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Address} from "../../../shared/model/address";
 import {ConfirmationDialogService} from "../../../shared/services/confirmation-dialog.service";
-import {AddressService} from "../../../shared/services/address.service";
+import {AddressService} from "../../../shared/services/api/address.service";
 import {Router} from "@angular/router";
 
 @Component({

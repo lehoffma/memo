@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
-import {UserService} from "../../shared/services/user.service";
-import {EventService} from "../../shared/services/event.service";
+import {UserService} from "../../shared/services/api/user.service";
+import {EventService} from "../../shared/services/api/event.service";
 
 @Component({
 	selector: "memo-imprint",

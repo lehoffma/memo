@@ -3,7 +3,7 @@ import {EventUtilityService} from "../../../../shared/services/event-utility.ser
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {Event} from "../../../shared/model/event";
 import {MerchColor} from "../../../shared/model/merch-color";
-import {StockService} from "../../../../shared/services/stock.service";
+import {StockService} from "../../../../shared/services/api/stock.service";
 
 @Component({
 	selector: "memo-results-entry",

@@ -2,10 +2,10 @@ import {Injectable} from '@angular/core';
 import {AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Observable} from "rxjs/Observable";
 import {Response} from "@angular/http";
-import {BankAccount} from "../model/bank-account";
+import {BankAccount} from "../../model/bank-account";
 import {UserService} from "./user.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {CacheStore} from "../stores/cache.store";
+import {CacheStore} from "../../stores/cache.store";
 
 interface UserBankAccountApiResponse {
 	bankAccounts: BankAccount[];

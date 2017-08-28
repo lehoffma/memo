@@ -1,5 +1,5 @@
 import {Component, HostListener, OnInit, Type} from "@angular/core";
-import {EntryService} from "../../shared/services/entry.service";
+import {EntryService} from "../../shared/services/api/entry.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
 import {Entry} from "../../shared/model/entry";
@@ -13,10 +13,10 @@ import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-t
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import * as moment from "moment";
 import {DateTableCellComponent} from "../administration/member-list/member-list-table-cells/date-table-cell.component";
-import {LogInService} from "../../shared/services/login.service";
+import {LogInService} from "../../shared/services/api/login.service";
 import {ActionPermissions} from "../../shared/expandable-table/expandable-table.component";
 import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
-import {EventService} from "../../shared/services/event.service";
+import {EventService} from "../../shared/services/api/event.service";
 
 @Component({
 	selector: "memo-accounting",

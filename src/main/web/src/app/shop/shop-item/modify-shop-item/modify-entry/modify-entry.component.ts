@@ -4,11 +4,12 @@ import {Location} from "@angular/common";
 import {Observable} from "rxjs/Observable";
 import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
-import {EventService} from "../../../../shared/services/event.service";
+import {EventService} from "../../../../shared/services/api/event.service";
 import {Event} from "../../../shared/model/event";
 import {EventType} from "../../../shared/model/event-type";
 import {ActivatedRoute} from "@angular/router";
-import {EntryCategoryService} from "../../../../shared/services/entry-category.service";
+import {EntryCategoryService} from "../../../../shared/services/api/entry-category.service";
+import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/shared/modify-item-event";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -19,7 +20,7 @@ export class ModifyEntryComponent implements OnInit {
 	@Input() model: any;
 	@Input() mode: ModifyType;
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
-	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
+	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 	associatedEvent: Event;
 
 	ModifyType = ModifyType;

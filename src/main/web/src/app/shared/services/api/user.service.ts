@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {User} from "../model/user";
-import {CacheStore} from "../stores/cache.store";
+import {User} from "../../model/user";
+import {CacheStore} from "../../stores/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 

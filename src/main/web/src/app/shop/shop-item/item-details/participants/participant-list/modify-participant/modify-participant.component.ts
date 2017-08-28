@@ -5,9 +5,9 @@ import {ModifyType} from "../../../../modify-shop-item/modify-type";
 import {FormControl} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
 import {User} from "../../../../../../shared/model/user";
-import {UserService} from "../../../../../../shared/services/user.service";
+import {UserService} from "../../../../../../shared/services/api/user.service";
 import {EventUtilityService} from "../../../../../../shared/services/event-utility.service";
-import {ParticipantsService} from "../../../../../../shared/services/participants.service";
+import {ParticipantsService} from "../../../../../../shared/services/api/participants.service";
 import {EventType} from "../../../../../shared/model/event-type";
 
 export interface ModifyParticipantEvent {

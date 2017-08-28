@@ -3,7 +3,7 @@ import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {ParticipantUser} from "../../../../shared/model/participant";
 import {Observable} from "rxjs/Observable";
 import {EventType} from "../../../../shared/model/event-type";
-import {ParticipantsService} from "../../../../../shared/services/participants.service";
+import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
 import {BooleanCheckMarkCellComponent} from "../../../../../club-management/administration/member-list/member-list-table-cells/boolean-checkmark-cell.component";
@@ -17,9 +17,9 @@ import {
 	ModifyParticipantComponent,
 	ModifyParticipantEvent
 } from "app/shop/shop-item/item-details/participants/participant-list/modify-participant/modify-participant.component";
-import {EventService} from "../../../../../shared/services/event.service";
+import {EventService} from "../../../../../shared/services/api/event.service";
 import {ActionPermissions} from "../../../../../shared/expandable-table/expandable-table.component";
-import {LogInService} from "../../../../../shared/services/login.service";
+import {LogInService} from "../../../../../shared/services/api/login.service";
 
 const participantListColumns = {
 	name: new ExpandableTableColumn<ParticipantUser>("Name", "user", FullNameTableCellComponent),

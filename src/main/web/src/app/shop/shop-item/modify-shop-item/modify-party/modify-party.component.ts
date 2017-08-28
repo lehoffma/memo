@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
+import {ModifyItemEvent} from "../shared/modify-item-event";
 
 @Component({
 	selector: "memo-modify-party",
@@ -11,11 +12,12 @@ export class ModifyPartyComponent implements OnInit {
 	@Input() model: any;
 	@Input() mode: ModifyType;
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
-	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
+	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 
 	ModifyType = ModifyType;
 
 	defaultImageUrl = "resources/images/Logo.png";
+	uploadedImage: FormData;
 
 	constructor(private location: Location) {
 	}
@@ -37,11 +39,13 @@ export class ModifyPartyComponent implements OnInit {
 	}
 
 	submitModifiedObject() {
-		this.onSubmit.emit(this.model);
+		this.onSubmit.emit({
+			model: this.model,
+			uploadedImage: this.uploadedImage
+		});
 	}
 
 	profilePictureChanged(event) {
-		console.error("todo implement");
-		console.log(event);
+		this.uploadedImage = event;
 	}
 }

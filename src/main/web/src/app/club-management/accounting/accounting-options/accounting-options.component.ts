@@ -3,13 +3,13 @@ import * as moment from "moment";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
 import {Event} from "../../../shop/shared/model/event";
-import {EventService} from "../../../shared/services/event.service";
+import {EventService} from "../../../shared/services/api/event.service";
 import {EventType} from "../../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {EntryCategoryService} from "../../../shared/services/entry-category.service";
+import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
 
 @Component({
 	selector: "memo-accounting-options",

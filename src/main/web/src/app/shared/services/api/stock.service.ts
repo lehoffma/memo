@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
-import {MerchStock, MerchStockList} from "../../shop/shared/model/merch-stock";
+import {MerchStock, MerchStockList} from "../../../shop/shared/model/merch-stock";
 import {Observable} from "rxjs/Observable";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Merchandise} from "../../shop/shared/model/merchandise";
+import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 
 const stockMockData = [
