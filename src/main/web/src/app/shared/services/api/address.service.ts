@@ -1,10 +1,10 @@
 import {EventEmitter, Injectable} from "@angular/core";
-import {Address} from "../model/address";
 import {Observable} from "rxjs/Observable";
 import {Response} from "@angular/http";
-import {CacheStore} from "../stores/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {CacheStore} from "../../stores/cache.store";
+import {Address} from "../../model/address";
 
 interface AddressApiResponse {
 	addresses: Partial<Address>[]

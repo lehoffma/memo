@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Observable} from "rxjs/Observable";
-import {Comment} from "../../shop/shared/model/comment";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {CacheStore} from "../stores/cache.store";
+import {CacheStore} from "../../stores/cache.store";
+import {Comment} from "../../../shop/shared/model/comment";
 
 interface CommentApiResponse {
 	comments: Comment[];
