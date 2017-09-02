@@ -2,12 +2,14 @@ import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
+import {Moment} from "moment";
+import * as moment from "moment";;
 
 export class Tour extends Event {
 
 	constructor(id: number,
 				title: string,
-				date: Date,
+				date: Moment,
 				description: string,
 				expectedRole: ClubRole,
 				route: EventRoute,
@@ -77,6 +79,6 @@ export class Tour extends Event {
 	}
 
 	static create() {
-		return new Tour(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, -1, "", -1, -1);
+		return new Tour(-1, "", moment(), "", ClubRole.None, [], "resources/images/Logo.png", -1, -1, "", -1, -1);
 	}
 }

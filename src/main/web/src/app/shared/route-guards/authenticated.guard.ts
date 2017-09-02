@@ -13,6 +13,12 @@ export class AuthenticatedGuard implements CanActivate {
 	}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
+		//todo demo remove
+		if(state.url.includes("")){
+			console.warn("Authenticated guard demo");
+			return true;
+		}
+
 		if (this.authService.isAuthenticated()) {
 			return true;
 		}

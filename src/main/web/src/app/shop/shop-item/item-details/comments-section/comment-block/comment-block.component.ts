@@ -10,6 +10,7 @@ import {Router} from "@angular/router";
 import {MdDialog} from "@angular/material";
 import {EditCommentDialogComponent} from "../edit-comment-dialog/edit-comment-dialog.component";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
+import * as moment from "moment";
 
 @Component({
 	selector: "memo-comment-block",
@@ -106,7 +107,8 @@ export class CommentBlockComponent implements OnInit {
 			this.loginService.currentUser()
 				.first()
 				.subscribe((user) => {
-					let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText);
+					let comment = new Comment(this.eventId, -1, moment(), user.id, commentText);
+					//todo demo
 					// this.dummyComment = this.dummyComment.setProperties({
 					// 	text: "",
 					// 	authorId: user.id,
@@ -120,6 +122,7 @@ export class CommentBlockComponent implements OnInit {
 						.subscribe(addResult => {
 							currentComment.children.push(addResult.id);
 							this.comment = Object.assign({}, currentComment);
+							this.showReplyBox = false;
 							// this.loadingChildren = false;
 						}, error => {
 							console.error("adding the comment went wrong");

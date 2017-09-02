@@ -23,9 +23,9 @@
 		}
 
 		.comment-image {
-			//border-radius: 50%;
-			width: 30px;
-			height: 30px;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
 
 			&.dummy {
 				filter: grayscale(100%);
@@ -105,11 +105,10 @@
 }
 
 .show-children-button-container {
-	color: mat-color($accent);
-	//margin-top: -10px;
-	//margin-bottom: 5px;
-	font-size: 0.85rem;
 	margin: 6px 0 0;
+	color: black;
+	font-size: .9rem;
+	font-weight: bold;
 
 	> span > span:hover {
 		text-decoration: underline;
@@ -118,7 +117,7 @@
 }
 
 .child-comments-container {
-	margin-left: 40px;
+	margin-left: 50px;
 
 	@media all and (max-width: 800px) {
 		border-left: 5px solid mat-color($primary);

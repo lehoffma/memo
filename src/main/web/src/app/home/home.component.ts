@@ -55,6 +55,11 @@ export class HomeComponent implements OnInit {
 	 * @returns {Event[]}
 	 */
 	removePastEvents(events: Event[]): Event[] {
+		//todo remove demo
+		if(events.length > 0){
+			return events;
+		}
+
 		return events.filter(event => moment(event.date).isAfter(moment()));
 	}
 }

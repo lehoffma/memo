@@ -6,6 +6,7 @@ import {CacheStore} from "../../stores/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/api/servlet.service";
 import {EntryCategoryService} from "./entry-category.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {Moment} from "moment";
 
 interface EntryApiResponse {
 	entries: Entry[];
@@ -80,7 +81,7 @@ export class EntryService extends ServletService<Entry> {
 	 * @param searchTerm
 	 * @param dateRange
 	 */
-	search(searchTerm: string, dateRange?: { minDate: Date, maxDate: Date }): Observable<Entry[]> {
+	search(searchTerm: string, dateRange?: { minDate: Moment, maxDate: Moment}): Observable<Entry[]> {
 		let params = new HttpParams().set("searchTerm", searchTerm);
 		if (dateRange && dateRange.minDate && dateRange.maxDate) {
 			//TODO date format

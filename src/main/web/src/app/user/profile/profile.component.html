@@ -33,7 +33,7 @@
 			<div *ngFor="let category of profileCategories;">
 				<div *ngFor="let item of category">
 					<md-icon class="middle-icon md-dark">{{item.icon}}</md-icon>
-					<span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | date}}</span>
+					<span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | moment}}</span>
 					<span *ngIf="!item.isDate" class="icon-text secondary-text">{{user[item.key]}}</span>
 				</div>
 			</div>

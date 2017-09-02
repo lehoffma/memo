@@ -7,7 +7,7 @@
 						 alt="picture of the {{recentEvent.title}} event">
                     <h3 md-line> {{recentEvent.title}} </h3>
                     <p md-line>
-                        <span class="secondary-text"> {{recentEvent.date|date}} </span>
+                        <span class="secondary-text"> {{recentEvent.date | moment:'DD.MM.YYYY HH:mm'}} </span>
                     </p>
                 </md-list-item>
                 <md-divider *ngIf="!lastTour"></md-divider>

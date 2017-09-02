@@ -17,7 +17,7 @@ export class EventCalendarComponent implements OnInit {
 			return events.map(event => ({
 				id: event.id,
 				title: event.title,
-				start: event.date.toISOString(),
+				start: event.date,
 				//todo combineLatest
 				editable: this.editable
 			}))

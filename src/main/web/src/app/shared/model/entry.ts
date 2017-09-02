@@ -1,12 +1,14 @@
 import {BaseObject} from "./util/base-object";
 import {EntryCategory} from "./entry-category";
+import {Moment} from "moment";
+import * as moment from "moment";;
 
 export class Entry extends BaseObject<Entry> {
 
 	constructor(public readonly id: number,
 				public readonly name: string,
 				public readonly value: number,
-				public readonly date: Date,
+				public readonly date: Moment,
 				public readonly comment: string,
 				//todo public readonly imagePath:string,
 				public readonly category: EntryCategory) {
@@ -14,7 +16,7 @@ export class Entry extends BaseObject<Entry> {
 	}
 
 	static create() {
-		return new Entry(-1, "", 0, new Date(), "", null);
+		return new Entry(-1, "", 0, moment(), "", null);
 	}
 
 	static isEntry(entry: any): entry is Entry {

@@ -5,7 +5,7 @@
 				<div [ngSwitch]="overviewKey.pipe">
 					<ng-template [ngSwitchCase]="'price'">{{event[overviewKey.key] | currency:'EUR':true}}
 					</ng-template>
-					<ng-template [ngSwitchCase]="'date'">{{event[overviewKey.key] | date:'shortDate'}}</ng-template>
+					<ng-template [ngSwitchCase]="'date'">{{event[overviewKey.key] | moment:'DD.MM.YYYY'}}</ng-template>
 					<ng-template ngSwitchDefault>{{event[overviewKey.key]}}</ng-template>
 				</div>
 				<div class="secondary-text">

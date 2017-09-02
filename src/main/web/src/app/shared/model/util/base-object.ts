@@ -19,7 +19,7 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 			((+day < 10) ? '0' + day : day) + "T" +
 			((+hour < 10) ? '0' + hour : hour) + ":" +
 			((+minute < 10) ? '0' + minute : minute) + ":" +
-			((+second < 10) ? '0' + second : second) + "Z";
+			((+second < 10) ? '0' + second : second);
 
 
 	}
@@ -34,8 +34,17 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 				let value: (string | number | number[] | Date | UserPermissions | any) = (<any>properties)[key];
 				if (isArray(value)) {
 
-				} else if ((key.toLowerCase().includes("date") || key.toLowerCase().includes("day"))) {
-					value = moment.tz(this.getIsoDateFromDateTimeObject(value), "Europe/Berlin").toDate();
+				} else if ((key.toLowerCase().includes("date")
+						|| key.toLowerCase().includes("day")
+						|| key.toLowerCase().includes("time"))) {
+					if(value.date && value.time){
+						// value = moment.tz(this.getIsoDateFromDateTimeObject(value), "Europe/Berlin");
+						value = moment(this.getIsoDateFromDateTimeObject(value));
+					}
+					else{
+						// value = moment.tz(value, "Europe/Berlin");
+						value = moment(value);
+					}
 				} else if (isNumber(value)) {
 					value = +value;
 				}

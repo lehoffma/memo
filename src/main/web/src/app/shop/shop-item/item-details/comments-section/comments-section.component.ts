@@ -12,6 +12,7 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {Observable} from "rxjs/Observable";
 import {CommentService} from "../../../../shared/services/api/comment.service";
+import * as moment from "moment";
 
 @Component({
 	selector: "memo-comments-section",
@@ -33,6 +34,7 @@ export class CommentsSectionComponent implements OnInit {
 	@Output() onDeleteComment = new EventEmitter<{ comment: Comment, parentId: number }>();
 	readonly DEFAULT_AMOUNT_OF_COMMENTS_SHOWN = 3;
 	loggedInUser$ = this.loginService.currentUser()
+		.do(console.log)
 		.flatMap(user => user === null ? Observable.empty() : Observable.of(user));
 	expandState = false;
 	dummyComment = Comment.create();
@@ -63,7 +65,7 @@ export class CommentsSectionComponent implements OnInit {
 			this.loginService.currentUser()
 				.first()
 				.subscribe((user) => {
-					let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText);
+					let comment = new Comment(this.eventId, -1, moment(), user.id, commentText);
 					this.dummyComment = this.dummyComment.setProperties({
 						text: "",
 						authorId: user.id,

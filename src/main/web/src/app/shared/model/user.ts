@@ -2,6 +2,8 @@ import {ClubRole, rolePermissions} from "./club-role";
 import {UserPermissions} from "./permission";
 import {BaseObject} from "./util/base-object";
 import {Gender} from "./gender";
+import {Moment} from "moment";
+import * as moment from "moment";;
 
 
 export class User extends BaseObject<User> {
@@ -32,11 +34,11 @@ export class User extends BaseObject<User> {
 				public readonly firstName: string,
 				public readonly surname: string,
 				public readonly gender: Gender,
-				public readonly birthday: Date,
+				public readonly birthday: Moment,
 				public readonly telephone: string,
 				public readonly mobile: string,
 				public readonly clubRole: ClubRole,
-				public readonly joinDate: Date,
+				public readonly joinDate: Moment,
 				public readonly addresses: number[],
 				public readonly bankAccounts: number[],
 				public readonly permissions: UserPermissions,
@@ -59,7 +61,7 @@ export class User extends BaseObject<User> {
 	}
 
 	static create() {
-		return new User(-1, "", "", Gender.OTHER, null, "", "", ClubRole.None, new Date(), [], [],
+		return new User(-1, "", "", Gender.OTHER, null, "", "", ClubRole.None, moment(), [], [],
 			null, 0, "", "", false, false, false, false, "resources/images/Logo.png");
 	}
 

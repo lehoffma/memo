@@ -145,11 +145,14 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {ImageUploadService} from "./shared/services/api/image-upload.service";
 import {AuthService} from "./shared/services/api/auth.service";
 import {AuthInterceptor} from "./shared/interceptors/auth.interceptor";
+import {HttpModule} from "@angular/http";
+import {MomentPipe} from "./shared/pipes/moment.pipe";
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		FormsModule,
+		HttpModule,
 		HttpClientModule,
 		ReactiveFormsModule,
 		BrowserAnimationsModule,
@@ -267,7 +270,8 @@ import {AuthInterceptor} from "./shared/interceptors/auth.interceptor";
 		AddressEntryComponent,
 		EntryCategoryCellComponent,
 		ErrorPageComponent,
-		OrderHistoryEntryComponent
+		OrderHistoryEntryComponent,
+		MomentPipe
 	],
 	bootstrap: [
 		AppComponent

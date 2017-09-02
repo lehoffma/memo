@@ -13,13 +13,14 @@
 		img {
 			width: 30px;
 			height: 30px;
-			//border-radius: 50%;
+			border-radius: 50%;
 		}
 	}
 
 	form {
 		display: flex;
-		align-items: flex-end;
+		flex-direction: column;
+
 		width: 100%;
 		textarea {
 			flex-grow: 1;
@@ -27,9 +28,24 @@
 			min-height: 2rem;
 			padding: 0.4rem;
 
+			border: 0;
+			border-bottom: 1px solid #BDBDBD;
+			transition: border 0.2s ease-in;
+
 			&:focus {
 				border-color: mat-color($primary);
-				outline-color: mat-color($primary);
+				border-bottom-width: 3px;
+				outline: none;
+			}
+		}
+
+		div{
+			margin-top: 10px;
+			display: flex;
+			justify-content: flex-end;
+
+			button:first-child{
+				margin-right: 10px;
 			}
 		}
 	}

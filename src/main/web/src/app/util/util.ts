@@ -1,5 +1,6 @@
 import {isNullOrUndefined} from "util";
 import * as moment from "moment";
+import {Moment} from "moment";
 
 export type SortingFunction<T> = (a: T, b: T) => number;
 
@@ -8,7 +9,7 @@ export function attributeSortingFunction<ObjectType>(attribute: string, descendi
 	return sortingFunction(obj => obj[attribute], descending);
 }
 
-export function dateSortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => Date, descending: boolean): SortingFunction<ObjectType> {
+export function dateSortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => Date|Moment, descending: boolean): SortingFunction<ObjectType> {
 	return (a, b) => {
 		let dateA = moment(getAttribute(a)),
 			dateB = moment(getAttribute(b));

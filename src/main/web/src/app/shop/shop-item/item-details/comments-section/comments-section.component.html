@@ -27,9 +27,10 @@
 	</md-icon>
 </button>
 
-<hr/>
+<hr *ngIf="loggedInUser$ | async"/>
 
 <div class="reply-form-container" *ngIf="loggedInUser$ | async; let loggedInUser">
-	<memo-comment-input (submitComment)="addComment($event, -1)" [author]="loggedInUser"
+	<memo-comment-input (submitComment)="addComment($event, -1)"
+						[author]="loggedInUser"
 						[commentText]="''"></memo-comment-input>
 </div>

@@ -11,15 +11,23 @@ export class CommentInputComponent implements OnInit, AfterViewInit {
 	@Input() commentText: string;
 	@Input() author: User;
 	@Input() focus: boolean;
+	@Input() submitCommentText = "Antworten";
 
 	@Output() submitComment: EventEmitter<string> = new EventEmitter();
+	@Output() closeSubmitComment: EventEmitter<any> = new EventEmitter();
 
 	@ViewChild(AutoSizeTextAreaDirective) commentInput: AutoSizeTextAreaDirective;
+
+	showActionButtons = true;
 
 	constructor() {
 	}
 
 	ngOnInit() {
+		this.closeSubmitComment.subscribe(event => {
+			this.commentText = "";
+			this.showActionButtons = false;
+		});
 	}
 
 	ngAfterViewInit(): void {

@@ -17,6 +17,7 @@ import {BankAccount} from "../../shared/model/bank-account";
 import {OrderedItem} from "../../shared/model/ordered-item";
 import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
+import * as moment from "moment";
 
 @Component({
 	selector: "memo-checkout",
@@ -128,7 +129,7 @@ export class CheckoutComponent implements OnInit {
 						return this.orderService.add(Order.create()
 							.setProperties({
 								userId,
-								timeStamp: new Date(),
+								timeStamp: moment(),
 								method: event.method,
 								bankAccount: bankAccountId,
 								orderedItems

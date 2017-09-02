@@ -1,9 +1,12 @@
 import {BaseObject} from "../../../shared/model/util/base-object";
+import {Moment} from "moment";
+import * as moment from "moment";;
 
 export class Comment extends BaseObject<Comment> {
 	constructor(public readonly eventId: number,
 				public readonly id: number,
-				public readonly timeStamp: Date,
+				//todo use Moment so we can do "vor 4 stunden" stuff
+				public readonly timeStamp: Moment,
 				public readonly authorId: number,
 				public text: string,
 				public readonly children: number[] = []) {
@@ -11,7 +14,7 @@ export class Comment extends BaseObject<Comment> {
 	}
 
 	static create() {
-		return new Comment(-1, -1, new Date(), -1, "", []);
+		return new Comment(-1, -1, moment(), -1, "", []);
 	}
 
 	static isComment(value: any): value is Comment {

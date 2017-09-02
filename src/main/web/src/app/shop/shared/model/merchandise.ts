@@ -4,6 +4,8 @@ import {SizeTable} from "./size-table";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
 import {MerchColor} from "./merch-color";
+import {Moment} from "moment";
+import * as moment from "moment";;
 
 //todo remove demo
 const sizeTable = `{
@@ -147,7 +149,7 @@ export class Merchandise extends Event {
 
 	constructor(id: number,
 				title: string,
-				date: Date,
+				date: Moment,
 				description: string,
 				expectedRole: ClubRole,
 				route: EventRoute,
@@ -228,7 +230,7 @@ export class Merchandise extends Event {
 	}
 
 	static create() {
-		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "resources/images/Logo.png", -1, [], "",
+		return new Merchandise(-1, "", moment(), "", ClubRole.None, [], "resources/images/Logo.png", -1, [], "",
 			JSON.parse(sizeTable), -1, -1);
 	}
 }

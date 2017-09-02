@@ -17,6 +17,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {ActionPermissions} from "../../shared/expandable-table/expandable-table.component";
 import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
 import {EventService} from "../../shared/services/api/event.service";
+import {Moment} from "moment";
 
 @Component({
 	selector: "memo-accounting",
@@ -212,14 +213,14 @@ export class AccountingComponent implements OnInit {
 	 * Extracts the dateRange from the queryParameters so it can be used in the API call
 	 * @returns {{minDate: Date; maxDate: Date}}
 	 */
-	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Date, maxDate: Date } {
+	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Moment, maxDate: Moment} {
 		const from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : moment("1970-01-01");
 		const to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : moment("2100-01-01");
 
 		//default: this month
 		return {
-			minDate: from.toDate(),
-			maxDate: to.toDate()
+			minDate: from,
+			maxDate: to
 		};
 	}
 }

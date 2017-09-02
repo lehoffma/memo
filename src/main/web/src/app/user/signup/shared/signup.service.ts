@@ -172,7 +172,8 @@ export class SignUpService {
 
 		if (isLastScreen) {
 			this.submittingFinalUser = true;
-			this.newUser = await this.uploadProfilePicture(this.newUser, this.newUserProfilePicture);
+			console.warn("uploading picture not implemented");
+			// this.newUser = await this.uploadProfilePicture(this.newUser, this.newUserProfilePicture);
 			this.userService.add(this.newUser, this.newUserProfilePicture)
 				.flatMap(newUser => this.newUserDebitInfo && this.newUserDebitInfo.bic !== undefined
 					? this.bankAccountService.add(BankAccount.create()

@@ -7,7 +7,7 @@
 			<div class="card-content-container">
 				<div class="event-content">
 					<span>{{event.title}}</span>
-					<span *ngIf="showDate | async" class="secondary-text">{{event.date | date:'longDate'}}</span>
+					<span *ngIf="showDate | async" class="secondary-text">{{event.date | moment:'DD.MM.YYYY'}}</span>
 				</div>
 				<span class="event-price">{{event.price | currency:'EUR':true}}</span>
 			</div>

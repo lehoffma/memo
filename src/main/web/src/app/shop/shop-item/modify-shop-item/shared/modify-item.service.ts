@@ -330,7 +330,8 @@ export class ModifyItemService {
 		newObject = await this.addAddresses(newObject);
 		newObject = this.setDefaultValues(newObject);
 		//todo display progress-bar while uploading
-		newObject = await this.uploadImage(newObject, model.uploadedImage);
+		console.warn("demo: modify-item should upload image");
+		// newObject = await this.uploadImage(newObject, model.uploadedImage);
 
 
 		//todo display "submitting..." while waiting for response from server
