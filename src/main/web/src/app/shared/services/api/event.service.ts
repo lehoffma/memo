@@ -93,7 +93,9 @@ export class EventService extends ServletService<Event> {
 					params: new HttpParams().set("userId", "" + userId)
 						.set("type", "" + eventType)
 				}))
-					.map(response => response.events)
+					.map(json => json.events.map(event =>
+						this.eventFactoryService.build(eventType).setProperties(event)))
+					.do(events => this.cache.addMultiple(...events))
 			);
 
 		return Observable.combineLatest(searchQueries)

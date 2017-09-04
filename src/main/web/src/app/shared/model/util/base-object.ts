@@ -39,11 +39,11 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 						|| key.toLowerCase().includes("time"))) {
 					if(value.date && value.time){
 						// value = moment.tz(this.getIsoDateFromDateTimeObject(value), "Europe/Berlin");
-						value = moment(this.getIsoDateFromDateTimeObject(value));
+						value = moment(this.getIsoDateFromDateTimeObject(value)).locale("de");
 					}
 					else{
 						// value = moment.tz(value, "Europe/Berlin");
-						value = moment(value);
+						value = moment(value).locale("de");
 					}
 				} else if (isNumber(value)) {
 					value = +value;

@@ -1,8 +1,20 @@
-<div class="overview-preview-container" *ngFor="let eventPreview of events">
-	<div class="overview-preview-header">
-		<h2>{{eventPreview.title}}</h2>
-		<a routerLink="{{eventPreview.route}}">MEHR</a>
+
+<div class="home-header">
+	<h1>Meilenwölfe Shop</h1>
+	<img src="../../resources/images/lel.png"/>
+</div>
+
+
+<div class="category-overview-container">
+	<div class="overview-preview-container" *ngFor="let eventPreview of events">
+		<div class="overview-preview-header">
+			<h2>{{eventPreview.title}}</h2>
+			<a routerLink="{{eventPreview.route}}">MEHR</a>
+		</div>
+
+		<memo-category-preview [events]="eventPreview.events"
+							   [itemType]="eventPreview.type"
+							   [route]="eventPreview.route"></memo-category-preview>
 	</div>
 
-	<memo-category-preview [events]="eventPreview.events" [route]="eventPreview.route"></memo-category-preview>
 </div>

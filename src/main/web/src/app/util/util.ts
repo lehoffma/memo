@@ -1,6 +1,7 @@
 import {isNullOrUndefined} from "util";
 import * as moment from "moment";
 import {Moment} from "moment";
+import {Observable} from "rxjs/Observable";
 
 export type SortingFunction<T> = (a: T, b: T) => number;
 
@@ -85,4 +86,8 @@ export function getId(object: any): number {
 	};
 
 	return getHashOfObject(object);
+}
+
+export function isObservable(value:any): value is Observable<any>{
+	return (<Observable<any>>value).subscribe !== undefined;
 }

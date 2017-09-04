@@ -94,8 +94,8 @@ export const ROUTES: Route[] = [
 	{path: "checkout", component: CheckoutComponent, canActivate: [AuthenticatedGuard]},
 
 	//nur eingeloggte User können diese Routen sehen
-	{path: "my-events", component: MyToursComponent},
-	{path: "order-history", component: OrderHistoryComponent},
+	{path: "my-events", component: MyToursComponent, canActivate: [AuthenticatedGuard]},
+	{path: "order-history", component: OrderHistoryComponent, canActivate: [AuthenticatedGuard]},
 
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
 	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},

@@ -5,10 +5,12 @@ import {Observable} from "rxjs";
 import {EventService} from "../shared/services/api/event.service";
 import {EventType} from "../shop/shared/model/event-type";
 import * as moment from "moment";
+import {ShopItemType} from "../shop/shared/model/shop-item-type";
 
 interface EventsPreview {
 	title: string,
 	route: string,
+	type: ShopItemType,
 	events: Observable<Event[]>
 }
 
@@ -18,34 +20,36 @@ interface EventsPreview {
 	styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent implements OnInit {
-	events: EventsPreview[] = [];
+	events: EventsPreview[] = [
+		{
+			title: "Touren",
+			route: "tours",
+			type: ShopItemType.tour,
+			events: this.eventService.search("", EventType.tours)
+				.map(tours => this.removePastEvents(tours))
+				.map(tours => tours.slice(0, 7))
+		},
+		{
+			title: "Veranstaltungen",
+			route: "partys",
+			type: ShopItemType.party,
+			events: this.eventService.search("", EventType.partys)
+				.map(tours => this.removePastEvents(tours))
+				.map(partys => partys.slice(0, 7))
+				.delay(5000)
+		},
+		{
+			title: "Merchandise",
+			route: "merch",
+			type: ShopItemType.merch,
+			events: this.eventService.search("", EventType.merch).map(merch => merch.slice(0, 7))
+		},
+	];
 
 	constructor(private eventService: EventService) {
 	}
 
 	ngOnInit(): void {
-		//get up to 7 preview items per category
-		this.events = [
-			{
-				title: "Touren",
-				route: "tours",
-				events: this.eventService.search("", EventType.tours)
-					.map(tours => this.removePastEvents(tours))
-					.map(tours => tours.slice(0, 7))
-			},
-			{
-				title: "Veranstaltungen",
-				route: "partys",
-				events: this.eventService.search("", EventType.partys)
-					.map(tours => this.removePastEvents(tours))
-					.map(partys => partys.slice(0, 7))
-			},
-			{
-				title: "Merchandise",
-				route: "merch",
-				events: this.eventService.search("", EventType.merch).map(merch => merch.slice(0, 7))
-			},
-		];
 	}
 
 

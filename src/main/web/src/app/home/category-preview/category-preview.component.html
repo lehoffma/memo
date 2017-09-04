@@ -1,4 +1,4 @@
-<div class="preview-container">
+<div class="preview-container" *ngIf="events | async; else loadingPreview">
 	<md-card class="preview-card"
 			 *ngFor="let event of (events | async)"
 			 (click)="showDetails(event)">
@@ -7,11 +7,25 @@
 			<div class="card-content-container">
 				<div class="event-content">
 					<span>{{event.title}}</span>
-					<span *ngIf="showDate | async" class="secondary-text">{{event.date | moment:'DD.MM.YYYY'}}</span>
+					<span [style.visibility]="(showDate | async) ? 'visible' : 'hidden'" class="secondary-text">
+						{{event.date.fromNow()}}
+					</span>
 				</div>
-				<span class="event-price">{{event.price | currency:'EUR':true}}</span>
+				<span class="event-price">
+					{{event.price | currency:'EUR':true}}
+				</span>
 			</div>
 		</md-card-content>
 	</md-card>
-
 </div>
+
+<div class="no-events" *ngIf="(events|async)?.length === 0 || (events|async) === null">
+	<span>{{noElementsText}}</span>
+	<a md-raised-button color="accent" *ngIf="userCanCreateEvent | async" routerLink="{{createLink}}">
+		{{addShopItemText}}
+	</a>
+</div>
+
+<ng-template #loadingPreview>
+
+</ng-template>

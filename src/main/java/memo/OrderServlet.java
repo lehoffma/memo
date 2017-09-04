@@ -219,7 +219,7 @@ public class OrderServlet extends HttpServlet {
             Integer id = Integer.parseInt(SuserId);
 
             return DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o " +
-                    " WHERE o.user.id = :userId", Order.class)
+                    " WHERE o.userId = :userId", Order.class)
                     .setParameter("userId", id)
                     .getResultList();
 

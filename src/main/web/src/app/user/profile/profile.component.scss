@@ -11,7 +11,7 @@
 		width: 100%;
 		position: relative;
 		overflow: visible;
-		z-index: -1;
+		//z-index: -1;
 		.no-height-image-container {
 			overflow: visible;
 			height: 0;
@@ -47,6 +47,8 @@
 
 	.profile-details-container {
 		margin-top: 128px;
+		z-index: 5;
+
 
 		.profile-header {
 			align-items: center;
@@ -58,10 +60,10 @@
 			.profile-picture {
 				height: 8rem;
 				width: 8rem;
+				background: white;
 				border-radius: 50%;
 				border: #ffffff solid 5px;
 				box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
-				//box-shadow: inset 0 1.5px 3px 0 rgba(0,0,0,.15), 0 1.5px 3px 0 rgba(0,0,0,.15);
 			}
 		}
 

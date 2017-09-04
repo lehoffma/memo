@@ -32,7 +32,7 @@ export class NavigationService {
 	}
 
 	public navigateToItem(item: ShopItem | Event, suffix?: string) {
-		this.navigateToItemWithId(this.eventUtilService.getShopItemType(item), item.id, suffix);
+		this.navigateToItemWithId(EventUtilityService.getShopItemType(item), item.id, suffix);
 	}
 
 	public navigateToItemWithId(category: ShopItemType | EventType, id: number, suffix?: string) {

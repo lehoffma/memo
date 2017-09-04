@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
 import {isMultiLevelSelectLeaf} from "../../../shared/multi-level-select/shared/multi-level-select-option";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
@@ -10,8 +10,12 @@ import {MultiLevelSelectLeaf} from "../../../shared/multi-level-select/shared/mu
 	templateUrl: "./filtering-menu.component.html",
 	styleUrls: ["./filtering-menu.component.scss"]
 })
-export class FilteringMenuComponent implements OnInit {
+export class FilteringMenuComponent implements OnInit, OnChanges{
+
 	@Input() filterOptions: MultiLevelSelectParent[];
+
+	selectedOption = {};
+
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private router: Router,
@@ -21,6 +25,38 @@ export class FilteringMenuComponent implements OnInit {
 	ngOnInit() {
 	}
 
+	/**
+	 * Initialize the selectedOption object whenever the input changes
+	 * @param {SimpleChanges} changes
+	 */
+	ngOnChanges(changes: SimpleChanges): void {
+		if(changes["filterOptions"] && this.filterOptions){
+			this.filterOptions
+				.filter(option => option.selectType === "single")
+				.forEach(option => {
+					this.selectedOption[option.queryKey] = option.children.find(child => child["selected"]);
+
+				})
+		}
+	}
+
+	/**
+	 *
+	 * @param {string} queryKey
+	 */
+	updateFromRadioSelection(queryKey:string){
+		const parent = this.filterOptions.find(option => option.queryKey === queryKey);
+		const childIndex = parent.children.findIndex(child => this.selectedOption[queryKey].name === child.name);
+
+		parent.children.forEach(child => isMultiLevelSelectLeaf(child) ? child.selected = false : null);
+		parent.children[childIndex]["selected"] = true;
+		this.updateQueryParams(parent);
+	}
+
+	/**
+	 *
+	 * @param {MultiLevelSelectParent} option
+	 */
 	updateQueryParams(option: MultiLevelSelectParent) {
 		let queryParams: Params = {};
 		queryParams[option.queryKey] = option.children

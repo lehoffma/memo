@@ -8,12 +8,13 @@ import {MultiLevelSelectLeaf} from "../multi-level-select/shared/multi-level-sel
 import * as moment from "moment";
 import {StockService} from "./api/stock.service";
 import {Observable} from "rxjs/Observable";
+import {isObservable} from "../../util/util";
 
 @Injectable()
 export class SearchFilterService {
 
 	readonly eventFilterFunctions: {
-		[key: string]: (obj: ShopItem | Event, filterValue: any) => boolean
+		[key: string]: (obj: ShopItem | Event, filterValue: any) => boolean | Observable<boolean>
 	} = {
 		"category": (item, filterValue: string) => {
 			if (EventUtilityService.isMerchandise(item) || EventUtilityService.isTour(item) || EventUtilityService.isParty(item)) {
@@ -57,9 +58,10 @@ export class SearchFilterService {
 		},
 		"color": (item, filterValue: string) => {
 			if (EventUtilityService.isMerchandise(item)) {
-				let selectedColors = filterValue.split("|");
-				//todo lieber hex nehmen?
-				return item.colors.some(color => selectedColors.includes(color.name));
+				const selectedColors = filterValue.split("|");
+				return this.stockService.getByEventId(item.id)
+					.map(stockList => stockList.map(stockItem => stockItem.color.name))
+					.map(colorNames => colorNames.some(color => selectedColors.includes(color)));
 			}
 			return false;
 		},
@@ -111,6 +113,11 @@ export class SearchFilterService {
 				selectType: "single",
 				children: [
 					{
+						name: "Alle",
+						queryValue: "",
+						selected: true
+					},
+					{
 						name: "Unter 10 Euro",
 						queryValue: "below10",
 						selected: false
@@ -138,6 +145,11 @@ export class SearchFilterService {
 				expanded: false,
 				queryKey: "date",
 				children: [
+					{
+						name: "Alle",
+						queryValue: "",
+						selected: true
+					},
 					{
 						name: "Vergangene Events",
 						queryValue: "past",
@@ -167,6 +179,7 @@ export class SearchFilterService {
 					queryValue: color.name,
 					selected: false
 				})))
+			.defaultIfEmpty([])
 			.toPromise();
 
 		eventFilterOptions.push({
@@ -205,11 +218,23 @@ export class SearchFilterService {
 	 * @param filteredBy
 	 * @returns {boolean}
 	 */
-	satisfiesFilters(event: Event, filteredBy: any) {
-		return Object.keys(filteredBy)
+	satisfiesFilters(event: Event, filteredBy: any): Observable<boolean> {
+		const filterKeys = Object.keys(filteredBy)
 			.filter(filterKey => this.eventFilterFunctions[filterKey] !== undefined)
-			.filter(filterKey => filteredBy[filterKey] !== undefined)
-			.every(filterKey => this.eventFilterFunctions[filterKey](event, filteredBy[filterKey]));
+			.filter(filterKey => filteredBy[filterKey] !== undefined);
+
+		const filterResults: Observable<boolean>[] = [...filterKeys
+			.map(filterKey => this.eventFilterFunctions[filterKey](event, filteredBy[filterKey]))
+			.map(result => {
+				if (isObservable(result)) {
+					return result;
+				}
+				return Observable.of(result);
+			})];
+
+		return Observable.combineLatest(...filterResults)
+			.map((results: boolean[]) => results.every(value => value))
+			.defaultIfEmpty(true);
 	}
 
 }

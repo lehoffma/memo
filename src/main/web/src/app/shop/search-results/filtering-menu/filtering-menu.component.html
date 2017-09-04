@@ -1,7 +1,31 @@
 <memo-multi-level-select
 	(itemSelected)="updateQueryParams($event)"
 	[options]="filterOptions"
-	[title]="'Filtern'">
+	[title]="'FILTERN'">
 </memo-multi-level-select>
 
+<div class="filter-sidebar">
+	<div *ngFor="let option of filterOptions">
+		<h2 class="filter-title">{{option.name}}</h2>
+
+		<div class="option-children" *ngIf="option.selectType === 'multiple'; else radioGroup">
+			<md-checkbox *ngFor="let child of option.children"
+						 [(ngModel)]="child.selected"
+						 (ngModelChange)="updateQueryParams(option)">
+				{{child.name}}
+			</md-checkbox>
+		</div>
+		<ng-template #radioGroup>
+			<md-radio-group [(ngModel)]="selectedOption[option.queryKey]"
+							(ngModelChange)="updateFromRadioSelection(option.queryKey)">
+				<md-radio-button *ngFor="let child of option.children" [value]="child">
+					{{child.name}}
+				</md-radio-button>
+			</md-radio-group>
+
+			<!--todo ngIf queryKey === "date"-->
+		</ng-template>
+	</div>
+
+</div>
 <!--todo on bigger screen sizes, transform into left-hand-side list of items to click-->

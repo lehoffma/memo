@@ -98,3 +98,8 @@ a.disabled {
 		transition: 0s;
 	}
 }
+
+
+.mat-sidenav-container, .mat-sidenav-content {
+	transform: none !important;
+}

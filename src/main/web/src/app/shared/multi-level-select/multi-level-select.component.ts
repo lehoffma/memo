@@ -8,6 +8,7 @@ import {MultiLevelSelectParent} from "./shared/multi-level-select-parent";
 })
 export class MultiLevelSelectComponent implements OnInit {
 	@Input() title: string;
+	@Input() icon: string = "filter_list";
 	@Input() options: MultiLevelSelectParent[];
 	@Output() itemSelected: EventEmitter<MultiLevelSelectParent> = new EventEmitter();
 

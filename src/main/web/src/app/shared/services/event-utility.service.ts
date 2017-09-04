@@ -58,6 +58,16 @@ export class EventUtilityService {
 		return defaultCallback(item);
 	}
 
+	static handleOptionalShopItem<T>(item: ShopItem | Event,callbacks: {
+		merch?: () => T,
+		tours?: () => T,
+		partys?: () => T,
+		members?: () => T,
+		entries?: () => T
+	}):T{
+		return EventUtilityService.handleOptionalShopType<T>(EventUtilityService.getShopItemType(item), callbacks);
+	}
+
 	static handleOptionalShopType<T>(type: ShopItemType, callbacks: {
 		merch?: () => T,
 		tours?: () => T,
@@ -129,7 +139,7 @@ export class EventUtilityService {
 			&& ((<Tour>event).vehicle === undefined || (<Tour>event).vehicle === null);
 	}
 
-	getShopItemType(item: ShopItem | Event): ShopItemType {
+	static getShopItemType(item: ShopItem | Event): ShopItemType {
 		return EventUtilityService.handleShopItem(item,
 			merch => ShopItemType.merch,
 			tour => ShopItemType.tour,

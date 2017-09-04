@@ -23,7 +23,8 @@ export class ProfileComponent implements OnInit {
 	userId = this.route.params.map(params => +params["id"]);
 	userObservable: Observable<User> = this.userId.flatMap(id => this.userService.getById(id));
 	userEvents: Observable<Event[]> = this.userObservable
-		.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}));
+		.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}))
+		.do(console.log)
 	userDestinations: Observable<Address[]> = this.userEvents.flatMap(events => {
 		return Observable.combineLatest(...events
 			.map(event => event.route)
