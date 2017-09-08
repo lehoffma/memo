@@ -1,5 +1,5 @@
 <tr *ngFor="let key of keys">
-	<td class="secondary-text" colspan="2">
+	<td class="secondary-text" colspan="2" *ngIf="key.title">
 		{{key.title}}
 	</td>
 

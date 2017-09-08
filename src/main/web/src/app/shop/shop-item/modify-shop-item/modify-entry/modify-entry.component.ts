@@ -9,7 +9,7 @@ import {Event} from "../../../shared/model/event";
 import {EventType} from "../../../shared/model/event-type";
 import {ActivatedRoute} from "@angular/router";
 import {EntryCategoryService} from "../../../../shared/services/api/entry-category.service";
-import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/shared/modify-item-event";
+import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/modify-item-event";
 
 @Component({
 	selector: "memo-modify-entry",

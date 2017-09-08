@@ -20,7 +20,6 @@ export class NavigationService {
 	public redirectToTour: Address[] = [];
 
 	constructor(private http: HttpClient,
-				private eventUtilService: EventUtilityService,
 				private loginService: LogInService,
 				private router: Router) {
 		this.initialize();

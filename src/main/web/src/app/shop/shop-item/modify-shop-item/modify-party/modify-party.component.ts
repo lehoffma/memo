@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
-import {ModifyItemEvent} from "../shared/modify-item-event";
+import {ModifyItemEvent} from "../modify-item-event";
 
 @Component({
 	selector: "memo-modify-party",

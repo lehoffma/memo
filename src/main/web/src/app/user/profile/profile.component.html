@@ -29,23 +29,30 @@
 			<h1 class="profile-name">{{user.firstName}} {{user.surname}}</h1>
 			<h3 class="profile-role">{{user.clubRole}}</h3>
 		</div>
-		<div class="profile-info-container">
+		<div class="profile-info-table">
 			<div *ngFor="let category of profileCategories;">
 				<div *ngFor="let item of category">
-					<md-icon class="middle-icon md-dark">{{item.icon}}</md-icon>
+					<div>
+						<md-icon class="middle-icon md-dark">{{item.icon}}</md-icon>
+						<span class="secondary-text">{{item.name}}</span>
+					</div>
 					<span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | moment}}</span>
 					<span *ngIf="!item.isDate" class="icon-text secondary-text">{{user[item.key]}}</span>
 				</div>
 			</div>
 		</div>
 		<div class="profile-action-container">
-			<a href="tel:{{user.telephone}}" md-raised-button color="accent" [disabled]="!user.telephone">
+			<a href="tel:{{user.telephone}}" md-button color="accent" [disabled]="!user.telephone">
 				<md-icon>local_phone</md-icon>
 				<span class="action-text">Anrufen</span>
 			</a>
-			<a href="mailto:{{user.email}}" md-raised-button color="accent" [disabled]="!user.email">
+			<a href="tel:{{user.mobile}}" md-button color="accent" [disabled]="!user.mobile">
+				<md-icon>smartphone</md-icon>
+				<span class="action-text">Anrufen</span>
+			</a>
+			<a href="mailto:{{user.email}}" md-button color="accent" [disabled]="!user.email">
 				<md-icon>local_post_office</md-icon>
-				<span class="action-text">Email</span>
+				<span class="action-text">Schreiben</span>
 			</a>
 		</div>
 	</div>

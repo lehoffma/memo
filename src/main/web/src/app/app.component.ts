@@ -1,7 +1,7 @@
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {DateAdapter} from "@angular/material";
 import {Moment} from "moment";
-import {AuthService} from "./shared/services/api/auth.service";
+import {AuthService} from "./shared/authentication/auth.service";
 
 @Component({
 	selector: "app",

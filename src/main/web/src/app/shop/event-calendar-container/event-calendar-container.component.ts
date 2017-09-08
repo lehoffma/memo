@@ -8,7 +8,6 @@ import {MdDialog, MdSnackBar} from "@angular/material";
 import {EventContextMenuComponent} from "./event-context-menu/event-context-menu.component";
 import {CreateEventContextMenuComponent} from "./create-event-context-menu/create-event-context-menu.component";
 import {LogInService} from "../../shared/services/api/login.service";
-import {UserService} from "../../shared/services/api/user.service";
 import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
@@ -25,7 +24,6 @@ export class EventCalendarContainerComponent implements OnInit {
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
 				private snackBar: MdSnackBar,
-				private userService: UserService,
 				private mdDialog: MdDialog) {
 	}
 

@@ -10,7 +10,7 @@ import {attributeSortingFunction} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {MultiLevelSelectParent} from "app/shared/multi-level-select/shared/multi-level-select-parent";
 import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
-import {SearchFilterService} from "../../shared/services/search-filter.service";
+import {SearchFilterService} from "./search-filter.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 type sortingQueryParameter = { sortedBy: string; descending: string; };

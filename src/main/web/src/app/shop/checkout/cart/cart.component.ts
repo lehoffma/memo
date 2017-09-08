@@ -7,11 +7,11 @@ import {ShoppingCartContent} from "../../../shared/model/shopping-cart-content";
 import {ShoppingCartItem} from "app/shared/model/shopping-cart-item";
 
 @Component({
-	selector: "checkout-cart",
+	selector: "memo-cart",
 	templateUrl: "./cart.component.html",
 	styleUrls: ["./cart.component.scss"]
 })
-export class CheckoutCartComponent implements OnInit {
+export class CartComponent implements OnInit {
 	public shoppingCartItems: Observable<{ tours: CartItem[], merch: CartItem[], partys: CartItem[] }> =
 		this.shoppingCartService.content.flatMap((content: ShoppingCartContent) => {
 			let tours = this.getEventsFromShoppingCart(content, "tours").defaultIfEmpty([]);

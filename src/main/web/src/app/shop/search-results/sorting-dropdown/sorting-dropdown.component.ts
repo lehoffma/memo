@@ -9,7 +9,6 @@ import {QueryParameterService} from "../../../shared/services/query-parameter.se
 	styleUrls: ["./sorting-dropdown.component.scss"]
 })
 export class SortingDropdownComponent implements OnInit {
-	//TODO: update text if sort selection changes. or at least highlight which one is selected at the moment?
 	@Input() sortingOptions: SortingOption<any>[];
 	selectedOption: string = "";
 

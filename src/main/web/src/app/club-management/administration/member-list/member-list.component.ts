@@ -77,14 +77,19 @@ export class MemberListComponent implements OnInit {
 				columns: [memberListColumns.gender]
 			},
 			{
-				width: 1100,
-				columns: [memberListColumns.telephone]
+				width: 1200,
+				columns: [memberListColumns.imagePath]
 			}
 		];
 
 		let newColumns: ExpandableTableColumn<User>[] = breakPoints
 			.filter(breakPoint => screenWidth > breakPoint.width)
-			.reduce((acc, breakPoint) => [...acc, ...breakPoint.columns], []);
+			.reduce((acc, breakPoint) => {
+					if(breakPoint.width === 1200){
+						return [...breakPoint.columns, ...acc];
+					}
+					return [...acc, ...breakPoint.columns]
+				}, []);
 
 
 		this.primaryColumnKeys.next(newColumns);

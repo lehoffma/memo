@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {NavigationService} from "../../../../shared/services/navigation.service";
 import {Address} from "../../../../shared/model/address";
 
 @Component({
@@ -10,7 +9,7 @@ import {Address} from "../../../../shared/model/address";
 export class RouteComponent implements OnInit {
 	@Input() tourRoute: Address[];
 
-	constructor(private navigationService: NavigationService) {
+	constructor() {
 	}
 
 	ngOnInit() {

@@ -36,7 +36,6 @@ export class HomeComponent implements OnInit {
 			events: this.eventService.search("", EventType.partys)
 				.map(tours => this.removePastEvents(tours))
 				.map(partys => partys.slice(0, 7))
-				.delay(5000)
 		},
 		{
 			title: "Merchandise",

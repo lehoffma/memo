@@ -5,16 +5,25 @@ import {DateTableCellComponent} from "./member-list-table-cells/date-table-cell.
 import {BooleanCheckMarkCellComponent} from "./member-list-table-cells/boolean-checkmark-cell.component";
 import {GenderCellComponent} from "./member-list-table-cells/gender-cell.component";
 import {AddressTableCellComponent} from "./member-list-table-cells/address-table-cell.component";
+import {PictureTableCellComponent} from "./member-list-table-cells/picture-table-cell.component";
+import {TelephoneTableCellComponent} from "./member-list-table-cells/telephone-table-cell.component";
+import {EmailTableCellComponent} from "./member-list-table-cells/email-table-cell.component";
+import {MobileTableCellComponent} from "./member-list-table-cells/mobile-table-cell.component";
+import {ProfileLinkCellComponent} from "./member-list-table-cells/profile-link-cell.component";
 
 export const memberListColumns = {
+	"imagePath": new ExpandableTableColumn<User>("Foto", "imagePath", PictureTableCellComponent),
 	"firstName": new ExpandableTableColumn<User>("Vorname", "firstName"),
 	"surname": new ExpandableTableColumn<User>("Nachname", "surname"),
 	"clubRole": new ExpandableTableColumn<User>("Rolle", "clubRole", ClubRoleTableCellComponent),
 	"birthday": new ExpandableTableColumn<User>("Geburtstag", "birthday", DateTableCellComponent),
-	"telephone": new ExpandableTableColumn<User>("Telefon", "telephone"),
 	"hasSeasonTicket": new ExpandableTableColumn<User>("Dauerkarte", "hasSeasonTicket", BooleanCheckMarkCellComponent),
 	"isWoelfeClubMember": new ExpandableTableColumn<User>("Wölfecard", "isWoelfeClubMember", BooleanCheckMarkCellComponent),
 	"gender": new ExpandableTableColumn<User>("Geschlecht", "gender", GenderCellComponent),
 	"joinDate": new ExpandableTableColumn<User>("Eintrittsjahr", "joinDate", DateTableCellComponent),
-	"address": new ExpandableTableColumn<User>("Addressen", "addresses", AddressTableCellComponent)
+	"address": new ExpandableTableColumn<User>("Addressen", "addresses", AddressTableCellComponent),
+	"telephone": new ExpandableTableColumn<User>("Festnetz", "telephone", TelephoneTableCellComponent),
+	"mobile": new ExpandableTableColumn<User>("Handy", "mobile", MobileTableCellComponent),
+	"email": new ExpandableTableColumn<User>("Email", "email", EmailTableCellComponent),
+	"profile": new ExpandableTableColumn<User>("Profil", "id", ProfileLinkCellComponent)
 };

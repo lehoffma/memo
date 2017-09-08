@@ -101,14 +101,22 @@
 			}
 		}
 
-		.profile-info-container {
+		.profile-info-table {
 			margin-top: 2rem;
 
 			> div {
-				> div {
+				> div,
+				> div > div{
 					align-items: center;
 					justify-content: space-between;
 					display: flex;
+
+					.secondary-text{
+						margin-left: 10px;
+					}
+				}
+				> div{
+					margin-top: 2px;
 				}
 
 			}
@@ -116,16 +124,25 @@
 
 		.profile-action-container {
 			display: flex;
-			justify-content: space-around;
+			justify-content: space-evenly;
 			margin-top: 2rem;
+			margin-bottom: -1rem;
 
 			a {
-				width: 45%;
+				//width: 45%;
+
+				span{
+
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					flex-direction: column;
+				}
 
 				.action-text {
-					margin-left: 1rem;
+					//margin-left: 1rem;
 					text-decoration: none;
-					color: white;
+					//color: white;
 				}
 			}
 		}

@@ -67,7 +67,7 @@
 			<ng-template ngFor let-dataObject
 						 [ngForOf]="data | slice:((currentPage-1)*rowsPerPage):(currentPage*rowsPerPage)">
 
-				<tbody class="expandable-table-body">
+				<tbody class="expandable-table-body" [ngClass]="{'expanded-row': expandStatusList[dataObject.id]}">
 				<tr class="expandable-table-body-main-row expandable-table-row"
 					[ngClass]="{'selected-row': selectedStatusList[dataObject.id]}"
 					(click)="toggleSelectedStatus(dataObject)">

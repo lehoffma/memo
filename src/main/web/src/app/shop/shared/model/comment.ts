@@ -1,11 +1,10 @@
 import {BaseObject} from "../../../shared/model/util/base-object";
 import {Moment} from "moment";
-import * as moment from "moment";;
+import * as moment from "moment";
 
 export class Comment extends BaseObject<Comment> {
 	constructor(public readonly eventId: number,
 				public readonly id: number,
-				//todo use Moment so we can do "vor 4 stunden" stuff
 				public readonly timeStamp: Moment,
 				public readonly authorId: number,
 				public text: string,

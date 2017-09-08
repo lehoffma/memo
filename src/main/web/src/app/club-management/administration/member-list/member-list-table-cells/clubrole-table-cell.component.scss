@@ -1,0 +1,26 @@
+
+@import "~@angular/material/theming";
+@import "../../../../../theme";
+
+.data-as-text{
+	font-weight: bold;
+}
+
+.Admin{
+	color: red;
+}
+.Kassenwart{
+	color: yellow;
+}
+.Mitglied{
+	color: mat-color($primary);
+}
+.Organizer{
+	color: #f315a1;
+}
+.Vorstand{
+	color: #2196F3;
+}
+.None{
+	color: grey;
+}

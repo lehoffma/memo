@@ -6,7 +6,7 @@
 
 <div class="filter-sidebar">
 	<div *ngFor="let option of filterOptions">
-		<h2 class="filter-title">{{option.name}}</h2>
+		<h3 class="filter-title">{{option.name}}</h3>
 
 		<div class="option-children" *ngIf="option.selectType === 'multiple'; else radioGroup">
 			<md-checkbox *ngFor="let child of option.children"
@@ -28,4 +28,3 @@
 	</div>
 
 </div>
-<!--todo on bigger screen sizes, transform into left-hand-side list of items to click-->

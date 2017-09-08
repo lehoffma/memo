@@ -16,14 +16,15 @@ export const profileCategories: ProfileCategory[] = [
 			isDate: true
 		},
 		{
-			name: "Telefonnummer",
-			icon: "local_phone",
-			key: "telephone"
+			name: "Geschlecht",
+			icon: "person",
+			key: "gender",
 		},
 		{
-			name: "Email-Adresse",
-			icon: "local_post_office",
-			key: "email"
+			name: "Dabei seit",
+			icon: "event",
+			key: "joinDate",
+			isDate: true
 		},
 
 		{

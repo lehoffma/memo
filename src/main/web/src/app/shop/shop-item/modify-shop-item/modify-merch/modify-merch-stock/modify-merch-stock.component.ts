@@ -5,7 +5,7 @@ import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expa
 import {ColumnSortingEvent} from "../../../../../shared/expandable-table/column-sorting-event";
 import {Observable} from "rxjs/Observable";
 import {attributeSortingFunction, getId, sortingFunction} from "../../../../../util/util";
-import {MerchColorCellComponent} from "./merch-color-cell/merch-color-cell.component";
+import {MerchColorCellComponent} from "./merch-color-cell.component";
 import {MdDialog} from "@angular/material";
 import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-merch-stock-item.component";
 import {ModifyStockItemEvent} from "./modify-merch-stock-item/modify-stock-item-event";

@@ -3,7 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
 import {SignUpSubmitEvent} from "./signup-submit-event";
 import {SignUpSection} from "./signup-section";
-import {SignUpService} from "./shared/signup.service";
+import {SignUpService} from "./signup.service";
 
 @Component({
 	selector: "memo-signup",

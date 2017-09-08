@@ -6,9 +6,9 @@ import {ClubRole} from "../../../../shared/model/club-role";
 	selector: "td [clubRoleTableCell]",
 	template: `
 		<span class="data-as-icon" title="{{data}}"><md-icon>{{icon}}</md-icon></span>
-		<span class="data-as-text">{{data}}</span>
+		<span class="data-as-text {{data}}">{{data}}</span>
 	`,
-	styleUrls: ["./icon-data-table-cell.component.scss"]
+	styleUrls: ["./icon-data-table-cell.component.scss", "./clubrole-table-cell.component.scss"]
 })
 export class ClubRoleTableCellComponent implements OnInit, OnChanges, ExpandableTableCellComponent {
 	@Input() data: ClubRole;

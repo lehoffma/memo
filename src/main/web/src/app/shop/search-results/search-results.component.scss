@@ -51,13 +51,17 @@
 		display: flex;
 		.filter-sidebar {
 			display: block;
-			width: 400px;
+			width: 350px;
 			z-index: 2;
 			position: fixed;
 			left: 30px;
-			top: 60px;
+			top: 70px;
 			height: calc(100% - 90px);
-			overflow-y: auto;
+			overflow-y: hidden;
+
+			&:hover, &:active, &:focus{
+				overflow-y: auto;
+			}
 		}
 		.results-container {
 			width: calc(100% - 400px);

@@ -8,7 +8,7 @@ import {MdSnackBar} from "@angular/material";
 import {ActionPermissions} from "../../expandable-table/expandable-table.component";
 import {Permission, UserPermissions} from "../../model/permission";
 import {HttpClient} from "@angular/common/http";
-import {AuthService} from "./auth.service";
+import {AuthService} from "../../authentication/auth.service";
 
 interface LoginApiResponse {
 	id: number;

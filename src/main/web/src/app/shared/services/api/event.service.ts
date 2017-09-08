@@ -19,8 +19,7 @@ export class EventService extends ServletService<Event> {
 	private readonly baseUrl = `/api/event`;
 
 	constructor(private http: HttpClient,
-				private cache: CacheStore,
-				private eventFactoryService: EventFactoryService) {
+				private cache: CacheStore) {
 		super();
 	}
 
@@ -94,7 +93,7 @@ export class EventService extends ServletService<Event> {
 						.set("type", "" + eventType)
 				}))
 					.map(json => json.events.map(event =>
-						this.eventFactoryService.build(eventType).setProperties(event)))
+						EventFactoryService.build(eventType).setProperties(event)))
 					.do(events => this.cache.addMultiple(...events))
 			);
 
@@ -115,7 +114,7 @@ export class EventService extends ServletService<Event> {
 			params: new HttpParams().set("searchTerm", searchTerm).set("type", "" + eventType)
 		}))
 			.map(json => json.events.map(event =>
-				this.eventFactoryService.build(eventType).setProperties(event)))
+				EventFactoryService.build(eventType).setProperties(event)))
 			.do(events => this.cache.addMultiple(...events));
 
 		//todo just use the cached one instead of combining them?

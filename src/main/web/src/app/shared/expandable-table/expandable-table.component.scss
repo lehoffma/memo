@@ -82,6 +82,10 @@
 		thead, /deep/ tbody {
 			border-bottom: 2px solid #ededed;
 
+			&.expanded-row{
+				border-bottom: 0;
+			}
+
 			> tr {
 				text-align: left;
 			}
