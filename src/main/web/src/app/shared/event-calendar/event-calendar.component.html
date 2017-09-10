@@ -3,7 +3,7 @@
 	<p-schedule [events]="calendarEvents$ | async"
 				locale="de"
 				[editable]="true"
-				[height]="'auto'"
+				[height]="height$ | async"
 				(onEventClick)="eventClickHandler($event);"
 				(onDayClick)="dayClickHandler($event)"
 

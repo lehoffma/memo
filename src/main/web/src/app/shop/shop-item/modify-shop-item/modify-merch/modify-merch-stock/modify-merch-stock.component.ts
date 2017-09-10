@@ -94,6 +94,7 @@ export class ModifyMerchStockComponent implements OnInit {
 						if (index === -1) {
 							this.merchStock = [...this.merchStock, {
 								id: getId(event.size + event.color.name),
+								event: event.event,
 								size: event.size,
 								color: Object.assign({}, event.color),
 								amount: event.amount
@@ -117,6 +118,7 @@ export class ModifyMerchStockComponent implements OnInit {
 							if (stock["id"] === event.modifiedStock["id"]) {
 								return {
 									id: event.modifiedStock.id,
+									event: event.event,
 									size: event.size,
 									color: Object.assign({}, event.color),
 									amount: event.amount

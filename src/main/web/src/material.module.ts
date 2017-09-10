@@ -1,7 +1,7 @@
 import {NgModule} from "@angular/core";
 import {
 	MdAutocompleteModule,
-	MdButtonModule,
+	MdButtonModule, MdButtonToggleModule,
 	MdCardModule,
 	MdCheckboxModule,
 	MdChipsModule,
@@ -18,21 +18,20 @@ import {
 	MdSidenavModule,
 	MdSnackBarModule,
 	MdToolbarModule,
-	MdTooltipModule
+	MdTooltipModule,
 } from "@angular/material";
 
+const modules = [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepickerModule,
+	MdMenuModule, MdSidenavModule, MdToolbarModule, MdCardModule,
+	MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
+	MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
+	MdAutocompleteModule, MdChipsModule, MdProgressSpinnerModule,
+	MdButtonToggleModule
+];
 
 @NgModule({
-	imports: [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepickerModule,
-		MdMenuModule, MdSidenavModule, MdToolbarModule, MdCardModule,
-		MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
-		MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
-		MdAutocompleteModule, MdChipsModule, MdProgressSpinnerModule],
-	exports: [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepickerModule,
-		MdMenuModule, MdSidenavModule, MdToolbarModule, MdCardModule,
-		MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
-		MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
-		MdAutocompleteModule, MdChipsModule, MdProgressSpinnerModule],
+	imports: modules,
+	exports: modules,
 })
 export class MemoMaterialModule {
 }

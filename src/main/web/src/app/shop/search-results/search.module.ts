@@ -29,7 +29,9 @@ import {SearchFilterService} from "./search-filter.service";
 		SearchFilterService
 	],
 	exports: [
-		SortingDropdownComponent
+		SortingDropdownComponent,
+		FilteringMenuComponent,
+		ResultsEntryComponent,
 	]
 })
 export class SearchModule{}

@@ -16,8 +16,23 @@ tr {
 	}
 }
 
+
 @media all and (min-width: 1000px) {
-	td {
+	.row-title{
 		padding-left: 30px;
+	}
+
+	td,
+	/deep/ td{
+		padding-right: 24px;
+	}
+
+
+	/deep/ td{
+		text-align: end;
+	}
+
+	td{
+		text-align: left;
 	}
 }

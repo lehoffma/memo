@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Party} from "../../shop/shared/model/party";
 import {Tour} from "../../shop/shared/model/tour";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {WindowService} from "../services/window.service";
 
 @Component({
 	selector: "memo-event-calendar",
@@ -26,7 +27,10 @@ export class EventCalendarComponent implements OnInit {
 	@Output() onDayClick: EventEmitter<Date> = new EventEmitter();
 	@Output() onEventClick: EventEmitter<number> = new EventEmitter();
 
-	constructor() {
+	height$ = this.windowService.dimension$
+		.map(dimensions => dimensions.height);
+
+	constructor(private windowService: WindowService) {
 	}
 
 	@Input()

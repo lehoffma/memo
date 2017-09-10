@@ -9,6 +9,8 @@ import * as moment from "moment";
 import {StockService} from "../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
 import {isObservable} from "../../util/util";
+import {MerchColor} from "../shared/model/merch-color";
+import {MerchStockList} from "../shared/model/merch-stock";
 
 @Injectable()
 export class SearchFilterService {
@@ -170,11 +172,14 @@ export class SearchFilterService {
 			.map(event => (<Merchandise>event))
 			.map(merch => this.stockService.getByEventId(merch.id))
 		)
-			.map(nestedStockList => nestedStockList
+			.map((nestedStockList: MerchStockList[]) => nestedStockList
 				.map(stockList => stockList.map(stockItem => stockItem.color))
-				.reduce((acc, colors) => [...acc, ...colors.filter(color => !acc.find(it => it.name === color.name))],
+				.reduce((acc: MerchColor[], colors: MerchColor[]) =>
+						[...acc, ...colors.filter(color => !acc.find(it => it.name === color.name))],
 					[])
-				.map(color => ({
+				//remove duplicates
+				.filter((color, index, array) => array.findIndex(_color => _color.name === color.name) === index)
+				.map((color: MerchColor) => ({
 					name: color.name,
 					queryValue: color.name,
 					selected: false

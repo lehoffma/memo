@@ -11,6 +11,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
 	selector: "memo-event-calendar-container",
@@ -21,13 +22,40 @@ export class EventCalendarContainerComponent implements OnInit {
 	events: Observable<(Party | Tour)[]> = this.getUpdatedEvents();
 	editable: Observable<boolean> = Observable.of(false); //todo true if permissions of tour/party >= write, else false
 
+	selectedView = "calendar";
+
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
+				private activatedRoute: ActivatedRoute,
+				private router: Router,
 				private snackBar: MdSnackBar,
 				private mdDialog: MdDialog) {
 	}
 
 	ngOnInit() {
+		this.activatedRoute.queryParamMap
+			.filter(queryParamMap => queryParamMap.has("view"))
+			.subscribe(queryParamMap => {
+				switch (queryParamMap.get("view")) {
+					case "calendar":
+						this.selectedView = "calendar";
+						break;
+					case "list":
+						this.selectedView = "list";
+						break;
+					default:
+						this.selectedView = "calendar";
+				}
+			})
+	}
+
+	navigateToRoute(selectedView: "calendar" | "list") {
+		this.router.navigate([], {
+			queryParams: {
+				view: selectedView,
+			},
+			relativeTo: this.activatedRoute
+		});
 	}
 
 	getUpdatedEvents(): Observable<(Party | Tour)[]> {
@@ -66,7 +94,7 @@ export class EventCalendarContainerComponent implements OnInit {
 				}
 			);
 
-		let dialogRef = this.mdDialog.open(EventContextMenuComponent, {
+		const dialogRef = this.mdDialog.open(EventContextMenuComponent, {
 			data: {
 				id: eventId,
 				title: this.eventService.getById(eventId).map(event => event.title),

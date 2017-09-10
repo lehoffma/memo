@@ -24,7 +24,8 @@ const routes: Route[] = [
 	{
 		path: "management/stock/merch",
 		component: MerchStockComponent,
-		canActivate: [AuthenticatedGuard, CanViewStockGuard]
+		//todo wieder rein hauen, demo
+		// canActivate: [AuthenticatedGuard, CanViewStockGuard]
 	},
 ];
 

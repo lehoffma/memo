@@ -1,3 +1,28 @@
+$max-width: 1000px;
+
 .calendar-container {
-	padding: 2%;
+	padding: 20px 2% 2%;
+
+	min-height: 100%;
+}
+
+
+.calendar-container,
+.calendar-options{
+	margin: auto;
+	max-width: $max-width;
+}
+
+.calendar-options {
+	padding: 1% 2% 0;
+	display: flex;
+	flex-direction: column;
+	md-button-toggle-group {
+		background-color: white;
+	}
+
+	.calendar-options-actions{
+		display: flex;
+		justify-content: space-between;
+	}
 }

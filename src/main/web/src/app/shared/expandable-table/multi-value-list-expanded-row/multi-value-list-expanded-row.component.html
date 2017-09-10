@@ -1,14 +1,12 @@
 <tr *ngFor="let columnKey of keys; let i = index">
 	<td></td>
-	<td class="secondary-text">
+	<td class="secondary-text row-title">
 		{{columnKey.title}}
 	</td>
 
-	<td *ngFor="let dataObject of data[columnKey.key]">
-		<ng-template memoExpandableTableColumnContainer>
+	<ng-template memoExpandableTableColumnContainer *ngFor="let dataObject of data[columnKey.key]">
 
-		</ng-template>
-	</td>
+	</ng-template>
 	<td colspan="20">
 	</td>
 </tr>

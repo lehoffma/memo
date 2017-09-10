@@ -103,3 +103,17 @@ a.disabled {
 .mat-sidenav-container, .mat-sidenav-content {
 	transform: none !important;
 }
+
+.mat-button:not(.dropbtn),
+.mat-raised-button,
+.mat-icon-button{
+	text-transform: uppercase
+}
+
+.mat-raised-button{
+	transition: all .15s ease !important;
+	&:hover{
+		transform: translateY(-1px);
+		@extend .mat-elevation-z3;
+	}
+}

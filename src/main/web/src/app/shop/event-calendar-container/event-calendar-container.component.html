@@ -1,10 +1,36 @@
+<div class="calendar-options">
+	<div>
+		<span class="secondary-text">Ansichten:</span>
+	</div>
+	<div class="calendar-options-actions">
+		<md-button-toggle-group #calendarViewGroup="mdButtonToggleGroup"
+								[(ngModel)]="selectedView" (ngModelChange)="navigateToRoute(selectedView)">
+			<md-button-toggle value="calendar">
+				<md-icon>event</md-icon>
+			</md-button-toggle>
+			<md-button-toggle value="list">
+				<md-icon>list</md-icon>
+			</md-button-toggle>
+		</md-button-toggle-group>
+		<button md-raised-button color="accent" (click)="onDayClick()">
+			Hinzufügen
+		</button>
+	</div>
+</div>
+
 <div class="calendar-container">
-	<memo-event-calendar [events]="events | async"
-						 [editable]="editable | async"
-						 (onDayClick)="onDayClick($event)"
-						 (onEventClick)="onEventClick($event)"
+	<div [ngSwitch]="selectedView">
+		<memo-event-calendar *ngSwitchCase="'calendar'"
+							 [events]="events | async"
+							 [editable]="false"
+							 (onDayClick)="onDayClick($event)"
+							 (onEventClick)="onEventClick($event)"
 
-	>
-
-	</memo-event-calendar>
+		>
+		</memo-event-calendar>
+		<memo-event-list-view *ngSwitchCase="'list'" [events]="events | async" (onAddEvent)="onDayClick($event)">
+			Listenansicht
+		</memo-event-list-view>
+		<memo-page-not-found *ngSwitchDefault></memo-page-not-found>
+	</div>
 </div>

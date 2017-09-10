@@ -9,13 +9,14 @@ import {EventType} from "../../../../shop/shared/model/event-type";
 import {ExpandableTableColumn} from "../../../../shared/expandable-table/expandable-table-column";
 import {ExpandedRowComponent} from "../../../../shared/expandable-table/expanded-row.component";
 import {MultiValueListExpandedRowComponent} from "../../../../shared/expandable-table/multi-value-list-expanded-row/multi-value-list-expanded-row.component";
-import {MerchStockTotalTableCellComponent} from "app/club-management/administration/stock/merch-stock/merch-stock-table-cells/merch-stock-total-table-cell.component";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {ShopItemType} from "../../../../shop/shared/model/shop-item-type";
 import {isNullOrUndefined} from "util";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {ActionPermissions} from "../../../../shared/expandable-table/expandable-table.component";
 import {LogInService} from "../../../../shared/services/api/login.service";
+import {StockTableItem} from "./stock-table-item";
+import {MerchStockTableCellComponent} from "./merch-stock-table-cell.component";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -23,35 +24,21 @@ import {LogInService} from "../../../../shared/services/api/login.service";
 	styleUrls: ["./merch-stock.component.scss"]
 })
 export class MerchStockComponent implements OnInit {
-
-	_sortBy = new BehaviorSubject<ColumnSortingEvent<Merchandise>>({
+	_sortBy = new BehaviorSubject<ColumnSortingEvent<StockTableItem>>({
 		key: "id",
 		descending: false
 	});
-	sortBy: Observable<ColumnSortingEvent<Merchandise>> = this._sortBy.asObservable();
+	sortBy: Observable<ColumnSortingEvent<StockTableItem>> = this._sortBy.asObservable();
 	merchListSubject$: BehaviorSubject<any[]> = new BehaviorSubject([]);
 	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("merch");
 	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
 	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
-	merchList: Observable<any[]> = Observable.combineLatest(this.eventService.search("", EventType.merch)
-			.do((merchList: Merchandise[]) => {
-				Observable.combineLatest(...merchList.map(merch => this.stockService.getByEventId(merch.id)))
-					.first()
-					.subscribe(stockList => {
-						let options = this.stockService.getStockOptions(stockList);
-						this.primaryColumnKeys.next([
-							new ExpandableTableColumn<any>("Name", "title"),
-							...options.size
-								.map((size: string) => new ExpandableTableColumn<any>(size, size, MerchStockTotalTableCellComponent)),
-							new ExpandableTableColumn<any>("Gesamt", "total")
-						]);
-						this.expandedRowKeys.next([...options.color
-							.map((color: string) => new ExpandableTableColumn<any>(color, color))]);
-					});
-			})
-			.flatMap((merchList: Merchandise[]) => this.stockService.mapToStockTableObject(merchList))
+	merchList: Observable<StockTableItem[]> = Observable.combineLatest(this.eventService.search("", EventType.merch)
+			.do(this.updateRowsAndColumns.bind(this))
+			.flatMap(this.stockService.mapToStockTableObject.bind(this.stockService))
 		, this.sortBy)
-		.map(([merch, sortBy]) => merch.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
+		.map(([merch, sortBy]: [StockTableItem[], ColumnSortingEvent<StockTableItem>]) =>
+			merch.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
 	expandedRowComponent: Type<ExpandedRowComponent<any>> = MultiValueListExpandedRowComponent;
 
 	constructor(private eventService: EventService,
@@ -106,4 +93,23 @@ export class MerchStockComponent implements OnInit {
 			));
 	}
 
+	/**
+	 *
+	 * @param {Merchandise[]} merchList
+	 */
+	updateRowsAndColumns(merchList: Merchandise[]){
+		Observable.combineLatest(...merchList.map(merch => this.stockService.getByEventId(merch.id)))
+			.first()
+			.subscribe(stockList => {
+				const options = this.stockService.getStockOptions(stockList);
+				this.primaryColumnKeys.next([
+					new ExpandableTableColumn<any>("Name", "title"),
+					...options.size
+						.map((size: string) => new ExpandableTableColumn<any>(size, size, MerchStockTableCellComponent)),
+					new ExpandableTableColumn<any>("Gesamt", "total")
+				]);
+				this.expandedRowKeys.next([...options.color
+					.map((color: string) => new ExpandableTableColumn<any>(color, color, MerchStockTableCellComponent))]);
+			});
+	}
 }

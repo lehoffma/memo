@@ -3,7 +3,6 @@ import {ClubManagementRoutingModule, routedComponents} from "./club-management.r
 import {AccountingOptionsComponent} from "./accounting/accounting-options/accounting-options.component";
 import {EntryCategoryCellComponent} from "./accounting/accounting-table-cells/entry-category-cell.component";
 import {CostValueTableCellComponent} from "./accounting/accounting-table-cells/cost-value-table-cell.component";
-import {MerchStockTotalTableCellComponent} from "./administration/stock/merch-stock/merch-stock-table-cells/merch-stock-total-table-cell.component";
 import {AddressTableCellComponent} from "./administration/member-list/member-list-table-cells/address-table-cell.component";
 import {BooleanCheckMarkCellComponent} from "./administration/member-list/member-list-table-cells/boolean-checkmark-cell.component";
 import {ClubRoleTableCellComponent} from "./administration/member-list/member-list-table-cells/clubrole-table-cell.component";
@@ -18,14 +17,16 @@ import {CommonModule} from "@angular/common";
 import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {PieChartModule} from "@swimlane/ngx-charts";
+import {MerchStockTableCellComponent} from "./administration/stock/merch-stock/merch-stock-table-cell.component";
 
 const tableCellComponents = [
 	//accounting table cells
 	EntryCategoryCellComponent,
 	CostValueTableCellComponent,
 
-	//stock table cells
-	MerchStockTotalTableCellComponent,
+	//merch table cell
+	MerchStockTableCellComponent,
 
 	//memberlist table cells
 	AddressTableCellComponent,
@@ -46,7 +47,10 @@ const tableCellComponents = [
 		ReactiveFormsModule,
 		CommonModule,
 		MemoMaterialModule,
-		SharedModule, ClubManagementRoutingModule],
+		PieChartModule,
+		SharedModule,
+		ClubManagementRoutingModule
+	],
 	declarations: [
 		routedComponents,
 		AccountingOptionsComponent,

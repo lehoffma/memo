@@ -7,19 +7,25 @@ import {EventCalendarContainerComponentRoutingModule, routedComponents} from "./
 import {CommonModule} from "@angular/common";
 import {SharedModule} from "../../shared/shared.module";
 import {MemoMaterialModule} from "../../../material.module";
+import {FormsModule} from "@angular/forms";
+import {EventListViewComponent} from './event-list-view/event-list-view.component';
+import {SearchModule} from "../search-results/search.module";
 
 @NgModule({
 	imports: [
 		CommonModule,
 		SharedModule,
+		FormsModule,
 		MemoMaterialModule,
+		SearchModule,
 		EventCalendarContainerComponentRoutingModule
 	],
 	exports: [EventCalendarContainerComponent],
 	declarations: [
 		routedComponents,
 		EventContextMenuComponent,
-		CreateEventContextMenuComponent
+		CreateEventContextMenuComponent,
+		EventListViewComponent
 	],
 
 	entryComponents: [

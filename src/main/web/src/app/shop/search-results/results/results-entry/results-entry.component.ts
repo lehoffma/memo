@@ -13,8 +13,7 @@ import {StockService} from "../../../../shared/services/api/stock.service";
 export class ResultsEntryComponent implements OnInit {
 	colors: MerchColor[] = [];
 
-	constructor(private eventUtilService: EventUtilityService,
-				private stockService: StockService,
+	constructor(private stockService: StockService,
 				private navigationService: NavigationService) {
 	}
 
@@ -31,6 +30,8 @@ export class ResultsEntryComponent implements OnInit {
 			this.stockService
 				.getByEventId(result.id)
 				.map(stockList => stockList.map(stockItem => stockItem.color))
+				//remove duplicates
+				.map(colors => colors.filter((color, index, array) => array.findIndex(it => it.name === color.name) === index))
 				.subscribe(colors => this.colors = [...colors]);
 		}
 	}

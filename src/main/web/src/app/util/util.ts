@@ -1,4 +1,4 @@
-import {isNullOrUndefined} from "util";
+import {isArray, isNullOrUndefined} from "util";
 import * as moment from "moment";
 import {Moment} from "moment";
 import {Observable} from "rxjs/Observable";
@@ -90,4 +90,16 @@ export function getId(object: any): number {
 
 export function isObservable(value:any): value is Observable<any>{
 	return (<Observable<any>>value).subscribe !== undefined;
+}
+
+
+const concat = (x,y) =>
+	x.concat(y)
+
+const flatMap = (f,xs) =>
+	xs.map(f).reduce(concat, [])
+
+
+export function isArrayType(value) : value is any[]{
+	return isArray(value);
 }

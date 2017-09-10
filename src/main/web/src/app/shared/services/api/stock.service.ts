@@ -1,9 +1,11 @@
 import {Injectable} from "@angular/core";
-import {MerchStock, MerchStockList} from "../../../shop/shared/model/merch-stock";
+import {MerchStockList} from "../../../shop/shared/model/merch-stock";
 import {Observable} from "rxjs/Observable";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {GroupedStockItem} from "app/club-management/administration/stock/merch-stock/grouped-stock-item";
+import {StockTableItem} from "app/club-management/administration/stock/merch-stock/stock-table-item";
 
 const stockMockData = [
 	{
@@ -172,44 +174,26 @@ export class StockService extends ServletService<MerchStockList> {
 			.map((stockList: MerchStockList[]) => {
 				let options = this.getStockOptions(stockList);
 
-				/**
-				 *
-				 * @param stock
-				 * @param options
-				 * @param stockKey
-				 * @param optionsKey
-				 * @param stockValue
-				 * @returns {Array}
-				 */
-				let getStockAmountList = function (stock: MerchStockList, options: { [key: string]: string[] }, stockKey: string, optionsKey: string, stockValue: string) {
-					let list = stock
-						.filter(stock => stock[stockKey] === stockValue || stock[stockKey].name === stockValue)
-						.reduce((acc, stock) => {
-							let index = options[optionsKey].findIndex(option =>
-								option === stock[optionsKey] || option === stock[optionsKey].name
-							);
-							acc[index] = stock.amount;
-							return acc;
-						}, []);
-
-					list.push(list.reduce((acc, val) => acc + val, 0));
-
-					return list;
-				};
-
-
 				return merchList.map((merchObject, index) => {
-					let transformedMerch: any = {id: merchObject.id};
+					let transformedMerch: StockTableItem = {id: merchObject.id};
 					options.size.forEach(size => {
-						transformedMerch[size] = getStockAmountList(stockList[index], options, "size", "color", size);
+						transformedMerch[size] = stockList[index]
+							.filter(stock => stock.size === size)
+							.reduce((sum, stock) => sum + stock.amount, 0);
 					});
 					options.color.forEach(color => {
-						transformedMerch[color] = getStockAmountList(stockList[index], options, "color", "size", color);
+						transformedMerch[color] = options.size
+							.map(size => stockList[index]
+								.filter(stock => stock.color.name === color && stock.size === size)
+								.reduce((sum, stock) => sum + stock.amount, 0)
+							);
+						(<number[]>transformedMerch[color]).push(
+							(<number[]>transformedMerch[color]).reduce((sum, amount) => sum + amount, 0)
+						)
 					});
 					transformedMerch["title"] = merchObject.title;
 					transformedMerch["total"] = options.size.reduce(
-						(acc, size) => acc + transformedMerch[size][transformedMerch[size].length - 1]
-						, 0
+						(acc, size) => acc + (<number>transformedMerch[size]), 0
 					);
 
 					return transformedMerch;
@@ -217,6 +201,30 @@ export class StockService extends ServletService<MerchStockList> {
 			});
 
 	}
+
+	/**
+	 *
+	 * @param {MerchStockList} stockList
+	 * @returns {Array}
+	 */
+	groupStockListByEvent(stockList: MerchStockList): GroupedStockItem[] {
+		return stockList.reduce((acc, stockItem) => {
+			const index = acc.findIndex(item => item.event.id === stockItem.event.id);
+			if (index === -1) {
+				acc.push({
+					event: stockItem.event,
+					stockList: [stockItem],
+					amount: stockItem.amount
+				})
+			}
+			else {
+				acc[index].stockList.push(stockItem);
+				acc[index].amount += stockItem.amount;
+			}
+			return acc;
+		}, [])
+	}
+
 
 	/**
 	 *

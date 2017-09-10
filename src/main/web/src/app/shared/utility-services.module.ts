@@ -7,6 +7,7 @@ import {EventUtilityService} from "./services/event-utility.service";
 import {NavigationService} from "./services/navigation.service";
 import {QueryParameterService} from "./services/query-parameter.service";
 import {ShoppingCartService} from "./services/shopping-cart.service";
+import {WindowService} from "./services/window.service";
 
 
 const providers = [
@@ -15,7 +16,8 @@ const providers = [
 	EventUtilityService,
 	NavigationService,
 	QueryParameterService,
-	ShoppingCartService
+	ShoppingCartService,
+	WindowService
 ];
 
 @NgModule({
