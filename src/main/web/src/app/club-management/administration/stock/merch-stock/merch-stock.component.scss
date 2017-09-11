@@ -1,6 +1,32 @@
 
 
 
+.desktop{
+	display: none;
+}
+
+.stock-entry-container{
+	.stock-options{
+		display: flex;
+		background-color: white;
+		padding: 0.5rem;
+		justify-content: space-evenly;
+
+		* {
+			width: 50%;
+		}
+	}
+
+	memo-merch-stock-entry{
+		margin-top: 15px;
+	}
+}
+
+memo-merch-stock-feed{
+	display: none;
+}
+
+
 img{
 	width: 50px;
 	height: 50px;
@@ -9,37 +35,58 @@ img{
 
 
 
-
-
-
-
-
-///////
-
-memo-expandable-table /deep/ .sortable-column:nth-child(2) {
-	min-width: 6rem;
-}
-
-$breakpoint: 600px;
-
-.merch-stock-container {
-
-	@media all and (min-width: $breakpoint) {
-		display: flex;
-		align-items: center;
-		justify-content: center;
+@media all and (min-width: 800px){
+	.stock-options-sidebar{
+		display: block;
+		width: 250px;
+		z-index: 2;
+		position: fixed;
+		left: 30px;
+		top: 100px;
+		height: calc(100% - 90px);
+		overflow-y: hidden;
 	}
-}
-
-memo-expandable-table {
-	/deep/ .expandable-table-component-container {
-		max-width: 800px;
-
-		@media all and (min-width: $breakpoint) {
-			margin: 2rem;
-			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+	.stock-entry-container{
+		width: calc(100% - 350px);
+		position: relative;
+		left: 300px;
+		top: 20px;
+		margin-bottom: 30px;
+		.stock-options{
+			background-color: transparent;
+			padding: 0;
+			justify-content: flex-end;
+			* {
+				width: auto;
+			}
 		}
-
 	}
 
+	.desktop{
+		display: block;
+	}
+	.mobile{
+		display: none;
+	}
 }
+
+
+@media all and (min-width: 1000px){
+	.stock-entry-container{
+		width: calc(100% - 300px - 400px);
+	}
+
+
+	memo-merch-stock-feed{
+		display: block;
+		width: 300px;
+		z-index: 2;
+		position: absolute;
+		right: 60px;
+		top: 123px;
+		height: calc(100% - 140px);
+		overflow-y: hidden;
+	}
+}
+
+

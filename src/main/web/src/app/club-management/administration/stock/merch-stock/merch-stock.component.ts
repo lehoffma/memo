@@ -1,25 +1,17 @@
-import {Component, OnInit, Type} from "@angular/core";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {ColumnSortingEvent} from "../../../../shared/expandable-table/column-sorting-event";
+import {Component, OnInit} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {attributeSortingFunction} from "../../../../util/util";
-import {Merchandise} from "../../../../shop/shared/model/merchandise";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {EventType} from "../../../../shop/shared/model/event-type";
-import {ExpandableTableColumn} from "../../../../shared/expandable-table/expandable-table-column";
-import {ExpandedRowComponent} from "../../../../shared/expandable-table/expanded-row.component";
-import {MultiValueListExpandedRowComponent} from "../../../../shared/expandable-table/multi-value-list-expanded-row/multi-value-list-expanded-row.component";
 import {NavigationService} from "../../../../shared/services/navigation.service";
-import {ShopItemType} from "../../../../shop/shared/model/shop-item-type";
-import {isNullOrUndefined} from "util";
 import {StockService} from "../../../../shared/services/api/stock.service";
-import {ActionPermissions} from "../../../../shared/expandable-table/expandable-table.component";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {StockTableItem} from "./stock-table-item";
-import {MerchStockTableCellComponent} from "./merch-stock-table-cell.component";
-import {TableActionEvent} from "../../../../shared/expandable-table/table-action-event";
-import {MerchStock} from "../../../../shop/shared/model/merch-stock";
-import {RowAction} from "../../../../shared/expandable-table/row-action";
+import {StockEntry} from "./merch-stock-entry/stock-entry";
+import {MultiLevelSelectParent} from "../../../../shared/multi-level-select/shared/multi-level-select-parent";
+import {SearchFilterService} from "../../../../shop/search-results/search-filter.service";
+import {SortingOption} from "../../../../shared/model/sorting-option";
+import {ActivatedRoute} from "@angular/router";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {sortingFunction} from "../../../../util/util";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -27,108 +19,103 @@ import {RowAction} from "../../../../shared/expandable-table/row-action";
 	styleUrls: ["./merch-stock.component.scss"]
 })
 export class MerchStockComponent implements OnInit {
-	_sortBy = new BehaviorSubject<ColumnSortingEvent<StockTableItem>>({
-		key: "id",
-		descending: false
-	});
-	sortBy: Observable<ColumnSortingEvent<StockTableItem>> = this._sortBy.asObservable();
-	merchListSubject$: BehaviorSubject<any[]> = new BehaviorSubject([]);
-	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("merch");
-	primaryColumnKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
-	expandedRowKeys: BehaviorSubject<ExpandableTableColumn<any>[]> = new BehaviorSubject([]);
-	merchList: Observable<StockTableItem[]> = Observable.combineLatest(this.eventService.search("", EventType.merch)
-			.do(this.updateRowsAndColumns.bind(this))
-			.flatMap(this.stockService.mapToStockTableObject.bind(this.stockService))
-		, this.sortBy)
-		.map(([merch, sortBy]: [StockTableItem[], ColumnSortingEvent<StockTableItem>]) =>
-			merch.sort(attributeSortingFunction(sortBy.key, sortBy.descending)));
-	expandedRowComponent: Type<ExpandedRowComponent<any>> = MultiValueListExpandedRowComponent;
+	merch$: Observable<StockEntry[]> =
+		this.eventService.search("", EventType.merch)
+			.flatMap(merch => Observable.combineLatest(
+				...merch.map(merchItem => this.stockService.getByEventId(merchItem.id)
+					.map(stockList => ({
+						stockMap: this.stockService.toStockMap(stockList),
+						options: this.stockService.getStockOptions([stockList]),
+						item: merchItem
+					})))
+			))
+			.flatMap((dataList: StockEntry[]) => {
+
+				return this.activatedRoute.queryParamMap
+					.flatMap(queryParamMap => {
+						let list = [...dataList];
+
+						//todo filter => categories + search bar
+						const filteredBy = {};
+						queryParamMap.keys.forEach(key => filteredBy[key] = queryParamMap.get(key));
+
+						return Observable.combineLatest(...list
+							.map(item => this.searchFilterService.satisfiesFilters(item.item, filteredBy)
+								.map(satisfiesFilter => ({
+									satisfiesFilter,
+									item
+								}))))
+							.map(list => list.filter(it => it.satisfiesFilter).map(it => it.item))
+							.map(list => {
+								if (queryParamMap.has("sortBy") && queryParamMap.has("descending")) {
+									const attribute = queryParamMap.get("sortBy");
+									const descending = queryParamMap.get("descending") === "true";
+									return list.sort(sortingFunction<StockEntry>(obj => obj.item[attribute], descending));
+								}
+								return list;
+							})
+					})
+
+			});
+
+
+	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
+	//todo blinking when filtering
+	//todo "keine merchandise artikel matchen die ausgewählten filter"
+	filterOptions$ = this._filterOptions$
+		.asObservable()
+		.scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService))
+		.map(options => options.filter(option => option.children && option.children.length > 0));
+
+	get filterOptions() {
+		return this._filterOptions$.getValue();
+	}
+
+	set filterOptions(options) {
+		this._filterOptions$.next(options);
+	}
+
+	sortingOptions: SortingOption<StockEntry>[] = [
+		{
+			name: "Alphabetisch A-Z",
+			queryParameters: {
+				sortBy: "title",
+				descending: "false"
+			},
+		},
+		{
+			name: "Alphabetisch Z-A",
+			queryParameters: {
+				sortBy: "title",
+				descending: "true"
+			}
+		},
+	];
+
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
 				private stockService: StockService,
+				private activatedRoute: ActivatedRoute,
+				private searchFilterService: SearchFilterService,
 				private navigationService: NavigationService) {
-		this.merchList.subscribe(merchList => this.merchListSubject$.next(merchList));
+
 	}
 
 	ngOnInit() {
-	}
-
-
-	/**
-	 * Pushes a new sortBy value into the stream
-	 * @param event
-	 */
-	updateSortingKey(event: ColumnSortingEvent<any>) {
-		this._sortBy.next(event)
-	}
-
-	/**
-	 *
-	 * @param event
-	 */
-	addMerch(event: any) {
-		this.navigationService.navigateByUrl("merch/create");
-	}
-
-	/**
-	 *
-	 * @param merchObj
-	 */
-	edit(merchObj: any) {
-		if (!isNullOrUndefined(merchObj.id) && merchObj.id >= 0) {
-			this.navigationService.navigateToItemWithId(ShopItemType.merch, merchObj.id, "/edit");
-		}
-	}
-
-	/**
-	 * @param merchObjects
-	 */
-	deleteMerch(merchObjects: any[]) {
-		merchObjects.forEach(merchObject => this.eventService.remove(merchObject.id)
-			.subscribe(
-				value => {
-					this.merchListSubject$.next(this.merchListSubject$.value
-						.filter(object => merchObject.id !== object.id)
-					);
-				},
-				error => console.error(error)
-			));
-	}
-
-	/**
-	 *
-	 * @param {TableActionEvent<StockTableItem>} event
-	 * @returns {any}
-	 */
-	handleMerchStockAction(event: TableActionEvent<StockTableItem>){
-		switch(event.action){
-			case RowAction.ADD:
-				return this.addMerch(event);
-			case RowAction.EDIT:
-				return this.edit(event.entries[0]);
-			case RowAction.DELETE:
-				return this.deleteMerch(event.entries);
-		}
-	}
-
-	/**
-	 *
-	 * @param {Merchandise[]} merchList
-	 */
-	updateRowsAndColumns(merchList: Merchandise[]){
-		Observable.combineLatest(...merchList.map(merch => this.stockService.getByEventId(merch.id)))
-			.first()
-			.subscribe(stockList => {
-				const options = this.stockService.getStockOptions(stockList);
-				this.primaryColumnKeys.next([
-					new ExpandableTableColumn<any>("Name", "title"),
-					...options.size
-						.map((size: string) => new ExpandableTableColumn<any>(size, size, MerchStockTableCellComponent)),
-					new ExpandableTableColumn<any>("Gesamt", "total")
-				]);
-				this.expandedRowKeys.next([...options.color
-					.map((color: string) => new ExpandableTableColumn<any>(color, color, MerchStockTableCellComponent))]);
+		this.merch$
+			.flatMap((dataList: StockEntry[]) => Observable.fromPromise(this.searchFilterService
+				.getEventFilterOptionsFromResults(dataList.map(it => it.item)))
+			)
+			.map(filterOptions => filterOptions
+				.filter(option => option.queryKey !== "category" && option.queryKey !== "date"))
+			.subscribe(filterOptions => {
+				this.searchFilterService.initFilterMenu(this.activatedRoute, filterOptions)
+					.subscribe(options => {
+						this.filterOptions = options;
+					})
 			});
 	}
+
+
 }

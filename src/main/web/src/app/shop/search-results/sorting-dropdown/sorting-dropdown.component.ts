@@ -37,6 +37,6 @@ export class SortingDropdownComponent implements OnInit {
 	updateQueryParams(queryParams: Params) {
 		this.activatedRoute.queryParamMap.first()
 			.map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams))
-			.subscribe(newQueryParams => this.router.navigate(["search"], {queryParams: newQueryParams}));
+			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
 	}
 }

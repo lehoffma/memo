@@ -1,3 +1,45 @@
-<p>
-  merch-stock-feed works!
-</p>
+<h3>
+	Ausverkaufte Artikel
+</h3>
+
+<div>
+	<div *ngFor="let merch of merch$ | async">
+		<div class="out-of-stock-item-header">
+			<div>
+				<a routerLink="/merch/{{merch.item.id}}">
+					<img src="{{merch.item.imagePath}}"/>
+				</a>
+				<a routerLink="/merch/{{merch.item.id}}">
+					<h4>
+						{{merch.item.title}}
+					</h4>
+				</a>
+			</div>
+			<button md-icon-button>
+				<md-icon>more_vert</md-icon>
+			</button>
+		</div>
+
+		<div class="out-of-stock-item-options">
+			<table>
+				<tbody>
+				<tr *ngFor="let size of keysOfObject(merch.emptyOptions)">
+					<th>
+						{{size}}
+					</th>
+					<td class="color-container">
+						<div *ngFor="let color of merch.emptyOptions[size]">
+							<span class="merch-available-colors"
+								  [style.background-color]="color.hex">
+
+							</span>
+							<span>{{color.name}}</span>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>

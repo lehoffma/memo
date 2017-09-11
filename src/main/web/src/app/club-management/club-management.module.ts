@@ -19,7 +19,10 @@ import {MemoMaterialModule} from "../../material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {PieChartModule} from "@swimlane/ngx-charts";
 import {MerchStockTableCellComponent} from "./administration/stock/merch-stock/merch-stock-table-cell.component";
-import { MerchStockFeedComponent } from './administration/stock/merch-stock/src/app/club-management/administration/stock/merch-stock/merch-stock-feed/merch-stock-feed.component';
+import {MerchStockFeedComponent} from "./administration/stock/merch-stock/merch-stock-feed/merch-stock-feed.component";
+import {MerchStockEntryComponent} from "app/club-management/administration/stock/merch-stock/merch-stock-entry/merch-stock-entry.component";
+import {SearchFilterService} from "../shop/search-results/search-filter.service";
+import {SearchModule} from "../shop/search-results/search.module";
 
 const tableCellComponents = [
 	//accounting table cells
@@ -42,6 +45,7 @@ const tableCellComponents = [
 	TelephoneTableCellComponent
 ];
 
+
 @NgModule({
 	imports: [
 		FormsModule,
@@ -50,13 +54,18 @@ const tableCellComponents = [
 		MemoMaterialModule,
 		PieChartModule,
 		SharedModule,
+		SearchModule,
 		ClubManagementRoutingModule
 	],
 	declarations: [
 		routedComponents,
 		AccountingOptionsComponent,
 		tableCellComponents,
-		MerchStockFeedComponent
+		MerchStockFeedComponent,
+		MerchStockEntryComponent
+	],
+	providers: [
+		SearchFilterService
 	],
 	entryComponents: [tableCellComponents]
 })

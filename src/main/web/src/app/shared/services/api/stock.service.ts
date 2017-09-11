@@ -1,11 +1,12 @@
 import {Injectable} from "@angular/core";
-import {MerchStockList} from "../../../shop/shared/model/merch-stock";
+import {MerchStock, MerchStockList} from "../../../shop/shared/model/merch-stock";
 import {Observable} from "rxjs/Observable";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {GroupedStockItem} from "app/club-management/administration/stock/merch-stock/grouped-stock-item";
 import {StockTableItem} from "app/club-management/administration/stock/merch-stock/stock-table-item";
+import {MerchColor} from "../../../shop/shared/model/merch-color";
 
 const stockMockData = [
 	{
@@ -134,6 +135,12 @@ interface StockApiResponse {
 	stock: MerchStockList;
 }
 
+export interface StockMap{
+	[size: string]: {
+		[color: string]: number;
+	}
+}
+
 @Injectable()
 export class StockService extends ServletService<MerchStockList> {
 	baseUrl = "/api/stock";
@@ -178,66 +185,32 @@ export class StockService extends ServletService<MerchStockList> {
 		return this.getById(null, eventId);
 	}
 
-	/**
-	 *
-	 * @param merchList
-	 */
-	mapToStockTableObject(merchList: Merchandise[]): Observable<any> {
-		return Observable.combineLatest(merchList.map(merch => this.getByEventId(merch.id)))
-			.map((stockList: MerchStockList[]) => {
-				let options = this.getStockOptions(stockList);
 
-				return merchList.map((merchObject, index) => {
-					let transformedMerch: StockTableItem = {id: merchObject.id};
-					options.size.forEach(size => {
-						transformedMerch[size] = stockList[index]
-							.filter(stock => stock.size === size)
-							.reduce((sum, stock) => sum + stock.amount, 0);
-					});
-					options.color.forEach(color => {
-						transformedMerch[color] = options.size
-							.map(size => stockList[index]
-								.filter(stock => stock.color.name === color && stock.size === size)
-								.reduce((sum, stock) => sum + stock.amount, 0)
-							);
-						(<number[]>transformedMerch[color]).push(
-							(<number[]>transformedMerch[color]).reduce((sum, amount) => sum + amount, 0)
-						)
-					});
-					transformedMerch["title"] = merchObject.title;
-					transformedMerch["total"] = options.size.reduce(
-						(acc, size) => acc + (<number>transformedMerch[size]), 0
-					);
-
-					return transformedMerch;
-				})
-			});
-
-	}
 
 	/**
 	 *
 	 * @param {MerchStockList} stockList
-	 * @returns {Array}
+	 * @returns {StockMap}
 	 */
-	groupStockListByEvent(stockList: MerchStockList): GroupedStockItem[] {
-		return stockList.reduce((acc, stockItem) => {
-			const index = acc.findIndex(item => item.event.id === stockItem.event.id);
-			if (index === -1) {
-				acc.push({
-					event: stockItem.event,
-					stockList: [stockItem],
-					amount: stockItem.amount
-				})
-			}
-			else {
-				acc[index].stockList.push(stockItem);
-				acc[index].amount += stockItem.amount;
-			}
-			return acc;
-		}, [])
-	}
+	toStockMap(stockList: MerchStockList):StockMap{
+		const options = this.getStockOptions([stockList]);
 
+		//initialize the 2d map with zeroes
+		const stockMap: StockMap = options.size.reduce((map, size) => {
+			map[size] = options.color.reduce((object, color) => {
+				object[color.name] = 0;
+				return object;
+			}, {});
+			return map;
+		}, {});
+
+
+		return stockList
+			.reduce((map, stockItem:MerchStock) => {
+				map[stockItem.size][stockItem.color.name] += stockItem.amount;
+				return map;
+			}, stockMap)
+	}
 
 	/**
 	 *
@@ -260,10 +233,10 @@ export class StockService extends ServletService<MerchStockList> {
 					return valueA - valueB;
 				})
 			,
-			color: stockList.reduce((colors: string[], current) => {
+			color: stockList.reduce((colors: MerchColor[], current) => {
 				current.forEach(stock => {
-					if (!colors.find(color => color === stock.color.name)) {
-						colors.push(stock.color.name);
+					if (!colors.find(color => color.name === stock.color.name)) {
+						colors.push(stock.color);
 					}
 				});
 				return colors;

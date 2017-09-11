@@ -41,7 +41,7 @@ export class SearchResultComponent implements OnInit {
 	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
 	filterOptions$ = this._filterOptions$
 		.asObservable()
-		.scan(this.mergeFilterOptions.bind(this))
+		.scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService))
 		.map(options => options.filter(option => option.children && option.children.length > 0));
 
 	get filterOptions() {
@@ -72,30 +72,6 @@ export class SearchResultComponent implements OnInit {
 		this.fetchResults();
 	}
 
-	/**
-	 * Schaut, ob die Route query parameter beinhaltet und initialisiert die filter menü checkboxen mit den
-	 * jeweiligen werten
-	 */
-	initFilterMenu(filterOptions: MultiLevelSelectParent[]): Observable<MultiLevelSelectParent[]> {
-		//checks if the route includes query parameters and initializes the filtermenus checkboxes
-		return this.activatedRoute.queryParamMap
-			.map(queryParamMap => {
-				return filterOptions.map(filterOptionParent => {
-					let key = filterOptionParent.queryKey;
-					//if the key associated with the filter selection box is part of the query parameters,
-					//update the filterOption's selected values.
-					if (queryParamMap.has(key)) {
-						let values: string[] = queryParamMap.get(key).split("|"); //something like 'tours|partys|merch'
-						filterOptionParent.children.forEach(child => {
-							if (isMultiLevelSelectLeaf(child)) {
-								child.selected = values.includes(child.queryValue);
-							}
-						});
-					}
-					return filterOptionParent;
-				});
-			});
-	}
 
 
 	/**
@@ -124,7 +100,7 @@ export class SearchResultComponent implements OnInit {
 							return events;
 						})
 						//todo replace with actual api call?
-						.flatMap((events: Event[]) =>{
+						.flatMap((events: Event[]) => {
 							return Observable.combineLatest(
 								...events.map(event => this.searchFilterService.satisfiesFilters(event, filteredBy)
 									.map(satisfiesFilters => ({
@@ -132,7 +108,7 @@ export class SearchResultComponent implements OnInit {
 										satisfiesFilters
 									})))
 							)
-								.map((isFilteredList:{event: Event, satisfiesFilters:boolean}[]) =>
+								.map((isFilteredList: { event: Event, satisfiesFilters: boolean }[]) =>
 									isFilteredList.filter(it => it.satisfiesFilters)
 										.map(it => it.event)
 								)
@@ -141,73 +117,22 @@ export class SearchResultComponent implements OnInit {
 						//Updated den Suchergebnisse Titel anhand der ausgewählten Kategorien und der Menge an Ergebnissen.
 						.do(async events => {
 							const options = await this.searchFilterService.getEventFilterOptionsFromResults(events);
-							this.initFilterMenu(options).subscribe(filterOptions => {
-								this.filterOptions = filterOptions;
-								let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");
-								let selectedCategories: string[] = categoryFilterOption.children
-									.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
-									.map(child => child.name);
+							this.searchFilterService.initFilterMenu(this.activatedRoute, options)
+								.subscribe(filterOptions => {
+									this.filterOptions = filterOptions;
+									let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");
+									let selectedCategories: string[] = categoryFilterOption.children
+										.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
+										.map(child => child.name);
 
-								//todo ausgewählte filter optionen in den title reintun
-								this.resultsTitle.next(events.length + " " + selectedCategories.join(", ") +
-									" Ergebnisse" + (keywords === "" ? "" : " für '" + keywords + "'") +
-									"");
-							});
+									//todo ausgewählte filter optionen in den title reintun
+									this.resultsTitle.next(events.length + " " + selectedCategories.join(", ") +
+										" Ergebnisse" + (keywords === "" ? "" : " für '" + keywords + "'") +
+										"");
+								});
 						})
 				}
 			);
 	}
 
-	/**
-	 *
-	 * @param {MultiLevelSelectParent[]} acc
-	 * @param {MultiLevelSelectParent[]} options
-	 * @returns {MultiLevelSelectParent[]}
-	 */
-	mergeFilterOptions(acc: MultiLevelSelectParent[], options: MultiLevelSelectParent[]) {
-		if (!acc || options.length === 0) {
-			return options;
-		}
-		//remove values that are not part of the array anymore
-		for (let i = acc.length - 1; i >= 0; i--) {
-			if (options.findIndex(option => option.queryKey === options[i].queryKey) === -1) {
-				acc.splice(i, 1);
-			}
-		}
-
-		//modify children values (todo make more generic, only supports parent->child structures)
-		options
-			.filter(option => !!acc.find(prevOption => prevOption.queryKey === option.queryKey))
-			.forEach(option => {
-				const index = acc.findIndex(prevOption => prevOption.queryKey === option.queryKey);
-
-				//add children if array is null/undefined
-				if(isNullOrUndefined(acc[index].children) && option.children){
-					acc[index].children = [...option.children];
-				}
-				else if(acc[index].children && option.children){
-					//remove children that are not part of the array anymore
-					for (let i = acc[index].children.length - 1; i >= 0; i--) {
-						if (option.children.findIndex(child => child.name === acc[index].children[i].name) === -1) {
-							acc[index].children.splice(i, 1);
-						}
-					}
-					//add children that aren't yet part of the array
-					acc[index].children.push(
-						...option.children.filter(child =>
-							!acc[index].children.find(childOption => childOption.name === child.name)
-						)
-					);
-				}
-			});
-
-		//add options that aren't yet part of the array to the array
-		acc.push(
-			...options.filter(option =>
-				!acc.find(prevOption => prevOption.queryKey === option.queryKey)
-			)
-		);
-
-		return acc;
-	}
 }

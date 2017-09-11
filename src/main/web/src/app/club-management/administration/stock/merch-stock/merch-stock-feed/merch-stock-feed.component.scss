@@ -1,0 +1,93 @@
+@import "~@angular/material/theming";
+@import "../../../../../../theme";
+
+:host{
+	display: block;
+	@extend .mat-elevation-z3;
+	background-color: #fafafa;
+	border-top: 5px solid mat-color($warn);
+	h3{
+		background-color: white;
+		margin: 0;
+		text-align: center;
+		padding: 1rem;
+	}
+
+	> div{
+		height: calc(100% - 3.5rem);
+		overflow-y: auto;
+
+		> div{
+			padding: 10px;
+			.out-of-stock-item-header{
+				display: flex;
+				justify-content: space-between;
+
+				div{
+					display: flex;
+					img{
+						width: 50px;
+						height: 50px;
+						object-fit: cover;
+					}
+					a{
+						color: rgba(0,0,0, 0.7);
+						text-decoration: none;
+
+						&:hover{
+							color: black;
+						}
+
+						h4{
+							margin: 0 0 0 10px;
+						}
+					}
+				}
+				button{
+					margin-right: -10px;
+					margin-top: -10px;
+				}
+			}
+
+			.out-of-stock-item-options{
+				table{
+					width: 100%;
+					border-collapse: collapse;
+
+					tr:not(:last-child){
+						border-bottom: 2px solid #ededed;
+					}
+
+					.color-container{
+						display: flex;
+						flex-wrap: wrap;
+						> div{
+							display:flex;
+							width: 50%;
+							padding: 5px;
+						}
+						span:last-child{
+							margin-left: 5px;
+						}
+					}
+
+					.merch-available-colors {
+						display: block;
+						width: 20px;
+						height: 20px;
+						border-radius: 50%;
+						box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+					}
+
+					th{
+						width: 30%;
+					}
+				}
+			}
+			&:not(:last-child){
+				border-bottom: 1px solid #ededed;
+			}
+		}
+	}
+
+}

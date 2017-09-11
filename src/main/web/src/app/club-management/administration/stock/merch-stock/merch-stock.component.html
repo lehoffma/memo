@@ -1,18 +1,25 @@
 
+<div class="stock-options-sidebar desktop">
+	<memo-filtering-menu class="desktop" [filterOptions]="filterOptions">
 
-
-<div class="merch-stock-container">
-	<memo-expandable-table
-		[expandedRowComponent]="expandedRowComponent"
-		[title]="'Bestand'"
-		[data]="merchListSubject$ | async"
-		[columnKeys]="primaryColumnKeys | async"
-		[expandedRowKeys]="expandedRowKeys | async"
-		[permissions]="permissions$ | async"
-		(onSort)="updateSortingKey($event)"
-		(onAction)="handleMerchStockAction($event)"
-	>
-
-	</memo-expandable-table>
-
+	</memo-filtering-menu>
 </div>
+
+<div class="stock-entry-container">
+
+	<div class="stock-options">
+		<memo-filtering-menu class="mobile" [filterOptions]="filterOptions">
+
+		</memo-filtering-menu>
+		<memo-sorting-dropdown [sortingOptions]="sortingOptions">
+
+		</memo-sorting-dropdown>
+	</div>
+	<memo-merch-stock-entry *ngFor="let stockEntry of merch$|async" [stockEntry]="stockEntry">
+
+	</memo-merch-stock-entry>
+</div>
+
+<memo-merch-stock-feed>
+
+</memo-merch-stock-feed>

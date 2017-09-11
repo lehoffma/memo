@@ -70,8 +70,9 @@ export class FilteringMenuComponent implements OnInit, OnChanges{
 			.map(child => child.queryValue)
 			.join("|");
 
+
 		this.activatedRoute.queryParamMap.first()
 			.map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams))
-			.subscribe(newQueryParams => this.router.navigate(["search"], {queryParams: newQueryParams}));
+			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
 	}
 }
