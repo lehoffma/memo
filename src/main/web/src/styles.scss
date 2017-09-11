@@ -110,7 +110,7 @@ a.disabled {
 	text-transform: uppercase
 }
 
-.mat-raised-button{
+.mat-raised-button:not([disabled]){
 	transition: all .15s ease !important;
 	&:hover{
 		transform: translateY(-1px);

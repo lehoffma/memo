@@ -4,10 +4,8 @@
 	[expandable]="false"
 	[columnKeys]="primaryColumnKeys"
 	[permissions]="permissions$ | async"
-	(onEdit)="editStock($event)"
-	(onAdd)="addStock()"
 	(onSort)="updateSortBy($event)"
-	(onDelete)="deleteStock($event)"
+	(onAction)="handleMerchStockAction($event)"
 >
 
 </memo-expandable-table>

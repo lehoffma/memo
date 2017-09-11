@@ -8,11 +8,13 @@ import {ExpandableTableColumnContainerDirective} from "./expandable-table-column
 import {CommonModule} from "@angular/common";
 import {MemoMaterialModule} from "../../../material.module";
 import {FormsModule} from "@angular/forms";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
 	imports: [
 		FormsModule,
 		CommonModule,
+		RouterModule,
 		MemoMaterialModule
 	],
 	declarations: [

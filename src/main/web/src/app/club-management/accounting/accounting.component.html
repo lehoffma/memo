@@ -20,9 +20,7 @@
 		[title]="'Kostenübersicht'"
 		[permissions]="permissions$ | async"
 		(onSort)="updateSortingKey($event)"
-		(onAdd)="addEntry($event)"
-		(onEdit)="editEntry($event)"
-		(onDelete)="deleteEntries($event)"
+		(onAction)="handleEntryAction($event)"
 	>
 
 	</memo-expandable-table>

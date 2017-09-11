@@ -9,4 +9,8 @@ export class EntryCategory extends BaseObject<EntryCategory> {
 	static create() {
 		return new EntryCategory(-1, "");
 	}
+
+	static isEntryCategory(object:any): object is EntryCategory{
+		return object["id"] !== undefined && object["name"] !== undefined;
+	}
 }

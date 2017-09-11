@@ -12,6 +12,8 @@ import {ModifyStockItemEvent} from "./modify-merch-stock-item/modify-stock-item-
 import {ModifyType} from "../../modify-type";
 import {ActionPermissions} from "../../../../../shared/expandable-table/expandable-table.component";
 import {LogInService} from "../../../../../shared/services/api/login.service";
+import {TableActionEvent} from "../../../../../shared/expandable-table/table-action-event";
+import {RowAction} from "../../../../../shared/expandable-table/row-action";
 
 @Component({
 	selector: "memo-modify-merch-stock",
@@ -161,5 +163,21 @@ export class ModifyMerchStockComponent implements OnInit {
 				!stockEntriesToDelete
 					.find(stockToDelete => stockToDelete.size === stock.size && stockToDelete.color.name === stock.color.name)
 			);
+	}
+
+	/**
+	 *
+	 * @param {TableActionEvent<MerchStock>} event
+	 * @returns {any}
+	 */
+	handleMerchStockAction(event: TableActionEvent<MerchStock>){
+		switch(event.action){
+			case RowAction.ADD:
+				return this.addStock();
+			case RowAction.EDIT:
+				return this.editStock(event.entries[0]);
+			case RowAction.DELETE:
+				return this.deleteStock(event.entries);
+		}
 	}
 }

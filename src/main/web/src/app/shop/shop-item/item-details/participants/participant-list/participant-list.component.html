@@ -8,9 +8,7 @@
 		[expandedRowKeys]="expandedKeys | async"
 		[permissions]="permissions$ | async"
 		(onSort)="updateSortBy($event)"
-		(onAdd)="addParticipant()"
-		(onEdit)="editParticipant($event)"
-		(onDelete)="deleteParticipant($event)"
+		(onAction)="handleParticipantAction($event)"
 	>
 
 	</memo-expandable-table>

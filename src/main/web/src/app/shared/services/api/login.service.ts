@@ -108,16 +108,16 @@ export class LogInService {
 		return this.currentUser()
 			.map(user => user === null
 				? {
-					add: false,
-					edit: false,
-					remove: false,
+					"Hinzufuegen": false,
+					"Bearbeiten": false,
+					"Loeschen": false,
 				}
 				: {
-					add: permissionsKeys.some(permissionsKey =>
+					"Hinzufuegen": permissionsKeys.some(permissionsKey =>
 						user.userPermissions[permissionsKey] >= Permission.create),
-					edit: permissionsKeys.some(permissionsKey =>
+					"Bearbeiten": permissionsKeys.some(permissionsKey =>
 						user.userPermissions[permissionsKey] >= Permission.write),
-					remove: permissionsKeys.some(permissionsKey =>
+					"Loeschen": permissionsKeys.some(permissionsKey =>
 						user.userPermissions[permissionsKey] >= Permission.delete)
 				});
 	}

@@ -17,6 +17,9 @@ import {ActionPermissions} from "../../../../shared/expandable-table/expandable-
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {StockTableItem} from "./stock-table-item";
 import {MerchStockTableCellComponent} from "./merch-stock-table-cell.component";
+import {TableActionEvent} from "../../../../shared/expandable-table/table-action-event";
+import {MerchStock} from "../../../../shop/shared/model/merch-stock";
+import {RowAction} from "../../../../shared/expandable-table/row-action";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -91,6 +94,22 @@ export class MerchStockComponent implements OnInit {
 				},
 				error => console.error(error)
 			));
+	}
+
+	/**
+	 *
+	 * @param {TableActionEvent<StockTableItem>} event
+	 * @returns {any}
+	 */
+	handleMerchStockAction(event: TableActionEvent<StockTableItem>){
+		switch(event.action){
+			case RowAction.ADD:
+				return this.addMerch(event);
+			case RowAction.EDIT:
+				return this.edit(event.entries[0]);
+			case RowAction.DELETE:
+				return this.deleteMerch(event.entries);
+		}
 	}
 
 	/**

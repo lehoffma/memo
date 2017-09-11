@@ -19,6 +19,7 @@ import {MemoMaterialModule} from "../../material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {PieChartModule} from "@swimlane/ngx-charts";
 import {MerchStockTableCellComponent} from "./administration/stock/merch-stock/merch-stock-table-cell.component";
+import { MerchStockFeedComponent } from './administration/stock/merch-stock/src/app/club-management/administration/stock/merch-stock/merch-stock-feed/merch-stock-feed.component';
 
 const tableCellComponents = [
 	//accounting table cells
@@ -54,7 +55,8 @@ const tableCellComponents = [
 	declarations: [
 		routedComponents,
 		AccountingOptionsComponent,
-		tableCellComponents
+		tableCellComponents,
+		MerchStockFeedComponent
 	],
 	entryComponents: [tableCellComponents]
 })

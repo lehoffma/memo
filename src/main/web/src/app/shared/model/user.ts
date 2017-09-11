@@ -3,7 +3,7 @@ import {UserPermissions} from "./permission";
 import {BaseObject} from "./util/base-object";
 import {Gender} from "./gender";
 import {Moment} from "moment";
-import * as moment from "moment";;
+import * as moment from "moment";
 
 
 export class User extends BaseObject<User> {

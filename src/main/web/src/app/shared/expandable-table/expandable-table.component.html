@@ -11,8 +11,8 @@
 
 			<div class="expandable-table-header-actions">
 				<button md-button type="button" color="accent"
-						[disabled]="!permissions?.add"
-						(click)="addItem()">
+						[disabled]="!permissions?.Hinzufuegen"
+						(click)="actionCallback(rowAction.ADD, [])">
 					HINZUFÜGEN
 				</button>
 			</div>
@@ -23,7 +23,7 @@
 			</div>
 			<div class="expandable-table-header-actions">
 				<button md-icon-button
-						[disabled]="!permissions?.remove"
+						[disabled]="!permissions?.Loeschen"
 						type="button" (click)="deleteSelected()">
 					<md-icon>delete</md-icon>
 				</button>
@@ -94,25 +94,37 @@
 					<td class="expandable-table-actions">
 						<!--todo more columns if showActionsAsSeparateRows?-->
 						<button md-icon-button type="button"
-								[disabled]="!permissions?.edit && !permissions?.remove"
+								[disabled]="!permissions?.Bearbeiten && !permissions?.Loeschen && !(rowActions.length > 2)"
 								(click)="$event.stopPropagation()"
 								[mdMenuTriggerFor]="menu">
 							<md-icon>more_vert</md-icon>
 
 						</button>
 						<md-menu #menu="mdMenu">
-							<button md-menu-item type="button"
-									[disabled]="!permissions?.edit"
-									(click)="editItem(dataObject)">
-								<md-icon>edit</md-icon>
-								<span>Bearbeiten</span>
-							</button>
-							<button md-menu-item type="button"
-									[disabled]="!permissions?.remove"
-									(click)="deleteItem(dataObject)">
-								<md-icon>delete</md-icon>
-								<span>Löschen</span>
-							</button>
+							<div *ngFor="let action of rowActions">
+								<a *ngIf="action?.link !== undefined"
+								   href="{{action?.link(dataObject)}}"
+								   md-menu-item
+								   [disabled]="permissions[action?.name] === undefined ? false : !permissions[action?.name]">
+									<md-icon *ngIf="action?.icon">{{action?.icon}}</md-icon>
+									<span>{{action?.name}}</span>
+								</a>
+								<a *ngIf="action?.route !== undefined"
+								   routerLink="{{action?.route(dataObject)}}"
+								   md-menu-item
+								   [disabled]="permissions[action?.name] === undefined ? false : !permissions[action?.name]">
+									<md-icon *ngIf="action?.icon">{{action?.icon}}</md-icon>
+									<span>{{action?.name}}</span>
+								</a>
+								<button *ngIf="!action?.link && !action?.route" md-menu-item
+										type="button"
+										[disabled]="permissions[action?.name] === undefined ? false : !permissions[action?.name]"
+										(click)="actionCallback(action?.name, [dataObject])">
+									<md-icon *ngIf="action?.icon">{{action?.icon}}</md-icon>
+									<span>{{action?.name}}</span>
+
+								</button>
+							</div>
 						</md-menu>
 					</td>
 				</tr>

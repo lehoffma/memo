@@ -22,17 +22,19 @@ tr {
 		padding-left: 30px;
 	}
 
-	td,
-	/deep/ td{
-		padding-right: 24px;
-	}
+	:host{
+		td,
+		/deep/ td{
+			padding-right: 24px;
+		}
 
 
-	/deep/ td{
-		text-align: end;
-	}
+		/deep/ td{
+			text-align: end;
+		}
 
-	td{
-		text-align: left;
+		td{
+			text-align: left;
+		}
 	}
 }

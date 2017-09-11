@@ -22,8 +22,8 @@ export const memberListColumns = {
 	"gender": new ExpandableTableColumn<User>("Geschlecht", "gender", GenderCellComponent),
 	"joinDate": new ExpandableTableColumn<User>("Eintrittsjahr", "joinDate", DateTableCellComponent),
 	"address": new ExpandableTableColumn<User>("Addressen", "addresses", AddressTableCellComponent),
-	"telephone": new ExpandableTableColumn<User>("Festnetz", "telephone", TelephoneTableCellComponent),
-	"mobile": new ExpandableTableColumn<User>("Handy", "mobile", MobileTableCellComponent),
-	"email": new ExpandableTableColumn<User>("Email", "email", EmailTableCellComponent),
-	"profile": new ExpandableTableColumn<User>("Profil", "id", ProfileLinkCellComponent)
+	// "telephone": new ExpandableTableColumn<User>("Festnetz", "telephone", TelephoneTableCellComponent),
+	// "mobile": new ExpandableTableColumn<User>("Handy", "mobile", MobileTableCellComponent),
+	// "email": new ExpandableTableColumn<User>("Email", "email", EmailTableCellComponent),
+	// "profile": new ExpandableTableColumn<User>("Profil", "id", ProfileLinkCellComponent)
 };

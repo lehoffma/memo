@@ -138,6 +138,19 @@ interface StockApiResponse {
 export class StockService extends ServletService<MerchStockList> {
 	baseUrl = "/api/stock";
 
+	readonly possibleSizes = [
+		"XXS",
+		"XS",
+		"S",
+		"M",
+		"L",
+		"XL",
+		"XXL",
+		"XXXL",
+		"4XL",
+		"5XL"
+	];
+
 	constructor(protected http: HttpClient) {
 		super();
 	}
@@ -240,7 +253,13 @@ export class StockService extends ServletService<MerchStockList> {
 					}
 				});
 				return sizes;
-			}, []),
+			}, [])
+				.sort((a, b) => {
+					const valueA = this.possibleSizes.indexOf(a);
+					const valueB = this.possibleSizes.indexOf(b);
+					return valueA - valueB;
+				})
+			,
 			color: stockList.reduce((colors: string[], current) => {
 				current.forEach(stock => {
 					if (!colors.find(color => color === stock.color.name)) {

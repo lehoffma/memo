@@ -18,12 +18,15 @@ import {ColumnSortingEvent} from "./column-sorting-event";
 import {ExpandableTableColumn} from "./expandable-table-column";
 import {ExpandableTableColumnContainerDirective} from "./expandable-table-column-container.directive";
 import {ConfirmationDialogService} from "../services/confirmation-dialog.service";
+import {RowAction} from "./row-action";
+import {TableActionEvent} from "./table-action-event";
+
 
 export interface ActionPermissions {
-	add: boolean;
-	edit: boolean;
-	remove: boolean;
-};
+	"Hinzufuegen": boolean;
+	"Bearbeiten": boolean;
+	"Loeschen": boolean;
+}
 
 @Component({
 	selector: "memo-expandable-table",
@@ -40,6 +43,8 @@ export interface ActionPermissions {
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExpandableTableComponent<T extends { id: number }> implements OnInit, AfterViewInit {
+	rowAction = RowAction;
+
 	@Input() data: T[];
 	@Input() columnKeys: ExpandableTableColumn<T>[];
 	@Input() expandedRowComponent: Type<ExpandedRowComponent<T>>;
@@ -49,10 +54,25 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 
 	@Input() permissions: ActionPermissions;
 
-	@Output() onAdd = new EventEmitter<any>();
+	@Input() rowActions: {
+		icon?: string;
+		name: string | RowAction;
+		link?: (object:T) => string;
+		route?: (object:T) => string;
+	}[] = [
+		{
+			icon: "edit",
+			name: RowAction.EDIT
+		},
+		{
+			icon: "delete",
+			name: RowAction.DELETE
+		}
+	];
+
+	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
+
 	@Output() onSort = new EventEmitter<ColumnSortingEvent<T>>();
-	@Output() onEdit = new EventEmitter<T>();
-	@Output() onDelete = new EventEmitter<T[]>();
 
 	tableRowHostList: QueryList<ExpandedTableRowContainerDirective>;
 	@ViewChildren(ExpandableTableColumnContainerDirective) tableCellList: QueryList<ExpandableTableColumnContainerDirective>;
@@ -223,35 +243,27 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 		this.onSort.emit(this.sortedBy);
 	}
 
-	/**
-	 *
-	 */
-	addItem(event: any) {
-		this.onAdd.emit(event);
-	}
 
 	/**
-	 * Opens the edit dialog of the item
-	 * @param data
+	 * Callback of a generic action (e.g. edit/remove/see profile etc.
+	 * @param {string} action
+	 * @param {T[]} data
 	 */
-	editItem(data: T) {
-		this.onEdit.emit(data);
-	}
-
-	/**
-	 *
-	 * @param data
-	 */
-	deleteItem(data: T) {
-		this.confirmationDialogService.openDialog(
-			"Wollen Sie diesen Eintrag wirklich löschen?"
-		)
-			.subscribe(accepted => {
-				if (accepted) {
-					this.onDelete.emit([data]);
-					this.selectedStatusList[data.id] = false;
-				}
-			});
+	actionCallback(action: string | RowAction, data: T[]) {
+		if (action === RowAction.DELETE && data.length === 1) {
+			this.confirmationDialogService.openDialog(
+				"Wollen Sie diesen Eintrag wirklich löschen?"
+			)
+				.subscribe(accepted => {
+					if (accepted) {
+						this.onAction.emit({action, entries: data});
+						this.selectedStatusList[data[0].id] = false;
+					}
+				})
+		}
+		else {
+			this.onAction.emit({action, entries: data});
+		}
 	}
 
 	/**
@@ -267,7 +279,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 		)
 			.subscribe(accepted => {
 				if (accepted) {
-					this.onDelete.emit(entriesToDelete);
+					this.onAction.emit({action: RowAction.DELETE, entries: entriesToDelete});
 					this.selectedStatusList = {};
 				}
 			});

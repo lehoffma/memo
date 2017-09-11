@@ -4,6 +4,7 @@ import {EntryCategory} from "../../model/entry-category";
 import {Observable} from "rxjs/Observable";
 import {Response} from "@angular/http";
 import {HttpClient, HttpParams} from "@angular/common/http";
+import {CacheStore} from "../../stores/cache.store";
 
 interface EntryCategoryApiResponse {
 	categories: EntryCategory[]
@@ -13,22 +14,29 @@ interface EntryCategoryApiResponse {
 export class EntryCategoryService extends ServletService<EntryCategory> {
 	baseUrl = "/api/entryCategory";
 
-	constructor(public http: HttpClient) {
+	constructor(public http: HttpClient,
+				private cache: CacheStore) {
 		super();
 	}
 
-	//todo cache
 	/**
 	 *
 	 * @param {number} id
-	 * @param args
 	 * @returns {Observable<EntryCategory>}
 	 */
 	getById(id: number): Observable<EntryCategory> {
+		if (this.cache.isCached("entryCategories", id)) {
+			console.log(`entryCategoryId ${id} is cached`);
+			return this.cache.cache.entryCategories
+				.map(categories => categories.find(category => category.id === id));
+		}
+		console.log(`entryCategoryId ${id} is not cached, retrieving from db`);
+
 		return this.http.get<EntryCategoryApiResponse>(this.baseUrl, {
 			params: new HttpParams().set("categoryId", "" + id)
 		})
-			.map(json => EntryCategory.create().setProperties(json.categories[0]));
+			.map(json => EntryCategory.create().setProperties(json.categories[0]))
+			.do(category => this.cache.addOrModify(category))
 	}
 
 	/**
@@ -48,7 +56,8 @@ export class EntryCategoryService extends ServletService<EntryCategory> {
 		return this.http.get<EntryCategoryApiResponse>(this.baseUrl, {
 			params: new HttpParams().set("searchTerm", "" + searchTerm)
 		})
-			.map(response => response.categories);
+			.map(response => response.categories)
+			.do(categories => this.cache.addMultiple(...categories))
 	}
 
 	/**

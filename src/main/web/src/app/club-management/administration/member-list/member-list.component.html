@@ -1,9 +1,8 @@
 <memo-expandable-table
 	[data]="userSubject$|async"
-	(onAdd)="addUser($event)"
+	[rowActions]="rowActions"
 	(onSort)="updateSortingKey($event)"
-	(onDelete)="deleteUsers($event)"
-	(onEdit)="editUser($event)"
+	(onAction)="userAction($event)"
 	[title]="'Mitgliederliste'"
 	[expandedRowComponent]="rowComponent"
 	[columnKeys]="primaryColumnKeys | async"

@@ -20,6 +20,8 @@ import {
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {ActionPermissions} from "../../../../../shared/expandable-table/expandable-table.component";
 import {LogInService} from "../../../../../shared/services/api/login.service";
+import {TableActionEvent} from "../../../../../shared/expandable-table/table-action-event";
+import {RowAction} from "../../../../../shared/expandable-table/row-action";
 
 const participantListColumns = {
 	name: new ExpandableTableColumn<ParticipantUser>("Name", "user", FullNameTableCellComponent),
@@ -211,5 +213,16 @@ export class ParticipantListComponent implements OnInit {
 					});
 			});
 		})
+	}
+
+	handleParticipantAction(event: TableActionEvent<ParticipantUser>){
+		switch(event.action){
+			case RowAction.ADD:
+				return this.addParticipant();
+			case RowAction.EDIT:
+				return this.editParticipant(event.entries[0]);
+			case RowAction.DELETE:
+				return this.deleteParticipant(event.entries);
+		}
 	}
 }

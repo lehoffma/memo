@@ -1,20 +1,5 @@
 
 
-<div>
-	<div *ngFor="let groupedStockItem of stockList$ | async">
-		<img src="{{groupedStockItem.event.imagePath}}"/>
-		<span>
-			{{groupedStockItem.event.title}}
-		</span>
-		<span *ngFor="let stockItem of groupedStockItem.stockList">
-			{{stockItem.color.name}}
-		</span>
-		<span>
-			{{groupedStockItem.amount}}
-		</span>
-	</div>
-</div>
-
 
 <div class="merch-stock-container">
 	<memo-expandable-table
@@ -24,10 +9,8 @@
 		[columnKeys]="primaryColumnKeys | async"
 		[expandedRowKeys]="expandedRowKeys | async"
 		[permissions]="permissions$ | async"
-		(onDelete)="deleteMerch($event)"
 		(onSort)="updateSortingKey($event)"
-		(onAdd)="addMerch($event)"
-		(onEdit)="edit($event)"
+		(onAction)="handleMerchStockAction($event)"
 	>
 
 	</memo-expandable-table>

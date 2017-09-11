@@ -18,6 +18,8 @@ import {ActionPermissions} from "../../shared/expandable-table/expandable-table.
 import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
 import {EventService} from "../../shared/services/api/event.service";
 import {Moment} from "moment";
+import {TableActionEvent} from "../../shared/expandable-table/table-action-event";
+import {RowAction} from "../../shared/expandable-table/row-action";
 
 @Component({
 	selector: "memo-accounting",
@@ -156,6 +158,22 @@ export class AccountingComponent implements OnInit {
 				},
 				error => console.error(error)
 			));
+	}
+
+	/**
+	 *
+	 * @param {TableActionEvent<Entry>} event
+	 * @returns {any}
+	 */
+	handleEntryAction(event: TableActionEvent<Entry>){
+		switch(event.action){
+			case RowAction.ADD:
+				return this.addEntry(event);
+			case RowAction.EDIT:
+				return this.editEntry(event.entries[0]);
+			case RowAction.DELETE:
+				return this.deleteEntries(event.entries);
+		}
 	}
 
 	/**

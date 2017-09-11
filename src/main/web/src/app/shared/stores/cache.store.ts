@@ -18,6 +18,7 @@ import {Address} from "../model/address";
 import {Comment} from "../../shop/shared/model/comment";
 import {Order} from "../model/order";
 import {BankAccount} from "../model/bank-account";
+import {EntryCategory} from "../model/entry-category";
 
 export interface Cache extends EventData, ArrayObjectType<BaseObject<any>> {
 	users: User[];
@@ -26,6 +27,7 @@ export interface Cache extends EventData, ArrayObjectType<BaseObject<any>> {
 	comments: Comment[];
 	orders: Order[];
 	bankAccounts: BankAccount[];
+	entryCategories: EntryCategory[];
 
 	//todo update cache (participant + merchstoch have to be converted to immutableObject-classes)
 	// participants: Participant[];
@@ -47,7 +49,8 @@ export class CacheStore {
 		addresses: new BehaviorSubject<Address[]>([]),
 		comments: new BehaviorSubject<Comment[]>([]),
 		orders: new BehaviorSubject<Order[]>([]),
-		bankAccounts: new BehaviorSubject<BankAccount[]>([])
+		bankAccounts: new BehaviorSubject<BankAccount[]>([]),
+		entryCategories: new BehaviorSubject<EntryCategory[]>([]),
 		//todo update cache (participant + merchstoch have to be converted to immutableObject-classes)
 		// participants: new BehaviorSubject<Participant[]>([]),
 		// stocks: new BehaviorSubject<MerchStockList[]>([])
@@ -118,6 +121,9 @@ export class CacheStore {
 		}
 		if (BankAccount.isBankAccount(object)) {
 			return "bankAccounts";
+		}
+		if(EntryCategory.isEntryCategory(object)){
+			return "entryCategories";
 		}
 		return "";
 	}
