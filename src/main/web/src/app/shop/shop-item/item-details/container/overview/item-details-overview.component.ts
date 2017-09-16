@@ -19,21 +19,21 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 })
 export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	_event$: BehaviorSubject<Event> = new BehaviorSubject(Event.create());
-	public colorSelection$: Observable<MerchColor[]> =
-		Observable.combineLatest(
-			this._event$
-				.filter(event => EventUtilityService.isMerchandise(event)),
-		)
-			.flatMap(([merch]) => this.getColorSelection(<Merchandise>merch, ""));
+
+
+	stock$: Observable<MerchStockList> = this._event$
+		.filter(event => EventUtilityService.isMerchandise(event))
+		.filter(event => event.id !== -1)
+		.flatMap(event => this.stockService.getByEventId(event.id))
+		.share();
+
+
+	public colorSelection$: Observable<MerchColor[]> = this.getColorSelection("");
+
 	@Input() overviewKeys: EventOverviewKey[] = [];
 	_color$: BehaviorSubject<MerchColor> = new BehaviorSubject(undefined);
-	public sizeSelection$: Observable<string[]> =
-		Observable.combineLatest(
-			this._event$
-				.filter(event => EventUtilityService.isMerchandise(event)),
-			this._color$
-		)
-			.flatMap(([merch, color]) => this.getSizeSelection(<Merchandise>merch, color));
+	public sizeSelection$: Observable<string[]> = this._color$
+		.flatMap((color) => this.getSizeSelection(color));
 	_size$: BehaviorSubject<string> = new BehaviorSubject(undefined);
 	model = {
 		amount: undefined
@@ -74,7 +74,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	}
 
 	ngOnChanges() {
-		if (this.event) {
+		if (this.event && this.event.id !== -1) {
 			this.updateMaxAmount();
 			if (this.event.date) {
 				//todo as observable
@@ -84,7 +84,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	}
 
 	ngOnInit() {
-		if (this.event) {
+		if (this.event && this.event.id !== -1) {
 			this.updateMaxAmount();
 		}
 	}
@@ -95,8 +95,8 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 * @param {string} size
 	 * @returns {Observable<MerchColor[]>}
 	 */
-	getColorSelection(merch: Merchandise, size: string): Observable<MerchColor[]> {
-		return this.stockService.getByEventId(merch.id)
+	getColorSelection(size: string): Observable<MerchColor[]> {
+		return this.stock$
 			.map((stock: MerchStockList) => {
 				return stock
 				//remove values that aren't possible with the current size selection
@@ -111,12 +111,11 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 
 	/**
 	 *
-	 * @param {Merchandise} merch
 	 * @param {string} color
 	 * @returns {Observable<MerchColor[]>}
 	 */
-	getSizeSelection(merch: Merchandise, color: MerchColor): Observable<string[]> {
-		return this.stockService.getByEventId(merch.id)
+	getSizeSelection(color: MerchColor): Observable<string[]> {
+		return this.stock$
 			.map((stock: MerchStockList) => {
 				return stock
 				//remove values that aren't possible with the current color selection
@@ -133,13 +132,17 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	updateMaxAmount() {
 		let maxAmount$ = this.isMerch(this.event)
-			? this.stockService.getByEventId(this.event.id)
-				.map(stock => stock
+			?  Observable.combineLatest(
+				this.stock$,
+				this._color$,
+				this._size$
+			)
+				.map(([stock, color, size]) => stock
 				// we have to consider the selected color and size attributes
 					.filter(stockItem =>
-						this.color &&
-						stockItem.color.hex === this.color.hex
-						&& stockItem.size === this.size
+						color &&
+						stockItem.color.hex === color.hex
+						&& stockItem.size === size
 					)
 					.reduce((acc, stockItem) => acc + stockItem.amount, 0))
 			: Observable.of(this.event.capacity);

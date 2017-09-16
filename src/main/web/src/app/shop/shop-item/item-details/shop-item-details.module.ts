@@ -54,6 +54,7 @@ import {AgmCoreModule} from "@agm/core";
 	entryComponents: [
 		FullNameTableCellComponent,
 		ItemImagePopupComponent,
+		ModifyParticipantComponent
 	]
 })
 export class ShopItemDetailsModule{}

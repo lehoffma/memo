@@ -12,8 +12,7 @@ import {UserService} from "../../../../shared/services/api/user.service";
 	styleUrls: ["./toolbar-profile-link.component.scss"]
 })
 export class ToolbarProfileLinkComponent implements OnInit {
-	user: Observable<User> = this.loginService.accountObservable
-		.flatMap(accountId => accountId !== null ? this.userService.getById(accountId) : Observable.of(null));
+	user: Observable<User> = this.loginService.currentUser$;
 
 	accountLinks: Observable<Link[]> = Observable.combineLatest(this.navigationService.accountLinks, this.user)
 		.map(([links, user]) => {

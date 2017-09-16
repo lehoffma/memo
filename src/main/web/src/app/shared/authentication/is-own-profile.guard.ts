@@ -17,23 +17,26 @@ export class IsOwnProfileGuard implements CanActivate {
 
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
-		return this.loginService.accountObservable
-			.flatMap(currentUserId => {
+		return this.loginService
+			.accountObservable
+			.flatMap(id => id === null ? Observable.of(null) : this.userService.getById(id))
+			.map(currentUser => {
 				const routeId: number = +route.paramMap.get("id");
-				let isAllowed = Observable.of(false);
+				let isAllowed = false;
 
-				if (currentUserId !== null) {
-					isAllowed = this.userService.getById(routeId)
-						.map(user => currentUserId === routeId || isAuthenticated(user.clubRole, ClubRole.Admin))
+				if (currentUser !== null) {
+					isAllowed = currentUser.id === routeId || isAuthenticated(currentUser.clubRole, ClubRole.Admin);
 				}
 				//redirect to login if the user isn't logged in
 				else {
 					this.loginService.redirectUrl = state.url;
 					this.navigationService.navigateByUrl("login");
 				}
-				return isAllowed.do(isAllowed => isAllowed
-					? null
-					: this.navigationService.navigateByUrl("not-allowed"));
+
+				if(!isAllowed){
+					this.navigationService.navigateByUrl("not-allowed")
+				}
+				return isAllowed;
 			});
 	}
 }

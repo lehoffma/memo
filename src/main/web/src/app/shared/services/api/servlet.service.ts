@@ -44,7 +44,9 @@ export abstract class ServletService<T> implements ServletServiceInterface<T> {
 			.catch(this.handleError)
 			//convert the observable to a hot observable, i.e. immediately perform the http request
 			//instead of waiting for someone to subscribe
-			.share();
+			// 		.publish().refCount()
+			// .shareReplay(3, 10000)
+			// .publishReplay(1)
 	}
 
 

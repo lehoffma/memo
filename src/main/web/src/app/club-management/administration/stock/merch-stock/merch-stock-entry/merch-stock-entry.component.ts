@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {StockEntry} from "./stock-entry";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
@@ -42,10 +42,15 @@ export class MerchStockEntryComponent implements OnInit {
 			return totals;
 		});
 
+	@Output() onDelete = new EventEmitter<number>();
+
 	constructor() {
 	}
 
 	ngOnInit() {
 	}
 
+	deleteMerch(id:number){
+		this.onDelete.emit(id);
+	}
 }

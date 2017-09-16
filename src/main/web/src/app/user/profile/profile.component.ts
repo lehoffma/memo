@@ -20,11 +20,10 @@ import {Address} from "../../shared/model/address";
 })
 
 export class ProfileComponent implements OnInit {
-	userId = this.route.params.map(params => +params["id"]);
+	userId = this.route.params.first().map(params => +params["id"]);
 	userObservable: Observable<User> = this.userId.flatMap(id => this.userService.getById(id));
 	userEvents: Observable<Event[]> = this.userObservable
-		.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}))
-		.do(console.log)
+		.flatMap(user => this.eventService.getEventsOfUser(user.id));
 	userDestinations: Observable<Address[]> = this.userEvents.flatMap(events => {
 		return Observable.combineLatest(...events
 			.map(event => event.route)

@@ -21,14 +21,14 @@
 <div class="calendar-container">
 	<div [ngSwitch]="selectedView">
 		<memo-event-calendar *ngSwitchCase="'calendar'"
-							 [events]="events | async"
+							 [events]="events$ | async"
 							 [editable]="false"
 							 (onDayClick)="onDayClick($event)"
 							 (onEventClick)="onEventClick($event)"
 
 		>
 		</memo-event-calendar>
-		<memo-event-list-view *ngSwitchCase="'list'" [events]="events | async" (onAddEvent)="onDayClick($event)">
+		<memo-event-list-view *ngSwitchCase="'list'" [events]="events$ | async" (onAddEvent)="onDayClick($event)">
 			Listenansicht
 		</memo-event-list-view>
 		<memo-page-not-found *ngSwitchDefault></memo-page-not-found>

@@ -35,6 +35,7 @@ export class LoginComponent implements OnInit {
 					this.loading = false;
 					this.wrongInput = !loginWasSuccessful;
 					if (loginWasSuccessful) {
+						console.log(this.loginService.redirectUrl);
 						this.navigationService.navigateByUrl(this.loginService.redirectUrl)
 					}
 				},

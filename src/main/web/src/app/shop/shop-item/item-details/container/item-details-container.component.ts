@@ -16,7 +16,7 @@ import {Permission} from "../../../../shared/model/permission";
 })
 export class ItemDetailsContainerComponent implements OnInit {
 	@Input() event: Event;
-	userCanEditEvent: Observable<boolean> = this.loginService.currentUser()
+	userCanEditEvent: Observable<boolean> = this.loginService.currentUser$
 		.map((user) => {
 			if (user !== null && this.event !== null) {
 				let permissions = user.userPermissions;
@@ -32,7 +32,7 @@ export class ItemDetailsContainerComponent implements OnInit {
 
 			return false;
 		});
-	userCanAccessEntries$: Observable<boolean> = this.loginService.currentUser()
+	userCanAccessEntries$: Observable<boolean> = this.loginService.currentUser$
 		.map((user) => {
 			if (user !== null && this.event !== null) {
 				let permissions = user.userPermissions;
@@ -40,6 +40,7 @@ export class ItemDetailsContainerComponent implements OnInit {
 			}
 			return false;
 		});
+
 	@Input() overviewKeys: Observable<EventOverviewKey[]> = Observable.of([]);
 
 	constructor(private mdDialog: MdDialog,

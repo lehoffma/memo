@@ -17,10 +17,10 @@ import {Location} from "@angular/common";
 export class SideNavComponent implements OnInit {
 	@Output() sideBarClosed = new EventEmitter();
 
-	public user: Observable<User> = this.logInService.accountObservable
-		.flatMap(accountId => accountId === null
+	public user: Observable<User> = this.logInService.currentUser$
+		.flatMap(user => user === null
 			? Observable.of(User.create().setProperties({id: -1}))
-			: this.userService.getById(accountId));
+			: Observable.of(user));
 
 	public links = Observable.combineLatest(this.user, this.navigationService.sidenavLinks)
 		.map(([user, links]) => {

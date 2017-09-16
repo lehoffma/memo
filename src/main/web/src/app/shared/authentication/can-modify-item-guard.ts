@@ -20,7 +20,9 @@ export class CanModifyItemGuard implements CanActivate {
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
 
-		return this.loginService.currentUser()
+		return this.loginService
+			.accountObservable
+			.flatMap(id => id === null ? Observable.of(null) : this.userService.getById(id))
 			.flatMap(user => {
 				if (user === null) {
 					this.loginService.redirectUrl = state.url;

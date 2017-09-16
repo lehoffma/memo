@@ -19,44 +19,48 @@ import {sortingFunction} from "../../../../util/util";
 	styleUrls: ["./merch-stock.component.scss"]
 })
 export class MerchStockComponent implements OnInit {
-	merch$: Observable<StockEntry[]> =
-		this.eventService.search("", EventType.merch)
-			.flatMap(merch => Observable.combineLatest(
-				...merch.map(merchItem => this.stockService.getByEventId(merchItem.id)
-					.map(stockList => ({
-						stockMap: this.stockService.toStockMap(stockList),
-						options: this.stockService.getStockOptions([stockList]),
-						item: merchItem
-					})))
-			))
-			.flatMap((dataList: StockEntry[]) => {
+	stockEntryList$: Observable<StockEntry[]> = this.eventService.search("", EventType.merch)
+		.flatMap(merch => Observable.forkJoin(
+			...merch.map(merchItem => this.stockService.getByEventId(merchItem.id)
+				.map(stockList => ({
+					stockMap: this.stockService.toStockMap(stockList),
+					options: this.stockService.getStockOptions([stockList]),
+					item: merchItem
+				}))
+			)))
+		.share();
 
-				return this.activatedRoute.queryParamMap
-					.flatMap(queryParamMap => {
-						let list = [...dataList];
 
-						//todo filter => categories + search bar
-						const filteredBy = {};
-						queryParamMap.keys.forEach(key => filteredBy[key] = queryParamMap.get(key));
+	merch$: Observable<StockEntry[]> = this.stockEntryList$
+		.flatMap((dataList: StockEntry[]) => {
+			return this.activatedRoute.queryParamMap
+				.flatMap(queryParamMap => {
+					let list = [...dataList];
 
-						return Observable.combineLatest(...list
-							.map(item => this.searchFilterService.satisfiesFilters(item.item, filteredBy)
-								.map(satisfiesFilter => ({
-									satisfiesFilter,
-									item
-								}))))
-							.map(list => list.filter(it => it.satisfiesFilter).map(it => it.item))
-							.map(list => {
-								if (queryParamMap.has("sortBy") && queryParamMap.has("descending")) {
-									const attribute = queryParamMap.get("sortBy");
-									const descending = queryParamMap.get("descending") === "true";
-									return list.sort(sortingFunction<StockEntry>(obj => obj.item[attribute], descending));
-								}
-								return list;
-							})
-					})
+					//todo filter => categories + search bar
+					const filteredBy = {};
+					queryParamMap.keys.forEach(key => filteredBy[key] = queryParamMap.get(key));
 
-			});
+					return Observable.combineLatest(...list
+						.map(item => this.searchFilterService.satisfiesFilters(item.item, filteredBy)
+							.map(satisfiesFilter => ({
+								satisfiesFilter,
+								item
+							}))))
+						.map(list => list.filter(it => it.satisfiesFilter).map(it => it.item))
+						.map(list => {
+							if (queryParamMap.has("sortBy") && queryParamMap.has("descending")) {
+								const attribute = queryParamMap.get("sortBy");
+								const descending = queryParamMap.get("descending") === "true";
+								return list.sort(sortingFunction<StockEntry>(obj => obj.item[attribute], descending));
+							}
+							return list;
+						})
+				})
+		});
+
+	userCanAddMerch$ = this.loginService.getActionPermissions("merch")
+		.map(permission => permission.Hinzufuegen);
 
 
 	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
@@ -109,13 +113,13 @@ export class MerchStockComponent implements OnInit {
 			)
 			.map(filterOptions => filterOptions
 				.filter(option => option.queryKey !== "category" && option.queryKey !== "date"))
-			.subscribe(filterOptions => {
-				this.searchFilterService.initFilterMenu(this.activatedRoute, filterOptions)
-					.subscribe(options => {
-						this.filterOptions = options;
-					})
-			});
+			.flatMap(filterOptions => this.searchFilterService.initFilterMenu(this.activatedRoute, filterOptions))
+			.subscribe(options => this.filterOptions = options);
 	}
 
+
+	deleteMerch(id:number){
+		console.warn("delete merch not implemented yet. ", id);
+	}
 
 }

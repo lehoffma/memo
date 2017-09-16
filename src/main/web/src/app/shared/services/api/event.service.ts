@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {EventType, getEventTypes} from "../../../shop/shared/model/event-type";
+import {EventType} from "../../../shop/shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../../shop/shared/model/event";
 import {EventFactoryService} from "../event-factory.service";
@@ -77,30 +77,22 @@ export class EventService extends ServletService<Event> {
 			params: new HttpParams().set("id", "" + eventId)
 		}))
 			.map(json => this.getFactoryFromType(json.events[0]["type"])().setProperties(json.events[0]))
-			.do(event => this.cache.addOrModify(event));
+			.do(event => this.cache.addOrModify(event))
+			.share();
 	}
 
 	/**
 	 *
 	 * @param userId
-	 * @param eventTypes
 	 */
-	getEventsOfUser(userId: number, eventTypes: { tours?: boolean, partys?: boolean }): Observable<(Tour | Party)[]> {
-		let searchQueries: Observable<Event[]>[] = getEventTypes()
-			.filter(type => eventTypes[type])
-			.map(eventType => this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {
-					params: new HttpParams().set("userId", "" + userId)
-						.set("type", "" + eventType)
-				}))
-					.map(json => json.events.map(event =>
-						EventFactoryService.build(eventType).setProperties(event)))
-					.do(events => this.cache.addMultiple(...events))
-			);
-
-		return Observable.combineLatest(searchQueries)
-		//combine two observable arrays (one for tours, one for partys) into one
-			.map((nestedEventArray: (Tour | Party)[][]) =>
-				nestedEventArray.reduce((previous, current) => previous.concat(...current), []));
+	getEventsOfUser(userId: number): Observable<(Tour | Party)[]> {
+		return this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {
+			params: new HttpParams().set("userId", "" + userId)
+		}))
+			.map(json => json.events.map(event =>
+				event.setProperties(event)))
+			.do(events => this.cache.addMultiple(...events))
+			.share()
 	}
 
 	/**
@@ -122,14 +114,14 @@ export class EventService extends ServletService<Event> {
 		const cachedObservable: Observable<Event[]> = this.cache
 			.search(searchTerm, EventService.cacheKeyFromEventType(eventType));
 
-
 		//if any of the cached events match the search term, combine these with the ones loaded from the server
 		return Observable.combineLatest(cachedObservable, httpRequest,
 			(cachedEvents, loadedEvents) => [...cachedEvents, ...loadedEvents]
 				.filter((value, index, array) =>
 					//removes duplicate entries
 					array.findIndex((event: Event) => event.id === value.id && event.title === value.title) === index
-				));
+				))
+			.share()
 	}
 
 

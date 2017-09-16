@@ -41,6 +41,7 @@ export class AccountingComponent implements OnInit {
 		.flatMap(([paramMap, queryParamMap, sortBy]) =>
 			this.getEntries([paramMap, queryParamMap, sortBy]))
 		.map(entries => [...entries]);
+
 	entriesSubject$: BehaviorSubject<Entry[]> = new BehaviorSubject([]);
 	total$ = this.entriesSubject$
 		.map(entries => entries.reduce((acc, entry) => acc + entry.value, 0));

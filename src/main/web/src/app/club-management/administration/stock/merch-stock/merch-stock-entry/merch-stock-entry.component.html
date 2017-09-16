@@ -12,9 +12,22 @@
 		</div>
 	</div>
 
-	<button md-icon-button>
+	<md-menu #menu="mdMenu">
+		<a md-menu-item
+		   routerLink="/merch/{{stockEntry?.item.id}}/edit">
+			<md-icon>edit</md-icon>
+			<span>Bearbeiten</span>
+		</a>
+		<button md-menu-item type="button" (click)="deleteMerch(stockEntry?.item.id)">
+			<md-icon>delete</md-icon>
+			<span>Löschen</span>
+		</button>
+	</md-menu>
+	<button md-icon-button [mdMenuTriggerFor]="menu">
 		<md-icon>more_vert</md-icon>
 	</button>
+
+
 </div>
 <table>
 	<thead>

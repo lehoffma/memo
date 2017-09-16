@@ -33,8 +33,7 @@ export class CommentsSectionComponent implements OnInit {
 	@Input() eventId: number;
 	@Output() onDeleteComment = new EventEmitter<{ comment: Comment, parentId: number }>();
 	readonly DEFAULT_AMOUNT_OF_COMMENTS_SHOWN = 3;
-	loggedInUser$ = this.loginService.currentUser()
-		.do(console.log)
+	loggedInUser$ = this.loginService.currentUser$
 		.flatMap(user => user === null ? Observable.empty() : Observable.of(user));
 	expandState = false;
 	dummyComment = Comment.create();
@@ -62,7 +61,7 @@ export class CommentsSectionComponent implements OnInit {
 	addComment(commentText: string, parentId: number) {
 		console.log(commentText, parentId);
 		if (parentId === -1) {
-			this.loginService.currentUser()
+			this.loginService.currentUser$
 				.first()
 				.subscribe((user) => {
 					let comment = new Comment(this.eventId, -1, moment(), user.id, commentText);

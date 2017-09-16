@@ -4,7 +4,7 @@
 			<!--display image with overlayed title if present-->
 			<div class="image-container"
 				 (click)="showDetailedImage(!!event?.imagePath ? event.imagePath : 'resources/images/Logo.png')"
-				 [attr.object-title]="event.title">
+				 [attr.object-title]="event?.title">
 				<img class="image-detail" src="{{!!event?.imagePath ? event.imagePath : 'resources/images/Logo.png'}}">
 			</div>
 

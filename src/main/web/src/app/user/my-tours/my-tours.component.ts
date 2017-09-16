@@ -15,7 +15,7 @@ export class MyToursComponent implements OnInit {
 	public tours: Observable<(Tour | Party)[]> = this.loginService.accountObservable
 		.flatMap(accountId => accountId === null
 			? Observable.empty()
-			: this.eventService.getEventsOfUser(accountId, {tours: true, partys: true}))
+			: this.eventService.getEventsOfUser(accountId))
 		.map((events: (Tour | Party)[]) => {
 			events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
 			return events;

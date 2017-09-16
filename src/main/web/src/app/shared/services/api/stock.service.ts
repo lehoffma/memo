@@ -173,7 +173,8 @@ export class StockService extends ServletService<MerchStockList> {
 				.set("eventId", "" + eventId)
 		}))
 		//todo update when merchstock is a class?
-			.map(response => response.stock);
+			.map(response => response.stock)
+			.share();
 	}
 
 	/**
@@ -254,7 +255,8 @@ export class StockService extends ServletService<MerchStockList> {
 			params: new HttpParams().set("searchTerm", searchTerm)
 		}))
 		//todo update when merchstock is a class
-			.map(response => [response.stock]);
+			.map(response => [response.stock])
+			.share();
 	}
 
 	/**

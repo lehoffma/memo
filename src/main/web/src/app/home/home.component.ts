@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit {
 	 */
 	removePastEvents(events: Event[]): Event[] {
 		//todo remove demo
-		if(events.length > 0){
+		if (events.length > 0) {
 			return events;
 		}
 

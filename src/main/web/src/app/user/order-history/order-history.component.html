@@ -1,6 +1,6 @@
 <memo-order-history-entry *ngFor="let order of orders$|async" [orderEntry]="order">
 </memo-order-history-entry>
 
-<div *ngIf="(orders$|async).length === 0">
+<div *ngIf="(orders$|async)?.length === 0">
 	Du hast bisher keine Bestellungen getätigt.
 </div>

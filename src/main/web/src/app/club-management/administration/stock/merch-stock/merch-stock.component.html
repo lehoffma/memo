@@ -15,11 +15,24 @@
 
 		</memo-sorting-dropdown>
 	</div>
-	<memo-merch-stock-entry *ngFor="let stockEntry of merch$|async" [stockEntry]="stockEntry">
+	<memo-merch-stock-entry *ngFor="let stockEntry of merch$|async"
+							[stockEntry]="stockEntry"
+							(onDelete)="deleteMerch($event)"
+
+	>
 
 	</memo-merch-stock-entry>
 </div>
 
-<memo-merch-stock-feed>
+
+<a md-fab color="accent" *ngIf="userCanAddMerch$ | async"
+		[md-tooltip]="'Artikel hinzufügen'"
+		[mdTooltipPosition]="'above'"
+		routerLink="/merch/create"
+		class="add-merch-button">
+	<md-icon>add</md-icon>
+</a>
+
+<memo-merch-stock-feed [stockEntryList]="stockEntryList$ | async">
 
 </memo-merch-stock-feed>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {Party} from "../shared/model/party";
 import {Tour} from "../shared/model/tour";
@@ -18,9 +18,12 @@ import {ActivatedRoute, Router} from "@angular/router";
 	templateUrl: "./event-calendar-container.component.html",
 	styleUrls: ["./event-calendar-container.component.scss"]
 })
-export class EventCalendarContainerComponent implements OnInit {
-	events: Observable<(Party | Tour)[]> = this.getUpdatedEvents();
+export class EventCalendarContainerComponent implements OnInit, OnDestroy {
+
+	events$: Observable<(Party | Tour)[]> = this.getUpdatedEvents();
 	editable: Observable<boolean> = Observable.of(false); //todo true if permissions of tour/party >= write, else false
+
+	eventSubscription = this.events$.subscribe();
 
 	selectedView = "calendar";
 
@@ -49,17 +52,23 @@ export class EventCalendarContainerComponent implements OnInit {
 			})
 	}
 
+
+	ngOnDestroy(): void {
+		this.eventSubscription.unsubscribe();
+	}
+
 	navigateToRoute(selectedView: "calendar" | "list") {
 		this.router.navigate([], {
 			queryParams: {
 				view: selectedView,
 			},
-			relativeTo: this.activatedRoute
+			relativeTo: this.activatedRoute,
+			replaceUrl: !this.activatedRoute.snapshot.queryParamMap.has("view")
 		});
 	}
 
 	getUpdatedEvents(): Observable<(Party | Tour)[]> {
-		return Observable.combineLatest(
+		return Observable.forkJoin(
 			this.eventService.search("", EventType.tours),
 			this.eventService.search("", EventType.partys),
 			(tours, partys) => [...tours, ...partys]
@@ -72,7 +81,7 @@ export class EventCalendarContainerComponent implements OnInit {
 	 */
 	onEventClick(eventId: number) {
 		let observable = Observable.combineLatest(
-			this.loginService.currentUser()
+			this.loginService.currentUser$
 				.filter(user => user !== null)
 				.map(user => user.userPermissions)
 				.filter(permissions => !isNullOrUndefined(permissions))
@@ -108,7 +117,8 @@ export class EventCalendarContainerComponent implements OnInit {
 		dialogRef.afterClosed()
 			.subscribe(value => {
 					if (value === "deleted") {
-						this.events = this.getUpdatedEvents();
+						this.events$ = this.getUpdatedEvents();
+						this.eventSubscription = this.events$.subscribe();
 						this.snackBar.open("Löschen erfolgreich.", "Schließen", {
 							duration: 1000
 						});
@@ -122,7 +132,7 @@ export class EventCalendarContainerComponent implements OnInit {
 	 * @param date
 	 */
 	onDayClick(date: Date) {
-		let permissions$ = this.loginService.currentUser()
+		let permissions$ = this.loginService.currentUser$
 			.filter(user => user !== null)
 			.map(user => user.userPermissions)
 			.filter(permissions => !isNullOrUndefined(permissions))

@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ShopItemType} from "../../shared/model/shop-item-type";
 import {ModifyType} from "./modify-type";
 import {ActivatedRoute} from "@angular/router";
@@ -12,7 +12,7 @@ import {ModifyItemEvent} from "./modify-item-event";
 	templateUrl: "./modify-shop-item.component.html",
 	styleUrls: ["./modify-shop-item.component.scss"]
 })
-export class ModifyShopItemComponent implements OnInit {
+export class ModifyShopItemComponent implements OnInit, OnDestroy {
 	ModifyType = ModifyType;
 	ItemType = ShopItemType;
 
@@ -52,13 +52,16 @@ export class ModifyShopItemComponent implements OnInit {
 		// this.modifyItemService.init();
 	}
 
+	ngOnDestroy(): void {
+		this.modifyItemService.reset();
+	}
 
 	/**
 	 * Cancel callback
 	 */
 	cancel() {
-		this.location.back();
 		this.modifyItemService.reset();
+		this.location.back();
 	}
 
 	/**

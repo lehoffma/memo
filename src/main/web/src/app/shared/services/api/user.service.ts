@@ -37,7 +37,8 @@ export class UserService extends ServletService<User> {
 			params: new HttpParams().set("id", "" + userId)
 		}))
 			.map(json => User.create().setProperties(json.users[0]))
-			.do((user: User) => this.cache.addOrModify(user));
+			.do((user: User) => this.cache.addOrModify(user))
+			.share();
 	}
 
 	/**
@@ -51,7 +52,8 @@ export class UserService extends ServletService<User> {
 			params: new HttpParams().set("searchTerm", searchTerm)
 		}))
 			.map(json => json.users.map(jsonUser => User.create().setProperties(jsonUser)))
-			.do((users: User[]) => this.cache.addMultiple(...users));
+			.do((users: User[]) => this.cache.addMultiple(...users))
+			.share();
 	}
 
 	/**

@@ -38,6 +38,7 @@ export class AccountingOptionsComponent implements OnInit {
 	autocompleteFormControl: FormControl = new FormControl();
 	filteredOptions: Observable<Event[]>;
 
+
 	constructor(private queryParameterService: QueryParameterService,
 				private router: Router,
 				private changeDetectorRef: ChangeDetectorRef,
@@ -57,7 +58,7 @@ export class AccountingOptionsComponent implements OnInit {
 	async ngOnInit() {
 		let categories = await this.costCategories$.first().toPromise();
 		categories.forEach(category => this.costTypes[category.name] = true);
-		await this.getAvailableEvents();
+		// await this.getAvailableEvents();
 		this.readQueryParams();
 		this.initEventAutoComplete();
 	}

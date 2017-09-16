@@ -36,7 +36,7 @@ export class CommentBlockComponent implements OnInit {
 	@Output() onAddComment = new EventEmitter<{ commentText: string, parentCommentId: number }>();
 	@Output() onDelete = new EventEmitter<{ comment: Comment, parentId: number }>();
 	loggedInUser: User | null = null;
-	loggedInUser$: Observable<User> = this.loginService.currentUser()
+	loggedInUser$: Observable<User> = this.loginService.currentUser$
 		.flatMap(user => user === null ? Observable.empty() : Observable.of(user));
 	showChildren = false;
 	showReplyBox = false;
@@ -58,7 +58,7 @@ export class CommentBlockComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.loginService.currentUser().subscribe(value => this.loggedInUser = value);
+		this.loginService.currentUser$.subscribe(value => this.loggedInUser = value);
 	}
 
 	isTouchDevice() {
@@ -104,7 +104,7 @@ export class CommentBlockComponent implements OnInit {
 		console.log(commentText, parentCommentId);
 		let currentComment: Comment = this._comment$.value;
 		if (parentCommentId === currentComment.id) {
-			this.loginService.currentUser()
+			this.loginService.currentUser$
 				.first()
 				.subscribe((user) => {
 					let comment = new Comment(this.eventId, -1, moment(), user.id, commentText);

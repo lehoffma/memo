@@ -31,8 +31,7 @@ export class AddressModificationComponent implements OnInit {
 			.first()
 			.subscribe(queryParamMap => {
 				if (queryParamMap.has("id")) {
-					this.loginService.accountObservable
-						.flatMap(id => this.userService.getById(id))
+					this.loginService.currentUser$
 						.flatMap(user => Observable.combineLatest(
 							user.addresses.map(addressId => this.addressService.getById(addressId))
 						))
@@ -71,7 +70,7 @@ export class AddressModificationComponent implements OnInit {
 		else {
 			this.addressService.add(this.model)
 				.flatMap(address => this.loginService.isLoggedIn() ?
-					this.loginService.currentUser()
+					this.loginService.currentUser$
 						.first()
 						.map(user => user.setProperties({addresses: [...user.addresses, address.id]}))
 						.flatMap(user => this.userService.modify(user))

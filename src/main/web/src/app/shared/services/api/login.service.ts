@@ -21,6 +21,9 @@ export class LogInService {
 	public redirectUrl = "/";
 	private accountSubject: BehaviorSubject<number> = new BehaviorSubject(null);
 	public accountObservable: Observable<number> = this.accountSubject.asObservable();
+
+	private _currentUser$ = new BehaviorSubject(null);
+	public currentUser$: Observable<User> = this._currentUser$.asObservable();
 	private readonly loginUrl = "/api/login";
 	private readonly logoutUrl = "/api/logout";
 
@@ -34,6 +37,9 @@ export class LogInService {
 		if (currentUserId && !isNullOrUndefined(currentUserId) && this.authService.isAuthenticated()) {
 			this.pushNewData(+currentUserId);
 		}
+		this.accountObservable
+			.flatMap(id => id !== null ? this.userService.getById(id) : Observable.of(null))
+			.subscribe(user => this._currentUser$.next(user));
 	}
 
 	/**
@@ -61,7 +67,6 @@ export class LogInService {
 				}
 				return id !== null;
 			})
-			.retry(3)
 			.catch(error => {
 				console.error(error);
 				//todo better error handling
@@ -105,7 +110,7 @@ export class LogInService {
 	 * @returns {Observable<ActionPermissions>}
 	 */
 	getActionPermissions(...permissionsKeys: (keyof UserPermissions)[]): Observable<ActionPermissions> {
-		return this.currentUser()
+		return this.currentUser$
 			.map(user => user === null
 				? {
 					"Hinzufuegen": false,
@@ -131,14 +136,6 @@ export class LogInService {
 		return this.accountSubject.getValue() !== null;
 	}
 
-	/**
-	 *
-	 * @returns {Observable<User>}
-	 */
-	currentUser(): Observable<User> {
-		const currentId = this.accountSubject.getValue();
-		return currentId !== null ? this.userService.getById(this.accountSubject.getValue()) : Observable.of(null);
-	}
 
 	/**
 	 *

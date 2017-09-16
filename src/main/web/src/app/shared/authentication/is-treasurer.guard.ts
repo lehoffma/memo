@@ -4,15 +4,19 @@ import {Observable} from "rxjs/Observable";
 import {LogInService} from "../services/api/login.service";
 import {ClubRole, isAuthenticated, rolePermissions} from "../model/club-role";
 import {Permission} from "../model/permission";
+import {UserService} from "../services/api/user.service";
 
 @Injectable()
 export class IsTreasurerGuard implements CanActivate {
 	constructor(private loginService: LogInService,
+				private userService: UserService,
 				private router: Router) {
 	}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-		return this.loginService.currentUser()
+		return this.loginService
+			.accountObservable
+			.flatMap(id => id === null ? Observable.of(null) : this.userService.getById(id))
 			.map(user => {
 				if (user === null) {
 					this.loginService.redirectUrl = state.url;
@@ -31,6 +35,6 @@ export class IsTreasurerGuard implements CanActivate {
 
 				this.router.navigate(["not-allowed"]);
 				return false;
-			});
+			})
 	}
 }

@@ -3,9 +3,7 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
-import memo.model.Color;
-import memo.model.Event;
-import memo.model.Size;
+import memo.model.*;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -20,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Servlet implementation class EventServlet
@@ -35,6 +34,7 @@ public class EventServlet extends HttpServlet {
         super();
     }
 
+    //todo as enum
     static Integer getType(String sType) {
         switch (sType) {
             case "tours":
@@ -59,9 +59,10 @@ public class EventServlet extends HttpServlet {
         String Sid = request.getParameter("id");
         String searchTerm = request.getParameter("searchTerm");
         String sType = request.getParameter("type");
+        String userId = request.getParameter("userId");
 
 
-        List<Event> events = getEventsFromDatabase(Sid, searchTerm, sType, response);
+        List<Event> events = getEventsFromDatabase(Sid, searchTerm, sType, userId, response);
 
         /*
         if (events.isEmpty()) {
@@ -78,10 +79,6 @@ public class EventServlet extends HttpServlet {
         JsonObject responseJson = new JsonObject();
         responseJson.add("events", gson.toJsonTree(events));
         response.getWriter().append(responseJson.toString());
-
-//        response.getWriter().append("{ \"events\": " + output + " }");
-
-
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -260,7 +257,8 @@ public class EventServlet extends HttpServlet {
         em.getTransaction().commit();
     }
 
-    private List<Event> getEventsFromDatabase(String Sid, String searchTerm, String sType, HttpServletResponse response) throws IOException {
+    private List<Event> getEventsFromDatabase(String Sid, String searchTerm, String sType, String userId,
+                                              HttpServletResponse response) throws IOException {
 
         List<Event> events = new ArrayList<>();
 
@@ -278,6 +276,8 @@ public class EventServlet extends HttpServlet {
 
         if (isStringNotEmpty(sType)) return getEventsByType(getType(sType));
 
+        if(isStringNotEmpty(userId)) return this.getEventsByUser(new Integer(userId));
+
         return getEvents();
     }
 
@@ -290,9 +290,20 @@ public class EventServlet extends HttpServlet {
 
     private List<Event> getEventsByType(Integer type) {
         return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Event e " +
-                " WHERE e.type = :typ", Event.class)
-                .setParameter("typ", type)
+                " WHERE e.type = :type", Event.class)
+                .setParameter("type", type)
                 .getResultList();
+    }
+
+    private List<Event> getEventsByUser(Integer userId){
+        return DatabaseManager.createEntityManager().createQuery(
+                "SELECT item from Order o join OrderedItem item \n" +
+                        "    WHERE o.userId =:userId", OrderedItem.class)
+                .setParameter("userId", userId)
+                .getResultList()
+                .stream()
+                .map(OrderedItem::getEvent)
+                .collect(Collectors.toList());
     }
 
     private List<Event> getEvents() {

@@ -12,7 +12,7 @@
 			<a routerLink="{{eventPreview.route}}">MEHR</a>
 		</div>
 
-		<memo-category-preview [events]="eventPreview.events"
+		<memo-category-preview [events$]="eventPreview.events"
 							   [itemType]="eventPreview.type"
 							   [route]="eventPreview.route"></memo-category-preview>
 	</div>

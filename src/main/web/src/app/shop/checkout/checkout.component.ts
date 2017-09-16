@@ -26,8 +26,7 @@ import * as moment from "moment";
 })
 export class CheckoutComponent implements OnInit {
 	paymentMethod: string;
-	user$: Observable<User> = this.logInService.accountObservable
-		.flatMap(id => this.userService.getById(id));
+	user$: Observable<User> = this.logInService.currentUser$;
 	userAddresses$: Observable<Address[]> = this.user$
 		.flatMap(user => Observable.combineLatest(
 			user.addresses.map(addressId => this.addressService.getById(addressId))

@@ -14,22 +14,22 @@ import {Permission, UserPermissions} from "../../shared/model/permission";
 	styleUrls: ["./category-preview.component.scss"]
 })
 export class CategoryPreviewComponent implements OnInit {
-	@Input() events: Observable<Event[]>;
+	@Input() events$: Observable<Event[]>;
 	@Input() route: string;
 	@Input() itemType: ShopItemType;
 
-	showDate = Observable.of(false);
+	showDate = false;
 	noElementsText = "";
 	addShopItemText = "";
 	createLink = "";
 
 	userCanCreateEvent: Observable<boolean> = this.loginService
-		.currentUser()
+		.currentUser$
 		.map(user => {
 			if (user === null) {
 				return false;
 			}
-			const permissions = user.userPermissions
+			const permissions = user.userPermissions;
 			const permissionKey: keyof UserPermissions = EventUtilityService
 				.handleOptionalShopType<keyof UserPermissions>(this.itemType, {
 					tours: () => "tour",
@@ -46,8 +46,7 @@ export class CategoryPreviewComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.showDate = this.events
-			.map(events => events[0] && !(events[0] instanceof Merchandise));
+		this.showDate = this.itemType !== ShopItemType.merch;
 		this.noElementsText = EventUtilityService.handleOptionalShopType<string>(this.itemType, {
 			tours: () => "Es gibt keine bevorstehenden Touren!",
 			merch: () => "Keine Merchandise-Artikel vorhanden!",

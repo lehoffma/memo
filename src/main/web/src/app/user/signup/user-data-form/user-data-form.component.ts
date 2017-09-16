@@ -32,7 +32,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 			: `/members/${id}/address`);
 	genderOptions = [Gender.FEMALE, Gender.MALE, Gender.OTHER];
 	clubRoleOptions = [ClubRole.Organizer, ClubRole.Admin, ClubRole.Vorstand, ClubRole.Kassenwart, ClubRole.Mitglied, ClubRole.None];
-	isAdmin = this.loginService.currentUser().map(user => {
+	isAdmin = this.loginService.currentUser$.map(user => {
 		return user !== null && user.clubRole === ClubRole.Admin;
 	});
 	addressesSubject$ = new BehaviorSubject<Address[]>([]);
