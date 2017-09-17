@@ -2,6 +2,8 @@ package memo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import memo.model.Event;
 import memo.model.OrderedItem;
 
 import javax.servlet.ServletException;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "ParticipantsServlet", value = "/api/participants")
 public class ParticipantsServlet extends HttpServlet {
@@ -22,22 +25,32 @@ public class ParticipantsServlet extends HttpServlet {
 
         String SeventId = request.getParameter("eventId");
         String sType = request.getParameter("type");
+        String userId = request.getParameter("userId");
 
 
-        List<OrderedItem> participants = getParticipantsFromDatabase(SeventId, sType, response);
+        List<OrderedItem> result = getParticipantsFromDatabase(SeventId, sType, response);
+
+        //todo wohin soll der getUserEvents call?
+        if(isStringNotEmpty(userId)){
+            List<Event> events = this.getEventsByUserId(Integer.valueOf(userId));
+            Gson gson = new GsonBuilder().serializeNulls().create();
+            JsonObject responseJson = new JsonObject();
+            responseJson.add("result", gson.toJsonTree(events));
+            response.getWriter().append(responseJson.toString());
+        }
 
         /*
-        if (participants.isEmpty()) {
+        if (result.isEmpty()) {
             response.setStatus(404);
             response.getWriter().append("Not found");
             return;
         }
 */
+
         Gson gson = new GsonBuilder().serializeNulls().create();
-        String output = gson.toJson(participants);
-
-        response.getWriter().append("{ \"participants\": " + output + " }");
-
+        JsonObject responseJson = new JsonObject();
+        responseJson.add("result", gson.toJsonTree(result));
+        response.getWriter().append(responseJson.toString());
     }
 
 
@@ -74,6 +87,17 @@ public class ParticipantsServlet extends HttpServlet {
                 " WHERE o.event.type = :typ", OrderedItem.class)
                 .setParameter("typ", type)
                 .getResultList();
+    }
+
+    private List<Event> getEventsByUserId(Integer userId){
+        return DatabaseManager.createEntityManager().createQuery(
+                "SELECT item from Order o join OrderedItem item \n" +
+                        "    WHERE o.userId =:userId", OrderedItem.class)
+                .setParameter("userId", userId)
+                .getResultList()
+                .stream()
+                .map(OrderedItem::getEvent)
+                .collect(Collectors.toList());
     }
 
     private List<OrderedItem> getParticipantsByEventId(String SeventId, HttpServletResponse response) throws IOException {

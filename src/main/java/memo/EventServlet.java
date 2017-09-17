@@ -12,13 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Servlet implementation class EventServlet
@@ -276,7 +274,7 @@ public class EventServlet extends HttpServlet {
 
         if (isStringNotEmpty(sType)) return getEventsByType(getType(sType));
 
-        if(isStringNotEmpty(userId)) return this.getEventsByUser(new Integer(userId));
+        if(isStringNotEmpty(userId)) return this.getEventsCreatedByUser(new Integer(userId));
 
         return getEvents();
     }
@@ -295,15 +293,9 @@ public class EventServlet extends HttpServlet {
                 .getResultList();
     }
 
-    private List<Event> getEventsByUser(Integer userId){
-        return DatabaseManager.createEntityManager().createQuery(
-                "SELECT item from Order o join OrderedItem item \n" +
-                        "    WHERE o.userId =:userId", OrderedItem.class)
-                .setParameter("userId", userId)
-                .getResultList()
-                .stream()
-                .map(OrderedItem::getEvent)
-                .collect(Collectors.toList());
+    private List<Event> getEventsCreatedByUser(Integer userId){
+        //todo implement
+        return new ArrayList<>();
     }
 
     private List<Event> getEvents() {
