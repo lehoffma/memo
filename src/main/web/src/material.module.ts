@@ -1,7 +1,8 @@
 import {NgModule} from "@angular/core";
 import {
 	MdAutocompleteModule,
-	MdButtonModule, MdButtonToggleModule,
+	MdButtonModule,
+	MdButtonToggleModule,
 	MdCardModule,
 	MdCheckboxModule,
 	MdChipsModule,
@@ -17,6 +18,7 @@ import {
 	MdSelectModule,
 	MdSidenavModule,
 	MdSnackBarModule,
+	MdTabsModule,
 	MdToolbarModule,
 	MdTooltipModule,
 } from "@angular/material";
@@ -26,7 +28,7 @@ const modules = [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepic
 	MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
 	MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
 	MdAutocompleteModule, MdChipsModule, MdProgressSpinnerModule,
-	MdButtonToggleModule
+	MdButtonToggleModule, MdTabsModule
 ];
 
 @NgModule({

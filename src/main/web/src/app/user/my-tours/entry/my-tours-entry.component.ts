@@ -34,7 +34,9 @@ export class MyToursEntryComponent implements OnInit, OnChanges {
 			this.eventIsInThePast = moment(this.event.date).isBefore(moment());
 			this.eventType = EventUtilityService.getEventType(this.event);
 			this.from$ = this.addressService.getById(this.event.route[0]);
-			this.to$ = this.addressService.getById(this.event.route[this.event.route.length - 1]);
+			if(this.event.route.length > 1){
+				this.to$ = this.addressService.getById(this.event.route[this.event.route.length - 1]);
+			}
 		}
 	}
 }

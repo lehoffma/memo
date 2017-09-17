@@ -3,6 +3,7 @@ package memo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import memo.model.Event;
 import memo.model.OrderedItem;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,8 +37,10 @@ public class ParticipantsServlet extends HttpServlet {
             List<Event> events = this.getEventsByUserId(Integer.valueOf(userId));
             Gson gson = new GsonBuilder().serializeNulls().create();
             JsonObject responseJson = new JsonObject();
-            responseJson.add("result", gson.toJsonTree(events));
+            Type eventType = new TypeToken<List<Event>>() {}.getType();
+            responseJson.add("events", gson.toJsonTree(events, eventType));
             response.getWriter().append(responseJson.toString());
+            return;
         }
 
         /*
@@ -97,6 +101,7 @@ public class ParticipantsServlet extends HttpServlet {
                 .getResultList()
                 .stream()
                 .map(OrderedItem::getEvent)
+                .distinct()
                 .collect(Collectors.toList());
     }
 

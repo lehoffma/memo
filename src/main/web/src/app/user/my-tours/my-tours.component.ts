@@ -5,6 +5,7 @@ import {Observable} from "rxjs/Observable";
 import {EventService} from "../../shared/services/api/event.service";
 import {Party} from "../../shop/shared/model/party";
 import {dateSortingFunction} from "../../util/util";
+import {ParticipantsService} from "../../shared/services/api/participants.service";
 
 @Component({
 	selector: "memo-my-tours",
@@ -12,16 +13,29 @@ import {dateSortingFunction} from "../../util/util";
 	styleUrls: ["./my-tours.component.scss"]
 })
 export class MyToursComponent implements OnInit {
-	public tours: Observable<(Tour | Party)[]> = this.loginService.accountObservable
+	public createdTours$: Observable<(Tour | Party)[]> = this.loginService.accountObservable
 		.flatMap(accountId => accountId === null
 			? Observable.empty()
-			: this.eventService.getEventsOfUser(accountId))
+			: this.eventService.getHostedEventsOfUser(accountId))
 		.map((events: (Tour | Party)[]) => {
 			events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
 			return events;
 		});
 
+	public participatedTours$ = this.loginService.accountObservable
+		.flatMap(accountId => accountId === null
+			? Observable.empty()
+			: this.participantService.getParticipatedEventsOfUser(accountId))
+		.map((events: (Tour | Party)[]) => {
+			events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
+			return events;
+		});
+
+	//todo: past/future/all events filter dropdown
+	//todo: search bar?
+
 	constructor(private loginService: LogInService,
+				private participantService: ParticipantsService,
 				private eventService: EventService) {
 	}
 

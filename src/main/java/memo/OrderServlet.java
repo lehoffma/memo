@@ -47,6 +47,7 @@ public class OrderServlet extends HttpServlet {
 
         Gson gson = new GsonBuilder().serializeNulls().create();
         Type orderedItemType = new TypeToken<List<OrderedItem>>() {}.getType();
+        Type orderType = new TypeToken<List<Object>>() {}.getType();
 
         //todo test
         List<JsonObject> jsonOrders = orders.stream()
@@ -59,7 +60,7 @@ public class OrderServlet extends HttpServlet {
                 .collect(Collectors.toList());
 
         JsonObject jsonResponse = new JsonObject();
-        jsonResponse.add("orders", gson.toJsonTree(jsonOrders));
+        jsonResponse.add("orders", gson.toJsonTree(jsonOrders, orderType));
         response.getWriter().append(jsonResponse.toString());
 
 

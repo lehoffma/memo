@@ -10,7 +10,7 @@
 
 				</span>
 				<span class="event-date-bottom">
-				{{event?.date | moment:'dd'}}
+				{{event?.date | moment:'DD'}}
 				</span>
 			</div>
 			<div class="event-other-info">
@@ -19,7 +19,7 @@
 				</h3>
 				<span class="event-route">
 				<span>{{(from$ | async)?.city}}</span>
-				<md-icon [style.transform]="'rotate(-90deg)'">arrow_downward</md-icon>
+				<md-icon *ngIf="event.route.length > 1" [style.transform]="'rotate(-90deg)'">arrow_downward</md-icon>
 				<span>{{(to$ | async)?.city}}</span>
 			</span>
 			</div>

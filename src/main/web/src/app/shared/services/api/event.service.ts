@@ -85,7 +85,7 @@ export class EventService extends ServletService<Event> {
 	 *
 	 * @param userId
 	 */
-	getEventsOfUser(userId: number): Observable<(Tour | Party)[]> {
+	getHostedEventsOfUser(userId: number): Observable<(Tour | Party)[]> {
 		return this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {
 			params: new HttpParams().set("userId", "" + userId)
 		}))

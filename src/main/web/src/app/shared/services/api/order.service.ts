@@ -36,6 +36,7 @@ export class OrderService extends ServletService<Order> {
 		})
 		//todo error handling
 			.map(response => response.orders[0])
+			.map(order => Order.create().setProperties(order))
 			.do(order => this.cache.addOrModify(order))
 	}
 
@@ -49,6 +50,7 @@ export class OrderService extends ServletService<Order> {
 			params: new HttpParams().set("searchTerm", searchTerm)
 		})
 			.map(response => response.orders)
+			.map(orders => orders.map(order => Order.create().setProperties(order)))
 			.do(orders => this.cache.addMultiple(...orders));
 	}
 
@@ -62,6 +64,7 @@ export class OrderService extends ServletService<Order> {
 			params: new HttpParams().set("userId", "" + userId)
 		})
 			.map(response => response.orders)
+			.map(orders => orders.map(order => Order.create().setProperties(order)))
 			.do(orders => this.cache.addMultiple(...orders));
 	}
 

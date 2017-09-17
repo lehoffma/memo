@@ -4,6 +4,7 @@ import {isArray} from "util";
 import {Gender} from "../gender";
 import {isNumber} from "../../../util/util";
 import * as moment from "moment-timezone";
+import {PaymentMethod, toPaymentMethod} from "../../../shop/checkout/payment/payment-method";
 
 
 export abstract class BaseObject<T extends BaseObject<T>> {
@@ -56,6 +57,8 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 					value = jsonToPermissions(properties[key]);
 				} else if (key === "gender") {
 					value = Gender[Gender[(<any>properties[key])]];
+				} else if (key === "method" && isNumber(value)){
+					value = toPaymentMethod(value);
 				}
 
 				this[key] = value;

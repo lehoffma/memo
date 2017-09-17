@@ -96,7 +96,7 @@ export class CheckoutComponent implements OnInit {
 		chosenBankAccount: number,
 		data: any
 	}) {
-		let bankAccountId: number = await this.getBankAccountId(event.method, event.chosenBankAccount, event.data);
+		const bankAccountId: number = await this.getBankAccountId(event.method, event.chosenBankAccount, event.data);
 
 		this.logInService.accountObservable
 			.first()
@@ -104,6 +104,7 @@ export class CheckoutComponent implements OnInit {
 				return this.cartService.content
 					.first()
 					.flatMap((content: ShoppingCartContent) => {
+						//combine cart content into one array
 						return Observable.combineLatest(
 							...[...content.partys, ...content.tours, ...content.merch]
 								.map(event => this.eventService.getById(event.id)
@@ -114,6 +115,7 @@ export class CheckoutComponent implements OnInit {
 						)
 					})
 					.flatMap(events => {
+						//map events to orderedItem interface to make it usable on the backend
 						let orderedItems: OrderedItem[] = events
 							.reduce((acc, event) => [...acc, ...new Array(event.amount)
 								.fill(({

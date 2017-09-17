@@ -5,6 +5,11 @@ import {Participant, ParticipantUser} from "../../../shop/shared/model/participa
 import {UserService} from "./user.service";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AddOrModifyRequest, AddOrModifyResponse} from "./servlet.service";
+import {Tour} from "../../../shop/shared/model/tour";
+import {Party} from "../../../shop/shared/model/party";
+import {Merchandise} from "../../../shop/shared/model/merchandise";
+import {CacheStore} from "../../stores/cache.store";
+import {EventUtilityService} from "../event-utility.service";
 
 interface ParticipantApiResponse {
 	participants: Participant[]
@@ -15,7 +20,8 @@ export class ParticipantsService {
 	baseUrl = "/api/participants";
 
 	constructor(private http: HttpClient,
-				private userService: UserService) {
+				private userService: UserService,
+				private cache: CacheStore) {
 
 	}
 
@@ -68,6 +74,27 @@ export class ParticipantsService {
 						comments: participant.comments
 					}))));
 			})
+	}
+
+
+	/**
+	 *
+	 * @param userId
+	 */
+	getParticipatedEventsOfUser(userId: number): Observable<(Tour | Party)[]> {
+		return this.http.get<{
+			events: (Party | Merchandise | Tour)[];
+		}>(this.baseUrl, {
+			params: new HttpParams().set("userId", "" + userId)
+		})
+			.map(json => json.events.map(event => EventUtilityService.handleOptionalShopItem(event,
+				{
+					tours: () => Tour.create().setProperties(event),
+					partys: () => Party.create().setProperties(event)
+				})
+			))
+			.do(events => this.cache.addMultiple(...events))
+			.share()
 	}
 
 	/**
