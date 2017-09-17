@@ -7,8 +7,12 @@ import {AuthenticatedGuard} from "../shared/authentication/authenticated.guard";
 import {IsTreasurerGuard} from "../shared/authentication/is-treasurer.guard";
 import {CanViewStockGuard} from "../shared/authentication/can-view-stock.guard";
 import {NgModule} from "@angular/core";
+import {DashboardComponent} from "./dashboard/dashboard.component";
+import {MilesLeaderboardComponent} from "./miles-leaderboard/miles-leaderboard.component";
 
 const routes: Route[] = [
+	{path: "dashboard", component: DashboardComponent},
+	{path: "leaderboard", component: MilesLeaderboardComponent},
 	{path: "members", component: MemberListComponent},
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
 	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
@@ -39,5 +43,7 @@ export class ClubManagementRoutingModule{}
 export const routedComponents = [
 	MemberListComponent,
 	AccountingComponent,
-	MerchStockComponent
+	MerchStockComponent,
+	DashboardComponent,
+	MilesLeaderboardComponent
 ];

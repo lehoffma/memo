@@ -69,10 +69,10 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 
 	getUpdatedEvents(): Observable<(Party | Tour)[]> {
 		return Observable.forkJoin(
-			this.eventService.search("", EventType.tours),
-			this.eventService.search("", EventType.partys),
-			(tours, partys) => [...tours, ...partys]
-		);
+			this.eventService.search("", EventType.tours).first(),
+			this.eventService.search("", EventType.partys).first()
+		)
+			.map(([tours, partys]) => [...tours, ...partys])
 	}
 
 	/**

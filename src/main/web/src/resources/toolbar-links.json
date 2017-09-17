@@ -1,26 +1,38 @@
 [
 	{
-		"route": "tours",
+		"route": "shop",
 		"icon": "",
-		"name": "Fahrten"
+		"name": "Shop",
+		"children": [
+			{
+				"route": "tours",
+				"icon": "",
+				"name": "Fahrten"
+			},
+			{
+				"route": "partys",
+				"icon": "",
+				"name": "Veranstaltungen"
+			},
+			{
+				"route": "merch",
+				"icon": "",
+				"name": "Merchandise"
+			},
+			{
+				"route": "calendar",
+				"icon": "",
+				"name": "Kalender"
+			}
+		]
 	},
 	{
-		"route": "partys",
+		"route": "leaderboard",
 		"icon": "",
-		"name": "Veranstaltungen"
+		"name": "Meilentabelle"
 	},
 	{
-		"route": "merch",
-		"icon": "",
-		"name": "Merchandise"
-	},
-	{
-		"route": "calendar",
-		"icon": "",
-		"name": "Kalender"
-	},
-	{
-		"route": "management",
+		"route": "dashboard",
 		"icon": "",
 		"name": "Vereinsverwaltung",
 		"loginNeeded": true,

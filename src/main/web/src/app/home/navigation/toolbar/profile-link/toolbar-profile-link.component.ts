@@ -44,11 +44,10 @@ export class ToolbarProfileLinkComponent implements OnInit {
 
 
 	/**
-	 * Navigiert zur angegebenen URL
-	 * @param url
+	 * Navigiert zum login screen
 	 */
-	takeToPage(url: string) {
-		this.navigationService.navigateByUrl(url);
+	takeToLogin() {
+		this.navigationService.navigateToLogin();
 	}
 
 }

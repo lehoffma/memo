@@ -23,6 +23,7 @@ import {MerchStockFeedComponent} from "./administration/stock/merch-stock/merch-
 import {MerchStockEntryComponent} from "app/club-management/administration/stock/merch-stock/merch-stock-entry/merch-stock-entry.component";
 import {SearchFilterService} from "../shop/search-results/search-filter.service";
 import {SearchModule} from "../shop/search-results/search.module";
+import {MilesLeaderboardEntryComponent} from "app/club-management/miles-leaderboard/miles-leaderboard-entry.component";
 
 const tableCellComponents = [
 	//accounting table cells
@@ -62,7 +63,8 @@ const tableCellComponents = [
 		AccountingOptionsComponent,
 		tableCellComponents,
 		MerchStockFeedComponent,
-		MerchStockEntryComponent
+		MerchStockEntryComponent,
+		MilesLeaderboardEntryComponent,
 	],
 	providers: [
 		SearchFilterService
