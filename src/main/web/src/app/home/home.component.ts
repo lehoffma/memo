@@ -6,6 +6,7 @@ import {EventService} from "../shared/services/api/event.service";
 import {EventType} from "../shop/shared/model/event-type";
 import * as moment from "moment";
 import {ShopItemType} from "../shop/shared/model/shop-item-type";
+import {LogInService} from "../shared/services/api/login.service";
 
 interface EventsPreview {
 	title: string,
@@ -45,7 +46,10 @@ export class HomeComponent implements OnInit {
 		},
 	];
 
-	constructor(private eventService: EventService) {
+	userIsLoggedIn$ = this.loginService.isLoggedInObservable();
+
+	constructor(private eventService: EventService,
+				private loginService: LogInService) {
 	}
 
 	ngOnInit(): void {

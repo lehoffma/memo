@@ -1,5 +1,20 @@
 @import "~@angular/material/theming";
 @import "../../theme";
+@import "../../mixins";
+
+:host{
+	display: block;
+	@include animation(slideUpFadeIn 0.5s ease);
+}
+
+@include keyframes(slideUpFadeIn){
+	0%{
+		opacity: 0;
+	}
+	100%{
+		opacity: 1;
+	}
+}
 
 div.overview-preview-container > .overview-preview-header {
 	display: flex;
@@ -33,7 +48,33 @@ div.overview-preview-container > .overview-preview-header {
 	align-items: center;
 	justify-content: center;
 
-	h1{
+	.svg-logo-container {
+		.svg-logo {
+			@include transition(0.2s ease);
+			@include animation(5s pulse infinite);
+			transform-origin: 50% 50%;
+			cursor: pointer;
+
+			&:hover{
+				animation-play-state: paused;
+			}
+		}
+	}
+
+	.login-button{
+		color: white;
+		border: 2px solid white;
+		transform: scale(0.8);
+	}
+
+	.header-logo {
+		width: 150px;
+		height: 150px;
+		background: url("../../resources/images/Logo.svg") no-repeat;
+		background-size: contain;
+	}
+
+	h1 {
 		color: white;
 		padding-top: 20px;
 		text-align: center;
@@ -48,9 +89,42 @@ div.overview-preview-container > .overview-preview-header {
 		//	top: 75%;
 		//}
 
-		@media all and (min-width: 800px){
+		@media all and (min-width: 800px) {
 			font-size: 3rem;
 		}
+	}
+}
+
+@include keyframes(pulse) {
+	0% {
+		@include transform(scale(1));
+	}
+	20% {
+		@include transform(scale(1));
+	}
+	30% {
+		@include transform(scale(1.08));
+	}
+	40% {
+		@include transform(scale(1));
+	}
+	50% {
+		@include transform(scale(1));
+	}
+	60% {
+		@include transform(scale(1.05));
+	}
+	70% {
+		@include transform(scale(1));
+	}
+	80% {
+		@include transform(scale(1));
+	}
+	90% {
+		@include transform(scale(1.08));
+	}
+	100% {
+		@include transform(scale(1));
 	}
 }
 
@@ -78,7 +152,7 @@ div.overview-preview-container > .overview-preview-header {
 				> a {
 					color: mat-color($primary);
 
-					&:hover{
+					&:hover {
 						color: mat-color($primary, 300);
 					}
 				}
