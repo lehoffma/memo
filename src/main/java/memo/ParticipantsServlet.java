@@ -53,7 +53,7 @@ public class ParticipantsServlet extends HttpServlet {
 
         Gson gson = new GsonBuilder().serializeNulls().create();
         JsonObject responseJson = new JsonObject();
-        responseJson.add("result", gson.toJsonTree(result));
+        responseJson.add("participants", gson.toJsonTree(result));
         response.getWriter().append(responseJson.toString());
     }
 

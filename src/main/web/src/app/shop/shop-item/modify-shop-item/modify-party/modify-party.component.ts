@@ -19,8 +19,6 @@ export class ModifyPartyComponent implements OnInit {
 	defaultImageUrl = "resources/images/Logo.png";
 	uploadedImage: FormData;
 
-	constructor(private location: Location) {
-	}
 
 	get partyModel() {
 		return this.model;
@@ -31,13 +29,32 @@ export class ModifyPartyComponent implements OnInit {
 		this.modelChange.emit(this.model);
 	}
 
+
+	hours = [];
+	minutes = [];
+
+	constructor(private location: Location) {
+		for (let i = 0; i < 24; i++) {
+			this.hours.push(i);
+		}
+		for (let i = 0; i < 60; i++) {
+			this.minutes.push(i);
+		}
+	}
+
 	ngOnInit() {
 	}
 
+	/**
+	 * Go back to where the user came from
+	 */
 	cancel() {
 		this.location.back();
 	}
 
+	/**
+	 * Emit submit event
+	 */
 	submitModifiedObject() {
 		this.onSubmit.emit({
 			model: this.model,
@@ -45,6 +62,10 @@ export class ModifyPartyComponent implements OnInit {
 		});
 	}
 
+	/**
+	 * Updates the currently uploaded image
+	 * @param event
+	 */
 	profilePictureChanged(event) {
 		this.uploadedImage = event;
 	}

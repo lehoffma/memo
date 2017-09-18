@@ -37,7 +37,6 @@
 		</md-input-container>
 
 		<div class="additional-party-info-container">
-
 			<div>
 				<div>
 					<md-input-container>
@@ -49,6 +48,34 @@
 						<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>
 					</md-input-container>
 					<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>
+				</div>
+			</div>
+
+			<div>
+				<div class="time-selection">
+					<md-select [ngModel]="partyModel['date'].hour()"
+							   placeholder="Stunde"
+							   (change)="partyModel['date'].hour($event.value)"
+							   name="hour-selection"
+							   #hourSelection="ngModel">
+						<md-option *ngFor="let hour of hours"
+								   [value]="hour"
+						>
+							{{hour}}
+						</md-option>
+					</md-select>
+					<md-select [ngModel]="partyModel['date'].minute()"
+							   (change)="partyModel['date'].minute($event.value)"
+							   placeholder="Minute"
+							   name="minute-selection"
+							   #minuteSelection="ngModel">
+						<md-option *ngFor="let minute of minutes"
+								   [value]="minute"
+						>
+							{{minute}}
+						</md-option>
+					</md-select>
+
 				</div>
 			</div>
 			<div>

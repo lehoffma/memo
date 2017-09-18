@@ -87,6 +87,32 @@
 					<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>
 				</div>
 			</div>
+
+			<div class="time-selection">
+				<md-select [ngModel]="tourModel['date'].hour()"
+						   placeholder="Stunde"
+						   (change)="tourModel['date'].hour($event.value)"
+						   name="hour-selection"
+						   #hourSelection="ngModel">
+					<md-option *ngFor="let hour of hours"
+							   [value]="hour"
+					>
+						{{hour}}
+					</md-option>
+				</md-select>
+				<md-select [ngModel]="tourModel['date'].minute()"
+						   (change)="tourModel['date'].minute($event.value)"
+						   placeholder="Minute"
+						   name="minute-selection"
+						   #minuteSelection="ngModel">
+					<md-option *ngFor="let minute of minutes"
+							   [value]="minute"
+					>
+						{{minute}}
+					</md-option>
+				</md-select>
+
+			</div>
 		</div>
 
 		<h2>Route</h2>

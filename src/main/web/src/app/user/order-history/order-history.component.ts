@@ -20,6 +20,9 @@ export class OrderHistoryComponent implements OnInit {
 			return Observable.empty();
 		});
 
+	//todo schönere "keine bestellungen" message
+	//todo timeline slider
+
 	constructor(private loginService: LogInService,
 				private orderService: OrderService) {
 	}

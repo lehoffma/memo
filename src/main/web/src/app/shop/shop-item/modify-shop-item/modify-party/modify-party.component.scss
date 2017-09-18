@@ -6,11 +6,26 @@
 	justify-content: space-between;
 	flex-direction: column;
 
-	> div:nth-child(2) {
+	> div:not(:first-child) {
+		width: 100%;
 		display: flex;
 		justify-content: space-between;
-		> * {
+		> *:not(.time-selection){
 			width: 45%;
+		}
+		.time-selection{
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding-bottom: 6px;
+
+
+			@media all and (min-width: 650px){
+				> * {
+					width: 45%;
+				}
+			}
 		}
 	}
 }

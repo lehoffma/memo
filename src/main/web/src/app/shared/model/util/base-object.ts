@@ -20,7 +20,7 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 			((+day < 10) ? '0' + day : day) + "T" +
 			((+hour < 10) ? '0' + hour : hour) + ":" +
 			((+minute < 10) ? '0' + minute : minute) + ":" +
-			((+second < 10) ? '0' + second : second);
+			((+second < 10) ? '0' + second : second) + "Z";
 
 
 	}
@@ -40,11 +40,11 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 						|| key.toLowerCase().includes("time"))) {
 					if(value.date && value.time){
 						// value = moment.tz(this.getIsoDateFromDateTimeObject(value), "Europe/Berlin");
-						value = moment(this.getIsoDateFromDateTimeObject(value)).locale("de");
+						value = moment(this.getIsoDateFromDateTimeObject(value)).tz("Europe/Berlin").locale("de");
 					}
 					else{
 						// value = moment.tz(value, "Europe/Berlin");
-						value = moment(value).locale("de");
+						value = moment(value).tz("Europe/Berlin").locale("de");
 					}
 				} else if (isNumber(value)) {
 					value = +value;

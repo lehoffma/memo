@@ -102,7 +102,7 @@ export class ModifyItemService {
 	 */
 	readQueryParams(queryParamMap: ParamMap) {
 		if (queryParamMap.has("date")) {
-			this.model["date"] = moment(queryParamMap.get("date")).toDate();
+			this.model["date"] = moment(queryParamMap.get("date"));
 		}
 		if (queryParamMap.has("eventId")) {
 			this.eventId = +queryParamMap.get("eventId");

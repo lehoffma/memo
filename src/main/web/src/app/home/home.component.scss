@@ -25,49 +25,31 @@ div.overview-preview-container > .overview-preview-header {
 
 .home-header {
 	background: mat-color($primary);
-	height: 20rem;
+	height: 30rem;
+	padding-bottom: 2rem;
 	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 
 	h1{
-		position: relative;
 		color: white;
-		margin: 0 0 0 5%;
-		top: 80%;
+		padding-top: 20px;
+		text-align: center;
+		max-width: 80%;
 		font-size: 2.2rem;
 		font-weight: 100;
 
-		@media all and (min-width: 600px) {
-			margin-left: 0;
-			width: calc(100% - 5%);
-			left: 5%;
-			top: 75%;
-		}
+		//@media all and (min-width: 600px) {
+		//	margin-left: 0;
+		//	width: calc(100% - 5%);
+		//	left: 5%;
+		//	top: 75%;
+		//}
 
 		@media all and (min-width: 800px){
 			font-size: 3rem;
-		}
-	}
-
-	img{
-		position: relative;
-		display: block;
-		width: 300px;
-		margin: auto;
-
-		@media all and (min-width: 600px) {
-			width: 400px;
-			left: calc(100% - 400px);
-			margin: 0;
-			bottom: 50px;
-		}
-
-		@media all and (min-width: 850px){
-			left: calc(100% - 500px);
-			width: 500px;
-		}
-
-		@media all and (min-width: 1000px){
-			left: 50%;
 		}
 	}
 }

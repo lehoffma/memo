@@ -14,12 +14,22 @@ export class ModifyTourComponent implements OnInit {
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 
+	//todo time picker
+
 	defaultImageUrl = "resources/images/Logo.png";
 	uploadedImage: FormData;
 
 	ModifyType = ModifyType;
 
+	hours = [];
+	minutes = [];
 	constructor(private location: Location) {
+		for (let i = 0; i < 24; i++) {
+			this.hours.push(i);
+		}
+		for (let i = 0; i < 60; i++) {
+			this.minutes.push(i);
+		}
 	}
 
 	get tourModel() {
@@ -34,14 +44,25 @@ export class ModifyTourComponent implements OnInit {
 	ngOnInit() {
 	}
 
+
+	/**
+	 * Go back to where the user came from
+	 */
 	cancel() {
 		this.location.back();
 	}
 
+	/**
+	 * Updates the currently uploaded image
+	 * @param event
+	 */
 	profilePictureChanged(event) {
 		this.uploadedImage = event;
 	}
 
+	/**
+	 * Emit submit event
+	 */
 	submitModifiedObject() {
 		this.onSubmit.emit({
 			model: this.model,
