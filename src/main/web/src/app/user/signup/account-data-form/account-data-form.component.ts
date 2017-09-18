@@ -27,19 +27,19 @@ export class AccountDataFormComponent implements OnInit {
 		this.loading = true;
 		this.userService.isUserEmailAlreadyInUse(this.userEmail)
 			.subscribe(isAlreadyInUse => {
-				this.loading = false;
-				if (!isAlreadyInUse) {
-					this.onSubmit.emit({
-						section: SignUpSection.AccountData,
-						email: this.userEmail,
-						//TODO calculate hash?
-						passwordHash: this.password
-					});
-				}
-				else {
-					this.emailIsAlreadyUsed = true;
-				}
-			})
+					this.loading = false;
+					if (!isAlreadyInUse) {
+						this.onSubmit.emit({
+							section: SignUpSection.AccountData,
+							email: this.userEmail,
+							passwordHash: this.password
+						});
+					}
+					else {
+						this.emailIsAlreadyUsed = true;
+					}
+				},
+				console.error)
 
 	}
 }

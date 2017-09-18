@@ -1,4 +1,4 @@
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {animate, query, state, style, transition, trigger} from "@angular/animations";
 
 //todo use for error messages globally?
 export const Wiggle =
@@ -12,4 +12,31 @@ export const Wiggle =
 			style({transform: "translateX(-40%"}),
 			animate("100ms ease-in"),
 		]),
+	]);
+
+
+export const fadeAnimation =
+	trigger('fadeAnimation', [
+		transition('* => *', [
+			query(':enter',
+				[
+					style({opacity: 0})
+				],
+				{optional: true}
+			),
+			query(':leave',
+				[
+					style({opacity: 1}),
+					animate('0.2s', style({opacity: 0}))
+				],
+				{optional: true}
+			),
+			query(':enter',
+				[
+					style({opacity: 0}),
+					animate('0.2s', style({opacity: 1}))
+				],
+				{optional: true}
+			)
+		])
 	]);
