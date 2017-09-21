@@ -14,17 +14,22 @@ import java.io.Serializable;
 public class SizeTable implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @ManyToOne(cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "SIZE_ID")
     @Expose
     private Size size;
+
     @Expose
     private String name;
+
     @Expose
     private Integer min;
+
     @Expose
     private Integer max;
 

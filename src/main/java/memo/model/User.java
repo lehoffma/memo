@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +18,7 @@ import java.util.List;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -42,40 +42,54 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private LocalDateTime birthday = LocalDateTime.now();
+
     @Expose
     private String telephone;
+
     @Expose
     private String mobile;
+
     @Expose
     @Column(nullable = false)
     private Integer miles = 0;
+
     @Expose
     @Column(nullable = false)
     private String email;
+
     @Expose
     @Column(name = "PASSWORD", nullable = false)
     private String passwordHash;
+
     @Expose
     private Boolean isStudent = false;
+
     @Expose
     private Boolean hasDebitAuth = false;
+
     @Expose
     @Column(name = "IMAGE_PATH")
     private String imagePath;
+
     @ElementCollection
     @CollectionTable(name = "USER_BANK_ACCOUNTS")
     @Expose
     private List<Integer> bankAccounts = new ArrayList<>();
+
     @Column(name = "JOIN_DATE", nullable = false)
     private LocalDateTime joinDate = LocalDateTime.now();
+
     @Expose
     private String gender;
+
     @Expose
     @Column(name = "HAS_SEASON_TICKET")
     private Boolean hasSeasonTicket = false;
+
     @Expose
     @Column(name = "IS_WOELFE_CLUB_MEMBER")
     private Boolean isWoelfeClubMember = false;
+
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "PERMISSIONS_ID")
     private PermissionState permissions;
