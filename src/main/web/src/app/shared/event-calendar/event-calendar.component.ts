@@ -24,6 +24,7 @@ export class EventCalendarComponent implements OnInit {
 			}))
 		})
 		.defaultIfEmpty([]);
+	@Input() height: string;
 	@Output() onDayClick: EventEmitter<Date> = new EventEmitter();
 	@Output() onEventClick: EventEmitter<number> = new EventEmitter();
 

@@ -82,7 +82,9 @@ export class LogInService {
 	 * @returns {boolean}
 	 */
 	logout(): Observable<boolean> {
-		return this.http.post<{}>(this.logoutUrl, {auth_token: this.authService.getToken()})
+		return this.http.post(this.logoutUrl, {auth_token: this.authService.getToken()}, {
+			responseType: "text"
+		})
 			.map(() => {
 				this.authService.setAccessToken(null);
 				this.authService.setRefreshToken("");
