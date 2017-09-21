@@ -63,7 +63,9 @@ export class UserService extends ServletService<User> {
 	 */
 	isUserEmailAlreadyInUse(email: string): Observable<boolean> {
 		return this.http.head(this.baseUrl, {
-			params: new HttpParams().set("email", email)
+			params: new HttpParams().set("email", email),
+			observe: "response",
+			responseType: "text"
 		})
 			.map(value => false)
 			.catch(error => Observable.of(true))
