@@ -22,7 +22,7 @@ import {ParamMap, Params} from "@angular/router";
 import * as moment from "moment";
 import {Address} from "../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {ImageUploadApiResponse, ImageUploadService} from "../../../shared/services/api/image-upload.service";
+import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 import {ModifyItemEvent} from "./modify-item-event";
 
 @Injectable()
@@ -192,6 +192,15 @@ export class ModifyItemService {
 		else {
 			this.mode = ModifyType.ADD;
 		}
+
+		if (!this.model["date"]) {
+			EventUtilityService.handleOptionalShopType<any>(
+				this.itemType,
+				{
+					tours: () => this.model["date"] = moment(),
+					partys: () => this.model["date"] = moment(),
+				});
+		}
 	}
 
 	/**
@@ -240,7 +249,7 @@ export class ModifyItemService {
 	 * @param {ShopItem} newObject
 	 * @returns {Promise<ShopItem>}
 	 */
-	async addAddresses(newObject:ShopItem):Promise<ShopItem>{
+	async addAddresses(newObject: ShopItem): Promise<ShopItem> {
 		if (EventUtilityService.isTour(newObject) || EventUtilityService.isParty(newObject)) {
 			//todo instead of combineLatest: add routes one after another (to avoid transaction errors)
 			if (this.isAddressArray(newObject.route)) {
@@ -261,7 +270,7 @@ export class ModifyItemService {
 	 * @param {ShopItem} newObject
 	 * @returns {ShopItem}
 	 */
-	setDefaultValues(newObject:ShopItem){
+	setDefaultValues(newObject: ShopItem) {
 		if (EventUtilityService.isTour(newObject)) {
 			newObject.setProperties((<Partial<Tour>>{emptySeats: newObject.capacity}));
 		}
@@ -273,16 +282,16 @@ export class ModifyItemService {
 	 * @param newObject
 	 * @param {FormData} uploadedImage
 	 */
-	async uploadImage(newObject:ShopItem, uploadedImage:FormData):Promise<ShopItem>{
-		if(EventUtilityService.isMerchandise(newObject) || EventUtilityService.isTour(newObject) ||
-			EventUtilityService.isUser(newObject) || EventUtilityService.isParty(newObject)){
+	async uploadImage(newObject: ShopItem, uploadedImage: FormData): Promise<ShopItem> {
+		if (EventUtilityService.isMerchandise(newObject) || EventUtilityService.isTour(newObject) ||
+			EventUtilityService.isUser(newObject) || EventUtilityService.isParty(newObject)) {
 			//todo: error handling, progress report
 			let imagePath = await this.imageUploadService.uploadImage(uploadedImage)
 				.map(response => response.imagePath)
 				.toPromise();
 
 			//thanks typescript..
-			if(EventUtilityService.isUser(newObject)){
+			if (EventUtilityService.isUser(newObject)) {
 				return newObject.setProperties({imagePath: imagePath});
 			}
 			return newObject.setProperties({imagePath: imagePath});
