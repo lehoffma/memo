@@ -15,17 +15,22 @@ import java.io.Serializable;
 public class BankAcc implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Expose
     private String bankName;
+
     @Expose
     @Column(nullable = false)
     private String iban;
+
     @Expose
     @Column(nullable = false)
     private String bic;
+
     @Expose
     @Column(nullable = false)
     private String name;

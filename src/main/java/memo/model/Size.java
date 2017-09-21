@@ -14,19 +14,24 @@ import java.io.Serializable;
 public class Size implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Expose
     private Integer id;
+
     @ManyToOne(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "EVENT_ID")
     @Expose
     private Event event;
+
     @Expose
     private String size;
+
     @Column(name = "STOCK")
     @Expose
     private Integer amount;
+
     @ManyToOne(cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "COLOR_ID")
     @Expose

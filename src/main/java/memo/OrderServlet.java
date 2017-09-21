@@ -343,51 +343,61 @@ public class OrderServlet extends HttpServlet {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         EntityManager em = DatabaseManager.createEntityManager();
 
-        if (!jItem.has("id")) {
-            item = gson.fromJson(jItem, OrderedItem.class);
-            // update event,order, color
+        try {
 
 
-            item.setEvent(em.find(Event.class, jItem.get("event").getAsJsonObject().get("id").getAsInt()));
+            if (!jItem.has("id")) {
+                item = gson.fromJson(jItem, OrderedItem.class);
+                // update event,order, color
 
-            if (jItem.has("color")) {
-                Color c = gson.fromJson(jItem.get("color").getAsJsonObject(), Color.class);
-                item.setColor(c);
 
-                List<Size> sizes = em.createQuery("SELECT s FROM Size s " +
-                        " WHERE s.size = :name AND s.color.hex = :hex", Size.class)
-                        .setParameter("name", item.getSize()).setParameter("hex", c.getHex())
-                        .getResultList();
+                item.setEvent(em.find(Event.class, jItem.get("event").getAsJsonObject().get("id").getAsInt()));
+                item.setOrderId(o.getId());
 
-                Size size = sizes.get(0);
-                size.setAmount(size.getAmount() - 1);
-                updatedSizes.add(size);
-            }
+                if (jItem.has("color")) {
+                    Color c = gson.fromJson(jItem.get("color").getAsJsonObject(), Color.class);
+                    item.setColor(c);
 
-        } else {
+                    List<Size> sizes = em.createQuery("SELECT s FROM Size s " +
+                            " WHERE s.size = :name AND s.color.hex = :hex", Size.class)
+                            .setParameter("name", item.getSize()).setParameter("hex", c.getHex())
+                            .getResultList();
 
-            OrderStatus oldState = item.getStatus();
-            item = gson.fromJson(jItem, OrderedItem.class);
-            item.setId(jItem.get("id").getAsInt());
+                    if (sizes.isEmpty()) throw new Exception("Not in Stock");
+                    Size size = sizes.get(0);
+                    size.setAmount(size.getAmount() - 1);
+                    updatedSizes.add(size);
+                }
 
-            if ((oldState != OrderStatus.Cancelled) && (oldState != OrderStatus.Refused)) {
+            } else {
 
-                if (item.getStatus() == OrderStatus.Cancelled || item.getStatus() == OrderStatus.Refused) {
+                OrderStatus oldState = item.getStatus();
+                item = gson.fromJson(jItem, OrderedItem.class);
+                item.setId(jItem.get("id").getAsInt());
+                item.setOrderId(o.getId());
 
-                    if (item.getColor() != null) {
+                if ((oldState != OrderStatus.Cancelled) && (oldState != OrderStatus.Refused)) {
 
-                        List<Size> sizes = em.createQuery("SELECT s FROM Size s " +
-                                " WHERE s.size = :name AND s.color.hex = :hex", Size.class)
-                                .setParameter("name", item.getSize()).setParameter("hex", item.getColor().getHex())
-                                .getResultList();
+                    if (item.getStatus() == OrderStatus.Cancelled || item.getStatus() == OrderStatus.Refused) {
 
-                        Size size = sizes.get(0);
-                        size.setAmount(size.getAmount() + 1);
-                        updatedSizes.add(size);
+                        if (item.getColor() != null) {
+
+                            List<Size> sizes = em.createQuery("SELECT s FROM Size s " +
+                                    " WHERE s.size = :name AND s.color.hex = :hex", Size.class)
+                                    .setParameter("name", item.getSize()).setParameter("hex", item.getColor().getHex())
+                                    .getResultList();
+
+                            Size size = sizes.get(0);
+                            size.setAmount(size.getAmount() + 1);
+                            updatedSizes.add(size);
+                        }
                     }
                 }
-            }
 
+            }
+        }catch (Exception e)
+        {
+            System.out.println("Error: "+e.toString());
         }
 
         return item;

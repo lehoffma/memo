@@ -15,26 +15,35 @@ import java.io.Serializable;
 public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Expose
     private String name;
+
     @Expose
     @Column(nullable = false)
     private String street;
+
     @Expose
     private String streetNr;
+
     @Expose
     @Column(nullable = false)
     private String zip;
+
     @Expose
     @Column(nullable = false)
     private String city;
+
     @Expose
     private String country = "Germany";
+
     @Expose
     private double latitude;
+
     @Expose
     private double longitude;
 

@@ -63,8 +63,13 @@ public class EntryCategoryServlet extends HttpServlet {
         EntryCategory d = new EntryCategory();
         d.setName("Steuern");
         d.setCategory(1);
-        d.setId(3);
+        d.setId(4);
         entries.add(d);
+        EntryCategory e = new EntryCategory();
+        e.setName("Sonstiges");
+        e.setCategory(1);
+        e.setId(5);
+        entries.add(e);
 
         return entries;
     }

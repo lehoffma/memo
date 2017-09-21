@@ -19,22 +19,30 @@ public class Entry implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @ManyToOne
     @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
     private Event event;
+
     @Column(name = "ENTRY_CATEGORY_ID")
     private Integer entryCategoryID;
+
     @Expose
     private String name;
+
     @Expose
     private Integer value;
+
     @Expose
     @Column(name = "IS_INCOME")
     private Boolean isIncome;
+
     @Expose
     private String comment;
+
     @Expose
     private String picPath;
+
     private LocalDateTime date;
 
     public Entry() {

@@ -19,46 +19,61 @@ public class Event implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Expose
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false)
     private LocalDateTime date;
+
     @Expose
     @Lob
     @Column(nullable = false)
     private String description;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedReadRole;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedCheckInRole;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedWriteRole;
+
     @Expose
     @Column(name = "IMAGE_PATH")
     private String imagePath;
+
     @Expose
     @Column(nullable = false)
     private Integer capacity;
+
     @Expose
     @Column(name = "PRICE_MEMBER", nullable = false)
     private float priceMember;
+
     @Expose
     @Column(nullable = false)
     private float price;
+
     @ElementCollection
     @CollectionTable(name = "EVENT_ROUTES")
     @Expose
     private List<Integer> route = new ArrayList<>();
+
     @Expose
     private String material;
+
     @Expose
     private String vehicle;
+
     @Expose
     private Integer miles = 0;
+
     @Expose
     @Column(nullable = false)
     private Integer type;
