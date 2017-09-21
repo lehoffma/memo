@@ -349,6 +349,7 @@ public class OrderServlet extends HttpServlet {
 
 
             item.setEvent(em.find(Event.class, jItem.get("event").getAsJsonObject().get("id").getAsInt()));
+            item.setOrderId(o.getId());
 
             if (jItem.has("color")) {
                 Color c = gson.fromJson(jItem.get("color").getAsJsonObject(), Color.class);
@@ -369,6 +370,7 @@ public class OrderServlet extends HttpServlet {
             OrderStatus oldState = item.getStatus();
             item = gson.fromJson(jItem, OrderedItem.class);
             item.setId(jItem.get("id").getAsInt());
+            item.setOrderId(o.getId());
 
             if ((oldState != OrderStatus.Cancelled) && (oldState != OrderStatus.Refused)) {
 

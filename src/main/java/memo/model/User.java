@@ -23,18 +23,23 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
+
     @Column(name = "FIRST_NAME", nullable = false)
     @Expose
     private String firstName;
+
     @Column(nullable = false)
     @Expose
     private String surname;
+
     @Enumerated(EnumType.ORDINAL)
     private ClubRole clubRole = ClubRole.none;
+
     @ElementCollection
     @CollectionTable(name = "USER_ADDRESSES")
     @Expose
     private List<Integer> addresses = new ArrayList<Integer>();
+
     @Column(nullable = false)
     private LocalDateTime birthday = LocalDateTime.now();
     @Expose

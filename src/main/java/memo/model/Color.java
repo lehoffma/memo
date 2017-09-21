@@ -15,9 +15,11 @@ public class Color implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Expose
     private Integer id;
+
     @Column(nullable = false)
     @Expose
     private String name;
+
     @Column(nullable = false)
     @Expose
     private String hex;
