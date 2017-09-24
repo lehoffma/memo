@@ -177,10 +177,10 @@ export class AccountingOptionsComponent implements OnInit {
 				this.dateOptions.to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : undefined;
 				await this.getAvailableEvents();
 				if (queryParamMap.has("eventTypes")) {
-					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.get("eventTypes").split("|"));
+					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.getAll("eventTypes"));
 				}
 				if (queryParamMap.has("costTypes")) {
-					this.readBinaryValuesFromQueryParams(this.costTypes, queryParamMap.get("costTypes").split("|"));
+					this.readBinaryValuesFromQueryParams(this.costTypes, queryParamMap.getAll("costTypes"));
 				}
 				//in case the route is something like /tours/:eventId/costs, extract the event id
 				if (paramMap.has("eventId")) {
@@ -189,8 +189,7 @@ export class AccountingOptionsComponent implements OnInit {
 						: [];
 				}
 				if (queryParamMap.has("eventIds")) {
-					this.events = queryParamMap.get("eventIds")
-						.split(",")
+					this.events = queryParamMap.getAll("eventIds")
 						.filter(eventId => this.availableEvents.findIndex(event => event.id === +eventId) !== -1)
 						.map(eventId => this.availableEvents.find(event => event.id === +eventId));
 				}
@@ -198,41 +197,19 @@ export class AccountingOptionsComponent implements OnInit {
 			})
 	}
 
-	/**
-	 *
-	 * @param object
-	 * @returns {string}
-	 */
-	getBinaryQueryParamValue(object: {
-		[key: string]: boolean
-	}): string {
-		return Object.keys(object)
-			.filter(key => object[key])
-			.join("|");
-	}
 
 	/**
 	 * Updates the query parameters based on the values chosen by the user
 	 */
 	updateQueryParams() {
-		console.log(this.dateOptions);
-		let params: Params = {};
-		let assignType = (paramKey: string, object: {
-			[key: string]: boolean
-		}) => {
-			params[paramKey] = "";
-			if (!Object.keys(object).every(key => object[key])) {
-				params[paramKey] = this.getBinaryQueryParamValue(object);
-				if (params[paramKey] === "") {
-					params[paramKey] = "none";
-				}
-			}
-		};
+		const params: Params = {};
 
-		assignType("eventTypes", this.eventTypes);
-		assignType("costTypes", this.costTypes);
+		params["eventTypes"] = Object.keys(this.eventTypes)
+			.filter(key => this.eventTypes[key]);
+		params["costTypes"] = Object.keys(this.costTypes)
+			.filter(key => this.costTypes[key]);
 
-		params["eventIds"] = this.events.map(event => "" + event.id).join(",");
+		params["eventIds"] = this.events.map(event => event.id);
 
 		params["from"] = (!this.dateOptions.from || !this.dateOptions.from.isValid()) ? "" : this.dateOptions.from.toISOString();
 		params["to"] = (!this.dateOptions.to || !this.dateOptions.to.isValid()) ? "" : this.dateOptions.to.toISOString();

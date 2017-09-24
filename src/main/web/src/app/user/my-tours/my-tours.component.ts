@@ -20,7 +20,8 @@ export class MyToursComponent implements OnInit {
 		.map((events: (Tour | Party)[]) => {
 			events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
 			return events;
-		});
+		})
+		.share();
 
 	public participatedTours$ = this.loginService.accountObservable
 		.flatMap(accountId => accountId === null
@@ -29,7 +30,8 @@ export class MyToursComponent implements OnInit {
 		.map((events: (Tour | Party)[]) => {
 			events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
 			return events;
-		});
+		})
+		.share();
 
 	//todo: past/future/all events filter dropdown
 	//todo: search bar?

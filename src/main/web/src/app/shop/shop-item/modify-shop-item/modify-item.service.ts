@@ -349,12 +349,13 @@ export class ModifyItemService {
 			requestMethod = service.modify.bind(service);
 		}
 		requestMethod(newObject, options)
+			.first()
 			.subscribe(
 				(result: ShopItem) => {
 					if (this.itemType === ShopItemType.entry) {
-						this.location.back();
+						this.navigationService.navigateByUrl("/management/costs");
 					}
-					if (!this.eventType && !this.eventId) {
+					else if (!this.eventType && !this.eventId) {
 						//navigiere zum neu erstellten item
 						this.navigationService.navigateToItem(result);
 					}

@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {Entry} from "../../model/entry";
-import {Response} from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import {CacheStore} from "../../stores/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/api/servlet.service";
@@ -81,12 +80,11 @@ export class EntryService extends ServletService<Entry> {
 	 * @param searchTerm
 	 * @param dateRange
 	 */
-	search(searchTerm: string, dateRange?: { minDate: Moment, maxDate: Moment}): Observable<Entry[]> {
+	search(searchTerm: string, dateRange?: { minDate: Moment, maxDate: Moment }): Observable<Entry[]> {
 		let params = new HttpParams().set("searchTerm", searchTerm);
 		if (dateRange && dateRange.minDate && dateRange.maxDate) {
-			//TODO date format
-			params.set("minDate", dateRange.minDate.toISOString());
-			params.set("maxDate", dateRange.maxDate.toISOString());
+			params = params.set("minDate", dateRange.minDate.toISOString())
+				.set("maxDate", dateRange.maxDate.toISOString());
 		}
 
 		return this.performRequest(this.http.get<EntryApiResponse>(this.baseUrl, {params}))
@@ -124,9 +122,10 @@ export class EntryService extends ServletService<Entry> {
 	 * @param id
 	 * @param options
 	 */
-	remove(id: number, options?: any): Observable<Response> {
+	remove(id: number, options?: any): Observable<Object> {
 		return this.performRequest(this.http.delete(this.baseUrl, {
-			params: new HttpParams().set("id", "" + id)
+			params: new HttpParams().set("id", "" + id),
+			responseType: "text"
 		}));
 	}
 

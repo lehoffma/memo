@@ -3,10 +3,10 @@
 		<div class="object-info-container">
 			<div class="object-info" *ngFor="let overviewKey of overviewKeys">
 				<div [ngSwitch]="overviewKey.pipe">
-					<ng-template [ngSwitchCase]="'price'">{{event[overviewKey.key] | currency:'EUR':true}}
+					<ng-template [ngSwitchCase]="'price'">{{getValue(overviewKey.key) | async | currency:'EUR':true}}
 					</ng-template>
-					<ng-template [ngSwitchCase]="'date'">{{event[overviewKey.key] | moment:'DD.MM.YYYY'}}</ng-template>
-					<ng-template ngSwitchDefault>{{event[overviewKey.key]}}</ng-template>
+					<ng-template [ngSwitchCase]="'date'">{{getValue(overviewKey.key) | async | moment:'DD.MM.YYYY'}}</ng-template>
+					<ng-template ngSwitchDefault>{{getValue(overviewKey.key) | async}}</ng-template>
 				</div>
 				<div class="secondary-text">
 					{{overviewKey.label}}

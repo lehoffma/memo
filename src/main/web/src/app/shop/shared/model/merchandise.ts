@@ -5,7 +5,9 @@ import {EventOverviewKey} from "../../shop-item/item-details/container/overview/
 import {EventRoute} from "./route";
 import {MerchColor} from "./merch-color";
 import {Moment} from "moment";
-import * as moment from "moment";;
+import * as moment from "moment";
+import {StockService} from "../../../shared/services/api/stock.service";
+import {Observable} from "rxjs/Observable";
 
 //todo remove demo
 const sizeTable = `{
@@ -227,6 +229,11 @@ export class Merchandise extends Event {
 				previousValue.concat(...Object.keys(this.sizeTable[currentValue])
 					.filter(category => previousValue.indexOf(category) === -1)),
 			[])
+	}
+
+	static capacity$(stockService: StockService, id:number):Observable<number>{
+		return stockService.getByEventId(id)
+			.map(stock => stock.reduce((sum, it) => sum + it.amount, 0))
 	}
 
 	static create() {

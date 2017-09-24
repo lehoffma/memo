@@ -49,6 +49,9 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 				} else if (isNumber(value)) {
 					value = +value;
 				}
+				if(key === "event"){
+
+				}
 				if (key === "expectedRole") {
 					value = ClubRole[properties[key]]
 				} else if (key === "clubRole") {
