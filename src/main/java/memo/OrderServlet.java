@@ -106,6 +106,8 @@ public class OrderServlet extends HttpServlet {
 
         saveOrderToDatabase(newOrder, items);
 
+        saveOrderIdToItems(newOrder,items);
+
         response.setStatus(201);
         response.getWriter().append("{ \"id\": " + newOrder.getId() + " }");
 
@@ -374,7 +376,6 @@ public class OrderServlet extends HttpServlet {
                 OrderStatus oldState = item.getStatus();
                 item = gson.fromJson(jItem, OrderedItem.class);
                 item.setId(jItem.get("id").getAsInt());
-                item.setOrderId(o.getId());
 
                 if ((oldState != OrderStatus.Cancelled) && (oldState != OrderStatus.Refused)) {
 
@@ -410,6 +411,19 @@ public class OrderServlet extends HttpServlet {
                 .setParameter("Id", id)
                 .getResultList();
 
+    }
+
+    private void saveOrderIdToItems(Order newOrder, List<OrderedItem> items) {
+
+        EntityManager em = DatabaseManager.createEntityManager();
+
+        em.getTransaction().begin();
+
+        for (OrderedItem o : items){
+            o.setOrderId(newOrder.getId());
+            em.persist(o);
+        }
+        em.getTransaction().commit();
     }
 
 }
