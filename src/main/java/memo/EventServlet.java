@@ -59,9 +59,10 @@ public class EventServlet extends HttpServlet {
         String searchTerm = request.getParameter("searchTerm");
         String sType = request.getParameter("type");
         String userId = request.getParameter("userId");
+        String authorId = request.getParameter("authorId");
 
 
-        List<Event> events = getEventsFromDatabase(Sid, searchTerm, sType, userId, response);
+        List<Event> events = getEventsFromDatabase(Sid, searchTerm, sType, userId, authorId, response);
 
         /*
         if (events.isEmpty()) {
@@ -256,7 +257,7 @@ public class EventServlet extends HttpServlet {
         em.getTransaction().commit();
     }
 
-    private List<Event> getEventsFromDatabase(String Sid, String searchTerm, String sType, String userId,
+    private List<Event> getEventsFromDatabase(String Sid, String searchTerm, String sType, String userId, String authorId,
                                               HttpServletResponse response) throws IOException {
 
         List<Event> events = new ArrayList<>();
@@ -275,7 +276,9 @@ public class EventServlet extends HttpServlet {
 
         if (isStringNotEmpty(sType)) return getEventsByType(getType(sType));
 
-        if(isStringNotEmpty(userId)) return this.getEventsCreatedByUser(new Integer(userId));
+        if(isStringNotEmpty(userId)) return getEventsByUser(new Integer(userId));
+
+        if(isStringNotEmpty(authorId)) return getEventsByAuthor(new Integer(authorId));
 
         return getEvents();
     }
@@ -294,9 +297,16 @@ public class EventServlet extends HttpServlet {
                 .getResultList();
     }
 
-    private List<Event> getEventsCreatedByUser(Integer userId){
+    private List<Event> getEventsByUser(Integer userId){
         //todo implement
         return new ArrayList<>();
+    }
+
+    private List<Event> getEventsByAuthor(Integer authorId){
+        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Event e " +
+                " WHERE e.authorId = :author", Event.class)
+                .setParameter("author", authorId)
+                .getResultList();
     }
 
     private List<Event> getEvents() {

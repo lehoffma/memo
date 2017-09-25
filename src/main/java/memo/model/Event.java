@@ -75,6 +75,9 @@ public class Event implements Serializable {
     private Integer miles = 0;
 
     @Expose
+    private Integer authorId;
+
+    @Expose
     @Column(nullable = false)
     private Integer type;
 
@@ -210,6 +213,14 @@ public class Event implements Serializable {
         this.route = route;
     }
 
+    public Integer getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Integer authorId) {
+        this.authorId = authorId;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
@@ -228,6 +239,7 @@ public class Event implements Serializable {
                 ", material='" + material + '\'' +
                 ", vehicle='" + vehicle + '\'' +
                 ", miles=" + miles +
+                ", authorId=" + authorId +
                 ", type=" + type +
                 '}';
     }
