@@ -23,6 +23,7 @@
 		<memo-event-calendar *ngSwitchCase="'calendar'"
 							 [events]="events$ | async"
 							 [editable]="false"
+							 [height]="'auto'"
 							 (onDayClick)="onDayClick($event)"
 							 (onEventClick)="onEventClick($event)"
 
@@ -33,4 +34,9 @@
 		</memo-event-list-view>
 		<memo-page-not-found *ngSwitchDefault></memo-page-not-found>
 	</div>
+</div>
+
+
+<div class="background">
+
 </div>

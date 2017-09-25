@@ -1,4 +1,7 @@
 import {Component, OnInit} from '@angular/core';
+import {EventService} from "../../shared/services/api/event.service";
+import {Observable} from "rxjs/Observable";
+import {EventType} from "../../shop/shared/model/event-type";
 
 @Component({
 	selector: 'memo-dashboard',
@@ -6,8 +9,14 @@ import {Component, OnInit} from '@angular/core';
 	styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+	events$ = Observable.forkJoin(
+		this.eventService.search("", EventType.tours).first(),
+		this.eventService.search("", EventType.partys).first()
+	)
+		.map(([tours, partys]) => [...tours, ...partys]);
 
-	constructor() {
+
+	constructor(private eventService: EventService) {
 	}
 
 	ngOnInit() {

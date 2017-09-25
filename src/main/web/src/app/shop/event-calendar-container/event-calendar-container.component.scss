@@ -1,4 +1,7 @@
-$max-width: 1000px;
+@import "../../../theme";
+@import "~@angular/material/theming";
+
+$max-width: 1200px;
 
 .calendar-container {
 	padding: 20px 2% 2%;
@@ -11,6 +14,8 @@ $max-width: 1000px;
 .calendar-options{
 	margin: auto;
 	max-width: $max-width;
+	position: relative;
+	z-index: 2;
 }
 
 .calendar-options {
@@ -24,5 +29,25 @@ $max-width: 1000px;
 	.calendar-options-actions{
 		display: flex;
 		justify-content: space-between;
+	}
+
+	@media all and (min-width: 600px){
+		.secondary-text{
+			color: white;
+		}
+	}
+}
+
+.background{
+	position: absolute;
+	height: 200px;
+	width: 100%;
+	top: 64px;
+	background-color: mat-color($primary);
+	opacity: 0;
+	transition: opacity 1s ease;
+
+	@media all and (min-width: 600px){
+		opacity: 1;
 	}
 }

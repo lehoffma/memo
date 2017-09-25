@@ -12,12 +12,12 @@ import {isNullOrUndefined} from "util";
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import * as moment from "moment";
+import {Moment} from "moment";
 import {DateTableCellComponent} from "../administration/member-list/member-list-table-cells/date-table-cell.component";
 import {LogInService} from "../../shared/services/api/login.service";
 import {ActionPermissions} from "../../shared/expandable-table/expandable-table.component";
 import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
 import {EventService} from "../../shared/services/api/event.service";
-import {Moment} from "moment";
 import {TableActionEvent} from "../../shared/expandable-table/table-action-event";
 import {RowAction} from "../../shared/expandable-table/row-action";
 
@@ -34,12 +34,11 @@ export class AccountingComponent implements OnInit {
 	sortBy$: Observable<ColumnSortingEvent<Entry>> = this._sortBy$.asObservable();
 
 	entries$ = Observable.combineLatest(
-		this.activatedRoute.paramMap,
 		this.activatedRoute.queryParamMap,
 		this.sortBy$
 	)
-		.flatMap(([paramMap, queryParamMap, sortBy]) =>
-			this.getEntries([paramMap, queryParamMap, sortBy]))
+		.flatMap(([queryParamMap, sortBy]) =>
+			this.getEntries([queryParamMap, sortBy]))
 		.map(entries => [...entries]);
 
 	entriesSubject$: BehaviorSubject<Entry[]> = new BehaviorSubject([]);
@@ -166,8 +165,8 @@ export class AccountingComponent implements OnInit {
 	 * @param {TableActionEvent<Entry>} event
 	 * @returns {any}
 	 */
-	handleEntryAction(event: TableActionEvent<Entry>){
-		switch(event.action){
+	handleEntryAction(event: TableActionEvent<Entry>) {
+		switch (event.action) {
 			case RowAction.ADD:
 				return this.addEntry(event);
 			case RowAction.EDIT:
@@ -185,11 +184,12 @@ export class AccountingComponent implements OnInit {
 	 */
 	entryMatchesFilterCriteria(entry: Entry, queryParamMap: ParamMap): boolean {
 		let entryRemains = true;
-		if (queryParamMap.has("eventTypes")) {
-			//todo link entry to event somehow?
+		if (queryParamMap.has("eventIds")) {
+			entryRemains = entryRemains && queryParamMap.getAll("eventIds").some(id => entry.event.id === +id);
 		}
 		if (queryParamMap.has("costTypes")) {
-			entryRemains = entryRemains && entry.categoryMatchesQueryParameter(queryParamMap.get("costTypes"));
+			entryRemains = entryRemains && queryParamMap.getAll("costTypes")
+				.some(type => type.toLowerCase() === entry.category.name.toLowerCase());
 		}
 
 		return entryRemains;
@@ -197,21 +197,20 @@ export class AccountingComponent implements OnInit {
 
 	/**
 	 *
-	 * @param {ParamMap} paramMap
 	 * @param {ParamMap} queryParamMap
 	 * @param {ColumnSortingEvent<any>} sortBy
 	 * @returns {Observable<any>}
 	 */
-	getEntries([paramMap, queryParamMap, sortBy]: [ParamMap, ParamMap, ColumnSortingEvent<any>]): Observable<Entry[]> {
-		let dateRange = this.extractDateRangeFromQueryParams(queryParamMap);
+	getEntries([queryParamMap, sortBy]: [ParamMap, ColumnSortingEvent<any>]): Observable<Entry[]> {
+		const dateRange = this.extractDateRangeFromQueryParams(queryParamMap);
 
 		//we're looking at an event's accounting table
 		if (queryParamMap.has("eventIds")) {
-			let eventIds: string[] = queryParamMap.get("eventIds")
-				.split(",");
+			let eventIds: string[] = queryParamMap.getAll("eventIds");
 
 			return Observable.combineLatest(
-				...eventIds.map(id => this.entryService.getEntriesOfEvent(+id))
+				...eventIds.map(id => this.entryService.getEntriesOfEvent(+id)
+					.defaultIfEmpty([]))
 			)
 				.map((eventEntries: Entry[][]) => eventEntries.reduce((acc, current) => [...acc, ...current], []))
 				.map(entries => entries
@@ -232,7 +231,7 @@ export class AccountingComponent implements OnInit {
 	 * Extracts the dateRange from the queryParameters so it can be used in the API call
 	 * @returns {{minDate: Date; maxDate: Date}}
 	 */
-	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Moment, maxDate: Moment} {
+	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Moment, maxDate: Moment } {
 		const from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : moment("1970-01-01");
 		const to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : moment("2100-01-01");
 

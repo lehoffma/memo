@@ -2,10 +2,7 @@ import {Injectable} from "@angular/core";
 import {MerchStock, MerchStockList} from "../../../shop/shared/model/merch-stock";
 import {Observable} from "rxjs/Observable";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {GroupedStockItem} from "app/club-management/administration/stock/merch-stock/grouped-stock-item";
-import {StockTableItem} from "app/club-management/administration/stock/merch-stock/stock-table-item";
 import {MerchColor} from "../../../shop/shared/model/merch-color";
 
 const stockMockData = [
@@ -135,7 +132,7 @@ interface StockApiResponse {
 	stock: MerchStockList;
 }
 
-export interface StockMap{
+export interface StockMap {
 	[size: string]: {
 		[color: string]: number;
 	}
@@ -187,13 +184,12 @@ export class StockService extends ServletService<MerchStockList> {
 	}
 
 
-
 	/**
 	 *
 	 * @param {MerchStockList} stockList
 	 * @returns {StockMap}
 	 */
-	toStockMap(stockList: MerchStockList):StockMap{
+	toStockMap(stockList: MerchStockList): StockMap {
 		const options = this.getStockOptions([stockList]);
 
 		//initialize the 2d map with zeroes
@@ -207,7 +203,7 @@ export class StockService extends ServletService<MerchStockList> {
 
 
 		return stockList
-			.reduce((map, stockItem:MerchStock) => {
+			.reduce((map, stockItem: MerchStock) => {
 				map[stockItem.size][stockItem.color.name] += stockItem.amount;
 				return map;
 			}, stockMap)

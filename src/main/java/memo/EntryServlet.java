@@ -3,6 +3,7 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import memo.model.Entry;
+import memo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -183,6 +184,12 @@ public class EntryServlet extends HttpServlet {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         // save params to new user
         entry = gson.fromJson(jEntry, Entry.class);
+
+        try {
+            entry.setEvent(new EventServlet().getEventByID(jEntry.getAsJsonObject("event").get("id").getAsString(), null));
+        } catch (IOException e) {
+            //todo logger.log(Level.DANGER, "Could not find event associated with entry", e)
+        }
 
         entry.setEntryCategoryID(jEntry.get("category").getAsJsonObject().get("id").getAsInt());
 

@@ -21,7 +21,16 @@ export class ModifyEntryComponent implements OnInit {
 	@Input() mode: ModifyType;
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
-	associatedEvent: Event;
+	_associatedEvent: Event;
+
+	get associatedEvent() {
+		return this._associatedEvent;
+	}
+
+	set associatedEvent(event: Event) {
+		this._associatedEvent = event;
+		this.model["event"] = event;
+	}
 
 	ModifyType = ModifyType;
 

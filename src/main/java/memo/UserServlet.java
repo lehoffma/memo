@@ -283,7 +283,6 @@ public class UserServlet extends HttpServlet {
         u.setClubRole(ClubRole.Admin);
 
         if (jUser.has("birthday")) {
-            //todo rest der date parser an ISO format anpassen
             TemporalAccessor birthday = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
             LocalDateTime date = LocalDateTime.from(birthday);
             u.setBirthday(date);

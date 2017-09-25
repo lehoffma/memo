@@ -167,7 +167,7 @@ public class EventServlet extends HttpServlet {
         return jElement.getAsJsonObject().getAsJsonObject("event");
     }
 
-    private Event getEventByID(String Sid, HttpServletResponse response) throws IOException {
+    public Event getEventByID(String Sid, HttpServletResponse response) throws IOException {
 
         try {
             Integer id = Integer.parseInt(Sid);

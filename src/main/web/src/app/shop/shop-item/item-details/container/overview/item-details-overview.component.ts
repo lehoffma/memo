@@ -10,6 +10,9 @@ import * as moment from "moment";
 import {MerchColor} from "../../../../shared/model/merch-color";
 import {MerchStockList} from "../../../../shared/model/merch-stock";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {ShopItem} from "../../../../../shared/model/shop-item";
+import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property";
+import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
 
 
 @Component({
@@ -44,6 +47,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	public isPastEvent: boolean = false;
 
 	constructor(private eventUtilityService: EventUtilityService,
+				private participantService: ParticipantsService,
 				private stockService: StockService,
 				private shoppingCartService: ShoppingCartService) {
 	}
@@ -89,6 +93,36 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		}
 	}
 
+	values: {
+		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
+		} = {};
+
+	/**
+	 *
+	 * @param {string} key
+	 * @returns {Observable<TypeOfProperty<ShopItem>>}
+	 */
+	getValue(key: string): Observable<TypeOfProperty<ShopItem>> {
+		if (!this.values[key]) {
+			//cache observable so we only have to query the value once
+			if (this.isMerch(this.event) && key === "capacity") {
+				this.values[key] = this.stock$
+					.map(stock => stock.reduce((sum, it) => sum + it.amount, 0));
+			}
+			else if (key === "emptySeats") {
+				this.values[key] = this._event$
+					.flatMap(event =>
+						this.participantService.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
+							.map(participants => event.capacity - participants.length));
+			}
+			else {
+				this.values[key] = this._event$
+					.map(event => event[key]);
+			}
+		}
+		return this.values[key];
+	}
+
 	/**
 	 *
 	 * @param {Merchandise} merch
@@ -132,7 +166,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	updateMaxAmount() {
 		let maxAmount$ = this.isMerch(this.event)
-			?  Observable.combineLatest(
+			? Observable.combineLatest(
 				this.stock$,
 				this._color$,
 				this._size$

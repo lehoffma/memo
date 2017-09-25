@@ -1,5 +1,8 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {PaymentInfo} from "./payment-info";
+import {Observable} from "rxjs/Observable";
+import {User} from "../../../../shared/model/user";
+import {Address} from "../../../../shared/model/address";
 
 declare var IBAN;
 
