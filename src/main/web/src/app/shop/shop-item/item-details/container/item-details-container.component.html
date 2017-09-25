@@ -9,17 +9,19 @@
 			</div>
 
 			<div class="item-actions">
-				<a md-icon-button
+				<a mat-icon-button
 				   *ngIf="userCanAccessEntries$ | async"
-				   mdTooltip="Kosten dieses Events anzeigen"
-				   routerLink="./costs">
-					<md-icon>payment</md-icon>
+				   matTooltip="Kosten dieses Events anzeigen"
+				   routerLink="/management/costs"
+				   [queryParams]="{eventIds: event.id}"
+				>
+					<mat-icon>payment</mat-icon>
 				</a>
-				<a md-icon-button
+				<a mat-icon-button
 				   *ngIf="userCanEditEvent | async"
-				   mdTooltip="Dieses Event bearbeiten"
+				   matTooltip="Dieses Event bearbeiten"
 				   routerLink="./edit">
-					<md-icon>edit</md-icon>
+					<mat-icon>edit</mat-icon>
 				</a>
 			</div>
 

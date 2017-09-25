@@ -2,8 +2,9 @@ import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs";
 import {SignUpSubmitEvent} from "./signup-submit-event";
-import {SignUpSection} from "./signup-section";
+import {SignUpSection, toTitle} from "./signup-section";
 import {SignUpService} from "./signup.service";
+import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({
 	selector: "memo-signup",
@@ -13,6 +14,7 @@ import {SignUpService} from "./signup.service";
 export class SignUpComponent implements OnInit {
 	sectionEnum = SignUpSection;
 	public currentSection: Observable<SignUpSection> = this.activatedRoute.params.map(params => params["step"]);
+	getTitleOfSection = toTitle;
 
 	constructor(public signUpService: SignUpService,
 				private activatedRoute: ActivatedRoute) {

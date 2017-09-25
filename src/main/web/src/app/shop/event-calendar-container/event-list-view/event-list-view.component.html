@@ -1,11 +1,11 @@
 
 
-<div *ngFor="let key of groupedListKeys" class="event-list-view-container">
+<div *ngFor="let key of groupedListKeys" class="event-list-view-container mat-elevation-z1">
 	<div class="event-list-view-title">
 
 		<h3>{{key}}</h3>
 
-		<button md-button color="accent" (click)="onAddCallback(key, groupedEventList[key])">
+		<button mat-button color="accent" (click)="onAddCallback(key, groupedEventList[key])">
 			Hinzufügen
 		</button>
 	</div>

@@ -2,93 +2,93 @@
 	<h2>Addresse {{model.id === -1 ? 'hinzufügen' : 'modifizieren'}}</h2>
 	<form #addressModificationForm="ngForm" (ngSubmit)="submitNewAddress()">
 
-		<md-input-container
+		<mat-form-field
 			[dividerColor]="(name.touched && name.invalid) ? 'warn' : 'primary'">
-			<input mdInput
+			<input matInput
 				   placeholder="Name"
 				   name="name"
 				   #name="ngModel"
 				   [(ngModel)]="model.name"
 				   required>
-			<md-hint [@wiggle]="1" *ngIf="(name.touched && name.invalid)">Der Name darf nicht leer bleiben!</md-hint>
-		</md-input-container>
+			<mat-hint [@wiggle]="1" *ngIf="(name.touched && name.invalid)">Der Name darf nicht leer bleiben!</mat-hint>
+		</mat-form-field>
 
 		<div>
-			<md-input-container
+			<mat-form-field
 				[dividerColor]="(street.touched && street.invalid) ? 'warn' : 'primary'">
-				<input mdInput
+				<input matInput
 					   placeholder="Straße"
 					   name="street"
 					   #street="ngModel"
 					   [(ngModel)]="model.street"
 					   required>
-				<md-hint [@wiggle]="1" *ngIf="(street.touched && street.invalid)">Die Straße darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
-			<md-input-container
+				<mat-hint [@wiggle]="1" *ngIf="(street.touched && street.invalid)">Die Straße darf nicht leer bleiben!
+				</mat-hint>
+			</mat-form-field>
+			<mat-form-field
 				[dividerColor]="(streetNr.touched && streetNr.invalid) ? 'warn' : 'primary'">
-				<input mdInput
+				<input matInput
 					   placeholder="Hausnummer"
 					   name="streetNr"
 					   #streetNr="ngModel"
 					   [(ngModel)]="model.streetNr"
 					   required>
-				<md-hint [@wiggle]="1" *ngIf="(streetNr.touched && streetNr.invalid)">Die Hausnummer darf nicht leer
+				<mat-hint [@wiggle]="1" *ngIf="(streetNr.touched && streetNr.invalid)">Die Hausnummer darf nicht leer
 					bleiben!
-				</md-hint>
-			</md-input-container>
+				</mat-hint>
+			</mat-form-field>
 		</div>
 
 		<div>
-			<md-input-container
+			<mat-form-field
 				[dividerColor]="(city.touched && city.invalid) ? 'warn' : 'primary'">
-				<input mdInput
+				<input matInput
 					   placeholder="Stadt"
 					   name="city"
 					   #city="ngModel"
 					   [(ngModel)]="model.city"
 					   required>
-				<md-hint [@wiggle]="1" *ngIf="(city.touched && city.invalid)">Die Stadt darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
-			<md-input-container
+				<mat-hint [@wiggle]="1" *ngIf="(city.touched && city.invalid)">Die Stadt darf nicht leer bleiben!
+				</mat-hint>
+			</mat-form-field>
+			<mat-form-field
 				[dividerColor]="(zip.touched && zip.invalid) ? 'warn' : 'primary'">
-				<input mdInput
+				<input matInput
 					   placeholder="PLZ"
 					   name="zip"
 					   pattern="^([0]{1}[1-9]{1}|[1-9]{1}[0-9]{1})[0-9]{3}$"
 					   #zip="ngModel"
 					   [(ngModel)]="model.zip"
 					   required>
-				<md-hint [@wiggle]="1" *ngIf="(zip.touched && zip.invalid && model.zip.length === 0)">
+				<mat-hint [@wiggle]="1" *ngIf="(zip.touched && zip.invalid && model.zip.length === 0)">
 					Die Postleitzahl darf nicht leer bleiben!
-				</md-hint>
-				<md-hint [@wiggle]="1" *ngIf="zip.touched && zip.invalid && model.zip.length > 0">
+				</mat-hint>
+				<mat-hint [@wiggle]="1" *ngIf="zip.touched && zip.invalid && model.zip.length > 0">
 					Diese Postleitzahl ist ungültig!
-				</md-hint>
-			</md-input-container>
+				</mat-hint>
+			</mat-form-field>
 		</div>
 
 		<div>
-			<md-input-container
+			<mat-form-field
 				[dividerColor]="(country.touched && country.invalid) ? 'warn' : 'primary'">
-				<input mdInput
+				<input matInput
 					   placeholder="Land"
 					   name="country"
 					   #country="ngModel"
 					   [(ngModel)]="model.country"
 					   required>
-				<md-hint [@wiggle]="1" *ngIf="(country.touched && country.invalid)">Das Land darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
+				<mat-hint [@wiggle]="1" *ngIf="(country.touched && country.invalid)">Das Land darf nicht leer bleiben!
+				</mat-hint>
+			</mat-form-field>
 		</div>
 
 
 		<div class="address-modification-actions">
-			<button md-raised-button type="button" (click)="goBack()">
+			<button mat-raised-button type="button" (click)="goBack()">
 				Zurück
 			</button>
-			<button md-raised-button color="accent" [disabled]="!addressModificationForm.form.valid">
+			<button mat-raised-button color="accent" [disabled]="!addressModificationForm.form.valid">
 				{{model.id === -1 ? 'Speichern' : 'Änderungen speichern'}}
 			</button>
 		</div>

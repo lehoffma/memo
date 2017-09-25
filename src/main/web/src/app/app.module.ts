@@ -18,8 +18,7 @@ import {ImprintComponent} from "./home/imprint/imprint.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
 import {ShareButtonsModule} from "ngx-sharebuttons";
-import {DateAdapter, MD_DATE_FORMATS} from "@angular/material";
-import {MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-config/moment-adapter";
+import {DateAdapter, MATERIAL_COMPATIBILITY_MODE, MD_DATE_FORMATS} from "@angular/material";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./shared/authentication/auth.interceptor";
 import {HttpModule} from "@angular/http";
@@ -30,6 +29,7 @@ import {ShopModule} from "./shop/shop.module";
 import {ApiServicesModule} from "./shared/api-services.module";
 import {UtilityServicesModule} from "./shared/utility-services.module";
 import {AuthenticationModule} from "./shared/authentication.module";
+import {MomentDateAdapter, MD_MOMENT_DATE_FORMATS} from "./shared/datepicker-config/moment-adapter";
 
 
 @NgModule({
@@ -59,8 +59,8 @@ import {AuthenticationModule} from "./shared/authentication.module";
 		//includes route guards and other authentication stuff
 		AuthenticationModule.forRoot(),
 		ClubManagementModule,
+		ShopModule,
 		UserModule,
-		ShopModule
 	],
 	declarations: [
 		AppComponent,
@@ -80,9 +80,10 @@ import {AuthenticationModule} from "./shared/authentication.module";
 		AppComponent
 	],
 	providers: [
+		{provide: MATERIAL_COMPATIBILITY_MODE, useValue: true},
 		{provide: LOCALE_ID, useValue: "de-DE"},
 		{provide: DateAdapter, useClass: MomentDateAdapter},
-		{provide: MD_DATE_FORMATS, useValue: MOMENT_DATE_FORMATS},
+		{provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS},
 		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
 	]
 })

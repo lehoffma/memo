@@ -3,8 +3,9 @@
 @import "~@angular/material/theming";
 
 .cart {
-	> md-card {
+	> mat-card {
 		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 0px 0 rgba(0, 0, 0, .12) !important;
+		background: #fafafa;
 	}
 
 	@media all and (min-width: 600px) {
@@ -12,7 +13,7 @@
 		justify-content: center;
 		margin-top: 25px;
 
-		> md-card {
+		> mat-card {
 			max-width: 500px;
 			width: 500px;
 			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12) !important;
@@ -27,9 +28,9 @@
 	//border-bottom: 1px solid #E0E0E0;
 
 	font-weight: 200;
-	border-bottom: 1px solid #E0E0E0;
-	background-color: mat-color($primary);
-	color: white;
+	border-bottom: 1px solid #e6e6e6;
+	background-color: white;
+	color: rgba(0, 0, 0, 0.8);
 	padding: 24px 16px 10px 24px;
 	margin: -24px -24px 10px !important;
 

@@ -13,7 +13,7 @@
 
 					<div class="comment-timestamp secondary-text"
 						 title="{{commentObject.timeStamp | moment:'DD.MM.YYYY HH:mm:ss'}}">
-						{{commentObject.timeStamp.locale("de").fromNow()}}
+						{{commentObject.timeStamp.fromNow()}}
 					</div>
 				</div>
 			</div>
@@ -26,7 +26,7 @@
 				</div>
 			</div>
 			<div class="comment-footer" [ngClass]="{'dummy': dummy}">
-				<span (click)="replyToComment(commentObject)">Antworten</span>
+				<span (click)="replyToComment(commentObject)">ANTWORTEN</span>
 			</div>
 		</div>
 
@@ -37,23 +37,23 @@
 			 [style.visibility]="((loggedInUser$ | async)?.id === author.id && !dummy) ? 'visible' : 'hidden'"
 			 [ngClass]="{'show-element': isTouchDevice()}">
 
-			<md-icon
-				[mdMenuTriggerFor]="menu">
+			<mat-icon
+				[matMenuTriggerFor]="menu">
 				more_horiz
-			</md-icon>
-			<!--todo md-menu-->
+			</mat-icon>
+			<!--todo mat-menu-->
 			<!--(loggedInUser$ | async)?.id === author.id-->
 
-			<md-menu #menu="mdMenu" xPosition="before">
-				<button md-menu-item type="button" (click)="editComment(commentObject)">
-					<md-icon>edit</md-icon>
+			<mat-menu #menu="matMenu" xPosition="before">
+				<button mat-menu-item type="button" (click)="editComment(commentObject)">
+					<mat-icon>edit</mat-icon>
 					<span>Bearbeiten</span>
 				</button>
-				<button md-menu-item type="button" (click)="deleteCurrentComment()">
-					<md-icon>delete</md-icon>
+				<button mat-menu-item type="button" (click)="deleteCurrentComment()">
+					<mat-icon>delete</mat-icon>
 					<span>Löschen</span>
 				</button>
-			</md-menu>
+			</mat-menu>
 		</div>
 	</div>
 

@@ -147,12 +147,14 @@ export class ModifyItemService {
 	 *
 	 */
 	init() {
+		console.log(this.idOfObjectToModify);
+		console.log(this.model)
 		//service was already initialized. reset() needs to be called before the user can use it any further
 		if (this.mode !== undefined) {
 			return;
 		}
-		if (this.idOfObjectToModify !== -1) {
-			let objectToModifyObservable: Observable<ShopItem> = EventUtilityService.handleOptionalShopType<any>(
+		if (this.idOfObjectToModify >= 0) {
+			let objectToModifyObservable: Observable<ShopItem> = EventUtilityService.shopItemSwitch<any>(
 				this.itemType,
 				{
 					merch: () => this.eventService.getById(this.idOfObjectToModify),
@@ -194,7 +196,7 @@ export class ModifyItemService {
 		}
 
 		if (!this.model["date"]) {
-			EventUtilityService.handleOptionalShopType<any>(
+			EventUtilityService.shopItemSwitch<any>(
 				this.itemType,
 				{
 					tours: () => this.model["date"] = moment(),
@@ -302,10 +304,10 @@ export class ModifyItemService {
 
 	/**
 	 *
-	 * @param model
+	 * @param modifyItemEvent
 	 */
-	async submitModifiedEvent(model: ModifyItemEvent) {
-		let service: ServletServiceInterface<ShopItem> = EventUtilityService.handleOptionalShopType<ServletServiceInterface<User | Entry | Event>>(
+	async submitModifiedEvent(modifyItemEvent: ModifyItemEvent) {
+		let service: ServletServiceInterface<ShopItem> = EventUtilityService.shopItemSwitch<ServletServiceInterface<User | Entry | Event>>(
 			this.itemType,
 			{
 				merch: () => this.eventService,
@@ -316,7 +318,7 @@ export class ModifyItemService {
 			}
 		);
 
-		let newObject: ShopItem = EventUtilityService.handleOptionalShopType<ShopItem>(
+		let newObject: ShopItem = EventUtilityService.shopItemSwitch<ShopItem>(
 			this.itemType,
 			{
 				merch: () => Merchandise.create().setProperties(this.model),
@@ -327,9 +329,9 @@ export class ModifyItemService {
 			}
 		);
 
-		let options: any = EventUtilityService.handleOptionalShopType<any>(this.itemType,
+		let options: any = EventUtilityService.shopItemSwitch<any>(this.itemType,
 			{
-				entries: () => ({eventId: model.eventId})
+				entries: () => ({eventId: modifyItemEvent.eventId})
 			});
 
 		//handle addresses correctly
@@ -338,7 +340,9 @@ export class ModifyItemService {
 		}
 		newObject = await this.addAddresses(newObject);
 		newObject = this.setDefaultValues(newObject);
+
 		//todo display progress-bar while uploading
+		//todo demo remove
 		console.warn("demo: modify-item should upload image");
 		// newObject = await this.uploadImage(newObject, model.uploadedImage);
 
@@ -348,7 +352,14 @@ export class ModifyItemService {
 		if (this.mode === ModifyType.EDIT) {
 			requestMethod = service.modify.bind(service);
 		}
+
 		requestMethod(newObject, options)
+			.do((result: ShopItem) => {
+				if(EventUtilityService.isMerchandise(result)){
+					// this.stockService.add(model["stock"], newObject.id)
+					console.log(modifyItemEvent.model["stock"]);
+				}
+			})
 			.first()
 			.subscribe(
 				(result: ShopItem) => {
@@ -360,7 +371,6 @@ export class ModifyItemService {
 						this.navigationService.navigateToItem(result);
 					}
 					else {
-						//todo
 						this.navigationService.navigateToItemWithId(this.eventType, this.eventId);
 					}
 					this.reset();

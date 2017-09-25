@@ -10,6 +10,7 @@ import {EventType} from "../../../shared/model/event-type";
 import {ActivatedRoute} from "@angular/router";
 import {EntryCategoryService} from "../../../../shared/services/api/entry-category.service";
 import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/modify-item-event";
+import {EntryCategory} from "../../../../shared/model/entry-category";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -60,7 +61,7 @@ export class ModifyEntryComponent implements OnInit {
 				EventUtilityService.isTour(this.model["event"]) ||
 				EventUtilityService.isParty(this.model["event"]))) {
 			this.associatedEvent = this.model["event"];
-			this.autocompleteFormControl.setValue(this.model["event"]);
+			this.autocompleteFormControl.setValue(this.associatedEvent);
 		}
 		this.activatedRoute.queryParamMap
 			.first()
@@ -109,6 +110,10 @@ export class ModifyEntryComponent implements OnInit {
 			return event.title;
 		}
 		return "";
+	}
+
+	compareCategories(value1:EntryCategory, value2:EntryCategory){
+		return value1 && value2 && value1.id === value2.id;
 	}
 
 	/**

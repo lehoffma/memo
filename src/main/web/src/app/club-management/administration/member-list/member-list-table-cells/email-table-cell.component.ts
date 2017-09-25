@@ -6,9 +6,9 @@ import {DomSanitizer} from "@angular/platform-browser";
 	selector: 'td [memoEmailTableCellComponent]',
 	template: `
 		<span class="action-text">{{data}}</span>
-		<a [href]="sanitizedEmail" md-button color="accent">
+		<a [href]="sanitizedEmail" mat-button color="accent">
 			<div>
-				<md-icon>email</md-icon>
+				<mat-icon>email</mat-icon>
 				<span class="icon-text">Kontaktieren</span>
 			</div>
 		</a>

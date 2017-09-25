@@ -1,14 +1,18 @@
 <div class="login-container">
-	<md-card *ngIf="currentSection | async as section">
+	<mat-card *ngIf="currentSection | async as section">
 		<div class="account-signup-progress">
 			<ng-template ngFor let-item [ngForOf]="signUpService.sections" let-i="index">
-				<div [ngClass]="{
+				<div class="progress-indicator" [ngClass]="{
 					'active': item === section,
 					'completed': signUpService.sections.indexOf(section) > i
 				}">
-
+					<mat-icon *ngIf="signUpService.sections.indexOf(section) > i; else indexContainer">done</mat-icon>
+					<ng-template #indexContainer>{{i + 1}}</ng-template>
 				</div>
-				<span *ngIf="item !== sectionEnum.PaymentMethods"></span>
+				<div class="progress-label desktop" [class.active]="item === section">
+					{{getTitleOfSection(item)}}
+				</div>
+				<span class="progress-line" *ngIf="item !== sectionEnum.PaymentMethods"></span>
 			</ng-template>
 		</div>
 
@@ -35,6 +39,6 @@
 			</div>
 		</div>
 
-	</md-card>
+	</mat-card>
 
 </div>

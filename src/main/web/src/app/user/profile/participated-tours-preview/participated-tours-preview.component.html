@@ -1,22 +1,22 @@
 <div class="profile-tours-container">
-	<md-list>
+	<mat-list>
             <span *ngFor="let recentEvent of (userEvents | slice:0:amountOfEventsShown); let lastTour = last"
 				  (click)="showEvent(recentEvent)">
-                <md-list-item>
-                    <img md-list-avatar src="{{recentEvent?.imagePath}}"
+                <mat-list-item>
+                    <img mat-list-avatar src="{{recentEvent?.imagePath}}"
 						 alt="picture of the {{recentEvent.title}} event">
-                    <h3 md-line> {{recentEvent.title}} </h3>
-                    <p md-line>
+                    <h3 matLine> {{recentEvent.title}} </h3>
+                    <p matLine>
                         <span class="secondary-text"> {{recentEvent.date.locale("de").fromNow()}} </span>
                     </p>
-                </md-list-item>
-                <md-divider *ngIf="!lastTour"></md-divider>
+                </mat-list-item>
+                <mat-divider *ngIf="!lastTour"></mat-divider>
             </span>
-	</md-list>
+	</mat-list>
 
-	<button md-button *ngIf="userEvents?.length > 3" type="button" (click)="expandedStatus = !expandedStatus">
+	<button mat-button *ngIf="userEvents?.length > 3" type="button" (click)="expandedStatus = !expandedStatus">
 		<span>{{expandedStatus ? 'Weniger' : 'Mehr'}}</span>
-		<md-icon [@expandedState]="expandedStatus">expand_more</md-icon>
+		<mat-icon [@expandedState]="expandedStatus">expand_more</mat-icon>
 	</button>
 
 </div>

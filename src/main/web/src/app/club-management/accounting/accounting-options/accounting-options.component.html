@@ -1,89 +1,89 @@
 <div *ngIf="!hidden">
 	<h2 class="account-options-title mat-headline">{{'Optionen'|uppercase}}</h2>
 	<h3>Datum</h3>
-	<md-input-container>
-		<input mdInput [mdDatepicker]="startingDatePicker"
+	<mat-form-field>
+		<input matInput [matDatepicker]="startingDatePicker"
 			   placeholder="Von"
 			   [(ngModel)]="dateOptions.from"
 			   (ngModel)="updateQueryParams()"
 			   (blur)="updateQueryParams()"
 			   #startingDateInput="ngModel"
 			   name="startingDateInput">
-		<button type="button" mdSuffix [mdDatepickerToggle]="startingDatePicker"></button>
-	</md-input-container>
-	<md-datepicker #startingDatePicker (selectedChanged)="updateQueryParams()" [touchUi]="true"></md-datepicker>
+		<mat-datepicker-toggle matSuffix [for]="startingDatePicker"></mat-datepicker-toggle>
+	</mat-form-field>
+	<mat-datepicker #startingDatePicker (selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
 
-	<md-input-container>
-		<input mdInput [mdDatepicker]="endDatePicker"
+	<mat-form-field>
+		<input matInput [matDatepicker]="endDatePicker"
 			   placeholder="Bis"
 			   [(ngModel)]="dateOptions.to"
 			   (ngModel)="updateQueryParams()"
 			   (blur)="updateQueryParams()"
 			   #endDateInput="ngModel"
 			   name="endDateInput">
-		<button type="button" mdSuffix [mdDatepickerToggle]="endDatePicker"></button>
-	</md-input-container>
-	<md-datepicker #endDatePicker (selectedChanged)="updateQueryParams()" [touchUi]="true"></md-datepicker>
+		<mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+	</mat-form-field>
+	<mat-datepicker #endDatePicker (selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
 </div>
 
 
 <div *ngIf="!hidden" class="events-container">
 	<h3>Nach Events filtern</h3>
-	<md-chip-list class="mat-chip-list-stacked">
-		<md-chip *ngFor="let event of events; let i = index"
+	<mat-chip-list class="mat-chip-list-stacked">
+		<mat-chip *ngFor="let event of events; let i = index"
 				 color="primary">
-			<a routerLink="/{{getEventType(event)}}/{{event.id}}" mdTooltip="Auf die Detailseite dieses Events gehen">
+			<a routerLink="/{{getEventType(event)}}/{{event.id}}" matTooltip="Auf die Detailseite dieses Events gehen">
 				{{ event.title }}
 			</a>
-			<md-icon class="remove-chip-button" (click)="events.splice(i,1); updateQueryParams()" mdTooltip="Löschen">
+			<mat-icon class="remove-chip-button" (click)="events.splice(i,1); updateQueryParams()" matTooltip="Löschen">
 				cancel
-			</md-icon>
-		</md-chip>
-		<md-chip *ngIf="events.length === 0" class="chip-accent" color="accent">
+			</mat-icon>
+		</mat-chip>
+		<mat-chip *ngIf="events.length === 0" class="chip-accent" color="accent">
 			Alle Events
-		</md-chip>
-	</md-chip-list>
+		</mat-chip>
+	</mat-chip-list>
 
 
-	<md-input-container>
-		<input mdInput
+	<mat-form-field>
+		<input matInput
 			   tabindex="-1"
 			   placeholder="Event"
 			   name="userInput"
 			   [formControl]="autocompleteFormControl"
-			   [mdAutocomplete]="auto">
-	</md-input-container>
-	<md-autocomplete #auto="mdAutocomplete" [displayWith]="displayFn">
-		<md-option *ngFor="let option of filteredOptions | async" [value]="option">
+			   [matAutocomplete]="auto">
+	</mat-form-field>
+	<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+		<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
 			{{option.title}}
-		</md-option>
-	</md-autocomplete>
+		</mat-option>
+	</mat-autocomplete>
 </div>
 
 <!--todo?-->
 <!--<div *ngIf="!hidden">-->
 <!--<h3>Event-Typen</h3>-->
-<!--<md-checkbox [(ngModel)]="eventTypes['tours']"-->
+<!--<mat-checkbox [(ngModel)]="eventTypes['tours']"-->
 <!--(ngModelChange)="updateQueryParams()">-->
 <!--Fahrten-->
-<!--</md-checkbox>-->
-<!--<md-checkbox [(ngModel)]="eventTypes['events']"-->
+<!--</mat-checkbox>-->
+<!--<mat-checkbox [(ngModel)]="eventTypes['events']"-->
 <!--(ngModelChange)="updateQueryParams()">-->
 <!--Veranstaltungen-->
-<!--</md-checkbox>-->
+<!--</mat-checkbox>-->
 <!--&lt;!&ndash;todo macht merchandise überhaupt sinn?&ndash;&gt;-->
-<!--<md-checkbox [(ngModel)]="eventTypes['merch']"-->
+<!--<mat-checkbox [(ngModel)]="eventTypes['merch']"-->
 <!--(ngModelChange)="updateQueryParams()">-->
 <!--Merchandise-->
-<!--</md-checkbox>-->
+<!--</mat-checkbox>-->
 <!--</div>-->
 <div *ngIf="!hidden">
 	<h3>Kostenarten</h3>
 
-	<md-checkbox *ngFor="let costType of (costCategories$|async)"
+	<mat-checkbox *ngFor="let costType of (costCategories$|async)"
 				 [(ngModel)]="costTypes[costType.name]"
 				 (ngModelChange)="updateQueryParams()">
 		{{costType.name}}
-	</md-checkbox>
+	</mat-checkbox>
 </div>
 <!--todo andere optionen?-->

@@ -1,9 +1,9 @@
-:host > md-dialog-content {
+:host > mat-dialog-content {
 	display: flex;
 	flex-direction: column;
 }
 
-md-dialog-actions {
+mat-dialog-actions {
 	justify-content: center;
 	button {
 		width: 100%;

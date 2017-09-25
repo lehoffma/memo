@@ -10,7 +10,7 @@
 			</div>
 
 			<div class="expandable-table-header-actions">
-				<button md-button type="button" color="accent"
+				<button mat-button type="button" color="accent"
 						[disabled]="!permissions?.Hinzufuegen"
 						(click)="actionCallback(rowAction.ADD, [])">
 					HINZUFÜGEN
@@ -22,10 +22,10 @@
 				{{amountOfSelectedEntries}} {{amountOfSelectedEntries > 1 ? 'Einträge' : 'Eintrag'}} ausgewählt.
 			</div>
 			<div class="expandable-table-header-actions">
-				<button md-icon-button
+				<button mat-icon-button
 						[disabled]="!permissions?.Loeschen"
 						type="button" (click)="deleteSelected()">
-					<md-icon>delete</md-icon>
+					<mat-icon>delete</mat-icon>
 				</button>
 			</div>
 		</ng-template>
@@ -39,24 +39,24 @@
 					<!--empty because of expand icon-->
 				</th>
 				<!--todo tooltips-->
-				<!--mdTooltip="Tooltip!" [mdTooltipPosition]="'below'"-->
+				<!--matTooltip="Tooltip!" [matTooltipPosition]="'below'"-->
 				<th *ngFor="let columnKey of columnKeys"
 					class="sortable-column"
 					[ngClass]="{'sorted-column': sortedBy?.key === columnKey.key}"
 					(click)="sort(columnKey.key)">
 					<div>
 						{{columnKey.title}}
-						<md-icon [@expandedState]="sortedBy?.descending"
+						<mat-icon [@expandedState]="sortedBy?.descending"
 								 [style.visibility]="sortedBy?.key === columnKey.key ? 'visible' : 'hidden'">
 							arrow_upward
-						</md-icon>
+						</mat-icon>
 					</div>
 				</th>
 				<th class="expandable-table-selectall-checkbox">
-					<md-checkbox [(ngModel)]="everythingIsSelected"
+					<mat-checkbox [(ngModel)]="everythingIsSelected"
 								 (ngModel)="changeSelectedStatusOfAllItems(!everythingIsSelected)">
 
-					</md-checkbox>
+					</mat-checkbox>
 				</th>
 				<th>
 					<!--todo more empty columns if showActionsAsSeparateRows?-->
@@ -73,11 +73,11 @@
 					(click)="toggleSelectedStatus(dataObject)">
 					<td *ngIf="expandable" class="expand-icon">
 						<!--toggle expanded status of the row-->
-						<button md-icon-button type="button"
+						<button mat-icon-button type="button"
 								(click)="toggleExpandedStatus(dataObject); $event.stopPropagation()">
-							<md-icon [@expandedState]="expandStatusList[dataObject.id]">
+							<mat-icon [@expandedState]="expandStatusList[dataObject.id]">
 								expand_more
-							</md-icon>
+							</mat-icon>
 						</button>
 					</td>
 					<ng-template ngFor let-columnKey [ngForOf]="columnKeys">
@@ -85,47 +85,47 @@
 						</ng-template>
 					</ng-template>
 					<td class="expandable-table-single-checkbox">
-						<md-checkbox [(ngModel)]="selectedStatusList[dataObject.id]"
+						<mat-checkbox [(ngModel)]="selectedStatusList[dataObject.id]"
 									 (ngModelChange)="updateEverythingIsSelected()"
 									 (click)="$event.stopPropagation()">
 
-						</md-checkbox>
+						</mat-checkbox>
 					</td>
 					<td class="expandable-table-actions">
 						<!--todo more columns if showActionsAsSeparateRows?-->
-						<button md-icon-button type="button"
+						<button mat-icon-button type="button"
 								[disabled]="!permissions?.Bearbeiten && !permissions?.Loeschen && !(rowActions.length > 2)"
 								(click)="$event.stopPropagation()"
-								[mdMenuTriggerFor]="menu">
-							<md-icon>more_vert</md-icon>
+								[matMenuTriggerFor]="menu">
+							<mat-icon>more_vert</mat-icon>
 
 						</button>
-						<md-menu #menu="mdMenu">
+						<mat-menu #menu="matMenu">
 							<div *ngFor="let action of rowActions">
 								<a *ngIf="action?.link !== undefined"
 								   href="{{action?.link(dataObject)}}"
-								   md-menu-item
+								   mat-menu-item
 								   [disabled]="permissions[action?.name] === undefined ? false : !permissions[action?.name]">
-									<md-icon *ngIf="action?.icon">{{action?.icon}}</md-icon>
+									<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 									<span>{{action?.name}}</span>
 								</a>
 								<a *ngIf="action?.route !== undefined"
 								   routerLink="{{action?.route(dataObject)}}"
-								   md-menu-item
+								   mat-menu-item
 								   [disabled]="permissions[action?.name] === undefined ? false : !permissions[action?.name]">
-									<md-icon *ngIf="action?.icon">{{action?.icon}}</md-icon>
+									<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 									<span>{{action?.name}}</span>
 								</a>
-								<button *ngIf="!action?.link && !action?.route" md-menu-item
+								<button *ngIf="!action?.link && !action?.route" mat-menu-item
 										type="button"
 										[disabled]="permissions[action?.name] === undefined ? false : !permissions[action?.name]"
 										(click)="actionCallback(action?.name, [dataObject])">
-									<md-icon *ngIf="action?.icon">{{action?.icon}}</md-icon>
+									<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 									<span>{{action?.name}}</span>
 
 								</button>
 							</div>
-						</md-menu>
+						</mat-menu>
 					</td>
 				</tr>
 				</tbody>
@@ -141,21 +141,21 @@
 
 	<div class="expandable-table-footer expandable-table-row secondary-text">
 		<span>Zeilen pro Seite:</span>
-		<md-select [(ngModel)]="rowsPerPage">
-			<md-option *ngFor="let option of rowsPerPageOptions" [value]="option">{{option}}</md-option>
-		</md-select>
+		<mat-select [(ngModel)]="rowsPerPage">
+			<mat-option *ngFor="let option of rowsPerPageOptions" [value]="option">{{option}}</mat-option>
+		</mat-select>
 		<span class="current-page-range">
 		{{1+(currentPage-1)*rowsPerPage +
 		'-' + (currentPage*rowsPerPage < data?.length ? currentPage*rowsPerPage : data?.length)
 		+ ' von ' + data?.length}}
 	</span>
-		<button md-icon-button type="button" (click)="currentPage = currentPage-1"
+		<button mat-icon-button type="button" (click)="currentPage = currentPage-1"
 				[disabled]="(currentPage-2)*rowsPerPage < 0">
-			<md-icon>navigate_before</md-icon>
+			<mat-icon>navigate_before</mat-icon>
 		</button>
-		<button md-icon-button type="button" (click)="currentPage = currentPage+1"
+		<button mat-icon-button type="button" (click)="currentPage = currentPage+1"
 				[disabled]="(currentPage)*rowsPerPage > data?.length">
-			<md-icon>navigate_next</md-icon>
+			<mat-icon>navigate_next</mat-icon>
 		</button>
 	</div>
 

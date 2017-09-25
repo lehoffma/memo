@@ -11,16 +11,16 @@
 
 	<div class="profile-details-container profile-component">
 		<div class="profile-other-actions">
-			<button md-icon-button
+			<button mat-icon-button
 					*ngIf="isOwnProfile | async"
-					[mdMenuTriggerFor]="menu">
-				<md-icon>more_vert</md-icon>
+					[matMenuTriggerFor]="menu">
+				<mat-icon>more_vert</mat-icon>
 			</button>
-			<md-menu #menu="mdMenu">
-				<button md-menu-item (click)="editProfile()">
+			<mat-menu #menu="matMenu">
+				<button mat-menu-item (click)="editProfile()">
 					<span>Bearbeiten</span>
 				</button>
-			</md-menu>
+			</mat-menu>
 		</div>
 		<div class="profile-header">
 			<img class="profile-picture" src={{user.imagePath}}>
@@ -33,7 +33,7 @@
 			<div *ngFor="let category of profileCategories;">
 				<div *ngFor="let item of category">
 					<div>
-						<md-icon class="middle-icon md-dark">{{item.icon}}</md-icon>
+						<mat-icon class="middle-icon md-dark">{{item.icon}}</mat-icon>
 						<span class="secondary-text">{{item.name}}</span>
 					</div>
 					<span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | moment}}</span>
@@ -42,16 +42,16 @@
 			</div>
 		</div>
 		<div class="profile-action-container">
-			<a href="tel:{{user.telephone}}" md-button color="accent" [disabled]="!user.telephone">
-				<md-icon>local_phone</md-icon>
+			<a href="tel:{{user.telephone}}" mat-button color="accent" [disabled]="!user.telephone">
+				<mat-icon>local_phone</mat-icon>
 				<span class="action-text">Anrufen</span>
 			</a>
-			<a href="tel:{{user.mobile}}" md-button color="accent" [disabled]="!user.mobile">
-				<md-icon>smartphone</md-icon>
+			<a href="tel:{{user.mobile}}" mat-button color="accent" [disabled]="!user.mobile">
+				<mat-icon>smartphone</mat-icon>
 				<span class="action-text">Anrufen</span>
 			</a>
-			<a href="mailto:{{user.email}}" md-button color="accent" [disabled]="!user.email">
-				<md-icon>local_post_office</md-icon>
+			<a href="mailto:{{user.email}}" mat-button color="accent" [disabled]="!user.email">
+				<mat-icon>local_post_office</mat-icon>
 				<span class="action-text">Schreiben</span>
 			</a>
 		</div>

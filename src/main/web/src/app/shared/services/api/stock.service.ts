@@ -263,7 +263,7 @@ export class StockService extends ServletService<MerchStockList> {
 	 */
 	addOrModify(requestMethod: AddOrModifyRequest,
 				stock: MerchStockList, eventId: number): Observable<MerchStockList> {
-		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/stock", {stock}, {
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {stock}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
 			.flatMap(response => this.getById(response.id, eventId));
@@ -293,7 +293,7 @@ export class StockService extends ServletService<MerchStockList> {
 	 * @param options
 	 */
 	remove(id: number): Observable<Object> {
-		return this.performRequest(this.http.delete("/api/stock", {
+		return this.performRequest(this.http.delete(this.baseUrl, {
 			params: new HttpParams().set("id", "" + id)
 		}));
 	}

@@ -14,6 +14,7 @@
 		background-color: white;
 		justify-content: space-between;
 		padding: 10px;
+		border-bottom: 1px solid #e6e6e6;
 
 		a{
 			color: rgba(0,0,0, 0.65);
@@ -84,7 +85,7 @@
 				-ms-user-select: none;
 				user-select: none;
 
-				md-icon {
+				mat-icon {
 					display: inline-flex;
 					vertical-align: middle;
 				}

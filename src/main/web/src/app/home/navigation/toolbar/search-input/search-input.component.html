@@ -1,25 +1,25 @@
 <form #searchForm="ngForm" (ngSubmit)="inputState === searchInputState.INACTIVE ? toggleInputState() : onSearch()">
-	<button md-icon-button
+	<button mat-icon-button
 			type="submit"
 			#searchButton
 			class="search-button">
-		<md-icon class="cart-icon">
+		<mat-icon class="cart-icon">
 			search
-		</md-icon>
+		</mat-icon>
 	</button>
-	<md-input-container
+	<mat-form-field
 		*ngIf="inputState === searchInputState.ACTIVE"
 		[@searchInputState]="inputState"
 		class="search-input" [dividerColor]="'accent'">
-		<input mdInput
+		<input matInput
 			   title="Sucheingabe"
 			   #searchInput
 			   name="searchInput"
 			   [(ngModel)]="model.searchInput"
 			   autocomplete="off">
-		<md-icon mdSuffix
+		<mat-icon matSuffix
 				 class="cart-icon ripple" (click)="toggleInputState()">
 			clear
-		</md-icon>
-	</md-input-container>
+		</mat-icon>
+	</mat-form-field>
 </form>

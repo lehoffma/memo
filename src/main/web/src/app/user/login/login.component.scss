@@ -6,14 +6,16 @@
 	justify-content: center;
 }
 
-md-card {
+mat-card {
 	margin: 1rem;
 	max-width: 500px;
 	width: 100%;
 }
 
-md-input-container {
-	width: 100%;
+:host{
+	mat-form-field {
+		width: 100%;
+	}
 }
 
 button, a {

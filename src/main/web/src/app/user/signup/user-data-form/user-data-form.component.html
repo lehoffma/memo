@@ -16,50 +16,50 @@
 		<h3>Persönliche Daten</h3>
 		<div class="user-personal-data-input-container" *ngIf="userModel">
 			<div class="name-input">
-				<md-input-container>
-					<input mdInput name="firstNameInput"
+				<mat-form-field>
+					<input matInput name="firstNameInput"
 						   type="text" required
 						   placeholder="Vorname"
 						   #firstNameInput="ngModel"
 						   [(ngModel)]="userModel['firstName']">
-					<md-hint *ngIf="firstNameInput.touched && !firstNameInput.valid" class="error-message" align="end">
+					<mat-hint *ngIf="firstNameInput.touched && !firstNameInput.valid" class="error-message" align="end">
 						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
-				<md-input-container>
-					<input mdInput name="surnameInput"
+					</mat-hint>
+				</mat-form-field>
+				<mat-form-field>
+					<input matInput name="surnameInput"
 						   type="text" required
 						   placeholder="Nachname"
 						   #surnameInput="ngModel"
 						   [(ngModel)]="userModel['surname']">
-					<md-hint *ngIf="surnameInput.touched && !surnameInput.valid" class="error-message" align="end">
+					<mat-hint *ngIf="surnameInput.touched && !surnameInput.valid" class="error-message" align="end">
 						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
+					</mat-hint>
+				</mat-form-field>
 			</div>
 			<div class="date-and-gender-input">
 				<div>
-					<md-input-container>
-						<input mdInput [mdDatepicker]="birthDayPicker"
+					<mat-form-field>
+						<input matInput [matDatepicker]="birthDayPicker"
 							   placeholder="Geburtstag"
 							   [(ngModel)]="userModel['birthday']"
 							   #birthdayInput="ngModel"
 							   name="dateInput" required>
-						<button type="button" mdSuffix [mdDatepickerToggle]="birthDayPicker"></button>
-					</md-input-container>
-					<md-datepicker [touchUi]="true" #birthDayPicker></md-datepicker>
+						<mat-datepicker-toggle matSuffix [for]="birthDayPicker"></mat-datepicker-toggle>
+					</mat-form-field>
+					<mat-datepicker [touchUi]="true" #birthDayPicker></mat-datepicker>
 				</div>
-				<md-select [(ngModel)]="userModel['gender']" placeholder="Geschlecht" #genderSelect="ngModel"
-						   name="genderSelect" class="aligned-md-select">
-					<md-option *ngFor="let option of genderOptions" [value]="option">
+				<mat-select [(ngModel)]="userModel['gender']" placeholder="Geschlecht" #genderSelect="ngModel"
+						   name="genderSelect" class="aligned-mat-select">
+					<mat-option *ngFor="let option of genderOptions" [value]="option">
 						{{option}}
-					</md-option>
-				</md-select>
+					</mat-option>
+				</mat-select>
 			</div>
 			<div>
-				<md-input-container
+				<mat-form-field
 					[dividerColor]="(telephone.touched && telephone.invalid) ? 'warn' : 'primary'">
-					<input mdInput
+					<input matInput
 						   placeholder="Telefon"
 						   type="tel"
 						   pattern="^[0-9\-\+\s\(\)]*$"
@@ -68,15 +68,15 @@
 						   [(ngModel)]="userModel['telephone']"
 					>
 					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-					<md-hint align="end" class="error-message" *ngIf="telephone.touched && (telephone.invalid)">
+					<mat-hint align="end" class="error-message" *ngIf="telephone.touched && (telephone.invalid)">
 						Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
-					</md-hint>
-				</md-input-container>
+					</mat-hint>
+				</mat-form-field>
 			</div>
 			<div>
-				<md-input-container
+				<mat-form-field
 					[dividerColor]="(mobile.touched && mobile.invalid) ? 'warn' : 'primary'">
-					<input mdInput
+					<input matInput
 						   placeholder="Mobiltelefon"
 						   type="tel"
 						   pattern="^[0-9\-\+\s\(\)]*$"
@@ -85,34 +85,34 @@
 						   [(ngModel)]="userModel['mobile']"
 					>
 					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-					<md-hint align="end" class="error-message" *ngIf="mobile.touched && (mobile.invalid)">
+					<mat-hint align="end" class="error-message" *ngIf="mobile.touched && (mobile.invalid)">
 						Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
-					</md-hint>
-				</md-input-container>
+					</mat-hint>
+				</mat-form-field>
 			</div>
 		</div>
 
 
 		<!--isStudent-->
 		<div class="checkboxes-container">
-			<md-checkbox [(ngModel)]="userModel['isStudent']"
+			<mat-checkbox [(ngModel)]="userModel['isStudent']"
 						 [align]="'start'"
 						 name="isStudent"
 						 #isStudent="ngModel">
 				Student
-			</md-checkbox>
-			<md-checkbox [(ngModel)]="userModel['hasSeasonTicket']"
+			</mat-checkbox>
+			<mat-checkbox [(ngModel)]="userModel['hasSeasonTicket']"
 						 [align]="'start'"
 						 name="hasSeasonTicket"
 						 #hasSeasonTicket="ngModel">
 				Dauerkarte
-			</md-checkbox>
-			<md-checkbox [(ngModel)]="userModel['isWoelfeClubMember']"
+			</mat-checkbox>
+			<mat-checkbox [(ngModel)]="userModel['isWoelfeClubMember']"
 						 [align]="'start'"
 						 name="isWoelfeClubMember"
 						 #isWoelfeClubMember="ngModel">
 				Woelfeclub-Mitglied
-			</md-checkbox>
+			</mat-checkbox>
 		</div>
 	</div>
 
@@ -131,7 +131,7 @@
 							(onDelete)="deleteAddress(address)"
 		>
 		</memo-address-entry>
-		<a md-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">
+		<a mat-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">
 			Neue Addresse hinzufügen
 		</a>
 
@@ -144,9 +144,9 @@
 		<!--public readonly passwordHash: string,-->
 		<h3>Account Informationen</h3>
 
-		<md-input-container
+		<mat-form-field
 			[dividerColor]="(email.touched && email.invalid) ? 'warn' : 'primary'">
-			<input mdInput
+			<input matInput
 				   placeholder="Email"
 				   type="email"
 				   name="email"
@@ -156,40 +156,40 @@
 				   #email="ngModel"
 				   required>
 			<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-			<md-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
+			<mat-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
 				Email-Adresse muss in der Form <i>test@email.de</i> sein
-			</md-hint>
-		</md-input-container>
+			</mat-hint>
+		</mat-form-field>
 
 
-		<md-input-container>
-			<input mdInput
+		<mat-form-field>
+			<input matInput
 				   placeholder="Neues Passwort"
 				   type="password"
 				   name="password"
 				   [(ngModel)]="userModel['password']"
 				   #passwordInput="ngModel">
-			<md-hint align="end">
+			<mat-hint align="end">
 				<ng2-password-strength-bar
 					[passwordToCheck]="userModel['password']"
 					[barLabel]="''">
 				</ng2-password-strength-bar>
-			</md-hint>
-		</md-input-container>
-		<md-input-container
+			</mat-hint>
+		</mat-form-field>
+		<mat-form-field
 			[dividerColor]="(confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)) ? 'warn' : 'primary'">
-			<input mdInput
+			<input matInput
 				   placeholder="Passwort bestätigen"
 				   type="password"
 				   name="confirm-password-input"
 				   #confirmPasswordInput="ngModel"
 				   [(ngModel)]="confirmedPassword">
 			<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
-			<md-hint align="end" class="error-message"
+			<mat-hint align="end" class="error-message"
 					 *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)">
 				Passwörter stimmen nicht überein
-			</md-hint>
-		</md-input-container>
+			</mat-hint>
+		</mat-form-field>
 
 	</div>
 
@@ -197,45 +197,44 @@
 	<!--Permissions-->
 	<!--todo permissions als flags? dann könnte man zwischen "kann editieren", "kann lesen",
 	"kann erstellen", "kann löschen" auswählen...-->
-	<!--Tours: <md-select>[Admin, Kann löschen</md-select>-->
+	<!--Tours: <mat-select>[Admin, Kann löschen</mat-select>-->
 
 	<div class="club-information" *ngIf="loginService.isLoggedInObservable() | async">
 		<div class="form-divider"></div>
 		<h3>Vereinsinformationen</h3>
 		<div class="club-information-forms">
-			<md-select [(ngModel)]="userModel['clubRole']" placeholder="Vereinsrolle" #clubRoleSelect="ngModel"
-					   [disabled]="!(isAdmin | async)" class="aligned-md-select"
-					   mdTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
-					   [mdTooltipPosition]="'above'"
+			<mat-select [(ngModel)]="userModel['clubRole']" placeholder="Vereinsrolle" #clubRoleSelect="ngModel"
+					   [disabled]="!(isAdmin | async)" class="aligned-mat-select"
+					   matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
+					   [matTooltipPosition]="'above'"
 					   name="clubRoleSelect">
-				<md-option *ngFor="let option of clubRoleOptions" [value]="option">
+				<mat-option *ngFor="let option of clubRoleOptions" [value]="option">
 					{{option}}
-				</md-option>
-			</md-select>
+				</mat-option>
+			</mat-select>
 			<div>
-				<md-input-container
-					mdTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
-					[mdTooltipPosition]="'above'">
-					<input mdInput [mdDatepicker]="joinDatePicker"
+				<mat-form-field
+					matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
+					[matTooltipPosition]="'above'">
+					<input matInput [matDatepicker]="joinDatePicker"
 						   placeholder="Mitglied seit"
 						   [disabled]="!(isAdmin | async)"
 						   [(ngModel)]="userModel['joinDate']"
 						   #joinDateInput="ngModel"
 						   name="joinDateInput" required>
-					<button type="button" [disabled]="!(isAdmin | async)" mdSuffix
-							[mdDatepickerToggle]="joinDatePicker"></button>
-				</md-input-container>
-				<md-datepicker [touchUi]="true" #joinDatePicker></md-datepicker>
+					<mat-datepicker-toggle [disabled]="!(isAdmin | async)" matSuffix [for]="joinDatePicker"></mat-datepicker-toggle>
+				</mat-form-field>
+				<mat-datepicker [touchUi]="true" #joinDatePicker></mat-datepicker>
 			</div>
 		</div>
 	</div>
 
 
 	<div class="form-actions">
-		<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+		<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 		<button color="accent"
 				[disabled]="!userCanSaveChanges(userDataForm)"
-				md-raised-button>
+				mat-raised-button>
 			Speichern
 		</button>
 	</div>

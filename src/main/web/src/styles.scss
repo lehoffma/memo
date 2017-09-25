@@ -20,7 +20,7 @@ md-icon.md-dark {
 }
 
 .error-message {
-	color: mat-color($warn);
+	color: mat-color($warn) !important;
 }
 
 main {
@@ -47,12 +47,16 @@ a.disabled {
 	opacity: 0 !important;
 }
 
-.md-overlay-backdrop {
+.mat-overlay-backdrop {
 	background-color: transparent;
 }
 
-.md-overlay-pane {
+.mat-overlay-pane {
 	background-color: white;
+}
+
+mat-select{
+	padding-top: 0 !important;
 }
 
 .secondary-text {
@@ -100,7 +104,7 @@ a.disabled {
 }
 
 
-.mat-sidenav-container, .mat-sidenav-content {
+.mat-drawer-container, .mat-drawer-content {
 	transform: none !important;
 }
 

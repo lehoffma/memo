@@ -17,8 +17,8 @@
 						   (onChange)="saveDebitInfo($event)">
 	</memo-debit-input-form>
 
-	<button md-raised-button type="submit" color="{{debitFormIsValid ? 'primary' : 'accent'}}">
-		<md-icon *ngIf="loading" class="loading-spinner">refresh</md-icon>
+	<button mat-raised-button type="submit" color="{{debitFormIsValid ? 'primary' : 'accent'}}">
+		<mat-icon *ngIf="loading" class="loading-spinner">refresh</mat-icon>
 		{{debitFormIsValid ? 'Registrierung abschließen' :'Überspringen und abschließen'}}
 	</button>
 </form>

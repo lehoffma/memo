@@ -58,17 +58,17 @@ export class EventUtilityService {
 		return defaultCallback(item);
 	}
 
-	static handleOptionalShopItem<T>(item: ShopItem | Event,callbacks: {
+	static optionalShopItemSwitch<T>(item: ShopItem | Event, callbacks: {
 		merch?: () => T,
 		tours?: () => T,
 		partys?: () => T,
 		members?: () => T,
 		entries?: () => T
 	}):T{
-		return EventUtilityService.handleOptionalShopType<T>(EventUtilityService.getShopItemType(item), callbacks);
+		return EventUtilityService.shopItemSwitch<T>(EventUtilityService.getShopItemType(item), callbacks);
 	}
 
-	static handleOptionalShopType<T>(type: ShopItemType, callbacks: {
+	static shopItemSwitch<T>(type: ShopItemType, callbacks: {
 		merch?: () => T,
 		tours?: () => T,
 		partys?: () => T,
@@ -90,10 +90,10 @@ export class EventUtilityService {
 		if (!callbacks.entries) {
 			callbacks.entries = () => null;
 		}
-		return EventUtilityService.handleShopType(type, callbacks.merch, callbacks.tours, callbacks.partys, callbacks.members, callbacks.entries);
+		return EventUtilityService.itemTypeSwitch(type, callbacks.merch, callbacks.tours, callbacks.partys, callbacks.members, callbacks.entries);
 	}
 
-	static handleShopType<T>(type: ShopItemType,
+	static itemTypeSwitch<T>(type: ShopItemType,
 							 merchCallback: () => T,
 							 tourCallback: () => T,
 							 partyCallback: () => T,

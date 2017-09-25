@@ -83,7 +83,7 @@ export class CanModifyItemGuard implements CanActivate {
 							this.router.navigate(["not-allowed"]);
 						}
 					});
-			});
+			})
 	}
 
 }

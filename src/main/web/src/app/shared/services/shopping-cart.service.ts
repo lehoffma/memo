@@ -48,6 +48,7 @@ export class ShoppingCartService implements OnInit {
 	 */
 	reset() {
 		this._content.next({tours: [], partys: [], merch: []});
+		localStorage.setItem(this.localStorageKey, "");
 	}
 
 	/**

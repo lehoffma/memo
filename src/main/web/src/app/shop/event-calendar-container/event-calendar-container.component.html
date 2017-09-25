@@ -3,16 +3,16 @@
 		<span class="secondary-text">Ansichten:</span>
 	</div>
 	<div class="calendar-options-actions">
-		<md-button-toggle-group #calendarViewGroup="mdButtonToggleGroup"
+		<mat-button-toggle-group #calendarViewGroup="matButtonToggleGroup"
 								[(ngModel)]="selectedView" (ngModelChange)="navigateToRoute(selectedView)">
-			<md-button-toggle value="calendar">
-				<md-icon>event</md-icon>
-			</md-button-toggle>
-			<md-button-toggle value="list">
-				<md-icon>list</md-icon>
-			</md-button-toggle>
-		</md-button-toggle-group>
-		<button md-raised-button color="accent" (click)="onDayClick()">
+			<mat-button-toggle value="calendar">
+				<mat-icon>event</mat-icon>
+			</mat-button-toggle>
+			<mat-button-toggle value="list">
+				<mat-icon>list</mat-icon>
+			</mat-button-toggle>
+		</mat-button-toggle-group>
+		<button mat-raised-button color="accent" (click)="onDayClick()">
 			Hinzufügen
 		</button>
 	</div>

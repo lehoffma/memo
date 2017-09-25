@@ -1,5 +1,5 @@
 <div class="cart">
-	<md-card>
+	<mat-card>
 		<h2 class="cart-title mat-headline">{{'Warenkorb'|uppercase}}</h2>
 		<div *ngIf="shoppingCartItems|async as events">
 			<memo-cart-entry *ngFor="let tour of events.tours" [cartItem]="tour">
@@ -18,12 +18,12 @@
 		</div>
 
 		<div class="btn-flexbox">
-			<a md-raised-button color="accent"
+			<a mat-raised-button color="accent"
 			   [disabled]="(totalAmount|async) === 0"
 			   [class.disabled]="(totalAmount|async) === 0"
 			   routerLink="/checkout">
 				{{'Zur Kasse'|uppercase}}
 			</a>
 		</div>
-	</md-card>
+	</mat-card>
 </div>

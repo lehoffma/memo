@@ -10,7 +10,7 @@ import {Router} from "@angular/router";
 import {MdDialog} from "@angular/material";
 import {EditCommentDialogComponent} from "../edit-comment-dialog/edit-comment-dialog.component";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
-import * as moment from "moment";
+import * as moment from "moment-timezone";
 
 @Component({
 	selector: "memo-comment-block",

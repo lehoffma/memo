@@ -1,13 +1,13 @@
 
-md-list > span:last-child > md-divider {
+mat-list > span:last-child > mat-divider {
 	display: none;
 }
 
 :host {
-	> md-list {
+	> mat-list {
 		margin-top: -1rem;
 
-		md-list-item {
+		mat-list-item {
 			cursor: pointer;
 
 			&:hover {

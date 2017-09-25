@@ -12,12 +12,12 @@ h3 {
 .name-container {
 	display: flex;
 	justify-content: space-between;
-	md-input-container {
+	mat-form-field {
 		width: 45%;
 	}
 }
 
-.aligned-md-select {
+.aligned-mat-select {
 	margin-top: -8px;
 	/deep/ .mat-select-placeholder.mat-floating-placeholder {
 		top: -16px !important;
@@ -40,11 +40,11 @@ h3 {
 			align-items: center;
 			margin-top: 10px;
 
-			md-input-container,
-			md-select,
+			mat-form-field,
+			mat-select,
 			> div {
 				width: 45%;
-				> md-input-container {
+				> mat-form-field {
 					width: 100%;
 				}
 			}
@@ -72,11 +72,11 @@ h3 {
 		align-items: center;
 		margin-top: 15px;
 
-		md-select,
+		mat-select,
 		> div {
 			width: 45%;
 
-			> md-input-container {
+			> mat-form-field {
 				width: 100%;
 			}
 		}

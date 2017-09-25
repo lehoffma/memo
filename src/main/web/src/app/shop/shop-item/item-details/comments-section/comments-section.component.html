@@ -18,13 +18,13 @@
 	Bisher keine Kommentare vorhanden.
 </div>
 
-<button md-button (click)="toggleShowMore()" *ngIf="comments?.length > DEFAULT_AMOUNT_OF_COMMENTS_SHOWN">
+<button mat-button (click)="toggleShowMore()" *ngIf="comments?.length > DEFAULT_AMOUNT_OF_COMMENTS_SHOWN">
 		<span>
 			{{amountOfCommentsShown === DEFAULT_AMOUNT_OF_COMMENTS_SHOWN ? 'Mehr Kommentare' : 'Weniger Kommentare'}}
 		</span>
-	<md-icon [@expandedState]="expandState">
+	<mat-icon [@expandedState]="expandState">
 		expand_more
-	</md-icon>
+	</mat-icon>
 </button>
 
 <hr *ngIf="loggedInUser$ | async"/>

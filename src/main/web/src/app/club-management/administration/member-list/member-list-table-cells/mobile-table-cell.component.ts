@@ -5,9 +5,9 @@ import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/
 	selector: 'td [memoMobileTableCellComponent]',
 	template: `
 		<span class="action-text">{{data}}</span>
-		<a href="tel:{{data}}" md-button color="accent">
+		<a href="tel:{{data}}" mat-button color="accent">
 			<div>
-				<md-icon>smartphone</md-icon>
+				<mat-icon>smartphone</mat-icon>
 				<span class="icon-text">Anrufen</span>
 			</div>
 		</a>

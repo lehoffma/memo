@@ -126,12 +126,16 @@ export class SignUpService {
 	 * @param {FormData} picture
 	 * @returns {Promise<User>}
 	 */
-	async uploadProfilePicture(user:User, picture: FormData):Promise<User>{
-		let imagePath = await this.imageUploadService.uploadImage(picture)
-			.map(response => response.imagePath)
-			.toPromise();
+	uploadProfilePicture(user: User, picture: FormData) {
+		console.warn("uploading picture not implemented");
 
-		return user.setProperties({imagePath});
+		if(user){
+			return Observable.of(user);
+		}
+
+		return this.imageUploadService.uploadImage(picture)
+			.map(response => response.imagePath)
+			.map(imagePath => user.setProperties({imagePath}));
 	}
 
 	/**
@@ -164,6 +168,23 @@ export class SignUpService {
 				break;
 			case SignUpSection.PaymentMethods:
 				this.newUserDebitInfo = paymentInfo;
+				//add bank account address to user
+				if(paymentInfo && paymentInfo.address){
+					await this.addressService.add(Address.create()
+						.setProperties({
+							...paymentInfo.address
+						}))
+						.do(address => this.newUserAddresses.push(address))
+						.do(address => this.newUser.addresses.push(address.id))
+						.flatMap(_ => this.bankAccountService.add(BankAccount.create()
+							.setProperties({
+								bic: this.newUserDebitInfo.bic,
+								iban: this.newUserDebitInfo.iban,
+								name: this.newUserDebitInfo.address.name
+							})))
+						.do(bankAccount => this.newUser.bankAccounts.push(bankAccount.id))
+						.toPromise();
+				}
 				break;
 		}
 
@@ -172,18 +193,9 @@ export class SignUpService {
 
 		if (isLastScreen) {
 			this.submittingFinalUser = true;
-			console.warn("uploading picture not implemented");
-			// this.newUser = await this.uploadProfilePicture(this.newUser, this.newUserProfilePicture);
-			this.userService.add(this.newUser, this.newUserProfilePicture)
-				.flatMap(newUser => this.newUserDebitInfo && this.newUserDebitInfo.bic !== undefined
-					? this.bankAccountService.add(BankAccount.create()
-						.setProperties({
-							bic: this.newUserDebitInfo.bic,
-							iban: this.newUserDebitInfo.iban,
-							name: this.newUserDebitInfo.name
-						}))
-					: Observable.of(null)
-				)
+			//upload profile picture
+			this.uploadProfilePicture(this.newUser, this.newUserProfilePicture)
+				.flatMap(newUser => this.userService.add(newUser, this.newUserProfilePicture))
 				.subscribe(newUserId => {
 						this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
 							duration: 1000

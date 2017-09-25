@@ -58,6 +58,10 @@
 }
 
 .cart-entry-amount {
+	mat-select {
+		padding-top: 0;
+		background: white;
+	}
 
 	/deep/ .mat-select-trigger {
 		min-width: 50px;

@@ -1,6 +1,6 @@
 <form (ngSubmit)="emitOnChange(debitInputForm)" #debitInputForm="ngForm" novalidate>
 	<h3>Kontoinformationen</h3>
-	<md-input-container
+	<mat-form-field
 		[dividerColor]="(ibanInput.touched && (ibanInput.invalid || !isValidIBAN(model.iban))) ? 'warn'  : 'primary'">
 		<input
 			placeholder="IBAN"
@@ -8,14 +8,14 @@
 			#ibanInput="ngModel"
 			[(ngModel)]="model.iban"
 			(blur)="emitOnChange(debitInputForm)"
-			mdInput required>
+			matInput required>
 		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
-		<md-hint align="end" class="error-message"
+		<mat-hint align="end" class="error-message"
 				 *ngIf="ibanInput.touched && (ibanInput.invalid || !isValidIBAN(model.iban))">
 			{{model.iban.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist inkorrekt!"}}
-		</md-hint>
-	</md-input-container>
-	<md-input-container
+		</mat-hint>
+	</mat-form-field>
+	<mat-form-field
 		[dividerColor]="(bicInput.touched && bicInput.invalid) ? 'warn'  : 'primary'">
 		<input
 			placeholder="BIC"
@@ -24,92 +24,104 @@
 			pattern="[a-zA-Z]{6}[a-zA-Z2-9][a-nA-Np-zP-Z0-9]([a-wyzA-WYZ0-9][a-zA-Z0-9]{2})?([xX]{3})?"
 			[(ngModel)]="model.bic"
 			(blur)="emitOnChange(debitInputForm)"
-			mdInput required>
+			matInput required>
 		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
-		<md-hint align="end" class="error-message"
+		<mat-hint align="end" class="error-message"
 				 *ngIf="bicInput.touched && bicInput.invalid">
 			{{model.bic.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene BIC ist inkorrekt!"}}
-		</md-hint>
-	</md-input-container>
+		</mat-hint>
+	</mat-form-field>
 
 	<!--<memo-address-selection [addresses]="(userAddresses$ | async)" (addressChange)="onAddressChange($event)">-->
 	<!--</memo-address-selection>-->
 
 	<h3>Kontoinhaber</h3>
-	<md-input-container>
+	<mat-form-field>
 		<input placeholder="Name"
 			   name="nameInput"
 			   #nameInput="ngModel"
-			   [(ngModel)]="model.name"
+			   [(ngModel)]="model.address.name"
 			   (blur)="emitOnChange(debitInputForm)"
-			   mdInput required>
-		<md-hint align="end" class="error-message" *ngIf="nameInput.touched && (nameInput.invalid)">
+			   matInput required>
+		<mat-hint align="end" class="error-message" *ngIf="nameInput.touched && (nameInput.invalid)">
 			Dies ist ein Pflichtfeld!
-		</md-hint>
-	</md-input-container>
-	<md-input-container>
-		<input placeholder="Firma"
-			   name="companyInput"
-			   #companyInput="ngModel"
-			   [(ngModel)]="model.company"
-			   (blur)="emitOnChange(debitInputForm)"
-			   mdInput>
-	</md-input-container>
+		</mat-hint>
+	</mat-form-field>
+	<!--<mat-form-field>-->
+		<!--<input placeholder="Firma"-->
+			   <!--name="companyInput"-->
+			   <!--#companyInput="ngModel"-->
+			   <!--[(ngModel)]="model.address.company"-->
+			   <!--(blur)="emitOnChange(debitInputForm)"-->
+			   <!--matInput>-->
+	<!--</mat-form-field>-->
 
-	<md-input-container>
-		<input placeholder="Strasse / Nr."
+	<mat-form-field>
+		<input placeholder="Strasse"
 			   name="streetInput"
 			   #streetInput="ngModel"
-			   [(ngModel)]="model.street"
+			   [(ngModel)]="model.address.street"
 			   (blur)="emitOnChange(debitInputForm)"
-			   mdInput required>
-		<md-hint align="end" class="error-message" *ngIf="streetInput.touched && (streetInput.invalid)">
+			   matInput required>
+		<mat-hint align="end" class="error-message" *ngIf="streetInput.touched && (streetInput.invalid)">
 			Dies ist ein Pflichtfeld!
 			<!--todo validation?-->
-		</md-hint>
-	</md-input-container>
+		</mat-hint>
+	</mat-form-field>
+	<mat-form-field>
+		<input placeholder="Nr."
+			   name="streetNrInput"
+			   #streetNrInput="ngModel"
+			   [(ngModel)]="model.address.streetNr"
+			   (blur)="emitOnChange(debitInputForm)"
+			   matInput required>
+		<mat-hint align="end" class="error-message" *ngIf="streetNrInput.touched && (streetNrInput.invalid)">
+			Dies ist ein Pflichtfeld!
+			<!--todo validation?-->
+		</mat-hint>
+	</mat-form-field>
 
-	<md-input-container>
+	<mat-form-field>
 		<input placeholder="PLZ"
 			   name="plzInput"
 			   #plzInput="ngModel"
 			   pattern="^([0]{1}[1-9]{1}|[1-9]{1}[0-9]{1})[0-9]{3}$"
-			   [(ngModel)]="model.plz"
+			   [(ngModel)]="model.address.zip"
 			   (blur)="emitOnChange(debitInputForm)"
-			   mdInput required>
-		<md-hint align="end" class="error-message" *ngIf="plzInput.touched && (plzInput.invalid)">
-			{{model.plz.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene PLZ ist nicht gültig!"}}
-		</md-hint>
-	</md-input-container>
+			   matInput required>
+		<mat-hint align="end" class="error-message" *ngIf="plzInput.touched && (plzInput.invalid)">
+			{{model.address.zip.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene PLZ ist nicht gültig!"}}
+		</mat-hint>
+	</mat-form-field>
 
-	<md-input-container>
+	<mat-form-field>
 		<input placeholder="Ort"
 			   name="residenceInput"
 			   #residenceInput="ngModel"
-			   [(ngModel)]="model.residence"
+			   [(ngModel)]="model.address.city"
 			   (blur)="emitOnChange(debitInputForm)"
-			   mdInput required>
-		<md-hint align="end" class="error-message" *ngIf="residenceInput.touched && (residenceInput.invalid)">
+			   matInput required>
+		<mat-hint align="end" class="error-message" *ngIf="residenceInput.touched && (residenceInput.invalid)">
 			Dies ist ein Pflichtfeld!
-		</md-hint>
-	</md-input-container>
+		</mat-hint>
+	</mat-form-field>
 
 	<!--todo: autocomplete with a list of countries-->
-	<md-input-container>
+	<mat-form-field>
 		<input placeholder="Land"
 			   name="countryInput"
 			   #countryInput="ngModel"
-			   [(ngModel)]="model.country"
+			   [(ngModel)]="model.address.country"
 			   (blur)="emitOnChange(debitInputForm)"
-			   mdInput required>
-		<md-hint align="end" class="error-message" *ngIf="countryInput.touched && (countryInput.invalid)">
+			   matInput required>
+		<mat-hint align="end" class="error-message" *ngIf="countryInput.touched && (countryInput.invalid)">
 			Dies ist ein Pflichtfeld!
-		</md-hint>
-	</md-input-container>
+		</mat-hint>
+	</mat-form-field>
 
 	<!--<button tyemitOnChangebmit"-->
 	<!--[disabled]="!debitInputForm.form.valid"-->
-	<!--md-raised-button-->
+	<!--mat-raised-button-->
 	<!--color="primary">-->
 	<!--Speichern-->
 	<!--</button>-->

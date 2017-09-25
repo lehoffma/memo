@@ -1,11 +1,11 @@
-<div md-menu-item
+<div mat-menu-item
 	 class="multi-level-select-entry-parent"
 	 (click)="parentOnClick(option, $event)">
 
 	{{option.name}}
-	<md-icon *ngIf="option.children" [@expandedState]="option.expanded">
+	<mat-icon *ngIf="option.children" [@expandedState]="option.expanded">
 		expand_more
-	</md-icon>
+	</mat-icon>
 </div>
 
 <ng-template [ngIf]="option.expanded">
@@ -15,16 +15,16 @@
 			 title="{{child.selected ? 'Filter löschen' : 'Filter auswählen'}}"
 			 [ngClass]="{'selected': option.selectType === 'single' && child.selected}"
 			 (click)="childOnClick(child, $event)"
-			 md-menu-item>
+			 mat-menu-item>
 
 			{{child.name}}
-			<md-checkbox *ngIf="option.selectType === 'multiple'"
+			<mat-checkbox *ngIf="option.selectType === 'multiple'"
 						 class="multi-level-select-checkbox"
 						 [(ngModel)]="child.selected"
 						 name="multiSelectCheckbox"
 						 #multiSelectCheckbox="ngModel">
 
-			</md-checkbox>
+			</mat-checkbox>
 		</div>
 
 		<ng-template #nestedLayer>

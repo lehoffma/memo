@@ -13,6 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -174,7 +178,9 @@ public class CommentServlet extends HttpServlet {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         c = gson.fromJson(jComment, Comment.class);
 
-        c.setTimeStamp(LocalDateTime.now());
+        TemporalAccessor timeStamp = DateTimeFormatter.ISO_DATE_TIME.parse(jComment.get("timeStamp").getAsString());
+        LocalDateTime date = LocalDateTime.from(timeStamp);
+        c.setTimeStamp(date);
 
         return c;
     }

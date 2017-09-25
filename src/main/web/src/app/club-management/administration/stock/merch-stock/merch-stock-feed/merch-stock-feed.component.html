@@ -15,19 +15,19 @@
 					</h4>
 				</a>
 			</div>
-			<md-menu #menu="mdMenu">
-				<a md-menu-item
+			<mat-menu #menu="matMenu">
+				<a mat-menu-item
 				   routerLink="/merch/{{merch.item.id}}/edit">
-					<md-icon>edit</md-icon>
+					<mat-icon>edit</mat-icon>
 					<span>Bearbeiten</span>
 				</a>
-				<button md-menu-item type="button" (click)="deleteMerch(merch.item)">
-					<md-icon>delete</md-icon>
+				<button mat-menu-item type="button" (click)="deleteMerch(merch.item)">
+					<mat-icon>delete</mat-icon>
 					<span>Löschen</span>
 				</button>
-			</md-menu>
-			<button md-icon-button [mdMenuTriggerFor]="menu">
-				<md-icon>more_vert</md-icon>
+			</mat-menu>
+			<button mat-icon-button [matMenuTriggerFor]="menu">
+				<mat-icon>more_vert</mat-icon>
 			</button>
 		</div>
 

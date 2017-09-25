@@ -58,7 +58,7 @@ export class EntryService extends ServletService<Entry> {
 		console.log(`entryId ${entryId} is not cached, retrieving from db`);
 
 		return this.performRequest(this.http.get<EntryApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("entryId", "" + entryId)
+			params: new HttpParams().set("id", "" + entryId)
 		}))
 			.flatMap(json => this.getEntryFromJSON(json.entries[0]))
 			.do(entry => this.cache.addOrModify(entry));
