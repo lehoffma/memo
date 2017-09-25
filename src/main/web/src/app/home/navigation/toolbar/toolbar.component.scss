@@ -1,9 +1,9 @@
 
-md-toolbar {
+mat-toolbar {
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 
-md-toolbar, :host /deep/ md-toolbar-row {
+mat-toolbar, :host /deep/ mat-toolbar-row {
 	transition: height 0.5s;
 	height: 64px;
 }
@@ -58,7 +58,7 @@ md-toolbar, :host /deep/ md-toolbar-row {
 }
 
 @media all and (min-width: 1100px) {
-	md-toolbar, :host /deep/ md-toolbar-row {
+	mat-toolbar, :host /deep/ mat-toolbar-row {
 		height: 64px;
 	}
 
@@ -70,7 +70,7 @@ md-toolbar, :host /deep/ md-toolbar-row {
 		display: flex;
 	}
 
-	md-toolbar {
+	mat-toolbar {
 		padding: 0;
 	}
 

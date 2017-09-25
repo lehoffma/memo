@@ -6,12 +6,18 @@ div {
 	flex-direction: column;
 }
 
+:host{
+	mat-form-field{
+		width: 100%;
+	}
+}
+
 .events-container {
-	md-input-container {
+	mat-form-field {
 		margin-top: 5px;
 	}
 
-	md-chip {
+	mat-chip {
 		display: flex !important;
 		justify-content: space-between;
 		align-items: center;

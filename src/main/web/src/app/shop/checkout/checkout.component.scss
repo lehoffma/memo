@@ -10,10 +10,6 @@
 }
 
 .checkout-options-container {
-	//display: flex;
-	//justify-content: center;
-	//flex-direction: column;
-	//align-items: center;
 
 	display: flex;
 	flex-wrap: wrap;
@@ -24,13 +20,17 @@
 	height: calc(100% - 80px);
 	overflow-y: auto;
 
+	mat-card{
+		background: #fafafa;
+	}
+
 	@media all and (min-width: 500px) {
 		padding-top: 20px;
 		padding-bottom: 20px;
 	}
 }
 
-md-card {
+mat-card {
 	max-width: 500px;
 	width: 100%;
 	margin: auto;
@@ -54,9 +54,8 @@ md-card {
 
 .checkout-title {
 	font-weight: 200;
-	border-bottom: 1px solid #E0E0E0;
-	background-color: mat-color($primary);
-	color: white;
+	border-bottom: 1px solid #e6e6e6;
+	background-color: white;
 	padding: 24px 16px 10px 24px;
 	margin-top: -24px !important;
 	margin-left: -24px;

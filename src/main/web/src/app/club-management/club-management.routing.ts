@@ -19,8 +19,8 @@ const routes: Route[] = [
 
 	{
 		path: ":itemType/:eventId/costs",
-		component: AccountingComponent,
-		canActivate: [/*todo is-event guard*/ IsTreasurerGuard]
+		redirectTo: "management/costs?eventIds=:eventId",
+		pathMatch: "full"
 	},
 
 	//todo update once there is more than one type of stock

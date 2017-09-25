@@ -1,38 +1,38 @@
 <form #modifyStockItemForm="ngForm" class="dialog-container" (ngSubmit)="emitDoneEvent()">
 	<div>
-		<!--<h1 md-dialog-title>Füge eine weitere Farbe hinzu</h1>-->
-		<div md-dialog-content class="dialog-content-container">
-			<md-input-container>
+		<!--<h1 matDialogTitle>Füge eine weitere Farbe hinzu</h1>-->
+		<div mat-dialog-content class="dialog-content-container">
+			<mat-form-field>
 				<input placeholder="Größe"
 					   #sizeInput="ngModel"
 					   name="sizeInput" required
-					   [(ngModel)]="size" mdInput>
-				<md-hint *ngIf="sizeInput.touched && !sizeInput.valid" class="error-message">
+					   [(ngModel)]="size" matInput>
+				<mat-hint *ngIf="sizeInput.touched && !sizeInput.valid" class="error-message">
 					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
-			<md-input-container>
+				</mat-hint>
+			</mat-form-field>
+			<mat-form-field>
 				<input placeholder="Anzahl"
 					   type="number" min="0" step="1" required
 					   (keypress)="($event.charCode == 8 || $event.charCode == 0) ? null : $event.charCode >= 48 && $event.charCode <= 57"
 					   #amountInput="ngModel"
 					   name="amountInput"
-					   [(ngModel)]="amount" mdInput>
-				<md-hint *ngIf="amountInput.touched && !amountInput.valid" class="error-message">
+					   [(ngModel)]="amount" matInput>
+				<mat-hint *ngIf="amountInput.touched && !amountInput.valid" class="error-message">
 					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
+				</mat-hint>
+			</mat-form-field>
 
 
-			<md-input-container>
+			<mat-form-field>
 				<input placeholder="Name der Farbe"
 					   #colorInput="ngModel" required
 					   name="colorInput"
-					   [(ngModel)]="colorName" mdInput>
-				<md-hint *ngIf="colorInput.touched && !colorInput.valid" class="error-message">
+					   [(ngModel)]="colorName" matInput>
+				<mat-hint *ngIf="colorInput.touched && !colorInput.valid" class="error-message">
 					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
+				</mat-hint>
+			</mat-form-field>
 
 			<span [(colorPicker)]="color"
 				  [cpWidth]="'230px'"
@@ -43,12 +43,12 @@
 		</div>
 
 	</div>
-	<div md-dialog-actions>
-		<button md-icon-button type="button" md-dialog-close (click)="color=''">
-			<md-icon>arrow_back</md-icon>
+	<div mat-dialog-actions>
+		<button mat-icon-button type="button" matDialogClose (click)="color=''">
+			<mat-icon>arrow_back</mat-icon>
 		</button>
-		<button md-icon-button [disabled]="!modifyStockItemForm.form.valid" type="submit" color="primary">
-			<md-icon>done</md-icon>
+		<button mat-icon-button [disabled]="!modifyStockItemForm.form.valid" type="submit" color="primary">
+			<mat-icon>done</mat-icon>
 		</button>
 	</div>
 

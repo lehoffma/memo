@@ -4,7 +4,7 @@ import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/
 @Component({
 	selector: "td [booleanCheckMarkCell]",
 	template: `
-		<span class="data-as-icon"><md-icon [ngClass]="{'true': data}">{{data ? 'check' : 'clear'}}</md-icon></span>
+		<span class="data-as-icon"><mat-icon [ngClass]="{'true': data}">{{data ? 'check' : 'clear'}}</mat-icon></span>
 	`,
 	styleUrls: ["./boolean-checkmark-cell.component.scss"]
 })

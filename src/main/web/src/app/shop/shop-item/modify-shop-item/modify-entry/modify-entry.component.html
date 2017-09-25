@@ -3,73 +3,75 @@
 	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
 
 		<div class="entry-info-container">
-			<md-input-container>
-				<input mdInput name="titleInput"
+			<mat-form-field>
+				<input matInput name="titleInput"
 					   required
 					   placeholder="Titel"
 					   #titleInput="ngModel"
 					   [(ngModel)]="entryModel['name']">
-				<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+				<mat-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
 					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
-			<md-select [(ngModel)]="entryModel['category']" placeholder="Kategorie" #categorySelect="ngModel"
+				</mat-hint>
+			</mat-form-field>
+			<mat-select [(ngModel)]="entryModel['category']"
+						[compareWith]="compareCategories"
+						placeholder="Kategorie" #categorySelect="ngModel"
 					   name="categorySelect">
-				<md-option *ngFor="let option of (entryCategories$ | async)" [value]="option">
+				<mat-option *ngFor="let option of (entryCategories$ | async)" [value]="option">
 					{{option.name}}
-				</md-option>
-			</md-select>
+				</mat-option>
+			</mat-select>
 		</div>
 
 		<div class="entry-info-container">
 			<div>
-				<md-input-container>
-					<input mdInput [mdDatepicker]="myDatepicker"
+				<mat-form-field>
+					<input matInput [matDatepicker]="myDatepicker"
 						   placeholder="Datum"
 						   [(ngModel)]="entryModel['date']"
 						   #dateInput="ngModel"
 						   name="dateInput" required>
-					<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>
-				</md-input-container>
-				<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>
+					<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+				</mat-form-field>
+				<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
 			</div>
 			<div>
-				<md-input-container>
-					<input mdInput name="valueInput"
+				<mat-form-field>
+					<input matInput name="valueInput"
 						   type="number" required
 						   placeholder="Wert"
 						   #valueInput="ngModel"
 						   [(ngModel)]="entryModel['value']">
-					<span mdSuffix>€</span>
-					<md-hint *ngIf="valueInput.touched && !valueInput.valid" class="error-message" align="end">
+					<span matSuffix>€</span>
+					<mat-hint *ngIf="valueInput.touched && !valueInput.valid" class="error-message" align="end">
 						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
+					</mat-hint>
+				</mat-form-field>
 			</div>
 		</div>
 
 		<!--todo auto complete für event das dem entry zugewiesen ist-->
 
-		<md-input-container>
-			<input mdInput
+		<mat-form-field>
+			<input matInput
 				   tabindex="-1"
 				   placeholder="Event"
 				   name="eventInput"
 				   [formControl]="autocompleteFormControl"
-				   [mdAutocomplete]="auto" required>
-		</md-input-container>
-		<md-autocomplete #auto="mdAutocomplete" [displayWith]="displayFn">
-			<md-option *ngFor="let option of filteredOptions | async" [value]="option">
+				   [matAutocomplete]="auto" required>
+		</mat-form-field>
+		<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+			<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
 				{{option.title}}
-			</md-option>
-		</md-autocomplete>
+			</mat-option>
+		</mat-autocomplete>
 
 		<!--below all that-->
 		<div class="form-buttons">
 			<!--	cancel button-->
-			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
-			<button md-raised-button color="accent"
+			<button mat-raised-button color="accent"
 					[disabled]="!modifyShopItemForm.form.valid"
 					type="submit">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}

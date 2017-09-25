@@ -6,7 +6,7 @@
 	justify-content: center;
 	width: 100%;
 
-	md-tab-group{
+	mat-tab-group{
 		background-color: #fafafa;
 		width: 100%;
 		@extend .mat-elevation-z3;
@@ -28,10 +28,10 @@
 			max-width: 1530px;
 		}
 	}
-	md-tab{
+	mat-tab{
 		height: 100%;
 	}
-	/deep/ md-tab-header{
+	/deep/ mat-tab-header{
 		background-color: white;
 	}
 

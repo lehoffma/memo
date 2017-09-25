@@ -5,9 +5,10 @@
 	display: block;
 	@extend .mat-elevation-z3;
 	background-color: #fafafa;
-	border-top: 5px solid mat-color($warn);
+
 	h3{
 		background-color: white;
+		border-bottom: 1px solid #e6e6e6;
 		margin: 0;
 		text-align: center;
 		padding: 1rem;

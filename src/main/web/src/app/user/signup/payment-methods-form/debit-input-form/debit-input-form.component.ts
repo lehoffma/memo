@@ -1,7 +1,5 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {PaymentInfo} from "./payment-info";
-import {Observable} from "rxjs/Observable";
-import {User} from "../../../../shared/model/user";
 import {Address} from "../../../../shared/model/address";
 
 declare var IBAN;
@@ -16,12 +14,10 @@ export class DebitInputFormComponent implements OnInit, OnChanges {
 	model: PaymentInfo = {
 		iban: "",
 		bic: "",
-		name: this.name,
-		company: "",
-		street: "",
-		plz: "",
-		residence: "",
-		country: ""
+		address: Address.create()
+			.setProperties({
+				name: this.name
+			})
 	};
 	@Output() onChange = new EventEmitter<{ formIsValid: boolean, paymentInfo: PaymentInfo }>();
 
@@ -35,7 +31,9 @@ export class DebitInputFormComponent implements OnInit, OnChanges {
 	ngOnChanges(changes: SimpleChanges): void {
 		// throw new Error("Method not implemented.");
 		if (changes["name"]) {
-			this.model.name = changes["name"].currentValue;
+			this.model.address.setProperties({
+				name: changes["name"].currentValue
+			});
 		}
 	}
 

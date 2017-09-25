@@ -39,14 +39,14 @@
 
 	<h1>Meilenwölfe Shop</h1>
 	<div *ngIf="!(userIsLoggedIn$ | async)">
-		<a md-raised-button routerLink="/login" class="login-button" color="primary">Login</a>
-		<a md-raised-button routerLink="/signup" color="accent">Registrieren</a>
+		<a mat-raised-button routerLink="/login" class="login-button" color="primary">Login</a>
+		<a mat-raised-button routerLink="/signup" color="accent">Registrieren</a>
 	</div>
 </div>
 
 
 <div class="category-overview-container">
-	<div class="overview-preview-container" *ngFor="let eventPreview of events">
+	<div class="overview-preview-container mat-elevation-z1" *ngFor="let eventPreview of events">
 		<div class="overview-preview-header">
 			<h2>{{eventPreview.title}}</h2>
 			<a routerLink="{{eventPreview.route}}">MEHR</a>

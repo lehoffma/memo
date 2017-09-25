@@ -5,6 +5,7 @@ import {Gender} from "../gender";
 import {isNumber} from "../../../util/util";
 import * as moment from "moment-timezone";
 import {PaymentMethod, toPaymentMethod} from "../../../shop/checkout/payment/payment-method";
+import {Moment} from "moment";
 
 
 export abstract class BaseObject<T extends BaseObject<T>> {
@@ -32,7 +33,7 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 	setProperties(properties: Partial<T>) {
 		Object.keys(properties)
 			.forEach((key: keyof (T | this)) => {
-				let value: (string | number | number[] | Date | UserPermissions | any) = (<any>properties)[key];
+				let value: (string | number | number[] | Moment | UserPermissions | any) = (<any>properties)[key];
 				if (isArray(value)) {
 
 				} else if ((key.toLowerCase().includes("date")
@@ -44,7 +45,7 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 					}
 					else{
 						// value = moment.tz(value, "Europe/Berlin");
-						value = moment(value).tz("Europe/Berlin").locale("de");
+						value = moment(value);
 					}
 				} else if (isNumber(value)) {
 					value = +value;

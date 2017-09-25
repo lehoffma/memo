@@ -25,12 +25,12 @@
 </div>
 
 
-<a md-fab color="accent" *ngIf="userCanAddMerch$ | async"
-		[md-tooltip]="'Artikel hinzufügen'"
-		[mdTooltipPosition]="'above'"
+<a mat-fab color="accent" *ngIf="userCanAddMerch$ | async"
+		[matTooltip]="'Artikel hinzufügen'"
+		[matTooltipPosition]="'above'"
 		routerLink="/merch/create"
 		class="add-merch-button">
-	<md-icon>add</md-icon>
+	<mat-icon>add</mat-icon>
 </a>
 
 <memo-merch-stock-feed [stockEntryList]="stockEntryList$ | async">

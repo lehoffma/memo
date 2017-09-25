@@ -28,8 +28,8 @@ import {AgmCoreModule} from "@agm/core";
 		AgmCoreModule,
 		MemoMaterialModule,
 		SharedModule,
+		ModifyShopItemRoutingModule,
 		UserModule,
-		ModifyShopItemRoutingModule
 	],
 	exports: [],
 	declarations: [

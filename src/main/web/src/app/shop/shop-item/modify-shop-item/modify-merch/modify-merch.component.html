@@ -11,61 +11,61 @@
 
 		<h2>Merch-Informationen</h2>
 
-		<md-input-container>
-			<input mdInput name="titleInput"
+		<mat-form-field>
+			<input matInput name="titleInput"
 				   required
 				   placeholder="Titel"
 				   #titleInput="ngModel"
 				   [(ngModel)]="merchModel['title']">
-			<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+			<mat-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
 				Dieses Feld darf nicht leer bleiben!
-			</md-hint>
-		</md-input-container>
+			</mat-hint>
+		</mat-form-field>
 
 		<div class="merch-info-container">
-			<md-input-container>
-				<input mdInput name="priceInput"
+			<mat-form-field>
+				<input matInput name="priceInput"
 					   type="number" required
 					   pattern="^[\d]+((\.|\,)[\d]{1,2})?$"
 					   placeholder="Preis (max. 2 Nachkommastellen)"
 					   (input)="checkValidityOfPrice()"
 					   #priceInput="ngModel"
 					   [(ngModel)]="merchModel['price']">
-				<span mdSuffix>€</span>
-				<md-hint *ngIf="priceInput.touched && !priceInput.valid && priceInput.value === ''"
+				<span matSuffix>€</span>
+				<mat-hint *ngIf="priceInput.touched && !priceInput.valid && priceInput.value === ''"
 						 class="error-message" align="end">
 					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-				<md-hint *ngIf="!priceIsValid"
+				</mat-hint>
+				<mat-hint *ngIf="!priceIsValid"
 						 class="error-message" align="end">
 					Der Preis ist inkorrekt formatiert!
-				</md-hint>
-			</md-input-container>
-			<md-input-container>
-				<input mdInput name="materialInput"
+				</mat-hint>
+			</mat-form-field>
+			<mat-form-field>
+				<input matInput name="materialInput"
 					   type="text" required
 					   placeholder="Material"
 					   #materialInput="ngModel"
 					   [(ngModel)]="merchModel['material']">
-				<md-hint *ngIf="materialInput.touched && !materialInput.valid" class="error-message" align="end">
+				<mat-hint *ngIf="materialInput.touched && !materialInput.valid" class="error-message" align="end">
 					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
+				</mat-hint>
+			</mat-form-field>
 		</div>
 
-		<md-input-container class="description-input">
-			<textarea autosize mdInput name="descriptionInput"
+		<mat-form-field class="description-input">
+			<textarea autosize matInput name="descriptionInput"
 					  class="not-resizable-textarea" required
 					  type="text"
 					  #descriptionInput="ngModel"
 					  placeholder="Beschreibung"
 					  [(ngModel)]="merchModel['description']">
 			</textarea>
-			<md-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
+			<mat-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
 					 align="end">
 				Dieses Feld darf nicht leer bleiben!
-			</md-hint>
-		</md-input-container>
+			</mat-hint>
+		</mat-form-field>
 
 		<!--todo? date: Date,-->
 
@@ -87,9 +87,9 @@
 		<!--below all that-->
 		<div class="form-buttons">
 			<!--	cancel button-->
-			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
-			<button md-raised-button color="accent"
+			<button mat-raised-button color="accent"
 					[disabled]="!modifyShopItemForm.form.valid"
 					type="submit">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}

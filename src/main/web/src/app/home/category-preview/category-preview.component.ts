@@ -31,7 +31,7 @@ export class CategoryPreviewComponent implements OnInit {
 			}
 			const permissions = user.userPermissions;
 			const permissionKey: keyof UserPermissions = EventUtilityService
-				.handleOptionalShopType<keyof UserPermissions>(this.itemType, {
+				.shopItemSwitch<keyof UserPermissions>(this.itemType, {
 					tours: () => "tour",
 					partys: () => "party",
 					merch: () => "merch"
@@ -47,12 +47,12 @@ export class CategoryPreviewComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.showDate = this.itemType !== ShopItemType.merch;
-		this.noElementsText = EventUtilityService.handleOptionalShopType<string>(this.itemType, {
+		this.noElementsText = EventUtilityService.shopItemSwitch<string>(this.itemType, {
 			tours: () => "Es gibt keine bevorstehenden Touren!",
 			merch: () => "Keine Merchandise-Artikel vorhanden!",
 			partys: () => "Es gibt keine bevorstehenden Veranstaltungen!"
 		});
-		this.addShopItemText = EventUtilityService.handleOptionalShopType(this.itemType, {
+		this.addShopItemText = EventUtilityService.shopItemSwitch(this.itemType, {
 			tours: () => "Tour erstellen",
 			merch: () => "Artikel erstellen",
 			partys: () => "Veranstaltung erstellen"

@@ -1,8 +1,7 @@
-<h3>Account Daten</h3>
 <form (ngSubmit)="submit()" #accountDataForm="ngForm" novalidate>
-	<md-input-container
+	<mat-form-field
 		[dividerColor]="(email.touched && email.invalid) ? 'warn' : 'primary'">
-		<input mdInput
+		<input matInput
 			   placeholder="Email"
 			   type="email"
 			   name="email"
@@ -13,31 +12,31 @@
 			   #email="ngModel"
 			   required>
 		<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-		<md-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
+		<mat-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
 			Email-Adresse muss in der Form <i>test@email.de</i> sein
-		</md-hint>
-		<md-hint align="end" class="error-message" *ngIf="emailIsAlreadyUsed">
+		</mat-hint>
+		<mat-hint align="end" class="error-message" *ngIf="emailIsAlreadyUsed">
 			Die angegebene Email-Adresse wird bereits verwendet. <a routerLink="/login">Weiter zum Login?</a>
-		</md-hint>
-	</md-input-container>
-	<md-input-container>
-		<input mdInput
+		</mat-hint>
+	</mat-form-field>
+	<mat-form-field>
+		<input matInput
 			   placeholder="Passwort"
 			   type="password"
 			   name="password"
 			   [(ngModel)]="password"
 			   #passwordInput="ngModel"
 			   required>
-		<md-hint align="end">
+		<mat-hint align="end">
 			<ng2-password-strength-bar
 				[passwordToCheck]="password"
 				[barLabel]="''">
 			</ng2-password-strength-bar>
-		</md-hint>
-	</md-input-container>
-	<md-input-container
+		</mat-hint>
+	</mat-form-field>
+	<mat-form-field
 		[dividerColor]="(confirmPasswordInput.touched &&  (password !== confirmedPassword)) ? 'warn' : 'primary'">
-		<input mdInput
+		<input matInput
 			   placeholder="Passwort bestätigen"
 			   type="password"
 			   name="confirm-password-input"
@@ -45,17 +44,17 @@
 			   [(ngModel)]="confirmedPassword"
 			   required>
 		<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
-		<md-hint align="end" class="error-message"
+		<mat-hint align="end" class="error-message"
 				 *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (password !== confirmedPassword)">
 			Passwörter stimmen nicht überein
-		</md-hint>
-	</md-input-container>
+		</mat-hint>
+	</mat-form-field>
 
 	<button type="submit"
 			color="primary"
 			[disabled]="!accountDataForm.form.valid || (password !== confirmedPassword) || emailIsAlreadyUsed"
-			md-raised-button>
-		<md-icon *ngIf="loading" class="loading-spinner">refresh</md-icon>
+			mat-raised-button>
+		<mat-icon *ngIf="loading" class="loading-spinner">refresh</mat-icon>
 		Weiter
 	</button>
 </form>

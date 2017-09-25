@@ -1,13 +1,13 @@
-<md-radio-group [(ngModel)]="selectedAddress">
+<mat-radio-group [(ngModel)]="selectedAddress">
 	<div *ngFor="let address of addresses">
-		<md-radio-button [value]="address">
+		<mat-radio-button [value]="address">
 			<memo-address-entry [address]="address"
 								[editUrl]="editUrl$|async"
 								(onDelete)="deleteAddress(address)"
 			>
 
 			</memo-address-entry>
-		</md-radio-button>
+		</mat-radio-button>
 	</div>
-</md-radio-group>
-<a md-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">Neue Addresse hinzufügen</a>
+</mat-radio-group>
+<a mat-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">Neue Addresse hinzufügen</a>

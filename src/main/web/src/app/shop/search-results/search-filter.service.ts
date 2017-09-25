@@ -72,8 +72,17 @@ export class SearchFilterService {
 		},
 		"material": (item, filterValue: string) => {
 			if (EventUtilityService.isMerchandise(item)) {
-				let selectedMaterials = filterValue.split("|");
+				const selectedMaterials = filterValue.split("|");
 				return selectedMaterials.includes(item.material);
+			}
+			return false;
+		},
+		"size": (item, filterValue: string) => {
+			if (EventUtilityService.isMerchandise(item)) {
+				const selectedSizes = filterValue.split("|");
+				return this.stockService.getByEventId(item.id)
+					.map(stockList => stockList.map(stockItem => stockItem.size))
+					.map(sizes => sizes.some(size => selectedSizes.includes(size)));
 			}
 			return false;
 		}
@@ -87,7 +96,33 @@ export class SearchFilterService {
 	 * @param {Event[]} results
 	 */
 	async getEventFilterOptionsFromResults(results: Event[]) {
-		let eventFilterOptions: MultiLevelSelectParent[] = [
+		let eventFilterOptions: MultiLevelSelectParent[] = this.getBaseFilterOptions();
+
+		//colors aus dem stock raus holen
+		const colorChildren: MultiLevelSelectLeaf[] = await this.getColorFilterOptions(results).toPromise();
+		eventFilterOptions.push({
+			name: "Farben", queryKey: "color", selectType: "multiple", expanded: false, children: colorChildren
+		});
+
+		const materialChildren: MultiLevelSelectLeaf[] = this.getMaterialFilterOptions(results);
+		eventFilterOptions.push({
+			name: "Material", queryKey: "material", selectType: "multiple", expanded: false, children: materialChildren
+		});
+
+		const sizeChildren: MultiLevelSelectLeaf[] = await this.getSizeFilterOptions(results).toPromise();
+		eventFilterOptions.push({
+			name: "Größe", queryKey: "size", selectType: "multiple", expanded: false, children: sizeChildren
+		});
+
+		return eventFilterOptions;
+	}
+
+	/**
+	 *
+	 * @returns {[{name: string; queryKey: string; selectType: string; expanded: boolean; children: [{name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean}]} , {name: string; queryKey: string; expanded: boolean; selectType: string; children: [{name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean}]} , {name: string; selectType: string; expanded: boolean; queryKey: string; children: [{name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean}]}]}
+	 */
+	private getBaseFilterOptions():MultiLevelSelectParent[]{
+		return [
 			{
 				name: "Kategorie",
 				queryKey: "category",
@@ -168,9 +203,50 @@ export class SearchFilterService {
 				]
 			}
 		];
+	}
 
-		//colors aus dem stock raus holen
-		let colorChildren: MultiLevelSelectLeaf[] = await Observable.combineLatest(...results
+	private getSizeFilterOptions(results: Event[]) {
+		return Observable.combineLatest(...results
+			.filter(event => EventUtilityService.isMerchandise(event))
+			.map(event => (<Merchandise>event))
+			.map(merch => this.stockService.getByEventId(merch.id))
+		)
+			.map((nestedStockList: MerchStockList[]) => nestedStockList
+				.map(stockList => stockList.map(stockItem => stockItem.size))
+				.reduce((acc: string[], sizes: string[]) =>
+						[...acc, ...sizes.filter(size => !acc.find(it => it === size))],
+					[])
+				//remove duplicates
+				.filter((size, index, array) => array.indexOf(size) === index)
+				.map((size: string) => ({
+					name: size,
+					queryValue: size,
+					selected: false
+				})))
+			.defaultIfEmpty([]);
+	}
+
+	private getMaterialFilterOptions(results: Event[]) {
+		return results
+			.filter(event => EventUtilityService.isMerchandise(event))
+			.map(event => (<Merchandise>event))
+			.map(merch => merch.material)
+			.filter((material, index, array) => array.indexOf(material) === index)
+			.sort(sortingFunction(obj => obj, false))
+			.map(material => ({
+				name: material,
+				queryValue: material,
+				selected: false
+			}));
+	}
+
+	/**
+	 *
+	 * @param {Event[]} results
+	 * @returns {Observable<MultiLevelSelectLeaf[]>}
+	 */
+	private getColorFilterOptions(results: Event[]): Observable<MultiLevelSelectLeaf[]> {
+		return Observable.combineLatest(...results
 			.filter(event => EventUtilityService.isMerchandise(event))
 			.map(event => (<Merchandise>event))
 			.map(merch => this.stockService.getByEventId(merch.id))
@@ -188,41 +264,7 @@ export class SearchFilterService {
 					queryValue: color.name,
 					selected: false
 				})))
-			.defaultIfEmpty([])
-			.toPromise();
-
-		eventFilterOptions.push({
-			name: "Farben",
-			queryKey: "color",
-			selectType: "multiple",
-			expanded: false,
-			children: colorChildren
-		});
-
-		let materialChildren: MultiLevelSelectLeaf[] = results
-			.filter(event => EventUtilityService.isMerchandise(event))
-			.map(event => (<Merchandise>event))
-			.map(merch => merch.material)
-			.filter((material, index, array) => array.indexOf(material) === index)
-			.sort(sortingFunction(obj => obj, false))
-			.map(material => ({
-				name: material,
-				queryValue: material,
-				selected: false
-			}));
-
-		eventFilterOptions.push({
-			name: "Material",
-			queryKey: "material",
-			selectType: "multiple",
-			expanded: false,
-			children: materialChildren
-		});
-
-
-		//TODO: size filter options
-
-		return eventFilterOptions;
+			.defaultIfEmpty([]);
 	}
 
 	/**
@@ -249,8 +291,6 @@ export class SearchFilterService {
 			.map((results: boolean[]) => results.every(value => value))
 			.defaultIfEmpty(true);
 	}
-
-
 
 
 	/**
@@ -303,10 +343,10 @@ export class SearchFilterService {
 				const index = acc.findIndex(prevOption => prevOption.queryKey === option.queryKey);
 
 				//add children if array is null/undefined
-				if(isNullOrUndefined(acc[index].children) && option.children){
+				if (isNullOrUndefined(acc[index].children) && option.children) {
 					acc[index].children = [...option.children];
 				}
-				else if(acc[index].children && option.children){
+				else if (acc[index].children && option.children) {
 					//remove children that are not part of the array anymore
 					for (let i = acc[index].children.length - 1; i >= 0; i--) {
 						if (option.children.findIndex(child => child.name === acc[index].children[i].name) === -1) {

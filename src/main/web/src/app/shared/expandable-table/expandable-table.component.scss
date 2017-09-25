@@ -23,7 +23,7 @@
 	}
 
 	.expandable-table-actions {
-		md-icon {
+		mat-icon {
 			color: rgba(0, 0, 0, 0.54);
 		}
 	}
@@ -64,7 +64,7 @@
 				-ms-user-select: none;
 				user-select: none;
 
-				md-icon {
+				mat-icon {
 					display: inline-flex;
 					vertical-align: middle;
 				}
@@ -127,7 +127,7 @@
 	padding-left: 15px;
 	padding-right: 15px;
 
-	md-select {
+	mat-select {
 		margin-left: 29px;
 	}
 
@@ -154,7 +154,7 @@
 			margin-right: 0;
 		}
 
-		md-select {
+		mat-select {
 			margin-left: 5px;
 		}
 	}

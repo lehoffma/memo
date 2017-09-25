@@ -17,7 +17,7 @@ import {
 	MdRadioModule,
 	MdSelectModule,
 	MdSidenavModule,
-	MdSnackBarModule,
+	MdSnackBarModule, MdStepperModule,
 	MdTabsModule,
 	MdToolbarModule,
 	MdTooltipModule,
@@ -28,7 +28,7 @@ const modules = [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepic
 	MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
 	MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
 	MdAutocompleteModule, MdChipsModule, MdProgressSpinnerModule,
-	MdButtonToggleModule, MdTabsModule
+	MdButtonToggleModule, MdTabsModule, MdStepperModule
 ];
 
 @NgModule({

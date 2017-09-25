@@ -1,15 +1,15 @@
-<md-input-container *ngFor="let tourStop of modelRoute; let i = index;">
+<mat-form-field *ngFor="let tourStop of modelRoute; let i = index;">
 	<!--Format: "Alexanderpl. 2, 10178 Berlin, Deutschland"-->
 
-	<input mdInput (keydown.enter)="$event.preventDefault()" #routeInput
+	<input matInput (keydown.enter)="$event.preventDefault()" #routeInput
 		   [(ngModel)]="transformedRoutes[i]"
 		   placeholder="{{i === 0 ? 'Treffpunkt' : ((i===modelRoute.length - 1) ? 'Ziel' : 'Zwischenstop')}}">
 
-	<md-icon mdSuffix (click)="removeStop(i)" *ngIf="i > 0 && (i < modelRoute.length - 1)">close</md-icon>
+	<mat-icon matSuffix (click)="removeStop(i)" *ngIf="i > 0 && (i < modelRoute.length - 1)">close</mat-icon>
 
-</md-input-container>
+</mat-form-field>
 
-<button md-button
+<button mat-button
 		color="primary"
 		type="button"
 		class="add-stop-button"

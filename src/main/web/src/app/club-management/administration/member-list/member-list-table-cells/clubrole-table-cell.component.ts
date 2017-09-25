@@ -5,7 +5,7 @@ import {ClubRole} from "../../../../shared/model/club-role";
 @Component({
 	selector: "td [clubRoleTableCell]",
 	template: `
-		<span class="data-as-icon" title="{{data}}"><md-icon>{{icon}}</md-icon></span>
+		<span class="data-as-icon" title="{{data}}"><mat-icon>{{icon}}</mat-icon></span>
 		<span class="data-as-text {{data}}">{{data}}</span>
 	`,
 	styleUrls: ["./icon-data-table-cell.component.scss", "./clubrole-table-cell.component.scss"]

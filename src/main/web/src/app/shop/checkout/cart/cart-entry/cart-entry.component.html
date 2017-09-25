@@ -11,14 +11,14 @@
 </a>
 <div>
 	<div class="cart-entry-amount">
-		<md-select class="amount" [(ngModel)]="cartItem.amount" (ngModelChange)="updateEventAmount()"
+		<mat-select class="amount" [(ngModel)]="cartItem.amount" (ngModelChange)="updateEventAmount()"
 				   placeholder=" ">
-			<md-option *ngFor="let amount of amountOptions" [value]="amount">
+			<mat-option *ngFor="let amount of amountOptions" [value]="amount">
 				{{amount}}
-			</md-option>
-		</md-select>
+			</mat-option>
+		</mat-select>
 	</div>
 
 	<div class="price">{{(cartItem.item.price*cartItem.amount).toFixed(2)}} €</div>
-	<!--<md-icon md-icon-button (click)="deleteItem()">close</md-icon>-->
+	<!--<mat-icon mat-icon-button (click)="deleteItem()">close</mat-icon>-->
 </div>

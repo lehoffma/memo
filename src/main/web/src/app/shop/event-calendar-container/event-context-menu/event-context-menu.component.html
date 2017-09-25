@@ -1,28 +1,28 @@
-<h2 md-dialog-title>{{data?.title | async}}</h2>
+<h2 matDialogTitle>{{data?.title | async}}</h2>
 
-<md-dialog-content>
-	<a md-button routerLink="{{data?.eventType | async}}/{{data?.id}}"
+<mat-dialog-content>
+	<a mat-button routerLink="{{data?.eventType | async}}/{{data?.id}}"
 	   (click)="close()"
 	   [disabled]="!(data?.view | async)"
 	   [class.disabled]="!(data?.view | async)">
-		<md-icon>view_list</md-icon>
+		<mat-icon>view_list</mat-icon>
 		Details ansehen
 	</a>
-	<a md-button routerLink="{{data?.eventType | async}}/{{data?.id}}/edit"
+	<a mat-button routerLink="{{data?.eventType | async}}/{{data?.id}}/edit"
 	   (click)="close()"
 	   [disabled]="!(data?.edit | async)"
 	   [class.disabled]="!(data?.edit | async)">
-		<md-icon>edit</md-icon>
+		<mat-icon>edit</mat-icon>
 		Bearbeiten
 	</a>
-	<button md-raised-button color="warn"
+	<button mat-raised-button color="warn"
 			[disabled]="!(data?.remove | async)"
 			(click)="deleteEvent()">
-		<md-icon>delete</md-icon>
+		<mat-icon>delete</mat-icon>
 		Löschen
 	</button>
 
-</md-dialog-content>
-<md-dialog-actions>
-	<button md-button md-dialog-close>Schließen</button>
-</md-dialog-actions>
+</mat-dialog-content>
+<mat-dialog-actions>
+	<button mat-button matDialogClose>Schließen</button>
+</mat-dialog-actions>

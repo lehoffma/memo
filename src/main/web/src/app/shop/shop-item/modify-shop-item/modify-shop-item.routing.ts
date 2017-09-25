@@ -6,9 +6,13 @@ import {CanModifyItemGuard} from "../../../shared/authentication/can-modify-item
 import {ModifyUserComponent} from "./modify-user/modify-user.component";
 import {AuthenticatedGuard} from "../../../shared/authentication/authenticated.guard";
 import {IsOwnProfileGuard} from "../../../shared/authentication/is-own-profile.guard";
+import {ModifyMerchStockComponent} from "./modify-merch/modify-merch-stock/modify-merch-stock.component";
+import {IsMerchandiseGuard} from "../../../shared/authentication/is-merchandise.guard";
 
 
 const routes: Routes = [
+	{path: ":itemType/:id/stock/edit", component: ModifyMerchStockComponent, canActivate: [AuthenticatedGuard, CanModifyItemGuard, IsMerchandiseGuard]},
+
 	//todo implement
 	//nur eingeloggte user, die die Tour erstellt haben oder Organizer oder Admin sind
 	{
@@ -32,7 +36,6 @@ const routes: Routes = [
 		component: ModifyShopItemComponent,
 		canActivate: [/*todo is-event guard*/ CanModifyItemGuard]
 	},
-	{path: "members/:id/edit", component: ModifyUserComponent, canActivate: [AuthenticatedGuard, IsOwnProfileGuard]},
 ];
 
 @NgModule({
@@ -41,7 +44,8 @@ const routes: Routes = [
 		IsValidItemTypeGuard,
 		CanModifyItemGuard,
 		AuthenticatedGuard,
-		IsOwnProfileGuard
+		IsOwnProfileGuard,
+		IsMerchandiseGuard
 	],
 	exports: [RouterModule],
 })

@@ -87,7 +87,7 @@ export class ParticipantsService {
 		}>(this.baseUrl, {
 			params: new HttpParams().set("userId", "" + userId)
 		})
-			.map(json => json.events.map(event => EventUtilityService.handleOptionalShopItem(event,
+			.map(json => json.events.map(event => EventUtilityService.optionalShopItemSwitch(event,
 				{
 					tours: () => Tour.create().setProperties(event),
 					partys: () => Party.create().setProperties(event)

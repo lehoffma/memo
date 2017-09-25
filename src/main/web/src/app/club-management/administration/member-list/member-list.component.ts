@@ -171,7 +171,7 @@ export class MemberListComponent implements OnInit {
 	 * @param event
 	 */
 	addUser(event: any) {
-		this.navigationService.navigateByUrl("members/create");
+		this.navigationService.navigateByUrl("/members/create");
 	}
 
 	/**

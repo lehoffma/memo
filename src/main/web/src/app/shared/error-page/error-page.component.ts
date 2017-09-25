@@ -12,10 +12,10 @@ import {Location} from "@angular/common";
 			{{errorMessage}}
 		</div>
 		<div class="actions">
-			<button md-raised-button color="primary" (click)="location.back()">
+			<button mat-raised-button color="primary" (click)="location.back()">
 				Zurück
 			</button>
-			<a md-raised-button color="primary" routerLink="/">
+			<a mat-raised-button color="primary" routerLink="/">
 				Startseite
 			</a>
 		</div>

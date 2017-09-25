@@ -11,96 +11,96 @@
 
 
 		<h2>Party-Informationen</h2>
-		<md-input-container>
-			<input mdInput name="titleInput"
+		<mat-form-field>
+			<input matInput name="titleInput"
 				   type="text" required
 				   placeholder="Titel"
 				   #titleInput="ngModel"
 				   [(ngModel)]="partyModel['title']">
-			<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+			<mat-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
 				Dieses Feld darf nicht leer bleiben!
-			</md-hint>
-		</md-input-container>
+			</mat-hint>
+		</mat-form-field>
 
-		<md-input-container class="description-input">
-			<textarea autosize mdInput name="descriptionInput"
+		<mat-form-field class="description-input">
+			<textarea autosize matInput name="descriptionInput"
 					  class="not-resizable-textarea" required
 					  type="text"
 					  #descriptionInput="ngModel"
 					  placeholder="Beschreibung"
 					  [(ngModel)]="partyModel['description']">
 			</textarea>
-			<md-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
+			<mat-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
 					 align="end">
 				Dieses Feld darf nicht leer bleiben!
-			</md-hint>
-		</md-input-container>
+			</mat-hint>
+		</mat-form-field>
 
 		<div class="additional-party-info-container">
 			<div>
 				<div>
-					<md-input-container>
-						<input mdInput [mdDatepicker]="myDatepicker"
+					<mat-form-field>
+						<input matInput [matDatepicker]="myDatepicker"
 							   placeholder="Datum"
 							   [(ngModel)]="partyModel['date']"
 							   #dateInput="ngModel"
 							   name="dateInput" required>
-						<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>
-					</md-input-container>
-					<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>
+						<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+					</mat-form-field>
+					<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
 				</div>
 			</div>
 
 			<div>
 				<div class="time-selection">
-					<md-select [ngModel]="partyModel['date'].hour()"
+					<mat-select [ngModel]="partyModel['date'].hour()"
 							   placeholder="Stunde"
 							   (change)="partyModel['date'].hour($event.value)"
 							   name="hour-selection"
 							   #hourSelection="ngModel">
-						<md-option *ngFor="let hour of hours"
+						<mat-option *ngFor="let hour of hours"
 								   [value]="hour"
 						>
 							{{hour}}
-						</md-option>
-					</md-select>
-					<md-select [ngModel]="partyModel['date'].minute()"
+						</mat-option>
+					</mat-select>
+					<mat-select [ngModel]="partyModel['date'].minute()"
 							   (change)="partyModel['date'].minute($event.value)"
 							   placeholder="Minute"
 							   name="minute-selection"
 							   #minuteSelection="ngModel">
-						<md-option *ngFor="let minute of minutes"
+						<mat-option *ngFor="let minute of minutes"
 								   [value]="minute"
 						>
 							{{minute}}
-						</md-option>
-					</md-select>
+						</mat-option>
+					</mat-select>
 
 				</div>
 			</div>
 			<div>
-				<md-input-container>
-					<input mdInput name="priceInput"
+				<mat-form-field>
+					<input matInput name="priceInput"
 						   type="number" required
 						   placeholder="Preis"
 						   #priceInput="ngModel"
 						   [(ngModel)]="partyModel['price']">
-					<span mdSuffix>€</span>
-					<md-hint *ngIf="priceInput.touched && !priceInput.valid" class="error-message" align="end">
+					<span matSuffix>€</span>
+					<mat-hint *ngIf="priceInput.touched && !priceInput.valid" class="error-message" align="end">
 						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
+					</mat-hint>
+				</mat-form-field>
 
-				<md-input-container>
-					<input mdInput name="capacityInput"
+				<mat-form-field>
+					<input matInput name="capacityInput"
 						   type="number" required
 						   placeholder="Kapazität"
 						   #capacityInput="ngModel"
 						   [(ngModel)]="partyModel['capacity']">
-					<md-hint *ngIf="capacityInput.touched && !capacityInput.valid" class="error-message" align="end">
+					<mat-hint *ngIf="capacityInput.touched && !capacityInput.valid" class="error-message" align="end">
 						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
+					</mat-hint>
+				</mat-form-field>
 			</div>
 
 		</div>
@@ -113,9 +113,9 @@
 		<!--below all that-->
 		<div class="form-buttons">
 			<!--	cancel button-->
-			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
-			<button md-raised-button color="accent"
+			<button mat-raised-button color="accent"
 					[disabled]="!modifyShopItemForm.form.valid"
 					type="submit">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}

@@ -15,10 +15,10 @@
 	</textarea>
 
 	<div *ngIf="showActionButtons || commentText.length > 0">
-		<button md-button type="button" (click)="closeSubmitComment.emit()">
+		<button mat-button type="button" (click)="closeSubmitComment.emit()">
 			ABBRECHEN
 		</button>
-		<button md-raised-button color="accent"
+		<button mat-raised-button color="accent"
 				[disabled]="!commentText || commentText.length === 0">
 			{{submitCommentText | uppercase}}
 		</button>

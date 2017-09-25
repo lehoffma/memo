@@ -1,9 +1,9 @@
 <div class="preview-container" *ngIf="events$ | async; let events">
-	<md-card class="preview-card"
+	<mat-card class="preview-card"
 			 *ngFor="let event of events"
 			 (click)="showDetails(event)">
-		<img md-card-image src="{{!!event.imagePath ? event.imagePath : 'resources/images/Logo.png'}}">
-		<md-card-content>
+		<img mat-card-image src="{{!!event.imagePath ? event.imagePath : 'resources/images/Logo.png'}}">
+		<mat-card-content>
 			<div class="card-content-container">
 				<div class="event-content">
 					<span>{{event.title}}</span>
@@ -15,13 +15,13 @@
 					{{event.price | currency:'EUR':true}}
 				</span>
 			</div>
-		</md-card-content>
-	</md-card>
+		</mat-card-content>
+	</mat-card>
 </div>
 
 <div class="no-events" *ngIf="(events$|async)?.length === 0 || (events$|async) === null">
 	<span>{{noElementsText}}</span>
-	<a md-raised-button color="accent" *ngIf="userCanCreateEvent | async" routerLink="{{createLink}}">
+	<a mat-raised-button color="accent" *ngIf="userCanCreateEvent | async" routerLink="{{createLink}}">
 		{{addShopItemText}}
 	</a>
 </div>

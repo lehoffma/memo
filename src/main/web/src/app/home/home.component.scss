@@ -2,17 +2,31 @@
 @import "../../theme";
 @import "../../mixins";
 
-:host{
+:host {
 	display: block;
 	@include animation(slideUpFadeIn 0.5s ease);
 }
 
-@include keyframes(slideUpFadeIn){
-	0%{
+@include keyframes(slideUpFadeIn) {
+	0% {
 		opacity: 0;
 	}
-	100%{
+	100% {
 		opacity: 1;
+	}
+}
+
+.category-overview-container{
+	padding: 10px;
+	max-width: 800px;
+	margin: auto;
+}
+
+.overview-preview-container{
+	background: #fafafa;
+
+	&:not(:first-child){
+		margin-top: 1rem;
 	}
 }
 
@@ -20,6 +34,9 @@ div.overview-preview-container > .overview-preview-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	background: white;
+	border-bottom: 1px solid #e6e6e6;
+	color: rgba(0, 0, 0, 0.8);
 
 	padding: 1rem;
 	> a {
@@ -55,13 +72,13 @@ div.overview-preview-container > .overview-preview-header {
 			transform-origin: 50% 50%;
 			cursor: pointer;
 
-			&:hover{
+			&:hover {
 				animation-play-state: paused;
 			}
 		}
 	}
 
-	.login-button{
+	.login-button {
 		color: white;
 		border: 2px solid white;
 		transform: scale(0.8);
@@ -130,30 +147,32 @@ div.overview-preview-container > .overview-preview-header {
 
 @media all and (min-width: 950px) {
 	.category-overview-container {
-		display: flex;
-		justify-content: center;
-		padding: 20px;
+		//display: flex;
+		//justify-content: center;
+		//padding: 20px;
 
 		.overview-preview-container {
-			flex-grow: 2;
-			max-width: 500px;
-			width: 30%;
+			//flex-grow: 2;
+			//max-width: 500px;
+			//background: #fafafa;
+			box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
+			//width: 30%;
 
 			&:not(:first-child) {
-				margin-left: 20px;
+				//margin-left: 20px;
 			}
 
 			.overview-preview-header {
-				//box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
-				background: white;
-				border-top: 5px solid mat-color($primary);
-				color: mat-color($primary);
+				//background: white;
+				//border-bottom: 1px solid #e6e6e6;
+				//color: rgba(0, 0, 0, 0.8);
 
 				> a {
-					color: mat-color($primary);
+					//color: mat-color($primary);
 
 					&:hover {
-						color: mat-color($primary, 300);
+						color: mat-color($accent, 300);
+
 					}
 				}
 			}

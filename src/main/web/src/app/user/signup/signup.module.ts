@@ -2,7 +2,7 @@
 
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SignUpComponent} from "./signup.component";
 import {AccountDataFormComponent} from "./account-data-form/account-data-form.component";
 import {PaymentMethodsFormComponent} from "./payment-methods-form/payment-methods-form.component";
@@ -21,6 +21,7 @@ import {RouterModule} from "@angular/router";
 		CommonModule,
 		RouterModule,
 		FormsModule,
+		ReactiveFormsModule,
 		ImageCropperModule,
 		PasswordStrengthBarModule,
 		MemoMaterialModule,

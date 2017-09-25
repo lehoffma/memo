@@ -20,7 +20,7 @@
 	</div>
 	<!--navigation links-->
 	<nav class="navigation-links" (click)="closeSideNav()">
-		<a md-button style="height: 0; position: absolute;"> <!-- 'absorbs' the focus behavior -->
+		<a mat-button style="height: 0; position: absolute;"> <!-- 'absorbs' the focus behavior -->
 		</a>
 		<div id="navigation-links-login" *ngIf="account.id === -1">
 			<a routerLink="login" (click)="saveUrl()">
@@ -31,19 +31,19 @@
 			<hr *ngIf="link.drawLineAbove || link.children">
 			<!--"main" link-->
 			<a routerLink="{{link.route}}">
-				<md-icon class="md-dark" *ngIf="!link.children">{{link.icon}}</md-icon>
+				<mat-icon class="md-dark" *ngIf="!link.children">{{link.icon}}</mat-icon>
 				<span>{{link.name}}</span>
 			</a>
 			<!--child links-->
 			<a *ngFor="let childLink of link.children"
 			   routerLink="{{childLink.route}}">
-				<md-icon class="md-dark">{{childLink.icon}}</md-icon>
+				<mat-icon class="md-dark">{{childLink.icon}}</mat-icon>
 				<span>{{childLink.name}}</span>
 			</a>
 		</div>
 		<div *ngIf="account.id !== -1">
 			<a routerLink="/" (click)="logout()">
-				<md-icon class="md-dark">exit_to_app</md-icon>
+				<mat-icon class="md-dark">exit_to_app</mat-icon>
 				<span>Logout</span>
 			</a>
 		</div>

@@ -1,12 +1,12 @@
 <div class="login-container">
 
-	<md-card>
+	<mat-card>
 		<h4>Bereits Meilenwölfe-Mitglied?</h4>
 		<form #loginForm="ngForm" (ngSubmit)="checkLogin()">
 			<label>
-				<md-input-container
+				<mat-form-field
 					[dividerColor]="(emailInput.touched && emailInput.invalid) ? 'warn' : 'primary'">
-					<input mdInput
+					<input matInput
 						   placeholder="Email"
 						   type="email"
 						   name="emailInput"
@@ -16,27 +16,27 @@
 						   #emailInput="ngModel"
 						   required>
 					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-					<md-hint align="end" class="error-message" *ngIf="emailInput.touched && (emailInput.invalid)">
+					<mat-hint align="end" class="error-message" *ngIf="emailInput.touched && (emailInput.invalid)">
 						Email-Adresse muss in der Form <i>test@email.de</i> sein
-					</md-hint>
-				</md-input-container>
+					</mat-hint>
+				</mat-form-field>
 			</label>
 			<label>
-				<md-input-container>
-					<input mdInput
+				<mat-form-field>
+					<input matInput
 						   placeholder="Passwort"
 						   type="password"
 						   #passwordInput="ngModel"
 						   name="passwordInput"
 						   [(ngModel)]="password"
 						   required>
-					<md-hint align="end">
+					<mat-hint align="end">
 						<ng2-password-strength-bar
 							[passwordToCheck]="password"
 							[barLabel]="''">
 						</ng2-password-strength-bar>
-					</md-hint>
-				</md-input-container>
+					</mat-hint>
+				</mat-form-field>
 
 			</label>
 
@@ -46,14 +46,14 @@
 			</div>
 
 			<button type="submit"
-					md-raised-button
+					mat-raised-button
 					[disabled]="!loginForm.form.valid"
 					color="primary">
 			<span *ngIf="!loading; else loadingSpinner">
 			{{'Einloggen' | uppercase}}
 			</span>
 				<ng-template #loadingSpinner>
-					<md-icon class="loading-spinner">refresh</md-icon>
+					<mat-icon class="loading-spinner">refresh</mat-icon>
 					{{'Überprüfe...' | uppercase}}
 				</ng-template>
 			</button>
@@ -63,8 +63,8 @@
 
 
 		<h4>Noch keinen Account?</h4>
-		<a routerLink="../signup" md-raised-button color="primary">{{'Registrieren' | uppercase}}</a>
+		<a routerLink="../signup" mat-raised-button color="primary">{{'Registrieren' | uppercase}}</a>
 
-	</md-card>
+	</mat-card>
 
 </div>

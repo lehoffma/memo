@@ -116,7 +116,7 @@ export class CheckoutComponent implements OnInit {
 					})
 					.flatMap(events => {
 						//map events to orderedItem interface to make it usable on the backend
-						let orderedItems: OrderedItem[] = events
+						const orderedItems: OrderedItem[] = events
 							.reduce((acc, event) => [...acc, ...new Array(event.amount)
 								.fill(({
 									id: undefined,
@@ -139,10 +139,10 @@ export class CheckoutComponent implements OnInit {
 			})
 			.subscribe(value => {
 				this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
+				this.cartService.reset();
 			}, error => {
 				this.snackBar.open(error, "Schließen", {duration: 2000});
 			}, () => {
-				this.cartService.reset();
 				this.router.navigateByUrl("/");
 			});
 	}
