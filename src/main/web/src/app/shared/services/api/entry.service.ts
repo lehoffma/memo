@@ -148,7 +148,8 @@ export class EntryService extends ServletService<Entry> {
 		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/entry", {entry, ...body}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json"),
 		}))
-			.flatMap(response => this.getById(response.id));
+			.do(response => this.cache.addOrModify(entry))
+			.flatMap(response => this.getById(response.id))
 	}
 
 }

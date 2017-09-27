@@ -2,7 +2,7 @@ import {BaseObject} from "./util/base-object";
 import {PaymentMethod} from "../../shop/checkout/payment/payment-method";
 import {OrderedItem} from "./ordered-item";
 import {Moment} from "moment";
-import * as moment from "moment";;
+import * as moment from "moment";
 
 export class Order extends BaseObject<Order> {
 	constructor(public readonly id: number,
@@ -20,6 +20,6 @@ export class Order extends BaseObject<Order> {
 	}
 
 	static isOrder(object:any):object is Order{
-		return (<Order>object).method !== undefined && (<Order>object).method !== null;
+		return object && (<Order>object).method !== undefined && (<Order>object).method !== null;
 	}
 }

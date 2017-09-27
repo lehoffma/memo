@@ -14,14 +14,15 @@ import {CommentService} from "../../../../shared/services/api/comment.service";
 import {Comment} from "../../../shared/model/comment";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
+import {ParticipantUser} from "../../../shared/model/participant";
 
 
 @Component({
 	selector: "memo-tour-details",
 	templateUrl: "./tour-detail.component.html",
 	styles: [
-		`
-			.description{
+			`
+			.description {
 				white-space: pre-wrap;
 			}
 		`
@@ -43,7 +44,12 @@ export class TourDetailComponent implements OnInit {
 
 	participants$ = this._tour$
 		.filter(party => party.id !== -1)
-		.flatMap((tour: Tour) => this.participantService.getParticipantUsersByEvent(tour.id, EventType.tours));
+		.flatMap((tour: Tour) => this.participantService.getParticipantUsersByEvent(tour.id, EventType.tours))
+		//remove duplicate entries
+		.map((participants: ParticipantUser[]) => participants.reduce((acc: ParticipantUser[], user) => {
+			const index = acc.find(it => it.user.id === user.user.id);
+			return index === undefined ? [...acc, user] : acc;
+		}, []));
 
 	participantsLink$ = Observable.combineLatest(this._tour$, this.loginService.currentUser$)
 		.map(([tour, user]) => {

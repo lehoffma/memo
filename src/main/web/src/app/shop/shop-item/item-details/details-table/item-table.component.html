@@ -1,10 +1,11 @@
 <table class="details-table" *ngIf="event">
-	<tr *ngFor="let category of (tableCategories)">
+	<tr *ngFor="let category of (tableCategories$ | async)">
 		<td align="left" class="row">{{category.label}}</td>
-		<td [ngSwitch]="category.pipe" align="right" class="row secondary-text">
-			<ng-template [ngSwitchCase]="'price'">{{event[category.key] | currency:'EUR':true}}</ng-template>
-			<ng-template [ngSwitchCase]="'date'">{{event[category.key] | moment:'DD.MM.YYYY'}}</ng-template>
-			<ng-template ngSwitchDefault>{{event[category.key]}}</ng-template>
+		<td [ngSwitch]="category.pipe" align="right" *ngIf="getValue(category.key) | async; let value"
+			class="row secondary-text">
+			<ng-template [ngSwitchCase]="'price'">{{value | currency:'EUR':true}}</ng-template>
+			<ng-template [ngSwitchCase]="'date'">{{value | moment:'DD.MM.YYYY'}}</ng-template>
+			<ng-template ngSwitchDefault>{{value}}</ng-template>
 		</td>
 	</tr>
 </table>

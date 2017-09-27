@@ -17,6 +17,6 @@ export class Comment extends BaseObject<Comment> {
 	}
 
 	static isComment(value: any): value is Comment {
-		return (<Comment>value).timeStamp !== undefined;
+		return value && (<Comment>value).timeStamp !== undefined;
 	}
 }

@@ -30,6 +30,6 @@ export class Address extends BaseObject<Address> {
 	}
 
 	static isAddress(obj: any): obj is Address {
-		return obj.street !== undefined && obj.zip !== undefined;
+		return obj && obj.street !== undefined && obj.zip !== undefined;
 	}
 }
