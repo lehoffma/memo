@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
 import {ModifyItemEvent} from "../modify-item-event";
+import {Moment} from "moment";
 
 @Component({
 	selector: "memo-modify-party",
@@ -30,16 +31,7 @@ export class ModifyPartyComponent implements OnInit {
 	}
 
 
-	hours = [];
-	minutes = [];
-
 	constructor(private location: Location) {
-		for (let i = 0; i < 24; i++) {
-			this.hours.push(i);
-		}
-		for (let i = 0; i < 60; i++) {
-			this.minutes.push(i);
-		}
 	}
 
 	ngOnInit() {
@@ -53,9 +45,27 @@ export class ModifyPartyComponent implements OnInit {
 	}
 
 	/**
+	 *
+	 */
+	updateTimeOfDate() {
+		const timeRegex = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/;
+		const result = timeRegex.exec(this.model["time"]);
+		if (result) {
+			const hours = +result[1];
+			const minutes = +result[2];
+			(<Moment>this.model["date"]).hours(hours).minutes(minutes);
+		}
+		else {
+			console.error("Time value " + this.model["time"] + " is not valid");
+		}
+	}
+
+
+	/**
 	 * Emit submit event
 	 */
 	submitModifiedObject() {
+		this.updateTimeOfDate();
 		this.onSubmit.emit({
 			model: this.model,
 			uploadedImage: this.uploadedImage

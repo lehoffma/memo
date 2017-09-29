@@ -5,8 +5,13 @@
 	display: block;
 	background-color: white;
 	max-width: 800px;
-	margin: auto;
-	margin-top: 20px;
+	margin: 0.5rem;
+
+	@media all and (min-width: 600px){
+		margin: auto;
+		margin-top: 20px;
+	}
+
 	@extend .mat-elevation-z3;
 
 	.leaderboard-header {
@@ -17,7 +22,12 @@
 		color: white;
 
 		svg {
-			width: 70px;
+			width: 40px;
+
+			@media all and (min-width: 600px){
+				width: 70px;
+			}
+
 			height: 100px;
 			path {
 				fill: yellow;

@@ -2,27 +2,35 @@
 	<h2>Party {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
 	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
 
-		<h2>Bild</h2>
-		<memo-profile-picture-form
-			[image]="partyModel['imagePath'] ? partyModel['imagePath'] : defaultImageUrl"
-			(onChange)="profilePictureChanged($event)">
+		<memo-modify-item-inner-container [title]="'Bild'"
+										  [saveButton]="mode === ModifyType.EDIT"
+										  [formIsValid]="modifyShopItemForm.form.valid"
+										  (onSave)="submitModifiedObject()"
+		>
+			<memo-profile-picture-form
+				[image]="partyModel['imagePath'] ? partyModel['imagePath'] : defaultImageUrl"
+				(onChange)="profilePictureChanged($event)">
 
-		</memo-profile-picture-form>
+			</memo-profile-picture-form>
+		</memo-modify-item-inner-container>
 
+		<memo-modify-item-inner-container [title]="'Party-Informationen'"
+										  [saveButton]="mode === ModifyType.EDIT"
+										  [formIsValid]="modifyShopItemForm.form.valid"
+										  (onSave)="submitModifiedObject()"
+		>
+			<mat-form-field>
+				<input matInput name="titleInput"
+					   type="text" required
+					   placeholder="Titel"
+					   #titleInput="ngModel"
+					   [(ngModel)]="partyModel['title']">
+				<mat-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+					Dieses Feld darf nicht leer bleiben!
+				</mat-hint>
+			</mat-form-field>
 
-		<h2>Party-Informationen</h2>
-		<mat-form-field>
-			<input matInput name="titleInput"
-				   type="text" required
-				   placeholder="Titel"
-				   #titleInput="ngModel"
-				   [(ngModel)]="partyModel['title']">
-			<mat-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
-				Dieses Feld darf nicht leer bleiben!
-			</mat-hint>
-		</mat-form-field>
-
-		<mat-form-field class="description-input">
+			<mat-form-field class="description-input">
 			<textarea autosize matInput name="descriptionInput"
 					  class="not-resizable-textarea" required
 					  type="text"
@@ -30,84 +38,86 @@
 					  placeholder="Beschreibung"
 					  [(ngModel)]="partyModel['description']">
 			</textarea>
-			<mat-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
-					 align="end">
-				Dieses Feld darf nicht leer bleiben!
-			</mat-hint>
-		</mat-form-field>
+				<mat-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
+						  align="end">
+					Dieses Feld darf nicht leer bleiben!
+				</mat-hint>
+			</mat-form-field>
 
-		<div class="additional-party-info-container">
-			<div>
+			<div class="additional-party-info-container">
+				<div>
+					<div>
+						<mat-form-field>
+							<input matInput [matDatepicker]="myDatepicker"
+								   placeholder="Datum"
+								   [(ngModel)]="partyModel['date']"
+								   #dateInput="ngModel"
+								   name="dateInput" required>
+							<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+						</mat-form-field>
+						<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
+					</div>
+				</div>
+
+				<div>
+					<div class="time-selection">
+						<mat-form-field>
+							<input matInput
+								   placeholder="Uhrzeit"
+								   [(ngModel)]="partyModel['time']"
+								   pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
+								   #timeInput="ngModel"
+								   name="timeInput" required>
+
+							<mat-hint *ngIf="timeInput.touched && !timeInput.valid && partyModel['time'].length === 0"
+									  class="error-message" align="end">
+								Dieses Feld darf nicht leer bleiben!
+							</mat-hint>
+							<mat-hint *ngIf="timeInput.touched && !timeInput.valid && partyModel['time'].length > 0"
+									  class="error-message" align="end">
+								Die Uhrzeit muss im Format "HH:MM" vorliegen!
+							</mat-hint>
+						</mat-form-field>
+					</div>
+				</div>
 				<div>
 					<mat-form-field>
-						<input matInput [matDatepicker]="myDatepicker"
-							   placeholder="Datum"
-							   [(ngModel)]="partyModel['date']"
-							   #dateInput="ngModel"
-							   name="dateInput" required>
-						<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+						<input matInput name="priceInput"
+							   type="number" required
+							   placeholder="Preis"
+							   #priceInput="ngModel"
+							   [(ngModel)]="partyModel['price']">
+						<span matSuffix>€</span>
+						<mat-hint *ngIf="priceInput.touched && !priceInput.valid" class="error-message" align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</mat-hint>
 					</mat-form-field>
-					<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
+
+					<mat-form-field>
+						<input matInput name="capacityInput"
+							   type="number" required
+							   placeholder="Kapazität"
+							   #capacityInput="ngModel"
+							   [(ngModel)]="partyModel['capacity']">
+						<mat-hint *ngIf="capacityInput.touched && !capacityInput.valid" class="error-message"
+								  align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</mat-hint>
+					</mat-form-field>
 				</div>
+
 			</div>
 
-			<div>
-				<div class="time-selection">
-					<mat-select [ngModel]="partyModel['date'].hour()"
-							   placeholder="Stunde"
-							   (change)="partyModel['date'].hour($event.value)"
-							   name="hour-selection"
-							   #hourSelection="ngModel">
-						<mat-option *ngFor="let hour of hours"
-								   [value]="hour"
-						>
-							{{hour}}
-						</mat-option>
-					</mat-select>
-					<mat-select [ngModel]="partyModel['date'].minute()"
-							   (change)="partyModel['date'].minute($event.value)"
-							   placeholder="Minute"
-							   name="minute-selection"
-							   #minuteSelection="ngModel">
-						<mat-option *ngFor="let minute of minutes"
-								   [value]="minute"
-						>
-							{{minute}}
-						</mat-option>
-					</mat-select>
-
-				</div>
-			</div>
-			<div>
-				<mat-form-field>
-					<input matInput name="priceInput"
-						   type="number" required
-						   placeholder="Preis"
-						   #priceInput="ngModel"
-						   [(ngModel)]="partyModel['price']">
-					<span matSuffix>€</span>
-					<mat-hint *ngIf="priceInput.touched && !priceInput.valid" class="error-message" align="end">
-						Dieses Feld darf nicht leer bleiben!
-					</mat-hint>
-				</mat-form-field>
-
-				<mat-form-field>
-					<input matInput name="capacityInput"
-						   type="number" required
-						   placeholder="Kapazität"
-						   #capacityInput="ngModel"
-						   [(ngModel)]="partyModel['capacity']">
-					<mat-hint *ngIf="capacityInput.touched && !capacityInput.valid" class="error-message" align="end">
-						Dieses Feld darf nicht leer bleiben!
-					</mat-hint>
-				</mat-form-field>
-			</div>
-
-		</div>
+		</memo-modify-item-inner-container>
 
 
-		<h2>Treffpunkt</h2>
-		<memo-tour-route-input [(route)]="partyModel['route']"></memo-tour-route-input>
+		<memo-modify-item-inner-container [title]="'Treffpunkt'"
+										  [saveButton]="mode === ModifyType.EDIT"
+										  [formIsValid]="modifyShopItemForm.form.valid"
+										  (onSave)="submitModifiedObject()"
+		>
+			<memo-tour-route-input [(route)]="partyModel['route']"></memo-tour-route-input>
+		</memo-modify-item-inner-container>
 
 
 		<!--below all that-->

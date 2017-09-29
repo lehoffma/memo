@@ -3,14 +3,18 @@
 
 .object-overview-container {
 	@include card-like();
+	background-color: #fafafa;
 	padding: 1.5rem;
 
 	.object-info-container {
 		display: flex;
 		justify-content: space-between;
-		padding-bottom: 15px;
-		margin-bottom: 15px;
-		border-bottom: 1px solid #9E9E9E;
+		margin: -1.5rem;
+		padding: 1.5rem;
+		padding-bottom: 1rem;
+		margin-bottom: 1rem;
+		background-color: white;
+		border-bottom: 1px solid #ededed;
 
 		.object-info {
 			display: flex;

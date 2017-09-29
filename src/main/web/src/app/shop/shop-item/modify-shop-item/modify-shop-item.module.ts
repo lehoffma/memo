@@ -17,6 +17,7 @@ import {MemoMaterialModule} from "../../../../material.module";
 import {SharedModule} from "../../../shared/shared.module";
 import {ColorPickerModule} from "ngx-color-picker";
 import {AgmCoreModule} from "@agm/core";
+import {ModifyItemInnerContainerComponent} from "./modify-item-inner-container/modify-item-inner-container.component";
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import {AgmCoreModule} from "@agm/core";
 		ModifyPartyComponent,
 		ModifyTourComponent,
 		ModifyUserComponent,
-		TourRouteInputComponent
+		TourRouteInputComponent,
+		ModifyItemInnerContainerComponent
 	],
 	providers: [ModifyItemService],
 	entryComponents: [

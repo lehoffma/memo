@@ -20,6 +20,7 @@ import {Location} from "@angular/common";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {ParamMap, Params} from "@angular/router";
 import * as moment from "moment";
+import {isMoment, Moment} from "moment";
 import {Address} from "../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
@@ -147,8 +148,11 @@ export class ModifyItemService {
 	 *
 	 */
 	init() {
-		console.log(this.idOfObjectToModify);
-		console.log(this.model)
+		const setDateAndTime = (value: Moment) => {
+			this.model["date"] = value;
+			this.model["time"] = value.format("HH:mm");
+		};
+
 		//service was already initialized. reset() needs to be called before the user can use it any further
 		if (this.mode !== undefined) {
 			return;
@@ -170,9 +174,16 @@ export class ModifyItemService {
 					this.model[key] = objectToModify[key];
 				});
 
+
 				//extract addresses if we're editing a tour or a party
 				if (this.itemType === ShopItemType.tour || this.itemType === ShopItemType.party) {
 					this.extractAddresses(objectToModify, "route");
+
+					//initialize time as well, if a date is specified
+					const date = this.model["date"];
+					if (isMoment(date)) {
+						this.model["time"] = date.format("HH:mm");
+					}
 				}
 				else if (this.itemType === ShopItemType.user) {
 					if ((<User>objectToModify).addresses.length > 0) {
@@ -199,10 +210,20 @@ export class ModifyItemService {
 			EventUtilityService.shopItemSwitch<any>(
 				this.itemType,
 				{
-					tours: () => this.model["date"] = moment(),
-					partys: () => this.model["date"] = moment(),
+					tours: () => setDateAndTime(moment()),
+					partys: () => setDateAndTime(moment()),
 				});
 		}
+		else if (!this.model["time"]) {
+			EventUtilityService.shopItemSwitch(
+				this.itemType,
+				{
+					tours: () => setDateAndTime(this.model["date"]),
+					partys: () => setDateAndTime(this.model["date"]),
+				}
+			)
+		}
+		console.log(this.model);
 	}
 
 	/**
@@ -355,7 +376,7 @@ export class ModifyItemService {
 
 		requestMethod(newObject, options)
 			.do((result: ShopItem) => {
-				if(EventUtilityService.isMerchandise(result)){
+				if (EventUtilityService.isMerchandise(result)) {
 					// this.stockService.add(model["stock"], newObject.id)
 					console.log(modifyItemEvent.model["stock"]);
 				}

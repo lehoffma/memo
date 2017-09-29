@@ -71,14 +71,14 @@ div.overview-preview-container > .overview-preview-header {
 
 	.svg-logo-container {
 		.svg-logo {
-			@include transition(0.2s ease);
-			@include animation(5s pulse infinite);
-			transform-origin: 50% 50%;
-			cursor: pointer;
-
-			&:hover {
-				animation-play-state: paused;
-			}
+			//@include transition(0.2s ease);
+			//@include animation(5s pulse infinite);
+			//transform-origin: 50% 50%;
+			//cursor: pointer;
+            //
+			//&:hover {
+			//	animation-play-state: paused;
+			//}
 		}
 	}
 

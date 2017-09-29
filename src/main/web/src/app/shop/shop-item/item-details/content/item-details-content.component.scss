@@ -11,9 +11,11 @@
 	display: flex;
 	justify-content: space-between;
 
-	background-color: mat-color($primary);
+	//background-color: mat-color($primary);
+	//color: white;
+	border-bottom: 1px solid #ededed;
+
 	padding: 1rem 1rem 0.5rem;
-	color: white;
 	font-size: 1.3rem;
 
 	> h3 {
@@ -31,5 +33,5 @@
 
 .object-details-content {
 	padding: 1rem;
-	background-color: white;
+	background-color: #fafafa;
 }

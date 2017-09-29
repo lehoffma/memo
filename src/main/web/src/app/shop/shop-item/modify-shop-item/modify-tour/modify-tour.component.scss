@@ -27,15 +27,18 @@
 	> div{
 		display: flex;
 		justify-content: space-between;
+
+		&.column{
+			flex-direction: column;
+		}
 	}
 
-	> div:not(.time-selection) > * {
-		width: 45%;
+	.time-selection{
+
 	}
-	@media all and (min-width: 650px){
-		> div > * {
-			width: 45%;
-		}
+
+	> div:not(.column) > * {
+		width: 45%;
 	}
 }
 
