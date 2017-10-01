@@ -79,20 +79,27 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 *
 	 */
 	submit() {
-		this.userService.isUserEmailAlreadyInUse(this.model["email"])
-			.first()
-			.subscribe(isAlreadyInUse => {
-				if (isAlreadyInUse) {
-					this.emailIsAlreadyTaken = true;
-				}
-				else {
-					this.onSubmit.emit({
-						...this.model,
-						profilePicture: this.profilePicture
-					});
-				}
+		if(this.withEmailAndPassword){
+			this.userService.isUserEmailAlreadyInUse(this.model["email"])
+				.first()
+				.subscribe(isAlreadyInUse => {
+					if (isAlreadyInUse) {
+						this.emailIsAlreadyTaken = true;
+					}
+					else {
+						this.onSubmit.emit({
+							...this.model,
+							profilePicture: this.profilePicture
+						});
+					}
+				});
+		}
+		else{
+			this.onSubmit.emit({
+				...this.model,
+				profilePicture: this.profilePicture
 			});
-
+		}
 	}
 
 	/**
@@ -103,9 +110,9 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	userCanSaveChanges(userDataForm: FormControlDirective): boolean {
 		return userDataForm.form.valid
 			&& (this.previousValueIsEmpty() || !this.modelHasNotChanged())
-			&& (!this.userModel['passwordHash'] || this.userModel['passwordHash'].length === 0
-				|| this.userModel['passwordHash'] === this.confirmedPassword)
-			&& !this.emailIsAlreadyTaken
+			&& (!this.userModel['password'] || this.userModel['password'].length === 0
+				|| this.userModel['password'] === this.confirmedPassword)
+			// && !this.emailIsAlreadyTaken
 	}
 
 	/**

@@ -4,7 +4,6 @@ import {Observable} from "rxjs";
 import {SignUpSubmitEvent} from "./signup-submit-event";
 import {SignUpSection, toTitle} from "./signup-section";
 import {SignUpService} from "./signup.service";
-import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({
 	selector: "memo-signup",
