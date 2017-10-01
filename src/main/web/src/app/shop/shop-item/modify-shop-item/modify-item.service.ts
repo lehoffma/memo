@@ -15,11 +15,11 @@ import {StockService} from "../../../shared/services/api/stock.service";
 import {User} from "app/shared/model/user";
 import {ServletServiceInterface} from "../../../shared/model/servlet-service";
 import {Entry} from "../../../shared/model/entry";
-import {Event} from "../../shared/model/event";
 import {Location} from "@angular/common";
 import {NavigationService} from "../../../shared/services/navigation.service";
-import {ParamMap, Params} from "@angular/router";
+import {Event, NavigationEnd, ParamMap, Params, Router} from "@angular/router";
 import * as moment from "moment";
+import {isMoment, Moment} from "moment";
 import {Address} from "../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
@@ -48,6 +48,7 @@ export class ModifyItemService {
 				public imageUploadService: ImageUploadService,
 				public userService: UserService,
 				public location: Location,
+				public router: Router,
 				public navigationService: NavigationService,
 				public entryService: EntryService,
 				public addressService: AddressService,
@@ -147,8 +148,11 @@ export class ModifyItemService {
 	 *
 	 */
 	init() {
-		console.log(this.idOfObjectToModify);
-		console.log(this.model)
+		const setDateAndTime = (value: Moment) => {
+			this.model["date"] = value;
+			this.model["time"] = value.format("HH:mm");
+		};
+
 		//service was already initialized. reset() needs to be called before the user can use it any further
 		if (this.mode !== undefined) {
 			return;
@@ -170,9 +174,16 @@ export class ModifyItemService {
 					this.model[key] = objectToModify[key];
 				});
 
+
 				//extract addresses if we're editing a tour or a party
 				if (this.itemType === ShopItemType.tour || this.itemType === ShopItemType.party) {
 					this.extractAddresses(objectToModify, "route");
+
+					//initialize time as well, if a date is specified
+					const date = this.model["date"];
+					if (isMoment(date)) {
+						this.model["time"] = date.format("HH:mm");
+					}
 				}
 				else if (this.itemType === ShopItemType.user) {
 					if ((<User>objectToModify).addresses.length > 0) {
@@ -199,10 +210,36 @@ export class ModifyItemService {
 			EventUtilityService.shopItemSwitch<any>(
 				this.itemType,
 				{
-					tours: () => this.model["date"] = moment(),
-					partys: () => this.model["date"] = moment(),
+					tours: () => setDateAndTime(moment()),
+					partys: () => setDateAndTime(moment()),
 				});
 		}
+		else if (!this.model["time"]) {
+			EventUtilityService.shopItemSwitch(
+				this.itemType,
+				{
+					tours: () => setDateAndTime(this.model["date"]),
+					partys: () => setDateAndTime(this.model["date"]),
+				}
+			)
+		}
+		if (!this.model["addresses"]) {
+			this.model["addresses"] = [];
+		}
+
+		this.router.events
+			.filter(event => event instanceof NavigationEnd)
+			.map(event => (<NavigationEnd>event))
+			.scan((acc: NavigationEnd[], value: NavigationEnd) => {
+				return [...acc, value];
+			}, [])
+			//check that the url currently routed to isn't the one we started at AND not the address-modification route
+			.filter(events => events.length > 1 && !events[events.length - 1].urlAfterRedirects.includes("address") &&
+				events[events.length - 1].urlAfterRedirects !== events[0].urlAfterRedirects)
+			.first()
+			.subscribe(() => {
+				this.reset();
+			})
 	}
 
 	/**
@@ -210,9 +247,9 @@ export class ModifyItemService {
 	 * @param model
 	 */
 	watchForAddressModification(model: any) {
+		const currentAddresses: Address[] = [...this.model["addresses"]];
 		if (model.action && model.action === "delete") {
 			const addressToDelete: Address = model.address;
-			const currentAddresses: Address[] = this.model["addresses"];
 			const deletedAddressId: number = currentAddresses
 				.findIndex(currentAddress => currentAddress.id === addressToDelete.id);
 
@@ -227,14 +264,16 @@ export class ModifyItemService {
 			.first()
 			.subscribe(address => {
 				if (address) {
-					const currentAddresses: Address[] = this.model["addresses"];
 					const modifiedAddressIndex = currentAddresses
 						.findIndex(currentAddress => currentAddress.id === address.id);
 					//address was added
 					if (modifiedAddressIndex === -1) {
 						currentAddresses.push(address);
 					}
-					//address was modified => dont do anything
+					//address was modified => push back into array
+					else {
+						this.model["addresses"] = currentAddresses.splice(modifiedAddressIndex, 1, address);
+					}
 
 					this.model["addresses"] = [...currentAddresses];
 					this.model = {...this.model};
@@ -355,7 +394,7 @@ export class ModifyItemService {
 
 		requestMethod(newObject, options)
 			.do((result: ShopItem) => {
-				if(EventUtilityService.isMerchandise(result)){
+				if (EventUtilityService.isMerchandise(result)) {
 					// this.stockService.add(model["stock"], newObject.id)
 					console.log(modifyItemEvent.model["stock"]);
 				}

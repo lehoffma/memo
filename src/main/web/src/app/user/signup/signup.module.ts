@@ -1,5 +1,3 @@
-
-
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -15,6 +13,7 @@ import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {DebitInputFormComponent} from "./payment-methods-form/debit-input-form/debit-input-form.component";
 import {ImageCropperModule} from "ng2-image-cropper/src/imageCropperModule";
 import {RouterModule} from "@angular/router";
+import {SharedModule} from "../../shared/shared.module";
 
 @NgModule({
 	imports: [
@@ -24,6 +23,7 @@ import {RouterModule} from "@angular/router";
 		ReactiveFormsModule,
 		ImageCropperModule,
 		PasswordStrengthBarModule,
+		SharedModule,
 		MemoMaterialModule,
 	],
 	declarations: [
@@ -45,4 +45,5 @@ import {RouterModule} from "@angular/router";
 		AddressEntryComponent
 	]
 })
-export class SignUpModule{}
+export class SignUpModule {
+}

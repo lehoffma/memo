@@ -9,6 +9,9 @@ import {CacheStore} from "../../stores/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpParams} from "@angular/common/http";
+import {TypeOfProperty} from "../../model/util/type-of-property";
+import {ShopItem} from "../../model/shop-item";
+import {EventUtilityService} from "../event-utility.service";
 
 interface EventApiResponse {
 	events: (Party | Merchandise | Tour)[];
@@ -182,6 +185,5 @@ export class EventService extends ServletService<Event> {
 				this.cache.remove(EventService.cacheKeyFromEventType(EventType.merch), response.id);
 			});
 	}
-
 
 }

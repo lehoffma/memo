@@ -10,23 +10,45 @@
 		<div class="order-entry-picture">
 			<img src="{{!!item.event.imagePath ? item.event.imagePath : 'resources/images/Logo.png'}}"/>
 		</div>
-		<div class="order-entry-header">
-			<h3 class="mat-h4">
-				<!--todo order entry objekt-->
-				{{item.event.title}}
-			</h3>
-			<div *ngIf="item.color && item.size" class="merch-color-container mat-body-1">
-				{{item.color.name}}, {{item.size}}
+		<div class="order-entry-header order-entry-info">
+			<div class="order-entry-info-container">
+				<span class="label">Name</span>
+				<h3 class="mat-h4">{{item.event.title}}</h3>
+			</div>
+
+			<div *ngIf="item.color && item.size">
+				<div class="order-entry-info-container">
+					<span class="label">Farbe</span>
+					<div>{{item.color.name}}</div>
+				</div>
+
+				<div class="order-entry-info-container">
+					<span class="label">Größe</span>
+					<div>{{item.size}}</div>
+				</div>
+
 			</div>
 		</div>
 	</a>
-	<div>
-		<div class="order-entry-amount">
-			{{item.amount}}
+	<div class="order-entry-info">
+		<div>
+			<div class="order-entry-info-container">
+				<span class="label">Status</span>
+				<span class="status {{item.status}}">{{item.status}}</span>
+			</div>
 		</div>
+		<div>
+			<div class="order-entry-info-container">
+				<span class="label">Anzahl</span>
+				<div class="order-entry-amount">{{item.amount}}</div>
+			</div>
 
-		<div class="price">{{item.price | currency:'EUR':2}}</div>
-		<!--<div class="price">{{(orderEntry.item.price*orderEntry.amount).toFixed(2)}} €</div>-->
+			<div class="order-entry-info-container">
+				<span class="label">Preis</span>
+				<div class="price">{{item.price | currency:'EUR':2}}</div>
+			</div>
+
+		</div>
 	</div>
 </div>
 <div class="order-total-price">

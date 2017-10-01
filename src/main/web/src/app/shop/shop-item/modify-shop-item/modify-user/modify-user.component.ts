@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {UserService} from "../../../../shared/services/api/user.service";
 
 @Component({
 	selector: "memo-modify-user",
@@ -16,6 +17,7 @@ export class ModifyUserComponent implements OnInit {
 	ModifyType = ModifyType;
 	private _model$ = new BehaviorSubject<any>({});
 	public model$ = this._model$.asObservable();
+
 
 	constructor(private location: Location) {
 	}

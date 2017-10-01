@@ -23,7 +23,7 @@ export class Entry extends BaseObject<Entry> {
 	}
 
 	static isEntry(entry: any): entry is Entry {
-		return (<Entry>entry).name !== undefined && (<Entry>entry).value !== undefined;
+		return entry && (<Entry>entry).name !== undefined && (<Entry>entry).value !== undefined;
 	}
 
 	/**

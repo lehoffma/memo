@@ -1,13 +1,24 @@
-<mat-form-field *ngFor="let tourStop of modelRoute; let i = index;">
-	<!--Format: "Alexanderpl. 2, 10178 Berlin, Deutschland"-->
+<div *ngFor="let tourStop of modelRoute; let i = index;">
+	<mat-form-field>
+		<!--Format: "Alexanderpl. 2, 10178 Berlin, Deutschland"-->
 
-	<input matInput (keydown.enter)="$event.preventDefault()" #routeInput
-		   [(ngModel)]="transformedRoutes[i]"
-		   placeholder="{{i === 0 ? 'Treffpunkt' : ((i===modelRoute.length - 1) ? 'Ziel' : 'Zwischenstop')}}">
+		<input matInput (keydown.enter)="$event.preventDefault()" #routeInput
+			   placeholder="{{i === 0 ? 'Treffpunkt' : ((i===modelRoute.length - 1) ? 'Ziel' : 'Zwischenstop')}}">
 
-	<mat-icon matSuffix (click)="removeStop(i)" *ngIf="i > 0 && (i < modelRoute.length - 1)">close</mat-icon>
+		<button mat-icon-button type="button" matSuffix (click)="removeStop(i)" *ngIf="i > 0 && (i < modelRoute.length - 1)">
+			<mat-icon>close</mat-icon>
+		</button>
 
-</mat-form-field>
+	</mat-form-field>
+	<button mat-icon-button type="button" name="swap-{{i}}"
+			class="swap-button" *ngIf="i < modelRoute.length - 1"
+			(click)="swapRoutes(i, i+1)"
+			matTooltip="Tauschen"
+
+	>
+		<mat-icon>swap_vert</mat-icon>
+	</button>
+</div>
 
 <button mat-button
 		color="primary"
@@ -19,17 +30,19 @@
 </button>
 
 
-<agm-map [latitude]="getCenterOfTour().latitude" [longitude]="getCenterOfTour().longitude">
-	<agm-marker *ngFor="let tourStop of modelRoute"
-				[latitude]="tourStop.latitude"
-				[longitude]="tourStop.longitude">
+<agm-map [latitude]="(centerOfTour$ | async)?.latitude"
+		 [longitude]="(centerOfTour$ | async)?.longitude">
+	<sebm-google-map-directions *ngIf="showDirective" [route]="(initializedRoute$ | async)"></sebm-google-map-directions>
+	<!--<agm-marker *ngFor="let tourStop of (initializedRoute$ | async)"-->
+				<!--[latitude]="tourStop.latitude"-->
+				<!--[longitude]="tourStop.longitude">-->
 
-	</agm-marker>
-	<agm-polyline *ngIf="modelRoute && modelRoute.length > 1">
-		<agm-polyline-point *ngFor="let tourStop of modelRoute"
-							[latitude]="tourStop.latitude"
-							[longitude]="tourStop.longitude">
-		</agm-polyline-point>
-	</agm-polyline>
+	<!--</agm-marker>-->
+	<!--<agm-polyline *ngIf="(initializedRoute$ | async)?.length > 1">-->
+		<!--<agm-polyline-point *ngFor="let tourStop of (initializedRoute$ | async)"-->
+							<!--[latitude]="tourStop.latitude"-->
+							<!--[longitude]="tourStop.longitude">-->
+		<!--</agm-polyline-point>-->
+	<!--</agm-polyline>-->
 </agm-map>
 

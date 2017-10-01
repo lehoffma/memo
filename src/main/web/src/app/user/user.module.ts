@@ -11,12 +11,14 @@ import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
 import {AgmCoreModule} from "@agm/core";
+import {SearchModule} from "../shop/search-results/search.module";
 
 @NgModule({
 	imports: [
 		CommonModule,
 		FormsModule,
 		SharedModule,
+		SearchModule,
 		MemoMaterialModule,
 		AgmCoreModule,
 		PasswordStrengthBarModule,
@@ -37,4 +39,5 @@ import {AgmCoreModule} from "@agm/core";
 		SignUpModule
 	]
 })
-export class UserModule{}
+export class UserModule {
+}

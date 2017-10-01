@@ -1,5 +1,6 @@
 @import "../../../../../theme";
 @import "~@angular/material/theming";
+@import "variables";
 
 $breakpoint: 750px;
 
@@ -20,7 +21,7 @@ $breakpoint: 750px;
 	> div {
 		display: flex;
 		flex-direction: column;
-		background-color: white;
+		background-color: $container-content--background-color;
 		padding: 1rem;
 		max-width: $breakpoint;
 		width: 100%;
@@ -49,9 +50,9 @@ $breakpoint: 750px;
 
 		h2 {
 			font-weight: 200;
-			border-bottom: 1px solid #E0E0E0;
-			background-color: mat-color($primary);
-			color: white;
+			border-bottom: 1px solid $container-divider--color;
+			background-color: $container-header--background-color;
+			color: $container-header--color;
 			padding: 24px 16px 10px 24px;
 			margin: -1rem -1rem 1rem;
 		}

@@ -3,6 +3,16 @@ span {
 	font-size: 1.2rem;
 }
 
+:host > div > mat-form-field {
+	width: calc(100% - 45px);
+}
+
+.swap-button {
+	position: relative;
+	top: 40px;
+	left: 10px;
+}
+
 agm-map {
 	width: 100%;
 	height: 300px;

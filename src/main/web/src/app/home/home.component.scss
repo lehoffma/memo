@@ -1,6 +1,7 @@
 @import "~@angular/material/theming";
 @import "../../theme";
 @import "../../mixins";
+@import "variables";
 
 :host {
 	display: block;
@@ -16,16 +17,16 @@
 	}
 }
 
-.category-overview-container{
+.category-overview-container {
 	padding: 10px;
 	max-width: 800px;
 	margin: auto;
 }
 
-.overview-preview-container{
-	background: #fafafa;
+.overview-preview-container {
+	background: $container-content--background-color;
 
-	&:not(:first-child){
+	&:not(:first-child) {
 		margin-top: 1rem;
 	}
 }
@@ -34,15 +35,19 @@ div.overview-preview-container > .overview-preview-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	background: white;
-	border-bottom: 1px solid #e6e6e6;
-	color: rgba(0, 0, 0, 0.8);
+	background: $container-header--background-color;
+	border-bottom: $container-divider--height solid $container-divider--color;
+	color: $container-header--color;
 
 	padding: 1rem;
 	> a {
 		color: #2196F3;
 		text-decoration: none;
 		font-size: 1.1rem;
+
+		&:hover{
+			color: mat-color($accent, 300);
+		}
 	}
 
 	> h2 {
@@ -67,14 +72,14 @@ div.overview-preview-container > .overview-preview-header {
 
 	.svg-logo-container {
 		.svg-logo {
-			@include transition(0.2s ease);
-			@include animation(5s pulse infinite);
-			transform-origin: 50% 50%;
-			cursor: pointer;
-
-			&:hover {
-				animation-play-state: paused;
-			}
+			//@include transition(0.2s ease);
+			//@include animation(5s pulse infinite);
+			//transform-origin: 50% 50%;
+			//cursor: pointer;
+            //
+			//&:hover {
+			//	animation-play-state: paused;
+			//}
 		}
 	}
 
@@ -142,40 +147,5 @@ div.overview-preview-container > .overview-preview-header {
 	}
 	100% {
 		@include transform(scale(1));
-	}
-}
-
-@media all and (min-width: 950px) {
-	.category-overview-container {
-		//display: flex;
-		//justify-content: center;
-		//padding: 20px;
-
-		.overview-preview-container {
-			//flex-grow: 2;
-			//max-width: 500px;
-			//background: #fafafa;
-			box-shadow: 0 2px 1px -1px rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 1px 3px 0 rgba(0, 0, 0, .12);
-			//width: 30%;
-
-			&:not(:first-child) {
-				//margin-left: 20px;
-			}
-
-			.overview-preview-header {
-				//background: white;
-				//border-bottom: 1px solid #e6e6e6;
-				//color: rgba(0, 0, 0, 0.8);
-
-				> a {
-					//color: mat-color($primary);
-
-					&:hover {
-						color: mat-color($accent, 300);
-
-					}
-				}
-			}
-		}
 	}
 }

@@ -13,6 +13,7 @@ import {ErrorPageComponent} from "./error-page/error-page.component";
 import {AutoSizeTextAreaDirective} from "./autosize-textarea.directive";
 import {ConfirmationDialogComponent} from "./confirmation-dialog/confirmation-dialog.component";
 import {MemoMaterialModule} from "../../material.module";
+import {ModifyItemInnerContainerComponent} from "./modify-item-inner-container/modify-item-inner-container.component";
 
 @NgModule({
 	imports: [
@@ -28,6 +29,8 @@ import {MemoMaterialModule} from "../../material.module";
 
 		ConfirmationDialogComponent,
 
+		ModifyItemInnerContainerComponent,
+
 		BadgeComponent,
 		PageNotFoundComponent,
 		ErrorPageComponent,
@@ -38,6 +41,8 @@ import {MemoMaterialModule} from "../../material.module";
 		MultiLevelSelectModule,
 
 		EventCalendarComponent,
+
+		ModifyItemInnerContainerComponent,
 
 		BadgeComponent,
 		PageNotFoundComponent,

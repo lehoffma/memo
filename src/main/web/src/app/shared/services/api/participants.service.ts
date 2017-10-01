@@ -87,12 +87,14 @@ export class ParticipantsService {
 		}>(this.baseUrl, {
 			params: new HttpParams().set("userId", "" + userId)
 		})
-			.map(json => json.events.map(event => EventUtilityService.optionalShopItemSwitch(event,
-				{
-					tours: () => Tour.create().setProperties(event),
-					partys: () => Party.create().setProperties(event)
-				})
-			))
+			.map(json => json.events
+				.filter(event => !EventUtilityService.isMerchandise(event))
+				.map(event => EventUtilityService.optionalShopItemSwitch(event,
+					{
+						tours: () => Tour.create().setProperties(event),
+						partys: () => Party.create().setProperties(event)
+					})
+				))
 			.do(events => this.cache.addMultiple(...events))
 			.share()
 	}

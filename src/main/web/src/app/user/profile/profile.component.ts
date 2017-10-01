@@ -11,6 +11,7 @@ import {NavigationService} from "../../shared/services/navigation.service";
 import {AddressService} from "../../shared/services/api/address.service";
 import {EventRoute} from "../../shop/shared/model/route";
 import {Address} from "../../shared/model/address";
+import {ParticipantsService} from "../../shared/services/api/participants.service";
 
 
 @Component({
@@ -23,7 +24,7 @@ export class ProfileComponent implements OnInit {
 	userId = this.route.params.first().map(params => +params["id"]);
 	userObservable: Observable<User> = this.userId.flatMap(id => this.userService.getById(id));
 	userEvents: Observable<Event[]> = this.userObservable
-		.flatMap(user => this.eventService.getHostedEventsOfUser(user.id));
+		.flatMap(user => this.participantService.getParticipatedEventsOfUser(user.id));
 	userDestinations: Observable<Address[]> = this.userEvents.flatMap(events => {
 		return Observable.combineLatest(...events
 			.map(event => event.route)
@@ -56,6 +57,7 @@ export class ProfileComponent implements OnInit {
 				private navigationService: NavigationService,
 				private addressService: AddressService,
 				private eventService: EventService,
+				private participantService: ParticipantsService,
 				private loginService: LogInService,
 				private userService: UserService) {
 

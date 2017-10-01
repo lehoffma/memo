@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ShopItemType} from "../../shared/model/shop-item-type";
 import {ModifyType} from "./modify-type";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {ModifyItemService} from "./modify-item.service";
 import {Observable} from "rxjs/Observable";
@@ -33,6 +33,7 @@ export class ModifyShopItemComponent implements OnInit, OnDestroy {
 
 	constructor(public modifyItemService: ModifyItemService,
 				private location: Location,
+				private router: Router,
 				private activatedRoute: ActivatedRoute) {
 		Observable.combineLatest(
 			this.activatedRoute.params.first(),
@@ -43,6 +44,7 @@ export class ModifyShopItemComponent implements OnInit, OnDestroy {
 				this.modifyItemService.readQueryParams(queryParamMap);
 				this.modifyItemService.init();
 			});
+
 	}
 
 	/**
@@ -53,7 +55,6 @@ export class ModifyShopItemComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.modifyItemService.reset();
 	}
 
 	/**

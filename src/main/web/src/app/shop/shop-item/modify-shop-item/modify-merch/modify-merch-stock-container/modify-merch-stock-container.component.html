@@ -1,0 +1,15 @@
+<div class="stock-table-container">
+	<memo-modify-merch-stock [(stock)]="stock" [merchTitle]="merch.title">
+
+	</memo-modify-merch-stock>
+</div>
+
+
+<div class="action-buttons">
+	<button mat-button (click)="goBack()">
+		Abbrechen
+	</button>
+	<button mat-raised-button color="accent" (click)="saveChanges()" [disabled]="noChanges">
+		Änderungen speichern
+	</button>
+</div>

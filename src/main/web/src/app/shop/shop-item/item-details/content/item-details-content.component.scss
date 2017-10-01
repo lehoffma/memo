@@ -2,6 +2,7 @@
 @import "../../../../../theme";
 @import "~@angular/material/theming";
 @import "../centered-container";
+@import "variables";
 
 .object-details-content-container {
 	@include card-like();
@@ -11,9 +12,11 @@
 	display: flex;
 	justify-content: space-between;
 
-	background-color: mat-color($primary);
+	color: $container-header--color;
+	background-color: $container-header--background-color;
+	border-bottom: $container-divider--height solid $container-divider--color;
+
 	padding: 1rem 1rem 0.5rem;
-	color: white;
 	font-size: 1.3rem;
 
 	> h3 {
@@ -31,5 +34,5 @@
 
 .object-details-content {
 	padding: 1rem;
-	background-color: white;
+	background-color: $container-content--background-color;
 }

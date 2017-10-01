@@ -45,6 +45,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	public maxAmount: number = 0;
 	public isPartOfShoppingCart: boolean;
 	public isPastEvent: boolean = false;
+	values: {
+		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
+		} = {};
 
 	constructor(private eventUtilityService: EventUtilityService,
 				private participantService: ParticipantsService,
@@ -92,10 +95,6 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			this.updateMaxAmount();
 		}
 	}
-
-	values: {
-		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
-		} = {};
 
 	/**
 	 *

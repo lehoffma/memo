@@ -13,11 +13,21 @@
 	</div>
 
 	<mat-menu #menu="matMenu">
+
+		<!--todo modify merch stock page-->
+		<!--todo: edit Stock => extra seite auf mobile vllt-->
 		<a mat-menu-item
-		   routerLink="/merch/{{stockEntry?.item.id}}/edit">
+		   routerLink="/merch/{{stockEntry?.item.id}}/stock/edit"
+		   *ngIf="(windowService.dimension$ | async).width < 600; else dialogButton">
 			<mat-icon>edit</mat-icon>
 			<span>Bearbeiten</span>
 		</a>
+		<ng-template #dialogButton>
+			<button mat-menu-item type="button" (click)="openModifyStockDialog()">
+				<mat-icon>edit</mat-icon>
+				<span>Bearbeiten</span>
+			</button>
+		</ng-template>
 		<button mat-menu-item type="button" (click)="deleteMerch(stockEntry?.item.id)">
 			<mat-icon>delete</mat-icon>
 			<span>Löschen</span>
@@ -39,7 +49,7 @@
 		<th class="empty-column">
 			<!--todo add size-->
 			<!--<button mat-icon-button>-->
-				<!--<mat-icon>add</mat-icon>-->
+			<!--<mat-icon>add</mat-icon>-->
 			<!--</button>-->
 		</th>
 		<th class="total-header">
@@ -48,45 +58,45 @@
 	</tr>
 	</thead>
 	<tbody>
-		<tr *ngFor="let color of stockEntry.options.color">
-			<th class="color-container">
-				<div class="merch-available-colors"
-					[style.background-color]="color.hex">
+	<tr *ngFor="let color of stockEntry.options.color">
+		<th class="color-container">
+			<div class="merch-available-colors"
+				 [style.background-color]="color.hex">
 
-				</div>
-				<span>{{color.name}}</span>
-			</th>
-			<td *ngFor="let size of stockEntry.options.size; let i = index"
-				[ngClass]="{'is-zero': stockEntry.stockMap[size][color.name] === 0}"
-				class="stock-amount-cell">
-				{{stockEntry.stockMap[size][color.name]}}
-			</td>
-			<td>
-				<!--empty because of the add button-->
-			</td>
-			<th>
-				{{(totals$ | async)[color.name]}}
-			</th>
-		</tr>
-		<!--<tr>-->
-			<!--<td>-->
-				<!--&lt;!&ndash;todo add color&ndash;&gt;-->
-				<!--<button mat-icon-button>-->
-					<!--<mat-icon>add</mat-icon>-->
-				<!--</button>-->
-			<!--</td>-->
-		<!--</tr>-->
-		<tr>
-			<th>Gesamt</th>
-			<th *ngFor="let size of stockEntry.options.size">
-				{{(totals$ | async)[size]}}
-			</th>
-			<th>
+			</div>
+			<span>{{color.name}}</span>
+		</th>
+		<td *ngFor="let size of stockEntry.options.size; let i = index"
+			[ngClass]="{'is-zero': stockEntry.stockMap[size][color.name] === 0}"
+			class="stock-amount-cell">
+			{{stockEntry.stockMap[size][color.name]}}
+		</td>
+		<td>
+			<!--empty because of the add button-->
+		</td>
+		<th>
+			{{(totals$ | async)[color.name]}}
+		</th>
+	</tr>
+	<!--<tr>-->
+	<!--<td>-->
+	<!--&lt;!&ndash;todo add color&ndash;&gt;-->
+	<!--<button mat-icon-button>-->
+	<!--<mat-icon>add</mat-icon>-->
+	<!--</button>-->
+	<!--</td>-->
+	<!--</tr>-->
+	<tr>
+		<th>Gesamt</th>
+		<th *ngFor="let size of stockEntry.options.size">
+			{{(totals$ | async)[size]}}
+		</th>
+		<th>
 
-			</th>
-			<th class="total-sum">
-				{{(totals$ | async)["total"]}}
-			</th>
-		</tr>
+		</th>
+		<th class="total-sum">
+			{{(totals$ | async)["total"]}}
+		</th>
+	</tr>
 	</tbody>
 </table>

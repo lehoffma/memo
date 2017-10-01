@@ -25,3 +25,13 @@
 		}
 	}
 }
+
+:host /deep/ .expandable-table-component-container {
+	margin-left: -1rem;
+	padding-left: 1rem;
+	margin-right: -1rem;
+	padding-right: 1rem;
+	margin-top: -1.2rem;
+	background: white;
+	border-bottom: 1px solid #ededed;
+}

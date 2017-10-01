@@ -25,6 +25,11 @@
 		"name": "Kalender"
 	},
 	{
+		"route": "leaderboard",
+		"icon": "format_list_numbered",
+		"name": "Meilentabelle"
+	},
+	{
 		"route": "",
 		"icon": "",
 		"name": "Accountverwaltung",

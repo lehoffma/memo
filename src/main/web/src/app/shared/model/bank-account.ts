@@ -14,6 +14,6 @@ export class BankAccount extends BaseObject<BankAccount> {
 	}
 
 	static isBankAccount(object:any):object is BankAccount{
-		return (<BankAccount>object).iban !== undefined && (<BankAccount>object).iban !== null;
+		return object && (<BankAccount>object).iban !== undefined && (<BankAccount>object).iban !== null;
 	}
 }

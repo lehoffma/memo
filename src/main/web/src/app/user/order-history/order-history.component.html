@@ -1,3 +1,7 @@
+<memo-sorting-dropdown *ngIf="(orders$|async)?.length > 0"
+					   [sortingOptions]="sortingOptions" (onSort)="sortBy$.next($event)">
+
+</memo-sorting-dropdown>
 <memo-order-history-entry *ngFor="let order of orders$|async" [orderEntry]="order">
 </memo-order-history-entry>
 

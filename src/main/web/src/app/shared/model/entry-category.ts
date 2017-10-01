@@ -11,6 +11,6 @@ export class EntryCategory extends BaseObject<EntryCategory> {
 	}
 
 	static isEntryCategory(object:any): object is EntryCategory{
-		return object["id"] !== undefined && object["name"] !== undefined;
+		return object && object["id"] !== undefined && object["name"] !== undefined;
 	}
 }

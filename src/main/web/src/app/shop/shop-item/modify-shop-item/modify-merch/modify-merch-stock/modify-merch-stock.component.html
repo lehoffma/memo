@@ -1,6 +1,6 @@
 <memo-expandable-table
 	[data]="merchStockObservable | async"
-	[title]="'Bestand'"
+	[title]="'Bestand' + (merchTitle ? ' von ' + merchTitle : '')"
 	[expandable]="false"
 	[columnKeys]="primaryColumnKeys"
 	[permissions]="permissions$ | async"

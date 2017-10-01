@@ -1,119 +1,122 @@
 <form (ngSubmit)="submit()" #userDataForm="ngForm" novalidate>
 	<div class="personal-data">
 		<!--Profilbild-->
-		<h3>Profilbild</h3>
-		<memo-profile-picture-form
-			[image]="loginService.isLoggedIn()
+		<memo-modify-item-inner-container [title]="'Profilbild'" [saveButton]="false"
+										  [formIsValid]="userDataForm.form.valid">
+			<memo-profile-picture-form
+				[image]="loginService.isLoggedIn()
 			? userModel['imagePath']
 			: profilePicture"
-			(onChange)="profilePictureChanged($event)">
+				(onChange)="profilePictureChanged($event)">
 
-		</memo-profile-picture-form>
+			</memo-profile-picture-form>
+		</memo-modify-item-inner-container>
 
-		<div class="form-divider"></div>
 
-		<!--Vorname/Nachname-->
-		<h3>Persönliche Daten</h3>
-		<div class="user-personal-data-input-container" *ngIf="userModel">
-			<div class="name-input">
-				<mat-form-field>
-					<input matInput name="firstNameInput"
-						   type="text" required
-						   placeholder="Vorname"
-						   #firstNameInput="ngModel"
-						   [(ngModel)]="userModel['firstName']">
-					<mat-hint *ngIf="firstNameInput.touched && !firstNameInput.valid" class="error-message" align="end">
-						Dieses Feld darf nicht leer bleiben!
-					</mat-hint>
-				</mat-form-field>
-				<mat-form-field>
-					<input matInput name="surnameInput"
-						   type="text" required
-						   placeholder="Nachname"
-						   #surnameInput="ngModel"
-						   [(ngModel)]="userModel['surname']">
-					<mat-hint *ngIf="surnameInput.touched && !surnameInput.valid" class="error-message" align="end">
-						Dieses Feld darf nicht leer bleiben!
-					</mat-hint>
-				</mat-form-field>
-			</div>
-			<div class="date-and-gender-input">
-				<div>
+		<memo-modify-item-inner-container [title]="'Persönliche Daten'" [saveButton]="false">
+			<div class="user-personal-data-input-container" *ngIf="userModel">
+				<div class="name-input">
 					<mat-form-field>
-						<input matInput [matDatepicker]="birthDayPicker"
-							   placeholder="Geburtstag"
-							   [(ngModel)]="userModel['birthday']"
-							   #birthdayInput="ngModel"
-							   name="dateInput" required>
-						<mat-datepicker-toggle matSuffix [for]="birthDayPicker"></mat-datepicker-toggle>
+						<input matInput name="firstNameInput"
+							   type="text" required
+							   placeholder="Vorname"
+							   #firstNameInput="ngModel"
+							   [(ngModel)]="userModel['firstName']">
+						<mat-hint *ngIf="firstNameInput.touched && !firstNameInput.valid" class="error-message"
+								  align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</mat-hint>
 					</mat-form-field>
-					<mat-datepicker [touchUi]="true" #birthDayPicker></mat-datepicker>
+					<mat-form-field>
+						<input matInput name="surnameInput"
+							   type="text" required
+							   placeholder="Nachname"
+							   #surnameInput="ngModel"
+							   [(ngModel)]="userModel['surname']">
+						<mat-hint *ngIf="surnameInput.touched && !surnameInput.valid" class="error-message" align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</mat-hint>
+					</mat-form-field>
 				</div>
-				<mat-select [(ngModel)]="userModel['gender']" placeholder="Geschlecht" #genderSelect="ngModel"
-						   name="genderSelect" class="aligned-mat-select">
-					<mat-option *ngFor="let option of genderOptions" [value]="option">
-						{{option}}
-					</mat-option>
-				</mat-select>
+				<div class="date-and-gender-input">
+					<div>
+						<mat-form-field>
+							<input matInput [matDatepicker]="birthDayPicker"
+								   placeholder="Geburtstag"
+								   [(ngModel)]="userModel['birthday']"
+								   #birthdayInput="ngModel"
+								   name="dateInput" required>
+							<mat-datepicker-toggle matSuffix [for]="birthDayPicker"></mat-datepicker-toggle>
+						</mat-form-field>
+						<mat-datepicker [touchUi]="true" #birthDayPicker></mat-datepicker>
+					</div>
+					<mat-select [(ngModel)]="userModel['gender']" placeholder="Geschlecht" #genderSelect="ngModel"
+								name="genderSelect" class="aligned-mat-select">
+						<mat-option *ngFor="let option of genderOptions" [value]="option">
+							{{option}}
+						</mat-option>
+					</mat-select>
+				</div>
+				<div>
+					<mat-form-field
+						[dividerColor]="(telephone.touched && telephone.invalid) ? 'warn' : 'primary'">
+						<input matInput
+							   placeholder="Telefon"
+							   type="tel"
+							   pattern="^[0-9\-\+\s\(\)]*$"
+							   name="telephone"
+							   #telephone="ngModel"
+							   [(ngModel)]="userModel['telephone']"
+						>
+						<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
+						<mat-hint align="end" class="error-message" *ngIf="telephone.touched && (telephone.invalid)">
+							Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
+						</mat-hint>
+					</mat-form-field>
+				</div>
+				<div>
+					<mat-form-field
+						[dividerColor]="(mobile.touched && mobile.invalid) ? 'warn' : 'primary'">
+						<input matInput
+							   placeholder="Mobiltelefon"
+							   type="tel"
+							   pattern="^[0-9\-\+\s\(\)]*$"
+							   name="mobile"
+							   #mobile="ngModel"
+							   [(ngModel)]="userModel['mobile']"
+						>
+						<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
+						<mat-hint align="end" class="error-message" *ngIf="mobile.touched && (mobile.invalid)">
+							Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
+						</mat-hint>
+					</mat-form-field>
+				</div>
 			</div>
-			<div>
-				<mat-form-field
-					[dividerColor]="(telephone.touched && telephone.invalid) ? 'warn' : 'primary'">
-					<input matInput
-						   placeholder="Telefon"
-						   type="tel"
-						   pattern="^[0-9\-\+\s\(\)]*$"
-						   name="telephone"
-						   #telephone="ngModel"
-						   [(ngModel)]="userModel['telephone']"
-					>
-					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-					<mat-hint align="end" class="error-message" *ngIf="telephone.touched && (telephone.invalid)">
-						Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
-					</mat-hint>
-				</mat-form-field>
-			</div>
-			<div>
-				<mat-form-field
-					[dividerColor]="(mobile.touched && mobile.invalid) ? 'warn' : 'primary'">
-					<input matInput
-						   placeholder="Mobiltelefon"
-						   type="tel"
-						   pattern="^[0-9\-\+\s\(\)]*$"
-						   name="mobile"
-						   #mobile="ngModel"
-						   [(ngModel)]="userModel['mobile']"
-					>
-					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-					<mat-hint align="end" class="error-message" *ngIf="mobile.touched && (mobile.invalid)">
-						Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
-					</mat-hint>
-				</mat-form-field>
-			</div>
-		</div>
 
 
-		<!--isStudent-->
-		<div class="checkboxes-container">
-			<mat-checkbox [(ngModel)]="userModel['isStudent']"
-						 [align]="'start'"
-						 name="isStudent"
-						 #isStudent="ngModel">
-				Student
-			</mat-checkbox>
-			<mat-checkbox [(ngModel)]="userModel['hasSeasonTicket']"
-						 [align]="'start'"
-						 name="hasSeasonTicket"
-						 #hasSeasonTicket="ngModel">
-				Dauerkarte
-			</mat-checkbox>
-			<mat-checkbox [(ngModel)]="userModel['isWoelfeClubMember']"
-						 [align]="'start'"
-						 name="isWoelfeClubMember"
-						 #isWoelfeClubMember="ngModel">
-				Woelfeclub-Mitglied
-			</mat-checkbox>
-		</div>
+			<!--isStudent-->
+			<div class="checkboxes-container">
+				<mat-checkbox [(ngModel)]="userModel['isStudent']"
+							  [align]="'start'"
+							  name="isStudent"
+							  #isStudent="ngModel">
+					Student
+				</mat-checkbox>
+				<mat-checkbox [(ngModel)]="userModel['hasSeasonTicket']"
+							  [align]="'start'"
+							  name="hasSeasonTicket"
+							  #hasSeasonTicket="ngModel">
+					Dauerkarte
+				</mat-checkbox>
+				<mat-checkbox [(ngModel)]="userModel['isWoelfeClubMember']"
+							  [align]="'start'"
+							  name="isWoelfeClubMember"
+							  #isWoelfeClubMember="ngModel">
+					Woelfeclub-Mitglied
+				</mat-checkbox>
+			</div>
+		</memo-modify-item-inner-container>
+
 	</div>
 
 	<div class="addresses">
@@ -124,16 +127,17 @@
 		<!--ngFor für jede Adresse: ein Listeneintrag anzeigen -->
 		<!--dadrunter form für das hinzufügen einer neuen addresse mit speichern button-->
 		<!--die form ist fürs erste leer und wird mit daten geupdated wenn der nutzer auf eine der ngFor addressen klickt-->
-		<h3>Addressen</h3>
-		<memo-address-entry *ngFor="let address of (addressesSubject$ | async)"
-							[address]="address"
-							[editUrl]="editUrl$ | async"
-							(onDelete)="deleteAddress(address)"
-		>
-		</memo-address-entry>
-		<a mat-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">
-			Neue Addresse hinzufügen
-		</a>
+		<memo-modify-item-inner-container [title]="'Addressen'" [saveButton]="false">
+			<memo-address-entry *ngFor="let address of (addressesSubject$ | async)"
+								[address]="address"
+								[editUrl]="editUrl$ | async"
+								(onDelete)="deleteAddress(address)"
+			>
+			</memo-address-entry>
+			<a mat-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">
+				Neue Addresse hinzufügen
+			</a>
+		</memo-modify-item-inner-container>
 
 	</div>
 
@@ -142,54 +146,58 @@
 		<!--3. Accountinformationen-->
 		<!--public readonly email: string,-->
 		<!--public readonly passwordHash: string,-->
-		<h3>Account Informationen</h3>
 
-		<mat-form-field
-			[dividerColor]="(email.touched && email.invalid) ? 'warn' : 'primary'">
-			<input matInput
-				   placeholder="Email"
-				   type="email"
-				   name="email"
-				   [ngClass]="{'has-error': email.touched && email.invalid}"
-				   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
-				   [(ngModel)]="userModel['email']"
-				   #email="ngModel"
-				   required>
-			<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-			<mat-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
-				Email-Adresse muss in der Form <i>test@email.de</i> sein
-			</mat-hint>
-		</mat-form-field>
+		<memo-modify-item-inner-container [title]="'Account Informationen'">
+			<mat-form-field
+				[dividerColor]="(email.touched && (email.invalid || emailIsAlreadyTaken)) ? 'warn' : 'primary'">
+				<input matInput
+					   placeholder="Email"
+					   type="email"
+					   name="email"
+					   [ngClass]="{'has-error': email.touched && email.invalid}"
+					   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+					   [(ngModel)]="userModel['email']"
+					   #email="ngModel"
+					   required>
+				<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
+				<mat-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
+					Email-Adresse muss in der Form <i>test@email.de</i> sein
+				</mat-hint>
+				<mat-hint align="end" class="error-message" *ngIf="email.touched && emailIsAlreadyTaken">
+					Die Email-Addresse ist bereits vergeben.
+				</mat-hint>
+			</mat-form-field>
 
 
-		<mat-form-field>
-			<input matInput
-				   placeholder="Neues Passwort"
-				   type="password"
-				   name="password"
-				   [(ngModel)]="userModel['password']"
-				   #passwordInput="ngModel">
-			<mat-hint align="end">
-				<ng2-password-strength-bar
-					[passwordToCheck]="userModel['password']"
-					[barLabel]="''">
-				</ng2-password-strength-bar>
-			</mat-hint>
-		</mat-form-field>
-		<mat-form-field
-			[dividerColor]="(confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)) ? 'warn' : 'primary'">
-			<input matInput
-				   placeholder="Passwort bestätigen"
-				   type="password"
-				   name="confirm-password-input"
-				   #confirmPasswordInput="ngModel"
-				   [(ngModel)]="confirmedPassword">
-			<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
-			<mat-hint align="end" class="error-message"
-					 *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)">
-				Passwörter stimmen nicht überein
-			</mat-hint>
-		</mat-form-field>
+			<mat-form-field>
+				<input matInput
+					   placeholder="Neues Passwort"
+					   type="password"
+					   name="password"
+					   [(ngModel)]="userModel['passwordHash']"
+					   #passwordInput="ngModel">
+				<mat-hint align="end">
+					<ng2-password-strength-bar
+						[passwordToCheck]="userModel['passwordHash']"
+						[barLabel]="''">
+					</ng2-password-strength-bar>
+				</mat-hint>
+			</mat-form-field>
+			<mat-form-field
+				[dividerColor]="(confirmPasswordInput.touched &&  (userModel['passwordHash'] !== confirmedPassword)) ? 'warn' : 'primary'">
+				<input matInput
+					   placeholder="Passwort bestätigen"
+					   type="password"
+					   name="confirm-password-input"
+					   #confirmPasswordInput="ngModel"
+					   [(ngModel)]="confirmedPassword">
+				<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
+				<mat-hint align="end" class="error-message"
+						  *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (userModel['passwordHash'] !== confirmedPassword)">
+					Passwörter stimmen nicht überein
+				</mat-hint>
+			</mat-form-field>
+		</memo-modify-item-inner-container>
 
 	</div>
 
@@ -200,33 +208,36 @@
 	<!--Tours: <mat-select>[Admin, Kann löschen</mat-select>-->
 
 	<div class="club-information" *ngIf="loginService.isLoggedInObservable() | async">
-		<div class="form-divider"></div>
-		<h3>Vereinsinformationen</h3>
-		<div class="club-information-forms">
-			<mat-select [(ngModel)]="userModel['clubRole']" placeholder="Vereinsrolle" #clubRoleSelect="ngModel"
-					   [disabled]="!(isAdmin | async)" class="aligned-mat-select"
-					   matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
-					   [matTooltipPosition]="'above'"
-					   name="clubRoleSelect">
-				<mat-option *ngFor="let option of clubRoleOptions" [value]="option">
-					{{option}}
-				</mat-option>
-			</mat-select>
-			<div>
-				<mat-form-field
-					matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
-					[matTooltipPosition]="'above'">
-					<input matInput [matDatepicker]="joinDatePicker"
-						   placeholder="Mitglied seit"
-						   [disabled]="!(isAdmin | async)"
-						   [(ngModel)]="userModel['joinDate']"
-						   #joinDateInput="ngModel"
-						   name="joinDateInput" required>
-					<mat-datepicker-toggle [disabled]="!(isAdmin | async)" matSuffix [for]="joinDatePicker"></mat-datepicker-toggle>
-				</mat-form-field>
-				<mat-datepicker [touchUi]="true" #joinDatePicker></mat-datepicker>
+
+		<memo-modify-item-inner-container [title]="'Vereinsinformationen'" [saveButton]="false">
+
+			<div class="club-information-forms">
+				<mat-select [(ngModel)]="userModel['clubRole']" placeholder="Vereinsrolle" #clubRoleSelect="ngModel"
+							[disabled]="!(isAdmin | async)" class="aligned-mat-select"
+							matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
+							[matTooltipPosition]="'above'"
+							name="clubRoleSelect">
+					<mat-option *ngFor="let option of clubRoleOptions" [value]="option">
+						{{option}}
+					</mat-option>
+				</mat-select>
+				<div>
+					<mat-form-field
+						matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
+						[matTooltipPosition]="'above'">
+						<input matInput [matDatepicker]="joinDatePicker"
+							   placeholder="Mitglied seit"
+							   [disabled]="!(isAdmin | async)"
+							   [(ngModel)]="userModel['joinDate']"
+							   #joinDateInput="ngModel"
+							   name="joinDateInput" required>
+						<mat-datepicker-toggle [disabled]="!(isAdmin | async)" matSuffix
+											   [for]="joinDatePicker"></mat-datepicker-toggle>
+					</mat-form-field>
+					<mat-datepicker [touchUi]="true" #joinDatePicker></mat-datepicker>
+				</div>
 			</div>
-		</div>
+		</memo-modify-item-inner-container>
 	</div>
 
 
