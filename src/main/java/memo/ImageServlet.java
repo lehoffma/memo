@@ -1,5 +1,8 @@
 package memo;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +17,11 @@ public class ImageServlet extends HttpServlet {
 
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Gson gson = new Gson();
 
+        JsonObject obj = new JsonObject();
+        obj.addProperty("imagePath","/api/penis");
+        response.getWriter().append(gson.toJson(obj));
     }
 
 

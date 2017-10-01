@@ -127,11 +127,6 @@ export class SignUpService {
 	 * @returns {Promise<User>}
 	 */
 	uploadProfilePicture(user: User, picture: FormData) {
-		console.warn("uploading picture not implemented");
-
-		if(user){
-			return Observable.of(user);
-		}
 
 		return this.imageUploadService.uploadImage(picture)
 			.map(response => response.imagePath)
