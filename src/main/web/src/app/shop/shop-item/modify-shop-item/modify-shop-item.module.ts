@@ -17,8 +17,9 @@ import {MemoMaterialModule} from "../../../../material.module";
 import {SharedModule} from "../../../shared/shared.module";
 import {ColorPickerModule} from "ngx-color-picker";
 import {AgmCoreModule} from "@agm/core";
-import {ModifyItemInnerContainerComponent} from "./modify-item-inner-container/modify-item-inner-container.component";
-
+import {ModifyItemInnerContainerComponent} from "../../../shared/modify-item-inner-container/modify-item-inner-container.component";
+import {ModifyMerchStockContainerComponent} from './modify-merch/modify-merch-stock-container/modify-merch-stock-container.component';
+import {DirectionsMapDirective} from "./tour-route-input/directions-map.directive";
 
 @NgModule({
 	imports: [
@@ -32,9 +33,10 @@ import {ModifyItemInnerContainerComponent} from "./modify-item-inner-container/m
 		ModifyShopItemRoutingModule,
 		UserModule,
 	],
-	exports: [],
+	exports: [ModifyMerchStockComponent],
 	declarations: [
 		routedComponents,
+		DirectionsMapDirective,
 		ModifyEntryComponent,
 		ModifyMerchComponent,
 		ModifyMerchStockComponent,
@@ -44,13 +46,13 @@ import {ModifyItemInnerContainerComponent} from "./modify-item-inner-container/m
 		ModifyTourComponent,
 		ModifyUserComponent,
 		TourRouteInputComponent,
-		ModifyItemInnerContainerComponent
+		ModifyMerchStockContainerComponent
 	],
 	providers: [ModifyItemService],
 	entryComponents: [
 		ModifyMerchStockItemComponent,
 		MerchColorCellComponent
-	]
+	],
 })
 export class ModifyShopItemModule {
 }

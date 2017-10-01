@@ -5,7 +5,7 @@ import {LogInService} from "../../../shared/services/api/login.service";
 import {AddressService} from "../../../shared/services/api/address.service";
 import {Address} from "../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "../../../shared/services/api/user.service";
 import {FormControlDirective} from "@angular/forms";
 
@@ -26,8 +26,9 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	@Output() onCancel = new EventEmitter();
 	@Output() onAddressModification = new EventEmitter();
 
-	editUrl$ = this.loginService.accountObservable
-		.map(id => id === null
+	editUrl$ = this.activatedRoute.paramMap
+		.map(paramMap => paramMap.get("id"))
+		.map(id => id === null || id === "create"
 			? "/address"
 			: `/members/${id}/address`);
 	genderOptions = [Gender.FEMALE, Gender.MALE, Gender.OTHER];
@@ -37,11 +38,15 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	});
 	addressesSubject$ = new BehaviorSubject<Address[]>([]);
 
+	emailIsAlreadyTaken = false;
+
 	constructor(public loginService: LogInService,
 				public userService: UserService,
 				public router: Router,
+				public activatedRoute: ActivatedRoute,
 				public addressService: AddressService) {
 	}
+
 
 	get userModel() {
 		return this.model;
@@ -74,10 +79,20 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 *
 	 */
 	submit() {
-		this.onSubmit.emit({
-			...this.model,
-			profilePicture: this.profilePicture
-		});
+		this.userService.isUserEmailAlreadyInUse(this.model["email"])
+			.first()
+			.subscribe(isAlreadyInUse => {
+				if (isAlreadyInUse) {
+					this.emailIsAlreadyTaken = true;
+				}
+				else {
+					this.onSubmit.emit({
+						...this.model,
+						profilePicture: this.profilePicture
+					});
+				}
+			});
+
 	}
 
 	/**
@@ -88,8 +103,9 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	userCanSaveChanges(userDataForm: FormControlDirective): boolean {
 		return userDataForm.form.valid
 			&& (this.previousValueIsEmpty() || !this.modelHasNotChanged())
-			&& (!this.userModel['password'] || this.userModel['password'].length === 0
-				|| this.userModel['password'] === this.confirmedPassword)
+			&& (!this.userModel['passwordHash'] || this.userModel['passwordHash'].length === 0
+				|| this.userModel['passwordHash'] === this.confirmedPassword)
+			&& !this.emailIsAlreadyTaken
 	}
 
 	/**

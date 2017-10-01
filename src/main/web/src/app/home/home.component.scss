@@ -1,6 +1,7 @@
 @import "~@angular/material/theming";
 @import "../../theme";
 @import "../../mixins";
+@import "variables";
 
 :host {
 	display: block;
@@ -23,7 +24,7 @@
 }
 
 .overview-preview-container {
-	background: #fafafa;
+	background: $container-content--background-color;
 
 	&:not(:first-child) {
 		margin-top: 1rem;
@@ -34,9 +35,9 @@ div.overview-preview-container > .overview-preview-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	background: white;
-	border-bottom: 1px solid #e6e6e6;
-	color: rgba(0, 0, 0, 0.8);
+	background: $container-header--background-color;
+	border-bottom: $container-divider--height solid $container-divider--color;
+	color: $container-header--color;
 
 	padding: 1rem;
 	> a {

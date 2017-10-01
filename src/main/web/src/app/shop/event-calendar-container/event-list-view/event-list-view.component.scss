@@ -1,37 +1,36 @@
 @import "~@angular/material/theming";
 @import "../../../../theme";
+@import "variables";
 
-h3{
+h3 {
 	margin: 1rem 0 0;
 }
 
-
-.event-list-view-container{
+.event-list-view-container {
 	padding: 1rem;
-	background-color: #fafafa;
+	background-color: $container-content--background-color;
 	margin-bottom: 1rem;
-	//border-top: 5px solid mat-color($primary);
 }
 
-
-.event-list-view-title{
+.event-list-view-title {
 	padding: 0 1rem;
 	margin: -1rem -1rem 0;
 	margin-bottom: 1rem;
-	background-color: white;
-	border-bottom: 1px solid #e9e9e9;
+	background-color: $container-header--background-color;
+	color: $container-header--color;
+	border-bottom: $container-divider--height solid $container-divider--color;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 
-	h3{
+	h3 {
 		margin: 1rem 0;
 	}
 }
 
-@media all and (max-width: 650px){
-	:host{
-		/deep/ .result-entry-container{
+@media all and (max-width: 650px) {
+	:host {
+		/deep/ .result-entry-container {
 			margin: -0.5rem !important;
 			margin-bottom: 0 !important;
 			margin-top: 0 !important;
@@ -39,8 +38,8 @@ h3{
 	}
 }
 
-@media all and (min-width: 650px){
-	.event-list-container{
+@media all and (min-width: 650px) {
+	.event-list-container {
 		display: flex;
 		width: 100%;
 		overflow-x: auto;

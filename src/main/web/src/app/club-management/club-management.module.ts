@@ -24,6 +24,9 @@ import {MerchStockEntryComponent} from "app/club-management/administration/stock
 import {SearchFilterService} from "../shop/search-results/search-filter.service";
 import {SearchModule} from "../shop/search-results/search.module";
 import {MilesLeaderboardEntryComponent} from "app/club-management/miles-leaderboard/miles-leaderboard-entry.component";
+import {ModifyStockDialogComponent} from "./administration/stock/merch-stock/merch-stock-entry/modify-stock-dialog.component";
+import {ShopModule} from "../shop/shop.module";
+import {ModifyShopItemModule} from "../shop/shop-item/modify-shop-item/modify-shop-item.module";
 
 const tableCellComponents = [
 	//accounting table cells
@@ -56,6 +59,7 @@ const tableCellComponents = [
 		PieChartModule,
 		SharedModule,
 		SearchModule,
+		ModifyShopItemModule,
 		ClubManagementRoutingModule
 	],
 	declarations: [
@@ -65,10 +69,11 @@ const tableCellComponents = [
 		MerchStockFeedComponent,
 		MerchStockEntryComponent,
 		MilesLeaderboardEntryComponent,
+		ModifyStockDialogComponent,
 	],
 	providers: [
 		SearchFilterService
 	],
-	entryComponents: [tableCellComponents]
+	entryComponents: [tableCellComponents, ModifyStockDialogComponent]
 })
 export class ClubManagementModule{}

@@ -1,14 +1,17 @@
 @import "~@angular/material/theming";
 @import "../../../../../../theme";
+@import "variables";
 
 :host{
 	display: block;
 	@extend .mat-elevation-z3;
-	background-color: #fafafa;
+	background-color: $container-content--background-color;
+	color: $container-content--color;
 
 	h3{
-		background-color: white;
-		border-bottom: 1px solid #e6e6e6;
+		background-color: $container-header--background-color;
+		border-bottom: $container-divider--height solid $container-divider--color;
+		color: $container-header--color;
 		margin: 0;
 		text-align: center;
 		padding: 1rem;

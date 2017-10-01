@@ -15,10 +15,9 @@ import {StockService} from "../../../shared/services/api/stock.service";
 import {User} from "app/shared/model/user";
 import {ServletServiceInterface} from "../../../shared/model/servlet-service";
 import {Entry} from "../../../shared/model/entry";
-import {Event} from "../../shared/model/event";
 import {Location} from "@angular/common";
 import {NavigationService} from "../../../shared/services/navigation.service";
-import {ParamMap, Params} from "@angular/router";
+import {Event, NavigationEnd, ParamMap, Params, Router} from "@angular/router";
 import * as moment from "moment";
 import {isMoment, Moment} from "moment";
 import {Address} from "../../../shared/model/address";
@@ -49,6 +48,7 @@ export class ModifyItemService {
 				public imageUploadService: ImageUploadService,
 				public userService: UserService,
 				public location: Location,
+				public router: Router,
 				public navigationService: NavigationService,
 				public entryService: EntryService,
 				public addressService: AddressService,
@@ -223,7 +223,23 @@ export class ModifyItemService {
 				}
 			)
 		}
-		console.log(this.model);
+		if (!this.model["addresses"]) {
+			this.model["addresses"] = [];
+		}
+
+		this.router.events
+			.filter(event => event instanceof NavigationEnd)
+			.map(event => (<NavigationEnd>event))
+			.scan((acc: NavigationEnd[], value: NavigationEnd) => {
+				return [...acc, value];
+			}, [])
+			//check that the url currently routed to isn't the one we started at AND not the address-modification route
+			.filter(events => events.length > 1 && !events[events.length - 1].urlAfterRedirects.includes("address") &&
+				events[events.length - 1].urlAfterRedirects !== events[0].urlAfterRedirects)
+			.first()
+			.subscribe(() => {
+				this.reset();
+			})
 	}
 
 	/**
@@ -231,9 +247,9 @@ export class ModifyItemService {
 	 * @param model
 	 */
 	watchForAddressModification(model: any) {
+		const currentAddresses: Address[] = [...this.model["addresses"]];
 		if (model.action && model.action === "delete") {
 			const addressToDelete: Address = model.address;
-			const currentAddresses: Address[] = this.model["addresses"];
 			const deletedAddressId: number = currentAddresses
 				.findIndex(currentAddress => currentAddress.id === addressToDelete.id);
 
@@ -248,14 +264,16 @@ export class ModifyItemService {
 			.first()
 			.subscribe(address => {
 				if (address) {
-					const currentAddresses: Address[] = this.model["addresses"];
 					const modifiedAddressIndex = currentAddresses
 						.findIndex(currentAddress => currentAddress.id === address.id);
 					//address was added
 					if (modifiedAddressIndex === -1) {
 						currentAddresses.push(address);
 					}
-					//address was modified => dont do anything
+					//address was modified => push back into array
+					else {
+						this.model["addresses"] = currentAddresses.splice(modifiedAddressIndex, 1, address);
+					}
 
 					this.model["addresses"] = [...currentAddresses];
 					this.model = {...this.model};

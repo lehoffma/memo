@@ -3,7 +3,7 @@ import {MerchStock} from "../../../../../shared/model/merch-stock";
 import {Event} from "../../../../../shared/model/event";
 
 export interface ModifyStockItemEvent {
-	size: string;
+	sizes: string[];
 	color: { hex: string, name: string };
 	amount: number;
 	event: Event,

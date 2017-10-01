@@ -1,5 +1,6 @@
 @import "../../../theme";
 @import "~@angular/material/theming";
+@import "variables";
 
 :host {
 	height: calc(100% - 64px);
@@ -20,8 +21,8 @@
 	height: calc(100% - 80px);
 	overflow-y: auto;
 
-	mat-card{
-		background: #fafafa;
+	mat-card {
+		background: $container-content--background-color;
 	}
 
 	@media all and (min-width: 500px) {
@@ -54,8 +55,9 @@ mat-card {
 
 .checkout-title {
 	font-weight: 200;
-	border-bottom: 1px solid #e6e6e6;
-	background-color: white;
+	border-bottom: $container-divider--height solid $container-divider--color;
+	background-color: $container-header--background-color;
+	color: $container-header--color;
 	padding: 24px 16px 10px 24px;
 	margin-top: -24px !important;
 	margin-left: -24px;

@@ -15,6 +15,20 @@ import {
 import {MapsAPILoader} from "@agm/core";
 import {Address} from "../../../../shared/model/address";
 
+enum AddressComponentType {
+	street = <any>"route",
+	streetNr = <any>"street_number",
+	city = <any>"locality",
+	country = <any>"country",
+	zip = <any>"postal_code"
+}
+
+interface AddressComponent {
+	long_name: string;
+	short_name: string;
+	types: string[];
+}
+
 declare var google;
 
 @Component({
@@ -27,12 +41,49 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 	@Input() route: Address[] = [];
 
 	@Output() routeChange = new EventEmitter<Address[]>();
-	transformedRoutes: string[] = [];
 	@ViewChildren("routeInput") inputs: QueryList<ElementRef>;
+
+
+	centerOfTour$ = this.routeChange
+		.map(route => {
+			const initializedRoute = route
+				? route
+					.filter(it => it.latitude !== 0 && it.longitude !== 0)
+				: [];
+
+			if (initializedRoute.length === 0) {
+				return {longitude: 0, latitude: 0};
+			}
+
+			let longitude = 0;
+			let latitude = 0;
+			initializedRoute.forEach(tourRoute => {
+				longitude += tourRoute.longitude;
+				latitude += tourRoute.latitude;
+			});
+
+			const length = initializedRoute.length;
+			longitude /= length;
+			latitude /= length;
+
+			return {longitude, latitude};
+		})
+		.defaultIfEmpty({
+			longitude: 0,
+			latitude: 0
+		});
+
+	initializedRoute$ = this.routeChange
+		.map(route => route.filter(it => it.longitude !== 0 && it.latitude !== 0))
+		.defaultIfEmpty([]);
+
+	directionsDisplay;
+	showDirective = false;
 
 	constructor(private mapsAPILoader: MapsAPILoader,
 				private ngZone: NgZone) {
 	}
+
 
 	get modelRoute() {
 		return this.route;
@@ -40,11 +91,17 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 
 	set modelRoute(newRoute: Address[]) {
 		this.route = newRoute;
-		this.updateTransformedRoute(newRoute);
 		this.routeChange.emit(this.route);
 	}
 
+
 	ngOnInit() {
+		if (this.directionsDisplay === undefined) {
+			this.mapsAPILoader.load().then(() => {
+				this.directionsDisplay = new google.maps.DirectionsRenderer;
+				this.showDirective = true;
+			});
+		}
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -81,30 +138,49 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 		});
 	}
 
-	updateTransformedRoute(newRoute: Address[]) {
-		this.transformedRoutes = newRoute
-			.map(tourStop =>
-				tourStop.street
-					//Format: "Alexanderpl. 2, 10178 Berlin, Deutschland"
-					? `${tourStop.street}${tourStop.streetNr ? " " + tourStop.streetNr : ""}, ${tourStop.zip} ${tourStop.city}, ${tourStop.country}`
-					: ""
-			);
-	}
-
 	addNewStop() {
 		this.modelRoute.splice(this.modelRoute.length - 1, 0, Address.create());
-		this.updateTransformedRoute(this.modelRoute);
+		this.modelRoute = this.modelRoute;
 	}
 
 	removeStop(index) {
 		this.modelRoute.splice(index, 1);
-		this.updateTransformedRoute(this.modelRoute);
+		this.modelRoute = this.modelRoute;
 	}
 
+	swapRoutes(first, second) {
+		this.modelRoute = [
+			...this.modelRoute.filter((it, i) => i < first),
+			this.modelRoute[second],
+			this.modelRoute[first],
+			...this.modelRoute.filter((it, i) => i > second)
+		]
+	}
+
+	/**
+	 *
+	 * @returns {string}
+	 * @param components
+	 * @param type
+	 */
+	findNameOfAddressComponent(components: AddressComponent[], type: AddressComponentType): string {
+		const component = components.find(component => component.types.includes(type.toString()));
+		if (component && component !== null) {
+			return component.long_name;
+		}
+		return null;
+	}
+
+	/**
+	 *
+	 * @param inputElement
+	 * @param {number} index
+	 */
 	initAutoComplete(inputElement: any, index: number) {
 		let autocomplete = new google.maps.places.Autocomplete(inputElement, {
 			types: ["address"]
 		});
+
 
 		autocomplete.addListener("place_changed", () => {
 			this.ngZone.run(() => {
@@ -113,28 +189,16 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 
 				this.modelRoute = [...this.modelRoute.map((route, i) => {
 					if (i === index) {
-						//"Alexanderpl. 2, 10178 Berlin, Deutschland"
-						let address = place.formatted_address;
-						//lets hope that the format stays the same.. (todo test)
-						let regexMatches = address.match(/([^\s]+)(?:\s([\d\w]+))?,\s(\d+)\s([^\s]+),\s([^\s]+)/);
-						if (regexMatches !== null) {
-							/*
-							 0:"Alexanderpl. 2, 10178 Berlin, Deutschland"
-							 1:"Alexanderpl."
-							 2:"2"
-							 3:"10178"
-							 4:"Berlin"
-							 5:"Deutschland"
-							 */
-							route = route.setProperties({
-								name: place.name,
-								street: regexMatches[1],
-								streetNr: regexMatches[2],
-								zip: regexMatches[3],
-								city: regexMatches[4],
-								country: regexMatches[5]
-							})
-						}
+						const addressComponents: AddressComponent[] = place.address_components;
+
+						route.setProperties({
+							street: this.findNameOfAddressComponent(addressComponents, AddressComponentType.street),
+							streetNr: this.findNameOfAddressComponent(addressComponents, AddressComponentType.streetNr),
+							city: this.findNameOfAddressComponent(addressComponents, AddressComponentType.city),
+							country: this.findNameOfAddressComponent(addressComponents, AddressComponentType.country),
+							zip: this.findNameOfAddressComponent(addressComponents, AddressComponentType.zip)
+						});
+
 						return route.setProperties({
 							latitude: place.geometry.location.lat(),
 							longitude: place.geometry.location.lng()
@@ -143,31 +207,11 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 					return route;
 				})];
 
-				this.modelRoute.push(Address.create());
-
 				//verify result
 				if (place.geometry === undefined || place.geometry === null) {
 					return;
 				}
 			});
-
-			this.modelRoute.splice(this.modelRoute.length - 1, 1);
 		});
-	}
-
-	getCenterOfTour() {
-		if (!this.modelRoute) {
-			return {longitude: 0, latitude: 0};
-		}
-		let longitude = 0;
-		let latitude = 0;
-		this.modelRoute.forEach(tourRoute => {
-			longitude += tourRoute.longitude;
-			latitude += tourRoute.latitude;
-		});
-		longitude /= this.modelRoute.length;
-		latitude /= this.modelRoute.length;
-
-		return {longitude, latitude};
 	}
 }

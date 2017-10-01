@@ -21,6 +21,9 @@ import {RowAction} from "../../../../../shared/expandable-table/row-action";
 	styleUrls: ["./modify-merch-stock.component.scss"]
 })
 export class ModifyMerchStockComponent implements OnInit {
+	@Input() merchTitle: string;
+
+
 	_sortBy: BehaviorSubject<ColumnSortingEvent<MerchStock>> = new BehaviorSubject<ColumnSortingEvent<MerchStock>>({
 		key: "size",
 		descending: true
@@ -74,6 +77,59 @@ export class ModifyMerchStockComponent implements OnInit {
 		this._sortBy.next(event);
 	}
 
+	/**
+	 *
+	 * @param {ModifyStockItemEvent} event
+	 */
+	add(event: ModifyStockItemEvent) {
+		event.sizes.forEach(size => {
+			const index = this.merchStock
+				.findIndex(stockItem => stockItem.color.name === event.color.name
+					&& stockItem.size === size);
+
+			//this stock item hasn't been added to the list yet
+			if (index === -1) {
+				this.merchStock = [...this.merchStock, {
+					id: getId(size + event.color.name),
+					event: event.event,
+					size: size,
+					color: Object.assign({}, event.color),
+					amount: event.amount
+				}];
+			}
+			//the stock item is already part of the list => simply increase amount
+			else {
+				this.merchStock = [
+					...this.merchStock.slice(0, index),
+					{
+						...this.merchStock[index],
+						amount: this.merchStock[index].amount + event.amount
+					},
+					...this.merchStock.slice(index + 1)
+				]
+			}
+		});
+	}
+
+	/**
+	 *
+	 * @param {ModifyStockItemEvent} event
+	 */
+	edit(event: ModifyStockItemEvent) {
+		//todo multiple sizes
+		this.merchStock = this.merchStock.map(stock => {
+			if (stock["id"] === event.modifiedStock["id"]) {
+				return {
+					id: event.modifiedStock.id,
+					event: event.event,
+					size: event.sizes[0],
+					color: Object.assign({}, event.color),
+					amount: event.amount
+				}
+			}
+			return stock;
+		})
+	}
 
 	// edit ruft dann dialog auf, in dem size, color & amount felder drin sind
 	// beim editieren stehen für size&color dann bereits verwendete werte zur verfügung,
@@ -90,44 +146,10 @@ export class ModifyMerchStockComponent implements OnInit {
 			.subscribe((event: ModifyStockItemEvent) => {
 				switch (event.modifyType) {
 					case ModifyType.ADD:
-						let index = this.merchStock
-							.findIndex(stockItem => stockItem.color.name === event.color.name
-								&& stockItem.size === event.size);
-						if (index === -1) {
-							this.merchStock = [...this.merchStock, {
-								id: getId(event.size + event.color.name),
-								event: event.event,
-								size: event.size,
-								color: Object.assign({}, event.color),
-								amount: event.amount
-							}];
-						}
-						else {
-							this.merchStock = [
-								...this.merchStock.slice(0, index),
-								{
-									...this.merchStock[index],
-									amount: this.merchStock[index].amount + event.amount
-								},
-								...this.merchStock.slice(index + 1)
-							]
-						}
-
-
+						this.add(event);
 						break;
 					case ModifyType.EDIT:
-						this.merchStock = this.merchStock.map(stock => {
-							if (stock["id"] === event.modifiedStock["id"]) {
-								return {
-									id: event.modifiedStock.id,
-									event: event.event,
-									size: event.size,
-									color: Object.assign({}, event.color),
-									amount: event.amount
-								}
-							}
-							return stock;
-						})
+						this.edit(event);
 				}
 			})
 	}
@@ -170,8 +192,8 @@ export class ModifyMerchStockComponent implements OnInit {
 	 * @param {TableActionEvent<MerchStock>} event
 	 * @returns {any}
 	 */
-	handleMerchStockAction(event: TableActionEvent<MerchStock>){
-		switch(event.action){
+	handleMerchStockAction(event: TableActionEvent<MerchStock>) {
+		switch (event.action) {
 			case RowAction.ADD:
 				return this.addStock();
 			case RowAction.EDIT:

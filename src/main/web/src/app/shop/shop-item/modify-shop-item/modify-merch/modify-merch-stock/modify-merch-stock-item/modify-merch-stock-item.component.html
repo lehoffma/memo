@@ -2,12 +2,25 @@
 	<div>
 		<!--<h1 matDialogTitle>Füge eine weitere Farbe hinzu</h1>-->
 		<div mat-dialog-content class="dialog-content-container">
+
 			<mat-form-field>
-				<input placeholder="Größe"
-					   #sizeInput="ngModel"
-					   name="sizeInput" required
-					   [(ngModel)]="size" matInput>
-				<mat-hint *ngIf="sizeInput.touched && !sizeInput.valid" class="error-message">
+
+				<mat-chip-list matPrefix #chipList [placeholder]="'Größen'">
+					<mat-chip *ngFor="let size of sizes; let i = index" [selectable]="false"
+							 [removable]="true" (remove)="sizes.splice(i, 1)" color="primary">
+						{{size}}
+						<mat-icon matChipRemove matTooltip="Löschen">cancel</mat-icon>
+					</mat-chip>
+				</mat-chip-list>
+
+				<input matInput placeholder="Größen"
+					   #sizeInput
+					   [matChipInputFor]="chipList"
+					   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+					   [matChipInputAddOnBlur]="true"
+					   (matChipInputTokenEnd)="addSize($event)" />
+
+				<mat-hint *ngIf="sizeInput.touched && sizes.length === 0" class="error-message">
 					Dieses Feld darf nicht leer bleiben!
 				</mat-hint>
 			</mat-form-field>
