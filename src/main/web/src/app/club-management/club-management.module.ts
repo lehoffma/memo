@@ -27,6 +27,7 @@ import {MilesLeaderboardEntryComponent} from "app/club-management/miles-leaderbo
 import {ModifyStockDialogComponent} from "./administration/stock/merch-stock/merch-stock-entry/modify-stock-dialog.component";
 import {ShopModule} from "../shop/shop.module";
 import {ModifyShopItemModule} from "../shop/shop-item/modify-shop-item/modify-shop-item.module";
+import {AccountingTableContainerService} from "./accounting/accounting-table-container.service";
 
 const tableCellComponents = [
 	//accounting table cells
@@ -72,7 +73,7 @@ const tableCellComponents = [
 		ModifyStockDialogComponent,
 	],
 	providers: [
-		SearchFilterService
+		SearchFilterService,
 	],
 	entryComponents: [tableCellComponents, ModifyStockDialogComponent]
 })

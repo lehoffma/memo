@@ -147,7 +147,7 @@
 		<!--public readonly email: string,-->
 		<!--public readonly password: string,-->
 
-		<memo-modify-item-inner-container [title]="'Account Informationen'">
+		<memo-modify-item-inner-container [title]="'Account Informationen'" [saveButton]="false">
 			<mat-form-field
 				[dividerColor]="(email.touched && (email.invalid || emailIsAlreadyTaken)) ? 'warn' : 'primary'">
 				<input matInput
@@ -157,6 +157,7 @@
 					   [ngClass]="{'has-error': email.touched && email.invalid}"
 					   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
 					   [(ngModel)]="userModel['email']"
+					   (input)="emailIsAlreadyTaken = false;"
 					   #email="ngModel"
 					   required>
 				<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->

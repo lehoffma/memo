@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Link} from "../model/link";
 import {Observable} from "rxjs/Observable";
-import {Router} from "@angular/router";
+import {ParamMap, Router, RoutesRecognized} from "@angular/router";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {EventUtilityService} from "./event-utility.service";
 import {ShopItem} from "../model/shop-item";
@@ -10,6 +10,7 @@ import {EventType} from "../../shop/shared/model/event-type";
 import {Event} from "../../shop/shared/model/event";
 import {HttpClient} from "@angular/common/http";
 import {LogInService} from "./api/login.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class NavigationService {
@@ -19,10 +20,19 @@ export class NavigationService {
 
 	public redirectToTour: Address[] = [];
 
+
+	queryParamMap$: BehaviorSubject<ParamMap> = new BehaviorSubject(null);
+
+
 	constructor(private http: HttpClient,
 				private loginService: LogInService,
 				private router: Router) {
 		this.initialize();
+
+		this.router.events
+			.filter(val => val instanceof RoutesRecognized)
+			.map(val => (<RoutesRecognized>val).state.root.queryParamMap)
+			.subscribe(map => this.queryParamMap$.next(map));
 	}
 
 	navigateToLogin() {

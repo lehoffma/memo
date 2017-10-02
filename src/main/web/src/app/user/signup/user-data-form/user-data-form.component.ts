@@ -71,7 +71,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 */
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes["model"] && !changes["addresses"]) {
-			this.addressesSubject$.next(this.model["addresses"]);
+			this.addressesSubject$.next(this.userModel["addresses"]);
 		}
 	}
 
@@ -80,15 +80,18 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 */
 	submit() {
 		if(this.withEmailAndPassword){
-			this.userService.isUserEmailAlreadyInUse(this.model["email"])
+			this.userModel["passwordHash"] = this.userModel["password"];
+			this.userModel = {...this.userModel};
+
+			this.userService.isUserEmailAlreadyInUse(this.userModel["email"])
 				.first()
 				.subscribe(isAlreadyInUse => {
-					if (isAlreadyInUse) {
+					if (isAlreadyInUse && this.userModel["email"] !== this.previousValue["email"]) {
 						this.emailIsAlreadyTaken = true;
 					}
 					else {
 						this.onSubmit.emit({
-							...this.model,
+							...this.userModel,
 							profilePicture: this.profilePicture
 						});
 					}
@@ -96,7 +99,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 		}
 		else{
 			this.onSubmit.emit({
-				...this.model,
+				...this.userModel,
 				profilePicture: this.profilePicture
 			});
 		}
@@ -112,7 +115,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 			&& (this.previousValueIsEmpty() || !this.modelHasNotChanged())
 			&& (!this.userModel['password'] || this.userModel['password'].length === 0
 				|| this.userModel['password'] === this.confirmedPassword)
-			// && !this.emailIsAlreadyTaken
+			&& !this.emailIsAlreadyTaken
 	}
 
 	/**
@@ -131,8 +134,10 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	modelHasNotChanged() {
 		return this.previousValue
 			&& Object.keys(this.previousValue).length > 0
-			&& Object.keys(this.previousValue).every(key => this.model[key] === this.previousValue[key])
-			&& Object.keys(this.model).every(key => this.previousValue[key] === this.model[key]);
+			&& Object.keys(this.previousValue)
+				.filter(key => !key.includes("password"))
+				.every(key => this.userModel[key] === this.previousValue[key])
+			// && Object.keys(this.userModel).every(key => this.previousValue[key] === this.userModel[key]);
 	}
 
 	/**
@@ -149,7 +154,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	navigateToAddressModifications() {
 		this.addressService.redirectUrl = this.router.url;
 		this.onAddressModification.emit({
-			...this.model,
+			...this.userModel,
 			profilePicture: this.profilePicture
 		});
 	}

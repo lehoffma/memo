@@ -1,59 +1,37 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {MerchStock} from "../../../../shared/model/merch-stock";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
-import {ColumnSortingEvent} from "../../../../../shared/expandable-table/column-sorting-event";
-import {Observable} from "rxjs/Observable";
-import {attributeSortingFunction, getId, sortingFunction} from "../../../../../util/util";
-import {MerchColorCellComponent} from "./merch-color-cell.component";
 import {MdDialog} from "@angular/material";
-import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-merch-stock-item.component";
-import {ModifyStockItemEvent} from "./modify-merch-stock-item/modify-stock-item-event";
-import {ModifyType} from "../../modify-type";
-import {ActionPermissions} from "../../../../../shared/expandable-table/expandable-table.component";
 import {LogInService} from "../../../../../shared/services/api/login.service";
-import {TableActionEvent} from "../../../../../shared/expandable-table/table-action-event";
-import {RowAction} from "../../../../../shared/expandable-table/row-action";
+import {ModifyMerchStockService} from "./modify-merch-stock.service";
 
 @Component({
 	selector: "memo-modify-merch-stock",
 	templateUrl: "./modify-merch-stock.component.html",
-	styleUrls: ["./modify-merch-stock.component.scss"]
+	styleUrls: ["./modify-merch-stock.component.scss"],
+	providers: [ModifyMerchStockService]
 })
 export class ModifyMerchStockComponent implements OnInit {
 	@Input() merchTitle: string;
 
-
-	_sortBy: BehaviorSubject<ColumnSortingEvent<MerchStock>> = new BehaviorSubject<ColumnSortingEvent<MerchStock>>({
-		key: "size",
-		descending: true
-	});
-	sortBy = this._sortBy.asObservable();
-
 	merchStockSubject: BehaviorSubject<MerchStock[]> = new BehaviorSubject([]);
-	merchStockObservable = Observable.combineLatest(this.merchStockSubject, this.sortBy)
-		.map(([merchStock, sortBy]) => {
-			return [...merchStock]
-				.map((stock) => ({
-					id: stock["id"],
-					size: stock.size,
-					color: Object.assign({}, stock.color),
-					amount: stock.amount,
-				}))
-				.sort(sortBy.key === "color"
-					? sortingFunction<MerchStock>(obj => obj.color.name, sortBy.descending)
-					: attributeSortingFunction(sortBy.key, sortBy.descending));
-		});
-	@Output() stockChange = new EventEmitter();
-	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("stock");
-	primaryColumnKeys: ExpandableTableColumn<MerchStock>[] = [
-		new ExpandableTableColumn<MerchStock>("Größe", "size"),
-		new ExpandableTableColumn<MerchStock>("Farbe", "color", MerchColorCellComponent),
-		new ExpandableTableColumn<MerchStock>("Anzahl", "amount")
-	];
+	merchStock$ = this.merchStockSubject
+		.asObservable()
+		//huh
+		.map(merchStock => [...merchStock].map(stock => ({
+			id: stock["id"],
+			size: stock.size,
+			color: Object.assign({}, stock.color),
+			amount: stock.amount,
+		})));
 
-	constructor(private mdDialog: MdDialog,
-				private loginService: LogInService) {
+	@Output() stockChange = new EventEmitter();
+
+
+	constructor(public modifyMerchStockService: ModifyMerchStockService) {
+
+		this.modifyMerchStockService.init(this.merchStockSubject);
+		this.modifyMerchStockService.dataSubject$.subscribe(value => this.stockChange.emit(value))
 	}
 
 	@Input()
@@ -61,145 +39,7 @@ export class ModifyMerchStockComponent implements OnInit {
 		this.merchStockSubject.next(value ? value : []);
 	}
 
-	get merchStock() {
-		return this.merchStockSubject.getValue();
-	}
-
-	set merchStock(value: MerchStock[]) {
-		this.stock = value;
-		this.stockChange.emit(value);
-	}
-
 	ngOnInit() {
 	}
 
-	updateSortBy(event: ColumnSortingEvent<MerchStock>) {
-		this._sortBy.next(event);
-	}
-
-	/**
-	 *
-	 * @param {ModifyStockItemEvent} event
-	 */
-	add(event: ModifyStockItemEvent) {
-		event.sizes.forEach(size => {
-			const index = this.merchStock
-				.findIndex(stockItem => stockItem.color.name === event.color.name
-					&& stockItem.size === size);
-
-			//this stock item hasn't been added to the list yet
-			if (index === -1) {
-				this.merchStock = [...this.merchStock, {
-					id: getId(size + event.color.name),
-					event: event.event,
-					size: size,
-					color: Object.assign({}, event.color),
-					amount: event.amount
-				}];
-			}
-			//the stock item is already part of the list => simply increase amount
-			else {
-				this.merchStock = [
-					...this.merchStock.slice(0, index),
-					{
-						...this.merchStock[index],
-						amount: this.merchStock[index].amount + event.amount
-					},
-					...this.merchStock.slice(index + 1)
-				]
-			}
-		});
-	}
-
-	/**
-	 *
-	 * @param {ModifyStockItemEvent} event
-	 */
-	edit(event: ModifyStockItemEvent) {
-		//todo multiple sizes
-		this.merchStock = this.merchStock.map(stock => {
-			if (stock["id"] === event.modifiedStock["id"]) {
-				return {
-					id: event.modifiedStock.id,
-					event: event.event,
-					size: event.sizes[0],
-					color: Object.assign({}, event.color),
-					amount: event.amount
-				}
-			}
-			return stock;
-		})
-	}
-
-	// edit ruft dann dialog auf, in dem size, color & amount felder drin sind
-	// beim editieren stehen für size&color dann bereits verwendete werte zur verfügung,
-	// aber es kann auch ein neuer hinzugefügt werden
-
-	/**
-	 * Ruft den modify dialog mit den gegebenen daten auf
-	 * @param data
-	 * @returns {Observable<any>}
-	 */
-	openModifyStockItemDialog(data: any = {}) {
-		this.mdDialog.open(ModifyMerchStockItemComponent, {data})
-			.afterClosed()
-			.subscribe((event: ModifyStockItemEvent) => {
-				switch (event.modifyType) {
-					case ModifyType.ADD:
-						this.add(event);
-						break;
-					case ModifyType.EDIT:
-						this.edit(event);
-				}
-			})
-	}
-
-	/**
-	 *
-	 * @param event
-	 */
-	addStock() {
-		this.openModifyStockItemDialog()
-	}
-
-	/**
-	 *
-	 * @param event
-	 */
-	editStock(event: MerchStock) {
-		this.openModifyStockItemDialog({
-			color: event.color,
-			size: event.size,
-			amount: event.amount,
-			modifiedStock: Object.assign({}, event)
-		});
-	}
-
-	/**
-	 *
-	 * @param stockEntriesToDelete
-	 */
-	deleteStock(stockEntriesToDelete: MerchStock[]) {
-		this.merchStock = this.merchStock
-			.filter(stock =>
-				!stockEntriesToDelete
-					.find(stockToDelete => stockToDelete.size === stock.size && stockToDelete.color.name === stock.color.name)
-			);
-	}
-
-	/**
-	 *
-	 * @param {TableActionEvent<MerchStock>} event
-	 * @returns {any}
-	 */
-	handleMerchStockAction(event: TableActionEvent<MerchStock>) {
-		switch (event.action) {
-			case RowAction.ADD:
-				return this.addStock();
-			case RowAction.EDIT:
-				return this.editStock(event.entries[0]);
-			case RowAction.DELETE:
-				return this.deleteStock(event.entries);
-		}
-	}
 }

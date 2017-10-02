@@ -2,6 +2,7 @@
 	<h2>Nutzer {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
 
 	<memo-user-data-form [model]="model$ | async" (modelChange)="model = $event; modelChange.emit($event)"
+						 [previousValue]="previousValue"
 						 [withSubmitButton]="false"
 						 [withEmailAndPassword]="true"
 						 (onCancel)="cancel()"
