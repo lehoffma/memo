@@ -1,13 +1,13 @@
 <memo-expandable-table
-	[data]="userSubject$|async"
+	[data]="memberListService.data$ | async"
 	[rowActions]="rowActions"
-	(onSort)="updateSortingKey($event)"
-	(onAction)="userAction($event)"
+	(onSort)="memberListService.onSort($event)"
+	(onAction)="memberListService.handleTableAction($event)"
 	[title]="'Mitgliederliste'"
-	[expandedRowComponent]="rowComponent"
-	[columnKeys]="primaryColumnKeys | async"
-	[expandedRowKeys]="expandedRowKeys | async"
-	[permissions]="permissions$ | async"
+	[expandedRowComponent]="memberListService.rowComponent"
+	[columnKeys]="memberListService.primaryColumnKeys$ | async"
+	[expandedRowKeys]="memberListService.expandedRowKeys$ | async"
+	[permissions]="memberListService.permissions$ | async"
 >
 
 </memo-expandable-table>

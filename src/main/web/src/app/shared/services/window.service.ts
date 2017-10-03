@@ -5,6 +5,11 @@ function getWindow(): Window {
 	return window;
 }
 
+export interface Dimension{
+	width: number;
+	height: number;
+}
+
 @Injectable()
 export class WindowService {
 	private _dimensions$: BehaviorSubject<{ width: number, height: number }> = new BehaviorSubject({

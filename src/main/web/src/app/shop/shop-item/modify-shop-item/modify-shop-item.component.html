@@ -17,9 +17,9 @@
 						   (onSubmit)="submitModifiedObject($event)">
 		</memo-modify-entry>
 		<memo-modify-user *ngSwitchCase="ItemType.user"
-						  [model]="modifyItemService.model$ | async"
-						  (modelChange)="modifyItemService.model = $event"
+						  [(model)]="modifyItemService.model"
 						  [mode]="modifyItemService.mode"
+						  [previousValue]="modifyItemService.previousValue"
 						  (watchForAddressModification)="watchForAddressModification($event)"
 						  (onSubmit)="submitModifiedObject($event)">
 		</memo-modify-user>

@@ -10,6 +10,7 @@ import {UserService} from "../../../../shared/services/api/user.service";
 	styleUrls: ["./modify-user.component.scss"]
 })
 export class ModifyUserComponent implements OnInit {
+	@Input() previousValue: any;
 	@Input() mode: ModifyType;
 	@Output() modelChange: EventEmitter<any> = new EventEmitter();
 	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
@@ -48,7 +49,7 @@ export class ModifyUserComponent implements OnInit {
 	}
 
 	submitModifiedObject(event) {
-		this.onSubmit.emit(this.model);
+		this.onSubmit.emit(event);
 	}
 
 	emitWatchForAddressModification(model: any) {

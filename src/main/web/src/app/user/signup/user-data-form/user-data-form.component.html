@@ -145,9 +145,9 @@
 		<!--todo?-->
 		<!--3. Accountinformationen-->
 		<!--public readonly email: string,-->
-		<!--public readonly passwordHash: string,-->
+		<!--public readonly password: string,-->
 
-		<memo-modify-item-inner-container [title]="'Account Informationen'">
+		<memo-modify-item-inner-container [title]="'Account Informationen'" [saveButton]="false">
 			<mat-form-field
 				[dividerColor]="(email.touched && (email.invalid || emailIsAlreadyTaken)) ? 'warn' : 'primary'">
 				<input matInput
@@ -157,6 +157,7 @@
 					   [ngClass]="{'has-error': email.touched && email.invalid}"
 					   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
 					   [(ngModel)]="userModel['email']"
+					   (input)="emailIsAlreadyTaken = false;"
 					   #email="ngModel"
 					   required>
 				<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
@@ -174,17 +175,17 @@
 					   placeholder="Neues Passwort"
 					   type="password"
 					   name="password"
-					   [(ngModel)]="userModel['passwordHash']"
+					   [(ngModel)]="userModel['password']"
 					   #passwordInput="ngModel">
 				<mat-hint align="end">
 					<ng2-password-strength-bar
-						[passwordToCheck]="userModel['passwordHash']"
+						[passwordToCheck]="userModel['password']"
 						[barLabel]="''">
 					</ng2-password-strength-bar>
 				</mat-hint>
 			</mat-form-field>
 			<mat-form-field
-				[dividerColor]="(confirmPasswordInput.touched &&  (userModel['passwordHash'] !== confirmedPassword)) ? 'warn' : 'primary'">
+				[dividerColor]="(confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)) ? 'warn' : 'primary'">
 				<input matInput
 					   placeholder="Passwort bestätigen"
 					   type="password"
@@ -193,7 +194,7 @@
 					   [(ngModel)]="confirmedPassword">
 				<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
 				<mat-hint align="end" class="error-message"
-						  *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (userModel['passwordHash'] !== confirmedPassword)">
+						  *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)">
 					Passwörter stimmen nicht überein
 				</mat-hint>
 			</mat-form-field>

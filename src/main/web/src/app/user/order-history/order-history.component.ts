@@ -37,8 +37,7 @@ export class OrderHistoryComponent implements OnInit {
 	});
 
 	orders$: Observable<Order[]> = Observable.combineLatest(
-		this.sortBy$
-			.do(console.log),
+		this.sortBy$,
 		this.loginService
 			.accountObservable
 			.flatMap(userId => userId === null

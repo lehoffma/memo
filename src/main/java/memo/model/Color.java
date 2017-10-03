@@ -13,7 +13,6 @@ public class Color implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Expose
     private Integer id;
 
     @Column(nullable = false)

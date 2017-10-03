@@ -316,7 +316,7 @@ public class EventServlet extends HttpServlet {
     private void updateEventAtDatabase(Event e, List<Color> colorList, List<Size> sizeList) {
         EntityManager em = DatabaseManager.createEntityManager();
 
-        //todo lel
+
         em.getTransaction().begin();
         em.merge(e);
         em.getTransaction().commit();

@@ -3,27 +3,31 @@
 	<h3>Datum</h3>
 	<mat-form-field>
 		<input matInput [matDatepicker]="startingDatePicker"
+			   [disabled]="isLoading"
 			   placeholder="Von"
 			   [(ngModel)]="dateOptions.from"
 			   (ngModel)="updateQueryParams()"
 			   (blur)="updateQueryParams()"
 			   #startingDateInput="ngModel"
 			   name="startingDateInput">
-		<mat-datepicker-toggle matSuffix [for]="startingDatePicker"></mat-datepicker-toggle>
+		<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="startingDatePicker"></mat-datepicker-toggle>
 	</mat-form-field>
-	<mat-datepicker #startingDatePicker (selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
+	<mat-datepicker [disabled]="isLoading" #startingDatePicker
+					(selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
 
 	<mat-form-field>
 		<input matInput [matDatepicker]="endDatePicker"
 			   placeholder="Bis"
+			   [disabled]="isLoading"
 			   [(ngModel)]="dateOptions.to"
 			   (ngModel)="updateQueryParams()"
 			   (blur)="updateQueryParams()"
 			   #endDateInput="ngModel"
 			   name="endDateInput">
-		<mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+		<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
 	</mat-form-field>
-	<mat-datepicker #endDatePicker (selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
+	<mat-datepicker #endDatePicker [disabled]="isLoading"
+					(selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
 </div>
 
 
@@ -31,7 +35,7 @@
 	<h3>Nach Events filtern</h3>
 	<mat-chip-list class="mat-chip-list-stacked">
 		<mat-chip *ngFor="let event of events; let i = index"
-				 color="primary">
+				  color="primary">
 			<a routerLink="/{{getEventType(event)}}/{{event.id}}" matTooltip="Auf die Detailseite dieses Events gehen">
 				{{ event.title }}
 			</a>
@@ -81,8 +85,9 @@
 	<h3>Kostenarten</h3>
 
 	<mat-checkbox *ngFor="let costType of (costCategories$|async)"
-				 [(ngModel)]="costTypes[costType.name]"
-				 (ngModelChange)="updateQueryParams()">
+				  [(ngModel)]="costTypes[costType.name]"
+				  [disabled]="isLoading"
+				  (ngModelChange)="updateQueryParams()">
 		{{costType.name}}
 	</mat-checkbox>
 </div>

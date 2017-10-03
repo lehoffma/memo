@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
 import * as moment from "moment";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
@@ -10,14 +10,16 @@ import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
 	selector: "memo-accounting-options",
 	templateUrl: "./accounting-options.component.html",
 	styleUrls: ["./accounting-options.component.scss"]
 })
-export class AccountingOptionsComponent implements OnInit {
+export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	@Input() hidden: boolean = false;
+
 	eventTypes = {
 		tours: true,
 		events: true,
@@ -38,6 +40,23 @@ export class AccountingOptionsComponent implements OnInit {
 	autocompleteFormControl: FormControl = new FormControl();
 	filteredOptions: Observable<Event[]>;
 
+	_isLoading = false;
+
+	get isLoading(){
+		return this._isLoading;
+	}
+	set isLoading(value:boolean){
+		this._isLoading = value;
+		if(value){
+			this.autocompleteFormControl.disable();
+		}
+		else{
+			this.autocompleteFormControl.enable();
+		}
+	}
+
+
+	subscription: Subscription;
 
 	constructor(private queryParameterService: QueryParameterService,
 				private router: Router,
@@ -61,6 +80,13 @@ export class AccountingOptionsComponent implements OnInit {
 		// await this.getAvailableEvents();
 		this.readQueryParams();
 		this.initEventAutoComplete();
+	}
+
+
+	ngOnDestroy(): void {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
 	}
 
 	/**
@@ -168,11 +194,13 @@ export class AccountingOptionsComponent implements OnInit {
 	 * Updates the values by extracting them from the url query parameters
 	 */
 	readQueryParams() {
-		Observable.combineLatest(
+		this.subscription = Observable.combineLatest(
 			this.activatedRoute.paramMap,
 			this.activatedRoute.queryParamMap
 		)
 			.subscribe(async ([paramMap, queryParamMap]) => {
+				this.isLoading = true;
+				this.changeDetectorRef.detectChanges();
 				this.dateOptions.from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : undefined;
 				this.dateOptions.to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : undefined;
 				await this.getAvailableEvents();
@@ -190,8 +218,8 @@ export class AccountingOptionsComponent implements OnInit {
 				}
 				if (queryParamMap.has("eventIds")) {
 					this.events = queryParamMap.getAll("eventIds")
-						.filter(eventId => this.availableEvents.findIndex(event => event.id === +eventId) !== -1)
-						.map(eventId => this.availableEvents.find(event => event.id === +eventId));
+						.map(eventId => this.availableEvents.find(event => event.id === +eventId))
+						.filter(event => event !== null)
 				}
 				this.updateQueryParams();
 			})
@@ -217,7 +245,8 @@ export class AccountingOptionsComponent implements OnInit {
 		this.activatedRoute.queryParamMap.first()
 			.map(queryParamMap =>
 				this.queryParameterService.updateQueryParams(queryParamMap, params))
-			.subscribe(newQueryParams =>
-				this.router.navigate(["management", "costs"], {queryParams: newQueryParams, replaceUrl: true}));
+			.subscribe(async newQueryParams => {
+				await this.router.navigate(["management", "costs"], {queryParams: newQueryParams, replaceUrl: true});
+			}, null, () => this.isLoading = false);
 	}
 }

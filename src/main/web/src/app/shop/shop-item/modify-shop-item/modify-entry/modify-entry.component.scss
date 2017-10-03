@@ -1,4 +1,24 @@
 @import "../modify-shop-item.component";
+@import "variables";
+
+.modify-shop-item-container{
+	background: $container-content--background-color;
+	color: $container-content--color;
+	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+	padding-top: 0;
+
+	@media all and (min-width: 600px){
+		margin-top: 1rem;
+	}
+
+	h2{
+		margin-top: 0;
+		box-shadow: none;
+		border-bottom: $container-divider--height solid $container-divider--color;
+		color: $container-header--color;
+		background-color: $container-header--background-color;
+	}
+}
 
 .entry-info-container {
 	display: flex;
