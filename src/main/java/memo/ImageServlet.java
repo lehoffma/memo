@@ -26,7 +26,10 @@ public class ImageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
-        String path = System.getProperty("user.home") + "/MemoShop/pictures/";
+        String path;
+        path = System.getProperty("user.home") + System.getProperty("file.separator");
+        path += "MemoShop"+ System.getProperty("file.separator");
+        path += "pictures" + System.getProperty("file.separator");
         Collection<Part> parts = request.getParts();
 
         String filepath = "";
