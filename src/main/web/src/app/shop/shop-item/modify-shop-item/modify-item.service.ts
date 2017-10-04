@@ -24,6 +24,7 @@ import {Address} from "../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 import {ModifyItemEvent} from "./modify-item-event";
+import {MerchStockList} from "../../shared/model/merch-stock";
 
 @Injectable()
 export class ModifyItemService {
@@ -40,6 +41,9 @@ export class ModifyItemService {
 	eventId: number = -1;
 
 	previousValue: ShopItem;
+
+	//only used if itemType === merch
+	previousStock: MerchStockList = [];
 
 	private _model$ = new BehaviorSubject<any>({});
 	public model$ = this._model$.asObservable();
@@ -79,6 +83,7 @@ export class ModifyItemService {
 		this.eventId = -1;
 
 		this.previousValue = undefined;
+		this.previousStock = [];
 		this.model = {};
 	}
 
@@ -138,6 +143,7 @@ export class ModifyItemService {
 			.subscribe(stockList => {
 				this.model["stock"] = stockList;
 				this.model = {...this.model};
+				this.previousStock = [...stockList];
 				if (objectToModify && objectToModify.id !== -1) {
 					this.previousValue = objectToModify;
 				}
@@ -326,16 +332,19 @@ export class ModifyItemService {
 	async uploadImage(newObject: ShopItem, uploadedImage: FormData): Promise<ShopItem> {
 		if (EventUtilityService.isMerchandise(newObject) || EventUtilityService.isTour(newObject) ||
 			EventUtilityService.isUser(newObject) || EventUtilityService.isParty(newObject)) {
-			//todo: error handling, progress report
-			let imagePath = await this.imageUploadService.uploadImage(uploadedImage)
-				.map(response => response.imagePath)
-				.toPromise();
 
-			//thanks typescript..
-			if (EventUtilityService.isUser(newObject)) {
+			if(uploadedImage){
+				//todo: error handling, progress report
+				let imagePath = await this.imageUploadService.uploadImage(uploadedImage)
+					.map(response => response.imagePath)
+					.toPromise();
+
+				//thanks typescript..
+				if (EventUtilityService.isUser(newObject)) {
+					return newObject.setProperties({imagePath: imagePath});
+				}
 				return newObject.setProperties({imagePath: imagePath});
 			}
-			return newObject.setProperties({imagePath: imagePath});
 		}
 
 		return newObject;
@@ -346,7 +355,7 @@ export class ModifyItemService {
 	 * @param modifyItemEvent
 	 */
 	async submitModifiedEvent(modifyItemEvent: ModifyItemEvent) {
-		let service: ServletServiceInterface<ShopItem> = EventUtilityService.shopItemSwitch<ServletServiceInterface<User | Entry | Event>>(
+		const service: ServletServiceInterface<ShopItem> = EventUtilityService.shopItemSwitch<ServletServiceInterface<User | Entry | Event>>(
 			this.itemType,
 			{
 				merch: () => this.eventService,
@@ -368,7 +377,7 @@ export class ModifyItemService {
 			}
 		);
 
-		let options: any = EventUtilityService.shopItemSwitch<any>(this.itemType,
+		const options: any = EventUtilityService.shopItemSwitch<any>(this.itemType,
 			{
 				entries: () => ({eventId: modifyItemEvent.eventId})
 			});
@@ -381,9 +390,7 @@ export class ModifyItemService {
 		newObject = this.setDefaultValues(newObject);
 
 		//todo display progress-bar while uploading
-		//todo demo remove
-		console.warn("demo: modify-item should upload image");
-		// newObject = await this.uploadImage(newObject, model.uploadedImage);
+		newObject = await this.uploadImage(newObject, modifyItemEvent.uploadedImage);
 
 
 		//todo display "submitting..." while waiting for response from server
@@ -393,11 +400,19 @@ export class ModifyItemService {
 		}
 
 		requestMethod(newObject, options)
-			.do((result: ShopItem) => {
+			.flatMap((result: ShopItem) => {
 				if (EventUtilityService.isMerchandise(result)) {
 					// this.stockService.add(model["stock"], newObject.id)
 					console.log(modifyItemEvent.model["stock"]);
+
+					return this.stockService.pushChanges(
+						result,
+						[...this.previousStock],
+						[...modifyItemEvent.model["stock"]]
+					)
+						.map(it => result);
 				}
+				return Observable.of(result);
 			})
 			.first()
 			.subscribe(

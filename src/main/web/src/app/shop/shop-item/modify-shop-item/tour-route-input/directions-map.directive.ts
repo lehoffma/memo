@@ -21,6 +21,9 @@ export class DirectionsMapDirective {
 	constructor(private googleMapsApi: GoogleMapsAPIWrapper) {
 	}
 
+	//todo test
+	//todo calculate miles
+
 	ngOnInit() {
 		this._route$
 			.filter(route => route && route.length > 1)

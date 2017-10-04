@@ -10,6 +10,7 @@ import {ModifyType} from "../../modify-type";
 import {MdDialog} from "@angular/material";
 import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
 import {MerchColorCellComponent} from "./merch-color-cell.component";
+import {Merchandise} from "../../../../shared/model/merchandise";
 
 @Injectable()
 export class ModifyMerchStockService extends ExpandableTableContainerService<MerchStock> {
@@ -121,6 +122,7 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 	edit(event: MerchStock) {
 		this.openModifyStockItemDialog({
 			color: event.color,
+			event: event.event,
 			size: event.size,
 			amount: event.amount,
 			modifiedStock: Object.assign({}, event)

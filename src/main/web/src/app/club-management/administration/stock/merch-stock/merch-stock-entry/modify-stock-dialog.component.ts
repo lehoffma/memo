@@ -39,7 +39,9 @@ export class ModifyStockDialogComponent implements OnInit {
 	}
 
 	saveChanges() {
-		//todo
+		//todo remove demo
+		//todo replace with non-dialog version?
+		//todo stock api post/put
 		console.warn("We still haven't really decided how we want to approach this situation. Or I at least forgot what we ended up with.")
 		// this.stockService.
 

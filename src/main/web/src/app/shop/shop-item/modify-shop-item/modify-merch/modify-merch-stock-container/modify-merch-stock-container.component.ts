@@ -4,6 +4,8 @@ import {Merchandise} from "../../../../shared/model/merchandise";
 import {StockService} from "../../../../../shared/services/api/stock.service";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {ActivatedRoute} from "@angular/router";
+import {Location} from "@angular/common";
+import {Observable} from "rxjs/Observable";
 
 @Component({
 	selector: 'memo-modify-merch-stock-container',
@@ -11,6 +13,7 @@ import {ActivatedRoute} from "@angular/router";
 	styleUrls: ['./modify-merch-stock-container.component.scss']
 })
 export class ModifyMerchStockContainerComponent implements OnInit {
+	previousStock: MerchStockList;
 	stock: MerchStockList;
 	noChanges = false; //todo
 
@@ -19,6 +22,7 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 
 	constructor(private stockService: StockService,
 				private eventService: EventService,
+				private location: Location,
 				private activatedRoute: ActivatedRoute) {
 	}
 
@@ -43,14 +47,20 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 			.first()
 			.subscribe(stockList => {
 				this.stock = [...stockList];
+				this.previousStock = [...stockList];
 			});
 	}
 
 	goBack(){
-		console.log("go back");
+		this.location.back();
 	}
 
 	saveChanges(){
-		console.log("save");
+		this.stockService.pushChanges(this.merch, [...this.previousStock], [...this.stock])
+			.subscribe(result => {
+				this.goBack();
+			}, error => {
+				console.error(error);
+			})
 	}
 }

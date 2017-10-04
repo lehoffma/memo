@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {LogInService} from "../../shared/services/api/login.service";
-import {NavigationService} from "../../shared/services/navigation.service";
+import {Router} from "@angular/router";
 
 @Component({
 	selector: "memo-login",
@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
 	public wrongInput: boolean = false;
 
 	constructor(private loginService: LogInService,
-				private navigationService: NavigationService) {
+				private router: Router) {
 	}
 
 	ngOnInit() {
@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
 					this.loading = false;
 					this.wrongInput = !loginWasSuccessful;
 					if (loginWasSuccessful) {
-						this.navigationService.navigateByUrl(this.loginService.redirectUrl)
+						this.router.navigateByUrl(this.loginService.redirectUrl, {replaceUrl: true});
 					}
 				},
 				error => console.error(error) //todo remove?

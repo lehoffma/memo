@@ -62,6 +62,7 @@ export class ModifyMerchStockItemComponent implements OnInit {
 		let modifiedStock: number = this.isEditing ? this.data.modifiedStock : null;
 		this.dialogRef.close({
 			sizes: this.sizes,
+			event: this.data.event,
 			color: {hex: this.color, name: this.colorName},
 			amount: this.amount,
 			modifyType,

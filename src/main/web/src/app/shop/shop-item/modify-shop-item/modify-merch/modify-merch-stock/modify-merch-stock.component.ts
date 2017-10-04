@@ -4,6 +4,7 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {MdDialog} from "@angular/material";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {ModifyMerchStockService} from "./modify-merch-stock.service";
+import {Merchandise} from "../../../../shared/model/merchandise";
 
 @Component({
 	selector: "memo-modify-merch-stock",
@@ -17,7 +18,6 @@ export class ModifyMerchStockComponent implements OnInit {
 	merchStockSubject: BehaviorSubject<MerchStock[]> = new BehaviorSubject([]);
 	merchStock$ = this.merchStockSubject
 		.asObservable()
-		//huh
 		.map(merchStock => [...merchStock].map(stock => ({
 			id: stock["id"],
 			size: stock.size,
@@ -29,7 +29,6 @@ export class ModifyMerchStockComponent implements OnInit {
 
 
 	constructor(public modifyMerchStockService: ModifyMerchStockService) {
-
 		this.modifyMerchStockService.init(this.merchStockSubject);
 		this.modifyMerchStockService.dataSubject$.subscribe(value => this.stockChange.emit(value))
 	}

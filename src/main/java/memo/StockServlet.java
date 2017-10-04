@@ -182,9 +182,16 @@ public class StockServlet extends HttpServlet {
         Color color = gson.fromJson(jColor, Color.class);
         s.setColor(color);
 
-        Integer eventId = jStock.get("eventId").getAsInt();
-        Event e = DatabaseManager.createEntityManager().find(Event.class, eventId);
-        s.setEvent(e);
+        JsonObject jsonEvent = jStock.getAsJsonObject("event");
+        if(jsonEvent != null){
+            Integer eventId = jsonEvent.get("id").getAsInt();
+            Event e = DatabaseManager.createEntityManager().find(Event.class, eventId);
+            s.setEvent(e);
+        }
+        else{
+            //todo error handling
+//            throw new NoSuchFieldException();
+        }
 
         return s;
     }

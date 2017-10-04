@@ -1,6 +1,6 @@
 
 <div class="stock-options-sidebar desktop">
-	<memo-filtering-menu class="desktop" [filterOptions]="filterOptions">
+	<memo-filtering-menu class="desktop" [filterOptions]="filterOptions$ | async">
 
 	</memo-filtering-menu>
 </div>
@@ -8,7 +8,7 @@
 <div class="stock-entry-container">
 
 	<div class="stock-options">
-		<memo-filtering-menu class="mobile" [filterOptions]="filterOptions">
+		<memo-filtering-menu class="mobile" [filterOptions]="filterOptions$ | async">
 
 		</memo-filtering-menu>
 		<memo-sorting-dropdown [sortingOptions]="sortingOptions">
@@ -22,6 +22,10 @@
 	>
 
 	</memo-merch-stock-entry>
+
+	<div class="no-results" *ngIf="(merch$|async)?.length === 0">
+		Keine Merchandiseartikel vorhanden.
+	</div>
 </div>
 
 

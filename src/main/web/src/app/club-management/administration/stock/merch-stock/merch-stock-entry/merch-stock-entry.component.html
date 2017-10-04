@@ -13,21 +13,18 @@
 	</div>
 
 	<mat-menu #menu="matMenu">
-
-		<!--todo modify merch stock page-->
-		<!--todo: edit Stock => extra seite auf mobile vllt-->
 		<a mat-menu-item
-		   routerLink="/merch/{{stockEntry?.item.id}}/stock/edit"
-		   *ngIf="(windowService.dimension$ | async).width < 600; else dialogButton">
+		   routerLink="/merch/{{stockEntry?.item.id}}/stock/edit">
 			<mat-icon>edit</mat-icon>
 			<span>Bearbeiten</span>
 		</a>
-		<ng-template #dialogButton>
-			<button mat-menu-item type="button" (click)="openModifyStockDialog()">
-				<mat-icon>edit</mat-icon>
-				<span>Bearbeiten</span>
-			</button>
-		</ng-template>
+		<!--todo: edit Stock => popup on desktop vllt-->
+		<!--<ng-template #dialogButton>-->
+			<!--<button mat-menu-item type="button" (click)="openModifyStockDialog()">-->
+				<!--<mat-icon>edit</mat-icon>-->
+				<!--<span>Bearbeiten</span>-->
+			<!--</button>-->
+		<!--</ng-template>-->
 		<button mat-menu-item type="button" (click)="deleteMerch(stockEntry?.item.id)">
 			<mat-icon>delete</mat-icon>
 			<span>Löschen</span>

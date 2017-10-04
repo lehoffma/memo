@@ -27,8 +27,9 @@ export class MerchStockComponent implements OnInit {
 					options: this.stockService.getStockOptions([stockList]),
 					item: merchItem
 				}))
-			)))
-		.share();
+			))
+			.defaultIfEmpty([]))
+		.share()
 
 
 	merch$: Observable<StockEntry[]> = this.stockEntryList$
@@ -56,16 +57,15 @@ export class MerchStockComponent implements OnInit {
 							}
 							return list;
 						})
+						.defaultIfEmpty([]);
 				})
-		});
+		})
 
 	userCanAddMerch$ = this.loginService.getActionPermissions("merch")
 		.map(permission => permission.Hinzufuegen);
 
 
 	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
-	//todo blinking when filtering
-	//todo "keine merchandise artikel matchen die ausgewählten filter"
 	filterOptions$ = this._filterOptions$
 		.asObservable()
 		.scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService))
@@ -103,7 +103,6 @@ export class MerchStockComponent implements OnInit {
 				private activatedRoute: ActivatedRoute,
 				private searchFilterService: SearchFilterService,
 				private navigationService: NavigationService) {
-
 	}
 
 	ngOnInit() {
