@@ -1,23 +1,31 @@
-<div *ngFor="let tourStop of modelRoute; let i = index;">
+<div *ngFor="let tourStop of modelRoute; let i = index;" class="tour-route-input-container">
+	<div class="tour-route-indicators">
+
+		<span class="circle" *ngIf="i < modelRoute.length - 1"></span>
+		<mat-icon class="destination" *ngIf="i === modelRoute.length - 1">place</mat-icon>
+		<ng-template [ngIf]="i < modelRoute.length - 1">
+			<span class="waypoint-dot" *ngFor="let x of [1,2,3]"></span>
+		</ng-template>
+	</div>
 	<mat-form-field>
 		<!--Format: "Alexanderpl. 2, 10178 Berlin, Deutschland"-->
 
 		<input matInput (keydown.enter)="$event.preventDefault()" #routeInput
-			   placeholder="{{i === 0 ? 'Treffpunkt' : ((i===modelRoute.length - 1) ? 'Ziel' : 'Zwischenstop')}}">
+			   placeholder="{{i === 0 ? 'Treffpunkt' : ((i===modelRoute.length - 1) ? 'Ziel' : 'Zwischenstopp')}}">
 
 		<button mat-icon-button type="button" matSuffix (click)="removeStop(i)" *ngIf="i > 0 && (i < modelRoute.length - 1)">
 			<mat-icon>close</mat-icon>
 		</button>
 
 	</mat-form-field>
-	<button mat-icon-button type="button" name="swap-{{i}}"
-			class="swap-button" *ngIf="i < modelRoute.length - 1"
-			(click)="swapRoutes(i, i+1)"
-			matTooltip="Tauschen"
+	<!--<button mat-icon-button type="button" name="swap-{{i}}"-->
+			<!--class="swap-button" *ngIf="i < modelRoute.length - 1"-->
+			<!--(click)="swapRoutes(i, i+1)"-->
+			<!--matTooltip="Tauschen"-->
 
-	>
-		<mat-icon>swap_vert</mat-icon>
-	</button>
+	<!--&gt;-->
+		<!--<mat-icon>swap_vert</mat-icon>-->
+	<!--</button>-->
 </div>
 
 <button mat-button
@@ -32,7 +40,12 @@
 
 <agm-map [latitude]="(centerOfTour$ | async)?.latitude"
 		 [longitude]="(centerOfTour$ | async)?.longitude">
-	<sebm-google-map-directions *ngIf="showDirective" [route]="(initializedRoute$ | async)"></sebm-google-map-directions>
+	<sebm-google-map-directions *ngIf="showDirective"
+								[directionsDisplay]="directionsDisplay"
+								(totalDistanceChange)="totalDistance = $event"
+								[route]="(initializedRoute$ | async)">
+
+	</sebm-google-map-directions>
 	<!--<agm-marker *ngFor="let tourStop of (initializedRoute$ | async)"-->
 				<!--[latitude]="tourStop.latitude"-->
 				<!--[longitude]="tourStop.longitude">-->

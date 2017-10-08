@@ -41,6 +41,7 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 	@Input() route: Address[] = [];
 
 	@Output() routeChange = new EventEmitter<Address[]>();
+	@Output() distanceChange = new EventEmitter<number>();
 	@ViewChildren("routeInput") inputs: QueryList<ElementRef>;
 
 
@@ -79,6 +80,16 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 
 	directionsDisplay;
 	showDirective = false;
+	private _totalDistance = 0;
+
+	get totalDistance() {
+		return this._totalDistance
+	}
+
+	set totalDistance(distance: number) {
+		this._totalDistance = distance;
+		this.distanceChange.emit(distance);
+	}
 
 	constructor(private mapsAPILoader: MapsAPILoader,
 				private ngZone: NgZone) {

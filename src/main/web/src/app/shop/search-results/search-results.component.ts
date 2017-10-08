@@ -73,7 +73,6 @@ export class SearchResultComponent implements OnInit {
 	}
 
 
-
 	/**
 	 * Holt die Suchergebnisse aus den jeweiligen Services und sortiert und filtert sie anhand der
 	 * sortedBy und filteredBy werte.
@@ -116,8 +115,8 @@ export class SearchResultComponent implements OnInit {
 						})
 						//Updated den Suchergebnisse Titel anhand der ausgewählten Kategorien und der Menge an Ergebnissen.
 						.do(async events => {
-							const options = await this.searchFilterService.getEventFilterOptionsFromResults(events);
-							this.searchFilterService.initFilterMenu(this.activatedRoute, options)
+							this.searchFilterService.getEventFilterOptionsFromResults(events)
+								.flatMap(options => this.searchFilterService.initFilterMenu(this.activatedRoute, options))
 								.subscribe(filterOptions => {
 									this.filterOptions = filterOptions;
 									let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");

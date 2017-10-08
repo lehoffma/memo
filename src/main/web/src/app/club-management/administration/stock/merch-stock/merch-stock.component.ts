@@ -107,8 +107,8 @@ export class MerchStockComponent implements OnInit {
 
 	ngOnInit() {
 		this.merch$
-			.flatMap((dataList: StockEntry[]) => Observable.fromPromise(this.searchFilterService
-				.getEventFilterOptionsFromResults(dataList.map(it => it.item)))
+			.flatMap((dataList: StockEntry[]) => this.searchFilterService
+				.getEventFilterOptionsFromResults(dataList.map(it => it.item))
 			)
 			.map(filterOptions => filterOptions
 				.filter(option => option.queryKey !== "category" && option.queryKey !== "date"))

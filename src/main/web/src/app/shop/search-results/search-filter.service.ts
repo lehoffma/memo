@@ -8,12 +8,15 @@ import {MultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi
 import * as moment from "moment";
 import {StockService} from "../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
-import {attributeSortingFunction, isObservable, sortingFunction} from "../../util/util";
+import {attributeSortingFunction, isArrayType, isObservable, sortingFunction} from "../../util/util";
 import {MerchColor} from "../shared/model/merch-color";
 import {MerchStockList} from "../shared/model/merch-stock";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute} from "@angular/router";
-import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
+import {
+	isMultiLevelSelectLeaf,
+	isMultiLevelSelectParent
+} from "../../shared/multi-level-select/shared/multi-level-select-option";
 
 @Injectable()
 export class SearchFilterService {
@@ -95,33 +98,54 @@ export class SearchFilterService {
 	 * todo date: date range picker?
 	 * @param {Event[]} results
 	 */
-	async getEventFilterOptionsFromResults(results: Event[]) {
-		let eventFilterOptions: MultiLevelSelectParent[] = this.getBaseFilterOptions();
+	getEventFilterOptionsFromResults(results: Event[]): Observable<MultiLevelSelectParent[]> {
+		let eventFilterOptions: Observable<MultiLevelSelectParent[]> = Observable.of(this.getBaseFilterOptions());
 
 		//colors aus dem stock raus holen
-		const colorChildren: MultiLevelSelectLeaf[] = await this.getColorFilterOptions(results).toPromise();
-		eventFilterOptions.push({
-			name: "Farben", queryKey: "color", selectType: "multiple", expanded: false, children: colorChildren
-		});
+		const colorChildren: Observable<MultiLevelSelectLeaf[]> = this.getColorFilterOptions(results);
+		const materialChildren: Observable<MultiLevelSelectLeaf[]> = Observable.of(this.getMaterialFilterOptions(results));
+		const sizeChildren: Observable<MultiLevelSelectLeaf[]> = this.getSizeFilterOptions(results);
 
-		const materialChildren: MultiLevelSelectLeaf[] = this.getMaterialFilterOptions(results);
-		eventFilterOptions.push({
-			name: "Material", queryKey: "material", selectType: "multiple", expanded: false, children: materialChildren
-		});
 
-		const sizeChildren: MultiLevelSelectLeaf[] = await this.getSizeFilterOptions(results).toPromise();
-		eventFilterOptions.push({
-			name: "Größe", queryKey: "size", selectType: "multiple", expanded: false, children: sizeChildren
-		});
-
-		return eventFilterOptions;
+		return Observable.merge(
+			eventFilterOptions,
+			colorChildren
+				.map(colors => ({
+					name: "Farben", queryKey: "color",
+					selectType: (<"multiple" | "single">"multiple"),
+					expanded: false, children: colors
+				})),
+			materialChildren
+				.map(materials => ({
+					name: "Material",
+					queryKey: "material",
+					selectType: (<"multiple" | "single">"multiple"),
+					expanded: false,
+					children: materials
+				})),
+			sizeChildren
+				.map(sizes => ({
+					name: "Größe",
+					queryKey: "size",
+					selectType: (<"multiple" | "single">"multiple"),
+					expanded: false,
+					children: sizes
+				}))
+		)
+			.scan((options, value: MultiLevelSelectParent[] | MultiLevelSelectParent) => {
+				if (isArrayType(options) && isMultiLevelSelectParent(options[0])
+					&& !isArrayType(value) && value["name"]) {
+					options.push(value);
+				}
+				return options;
+			})
 	}
 
 	/**
 	 *
 	 * @returns {[{name: string; queryKey: string; selectType: string; expanded: boolean; children: [{name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean}]} , {name: string; queryKey: string; expanded: boolean; selectType: string; children: [{name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean}]} , {name: string; selectType: string; expanded: boolean; queryKey: string; children: [{name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean}]}]}
 	 */
-	private getBaseFilterOptions():MultiLevelSelectParent[]{
+	private getBaseFilterOptions(): MultiLevelSelectParent[] {
 		return [
 			{
 				name: "Kategorie",
@@ -331,7 +355,7 @@ export class SearchFilterService {
 		}
 		//remove values that are not part of the array anymore
 		for (let i = acc.length - 1; i >= 0; i--) {
-			if (options.findIndex(option => option.queryKey === options[i].queryKey) === -1) {
+			if (options.findIndex(option => option.queryKey === acc[i].queryKey) === -1) {
 				acc.splice(i, 1);
 			}
 		}

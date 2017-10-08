@@ -82,4 +82,8 @@ export class ModifyTourComponent implements OnInit {
 	}
 
 
+	meterToMiles(meters:number){
+		return meters * 0.000621371;
+	}
+
 }

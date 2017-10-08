@@ -125,7 +125,11 @@
 										  [formIsValid]="modifyShopItemForm.form.valid"
 										  [saveButton]="mode === ModifyType.EDIT"
 										  (onSave)="submitModifiedObject()">
-			<memo-tour-route-input [(route)]="tourModel['route']" [isTour]="true"></memo-tour-route-input>
+			<memo-tour-route-input [(route)]="tourModel['route']"
+								   (distanceChange)="tourModel['miles'] = meterToMiles($event)"
+								   [isTour]="true">
+
+			</memo-tour-route-input>
 		</memo-modify-item-inner-container>
 
 
