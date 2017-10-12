@@ -4,11 +4,24 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
 import {MultiLevelSelectParent} from "../../../shared/multi-level-select/shared/multi-level-select-parent";
 import {MultiLevelSelectLeaf} from "../../../shared/multi-level-select/shared/multi-level-select-leaf";
+import {animate, state, style, transition, trigger} from "@angular/animations";
 
 @Component({
 	selector: "memo-filtering-menu",
 	templateUrl: "./filtering-menu.component.html",
-	styleUrls: ["./filtering-menu.component.scss"]
+	styleUrls: ["./filtering-menu.component.scss"],
+	animations: [
+		trigger("slideUp", [
+			state("1", style({transform: "translateX(0)"})),
+			transition(":enter", [
+				style({transform: "translateX(-100%)"}),
+				animate("200ms ease-in"),
+			]),
+			transition(":leave", [
+				animate("200ms ease-in", style({transform: "translateX(-100%)"}))
+			])
+		])
+	]
 })
 export class FilteringMenuComponent implements OnInit, OnChanges{
 

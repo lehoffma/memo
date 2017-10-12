@@ -57,6 +57,7 @@
 		</div>
 
 		<share-buttons
+			*ngIf="event"
 			[title]="event.title"
 			[image]="event.imagePath"
 			[description]="event.description"

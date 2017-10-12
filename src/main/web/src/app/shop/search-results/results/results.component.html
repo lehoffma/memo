@@ -1,4 +1,5 @@
-<div *ngIf="events && events.length > 0" class="results-container">
+<div *ngIf="events && events.length > 0" class="results-container"
+	 [@flyInFadeOut]="events?.length">
 	<memo-results-entry
 		*ngFor="let result of events"
 		[result]="result">

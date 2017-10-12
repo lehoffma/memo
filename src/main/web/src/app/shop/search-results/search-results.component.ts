@@ -41,6 +41,7 @@ export class SearchResultComponent implements OnInit {
 	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
 	filterOptions$ = this._filterOptions$
 		.asObservable()
+		.debounceTime(200)
 		.scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService))
 		.map(options => options.filter(option => option.children && option.children.length > 0));
 
@@ -80,6 +81,8 @@ export class SearchResultComponent implements OnInit {
 	fetchResults() {
 		Observable.combineLatest(this.keywords, this.sortedBy, this.filteredBy)
 			.subscribe(([keywords, sortedBy, filteredBy]) => {
+					//todo isLoading = true; + use Observable.scan
+
 					//reset results so the result screen can show a loading screen while the http call is performed
 					this.results$ = Observable.empty();
 

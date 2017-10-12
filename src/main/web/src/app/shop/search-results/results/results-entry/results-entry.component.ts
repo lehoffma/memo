@@ -8,7 +8,7 @@ import {StockService} from "../../../../shared/services/api/stock.service";
 @Component({
 	selector: "memo-results-entry",
 	templateUrl: "./results-entry.component.html",
-	styleUrls: ["./results-entry.component.scss"]
+	styleUrls: ["./results-entry.component.scss"],
 })
 export class ResultsEntryComponent implements OnInit {
 	colors: MerchColor[] = [];

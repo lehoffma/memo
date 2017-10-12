@@ -315,10 +315,11 @@ export class StockService extends ServletService<MerchStock[]> {
 
 		//edit objects that are part of both objects, but contain different data
 		const editRequests = [...previous
-			.filter(stockItem => !!current.find(it => it.id === stockItem.id && (
+			.map(stockItem => current.find(it => it.id === stockItem.id && (
 				it.size !== stockItem.size || it.amount !== stockItem.amount || it.color.name !== stockItem.color.name ||
 				it.color.hex !== stockItem.color.hex || it.event.id !== stockItem.event.id
 			)))
+			.filter(editedItem => editedItem !== undefined)
 			.map(editedItem => this.modify(editedItem, editedItem.event.id)
 				.share())
 		];
