@@ -166,13 +166,14 @@ export class StockService extends ServletService<MerchStock[]> {
 	 * @param eventId
 	 */
 	getById(id: number, eventId: number): Observable<MerchStock[]> {
-		return this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("id", "" + id)
-				.set("eventId", "" + eventId)
-		}))
-		//todo update when merchstock is a class?
+		const params = new HttpParams().set("id", "" + id)
+			.set("eventId", "" + eventId);
+		const request = this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {params}))
+			//todo update when merchstock is a class?
 			.map(response => response.stock)
 			.share();
+
+		return this._cache.getById(params, request);
 	}
 
 	/**
@@ -247,13 +248,13 @@ export class StockService extends ServletService<MerchStock[]> {
 	 * @param searchTerm
 	 */
 	search(searchTerm: string): Observable<MerchStockList[]> {
-		//todo könnte buggy sein, wird aber grad eh nich benutzt
-		return this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("searchTerm", searchTerm)
-		}))
+		const params = new HttpParams().set("searchTerm", searchTerm);
+		const request = this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {params}))
 		//todo update when merchstock is a class
 			.map(response => [response.stock])
 			.share();
+
+		return this._cache.search(params, request);
 	}
 
 	/**
@@ -267,6 +268,7 @@ export class StockService extends ServletService<MerchStock[]> {
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {stock}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
+			.do(() => this._cache.invalidateByPartialParams(new HttpParams().set("eventId", ""+eventId)))
 			.flatMap(response => this.getById(response.id, eventId));
 	}
 
@@ -296,7 +298,8 @@ export class StockService extends ServletService<MerchStock[]> {
 	remove(id: number): Observable<Object> {
 		return this.performRequest(this.http.delete(this.baseUrl, {
 			params: new HttpParams().set("id", "" + id)
-		}));
+		}))
+			.do(() => this._cache.invalidateById(id))
 	}
 
 	/**

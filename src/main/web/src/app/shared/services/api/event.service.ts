@@ -5,13 +5,10 @@ import {Event} from "../../../shop/shared/model/event";
 import {EventFactoryService} from "../event-factory.service";
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
-import {CacheStore} from "../../stores/cache.store";
+import {CacheStore} from "../../cache/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {TypeOfProperty} from "../../model/util/type-of-property";
-import {ShopItem} from "../../model/shop-item";
-import {EventUtilityService} from "../event-utility.service";
 
 interface EventApiResponse {
 	events: (Party | Merchandise | Tour)[];
@@ -43,22 +40,6 @@ export class EventService extends ServletService<Event> {
 		return Event.create;
 	}
 
-	/**
-	 * Helper method for accessing the cache
-	 * @param eventType
-	 */
-	private static cacheKeyFromEventType(eventType: EventType): "tours" | "partys" | "merch" {
-		switch (eventType) {
-			case EventType.tours:
-				return "tours";
-			case EventType.partys:
-				return "partys";
-			case EventType.merch:
-				return "merch";
-		}
-		return "tours";
-	}
-
 
 	/**
 	 * Requested das Event (mit einem bestimmten Event-Typen) vom Server, welches die gegebene ID besitzt
@@ -67,21 +48,12 @@ export class EventService extends ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	getById(eventId: number, refresh?: boolean): Observable<Event> {
-		//return cached version if available to reduce number of http request necessary
-		//todo cache test
-		let cachedEvent = this.cache.getEventById(eventId);
-		if (cachedEvent && !refresh) {
-			console.log(`eventId ${eventId} is cached`);
-			return Observable.of(cachedEvent);
-		}
-		console.log(`eventId ${eventId} is not cached, retrieving from db`);
-
-		return this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("id", "" + eventId)
-		}))
+		const params = new HttpParams().set("id", "" + eventId);
+		const request = this.http.get<EventApiResponse>(this.baseUrl, {params})
 			.map(json => this.getFactoryFromType(json.events[0]["type"])().setProperties(json.events[0]))
-			.do(event => this.cache.addOrModify(event))
 			.share();
+
+		return this._cache.getById(params, request);
 	}
 
 	/**
@@ -89,13 +61,13 @@ export class EventService extends ServletService<Event> {
 	 * @param userId
 	 */
 	getHostedEventsOfUser(userId: number): Observable<(Tour | Party)[]> {
-		return this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("userId", "" + userId)
-		}))
+		const params = new HttpParams().set("userId", "" + userId);
+		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.map(json => json.events.map(event =>
 				event.setProperties(event)))
-			.do(events => this.cache.addMultiple(...events))
-			.share()
+			.share();
+
+		return this._cache.search(params, request);
 	}
 
 	/**
@@ -105,26 +77,12 @@ export class EventService extends ServletService<Event> {
 	 * @returns {Observable<T>}
 	 */
 	search(searchTerm: string, eventType: EventType): Observable<Event[]> {
-		const httpRequest = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("searchTerm", searchTerm).set("type", "" + eventType)
-		}))
+		const params = new HttpParams().set("searchTerm", searchTerm).set("type", "" + eventType);
+		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.map(json => json.events.map(event =>
-				EventFactoryService.build(eventType).setProperties(event)))
-			.do(events => this.cache.addMultiple(...events));
+				EventFactoryService.build(eventType).setProperties(event)));
 
-		//todo just use the cached one instead of combining them?
-		//todo cache search result instead of searching cached events?
-		const cachedObservable: Observable<Event[]> = this.cache
-			.search(searchTerm, EventService.cacheKeyFromEventType(eventType));
-
-		//if any of the cached events match the search term, combine these with the ones loaded from the server
-		return Observable.combineLatest(cachedObservable, httpRequest,
-			(cachedEvents, loadedEvents) => [...cachedEvents, ...loadedEvents]
-				.filter((value, index, array) =>
-					//removes duplicate entries
-					array.findIndex((event: Event) => event.id === value.id && event.title === value.title) === index
-				))
-			.share()
+		return this._cache.search(params, request);
 	}
 
 
@@ -146,7 +104,8 @@ export class EventService extends ServletService<Event> {
 		}
 
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {event, ...body}))
-			.flatMap(response => this.getById(response.id));
+			.do(() => this._cache.invalidateById(event.id))
+			.flatMap(response => this.getById(response.id))
 	}
 
 	/**
@@ -181,9 +140,7 @@ export class EventService extends ServletService<Event> {
 		return this.performRequest(this.http.delete<AddOrModifyResponse>(this.baseUrl, {
 			params: new HttpParams().set("id", "" + eventId)
 		}))
-			.do(response => {
-				this.cache.remove(EventService.cacheKeyFromEventType(EventType.merch), response.id);
-			});
+			.do(() => this._cache.invalidateById(eventId));
 	}
 
 }

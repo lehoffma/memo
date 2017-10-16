@@ -123,7 +123,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 * @returns {boolean}
 	 */
 	previousValueIsEmpty() {
-		return Object.keys(this.previousValue).length === 0;
+		return !this.previousValue || Object.keys(this.previousValue).length === 0;
 	}
 
 	/**

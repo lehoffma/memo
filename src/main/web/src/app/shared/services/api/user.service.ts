@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {User} from "../../model/user";
-import {CacheStore} from "../../stores/cache.store";
+import {CacheStore} from "../../cache/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 
@@ -25,20 +25,12 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	getById(userId: number, options?: any): Observable<User> {
-		//if the user is stored in the cache, return that object instead of performing the http request
-		if (this.cache.isCached("users", userId)) {
-			console.log(`userId ${userId} is cached`);
-			return this.cache.cache.users
-				.map(users => users.find(user => user.id === userId));
-		}
-		console.log(`userId ${userId} is not cached: fetching from DB`);
-
-		return this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("id", "" + userId)
-		}))
+		const params = new HttpParams().set("id", "" + userId);
+		const request = this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {params}))
 			.map(json => User.create().setProperties(json.users[0]))
-			.do((user: User) => this.cache.addOrModify(user))
 			.share();
+
+		return this._cache.getById(params, request);
 	}
 
 	/**
@@ -48,12 +40,11 @@ export class UserService extends ServletService<User> {
 	 * @returns {Observable<T>}
 	 */
 	search(searchTerm: string, options?: any): Observable<User[]> {
-		return this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("searchTerm", searchTerm)
-		}))
-			.map(json => json.users.map(jsonUser => User.create().setProperties(jsonUser)))
-			.do((users: User[]) => this.cache.addMultiple(...users))
-			.share();
+		const params = new HttpParams().set("searchTerm", searchTerm);
+		const request = this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {params}))
+			.map(json => json.users.map(jsonUser => User.create().setProperties(jsonUser)));
+
+		return this._cache.search(params, request);
 	}
 
 	/**
@@ -103,7 +94,7 @@ export class UserService extends ServletService<User> {
 		return this.performRequest(this.http.delete<{ id: number }>(this.baseUrl, {
 			params: new HttpParams().set("id", "" + userId)
 		}))
-			.do(response => this.cache.remove("users", response.id));
+			.do(() => this._cache.invalidateById(userId))
 	}
 
 	/**
@@ -123,6 +114,7 @@ export class UserService extends ServletService<User> {
 		}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
+			.do(() => this._cache.invalidateById(user.id))
 			.flatMap(response => this.getById(response.id))
 	}
 

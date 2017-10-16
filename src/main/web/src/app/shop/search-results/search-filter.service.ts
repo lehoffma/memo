@@ -107,6 +107,7 @@ export class SearchFilterService {
 		const sizeChildren: Observable<MultiLevelSelectLeaf[]> = this.getSizeFilterOptions(results);
 
 
+		console.log(results);
 		return Observable.merge(
 			eventFilterOptions,
 			colorChildren
@@ -139,6 +140,7 @@ export class SearchFilterService {
 				}
 				return options;
 			})
+			.do(console.log);
 	}
 
 	/**
@@ -263,6 +265,7 @@ export class SearchFilterService {
 				selected: false
 			}));
 	}
+
 
 	/**
 	 *
@@ -392,6 +395,8 @@ export class SearchFilterService {
 				!acc.find(prevOption => prevOption.queryKey === option.queryKey)
 			)
 		);
+
+		console.log(acc);
 
 		return acc;
 	}

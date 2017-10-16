@@ -5,7 +5,7 @@ import {Response} from "@angular/http";
 import {BankAccount} from "../../model/bank-account";
 import {UserService} from "./user.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {CacheStore} from "../../stores/cache.store";
+import {CacheStore} from "../../cache/cache.store";
 
 interface UserBankAccountApiResponse {
 	bankAccounts: BankAccount[];
@@ -29,19 +29,11 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 	 * @returns {Observable<BankAccount>}
 	 */
 	getById(id: number): Observable<BankAccount> {
-		if (this.cache.isCached("bankAccounts", id)) {
-			console.log(`bankAccountId ${id} is cached`);
-			return this.cache.cache.bankAccounts
-				.map(bankAccounts => bankAccounts.find(bankAccount => bankAccount.id === id));
-		}
-		console.log(`bankAccountId ${id} is not cached, retrieving from db`);
+		const params = new HttpParams().set("id", "" + id);
+		const request = this.http.get<UserBankAccountApiResponse>(this.baseUrl, {params})
+			.map(response => response.bankAccounts[0]);
 
-
-		return this.http.get<UserBankAccountApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("id", "" + id)
-		})
-			.map(response => response.bankAccounts[0])
-			.do(bankAccount => this.cache.addOrModify(bankAccount))
+		return this._cache.getById(params, request);
 	}
 
 	/**
@@ -59,11 +51,11 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 			return this.getBankAccountsByUserId(options.userId);
 		}
 
-		return this.http.get<UserBankAccountApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("searchTerm", searchTerm)
-		})
-			.map(response => response.bankAccounts)
-			.do(bankAccounts => this.cache.addMultiple(...bankAccounts))
+		const params = new HttpParams().set("searchTerm", searchTerm);
+		const request = this.http.get<UserBankAccountApiResponse>(this.baseUrl, {params})
+			.map(response => response.bankAccounts);
+
+		return this._cache.search(params, request);
 	}
 
 	/**
@@ -86,6 +78,7 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 		return this.http.post<AddOrModifyResponse>(this.baseUrl, {account}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
+			.do(() => this._cache.invalidateById(account.id))
 			.flatMap(response => this.getById(response.id));
 	}
 
@@ -99,6 +92,7 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 		return this.http.put<AddOrModifyResponse>(this.baseUrl, {account}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
+			.do(() => this._cache.invalidateById(account.id))
 			.flatMap(response => this.getById(response.id));
 	}
 
@@ -111,6 +105,7 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 	remove(id: number): Observable<Response> {
 		return this.http.delete(this.baseUrl, {
 			params: new HttpParams().set("id", "" + id)
-		});
+		})
+			.do(() => this._cache.invalidateById(id))
 	}
 }

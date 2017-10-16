@@ -68,8 +68,10 @@ export class MerchStockComponent implements OnInit {
 	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
 	filterOptions$ = this._filterOptions$
 		.asObservable()
+		.debounceTime(200)
 		.scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService))
-		.map(options => options.filter(option => option.children && option.children.length > 0));
+		.map(options => options.filter(option => option.children && option.children.length > 0))
+		.do(console.log);
 
 	get filterOptions() {
 		return this._filterOptions$.getValue();
@@ -107,13 +109,16 @@ export class MerchStockComponent implements OnInit {
 
 	ngOnInit() {
 		this.merch$
+			//todo searchFilterBuilder
 			.flatMap((dataList: StockEntry[]) => this.searchFilterService
 				.getEventFilterOptionsFromResults(dataList.map(it => it.item))
 			)
 			.map(filterOptions => filterOptions
 				.filter(option => option.queryKey !== "category" && option.queryKey !== "date"))
 			.flatMap(filterOptions => this.searchFilterService.initFilterMenu(this.activatedRoute, filterOptions))
-			.subscribe(options => this.filterOptions = options);
+			.subscribe(options => {
+				this.filterOptions = options
+			});
 	}
 
 

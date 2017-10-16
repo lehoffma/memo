@@ -11,7 +11,7 @@ import {ParticipantsService} from "./services/api/participants.service";
 import {StockService} from "./services/api/stock.service";
 import {UserService} from "./services/api/user.service";
 import {UserBankAccountService} from "./services/api/user-bank-account.service";
-import {CacheStore} from "./stores/cache.store";
+import {CacheStore} from "./cache/cache.store";
 import {HttpClientModule} from "@angular/common/http";
 import {MemoMaterialModule} from "../../material.module";
 

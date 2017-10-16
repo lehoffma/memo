@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {ServletServiceInterface} from "../../model/servlet-service";
 import {Observable} from "rxjs/Observable";
 import {HttpHeaders, HttpParams} from "@angular/common/http";
+import {ApiCache} from "../../cache/api-cache";
 
 export type AddOrModifyRequest = <T>(url: string, body: any | null, options?: {
 	headers?: HttpHeaders;
@@ -18,6 +19,8 @@ export interface AddOrModifyResponse {
 
 @Injectable()
 export abstract class ServletService<T> implements ServletServiceInterface<T> {
+	protected _cache: ApiCache<T> = new ApiCache<T>();
+
 	constructor() {
 	}
 

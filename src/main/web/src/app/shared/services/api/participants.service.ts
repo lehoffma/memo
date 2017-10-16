@@ -8,7 +8,7 @@ import {AddOrModifyRequest, AddOrModifyResponse} from "./servlet.service";
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
-import {CacheStore} from "../../stores/cache.store";
+import {CacheStore} from "../../cache/cache.store";
 import {EventUtilityService} from "../event-utility.service";
 
 interface ParticipantApiResponse {
@@ -26,6 +26,7 @@ export class ParticipantsService {
 	}
 
 	//todo von servletService erben lassen
+	//todo rewrite
 
 	handleError(error: any) {
 		console.error(error);

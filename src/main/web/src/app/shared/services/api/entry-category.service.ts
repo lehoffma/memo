@@ -4,7 +4,7 @@ import {EntryCategory} from "../../model/entry-category";
 import {Observable} from "rxjs/Observable";
 import {Response} from "@angular/http";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {CacheStore} from "../../stores/cache.store";
+import {CacheStore} from "../../cache/cache.store";
 
 interface EntryCategoryApiResponse {
 	categories: EntryCategory[]
@@ -25,18 +25,11 @@ export class EntryCategoryService extends ServletService<EntryCategory> {
 	 * @returns {Observable<EntryCategory>}
 	 */
 	getById(id: number): Observable<EntryCategory> {
-		if (this.cache.isCached("entryCategories", id)) {
-			console.log(`entryCategoryId ${id} is cached`);
-			return this.cache.cache.entryCategories
-				.map(categories => categories.find(category => category.id === id));
-		}
-		console.log(`entryCategoryId ${id} is not cached, retrieving from db`);
+		const params = new HttpParams().set("categoryId", "" + id);
+		const request = this.http.get<EntryCategoryApiResponse>(this.baseUrl, {params})
+			.map(json => EntryCategory.create().setProperties(json.categories[0]));
 
-		return this.http.get<EntryCategoryApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("categoryId", "" + id)
-		})
-			.map(json => EntryCategory.create().setProperties(json.categories[0]))
-			.do(category => this.cache.addOrModify(category))
+		return this._cache.getById(params, request);
 	}
 
 	/**
@@ -53,11 +46,11 @@ export class EntryCategoryService extends ServletService<EntryCategory> {
 	 * @returns {Observable<EntryCategory[]>}
 	 */
 	search(searchTerm: string): Observable<EntryCategory[]> {
-		return this.http.get<EntryCategoryApiResponse>(this.baseUrl, {
-			params: new HttpParams().set("searchTerm", "" + searchTerm)
-		})
-			.map(response => response.categories)
-			.do(categories => this.cache.addMultiple(...categories))
+		const params = new HttpParams().set("searchTerm", "" + searchTerm);
+		const request = this.http.get<EntryCategoryApiResponse>(this.baseUrl, {params})
+			.map(response => response.categories);
+
+		return this._cache.search(params, request);
 	}
 
 	/**

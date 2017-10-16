@@ -1,5 +1,5 @@
 import {ArrayObjectType} from "./array-object-type";
-import {Cache} from "../../stores/cache.store";
+import {Cache} from "../../cache/cache.store";
 
 export type InnerArrayObjectType<T extends ArrayObjectType<any>> = MappedArrayObjectType<T>[keyof MappedArrayObjectType<T>];
 

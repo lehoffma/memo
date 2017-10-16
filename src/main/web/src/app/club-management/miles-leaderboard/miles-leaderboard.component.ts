@@ -23,7 +23,7 @@ export class MilesLeaderboardComponent implements OnInit {
 
 	showAll$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-	users$ = this.userService.search("").first();
+	users$ = this.userService.search("");
 
 	leaderBoard$: Observable<LeaderboardRow[]> = this.users$
 	//sort by miles
