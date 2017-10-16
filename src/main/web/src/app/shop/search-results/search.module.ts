@@ -9,6 +9,8 @@ import {FormsModule} from "@angular/forms";
 import {MemoMaterialModule} from "../../../material.module";
 import {SharedModule} from "../../shared/shared.module";
 import {SearchFilterService} from "./search-filter.service";
+import {FilterOptionBuilder} from "./filter-option-builder.service";
+import {FilterOptionFactoryService} from "./filter-option-factory.service";
 
 @NgModule({
 	imports: [
@@ -26,7 +28,9 @@ import {SearchFilterService} from "./search-filter.service";
 		SortingDropdownComponent
 	],
 	providers: [
-		SearchFilterService
+		SearchFilterService,
+		FilterOptionBuilder,
+		FilterOptionFactoryService
 	],
 	exports: [
 		SortingDropdownComponent,

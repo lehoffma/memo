@@ -5,7 +5,6 @@ import {Event} from "../../../shop/shared/model/event";
 import {EventFactoryService} from "../event-factory.service";
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
-import {CacheStore} from "../../cache/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpParams} from "@angular/common/http";
@@ -18,8 +17,7 @@ interface EventApiResponse {
 export class EventService extends ServletService<Event> {
 	private readonly baseUrl = `/api/event`;
 
-	constructor(private http: HttpClient,
-				private cache: CacheStore) {
+	constructor(private http: HttpClient) {
 		super();
 	}
 

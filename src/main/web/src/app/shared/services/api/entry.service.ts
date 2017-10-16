@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Entry} from "../../model/entry";
 import {Observable} from "rxjs/Observable";
-import {CacheStore} from "../../cache/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/api/servlet.service";
 import {EntryCategoryService} from "./entry-category.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
@@ -17,8 +16,7 @@ export class EntryService extends ServletService<Entry> {
 	baseUrl = "/api/entry";
 
 	constructor(private http: HttpClient,
-				private entryCategoryService: EntryCategoryService,
-				private cache: CacheStore) {
+				private entryCategoryService: EntryCategoryService) {
 		super();
 	}
 

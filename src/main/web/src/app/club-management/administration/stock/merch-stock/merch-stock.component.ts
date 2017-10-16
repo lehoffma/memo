@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {EventType} from "../../../../shop/shared/model/event-type";
@@ -12,13 +12,16 @@ import {SortingOption} from "../../../../shared/model/sorting-option";
 import {ActivatedRoute} from "@angular/router";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {sortingFunction} from "../../../../util/util";
+import {FilterOptionBuilder} from "../../../../shop/search-results/filter-option-builder.service";
+import {FilterOptionType} from "../../../../shop/search-results/filter-option-type";
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
 	selector: "memo-merch-stock",
 	templateUrl: "./merch-stock.component.html",
 	styleUrls: ["./merch-stock.component.scss"]
 })
-export class MerchStockComponent implements OnInit {
+export class MerchStockComponent implements OnInit, OnDestroy {
 	stockEntryList$: Observable<StockEntry[]> = this.eventService.search("", EventType.merch)
 		.flatMap(merch => Observable.forkJoin(
 			...merch.map(merchItem => this.stockService.getByEventId(merchItem.id)
@@ -29,7 +32,7 @@ export class MerchStockComponent implements OnInit {
 				}))
 			))
 			.defaultIfEmpty([]))
-		.share()
+		.share();
 
 
 	merch$: Observable<StockEntry[]> = this.stockEntryList$
@@ -59,7 +62,7 @@ export class MerchStockComponent implements OnInit {
 						})
 						.defaultIfEmpty([]);
 				})
-		})
+		});
 
 	userCanAddMerch$ = this.loginService.getActionPermissions("merch")
 		.map(permission => permission.Hinzufuegen);
@@ -70,8 +73,7 @@ export class MerchStockComponent implements OnInit {
 		.asObservable()
 		.debounceTime(200)
 		.scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService))
-		.map(options => options.filter(option => option.children && option.children.length > 0))
-		.do(console.log);
+		.map(options => options.filter(option => option.children && option.children.length > 0));
 
 	get filterOptions() {
 		return this._filterOptions$.getValue();
@@ -98,31 +100,39 @@ export class MerchStockComponent implements OnInit {
 		},
 	];
 
+	subscription: Subscription;
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
 				private stockService: StockService,
 				private activatedRoute: ActivatedRoute,
 				private searchFilterService: SearchFilterService,
+				private filterOptionBuilder: FilterOptionBuilder,
 				private navigationService: NavigationService) {
 	}
 
 	ngOnInit() {
-		this.merch$
-			//todo searchFilterBuilder
-			.flatMap((dataList: StockEntry[]) => this.searchFilterService
-				.getEventFilterOptionsFromResults(dataList.map(it => it.item))
+		this.subscription = this.merch$
+			.flatMap((dataList: StockEntry[]) => this.filterOptionBuilder.empty()
+				.withOptions(
+					FilterOptionType.PRICE,
+					FilterOptionType.COLOR,
+					FilterOptionType.MATERIAL,
+					FilterOptionType.SIZE
+				)
+				.build(dataList.map(it => it.item))
 			)
-			.map(filterOptions => filterOptions
-				.filter(option => option.queryKey !== "category" && option.queryKey !== "date"))
 			.flatMap(filterOptions => this.searchFilterService.initFilterMenu(this.activatedRoute, filterOptions))
-			.subscribe(options => {
-				this.filterOptions = options
-			});
+			.subscribe(this._filterOptions$);
 	}
 
+	ngOnDestroy(): void {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
+	}
 
-	deleteMerch(id:number){
+	deleteMerch(id: number) {
 		console.warn("delete merch not implemented yet. ", id);
 	}
 

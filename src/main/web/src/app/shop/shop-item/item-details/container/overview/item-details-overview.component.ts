@@ -27,8 +27,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	stock$: Observable<MerchStockList> = this._event$
 		.filter(event => EventUtilityService.isMerchandise(event))
 		.filter(event => event.id !== -1)
-		.flatMap(event => this.stockService.getByEventId(event.id))
-		.share();
+		.flatMap(event => this.stockService.getByEventId(event.id));
 
 
 	public colorSelection$: Observable<MerchColor[]> = this.getColorSelection("");

@@ -4,7 +4,6 @@ import {EntryCategory} from "../../model/entry-category";
 import {Observable} from "rxjs/Observable";
 import {Response} from "@angular/http";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {CacheStore} from "../../cache/cache.store";
 
 interface EntryCategoryApiResponse {
 	categories: EntryCategory[]
@@ -14,8 +13,7 @@ interface EntryCategoryApiResponse {
 export class EntryCategoryService extends ServletService<EntryCategory> {
 	baseUrl = "/api/entryCategory";
 
-	constructor(public http: HttpClient,
-				private cache: CacheStore) {
+	constructor(public http: HttpClient) {
 		super();
 	}
 

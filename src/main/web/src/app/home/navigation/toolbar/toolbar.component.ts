@@ -3,6 +3,7 @@ import {Observable} from "rxjs/Observable";
 import {ShoppingCartService} from "../../../shared/services/shopping-cart.service";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {Link} from "../../../shared/model/link";
+import {WindowService} from "../../../shared/services/window.service";
 
 @Component({
 	selector: "memo-toolbar",
@@ -23,7 +24,10 @@ export class ToolbarComponent implements OnInit {
 
 	shoppingCartContent: Observable<number> = this.shoppingCartService.amountOfCartItems;
 
+	searchIsExpanded = false;
+
 	constructor(private navigationService: NavigationService,
+				private windowService: WindowService,
 				private shoppingCartService: ShoppingCartService) {
 
 	}
@@ -42,4 +46,21 @@ export class ToolbarComponent implements OnInit {
 	}
 
 
+	expandSearchBar(event) {
+		this.windowService.dimension$
+			.map(dimensions => dimensions.width)
+			.first()
+			.subscribe(width => {
+				if (width < 400) {
+					//todo expand to full width or something like that
+					// this.searchIsExpanded = event;
+				}
+			});
+
+		this.windowService.dimension$
+			.map(dim => dim.width)
+			.filter(width => width >= 400)
+			.first()
+			.subscribe(width => this.searchIsExpanded = false);
+	}
 }

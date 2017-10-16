@@ -5,7 +5,6 @@ import {Response} from "@angular/http";
 import {BankAccount} from "../../model/bank-account";
 import {UserService} from "./user.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {CacheStore} from "../../cache/cache.store";
 
 interface UserBankAccountApiResponse {
 	bankAccounts: BankAccount[];
@@ -18,8 +17,7 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 	//todo select from bank account list when ordering (similar to address-selection maybe)
 	//todo manage bank accounts somewhere (on user edit page?)
 	constructor(public http: HttpClient,
-				public userService: UserService,
-				public cache: CacheStore) {
+				public userService: UserService) {
 		super();
 	}
 

@@ -3,7 +3,6 @@ import {Observable} from "rxjs/Observable";
 import {Response} from "@angular/http";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {CacheStore} from "../../cache/cache.store";
 import {Address} from "../../model/address";
 
 interface AddressApiResponse {
@@ -16,8 +15,7 @@ export class AddressService extends ServletService<Address> {
 	addressModificationDone: EventEmitter<Address> = new EventEmitter();
 	redirectUrl: string;
 
-	constructor(private http: HttpClient,
-				private cache: CacheStore,) {
+	constructor(private http: HttpClient) {
 		super();
 	}
 

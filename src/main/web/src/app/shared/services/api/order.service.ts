@@ -3,7 +3,6 @@ import {AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Order} from "../../model/order";
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {CacheStore} from "app/shared/cache/cache.store";
 
 interface OrderApiResponse {
 	orders: Order[];
@@ -13,8 +12,7 @@ interface OrderApiResponse {
 export class OrderService extends ServletService<Order> {
 	baseUrl = "/api/order";
 
-	constructor(public http: HttpClient,
-				private cache: CacheStore) {
+	constructor(public http: HttpClient) {
 		super();
 	}
 

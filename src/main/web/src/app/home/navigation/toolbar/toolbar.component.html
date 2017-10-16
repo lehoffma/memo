@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-	<div class="mobile-toolbar">
+	<div class="mobile-toolbar" *ngIf="!searchIsExpanded">
 		<!--The left side-->
 		<div>
 			<!--The left side is hidden when the screen size is larger than small -->
@@ -21,7 +21,9 @@
 	<span class="navigation-fill-remaining-space navigation-left-space"></span>
 
 	<div class="toolbar-actions">
-		<memo-search-input></memo-search-input>
+		<memo-search-input (onFocus)="expandSearchBar($event)">
+
+		</memo-search-input>
 	</div>
 
 	<div class="desktop-toolbar">
@@ -30,7 +32,7 @@
 		</memo-toolbar-element>
 	</div>
 
-	<div class="toolbar-action cart">
+	<div class="toolbar-action cart" *ngIf="!searchIsExpanded">
 		<memo-badge [value]="shoppingCartContent | async">
 			<a mat-icon-button routerLink="/cart">
 				<mat-icon class="cart-icon ">

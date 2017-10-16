@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {User} from "../../model/user";
-import {CacheStore} from "../../cache/cache.store";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 
@@ -13,8 +12,7 @@ interface UserApiResponse {
 export class UserService extends ServletService<User> {
 	baseUrl = "/api/user";
 
-	constructor(private http: HttpClient,
-				private cache: CacheStore) {
+	constructor(private http: HttpClient) {
 		super();
 	}
 

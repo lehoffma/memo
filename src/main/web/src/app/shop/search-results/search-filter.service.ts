@@ -3,20 +3,13 @@ import {MultiLevelSelectParent} from "../../shared/multi-level-select/shared/mul
 import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {ShopItem} from "../../shared/model/shop-item";
 import {Event} from "../shared/model/event";
-import {Merchandise} from "../shared/model/merchandise";
-import {MultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-leaf";
 import * as moment from "moment";
 import {StockService} from "../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
-import {attributeSortingFunction, isArrayType, isObservable, sortingFunction} from "../../util/util";
-import {MerchColor} from "../shared/model/merch-color";
-import {MerchStockList} from "../shared/model/merch-stock";
+import {isObservable} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute} from "@angular/router";
-import {
-	isMultiLevelSelectLeaf,
-	isMultiLevelSelectParent
-} from "../../shared/multi-level-select/shared/multi-level-select-option";
+import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
 
 @Injectable()
 export class SearchFilterService {
@@ -95,206 +88,6 @@ export class SearchFilterService {
 	}
 
 	/**
-	 * todo date: date range picker?
-	 * @param {Event[]} results
-	 */
-	getEventFilterOptionsFromResults(results: Event[]): Observable<MultiLevelSelectParent[]> {
-		let eventFilterOptions: Observable<MultiLevelSelectParent[]> = Observable.of(this.getBaseFilterOptions());
-
-		//colors aus dem stock raus holen
-		const colorChildren: Observable<MultiLevelSelectLeaf[]> = this.getColorFilterOptions(results);
-		const materialChildren: Observable<MultiLevelSelectLeaf[]> = Observable.of(this.getMaterialFilterOptions(results));
-		const sizeChildren: Observable<MultiLevelSelectLeaf[]> = this.getSizeFilterOptions(results);
-
-
-		console.log(results);
-		return Observable.merge(
-			eventFilterOptions,
-			colorChildren
-				.map(colors => ({
-					name: "Farben", queryKey: "color",
-					selectType: (<"multiple" | "single">"multiple"),
-					expanded: false, children: colors
-				})),
-			materialChildren
-				.map(materials => ({
-					name: "Material",
-					queryKey: "material",
-					selectType: (<"multiple" | "single">"multiple"),
-					expanded: false,
-					children: materials
-				})),
-			sizeChildren
-				.map(sizes => ({
-					name: "Größe",
-					queryKey: "size",
-					selectType: (<"multiple" | "single">"multiple"),
-					expanded: false,
-					children: sizes
-				}))
-		)
-			.scan((options, value: MultiLevelSelectParent[] | MultiLevelSelectParent) => {
-				if (isArrayType(options) && isMultiLevelSelectParent(options[0])
-					&& !isArrayType(value) && value["name"]) {
-					options.push(value);
-				}
-				return options;
-			})
-			.do(console.log);
-	}
-
-	/**
-	 *
-	 * @returns {[{name: string; queryKey: string; selectType: string; expanded: boolean; children: [{name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean}]} , {name: string; queryKey: string; expanded: boolean; selectType: string; children: [{name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean}]} , {name: string; selectType: string; expanded: boolean; queryKey: string; children: [{name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean} , {name: string; queryValue: string; selected: boolean}]}]}
-	 */
-	private getBaseFilterOptions(): MultiLevelSelectParent[] {
-		return [
-			{
-				name: "Kategorie",
-				queryKey: "category",
-				selectType: "multiple",
-				expanded: false,
-				children: [
-					{
-						name: "Fahrten",
-						queryValue: "tours",
-						selected: false
-					},
-					{
-						name: "Veranstaltungen",
-						queryValue: "partys",
-						selected: false
-					},
-					{
-						name: "Merchandise",
-						queryValue: "merch",
-						selected: false
-					}
-				]
-			},
-			{
-				name: "Preis",
-				queryKey: "price",
-				expanded: false,
-				selectType: "single",
-				children: [
-					{
-						name: "Alle",
-						queryValue: "",
-						selected: true
-					},
-					{
-						name: "Unter 10 Euro",
-						queryValue: "below10",
-						selected: false
-					},
-					{
-						name: "10 bis 50 Euro",
-						queryValue: "between10and50",
-						selected: false
-					},
-					{
-						name: "50 bis 100 Euro",
-						queryValue: "between50and100",
-						selected: false
-					},
-					{
-						name: "Über 100 Euro",
-						queryValue: "moreThan100",
-						selected: false
-					}
-				]
-			},
-			{
-				name: "Datum",
-				selectType: "single",
-				expanded: false,
-				queryKey: "date",
-				children: [
-					{
-						name: "Alle",
-						queryValue: "",
-						selected: true
-					},
-					{
-						name: "Vergangene Events",
-						queryValue: "past",
-						selected: false
-					},
-					{
-						name: "Zukünftige Events",
-						queryValue: "upcoming",
-						selected: false
-					}
-				]
-			}
-		];
-	}
-
-	private getSizeFilterOptions(results: Event[]) {
-		return Observable.combineLatest(...results
-			.filter(event => EventUtilityService.isMerchandise(event))
-			.map(event => (<Merchandise>event))
-			.map(merch => this.stockService.getByEventId(merch.id))
-		)
-			.map((nestedStockList: MerchStockList[]) => nestedStockList
-				.map(stockList => stockList.map(stockItem => stockItem.size))
-				.reduce((acc: string[], sizes: string[]) =>
-						[...acc, ...sizes.filter(size => !acc.find(it => it === size))],
-					[])
-				//remove duplicates
-				.filter((size, index, array) => array.indexOf(size) === index)
-				.map((size: string) => ({
-					name: size,
-					queryValue: size,
-					selected: false
-				})))
-			.defaultIfEmpty([]);
-	}
-
-	private getMaterialFilterOptions(results: Event[]) {
-		return results
-			.filter(event => EventUtilityService.isMerchandise(event))
-			.map(event => (<Merchandise>event))
-			.map(merch => merch.material)
-			.filter((material, index, array) => array.indexOf(material) === index)
-			.sort(sortingFunction(obj => obj, false))
-			.map(material => ({
-				name: material,
-				queryValue: material,
-				selected: false
-			}));
-	}
-
-
-	/**
-	 *
-	 * @param {Event[]} results
-	 * @returns {Observable<MultiLevelSelectLeaf[]>}
-	 */
-	private getColorFilterOptions(results: Event[]): Observable<MultiLevelSelectLeaf[]> {
-		return Observable.combineLatest(...results
-			.filter(event => EventUtilityService.isMerchandise(event))
-			.map(event => (<Merchandise>event))
-			.map(merch => this.stockService.getByEventId(merch.id))
-		)
-			.map((nestedStockList: MerchStockList[]) => nestedStockList
-				.map(stockList => stockList.map(stockItem => stockItem.color))
-				.reduce((acc: MerchColor[], colors: MerchColor[]) =>
-						[...acc, ...colors.filter(color => !acc.find(it => it.name === color.name))],
-					[])
-				//remove duplicates
-				.filter((color, index, array) => array.findIndex(_color => _color.name === color.name) === index)
-				.sort(attributeSortingFunction("name", false))
-				.map((color: MerchColor) => ({
-					name: color.name,
-					queryValue: color.name,
-					selected: false
-				})))
-			.defaultIfEmpty([]);
-	}
-
-	/**
 	 *
 	 * @param event
 	 * @param filteredBy
@@ -327,8 +120,9 @@ export class SearchFilterService {
 	initFilterMenu(activatedRoute: ActivatedRoute, filterOptions: MultiLevelSelectParent[]): Observable<MultiLevelSelectParent[]> {
 		//checks if the route includes query parameters and initializes the filtermenus checkboxes
 		return activatedRoute.queryParamMap
+			.first()
 			.map(queryParamMap => {
-				return filterOptions.map(filterOptionParent => {
+				return [...filterOptions].map(filterOptionParent => {
 					let key = filterOptionParent.queryKey;
 					//if the key associated with the filter selection box is part of the query parameters,
 					//update the filterOption's selected values.
@@ -353,6 +147,7 @@ export class SearchFilterService {
 	 * @returns {MultiLevelSelectParent[]}
 	 */
 	mergeFilterOptions(acc: MultiLevelSelectParent[], options: MultiLevelSelectParent[]) {
+
 		if (!acc || options.length === 0) {
 			return options;
 		}
