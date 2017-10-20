@@ -1,25 +1,42 @@
-<form #searchForm="ngForm" (ngSubmit)="inputState === searchInputState.INACTIVE ? toggleInputState() : onSearch()">
+<form #searchForm="ngForm"
+	  [class.expanded-mobile]="mobileExpanded"
+	  (ngSubmit)="inputState === searchInputState.INACTIVE ? toggleInputState() : onSearch()">
 	<button mat-icon-button
 			type="submit"
 			#searchButton
+			*ngIf="!mobileExpanded"
 			class="search-button">
 		<mat-icon class="cart-icon">
 			search
 		</mat-icon>
 	</button>
+	<button mat-icon-button
+			type="button"
+			class="back-button"
+			*ngIf="mobileExpanded"
+			(click)="toggleInputState()"
+	>
+		<mat-icon>
+			arrow_back
+		</mat-icon>
+	</button>
 	<mat-form-field
 		*ngIf="inputState === searchInputState.ACTIVE"
-		[@searchInputState]="inputState"
+		[@searchInputState]="screenState$ | async"
 		class="search-input" [dividerColor]="'accent'">
 		<input matInput
 			   title="Sucheingabe"
 			   #searchInput
+			   id="searchInput"
 			   name="searchInput"
 			   [(ngModel)]="model.searchInput"
 			   autocomplete="off">
-		<mat-icon matSuffix
-				 class="cart-icon ripple" (click)="toggleInputState()">
+		<mat-icon matSuffix *ngIf="!mobileExpanded"
+				  class="cart-icon ripple" (click)="toggleInputState()">
 			clear
 		</mat-icon>
 	</mat-form-field>
+	<button mat-icon-button type="button" *ngIf="mobileExpanded" (click)="model.searchInput=''">
+		<mat-icon>clear</mat-icon>
+	</button>
 </form>

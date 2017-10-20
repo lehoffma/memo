@@ -4,6 +4,7 @@ import {ShoppingCartService} from "../../../shared/services/shopping-cart.servic
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {Link} from "../../../shared/model/link";
 import {WindowService} from "../../../shared/services/window.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Component({
 	selector: "memo-toolbar",
@@ -11,6 +12,9 @@ import {WindowService} from "../../../shared/services/window.service";
 	styleUrls: ["./toolbar.component.scss", "./element/toolbar-element.component.scss"]
 })
 export class ToolbarComponent implements OnInit {
+	//todo fadeout on mobile when searching
+
+
 	/**
 	 * Ein Event, welches beim öffnen der Sidenav Navigation emitted wird
 	 * @type {EventEmitter}
@@ -24,7 +28,7 @@ export class ToolbarComponent implements OnInit {
 
 	shoppingCartContent: Observable<number> = this.shoppingCartService.amountOfCartItems;
 
-	searchIsExpanded = false;
+	searchIsExpanded$ = new BehaviorSubject(false);
 
 	constructor(private navigationService: NavigationService,
 				private windowService: WindowService,
@@ -50,17 +54,13 @@ export class ToolbarComponent implements OnInit {
 		this.windowService.dimension$
 			.map(dimensions => dimensions.width)
 			.first()
-			.subscribe(width => {
-				if (width < 400) {
-					//todo expand to full width or something like that
-					// this.searchIsExpanded = event;
-				}
-			});
+			.filter(width => width < 400)
+			.subscribe(it => this.searchIsExpanded$.next(event), console.error);
 
 		this.windowService.dimension$
 			.map(dim => dim.width)
 			.filter(width => width >= 400)
 			.first()
-			.subscribe(width => this.searchIsExpanded = false);
+			.subscribe(it => this.searchIsExpanded$.next(false), console.error);
 	}
 }

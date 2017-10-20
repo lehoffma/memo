@@ -191,8 +191,6 @@ export class SearchFilterService {
 			)
 		);
 
-		console.log(acc);
-
 		return acc;
 	}
 }

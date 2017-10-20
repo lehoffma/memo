@@ -22,6 +22,14 @@ mat-toolbar, :host /deep/ mat-toolbar-row {
 	display: flex;
 	align-items: center;
 
+	&.expanded-mobile{
+		width: 100%;
+
+		memo-search-input{
+			width: 100%;
+		}
+	}
+
 	*:not(:first-child) {
 		margin-left: 10px
 	}
