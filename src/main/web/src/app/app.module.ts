@@ -84,7 +84,7 @@ import {MD_MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-con
 		{provide: LOCALE_ID, useValue: "de-DE"},
 		{provide: DateAdapter, useClass: MomentDateAdapter},
 		{provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS},
-		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
 	]
 })
 export class AppModule {

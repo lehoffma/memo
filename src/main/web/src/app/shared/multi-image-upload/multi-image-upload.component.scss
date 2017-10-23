@@ -1,0 +1,13 @@
+:host {
+	display: block;
+	background: white;
+}
+
+.images-list {
+	min-height: 200px;
+
+	> div {
+		display: flex;
+		justify-content: space-between;
+	}
+}

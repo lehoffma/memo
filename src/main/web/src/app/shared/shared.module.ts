@@ -52,10 +52,15 @@ import {MultiImageContainerComponent} from "./multi-image-container/multi-image-
 
 		MomentPipe,
 
-		AutoSizeTextAreaDirective
+		AutoSizeTextAreaDirective,
+
+
+		MultiImageUploadComponent,
+		MultiImageContainerComponent
 	],
 	entryComponents: [
 		ConfirmationDialogComponent,
 	]
 })
-export class SharedModule{}
+export class SharedModule {
+}

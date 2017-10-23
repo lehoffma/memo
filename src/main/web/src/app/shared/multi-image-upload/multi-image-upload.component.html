@@ -1,3 +1,32 @@
-<p>
-  multi-image-upload works!
-</p>
+<!--todo preview of currently uploaded images, i.e. multi-image-container-->
+<memo-multi-image-container [images]="images$ | async">
+
+</memo-multi-image-container>
+
+<!--todo drag-n-dropable list/table of currently uploaded images with a big "upload" or "browse" button at the bottom-->
+<div class="images-list">
+	<h3>
+		Hochgeladene Bilder
+	</h3>
+	<div *ngFor="let imageToUpload of (imagesToUpload$ | async); let i = index">
+		<div>
+			<span>{{i + 1}}.</span>
+			<span>{{imageToUpload.name}}</span>
+		</div>
+
+		<button mat-icon-button type="button" (click)="deleteImage(i)">
+			<mat-icon>delete</mat-icon>
+		</button>
+	</div>
+</div>
+<div class="upload-button-container">
+	<button mat-raised-button color="accent" (click)="fileUpload.click()">
+		<mat-icon>
+			file_upload
+		</mat-icon>
+		Hochladen
+	</button>
+	<input type="file" multiple #fileUpload [hidden]="true"
+		   (input)="onFileSelect($event)"
+		   (change)="onFileSelect($event)" name="file"/>
+</div>
