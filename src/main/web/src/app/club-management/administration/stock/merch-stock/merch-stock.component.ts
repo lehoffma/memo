@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable, Subscription} from "rxjs/Rx";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {EventType} from "../../../../shop/shared/model/event-type";
 import {NavigationService} from "../../../../shared/services/navigation.service";
@@ -10,11 +10,9 @@ import {MultiLevelSelectParent} from "../../../../shared/multi-level-select/shar
 import {SearchFilterService} from "../../../../shop/search-results/search-filter.service";
 import {SortingOption} from "../../../../shared/model/sorting-option";
 import {ActivatedRoute} from "@angular/router";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {sortingFunction} from "../../../../util/util";
 import {FilterOptionBuilder} from "../../../../shop/search-results/filter-option-builder.service";
 import {FilterOptionType} from "../../../../shop/search-results/filter-option-type";
-import {Subscription} from "rxjs/Subscription";
 
 @Component({
 	selector: "memo-merch-stock",

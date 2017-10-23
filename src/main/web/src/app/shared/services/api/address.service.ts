@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {Response} from "@angular/http";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";

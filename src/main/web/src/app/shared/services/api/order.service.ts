@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Order} from "../../model/order";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 
 interface OrderApiResponse {

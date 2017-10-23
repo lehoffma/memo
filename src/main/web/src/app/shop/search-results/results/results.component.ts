@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {animate, query, stagger, state, style, transition, trigger} from "@angular/animations";
+import {trigger} from "@angular/animations";
 
 @Component({
 	selector: "memo-results",

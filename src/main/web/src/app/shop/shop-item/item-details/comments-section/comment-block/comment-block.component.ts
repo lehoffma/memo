@@ -1,10 +1,9 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Comment} from "../../../../shared/model/comment";
 import {CommentService} from "../../../../../shared/services/api/comment.service";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {User} from "../../../../../shared/model/user";
 import {UserService} from "../../../../../shared/services/api/user.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {Router} from "@angular/router";
 import {MdDialog} from "@angular/material";

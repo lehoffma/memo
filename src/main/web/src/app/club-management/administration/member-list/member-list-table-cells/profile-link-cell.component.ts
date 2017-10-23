@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/expandable-table-cell.component";
 import {UserService} from "../../../../shared/services/api/user.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 
 @Component({
 	selector: 'td [memoProfileLinkCellComponent]',

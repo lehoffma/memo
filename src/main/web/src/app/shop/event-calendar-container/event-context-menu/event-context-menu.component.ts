@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from "@angular/core";
 import {MD_DIALOG_DATA, MdDialogRef} from "@angular/material";
 import {EventType} from "../../shared/model/event-type";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {EventService} from "../../../shared/services/api/event.service";
 
 @Component({

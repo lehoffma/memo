@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Tour} from "../../shop/shared/model/tour";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {EventService} from "../../shared/services/api/event.service";
 import {Party} from "../../shop/shared/model/party";
 import {dateSortingFunction} from "../../util/util";

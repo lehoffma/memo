@@ -1,10 +1,9 @@
 import {Component, HostListener, OnInit, Type} from "@angular/core";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {ParticipantUser} from "../../../../shared/model/participant";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {EventType} from "../../../../shared/model/event-type";
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
 import {BooleanCheckMarkCellComponent} from "../../../../../club-management/administration/member-list/member-list-table-cells/boolean-checkmark-cell.component";
 import {ColumnSortingEvent} from "../../../../../shared/expandable-table/column-sorting-event";

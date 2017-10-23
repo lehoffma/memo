@@ -1,8 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, OnInit, Output} from "@angular/core";
 import {SignUpSubmitEvent} from "../signup-submit-event";
 import {SignUpSection} from "../signup-section";
 import {UserService} from "../../../shared/services/api/user.service";
-import {FormGroup} from "@angular/forms";
 
 @Component({
 	selector: "memo-account-data-form",

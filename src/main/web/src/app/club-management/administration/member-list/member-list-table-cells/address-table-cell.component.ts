@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from "@angular/core";
 import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/expandable-table-cell.component";
 import {Address} from "../../../../shared/model/address";
 import {AddressService} from "../../../../shared/services/api/address.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 
 @Component({
 	selector: "td [addressTableCell]",

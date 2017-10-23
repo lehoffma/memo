@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {ServletServiceInterface} from "../../model/servlet-service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {HttpHeaders, HttpParams} from "@angular/common/http";
 import {ApiCache} from "../../cache/api-cache";
 

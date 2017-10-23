@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {UserService} from "../../shared/services/api/user.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {Router} from "@angular/router";
 import {LogInService} from "../../shared/services/api/login.service";
 import {AddressService} from "../../shared/services/api/address.service";

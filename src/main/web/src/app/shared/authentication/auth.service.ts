@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {tokenNotExpired} from "angular2-jwt";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 
 @Injectable()
 export class AuthService {

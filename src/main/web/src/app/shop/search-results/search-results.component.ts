@@ -11,7 +11,7 @@ import {isNullOrUndefined} from "util";
 import {MultiLevelSelectParent} from "app/shared/multi-level-select/shared/multi-level-select-parent";
 import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
 import {SearchFilterService} from "./search-filter.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject} from "rxjs/Rx";
 import {FilterOptionBuilder} from "./filter-option-builder.service";
 import {FilterOptionType} from "./filter-option-type";
 

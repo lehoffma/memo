@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Entry} from "../../model/entry";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/api/servlet.service";
 import {EntryCategoryService} from "./entry-category.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";

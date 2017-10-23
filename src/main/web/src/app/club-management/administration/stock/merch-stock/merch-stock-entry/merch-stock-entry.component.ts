@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {StockEntry} from "./stock-entry";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject} from "rxjs/Rx";
 import {WindowService} from "../../../../../shared/services/window.service";
 import {MdDialog} from "@angular/material";
 import {ModifyStockDialogComponent} from "./modify-stock-dialog.component";

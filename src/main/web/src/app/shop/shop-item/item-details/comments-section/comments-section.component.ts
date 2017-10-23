@@ -10,7 +10,7 @@ import {
 import {Comment} from "../../../shared/model/comment";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import * as moment from "moment";
 

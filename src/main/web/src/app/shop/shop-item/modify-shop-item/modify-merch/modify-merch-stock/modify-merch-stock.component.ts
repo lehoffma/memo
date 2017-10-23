@@ -1,10 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {MerchStock} from "../../../../shared/model/merch-stock";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {MdDialog} from "@angular/material";
-import {LogInService} from "../../../../../shared/services/api/login.service";
+import {BehaviorSubject} from "rxjs/Rx";
 import {ModifyMerchStockService} from "./modify-merch-stock.service";
-import {Merchandise} from "../../../../shared/model/merchandise";
 
 @Component({
 	selector: "memo-modify-merch-stock",

@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {MerchStock, MerchStockList} from "../../../shop/shared/model/merch-stock";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {MerchColor} from "../../../shop/shared/model/merch-color";

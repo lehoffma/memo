@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Party} from "../../shop/shared/model/party";
 import {Tour} from "../../shop/shared/model/tour";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject} from "rxjs/Rx";
 import {WindowService} from "../services/window.service";
 
 @Component({

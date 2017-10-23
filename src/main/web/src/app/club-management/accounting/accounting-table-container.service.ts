@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {ExpandableTableContainerService} from "../../shared/expandable-table/expandable-table-container.service";
 import {Entry} from "../../shared/model/entry";
 import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {LogInService} from "../../shared/services/api/login.service";
 import {ParamMap, Router} from "@angular/router";
 import {EntryService} from "../../shared/services/api/entry.service";

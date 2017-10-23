@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {isNullOrUndefined} from "util";
 import {User} from "../../../shared/model/user";
 import {Link} from "../../../shared/model/link";

@@ -1,6 +1,3 @@
-
-
-
 import {NgModule} from "@angular/core";
 import {CommentsSectionComponent} from "./comments-section.component";
 import {CommentBlockComponent} from "./comment-block/comment-block.component";

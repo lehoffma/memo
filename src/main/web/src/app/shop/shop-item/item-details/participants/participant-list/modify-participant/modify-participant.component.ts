@@ -3,7 +3,7 @@ import {MD_DIALOG_DATA, MdDialogRef} from "@angular/material";
 import {ParticipantUser} from "../../../../../shared/model/participant";
 import {ModifyType} from "../../../../modify-shop-item/modify-type";
 import {FormControl} from "@angular/forms";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {User} from "../../../../../../shared/model/user";
 import {UserService} from "../../../../../../shared/services/api/user.service";
 import {EventUtilityService} from "../../../../../../shared/services/event-utility.service";

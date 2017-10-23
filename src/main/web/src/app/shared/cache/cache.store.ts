@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Party} from "../../shop/shared/model/party";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {Merchandise} from "app/shop/shared/model/merchandise";
 import {Tour} from "../../shop/shared/model/tour";
 import {User} from "../model/user";
@@ -8,7 +8,6 @@ import {Entry} from "../model/entry";
 import {asValues, BehaviorSubjectType} from "../model/util/behaviour-subject-type";
 import {asObservableType, ObservableType} from "app/shared/model/util/observable-type";
 import {EventUtilityService} from "../services/event-utility.service";
-import {Observable} from "rxjs/Observable";
 import {isNullOrUndefined} from "util";
 import {EventData} from "../model/event-data";
 import {ArrayObjectType} from "../model/util/array-object-type";

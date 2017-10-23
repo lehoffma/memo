@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ShopItemType} from "../../shared/model/shop-item-type";
 import {ModifyType} from "./modify-type";
-import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {ModifyItemService} from "./modify-item.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {ModifyItemEvent} from "./modify-item-event";
 
 @Component({

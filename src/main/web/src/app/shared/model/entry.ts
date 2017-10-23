@@ -1,7 +1,7 @@
 import {BaseObject} from "./util/base-object";
 import {EntryCategory} from "./entry-category";
-import {Moment} from "moment";
 import * as moment from "moment";
+import {Moment} from "moment";
 import {Event} from "../../shop/shared/model/event";
 
 export class Entry extends BaseObject<Entry> {

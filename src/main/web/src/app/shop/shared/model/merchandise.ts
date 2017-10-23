@@ -4,10 +4,10 @@ import {SizeTable} from "./size-table";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
 import {MerchColor} from "./merch-color";
-import {Moment} from "moment";
 import * as moment from "moment";
+import {Moment} from "moment";
 import {StockService} from "../../../shared/services/api/stock.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 
 //todo remove demo
 const sizeTable = `{

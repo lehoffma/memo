@@ -1,6 +1,6 @@
 import {Cache} from "./cache";
 import {HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 
 interface ApiInnerCache<T> {
 	getById: {

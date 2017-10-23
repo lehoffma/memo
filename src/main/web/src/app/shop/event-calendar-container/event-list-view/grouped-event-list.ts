@@ -1,5 +1,3 @@
-
-
 import {Tour} from "../../shared/model/tour";
 import {Party} from "../../shared/model/party";
 

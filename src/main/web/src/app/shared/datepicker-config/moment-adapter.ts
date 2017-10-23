@@ -1,6 +1,7 @@
-import {DateAdapter, MdDateFormats} from "@angular/material";
+import {DateAdapter, MAT_DATE_LOCALE, MdDateFormats} from "@angular/material";
 import * as moment from "moment";
-import {isMoment, Moment} from "moment";
+import {Moment} from "moment";
+import {Inject, Injectable, Optional} from '@angular/core';
 
 /**
  * @license
@@ -9,10 +10,6 @@ import {isMoment, Moment} from "moment";
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-
-import {Inject, Injectable, Optional} from '@angular/core';
-import {MAT_DATE_LOCALE} from '@angular/material';
-
 
 
 export const MD_MOMENT_DATE_FORMATS: MdDateFormats = {

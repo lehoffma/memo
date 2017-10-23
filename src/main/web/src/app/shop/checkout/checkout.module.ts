@@ -1,6 +1,3 @@
-
-
-
 import {NgModule} from "@angular/core";
 import {CheckoutRoutingModule, routedComponents} from "./checkout.routing";
 import {PaymentMethodSelectionComponent} from "./payment/payment-method-selection.component";

@@ -12,7 +12,7 @@ import {Permission} from "../../../../shared/model/permission";
 import {rolePermissions} from "../../../../shared/model/club-role";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import {Comment} from "../../../shared/model/comment";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject} from "rxjs/Rx";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {ParticipantUser} from "../../../shared/model/participant";
 

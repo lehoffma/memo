@@ -1,6 +1,4 @@
-
-
-import {ModuleWithProviders, NgModule} from "@angular/core";
+import {NgModule} from "@angular/core";
 import {ExpandableTableModule} from "./expandable-table/expandable-table.module";
 import {MomentPipe} from "./pipes/moment.pipe";
 import {MultiLevelSelectModule} from "./multi-level-select/multi-level-select.module";
@@ -14,6 +12,8 @@ import {AutoSizeTextAreaDirective} from "./autosize-textarea.directive";
 import {ConfirmationDialogComponent} from "./confirmation-dialog/confirmation-dialog.component";
 import {MemoMaterialModule} from "../../material.module";
 import {ModifyItemInnerContainerComponent} from "./modify-item-inner-container/modify-item-inner-container.component";
+import {MultiImageUploadComponent} from "./multi-image-upload/multi-image-upload.component";
+import {MultiImageContainerComponent} from "./multi-image-container/multi-image-container.component";
 
 @NgModule({
 	imports: [
@@ -34,7 +34,9 @@ import {ModifyItemInnerContainerComponent} from "./modify-item-inner-container/m
 		BadgeComponent,
 		PageNotFoundComponent,
 		ErrorPageComponent,
-		AutoSizeTextAreaDirective
+		AutoSizeTextAreaDirective,
+		MultiImageUploadComponent,
+		MultiImageContainerComponent
 	],
 	exports: [
 		ExpandableTableModule,

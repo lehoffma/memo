@@ -1,11 +1,9 @@
-
 import {Route, RouterModule} from "@angular/router";
 import {MemberListComponent} from "./administration/member-list/member-list.component";
 import {MerchStockComponent} from "./administration/stock/merch-stock/merch-stock.component";
 import {AccountingComponent} from "./accounting/accounting.component";
 import {AuthenticatedGuard} from "../shared/authentication/authenticated.guard";
 import {IsTreasurerGuard} from "../shared/authentication/is-treasurer.guard";
-import {CanViewStockGuard} from "../shared/authentication/can-view-stock.guard";
 import {NgModule} from "@angular/core";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {MilesLeaderboardComponent} from "./miles-leaderboard/miles-leaderboard.component";

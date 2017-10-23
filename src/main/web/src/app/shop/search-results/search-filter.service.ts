@@ -5,7 +5,7 @@ import {ShopItem} from "../../shared/model/shop-item";
 import {Event} from "../shared/model/event";
 import * as moment from "moment";
 import {StockService} from "../../shared/services/api/stock.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {isObservable} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute} from "@angular/router";

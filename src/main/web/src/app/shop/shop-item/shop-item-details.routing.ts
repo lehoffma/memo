@@ -1,6 +1,3 @@
-
-
-
 import {Route, RouterModule} from "@angular/router";
 import {NgModule} from "@angular/core";
 import {TourDetailComponent} from "./item-details/details/tour-detail.component";

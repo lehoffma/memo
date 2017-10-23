@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {EventService} from "../../shared/services/api/event.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {EventType} from "../../shop/shared/model/event-type";
 
 @Component({

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {Response} from "@angular/http";
 import {BankAccount} from "../../model/bank-account";
 import {UserService} from "./user.service";

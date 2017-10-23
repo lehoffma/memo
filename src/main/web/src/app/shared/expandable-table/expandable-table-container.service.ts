@@ -1,15 +1,13 @@
 import {TableActionEvent} from "./table-action-event";
 import {RowAction} from "./row-action";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, Observable, Subscription} from "rxjs/Rx";
 import {ExpandableTableColumn} from "./expandable-table-column";
 import {OnDestroy, Type} from "@angular/core";
 import {ExpandedRowComponent} from "./expanded-row.component";
 import {SingleValueListExpandedRowComponent} from "./single-value-list-expanded-row/single-value-list-expanded-row.component";
 import {ColumnSortingEvent} from "./column-sorting-event";
-import {Observable} from "rxjs/Observable";
 import {ActionPermissions} from "./expandable-table.component";
 import {SortingFunction} from "../../util/util";
-import {Subscription} from "rxjs/Subscription";
 
 export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 	private _sortBy$ = new BehaviorSubject<ColumnSortingEvent<T>>(null);

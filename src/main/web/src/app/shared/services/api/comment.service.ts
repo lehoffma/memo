@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Comment} from "../../../shop/shared/model/comment";
 

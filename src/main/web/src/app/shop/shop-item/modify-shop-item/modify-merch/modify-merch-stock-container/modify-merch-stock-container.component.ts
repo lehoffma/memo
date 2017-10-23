@@ -5,7 +5,6 @@ import {StockService} from "../../../../../shared/services/api/stock.service";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
-import {Observable} from "rxjs/Observable";
 
 @Component({
 	selector: 'memo-modify-merch-stock-container',

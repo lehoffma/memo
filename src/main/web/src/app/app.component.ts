@@ -2,7 +2,7 @@ import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {DateAdapter} from "@angular/material";
 import {Moment} from "moment";
 import {AuthService} from "./shared/authentication/auth.service";
-import {NavigationCancel, Router} from "@angular/router";
+import {Router} from "@angular/router";
 
 @Component({
 	selector: "app",

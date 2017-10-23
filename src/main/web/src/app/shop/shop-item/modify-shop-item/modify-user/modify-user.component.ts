@@ -1,8 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {UserService} from "../../../../shared/services/api/user.service";
+import {BehaviorSubject} from "rxjs/Rx";
 
 @Component({
 	selector: "memo-modify-user",

@@ -1,13 +1,11 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {EventOverviewKey} from "../container/overview/event-overview-key";
 import {Event} from "../../../shared/model/event";
 import {ShopItem} from "../../../../shared/model/shop-item";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {TypeOfProperty} from "../../../../shared/model/util/type-of-property";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {MerchStockList} from "../../../shared/model/merch-stock";
 import {StockService} from "../../../../shared/services/api/stock.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ParticipantsService} from "../../../../shared/services/api/participants.service";
 
 @Component({

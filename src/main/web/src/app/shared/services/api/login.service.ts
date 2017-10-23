@@ -1,6 +1,5 @@
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
 import {UserService} from "./user.service";
 import {User} from "../../model/user";
 import {isNullOrUndefined} from "util";

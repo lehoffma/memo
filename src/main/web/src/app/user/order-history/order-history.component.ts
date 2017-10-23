@@ -1,12 +1,11 @@
 import {Component, OnInit} from "@angular/core";
 import {LogInService} from "../../shared/services/api/login.service";
 import {OrderService} from "../../shared/services/api/order.service";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {Order} from "../../shared/model/order";
 import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
 import {attributeSortingFunction, dateSortingFunction} from "../../util/util";
 import {SortingOption} from "../../shared/model/sorting-option";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Component({
 	selector: "memo-order-history",

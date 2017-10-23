@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {EventType} from "../../../shop/shared/model/event-type";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {Event} from "../../../shop/shared/model/event";
 import {EventFactoryService} from "../event-factory.service";
 import {Tour} from "../../../shop/shared/model/tour";

@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from "@angular/core";
 import {MD_DIALOG_DATA, MdDialogRef} from "@angular/material";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import * as moment from "moment";
 
 @Component({

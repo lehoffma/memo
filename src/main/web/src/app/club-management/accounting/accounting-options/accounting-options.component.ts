@@ -5,12 +5,10 @@ import {QueryParameterService} from "../../../shared/services/query-parameter.se
 import {Event} from "../../../shop/shared/model/event";
 import {EventService} from "../../../shared/services/api/event.service";
 import {EventType} from "../../../shop/shared/model/event-type";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable, Subscription} from "rxjs/Rx";
 import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
-import {Subscription} from "rxjs/Subscription";
 
 @Component({
 	selector: "memo-accounting-options",

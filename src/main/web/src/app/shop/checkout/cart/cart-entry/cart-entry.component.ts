@@ -4,7 +4,7 @@ import {EventUtilityService} from "../../../../shared/services/event-utility.ser
 import {CartItem} from "../cart-item";
 import {Event} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/api/stock.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 
 

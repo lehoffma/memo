@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {MdDialog} from "@angular/material";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {ConfirmationDialogComponent} from "../confirmation-dialog/confirmation-dialog.component";
 
 @Injectable()

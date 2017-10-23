@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {Address} from "../../../../shared/model/address";
 import {ActivatedRoute, Router} from "@angular/router";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {UserService} from "../../../../shared/services/api/user.service";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {Wiggle} from "app/util/animation-util";

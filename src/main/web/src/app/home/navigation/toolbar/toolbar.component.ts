@@ -1,10 +1,9 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {ShoppingCartService} from "../../../shared/services/shopping-cart.service";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {Link} from "../../../shared/model/link";
 import {WindowService} from "../../../shared/services/window.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Component({
 	selector: "memo-toolbar",

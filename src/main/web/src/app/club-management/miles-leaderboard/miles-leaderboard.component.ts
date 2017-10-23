@@ -1,11 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {User} from "../../shared/model/user";
 import {UserService} from "../../shared/services/api/user.service";
 import {attributeSortingFunction} from "../../util/util";
 import {LogInService} from "../../shared/services/api/login.service";
 import {LeaderboardRow} from "./leaderboard-row";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 export interface LoggedInUserPosition extends LeaderboardRow{
 	index: number;

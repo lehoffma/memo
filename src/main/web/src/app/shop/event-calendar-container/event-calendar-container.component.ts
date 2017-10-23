@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {Party} from "../shared/model/party";
 import {Tour} from "../shared/model/tour";
 import {EventService} from "../../shared/services/api/event.service";

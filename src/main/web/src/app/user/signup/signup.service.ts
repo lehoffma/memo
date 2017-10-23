@@ -11,7 +11,6 @@ import {Address} from "../../shared/model/address";
 import {AddressService} from "../../shared/services/api/address.service";
 import {UserBankAccountService} from "../../shared/services/api/user-bank-account.service";
 import {BankAccount} from "../../shared/model/bank-account";
-import {Observable} from "rxjs/Observable";
 import {ImageUploadService} from "../../shared/services/api/image-upload.service";
 
 @Injectable()

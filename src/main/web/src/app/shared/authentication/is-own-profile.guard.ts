@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 import {LogInService} from "../services/api/login.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {UserService} from "../services/api/user.service";
 import {ClubRole, isAuthenticated} from "../model/club-role";
 import {NavigationService} from "../services/navigation.service";

@@ -25,9 +25,7 @@ import {SearchFilterService} from "../shop/search-results/search-filter.service"
 import {SearchModule} from "../shop/search-results/search.module";
 import {MilesLeaderboardEntryComponent} from "app/club-management/miles-leaderboard/miles-leaderboard-entry.component";
 import {ModifyStockDialogComponent} from "./administration/stock/merch-stock/merch-stock-entry/modify-stock-dialog.component";
-import {ShopModule} from "../shop/shop.module";
 import {ModifyShopItemModule} from "../shop/shop-item/modify-shop-item/modify-shop-item.module";
-import {AccountingTableContainerService} from "./accounting/accounting-table-container.service";
 
 const tableCellComponents = [
 	//accounting table cells

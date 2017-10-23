@@ -8,7 +8,7 @@ import {EventOverviewKey} from "../container/overview/event-overview-key";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import {Comment} from "../../../shared/model/comment";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject} from "rxjs/Rx";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 
 @Component({

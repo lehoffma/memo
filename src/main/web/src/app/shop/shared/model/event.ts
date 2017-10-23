@@ -2,8 +2,8 @@ import {ClubRole} from "../../../shared/model/club-role";
 import {BaseObject} from "../../../shared/model/util/base-object";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
-import {Moment} from "moment";
 import * as moment from "moment";
+import {Moment} from "moment";
 
 
 export class Event extends BaseObject<Event> {

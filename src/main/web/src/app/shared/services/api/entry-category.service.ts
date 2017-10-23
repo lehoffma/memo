@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ServletService} from "./servlet.service";
 import {EntryCategory} from "../../model/entry-category";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {Response} from "@angular/http";
 import {HttpClient, HttpParams} from "@angular/common/http";
 

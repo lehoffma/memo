@@ -1,8 +1,8 @@
 import {BaseObject} from "./util/base-object";
 import {PaymentMethod} from "../../shop/checkout/payment/payment-method";
 import {OrderedItem} from "./ordered-item";
-import {Moment} from "moment";
 import * as moment from "moment";
+import {Moment} from "moment";
 
 export class Order extends BaseObject<Order> {
 	constructor(public readonly id: number,

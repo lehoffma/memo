@@ -6,10 +6,6 @@ import {BooleanCheckMarkCellComponent} from "./member-list-table-cells/boolean-c
 import {GenderCellComponent} from "./member-list-table-cells/gender-cell.component";
 import {AddressTableCellComponent} from "./member-list-table-cells/address-table-cell.component";
 import {PictureTableCellComponent} from "./member-list-table-cells/picture-table-cell.component";
-import {TelephoneTableCellComponent} from "./member-list-table-cells/telephone-table-cell.component";
-import {EmailTableCellComponent} from "./member-list-table-cells/email-table-cell.component";
-import {MobileTableCellComponent} from "./member-list-table-cells/mobile-table-cell.component";
-import {ProfileLinkCellComponent} from "./member-list-table-cells/profile-link-cell.component";
 
 export const memberListColumns = {
 	"imagePath": new ExpandableTableColumn<User>("Foto", "imagePath", PictureTableCellComponent),

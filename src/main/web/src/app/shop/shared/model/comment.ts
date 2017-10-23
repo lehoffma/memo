@@ -1,6 +1,6 @@
 import {BaseObject} from "../../../shared/model/util/base-object";
-import {Moment} from "moment";
 import * as moment from "moment";
+import {Moment} from "moment";
 
 export class Comment extends BaseObject<Comment> {
 	constructor(public readonly eventId: number,

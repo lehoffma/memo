@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Link} from "../model/link";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {ParamMap, Router, RoutesRecognized} from "@angular/router";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {EventUtilityService} from "./event-utility.service";
@@ -10,7 +10,6 @@ import {EventType} from "../../shop/shared/model/event-type";
 import {Event} from "../../shop/shared/model/event";
 import {HttpClient} from "@angular/common/http";
 import {LogInService} from "./api/login.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class NavigationService {

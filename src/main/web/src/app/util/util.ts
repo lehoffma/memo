@@ -1,7 +1,7 @@
 import {isArray, isNullOrUndefined} from "util";
 import * as moment from "moment";
 import {Moment} from "moment";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 
 export type SortingFunction<T> = (a: T, b: T) => number;
 

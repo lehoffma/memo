@@ -5,11 +5,10 @@ import {ShoppingCartService} from "../../../../../shared/services/shopping-cart.
 import {EventUtilityService} from "../../../../../shared/services/event-utility.service";
 import {EventOverviewKey} from "./event-overview-key";
 import {StockService} from "../../../../../shared/services/api/stock.service";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs/Rx";
 import * as moment from "moment";
 import {MerchColor} from "../../../../shared/model/merch-color";
 import {MerchStockList} from "../../../../shared/model/merch-stock";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ShopItem} from "../../../../../shared/model/shop-item";
 import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property";
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";

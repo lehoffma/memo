@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Event} from "../../shop/shared/model/event";
-import {Merchandise} from "../../shop/shared/model/merchandise";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs";
 import {EventUtilityService} from "../../shared/services/event-utility.service";

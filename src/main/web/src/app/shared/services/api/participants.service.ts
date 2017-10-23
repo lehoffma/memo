@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {EventType} from "../../../shop/shared/model/event-type";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {Participant, ParticipantUser} from "../../../shop/shared/model/participant";
 import {UserService} from "./user.service";
 import {HttpClient, HttpParams} from "@angular/common/http";

@@ -4,7 +4,7 @@ import {ClubRole} from "../../../shared/model/club-role";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {AddressService} from "../../../shared/services/api/address.service";
 import {Address} from "../../../shared/model/address";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject} from "rxjs/Rx";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "../../../shared/services/api/user.service";
 import {FormControlDirective} from "@angular/forms";

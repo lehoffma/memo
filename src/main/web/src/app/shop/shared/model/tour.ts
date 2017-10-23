@@ -2,8 +2,10 @@ import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
+import * as moment from "moment";
 import {Moment} from "moment";
-import * as moment from "moment";;
+
+;
 
 export class Tour extends Event {
 

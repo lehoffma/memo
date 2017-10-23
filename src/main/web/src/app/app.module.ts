@@ -26,10 +26,10 @@ import {ClubManagementModule} from "./club-management/club-management.module";
 import {SharedModule} from "./shared/shared.module";
 import {UserModule} from "./user/user.module";
 import {ShopModule} from "./shop/shop.module";
-import {ApiServicesModule} from "./shared/api-services.module";
-import {UtilityServicesModule} from "./shared/utility-services.module";
-import {AuthenticationModule} from "./shared/authentication.module";
-import {MomentDateAdapter, MD_MOMENT_DATE_FORMATS} from "./shared/datepicker-config/moment-adapter";
+import {ApiServicesModule} from "./shared/services/api/api-services.module";
+import {UtilityServicesModule} from "./shared/services/utility-services.module";
+import {AuthenticationModule} from "./shared/authentication/authentication.module";
+import {MD_MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-config/moment-adapter";
 
 
 @NgModule({

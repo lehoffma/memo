@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output, Renderer, Renderer2, ViewChild} from "@angular/core";
-import {animate, AnimationBuilder, style, transition, trigger} from "@angular/animations";
+import {Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from "@angular/core";
+import {animate, style, transition, trigger} from "@angular/animations";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {WindowService} from "../../../../shared/services/window.service";
 

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/Rx";
 import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {EventService} from "../../../../shared/services/api/event.service";
