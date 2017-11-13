@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/expandable-table-cell.component";
 import {UserService} from "../../../../shared/services/api/user.service";
-import {Observable} from "rxjs/Rx";
+import {empty} from "rxjs/observable/empty";
 
 @Component({
 	selector: 'td [memoProfileLinkCellComponent]',
@@ -23,7 +23,7 @@ import {Observable} from "rxjs/Rx";
 
 export class ProfileLinkCellComponent implements OnInit, ExpandableTableCellComponent {
 	@Input() data: number;
-	user$ = Observable.empty();
+	user$ = empty();
 
 	constructor(private userService: UserService) {
 	}

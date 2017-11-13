@@ -1,11 +1,16 @@
 import {Component, OnInit} from "@angular/core";
 import {LogInService} from "../../shared/services/api/login.service";
 import {OrderService} from "../../shared/services/api/order.service";
-import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {Order} from "../../shared/model/order";
 import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
 import {attributeSortingFunction, dateSortingFunction} from "../../util/util";
 import {SortingOption} from "../../shared/model/sorting-option";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Observable} from "rxjs/Observable";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {empty} from "rxjs/observable/empty";
+import {mergeMap, map, catchError, defaultIfEmpty} from "rxjs/operators";
+import {_throw} from "rxjs/observable/throw";
 
 @Component({
 	selector: "memo-order-history",
@@ -35,25 +40,30 @@ export class OrderHistoryComponent implements OnInit {
 		descending: true
 	});
 
-	orders$: Observable<Order[]> = Observable.combineLatest(
+	orders$: Observable<Order[]> = combineLatest(
 		this.sortBy$,
 		this.loginService
 			.accountObservable
-			.flatMap(userId => userId === null
-				? Observable.throw(new Error("User is not logged in"))
-				: this.orderService.getByUserId(userId))
+			.pipe(
+				mergeMap(userId => userId === null
+						? _throw(new Error("User is not logged in"))
+						: this.orderService.getByUserId(userId)
+				)
+			)
 	)
-		.map(([sortBy, orders]) => {
-			if (sortBy.key === "timeStamp") {
-				return [...orders.sort(dateSortingFunction<Order>(obj => obj.timeStamp, sortBy.descending))];
-			}
-			return [...orders.sort(attributeSortingFunction<Order>(sortBy.key, sortBy.descending))];
-		})
-		.catch(error => {
-			console.error(error);
-			return Observable.empty();
-		})
-		.defaultIfEmpty([]);
+		.pipe(
+			map(([sortBy, orders]) => {
+				if (sortBy.key === "timeStamp") {
+					return [...orders.sort(dateSortingFunction<Order>(obj => obj.timeStamp, sortBy.descending))];
+				}
+				return [...orders.sort(attributeSortingFunction<Order>(sortBy.key, sortBy.descending))];
+			}),
+			catchError(error => {
+				console.error(error);
+				return empty<Order[]>();
+			}),
+			defaultIfEmpty([])
+		);
 
 
 	//todo schönere "keine bestellungen" message

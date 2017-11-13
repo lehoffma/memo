@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
-import {Observable} from "rxjs/Rx";
 import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {EventService} from "../../../../shared/services/api/event.service";
@@ -11,6 +10,9 @@ import {ActivatedRoute} from "@angular/router";
 import {EntryCategoryService} from "../../../../shared/services/api/entry-category.service";
 import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/modify-item-event";
 import {EntryCategory} from "../../../../shared/model/entry-category";
+import {Observable} from "rxjs/Observable";
+import {filter, first, map, mergeMap, startWith} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -64,40 +66,43 @@ export class ModifyEntryComponent implements OnInit {
 			this.autocompleteFormControl.setValue(this.associatedEvent);
 		}
 		this.activatedRoute.queryParamMap
-			.first()
-			.subscribe(queryParamMap => {
-				if (queryParamMap.has("eventId")) {
-					this.eventService.getById(+queryParamMap.get("eventId"))
-						.first()
-						.subscribe(event => {
-							this.associatedEvent = event;
-							this.autocompleteFormControl.setValue(event);
-						});
-				}
-			});
-		this.autocompleteFormControl.valueChanges
-			.subscribe(value => {
-				if (EventUtilityService.isTour(value) || EventUtilityService.isParty(value) || EventUtilityService.isMerchandise(value)) {
-					this.associatedEvent = value;
-				}
+			.pipe(
+				first(),
+				filter(queryParamMap => queryParamMap.has("eventId")),
+				mergeMap(queryParamMap => this.eventService.getById(+queryParamMap.get("eventId"))),
+				first(),
+			)
+			.subscribe(event => {
+				this.associatedEvent = event;
+				this.autocompleteFormControl.setValue(event);
 			});
 
+		this.autocompleteFormControl.valueChanges
+			.pipe(
+				filter(value => EventUtilityService.isEvent(value))
+			)
+			.subscribe(value => this.associatedEvent = value);
+
 		this.filteredOptions = this.autocompleteFormControl.valueChanges
-			.startWith("")
-			.map(event => event && typeof event === "object" ? event.title : event)
-			.flatMap(title => {
-				return Observable.combineLatest(
-					this.eventService.search("", EventType.tours),
-					this.eventService.search("", EventType.partys),
-					this.eventService.search("", EventType.merch)
+			.pipe(
+				startWith(""),
+				map(event => event && EventUtilityService.isEvent(event) ? event.title : event),
+				mergeMap(title =>
+					combineLatest(
+						this.eventService.search("", EventType.tours),
+						this.eventService.search("", EventType.partys),
+						this.eventService.search("", EventType.merch)
+					)
+						.pipe(
+							map(([tours, partys, merch]) => {
+								let availableEvents = [...tours, ...partys, ...merch];
+								return title
+									? this.filter(availableEvents, title)
+									: availableEvents.slice()
+							})
+						)
 				)
-					.map(([tours, partys, merch]) => {
-						let availableEvents = [...tours, ...partys, ...merch];
-						return title
-							? this.filter(availableEvents, title)
-							: availableEvents.slice()
-					})
-			})
+			);
 	}
 
 	/**
@@ -112,7 +117,7 @@ export class ModifyEntryComponent implements OnInit {
 		return "";
 	}
 
-	compareCategories(value1:EntryCategory, value2:EntryCategory){
+	compareCategories(value1: EntryCategory, value2: EntryCategory) {
 		return value1 && value2 && value1.id === value2.id;
 	}
 

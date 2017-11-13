@@ -9,6 +9,11 @@
 .modify-shop-item-container {
 	//@include card-like();
 	padding: 1rem;
+	width: 100%;
+
+	@media all and (min-width: 600px){
+		width: 95%;
+	}
 
 	h2 {
 		font-weight: 200;
@@ -38,12 +43,12 @@
 	//max-width: 800px;
 
 	@media all and (min-width: 650px) {
-		width: 600px;
+		//width: 600px;
 	}
 }
 
 .modify-shop-item-component-container {
-	margin-bottom: 10px;
+	width: 100%;
 }
 
 .not-resizable-textarea {

@@ -31,19 +31,19 @@
 			<hr *ngIf="link.drawLineAbove || link.children">
 			<!--"main" link-->
 			<a routerLink="{{link.route}}">
-				<mat-icon class="md-dark" *ngIf="!link.children">{{link.icon}}</mat-icon>
+				<mat-icon class="mat-dark" *ngIf="!link.children">{{link.icon}}</mat-icon>
 				<span>{{link.name}}</span>
 			</a>
 			<!--child links-->
 			<a *ngFor="let childLink of link.children"
 			   routerLink="{{childLink.route}}">
-				<mat-icon class="md-dark">{{childLink.icon}}</mat-icon>
+				<mat-icon class="mat-dark">{{childLink.icon}}</mat-icon>
 				<span>{{childLink.name}}</span>
 			</a>
 		</div>
 		<div *ngIf="account.id !== -1">
 			<a routerLink="/" (click)="logout()">
-				<mat-icon class="md-dark">exit_to_app</mat-icon>
+				<mat-icon class="mat-dark">exit_to_app</mat-icon>
 				<span>Logout</span>
 			</a>
 		</div>

@@ -1,8 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MD_DIALOG_DATA, MdDialogRef} from "@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Merchandise} from "../../../../../shop/shared/model/merchandise";
 import {MerchStockList} from "../../../../../shop/shared/model/merch-stock";
 import {StockService} from "../../../../../shared/services/api/stock.service";
+import {first} from "rxjs/operators";
 
 @Component({
 	selector: 'memo-modify-stock-dialog',
@@ -15,9 +16,9 @@ export class ModifyStockDialogComponent implements OnInit {
 
 	merch: Merchandise;
 
-	constructor(private dialogRef: MdDialogRef<ModifyStockDialogComponent>,
+	constructor(private dialogRef: MatDialogRef<ModifyStockDialogComponent>,
 				private stockService: StockService,
-				@Inject(MD_DIALOG_DATA) public data: any) {
+				@Inject(MAT_DIALOG_DATA) public data: any) {
 	}
 
 	ngOnInit() {
@@ -32,10 +33,8 @@ export class ModifyStockDialogComponent implements OnInit {
 	 */
 	extractStock(merch: Merchandise) {
 		this.stockService.getByEventId(merch.id)
-			.first()
-			.subscribe(stockList => {
-				this.stock = [...stockList];
-			});
+			.pipe(first())
+			.subscribe(stockList => this.stock = [...stockList]);
 	}
 
 	saveChanges() {

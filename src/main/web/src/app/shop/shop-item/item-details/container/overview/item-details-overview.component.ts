@@ -5,13 +5,17 @@ import {ShoppingCartService} from "../../../../../shared/services/shopping-cart.
 import {EventUtilityService} from "../../../../../shared/services/event-utility.service";
 import {EventOverviewKey} from "./event-overview-key";
 import {StockService} from "../../../../../shared/services/api/stock.service";
-import {BehaviorSubject, Observable} from "rxjs/Rx";
 import * as moment from "moment";
 import {MerchColor} from "../../../../shared/model/merch-color";
 import {MerchStockList} from "../../../../shared/model/merch-stock";
 import {ShopItem} from "../../../../../shared/model/shop-item";
 import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property";
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Observable} from "rxjs/Observable";
+import {filter, first, map, mergeMap} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {of} from "rxjs/observable/of";
 
 
 @Component({
@@ -24,9 +28,11 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 
 
 	stock$: Observable<MerchStockList> = this._event$
-		.filter(event => EventUtilityService.isMerchandise(event))
-		.filter(event => event.id !== -1)
-		.flatMap(event => this.stockService.getByEventId(event.id));
+		.pipe(
+			filter(event => EventUtilityService.isMerchandise(event)),
+			filter(event => event.id !== -1),
+			mergeMap(event => this.stockService.getByEventId(event.id))
+		);
 
 
 	public colorSelection$: Observable<MerchColor[]> = this.getColorSelection("");
@@ -34,7 +40,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	@Input() overviewKeys: EventOverviewKey[] = [];
 	_color$: BehaviorSubject<MerchColor> = new BehaviorSubject(undefined);
 	public sizeSelection$: Observable<string[]> = this._color$
-		.flatMap((color) => this.getSizeSelection(color));
+		.pipe(
+			mergeMap(color => this.getSizeSelection(color))
+		);
 	_size$: BehaviorSubject<string> = new BehaviorSubject(undefined);
 	model = {
 		amount: undefined
@@ -47,8 +55,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
 		} = {};
 
-	constructor(private eventUtilityService: EventUtilityService,
-				private participantService: ParticipantsService,
+	constructor(private participantService: ParticipantsService,
 				private stockService: StockService,
 				private shoppingCartService: ShoppingCartService) {
 	}
@@ -104,17 +111,26 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			//cache observable so we only have to query the value once
 			if (this.isMerch(this.event) && key === "capacity") {
 				this.values[key] = this.stock$
-					.map(stock => stock.reduce((sum, it) => sum + it.amount, 0));
+					.pipe(
+						map(stock => stock.reduce((sum, it) => sum + it.amount, 0))
+					);
 			}
 			else if (key === "emptySeats") {
 				this.values[key] = this._event$
-					.flatMap(event =>
-						this.participantService.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
-							.map(participants => event.capacity - participants.length));
+					.pipe(
+						mergeMap(event =>
+							this.participantService
+								.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
+								.pipe(
+									map(participants => event.capacity - participants.length))
+						)
+					);
 			}
 			else {
 				this.values[key] = this._event$
-					.map(event => event[key]);
+					.pipe(
+						map(event => event[key])
+					);
 			}
 		}
 		return this.values[key];
@@ -128,15 +144,17 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	getColorSelection(size: string): Observable<MerchColor[]> {
 		return this.stock$
-			.map((stock: MerchStockList) => {
-				return stock
-				//remove values that aren't possible with the current size selection
-					.filter(stockItem => !size ? true : stockItem.size === size)
-					.map(stockItem => stockItem.color)
-					//remove duplicates
-					.filter((stockColor, index, array) => array
-						.findIndex(color => stockColor.name === color.name) === index);
-			})
+			.pipe(
+				map((stock: MerchStockList) => {
+					return stock
+					//remove values that aren't possible with the current size selection
+						.filter(stockItem => !size ? true : stockItem.size === size)
+						.map(stockItem => stockItem.color)
+						//remove duplicates
+						.filter((stockColor, index, array) => array
+							.findIndex(color => stockColor.name === color.name) === index);
+				})
+			);
 	}
 
 
@@ -147,54 +165,56 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	getSizeSelection(color: MerchColor): Observable<string[]> {
 		return this.stock$
-			.map((stock: MerchStockList) => {
-				return stock
-				//remove values that aren't possible with the current color selection
-					.filter(stockItem => !color ? true : stockItem.color.name === color.name)
-					.map(stockItem => stockItem.size)
-					//remove duplicates
-					.filter((stockSize, index, array) => array
-						.findIndex(size => size === stockSize) === index);
-			})
+			.pipe(
+				map((stock: MerchStockList) => {
+					return stock
+					//remove values that aren't possible with the current color selection
+						.filter(stockItem => !color ? true : stockItem.color.name === color.name)
+						.map(stockItem => stockItem.size)
+						//remove duplicates
+						.filter((stockSize, index, array) => array
+							.findIndex(size => size === stockSize) === index);
+				})
+			);
 	}
 
 	/**
 	 * Updates maxAmount and amountOptions (i.e. the amount-dropdown)
 	 */
 	updateMaxAmount() {
-		let maxAmount$ = this.isMerch(this.event)
-			? Observable.combineLatest(
-				this.stock$,
-				this._color$,
-				this._size$
-			)
-				.map(([stock, color, size]) => stock
-				// we have to consider the selected color and size attributes
-					.filter(stockItem =>
-						color &&
-						stockItem.color.hex === color.hex
-						&& stockItem.size === size
-					)
-					.reduce((acc, stockItem) => acc + stockItem.amount, 0))
-			: Observable.of(this.event.capacity);
+		const maxAmount$ = this.isMerch(this.event)
+			? combineLatest(this.stock$, this._color$, this._size$)
+				.pipe(
+					map(([stock, color, size]) => stock
+					// we have to consider the selected color and size attributes
+						.filter(stockItem =>
+							color &&
+							stockItem.color.hex === color.hex
+							&& stockItem.size === size
+						)
+						.reduce((acc, stockItem) => acc + stockItem.amount, 0))
+				)
+			: of(this.event.capacity);
 
-		maxAmount$.subscribe(maxAmount => {
-			this.maxAmount = maxAmount;
+		maxAmount$
+			.pipe(first())
+			.subscribe(maxAmount => {
+				this.maxAmount = maxAmount;
 
-			//fills the amountOptions variable with integers from 0 to maxAmount
-			this.amountOptions = Array((this.maxAmount === undefined) ? 0 : this.maxAmount + 1).fill(0).map((_, i) => i);
+				//fills the amountOptions variable with integers from 0 to maxAmount
+				this.amountOptions = Array((this.maxAmount === undefined) ? 0 : this.maxAmount + 1).fill(0).map((_, i) => i);
 
-			let shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-				this.event.id, {color: this.color, size: this.size});
+				const shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
+					this.event.id, {color: this.color, size: this.size});
 
-			if (shoppingCartItem) {
-				this.model.amount = shoppingCartItem.amount;
-			}
-			else {
-				this.model.amount = 0;
-			}
-			this.isPartOfShoppingCart = this.model.amount > 0;
-		});
+				if (shoppingCartItem) {
+					this.model.amount = shoppingCartItem.amount;
+				}
+				else {
+					this.model.amount = 0;
+				}
+				this.isPartOfShoppingCart = this.model.amount > 0;
+			});
 
 	}
 

@@ -11,7 +11,6 @@ import {ParticipantsService} from "./participants.service";
 import {StockService} from "./stock.service";
 import {UserService} from "./user.service";
 import {UserBankAccountService} from "./user-bank-account.service";
-import {CacheStore} from "../../cache/cache.store";
 import {HttpClientModule} from "@angular/common/http";
 import {MemoMaterialModule} from "../../../../material.module";
 
@@ -28,8 +27,6 @@ const providers = [
 	StockService,
 	UserService,
 	UserBankAccountService,
-
-	CacheStore
 ];
 
 @NgModule({

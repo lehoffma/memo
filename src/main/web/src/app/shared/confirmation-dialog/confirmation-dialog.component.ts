@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from "@angular/core";
-import {MD_DIALOG_DATA, MdDialogRef} from "@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 
 @Component({
 	selector: "memo-confirmation-dialog",
@@ -9,8 +9,8 @@ import {MD_DIALOG_DATA, MdDialogRef} from "@angular/material";
 export class ConfirmationDialogComponent implements OnInit {
 	public message: string = "";
 
-	constructor(private dialogRef: MdDialogRef<ConfirmationDialogComponent>,
-				@Inject(MD_DIALOG_DATA) public data: any) {
+	constructor(private dialogRef: MatDialogRef<ConfirmationDialogComponent>,
+				@Inject(MAT_DIALOG_DATA) public data: any) {
 	}
 
 

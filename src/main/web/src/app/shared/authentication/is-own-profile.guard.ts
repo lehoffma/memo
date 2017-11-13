@@ -1,42 +1,45 @@
 import {Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
+import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from "@angular/router";
 import {LogInService} from "../services/api/login.service";
-import {Observable} from "rxjs/Rx";
 import {UserService} from "../services/api/user.service";
 import {ClubRole, isAuthenticated} from "../model/club-role";
 import {NavigationService} from "../services/navigation.service";
+import {Observable} from "rxjs/Observable";
+import {of} from "rxjs/observable/of";
+import {map, mergeMap} from "rxjs/operators";
 
 @Injectable()
 export class IsOwnProfileGuard implements CanActivate {
 
 	constructor(private loginService: LogInService,
 				private userService: UserService,
-				private navigationService: NavigationService,
-				private router: Router) {
+				private navigationService: NavigationService) {
 	}
 
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
 		return this.loginService
 			.accountObservable
-			.flatMap(id => id === null ? Observable.of(null) : this.userService.getById(id))
-			.map(currentUser => {
-				const routeId: number = +route.paramMap.get("id");
-				let isAllowed = false;
+			.pipe(
+				mergeMap(id => id === null ? of(null) : this.userService.getById(id)),
+				map(currentUser => {
+					const routeId: number = +route.paramMap.get("id");
+					let isAllowed = false;
 
-				if (currentUser !== null) {
-					isAllowed = currentUser.id === routeId || isAuthenticated(currentUser.clubRole, ClubRole.Admin);
-				}
-				//redirect to login if the user isn't logged in
-				else {
-					this.loginService.redirectUrl = state.url;
-					this.navigationService.navigateByUrl("login");
-				}
+					if (currentUser !== null) {
+						isAllowed = currentUser.id === routeId || isAuthenticated(currentUser.clubRole, ClubRole.Admin);
+					}
+					//redirect to login if the user isn't logged in
+					else {
+						this.loginService.redirectUrl = state.url;
+						this.navigationService.navigateByUrl("login");
+					}
 
-				if(!isAllowed){
-					this.navigationService.navigateByUrl("not-allowed")
-				}
-				return isAllowed;
-			});
+					if(!isAllowed){
+						this.navigationService.navigateByUrl("not-allowed")
+					}
+					return isAllowed;
+				})
+			);
 	}
 }

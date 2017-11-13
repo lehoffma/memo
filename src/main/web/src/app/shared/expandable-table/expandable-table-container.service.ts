@@ -1,6 +1,5 @@
 import {TableActionEvent} from "./table-action-event";
 import {RowAction} from "./row-action";
-import {BehaviorSubject, Observable, Subscription} from "rxjs/Rx";
 import {ExpandableTableColumn} from "./expandable-table-column";
 import {OnDestroy, Type} from "@angular/core";
 import {ExpandedRowComponent} from "./expanded-row.component";
@@ -8,25 +7,31 @@ import {SingleValueListExpandedRowComponent} from "./single-value-list-expanded-
 import {ColumnSortingEvent} from "./column-sorting-event";
 import {ActionPermissions} from "./expandable-table.component";
 import {SortingFunction} from "../../util/util";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Observable} from "rxjs/Observable";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {defaultIfEmpty, map, tap} from "rxjs/operators";
+import {Subscription} from "rxjs/Subscription";
 
 export abstract class ExpandableTableContainerService<T> implements OnDestroy {
-	private _sortBy$ = new BehaviorSubject<ColumnSortingEvent<T>>(null);
+	protected _sortBy$ = new BehaviorSubject<ColumnSortingEvent<T>>(null);
 
 	primaryColumnKeys$: BehaviorSubject<ExpandableTableColumn<T>[]> = new BehaviorSubject([]);
 	expandedRowKeys$: BehaviorSubject<ExpandableTableColumn<T>[]> = new BehaviorSubject([]);
 
 	dataSubject$: BehaviorSubject<T[]> = new BehaviorSubject([]);
-	data$ = Observable.combineLatest(
+	data$ = combineLatest(
 		this.dataSubject$,
 		this._sortBy$,
 		...this.options$,
 	)
-		.map(([data, sortBy, ...options]: [T[], ColumnSortingEvent<T>, any[]]) => data
-			.filter(dataObject => this.satisfiesFilter(dataObject, ...options))
-			.sort((a,b) => this.comparator(sortBy)(a,b))
-		)
-		.map(data => [...data])
-		.defaultIfEmpty([]);
+		.pipe(
+			map(([data, sortBy, ...options]: [T[], ColumnSortingEvent<T>, any[]]) => data
+				.filter(dataObject => this.satisfiesFilter(dataObject, ...options))
+				.sort((a,b) => this.comparator(sortBy)(a,b))),
+			map(data => [...data]),
+			defaultIfEmpty([])
+		);
 
 	private dataSubscription: Subscription;
 
@@ -34,13 +39,12 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 				public permissions$: Observable<ActionPermissions>,
 				public options$: Observable<any>[],
 				public rowComponent: Type<ExpandedRowComponent<T>> = SingleValueListExpandedRowComponent) {
-
 		this._sortBy$.next(sortBy);
 	}
 
 	public init(dataSource$: Observable<T[]>) {
 		this.dataSubscription = dataSource$
-			.subscribe(data => this.dataSubject$.next(data));
+			.subscribe(this.dataSubject$);
 	}
 
 	ngOnDestroy() {

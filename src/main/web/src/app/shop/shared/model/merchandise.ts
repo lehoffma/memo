@@ -7,7 +7,8 @@ import {MerchColor} from "./merch-color";
 import * as moment from "moment";
 import {Moment} from "moment";
 import {StockService} from "../../../shared/services/api/stock.service";
-import {Observable} from "rxjs/Rx";
+import {Observable} from "rxjs/Observable";
+import {map} from "rxjs/operators";
 
 //todo remove demo
 const sizeTable = `{
@@ -233,7 +234,9 @@ export class Merchandise extends Event {
 
 	static capacity$(stockService: StockService, id:number):Observable<number>{
 		return stockService.getByEventId(id)
-			.map(stock => stock.reduce((sum, it) => sum + it.amount, 0))
+			.pipe(
+				map(stock => stock.reduce((sum, it) => sum + it.amount, 0))
+			);
 	}
 
 	static create() {

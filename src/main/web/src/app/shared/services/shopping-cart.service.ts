@@ -5,6 +5,7 @@ import {ShoppingCartContent} from "../model/shopping-cart-content";
 import {ShoppingCartItem} from "../model/shopping-cart-item";
 import {MerchColor} from "../../shop/shared/model/merch-color";
 import {EventService} from "./api/event.service";
+import {map, mergeMap} from "rxjs/operators";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -25,19 +26,24 @@ export class ShoppingCartService implements OnInit {
 	}
 
 	get amountOfCartItems(): Observable<number> {
-		return this.content.map(content => [...content.merch, ...content.partys, ...content.tours]
-			.reduce((previousValue, currentValue) => previousValue + currentValue.amount, 0))
+		return this.content
+			.pipe(
+				map(content => [...content.merch, ...content.partys, ...content.tours]
+					.reduce((previousValue, currentValue) => previousValue + currentValue.amount, 0))
+			);
 	}
 
 	get total(): Observable<number> {
 		return this.content
-			.flatMap(content =>
-				Observable.combineLatest(
-					...[...content.merch, ...content.partys, ...content.tours]
-						.map(item => this.eventService.getById(item.id)
-							.map(event => event.price * item.amount)))
-			)
-			.map(prices => prices.reduce((acc, price) => acc + price, 0));
+			.pipe(
+				mergeMap(content =>
+					Observable.combineLatest(
+						...[...content.merch, ...content.partys, ...content.tours]
+							.map(item => this.eventService.getById(item.id)
+								.map(event => event.price * item.amount)))
+				),
+				map(prices => prices.reduce((acc, price) => acc + price, 0))
+			);
 	}
 
 	ngOnInit() {
@@ -108,9 +114,12 @@ export class ShoppingCartService implements OnInit {
 	 * @returns {Observable<R>}
 	 */
 	public getItemAsObservable(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
-		return this._content.map(content => content[type].find((shoppingCartItem: ShoppingCartItem) =>
-			this.itemsAreEqual(shoppingCartItem, {id, options, amount: 0}))
-		);
+		return this._content
+			.pipe(
+				map(content => content[type].find((shoppingCartItem: ShoppingCartItem) =>
+					this.itemsAreEqual(shoppingCartItem, {id, options, amount: 0}))
+				)
+			);
 	}
 
 	/**

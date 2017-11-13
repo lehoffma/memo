@@ -1,14 +1,12 @@
 import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
-import {UserService} from "../../shared/services/api/user.service";
-import {Observable} from "rxjs/Rx";
 import {Router} from "@angular/router";
 import {LogInService} from "../../shared/services/api/login.service";
 import {AddressService} from "../../shared/services/api/address.service";
 import {Address} from "../../shared/model/address";
 import {PaymentMethod} from "./payment/payment-method";
 import {ShoppingCartService} from "../../shared/services/shopping-cart.service";
-import {MdSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material";
 import {OrderService} from "../../shared/services/api/order.service";
 import {Order} from "../../shared/model/order";
 import {ShoppingCartContent} from "../../shared/model/shopping-cart-content";
@@ -18,6 +16,10 @@ import {OrderedItem} from "../../shared/model/ordered-item";
 import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
 import * as moment from "moment";
+import {Observable} from "rxjs/Observable";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {catchError, first, map, mergeMap, retry} from "rxjs/operators";
+import {empty} from "rxjs/observable/empty";
 
 @Component({
 	selector: "memo-checkout",
@@ -28,17 +30,18 @@ export class CheckoutComponent implements OnInit {
 	paymentMethod: string;
 	user$: Observable<User> = this.logInService.currentUser$;
 	userAddresses$: Observable<Address[]> = this.user$
-		.flatMap(user => Observable.combineLatest(
-			user.addresses.map(addressId => this.addressService.getById(addressId))
-		));
+		.pipe(
+			mergeMap(user => combineLatest(
+				user.addresses.map(addressId => this.addressService.getById(addressId)))
+			)
+		);
 	total$ = this.cartService.total;
 
-	constructor(private userService: UserService,
-				private bankAccountService: UserBankAccountService,
+	constructor(private bankAccountService: UserBankAccountService,
 				private cartService: ShoppingCartService,
 				private eventService: EventService,
 				private orderService: OrderService,
-				private snackBar: MdSnackBar,
+				private snackBar: MatSnackBar,
 				private router: Router,
 				private addressService: AddressService,
 				private logInService: LogInService) {
@@ -75,11 +78,13 @@ export class CheckoutComponent implements OnInit {
 					bic: data.BIC
 				})
 			)
-				.retry(3)
-				.catch(error => {
-					console.error(error);
-					return Observable.empty<BankAccount>();
-				})
+				.pipe(
+					retry(3),
+					catchError(error => {
+						console.error(error);
+						return empty<BankAccount>();
+					})
+				)
 				.toPromise();
 		}
 
@@ -99,51 +104,59 @@ export class CheckoutComponent implements OnInit {
 		const bankAccountId: number = await this.getBankAccountId(event.method, event.chosenBankAccount, event.data);
 
 		this.logInService.accountObservable
-			.first()
-			.flatMap(userId => {
-				return this.cartService.content
-					.first()
-					.flatMap((content: ShoppingCartContent) => {
+			.pipe(
+				first(),
+				mergeMap(userId => this.cartService.content
+					.pipe(
+						first(),
 						//combine cart content into one array
-						return Observable.combineLatest(
+						mergeMap((content: ShoppingCartContent) => combineLatest(
 							...[...content.partys, ...content.tours, ...content.merch]
 								.map(event => this.eventService.getById(event.id)
-									.map(_event => ({
-										event: _event,
-										...event
-									})))
-						)
-					})
-					.flatMap(events => {
-						//map events to orderedItem interface to make it usable on the backend
-						const orderedItems: OrderedItem[] = events
-							.reduce((acc, event) => [...acc, ...new Array(event.amount)
-								.fill(({
-									id: undefined,
-									event: event.event,
-									price: event.event.price,
-									status: OrderStatus.RESERVED,
-									size: event.options ? event.options.size : undefined,
-									color: event.options ? event.options.color : undefined,
-								}))], []);
+									.pipe(
+										map(it => ({
+											event: it,
+											...event
+										}))
+									)
+								)
+						)),
+						mergeMap(events => {
+							//map events to orderedItem interface to make it usable on the backend
+							const orderedItems: OrderedItem[] = events
+								.reduce((acc, event) => [...acc, ...new Array(event.amount)
+									.fill(({
+										id: undefined,
+										event: event.event,
+										price: event.event.price,
+										status: OrderStatus.RESERVED,
+										size: event.options ? event.options.size : undefined,
+										color: event.options ? event.options.color : undefined,
+									}))], []);
 
-						return this.orderService.add(Order.create()
-							.setProperties({
-								userId,
-								timeStamp: moment(),
-								method: event.method,
-								bankAccount: bankAccountId,
-								orderedItems
-							}));
-					})
-			})
-			.subscribe(value => {
-				this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
-				this.cartService.reset();
-			}, error => {
-				this.snackBar.open(error, "Schließen", {duration: 2000});
-			}, () => {
-				this.router.navigateByUrl("/");
-			});
+							return this.orderService.add(Order.create()
+								.setProperties({
+									userId,
+									timeStamp: moment(),
+									method: event.method,
+									bankAccount: bankAccountId,
+									orderedItems
+								}));
+						})
+					)
+				)
+			)
+			.subscribe(
+				value => {
+					this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
+					this.cartService.reset();
+				},
+				error => {
+					this.snackBar.open(error, "Schließen", {duration: 2000});
+				},
+				() => {
+					this.router.navigateByUrl("/");
+				}
+			);
 	}
 }

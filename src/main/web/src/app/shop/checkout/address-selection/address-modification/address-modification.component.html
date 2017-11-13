@@ -10,7 +10,7 @@
 				   #name="ngModel"
 				   [(ngModel)]="model.name"
 				   required>
-			<mat-hint [@wiggle]="1" *ngIf="(name.touched && name.invalid)">Der Name darf nicht leer bleiben!</mat-hint>
+			<mat-error [@wiggle]="1" *ngIf="(name.touched && name.invalid)">Der Name darf nicht leer bleiben!</mat-error>
 		</mat-form-field>
 
 		<div>
@@ -22,8 +22,8 @@
 					   #street="ngModel"
 					   [(ngModel)]="model.street"
 					   required>
-				<mat-hint [@wiggle]="1" *ngIf="(street.touched && street.invalid)">Die Straße darf nicht leer bleiben!
-				</mat-hint>
+				<mat-error [@wiggle]="1" *ngIf="(street.touched && street.invalid)">Die Straße darf nicht leer bleiben!
+				</mat-error>
 			</mat-form-field>
 			<mat-form-field
 				[dividerColor]="(streetNr.touched && streetNr.invalid) ? 'warn' : 'primary'">
@@ -33,9 +33,9 @@
 					   #streetNr="ngModel"
 					   [(ngModel)]="model.streetNr"
 					   required>
-				<mat-hint [@wiggle]="1" *ngIf="(streetNr.touched && streetNr.invalid)">Die Hausnummer darf nicht leer
+				<mat-error [@wiggle]="1" *ngIf="(streetNr.touched && streetNr.invalid)">Die Hausnummer darf nicht leer
 					bleiben!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 		</div>
 
@@ -48,8 +48,8 @@
 					   #city="ngModel"
 					   [(ngModel)]="model.city"
 					   required>
-				<mat-hint [@wiggle]="1" *ngIf="(city.touched && city.invalid)">Die Stadt darf nicht leer bleiben!
-				</mat-hint>
+				<mat-error [@wiggle]="1" *ngIf="(city.touched && city.invalid)">Die Stadt darf nicht leer bleiben!
+				</mat-error>
 			</mat-form-field>
 			<mat-form-field
 				[dividerColor]="(zip.touched && zip.invalid) ? 'warn' : 'primary'">
@@ -60,12 +60,12 @@
 					   #zip="ngModel"
 					   [(ngModel)]="model.zip"
 					   required>
-				<mat-hint [@wiggle]="1" *ngIf="(zip.touched && zip.invalid && model.zip.length === 0)">
+				<mat-error [@wiggle]="1" *ngIf="(zip.touched && zip.invalid && model.zip.length === 0)">
 					Die Postleitzahl darf nicht leer bleiben!
-				</mat-hint>
-				<mat-hint [@wiggle]="1" *ngIf="zip.touched && zip.invalid && model.zip.length > 0">
+				</mat-error>
+				<mat-error [@wiggle]="1" *ngIf="zip.touched && zip.invalid && model.zip.length > 0">
 					Diese Postleitzahl ist ungültig!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 		</div>
 
@@ -78,8 +78,8 @@
 					   #country="ngModel"
 					   [(ngModel)]="model.country"
 					   required>
-				<mat-hint [@wiggle]="1" *ngIf="(country.touched && country.invalid)">Das Land darf nicht leer bleiben!
-				</mat-hint>
+				<mat-error [@wiggle]="1" *ngIf="(country.touched && country.invalid)">Das Land darf nicht leer bleiben!
+				</mat-error>
 			</mat-form-field>
 		</div>
 

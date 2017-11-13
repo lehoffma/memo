@@ -5,7 +5,7 @@ function getWindow(): Window {
 	return window;
 }
 
-export interface Dimension{
+export interface Dimension {
 	width: number;
 	height: number;
 }
@@ -30,5 +30,10 @@ export class WindowService {
 	get window(): Window {
 		return getWindow();
 	}
+
+	isTouchDevice() {
+		return "ontouchstart" in this.window   // works on most browsers
+			|| navigator.maxTouchPoints;       // works on IE10/11 and Surface
+	};
 
 }

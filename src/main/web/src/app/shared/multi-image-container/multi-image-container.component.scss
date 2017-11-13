@@ -62,9 +62,10 @@
 	.available-images-list {
 		flex-direction: column;
 		padding: 1rem;
+		padding-top: 0;
 
 		justify-content: flex-start;
-		width: auto;
+		width: 92px;
 		height: 100%;
 		max-height: 500px;
 	}
@@ -74,9 +75,6 @@
 		max-width: 500px;
 		display: flex;
 		justify-content: flex-start;
-		.current-image {
-			padding: 1rem 1rem 1rem 0;
-		}
 	}
 
 	.thumbnail {

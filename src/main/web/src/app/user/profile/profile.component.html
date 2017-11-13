@@ -33,7 +33,7 @@
 			<div *ngFor="let category of profileCategories;">
 				<div *ngFor="let item of category">
 					<div>
-						<mat-icon class="middle-icon md-dark">{{item.icon}}</mat-icon>
+						<mat-icon class="middle-icon mat-dark">{{item.icon}}</mat-icon>
 						<span class="secondary-text">{{item.name}}</span>
 					</div>
 					<span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | moment}}</span>
@@ -64,8 +64,7 @@
 
 	<div class="profile-component" *ngIf="userDestinations | async; let destinations;">
 		<h2 class="profile-tours-title">Karte</h2>
-		<agm-map [zoom]="7"
-				 [latitude]="(centerOfUserDestinations|async)?.latitude"
+		<agm-map [latitude]="(centerOfUserDestinations|async)?.latitude"
 				 [longitude]="(centerOfUserDestinations|async)?.longitude">
 			<agm-marker *ngFor="let destination of destinations; let i = index;"
 						[latitude]="destination.latitude"

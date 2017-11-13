@@ -37,11 +37,11 @@
 					   #ibanInput="ngModel"
 					   name="ibanInput"
 					   required>
-				<mat-hint align="end" class="error-message"
+				<mat-error align="end"
 						 *ngIf="ibanInput.touched && (ibanInput.invalid || !isValidIBAN(dataModel.IBAN))">
 					{{dataModel.IBAN.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist" +
 					" inkorrekt!"}}
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 			<mat-form-field>
 				<input matInput [(ngModel)]="dataModel.BIC"

@@ -16,9 +16,9 @@
 						   #emailInput="ngModel"
 						   required>
 					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-					<mat-hint align="end" class="error-message" *ngIf="emailInput.touched && (emailInput.invalid)">
+					<mat-error align="end" *ngIf="emailInput.touched && (emailInput.invalid)">
 						Email-Adresse muss in der Form <i>test@email.de</i> sein
-					</mat-hint>
+					</mat-error>
 				</mat-form-field>
 			</label>
 			<label>
@@ -40,10 +40,11 @@
 
 			</label>
 
-			<div *ngIf="wrongInput" class="wrong-input error-message">
+			<!--todo test-->
+			<mat-error *ngIf="wrongInput" class="wrong-input error-message">
 				Die eingebenen Daten sind falsch.
 				<!--todo passwort vergessen link-->
-			</div>
+			</mat-error>
 
 			<button type="submit"
 					mat-raised-button

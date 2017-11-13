@@ -13,10 +13,10 @@
 						   name="userInput"
 						   [formControl]="autocompleteFormControl"
 						   [matAutocomplete]="auto">
-					<mat-hint *ngIf="autocompleteFormControl.dirty && participant.user === null ||
-					participant.user?.id === -1" class="error-message">
+					<mat-error *ngIf="autocompleteFormControl.dirty && participant.user === null ||
+					participant.user?.id === -1">
 						Bitte wähle einen Nutzer aus der Liste!
-					</mat-hint>
+					</mat-error>
 				</mat-form-field>
 				<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
 					<mat-option *ngFor="let option of filteredOptions | async" [value]="option">

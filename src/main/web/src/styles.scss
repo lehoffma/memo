@@ -1,5 +1,8 @@
 @import "theme";
 @import "mixins";
+@import '~font-awesome/css/font-awesome.min.css';
+@import '~ngx-sharebuttons/styles/share-buttons';
+@import '~ngx-sharebuttons/styles/themes/default/default-theme';
 
 html, body, main, app {
 	min-height: 100%;
@@ -15,7 +18,7 @@ html, body, main, app {
 	font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-md-icon.md-dark {
+mat-icon.mat-dark {
 	color: #757575;
 }
 

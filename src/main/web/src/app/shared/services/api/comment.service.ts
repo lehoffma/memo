@@ -1,8 +1,9 @@
 import {Injectable} from "@angular/core";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Observable} from "rxjs/Rx";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Comment} from "../../../shop/shared/model/comment";
+import {Observable} from "rxjs/Observable";
+import {map, mergeMap, tap} from "rxjs/operators";
 
 interface CommentApiResponse {
 	comments: Comment[];
@@ -23,8 +24,10 @@ export class CommentService extends ServletService<Comment> {
 	getById(id: number): Observable<Comment> {
 		const params = new HttpParams().set("id", "" + id);
 		const request = this.performRequest(this.http.get<CommentApiResponse>(this.baseUrl, {params}))
-			.map(response => response.comments)
-			.map(json => Comment.create().setProperties(json[0]));
+			.pipe(
+				map(response => response.comments),
+				map(json => Comment.create().setProperties(json[0]))
+			);
 
 		return this._cache.getById(params, request);
 	}
@@ -37,8 +40,10 @@ export class CommentService extends ServletService<Comment> {
 	getByEventId(eventId: number): Observable<Comment[]> {
 		const params = new HttpParams().set("eventId", "" + eventId);
 		const request = this.performRequest(this.http.get<CommentApiResponse>(this.baseUrl, {params}))
-			.map(response => response.comments)
-			.map(commentJson => commentJson.map(json => Comment.create().setProperties(json)));
+			.pipe(
+				map(response => response.comments),
+				map(commentJson => commentJson.map(json => Comment.create().setProperties(json)))
+			);
 
 		return this._cache.search(params, request);
 	}
@@ -50,8 +55,10 @@ export class CommentService extends ServletService<Comment> {
 	search(searchTerm: string): Observable<Comment[]> {
 		const params = new HttpParams().set("searchTerm", "" + searchTerm);
 		const request = this.performRequest(this.http.get<CommentApiResponse>(this.baseUrl, {params}))
-			.map(response => response.comments)
-			.map(comments => comments.map(json => Comment.create().setProperties(json)));
+			.pipe(
+				map(response => response.comments),
+				map(comments => comments.map(json => Comment.create().setProperties(json)))
+			);
 
 		return this._cache.search(params, request);
 	}
@@ -66,8 +73,10 @@ export class CommentService extends ServletService<Comment> {
 	addOrModify(requestMethod: AddOrModifyRequest,
 				comment: Comment, parentId?: number): Observable<Comment> {
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {comment, parentId}))
-			.do(() => this._cache.invalidateById(comment.id))
-			.flatMap(response => this.getById(response.id))
+			.pipe(
+				tap(() => this._cache.invalidateById(comment.id)),
+				mergeMap(response => this.getById(response.id))
+			);
 	}
 
 	/**
@@ -97,7 +106,9 @@ export class CommentService extends ServletService<Comment> {
 		return this.performRequest(this.http.delete(this.baseUrl, {
 			params: new HttpParams().set("id", "" + id).set("parentId", "" + parentId)
 		}))
-			.do(() => this._cache.invalidateById(id))
+			.pipe(
+				tap(() => this._cache.invalidateById(id))
+			);
 	}
 
 }

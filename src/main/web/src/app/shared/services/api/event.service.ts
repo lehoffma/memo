@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {EventType} from "../../../shop/shared/model/event-type";
-import {Observable} from "rxjs/Rx";
 import {Event} from "../../../shop/shared/model/event";
 import {EventFactoryService} from "../event-factory.service";
 import {Tour} from "../../../shop/shared/model/tour";
@@ -8,6 +7,8 @@ import {Party} from "../../../shop/shared/model/party";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpParams} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
+import {map, share, tap, mergeMap} from "rxjs/operators";
 
 interface EventApiResponse {
 	events: (Party | Merchandise | Tour)[];
@@ -48,8 +49,10 @@ export class EventService extends ServletService<Event> {
 	getById(eventId: number, refresh?: boolean): Observable<Event> {
 		const params = new HttpParams().set("id", "" + eventId);
 		const request = this.http.get<EventApiResponse>(this.baseUrl, {params})
-			.map(json => this.getFactoryFromType(json.events[0]["type"])().setProperties(json.events[0]))
-			.share();
+			.pipe(
+				map(json => this.getFactoryFromType(json.events[0]["type"])().setProperties(json.events[0])),
+				share()
+			);
 
 		return this._cache.getById(params, request);
 	}
@@ -58,12 +61,14 @@ export class EventService extends ServletService<Event> {
 	 *
 	 * @param userId
 	 */
-	getHostedEventsOfUser(userId: number): Observable<(Tour | Party)[]> {
+	getHostedEventsOfUser(userId: number): Observable<Event[]> {
 		const params = new HttpParams().set("userId", "" + userId);
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
-			.map(json => json.events.map(event =>
-				event.setProperties(event)))
-			.share();
+			.pipe(
+				map(json => json.events.map(event =>
+					event.setProperties(event))),
+				share()
+			);
 
 		return this._cache.search(params, request);
 	}
@@ -77,8 +82,10 @@ export class EventService extends ServletService<Event> {
 	search(searchTerm: string, eventType: EventType): Observable<Event[]> {
 		const params = new HttpParams().set("searchTerm", searchTerm).set("type", "" + eventType);
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
-			.map(json => json.events.map(event =>
-				EventFactoryService.build(eventType).setProperties(event)));
+			.pipe(
+				map(json => json.events.map(event =>
+					EventFactoryService.build(eventType).setProperties(event)))
+			);
 
 		return this._cache.search(params, request);
 	}
@@ -102,8 +109,10 @@ export class EventService extends ServletService<Event> {
 		}
 
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {event, ...body}))
-			.do(() => this._cache.invalidateById(event.id))
-			.flatMap(response => this.getById(response.id))
+			.pipe(
+				tap(() => this._cache.invalidateById(event.id)),
+				mergeMap(response => this.getById(response.id))
+			);
 	}
 
 	/**
@@ -138,7 +147,9 @@ export class EventService extends ServletService<Event> {
 		return this.performRequest(this.http.delete<AddOrModifyResponse>(this.baseUrl, {
 			params: new HttpParams().set("id", "" + eventId)
 		}))
-			.do(() => this._cache.invalidateById(eventId));
+			.pipe(
+				tap(() => this._cache.invalidateById(eventId))
+			);
 	}
 
 }

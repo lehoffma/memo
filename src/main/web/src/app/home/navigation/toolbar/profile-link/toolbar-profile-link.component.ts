@@ -5,6 +5,8 @@ import {LogInService} from "../../../../shared/services/api/login.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {User} from "../../../../shared/model/user";
 import {UserService} from "../../../../shared/services/api/user.service";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-toolbar-profile-link",
@@ -14,23 +16,24 @@ import {UserService} from "../../../../shared/services/api/user.service";
 export class ToolbarProfileLinkComponent implements OnInit {
 	user: Observable<User> = this.loginService.currentUser$;
 
-	accountLinks: Observable<Link[]> = Observable.combineLatest(this.navigationService.accountLinks, this.user)
-		.map(([links, user]) => {
-			if (user === null) {
-				return links;
-			}
-			const setId = (link: Link): Link => {
-				if (link.children) {
-					link.children = link.children.map(childLink => setId(childLink))
+	accountLinks: Observable<Link[]> = combineLatest(this.navigationService.accountLinks, this.user)
+		.pipe(
+			map(([links, user]) => {
+				if (user === null) {
+					return links;
 				}
-				link.route = link.route.replace("PROFILE_ID", "" + user.id);
-				return link;
-			};
-			return links.map(setId)
-		});
+				const setId = (link: Link): Link => {
+					if (link.children) {
+						link.children = link.children.map(childLink => setId(childLink))
+					}
+					link.route = link.route.replace("PROFILE_ID", "" + user.id);
+					return link;
+				};
+				return links.map(setId)
+			})
+		);
 
 	constructor(private loginService: LogInService,
-				private userService: UserService,
 				private navigationService: NavigationService) {
 	}
 

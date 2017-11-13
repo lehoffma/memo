@@ -20,6 +20,7 @@ import {ExpandableTableColumnContainerDirective} from "./expandable-table-column
 import {ConfirmationDialogService} from "../services/confirmation-dialog.service";
 import {RowAction} from "./row-action";
 import {TableActionEvent} from "./table-action-event";
+import {filter} from "rxjs/operators";
 
 
 export interface ActionPermissions {
@@ -52,13 +53,17 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	@Input() title: string;
 	@Input() expandable: boolean = true;
 
-	@Input() permissions: ActionPermissions;
+	@Input() permissions: ActionPermissions = {
+		Hinzufuegen: true,
+		Bearbeiten: true,
+		Loeschen: true
+	};
 
 	@Input() rowActions: {
 		icon?: string;
 		name: string | RowAction;
-		link?: (object:T) => string;
-		route?: (object:T) => string;
+		link?: (object: T) => string;
+		route?: (object: T) => string;
 	}[] = [
 		{
 			icon: "edit",
@@ -119,10 +124,11 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	}
 
 	ngAfterViewInit(): void {
-		if (this.data) {
+		if (this.data && this.data !== null) {
 			this.initTableCells(this.tableCellList, this.data);
 		}
-		this.tableCellList.changes.subscribe(tableCellList => this.initTableCells(tableCellList, this.data));
+		this.tableCellList.changes
+			.subscribe(tableCellList => this.initTableCells(tableCellList, this.data));
 	}
 
 	/**
@@ -270,8 +276,10 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	 *
 	 */
 	deleteSelected() {
-		const entriesToDelete = Object.keys(this.selectedStatusList).filter(key => this.selectedStatusList[key])
-			.map(id => this.data.find(dataObject => dataObject.id === +id));
+		const entriesToDelete = Object.keys(this.selectedStatusList)
+			.filter(key => this.selectedStatusList[key])
+			.map(id => this.data.find(dataObject => ""+dataObject.id === id));
+
 		this.confirmationDialogService.openDialog(
 			entriesToDelete.length > 1
 				? `Wollen Sie diese ${entriesToDelete.length} Einträge wirklich löschen?`

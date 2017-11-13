@@ -34,7 +34,7 @@
 	}
 
 	.add-to-cart-container {
-		padding-top: 1rem;
+		padding-bottom: 1rem;
 		display: flex;
 		padding-left: 2rem;
 		padding-right: 2rem;
@@ -47,7 +47,7 @@
 		}
 
 		form > * {
-			margin-bottom: 1.5rem;
+			//margin-bottom: 1.5rem;
 			width: 100%;
 		}
 	}
@@ -56,4 +56,9 @@
 :host /deep/ .sb-buttons.sb-style.sb-style-colors {
 	justify-content: center;
 	width: 100%;
+}
+
+share-buttons{
+	width: 100%;
+	justify-content: center;
 }

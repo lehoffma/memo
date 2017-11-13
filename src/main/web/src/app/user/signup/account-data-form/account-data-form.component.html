@@ -12,12 +12,12 @@
 			   #email="ngModel"
 			   required>
 		<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-		<mat-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
+		<mat-error align="end" *ngIf="email.touched && (email.invalid)">
 			Email-Adresse muss in der Form <i>test@email.de</i> sein
-		</mat-hint>
-		<mat-hint align="end" class="error-message" *ngIf="emailIsAlreadyUsed">
+		</mat-error>
+		<mat-error align="end" *ngIf="emailIsAlreadyUsed">
 			Die angegebene Email-Adresse wird bereits verwendet. <a routerLink="/login">Weiter zum Login?</a>
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 	<mat-form-field>
 		<input matInput
@@ -44,10 +44,10 @@
 			   [(ngModel)]="confirmedPassword"
 			   required>
 		<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
-		<mat-hint align="end" class="error-message"
+		<mat-error align="end"
 				 *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (password !== confirmedPassword)">
 			Passwörter stimmen nicht überein
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 
 	<button type="submit"

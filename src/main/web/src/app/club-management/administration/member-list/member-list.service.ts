@@ -9,6 +9,7 @@ import {UserService} from "../../../shared/services/api/user.service";
 import {Dimension, WindowService} from "../../../shared/services/window.service";
 import {memberListColumns} from "./member-list-columns";
 import {ExpandableTableColumn} from "../../../shared/expandable-table/expandable-table-column";
+import {defaultIfEmpty} from "rxjs/operators";
 
 @Injectable()
 export class MemberListService extends ExpandableTableContainerService<User> {
@@ -25,7 +26,9 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 			[]);
 
 
-		this.init(this.userService.search("").defaultIfEmpty([]));
+		this.init(this.userService.search("").pipe(
+			defaultIfEmpty([])
+		));
 
 		this.windowService.dimension$
 			.subscribe(dimensions => this.onResize(dimensions));
@@ -67,7 +70,7 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 		let newColumns: ExpandableTableColumn<User>[] = breakPoints
 			.filter(breakPoint => width > breakPoint.width)
 			.reduce((acc, breakPoint) => {
-				if(breakPoint.width === 1200){
+				if (breakPoint.width === 1200) {
 					return [...breakPoint.columns, ...acc];
 				}
 				return [...acc, ...breakPoint.columns]
@@ -79,8 +82,6 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 			.filter(key => !newColumns.includes(memberListColumns[key]))
 			.map(key => memberListColumns[key]))
 	}
-
-
 
 
 	/**
@@ -118,7 +119,7 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 	}
 
 	comparator(sortBy: ColumnSortingEvent<User>, ...options): SortingFunction<User> {
-		switch(sortBy.key){
+		switch (sortBy.key) {
 			case "birthday":
 				return dateSortingFunction<User>(obj => obj["birthday"], sortBy.descending);
 			case "joinDate":

@@ -12,7 +12,7 @@
 <div>
 	<div class="cart-entry-amount">
 		<mat-select class="amount" [(ngModel)]="cartItem.amount" (ngModelChange)="updateEventAmount()"
-				   placeholder=" ">
+					placeholder=" ">
 			<mat-option *ngFor="let amount of amountOptions" [value]="amount">
 				{{amount}}
 			</mat-option>

@@ -1,10 +1,12 @@
 import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 import {LogInService} from "../services/api/login.service";
-import {Observable} from "rxjs/Rx";
 import {ClubRole, isAuthenticated, rolePermissions} from "../model/club-role";
 import {Permission} from "../model/permission";
 import {UserService} from "../services/api/user.service";
+import {Observable} from "rxjs/Observable";
+import {of} from "rxjs/observable/of";
+import {map, mergeMap} from "rxjs/operators";
 
 @Injectable()
 export class CanViewStockGuard implements CanActivate {
@@ -16,25 +18,27 @@ export class CanViewStockGuard implements CanActivate {
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
 		return this.loginService
 			.accountObservable
-			.flatMap(id => id === null ? Observable.of(null) : this.userService.getById(id))
-			.map(user => {
-				if (user === null) {
-					this.loginService.redirectUrl = state.url;
-					this.router.navigate(["login"]);
+			.pipe(
+				mergeMap(id => id === null ? of(null) : this.userService.getById(id)),
+				map(user => {
+					if (user === null) {
+						this.loginService.redirectUrl = state.url;
+						this.router.navigate(["login"]);
+						return false;
+					}
+					const defaultPermissions = rolePermissions[user.clubRole];
+					const userPermissions = user.userPermissions;
+
+					if (defaultPermissions.stock > Permission.read || userPermissions.stock > Permission.read) {
+						return true;
+					}
+					if (isAuthenticated(user.clubRole, ClubRole.Kassenwart)) {
+						return true;
+					}
+
+					this.router.navigate(["not-allowed"]);
 					return false;
-				}
-				let defaultPermissions = rolePermissions[user.clubRole];
-				let userPermissions = user.userPermissions;
-
-				if (defaultPermissions.stock > Permission.read || userPermissions.stock > Permission.read) {
-					return true;
-				}
-				if (isAuthenticated(user.clubRole, ClubRole.Kassenwart)) {
-					return true;
-				}
-
-				this.router.navigate(["not-allowed"]);
-				return false;
-			});
+				})
+			);
 	}
 }

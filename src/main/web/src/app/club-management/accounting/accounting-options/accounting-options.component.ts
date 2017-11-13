@@ -5,10 +5,15 @@ import {QueryParameterService} from "../../../shared/services/query-parameter.se
 import {Event} from "../../../shop/shared/model/event";
 import {EventService} from "../../../shared/services/api/event.service";
 import {EventType} from "../../../shop/shared/model/event-type";
-import {BehaviorSubject, Observable, Subscription} from "rxjs/Rx";
 import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Observable} from "rxjs/Observable";
+import {Subscription} from "rxjs/Subscription";
+import {filter, first, map, startWith, tap} from "rxjs/operators";
+import {EntryCategory} from "../../../shared/model/entry-category";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Component({
 	selector: "memo-accounting-options",
@@ -40,15 +45,16 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 
 	_isLoading = false;
 
-	get isLoading(){
+	get isLoading() {
 		return this._isLoading;
 	}
-	set isLoading(value:boolean){
+
+	set isLoading(value: boolean) {
 		this._isLoading = value;
-		if(value){
+		if (value) {
 			this.autocompleteFormControl.disable();
 		}
-		else{
+		else {
 			this.autocompleteFormControl.enable();
 		}
 	}
@@ -73,7 +79,9 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	}
 
 	async ngOnInit() {
-		let categories = await this.costCategories$.first().toPromise();
+		const categories: EntryCategory[] = await this.costCategories$
+			.pipe(first())
+			.toPromise();
 		categories.forEach(category => this.costTypes[category.name] = true);
 		// await this.getAvailableEvents();
 		this.readQueryParams();
@@ -92,25 +100,28 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	 */
 	initEventAutoComplete() {
 		this.autocompleteFormControl.valueChanges
+			.pipe(
+				filter(value => EventUtilityService.isEvent(value)),
+			)
 			.subscribe(value => {
-				if (EventUtilityService.isTour(value) || EventUtilityService.isParty(value) || EventUtilityService.isMerchandise(value)) {
-					this.events.push(value);
-					this.autocompleteFormControl.reset();
-					this.updateQueryParams();
-				}
+				this.events.push(value);
+				this.autocompleteFormControl.reset();
+				this.updateQueryParams();
 			});
 
 
 		this.filteredOptions = this.autocompleteFormControl.valueChanges
-			.startWith("")
-			.map(event => event && typeof event === "object" ? event.title : event)
-			.map(title => {
-				let availableEvents = this.availableEvents
-					.filter(event => !this.events.find(selectedEvent => selectedEvent.id === event.id));
-				return title
-					? this.filter(availableEvents, title)
-					: availableEvents.slice()
-			})
+			.pipe(
+				startWith(""),
+				map(event => event && EventUtilityService.isEvent(event) ? event.title : event),
+				map(title => {
+					const availableEvents = this.availableEvents
+						.filter(event => !this.events.find(selectedEvent => selectedEvent.id === event.id));
+					return title
+						? this.filter(availableEvents, title)
+						: availableEvents.slice()
+				})
+			);
 	}
 
 	/**
@@ -153,25 +164,26 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	 *
 	 */
 	async getAvailableEvents() {
-		await Observable.combineLatest(
+		await combineLatest(
 			this.eventService.search("", EventType.tours),
 			this.eventService.search("", EventType.partys),
 			this.eventService.search("", EventType.merch)
 		)
-			.first()
+			.pipe(
+				first(),
+				tap(([tours, partys, merch]) => {
+					this.availableEvents = [...tours, ...partys, ...merch]
+						.filter(event => {
+							let from = !this.dateOptions.from ? moment("1970-01-01") : this.dateOptions.from;
+							let to = !this.dateOptions.to ? moment("2100-01-01") : this.dateOptions.to;
+
+							return moment(event.date)
+								.isBetween(moment(from), moment(to));
+						});
+					this.autocompleteFormControl.setValue("", {emitEvent: true});
+				})
+			)
 			.toPromise()
-			.then(([tours, partys, merch]) => {
-				this.availableEvents = [...tours, ...partys, ...merch]
-					.filter(event => {
-						let from = !this.dateOptions.from ? moment("1970-01-01") : this.dateOptions.from;
-						let to = !this.dateOptions.to ? moment("2100-01-01") : this.dateOptions.to;
-
-						return moment(event.date)
-							.isBetween(moment(from), moment(to));
-					});
-				this.autocompleteFormControl.setValue("", {emitEvent: true});
-			})
-
 	}
 
 	/**
@@ -192,7 +204,7 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	 * Updates the values by extracting them from the url query parameters
 	 */
 	readQueryParams() {
-		this.subscription = Observable.combineLatest(
+		this.subscription = combineLatest(
 			this.activatedRoute.paramMap,
 			this.activatedRoute.queryParamMap
 		)
@@ -240,9 +252,12 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 		params["from"] = (!this.dateOptions.from || !this.dateOptions.from.isValid()) ? "" : this.dateOptions.from.toISOString();
 		params["to"] = (!this.dateOptions.to || !this.dateOptions.to.isValid()) ? "" : this.dateOptions.to.toISOString();
 
-		this.activatedRoute.queryParamMap.first()
-			.map(queryParamMap =>
-				this.queryParameterService.updateQueryParams(queryParamMap, params))
+		this.activatedRoute.queryParamMap
+			.pipe(
+				first(),
+				map(queryParamMap =>
+					this.queryParameterService.updateQueryParams(queryParamMap, params))
+			)
 			.subscribe(async newQueryParams => {
 				await this.router.navigate(["management", "costs"], {queryParams: newQueryParams, replaceUrl: true});
 			}, null, () => this.isLoading = false);

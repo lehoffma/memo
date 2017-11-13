@@ -47,14 +47,14 @@
 					<div>
 						{{columnKey.title}}
 						<mat-icon [@expandedState]="sortedBy?.descending"
-								 [style.visibility]="sortedBy?.key === columnKey.key ? 'visible' : 'hidden'">
+								  [style.visibility]="sortedBy?.key === columnKey.key ? 'visible' : 'hidden'">
 							arrow_upward
 						</mat-icon>
 					</div>
 				</th>
 				<th class="expandable-table-selectall-checkbox">
 					<mat-checkbox [(ngModel)]="everythingIsSelected"
-								 (ngModel)="changeSelectedStatusOfAllItems(!everythingIsSelected)">
+								  (ngModel)="changeSelectedStatusOfAllItems(!everythingIsSelected)">
 
 					</mat-checkbox>
 				</th>
@@ -86,8 +86,8 @@
 					</ng-template>
 					<td class="expandable-table-single-checkbox">
 						<mat-checkbox [(ngModel)]="selectedStatusList[dataObject.id]"
-									 (ngModelChange)="updateEverythingIsSelected()"
-									 (click)="$event.stopPropagation()">
+									  (ngModelChange)="updateEverythingIsSelected()"
+									  (click)="$event.stopPropagation()">
 
 						</mat-checkbox>
 					</td>
@@ -136,6 +136,13 @@
 					</ng-template>
 				</ng-template>
 			</ng-template>
+			<tbody *ngIf="data?.length === 0">
+			<tr class="expandable-table-body-main-row expandable-table-row">
+				<td colspan="20" [style.text-align]="'center'">
+					Hier befinden sich keine Einträge.
+				</td>
+			</tr>
+			</tbody>
 		</table>
 	</div>
 

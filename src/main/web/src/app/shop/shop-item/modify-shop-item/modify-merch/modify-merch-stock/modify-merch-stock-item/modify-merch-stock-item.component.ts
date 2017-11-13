@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from "@angular/core";
-import {MD_DIALOG_DATA, MdChipInputEvent, MdDialogRef} from "@angular/material";
+import {MAT_DIALOG_DATA, MatChipInputEvent, MatDialogRef} from "@angular/material";
 import {ModifyType} from "../../../modify-type";
 import {ENTER} from "@angular/cdk/keycodes";
 
@@ -21,15 +21,15 @@ export class ModifyMerchStockItemComponent implements OnInit {
 	public colorName: string;
 	public amount: number;
 
-	constructor(private dialogRef: MdDialogRef<ModifyMerchStockItemComponent>,
-				@Inject(MD_DIALOG_DATA) public data: any) {
+	constructor(private dialogRef: MatDialogRef<ModifyMerchStockItemComponent>,
+				@Inject(MAT_DIALOG_DATA) public data: any) {
 	}
 
 	/**
 	 *
 	 * @param {MdChipInputEvent} event
 	 */
-	addSize(event: MdChipInputEvent): void {
+	addSize(event: MatChipInputEvent): void {
 		const input = event.input;
 		const value = event.value;
 

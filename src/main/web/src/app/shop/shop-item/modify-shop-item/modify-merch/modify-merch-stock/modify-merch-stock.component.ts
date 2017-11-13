@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {MerchStock} from "../../../../shared/model/merch-stock";
-import {BehaviorSubject} from "rxjs/Rx";
 import {ModifyMerchStockService} from "./modify-merch-stock.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-modify-merch-stock",
@@ -9,25 +10,29 @@ import {ModifyMerchStockService} from "./modify-merch-stock.service";
 	styleUrls: ["./modify-merch-stock.component.scss"],
 	providers: [ModifyMerchStockService]
 })
-export class ModifyMerchStockComponent implements OnInit {
+export class ModifyMerchStockComponent implements OnInit, OnDestroy{
 	@Input() merchTitle: string;
 
 	merchStockSubject: BehaviorSubject<MerchStock[]> = new BehaviorSubject([]);
 	merchStock$ = this.merchStockSubject
 		.asObservable()
-		.map(merchStock => [...merchStock].map(stock => ({
-			id: stock["id"],
-			size: stock.size,
-			color: Object.assign({}, stock.color),
-			amount: stock.amount,
-		})));
+		.pipe(
+			map(merchStock => [...merchStock].map(stock => ({
+				id: stock["id"],
+				size: stock.size,
+				color: Object.assign({}, stock.color),
+				amount: stock.amount,
+			})))
+		);
 
 	@Output() stockChange = new EventEmitter();
 
 
+	subscription;
 	constructor(public modifyMerchStockService: ModifyMerchStockService) {
 		this.modifyMerchStockService.init(this.merchStockSubject);
-		this.modifyMerchStockService.dataSubject$.subscribe(value => this.stockChange.emit(value))
+		this.subscription = this.modifyMerchStockService.dataSubject$
+			.subscribe(value => this.stockChange.emit(value))
 	}
 
 	@Input()
@@ -36,6 +41,10 @@ export class ModifyMerchStockComponent implements OnInit {
 	}
 
 	ngOnInit() {
+	}
+
+	ngOnDestroy(): void {
+		this.subscription.unsubscribe();
 	}
 
 }

@@ -2,10 +2,10 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core"
 import {Event} from "../../../shop/shared/model/event";
 import {AddressService} from "../../../shared/services/api/address.service";
 import {Address} from "../../../shared/model/address";
-import {Observable} from "rxjs/Rx";
 import {EventType} from "../../../shop/shared/model/event-type";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import * as moment from "moment";
+import {Observable} from "rxjs/Observable";
 
 
 @Component({

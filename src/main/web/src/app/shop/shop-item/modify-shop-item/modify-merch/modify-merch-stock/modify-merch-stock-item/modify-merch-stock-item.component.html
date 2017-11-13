@@ -20,9 +20,9 @@
 					   [matChipInputAddOnBlur]="true"
 					   (matChipInputTokenEnd)="addSize($event)" />
 
-				<mat-hint *ngIf="sizeInput.touched && sizes.length === 0" class="error-message">
+				<mat-error *ngIf="sizeInput.touched && sizes.length === 0">
 					Dieses Feld darf nicht leer bleiben!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 			<mat-form-field>
 				<input placeholder="Anzahl"
@@ -31,9 +31,9 @@
 					   #amountInput="ngModel"
 					   name="amountInput"
 					   [(ngModel)]="amount" matInput>
-				<mat-hint *ngIf="amountInput.touched && !amountInput.valid" class="error-message">
+				<mat-error *ngIf="amountInput.touched && !amountInput.valid">
 					Dieses Feld darf nicht leer bleiben!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 
 
@@ -42,9 +42,9 @@
 					   #colorInput="ngModel" required
 					   name="colorInput"
 					   [(ngModel)]="colorName" matInput>
-				<mat-hint *ngIf="colorInput.touched && !colorInput.valid" class="error-message">
+				<mat-error *ngIf="colorInput.touched && !colorInput.valid">
 					Dieses Feld darf nicht leer bleiben!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 
 			<span [(colorPicker)]="color"

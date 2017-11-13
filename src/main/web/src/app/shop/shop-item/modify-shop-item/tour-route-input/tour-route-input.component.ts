@@ -5,7 +5,7 @@ import {
 	EventEmitter,
 	Input,
 	NgZone,
-	OnChanges,
+	OnChanges, OnDestroy,
 	OnInit,
 	Output,
 	QueryList,
@@ -14,6 +14,7 @@ import {
 } from "@angular/core";
 import {MapsAPILoader} from "@agm/core";
 import {Address} from "../../../../shared/model/address";
+import {defaultIfEmpty, map} from "rxjs/operators";
 
 enum AddressComponentType {
 	street = <any>"route",
@@ -36,7 +37,7 @@ declare var google;
 	templateUrl: "./tour-route-input.component.html",
 	styleUrls: ["./tour-route-input.component.scss"]
 })
-export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit {
+export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 	@Input() isTour: boolean = false;
 	@Input() route: Address[] = [];
 
@@ -46,37 +47,41 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 
 
 	centerOfTour$ = this.routeChange
-		.map(route => {
-			const initializedRoute = route
-				? route
-					.filter(it => it.latitude !== 0 && it.longitude !== 0)
-				: [];
+		.pipe(
+			map(route => {
+				const initializedRoute = route
+					? route
+						.filter(it => it.latitude !== 0 && it.longitude !== 0)
+					: [];
 
-			if (initializedRoute.length === 0) {
-				return {longitude: 0, latitude: 0};
-			}
+				if (initializedRoute.length === 0) {
+					return {longitude: 0, latitude: 0};
+				}
 
-			let longitude = 0;
-			let latitude = 0;
-			initializedRoute.forEach(tourRoute => {
-				longitude += tourRoute.longitude;
-				latitude += tourRoute.latitude;
-			});
+				let longitude = 0;
+				let latitude = 0;
+				initializedRoute.forEach(tourRoute => {
+					longitude += tourRoute.longitude;
+					latitude += tourRoute.latitude;
+				});
 
-			const length = initializedRoute.length;
-			longitude /= length;
-			latitude /= length;
+				const length = initializedRoute.length;
+				longitude /= length;
+				latitude /= length;
 
-			return {longitude, latitude};
-		})
-		.defaultIfEmpty({
-			longitude: 0,
-			latitude: 0
-		});
+				return {longitude, latitude};
+			}),
+			defaultIfEmpty({
+				longitude: 0,
+				latitude: 0
+			})
+		);
 
 	initializedRoute$ = this.routeChange
-		.map(route => route.filter(it => it.longitude !== 0 && it.latitude !== 0))
-		.defaultIfEmpty([]);
+		.pipe(
+			map(route => route.filter(it => it.longitude !== 0 && it.latitude !== 0)),
+			defaultIfEmpty([])
+		);
 
 	directionsDisplay;
 	showDirective = false;
@@ -91,6 +96,8 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 		this.distanceChange.emit(distance);
 	}
 
+
+	subscriptions = [];
 	constructor(private mapsAPILoader: MapsAPILoader,
 				private ngZone: NgZone) {
 	}
@@ -113,6 +120,11 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 				this.showDirective = true;
 			});
 		}
+	}
+
+
+	ngOnDestroy(): void {
+		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -138,7 +150,7 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 				})
 			})
 		}
-		this.inputs.changes.subscribe(queryList => {
+		this.subscriptions.push(this.inputs.changes.subscribe(queryList => {
 			if (queryList) {
 				this.mapsAPILoader.load().then(() => {
 					queryList.forEach((input, index) => {
@@ -146,7 +158,7 @@ export class TourRouteInputComponent implements OnInit, OnChanges, AfterViewInit
 					})
 				})
 			}
-		});
+		}));
 	}
 
 	addNewStop() {

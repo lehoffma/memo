@@ -7,7 +7,7 @@ import {LogInService} from "../../../../../shared/services/api/login.service";
 import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-merch-stock-item.component";
 import {ModifyStockItemEvent} from "./modify-merch-stock-item/modify-stock-item-event";
 import {ModifyType} from "../../modify-type";
-import {MdDialog} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
 import {MerchColorCellComponent} from "./merch-color-cell.component";
 
@@ -15,7 +15,7 @@ import {MerchColorCellComponent} from "./merch-color-cell.component";
 export class ModifyMerchStockService extends ExpandableTableContainerService<MerchStock> {
 
 	constructor(private loginService: LogInService,
-				private mdDialog: MdDialog) {
+				private mdDialog: MatDialog) {
 		super({
 				key: "size",
 				descending: true

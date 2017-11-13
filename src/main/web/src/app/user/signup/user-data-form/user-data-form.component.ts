@@ -4,10 +4,11 @@ import {ClubRole} from "../../../shared/model/club-role";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {AddressService} from "../../../shared/services/api/address.service";
 import {Address} from "../../../shared/model/address";
-import {BehaviorSubject} from "rxjs/Rx";
 import {ActivatedRoute, Router} from "@angular/router";
 import {UserService} from "../../../shared/services/api/user.service";
 import {FormControlDirective} from "@angular/forms";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {first, map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-user-data-form",
@@ -27,15 +28,18 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	@Output() onAddressModification = new EventEmitter();
 
 	editUrl$ = this.activatedRoute.paramMap
-		.map(paramMap => paramMap.get("id"))
-		.map(id => id === null || id === "create"
-			? "/address"
-			: `/members/${id}/address`);
+		.pipe(
+			map(paramMap => paramMap.get("id")),
+			map(id => id === null || id === "create"
+				? "/address"
+				: `/members/${id}/address`)
+		);
 	genderOptions = [Gender.FEMALE, Gender.MALE, Gender.OTHER];
 	clubRoleOptions = [ClubRole.Organizer, ClubRole.Admin, ClubRole.Vorstand, ClubRole.Kassenwart, ClubRole.Mitglied, ClubRole.None];
-	isAdmin = this.loginService.currentUser$.map(user => {
-		return user !== null && user.clubRole === ClubRole.Admin;
-	});
+	isAdmin = this.loginService.currentUser$
+		.pipe(
+			map(user => user !== null && user.clubRole === ClubRole.Admin)
+		);
 	addressesSubject$ = new BehaviorSubject<Address[]>([]);
 
 	emailIsAlreadyTaken = false;
@@ -84,7 +88,9 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 			this.userModel = {...this.userModel};
 
 			this.userService.isUserEmailAlreadyInUse(this.userModel["email"])
-				.first()
+				.pipe(
+					first()
+				)
 				.subscribe(isAlreadyInUse => {
 					if (isAlreadyInUse && this.userModel["email"] !== this.previousValue["email"]) {
 						this.emailIsAlreadyTaken = true;

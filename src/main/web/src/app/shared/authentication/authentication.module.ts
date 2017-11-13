@@ -22,7 +22,7 @@ const providers = [
 ];
 
 @NgModule({
-	imports: [HttpClientModule]
+	imports: [HttpClientModule],
 })
 export class AuthenticationModule {
 	static forRoot(): ModuleWithProviders {

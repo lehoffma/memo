@@ -31,9 +31,7 @@ import {LeaderboardRow} from "./leaderboard-row";
 			</div>
 		</ng-template>
 	`,
-	styleUrls: [
-		`./miles-leaderboard-entry.component.scss`
-	],
+	styleUrls: ["./miles-leaderboard-entry.component.scss"],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 

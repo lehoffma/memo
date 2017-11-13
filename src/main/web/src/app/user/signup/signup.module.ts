@@ -11,7 +11,6 @@ import {AddressEntryComponent} from "./user-data-form/address-entry.component";
 import {MemoMaterialModule} from "../../../material.module";
 import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {DebitInputFormComponent} from "./payment-methods-form/debit-input-form/debit-input-form.component";
-import {ImageCropperModule} from "ng2-image-cropper/src/imageCropperModule";
 import {RouterModule} from "@angular/router";
 import {SharedModule} from "../../shared/shared.module";
 
@@ -21,7 +20,6 @@ import {SharedModule} from "../../shared/shared.module";
 		RouterModule,
 		FormsModule,
 		ReactiveFormsModule,
-		ImageCropperModule,
 		PasswordStrengthBarModule,
 		SharedModule,
 		MemoMaterialModule,

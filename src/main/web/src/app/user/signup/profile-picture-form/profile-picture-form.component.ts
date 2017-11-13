@@ -9,7 +9,6 @@ import {
 	SimpleChanges,
 	ViewChild
 } from "@angular/core";
-import {CropperSettings, ImageCropperComponent} from "ng2-image-cropper";
 
 @Component({
 	selector: "memo-profile-picture-form",
@@ -22,10 +21,10 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges {
 	@Input() image;
 	@Output() onChange = new EventEmitter<FormData>();
 	@ViewChild("fileInput") inputEl: ElementRef;
-	@ViewChild("cropper") cropper: ImageCropperComponent;
+	// @ViewChild("cropper") cropper: ImageCropperComponent;
 
 	data: any = {};
-	imageCropperSettings: CropperSettings;
+	// imageCropperSettings: CropperSettings;
 
 	constructor() {
 		this.initImageCropperSettings();
@@ -34,9 +33,9 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges {
 	ngOnInit() {
 		let image = new Image();
 		image.src = "resources/images/Logo.png";
-		image.addEventListener("load", (data) => {
-			this.cropper.setImage(image);
-		});
+		// image.addEventListener("load", (data) => {
+		// 	this.cropper.setImage(image);
+		// });
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -47,29 +46,29 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges {
 			}
 			image.src = this.image + "?" + new Date().getTime();
 			image.setAttribute("crossOrigin", "");
-			image.addEventListener("load", (data) => {
-				this.cropper.setImage(image);
-			});
+			// image.addEventListener("load", (data) => {
+			// 	this.cropper.setImage(image);
+			// });
 		}
 	}
 
 	initImageCropperSettings() {
-		this.imageCropperSettings = new CropperSettings();
-		this.imageCropperSettings.width = 200;
-		this.imageCropperSettings.height = 200;
-
-		this.imageCropperSettings.croppedWidth = 200;
-		this.imageCropperSettings.croppedHeight = 200;
-
-		this.imageCropperSettings.canvasWidth = 200;
-		this.imageCropperSettings.canvasHeight = 200;
-
-		this.imageCropperSettings.minWidth = 10;
-		this.imageCropperSettings.minHeight = 10;
-
-		this.imageCropperSettings.rounded = false;
-		this.imageCropperSettings.keepAspect = true;
-		this.imageCropperSettings.noFileInput = true;
+		// this.imageCropperSettings = new CropperSettings();
+		// this.imageCropperSettings.width = 200;
+		// this.imageCropperSettings.height = 200;
+        //
+		// this.imageCropperSettings.croppedWidth = 200;
+		// this.imageCropperSettings.croppedHeight = 200;
+        //
+		// this.imageCropperSettings.canvasWidth = 200;
+		// this.imageCropperSettings.canvasHeight = 200;
+        //
+		// this.imageCropperSettings.minWidth = 10;
+		// this.imageCropperSettings.minHeight = 10;
+        //
+		// this.imageCropperSettings.rounded = false;
+		// this.imageCropperSettings.keepAspect = true;
+		// this.imageCropperSettings.noFileInput = true;
 	}
 
 	emitFormData() {
@@ -93,7 +92,7 @@ export class ProfilePictureFormComponent implements OnInit, OnChanges {
 			reader.onload = (event) => {
 				image.src = (<any>event.target).result;
 				this.image = (<any>event.target).result;
-				this.cropper.setImage(image);
+				// this.cropper.setImage(image);
 			};
 
 			reader.readAsDataURL(event.target.files[0]);

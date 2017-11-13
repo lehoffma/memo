@@ -1,8 +1,10 @@
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Rx";
 import {User} from "../../model/user";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
+import {catchError, map, mergeMap, share, tap} from "rxjs/operators";
+import {of} from "rxjs/observable/of";
 
 interface UserApiResponse {
 	users: User[];
@@ -25,8 +27,10 @@ export class UserService extends ServletService<User> {
 	getById(userId: number, options?: any): Observable<User> {
 		const params = new HttpParams().set("id", "" + userId);
 		const request = this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {params}))
-			.map(json => User.create().setProperties(json.users[0]))
-			.share();
+			.pipe(
+				map(json => User.create().setProperties(json.users[0])),
+				share()
+			);
 
 		return this._cache.getById(params, request);
 	}
@@ -40,7 +44,9 @@ export class UserService extends ServletService<User> {
 	search(searchTerm: string, options?: any): Observable<User[]> {
 		const params = new HttpParams().set("searchTerm", searchTerm);
 		const request = this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {params}))
-			.map(json => json.users.map(jsonUser => User.create().setProperties(jsonUser)));
+			.pipe(
+				map(json => json.users.map(jsonUser => User.create().setProperties(jsonUser)))
+			);
 
 		return this._cache.search(params, request);
 	}
@@ -56,8 +62,10 @@ export class UserService extends ServletService<User> {
 			observe: "response",
 			responseType: "text"
 		})
-			.map(value => false)
-			.catch(error => Observable.of(true))
+			.pipe(
+				map(value => false),
+				catchError(error => of(true))
+			)
 	}
 
 	/**
@@ -92,7 +100,9 @@ export class UserService extends ServletService<User> {
 		return this.performRequest(this.http.delete<{ id: number }>(this.baseUrl, {
 			params: new HttpParams().set("id", "" + userId)
 		}))
-			.do(() => this._cache.invalidateById(userId))
+			.pipe(
+				tap(() => this._cache.invalidateById(userId))
+			);
 	}
 
 	/**
@@ -112,8 +122,10 @@ export class UserService extends ServletService<User> {
 		}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
-			.do(() => this._cache.invalidateById(user.id))
-			.flatMap(response => this.getById(response.id))
+			.pipe(
+				tap(() => this._cache.invalidateById(user.id)),
+				mergeMap(response => this.getById(response.id))
+			)
 	}
 
 }

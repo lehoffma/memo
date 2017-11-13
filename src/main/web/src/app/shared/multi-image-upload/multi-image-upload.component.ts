@@ -1,7 +1,13 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {ExpandableTableColumn} from "../expandable-table/expandable-table-column";
+import {RowAction} from "../expandable-table/row-action";
+import {MatButton} from "@angular/material";
+import {MultiImageUploadService} from "./multi-image-upload.service";
+import {filter, map, take} from "rxjs/operators";
 
-interface ImageToUpload {
+export interface ImageToUpload {
+	id: string;
 	name: string;
 	data: any
 }
@@ -10,16 +16,54 @@ interface ImageToUpload {
 	selector: 'memo-multi-image-upload',
 	templateUrl: './multi-image-upload.component.html',
 	styleUrls: ['./multi-image-upload.component.scss'],
+	providers: [
+		MultiImageUploadService
+	]
 })
-export class MultiImageUploadComponent implements OnInit {
-	imagesToUpload$: BehaviorSubject<ImageToUpload[]> = new BehaviorSubject([]);
+export class MultiImageUploadComponent implements OnInit, OnDestroy {
+	//todo maximum size stuff
 
-	images$ = this.imagesToUpload$.map(images => images.map(it => it.data));
+	private _images$ = new BehaviorSubject<any[]>([]);
+	images$ = this.multiImageUploadService.data$
+		.pipe(
+			map(images => [...images.map(it => it.data)])
+		);
 
-	constructor() {
+	columnKeys: ExpandableTableColumn<ImageToUpload>[] = [
+		new ExpandableTableColumn<ImageToUpload>("Name", "name")
+	];
+	rowActions: {
+		icon?: string;
+		name: string | RowAction;
+		link?: (object: ImageToUpload) => string;
+		route?: (object: ImageToUpload) => string;
+	}[] = [
+		{
+			icon: "delete",
+			name: RowAction.DELETE
+		},
+	];
+	@ViewChild("fileUpload") fileUpload: ElementRef;
+
+	@Output() onFormDataChange = new EventEmitter<any>();
+
+	subscriptions = [];
+
+	constructor(public multiImageUploadService: MultiImageUploadService) {
 	}
 
 	ngOnInit() {
+		this.subscriptions.push(
+			this.multiImageUploadService.onAdd.subscribe(
+				() => this.fileUpload.nativeElement.click()
+			)
+		);
+		this.multiImageUploadService.init(this._images$);
+	}
+
+
+	ngOnDestroy(): void {
+		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
 	/**
@@ -36,6 +80,7 @@ export class MultiImageUploadComponent implements OnInit {
 				reader.onload = (event) => {
 					const currentValue = addedImages$.getValue();
 					currentValue.push({
+						id: fileList.item(i).name,
 						name: fileList.item(i).name,
 						data: (<any>event.target).result
 					});
@@ -47,32 +92,18 @@ export class MultiImageUploadComponent implements OnInit {
 		}
 
 		addedImages$
-		//only update the list if all images have been read by the file reader
-			.filter(images => images.length === fileList.length)
-			.take(1)
+			.pipe(
+				//only update the list if all images have been read by the file reader
+				filter(images => images.length === fileList.length),
+				take(1)
+			)
 			.subscribe(images => {
-				const currentValue = this.imagesToUpload$.getValue();
+				const currentValue = this._images$.getValue();
 				images.forEach(image => currentValue.push(image));
-				this.imagesToUpload$.next(currentValue);
+				this._images$.next([...currentValue]);
 			})
 	}
 
-	/**
-	 *
-	 * @param {number} index
-	 */
-	deleteImage(index: number) {
-		const currentValue = this.imagesToUpload$.getValue();
-		currentValue.splice(index, 1);
-		this.imagesToUpload$.next([...currentValue]);
-	}
-
-	/**
-	 *
-	 */
-	deleteAllImages() {
-		this.imagesToUpload$.next([]);
-	}
 
 	/**
 	 *
@@ -86,8 +117,7 @@ export class MultiImageUploadComponent implements OnInit {
 			for (let i = 0; i < fileCount; i++) {
 				formData.append("file[]", fileList.item(i));
 			}
-			//todo etwas mit formdata machen
-
+			this.onFormDataChange.emit(formData);
 			this.addImages(fileList);
 		}
 	}

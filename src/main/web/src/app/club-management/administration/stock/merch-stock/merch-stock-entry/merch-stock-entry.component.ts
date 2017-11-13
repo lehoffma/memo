@@ -1,9 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {StockEntry} from "./stock-entry";
-import {BehaviorSubject} from "rxjs/Rx";
 import {WindowService} from "../../../../../shared/services/window.service";
-import {MdDialog} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {ModifyStockDialogComponent} from "./modify-stock-dialog.component";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {filter, map} from "rxjs/operators";
 
 @Component({
 	selector: 'memo-merch-stock-entry',
@@ -24,33 +25,35 @@ export class MerchStockEntryComponent implements OnInit {
 	}
 
 	totals$ = this._stockEntry$
-		.filter(it => it !== null)
-		.map(stockEntry => {
-			const totals = {};
-			stockEntry.options.size.forEach(size => {
-				totals[size] = stockEntry.options.color
-					.reduce((acc, color) => {
-						return acc + stockEntry.stockMap[size][color.name];
-					}, 0);
-			});
+		.pipe(
+			filter(it => it !== null),
+			map(stockEntry => {
+				const totals = {};
+				stockEntry.options.size.forEach(size => {
+					totals[size] = stockEntry.options.color
+						.reduce((acc, color) => {
+							return acc + stockEntry.stockMap[size][color.name];
+						}, 0);
+				});
 
-			totals["total"] = Object.keys(totals)
-				.reduce((acc, key) => acc + totals[key], 0);
+				totals["total"] = Object.keys(totals)
+					.reduce((acc, key) => acc + totals[key], 0);
 
-			stockEntry.options.color.forEach(color => {
-				totals[color.name] = stockEntry.options.size
-					.reduce((acc, size) => {
-						return acc + stockEntry.stockMap[size][color.name];
-					}, 0);
-			});
+				stockEntry.options.color.forEach(color => {
+					totals[color.name] = stockEntry.options.size
+						.reduce((acc, size) => {
+							return acc + stockEntry.stockMap[size][color.name];
+						}, 0);
+				});
 
-			return totals;
-		});
+				return totals;
+			})
+		);
 
 	@Output() onDelete = new EventEmitter<number>();
 
 	constructor(public windowService: WindowService,
-				public mdDialog: MdDialog) {
+				public mdDialog: MatDialog) {
 	}
 
 	ngOnInit() {

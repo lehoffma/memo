@@ -1,8 +1,10 @@
 import {FilterOptionFactoryService} from "./filter-option-factory.service";
 import {FilterOptionType} from "./filter-option-type";
 import {MultiLevelSelectParent} from "../../shared/multi-level-select/shared/multi-level-select-parent";
-import {Observable} from "rxjs/Rx";
 import {Injectable} from "@angular/core";
+import {Observable} from "rxjs/Observable";
+import {merge} from "rxjs/observable/merge";
+import {scan} from "rxjs/operators";
 
 @Injectable()
 export class FilterOptionBuilder {
@@ -40,10 +42,12 @@ export class FilterOptionBuilder {
 			.map(option => option.option(results));
 
 
-		return Observable.merge(...sortedOptions)
-			.scan((options: MultiLevelSelectParent[], value: MultiLevelSelectParent[]) => {
-				options.push(...value);
-				return options;
-			}, []);
+		return merge(...sortedOptions)
+			.pipe(
+				scan((options: MultiLevelSelectParent[], value: MultiLevelSelectParent[]) => {
+					options.push(...value);
+					return options;
+				}, [])
+			);
 	}
 }

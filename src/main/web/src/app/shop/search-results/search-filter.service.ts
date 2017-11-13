@@ -5,11 +5,14 @@ import {ShopItem} from "../../shared/model/shop-item";
 import {Event} from "../shared/model/event";
 import * as moment from "moment";
 import {StockService} from "../../shared/services/api/stock.service";
-import {Observable} from "rxjs/Rx";
 import {isObservable} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute} from "@angular/router";
 import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
+import {Observable} from "rxjs/Observable";
+import {defaultIfEmpty, first, map} from "rxjs/operators";
+import {of} from "rxjs/observable/of";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Injectable()
 export class SearchFilterService {
@@ -61,8 +64,10 @@ export class SearchFilterService {
 			if (EventUtilityService.isMerchandise(item)) {
 				const selectedColors = filterValue.split("|");
 				return this.stockService.getByEventId(item.id)
-					.map(stockList => stockList.map(stockItem => stockItem.color.name))
-					.map(colorNames => colorNames.some(color => selectedColors.includes(color)));
+					.pipe(
+						map(stockList => stockList.map(stockItem => stockItem.color.name)),
+						map(colorNames => colorNames.some(color => selectedColors.includes(color)))
+					);
 			}
 			return false;
 		},
@@ -77,8 +82,10 @@ export class SearchFilterService {
 			if (EventUtilityService.isMerchandise(item)) {
 				const selectedSizes = filterValue.split("|");
 				return this.stockService.getByEventId(item.id)
-					.map(stockList => stockList.map(stockItem => stockItem.size))
-					.map(sizes => sizes.some(size => selectedSizes.includes(size)));
+					.pipe(
+						map(stockList => stockList.map(stockItem => stockItem.size)),
+						map(sizes => sizes.some(size => selectedSizes.includes(size)))
+					);
 			}
 			return false;
 		}
@@ -104,12 +111,14 @@ export class SearchFilterService {
 				if (isObservable(result)) {
 					return result;
 				}
-				return Observable.of(result);
+				return of(result);
 			})];
 
-		return Observable.combineLatest(...filterResults)
-			.map((results: boolean[]) => results.every(value => value))
-			.defaultIfEmpty(true);
+		return combineLatest(...filterResults)
+			.pipe(
+				map((results: boolean[]) => results.every(value => value)),
+				defaultIfEmpty(true)
+			);
 	}
 
 
@@ -120,23 +129,25 @@ export class SearchFilterService {
 	initFilterMenu(activatedRoute: ActivatedRoute, filterOptions: MultiLevelSelectParent[]): Observable<MultiLevelSelectParent[]> {
 		//checks if the route includes query parameters and initializes the filtermenus checkboxes
 		return activatedRoute.queryParamMap
-			.first()
-			.map(queryParamMap => {
-				return [...filterOptions].map(filterOptionParent => {
-					let key = filterOptionParent.queryKey;
-					//if the key associated with the filter selection box is part of the query parameters,
-					//update the filterOption's selected values.
-					if (queryParamMap.has(key)) {
-						let values: string[] = queryParamMap.get(key).split("|"); //something like 'tours|partys|merch'
-						filterOptionParent.children.forEach(child => {
-							if (isMultiLevelSelectLeaf(child)) {
-								child.selected = values.includes(child.queryValue);
-							}
-						});
-					}
-					return filterOptionParent;
-				});
-			});
+			.pipe(
+				first(),
+				map(queryParamMap => {
+					return [...filterOptions].map(filterOptionParent => {
+						let key = filterOptionParent.queryKey;
+						//if the key associated with the filter selection box is part of the query parameters,
+						//update the filterOption's selected values.
+						if (queryParamMap.has(key)) {
+							let values: string[] = queryParamMap.get(key).split("|"); //something like 'tours|partys|merch'
+							filterOptionParent.children.forEach(child => {
+								if (isMultiLevelSelectLeaf(child)) {
+									child.selected = values.includes(child.queryValue);
+								}
+							});
+						}
+						return filterOptionParent;
+					});
+				})
+			);
 	}
 
 

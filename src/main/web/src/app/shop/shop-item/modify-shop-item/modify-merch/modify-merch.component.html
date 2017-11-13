@@ -24,9 +24,9 @@
 					   placeholder="Titel"
 					   #titleInput="ngModel"
 					   [(ngModel)]="merchModel['title']">
-				<mat-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+				<mat-error *ngIf="titleInput.touched && !titleInput.valid" align="end">
 					Dieses Feld darf nicht leer bleiben!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 
 			<div class="merch-info-container">
@@ -39,14 +39,12 @@
 						   #priceInput="ngModel"
 						   [(ngModel)]="merchModel['price']">
 					<span matSuffix>€</span>
-					<mat-hint *ngIf="priceInput.touched && !priceInput.valid && priceInput.value === ''"
-							  class="error-message" align="end">
+					<mat-error *ngIf="priceInput.touched && !priceInput.valid && priceInput.value === ''" align="end">
 						Dieses Feld darf nicht leer bleiben!
-					</mat-hint>
-					<mat-hint *ngIf="!priceIsValid"
-							  class="error-message" align="end">
+					</mat-error>
+					<mat-error *ngIf="!priceIsValid" align="end">
 						Der Preis ist inkorrekt formatiert!
-					</mat-hint>
+					</mat-error>
 				</mat-form-field>
 				<mat-form-field>
 					<input matInput name="materialInput"
@@ -54,9 +52,9 @@
 						   placeholder="Material"
 						   #materialInput="ngModel"
 						   [(ngModel)]="merchModel['material']">
-					<mat-hint *ngIf="materialInput.touched && !materialInput.valid" class="error-message" align="end">
+					<mat-error *ngIf="materialInput.touched && !materialInput.valid" align="end">
 						Dieses Feld darf nicht leer bleiben!
-					</mat-hint>
+					</mat-error>
 				</mat-form-field>
 			</div>
 
@@ -68,10 +66,10 @@
 					  placeholder="Beschreibung"
 					  [(ngModel)]="merchModel['description']">
 			</textarea>
-				<mat-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
+				<mat-error *ngIf="descriptionInput.touched && !descriptionInput.valid"
 						  align="end">
 					Dieses Feld darf nicht leer bleiben!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 		</memo-modify-item-inner-container>
 

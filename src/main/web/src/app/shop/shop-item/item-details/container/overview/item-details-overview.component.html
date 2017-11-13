@@ -17,35 +17,41 @@
 		<div class="add-to-cart-container">
 			<form #addToCartForm="ngForm" (ngSubmit)="addOrDeleteFromCart(event)">
 				<ng-template [ngIf]="isMerch(event)">
-					<mat-select [(ngModel)]="color"
-								(change)="updateMaxAmount()"
-								placeholder="Farbe"
-								[required]="true"
-								name="colorSelectionInput">
-						<mat-option *ngFor="let color of colorSelection$ | async"
-									[value]="color">
-							{{color.name}}
-						</mat-option>
-					</mat-select>
-					<mat-select [(ngModel)]="size"
-								(change)="updateMaxAmount()"
-								placeholder="Größe"
-								[required]="true"
-								name="sizeSelectionInput">
-						<mat-option *ngFor="let size of sizeSelection$ | async" [value]="size">
-							{{size}}
-						</mat-option>
-					</mat-select>
+					<mat-form-field>
+						<mat-select [(ngModel)]="color"
+									(change)="updateMaxAmount()"
+									placeholder="Farbe"
+									[required]="true"
+									name="colorSelectionInput">
+							<mat-option *ngFor="let color of colorSelection$ | async"
+										[value]="color">
+								{{color.name}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+					<mat-form-field>
+						<mat-select [(ngModel)]="size"
+									(change)="updateMaxAmount()"
+									placeholder="Größe"
+									[required]="true"
+									name="sizeSelectionInput">
+							<mat-option *ngFor="let size of sizeSelection$ | async" [value]="size">
+								{{size}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
 				</ng-template>
 
-				<mat-select placeholder="Anzahl" name="amount"
-							[(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
-							[disabled]="!isMerch(event) && isPastEvent"
-							[required]="true">
-					<mat-option *ngFor="let number of amountOptions" [value]="number">
-						{{number}}
-					</mat-option>
-				</mat-select>
+				<mat-form-field>
+					<mat-select placeholder="Anzahl" name="amount"
+								[(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
+								[disabled]="!isMerch(event) && isPastEvent"
+								[required]="true">
+						<mat-option *ngFor="let number of amountOptions" [value]="number">
+							{{number}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
 
 				<button [disabled]="(!addToCartForm.valid || model.amount === 0) || (!isMerch(event) && isPastEvent)"
 						mat-raised-button
@@ -58,17 +64,14 @@
 
 		<share-buttons
 			*ngIf="event"
+			[theme]="'default'"
+			[include]="['facebook','twitter','whatsapp','telegram','copy']"
+			[size]="-2"
 			[title]="event.title"
 			[image]="event.imagePath"
 			[description]="event.description"
 			[tags]="['Meilenwoelfe', 'Meilenwoelfe-Shop']"
-			[pinterest]="false"
-			[linkedIn]="false"
-			[tumblr]="false"
-			[reddit]="false"
-			[stumbleUpOn]="false">
-
-		</share-buttons>
+		></share-buttons>
 	</div>
 
 

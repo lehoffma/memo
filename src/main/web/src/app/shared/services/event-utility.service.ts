@@ -64,7 +64,7 @@ export class EventUtilityService {
 		partys?: () => T,
 		members?: () => T,
 		entries?: () => T
-	}):T{
+	}): T {
 		return EventUtilityService.shopItemSwitch<T>(EventUtilityService.getShopItemType(item), callbacks);
 	}
 
@@ -116,6 +116,11 @@ export class EventUtilityService {
 				return entryCallback();
 		}
 		return defaultCallback();
+	}
+
+	static isEvent(event: any): event is Party | Tour | Merchandise {
+		return event && (EventUtilityService.isParty(event)
+			|| EventUtilityService.isMerchandise(event) || EventUtilityService.isTour(event));
 	}
 
 	static isUser(event: any): event is User {

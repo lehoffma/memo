@@ -22,10 +22,10 @@
 							   placeholder="Vorname"
 							   #firstNameInput="ngModel"
 							   [(ngModel)]="userModel['firstName']">
-						<mat-hint *ngIf="firstNameInput.touched && !firstNameInput.valid" class="error-message"
+						<mat-error *ngIf="firstNameInput.touched && !firstNameInput.valid"
 								  align="end">
 							Dieses Feld darf nicht leer bleiben!
-						</mat-hint>
+						</mat-error>
 					</mat-form-field>
 					<mat-form-field>
 						<input matInput name="surnameInput"
@@ -33,9 +33,9 @@
 							   placeholder="Nachname"
 							   #surnameInput="ngModel"
 							   [(ngModel)]="userModel['surname']">
-						<mat-hint *ngIf="surnameInput.touched && !surnameInput.valid" class="error-message" align="end">
+						<mat-error *ngIf="surnameInput.touched && !surnameInput.valid" align="end">
 							Dieses Feld darf nicht leer bleiben!
-						</mat-hint>
+						</mat-error>
 					</mat-form-field>
 				</div>
 				<div class="date-and-gender-input">
@@ -50,12 +50,14 @@
 						</mat-form-field>
 						<mat-datepicker [touchUi]="true" #birthDayPicker></mat-datepicker>
 					</div>
-					<mat-select [(ngModel)]="userModel['gender']" placeholder="Geschlecht" #genderSelect="ngModel"
-								name="genderSelect" class="aligned-mat-select">
-						<mat-option *ngFor="let option of genderOptions" [value]="option">
-							{{option}}
-						</mat-option>
-					</mat-select>
+					<mat-form-field>
+						<mat-select [(ngModel)]="userModel['gender']" placeholder="Geschlecht" #genderSelect="ngModel"
+									name="genderSelect" class="aligned-mat-select">
+							<mat-option *ngFor="let option of genderOptions" [value]="option">
+								{{option}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
 				</div>
 				<div>
 					<mat-form-field
@@ -69,9 +71,9 @@
 							   [(ngModel)]="userModel['telephone']"
 						>
 						<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-						<mat-hint align="end" class="error-message" *ngIf="telephone.touched && (telephone.invalid)">
+						<mat-error align="end" *ngIf="telephone.touched && (telephone.invalid)">
 							Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
-						</mat-hint>
+						</mat-error>
 					</mat-form-field>
 				</div>
 				<div>
@@ -86,9 +88,9 @@
 							   [(ngModel)]="userModel['mobile']"
 						>
 						<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-						<mat-hint align="end" class="error-message" *ngIf="mobile.touched && (mobile.invalid)">
+						<mat-error align="end" *ngIf="mobile.touched && (mobile.invalid)">
 							Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
-						</mat-hint>
+						</mat-error>
 					</mat-form-field>
 				</div>
 			</div>
@@ -161,12 +163,12 @@
 					   #email="ngModel"
 					   required>
 				<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-				<mat-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
+				<mat-error align="end" *ngIf="email.touched && (email.invalid)">
 					Email-Adresse muss in der Form <i>test@email.de</i> sein
-				</mat-hint>
-				<mat-hint align="end" class="error-message" *ngIf="email.touched && emailIsAlreadyTaken">
+				</mat-error>
+				<mat-error align="end" *ngIf="email.touched && emailIsAlreadyTaken">
 					Die Email-Addresse ist bereits vergeben.
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 
 
@@ -193,10 +195,10 @@
 					   #confirmPasswordInput="ngModel"
 					   [(ngModel)]="confirmedPassword">
 				<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
-				<mat-hint align="end" class="error-message"
+				<mat-error align="end"
 						  *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)">
 					Passwörter stimmen nicht überein
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 		</memo-modify-item-inner-container>
 
@@ -213,15 +215,17 @@
 		<memo-modify-item-inner-container [title]="'Vereinsinformationen'" [saveButton]="false">
 
 			<div class="club-information-forms">
-				<mat-select [(ngModel)]="userModel['clubRole']" placeholder="Vereinsrolle" #clubRoleSelect="ngModel"
-							[disabled]="!(isAdmin | async)" class="aligned-mat-select"
-							matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
-							[matTooltipPosition]="'above'"
-							name="clubRoleSelect">
-					<mat-option *ngFor="let option of clubRoleOptions" [value]="option">
-						{{option}}
-					</mat-option>
-				</mat-select>
+				<mat-form-field>
+					<mat-select [(ngModel)]="userModel['clubRole']" placeholder="Vereinsrolle" #clubRoleSelect="ngModel"
+								[disabled]="!(isAdmin | async)" class="aligned-mat-select"
+								matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
+								[matTooltipPosition]="'above'"
+								name="clubRoleSelect">
+						<mat-option *ngFor="let option of clubRoleOptions" [value]="option">
+							{{option}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
 				<div>
 					<mat-form-field
 						matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"

@@ -1,12 +1,12 @@
 import {Injectable} from "@angular/core";
-import {MdDialog} from "@angular/material";
-import {Observable} from "rxjs/Rx";
+import {MatDialog} from "@angular/material";
 import {ConfirmationDialogComponent} from "../confirmation-dialog/confirmation-dialog.component";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class ConfirmationDialogService {
 
-	constructor(private mdDialog: MdDialog) {
+	constructor(private mdDialog: MatDialog) {
 	}
 
 	openDialog(message: string): Observable<any> {

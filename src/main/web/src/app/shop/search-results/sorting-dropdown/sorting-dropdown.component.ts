@@ -3,6 +3,7 @@ import {SortingOption} from "../../../shared/model/sorting-option";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
 import {ColumnSortingEvent} from "../../../shared/expandable-table/column-sorting-event";
+import {first, map, tap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-sorting-dropdown",
@@ -38,14 +39,17 @@ export class SortingDropdownComponent implements OnInit {
 	}
 
 	updateQueryParams(queryParams: Params) {
-		this.activatedRoute.queryParamMap.first()
-			.map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams))
-			.do(paramMap => {
-				this.onSort.emit({
-					key: queryParams["sortBy"],
-					descending: queryParams["descending"] === "true"
-				})
-			})
+		this.activatedRoute.queryParamMap
+			.pipe(
+				first(),
+				map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams)),
+				tap(() =>
+					this.onSort.emit({
+						key: queryParams["sortBy"],
+						descending: queryParams["descending"] === "true"
+					})
+				)
+			)
 			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
 	}
 }

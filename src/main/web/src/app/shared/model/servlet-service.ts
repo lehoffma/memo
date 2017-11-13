@@ -1,4 +1,5 @@
-import {Observable} from "rxjs/Rx";
+
+import {Observable} from "rxjs/Observable";
 
 export interface ServletServiceInterface<T> {
 	handleError(error: Error): Observable<any>,

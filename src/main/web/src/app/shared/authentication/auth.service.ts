@@ -1,7 +1,8 @@
 import {Injectable} from "@angular/core";
-import {tokenNotExpired} from "angular2-jwt";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Rx";
+import {Observable} from "rxjs/Observable";
+import {tap} from "rxjs/operators";
+import {JwtHelperService} from "@auth0/angular-jwt";
 
 @Injectable()
 export class AuthService {
@@ -9,7 +10,8 @@ export class AuthService {
 	private readonly REFRESH_TOKEN_KEY = "refresh_token";
 	private readonly REFRESH_DELAY = 600000;
 
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient,
+				private jwtHelperService: JwtHelperService) {
 
 	}
 
@@ -63,7 +65,9 @@ export class AuthService {
 		return this.http.get<{ auth_token: string }>("/api/refreshAccessToken", {
 			params: new HttpParams().set("refreshToken", this.getRefreshToken())
 		})
-			.do(response => this.setAccessToken(response.auth_token));
+			.pipe(
+				tap(response => this.setAccessToken(response.auth_token))
+			);
 	}
 
 	/**
@@ -74,7 +78,9 @@ export class AuthService {
 		return this.http.get<{ refresh_token: string }>("/api/refreshRefreshToken", {
 			params: new HttpParams().set("refreshToken", this.getRefreshToken())
 		})
-			.do(response => this.setRefreshToken(response.refresh_token));
+			.pipe(
+				tap(response => this.setRefreshToken(response.refresh_token))
+			);
 	}
 
 	/**
@@ -83,6 +89,10 @@ export class AuthService {
 	 */
 	public isAuthenticated(): boolean {
 		const token = this.getToken();
-		return tokenNotExpired(null, token)
+
+		if(token !== null){
+			return this.jwtHelperService.isTokenExpired(token);
+		}
+		return false;
 	}
 }

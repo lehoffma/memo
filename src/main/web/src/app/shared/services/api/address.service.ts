@@ -1,9 +1,9 @@
 import {EventEmitter, Injectable} from "@angular/core";
-import {Observable} from "rxjs/Rx";
-import {Response} from "@angular/http";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Address} from "../../model/address";
+import {Observable} from "rxjs/Observable";
+import {map, mergeMap, tap} from "rxjs/operators";
 
 interface AddressApiResponse {
 	addresses: Partial<Address>[]
@@ -28,7 +28,9 @@ export class AddressService extends ServletService<Address> {
 	getById(id: number): Observable<Address> {
 		const params = new HttpParams().set("id", "" + id);
 		const request = this.performRequest(this.http.get<AddressApiResponse>(this.baseUrl, {params}))
-			.map(json => Address.create().setProperties(json.addresses[0]));
+			.pipe(
+				map(json => Address.create().setProperties(json.addresses[0]))
+			);
 
 		return this._cache.getById(params, request)
 	}
@@ -42,7 +44,9 @@ export class AddressService extends ServletService<Address> {
 	search(searchTerm: string, options?: any): Observable<Address[]> {
 		const params = new HttpParams().set("searchTerm", "" + searchTerm);
 		const request = this.performRequest(this.http.get<AddressApiResponse>(this.baseUrl, {params}))
-			.map((json) => json.addresses.map(json => Address.create().setProperties(json)));
+			.pipe(
+				map((json) => json.addresses.map(json => Address.create().setProperties(json)))
+			);
 
 		return this._cache.search(params, request);
 	}
@@ -69,12 +73,14 @@ export class AddressService extends ServletService<Address> {
 	 * @param id
 	 * @returns {Observable<T>}
 	 */
-	remove(id: number): Observable<Response> {
+	remove(id: number): Observable<Object> {
 		//todo invalidate stuff
 		return this.performRequest(this.http.delete(this.baseUrl, {
 			params: new HttpParams().set("id", "" + id)
 		}))
-			.do(() => this._cache.invalidateById(id));
+			.pipe(
+				tap(() => this._cache.invalidateById(id))
+			);
 	}
 
 	/**
@@ -91,8 +97,10 @@ export class AddressService extends ServletService<Address> {
 		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/address", {address}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
-			.do(() => this._cache.invalidateById(address.id))
-			.flatMap(json => this.getById(json.id))
-			.do(address => this.addressModificationDone.emit(address));
+			.pipe(
+				tap(() => this._cache.invalidateById(address.id)),
+				mergeMap(json => this.getById(json.id)),
+				tap(address => this.addressModificationDone.emit(address))
+			);
 	}
 }

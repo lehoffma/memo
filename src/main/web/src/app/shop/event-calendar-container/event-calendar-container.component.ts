@@ -1,10 +1,9 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Observable} from "rxjs/Rx";
 import {Party} from "../shared/model/party";
 import {Tour} from "../shared/model/tour";
 import {EventService} from "../../shared/services/api/event.service";
 import {EventType} from "../shared/model/event-type";
-import {MdDialog, MdSnackBar} from "@angular/material";
+import {MatDialog, MatSnackBar} from "@angular/material";
 import {EventContextMenuComponent} from "./event-context-menu/event-context-menu.component";
 import {CreateEventContextMenuComponent} from "./create-event-context-menu/create-event-context-menu.component";
 import {LogInService} from "../../shared/services/api/login.service";
@@ -12,6 +11,12 @@ import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute, Router} from "@angular/router";
+import {Observable} from "rxjs/Observable";
+import {of} from "rxjs/observable/of";
+import {defaultIfEmpty, filter, first, map} from "rxjs/operators";
+import {forkJoin} from "rxjs/observable/forkJoin";
+import {Event} from "../shared/model/event";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Component({
 	selector: "memo-event-calendar-container",
@@ -20,10 +25,10 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 
-	events$: Observable<(Party | Tour)[]> = this.getUpdatedEvents();
-	editable: Observable<boolean> = Observable.of(false); //todo true if permissions of tour/party >= write, else false
+	events$: Observable<Event[]> = this.getUpdatedEvents();
+	editable: Observable<boolean> = of(false); //todo true if permissions of tour/party >= write, else false
 
-	eventSubscription = this.events$.subscribe();
+	subscriptions = [this.events$.subscribe()];
 
 	selectedView = "calendar";
 
@@ -31,30 +36,34 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 				private loginService: LogInService,
 				private activatedRoute: ActivatedRoute,
 				private router: Router,
-				private snackBar: MdSnackBar,
-				private mdDialog: MdDialog) {
+				private snackBar: MatSnackBar,
+				private mdDialog: MatDialog) {
 	}
 
 	ngOnInit() {
-		this.activatedRoute.queryParamMap
-			.filter(queryParamMap => queryParamMap.has("view"))
-			.subscribe(queryParamMap => {
-				switch (queryParamMap.get("view")) {
-					case "calendar":
-						this.selectedView = "calendar";
-						break;
-					case "list":
-						this.selectedView = "list";
-						break;
-					default:
-						this.selectedView = "calendar";
-				}
-			})
+		this.subscriptions.push(
+			this.activatedRoute.queryParamMap
+				.pipe(
+					filter(map => map.has("view"))
+				)
+				.subscribe(queryParamMap => {
+					switch (queryParamMap.get("view")) {
+						case "calendar":
+							this.selectedView = "calendar";
+							break;
+						case "list":
+							this.selectedView = "list";
+							break;
+						default:
+							this.selectedView = "calendar";
+					}
+				})
+		);
 	}
 
 
 	ngOnDestroy(): void {
-		this.eventSubscription.unsubscribe();
+		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
 	navigateToRoute(selectedView: "calendar" | "list") {
@@ -67,12 +76,14 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 		});
 	}
 
-	getUpdatedEvents(): Observable<(Party | Tour)[]> {
-		return Observable.forkJoin(
-			this.eventService.search("", EventType.tours).first(),
-			this.eventService.search("", EventType.partys).first()
+	getUpdatedEvents(): Observable<Event[]> {
+		return forkJoin(
+			this.eventService.search("", EventType.tours).pipe(first()),
+			this.eventService.search("", EventType.partys).pipe(first())
 		)
-			.map(([tours, partys]) => [...tours, ...partys])
+			.pipe(
+				map(([tours, partys]) => [...tours, ...partys])
+			)
 	}
 
 	/**
@@ -80,19 +91,24 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	 * @param eventId
 	 */
 	onEventClick(eventId: number) {
-		let observable = Observable.combineLatest(
+		const observable = combineLatest(
 			this.loginService.currentUser$
-				.filter(user => user !== null)
-				.map(user => user.userPermissions)
-				.filter(permissions => !isNullOrUndefined(permissions))
-				.defaultIfEmpty(visitorPermissions),
+				.pipe(
+					filter(user => user !== null),
+					map(user => user.userPermissions),
+					filter(permissions => !isNullOrUndefined(permissions)),
+					defaultIfEmpty(visitorPermissions)
+				),
 			this.eventService.getById(eventId)
-				.map(event => EventUtilityService.getEventType(event))
-				.filter(eventType => !isNullOrUndefined(eventType))
+				.pipe(
+					map(event => EventUtilityService.getEventType(event)),
+					filter(eventType => !isNullOrUndefined(eventType))
+				)
 		);
 
-		let permission$ = observable
-			.map(([permissions, eventType]) => {
+		const permission$ = observable
+			.pipe(
+				map(([permissions, eventType]) => {
 					if (eventType === EventType.partys) {
 						return permissions.party;
 					}
@@ -100,17 +116,21 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 						return permissions.tour;
 					}
 					return permissions.merch;
-				}
+				})
 			);
 
 		const dialogRef = this.mdDialog.open(EventContextMenuComponent, {
 			data: {
 				id: eventId,
 				title: this.eventService.getById(eventId).map(event => event.title),
-				eventType: observable.map(([permissions, eventType]) => eventType),
-				view: permission$.map(permission => permission >= Permission.read),
-				edit: permission$.map(permission => permission >= Permission.write),
-				remove: permission$.map(permission => permission >= Permission.delete)
+				eventType: observable
+					.pipe(map(([permissions, eventType]) => eventType)),
+				view: permission$
+					.pipe(map(permission => permission >= Permission.read)),
+				edit: permission$
+					.pipe(map(permission => permission >= Permission.write)),
+				remove: permission$
+					.pipe(map(permission => permission >= Permission.delete))
 			}
 		});
 
@@ -118,7 +138,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 			.subscribe(value => {
 					if (value === "deleted") {
 						this.events$ = this.getUpdatedEvents();
-						this.eventSubscription = this.events$.subscribe();
+						this.subscriptions.push(this.events$.subscribe());
 						this.snackBar.open("Löschen erfolgreich.", "Schließen", {
 							duration: 1000
 						});
@@ -132,22 +152,24 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	 * @param date
 	 */
 	onDayClick(date: Date) {
-		let permissions$ = this.loginService.currentUser$
-			.filter(user => user !== null)
-			.map(user => user.userPermissions)
-			.filter(permissions => !isNullOrUndefined(permissions))
-			.defaultIfEmpty(visitorPermissions);
+		const permissions$ = this.loginService.currentUser$
+			.pipe(
+				filter(user => user !== null),
+				map(user => user.userPermissions),
+				filter(permissions => !isNullOrUndefined(permissions)),
+				defaultIfEmpty(visitorPermissions)
+			);
 
-		let dialogRef = this.mdDialog.open(CreateEventContextMenuComponent, {
+		const dialogRef = this.mdDialog.open(CreateEventContextMenuComponent, {
 			data: {
 				date,
-				tours: permissions$.map(permissions => permissions.tour >= Permission.create),
-				partys: permissions$.map(permissions => permissions.party >= Permission.create)
+				tours: permissions$
+					.pipe(map(permissions => permissions.tour >= Permission.create)),
+				partys: permissions$
+					.pipe(map(permissions => permissions.party >= Permission.create))
 			}
 		});
 		dialogRef.afterClosed()
-			.subscribe(value => {
-
-			}, console.error)
+			.subscribe(console.log, console.error)
 	}
 }

@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Party} from "../../shop/shared/model/party";
 import {Tour} from "../../shop/shared/model/tour";
-import {BehaviorSubject} from "rxjs/Rx";
 import {WindowService} from "../services/window.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {defaultIfEmpty, filter, map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-event-calendar",
@@ -13,23 +14,23 @@ export class EventCalendarComponent implements OnInit {
 	events$: BehaviorSubject<(Tour | Party)[]> = new BehaviorSubject<(Tour | Party)[]>([]);
 	@Input() editable: boolean; //todo mit options verknüpfen
 	calendarEvents$ = this.events$
-		.filter(events => events !== null)
-		.map(events => {
-			return events.map(event => ({
+		.pipe(
+			filter(events => events !== null),
+			map(events => events.map(event => ({
 				id: event.id,
 				title: event.title,
 				start: event.date,
 				//todo combineLatest
 				editable: this.editable
-			}))
-		})
-		.defaultIfEmpty([]);
+			}))),
+			defaultIfEmpty([])
+		);
 	@Input() height: string;
 	@Output() onDayClick: EventEmitter<Date> = new EventEmitter();
 	@Output() onEventClick: EventEmitter<number> = new EventEmitter();
 
 	height$ = this.windowService.dimension$
-		.map(dimensions => dimensions.height);
+		.pipe(map(dimensions => dimensions.height));
 
 	constructor(private windowService: WindowService) {
 	}

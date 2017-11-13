@@ -9,18 +9,20 @@
 					   placeholder="Titel"
 					   #titleInput="ngModel"
 					   [(ngModel)]="entryModel['name']">
-				<mat-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+				<mat-error *ngIf="titleInput.touched && !titleInput.valid" align="end">
 					Dieses Feld darf nicht leer bleiben!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
-			<mat-select [(ngModel)]="entryModel['category']"
-						[compareWith]="compareCategories"
-						placeholder="Kategorie" #categorySelect="ngModel"
-					   name="categorySelect">
-				<mat-option *ngFor="let option of (entryCategories$ | async)" [value]="option">
-					{{option.name}}
-				</mat-option>
-			</mat-select>
+			<mat-form-field>
+				<mat-select [(ngModel)]="entryModel['category']"
+							[compareWith]="compareCategories"
+							placeholder="Kategorie" #categorySelect="ngModel"
+							name="categorySelect">
+					<mat-option *ngFor="let option of (entryCategories$ | async)" [value]="option">
+						{{option.name}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
 		</div>
 
 		<div class="entry-info-container">
@@ -43,9 +45,9 @@
 						   #valueInput="ngModel"
 						   [(ngModel)]="entryModel['value']">
 					<span matSuffix>€</span>
-					<mat-hint *ngIf="valueInput.touched && !valueInput.valid" class="error-message" align="end">
+					<mat-error *ngIf="valueInput.touched && !valueInput.valid" align="end">
 						Dieses Feld darf nicht leer bleiben!
-					</mat-hint>
+					</mat-error>
 				</mat-form-field>
 			</div>
 		</div>

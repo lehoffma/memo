@@ -2,10 +2,12 @@ import {Component, OnInit} from "@angular/core";
 import {Address} from "../../../../shared/model/address";
 import {ActivatedRoute, Router} from "@angular/router";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {Observable} from "rxjs/Rx";
 import {UserService} from "../../../../shared/services/api/user.service";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {Wiggle} from "app/util/animation-util";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {filter, first, map, mergeMap, take, tap} from "rxjs/operators";
+import {of} from "rxjs/observable/of";
 
 @Component({
 	selector: "memo-address-modification",
@@ -28,21 +30,24 @@ export class AddressModificationComponent implements OnInit {
 
 		//initialize the model with the corresponding address if the query params contain an "id" parameter
 		this.activatedRoute.queryParamMap
-			.first()
-			.subscribe(queryParamMap => {
-				if (queryParamMap.has("id")) {
-					this.loginService.currentUser$
-						.flatMap(user => Observable.combineLatest(
+			.pipe(
+				first(),
+				filter(queryParamMap => queryParamMap.has("id")),
+				mergeMap(queryParamMap => this.loginService.currentUser$
+					.pipe(
+						mergeMap(user => combineLatest(
 							user.addresses.map(addressId => this.addressService.getById(addressId))
-						))
-						.first()
-						.subscribe(addresses => {
+						)),
+						tap(addresses => {
 							addresses.filter(address => address.id === +queryParamMap.get("id"))
 								.forEach(address => this.model = address);
 							this.modifyingExistingAddress = true;
 						})
-				}
-			})
+					)
+				),
+				take(1)
+			)
+			.subscribe();
 	}
 
 	ngOnInit() {
@@ -63,23 +68,22 @@ export class AddressModificationComponent implements OnInit {
 	submitNewAddress() {
 		if (this.modifyingExistingAddress) {
 			this.addressService.modify(this.model)
-				.subscribe(address => {
-					this.goBack();
-				});
+				.subscribe(() => this.goBack());
 		}
 		else {
 			this.addressService.add(this.model)
-				.flatMap(address => this.loginService.isLoggedIn() ?
-					this.loginService.currentUser$
-						.first()
-						.map(user => user.setProperties({addresses: [...user.addresses, address.id]}))
-						.flatMap(user => this.userService.modify(user))
-					: Observable.of(null)
+				.pipe(
+					mergeMap(address => this.loginService.isLoggedIn()
+						? this.loginService.currentUser$
+							.pipe(
+								map(user => user.setProperties({addresses: [...user.addresses, address.id]}))
+							)
+						: of(null)),
+					filter(user => user !== null),
+					mergeMap(user => this.userService.modify(user)),
+					first()
 				)
-				.first()
-				.subscribe(address => {
-					this.goBack();
-				});
+				.subscribe(() => this.goBack());
 		}
 	}
 }

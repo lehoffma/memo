@@ -5,6 +5,7 @@ import {StockService} from "../../../../../shared/services/api/stock.service";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
+import {filter, first, map, mergeMap} from "rxjs/operators";
 
 @Component({
 	selector: 'memo-modify-merch-stock-container',
@@ -27,10 +28,12 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 
 	ngOnInit() {
 		this.activatedRoute.paramMap
-			.filter(paramMap => paramMap.has("id"))
-			.flatMap(paramMap => this.eventService.getById(+paramMap.get("id")))
-			.map(event => (<Merchandise>event))
-			.first()
+			.pipe(
+				filter(paramMap => paramMap.has("id")),
+				mergeMap(paramMap => this.eventService.getById(+paramMap.get("id"))),
+				map(event => (<Merchandise>event)),
+				first()
+			)
 			.subscribe(merch => {
 				this.merch = merch;
 				this.extractStock(this.merch);
@@ -43,7 +46,7 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 	 */
 	extractStock(merch: Merchandise) {
 		this.stockService.getByEventId(merch.id)
-			.first()
+			.pipe(first())
 			.subscribe(stockList => {
 				this.stock = [...stockList];
 				this.previousStock = [...stockList];

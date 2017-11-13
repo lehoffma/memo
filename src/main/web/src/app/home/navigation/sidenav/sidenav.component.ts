@@ -1,5 +1,4 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {Observable} from "rxjs/Rx";
 import {isNullOrUndefined} from "util";
 import {User} from "../../../shared/model/user";
 import {Link} from "../../../shared/model/link";
@@ -8,6 +7,10 @@ import {NavigationService} from "../../../shared/services/navigation.service";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {UserService} from "../../../shared/services/api/user.service";
 import {Location} from "@angular/common";
+import {Observable} from "rxjs/Observable";
+import {of} from "rxjs/observable/of";
+import {mergeMap, map} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Component({
 	selector: "memo-sidenav",
@@ -18,35 +21,38 @@ export class SideNavComponent implements OnInit {
 	@Output() sideBarClosed = new EventEmitter();
 
 	public user: Observable<User> = this.logInService.currentUser$
-		.flatMap(user => user === null
-			? Observable.of(User.create().setProperties({id: -1}))
-			: Observable.of(user));
+		.pipe(
+			mergeMap(user => user === null
+				? of(User.create().setProperties({id: -1}))
+				: of(user))
+		);
 
-	public links = Observable.combineLatest(this.user, this.navigationService.sidenavLinks)
-		.map(([user, links]) => {
-			const linksCopy = [...links];
-			const permissions = user === null || user.id === -1
-				? visitorPermissions
-				: user.userPermissions;
+	public links = combineLatest(this.user, this.navigationService.sidenavLinks)
+		.pipe(
+			map(([user, links]) => {
+				const linksCopy = [...links];
+				const permissions = user === null || user.id === -1
+					? visitorPermissions
+					: user.userPermissions;
 
-			const setId = (link: Link): Link => {
-				let newLink = {...link};
-				if (newLink.children) {
-					newLink.children = newLink.children.map(childLink => setId(childLink))
-				}
-				newLink.route = newLink.route.replace("PROFILE_ID", "" + user.id);
-				return newLink;
-			};
+				const setId = (link: Link): Link => {
+					let newLink = {...link};
+					if (newLink.children) {
+						newLink.children = newLink.children.map(childLink => setId(childLink))
+					}
+					newLink.route = newLink.route.replace("PROFILE_ID", "" + user.id);
+					return newLink;
+				};
 
-			return linksCopy.map(setId)
-				.filter(link => (!link.loginNeeded || user !== null || user.id !== -1)
-					&& this.checkPermissions(link.minimumPermission, permissions))
-		});
+				return linksCopy.map(setId)
+					.filter(link => (!link.loginNeeded || user !== null || user.id !== -1)
+						&& this.checkPermissions(link.minimumPermission, permissions))
+			})
+		);
 
 	constructor(private navigationService: NavigationService,
 				private logInService: LogInService,
-				private location: Location,
-				private userService: UserService) {
+				private location: Location) {
 
 	}
 

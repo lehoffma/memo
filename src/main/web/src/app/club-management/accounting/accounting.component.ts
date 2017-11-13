@@ -1,6 +1,7 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Dimension, WindowService} from "../../shared/services/window.service";
 import {AccountingTableContainerService} from "./accounting-table-container.service";
+import {map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-accounting",
@@ -8,21 +9,29 @@ import {AccountingTableContainerService} from "./accounting-table-container.serv
 	styleUrls: ["./accounting.component.scss"],
 	providers: [AccountingTableContainerService]
 })
-export class AccountingComponent implements OnInit {
+export class AccountingComponent implements OnInit, OnDestroy {
 	total$ = this.accountingTableContainerService.dataSubject$
-		.map(entries => entries.reduce((acc, entry) => acc + entry.value, 0));
+		.pipe(
+			map(entries => entries.reduce((acc, entry) => acc + entry.value, 0))
+		);
 
 	showOptions = true;
 	mobile = false;
 
+	subscriptions = [];
+
 	constructor(private windowService: WindowService,
 				public accountingTableContainerService: AccountingTableContainerService) {
 
-		this.windowService.dimension$
-			.subscribe(dimensions => this.onResize(dimensions));
+		this.subscriptions.push(this.windowService.dimension$
+			.subscribe(dimensions => this.onResize(dimensions)));
 	}
 
 	ngOnInit() {
+	}
+
+	ngOnDestroy() {
+		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
 	/**

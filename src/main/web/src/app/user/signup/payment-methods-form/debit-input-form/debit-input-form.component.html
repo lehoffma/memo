@@ -10,10 +10,10 @@
 			(blur)="emitOnChange(debitInputForm)"
 			matInput required>
 		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
-		<mat-hint align="end" class="error-message"
+		<mat-error align="end"
 				 *ngIf="ibanInput.touched && (ibanInput.invalid || !isValidIBAN(model.iban))">
 			{{model.iban.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist inkorrekt!"}}
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 	<mat-form-field
 		[dividerColor]="(bicInput.touched && bicInput.invalid) ? 'warn'  : 'primary'">
@@ -26,10 +26,10 @@
 			(blur)="emitOnChange(debitInputForm)"
 			matInput required>
 		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
-		<mat-hint align="end" class="error-message"
+		<mat-error align="end"
 				 *ngIf="bicInput.touched && bicInput.invalid">
 			{{model.bic.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene BIC ist inkorrekt!"}}
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 
 	<!--<memo-address-selection [addresses]="(userAddresses$ | async)" (addressChange)="onAddressChange($event)">-->
@@ -43,9 +43,9 @@
 			   [(ngModel)]="model.address.name"
 			   (blur)="emitOnChange(debitInputForm)"
 			   matInput required>
-		<mat-hint align="end" class="error-message" *ngIf="nameInput.touched && (nameInput.invalid)">
+		<mat-error align="end" *ngIf="nameInput.touched && (nameInput.invalid)">
 			Dies ist ein Pflichtfeld!
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 	<!--<mat-form-field>-->
 		<!--<input placeholder="Firma"-->
@@ -63,10 +63,10 @@
 			   [(ngModel)]="model.address.street"
 			   (blur)="emitOnChange(debitInputForm)"
 			   matInput required>
-		<mat-hint align="end" class="error-message" *ngIf="streetInput.touched && (streetInput.invalid)">
+		<mat-error align="end" *ngIf="streetInput.touched && (streetInput.invalid)">
 			Dies ist ein Pflichtfeld!
 			<!--todo validation?-->
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 	<mat-form-field>
 		<input placeholder="Nr."
@@ -75,10 +75,10 @@
 			   [(ngModel)]="model.address.streetNr"
 			   (blur)="emitOnChange(debitInputForm)"
 			   matInput required>
-		<mat-hint align="end" class="error-message" *ngIf="streetNrInput.touched && (streetNrInput.invalid)">
+		<mat-error align="end" *ngIf="streetNrInput.touched && (streetNrInput.invalid)">
 			Dies ist ein Pflichtfeld!
 			<!--todo validation?-->
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 
 	<mat-form-field>
@@ -89,9 +89,9 @@
 			   [(ngModel)]="model.address.zip"
 			   (blur)="emitOnChange(debitInputForm)"
 			   matInput required>
-		<mat-hint align="end" class="error-message" *ngIf="plzInput.touched && (plzInput.invalid)">
+		<mat-error align="end" *ngIf="plzInput.touched && (plzInput.invalid)">
 			{{model.address.zip.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene PLZ ist nicht gültig!"}}
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 
 	<mat-form-field>
@@ -101,9 +101,9 @@
 			   [(ngModel)]="model.address.city"
 			   (blur)="emitOnChange(debitInputForm)"
 			   matInput required>
-		<mat-hint align="end" class="error-message" *ngIf="residenceInput.touched && (residenceInput.invalid)">
+		<mat-error align="end" *ngIf="residenceInput.touched && (residenceInput.invalid)">
 			Dies ist ein Pflichtfeld!
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 
 	<!--todo: autocomplete with a list of countries-->
@@ -114,9 +114,9 @@
 			   [(ngModel)]="model.address.country"
 			   (blur)="emitOnChange(debitInputForm)"
 			   matInput required>
-		<mat-hint align="end" class="error-message" *ngIf="countryInput.touched && (countryInput.invalid)">
+		<mat-error align="end" *ngIf="countryInput.touched && (countryInput.invalid)">
 			Dies ist ein Pflichtfeld!
-		</mat-hint>
+		</mat-error>
 	</mat-form-field>
 
 	<!--<button tyemitOnChangebmit"-->

@@ -25,9 +25,9 @@
 					   placeholder="Titel"
 					   #titleInput="ngModel"
 					   [(ngModel)]="partyModel['title']">
-				<mat-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
+				<mat-error *ngIf="titleInput.touched && !titleInput.valid" align="end">
 					Dieses Feld darf nicht leer bleiben!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 
 			<mat-form-field class="description-input">
@@ -38,10 +38,10 @@
 					  placeholder="Beschreibung"
 					  [(ngModel)]="partyModel['description']">
 			</textarea>
-				<mat-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
+				<mat-error *ngIf="descriptionInput.touched && !descriptionInput.valid"
 						  align="end">
 					Dieses Feld darf nicht leer bleiben!
-				</mat-hint>
+				</mat-error>
 			</mat-form-field>
 
 			<div class="additional-party-info-container">
@@ -69,14 +69,14 @@
 								   #timeInput="ngModel"
 								   name="timeInput" required>
 
-							<mat-hint *ngIf="timeInput.touched && !timeInput.valid && partyModel['time'].length === 0"
-									  class="error-message" align="end">
+							<mat-error *ngIf="timeInput.touched && !timeInput.valid && partyModel['time'].length === 0"
+									  align="end">
 								Dieses Feld darf nicht leer bleiben!
-							</mat-hint>
-							<mat-hint *ngIf="timeInput.touched && !timeInput.valid && partyModel['time'].length > 0"
-									  class="error-message" align="end">
+							</mat-error>
+							<mat-error *ngIf="timeInput.touched && !timeInput.valid && partyModel['time'].length > 0"
+									   align="end">
 								Die Uhrzeit muss im Format "HH:MM" vorliegen!
-							</mat-hint>
+							</mat-error>
 						</mat-form-field>
 					</div>
 				</div>
@@ -88,9 +88,9 @@
 							   #priceInput="ngModel"
 							   [(ngModel)]="partyModel['price']">
 						<span matSuffix>€</span>
-						<mat-hint *ngIf="priceInput.touched && !priceInput.valid" class="error-message" align="end">
+						<mat-error *ngIf="priceInput.touched && !priceInput.valid" align="end">
 							Dieses Feld darf nicht leer bleiben!
-						</mat-hint>
+						</mat-error>
 					</mat-form-field>
 
 					<mat-form-field>
@@ -99,10 +99,10 @@
 							   placeholder="Kapazität"
 							   #capacityInput="ngModel"
 							   [(ngModel)]="partyModel['capacity']">
-						<mat-hint *ngIf="capacityInput.touched && !capacityInput.valid" class="error-message"
+						<mat-error *ngIf="capacityInput.touched && !capacityInput.valid"
 								  align="end">
 							Dieses Feld darf nicht leer bleiben!
-						</mat-hint>
+						</mat-error>
 					</mat-form-field>
 				</div>
 

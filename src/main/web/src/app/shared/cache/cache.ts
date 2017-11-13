@@ -1,4 +1,7 @@
-import {Observable, Subject} from "rxjs/Rx";
+import {Subject} from "rxjs/Subject";
+import {Observable} from "rxjs/Observable";
+import {of} from "rxjs/observable/of";
+import {first, tap} from "rxjs/operators";
 
 interface CacheContent<T> {
 	expiry: number;
@@ -23,36 +26,38 @@ export class Cache<T> {
 	 *
 	 * first get():
 	 * no cached value & no inFlightRequest
-	 * 		=> this.load() is called and the result is written into the inFlightRequest
+	 *        => this.load() is called and the result is written into the inFlightRequest
 	 *
 	 * second get():
 	 * no cached value, but inFlightRequest
-	 * 		=> return the same observable as for the first guy, to avoid duplicate http calls
+	 *        => return the same observable as for the first guy, to avoid duplicate http calls
 	 *
 	 * third get():
 	 * has cached value
-	 * 		=> returns the cached value immediately
+	 *        => returns the cached value immediately
 	 *
 	 * fourth get():
 	 * cached value expired
-	 * 		=> call load() again
+	 *        => call load() again
 	 *
 	 *
 	 * @returns {Observable<T>}
 	 */
 	get(): Observable<T> {
 		if (this.hasValidCachedValue()) {
-			return Observable.of(this.cache.value);
+			return of(this.cache.value);
 		}
 		//cache value has expired or its the first time calling this method (inFlight is undefined)
 		// 		=> reload the cache value again
 		else if (this.cache !== undefined || !this.inFlightRequest) {
 			this.inFlightRequest = new Subject();
 			this.load()
-				//update cached value once the request is done
-				.do(value => this.setValue(value))
-				//avoid memory leaks by only subscribing to the first value
-				.first()
+				.pipe(
+					//update cached value once the request is done
+					tap(value => this.setValue(value)),
+					//avoid memory leaks by only subscribing to the first value
+					first(),
+				)
 				//push result of http request into inFlightRequest
 				.subscribe(this.inFlightRequest);
 		}
@@ -76,7 +81,7 @@ export class Cache<T> {
 	 */
 	invalidate() {
 		this.cache = undefined;
-		if(this.inFlightRequest){
+		if (this.inFlightRequest) {
 			const observers = this.inFlightRequest.observers;
 			//complete the stream for every observer to avoid memory leaks/dangling subscriptions
 			observers.forEach(observer => observer.complete());

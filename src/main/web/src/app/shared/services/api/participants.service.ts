@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {EventType} from "../../../shop/shared/model/event-type";
-import {Observable} from "rxjs/Rx";
 import {Participant, ParticipantUser} from "../../../shop/shared/model/participant";
 import {UserService} from "./user.service";
 import {HttpClient, HttpParams} from "@angular/common/http";
@@ -8,8 +7,12 @@ import {AddOrModifyRequest, AddOrModifyResponse} from "./servlet.service";
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
-import {CacheStore} from "../../cache/cache.store";
 import {EventUtilityService} from "../event-utility.service";
+import {empty} from "rxjs/observable/empty";
+import {of} from "rxjs/observable/of";
+import {Observable} from "rxjs/Observable";
+import {catchError, map, mergeMap, retry, share} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 interface ParticipantApiResponse {
 	participants: Participant[]
@@ -20,17 +23,16 @@ export class ParticipantsService {
 	baseUrl = "/api/participants";
 
 	constructor(private http: HttpClient,
-				private userService: UserService,
-				private cache: CacheStore) {
+				private userService: UserService) {
 
 	}
 
 	//todo von servletService erben lassen
 	//todo rewrite
 
-	handleError(error: any) {
+	handleError<T>(error: any) {
 		console.error(error);
-		return Observable.empty();
+		return empty<T>();
 	}
 
 	/**
@@ -41,21 +43,23 @@ export class ParticipantsService {
 	 */
 	getParticipantIdsByEvent(eventId: number, eventType: EventType): Observable<Participant[]> {
 		if (eventType === EventType.merch) {
-			return Observable.of([]);
+			return of([]);
 		}
 
 		return this.http.get<ParticipantApiResponse>(this.baseUrl, {
 			params: new HttpParams().set("eventId", "" + eventId)
 				.set("type", "" + eventType)
 		})
-			.map(response => response.participants)
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.share();
+			.pipe(
+				map(response => response.participants),
+				//retry 3 times before throwing an error
+				retry(3),
+				//log any errors
+				catchError(error => this.handleError<Participant[]>(error)),
+				//convert the observable to a hot observable, i.e. immediately perform the http request
+				//instead of waiting for someone to subscribe
+				share()
+			);
 	}
 
 	/**
@@ -65,16 +69,19 @@ export class ParticipantsService {
 	 */
 	getParticipantUsersByEvent(eventId: number, eventType: EventType): Observable<ParticipantUser[]> {
 		return this.getParticipantIdsByEvent(eventId, eventType)
-			.flatMap(participants => {
-				return Observable.combineLatest(...participants.map(participant => this.userService.getById(participant.id)
-					.map(user => ({
-						id: participant.id,
-						user,
-						isDriver: participant.isDriver,
-						hasPaid: participant.hasPaid,
-						comments: participant.comments
-					}))));
-			})
+			.pipe(
+				mergeMap(participants => combineLatest(
+					...participants.map(participant => this.userService.getById(participant.id)
+						.pipe(
+							map(user => ({
+								id: participant.id,
+								user,
+								isDriver: participant.isDriver,
+								hasPaid: participant.hasPaid,
+								comments: participant.comments
+							}))
+						))))
+			)
 	}
 
 
@@ -88,16 +95,17 @@ export class ParticipantsService {
 		}>(this.baseUrl, {
 			params: new HttpParams().set("userId", "" + userId)
 		})
-			.map(json => json.events
-				.filter(event => !EventUtilityService.isMerchandise(event))
-				.map(event => EventUtilityService.optionalShopItemSwitch(event,
-					{
-						tours: () => Tour.create().setProperties(event),
-						partys: () => Party.create().setProperties(event)
-					})
-				))
-			.do(events => this.cache.addMultiple(...events))
-			.share()
+			.pipe(
+				map(json => json.events
+					.filter(event => !EventUtilityService.isMerchandise(event))
+					.map(event => EventUtilityService.optionalShopItemSwitch(event,
+						{
+							tours: () => Tour.create().setProperties(event),
+							partys: () => Party.create().setProperties(event)
+						})
+					)),
+				share()
+			)
 	}
 
 	/**
@@ -112,14 +120,16 @@ export class ParticipantsService {
 				eventId: number, eventType: EventType, participant: Participant): Observable<number> {
 
 		return requestMethod<AddOrModifyResponse>(this.baseUrl, {eventId, eventType, participant})
-			.map(response => response.id)
-			//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.share();
+			.pipe(
+				map(response => response.id),
+				//retry 3 times before throwing an error
+				retry(3),
+				//log any errors
+				catchError(error => this.handleError<number>(error)),
+				//convert the observable to a hot observable, i.e. immediately perform the http request
+				//instead of waiting for someone to subscribe
+				share()
+			);
 	}
 
 	/**
@@ -155,12 +165,14 @@ export class ParticipantsService {
 				.set("type", "" + eventType)
 				.set("id", "" + participantId)
 		})
-		//retry 3 times before throwing an error
-			.retry(3)
-			//log any errors
-			.catch(this.handleError)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			.share();
+			.pipe(
+				//retry 3 times before throwing an error
+				retry(3),
+				//log any errors
+				catchError(error => this.handleError<any>(error)),
+				//convert the observable to a hot observable, i.e. immediately perform the http request
+				//instead of waiting for someone to subscribe
+				share()
+			);
 	}
 }

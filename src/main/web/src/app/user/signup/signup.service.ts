@@ -5,13 +5,16 @@ import {SignUpSection} from "./signup-section";
 import {SignUpSubmitEvent} from "./signup-submit-event";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {UserService} from "../../shared/services/api/user.service";
-import {MdSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Address} from "../../shared/model/address";
 import {AddressService} from "../../shared/services/api/address.service";
 import {UserBankAccountService} from "../../shared/services/api/user-bank-account.service";
 import {BankAccount} from "../../shared/model/bank-account";
 import {ImageUploadService} from "../../shared/services/api/image-upload.service";
+import {filter, first, map, mergeMap, tap, catchError} from "rxjs/operators";
+import {_throw} from "rxjs/observable/throw";
+import {empty} from "rxjs/observable/empty";
 
 @Injectable()
 export class SignUpService {
@@ -28,7 +31,7 @@ export class SignUpService {
 				private imageUploadService: ImageUploadService,
 				private bankAccountService: UserBankAccountService,
 				private userService: UserService,
-				private snackBar: MdSnackBar,
+				private snackBar: MatSnackBar,
 				private loginService: LogInService) {
 
 	}
@@ -62,23 +65,21 @@ export class SignUpService {
 			this.newUserProfilePicture = model.profilePicture;
 		}
 		this.addressService.addressModificationDone
-			.first()
+			.pipe(first(), filter(it => !!it))
 			.subscribe(address => {
-				if (address) {
-					const currentAddresses = this.newUserAddresses;
-					const modifiedAddressIndex = currentAddresses
-						.findIndex(currentAddress => currentAddress.id === address.id);
-					//address was added, not modified
-					if (modifiedAddressIndex === -1) {
-						currentAddresses.push(address);
-					}
-					//address was modified
-					else {
-						currentAddresses.splice(modifiedAddressIndex, 1, address);
-					}
-					this.newUserAddresses = [...currentAddresses];
-					this.newUser.setProperties({addresses: currentAddresses.map(it => it.id)})
+				const currentAddresses = this.newUserAddresses;
+				const modifiedAddressIndex = currentAddresses
+					.findIndex(currentAddress => currentAddress.id === address.id);
+				//address was added, not modified
+				if (modifiedAddressIndex === -1) {
+					currentAddresses.push(address);
 				}
+				//address was modified
+				else {
+					currentAddresses.splice(modifiedAddressIndex, 1, address);
+				}
+				this.newUserAddresses = [...currentAddresses];
+				this.newUser.setProperties({addresses: currentAddresses.map(it => it.id)})
 			})
 	}
 
@@ -128,8 +129,10 @@ export class SignUpService {
 	uploadProfilePicture(user: User, picture: FormData) {
 
 		return this.imageUploadService.uploadImage(picture)
-			.map(response => response.imagePath)
-			.map(imagePath => user.setProperties({imagePath}));
+			.pipe(
+				map(response => response.imagePath),
+				map(imagePath => user.setProperties({imagePath}))
+			);
 	}
 
 	/**
@@ -163,20 +166,22 @@ export class SignUpService {
 			case SignUpSection.PaymentMethods:
 				this.newUserDebitInfo = paymentInfo;
 				//add bank account address to user
-				if(paymentInfo && paymentInfo.address){
+				if (paymentInfo && paymentInfo.address) {
 					await this.addressService.add(Address.create()
 						.setProperties({
 							...paymentInfo.address
 						}))
-						.do(address => this.newUserAddresses.push(address))
-						.do(address => this.newUser.addresses.push(address.id))
-						.flatMap(_ => this.bankAccountService.add(BankAccount.create()
-							.setProperties({
-								bic: this.newUserDebitInfo.bic,
-								iban: this.newUserDebitInfo.iban,
-								name: this.newUserDebitInfo.address.name
-							})))
-						.do(bankAccount => this.newUser.bankAccounts.push(bankAccount.id))
+						.pipe(
+							tap(address => this.newUserAddresses.push(address)),
+							tap(address => this.newUser.addresses.push(address.id)),
+							mergeMap(_ => this.bankAccountService.add(BankAccount.create()
+								.setProperties({
+									bic: this.newUserDebitInfo.bic,
+									iban: this.newUserDebitInfo.iban,
+									name: this.newUserDebitInfo.address.name
+								}))),
+							tap(bankAccount => this.newUser.bankAccounts.push(bankAccount.id))
+						)
 						.toPromise();
 				}
 				break;
@@ -189,36 +194,34 @@ export class SignUpService {
 			this.submittingFinalUser = true;
 			//upload profile picture
 			this.uploadProfilePicture(this.newUser, this.newUserProfilePicture)
-				.flatMap(newUser => this.userService.add(newUser, this.newUserProfilePicture))
-				.subscribe(newUserId => {
-						this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
+				.pipe(
+					mergeMap(newUser => this.userService.add(newUser, this.newUserProfilePicture)),
+					tap(() => this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
 							duration: 1000
-						});
-						this.loginService.login(this.newUser.email, this.newUser.passwordHash)
-							.subscribe(wereCorrect => {
-								if (wereCorrect) {
-									this.navigationService.navigateByUrl("/");
-									this.reset();
-									this.submittingFinalUser = false;
-								}
-								else {
-									this.snackBar.open("Bei der Registrierung ist leider ein Fehler aufgetreten!",
-										"Schließen",
-										{
-											duration: 1000
-										});
-								}
-							})
-					},
-					(error: Error) => {
+						})),
+					mergeMap(() => this.loginService.login(this.newUser.email, this.newUser.passwordHash)),
+					tap(wereCorrect => {
+						if (wereCorrect) {
+							this.navigationService.navigateByUrl("/");
+							this.reset();
+							this.submittingFinalUser = false;
+						}
+						else{
+							return _throw(new Error());
+						}
+					}),
+					catchError(error => {
 						this.snackBar.open(
 							"Bei der Registrierung ist leider ein Fehler aufgetreten!" + error.message,
 							"Schließen",
 							{
 								duration: 10000,
 							});
-						this.submittingFinalUser = false;
-					})
+						return empty();
+					}),
+					first()
+				)
+				.subscribe(null, null, () => this.submittingFinalUser = false);
 		}
 	}
 }

@@ -1,10 +1,12 @@
 import {Injectable} from "@angular/core";
 import {MerchStock, MerchStockList} from "../../../shop/shared/model/merch-stock";
-import {Observable} from "rxjs/Rx";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {MerchColor} from "../../../shop/shared/model/merch-color";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
+import {Observable} from "rxjs/Observable";
+import {map, mergeMap, share, tap} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 const stockMockData = [
 	{
@@ -169,9 +171,11 @@ export class StockService extends ServletService<MerchStock[]> {
 		const params = new HttpParams().set("id", "" + id)
 			.set("eventId", "" + eventId);
 		const request = this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {params}))
-			//todo update when merchstock is a class?
-			.map(response => response.stock)
-			.share();
+			.pipe(
+				//todo update when merchstock is a class?
+				map(response => response.stock),
+				share()
+			);
 
 		return this._cache.getById(params, request);
 	}
@@ -250,9 +254,11 @@ export class StockService extends ServletService<MerchStock[]> {
 	search(searchTerm: string): Observable<MerchStockList[]> {
 		const params = new HttpParams().set("searchTerm", searchTerm);
 		const request = this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {params}))
-		//todo update when merchstock is a class
-			.map(response => [response.stock])
-			.share();
+			.pipe(
+				//todo update when merchstock is a class
+				map(response => [response.stock]),
+				share()
+			);
 
 		return this._cache.search(params, request);
 	}
@@ -268,8 +274,10 @@ export class StockService extends ServletService<MerchStock[]> {
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {stock}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
-			.do(() => this._cache.invalidateByPartialParams(new HttpParams().set("eventId", ""+eventId)))
-			.flatMap(response => this.getById(response.id, eventId));
+			.pipe(
+				tap(() => this._cache.invalidateByPartialParams(new HttpParams().set("eventId", ""+eventId))),
+				mergeMap(response => this.getById(response.id, eventId))
+			);
 	}
 
 	/**
@@ -299,7 +307,9 @@ export class StockService extends ServletService<MerchStock[]> {
 		return this.performRequest(this.http.delete(this.baseUrl, {
 			params: new HttpParams().set("id", "" + id)
 		}))
-			.do(() => this._cache.invalidateById(id))
+			.pipe(
+				tap(() => this._cache.invalidateById(id))
+			);
 	}
 
 	/**
@@ -314,7 +324,7 @@ export class StockService extends ServletService<MerchStock[]> {
 		const removeRequests = [...previous
 			.filter(stockItem => !current.find(it => it.id === stockItem.id))
 			.map(previousItem => this.remove(previousItem.id)
-				.share())];
+				.pipe(share()))];
 
 		//edit objects that are part of both objects, but contain different data
 		const editRequests = [...previous
@@ -324,7 +334,7 @@ export class StockService extends ServletService<MerchStock[]> {
 			)))
 			.filter(editedItem => editedItem !== undefined)
 			.map(editedItem => this.modify(editedItem, editedItem.event.id)
-				.share())
+				.pipe(share()))
 		];
 
 		//add objects that are not part of the previous list, but are contained in the new one
@@ -335,11 +345,11 @@ export class StockService extends ServletService<MerchStock[]> {
 				return addedItem;
 			})
 			.map(addedItem => this.add(addedItem, addedItem.event.id)
-				.share())
+				.pipe(share()))
 		];
 
 
-		return Observable.combineLatest(
+		return combineLatest(
 			...removeRequests,
 			...editRequests,
 			...addRequests

@@ -10,9 +10,11 @@ import {
 import {Comment} from "../../../shared/model/comment";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {Observable} from "rxjs/Rx";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import * as moment from "moment";
+import {empty} from "rxjs/observable/empty";
+import {of} from "rxjs/observable/of";
+import {catchError, first, mergeMap, tap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-comments-section",
@@ -34,7 +36,9 @@ export class CommentsSectionComponent implements OnInit {
 	@Output() onDeleteComment = new EventEmitter<{ comment: Comment, parentId: number }>();
 	readonly DEFAULT_AMOUNT_OF_COMMENTS_SHOWN = 3;
 	loggedInUser$ = this.loginService.currentUser$
-		.flatMap(user => user === null ? Observable.empty() : Observable.of(user));
+		.pipe(
+			mergeMap(user => user === null ? empty() : of(user))
+		);
 	expandState = false;
 	dummyComment = Comment.create();
 	loadingAddedComment = false;
@@ -62,29 +66,34 @@ export class CommentsSectionComponent implements OnInit {
 		console.log(commentText, parentId);
 		if (parentId === -1) {
 			this.loginService.currentUser$
-				.first()
-				.subscribe((user) => {
-					let comment = new Comment(this.eventId, -1, moment(), user.id, commentText);
-					this.dummyComment = this.dummyComment.setProperties({
-						text: "",
-						authorId: user.id,
-						timeStamp: comment.timeStamp,
-						eventId: this.eventId,
-					});
-					this.loadingAddedComment = true;
-					this.changeDetectorRef.detectChanges();
+				.pipe(
+					first(),
+					mergeMap(user => {
+						let comment = new Comment(this.eventId, -1, moment(), user.id, commentText);
+						this.dummyComment = this.dummyComment.setProperties({
+							text: "",
+							authorId: user.id,
+							timeStamp: comment.timeStamp,
+							eventId: this.eventId,
+						});
+						this.loadingAddedComment = true;
+						this.changeDetectorRef.detectChanges();
 
-					this.commentService.add(comment, parentId)
-						.subscribe(addResult => {
-							console.log(addResult);
-							this.comments.push(addResult);
-							this.loadingAddedComment = false;
-							this.changeDetectorRef.detectChanges();
-						}, error => {
-							console.error("adding the comment went wrong");
-							console.error(error);
-						})
-				})
+						return this.commentService.add(comment, parentId);
+					}),
+					tap(addResult => {
+						console.log(addResult);
+						this.comments.push(addResult);
+						this.loadingAddedComment = false;
+						this.changeDetectorRef.detectChanges();
+					}),
+					catchError(error => {
+						console.error("adding the comment went wrong");
+						console.error(error);
+						return empty()
+					})
+				)
+				.subscribe()
 		}
 	}
 
@@ -95,7 +104,7 @@ export class CommentsSectionComponent implements OnInit {
 	 */
 	deleteComment({comment, parentId}: { comment: Comment, parentId: number }) {
 		this.commentService.remove(comment.id)
-			.subscribe(addResult => {
+			.subscribe(() => {
 				let indexOfChildId = this.comments.findIndex(childComment => comment.id === childComment.id);
 				if (indexOfChildId >= 0) {
 					this.comments.splice(indexOfChildId, 1);

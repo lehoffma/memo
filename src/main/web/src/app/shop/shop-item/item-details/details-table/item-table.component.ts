@@ -1,12 +1,14 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Event} from "../../../shared/model/event";
 import {ShopItem} from "../../../../shared/model/shop-item";
-import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {TypeOfProperty} from "../../../../shared/model/util/type-of-property";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {MerchStockList} from "../../../shared/model/merch-stock";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {ParticipantsService} from "../../../../shared/services/api/participants.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Observable} from "rxjs/Observable";
+import {filter, map, mergeMap, share} from "rxjs/operators";
 
 @Component({
 	selector: "memo-item-table",
@@ -29,10 +31,12 @@ export class ItemTableComponent implements OnInit {
 	}
 
 	stock$: Observable<MerchStockList> = this._event$
-		.filter(event => EventUtilityService.isMerchandise(event))
-		.filter(event => event.id !== -1)
-		.flatMap(event => this.stockService.getByEventId(event.id))
-		.share();
+		.pipe(
+			filter(event => EventUtilityService.isMerchandise(event)),
+			filter(event => event.id !== -1),
+			mergeMap(event => this.stockService.getByEventId(event.id)),
+			share()
+		);
 
 	values: {
 		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
@@ -43,7 +47,9 @@ export class ItemTableComponent implements OnInit {
 	}
 
 	tableCategories$ = this._event$.asObservable()
-		.map(event => event.id === -1 ? [] : event.detailsTableKeys);
+		.pipe(
+			map(event => event.id === -1 ? [] : event.detailsTableKeys)
+		);
 
 	ngOnInit() {
 	}
@@ -59,17 +65,26 @@ export class ItemTableComponent implements OnInit {
 			//cache observable so we only have to query the value once
 			if (EventUtilityService.isMerchandise(this.event) && key === "capacity") {
 				this.values[key] = this.stock$
-					.map(stock => stock.reduce((sum, it) => sum + it.amount, 0));
+					.pipe(
+						map(stock => stock.reduce((sum, it) => sum + it.amount, 0))
+					);
 			}
 			else if (key === "emptySeats") {
 				this.values[key] = this._event$
-					.flatMap(event =>
-						this.participantService.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
-							.map(participants => event.capacity - participants.length));
+					.pipe(
+						mergeMap(event =>
+							this.participantService
+								.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
+								.pipe(
+									map(participants => event.capacity - participants.length))
+								)
+					);
 			}
 			else {
 				this.values[key] = this._event$
-					.map(event => event[key]);
+					.pipe(
+						map(event => event[key])
+					)
 			}
 		}
 		return this.values[key];

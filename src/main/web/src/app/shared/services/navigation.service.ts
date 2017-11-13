@@ -1,6 +1,5 @@
-import {Injectable} from "@angular/core";
+import {Injectable, OnDestroy} from "@angular/core";
 import {Link} from "../model/link";
-import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {ParamMap, Router, RoutesRecognized} from "@angular/router";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {EventUtilityService} from "./event-utility.service";
@@ -10,9 +9,13 @@ import {EventType} from "../../shop/shared/model/event-type";
 import {Event} from "../../shop/shared/model/event";
 import {HttpClient} from "@angular/common/http";
 import {LogInService} from "./api/login.service";
+import {Subject} from "rxjs/Subject";
+import {Observable} from "rxjs/Observable";
+import {defaultIfEmpty, filter, map, tap} from "rxjs/operators";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
-export class NavigationService {
+export class NavigationService implements OnDestroy{
 	public toolbarLinks: Observable<Link[]>;
 	public sidenavLinks: Observable<Link[]>;
 	public accountLinks: Observable<Link[]>;
@@ -22,16 +25,22 @@ export class NavigationService {
 
 	queryParamMap$: BehaviorSubject<ParamMap> = new BehaviorSubject(null);
 
-
+	subscriptions = [];
 	constructor(private http: HttpClient,
 				private loginService: LogInService,
 				private router: Router) {
 		this.initialize();
 
-		this.router.events
-			.filter(val => val instanceof RoutesRecognized)
-			.map(val => (<RoutesRecognized>val).state.root.queryParamMap)
-			.subscribe(map => this.queryParamMap$.next(map));
+		this.subscriptions.push(this.router.events
+			.pipe(
+				filter(val => val instanceof RoutesRecognized),
+				map(val => (<RoutesRecognized>val).state.root.queryParamMap)
+			)
+			.subscribe(this.queryParamMap$));
+	}
+
+	ngOnDestroy(): void {
+		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
 	navigateToLogin() {

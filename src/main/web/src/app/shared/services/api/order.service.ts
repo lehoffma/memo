@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Order} from "../../model/order";
-import {Observable} from "rxjs/Rx";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
+import {map, mergeMap, tap} from "rxjs/operators";
 
 interface OrderApiResponse {
 	orders: Order[];
@@ -24,8 +25,10 @@ export class OrderService extends ServletService<Order> {
 	getById(id: number): Observable<Order> {
 		const params = new HttpParams().set("id", "" + id);
 		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
-			.map(response => response.orders[0])
-			.map(order => Order.create().setProperties(order));
+			.pipe(
+				map(response => response.orders[0]),
+				map(order => Order.create().setProperties(order))
+			);
 
 		return this._cache.getById(params, request);
 	}
@@ -38,8 +41,10 @@ export class OrderService extends ServletService<Order> {
 	search(searchTerm: string): Observable<Order[]> {
 		const params = new HttpParams().set("searchTerm", searchTerm);
 		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
-			.map(response => response.orders)
-			.map(orders => orders.map(order => Order.create().setProperties(order)));
+			.pipe(
+				map(response => response.orders),
+				map(orders => orders.map(order => Order.create().setProperties(order)))
+			);
 
 		return this._cache.search(params, request);
 	}
@@ -52,8 +57,10 @@ export class OrderService extends ServletService<Order> {
 	getByUserId(userId: number): Observable<Order[]> {
 		const params = new HttpParams().set("userId", "" + userId);
 		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
-			.map(response => response.orders)
-			.map(orders => orders.map(order => Order.create().setProperties(order)));
+			.pipe(
+				map(response => response.orders),
+				map(orders => orders.map(order => Order.create().setProperties(order)))
+			);
 
 		return this._cache.search(params, request);
 	}
@@ -68,8 +75,10 @@ export class OrderService extends ServletService<Order> {
 		return this.http.post<AddOrModifyResponse>(this.baseUrl, {order}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
-			.do(() => this._cache.invalidateById(order.id))
-			.flatMap(response => this.getById(response.id));
+			.pipe(
+				tap(() => this._cache.invalidateById(order.id)),
+				mergeMap(response => this.getById(response.id))
+			);
 	}
 
 	/**
@@ -81,8 +90,10 @@ export class OrderService extends ServletService<Order> {
 		return this.http.put<AddOrModifyResponse>(this.baseUrl, {order}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
-			.do(() => this._cache.invalidateById(order.id))
-			.flatMap(response => this.getById(response.id));
+			.pipe(
+				tap(() => this._cache.invalidateById(order.id)),
+				mergeMap(response => this.getById(response.id))
+			);
 	}
 
 	/**
@@ -94,6 +105,8 @@ export class OrderService extends ServletService<Order> {
 		return this.http.delete(this.baseUrl, {
 			params: new HttpParams().set("id", "" + id)
 		})
-			.do(() => this._cache.invalidateById(id))
+			.pipe(
+				tap(() => this._cache.invalidateById(id))
+			);
 	}
 }

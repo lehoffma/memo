@@ -7,6 +7,16 @@ import * as moment from "moment-timezone";
 import {toPaymentMethod} from "../../../shop/checkout/payment/payment-method";
 import {Moment} from "moment";
 
+function getIsoDateFromDateTimeObject({date: {day, month, year}, time: {hour, minute, second}}): string {
+	return year + "-" +
+		((+month < 10) ? '0' + month : month) + "-" +
+		((+day < 10) ? '0' + day : day) + "T" +
+		((+hour < 10) ? '0' + hour : hour) + ":" +
+		((+minute < 10) ? '0' + minute : minute) + ":" +
+		((+second < 10) ? '0' + second : second) + "Z";
+
+
+}
 
 export abstract class BaseObject<T extends BaseObject<T>> {
 
@@ -14,17 +24,6 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 
 	}
 
-
-	private getIsoDateFromDateTimeObject({date: {day, month, year}, time: {hour, minute, second}}): string {
-		return year + "-" +
-			((+month < 10) ? '0' + month : month) + "-" +
-			((+day < 10) ? '0' + day : day) + "T" +
-			((+hour < 10) ? '0' + hour : hour) + ":" +
-			((+minute < 10) ? '0' + minute : minute) + ":" +
-			((+second < 10) ? '0' + second : second) + "Z";
-
-
-	}
 
 	/**
 	 * @param properties
@@ -41,7 +40,7 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 						|| key.toLowerCase().includes("time"))) {
 					if(value.date && value.time){
 						// value = moment.tz(this.getIsoDateFromDateTimeObject(value), "Europe/Berlin");
-						value = moment(this.getIsoDateFromDateTimeObject(value)).tz("Europe/Berlin").locale("de");
+						value = moment(getIsoDateFromDateTimeObject(value)).tz("Europe/Berlin").locale("de");
 					}
 					else{
 						// value = moment.tz(value, "Europe/Berlin");

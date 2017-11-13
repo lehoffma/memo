@@ -1,8 +1,7 @@
-import {Injectable} from '@angular/core';
+import {Injectable, OnDestroy} from '@angular/core';
 import {ExpandableTableContainerService} from "../../shared/expandable-table/expandable-table-container.service";
 import {Entry} from "../../shared/model/entry";
 import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
-import {Observable} from "rxjs/Rx";
 import {LogInService} from "../../shared/services/api/login.service";
 import {ParamMap, Router} from "@angular/router";
 import {EntryService} from "../../shared/services/api/entry.service";
@@ -17,9 +16,14 @@ import {DateTableCellComponent} from "../administration/member-list/member-list-
 import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {NavigationService} from "../../shared/services/navigation.service";
+import {Observable} from "rxjs/Observable";
+import {catchError, defaultIfEmpty, first, map, mergeMap, tap} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {empty} from "rxjs/observable/empty";
+import {of} from "rxjs/observable/of";
 
 @Injectable()
-export class AccountingTableContainerService extends ExpandableTableContainerService<Entry> {
+export class AccountingTableContainerService extends ExpandableTableContainerService<Entry>{
 
 	columns = {
 		date: new ExpandableTableColumn<Entry>("Datum", "date", DateTableCellComponent),
@@ -28,6 +32,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 		value: new ExpandableTableColumn<Entry>("Kosten", "value", CostValueTableCellComponent)
 	};
 
+	subscriptions = [];
 	constructor(protected loginService: LogInService,
 				protected router: Router,
 				protected navigationService: NavigationService,
@@ -44,8 +49,13 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 
 		this.init(this.getDataSource$());
 
-		this.windowService.dimension$
-			.subscribe(dimensions => this.onResize(dimensions));
+		this.subscriptions.push(this.windowService.dimension$
+			.subscribe(dimensions => this.onResize(dimensions)));
+	}
+
+	ngOnDestroy(){
+		super.ngOnDestroy();
+		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
 	/**
@@ -85,28 +95,37 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 
 	getDataSource$(): Observable<Entry[]> {
 		return this.navigationService.queryParamMap$
-			.flatMap(queryParamMap => {
-				const dateRange = this.extractDateRangeFromQueryParams(queryParamMap);
+			.pipe(
+				mergeMap(queryParamMap => {
+					const dateRange = this.extractDateRangeFromQueryParams(queryParamMap);
 
-				//we're looking at an event's accounting table
-				if (queryParamMap.has("eventIds")) {
-					let eventIds: string[] = queryParamMap.getAll("eventIds");
+					//we're looking at an event's accounting table
+					if (queryParamMap.has("eventIds")) {
+						let eventIds: string[] = queryParamMap.getAll("eventIds");
 
-					return Observable.combineLatest(
-						...eventIds.map(id => this.entryService.getEntriesOfEvent(+id)
-							.defaultIfEmpty([]))
-					)
-						.map((eventEntries: Entry[][]) => eventEntries.reduce((acc, current) => [...acc, ...current], []))
-				}
+						return combineLatest(
+							...eventIds.map(id => this.entryService.getEntriesOfEvent(+id)
+								.pipe(defaultIfEmpty([]))
+							)
+						)
+							.pipe(
+								map(eventEntries =>
+									eventEntries.reduce((acc, current) => [...acc, ...current], []))
+							);
+					}
 
-				//otherwise, we're looking at the general club accounting table
-				return this.entryService.search("", dateRange)
-					.defaultIfEmpty([]);
-			})
-			.catch(error => {
-				console.error(error);
-				return Observable.empty()
-			})
+					//otherwise, we're looking at the general club accounting table
+					return this.entryService.search("", dateRange)
+						.pipe(
+							defaultIfEmpty([])
+						);
+				}),
+				catchError(error => {
+					console.error(error);
+					return empty<Entry[]>()
+				}),
+				defaultIfEmpty([])
+			);
 
 	}
 
@@ -124,12 +143,14 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 		if (eventIds.length === 1) {
 			queryParams["eventId"] = eventIds[0];
 			return this.eventService.getById(+eventIds[0])
-				.map(event => {
-					queryParams["date"] = event.date.toISOString();
-					return queryParams;
-				})
+				.pipe(
+					map(event => {
+						queryParams["date"] = event.date.toISOString();
+						return queryParams;
+					})
+				)
 		}
-		return Observable.of(queryParams);
+		return of(queryParams);
 	}
 
 	/**
@@ -138,8 +159,10 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	 */
 	add() {
 		this.navigationService.queryParamMap$
-			.first()
-			.flatMap(this.getQueryParamsForEntryModification)
+			.pipe(
+				first(),
+				mergeMap(this.getQueryParamsForEntryModification)
+			)
 			.subscribe(queryParams => {
 				this.router.navigate(["entries", "create"], {queryParams});
 			});
@@ -152,8 +175,10 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	 */
 	edit(entryObj: Entry) {
 		this.navigationService.queryParamMap$
-			.first()
-			.flatMap(this.getQueryParamsForEntryModification)
+			.pipe(
+				first(),
+				mergeMap(this.getQueryParamsForEntryModification)
+			)
 			.subscribe(queryParams => {
 				if (!isNullOrUndefined(entryObj.id) && entryObj.id >= 0) {
 					this.router.navigate(["entries", entryObj.id, "edit"], {queryParams});
@@ -168,13 +193,11 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	 */
 	remove(entries: Entry[]) {
 		entries.forEach(merchObject => this.entryService.remove(merchObject.id)
-			.subscribe(
-				() => {
-					this.dataSubject$.next(this.dataSubject$.value
-						.filter(entry => !entries.some(deletedEntry => deletedEntry.id === entry.id)))
-				},
-				error => console.error(error)
-			));
+			.pipe(
+				map(() => this.dataSubject$.value
+					.filter(entry => !entries.some(deletedEntry => deletedEntry.id === entry.id)))
+			)
+			.subscribe(this.dataSubject$));
 	}
 
 	satisfiesFilter(entry: Entry, queryParamMap: ParamMap): boolean {
@@ -191,10 +214,10 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	}
 
 	comparator(sortBy: ColumnSortingEvent<Entry>, ...options): SortingFunction<Entry> {
-		if(sortBy.key === "category"){
+		if (sortBy.key === "category") {
 			return sortingFunction<Entry>(entry => entry.category.name, sortBy.descending);
 		}
-		if(sortBy.key === "date"){
+		if (sortBy.key === "date") {
 			return dateSortingFunction<Entry>(entry => entry.date, sortBy.descending);
 		}
 		return attributeSortingFunction(sortBy.key, sortBy.descending);

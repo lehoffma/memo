@@ -1,9 +1,11 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {ShoppingCartService} from "../../../shared/services/shopping-cart.service";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {Link} from "../../../shared/model/link";
 import {WindowService} from "../../../shared/services/window.service";
+import {Observable} from "rxjs/Observable";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {filter, first, map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-toolbar",
@@ -51,15 +53,19 @@ export class ToolbarComponent implements OnInit {
 
 	expandSearchBar(event) {
 		this.windowService.dimension$
-			.map(dimensions => dimensions.width)
-			.first()
-			.filter(width => width < 400)
+			.pipe(
+				map(it => it.width),
+				first(),
+				filter(width => width < 400)
+			)
 			.subscribe(it => this.searchIsExpanded$.next(event), console.error);
 
 		this.windowService.dimension$
-			.map(dim => dim.width)
-			.filter(width => width >= 400)
-			.first()
+			.pipe(
+				map(it => it.width),
+				filter(width => width >= 400),
+				first()
+			)
 			.subscribe(it => this.searchIsExpanded$.next(false), console.error);
 	}
 }

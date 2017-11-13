@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {scan} from "rxjs/operators";
 
 
 @Component({
@@ -17,20 +18,27 @@ export class MultiImageContainerComponent implements OnInit {
 
 	_images$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 	images$: Observable<string[]> = this._images$
-		.scan((acc: string[], values: string[]) => {
-			//remove values that are present in old value but not in new
-			for (let i = acc.length - 1; i >= 0; i--) {
-				if (!values.find(it => it === acc[i])) {
-					acc.splice(i, 1);
+		.pipe(
+			scan((acc: string[], values: string[]) => {
+				//remove values that are present in old value but not in new
+				for (let i = acc.length - 1; i >= 0; i--) {
+					if (!values.find(it => it === acc[i])) {
+						acc.splice(i, 1);
+					}
 				}
-			}
 
-			//add values that are present in new value but not in old
-			values.filter(value => !acc.find(it => value === it))
-				.forEach(value => acc.push(value));
+				//add values that are present in new value but not in old
+				values.filter(value => !acc.find(it => value === it))
+					.forEach(value => acc.push(value));
 
-			return acc;
-		}, []);
+				//reorder values that have been reordered
+				if(acc.some((value, index, array) => values.indexOf(value) !== index)){
+					return values;
+				}
+
+				return acc;
+			}, [])
+		);
 
 
 	get images() {

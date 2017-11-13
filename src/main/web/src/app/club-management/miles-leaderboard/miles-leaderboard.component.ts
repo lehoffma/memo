@@ -1,12 +1,15 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BehaviorSubject, Observable} from "rxjs/Rx";
 import {User} from "../../shared/model/user";
 import {UserService} from "../../shared/services/api/user.service";
 import {attributeSortingFunction} from "../../util/util";
 import {LogInService} from "../../shared/services/api/login.service";
 import {LeaderboardRow} from "./leaderboard-row";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Observable} from "rxjs/Observable";
+import {map} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
-export interface LoggedInUserPosition extends LeaderboardRow{
+export interface LoggedInUserPosition extends LeaderboardRow {
 	index: number;
 }
 
@@ -25,47 +28,52 @@ export class MilesLeaderboardComponent implements OnInit {
 	users$ = this.userService.search("");
 
 	leaderBoard$: Observable<LeaderboardRow[]> = this.users$
-	//sort by miles
-		.map(users => users.sort(attributeSortingFunction<User>("miles", true))
-			.sort(attributeSortingFunction<User>("surname", true)))
-		.map(users => {
-			let index = 0;
-			return users.reduce((acc, user) => {
+		.pipe(
+			//sort by miles
+			map(users => users.sort(attributeSortingFunction<User>("miles", true))
+				.sort(attributeSortingFunction<User>("surname", true))),
+			map(users => users.reduce((acc, user, index) => {
 				let position = index + 1;
 
-				if(index > 0 && acc[index-1].miles === user.miles){
-					position = acc[index-1].position;
+				if (index > 0 && acc[index - 1].miles === user.miles) {
+					position = acc[index - 1].position;
 				}
 
-				index++;
 				return [...acc, {
 					...user,
 					position
 				}];
-			}, [])
-		});
+			}, []))
+		);
 
 	loggedInUserId$ = this.loginService.accountObservable;
 
-	loggedInUserPosition$: Observable<LoggedInUserPosition> = Observable.combineLatest(
+	loggedInUserPosition$: Observable<LoggedInUserPosition> = combineLatest(
 		this.loggedInUserId$,
 		this.leaderBoard$
 	)
-		.map(([id, leaderboard]) => {
-			const index = leaderboard.findIndex(item => item.id === id);
+		.pipe(
+			map(([id, leaderboard]) => {
+				const index = leaderboard.findIndex(item => item.id === id);
 
-			return {
-				...leaderboard[index],
-				index: index + 1
-			};
-		});
+				return {
+					...leaderboard[index],
+					position: leaderboard[index].position,
+					index: index + 1
+				}
+			})
+		);
 
 
-	rowsAmount$ = Observable.combineLatest(
+	rowsAmount$ = combineLatest(
 		this.leaderBoard$,
 		this.showAll$
 	)
-		.map(([leaderboard, showAll]) => showAll ? leaderboard.length : Math.min(this.amountOfRowsShown, leaderboard.length));
+		.pipe(
+			map(([leaderboard, showAll]) => showAll
+				? leaderboard.length
+				: Math.min(this.amountOfRowsShown, leaderboard.length))
+		);
 
 	constructor(private userService: UserService,
 				private loginService: LogInService) {

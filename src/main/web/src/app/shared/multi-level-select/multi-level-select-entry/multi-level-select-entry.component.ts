@@ -36,7 +36,7 @@ export class MultiLevelSelectEntryComponent implements OnInit {
 
 	/**
 	 * Callback für Option, welche noch child-options hat.
-	 *  => Zeige Child-Options und rufe stopPropagation auf, um default callback des md-menus zu verhindern
+	 *  => Zeige Child-Options und rufe stopPropagation auf, um default callback des mat-menus zu verhindern
 	 *  (welches das menu schließen würde)
 	 * @param option
 	 * @param event

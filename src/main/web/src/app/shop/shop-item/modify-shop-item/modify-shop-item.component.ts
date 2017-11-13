@@ -1,11 +1,12 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ShopItemType} from "../../shared/model/shop-item-type";
 import {ModifyType} from "./modify-type";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
 import {ModifyItemService} from "./modify-item.service";
-import {Observable} from "rxjs/Rx";
 import {ModifyItemEvent} from "./modify-item-event";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {first} from "rxjs/operators";
 
 @Component({
 	selector: "memo-modify-shop-item",
@@ -33,11 +34,10 @@ export class ModifyShopItemComponent implements OnInit, OnDestroy {
 
 	constructor(public modifyItemService: ModifyItemService,
 				private location: Location,
-				private router: Router,
 				private activatedRoute: ActivatedRoute) {
-		Observable.combineLatest(
-			this.activatedRoute.params.first(),
-			this.activatedRoute.queryParamMap.first()
+		combineLatest(
+			this.activatedRoute.params.pipe(first()),
+			this.activatedRoute.queryParamMap.pipe(first())
 		)
 			.subscribe(([params, queryParamMap]) => {
 				this.modifyItemService.readParams(params);

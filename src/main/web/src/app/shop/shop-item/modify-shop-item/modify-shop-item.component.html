@@ -3,7 +3,7 @@
 	<div class="loader"></div>
 </div>
 <ng-template #modifyItemContainer>
-	<div [ngSwitch]="modifyItemService.itemType">
+	<div [ngSwitch]="modifyItemService.itemType" class="modify-shop-item-component-container">
 		<memo-modify-tour *ngSwitchCase="ItemType.tour" [(model)]="modifyItemService.model"
 						  [mode]="modifyItemService.mode"
 						  (onSubmit)="submitModifiedObject($event)">

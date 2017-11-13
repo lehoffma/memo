@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FilterOptionType} from "./filter-option-type";
 import {MultiLevelSelectParent} from "../../shared/multi-level-select/shared/multi-level-select-parent";
-import {Observable} from "rxjs/Rx";
 import {Event} from "../shared/model/event";
 import {MerchStockList} from "../shared/model/merch-stock";
 import {Merchandise} from "../shared/model/merchandise";
@@ -9,6 +8,11 @@ import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {attributeSortingFunction, sortingFunction} from "../../util/util";
 import {MerchColor} from "../shared/model/merch-color";
 import {StockService} from "../../shared/services/api/stock.service";
+import {of} from "rxjs/observable/of";
+import {Observable} from "rxjs/Observable";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {defaultIfEmpty, map} from "rxjs/operators";
+import {_throw} from "rxjs/observable/throw";
 
 @Injectable()
 export class FilterOptionFactoryService {
@@ -16,7 +20,7 @@ export class FilterOptionFactoryService {
 	constructor(private stockService: StockService) {
 	}
 
-	readonly getCategory = () => Observable.of([{
+	readonly getCategory = () => of([{
 		name: "Kategorie",
 		queryKey: "category",
 		selectType: (<"multiple" | "single">"multiple"),
@@ -40,7 +44,7 @@ export class FilterOptionFactoryService {
 		]
 	}]);
 
-	readonly getPrice = () => Observable.of([{
+	readonly getPrice = () => of([{
 		name: "Preis",
 		queryKey: "price",
 		expanded: false,
@@ -74,7 +78,7 @@ export class FilterOptionFactoryService {
 		]
 	}]);
 
-	readonly getDate = () => Observable.of([{
+	readonly getDate = () => of([{
 		name: "Datum",
 		selectType: (<"multiple" | "single">"single"),
 		expanded: false,
@@ -99,36 +103,38 @@ export class FilterOptionFactoryService {
 	}]);
 
 	private getSizeFilterOptions(results: Event[]): Observable<MultiLevelSelectParent[]> {
-		return Observable.combineLatest(...results
+		return combineLatest(...results
 			.filter(event => EventUtilityService.isMerchandise(event))
 			.map(event => (<Merchandise>event))
 			.map(merch => this.stockService.getByEventId(merch.id))
 		)
-			.map((nestedStockList: MerchStockList[]) => nestedStockList
-				.map(stockList => stockList.map(stockItem => stockItem.size))
-				.reduce((acc: string[], sizes: string[]) =>
-						[...acc, ...sizes.filter(size => !acc.find(it => it === size))],
-					[])
-				//remove duplicates
-				.filter((size, index, array) => array.indexOf(size) === index)
-				.map((size: string) => ({
-					name: size,
-					queryValue: size,
-					selected: false
-				})))
-			.defaultIfEmpty([])
-			.map(sizes => [{
-				name: "Größe",
-				queryKey: "size",
-				selectType: (<"multiple" | "single">"multiple"),
-				expanded: false,
-				children: sizes
-			}]);
+			.pipe(
+				map((nestedStockList: MerchStockList[]) => nestedStockList
+					.map(stockList => stockList.map(stockItem => stockItem.size))
+					.reduce((acc: string[], sizes: string[]) =>
+							[...acc, ...sizes.filter(size => !acc.find(it => it === size))],
+						[])
+					//remove duplicates
+					.filter((size, index, array) => array.indexOf(size) === index)
+					.map((size: string) => ({
+						name: size,
+						queryValue: size,
+						selected: false
+					}))),
+				defaultIfEmpty([]),
+				map(sizes => [{
+					name: "Größe",
+					queryKey: "size",
+					selectType: (<"multiple" | "single">"multiple"),
+					expanded: false,
+					children: sizes
+				}])
+			);
 	}
 
 
 	private getMaterialFilterOptions(results: Event[]): Observable<MultiLevelSelectParent[]> {
-		return Observable.of(results
+		return of(results
 			.filter(event => EventUtilityService.isMerchandise(event))
 			.map(event => (<Merchandise>event))
 			.map(merch => merch.material)
@@ -149,33 +155,35 @@ export class FilterOptionFactoryService {
 	}
 
 	private getColorFilterOptions(results: Event[]): Observable<MultiLevelSelectParent[]> {
-		return Observable.combineLatest(...results
+		return combineLatest(...results
 			.filter(event => EventUtilityService.isMerchandise(event))
 			.map(event => (<Merchandise>event))
 			.map(merch => this.stockService.getByEventId(merch.id))
 		)
-			.map((nestedStockList: MerchStockList[]) => nestedStockList
-				.map(stockList => stockList.map(stockItem => stockItem.color))
-				.reduce((acc: MerchColor[], colors: MerchColor[]) =>
-						[...acc, ...colors.filter(color => !acc.find(it => it.name === color.name))],
-					[])
-				//remove duplicates
-				.filter((color, index, array) => array.findIndex(_color => _color.name === color.name) === index)
-				.sort(attributeSortingFunction("name", false))
-				.map((color: MerchColor) => ({
-					name: color.name,
-					queryValue: color.name,
-					selected: false
-				})))
-			.defaultIfEmpty([])
-			.map(colors => [{
-				name: "Farben", queryKey: "color",
-				selectType: (<"multiple" | "single">"multiple"),
-				expanded: false, children: colors
-			}])
+			.pipe(
+				map((nestedStockList: MerchStockList[]) => nestedStockList
+					.map(stockList => stockList.map(stockItem => stockItem.color))
+					.reduce((acc: MerchColor[], colors: MerchColor[]) =>
+							[...acc, ...colors.filter(color => !acc.find(it => it.name === color.name))],
+						[])
+					//remove duplicates
+					.filter((color, index, array) => array.findIndex(_color => _color.name === color.name) === index)
+					.sort(attributeSortingFunction("name", false))
+					.map((color: MerchColor) => ({
+						name: color.name,
+						queryValue: color.name,
+						selected: false
+					}))),
+				defaultIfEmpty([]),
+				map(colors => [{
+					name: "Farben", queryKey: "color",
+					selectType: (<"multiple" | "single">"multiple"),
+					expanded: false, children: colors
+				}])
+			);
 	}
 
-	get(type: FilterOptionType): (results:any[]) => Observable<MultiLevelSelectParent[]> {
+	get(type: FilterOptionType): (results: any[]) => Observable<MultiLevelSelectParent[]> {
 		switch (type) {
 			case FilterOptionType.EVENT_CATEGORY:
 				return this.getCategory;
@@ -183,17 +191,14 @@ export class FilterOptionFactoryService {
 				return this.getPrice;
 			case FilterOptionType.DATE:
 				return this.getDate;
-
 			case FilterOptionType.COLOR:
 				return this.getColorFilterOptions.bind(this);
-
 			case FilterOptionType.MATERIAL:
 				return this.getMaterialFilterOptions;
-
 			case FilterOptionType.SIZE:
 				return this.getSizeFilterOptions.bind(this);
 		}
 
-		return () => Observable.throw(new Error("No provider for type " + type));
+		return () => _throw(new Error("No provider for type " + type));
 	}
 }

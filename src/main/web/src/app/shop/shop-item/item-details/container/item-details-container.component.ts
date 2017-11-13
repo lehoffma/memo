@@ -1,12 +1,14 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Observable} from "rxjs";
-import {MdDialog} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {ItemImagePopupComponent} from "./image-popup/item-image-popup.component";
 import {Event} from "../../../shared/model/event";
 import {EventOverviewKey} from "./overview/event-overview-key";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {Permission} from "../../../../shared/model/permission";
+import {of} from "rxjs/observable/of";
+import {map} from "rxjs/operators";
 
 
 @Component({
@@ -17,33 +19,37 @@ import {Permission} from "../../../../shared/model/permission";
 export class ItemDetailsContainerComponent implements OnInit {
 	@Input() event: Event;
 	userCanEditEvent: Observable<boolean> = this.loginService.currentUser$
-		.map((user) => {
-			if (user !== null && this.event !== null) {
-				let permissions = user.userPermissions;
-				let permissionKey = EventUtilityService.handleShopItem(this.event,
-					merch => "merch",
-					tour => "tour",
-					party => "party"
-				);
-				if (permissionKey) {
-					return permissions[permissionKey] >= Permission.write;
+		.pipe(
+			map((user) => {
+				if (user !== null && this.event !== null) {
+					let permissions = user.userPermissions;
+					let permissionKey = EventUtilityService.handleShopItem(this.event,
+						merch => "merch",
+						tour => "tour",
+						party => "party"
+					);
+					if (permissionKey) {
+						return permissions[permissionKey] >= Permission.write;
+					}
 				}
-			}
 
-			return false;
-		});
+				return false;
+			})
+		);
 	userCanAccessEntries$: Observable<boolean> = this.loginService.currentUser$
-		.map((user) => {
-			if (user !== null && this.event !== null) {
-				let permissions = user.userPermissions;
-				return permissions.funds >= Permission.read;
-			}
-			return false;
-		});
+		.pipe(
+			map((user) => {
+				if (user !== null && this.event !== null) {
+					let permissions = user.userPermissions;
+					return permissions.funds >= Permission.read;
+				}
+				return false;
+			})
+		);
 
-	@Input() overviewKeys: Observable<EventOverviewKey[]> = Observable.of([]);
+	@Input() overviewKeys: Observable<EventOverviewKey[]> = of([]);
 
-	constructor(private mdDialog: MdDialog,
+	constructor(private mdDialog: MatDialog,
 				private loginService: LogInService) {
 	}
 

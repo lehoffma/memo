@@ -5,6 +5,7 @@ import {QueryParameterService} from "../../../shared/services/query-parameter.se
 import {MultiLevelSelectParent} from "../../../shared/multi-level-select/shared/multi-level-select-parent";
 import {MultiLevelSelectLeaf} from "../../../shared/multi-level-select/shared/multi-level-select-leaf";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {first, map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-filtering-menu",
@@ -84,8 +85,11 @@ export class FilteringMenuComponent implements OnInit, OnChanges{
 			.join("|");
 
 
-		this.activatedRoute.queryParamMap.first()
-			.map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams))
+		this.activatedRoute.queryParamMap
+			.pipe(
+				first(),
+				map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams))
+			)
 			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
 	}
 }

@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {UserService} from "../../shared/services/api/user.service";
 import {EventService} from "../../shared/services/api/event.service";
+import {mergeMap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-imprint",
@@ -19,22 +20,30 @@ export class ImprintComponent implements OnInit {
 
 	postUser() {
 		this.result = this.userService.getById(0)
-			.flatMap(user => this.userService.add(user));
+			.pipe(
+				mergeMap(user => this.userService.add(user))
+			)
 	}
 
 	postMerch() {
 		this.result = this.eventService.getById(0)
-			.flatMap(merch => this.eventService.add(merch));
+			.pipe(
+				mergeMap(merch => this.eventService.add(merch))
+			);
 	}
 
 	postTour() {
 		this.result = this.eventService.getById(0)
-			.flatMap(tour => this.eventService.add(tour));
+			.pipe(
+				mergeMap(tour => this.eventService.add(tour))
+			);
 	}
 
 	postParty() {
 		this.result = this.eventService.getById(0)
-			.flatMap(party => this.eventService.add(party));
+			.pipe(
+				mergeMap(party => this.eventService.add(party))
+			);
 	}
 
 }

@@ -18,10 +18,9 @@ import {ImprintComponent} from "./home/imprint/imprint.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
 import {ShareButtonsModule} from "ngx-sharebuttons";
-import {DateAdapter, MATERIAL_COMPATIBILITY_MODE, MD_DATE_FORMATS} from "@angular/material";
+import {DateAdapter, MAT_DATE_FORMATS} from "@angular/material";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./shared/authentication/auth.interceptor";
-import {HttpModule} from "@angular/http";
 import {ClubManagementModule} from "./club-management/club-management.module";
 import {SharedModule} from "./shared/shared.module";
 import {UserModule} from "./user/user.module";
@@ -29,14 +28,27 @@ import {ShopModule} from "./shop/shop.module";
 import {ApiServicesModule} from "./shared/services/api/api-services.module";
 import {UtilityServicesModule} from "./shared/services/utility-services.module";
 import {AuthenticationModule} from "./shared/authentication/authentication.module";
-import {MD_MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-config/moment-adapter";
+import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from "@angular/material-moment-adapter";
+import {JwtModule} from "@auth0/angular-jwt";
+import {AuthService} from "./shared/authentication/auth.service";
 
+import { registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
+
+registerLocaleData(localeDe);
+
+export function jwtOptionsFactory(tokenService: AuthService) {
+	return {
+		tokenGetter: () => {
+			return tokenService.getToken();
+		}
+	}
+}
 
 @NgModule({
 	imports: [
 		BrowserModule,
 		FormsModule,
-		HttpModule,
 		HttpClientModule,
 		ReactiveFormsModule,
 		BrowserAnimationsModule,
@@ -49,6 +61,22 @@ import {MD_MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-con
 			libraries: ["places"]
 		}),
 		ShareButtonsModule.forRoot(),
+		JwtModule.forRoot(
+			// {
+			// 	jwtOptionsProvider: {
+			// 		provide: JWT_OPTIONS,
+			// 		useFactory: jwtOptionsFactory,
+			// 		deps: [AuthService]
+			// 	}
+			// }
+			{
+				config: {
+					tokenGetter: () => {
+						return localStorage.getItem("auth_token");
+					}
+				}
+			}
+		),
 
 		//memo modules
 		SharedModule,
@@ -80,10 +108,9 @@ import {MD_MOMENT_DATE_FORMATS, MomentDateAdapter} from "./shared/datepicker-con
 		AppComponent
 	],
 	providers: [
-		{provide: MATERIAL_COMPATIBILITY_MODE, useValue: true},
 		{provide: LOCALE_ID, useValue: "de-DE"},
 		{provide: DateAdapter, useClass: MomentDateAdapter},
-		{provide: MD_DATE_FORMATS, useValue: MD_MOMENT_DATE_FORMATS},
+		{provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
 		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
 	]
 })
