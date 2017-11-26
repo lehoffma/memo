@@ -11,7 +11,32 @@
 	padding: 1rem;
 	width: 100%;
 
-	@media all and (min-width: 600px){
+	> h2:first-child {
+		margin-bottom: 1rem;
+	}
+
+	form {
+		> h2:not(:first-child) {
+			margin-top: 1.5rem;
+		}
+
+		memo-tour-route-input {
+			display: block;
+			margin-bottom: 1.5rem;
+		}
+
+		@media all and (max-width: 800px) {
+			memo-item-details-content {
+				::ng-deep .centered-container > .object-details-content-container {
+					max-width: 100%;
+					margin-left: 0;
+					margin-right: 0;
+				}
+			}
+		}
+	}
+
+	@media all and (min-width: 600px) {
 		width: 95%;
 	}
 
@@ -25,9 +50,9 @@
 		margin-top: -1rem;
 		margin-right: -1rem;
 
-
-		@media all and (min-width: 600px){
-			margin-top: 0.5rem;
+		@media all and (min-width: 600px) {
+			max-width: 1010px;
+			margin: auto;
 		}
 	}
 
@@ -38,12 +63,6 @@
 
 	/deep/ input {
 		font-size: 1rem;
-	}
-
-	//max-width: 800px;
-
-	@media all and (min-width: 650px) {
-		//width: 600px;
 	}
 }
 
@@ -63,3 +82,70 @@
 	color: red;
 }
 
+@media all and (max-width: 800px) {
+	form > .image-upload-container ::ng-deep .upload-container {
+		padding: 0 1rem 1rem;
+		margin: 1rem -1rem -1rem;
+		border-top: 1px solid #ededed;
+		background: white;
+	}
+}
+
+@media all and (min-width: 800px) {
+	form > .image-upload-container {
+		//flex-direction: row;
+		//justify-content: space-between;
+
+		::ng-deep .object-details-content-container {
+			max-width: 1010px;
+			margin-left: 0;
+			margin-right: 0;
+		}
+
+		memo-multi-image-upload {
+			background: #ffffff;
+			margin: -1rem;
+
+			::ng-deep memo-multi-image-container {
+
+				.available-images-list {
+					background: #fafafa;
+				}
+
+				.current-image-container {
+					background: #fafafa;
+				}
+			}
+		}
+	}
+
+	.information-container {
+		display: flex;
+		justify-content: center;
+
+		memo-item-details-content {
+			width: 50%;
+
+			&:first-child {
+				margin-right: 10px;
+
+				::ng-deep .centered-container {
+					justify-content: flex-end;
+				}
+			}
+
+			&:last-child {
+				::ng-deep .centered-container {
+					justify-content: flex-start;
+				}
+			}
+
+			::ng-deep .object-details-content-container {
+				margin-left: 0;
+				margin-right: 0;
+			}
+
+		}
+
+	}
+}

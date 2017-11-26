@@ -1,33 +1,25 @@
 <div class="modify-shop-item-container">
 	<h2>Tour {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
 	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
-
-		<div>
-			<memo-modify-item-inner-container [title]="'Bild'"
-											  [formIsValid]="modifyShopItemForm.form.valid"
-											  [saveButton]="false"
-											  (onSave)="submitModifiedObject()"
-			>
-
-				<!--todo test-->
-				<!--todo current image as input-->
+		<div class="image-upload-container">
+			<memo-item-details-content [title]="'Bilder'">
 				<memo-multi-image-upload
-
-				>
-
+					(onFormDataChange)="profilePictureChanged($event)"
+					[images]="[tourModel['imagePath']]">
 				</memo-multi-image-upload>
-				<!--<memo-profile-picture-form-->
-				<!--[image]="tourModel['imagePath'] ? tourModel['imagePath'] : defaultImageUrl"-->
-				<!--(onChange)="profilePictureChanged($event)">-->
+			</memo-item-details-content>
+		</div>
 
-				<!--</memo-profile-picture-form>-->
-			</memo-modify-item-inner-container>
+		<div class="information-container">
+			<memo-item-details-content [title]="'Route'">
+				<memo-tour-route-input [(route)]="tourModel['route']"
+									   (distanceChange)="tourModel['miles'] = meterToMiles($event)"
+									   [isTour]="true" content>
 
+				</memo-tour-route-input>
+			</memo-item-details-content>
 
-			<memo-modify-item-inner-container [title]="'Tour-Informationen'"
-											  [formIsValid]="modifyShopItemForm.form.valid"
-											  [saveButton]="false"
-											  (onSave)="submitModifiedObject()">
+			<memo-item-details-content [title]="'Tour-Informationen'">
 				<mat-form-field>
 					<input matInput name="titleInput"
 						   required
@@ -39,17 +31,16 @@
 					</mat-error>
 				</mat-form-field>
 
-
 				<mat-form-field class="description-input">
-			<textarea autosize matInput name="descriptionInput"
-					  class="not-resizable-textarea" required
-					  type="text"
-					  #descriptionInput="ngModel"
-					  placeholder="Beschreibung"
-					  [(ngModel)]="tourModel['description']">
-			</textarea>
+					<textarea autosize matInput name="descriptionInput"
+							  class="not-resizable-textarea" required
+							  type="text"
+							  #descriptionInput="ngModel"
+							  placeholder="Beschreibung"
+							  [(ngModel)]="tourModel['description']">
+					</textarea>
 					<mat-error *ngIf="descriptionInput.touched && !descriptionInput.valid"
-							  align="end">
+							   align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
@@ -75,7 +66,7 @@
 								   #capacityInput="ngModel"
 								   [(ngModel)]="tourModel['capacity']">
 							<mat-error *ngIf="capacityInput.touched && !capacityInput.valid"
-									  align="end">
+									   align="end">
 								Dieses Feld darf nicht leer bleiben!
 							</mat-error>
 						</mat-form-field>
@@ -117,30 +108,25 @@
 								   name="timeInput" required>
 
 							<mat-error *ngIf="timeInput.touched && !timeInput.valid && tourModel['time'].length === 0"
-									  align="end">
+									   align="end">
 								Dieses Feld darf nicht leer bleiben!
 							</mat-error>
 							<mat-error *ngIf="timeInput.touched && !timeInput.valid && tourModel['time'].length > 0"
-									  align="end">
+									   align="end">
 								Die Uhrzeit muss im Format "HH:MM" vorliegen!
 							</mat-error>
 						</mat-form-field>
 
 					</div>
 				</div>
-			</memo-modify-item-inner-container>
+			</memo-item-details-content>
 		</div>
 
-		<memo-modify-item-inner-container [title]="'Route'"
-										  [formIsValid]="modifyShopItemForm.form.valid"
-										  [saveButton]="false"
-										  (onSave)="submitModifiedObject()">
-			<memo-tour-route-input [(route)]="tourModel['route']"
-								   (distanceChange)="tourModel['miles'] = meterToMiles($event)"
-								   [isTour]="true">
-
-			</memo-tour-route-input>
-		</memo-modify-item-inner-container>
+		<!--<memo-modify-item-inner-container [title]="'Route'"-->
+		<!--[formIsValid]="modifyShopItemForm.form.valid"-->
+		<!--[saveButton]="false"-->
+		<!--(onSave)="submitModifiedObject()">-->
+		<!--</memo-modify-item-inner-container>-->
 
 
 		<!--below all that-->

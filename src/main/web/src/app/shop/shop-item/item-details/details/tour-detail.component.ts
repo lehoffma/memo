@@ -86,7 +86,7 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 		.pipe(
 			filter(tour => tour.id >= 0),
 			mergeMap(tour => this.commentService.getByEventId(tour.id))
-		)
+		);
 
 	commentsSubject$ = new BehaviorSubject<Comment[]>([]);
 

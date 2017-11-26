@@ -19,6 +19,7 @@ import {ColorPickerModule} from "ngx-color-picker";
 import {AgmCoreModule} from "@agm/core";
 import {ModifyMerchStockContainerComponent} from './modify-merch/modify-merch-stock-container/modify-merch-stock-container.component';
 import {DirectionsMapDirective} from "./tour-route-input/directions-map.directive";
+import {ShopItemDetailsModule} from "../item-details/shop-item-details.module";
 
 @NgModule({
 	imports: [
@@ -30,6 +31,7 @@ import {DirectionsMapDirective} from "./tour-route-input/directions-map.directiv
 		MemoMaterialModule,
 		SharedModule,
 		ModifyShopItemRoutingModule,
+		ShopItemDetailsModule,
 		UserModule,
 	],
 	exports: [ModifyMerchStockComponent],

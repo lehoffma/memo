@@ -11,7 +11,7 @@ import {EntryCategoryService} from "../../../../shared/services/api/entry-catego
 import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/modify-item-event";
 import {EntryCategory} from "../../../../shared/model/entry-category";
 import {Observable} from "rxjs/Observable";
-import {filter, first, map, mergeMap, startWith} from "rxjs/operators";
+import {filter, map, mergeMap, startWith, take} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Component({
@@ -67,10 +67,9 @@ export class ModifyEntryComponent implements OnInit {
 		}
 		this.activatedRoute.queryParamMap
 			.pipe(
-				first(),
 				filter(queryParamMap => queryParamMap.has("eventId")),
 				mergeMap(queryParamMap => this.eventService.getById(+queryParamMap.get("eventId"))),
-				first(),
+				take(1),
 			)
 			.subscribe(event => {
 				this.associatedEvent = event;

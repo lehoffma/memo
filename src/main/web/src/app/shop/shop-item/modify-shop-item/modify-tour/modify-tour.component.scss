@@ -1,22 +1,6 @@
 @import "../../../../../mixins";
 @import "../modify-shop-item.component";
 
-.modify-shop-item-container {
-	> h2:first-child {
-		margin-bottom: 1rem;
-	}
-
-	form {
-		> h2:not(:first-child) {
-			margin-top: 1.5rem;
-		}
-
-		memo-tour-route-input {
-			display: block;
-			margin-bottom: 1.5rem;
-		}
-	}
-}
 
 .additional-tour-info-container {
 	display: flex;
@@ -50,54 +34,12 @@ memo-multi-image-upload {
 	background: #fafafa;
 }
 
-::ng-deep .upload-container {
-	padding: 0 1rem 1rem;
-	margin: 1rem -1rem -1rem;
-	border-top: 1px solid #ededed;
-	background: white;
-}
-
 form > div:first-child {
 	display: flex;
 	flex-direction: column;
 }
 
-@media all and (min-width: 800px) {
-	form > div:first-child {
-		flex-direction: row;
-		justify-content: space-between;
-
-		memo-modify-item-inner-container {
-			width: 50%;
-
-			&:not(:first-child) {
-				//margin-left: 50px;
-			}
-		}
-
-		memo-multi-image-upload {
-			flex-direction: column;
-
-			::ng-deep memo-multi-image-container {
-				max-width: none;
-
-				.available-images-list {
-					background: #fafafa;
-				}
-
-				.current-image-container {
-					background: #fafafa;
-				}
-			}
-
-			::ng-deep .current-image-container {
-				width: 100%;
-				max-width: none;
-
-				.current-image {
-					max-width: none;
-				}
-			}
-		}
-	}
+.form-buttons {
+	display: flex;
+	justify-content: center;
 }

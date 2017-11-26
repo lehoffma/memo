@@ -65,7 +65,10 @@
 			</tr>
 			</thead>
 			<ng-template ngFor let-dataObject
-						 [ngForOf]="data | slice:((currentPage-1)*rowsPerPage):(currentPage*rowsPerPage)">
+						 [ngForOf]="data
+						 | slice
+							 :getPaginationIndex('start', currentPage, rowsPerPage, pagination)
+							 :getPaginationIndex('end', currentPage, rowsPerPage, pagination)">
 
 				<tbody class="expandable-table-body" [ngClass]="{'expanded-row': expandStatusList[dataObject.id]}">
 				<tr class="expandable-table-body-main-row expandable-table-row"
@@ -147,23 +150,25 @@
 	</div>
 
 	<div class="expandable-table-footer expandable-table-row secondary-text">
-		<span>Zeilen pro Seite:</span>
-		<mat-select [(ngModel)]="rowsPerPage">
-			<mat-option *ngFor="let option of rowsPerPageOptions" [value]="option">{{option}}</mat-option>
-		</mat-select>
-		<span class="current-page-range">
-		{{1+(currentPage-1)*rowsPerPage +
-		'-' + (currentPage*rowsPerPage < data?.length ? currentPage*rowsPerPage : data?.length)
-		+ ' von ' + data?.length}}
-	</span>
-		<button mat-icon-button type="button" (click)="currentPage = currentPage-1"
-				[disabled]="(currentPage-2)*rowsPerPage < 0">
-			<mat-icon>navigate_before</mat-icon>
-		</button>
-		<button mat-icon-button type="button" (click)="currentPage = currentPage+1"
-				[disabled]="(currentPage)*rowsPerPage > data?.length">
-			<mat-icon>navigate_next</mat-icon>
-		</button>
+		<ng-template [ngIf]="pagination">
+			<span>Zeilen pro Seite:</span>
+			<mat-select [(ngModel)]="rowsPerPage">
+				<mat-option *ngFor="let option of rowsPerPageOptions" [value]="option">{{option}}</mat-option>
+			</mat-select>
+			<span class="current-page-range">
+			{{1+(currentPage-1)*rowsPerPage +
+			'-' + (currentPage*rowsPerPage < data?.length ? currentPage*rowsPerPage : data?.length)
+			+ ' von ' + data?.length}}
+			</span>
+			<button mat-icon-button type="button" (click)="currentPage = currentPage-1"
+					[disabled]="(currentPage-2)*rowsPerPage < 0">
+				<mat-icon>navigate_before</mat-icon>
+			</button>
+			<button mat-icon-button type="button" (click)="currentPage = currentPage+1"
+					[disabled]="(currentPage)*rowsPerPage > data?.length">
+				<mat-icon>navigate_next</mat-icon>
+			</button>
+		</ng-template>
 	</div>
 
 </div>

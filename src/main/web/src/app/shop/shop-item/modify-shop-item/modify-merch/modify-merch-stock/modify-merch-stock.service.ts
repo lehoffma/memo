@@ -95,12 +95,14 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 		this.mdDialog.open(ModifyMerchStockItemComponent, {data})
 			.afterClosed()
 			.subscribe((event: ModifyStockItemEvent) => {
-				switch (event.modifyType) {
-					case ModifyType.ADD:
-						this.addStock(event);
-						break;
-					case ModifyType.EDIT:
-						this.editStock(event);
+				if (event) {
+					switch (event.modifyType) {
+						case ModifyType.ADD:
+							this.addStock(event);
+							break;
+						case ModifyType.EDIT:
+							this.editStock(event);
+					}
 				}
 			})
 	}

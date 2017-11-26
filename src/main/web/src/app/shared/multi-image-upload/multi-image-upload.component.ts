@@ -1,8 +1,7 @@
-import {Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ExpandableTableColumn} from "../expandable-table/expandable-table-column";
 import {RowAction} from "../expandable-table/row-action";
-import {MatButton} from "@angular/material";
 import {MultiImageUploadService} from "./multi-image-upload.service";
 import {filter, map, take} from "rxjs/operators";
 
@@ -23,11 +22,29 @@ export interface ImageToUpload {
 export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	//todo maximum size stuff
 
-	private _images$ = new BehaviorSubject<any[]>([]);
+	private _images$ = new BehaviorSubject<ImageToUpload[]>([]);
 	images$ = this.multiImageUploadService.data$
 		.pipe(
 			map(images => [...images.map(it => it.data)])
 		);
+
+	@Input()
+	set images(images: string[]) {
+		console.log(images);
+		if (images) {
+			const imagesToUpload = images.filter(it => it !== undefined);
+			if (imagesToUpload && imagesToUpload.length > 0) {
+				const currentValue = this._images$.getValue();
+				this._images$.next([...currentValue, ...imagesToUpload.map(image => ({
+					id: image,
+					name: image,
+					data: image
+				}))]
+					.filter((value, index, array) => array.findIndex(it => it.id === value.id) === index));
+
+			}
+		}
+	}
 
 	columnKeys: ExpandableTableColumn<ImageToUpload>[] = [
 		new ExpandableTableColumn<ImageToUpload>("Name", "name")

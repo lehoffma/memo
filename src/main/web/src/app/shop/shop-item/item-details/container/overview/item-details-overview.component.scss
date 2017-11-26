@@ -2,11 +2,32 @@
 @import "../../centered-container";
 @import "variables";
 
+
 .object-overview-container {
 	@include card-like();
 	background-color: $container-content--background-color;
 	color: $container-content--color;
 	padding: 1.5rem;
+	max-width: none !important;
+	margin: 0;
+
+	.object-info-title{
+		display: flex;
+		justify-content: space-between;
+		color: rgba(0, 0, 0, 0.84);
+		background-color: white;
+		margin-left: -1.5rem;
+		margin: -1.5rem;
+		margin-bottom: 1.5rem;
+		font-size: 1.3rem;
+		padding-left: 1rem;
+		padding-right: 0.5rem;
+		padding-top: 1rem;
+
+		button{
+			margin-top: -0.5rem;
+		}
+	}
 
 	.object-info-container {
 		display: flex;

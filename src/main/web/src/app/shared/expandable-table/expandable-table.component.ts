@@ -20,7 +20,6 @@ import {ExpandableTableColumnContainerDirective} from "./expandable-table-column
 import {ConfirmationDialogService} from "../services/confirmation-dialog.service";
 import {RowAction} from "./row-action";
 import {TableActionEvent} from "./table-action-event";
-import {filter} from "rxjs/operators";
 
 
 export interface ActionPermissions {
@@ -89,6 +88,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	} = {};
 	sortedBy: ColumnSortingEvent<T>;
 	//pagination variables
+	@Input() pagination = true;
 	currentPage = 1;
 	@Input() rowsPerPage = 50;
 	rowsPerPageOptions = [5, 10, 25, 50];
@@ -201,6 +201,23 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	}
 
 	/**
+	 *
+	 * @param {"start" | "end"} which
+	 * @param {number} currentPage
+	 * @param {number} rowsPerPage
+	 * @param {boolean} pagination
+	 * @returns {number}
+	 */
+	getPaginationIndex(which: "start" | "end", currentPage: number, rowsPerPage: number, pagination: boolean = true) {
+		if (pagination) {
+			return ((currentPage - ((which === "start") ? 1 : 0)) * rowsPerPage);
+		}
+		return which === "start"
+			? 0
+			: Infinity;
+	}
+
+	/**
 	 * Expands the row associated with the given data object and dynamically initializes the child component contained
 	 * in the expanded row.
 	 * @param data
@@ -278,7 +295,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	deleteSelected() {
 		const entriesToDelete = Object.keys(this.selectedStatusList)
 			.filter(key => this.selectedStatusList[key])
-			.map(id => this.data.find(dataObject => ""+dataObject.id === id));
+			.map(id => this.data.find(dataObject => "" + dataObject.id === id));
 
 		this.confirmationDialogService.openDialog(
 			entriesToDelete.length > 1
@@ -291,6 +308,6 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 					this.selectedStatusList = {};
 				}
 			});
-
 	}
+
 }

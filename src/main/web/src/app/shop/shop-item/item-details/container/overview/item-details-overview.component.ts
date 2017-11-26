@@ -13,9 +13,11 @@ import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property"
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {filter, first, map, mergeMap} from "rxjs/operators";
+import {defaultIfEmpty, filter, first, map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {of} from "rxjs/observable/of";
+import {Permission} from "app/shared/model/permission";
+import {LogInService} from "../../../../../shared/services/api/login.service";
 
 
 @Component({
@@ -26,14 +28,12 @@ import {of} from "rxjs/observable/of";
 export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	_event$: BehaviorSubject<Event> = new BehaviorSubject(Event.create());
 
-
 	stock$: Observable<MerchStockList> = this._event$
 		.pipe(
 			filter(event => EventUtilityService.isMerchandise(event)),
 			filter(event => event.id !== -1),
 			mergeMap(event => this.stockService.getByEventId(event.id))
 		);
-
 
 	public colorSelection$: Observable<MerchColor[]> = this.getColorSelection("");
 
@@ -55,8 +55,38 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
 		} = {};
 
+	userCanEditEvent$: Observable<boolean> = this.loginService.currentUser$
+		.pipe(
+			map((user) => {
+				if (user !== null && this.event !== null) {
+					let permissions = user.userPermissions;
+					let permissionKey = EventUtilityService.handleShopItem(this.event,
+						merch => "merch",
+						tour => "tour",
+						party => "party"
+					);
+					if (permissionKey) {
+						return permissions[permissionKey] >= Permission.write;
+					}
+				}
+
+				return false;
+			})
+		);
+	userCanAccessEntries$: Observable<boolean> = this.loginService.currentUser$
+		.pipe(
+			map((user) => {
+				if (user !== null && this.event !== null) {
+					let permissions = user.userPermissions;
+					return permissions.funds >= Permission.read;
+				}
+				return false;
+			})
+		);
+
 	constructor(private participantService: ParticipantsService,
 				private stockService: StockService,
+				private loginService: LogInService,
 				private shoppingCartService: ShoppingCartService) {
 	}
 
@@ -123,7 +153,8 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 								.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
 								.pipe(
 									map(participants => event.capacity - participants.length))
-						)
+						),
+						defaultIfEmpty(0)
 					);
 			}
 			else {

@@ -1,11 +1,41 @@
 <div class="centered-container">
 	<div class="object-overview-container" *ngIf="event">
+		<div class="object-info-title">
+			<span>
+			{{event.title}}
+			</span>
+
+			<mat-menu #menu="matMenu">
+				<a mat-menu-item
+				   *ngIf="userCanEditEvent$ | async"
+				   matTooltip="Dieses Event bearbeiten"
+				   routerLink="./edit">
+					<mat-icon>edit</mat-icon>
+					<span>Bearbeiten</span>
+				</a>
+				<a mat-menu-item
+				   *ngIf="userCanAccessEntries$ | async"
+				   matTooltip="Kosten dieses Events anzeigen"
+				   routerLink="/management/costs"
+				   [queryParams]="{eventIds: event.id}">
+					<mat-icon>payment</mat-icon>
+					Kosten
+				</a>
+			</mat-menu>
+			<button mat-icon-button [matMenuTriggerFor]="menu"
+					*ngIf="(userCanEditEvent$ | async) || (userCanAccessEntries$ | async)">
+				<mat-icon>
+					more_vert
+				</mat-icon>
+			</button>
+		</div>
+
 		<div class="object-info-container">
 			<div class="object-info" *ngFor="let overviewKey of overviewKeys">
 				<div [ngSwitch]="overviewKey.pipe">
 					<ng-template [ngSwitchCase]="'price'">{{getValue(overviewKey.key) | async | currency:'EUR':true}}
 					</ng-template>
-					<ng-template [ngSwitchCase]="'date'">{{getValue(overviewKey.key) | async | moment:'DD.MM.YYYY'}}
+					<ng-template [ngSwitchCase]="'date'">{{getValue(overviewKey.key) | async | moment:'DD.MM.'}}
 					</ng-template>
 					<ng-template ngSwitchDefault>{{getValue(overviewKey.key) | async}}</ng-template>
 				</div>

@@ -1,6 +1,4 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Party} from "../shared/model/party";
-import {Tour} from "../shared/model/tour";
 import {EventService} from "../../shared/services/api/event.service";
 import {EventType} from "../shared/model/event-type";
 import {MatDialog, MatSnackBar} from "@angular/material";

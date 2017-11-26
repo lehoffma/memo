@@ -53,6 +53,10 @@ import {AgmCoreModule} from "@agm/core";
 		FullNameTableCellComponent,
 		ItemImagePopupComponent,
 		ModifyParticipantComponent
+	],
+	exports: [
+		ItemDetailsContentComponent
 	]
 })
-export class ShopItemDetailsModule{}
+export class ShopItemDetailsModule {
+}
