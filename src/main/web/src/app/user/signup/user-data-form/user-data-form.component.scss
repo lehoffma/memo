@@ -1,5 +1,10 @@
 //@import "../../login/login.component";
 @import "variables";
+@import "../../../shop/shop-item/modify-shop-item/modify-shop-item.component";
+
+.modify-shop-item-container {
+	padding: 0;
+}
 
 h3 {
 	font-weight: 200;
@@ -32,26 +37,34 @@ h3 {
 	.user-personal-data-input-container {
 		display: flex;
 		flex-direction: column;
-		margin-top: 15px;
 		margin-bottom: 10px;
 
 		.name-input,
 		.date-and-gender-input {
 			display: flex;
 			justify-content: space-between;
+			flex-wrap: wrap;
 			align-items: center;
 			margin-top: 10px;
 
 			mat-form-field,
-			mat-select,
 			> div {
-				width: 45%;
+				width: 100%;
 				> mat-form-field {
 					width: 100%;
 				}
 			}
-		}
 
+			@media all and (min-width: 500px) {
+				mat-form-field,
+				> div {
+					width: 45%;
+					> mat-form-field {
+						width: 100%;
+					}
+				}
+			}
+		}
 	}
 
 	.checkboxes-container {
@@ -65,6 +78,7 @@ h3 {
 			align-items: flex-start;
 		}
 	}
+
 }
 
 .club-information {
@@ -72,14 +86,23 @@ h3 {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-top: 15px;
+		flex-wrap: wrap;
 
-		mat-select,
+		mat-form-field,
 		> div {
-			width: 45%;
-
+			width: 100%;
 			> mat-form-field {
 				width: 100%;
+			}
+		}
+
+		@media all and (min-width: 500px) {
+			mat-form-field,
+			> div {
+				width: 45%;
+				> mat-form-field {
+					width: 100%;
+				}
 			}
 		}
 	}
@@ -114,4 +137,6 @@ memo-address-entry {
 
 .form-actions {
 	margin-top: 15px;
+	display: flex;
+	justify-content: center;
 }

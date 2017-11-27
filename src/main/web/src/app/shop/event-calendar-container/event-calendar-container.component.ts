@@ -28,7 +28,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 
 	subscriptions = [this.events$.subscribe()];
 
-	selectedView = "calendar";
+	selectedView: "calendar" | "list" = "calendar";
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
@@ -149,7 +149,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	 *
 	 * @param date
 	 */
-	onDayClick(date: Date) {
+	onDayClick(date: Date = new Date()) {
 		const permissions$ = this.loginService.currentUser$
 			.pipe(
 				filter(user => user !== null),

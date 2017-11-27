@@ -32,7 +32,7 @@ import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from "@angular/material-mome
 import {JwtModule} from "@auth0/angular-jwt";
 import {AuthService} from "./shared/authentication/auth.service";
 
-import { registerLocaleData } from '@angular/common';
+import {registerLocaleData} from '@angular/common';
 import localeDe from '@angular/common/locales/de';
 
 registerLocaleData(localeDe);
@@ -43,6 +43,10 @@ export function jwtOptionsFactory(tokenService: AuthService) {
 			return tokenService.getToken();
 		}
 	}
+}
+
+export function tokenGetter() {
+	return localStorage.getItem("auth_token");
 }
 
 @NgModule({
@@ -71,9 +75,7 @@ export function jwtOptionsFactory(tokenService: AuthService) {
 			// }
 			{
 				config: {
-					tokenGetter: () => {
-						return localStorage.getItem("auth_token");
-					}
+					tokenGetter: tokenGetter
 				}
 			}
 		),

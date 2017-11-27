@@ -46,6 +46,8 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 		}
 	}
 
+	@Input() limit: number = Infinity;
+
 	columnKeys: ExpandableTableColumn<ImageToUpload>[] = [
 		new ExpandableTableColumn<ImageToUpload>("Name", "name")
 	];
@@ -62,7 +64,9 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	];
 	@ViewChild("fileUpload") fileUpload: ElementRef;
 
+	currentFiles: File[] = [];
 	@Output() onFormDataChange = new EventEmitter<any>();
+
 
 	subscriptions = [];
 
@@ -87,7 +91,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	 *
 	 * @param {FileList} fileList
 	 */
-	addImages(fileList: FileList) {
+	addImages(fileList: File[]) {
 		const addedImages$ = new BehaviorSubject<ImageToUpload[]>([]);
 
 		for (let i = 0; i < fileList.length; i++) {
@@ -97,14 +101,14 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 				reader.onload = (event) => {
 					const currentValue = addedImages$.getValue();
 					currentValue.push({
-						id: fileList.item(i).name,
-						name: fileList.item(i).name,
+						id: fileList[i].name,
+						name: fileList[i].name,
 						data: (<any>event.target).result
 					});
 					addedImages$.next(currentValue);
 				};
 
-				reader.readAsDataURL(fileList.item(i));
+				reader.readAsDataURL(fileList[i]);
 			})();
 		}
 
@@ -115,9 +119,9 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 				take(1)
 			)
 			.subscribe(images => {
-				const currentValue = this._images$.getValue();
-				images.forEach(image => currentValue.push(image));
-				this._images$.next([...currentValue]);
+				// const currentValue = this._images$.getValue();
+				// images.forEach(image => currentValue.push(image));
+				this._images$.next([...images]);
 			})
 	}
 
@@ -131,11 +135,36 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 		const fileCount: number = fileList.length;
 		const formData = new FormData();
 		if (fileCount > 0) { // a file was selected
-			for (let i = 0; i < fileCount; i++) {
-				formData.append("file[]", fileList.item(i));
+			//examples
+			// [] + [a,b,c,d,e] => [a,b,c,d,e]
+			// [a,b,c,d] + [e] => [a,b,c,d,e]
+			// [a,b,c] + [d,e,f] => [f,b,c,d,e] //fill up and then start from the beginning
+
+			let files = Array.from(fileList);
+			//only look at the first N files and completely replace the old ones
+			if (fileCount > this.limit) {
+				this.currentFiles = [...files.splice(0, this.limit)];
 			}
-			this.onFormDataChange.emit(formData);
-			this.addImages(fileList);
+			else {
+				const after = files.splice(0, this.limit - this.currentFiles.length);
+				//there are still some files left => wrap around and start from the beginning
+				const before = [...files];
+
+				//fill up until limit is reached
+				this.currentFiles = [
+					...before,
+					...this.currentFiles.slice(before.length, before.length + this.limit - after.length),
+					...after];
+			}
+
 		}
+
+		this.currentFiles.forEach(file => formData.append("file[]", file));
+		this.onFormDataChange.emit(formData);
+		this.addImages(this.currentFiles);
+	}
+
+	isFinite(number: number) {
+		return isFinite(number);
 	}
 }

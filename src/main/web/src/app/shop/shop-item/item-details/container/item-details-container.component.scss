@@ -33,6 +33,11 @@
 	background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
 }
 
+memo-multi-image-container{
+	max-width: 500px;
+	margin: auto;
+}
+
 @media all and (min-width: 1050px) {
 	.item-details-card {
 		display: flex;
@@ -42,7 +47,7 @@
 	}
 
 	.image-overlay-container {
-		height: 400px;
+		height: 500px;
 		width: 500px;
 	}
 
@@ -64,13 +69,19 @@
 	}
 
 	memo-item-details-overview /deep/ .centered-container {
-		height: 400px;
+		height: 500px;
+		width: 500px;
 	}
 
 	memo-item-details-overview /deep/ .object-overview-container {
 		margin: 0;
 	}
 
+	memo-multi-image-container{
+		max-width: 500px;
+		width: 500px;
+		margin: 0;
+	}
 
 	.item-details-container /deep/ .object-details-content-container {
 		max-width: 1000px !important;

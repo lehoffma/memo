@@ -13,6 +13,7 @@ import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {DebitInputFormComponent} from "./payment-methods-form/debit-input-form/debit-input-form.component";
 import {RouterModule} from "@angular/router";
 import {SharedModule} from "../../shared/shared.module";
+import {ShopItemDetailsModule} from "../../shop/shop-item/item-details/shop-item-details.module";
 
 @NgModule({
 	imports: [
@@ -23,6 +24,7 @@ import {SharedModule} from "../../shared/shared.module";
 		PasswordStrengthBarModule,
 		SharedModule,
 		MemoMaterialModule,
+		ShopItemDetailsModule,
 	],
 	declarations: [
 		SignUpComponent,

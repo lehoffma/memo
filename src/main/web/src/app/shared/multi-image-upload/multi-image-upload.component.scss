@@ -44,10 +44,12 @@ memo-multi-image-container {
 		memo-multi-image-container {
 			max-width: none;
 			width: 50%;
+			//flex-grow: 1;
 		}
 
 		.upload-container {
 			width: 50%;
+			//flex-grow: 1;
 			padding: 0;
 			margin: 0;
 

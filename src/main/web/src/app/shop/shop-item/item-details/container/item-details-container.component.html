@@ -2,35 +2,36 @@
 	<div class="item-details-card">
 		<!--todo imagePaths-->
 		<memo-multi-image-container
-			[images]="[event.imagePath]"
+			class="mat-elevation-z3"
+			[images]="[event.imagePath, 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?auto=format&fit=crop&w=1182&q=60&ixid=dW5zcGxhc2guY29tOzs7Ozs%3D']"
 			(onClick)="showDetailedImage($event)"
 		>
 
 		</memo-multi-image-container>
 		<!--<div class="image-overlay-container">-->
-			<!--&lt;!&ndash;display image with overlayed title if present&ndash;&gt;-->
-			<!--<div class="image-container"-->
-				 <!--(click)="showDetailedImage(!!event?.imagePath ? event.imagePath : 'resources/images/Logo.png')"-->
-				 <!--[attr.object-title]="event?.title">-->
-				<!--<img class="image-detail" src="{{!!event?.imagePath ? event.imagePath : 'resources/images/Logo.png'}}">-->
-			<!--</div>-->
+		<!--&lt;!&ndash;display image with overlayed title if present&ndash;&gt;-->
+		<!--<div class="image-container"-->
+		<!--(click)="showDetailedImage(!!event?.imagePath ? event.imagePath : 'resources/images/Logo.png')"-->
+		<!--[attr.object-title]="event?.title">-->
+		<!--<img class="image-detail" src="{{!!event?.imagePath ? event.imagePath : 'resources/images/Logo.png'}}">-->
+		<!--</div>-->
 
-			<!--<div class="item-actions">-->
-				<!--<a mat-icon-button-->
-				   <!--*ngIf="userCanAccessEntries$ | async"-->
-				   <!--matTooltip="Kosten dieses Events anzeigen"-->
-				   <!--routerLink="/management/costs"-->
-				   <!--[queryParams]="{eventIds: event.id}"-->
-				<!--&gt;-->
-					<!--<mat-icon>payment</mat-icon>-->
-				<!--</a>-->
-				<!--<a mat-icon-button-->
-				   <!--*ngIf="userCanEditEvent$ | async"-->
-				   <!--matTooltip="Dieses Event bearbeiten"-->
-				   <!--routerLink="./edit">-->
-					<!--<mat-icon>edit</mat-icon>-->
-				<!--</a>-->
-			<!--</div>-->
+		<!--<div class="item-actions">-->
+		<!--<a mat-icon-button-->
+		<!--*ngIf="userCanAccessEntries$ | async"-->
+		<!--matTooltip="Kosten dieses Events anzeigen"-->
+		<!--routerLink="/management/costs"-->
+		<!--[queryParams]="{eventIds: event.id}"-->
+		<!--&gt;-->
+		<!--<mat-icon>payment</mat-icon>-->
+		<!--</a>-->
+		<!--<a mat-icon-button-->
+		<!--*ngIf="userCanEditEvent$ | async"-->
+		<!--matTooltip="Dieses Event bearbeiten"-->
+		<!--routerLink="./edit">-->
+		<!--<mat-icon>edit</mat-icon>-->
+		<!--</a>-->
+		<!--</div>-->
 
 		<!--</div>-->
 

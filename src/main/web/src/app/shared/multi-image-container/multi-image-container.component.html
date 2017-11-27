@@ -17,7 +17,7 @@
 		 (click)="onClick.emit(currentImage)"
 		 class="current-image" src="{{(_currentImage$ | async)}}"/>
 	<ng-template #placeholder>
-		<div class="current-image placeholder">
+		<div class="current-image placeholder" (click)="onClick.emit({})">
 
 		</div>
 	</ng-template>

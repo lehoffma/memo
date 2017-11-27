@@ -1,11 +1,14 @@
-<memo-multi-image-container [images]="images$ | async">
+<memo-multi-image-container [images]="images$ | async"
+							(onClick)="fileUpload.click()"
+							[style.width]="limit === 1 ? '100%' : ''"
+>
 
 </memo-multi-image-container>
 
 <!--todo drag-n-dropable list/table of currently uploaded images with a big "upload" or "browse" button at the bottom-->
 
-<div class="upload-container">
-	<memo-expandable-table [title]="'Hochgeladene Bilder'"
+<div class="upload-container" *ngIf="limit > 1">
+	<memo-expandable-table [title]="'Hochgeladene Bilder' + (isFinite(limit) ? (' (max. ' + limit + ')') : '')"
 						   [data]="multiImageUploadService.data$ | async"
 						   [rowActions]="rowActions"
 						   [expandable]="false"
@@ -17,19 +20,11 @@
 	>
 
 	</memo-expandable-table>
+</div>
 
-	<div class="upload-button-container">
-		<!--<button mat-raised-button color="accent" type="button"-->
-				<!--[hidden]="true"-->
-				<!--#fileUploadButton (click)="fileUpload.click()">-->
-			<!--<mat-icon>-->
-				<!--file_upload-->
-			<!--</mat-icon>-->
-			<!--Hochladen-->
-		<!--</button>-->
-		<input type="file" multiple #fileUpload [hidden]="true"
-			   (input)="onFileSelect($event)"
-			   (change)="onFileSelect($event)" name="file"/>
-	</div>
 
+<div class="upload-button-container">
+	<input type="file" [multiple]="limit > 1" #fileUpload [hidden]="true"
+		   (input)="onFileSelect($event)"
+		   (change)="onFileSelect($event)" name="file"/>
 </div>
