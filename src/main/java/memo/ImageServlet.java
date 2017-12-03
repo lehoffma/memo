@@ -2,6 +2,7 @@ package memo;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -17,7 +18,7 @@ import java.io.*;
 import java.util.Collection;
 
 @WebServlet(name = "ImageServlet", value = "/api/image")
-@MultipartConfig
+@MultipartConfig()
 public class ImageServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,29 +31,41 @@ public class ImageServlet extends HttpServlet {
         path = System.getProperty("user.home") + System.getProperty("file.separator");
         path += "MemoShop"+ System.getProperty("file.separator");
         path += "pictures" + System.getProperty("file.separator");
-        Collection<Part> parts = request.getParts();
 
-        String filepath = "";
-
-
-        for (Part p: parts) {
-
-            String ext = FilenameUtils.getExtension(getFileName(p));
-
-            File f;
-            do {
-                String filename = RandomStringUtils.randomAlphanumeric(10);
-                f = new File(filepath = path + filename + FilenameUtils.EXTENSION_SEPARATOR + ext);
-            }while(f.exists());
-            writeToFile(p.getInputStream(),f);
-        }
+         try {
 
 
-        Gson gson = new Gson();
+             Collection<Part> parts = request.getParts();
 
-        JsonObject obj = new JsonObject();
-        obj.addProperty("imagePath",filepath);
-        response.getWriter().append(gson.toJson(obj));
+             String filepath = "";
+
+             JsonArray arr = new JsonArray();
+
+             for (Part p : parts) {
+
+                 String ext = FilenameUtils.getExtension(getFileName(p));
+
+                 File f;
+                 do {
+                     String filename = RandomStringUtils.randomAlphanumeric(10);
+                     f = new File(filepath = path + filename + FilenameUtils.EXTENSION_SEPARATOR + ext);
+                 } while (f.exists());
+                 writeToFile(p.getInputStream(), f);
+                 arr.add(filepath);
+             }
+
+
+             Gson gson = new Gson();
+
+             JsonObject obj = new JsonObject();
+             obj.add("imagePaths", arr);
+             response.getWriter().append(gson.toJson(obj));
+
+         }
+         catch (Exception e)
+         {
+             System.out.println(e);
+         }
     }
 
 

@@ -1,23 +1,29 @@
 package memo.model;
 
+
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Entity implementation class for Entity: SizeTable
+ * Entity implementation class for Entity: Images
  */
-@Entity
-@Table(name = "SIZE_TABLE")
 
-public class SizeTable implements Serializable {
+
+@Entity
+@Table(name = "IMAGES")
+public class Image implements Serializable{
 
     //**************************************************************
     //  static members
     //**************************************************************
 
     private static final long serialVersionUID = 1L;
+
+
+    // ToDo: anpassen
+    private static final String filePath = "";
 
     //**************************************************************
     //  members
@@ -29,78 +35,60 @@ public class SizeTable implements Serializable {
     private Integer id;
 
     @Expose
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn
-    private Stock stock;
+    private User user;
 
     @Expose
-    @Column(nullable = false)
-    private String name;
+    @ManyToOne
+    @JoinColumn
+    private ShopItem item;
+
+    //ToDo: default vergeben
 
     @Expose
-    @Column(nullable = false)
-    private Integer min;
-
-    @Expose
-    private Integer max;
+    private String name = "";
 
     //**************************************************************
     //  constructor
     //**************************************************************
 
-    public SizeTable() {
-        super();
-    }
-
-    public SizeTable(Stock stock, String name, Integer min, Integer max) {
-        this.stock = stock;
-        this.name = name;
-        this.min = min;
-        this.max = max;
-    }
+    public Image(){super();}
 
     //**************************************************************
     //  getters and setters
     //**************************************************************
 
     public Integer getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public Stock getStock() {
-        return this.stock;
+    public User getUser() {
+        return user;
     }
 
-    public void setStock(Stock stock) {
-        this.stock = stock;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public ShopItem getItem() {
+        return item;
+    }
+
+    public void setItem(ShopItem item) {
+        this.item = item;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getMin() {
-        return this.min;
-    }
-
-    public void setMin(Integer min) {
-        this.min = min;
-    }
-
-    public Integer getMax() {
-        return this.max;
-    }
-
-    public void setMax(Integer max) {
-        this.max = max;
     }
 
     //**************************************************************
@@ -109,12 +97,15 @@ public class SizeTable implements Serializable {
 
     @Override
     public String toString() {
-        return "SizeTable{" +
+        return "Image{" +
                 "id=" + id +
-                ", stock=" + stock +
+                ", user=" + user +
+                ", item=" + item +
                 ", name='" + name + '\'' +
-                ", min=" + min +
-                ", max=" + max +
                 '}';
+    }
+
+    protected void finalize() throws Throwable {
+        // ToDo: implement
     }
 }

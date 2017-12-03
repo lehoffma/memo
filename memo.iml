@@ -19,7 +19,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="EclipseLink" />
         <datasource-mapping>
-          <factory-entry name="memoPersistence" value="898949e9-5fb2-412d-b70e-13aef7749066" />
+          <factory-entry name="memoPersistence" value="cd0dc219-02f3-4f3c-a91c-862e18406851" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>
@@ -41,6 +41,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="checkout" level="application" />
+    <orderEntry type="library" name="touch-emulator" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.geronimo.specs:geronimo-servlet_3.0_spec:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:eclipselink:2.5.0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" level="project" />
@@ -51,6 +52,5 @@
     <orderEntry type="library" name="Maven: com.google.guava:guava:21.0" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.6" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
-    <orderEntry type="library" name="touch-emulator" level="application" />
   </component>
 </module>

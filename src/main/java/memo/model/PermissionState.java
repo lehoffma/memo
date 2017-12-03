@@ -13,32 +13,57 @@ import java.io.Serializable;
 
 public class PermissionState implements Serializable {
 
+    //**************************************************************
+    //  static members
+    //**************************************************************
 
     private static final long serialVersionUID = 1L;
+
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Expose(serialize = false, deserialize = true)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "permissions")
+    private User user;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission funds;
+    private Permission funds = Permission.none;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission party;
+    private Permission party = Permission.none;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission user;
+    private Permission userManagement = Permission.none;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission merch;
+    private Permission merch = Permission.none;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission tour;
+    private Permission tour = Permission.none;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission stock;
+    private Permission stock = Permission.none;
+
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission settings;
+    private Permission settings = Permission.none;
+
+
+    //**************************************************************
+    //  constructor
+    //**************************************************************
 
     public PermissionState(ClubRole role) {
         switch (role) {
@@ -46,7 +71,7 @@ public class PermissionState implements Serializable {
 
                 this.funds = Permission.none;
                 this.party = Permission.read;
-                this.user = Permission.none;
+                this.userManagement = Permission.none;
                 this.merch = Permission.none;
                 this.tour = Permission.read;
                 this.stock = Permission.none;
@@ -58,7 +83,7 @@ public class PermissionState implements Serializable {
 
                 this.funds = Permission.none;
                 this.party = Permission.read;
-                this.user = Permission.none;
+                this.userManagement = Permission.none;
                 this.merch = Permission.read;
                 this.tour = Permission.read;
                 this.stock = Permission.none;
@@ -70,7 +95,7 @@ public class PermissionState implements Serializable {
 
                 this.funds = Permission.read;
                 this.party = Permission.write;
-                this.user = Permission.create;
+                this.userManagement = Permission.create;
                 this.merch = Permission.write;
                 this.tour = Permission.read;
                 this.stock = Permission.create;
@@ -82,7 +107,7 @@ public class PermissionState implements Serializable {
 
                 this.funds = Permission.read;
                 this.party = Permission.write;
-                this.user = Permission.create;
+                this.userManagement = Permission.create;
                 this.merch = Permission.write;
                 this.tour = Permission.read;
                 this.stock = Permission.create;
@@ -94,7 +119,7 @@ public class PermissionState implements Serializable {
 
                 this.funds = Permission.delete;
                 this.party = Permission.write;
-                this.user = Permission.create;
+                this.userManagement = Permission.create;
                 this.merch = Permission.write;
                 this.tour = Permission.read;
                 this.stock = Permission.create;
@@ -106,7 +131,7 @@ public class PermissionState implements Serializable {
 
                 this.funds = Permission.create;
                 this.party = Permission.delete;
-                this.user = Permission.create;
+                this.userManagement = Permission.create;
                 this.merch = Permission.delete;
                 this.tour = Permission.delete;
                 this.stock = Permission.delete;
@@ -118,7 +143,7 @@ public class PermissionState implements Serializable {
 
                 this.funds = Permission.admin;
                 this.party = Permission.admin;
-                this.user = Permission.admin;
+                this.userManagement = Permission.admin;
                 this.merch = Permission.admin;
                 this.tour = Permission.admin;
                 this.stock = Permission.admin;
@@ -131,6 +156,10 @@ public class PermissionState implements Serializable {
     public PermissionState() {
         this(ClubRole.none);
     }
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
 
     public Integer getId() {
         return id;
@@ -156,12 +185,12 @@ public class PermissionState implements Serializable {
         this.party = party;
     }
 
-    public Permission getUser() {
-        return user;
+    public Permission getUserManagement() {
+        return userManagement;
     }
 
-    public void setUser(Permission user) {
-        this.user = user;
+    public void setUserManagement(Permission userManagement) {
+        this.userManagement = userManagement;
     }
 
     public Permission getMerch() {
@@ -196,13 +225,17 @@ public class PermissionState implements Serializable {
         this.settings = account;
     }
 
+    //**************************************************************
+    //  methods
+    //**************************************************************
+
     @Override
     public String toString() {
         return "PermissionState{" +
                 "id=" + id +
                 ", funds=" + funds +
                 ", party=" + party +
-                ", user=" + user +
+                ", userManagement=" + userManagement +
                 ", merch=" + merch +
                 ", tour=" + tour +
                 ", stock=" + stock +

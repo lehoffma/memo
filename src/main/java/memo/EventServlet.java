@@ -62,10 +62,10 @@ public class EventServlet extends HttpServlet {
         String authorId = request.getParameter("authorId");
 
 
-        List<Event> events = getEventsFromDatabase(Sid, searchTerm, sType, userId, authorId, response);
+        List<ShopItem> shopItems = getEventsFromDatabase(Sid, searchTerm, sType, userId, authorId, response);
 
         /*
-        if (events.isEmpty()) {
+        if (shopItems.isEmpty()) {
             response.setStatus(404);
             response.getWriter().append("Not found");
             return;
@@ -77,7 +77,7 @@ public class EventServlet extends HttpServlet {
 
         //todo sowas ähnliches in den anderen servlets auch machen
         JsonObject responseJson = new JsonObject();
-        responseJson.add("events", gson.toJsonTree(events));
+        responseJson.add("shopItems", gson.toJsonTree(shopItems));
         response.getWriter().append(responseJson.toString());
     }
 
@@ -89,14 +89,14 @@ public class EventServlet extends HttpServlet {
 
         //ToDo: Duplicate Events
 
-        Event e = createEventFromJson(jEvent);
+        ShopItem e = createEventFromJson(jEvent);
 
         List<Color> colorList = new ArrayList<>();
-        List<Size> sizeList = new ArrayList<>();
+        List<Stock> stockList = new ArrayList<>();
 
-        if (e.getType() == 3) fillSizesFromJson(jEvent, colorList, sizeList, e);
+        if (e.getType() == 3) fillSizesFromJson(jEvent, colorList, stockList, e);
 
-        saveEventToDatabase(e, colorList, sizeList);
+        saveEventToDatabase(e, colorList, stockList);
 
         response.setStatus(201);
         response.getWriter().append("{ \"id\": " + e.getId() + " }");
@@ -112,7 +112,7 @@ public class EventServlet extends HttpServlet {
 
         Integer jId = jEvent.get("id").getAsInt();
 
-        Event e = DatabaseManager.createEntityManager().find(Event.class, jId);
+        ShopItem e = DatabaseManager.createEntityManager().find(ShopItem.class, jId);
 
         if (e == null) {
             response.getWriter().append("Not found");
@@ -123,12 +123,12 @@ public class EventServlet extends HttpServlet {
         e = updateEventFromJson(jEvent, e);
         e.setId(jEvent.get("id").getAsInt());
         List<Color> colorList = new ArrayList<>();
-        List<Size> sizeList = new ArrayList<>();
+        List<Stock> stockList = new ArrayList<>();
 
-        if (e.getType() == 3) fillSizesFromJson(jEvent, colorList, sizeList, e);
+        if (e.getType() == 3) fillSizesFromJson(jEvent, colorList, stockList, e);
 
         //todo lel
-        updateEventAtDatabase(e, colorList, sizeList);
+        updateEventAtDatabase(e, colorList, stockList);
 
         response.setStatus(201);
         response.getWriter().append("{ \"id\": " + e.getId() + " }");
@@ -139,7 +139,7 @@ public class EventServlet extends HttpServlet {
         setContentType(request, response);
 
         String Sid = request.getParameter("id");
-        Event e = getEventByID(Sid, response);
+        ShopItem e = getEventByID(Sid, response);
 
         if (e == null) {
             response.setStatus(404);
@@ -169,11 +169,11 @@ public class EventServlet extends HttpServlet {
         return jElement.getAsJsonObject().getAsJsonObject("event");
     }
 
-    public Event getEventByID(String Sid, HttpServletResponse response) throws IOException {
+    public ShopItem getEventByID(String Sid, HttpServletResponse response) throws IOException {
 
         try {
             Integer id = Integer.parseInt(Sid);
-            return DatabaseManager.createEntityManager().find(Event.class, id);
+            return DatabaseManager.createEntityManager().find(ShopItem.class, id);
         } catch (NumberFormatException e) {
             response.getWriter().append("Bad ID Value");
             response.setStatus(400);
@@ -181,15 +181,15 @@ public class EventServlet extends HttpServlet {
         return null;
     }
 
-    private Event createEventFromJson(JsonObject jEvent) {
-        return updateEventFromJson(jEvent, new Event());
+    private ShopItem createEventFromJson(JsonObject jEvent) {
+        return updateEventFromJson(jEvent, new ShopItem());
     }
 
-    private Event updateEventFromJson(JsonObject jEvent, Event e) {
+    private ShopItem updateEventFromJson(JsonObject jEvent, ShopItem e) {
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-        e = gson.fromJson(jEvent, Event.class);
+        e = gson.fromJson(jEvent, ShopItem.class);
 
         e.setPriceMember(e.getPrice());
 
@@ -211,7 +211,7 @@ public class EventServlet extends HttpServlet {
         return e;
     }
 
-    private void removeEventFromDatabase(Event e) {
+    private void removeEventFromDatabase(ShopItem e) {
 
         DatabaseManager.createEntityManager().getTransaction().begin();
         e = DatabaseManager.createEntityManager().merge(e);
@@ -219,7 +219,7 @@ public class EventServlet extends HttpServlet {
         DatabaseManager.createEntityManager().getTransaction().commit();
     }
 
-    private void fillSizesFromJson(JsonObject jEvent, List<Color> colorList, List<Size> sizeList, Event e) {
+    private void fillSizesFromJson(JsonObject jEvent, List<Color> colorList, List<Stock> stockList, ShopItem e) {
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         JsonArray stock = jEvent.getAsJsonArray("stock");
@@ -228,19 +228,19 @@ public class EventServlet extends HttpServlet {
             JsonObject st = stock.get(i).getAsJsonObject();
             JsonObject color = st.get("color").getAsJsonObject();
             Color c = gson.fromJson(color, Color.class);
-            Size s = new Size();
+            Stock s = new Stock();
             s.setColor(c);
-            s.setEvent(e);
+            s.setShopItem(e);
             s.setSize(st.get("size").getAsString());
             s.setAmount(st.get("amount").getAsInt());
             colorList.add(c);
-            sizeList.add(s);
+            stockList.add(s);
         }
 
 
     }
 
-    private void saveEventToDatabase(Event newEvent, List<Color> colorList, List<Size> sizeList) {
+    private void saveEventToDatabase(ShopItem newShopItem, List<Color> colorList, List<Stock> stockList) {
 
         EntityManager em = DatabaseManager.createEntityManager();
 
@@ -249,26 +249,26 @@ public class EventServlet extends HttpServlet {
         for (Color i : colorList) {
             em.persist(i);
         }
-        for (Size i : sizeList) {
+        for (Stock i : stockList) {
             em.persist(i);
         }
-        em.persist(newEvent);
+        em.persist(newShopItem);
 
         em.getTransaction().commit();
     }
 
-    private List<Event> getEventsFromDatabase(String Sid, String searchTerm, String sType, String userId, String authorId,
-                                              HttpServletResponse response) throws IOException {
+    private List<ShopItem> getEventsFromDatabase(String Sid, String searchTerm, String sType, String userId, String authorId,
+                                                 HttpServletResponse response) throws IOException {
 
-        List<Event> events = new ArrayList<>();
+        List<ShopItem> shopItems = new ArrayList<>();
 
         // if ID is submitted
         if (isStringNotEmpty(Sid)) {
 
-            Event e = getEventByID(Sid, response);
+            ShopItem e = getEventByID(Sid, response);
             if (e != null) {
-                events.add(e);
-                return events;
+                shopItems.add(e);
+                return shopItems;
             }
         }
 
@@ -283,37 +283,37 @@ public class EventServlet extends HttpServlet {
         return getEvents();
     }
 
-    private List<Event> getEventsBySearchTerm(String searchTerm) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Event e " +
-                " WHERE UPPER(e.title) LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", Event.class)
+    private List<ShopItem> getEventsBySearchTerm(String searchTerm) {
+        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e " +
+                " WHERE UPPER(e.title) LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", ShopItem.class)
                 .setParameter("searchTerm", "%" + searchTerm + "%")
                 .getResultList();
     }
 
-    private List<Event> getEventsByType(Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Event e " +
-                " WHERE e.type = :type", Event.class)
+    private List<ShopItem> getEventsByType(Integer type) {
+        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e " +
+                " WHERE e.type = :type", ShopItem.class)
                 .setParameter("type", type)
                 .getResultList();
     }
 
-    private List<Event> getEventsByUser(Integer userId){
+    private List<ShopItem> getEventsByUser(Integer userId){
         //todo implement
         return new ArrayList<>();
     }
 
-    private List<Event> getEventsByAuthor(Integer authorId){
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Event e " +
-                " WHERE e.authorId = :author", Event.class)
+    private List<ShopItem> getEventsByAuthor(Integer authorId){
+        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e " +
+                " WHERE e.authorId = :author", ShopItem.class)
                 .setParameter("author", authorId)
                 .getResultList();
     }
 
-    private List<Event> getEvents() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Event e", Event.class).getResultList();
+    private List<ShopItem> getEvents() {
+        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e", ShopItem.class).getResultList();
     }
 
-    private void updateEventAtDatabase(Event e, List<Color> colorList, List<Size> sizeList) {
+    private void updateEventAtDatabase(ShopItem e, List<Color> colorList, List<Stock> stockList) {
         EntityManager em = DatabaseManager.createEntityManager();
 
 

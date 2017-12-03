@@ -4,30 +4,58 @@ package memo.model;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
 @Table(name = "ORDERS")
-public class Order {
+public class Order implements Serializable{
 
 
+    //**************************************************************
+    //  static members
+    //**************************************************************
+
+    private static final long serialVersionUID = 1L;
+
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;   //globale unique ID
+    private int id;
 
     @Expose
-    @Column(name = "USER_ID")
-    private Integer userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private User user;
 
+    @Expose
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "order")
+    private Set<OrderedItem> items = new HashSet<>();
+
+    @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
     private LocalDateTime timeStamp;
 
     @Expose
-    private PaymentMethod method;
+    private PaymentMethod method = PaymentMethod.Lastschrift;
 
     @Expose
     private String text;
+
+    //**************************************************************
+    //  constructor
+    //**************************************************************
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
 
     public int getId() {
         return id;
@@ -37,12 +65,12 @@ public class Order {
         this.id = id;
     }
 
-    public Integer getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser(Integer userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDateTime getTimeStamp() {
@@ -69,11 +97,15 @@ public class Order {
         this.text = text;
     }
 
+    //**************************************************************
+    //  methods
+    //**************************************************************
+
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", user=" + userId +
+                ", user=" + user +
                 ", timeStamp=" + timeStamp +
                 ", method=" + method +
                 ", text='" + text + '\'' +

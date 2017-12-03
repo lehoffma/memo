@@ -6,16 +6,28 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Entity implementation class for Entity: Event
+ * Entity implementation class for Entity: ShopItem
  */
 @Entity
-@Table(name = "EVENTS")
-public class Event implements Serializable {
+@Table(name = "SHOP_ITEMS")
+public class ShopItem implements Serializable {
+
+    //**************************************************************
+    //  static members
+    //**************************************************************
 
     private static final long serialVersionUID = 1L;
+
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -24,34 +36,35 @@ public class Event implements Serializable {
     @Column(nullable = false)
     private String title;
 
+    @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
     private LocalDateTime date;
 
     @Expose
     @Lob
-    @Column(nullable = false)
     private String description;
 
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private ClubRole expectedReadRole;
+    private ClubRole expectedReadRole = ClubRole.Mitglied;
 
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private ClubRole expectedCheckInRole;
+    private ClubRole expectedCheckInRole = ClubRole.Mitglied;
 
     @Expose
     @Enumerated(EnumType.ORDINAL)
-    private ClubRole expectedWriteRole;
+    private ClubRole expectedWriteRole = ClubRole.Vorstand;
 
     @Expose
-    @Column(name = "IMAGE_PATH")
-    private String imagePath;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,mappedBy = "item")
+    private List<Image> images;
 
     @Expose
     @Column(nullable = false)
-    private Integer capacity;
+    private Integer capacity = 0;
 
+    // ToDo: fix
     @Expose
     @Column(name = "PRICE_MEMBER", nullable = false)
     private float priceMember;
@@ -60,10 +73,9 @@ public class Event implements Serializable {
     @Column(nullable = false)
     private float price;
 
-    @ElementCollection
-    @CollectionTable(name = "EVENT_ROUTES")
     @Expose
-    private List<Integer> route = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "item")
+    private List<Address> route = new ArrayList<>();
 
     @Expose
     private String material;
@@ -74,16 +86,41 @@ public class Event implements Serializable {
     @Expose
     private Integer miles = 0;
 
+    @Expose(serialize = false, deserialize = true)
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authoredItems")
+    private Set<User> author = new HashSet<>();
+
     @Expose
-    private Integer authorId;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    private List<Comment> comments;
+
+    @Expose(serialize = false, deserialize = false)
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "item")
+    private List<Entry> entries;
+
+    @Expose(serialize = false, deserialize = false)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "item")
+    private Set<OrderedItem> orders = new HashSet<>();
+
+    @Expose(serialize = false, deserialize = false)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    private Set<Stock> stock = new HashSet<>();
 
     @Expose
     @Column(nullable = false)
     private Integer type;
 
-    public Event() {
+    //**************************************************************
+    //  constructor
+    //**************************************************************
+
+    public ShopItem() {
         super();
     }
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
 
     public Integer getId() {
         return this.id;
@@ -197,33 +234,69 @@ public class Event implements Serializable {
         this.expectedCheckInRole = expectedCheckinRole;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public List<Image> getImages() {
+        return images;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 
-    public List<Integer> getRoute() {
+    public List<Address> getRoute() {
         return route;
     }
 
-    public void setRoute(List<Integer> route) {
+    public void setRoute(List<Address> route) {
         this.route = route;
     }
 
-    public Integer getAuthorId() {
-        return authorId;
+    public Set<User> getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Integer authorId) {
-        this.authorId = authorId;
+    public void setAuthor(Set<User> author) {
+        this.author = author;
     }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Entry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(List<Entry> entries) {
+        this.entries = entries;
+    }
+
+    public Set<OrderedItem> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<OrderedItem> orders) {
+        this.orders = orders;
+    }
+
+    public Set<Stock> getStock() {
+        return stock;
+    }
+
+    public void setStock(Set<Stock> stock) {
+        this.stock = stock;
+    }
+
+    //**************************************************************
+    //  methods
+    //**************************************************************
 
     @Override
     public String toString() {
-        return "Event{" +
+        return "ShopItem{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", date=" + date +
@@ -231,7 +304,7 @@ public class Event implements Serializable {
                 ", expectedReadRole=" + expectedReadRole +
                 ", expectedCheckInRole=" + expectedCheckInRole +
                 ", expectedWriteRole=" + expectedWriteRole +
-                ", imagePath='" + imagePath + '\'' +
+                ", images=" + images +
                 ", capacity=" + capacity +
                 ", priceMember=" + priceMember +
                 ", price=" + price +
@@ -239,7 +312,11 @@ public class Event implements Serializable {
                 ", material='" + material + '\'' +
                 ", vehicle='" + vehicle + '\'' +
                 ", miles=" + miles +
-                ", authorId=" + authorId +
+                ", author=" + author +
+                ", comments=" + comments +
+                ", entries=" + entries +
+                ", orders=" + orders +
+                ", stock=" + stock +
                 ", type=" + type +
                 '}';
     }

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 @WebServlet(name = "OrderServlet", value = "/api/order")
 public class OrderServlet extends HttpServlet {
 
-    List<Size> updatedSizes;
+    List<Stock> updatedStocks;
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -97,7 +96,7 @@ public class OrderServlet extends HttpServlet {
 
         // update Dependencies
 
-        updatedSizes = new ArrayList<>();
+        updatedStocks = new ArrayList<>();
 
         JsonArray jOrderItems = jOrder.get("orderedItems").getAsJsonArray();
 
@@ -135,7 +134,7 @@ public class OrderServlet extends HttpServlet {
         o = updateOrderFromJson(jOrder, o);
         o.setId(jOrder.get("id").getAsInt());
 
-        updatedSizes = new ArrayList<>();
+        updatedStocks = new ArrayList<>();
 
         List<OrderedItem> items = new ArrayList<>();
         if (jOrder.has("orderdItems")) {
@@ -292,7 +291,7 @@ public class OrderServlet extends HttpServlet {
         for (OrderedItem o : items) {
             em.persist(o);
         }
-        for (Size s : updatedSizes) {
+        for (Stock s : updatedStocks) {
             em.persist(s);
         }
         em.getTransaction().commit();
@@ -307,7 +306,7 @@ public class OrderServlet extends HttpServlet {
         for (OrderedItem o : items) {
             em.merge(o);
         }
-        for (Size s : updatedSizes) {
+        for (Stock s : updatedStocks) {
             em.merge(s);
         }
         em.getTransaction().commit();
@@ -353,22 +352,22 @@ public class OrderServlet extends HttpServlet {
                 // update event,order, color
 
 
-                item.setEvent(em.find(Event.class, jItem.get("event").getAsJsonObject().get("id").getAsInt()));
+                item.setShopItem(em.find(ShopItem.class, jItem.get("event").getAsJsonObject().get("id").getAsInt()));
                 item.setOrderId(o.getId());
 
                 if (jItem.has("color")) {
                     Color c = gson.fromJson(jItem.get("color").getAsJsonObject(), Color.class);
                     item.setColor(c);
 
-                    List<Size> sizes = em.createQuery("SELECT s FROM Size s " +
-                            " WHERE s.size = :name AND s.color.hex = :hex", Size.class)
+                    List<Stock> stocks = em.createQuery("SELECT s FROM Stock s " +
+                            " WHERE s.size = :name AND s.color.hex = :hex", Stock.class)
                             .setParameter("name", item.getSize()).setParameter("hex", c.getHex())
                             .getResultList();
 
-                    if (sizes.isEmpty()) throw new Exception("Not in Stock");
-                    Size size = sizes.get(0);
-                    size.setAmount(size.getAmount() - 1);
-                    updatedSizes.add(size);
+                    if (stocks.isEmpty()) throw new Exception("Not in Stock");
+                    Stock stock = stocks.get(0);
+                    stock.setAmount(stock.getAmount() - 1);
+                    updatedStocks.add(stock);
                 }
 
             } else {
@@ -383,14 +382,14 @@ public class OrderServlet extends HttpServlet {
 
                         if (item.getColor() != null) {
 
-                            List<Size> sizes = em.createQuery("SELECT s FROM Size s " +
-                                    " WHERE s.size = :name AND s.color.hex = :hex", Size.class)
+                            List<Stock> stocks = em.createQuery("SELECT s FROM Stock s " +
+                                    " WHERE s.size = :name AND s.color.hex = :hex", Stock.class)
                                     .setParameter("name", item.getSize()).setParameter("hex", item.getColor().getHex())
                                     .getResultList();
 
-                            Size size = sizes.get(0);
-                            size.setAmount(size.getAmount() + 1);
-                            updatedSizes.add(size);
+                            Stock stock = stocks.get(0);
+                            stock.setAmount(stock.getAmount() + 1);
+                            updatedStocks.add(stock);
                         }
                     }
                 }

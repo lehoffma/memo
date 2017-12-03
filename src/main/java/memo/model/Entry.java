@@ -5,6 +5,9 @@ import com.google.gson.annotations.Expose;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Entity implementation class for Entity: Entry
@@ -15,54 +18,82 @@ import java.time.LocalDateTime;
 public class Entry implements Serializable {
 
 
+
+    //**************************************************************
+    //  static members
+    //**************************************************************
+
     private static final long serialVersionUID = 1L;
+
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
-    private Event event;
-
-    @Column(name = "ENTRY_CATEGORY_ID")
-    private Integer entryCategoryID;
+    @Expose
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private ShopItem item;
 
     @Expose
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
+    private EntryCategory category;
+
+    @Expose
+    @Column(nullable = false)
     private String name;
 
     @Expose
+    @Column(nullable = false)
     private Integer value;
 
     @Expose
     @Column(name = "IS_INCOME")
-    private Boolean isIncome;
+    private Boolean isIncome = false;
 
     @Expose
     private String comment;
 
     @Expose
-    private String picPath;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn
+    private Set<Image> images = new HashSet<>();
 
+    @Expose(serialize = true, deserialize = false)
+    @Column(nullable = false)
     private LocalDateTime date;
+
+    //**************************************************************
+    //  constructor
+    //**************************************************************
 
     public Entry() {
         super();
     }
 
-    public Event getEvent() {
-        return this.event;
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
+
+    public ShopItem getItem() {
+        return this.item;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setItem(ShopItem item) {
+        this.item = item;
     }
 
-    public Integer getEntryCategoryID() {
-        return this.entryCategoryID;
+    public EntryCategory getCategory() {
+        return this.category;
     }
 
-    public void setEntryCategoryID(Integer entryID) {
-        this.entryCategoryID = entryID;
+    public void setCategory(EntryCategory category) {
+        this.category = category;
     }
 
     public Integer getValue() {
@@ -97,12 +128,12 @@ public class Entry implements Serializable {
         this.comment = comment;
     }
 
-    public String getPicPath() {
-        return picPath;
+    public Set<Image> getImages() {
+        return images;
     }
 
-    public void setPicPath(String picPath) {
-        this.picPath = picPath;
+    public void setImages(Set<Image> images) {
+        this.images = images;
     }
 
     public Integer getId() {
@@ -127,5 +158,24 @@ public class Entry implements Serializable {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    //**************************************************************
+    //  methods
+    //**************************************************************
+
+    @Override
+    public String toString() {
+        return "Entry{" +
+                "id=" + id +
+                ", item=" + item +
+                ", category=" + category +
+                ", name='" + name + '\'' +
+                ", value=" + value +
+                ", isIncome=" + isIncome +
+                ", comment='" + comment + '\'' +
+                ", images=" + images +
+                ", date=" + date +
+                '}';
     }
 }
