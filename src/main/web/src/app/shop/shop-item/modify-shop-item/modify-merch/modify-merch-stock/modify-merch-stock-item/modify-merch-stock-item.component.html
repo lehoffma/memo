@@ -2,62 +2,136 @@
 	<div>
 		<!--<h1 matDialogTitle>Füge eine weitere Farbe hinzu</h1>-->
 		<div mat-dialog-content class="dialog-content-container">
+			<!--<mat-form-field>-->
+				<!--&lt;!&ndash;todo preset colors = colors that have been used in the table before?&ndash;&gt;-->
+				<!--&lt;!&ndash;[cpPresetColors]="['#fff', '#000', '#2889e9', '#e920e9', '#fff500', 'rgb(236,64,64)']"/>&ndash;&gt;-->
+				<!--<input -->
+					   <!--matInput-->
+					   <!--title="Farbe"/>-->
+			<!--</mat-form-field>-->
 
 			<mat-form-field>
-
-				<mat-chip-list matPrefix #chipList [placeholder]="'Größen'">
-					<mat-chip *ngFor="let size of sizes; let i = index" [selectable]="false"
-							 [removable]="true" (remove)="sizes.splice(i, 1)" color="primary">
-						{{size}}
-						<mat-icon matChipRemove matTooltip="Löschen">cancel</mat-icon>
-					</mat-chip>
-				</mat-chip-list>
-
-				<input matInput placeholder="Größen"
-					   #sizeInput
-					   [matChipInputFor]="chipList"
-					   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-					   [matChipInputAddOnBlur]="true"
-					   (matChipInputTokenEnd)="addSize($event)" />
-
-				<mat-error *ngIf="sizeInput.touched && sizes.length === 0">
-					Dieses Feld darf nicht leer bleiben!
-				</mat-error>
-			</mat-form-field>
-			<mat-form-field>
-				<input placeholder="Anzahl"
-					   type="number" min="0" step="1" required
-					   (keypress)="($event.charCode == 8 || $event.charCode == 0) ? null : $event.charCode >= 48 && $event.charCode <= 57"
-					   #amountInput="ngModel"
-					   name="amountInput"
-					   [(ngModel)]="amount" matInput>
-				<mat-error *ngIf="amountInput.touched && !amountInput.valid">
-					Dieses Feld darf nicht leer bleiben!
-				</mat-error>
-			</mat-form-field>
-
-
-			<mat-form-field>
-				<input placeholder="Name der Farbe"
+				<input placeholder="Farbe"
 					   #colorInput="ngModel" required
 					   name="colorInput"
 					   [(ngModel)]="colorName" matInput>
+				<button mat-icon-button
+						type="button"
+						[(colorPicker)]="color"
+						(colorPickerChange)="updateTextColor()"
+						[style.background]="color"
+						[style.color]="textColor"
+						[value]="color"
+						[cpPosition]="'left'"
+						matSuffix>
+					<mat-icon>
+						color_lens
+					</mat-icon>
+				</button>
 				<mat-error *ngIf="colorInput.touched && !colorInput.valid">
 					Dieses Feld darf nicht leer bleiben!
 				</mat-error>
 			</mat-form-field>
 
-			<span [(colorPicker)]="color"
-				  [cpWidth]="'230px'"
-				  [cpDialogDisplay]="'inline'"
-				  [style.background]="color"
-				  [cpToggle]="true"></span>
+			<div class="add-size-form">
+				<form #addSizeForm="ngForm" (ngSubmit)="addSize(newSize)">
+					<mat-form-field>
+						<input matInput
+							   placeholder="Größe"
+							   [(ngModel)]="newSize"
+							   name="addSizeInput"
+							   #addSizeInput="ngModel"
 
+						>
+						<!--todo doesnt work-->
+						<mat-error align="end" *ngIf="availableSizes.indexOf(newSize) !== -1">
+							Diese Größe ist bereits in der Liste vorhanden!
+						</mat-error>
+
+					</mat-form-field>
+					<button mat-icon-button
+							[disabled]="!addSizeForm.valid
+							|| newSize.length === 0
+							|| availableSizes.indexOf(newSize) !== -1
+"
+							color="primary">
+						<mat-icon
+							[matTooltip]="'Größe hinzufügen'"
+							[matTooltipPosition]="'above'"
+						>
+							add_box
+						</mat-icon>
+					</button>
+					<!--todo autocomplete for possibleSizes-->
+				</form>
+			</div>
+
+			<div class="sizes-container">
+				<div *ngFor="let size of availableSizes; let i = index" class="size-amount-select-container">
+					<span>{{size}}</span>
+
+					<div>
+						<mat-select [(ngModel)]="model[size]"
+									name="amountSelect_{{size}}"
+									#amountSelect="ngModel">
+							<mat-option *ngFor="let amount of availableAmounts" [value]="amount">
+								{{amount}}
+							</mat-option>
+						</mat-select>
+
+						<button mat-icon-button
+								type="button"
+								(click)="availableSizes.splice(i,1)">
+							<mat-icon
+								[matTooltip]="'Größe löschen'"
+								[matTooltipPosition]="'above'"
+							>
+								delete
+							</mat-icon>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<!--<div>-->
+			<!--<mat-form-field>-->
+
+			<!--<mat-chip-list matPrefix #chipList [placeholder]="'Größen'">-->
+			<!--<mat-chip *ngFor="let size of sizes; let i = index" [selectable]="false"-->
+			<!--[removable]="true" (remove)="sizes.splice(i, 1)" color="primary">-->
+			<!--{{size}}-->
+			<!--<mat-icon matChipRemove matTooltip="Löschen">cancel</mat-icon>-->
+			<!--</mat-chip>-->
+			<!--</mat-chip-list>-->
+
+			<!--<input matInput placeholder="Größen"-->
+			<!--#sizeInput-->
+			<!--[matChipInputFor]="chipList"-->
+			<!--[matChipInputSeparatorKeyCodes]="separatorKeysCodes"-->
+			<!--[matChipInputAddOnBlur]="true"-->
+			<!--(matChipInputTokenEnd)="addSize($event)"/>-->
+
+			<!--<mat-error *ngIf="sizeInput.touched && sizes.length === 0">-->
+			<!--Dieses Feld darf nicht leer bleiben!-->
+			<!--</mat-error>-->
+			<!--</mat-form-field>-->
+			<!--<mat-form-field>-->
+			<!--<input placeholder="Anzahl"-->
+			<!--type="number" min="0" step="1" required-->
+			<!--(keypress)="($event.charCode == 8 || $event.charCode == 0) ? null : $event.charCode >= 48 && $event.charCode <= 57"-->
+			<!--#amountInput="ngModel"-->
+			<!--name="amountInput"-->
+			<!--[(ngModel)]="amount" matInput>-->
+			<!--<mat-error *ngIf="amountInput.touched && !amountInput.valid">-->
+			<!--Dieses Feld darf nicht leer bleiben!-->
+			<!--</mat-error>-->
+			<!--</mat-form-field>-->
+			<!--</div>-->
 		</div>
 
 	</div>
 	<div mat-dialog-actions>
-		<button mat-icon-button type="button" matDialogClose (click)="color=''">
+		<button mat-icon-button type="button" matDialogClose>
 			<mat-icon>arrow_back</mat-icon>
 		</button>
 		<button mat-icon-button [disabled]="!modifyStockItemForm.form.valid" type="submit" color="primary">

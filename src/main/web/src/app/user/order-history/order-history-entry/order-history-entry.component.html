@@ -45,7 +45,7 @@
 
 			<div class="order-entry-info-container">
 				<span class="label">Preis</span>
-				<div class="price">{{item.price | currency:'EUR':2}}</div>
+				<div class="price">{{item.price | currency:'EUR':'symbol'}}</div>
 			</div>
 
 		</div>
@@ -53,5 +53,5 @@
 </div>
 <div class="order-total-price">
 	<span>Gesamt</span>
-	<span class="order-total-price-amount">{{total | currency:'EUR':2}}</span>
+	<span class="order-total-price-amount">{{total | currency:'EUR':'symbol'}}</span>
 </div>

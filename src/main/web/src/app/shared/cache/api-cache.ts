@@ -8,13 +8,17 @@ interface ApiInnerCache<T> {
 	};
 	search: {
 		[params: string]: Cache<T[]>
+	};
+	other: {
+		[params: string]: Cache<any>
 	}
 }
 
 export class ApiCache<T> {
 	private cache: ApiInnerCache<T> = {
 		getById: {},
-		search: {}
+		search: {},
+		other: {}
 	};
 
 	/**
@@ -41,6 +45,17 @@ export class ApiCache<T> {
 
 	/**
 	 *
+	 * @param {HttpParams} params
+	 * @param {Observable<any>} fallback
+	 * @returns {Observable<any>}
+	 */
+	other<U>(params: HttpParams, fallback: Observable<U>): Observable<U> {
+		const key = this.getKeyFromParams(params);
+		return (<Observable<U>>this.getFromCache("other", key, fallback));
+	}
+
+	/**
+	 *
 	 * @param {number} id
 	 */
 	invalidateById(id: number) {
@@ -54,7 +69,7 @@ export class ApiCache<T> {
 	 * exactly, all values that match the params partially will be invalidated.
 	 * @param {HttpParams} params
 	 */
-	invalidateByPartialParams(params: HttpParams){
+	invalidateByPartialParams(params: HttpParams) {
 		const partialKey = this.getKeyFromParams(params);
 		Object.keys(this.cache)
 			.forEach((cacheType: keyof ApiInnerCache<T>) => Object.keys(this.cache[cacheType])
@@ -109,7 +124,7 @@ export class ApiCache<T> {
 	 * @param {Observable<T>} fallback
 	 * @returns {Observable<T> | Observable<T[]>}
 	 */
-	private getFromCache(type: keyof ApiInnerCache<T>, key: string, fallback: Observable<T> | Observable<T[]>): Observable<T> | Observable<T[]> {
+	private getFromCache(type: keyof ApiInnerCache<T>, key: string, fallback: Observable<T> | Observable<T[]> | Observable<any>): Observable<T> | Observable<T[]> | Observable<any> {
 		if (!this.cache[type][key]) {
 			console.info(`Cache for type ${type} and key ${key} doesn't exist, fallback will be used`);
 			this.cache[type][key] = new Cache<any>(() => fallback);
@@ -123,7 +138,7 @@ export class ApiCache<T> {
 	 * @param {string} key
 	 * @param {string} partialKey
 	 */
-	private matchesPartialParamKey(key:string, partialKey: string){
+	private matchesPartialParamKey(key: string, partialKey: string) {
 		return partialKey.split("&")
 			.every(value => key.includes(value));
 	}

@@ -33,7 +33,7 @@
 		<div class="object-info-container">
 			<div class="object-info" *ngFor="let overviewKey of overviewKeys">
 				<div [ngSwitch]="overviewKey.pipe">
-					<ng-template [ngSwitchCase]="'price'">{{getValue(overviewKey.key) | async | currency:'EUR':true}}
+					<ng-template [ngSwitchCase]="'price'">{{getValue(overviewKey.key) | async | currency:'EUR':'symbol'}}
 					</ng-template>
 					<ng-template [ngSwitchCase]="'date'">{{getValue(overviewKey.key) | async | moment:'DD.MM.'}}
 					</ng-template>
