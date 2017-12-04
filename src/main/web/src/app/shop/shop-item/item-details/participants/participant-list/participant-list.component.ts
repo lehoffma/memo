@@ -25,11 +25,12 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {filter, first, map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Subscription} from "rxjs/Subscription";
+import {OrderStatusTableCellComponent} from "../order-status-table-cell.component";
 
 const participantListColumns = {
 	name: new ExpandableTableColumn<ParticipantUser>("Name", "user", FullNameTableCellComponent),
 	//todo order-status cell component => call statusToString function at least, maybe use color
-	status: new ExpandableTableColumn<ParticipantUser>("Status", "status"),
+	status: new ExpandableTableColumn<ParticipantUser>("Status", "status", OrderStatusTableCellComponent),
 	isDriver: new ExpandableTableColumn<ParticipantUser>("Fahrer", "isDriver", BooleanCheckMarkCellComponent),
 	needsTicket: new ExpandableTableColumn<ParticipantUser>("Benötigt Ticket", "needsTicket", BooleanCheckMarkCellComponent),
 };
