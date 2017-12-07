@@ -3,8 +3,8 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import memo.model.Color;
-import memo.model.Event;
-import memo.model.Size;
+import memo.model.ShopItem;
+import memo.model.Stock;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "StockServlet", value = "/api/stock")
@@ -27,7 +26,7 @@ public class StockServlet extends HttpServlet {
         String sType = request.getParameter("type");
 
 
-        List<Size> stock = getStockFromDatabase(SeventId, sType, response);
+        List<Stock> stock = getStockFromDatabase(SeventId, sType, response);
 
 
         Gson gson = new GsonBuilder().serializeNulls().create();
@@ -44,7 +43,7 @@ public class StockServlet extends HttpServlet {
 
         //ToDo: Duplicate Events
 
-        Size s = createStockFromJson(jStock);
+        Stock s = createStockFromJson(jStock);
 
         saveStockToDatabase(s);
 
@@ -62,7 +61,7 @@ public class StockServlet extends HttpServlet {
 
         Integer jId = jStock.get("id").getAsInt();
 
-        Size s = DatabaseManager.createEntityManager().find(Size.class, jId);
+        Stock s = DatabaseManager.createEntityManager().find(Stock.class, jId);
 
         if (s == null) {
             response.getWriter().append("Not found");
@@ -86,7 +85,7 @@ public class StockServlet extends HttpServlet {
 
         String Sid = request.getParameter("id");
         Integer id = Integer.parseInt(Sid);
-        Size s = DatabaseManager.createEntityManager().find(Size.class, id);
+        Stock s = DatabaseManager.createEntityManager().find(Stock.class, id);
 
 
         if (s == null) {
@@ -109,7 +108,7 @@ public class StockServlet extends HttpServlet {
         return (s != null && !s.isEmpty());
     }
 
-    private List<Size> getStockFromDatabase(String SeventId, String sType, HttpServletResponse response) throws IOException {
+    private List<Stock> getStockFromDatabase(String SeventId, String sType, HttpServletResponse response) throws IOException {
 
         if (isStringNotEmpty(SeventId)) {
             return getStockByEventId(SeventId, response);
@@ -123,24 +122,24 @@ public class StockServlet extends HttpServlet {
 
     }
 
-    private List<Size> getStock() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Size s ", Size.class)
+    private List<Stock> getStock() {
+        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s ", Stock.class)
                 .getResultList();
     }
 
-    private List<Size> getStockByEventType(Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Size s " +
-                " WHERE s.event.type = :typ", Size.class)
+    private List<Stock> getStockByEventType(Integer type) {
+        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s " +
+                " WHERE s.item.type = :typ", Stock.class)
                 .setParameter("typ", type)
                 .getResultList();
     }
 
-    private List<Size> getStockByEventId(String SeventId, HttpServletResponse response) throws IOException {
+    private List<Stock> getStockByEventId(String SeventId, HttpServletResponse response) throws IOException {
         try {
             Integer id = Integer.parseInt(SeventId);
             //ToDo: gibt null aus wenn id nicht vergeben (ich bin für optionals)
-            return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Size s " +
-                    " WHERE s.event.id = :id", Size.class)
+            return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s " +
+                    " WHERE s.item.id = :id", Stock.class)
                     .setParameter("id", id)
                     .getResultList();
         } catch (NumberFormatException e) {
@@ -150,7 +149,7 @@ public class StockServlet extends HttpServlet {
         return null;
     }
 
-    private void saveStockToDatabase(Size s) {
+    private void saveStockToDatabase(Stock s) {
 
         EntityManager em = DatabaseManager.createEntityManager();
 
@@ -169,15 +168,15 @@ public class StockServlet extends HttpServlet {
         return jElement.getAsJsonObject().getAsJsonObject("stock");
     }
 
-    private Size createStockFromJson(JsonObject jStock) {
-        return updateStockFromJson(jStock, new Size());
+    private Stock createStockFromJson(JsonObject jStock) {
+        return updateStockFromJson(jStock, new Stock());
     }
 
-    private Size updateStockFromJson(JsonObject jStock, Size s) {
+    private Stock updateStockFromJson(JsonObject jStock, Stock s) {
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-        s = gson.fromJson(jStock, Size.class);
+        s = gson.fromJson(jStock, Stock.class);
         JsonObject jColor = jStock.get("color").getAsJsonObject();
         Color color = gson.fromJson(jColor, Color.class);
         s.setColor(color);
@@ -185,8 +184,8 @@ public class StockServlet extends HttpServlet {
         JsonObject jsonEvent = jStock.getAsJsonObject("event");
         if(jsonEvent != null){
             Integer eventId = jsonEvent.get("id").getAsInt();
-            Event e = DatabaseManager.createEntityManager().find(Event.class, eventId);
-            s.setEvent(e);
+            ShopItem e = DatabaseManager.createEntityManager().find(ShopItem.class, eventId);
+            s.setItem(e);
         }
         else{
             //todo error handling
@@ -196,7 +195,7 @@ public class StockServlet extends HttpServlet {
         return s;
     }
 
-    private void updateStockAtDatabase(Size s) {
+    private void updateStockAtDatabase(Stock s) {
         EntityManager em = DatabaseManager.createEntityManager();
 
 
@@ -206,7 +205,7 @@ public class StockServlet extends HttpServlet {
         em.getTransaction().commit();
     }
 
-    private void removeStockFromDatabase(Size s) {
+    private void removeStockFromDatabase(Stock s) {
 
         DatabaseManager.createEntityManager().getTransaction().begin();
         s = DatabaseManager.createEntityManager().merge(s);

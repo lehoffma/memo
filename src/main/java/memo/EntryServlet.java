@@ -3,7 +3,7 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import memo.model.Entry;
-import memo.model.User;
+import memo.model.EntryCategory;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -185,12 +184,12 @@ public class EntryServlet extends HttpServlet {
         entry = gson.fromJson(jEntry, Entry.class);
 
         try {
-            entry.setEvent(new EventServlet().getEventByID(jEntry.getAsJsonObject("event").get("id").getAsString(), null));
+            entry.setItem(new EventServlet().getEventByID(jEntry.getAsJsonObject("event").get("id").getAsString(), null));
         } catch (IOException e) {
             //todo logger.log(Level.DANGER, "Could not find event associated with entry", e)
         }
 
-        entry.setEntryCategoryID(jEntry.get("category").getAsJsonObject().get("id").getAsInt());
+        entry.setCategory(DatabaseManager.createEntityManager().find(EntryCategory.class,jEntry.get("category").getAsJsonObject().get("id").getAsInt()));
 
         TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEntry.get("date").getAsString());
         LocalDateTime date = LocalDateTime.from(day);

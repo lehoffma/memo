@@ -3,9 +3,7 @@ package memo;
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import memo.model.ClubRole;
-import memo.model.PermissionState;
-import memo.model.User;
+import memo.model.*;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -50,14 +48,6 @@ public class UserServlet extends HttpServlet {
         String searchTerm = request.getParameter("searchTerm");
 
         List<User> users = getUsersFromDatabase(Sid, email, searchTerm, response);
-        //todo probably not needed anymore
-        users = users.stream()
-                .peek(user -> user.setAddresses(new ArrayList<>(user.getAddresses())
-                        .stream()
-                        .distinct()
-                        .collect(Collectors.toList())
-                ))
-                .collect(Collectors.toList());
 
         if (users.isEmpty()) {
             response.setStatus(404);
@@ -292,13 +282,24 @@ public class UserServlet extends HttpServlet {
             Type collectionType = new TypeToken<List<Integer>>() {
             }.getType();
             List<Integer> addresses = gson.fromJson(jUser.getAsJsonArray("addresses"), collectionType);
-            u.setAddresses(addresses.stream().distinct().collect(Collectors.toList()));
+
+            for (Integer i: addresses) {
+
+                Address addr = DatabaseManager.createEntityManager().find(Address.class,i);
+                u.addAddress(addr);
+            }
         }
         if (jUser.has("bankAccounts")) {
             Type collectionType = new TypeToken<List<Integer>>() {
             }.getType();
             List<Integer> bankAccounts = gson.fromJson(jUser.getAsJsonArray("bankAccounts"), collectionType);
-            u.setBankAccounts(bankAccounts);
+
+            for (Integer i: bankAccounts) {
+
+                BankAcc bank = DatabaseManager.createEntityManager().find(BankAcc.class,i);
+                u.addBankAccount(bank);
+            }
+
         }
 
         if (jUser.has("joinDate")) {

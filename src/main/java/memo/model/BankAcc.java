@@ -11,17 +11,31 @@ import java.io.Serializable;
 @Entity
 @Table(name = "BANK_ACCOUNTS")
 
-@NamedQuery(name = "getBankAccById", query = "SELECT b FROM BankAcc b WHERE b.id = :id")
 public class BankAcc implements Serializable {
+
+    //**************************************************************
+    //  static members
+    //**************************************************************
 
     private static final long serialVersionUID = 1L;
 
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Expose
-    private String bankName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "USER")
+    private User user;
+
+    @Expose
+    @Column
+    private String name;
 
     @Expose
     @Column(nullable = false)
@@ -32,12 +46,19 @@ public class BankAcc implements Serializable {
     private String bic;
 
     @Expose
-    @Column(nullable = false)
-    private String name;
+    private String bankName;
+
+    //**************************************************************
+    //  constructor
+    //**************************************************************
 
     public BankAcc() {
         super();
     }
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
 
     public Integer getId() {
         return this.id;
@@ -45,6 +66,14 @@ public class BankAcc implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getBankName() {
@@ -79,15 +108,19 @@ public class BankAcc implements Serializable {
         this.name = name;
     }
 
+    //**************************************************************
+    //  methods
+    //**************************************************************
+
     @Override
     public String toString() {
         return "BankAcc{" +
                 "id=" + id +
-                ", bankName='" + bankName + '\'' +
+                ", user=" + user +
+                ", name='" + name + '\'' +
                 ", iban='" + iban + '\'' +
                 ", bic='" + bic + '\'' +
-                ", name='" + name + '\'' +
+                ", bankName='" + bankName + '\'' +
                 '}';
     }
-
 }

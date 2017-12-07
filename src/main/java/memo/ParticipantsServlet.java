@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import memo.model.Event;
+import memo.model.ShopItem;
 import memo.model.OrderedItem;
 
 import javax.servlet.ServletException;
@@ -34,11 +34,11 @@ public class ParticipantsServlet extends HttpServlet {
 
         //todo wohin soll der getUserEvents call?
         if(isStringNotEmpty(userId)){
-            List<Event> events = this.getEventsByUserId(Integer.valueOf(userId));
+            List<ShopItem> shopItems = this.getEventsByUserId(Integer.valueOf(userId));
             Gson gson = new GsonBuilder().serializeNulls().create();
             JsonObject responseJson = new JsonObject();
-            Type eventType = new TypeToken<List<Event>>() {}.getType();
-            responseJson.add("events", gson.toJsonTree(events, eventType));
+            Type eventType = new TypeToken<List<ShopItem>>() {}.getType();
+            responseJson.add("shopItems", gson.toJsonTree(shopItems, eventType));
             response.getWriter().append(responseJson.toString());
             return;
         }
@@ -88,19 +88,19 @@ public class ParticipantsServlet extends HttpServlet {
 
     private List<OrderedItem> getParticipantsByEventType(Integer type) {
         return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                " WHERE o.event.type = :typ", OrderedItem.class)
+                " WHERE o.item.type = :typ", OrderedItem.class)
                 .setParameter("typ", type)
                 .getResultList();
     }
 
-    private List<Event> getEventsByUserId(Integer userId){
+    private List<ShopItem> getEventsByUserId(Integer userId){
         return DatabaseManager.createEntityManager().createQuery(
                 "SELECT item from Order o join OrderedItem item \n" +
-                        "    WHERE o.userId =:userId", OrderedItem.class)
+                        "    WHERE o.user.id =:userId", OrderedItem.class)
                 .setParameter("userId", userId)
                 .getResultList()
                 .stream()
-                .map(OrderedItem::getEvent)
+                .map(OrderedItem::getItem)
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -110,7 +110,7 @@ public class ParticipantsServlet extends HttpServlet {
             Integer id = Integer.parseInt(SeventId);
             //ToDo: gibt null aus wenn id nicht vergeben
             return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                    " WHERE o.event.id = :id", OrderedItem.class)
+                    " WHERE o.item.id = :id", OrderedItem.class)
                     .setParameter("id", id)
                     .getResultList();
         } catch (NumberFormatException e) {

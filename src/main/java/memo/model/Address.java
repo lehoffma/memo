@@ -11,14 +11,32 @@ import java.io.Serializable;
 @Entity
 @Table(name = "ADDRESSES")
 
-@NamedQuery(name = "getAddressById", query = "SELECT a FROM Address a WHERE a.id = :id")
 public class Address implements Serializable {
+
+    //**************************************************************
+    //  static members
+    //**************************************************************
 
     private static final long serialVersionUID = 1L;
 
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Expose
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER")
+    private User user;
+
+    @Expose
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ITEM")
+    private ShopItem item;
 
     @Expose
     private String name;
@@ -47,8 +65,32 @@ public class Address implements Serializable {
     @Expose
     private double longitude;
 
+    //**************************************************************
+    //  constructor
+    //**************************************************************
+
     public Address() {
         super();
+    }
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public ShopItem getItem() {
+        return item;
+    }
+
+    public void setItem(ShopItem item) {
+        this.item = item;
     }
 
     public Integer getId() {
@@ -107,10 +149,30 @@ public class Address implements Serializable {
         this.country = country;
     }
 
+    public double getLatitude() { return latitude; }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    //**************************************************************
+    //  methods
+    //**************************************************************
+
     @Override
     public String toString() {
         return "Address{" +
                 "id=" + id +
+                ", user=" + user +
+                ", item=" + item +
                 ", name='" + name + '\'' +
                 ", street='" + street + '\'' +
                 ", streetNr='" + streetNr + '\'' +

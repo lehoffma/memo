@@ -4,36 +4,49 @@ package memo.model;
 import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "ORDERED_ITEMS")
-public class OrderedItem {
+public class OrderedItem implements Serializable{
 
+    //**************************************************************
+    //  static members
+    //**************************************************************
+
+    private static final long serialVersionUID = 1L;
+
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "EVENT_ID", referencedColumnName = "ID")
-    private Event event;
-
+    @Expose
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
+    private ShopItem item;
 
     @Expose
-    @Column(name = "ORDER_ID")
-    private Integer orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Order order;
 
     // Without Driver reduction
     @Expose
-    private int price;
+    private int price = 0;
 
     @Expose
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.Reserved;
 
     @Expose
     private String size;
 
-    @ManyToOne
-    @JoinColumn(name = "COLOR_ID", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn
     private Color color;
 
     @Expose
@@ -42,7 +55,17 @@ public class OrderedItem {
 
     @Expose
     @Column(name = "NEEDS_TICKET")
-    private Boolean needsTicket;
+    private Boolean needsTicket = true;
+
+    //**************************************************************
+    //  constructor
+    //**************************************************************
+
+    public OrderedItem() {super();}
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
 
     public int getId() {
         return id;
@@ -52,20 +75,20 @@ public class OrderedItem {
         this.id = id;
     }
 
-    public Event getEvent() {
-        return event;
+    public ShopItem getItem() {
+        return item;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
+    public void setItem(ShopItem shopItem) {
+        this.item = item;
     }
 
-    public Integer getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public int getPrice() {
@@ -116,12 +139,16 @@ public class OrderedItem {
         this.needsTicket = needsTicket;
     }
 
+    //**************************************************************
+    //  methods
+    //**************************************************************
+
     @Override
     public String toString() {
         return "OrderedItem{" +
                 "id=" + id +
-                ", event=" + event +
-                ", order=" + orderId +
+                ", item=" + item +
+                ", order=" + order +
                 ", price=" + price +
                 ", status=" + status +
                 ", size='" + size + '\'' +

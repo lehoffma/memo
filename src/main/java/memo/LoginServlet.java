@@ -47,7 +47,7 @@ public class LoginServlet extends HttpServlet {
 
         User user = users.get(0);
 
-        if (user.getPasswordHash().equals(password)) {
+        if (user.getPassword().equals(password)) {
             response.setStatus(202);
             response.getWriter().append("{ \"id\": " + user.getId() + ", \"auth_token\": null }");
         } else {

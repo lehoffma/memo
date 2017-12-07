@@ -6,29 +6,64 @@ import com.google.gson.annotations.Expose;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "COMMENTS")
 public class Comment implements Serializable {
 
+    //**************************************************************
+    //  static members
+    //**************************************************************
+
+    private static final long serialVersionUID = 1L;
+
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;   //globale unique ID
 
     @Expose
-    @Column(name = "EVENT_ID")
-    private Integer eventId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "ITEM")
+    private ShopItem item;
 
+    @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
     private LocalDateTime timeStamp;   //muss jetzt unbedingt nich 'Date' sein, aber halt nen Datumstyp
 
     @Expose
-    @Column(name = "AUTHOR_ID")
-    private Integer authorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "AUTHOR")
+    private User author;
 
     @Expose
-    private String text;
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "CHILDREN")
+    private List<Comment> children = new ArrayList<>();
 
+    @Expose
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Comment parent;
+
+    @Expose
+    @Column(nullable = false)
+    private String content;
+
+    //**************************************************************
+    //  constructor
+    //**************************************************************
+
+    public Comment(){super();}
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
 
     public int getId() {
         return id;
@@ -38,12 +73,12 @@ public class Comment implements Serializable {
         this.id = id;
     }
 
-    public Integer getEvent() {
-        return eventId;
+    public ShopItem getItem() {
+        return item;
     }
 
-    public void setEvent(Integer event) {
-        this.eventId = event;
+    public void setItem(ShopItem item) {
+        this.item = item;
     }
 
     public LocalDateTime getTimeStamp() {
@@ -54,30 +89,53 @@ public class Comment implements Serializable {
         this.timeStamp = timeStamp;
     }
 
-    public Integer getAuthorId() {
-        return authorId;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Integer author) {
-        this.authorId = author;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
-    public String getText() {
-        return text;
+    public List<Comment> getChildren() {
+        return children;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setChildren(List<Comment> children) {
+        this.children = children;
     }
+
+    public void addChild(Comment c){ this.children.add(c);}
+
+    public Comment getParent() {
+        return parent;
+    }
+
+    public void setParent(Comment parent) {
+        this.parent = parent;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    //**************************************************************
+    //  methods
+    //**************************************************************
 
     @Override
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", eventId=" + eventId +
+                ", itemId=" + item +
                 ", timeStamp=" + timeStamp +
-                ", authorId=" + authorId +
-                ", text='" + text + '\'' +
+                ", author=" + author +
+                ", children=" + children +
+                ", content='" + content + '\'' +
                 '}';
     }
 }

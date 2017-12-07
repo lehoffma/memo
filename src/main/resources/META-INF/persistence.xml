@@ -10,12 +10,13 @@
         <class>memo.model.Comment</class>
         <class>memo.model.EntryCategory</class>
         <class>memo.model.Entry</class>
-        <class>memo.model.Event</class>
+        <class>memo.model.Image</class>
         <class>memo.model.Order</class>
         <class>memo.model.OrderedItem</class>
         <class>memo.model.Permission</class>
         <class>memo.model.PermissionState</class>
-        <class>memo.model.Size</class>
+        <class>memo.model.ShopItem</class>
+        <class>memo.model.Stock</class>
         <class>memo.model.SizeTable</class>
         <class>memo.model.User</class>
 

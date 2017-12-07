@@ -6,7 +6,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Entity implementation class for Entity: User
@@ -17,29 +19,38 @@ import java.util.List;
 
 public class User implements Serializable {
 
+    //**************************************************************
+    //  static members
+    //**************************************************************
+
     private static final long serialVersionUID = 1L;
 
+    //**************************************************************
+    //  member
+    //**************************************************************
+
+    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
 
-    @Column(name = "FIRST_NAME", nullable = false)
     @Expose
+    @Column(name = "FIRST_NAME", nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
     @Expose
+    @Column(nullable = false)
     private String surname;
 
     @Enumerated(EnumType.ORDINAL)
     private ClubRole clubRole = ClubRole.none;
 
-    @ElementCollection
-    @CollectionTable(name = "USER_ADDRESSES")
     @Expose
-    private List<Integer> addresses = new ArrayList<Integer>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Address> addresses = new ArrayList<>();
 
+    @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
     private LocalDateTime birthday = LocalDateTime.now();
 
@@ -57,9 +68,9 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String email;
 
-    @Expose
+    @Expose(serialize = false,deserialize = true)
     @Column(name = "PASSWORD", nullable = false)
-    private String passwordHash;
+    private String password;
 
     @Expose
     private Boolean isStudent = false;
@@ -68,14 +79,14 @@ public class User implements Serializable {
     private Boolean hasDebitAuth = false;
 
     @Expose
-    @Column(name = "IMAGE_PATH")
-    private String imagePath;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    private List<Image> images = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "USER_BANK_ACCOUNTS")
-    @Expose
-    private List<Integer> bankAccounts = new ArrayList<>();
+    @Expose(serialize = false, deserialize = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private List<BankAcc> bankAccounts = new ArrayList<>();
 
+    @Expose(serialize = true, deserialize = false)
     @Column(name = "JOIN_DATE", nullable = false)
     private LocalDateTime joinDate = LocalDateTime.now();
 
@@ -90,13 +101,35 @@ public class User implements Serializable {
     @Column(name = "IS_WOELFE_CLUB_MEMBER")
     private Boolean isWoelfeClubMember = false;
 
+    @Expose
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "PERMISSIONS_ID")
+    @JoinColumn
     private PermissionState permissions;
+
+    @Expose
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
+
+    @Expose
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    private List<Comment> comments = new ArrayList<>();
+
+    @Expose
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn
+    private List<ShopItem> authoredItems = new ArrayList<>();
+
+    //**************************************************************
+    //  constructor
+    //**************************************************************
 
     public User() {
         super();
     }
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
 
     public Integer getId() {
         return this.id;
@@ -162,14 +195,6 @@ public class User implements Serializable {
         this.hasDebitAuth = hasDebitAuth;
     }
 
-    public String getImagePath() {
-        return this.imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
     public String getMobile() {
         return mobile;
     }
@@ -210,12 +235,12 @@ public class User implements Serializable {
         this.surname = surname;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Boolean getHasSeasonTicket() {
@@ -250,21 +275,69 @@ public class User implements Serializable {
         this.clubRole = clubRole;
     }
 
-    public List<Integer> getAddresses() {
+    public List<Address> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(List<Integer> addresses) {
+    public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
 
-    public List<Integer> getBankAccounts() {
+    public void addAddress(Address a) {this.addresses.add(a);}
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
+
+    public void addImage(Image i) {this.images.add(i);}
+
+    public List<BankAcc> getBankAccounts() {
         return bankAccounts;
     }
 
-    public void setBankAccounts(List<Integer> bankAccounts) {
+    public void setBankAccounts(List<BankAcc> bankAccounts) {
         this.bankAccounts = bankAccounts;
     }
+
+    public void addBankAccount(BankAcc b) {this.bankAccounts.add(b);}
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public void addOrder(Order o) { this.orders.add(o);}
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void addComment(Comment c) { this.comments.add(c);}
+
+    public List<ShopItem> getAuthoredItems() {
+        return authoredItems;
+    }
+
+    public void setAuthoredItems(List<ShopItem> authoredItems) {
+        this.authoredItems = authoredItems;
+    }
+
+    public void addAuthoredItem(ShopItem i) { this.authoredItems.add(i);}
+
+    //**************************************************************
+    //  methods
+    //**************************************************************
 
     @Override
     public String toString() {
@@ -273,22 +346,25 @@ public class User implements Serializable {
                 ", firstName='" + firstName + '\'' +
                 ", surname='" + surname + '\'' +
                 ", clubRole=" + clubRole +
-                ", Adresses=" + addresses.toString() +
+                ", addresses=" + addresses +
                 ", birthday=" + birthday +
                 ", telephone='" + telephone + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", miles=" + miles +
                 ", email='" + email + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
+                ", password='" + password + '\'' +
                 ", isStudent=" + isStudent +
                 ", hasDebitAuth=" + hasDebitAuth +
-                ", imagePath='" + imagePath + '\'' +
-                ", BankAccounts=" + bankAccounts.toString() +
+                ", images=" + images +
+                ", bankAccounts=" + bankAccounts +
                 ", joinDate=" + joinDate +
                 ", gender='" + gender + '\'' +
                 ", hasSeasonTicket=" + hasSeasonTicket +
                 ", isWoelfeClubMember=" + isWoelfeClubMember +
                 ", permissions=" + permissions +
+                ", orders=" + orders +
+                ", comments=" + comments +
+                ", authoredItems=" + authoredItems +
                 '}';
     }
 }
