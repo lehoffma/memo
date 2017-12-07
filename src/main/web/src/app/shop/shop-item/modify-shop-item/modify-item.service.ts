@@ -28,7 +28,6 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {filter, first, map, mergeMap, scan} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shared/model/event";
-import {flatMap} from "tslint/lib/utils";
 import {of} from "rxjs/observable/of";
 
 @Injectable()
@@ -421,7 +420,7 @@ export class ModifyItemService {
 							[...modifyItemEvent.model["stock"]]
 						)
 							.pipe(
-								map(it => result)
+								map(() => (<any>result))
 							)
 					}
 					return of(result);

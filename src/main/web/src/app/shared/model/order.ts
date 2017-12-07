@@ -10,16 +10,17 @@ export class Order extends BaseObject<Order> {
 				public readonly timeStamp: Moment,
 				public method: PaymentMethod,
 				public readonly orderedItems: OrderedItem[],
+				public text: string,
 				public bankAccount?: number) {
 		super(id);
 	}
 
 
 	static create(): Order {
-		return new Order(-1, -1, moment(), PaymentMethod.CASH, []);
+		return new Order(-1, -1, moment(), PaymentMethod.CASH, [], "");
 	}
 
-	static isOrder(object:any):object is Order{
+	static isOrder(object: any): object is Order {
 		return object && (<Order>object).method !== undefined && (<Order>object).method !== null;
 	}
 }
