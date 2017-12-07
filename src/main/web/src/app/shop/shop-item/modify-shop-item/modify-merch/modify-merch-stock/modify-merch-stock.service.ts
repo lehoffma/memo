@@ -36,7 +36,7 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 	 * @param {ModifyStockItemEvent} event
 	 */
 	addStock(event: ModifyStockItemEvent) {
-		event.sizes.forEach(size => {
+		Object.keys(event.sizes).forEach(size => {
 			const index = this.dataSubject$.getValue()
 				.findIndex(stockItem => stockItem.color.name === event.color.name
 					&& stockItem.size === size);
@@ -48,7 +48,7 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 					event: event.event,
 					size: size,
 					color: Object.assign({}, event.color),
-					amount: event.amount
+					amount: event.sizes[size]
 				}]);
 			}
 			//the stock item is already part of the list => simply increase amount
@@ -57,7 +57,7 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 					...this.dataSubject$.getValue().slice(0, index),
 					{
 						...this.dataSubject$.getValue()[index],
-						amount: this.dataSubject$.getValue()[index].amount + event.amount
+						amount: this.dataSubject$.getValue()[index].amount + event.sizes[size]
 					},
 					...this.dataSubject$.getValue().slice(index + 1)
 				]);
@@ -73,12 +73,13 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 		//todo multiple sizes
 		this.dataSubject$.next(this.dataSubject$.getValue().map(stock => {
 			if (stock["id"] === event.modifiedStock["id"]) {
+				const firstSize = Object.keys(event.sizes)[0];
 				return {
 					id: event.modifiedStock.id,
 					event: event.event,
-					size: event.sizes[0],
+					size: firstSize,
 					color: Object.assign({}, event.color),
-					amount: event.amount
+					amount: event.sizes[firstSize]
 				}
 			}
 			return stock;

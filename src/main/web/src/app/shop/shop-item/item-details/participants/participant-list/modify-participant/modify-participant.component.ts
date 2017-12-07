@@ -10,6 +10,8 @@ import {ParticipantsService} from "../../../../../../shared/services/api/partici
 import {EventType} from "../../../../../shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, startWith} from "rxjs/operators";
+import {OrderStatus, OrderStatusPairList, OrderStatusStringList} from "../../../../../../shared/model/order-status";
+import {Event} from "../../../../../shared/model/event";
 
 export interface ModifyParticipantEvent {
 	participant: ParticipantUser
@@ -28,9 +30,12 @@ export class ModifyParticipantComponent implements OnInit {
 		eventType: EventType,
 		eventId: number
 	};
+	associatedEvent: Event;
 
 	autocompleteFormControl = new FormControl();
 	filteredOptions: Observable<User[]>;
+
+	availableStatus = OrderStatusPairList;
 
 	constructor(private dialogRef: MatDialogRef<ModifyParticipantComponent>,
 				private participantsService: ParticipantsService,
@@ -44,6 +49,7 @@ export class ModifyParticipantComponent implements OnInit {
 
 	ngOnInit() {
 		this.associatedEventInfo = this.data.associatedEventInfo;
+		this.associatedEvent = this.data.event;
 		if (this.isEditing) {
 			this.participant = Object.assign({}, this.data.participant);
 			this.autocompleteFormControl.setValue(Object.assign({}, this.data.participant.user));
@@ -51,9 +57,11 @@ export class ModifyParticipantComponent implements OnInit {
 		else {
 			this.participant = {
 				isDriver: false,
-				hasPaid: false,
+				needsTicket: false,
+				status: OrderStatus.RESERVED,
+				price: 0,
+				event: this.associatedEvent,
 				id: -1,
-				comments: "",
 				user: null
 			}
 		}

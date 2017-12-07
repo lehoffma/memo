@@ -5,7 +5,7 @@ import {ExpandableTableCellComponent} from "../../../shared/expandable-table/exp
 	selector: "td [costValueTableCell]",
 	template: `
 		<span [ngClass]="{'positive': data >= 0}">
-			{{data | currency:'EUR':true}}
+			{{data | currency:'EUR':'symbol'}}
 			<!--{{data.toFixed(2)}} €-->
 		</span>
 	`,

@@ -9,6 +9,26 @@ export enum OrderStatus {
 	UNDER_APPROVAL = <any>"7"
 }
 
+export const OrderStatusList: OrderStatus[] = [
+	OrderStatus.RESERVED,
+	OrderStatus.ORDERED,
+	OrderStatus.PAID,
+	OrderStatus.SENT,
+	OrderStatus.COMPLETED,
+	OrderStatus.CANCELLED,
+	OrderStatus.REFUSED,
+	OrderStatus.UNDER_APPROVAL
+];
+
+export const OrderStatusStringList: string[] = OrderStatusList
+	.map(status => orderStatusToString(status));
+
+export const OrderStatusPairList: { status: OrderStatus, text: string }[] = OrderStatusList
+	.map(status => ({
+		status,
+		text: orderStatusToString(status)
+	}));
+
 export function orderStatusToString(status: OrderStatus): string {
 	switch (status) {
 		case OrderStatus.RESERVED:

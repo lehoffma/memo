@@ -26,19 +26,20 @@
 			</div>
 
 			<mat-form-field>
-				<textarea placeholder="Kommentar" autosize
-						  #commentInput="ngModel"
-						  name="commentInput"
-						  [(ngModel)]="participant.comments" matInput>
-				</textarea>
+				<mat-select [(value)]="participant.status">
+					<mat-option *ngFor="let status of availableStatus" [value]="status.status">
+						{{status.text}}
+					</mat-option>
+				</mat-select>
 			</mat-form-field>
 
 			<div class="participant-checkboxes">
 				<mat-checkbox name="isDriverCheckbox" #isDriverCheckbox="ngModel" [(ngModel)]="participant.isDriver">
 					Ist Fahrer
 				</mat-checkbox>
-				<mat-checkbox name="hasPaidCheckbox" #hasPaidCheckbox="ngModel" [(ngModel)]="participant.hasPaid">
-					Hat bezahlt
+				<mat-checkbox name="needsTicketCheckbox" #needsTicketCheckbox="ngModel"
+							  [(ngModel)]="participant.needsTicket">
+					Braucht Ticket
 				</mat-checkbox>
 			</div>
 		</div>

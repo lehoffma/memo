@@ -39,5 +39,5 @@
 			negative: (total$ | async) < 0
 		}">
 	<span>Gesamt</span>
-	<span>{{(total$ | async) | currency:'EUR':true}}</span>
+	<span>{{(total$ | async) | currency:'EUR':'symbol'}}</span>
 </div>

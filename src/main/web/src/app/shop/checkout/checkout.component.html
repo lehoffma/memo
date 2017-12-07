@@ -16,5 +16,5 @@
 
 <a class="checkout-total mat-elevation-z6" routerLink="/cart">
 	<h3>Gesamt</h3>
-	<span>{{total$ | async | currency:'EUR':2}}</span>
+	<span>{{total$ | async | currency:'EUR':'symbol'}}</span>
 </a>

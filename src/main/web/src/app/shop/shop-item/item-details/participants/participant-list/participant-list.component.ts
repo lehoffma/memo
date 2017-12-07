@@ -24,12 +24,15 @@ import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {filter, first, map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {Subscription} from "rxjs/Subscription";
+import {OrderStatusTableCellComponent} from "../order-status-table-cell.component";
 
 const participantListColumns = {
 	name: new ExpandableTableColumn<ParticipantUser>("Name", "user", FullNameTableCellComponent),
+	//todo order-status cell component => call statusToString function at least, maybe use color
+	status: new ExpandableTableColumn<ParticipantUser>("Status", "status", OrderStatusTableCellComponent),
 	isDriver: new ExpandableTableColumn<ParticipantUser>("Fahrer", "isDriver", BooleanCheckMarkCellComponent),
-	hasPaid: new ExpandableTableColumn<ParticipantUser>("Bezahlt", "hasPaid", BooleanCheckMarkCellComponent),
-	comments: new ExpandableTableColumn<ParticipantUser>("Kommentare", "comments")
+	needsTicket: new ExpandableTableColumn<ParticipantUser>("Benötigt Ticket", "needsTicket", BooleanCheckMarkCellComponent),
 };
 
 @Component({
@@ -38,6 +41,7 @@ const participantListColumns = {
 	styleUrls: ["./participant-list.component.scss"]
 })
 export class ParticipantListComponent implements OnInit, OnDestroy {
+	//todo use table.service
 	eventInfo: Observable<{
 		eventType: EventType,
 		eventId: number
@@ -63,8 +67,8 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	participantList = this.participants$;
 	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("party", "tour");
 	private _columnKeys: BehaviorSubject<ExpandableTableColumn<ParticipantUser>[]> = new BehaviorSubject([
-		participantListColumns.name, participantListColumns.isDriver,
-		participantListColumns.hasPaid, participantListColumns.comments
+		participantListColumns.name, participantListColumns.status,
+		participantListColumns.isDriver, participantListColumns.needsTicket
 	]);
 	columnKeys = this._columnKeys.asObservable();
 	private _expandedKeys: BehaviorSubject<ExpandableTableColumn<ParticipantUser>[]> = new BehaviorSubject([]);
@@ -78,7 +82,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 		});
 	sortBy$ = this._sortBy$.asObservable();
 
-	subscriptions = [];
+	subscriptions: Subscription[] = [];
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private dialog: MatDialog,
@@ -95,7 +99,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.subscriptions.forEach(it => it.unsusbcribe());
+		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
 	updateSortBy(event: ColumnSortingEvent<ParticipantUser>) {
@@ -110,13 +114,15 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	 */
 	updateColumnKeys(screenWidth: number) {
 		let newColumns: ExpandableTableColumn<ParticipantUser>[] = [
-			participantListColumns.name, participantListColumns.hasPaid
+			participantListColumns.name,
+
+			participantListColumns.status
 		];
 		if (screenWidth > 500) {
 			newColumns.push(participantListColumns.isDriver);
 		}
 		if (screenWidth > 700) {
-			newColumns.push(participantListColumns.comments);
+			newColumns.push(participantListColumns.needsTicket);
 		}
 		this._columnKeys.next(newColumns);
 		this._expandedKeys.next(Object.keys(participantListColumns)
@@ -168,26 +174,39 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	 *
 	 */
 	addParticipant() {
-		this.eventInfo.pipe(first()).subscribe(eventInfo => {
-			this.dialog.open(ModifyParticipantComponent, {data: {associatedEventInfo: eventInfo}})
-				.afterClosed()
-				.pipe(
-					filter(result => result),
-					mergeMap((result: ModifyParticipantEvent) => {
-						return this.participantService
-							.addParticipant(eventInfo.eventId, eventInfo.eventType, result.participant)
-							.pipe(
-								tap(() => {
-									this.participants$.next([
-										...this.participants$.getValue(),
-										result.participant
-									])
-								})
-							);
-					})
-				)
-				.subscribe()
-		})
+		this.eventInfo
+			.pipe(
+				first(),
+				mergeMap(eventInfo => {
+					return this.eventService.getById(eventInfo.eventId)
+						.pipe(
+							map(event => ({event, eventInfo}))
+						)
+				})
+			)
+			//todo add event to data object
+			.subscribe(info => {
+				this.dialog.open(ModifyParticipantComponent, {
+					data: {associatedEventInfo: info.eventInfo, event: info.event}
+				})
+					.afterClosed()
+					.pipe(
+						filter(result => result),
+						mergeMap((result: ModifyParticipantEvent) => {
+							return this.participantService
+								.add(result.participant, info.eventInfo.eventType, info.eventInfo.eventId)
+								.pipe(
+									tap(() => {
+										this.participants$.next([
+											...this.participants$.getValue(),
+											result.participant
+										])
+									})
+								);
+						})
+					)
+					.subscribe()
+			})
 	}
 
 	/**
@@ -195,30 +214,46 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	 * @param event
 	 */
 	editParticipant(event) {
-		this.eventInfo.pipe(first()).subscribe(eventInfo => {
-			this.dialog.open(ModifyParticipantComponent, {data: {participant: event, associatedEventInfo: eventInfo}})
-				.afterClosed()
-				.pipe(
-					filter(result => result),
-					mergeMap((result: ModifyParticipantEvent) => {
-						return this.participantService
-							.updateParticipant(eventInfo.eventId, eventInfo.eventType, result.participant)
-							.pipe(
-								tap(() => {
-									let indexOfParticipant = this.participants$.value.findIndex(
-										participant => participant.id === result.participant.id
-									);
-									this.participants$.next([
-										...this.participants$.value.slice(0, indexOfParticipant),
-										result.participant,
-										...this.participants$.value.slice(indexOfParticipant + 1)
-									]);
-								})
-							);
-					})
-				)
-				.subscribe()
-		})
+		this.eventInfo
+			.pipe(
+				first(),
+				mergeMap(eventInfo => {
+					return this.eventService.getById(eventInfo.eventId)
+						.pipe(
+							map(event => ({event, eventInfo}))
+						)
+				})
+			)
+			.subscribe(info => {
+				this.dialog.open(ModifyParticipantComponent, {
+					data: {
+						participant: event,
+						event: info.event,
+						associatedEventInfo: info.eventInfo
+					}
+				})
+					.afterClosed()
+					.pipe(
+						filter(result => result),
+						mergeMap((result: ModifyParticipantEvent) => {
+							return this.participantService
+								.modify(result.participant, info.eventInfo.eventType, info.eventInfo.eventId)
+								.pipe(
+									tap(() => {
+										let indexOfParticipant = this.participants$.value.findIndex(
+											participant => participant.id === result.participant.id
+										);
+										this.participants$.next([
+											...this.participants$.value.slice(0, indexOfParticipant),
+											result.participant,
+											...this.participants$.value.slice(indexOfParticipant + 1)
+										]);
+									})
+								);
+						})
+					)
+					.subscribe()
+			})
 	}
 
 	/**
@@ -229,7 +264,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 		this.eventInfo.pipe(first()).subscribe(eventInfo => {
 			event.forEach(participantUser => {
 				this.participantService
-					.deleteParticipant(eventInfo.eventId, eventInfo.eventType, participantUser.id)
+					.remove(participantUser.id, eventInfo.eventType, eventInfo.eventId)
 					.subscribe(response => {
 						let indexOfParticipant = this.participants$.value.findIndex(
 							participant => participant.id === participantUser.id
