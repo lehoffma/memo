@@ -4,7 +4,9 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,7 +35,7 @@ public class EntryCategory implements Serializable {
 
     @Expose
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "category")
-    private Set<Entry> entry = new HashSet<>();
+    private List<Entry> entry = new ArrayList<>();
 
     @Expose
     @Column(nullable = false)
@@ -63,13 +65,15 @@ public class EntryCategory implements Serializable {
         this.id = id;
     }
 
-    public Set<Entry> getEntry() {
+    public List<Entry> getEntry() {
         return entry;
     }
 
-    public void setEntry(Set<Entry> entry) {
+    public void setEntry(List<Entry> entry) {
         this.entry = entry;
     }
+
+    public void addEntry(Entry e){ this.entry.add(e);}
 
     public String getName() {
         return this.name;

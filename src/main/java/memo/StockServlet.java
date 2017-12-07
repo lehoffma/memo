@@ -129,7 +129,7 @@ public class StockServlet extends HttpServlet {
 
     private List<Stock> getStockByEventType(Integer type) {
         return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s " +
-                " WHERE s.event.type = :typ", Stock.class)
+                " WHERE s.item.type = :typ", Stock.class)
                 .setParameter("typ", type)
                 .getResultList();
     }
@@ -139,7 +139,7 @@ public class StockServlet extends HttpServlet {
             Integer id = Integer.parseInt(SeventId);
             //ToDo: gibt null aus wenn id nicht vergeben (ich bin für optionals)
             return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s " +
-                    " WHERE s.event.id = :id", Stock.class)
+                    " WHERE s.item.id = :id", Stock.class)
                     .setParameter("id", id)
                     .getResultList();
         } catch (NumberFormatException e) {
@@ -185,7 +185,7 @@ public class StockServlet extends HttpServlet {
         if(jsonEvent != null){
             Integer eventId = jsonEvent.get("id").getAsInt();
             ShopItem e = DatabaseManager.createEntityManager().find(ShopItem.class, eventId);
-            s.setShopItem(e);
+            s.setItem(e);
         }
         else{
             //todo error handling

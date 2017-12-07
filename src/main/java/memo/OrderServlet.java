@@ -223,7 +223,7 @@ public class OrderServlet extends HttpServlet {
             Integer id = Integer.parseInt(SuserId);
 
             return DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o " +
-                    " WHERE o.userId = :userId", Order.class)
+                    " WHERE o.user.id = :userId", Order.class)
                     .setParameter("userId", id)
                     .getResultList();
 
@@ -352,8 +352,9 @@ public class OrderServlet extends HttpServlet {
                 // update event,order, color
 
 
-                item.setShopItem(em.find(ShopItem.class, jItem.get("event").getAsJsonObject().get("id").getAsInt()));
-                item.setOrderId(o.getId());
+
+                item.setItem(em.find(ShopItem.class, jItem.get("event").getAsJsonObject().get("id").getAsInt()));
+                item.setOrder(o);
 
                 if (jItem.has("color")) {
                     Color c = gson.fromJson(jItem.get("color").getAsJsonObject(), Color.class);
@@ -406,7 +407,7 @@ public class OrderServlet extends HttpServlet {
     private List<OrderedItem> getOrderedItemsByOrderId(Integer id) {
 
         return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                " WHERE o.orderId = :Id", OrderedItem.class)
+                " WHERE o.order.id = :Id", OrderedItem.class)
                 .setParameter("Id", id)
                 .getResultList();
 
@@ -419,7 +420,7 @@ public class OrderServlet extends HttpServlet {
         em.getTransaction().begin();
 
         for (OrderedItem o : items){
-            o.setOrderId(newOrder.getId());
+            o.setOrder(newOrder);
             em.persist(o);
         }
         em.getTransaction().commit();

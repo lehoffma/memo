@@ -88,7 +88,7 @@ public class ParticipantsServlet extends HttpServlet {
 
     private List<OrderedItem> getParticipantsByEventType(Integer type) {
         return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                " WHERE o.event.type = :typ", OrderedItem.class)
+                " WHERE o.item.type = :typ", OrderedItem.class)
                 .setParameter("typ", type)
                 .getResultList();
     }
@@ -96,11 +96,11 @@ public class ParticipantsServlet extends HttpServlet {
     private List<ShopItem> getEventsByUserId(Integer userId){
         return DatabaseManager.createEntityManager().createQuery(
                 "SELECT item from Order o join OrderedItem item \n" +
-                        "    WHERE o.userId =:userId", OrderedItem.class)
+                        "    WHERE o.user.id =:userId", OrderedItem.class)
                 .setParameter("userId", userId)
                 .getResultList()
                 .stream()
-                .map(OrderedItem::getShopItem)
+                .map(OrderedItem::getItem)
                 .distinct()
                 .collect(Collectors.toList());
     }
@@ -110,7 +110,7 @@ public class ParticipantsServlet extends HttpServlet {
             Integer id = Integer.parseInt(SeventId);
             //ToDo: gibt null aus wenn id nicht vergeben
             return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                    " WHERE o.event.id = :id", OrderedItem.class)
+                    " WHERE o.item.id = :id", OrderedItem.class)
                     .setParameter("id", id)
                     .getResultList();
         } catch (NumberFormatException e) {

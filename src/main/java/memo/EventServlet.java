@@ -230,7 +230,7 @@ public class EventServlet extends HttpServlet {
             Color c = gson.fromJson(color, Color.class);
             Stock s = new Stock();
             s.setColor(c);
-            s.setShopItem(e);
+            s.setItem(e);
             s.setSize(st.get("size").getAsString());
             s.setAmount(st.get("amount").getAsInt());
             colorList.add(c);
@@ -303,8 +303,8 @@ public class EventServlet extends HttpServlet {
     }
 
     private List<ShopItem> getEventsByAuthor(Integer authorId){
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e " +
-                " WHERE e.authorId = :author", ShopItem.class)
+        return DatabaseManager.createEntityManager().createQuery("SELECT distinct e FROM ShopItem e " +
+                " JOIN e.author a WHERE a.id = :author", ShopItem.class)
                 .setParameter("author", authorId)
                 .getResultList();
     }

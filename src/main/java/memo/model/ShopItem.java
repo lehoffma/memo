@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -64,14 +65,13 @@ public class ShopItem implements Serializable {
     @Column(nullable = false)
     private Integer capacity = 0;
 
-    // ToDo: fix
     @Expose
-    @Column(name = "PRICE_MEMBER", nullable = false)
-    private float priceMember;
+    @Column(name = "PRICE_MEMBER", nullable = false, precision = 12, scale = 2)
+    private BigDecimal priceMember;
 
     @Expose
-    @Column(nullable = false)
-    private float price;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal price;
 
     @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "item")
@@ -88,7 +88,7 @@ public class ShopItem implements Serializable {
 
     @Expose(serialize = false, deserialize = true)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authoredItems")
-    private Set<User> author = new HashSet<>();
+    private List<User> author = new ArrayList<>();
 
     @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
@@ -100,11 +100,11 @@ public class ShopItem implements Serializable {
 
     @Expose(serialize = false, deserialize = false)
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "item")
-    private Set<OrderedItem> orders = new HashSet<>();
+    private List<OrderedItem> orders = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
-    private Set<Stock> stock = new HashSet<>();
+    private List<Stock> stock = new ArrayList<>();
 
     @Expose
     @Column(nullable = false)
@@ -178,19 +178,19 @@ public class ShopItem implements Serializable {
         this.capacity = capacity;
     }
 
-    public float getPriceMember() {
+    public BigDecimal getPriceMember() {
         return this.priceMember;
     }
 
-    public void setPriceMember(float priceMember) {
+    public void setPriceMember(BigDecimal priceMember) {
         this.priceMember = priceMember;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return this.price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -242,6 +242,8 @@ public class ShopItem implements Serializable {
         this.images = images;
     }
 
+    public void addImage(Image i) { this.images.add(i);}
+
     public List<Address> getRoute() {
         return route;
     }
@@ -250,13 +252,17 @@ public class ShopItem implements Serializable {
         this.route = route;
     }
 
-    public Set<User> getAuthor() {
+    public void addAddress(Address a) { this.route.add(a);}
+
+    public List<User> getAuthor() {
         return author;
     }
 
-    public void setAuthor(Set<User> author) {
+    public void setAuthor(List<User> author) {
         this.author = author;
     }
+
+    public void addAuthor(User a) { this.author.add(a);}
 
     public List<Comment> getComments() {
         return comments;
@@ -266,6 +272,8 @@ public class ShopItem implements Serializable {
         this.comments = comments;
     }
 
+    public void addComment(Comment c) { this.comments.add(c);}
+
     public List<Entry> getEntries() {
         return entries;
     }
@@ -274,21 +282,27 @@ public class ShopItem implements Serializable {
         this.entries = entries;
     }
 
-    public Set<OrderedItem> getOrders() {
+    public void addEntry(Entry e) { this.entries.add(e);}
+
+    public List<OrderedItem> getOrders() {
         return orders;
     }
 
-    public void setOrders(Set<OrderedItem> orders) {
+    public void setOrders(List<OrderedItem> orders) {
         this.orders = orders;
     }
 
-    public Set<Stock> getStock() {
+    public void addOrder(OrderedItem o) { this.orders.add(o);}
+
+    public List<Stock> getStock() {
         return stock;
     }
 
-    public void setStock(Set<Stock> stock) {
+    public void setStock(List<Stock> stock) {
         this.stock = stock;
     }
+
+    public void addStock(Stock s) { this.stock.add(s);}
 
     //**************************************************************
     //  methods

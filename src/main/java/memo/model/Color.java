@@ -4,8 +4,8 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -29,11 +29,11 @@ public class Color implements Serializable {
 
     @Expose(serialize = false, deserialize = false)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
-    private Set<OrderedItem> orderedItems = new HashSet<>();
+    private List<OrderedItem> orderedItems = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
-    private Set<Stock> stock = new HashSet<>();
+    private List<Stock> stock = new ArrayList<>();
 
     @Expose
     @Column(nullable = false)
@@ -68,21 +68,25 @@ public class Color implements Serializable {
         this.id = id;
     }
 
-    public Set<OrderedItem> getOrderedItems() {
+    public List<OrderedItem> getOrderedItems() {
         return orderedItems;
     }
 
-    public void setOrderedItems(Set<OrderedItem> orderedItems) {
+    public void setOrderedItems(List<OrderedItem> orderedItems) {
         this.orderedItems = orderedItems;
     }
 
-    public Set<Stock> getStock() {
+    public void addOrderedItem(OrderedItem o) { this.orderedItems.add(o);}
+
+    public List<Stock> getStock() {
         return stock;
     }
 
-    public void setStock(Set<Stock> stock) {
+    public void setStock(List<Stock> stock) {
         this.stock = stock;
     }
+
+    public void addStock(Stock s) {this.stock.add(s);}
 
     public String getName() {
         return name;

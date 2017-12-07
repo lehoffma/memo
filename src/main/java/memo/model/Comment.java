@@ -105,6 +105,8 @@ public class Comment implements Serializable {
         this.children = children;
     }
 
+    public void addChild(Comment c){ this.children.add(c);}
+
     public Comment getParent() {
         return parent;
     }

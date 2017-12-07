@@ -5,9 +5,7 @@ import com.google.gson.annotations.Expose;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Entity implementation class for Entity: Entry
@@ -62,7 +60,7 @@ public class Entry implements Serializable {
     @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn
-    private Set<Image> images = new HashSet<>();
+    private List<Image> images = new ArrayList<>();
 
     @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
@@ -128,13 +126,15 @@ public class Entry implements Serializable {
         this.comment = comment;
     }
 
-    public Set<Image> getImages() {
+    public List<Image> getImages() {
         return images;
     }
 
-    public void setImages(Set<Image> images) {
+    public void setImages(List<Image> images) {
         this.images = images;
     }
+
+    public void addImage(Image i) {this.images.add(i);}
 
     public Integer getId() {
         return id;

@@ -6,7 +6,9 @@ import com.google.gson.annotations.Expose;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -37,7 +39,7 @@ public class Order implements Serializable{
 
     @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "order")
-    private Set<OrderedItem> items = new HashSet<>();
+    private List<OrderedItem> items = new ArrayList<>();
 
     @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
@@ -88,6 +90,16 @@ public class Order implements Serializable{
     public void setMethod(PaymentMethod method) {
         this.method = method;
     }
+
+    public List<OrderedItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderedItem> items) {
+        this.items = items;
+    }
+
+    public void addItem(OrderedItem o) { this.items.add(o);}
 
     public String getText() {
         return text;

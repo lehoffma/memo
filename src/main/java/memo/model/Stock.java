@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +51,7 @@ public class Stock implements Serializable {
     @Expose
     @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
     @JoinColumn
-    private Set<SizeTable> sizeTable = new HashSet<>();
+    private List<SizeTable> sizeTable = new ArrayList<>();
 
     //**************************************************************
     //  constructor
@@ -111,13 +112,15 @@ public class Stock implements Serializable {
         this.color = color;
     }
 
-    public Set<SizeTable> getSizeTable() {
+    public List<SizeTable> getSizeTable() {
         return sizeTable;
     }
 
-    public void setSizeTable(Set<SizeTable> sizeTable) {
+    public void setSizeTable(List<SizeTable> sizeTable) {
         this.sizeTable = sizeTable;
     }
+
+    public void addSizeTable(SizeTable s) {this.sizeTable.add(s);}
 
     //**************************************************************
     //  methods

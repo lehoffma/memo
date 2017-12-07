@@ -48,7 +48,7 @@ public class User implements Serializable {
 
     @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-    private Set<Address> addresses = new HashSet<>();
+    private List<Address> addresses = new ArrayList<>();
 
     @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
@@ -80,7 +80,7 @@ public class User implements Serializable {
 
     @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
-    private List<Image> images;
+    private List<Image> images = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = true)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
@@ -112,12 +112,12 @@ public class User implements Serializable {
 
     @Expose
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
-    private Set<Comment> comments = new HashSet<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @Expose
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn
-    private Set<ShopItem> authoredItems = new HashSet<>();
+    private List<ShopItem> authoredItems = new ArrayList<>();
 
     //**************************************************************
     //  constructor
@@ -275,13 +275,15 @@ public class User implements Serializable {
         this.clubRole = clubRole;
     }
 
-    public Set<Address> getAddresses() {
+    public List<Address> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(Set<Address> addresses) {
+    public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
+
+    public void addAddress(Address a) {this.addresses.add(a);}
 
     public List<Image> getImages() {
         return images;
@@ -291,6 +293,8 @@ public class User implements Serializable {
         this.images = images;
     }
 
+    public void addImage(Image i) {this.images.add(i);}
+
     public List<BankAcc> getBankAccounts() {
         return bankAccounts;
     }
@@ -298,6 +302,8 @@ public class User implements Serializable {
     public void setBankAccounts(List<BankAcc> bankAccounts) {
         this.bankAccounts = bankAccounts;
     }
+
+    public void addBankAccount(BankAcc b) {this.bankAccounts.add(b);}
 
     public List<Order> getOrders() {
         return orders;
@@ -307,21 +313,27 @@ public class User implements Serializable {
         this.orders = orders;
     }
 
-    public Set<Comment> getComments() {
+    public void addOrder(Order o) { this.orders.add(o);}
+
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 
-    public Set<ShopItem> getAuthoredItems() {
+    public void addComment(Comment c) { this.comments.add(c);}
+
+    public List<ShopItem> getAuthoredItems() {
         return authoredItems;
     }
 
-    public void setAuthoredItems(Set<ShopItem> authoredItems) {
+    public void setAuthoredItems(List<ShopItem> authoredItems) {
         this.authoredItems = authoredItems;
     }
+
+    public void addAuthoredItem(ShopItem i) { this.authoredItems.add(i);}
 
     //**************************************************************
     //  methods
