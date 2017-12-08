@@ -11,7 +11,7 @@ export enum Permission {
 export interface UserPermissions {
 	readonly funds: Permission,
 	readonly party: Permission,
-	readonly user: Permission,
+	readonly userManagement: Permission,
 	readonly merch: Permission,
 	readonly tour: Permission,
 	readonly stock: Permission,
@@ -22,7 +22,7 @@ export function jsonToPermissions(jsonPermissions): UserPermissions {
 	return {
 		funds: jsonPermissions["funds"],
 		party: jsonPermissions["party"],
-		user: jsonPermissions["user"],
+		userManagement: jsonPermissions["userManagement"],
 		merch: jsonPermissions["merch"],
 		tour: jsonPermissions["tour"],
 		stock: jsonPermissions["stock"],
@@ -32,7 +32,7 @@ export function jsonToPermissions(jsonPermissions): UserPermissions {
 
 
 export const visitorPermissions: UserPermissions = {
-	user: Permission.none,
+	userManagement: Permission.none,
 	tour: Permission.read,
 	party: Permission.read,
 	merch: Permission.read,
@@ -40,3 +40,13 @@ export const visitorPermissions: UserPermissions = {
 	stock: Permission.none,
 	settings: Permission.none
 };
+
+export const adminPermissions: UserPermissions = {
+	userManagement: Permission.admin,
+	tour: Permission.admin,
+	party: Permission.admin,
+	merch: Permission.admin,
+	funds: Permission.admin,
+	stock: Permission.admin,
+	settings: Permission.admin
+}

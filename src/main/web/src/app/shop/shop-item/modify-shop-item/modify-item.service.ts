@@ -304,15 +304,12 @@ export class ModifyItemService {
 		if (EventUtilityService.isTour(newObject) || EventUtilityService.isParty(newObject)) {
 			//todo instead of combineLatest: add routes one after another (to avoid transaction errors)
 			if (this.isAddressArray(newObject.route)) {
-				let addressIds = await combineLatest(
+				let addresses = await combineLatest(
 					...newObject.route.map((route: Address) => this.addressService.add(route))
 				)
-					.pipe(
-						map((addresses: Address[]) => addresses.map(address => address.id))
-					)
 					.toPromise();
 
-				newObject.setProperties({route: [...addressIds]});
+				newObject.setProperties({route: [...addresses]});
 			}
 		}
 		return newObject
@@ -341,17 +338,17 @@ export class ModifyItemService {
 
 			if (uploadedImage) {
 				//todo: error handling, progress report
-				let imagePath = await this.imageUploadService.uploadImage(uploadedImage)
+				let imagePaths = await this.imageUploadService.uploadImages(uploadedImage)
 					.pipe(
-						map(response => response.imagePath)
+						map(response => response.imagePaths)
 					)
 					.toPromise();
 
 				//thanks typescript..
 				if (EventUtilityService.isUser(newObject)) {
-					return newObject.setProperties({imagePath: imagePath});
+					return newObject.setProperties({imagePaths});
 				}
-				return newObject.setProperties({imagePath: imagePath});
+				return newObject.setProperties({imagePaths});
 			}
 		}
 

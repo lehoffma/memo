@@ -24,7 +24,7 @@ export class SignUpComponent implements OnInit {
 		//wurde, wird er zur ersten weitergeleitet
 		this.currentSection
 			.filter(section => section !== SignUpSection.AccountData)
-			.filter(section => this.signUpService.newUser.email === "" || this.signUpService.newUser.passwordHash === "")
+			.filter(section => this.signUpService.newUser.email === "" || this.signUpService.newUser.password === "")
 			.subscribe(
 				section => this.signUpService.navigateToSection(SignUpSection.AccountData)
 			);

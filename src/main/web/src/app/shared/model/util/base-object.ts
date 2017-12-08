@@ -1,5 +1,5 @@
 import {ClubRole, idToClubRoleEnum} from "../club-role";
-import {jsonToPermissions, UserPermissions} from "../permission";
+import {adminPermissions, jsonToPermissions, UserPermissions} from "../permission";
 import {isArray} from "util";
 import {Gender} from "../gender";
 import {isNumber} from "../../../util/util";
@@ -38,18 +38,18 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 				} else if ((key.toLowerCase().includes("date")
 						|| key.toLowerCase().includes("day")
 						|| key.toLowerCase().includes("time"))) {
-					if(value.date && value.time){
+					if (value.date && value.time) {
 						// value = moment.tz(this.getIsoDateFromDateTimeObject(value), "Europe/Berlin");
 						value = moment(getIsoDateFromDateTimeObject(value)).tz("Europe/Berlin").locale("de");
 					}
-					else{
+					else {
 						// value = moment.tz(value, "Europe/Berlin");
 						value = moment(value);
 					}
 				} else if (isNumber(value)) {
 					value = +value;
 				}
-				if(key === "event"){
+				if (key === "event") {
 
 				}
 				if (key === "expectedRole") {
@@ -57,10 +57,17 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 				} else if (key === "clubRole") {
 					value = isNumber(value) ? idToClubRoleEnum(value) : ClubRole[properties[key]];
 				} else if (key === "permissions") {
-					value = jsonToPermissions(properties[key]);
+					if (properties[key] === null || properties[key] === "null") {
+						//todo demo permissions
+						value = adminPermissions;
+
+					}
+					else {
+						value = jsonToPermissions(properties[key]);
+					}
 				} else if (key === "gender") {
 					value = Gender[Gender[(<any>properties[key])]];
-				} else if (key === "method" && isNumber(value)){
+				} else if (key === "method" && isNumber(value)) {
 					value = toPaymentMethod(value);
 				}
 

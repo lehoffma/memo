@@ -83,8 +83,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 *
 	 */
 	submit() {
-		if(this.withEmailAndPassword){
-			this.userModel["passwordHash"] = this.userModel["password"];
+		if (this.withEmailAndPassword) {
 			this.userModel = {...this.userModel};
 
 			this.userService.isUserEmailAlreadyInUse(this.userModel["email"])
@@ -103,7 +102,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 					}
 				});
 		}
-		else{
+		else {
 			this.onSubmit.emit({
 				...this.userModel,
 				profilePicture: this.profilePicture
@@ -120,7 +119,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 		return userDataForm.form.valid
 			&& (this.previousValueIsEmpty() || !this.modelHasNotChanged())
 			&& (!this.userModel['password'] || this.userModel['password'].length === 0
-				|| this.userModel['password'] === this.confirmedPassword)
+				|| !this.withEmailAndPassword || this.userModel['password'] === this.confirmedPassword)
 			&& !this.emailIsAlreadyTaken
 	}
 
@@ -143,7 +142,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 			&& Object.keys(this.previousValue)
 				.filter(key => !key.includes("password"))
 				.every(key => this.userModel[key] === this.previousValue[key])
-			// && Object.keys(this.userModel).every(key => this.previousValue[key] === this.userModel[key]);
+		// && Object.keys(this.userModel).every(key => this.previousValue[key] === this.userModel[key]);
 	}
 
 	/**
@@ -152,6 +151,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 */
 	profilePictureChanged(event: FormData) {
 		this.profilePicture = event;
+		console.log(event);
 	}
 
 	/**

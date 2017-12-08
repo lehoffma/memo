@@ -1,6 +1,6 @@
 <a routerLink="{{linkToItem}}">
 	<div class="cart-entry-picture">
-		<img src="{{!!cartItem.item.imagePath ? cartItem.item.imagePath : 'resources/images/Logo.png'}}"/>
+		<img src="{{!!cartItem.item.imagePaths ? cartItem.item.imagePaths[0] : 'resources/images/Logo.png'}}"/>
 	</div>
 	<div class="cart-entry-header">
 		<h3 class="mat-h4">{{cartItem.item.title}}</h3>

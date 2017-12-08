@@ -156,14 +156,14 @@ export class Merchandise extends Event {
 				description: string,
 				expectedRole: ClubRole,
 				route: EventRoute,
-				imagePath: string,
+				imagePaths: string[],
 				capacity: number,
 				public colors: MerchColor[],
 				public material: string,
 				private _sizeTable: SizeTable,
 				priceMember: number,
 				price: number) {
-		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember, price);
+		super(id, title, date, description, expectedRole, route, imagePaths, capacity, priceMember, price);
 	}
 
 	get sizeTable() {
@@ -232,7 +232,7 @@ export class Merchandise extends Event {
 			[])
 	}
 
-	static capacity$(stockService: StockService, id:number):Observable<number>{
+	static capacity$(stockService: StockService, id: number): Observable<number> {
 		return stockService.getByEventId(id)
 			.pipe(
 				map(stock => stock.reduce((sum, it) => sum + it.amount, 0))
@@ -240,7 +240,8 @@ export class Merchandise extends Event {
 	}
 
 	static create() {
-		return new Merchandise(-1, "", moment(), "", ClubRole.None, [], "resources/images/Logo.png", -1, [], "",
+		return new Merchandise(-1, "", moment(), "", ClubRole.None, [],
+			["resources/images/Logo.png"], -1, [], "",
 			JSON.parse(sizeTable), -1, -1);
 	}
 }

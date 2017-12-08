@@ -13,7 +13,7 @@ export class Event extends BaseObject<Event> {
 				public description: string,
 				public expectedRole: ClubRole,
 				public route: EventRoute,
-				public imagePath: string,
+				public imagePaths: string[],
 				public capacity: number,
 				public priceMember: number,
 				public price: number = priceMember) {
@@ -29,6 +29,6 @@ export class Event extends BaseObject<Event> {
 	}
 
 	static create() {
-		return new Event(-1, "", moment(), "", ClubRole.None, [], "resources/images/Logo.png", -1, -1, -1);
+		return new Event(-1, "", moment(), "", ClubRole.None, [], ["resources/images/Logo.png"], -1, -1, -1);
 	}
 }

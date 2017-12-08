@@ -37,10 +37,10 @@ export class ProfileComponent implements OnInit {
 		);
 	userDestinations: Observable<Address[]> = this.userEvents
 		.pipe(
-			mergeMap(events => combineLatest(...events
+			map(events => [...events
 				.map(event => event.route)
 				.filter(route => route.length > 1)
-				.map((route: EventRoute) => this.addressService.getById(route[route.length - 1]))))
+				.map((route: EventRoute) => route[route.length - 1])])
 		);
 
 	centerOfUserDestinations: Observable<any> = this.userDestinations

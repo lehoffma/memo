@@ -4,13 +4,14 @@ import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/
 @Component({
 	selector: 'td [memoPictureTableCellComponent]',
 	template: `
-		<img src="{{data}}"/>
+		<img src="{{(data && data.length > 0 && data[0]) ? data[0] : defaultPath}}"/>
 	`,
 	styleUrls: ["./picture-table-cell.component.scss"]
 })
 
 export class PictureTableCellComponent implements OnInit, ExpandableTableCellComponent {
-	data: any;
+	defaultPath = "resources/images/Logo.png";
+	data: any[];
 
 	constructor() {
 	}

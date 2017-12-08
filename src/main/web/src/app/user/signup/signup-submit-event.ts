@@ -5,14 +5,14 @@ import {Moment} from "moment";
 export interface SignUpSubmitEvent {
 	section: SignUpSection,
 	email?: string,
-	passwordHash?: string,
+	password?: string,
 	firstName?: string,
 	surname?: string,
 	birthday?: Moment,
 	telephone?: string,
 	mobile?: string,
 	isStudent?: boolean,
-	imagePath?: string,
+	imagePaths?: string[],
 	profilePicture?: FormData,
 	paymentInfo?: PaymentInfo
 }

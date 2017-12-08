@@ -13,13 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Servlet implementation class UserServlet
@@ -281,11 +279,12 @@ public class UserServlet extends HttpServlet {
         if (jUser.has("addresses")) {
             Type collectionType = new TypeToken<List<Integer>>() {
             }.getType();
+            //todo macht dann ja keinen sinn mehr oder?
             List<Integer> addresses = gson.fromJson(jUser.getAsJsonArray("addresses"), collectionType);
 
-            for (Integer i: addresses) {
+            for (Integer i : addresses) {
 
-                Address addr = DatabaseManager.createEntityManager().find(Address.class,i);
+                Address addr = DatabaseManager.createEntityManager().find(Address.class, i);
                 u.addAddress(addr);
             }
         }
@@ -294,9 +293,10 @@ public class UserServlet extends HttpServlet {
             }.getType();
             List<Integer> bankAccounts = gson.fromJson(jUser.getAsJsonArray("bankAccounts"), collectionType);
 
-            for (Integer i: bankAccounts) {
+            //todo macht dann ja keinen sinn mehr oder?
+            for (Integer i : bankAccounts) {
 
-                BankAcc bank = DatabaseManager.createEntityManager().find(BankAcc.class,i);
+                BankAcc bank = DatabaseManager.createEntityManager().find(BankAcc.class, i);
                 u.addBankAccount(bank);
             }
 

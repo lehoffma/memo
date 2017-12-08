@@ -15,7 +15,7 @@ import {Comment} from "../../../shared/model/comment";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {ParticipantUser} from "../../../shared/model/participant";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {catchError, filter, map, mergeMap, first} from "rxjs/operators";
+import {catchError, filter, first, map, mergeMap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
@@ -55,7 +55,7 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 
 	tourRoute$ = this._tour$
 		.pipe(
-			mergeMap(tour => combineLatest(tour.route.map(addressId => this.addressService.getById(addressId))))
+			map(tour => tour.route),
 		);
 
 	participants$ = this._tour$
