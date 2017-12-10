@@ -229,7 +229,12 @@ public class UserServlet extends HttpServlet {
 
     private User updateUserFromJson(JsonObject jUser, User u) {
 
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        final User existing = u;
+        InstanceCreator<User> creator = new InstanceCreator<User>() {
+            public User createInstance(Type type) { return existing; }
+        };
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(User.class,creator).excludeFieldsWithoutExposeAnnotation().create();
         // save params to new user
         u = gson.fromJson(jUser, User.class);
 
