@@ -1,8 +1,8 @@
 <div class="preview-container" *ngIf="events$ | async; let events">
 	<mat-card class="preview-card"
-			 *ngFor="let event of events"
-			 (click)="showDetails(event)">
-		<img mat-card-image src="{{!!event.imagePath ? event.imagePath : 'resources/images/Logo.png'}}">
+			  *ngFor="let event of events"
+			  (click)="showDetails(event)">
+		<img mat-card-image src="{{!!event.imagePaths ? event.imagePaths[0] : 'resources/images/Logo.png'}}">
 		<mat-card-content>
 			<div class="card-content-container">
 				<div class="event-content">

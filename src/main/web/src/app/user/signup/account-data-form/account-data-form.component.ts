@@ -32,7 +32,7 @@ export class AccountDataFormComponent implements OnInit {
 						this.onSubmit.emit({
 							section: SignUpSection.AccountData,
 							email: this.userEmail,
-							passwordHash: this.password
+							password: this.password
 						});
 					}
 					else {

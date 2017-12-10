@@ -12,7 +12,7 @@ import {AddressService} from "../../shared/services/api/address.service";
 import {UserBankAccountService} from "../../shared/services/api/user-bank-account.service";
 import {BankAccount} from "../../shared/model/bank-account";
 import {ImageUploadService} from "../../shared/services/api/image-upload.service";
-import {filter, first, map, mergeMap, tap, catchError} from "rxjs/operators";
+import {catchError, filter, first, map, mergeMap, tap} from "rxjs/operators";
 import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
 
@@ -123,15 +123,15 @@ export class SignUpService {
 	/**
 	 *
 	 * @param {User} user
-	 * @param {FormData} picture
+	 * @param {FormData} pictures
 	 * @returns {Promise<User>}
 	 */
-	uploadProfilePicture(user: User, picture: FormData) {
+	uploadProfilePicture(user: User, pictures: FormData) {
 
-		return this.imageUploadService.uploadImage(picture)
+		return this.imageUploadService.uploadImages(pictures)
 			.pipe(
-				map(response => response.imagePath),
-				map(imagePath => user.setProperties({imagePath}))
+				map(response => response.imagePaths),
+				map(imagePaths => user.setProperties({imagePaths}))
 			);
 	}
 
@@ -141,10 +141,10 @@ export class SignUpService {
 	 * @param event
 	 */
 	async onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
-		//extract section, email and passwordHash properties
+		//extract section, email and password properties
 		const {
 			email,
-			passwordHash,
+			password,
 			firstName,
 			surname,
 			birthday,
@@ -157,7 +157,7 @@ export class SignUpService {
 
 		switch (section) {
 			case SignUpSection.AccountData:
-				this.newUser.setProperties({email, passwordHash});
+				this.newUser.setProperties({email, password});
 				break;
 			case SignUpSection.PersonalData:
 				this.newUser.setProperties({firstName, surname, birthday, telephone, mobile, isStudent});
@@ -167,6 +167,7 @@ export class SignUpService {
 				this.newUserDebitInfo = paymentInfo;
 				//add bank account address to user
 				if (paymentInfo && paymentInfo.address) {
+					//todo 8.12.
 					await this.addressService.add(Address.create()
 						.setProperties({
 							...paymentInfo.address
@@ -197,16 +198,16 @@ export class SignUpService {
 				.pipe(
 					mergeMap(newUser => this.userService.add(newUser, this.newUserProfilePicture)),
 					tap(() => this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
-							duration: 1000
-						})),
-					mergeMap(() => this.loginService.login(this.newUser.email, this.newUser.passwordHash)),
+						duration: 1000
+					})),
+					mergeMap(() => this.loginService.login(this.newUser.email, this.newUser.password)),
 					tap(wereCorrect => {
 						if (wereCorrect) {
 							this.navigationService.navigateByUrl("/");
 							this.reset();
 							this.submittingFinalUser = false;
 						}
-						else{
+						else {
 							return _throw(new Error());
 						}
 					}),

@@ -11,7 +11,7 @@ import {Observable} from "rxjs/Observable";
 import {map, share, tap, mergeMap} from "rxjs/operators";
 
 interface EventApiResponse {
-	events: (Party | Merchandise | Tour)[];
+	shopItems: (Party | Merchandise | Tour)[];
 }
 
 @Injectable()
@@ -50,7 +50,7 @@ export class EventService extends ServletService<Event> {
 		const params = new HttpParams().set("id", "" + eventId);
 		const request = this.http.get<EventApiResponse>(this.baseUrl, {params})
 			.pipe(
-				map(json => this.getFactoryFromType(json.events[0]["type"])().setProperties(json.events[0])),
+				map(json => this.getFactoryFromType(json.shopItems[0]["type"])().setProperties(json.shopItems[0])),
 				share()
 			);
 
@@ -65,7 +65,7 @@ export class EventService extends ServletService<Event> {
 		const params = new HttpParams().set("userId", "" + userId);
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.pipe(
-				map(json => json.events.map(event =>
+				map(json => json.shopItems.map(event =>
 					event.setProperties(event))),
 				share()
 			);
@@ -83,7 +83,7 @@ export class EventService extends ServletService<Event> {
 		const params = new HttpParams().set("searchTerm", searchTerm).set("type", "" + eventType);
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.pipe(
-				map(json => json.events.map(event =>
+				map(json => json.shopItems.map(event =>
 					EventFactoryService.build(eventType).setProperties(event)))
 			);
 

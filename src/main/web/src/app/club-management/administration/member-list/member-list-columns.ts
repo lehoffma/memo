@@ -8,7 +8,7 @@ import {AddressTableCellComponent} from "./member-list-table-cells/address-table
 import {PictureTableCellComponent} from "./member-list-table-cells/picture-table-cell.component";
 
 export const memberListColumns = {
-	"imagePath": new ExpandableTableColumn<User>("Foto", "imagePath", PictureTableCellComponent),
+	"imagePaths": new ExpandableTableColumn<User>("Foto", "imagePaths", PictureTableCellComponent),
 	"firstName": new ExpandableTableColumn<User>("Vorname", "firstName"),
 	"surname": new ExpandableTableColumn<User>("Nachname", "surname"),
 	"clubRole": new ExpandableTableColumn<User>("Rolle", "clubRole", ClubRoleTableCellComponent),

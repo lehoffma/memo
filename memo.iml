@@ -19,7 +19,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="EclipseLink" />
         <datasource-mapping>
-          <factory-entry name="memoPersistence" value="cd0dc219-02f3-4f3c-a91c-862e18406851" />
+          <factory-entry name="memoPersistence" value="898949e9-5fb2-412d-b70e-13aef7749066" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>

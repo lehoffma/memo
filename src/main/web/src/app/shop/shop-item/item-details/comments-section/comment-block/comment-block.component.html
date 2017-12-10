@@ -3,7 +3,7 @@
 <div class="comment-block-container" *ngIf="comment$ | async; let commentObject">
 	<div class="main-comment-container" *ngIf="author$ | async; let author">
 		<a class="comment-image-container" routerLink="/members/{{author.id}}">
-			<img class="comment-image" [ngClass]="{'dummy': dummy}" src="{{author.imagePath}}"/>
+			<img class="comment-image" [ngClass]="{'dummy': dummy}" src="{{author.imagePaths[0]}}"/>
 		</a>
 		<div class="comment-container">
 			<div class="comment-header">

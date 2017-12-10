@@ -5,11 +5,11 @@
 			<!--Profilbild-->
 			<memo-item-details-content [title]="'Profilbild'">
 				<memo-multi-image-upload
-					[images]="[loginService.isLoggedIn()
-					? userModel['imagePath']
-					: profilePicture]"
+					[images]="loginService.isLoggedIn()
+					? userModel['imagePaths']
+					: [profilePicture]"
 					[limit]="1"
-					(onChange)="profilePictureChanged($event)">
+					(onFormDataChange)="profilePictureChanged($event)">
 
 				</memo-multi-image-upload>
 			</memo-item-details-content>
@@ -53,7 +53,8 @@
 						</div>
 						<div>
 							<mat-form-field>
-								<mat-select [(ngModel)]="userModel['gender']" placeholder="Geschlecht" #genderSelect="ngModel"
+								<mat-select [(ngModel)]="userModel['gender']" placeholder="Geschlecht"
+											#genderSelect="ngModel"
 											name="genderSelect" class="aligned-mat-select">
 									<mat-option *ngFor="let option of genderOptions" [value]="option">
 										{{option}}
@@ -213,7 +214,8 @@
 			<memo-item-details-content [title]="'Vereinsinformationen'">
 				<div class="club-information-forms">
 					<mat-form-field>
-						<mat-select [(ngModel)]="userModel['clubRole']" placeholder="Vereinsrolle" #clubRoleSelect="ngModel"
+						<mat-select [(ngModel)]="userModel['clubRole']" placeholder="Vereinsrolle"
+									#clubRoleSelect="ngModel"
 									[disabled]="!(isAdmin | async)" class="aligned-mat-select"
 									matTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
 									[matTooltipPosition]="'above'"

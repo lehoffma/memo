@@ -12,14 +12,13 @@ export class Entry extends BaseObject<Entry> {
 				public readonly event: Event,
 				public readonly date: Moment,
 				public readonly comment: string,
-				public readonly picPath: string,
-				//todo public readonly imagePath:string,
+				public readonly imagePaths: string[],
 				public readonly category: EntryCategory) {
 		super(id);
 	}
 
 	static create() {
-		return new Entry(-1, "", 0, null, moment(), "", "", null);
+		return new Entry(-1, "", 0, null, moment(), "", [], null);
 	}
 
 	static isEntry(entry: any): entry is Entry {

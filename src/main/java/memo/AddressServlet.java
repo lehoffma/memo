@@ -16,12 +16,10 @@ import java.util.List;
 
 @WebServlet(name = "AddressServlet", value = "/api/address")
 public class AddressServlet extends HttpServlet {
-
     //Tested
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         setContentType(request, response);
 
         String Sid = request.getParameter("id");
@@ -51,6 +49,7 @@ public class AddressServlet extends HttpServlet {
 
         Address a = createAddressFromJson(jAddress);
         saveAddressToDatabase(a);
+//        DatabaseManager.save(a); //codereview: beispiel für anwendung von save
 
         response.setStatus(201);
         response.getWriter().append("{\"id\": " + a.getId() + "}");
@@ -170,6 +169,7 @@ public class AddressServlet extends HttpServlet {
 
         return a;
     }
+
 
     private void saveAddressToDatabase(Address newAddress) {
 

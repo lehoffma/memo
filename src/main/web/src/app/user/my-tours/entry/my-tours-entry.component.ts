@@ -6,6 +6,7 @@ import {EventType} from "../../../shop/shared/model/event-type";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import * as moment from "moment";
 import {Observable} from "rxjs/Observable";
+import {of} from "rxjs/observable/of";
 
 
 @Component({
@@ -33,9 +34,9 @@ export class MyToursEntryComponent implements OnInit, OnChanges {
 			this.isTour = this.event.route.length > 1;
 			this.eventIsInThePast = moment(this.event.date).isBefore(moment());
 			this.eventType = EventUtilityService.getEventType(this.event);
-			this.from$ = this.addressService.getById(this.event.route[0]);
-			if(this.event.route.length > 1){
-				this.to$ = this.addressService.getById(this.event.route[this.event.route.length - 1]);
+			this.from$ = of(this.event.route[0])
+			if (this.event.route.length > 1) {
+				this.to$ = of(this.event.route[this.event.route.length - 1]);
 			}
 		}
 	}
