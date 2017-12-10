@@ -23,7 +23,7 @@ public class DatabaseManager {
         return dbm.em;
     }
 
-    //codereview: diese funktionen benutzen statt für jedes servlet wieder neu saveToDatabase zu implementieren
+    //ToDo: diese funktionen benutzen statt für jedes servlet wieder neu saveToDatabase zu implementieren
 
     /**
      * @param clazz

@@ -27,13 +27,11 @@ public class Color implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Expose(serialize = false, deserialize = false)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
-    private List<OrderedItem> orderedItems = new ArrayList<>();
+    private transient List<OrderedItem> orderedItems = new ArrayList<>();
 
-    @Expose(serialize = false, deserialize = false)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
-    private List<Stock> stock = new ArrayList<>();
+    private transient List<Stock> stock = new ArrayList<>();
 
     @Expose
     @Column(nullable = false)
@@ -101,7 +99,7 @@ public class Color implements Serializable {
     }
 
     public void setHex(String hex) {
-        hex = hex;
+        this.hex = hex;
     }
 
     //**************************************************************

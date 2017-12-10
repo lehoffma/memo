@@ -28,10 +28,9 @@ public class SizeTable implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private Stock stock;
+    private transient Stock stock;
 
     @Expose
     @Column(nullable = false)

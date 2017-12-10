@@ -33,9 +33,8 @@ public class EntryCategory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Expose
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "category")
-    private List<Entry> entry = new ArrayList<>();
+    private transient List<Entry> entry = new ArrayList<>();
 
     @Expose
     @Column(nullable = false)

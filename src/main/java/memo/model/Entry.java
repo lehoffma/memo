@@ -32,10 +32,9 @@ public class Entry implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private ShopItem item;
+    private transient ShopItem item;
 
     @Expose
     @ManyToOne(fetch = FetchType.EAGER)

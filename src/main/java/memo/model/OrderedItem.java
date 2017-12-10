@@ -30,10 +30,9 @@ public class OrderedItem implements Serializable{
     @JoinColumn(nullable = false)
     private ShopItem item;
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private Order order;
+    private transient Order order;
 
     // Without Driver reduction
     @Expose
@@ -80,7 +79,7 @@ public class OrderedItem implements Serializable{
     }
 
     public void setItem(ShopItem shopItem) {
-        this.item = item;
+        this.item = shopItem;
     }
 
     public Order getOrder() {

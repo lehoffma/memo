@@ -28,15 +28,13 @@ public class Address implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER")
-    private User user;
+    private transient User user;
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ITEM")
-    private ShopItem item;
+    private transient ShopItem item;
 
     @Expose
     private String name;

@@ -110,14 +110,12 @@ public class User implements Serializable {
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
-    @Expose
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
-    private List<Comment> comments = new ArrayList<>();
+    private transient List<Comment> comments = new ArrayList<>();
 
-    @Expose
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinColumn
-    private List<ShopItem> authoredItems = new ArrayList<>();
+    private transient List<ShopItem> authoredItems = new ArrayList<>();
 
     //**************************************************************
     //  constructor

@@ -28,10 +28,9 @@ public class Comment implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;   //globale unique ID
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "ITEM")
-    private ShopItem item;
+    private transient ShopItem item;
 
     @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
