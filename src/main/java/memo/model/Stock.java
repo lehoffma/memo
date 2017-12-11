@@ -34,7 +34,7 @@ public class Stock implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private transient ShopItem item;
+    private ShopItem item;
 
     @Expose
     private String size = "oneSize";

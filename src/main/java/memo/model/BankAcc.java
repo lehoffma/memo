@@ -30,7 +30,7 @@ public class BankAcc implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private transient User user;
+    private User user;
 
     @Expose
     @Column
