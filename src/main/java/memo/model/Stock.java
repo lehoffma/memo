@@ -32,10 +32,9 @@ public class Stock implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private ShopItem item;
+    private transient ShopItem item;
 
     @Expose
     private String size = "oneSize";

@@ -28,10 +28,9 @@ public class BankAcc implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "USER")
-    private User user;
+    @JoinColumn(nullable = false)
+    private transient User user;
 
     @Expose
     @Column

@@ -28,9 +28,8 @@ public class PermissionState implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Expose(serialize = false, deserialize = true)
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "permissions")
-    private User user;
+    private transient User user;
 
     @Expose
     @Enumerated(EnumType.ORDINAL)
