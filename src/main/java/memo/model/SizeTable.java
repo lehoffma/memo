@@ -30,7 +30,7 @@ public class SizeTable implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
-    private transient Stock stock;
+    private Stock stock;
 
     @Expose
     @Column(nullable = false)

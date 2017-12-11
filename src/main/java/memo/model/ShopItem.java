@@ -94,15 +94,12 @@ public class ShopItem implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
     private List<Comment> comments;
 
-    @Expose(serialize = false, deserialize = false)
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "item")
-    private transient List<Entry> entries;
+    private List<Entry> entries;
 
-    @Expose(serialize = false, deserialize = false)
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "item")
-    private transient List<OrderedItem> orders = new ArrayList<>();
+    private List<OrderedItem> orders = new ArrayList<>();
 
-    @Expose(serialize = false, deserialize = false)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
     private transient List<Stock> stock = new ArrayList<>();
 

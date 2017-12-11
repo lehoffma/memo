@@ -30,7 +30,7 @@ public class Comment implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "ITEM")
-    private transient ShopItem item;
+    private ShopItem item;
 
     @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)

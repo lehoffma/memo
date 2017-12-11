@@ -34,7 +34,7 @@ public class Entry implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private transient ShopItem item;
+    private ShopItem item;
 
     @Expose
     @ManyToOne(fetch = FetchType.EAGER)

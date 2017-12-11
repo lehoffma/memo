@@ -29,12 +29,12 @@ public class Address implements Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER")
-    private transient User user;
+    @JoinColumn()
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ITEM")
-    private transient ShopItem item;
+    @JoinColumn()
+    private ShopItem item;
 
     @Expose
     private String name;

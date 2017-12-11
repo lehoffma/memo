@@ -32,7 +32,7 @@ public class OrderedItem implements Serializable{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private transient Order order;
+    private Order order;
 
     // Without Driver reduction
     @Expose

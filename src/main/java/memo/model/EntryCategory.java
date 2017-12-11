@@ -34,7 +34,7 @@ public class EntryCategory implements Serializable {
     private Integer id;
 
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "category")
-    private transient List<Entry> entry = new ArrayList<>();
+    private List<Entry> entry = new ArrayList<>();
 
     @Expose
     @Column(nullable = false)

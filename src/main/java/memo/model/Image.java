@@ -39,15 +39,15 @@ public class Image implements Serializable{
 
     @ManyToOne
     @JoinColumn
-    private transient User user;
+    private User user;
 
     @ManyToOne
     @JoinColumn
-    private transient ShopItem item;
+    private ShopItem item;
 
     @ManyToOne
     @JoinColumn
-    private transient Entry entry;
+    private Entry entry;
 
     @Expose
     private String fileName;
@@ -102,6 +102,8 @@ public class Image implements Serializable{
         this.fileName = fileName;
     }
 
+    public String getFullPath() { return filePath + fileName;}
+
     //**************************************************************
     //  methods
     //**************************************************************
@@ -119,7 +121,7 @@ public class Image implements Serializable{
 
     public void saveToFile(Part p) {
 
-        String ext = FilenameUtils.getExtension(getFileName(p));
+        String ext = FilenameUtils.getExtension(getUploadedName(p));
         File f;
         do {
             String filename = RandomStringUtils.randomAlphanumeric(10);
@@ -158,7 +160,7 @@ public class Image implements Serializable{
     /**
      * Utility method to get file name from HTTP header content-disposition
      */
-    private String getFileName(Part part) {
+    private String getUploadedName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         System.out.println("content-disposition header= " + contentDisp);
         String[] tokens = contentDisp.split(";");

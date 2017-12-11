@@ -29,7 +29,7 @@ public class PermissionState implements Serializable {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "permissions")
-    private transient User user;
+    private User user;
 
     @Expose
     @Enumerated(EnumType.ORDINAL)

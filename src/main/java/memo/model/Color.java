@@ -28,10 +28,10 @@ public class Color implements Serializable {
     private Integer id;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
-    private transient List<OrderedItem> orderedItems = new ArrayList<>();
+    private List<OrderedItem> orderedItems = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
-    private transient List<Stock> stock = new ArrayList<>();
+    private List<Stock> stock = new ArrayList<>();
 
     @Expose
     @Column(nullable = false)
