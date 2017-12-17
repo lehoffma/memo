@@ -9,4 +9,5 @@ export type MerchStock = {
 	event: Event,
 	color: MerchColor,
 	amount: number
+	//todo: sizetable objekt
 }

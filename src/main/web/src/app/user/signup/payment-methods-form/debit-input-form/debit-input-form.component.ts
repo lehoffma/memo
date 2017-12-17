@@ -20,6 +20,7 @@ export class DebitInputFormComponent implements OnInit, OnChanges {
 			})
 	};
 	@Output() onChange = new EventEmitter<{ formIsValid: boolean, paymentInfo: PaymentInfo }>();
+	@Output() onAddressModification = new EventEmitter();
 
 	constructor() {
 	}

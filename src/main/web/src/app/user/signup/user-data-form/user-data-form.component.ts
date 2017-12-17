@@ -121,6 +121,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 			&& (!this.userModel['password'] || this.userModel['password'].length === 0
 				|| !this.withEmailAndPassword || this.userModel['password'] === this.confirmedPassword)
 			&& !this.emailIsAlreadyTaken
+			&& this.userModel["addresses"] && this.userModel["addresses"].length > 0;
 	}
 
 	/**
@@ -178,7 +179,8 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 			const addressIndex = this.userModel["addresses"].findIndex(addressId => addressId === address.id);
 			this.userModel["addresses"] = this.userModel["addresses"].splice(addressIndex, 1);
 		}
-		this.onAddressModification.emit({action: "delete", address});
+		this.addressService.remove(address.id)
+			.subscribe(() => this.onAddressModification.emit({action: "delete", address}));
 	}
 
 	cancel() {
