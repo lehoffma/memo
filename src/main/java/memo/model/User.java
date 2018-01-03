@@ -1,14 +1,10 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Entity implementation class for Entity: User
@@ -29,84 +25,64 @@ public class User implements Serializable {
     //  member
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
 
-    @Expose
     @Column(name = "FIRST_NAME", nullable = false)
     private String firstName;
 
-    @Expose
     @Column(nullable = false)
     private String surname;
 
     @Enumerated(EnumType.ORDINAL)
     private ClubRole clubRole = ClubRole.none;
 
-    @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Address> addresses = new ArrayList<>();
 
-    @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
     private LocalDateTime birthday = LocalDateTime.now();
 
-    @Expose
     private String telephone;
 
-    @Expose
     private String mobile;
 
-    @Expose
     @Column(nullable = false)
     private Integer miles = 0;
 
-    @Expose
     @Column(nullable = false)
     private String email;
 
-    @Expose(serialize = false,deserialize = true)
-    @Column(name = "PASSWORD", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Expose
     private Boolean isStudent = false;
 
-    @Expose
     private Boolean hasDebitAuth = false;
 
-    @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     private List<Image> images = new ArrayList<>();
 
-    @Expose(serialize = false, deserialize = true)
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<BankAcc> bankAccounts = new ArrayList<>();
 
-    @Expose(serialize = true, deserialize = false)
     @Column(name = "JOIN_DATE", nullable = false)
     private LocalDateTime joinDate = LocalDateTime.now();
 
-    @Expose
     private String gender;
 
-    @Expose
     @Column(name = "HAS_SEASON_TICKET")
     private Boolean hasSeasonTicket = false;
 
-    @Expose
     @Column(name = "IS_WOELFE_CLUB_MEMBER")
     private Boolean isWoelfeClubMember = false;
 
-    @Expose
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private PermissionState permissions;
 
-    @Expose
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 

@@ -1,7 +1,5 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -27,7 +25,6 @@ public class Entry implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -36,32 +33,25 @@ public class Entry implements Serializable {
     @JoinColumn(nullable = false)
     private ShopItem item;
 
-    @Expose
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private EntryCategory category;
 
-    @Expose
     @Column(nullable = false)
     private String name;
 
-    @Expose
     @Column(nullable = false)
     private Integer value;
 
-    @Expose
     @Column(name = "IS_INCOME")
     private Boolean isIncome = false;
 
-    @Expose
     private String comment;
 
-    @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn
     private List<Image> images = new ArrayList<>();
 
-    @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
     private LocalDateTime date;
 

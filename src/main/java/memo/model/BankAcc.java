@@ -1,7 +1,5 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -23,7 +21,6 @@ public class BankAcc implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -32,19 +29,15 @@ public class BankAcc implements Serializable {
     @JoinColumn(nullable = false)
     private User user;
 
-    @Expose
     @Column
     private String name;
 
-    @Expose
     @Column(nullable = false)
     private String iban;
 
-    @Expose
     @Column(nullable = false)
     private String bic;
 
-    @Expose
     private String bankName;
 
     //**************************************************************

@@ -1,7 +1,5 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -23,7 +21,6 @@ public class SizeTable implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -32,15 +29,12 @@ public class SizeTable implements Serializable {
     @JoinColumn
     private Stock stock;
 
-    @Expose
     @Column(nullable = false)
     private String name;
 
-    @Expose
     @Column(nullable = false)
     private Integer min;
 
-    @Expose
     private Integer max;
 
     //**************************************************************

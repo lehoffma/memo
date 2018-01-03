@@ -1,8 +1,6 @@
 package memo.model;
 
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -23,7 +21,6 @@ public class Comment implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;   //globale unique ID
@@ -32,25 +29,20 @@ public class Comment implements Serializable {
     @JoinColumn(nullable = false, name = "ITEM")
     private ShopItem item;
 
-    @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
     private LocalDateTime timeStamp;   //muss jetzt unbedingt nich 'Date' sein, aber halt nen Datumstyp
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "AUTHOR")
     private User author;
 
-    @Expose
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "CHILDREN")
     private List<Comment> children = new ArrayList<>();
 
-    @Expose
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parent;
 
-    @Expose
     @Column(nullable = false)
     private String content;
 

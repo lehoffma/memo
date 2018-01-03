@@ -1,13 +1,9 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Entity implementation class for Entity: Stock
@@ -27,7 +23,6 @@ public class Stock implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -36,18 +31,14 @@ public class Stock implements Serializable {
     @JoinColumn
     private ShopItem item;
 
-    @Expose
     private String size = "oneSize";
 
-    @Expose
     private Integer amount = 0;
 
-    @Expose
     @ManyToOne(cascade = {CascadeType.REMOVE},fetch = FetchType.EAGER)
     @JoinColumn
     private Color color;
 
-    @Expose
     @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
     @JoinColumn
     private List<SizeTable> sizeTable = new ArrayList<>();

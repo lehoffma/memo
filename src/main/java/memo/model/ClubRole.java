@@ -13,21 +13,13 @@ package memo.model;
 	  */
 
 
-import com.google.gson.annotations.SerializedName;
 
 public enum ClubRole {
-    @SerializedName("0")
     none,
-    @SerializedName("1")
     Mitglied,
-    @SerializedName("2")
     Vorstand,
-    @SerializedName("3")
     Schriftführer,
-    @SerializedName("4")
     Kassenwart,
-    @SerializedName("5")
     Organisator,
-    @SerializedName("6")
     Admin
 }

@@ -1,7 +1,5 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -23,7 +21,6 @@ public class Address implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -36,31 +33,23 @@ public class Address implements Serializable {
     @JoinColumn()
     private ShopItem item;
 
-    @Expose
     private String name;
 
-    @Expose
     @Column(nullable = false)
     private String street;
 
-    @Expose
     private String streetNr;
 
-    @Expose
     @Column(nullable = false)
     private String zip;
 
-    @Expose
     @Column(nullable = false)
     private String city;
 
-    @Expose
     private String country = "Germany";
 
-    @Expose
     private double latitude;
 
-    @Expose
     private double longitude;
 
     //**************************************************************

@@ -1,16 +1,11 @@
 package memo.model;
 
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 
 @Entity
 @Table(name = "ORDERS")
@@ -27,7 +22,6 @@ public class Order implements Serializable{
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -36,18 +30,14 @@ public class Order implements Serializable{
     @JoinColumn(nullable = false)
     private User user;
 
-    @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "order")
     private List<OrderedItem> items = new ArrayList<>();
 
-    @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
     private LocalDateTime timeStamp;
 
-    @Expose
     private PaymentMethod method = PaymentMethod.Lastschrift;
 
-    @Expose
     private String text;
 
     //**************************************************************

@@ -1,15 +1,12 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Entity implementation class for Entity: ShopItem
@@ -28,69 +25,52 @@ public class ShopItem implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Expose
     @Column(nullable = false)
     private String title;
 
-    @Expose(serialize = true, deserialize = false)
     @Column(nullable = false)
     private LocalDateTime date;
 
-    @Expose
     @Lob
     private String description;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedReadRole = ClubRole.Mitglied;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedCheckInRole = ClubRole.Mitglied;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedWriteRole = ClubRole.Vorstand;
 
-    @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,mappedBy = "item")
     private List<Image> images;
 
-    @Expose
     @Column(nullable = false)
     private Integer capacity = 0;
 
-    @Expose
     @Column(name = "PRICE_MEMBER", nullable = false, precision = 12, scale = 2)
     private BigDecimal priceMember;
 
-    @Expose
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
-    @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "item")
     private List<Address> route = new ArrayList<>();
 
-    @Expose
     private String material;
 
-    @Expose
     private String vehicle;
 
-    @Expose
     private Integer miles = 0;
 
-    @Expose(serialize = false, deserialize = true)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authoredItems")
     private List<User> author = new ArrayList<>();
 
-    @Expose
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
     private List<Comment> comments;
 
@@ -101,9 +81,8 @@ public class ShopItem implements Serializable {
     private List<OrderedItem> orders = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
-    private transient List<Stock> stock = new ArrayList<>();
+    private List<Stock> stock = new ArrayList<>();
 
-    @Expose
     @Column(nullable = false)
     private Integer type;
 

@@ -1,8 +1,6 @@
 package memo.model;
 
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -20,12 +18,10 @@ public class OrderedItem implements Serializable{
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Expose
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private ShopItem item;
@@ -35,24 +31,19 @@ public class OrderedItem implements Serializable{
     private Order order;
 
     // Without Driver reduction
-    @Expose
     private int price = 0;
 
-    @Expose
     private OrderStatus status = OrderStatus.Reserved;
 
-    @Expose
     private String size;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Color color;
 
-    @Expose
     @Column(name = "IS_DRIVER")
     private Boolean isDriver = false;
 
-    @Expose
     @Column(name = "NEEDS_TICKET")
     private Boolean needsTicket = true;
 

@@ -1,7 +1,5 @@
 package memo.model;
 
-
-import com.google.gson.annotations.Expose;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -32,7 +30,6 @@ public class Image implements Serializable{
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -49,7 +46,6 @@ public class Image implements Serializable{
     @JoinColumn
     private Entry entry;
 
-    @Expose
     private String fileName;
 
     //**************************************************************

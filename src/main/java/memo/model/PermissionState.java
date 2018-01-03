@@ -1,7 +1,5 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -23,7 +21,6 @@ public class PermissionState implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -31,31 +28,24 @@ public class PermissionState implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "permissions")
     private User user;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission funds = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission party = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission userManagement = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission merch = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission tour = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission stock = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
     private Permission settings = Permission.none;
 

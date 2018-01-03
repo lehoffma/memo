@@ -1,7 +1,5 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,7 +20,6 @@ public class Color implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -33,11 +30,9 @@ public class Color implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
     private List<Stock> stock = new ArrayList<>();
 
-    @Expose
     @Column(nullable = false)
     private String name;
 
-    @Expose
     @Column(nullable = false)
     private String hex;
 

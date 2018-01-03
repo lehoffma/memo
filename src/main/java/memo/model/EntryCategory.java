@@ -1,13 +1,10 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Entity implementation class for Entity: EntryCategory
@@ -28,7 +25,6 @@ public class EntryCategory implements Serializable {
     //  members
     //**************************************************************
 
-    @Expose(serialize = true, deserialize = false)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -36,11 +32,9 @@ public class EntryCategory implements Serializable {
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "category")
     private List<Entry> entry = new ArrayList<>();
 
-    @Expose
     @Column(nullable = false)
     private String name;
 
-    @Expose
     @Column(nullable = false)
     private Integer category;
 
