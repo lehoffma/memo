@@ -1,4 +1,4 @@
-package memo;
+package memo.api;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;

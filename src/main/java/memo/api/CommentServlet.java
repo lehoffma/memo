@@ -1,7 +1,8 @@
-package memo;
+package memo.api;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
+import memo.util.DatabaseManager;
 import memo.model.Comment;
 
 import javax.persistence.EntityManager;
@@ -11,14 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 //TESTED
@@ -118,7 +115,7 @@ public class CommentServlet extends HttpServlet {
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/util;charset=UTF-8");
     }
 
     private boolean isStringNotEmpty(String s) {

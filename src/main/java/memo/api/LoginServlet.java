@@ -1,10 +1,11 @@
-package memo;
+package memo.api;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import memo.util.DatabaseManager;
 import memo.model.User;
 
 import javax.servlet.ServletException;

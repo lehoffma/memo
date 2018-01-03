@@ -1,4 +1,6 @@
-package memo;
+package memo.util;
+
+import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -9,6 +11,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DatabaseManager {
+
+    private static final Logger logger = Logger.getLogger(DatabaseManager.class);
 
     private static DatabaseManager dbm;
     private EntityManager em;
@@ -25,6 +29,19 @@ public class DatabaseManager {
 
     //ToDo: diese funktionen benutzen statt für jedes servlet wieder neu saveToDatabase zu implementieren
 
+
+    public static <T> T getById(Class<T> clazz, String primaryKey) {
+        try {
+            logger.trace("Tries to Parse " + primaryKey + " to Integer");
+            Integer id = Integer.parseInt(primaryKey);
+            return getById(clazz, id);
+        } catch (NumberFormatException e) {
+
+            logger.error("Parsing error", e);
+        }
+        return null;
+    }
+
     /**
      * @param clazz
      * @param primaryKey
@@ -33,6 +50,7 @@ public class DatabaseManager {
      * @return
      */
     public static <T, PrimaryKey> T getById(Class<T> clazz, PrimaryKey primaryKey) {
+        logger.debug("Database Query by Id: " + primaryKey + " on Class: " + clazz.getName());
         return performActionOnDb(em -> em.find(clazz, primaryKey));
     }
 
@@ -115,6 +133,8 @@ public class DatabaseManager {
      * @param action
      */
     public static <T> T performActionOnDb(Function<EntityManager, T> action) {
+
+        logger.debug("Performs Database Action: " + action.toString());
         EntityManager em = DatabaseManager.createEntityManager();
         em.getTransaction().begin();
         T result = action.apply(em);
@@ -126,6 +146,8 @@ public class DatabaseManager {
      * @param consumer
      */
     public static void performSideEffectOnDb(Consumer<EntityManager> consumer) {
+
+        logger.debug("Performs Database Side Effect on: " + consumer.toString());
         EntityManager em = DatabaseManager.createEntityManager();
         em.getTransaction().begin();
         consumer.accept(em);

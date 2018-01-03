@@ -1,8 +1,9 @@
-package memo;
+package memo.api;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import memo.util.DatabaseManager;
 import memo.model.*;
 
 import javax.persistence.EntityManager;
@@ -172,7 +173,7 @@ public class UserServlet extends HttpServlet {
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/util;charset=UTF-8");
     }
 
     private boolean isStringNotEmpty(String s) {

@@ -1,4 +1,4 @@
-package memo;
+package memo.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,7 +39,7 @@ public class EntryCategoryServlet extends HttpServlet {
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/util;charset=UTF-8");
     }
 
     private List<EntryCategory> createTestData() {

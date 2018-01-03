@@ -1,9 +1,10 @@
-package memo;
+package memo.api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import memo.util.DatabaseManager;
 import memo.model.ShopItem;
 import memo.model.OrderedItem;
 
@@ -60,7 +61,7 @@ public class ParticipantsServlet extends HttpServlet {
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/util;charset=UTF-8");
     }
 
     private boolean isStringNotEmpty(String s) {

@@ -1,11 +1,10 @@
-package memo;
+package memo.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import memo.util.DatabaseManager;
 import memo.model.Image;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.RandomStringUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

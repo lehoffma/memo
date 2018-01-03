@@ -1,8 +1,9 @@
-package memo;
+package memo.api;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import memo.util.DatabaseManager;
 import memo.model.*;
 
 import javax.persistence.EntityManager;
@@ -52,7 +53,7 @@ public class OrderServlet extends HttpServlet {
         List<JsonObject> jsonOrders = orders.stream()
                 .map(order -> {
                     JsonObject jsonOrder = gson.toJsonTree(order).getAsJsonObject();
-                    //add the ordered items property to the json object
+                    //add the ordered items property to the util object
                     jsonOrder.add("orderedItems", gson.toJsonTree(getOrderedItemsByOrderId(order.getId()), orderedItemType));
                     return jsonOrder;
                 })
@@ -171,7 +172,7 @@ public class OrderServlet extends HttpServlet {
 
     private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/util;charset=UTF-8");
     }
 
     private boolean isStringNotEmpty(String s) {
