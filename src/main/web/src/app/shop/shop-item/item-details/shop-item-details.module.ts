@@ -18,7 +18,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MemoMaterialModule} from "../../../../material.module";
 import {SharedModule} from "../../../shared/shared.module";
 import {AgmCoreModule} from "@agm/core";
-import { OrderStatusTableCellComponent } from './participants/order-status-table-cell.component';
+import {OrderStatusTableCellComponent} from './participants/order-status-table-cell.component';
 
 @NgModule({
 	imports: [

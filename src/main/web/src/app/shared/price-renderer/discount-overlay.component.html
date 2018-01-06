@@ -1,0 +1,31 @@
+<div mat-dialog-title>
+	Rabatte
+</div>
+<div mat-dialog-content>
+	<div class="discount-breakdown">
+		<div class="base-price breakdown-entry">
+			<span>
+				Grundpreis
+			</span>
+			<span>
+				{{basePrice | number:'1.2-2'}}€
+			</span>
+		</div>
+		<div *ngFor="let discount of discounts" class="discount-entry breakdown-entry">
+			<span>
+				{{discount.reason}}
+			</span>
+			<span>
+				-{{discount.amount | number:'1.2-2'}}€
+			</span>
+		</div>
+	</div>
+	<div class="total">
+		<span>
+			Gesamt
+		</span>
+		<span>
+			{{price | number:'1.2-2'}}€
+		</span>
+	</div>
+</div>

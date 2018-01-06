@@ -93,6 +93,19 @@ export class ShoppingCartService implements OnInit {
 	}
 
 	/**
+	 *
+	 * @param {ShoppingCartItem[]} items
+	 * @param {number} id
+	 * @param options
+	 * @returns {ShoppingCartItem | undefined}
+	 */
+	private findItem(items: ShoppingCartItem[], id: number, options?: { size?: string, color?: MerchColor }) {
+		return items.find((shoppingCartItem: ShoppingCartItem) =>
+			this.itemsAreEqual(shoppingCartItem, {id, options, amount: 0})
+		)
+	}
+
+	/**
 	 * Holt das Item mit den übergebenen werten aus dem shopping cart
 	 * Gibt null zurück, wenn das Objekt nicht im Warenkorb vorhanden ist
 	 * @param type
@@ -100,9 +113,7 @@ export class ShoppingCartService implements OnInit {
 	 * @param options
 	 */
 	public getItem(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
-		return this._content.getValue()[type].find((shoppingCartItem: ShoppingCartItem) =>
-			this.itemsAreEqual(shoppingCartItem, {id, options, amount: 0})
-		)
+		return this.findItem(this._content.getValue()[type], id, options);
 	}
 
 	/**
@@ -116,9 +127,7 @@ export class ShoppingCartService implements OnInit {
 	public getItemAsObservable(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
 		return this._content
 			.pipe(
-				map(content => content[type].find((shoppingCartItem: ShoppingCartItem) =>
-					this.itemsAreEqual(shoppingCartItem, {id, options, amount: 0}))
-				)
+				map(content => this.findItem(content[type], id, options))
 			);
 	}
 
@@ -131,7 +140,11 @@ export class ShoppingCartService implements OnInit {
 	 * @returns {ShoppingCartContent}
 	 */
 	private remove(content: ShoppingCartContent, type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
-		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, {id, options, amount: 0}));
+		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, {
+			id,
+			options,
+			amount: 0
+		}));
 		if (itemIndex >= 0) {
 			//remove
 			content[type].splice(itemIndex, 1);

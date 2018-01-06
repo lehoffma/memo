@@ -12,7 +12,6 @@ import {Order} from "../../shared/model/order";
 import {ShoppingCartContent} from "../../shared/model/shopping-cart-content";
 import {UserBankAccountService} from "../../shared/services/api/user-bank-account.service";
 import {BankAccount} from "../../shared/model/bank-account";
-import {OrderedItem} from "../../shared/model/ordered-item";
 import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
 import * as moment from "moment";
@@ -20,6 +19,7 @@ import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {catchError, first, map, mergeMap, retry} from "rxjs/operators";
 import {empty} from "rxjs/observable/empty";
+import {OrderedItem} from "../../shared/model/ordered-item";
 
 @Component({
 	selector: "memo-checkout",
@@ -93,6 +93,44 @@ export class CheckoutComponent implements OnInit {
 
 	/**
 	 *
+	 * @param {ShoppingCartContent} content
+	 * @returns {Observable<any[]>}
+	 */
+	private combineCartContent(content: ShoppingCartContent) {
+		return combineLatest(
+			...[...content.partys, ...content.tours, ...content.merch]
+				.map(event => this.eventService.getById(event.id)
+					.pipe(
+						map(it => ({
+							event: it,
+							...event
+						}))
+					)
+				)
+		);
+	}
+
+	/**
+	 *
+	 * @param events
+	 * @returns {OrderedItem[]}
+	 */
+	private mapToOrderedItems(events): OrderedItem[] {
+		//todo 2017 interface change
+		return events
+			.reduce((acc, event) => [...acc, ...new Array(event.amount)
+				.fill(({
+					id: undefined,
+					event: event.event,
+					price: event.event.price,
+					status: OrderStatus.RESERVED,
+					size: event.options ? event.options.size : undefined,
+					color: event.options ? event.options.color : undefined,
+				}))], []);
+	}
+
+	/**
+	 *
 	 * @param event
 	 * @returns {Promise<void>}
 	 */
@@ -110,39 +148,18 @@ export class CheckoutComponent implements OnInit {
 					.pipe(
 						first(),
 						//combine cart content into one array
-						mergeMap((content: ShoppingCartContent) => combineLatest(
-							...[...content.partys, ...content.tours, ...content.merch]
-								.map(event => this.eventService.getById(event.id)
-									.pipe(
-										map(it => ({
-											event: it,
-											...event
-										}))
-									)
-								)
-						)),
-						mergeMap(events => {
-							//map events to orderedItem interface to make it usable on the backend
-							const orderedItems: OrderedItem[] = events
-								.reduce((acc, event) => [...acc, ...new Array(event.amount)
-									.fill(({
-										id: undefined,
-										event: event.event,
-										price: event.event.price,
-										status: OrderStatus.RESERVED,
-										size: event.options ? event.options.size : undefined,
-										color: event.options ? event.options.color : undefined,
-									}))], []);
-
-							return this.orderService.add(Order.create()
-								.setProperties({
-									userId,
-									timeStamp: moment(),
-									method: event.method,
-									bankAccount: bankAccountId,
-									orderedItems
-								}));
-						})
+						mergeMap(content => this.combineCartContent(content)),
+						//map events to orderedItem interface to make it usable on the backend
+						map(events => this.mapToOrderedItems(events)),
+						map(orderedItems => Order.create()
+							.setProperties({
+								userId,
+								timeStamp: moment(),
+								method: event.method,
+								bankAccount: bankAccountId,
+								orderedItems
+							})),
+						mergeMap(order => this.orderService.add(order))
 					)
 				)
 			)

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {Event} from "../../shop/shared/model/event";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs";
@@ -6,13 +6,15 @@ import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Permission, UserPermissions} from "../../shared/model/permission";
+import {Discount} from "../../shared/price-renderer/discount";
+import {DiscountService} from "../../shop/shared/services/discount.service";
 
 @Component({
 	selector: "memo-category-preview",
 	templateUrl: "./category-preview.component.html",
 	styleUrls: ["./category-preview.component.scss"]
 })
-export class CategoryPreviewComponent implements OnInit {
+export class CategoryPreviewComponent implements OnInit, OnDestroy {
 	@Input() events$: Observable<Event[]>;
 	@Input() route: string;
 	@Input() itemType: ShopItemType;
@@ -21,6 +23,9 @@ export class CategoryPreviewComponent implements OnInit {
 	noElementsText = "";
 	addShopItemText = "";
 	createLink = "";
+	discounts: {
+		[id: number]: Observable<Discount[]>
+	} = {};
 
 	userCanCreateEvent: Observable<boolean> = this.loginService
 		.currentUser$
@@ -39,7 +44,10 @@ export class CategoryPreviewComponent implements OnInit {
 			return permissions[permissionKey] >= Permission.create;
 		});
 
+	subscriptions = [];
+
 	constructor(public navigationService: NavigationService,
+				public discountService: DiscountService,
 				public loginService: LogInService) {
 
 	}
@@ -57,6 +65,26 @@ export class CategoryPreviewComponent implements OnInit {
 			partys: () => "Veranstaltung erstellen"
 		});
 		this.createLink = "/" + this.itemType + "/create";
+
+		this.subscriptions.push(
+			Observable.combineLatest(this.events$, this.loginService.accountObservable)
+				.subscribe(([events, userId]) => {
+					this.discounts = {};
+					events.forEach(event => {
+						if (this.loginService.isLoggedIn()) {
+							this.discounts[event.id] = this.discountService.getEventDiscounts(event.id, userId);
+						}
+						else {
+							this.discounts[event.id] = this.discountService.getEventDiscounts(event.id)
+						}
+					})
+				})
+		)
+	}
+
+
+	ngOnDestroy(): void {
+		this.subscriptions.forEach(subscription => subscription.unsubscribe());
 	}
 
 	showDetails(event: Event) {

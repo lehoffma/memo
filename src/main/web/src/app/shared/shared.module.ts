@@ -14,10 +14,16 @@ import {MemoMaterialModule} from "../../material.module";
 import {ModifyItemInnerContainerComponent} from "./modify-item-inner-container/modify-item-inner-container.component";
 import {MultiImageUploadComponent} from "./multi-image-upload/multi-image-upload.component";
 import {MultiImageContainerComponent} from "./multi-image-container/multi-image-container.component";
+import {PriceRendererComponent} from "./price-renderer/price-renderer.component";
+import {RouterModule} from "@angular/router";
+import {ProfileLinkComponent} from "./profile-renderer/profile-link/profile-link.component";
+import {ProfilePreviewComponent} from "./profile-renderer/profile-preview/profile-preview.component";
+import {CapacityRendererComponent} from './capacity-renderer/capacity-renderer.component';
 
 @NgModule({
 	imports: [
 		CommonModule,
+		RouterModule,
 		ScheduleModule,
 		ExpandableTableModule,
 		MemoMaterialModule,
@@ -36,7 +42,12 @@ import {MultiImageContainerComponent} from "./multi-image-container/multi-image-
 		ErrorPageComponent,
 		AutoSizeTextAreaDirective,
 		MultiImageUploadComponent,
-		MultiImageContainerComponent
+		MultiImageContainerComponent,
+		PriceRendererComponent,
+
+		ProfileLinkComponent,
+		ProfilePreviewComponent,
+		CapacityRendererComponent
 	],
 	exports: [
 		ExpandableTableModule,
@@ -56,10 +67,17 @@ import {MultiImageContainerComponent} from "./multi-image-container/multi-image-
 
 
 		MultiImageUploadComponent,
-		MultiImageContainerComponent
+		MultiImageContainerComponent,
+
+		PriceRendererComponent,
+
+		ProfileLinkComponent,
+
+		CapacityRendererComponent
 	],
 	entryComponents: [
 		ConfirmationDialogComponent,
+		ProfilePreviewComponent
 	]
 })
 export class SharedModule {

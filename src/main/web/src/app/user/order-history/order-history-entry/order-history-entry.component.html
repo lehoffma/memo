@@ -8,12 +8,12 @@
 <div *ngFor="let item of orderedEventItems" class="ordered-items">
 	<a routerLink="{{item.link}}">
 		<div class="order-entry-picture">
-			<img src="{{!!item.event.imagePaths[0] ? item.event.imagePaths[0] : 'resources/images/Logo.png'}}"/>
+			<img src="{{!!item.item.imagePaths[0] ? item.item.imagePaths[0] : 'resources/images/Logo.png'}}"/>
 		</div>
 		<div class="order-entry-header order-entry-info">
 			<div class="order-entry-info-container">
 				<span class="label">Name</span>
-				<h3 class="mat-h4">{{item.event.title}}</h3>
+				<h3 class="mat-h4">{{item.item.title}}</h3>
 			</div>
 
 			<div *ngIf="item.color && item.size">

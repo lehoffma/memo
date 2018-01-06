@@ -88,8 +88,9 @@ export function tokenGetter() {
 		UtilityServicesModule.forRoot(),
 		//includes route guards and other authentication stuff
 		AuthenticationModule.forRoot(),
+		//includes discount service
+		ShopModule.forRoot(),
 		ClubManagementModule,
-		ShopModule,
 		UserModule,
 	],
 	declarations: [

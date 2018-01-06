@@ -3,7 +3,7 @@
 	"version": "0.0.2",
 	"scripts": {
 		"start": "ng serve --proxy-config proxy.conf.json",
-		"start-mobile": "ng serve --proxy-config proxy.conf.json --host 192.168.188.75",
+		"start-mobile": "ng serve --proxy-config proxy.conf.json --host 192.168.178.32",
 		"production": "ng serve --proxy-config proxy.conf.json --prod",
 		"build": "ng build --prod",
 		"build-with-stats": "ng build --prod --stats-json",

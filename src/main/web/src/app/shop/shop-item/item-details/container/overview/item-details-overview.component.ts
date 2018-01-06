@@ -18,6 +18,10 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {of} from "rxjs/observable/of";
 import {Permission} from "app/shared/model/permission";
 import {LogInService} from "../../../../../shared/services/api/login.service";
+import {User} from "../../../../../shared/model/user";
+import {Discount} from "../../../../../shared/price-renderer/discount";
+import {DiscountService} from "../../../../shared/services/discount.service";
+import {Tour} from "../../../../shared/model/tour";
 
 
 @Component({
@@ -84,7 +88,38 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			})
 		);
 
+	discounts$: Observable<Discount[]> =
+		combineLatest(
+			this._event$,
+			this.loginService.accountObservable
+		)
+			.pipe(
+				mergeMap(([event, userId]) => this.discountService.getEventDiscounts(event.id, userId))
+			);
+
+	capacityText$: Observable<string> = this._event$
+		.pipe(
+			map(event => (event.capacity !== 1) ? 'Plätzen' : 'Platz'),
+			defaultIfEmpty("Plätzen")
+		);
+
+	//todo remove demo
+	responsible$: Observable<User[]> = of(
+		[
+			User.create().setProperties({
+				firstName: "Sarah",
+				surname: "Riethmüller",
+				mobile: "+49 170 3431684"
+			}),
+			User.create().setProperties({
+				firstName: "Lennart",
+				surname: "Hoffmann",
+				mobile: "015170881887"
+			})
+		]);
+
 	constructor(private participantService: ParticipantsService,
+				private discountService: DiscountService,
 				private stockService: StockService,
 				private loginService: LogInService,
 				private shoppingCartService: ShoppingCartService) {
@@ -253,6 +288,10 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		return EventUtilityService.isMerchandise(event);
 	}
 
+	isTour(event): event is Tour {
+		return EventUtilityService.isTour(event);
+	}
+
 	/**
 	 *
 	 */
@@ -263,7 +302,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		const newItem = {
 			id: this.event.id,
 			amount: this.model.amount,
-			options: {color: this.color, size: this.size}
+			options: {color: this.color, size: this.size},
 		};
 
 		if (shoppingCartItem) {
@@ -291,12 +330,13 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			});
 			this.isPartOfShoppingCart = false;
 		}
+
 		else {
 			//add
 			this.shoppingCartService.pushItem(EventUtilityService.getEventType(item), {
 				id: item.id,
 				options: {color: this.color, size: this.size},
-				amount: this.model.amount
+				amount: this.model.amount,
 			});
 			this.isPartOfShoppingCart = true;
 		}

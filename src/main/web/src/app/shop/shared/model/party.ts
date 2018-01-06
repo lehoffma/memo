@@ -5,8 +5,6 @@ import {EventRoute} from "./route";
 import * as moment from "moment";
 import {Moment} from "moment";
 
-;
-
 export class Party extends Event {
 
 	constructor(id: number,

@@ -47,6 +47,14 @@
 	</div>
 </div>
 
+<!--todo remove demo-->
+<div [style.width]="'100%'" [style.display]="'flex'" [style.justify-content]="'flex-end'">
+	<memo-profile-link [user]="user"></memo-profile-link>
+</div>
+<memo-profile-link [user]="user" [shortened]="true"></memo-profile-link>
+<memo-price-renderer [price]="15.00" [showExplanation]="true" [discounts]="discounts">
+</memo-price-renderer>
+<!---->
 
 <div class="category-overview-container">
 	<div class="overview-preview-container mat-elevation-z1" *ngFor="let eventPreview of events">

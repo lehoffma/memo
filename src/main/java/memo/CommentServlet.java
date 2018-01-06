@@ -11,14 +11,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 //TESTED
@@ -217,7 +213,7 @@ public class CommentServlet extends HttpServlet {
             Integer eventID = Integer.parseInt(SEventID);
             //ToDo: gibt null aus wenn id nicht vergeben
             return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
-                    " WHERE c.eventId = :eventID", Comment.class)
+                    " WHERE c.item.id = :eventID", Comment.class)
                     .setParameter("eventID", eventID)
                     .getResultList();
         } catch (NumberFormatException e) {

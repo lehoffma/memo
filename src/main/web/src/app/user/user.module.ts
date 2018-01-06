@@ -12,6 +12,8 @@ import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
 import {AgmCoreModule} from "@agm/core";
 import {SearchModule} from "../shop/search-results/search.module";
+import {ProfilePreviewComponent} from '../shared/profile-renderer/profile-preview/profile-preview.component';
+import {ProfileLinkComponent} from '../shared/profile-renderer/profile-link/profile-link.component';
 
 @NgModule({
 	imports: [
@@ -33,10 +35,10 @@ import {SearchModule} from "../shop/search-results/search.module";
 
 		MyToursEntryComponent,
 
-		ParticipatedToursPreviewComponent
+		ParticipatedToursPreviewComponent,
 	],
 	exports: [
-		SignUpModule
+		SignUpModule,
 	]
 })
 export class UserModule {

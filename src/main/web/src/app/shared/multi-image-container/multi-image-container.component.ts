@@ -32,7 +32,7 @@ export class MultiImageContainerComponent implements OnInit {
 					.forEach(value => acc.push(value));
 
 				//reorder values that have been reordered
-				if(acc.some((value, index, array) => values.indexOf(value) !== index)){
+				if (acc.some((value, index, array) => values.indexOf(value) !== index)) {
 					return values;
 				}
 
@@ -47,6 +47,7 @@ export class MultiImageContainerComponent implements OnInit {
 
 	@Input()
 	set images(images: string[]) {
+		console.log(images);
 		this._images$.next(images);
 
 		//currently selected image was deleted

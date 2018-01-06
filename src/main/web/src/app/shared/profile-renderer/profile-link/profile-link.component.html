@@ -1,0 +1,7 @@
+<a routerLink="/members/{{user.id}}"
+   (mouseenter)="openPreview()"
+   (mouseleave)="closePreview()"
+   (click)="closePreview()"
+   #profileLink>
+	{{user.firstName + (shortened ? "" : (" " + user.surname))}}
+</a>

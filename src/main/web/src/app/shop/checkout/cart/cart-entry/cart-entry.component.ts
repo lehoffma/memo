@@ -32,26 +32,33 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		let maxAmount: Observable<number>;
+		let maxAmount: Observable<number> = this.getMaxAmount(this.cartItem);
+		this.subscription = maxAmount.subscribe(maxAmount => {
+			this.amountOptions = Array.from(Array(maxAmount + 1).keys());
+		})
+	}
+
+	/**
+	 *
+	 * @returns {Observable<number>}
+	 */
+	getMaxAmount(cartItem: CartItem): Observable<number> {
 		//if the cart item is a merchandise object,
 		//we have to extract the number from the item's stock (by calling the stockservice function)
-		if (EventUtilityService.isMerchandise(this.cartItem.item)) {
-			maxAmount = this.stockService.getByEventId(this.cartItem.item.id)
+		if (EventUtilityService.isMerchandise(cartItem.item)) {
+			return this.stockService.getByEventId(cartItem.item.id)
 				.pipe(
 					map(stock => stock
 					// we have to consider the selected color and size attributes
 						.filter(stockItem =>
-							stockItem.color.hex === this.cartItem.options.color.hex
-							&& stockItem.size === this.cartItem.options.size
+							stockItem.color.hex === cartItem.options.color.hex
+							&& stockItem.size === cartItem.options.size
 						)
 						.reduce((acc, stockItem) => acc + stockItem.amount, 0))
 				);
 		} else {
-			maxAmount = of(this.cartItem.item.capacity);
+			return of(cartItem.item.capacity);
 		}
-		this.subscription = maxAmount.subscribe(maxAmount => {
-			this.amountOptions = Array.from(Array(maxAmount + 1).keys());
-		})
 	}
 
 

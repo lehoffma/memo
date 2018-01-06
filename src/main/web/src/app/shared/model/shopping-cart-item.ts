@@ -6,5 +6,17 @@ export interface ShoppingCartItem {
 	options?: {
 		size?: string,
 		color?: MerchColor,
-	}
+	},
+	// orderedItems: OrderedItem[]; //todo
 }
+
+// export interface OrderedItem {
+// 	id: number,
+// 	item: Event,
+// 	price: number,
+// 	status: OrderStatus,
+// 	size?: string,
+// 	color?: MerchColor,
+// 	isDriver?: boolean;
+// 	needsTicket?: boolean;
+// }
