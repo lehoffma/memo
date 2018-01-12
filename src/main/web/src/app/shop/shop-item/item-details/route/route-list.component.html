@@ -1,0 +1,31 @@
+<div class="route-list-inner-container" *ngIf="googleMapsUrls$ | async; let mapsUrls">
+	<div *ngFor="let address of (_route$ | async); let i = index"
+		 (click)="toggleFormat(i)"
+		 class="route-list-entry">
+		<div class="route-list-entry-text">
+			<div class="index">
+				{{i+1}}.
+			</div>
+			<div class="address-display">
+				{{address | address:routeFormats[i]}}
+			</div>
+		</div>
+		<div class="route-list-entry-actions">
+			<button mat-icon-button class="show-long-name-toggle"
+					matTooltip="{{(routeFormats[i]===addressFormats.Short) ? 'Lange Version anzeigen' : 'Kurze Version anzeigen'}}"
+					(click)="toggleFormat(i); $event.stopPropagation()">
+				<mat-icon>
+					{{(routeFormats[i]===addressFormats.Short) ? 'expand_more' : 'expand_less'}}
+				</mat-icon>
+			</button>
+			<!--Opens the tour stop in google maps-->
+			<a mat-icon-button class="maps-link-button"
+			   matTooltip="Auf Google Maps öffnen"
+			   [href]="mapsUrls[i]">
+				<mat-icon>
+					map
+				</mat-icon>
+			</a>
+		</div>
+	</div>
+</div>

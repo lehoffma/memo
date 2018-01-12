@@ -30,6 +30,34 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 			.description {
 				white-space: pre-wrap;
 			}
+
+			memo-route-list {
+				display: block;
+				border-bottom: 1px solid #ededed;
+				margin: -1rem -1rem 1rem;
+				padding: 0 1rem;
+			}
+
+			@media all and (min-width: 1050px) {
+				memo-route-list {
+					width: calc(50% + 2rem);
+					background: white;
+					border-right: 1px solid #ededed;
+					border-bottom: none;
+					margin-bottom: -1rem;
+					height: 410px;
+					overflow-y: auto;
+				}
+
+				memo-item-details-content /deep/ .object-details-content {
+					display: flex;
+				}
+
+				memo-route-map {
+					width: 50%;
+					margin-left: 2rem;
+				}
+			}
 		`
 	]
 })

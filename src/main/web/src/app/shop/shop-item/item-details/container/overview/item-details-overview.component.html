@@ -15,6 +15,13 @@
 			</div>
 
 			<mat-menu #menu="matMenu">
+				<button mat-menu-item
+						matTooltip="Dieses Event teilen"
+						(click)="openShareDialog()"
+				>
+					<mat-icon>share</mat-icon>
+					<span>Teilen</span>
+				</button>
 				<a mat-menu-item
 				   *ngIf="userCanEditEvent$ | async"
 				   matTooltip="Dieses Event bearbeiten"
@@ -31,8 +38,7 @@
 					Kosten
 				</a>
 			</mat-menu>
-			<button mat-icon-button [matMenuTriggerFor]="menu"
-					*ngIf="(userCanEditEvent$ | async) || (userCanAccessEntries$ | async)">
+			<button mat-icon-button [matMenuTriggerFor]="menu">
 				<mat-icon>
 					more_vert
 				</mat-icon>
@@ -133,17 +139,6 @@
 				</button>
 			</form>
 		</div>
-
-		<share-buttons
-			*ngIf="event"
-			[theme]="'default'"
-			[include]="['facebook','twitter','whatsapp','telegram','copy']"
-			[size]="-2"
-			[title]="event.title"
-			[image]="event.imagePaths[0]"
-			[description]="event.description"
-			[tags]="['Meilenwoelfe', 'Meilenwoelfe-Shop']"
-		></share-buttons>
 	</div>
 
 

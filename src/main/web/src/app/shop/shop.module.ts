@@ -4,15 +4,15 @@ import {SearchModule} from "./search-results/search.module";
 import {EventCalendarContainerModule} from "./event-calendar-container/event-calendar-container.module";
 import {ModifyShopItemModule} from "./shop-item/modify-shop-item/modify-shop-item.module";
 import {ShopItemDetailsModule} from "./shop-item/item-details/shop-item-details.module";
-import {PriceRendererComponent} from '../shared/price-renderer/price-renderer.component';
 import {DiscountService} from "./shared/services/discount.service";
 import {CommonModule} from "@angular/common";
 import {MemoMaterialModule} from "../../material.module";
 import {RouterModule} from "@angular/router";
 import {DiscountOverlayComponent} from '../shared/price-renderer/discount-overlay.component';
+import {RoutingService} from "./shared/services/routing.service";
 
 const providers = [
-	DiscountService
+	DiscountService,
 ];
 
 @NgModule({
@@ -30,7 +30,8 @@ const providers = [
 		DiscountOverlayComponent
 	],
 	providers: [
-		...providers
+		...providers,
+		RoutingService
 	],
 	exports: [
 		CheckoutModule,

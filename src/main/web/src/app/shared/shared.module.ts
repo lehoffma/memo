@@ -19,11 +19,14 @@ import {RouterModule} from "@angular/router";
 import {ProfileLinkComponent} from "./profile-renderer/profile-link/profile-link.component";
 import {ProfilePreviewComponent} from "./profile-renderer/profile-preview/profile-preview.component";
 import {CapacityRendererComponent} from './capacity-renderer/capacity-renderer.component';
+import {ShareDialogComponent} from './share-dialog/share-dialog.component';
+import {ShareButtonsModule} from "ngx-sharebuttons";
 
 @NgModule({
 	imports: [
 		CommonModule,
 		RouterModule,
+		ShareButtonsModule,
 		ScheduleModule,
 		ExpandableTableModule,
 		MemoMaterialModule,
@@ -47,7 +50,8 @@ import {CapacityRendererComponent} from './capacity-renderer/capacity-renderer.c
 
 		ProfileLinkComponent,
 		ProfilePreviewComponent,
-		CapacityRendererComponent
+		CapacityRendererComponent,
+		ShareDialogComponent
 	],
 	exports: [
 		ExpandableTableModule,
@@ -65,6 +69,7 @@ import {CapacityRendererComponent} from './capacity-renderer/capacity-renderer.c
 
 		AutoSizeTextAreaDirective,
 
+		ShareDialogComponent,
 
 		MultiImageUploadComponent,
 		MultiImageContainerComponent,
@@ -77,7 +82,8 @@ import {CapacityRendererComponent} from './capacity-renderer/capacity-renderer.c
 	],
 	entryComponents: [
 		ConfirmationDialogComponent,
-		ProfilePreviewComponent
+		ProfilePreviewComponent,
+		ShareDialogComponent
 	]
 })
 export class SharedModule {

@@ -22,6 +22,8 @@ import {User} from "../../../../../shared/model/user";
 import {Discount} from "../../../../../shared/price-renderer/discount";
 import {DiscountService} from "../../../../shared/services/discount.service";
 import {Tour} from "../../../../shared/model/tour";
+import {MatDialog} from "@angular/material";
+import {ShareDialogComponent} from "../../../../../shared/share-dialog/share-dialog.component";
 
 
 @Component({
@@ -107,9 +109,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	responsible$: Observable<User[]> = of(
 		[
 			User.create().setProperties({
-				firstName: "Sarah",
-				surname: "Riethmüller",
-				mobile: "+49 170 3431684"
+				firstName: "Nils",
+				surname: "Pöcking",
+				mobile: "017684806285"
 			}),
 			User.create().setProperties({
 				firstName: "Lennart",
@@ -122,7 +124,8 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				private discountService: DiscountService,
 				private stockService: StockService,
 				private loginService: LogInService,
-				private shoppingCartService: ShoppingCartService) {
+				private shoppingCartService: ShoppingCartService,
+				private matDialog: MatDialog) {
 	}
 
 	get event() {
@@ -342,4 +345,14 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		}
 	}
 
+	openShareDialog() {
+		this.matDialog.open(ShareDialogComponent, {
+			data: {
+				title: this.event.title,
+				description: this.event.description,
+				image: this.event.imagePaths[0],
+				additionalTags: []
+			}
+		})
+	}
 }

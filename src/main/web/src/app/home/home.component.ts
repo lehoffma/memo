@@ -7,8 +7,6 @@ import {EventType} from "../shop/shared/model/event-type";
 import * as moment from "moment";
 import {ShopItemType} from "../shop/shared/model/shop-item-type";
 import {LogInService} from "../shared/services/api/login.service";
-import {User} from "../shared/model/user";
-import {Discount} from "../shared/price-renderer/discount";
 
 interface EventsPreview {
 	title: string,
@@ -49,28 +47,6 @@ export class HomeComponent implements OnInit {
 	];
 
 	userIsLoggedIn$ = this.loginService.isLoggedInObservable();
-
-	//todo demo remove
-	user: User = User.create().setProperties({
-		firstName: "Sarah",
-		surname: "Riethmüller",
-		mobile: "+49 170 3431684"
-	});
-
-	//todo discount api:
-	// if userID is member => memberDiscount
-	// if userId has balance > 0 => balanceDiscount
-	discounts: Discount[] = [
-		{
-			amount: 5,
-			eligible: false,
-			link: {
-				url: "/applyForMembership",
-				text: "Werde jetzt Mitglied, um 5 Euro zu sparen!"
-			},
-			reason: "Mitglieder-Rabatt"
-		}
-	];
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService) {
