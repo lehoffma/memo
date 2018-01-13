@@ -24,6 +24,7 @@ import {DiscountService} from "../../../../shared/services/discount.service";
 import {Tour} from "../../../../shared/model/tour";
 import {MatDialog} from "@angular/material";
 import {ShareDialogComponent} from "../../../../../shared/share-dialog/share-dialog.component";
+import {ResponsibilityService} from "../../../../shared/services/responsibility.service";
 
 
 @Component({
@@ -105,26 +106,19 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			defaultIfEmpty("Plätzen")
 		);
 
-	//todo remove demo
-	responsible$: Observable<User[]> = of(
-		[
-			User.create().setProperties({
-				firstName: "Nils",
-				surname: "Pöcking",
-				mobile: "017684806285"
-			}),
-			User.create().setProperties({
-				firstName: "Lennart",
-				surname: "Hoffmann",
-				mobile: "015170881887"
-			})
-		]);
+	responsible$: Observable<User[]> = this._event$
+		.pipe(
+			mergeMap(event => this.responsibilityService.getResponsible(event.id))
+		);
+
+
 
 	constructor(private participantService: ParticipantsService,
 				private discountService: DiscountService,
 				private stockService: StockService,
 				private loginService: LogInService,
 				private shoppingCartService: ShoppingCartService,
+				private responsibilityService: ResponsibilityService,
 				private matDialog: MatDialog) {
 	}
 

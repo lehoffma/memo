@@ -1,4 +1,33 @@
 @import "../centered-container";
+@import "../theme";
+@import "~@angular/material/theming";
+
+.conclude-event-header {
+	display: flex;
+	justify-content: space-between;
+	margin: auto;
+	padding: 1rem;
+	max-width: 1000px;
+
+	background: mat-color($accent);
+	color: white;
+	text-decoration: none;
+
+	font-size: 1.2rem;
+	font-weight: lighter;
+
+	mat-icon {
+		margin-right: 5px;
+		transition: all ease-in 0.2s
+	}
+
+	&:hover {
+		background: lighten(mat-color($accent), 5%);
+		mat-icon {
+			margin-right: 0;
+		}
+	}
+}
 
 .item-actions {
 	color: white;
@@ -33,16 +62,18 @@
 	background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
 }
 
-memo-multi-image-container{
+memo-multi-image-container {
 	max-width: 500px;
 	margin: auto;
 }
 
 @media all and (min-width: 1050px) {
+
+	.item-details-parent-container {
+		padding-top: 1rem;
+	}
 	.item-details-card {
 		display: flex;
-		//padding: 1rem;
-		padding-top: 1rem;
 		justify-content: center;
 	}
 
@@ -77,7 +108,7 @@ memo-multi-image-container{
 		margin: 0;
 	}
 
-	memo-multi-image-container{
+	memo-multi-image-container {
 		max-width: 500px;
 		width: 500px;
 		margin: 0;

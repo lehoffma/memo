@@ -10,9 +10,13 @@ import {MemoMaterialModule} from "../../material.module";
 import {RouterModule} from "@angular/router";
 import {DiscountOverlayComponent} from '../shared/price-renderer/discount-overlay.component';
 import {RoutingService} from "./shared/services/routing.service";
+import {ResponsibilityService} from "./shared/services/responsibility.service";
+import {ConcludeEventService} from "./shared/services/conclude-event.service";
 
 const providers = [
 	DiscountService,
+	ResponsibilityService,
+	ConcludeEventService
 ];
 
 @NgModule({
@@ -27,7 +31,7 @@ const providers = [
 		ShopItemDetailsModule
 	],
 	declarations: [
-		DiscountOverlayComponent
+		DiscountOverlayComponent,
 	],
 	providers: [
 		...providers,

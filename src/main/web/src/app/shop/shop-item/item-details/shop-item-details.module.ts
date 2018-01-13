@@ -21,6 +21,7 @@ import {AgmCoreModule} from "@agm/core";
 import {OrderStatusTableCellComponent} from './participants/order-status-table-cell.component';
 import {RouteListComponent} from './route/route-list.component';
 import {AddressRendererPipe} from "./route/address-renderer.pipe";
+import {SharedShopModule} from "../../shared/shop-shared.module";
 
 @NgModule({
 	imports: [
@@ -30,6 +31,7 @@ import {AddressRendererPipe} from "./route/address-renderer.pipe";
 		MemoMaterialModule,
 		ShareButtonsModule,
 		SharedModule,
+		SharedShopModule,
 		AgmCoreModule,
 		ShopItemDetailsRoutingModule,
 		CommentsSectionModule

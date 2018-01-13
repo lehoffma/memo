@@ -21,11 +21,15 @@ import {ProfilePreviewComponent} from "./profile-renderer/profile-preview/profil
 import {CapacityRendererComponent} from './capacity-renderer/capacity-renderer.component';
 import {ShareDialogComponent} from './share-dialog/share-dialog.component';
 import {ShareButtonsModule} from "ngx-sharebuttons";
+import {UserAutocompleteComponent} from './user-autocomplete/user-autocomplete.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
 	imports: [
 		CommonModule,
 		RouterModule,
+		FormsModule,
+		ReactiveFormsModule,
 		ShareButtonsModule,
 		ScheduleModule,
 		ExpandableTableModule,
@@ -51,7 +55,8 @@ import {ShareButtonsModule} from "ngx-sharebuttons";
 		ProfileLinkComponent,
 		ProfilePreviewComponent,
 		CapacityRendererComponent,
-		ShareDialogComponent
+		ShareDialogComponent,
+		UserAutocompleteComponent
 	],
 	exports: [
 		ExpandableTableModule,
@@ -78,7 +83,8 @@ import {ShareButtonsModule} from "ngx-sharebuttons";
 
 		ProfileLinkComponent,
 
-		CapacityRendererComponent
+		CapacityRendererComponent,
+		UserAutocompleteComponent
 	],
 	entryComponents: [
 		ConfirmationDialogComponent,

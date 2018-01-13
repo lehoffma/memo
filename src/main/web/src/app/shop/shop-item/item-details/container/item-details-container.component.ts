@@ -6,9 +6,12 @@ import {Event} from "../../../shared/model/event";
 import {EventOverviewKey} from "./overview/event-overview-key";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
-import {Permission} from "../../../../shared/model/permission";
+import {Permission, UserPermissions} from "../../../../shared/model/permission";
 import {of} from "rxjs/observable/of";
-import {map} from "rxjs/operators";
+import {map, mergeMap} from "rxjs/operators";
+import {ResponsibilityService} from "../../../shared/services/responsibility.service";
+import {ConcludeEventService} from "../../../shared/services/conclude-event.service";
+import {User} from "../../../../shared/model/user";
 
 
 @Component({
@@ -20,36 +23,27 @@ export class ItemDetailsContainerComponent implements OnInit {
 	@Input() event: Event;
 	userCanEditEvent: Observable<boolean> = this.loginService.currentUser$
 		.pipe(
-			map((user) => {
-				if (user !== null && this.event !== null) {
-					let permissions = user.userPermissions;
-					let permissionKey = EventUtilityService.handleShopItem(this.event,
-						merch => "merch",
-						tour => "tour",
-						party => "party"
-					);
-					if (permissionKey) {
-						return permissions[permissionKey] >= Permission.write;
-					}
-				}
-
-				return false;
-			})
+			map(user => this.checkPermissions(user, Permission.write,
+				u => (<any>EventUtilityService.handleShopItem(this.event,
+					merch => "merch",
+					tour => "tour",
+					party => "party"
+				))))
 		);
 	userCanAccessEntries$: Observable<boolean> = this.loginService.currentUser$
 		.pipe(
-			map((user) => {
-				if (user !== null && this.event !== null) {
-					let permissions = user.userPermissions;
-					return permissions.funds >= Permission.read;
-				}
-				return false;
-			})
+			map(user => this.checkPermissions(user, Permission.read, _ => "funds"))
+		);
+	showConcludeEventHeader$: Observable<boolean> = this.loginService.currentUser$
+		.pipe(
+			mergeMap(user => this.checkResponsibility(user))
 		);
 
 	@Input() overviewKeys: Observable<EventOverviewKey[]> = of([]);
 
 	constructor(private mdDialog: MatDialog,
+				private responsibilityService: ResponsibilityService,
+				private concludeEventService: ConcludeEventService,
 				private loginService: LogInService) {
 	}
 
@@ -62,5 +56,48 @@ export class ItemDetailsContainerComponent implements OnInit {
 				imagePath: imagePath
 			}
 		})
+	}
+
+	/**
+	 *
+	 * @param {User} user
+	 * @param minimumPermission
+	 * @param getPermissionKey
+	 * @returns {boolean}
+	 */
+	checkPermissions(user: User, minimumPermission: Permission,
+					 getPermissionKey: (user: User) => keyof UserPermissions): boolean {
+		if (user !== null && this.event !== null) {
+			let permissions = user.userPermissions;
+			let permissionKey = getPermissionKey(user);
+			if (permissionKey) {
+				return permissions[permissionKey] >= minimumPermission;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 *
+	 * @param {User} user
+	 * @returns {Observable<boolean>}
+	 */
+	checkResponsibility(user: User): Observable<boolean> {
+		//todo remove demo
+		user = User.create();
+
+		if (user !== null && this.event !== null) {
+			return this.concludeEventService.hasConcluded(this.event.id)
+				.pipe(
+					mergeMap(isConcluded => this.responsibilityService
+						.isResponsible(this.event.id, user.id)
+						.pipe(
+							map(isResponsible => !isConcluded && isResponsible)
+						)
+					)
+				);
+		}
+		return of(false);
 	}
 }

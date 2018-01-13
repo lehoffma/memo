@@ -1,0 +1,114 @@
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {User} from "../model/user";
+import {FormControl} from "@angular/forms";
+import {Observable} from "rxjs/Observable";
+import {EventUtilityService} from "../services/event-utility.service";
+import {map, mergeMap, startWith} from "rxjs/operators";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+
+@Component({
+	selector: 'memo-user-autocomplete',
+	templateUrl: './user-autocomplete.component.html',
+	styleUrls: ['./user-autocomplete.component.scss']
+})
+export class UserAutocompleteComponent implements OnInit, OnDestroy {
+	_userList$ = new BehaviorSubject<User[]>([]);
+
+	@Input() set userList(userList: User[]) {
+		this._userList$.next(userList);
+	}
+
+	@Output() userChanged = new EventEmitter<User>();
+
+	_user: User = null;
+
+	get user() {
+		return this._user;
+	}
+
+	set user(user: User) {
+		this._user = user;
+		this.userChanged.emit(user);
+		if (user !== null) {
+			this.autocompleteFormControl.reset();
+		}
+	}
+
+
+	autocompleteFormControl = new FormControl();
+	filteredOptions: Observable<User[]>;
+
+
+	subscriptions = [];
+
+	constructor() {
+	}
+
+	ngOnInit() {
+		this.subscriptions.push(
+			this.autocompleteFormControl.valueChanges
+				.subscribe(value => this.user = EventUtilityService.isUser(value)
+					? value
+					: null),
+
+			this._userList$
+				.subscribe(userList => {
+					if (userList.length === 0) {
+						this.autocompleteFormControl.disable();
+					}
+					else {
+						this.autocompleteFormControl.enable();
+					}
+				})
+		);
+
+
+		this.filteredOptions = this._userList$
+		//dont filter out the user that is being edited so we can still select him while editing
+			.pipe(
+				map(userList => userList.filter(it => this.user === null || this.user.id !== it.id)),
+				mergeMap(users => this.autocompleteFormControl.valueChanges
+					.pipe(
+						startWith(null),
+						map(user => user && typeof user === "object" ? user.name : user),
+						map(name => name ? this.filter(users, name) : users.slice()))
+				)
+			);
+	}
+
+
+	ngOnDestroy(): void {
+		this.subscriptions.forEach(it => it.unsubscribe());
+	}
+
+	public setValue(user: User) {
+		this.user = user;
+	}
+
+
+	/**
+	 * Filters the options array by checking the users first and last name
+	 * @param options
+	 * @param name
+	 * @returns {any[]}
+	 */
+	filter(options: User[], name: string): User[] {
+		return options.filter(option => {
+			const regex = new RegExp(`^${name}`, "gi");
+			return regex.test(option.firstName + " " + option.surname) || regex.test(option.surname);
+		});
+	}
+
+
+	/**
+	 * Defines how the user will be presented in the autocomplete box
+	 * @param user
+	 * @returns {any}
+	 */
+	displayFn(user: User): string {
+		if (user) {
+			return user.firstName + " " + user.surname;
+		}
+		return "";
+	}
+}
