@@ -131,10 +131,11 @@
 					</mat-select>
 				</mat-form-field>
 
-				<button [disabled]="(!addToCartForm.valid || model.amount === 0) || (!isMerch(event) && isPastEvent)"
-						mat-raised-button
-						color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
-						class="add-to-cart-button">
+				<button
+					[disabled]="(!addToCartForm.valid || model.amount === 0) || (!isMerch(event) && isPastEvent)"
+					mat-raised-button
+					color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
+					class="add-to-cart-button">
 					{{(isPartOfShoppingCart) ? 'Aus dem Warenkorb löschen' : 'In den Warenkorb'}}
 				</button>
 			</form>

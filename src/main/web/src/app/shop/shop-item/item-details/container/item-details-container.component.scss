@@ -7,7 +7,7 @@
 	justify-content: space-between;
 	margin: auto;
 	padding: 1rem;
-	max-width: 1000px;
+	max-width: 500px;
 
 	background: mat-color($accent);
 	color: white;
@@ -68,6 +68,10 @@ memo-multi-image-container {
 }
 
 @media all and (min-width: 1050px) {
+
+	.conclude-event-header {
+		max-width: 1000px;
+	}
 
 	.item-details-parent-container {
 		padding-top: 1rem;

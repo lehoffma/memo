@@ -25,6 +25,7 @@ import {Tour} from "../../../../shared/model/tour";
 import {MatDialog} from "@angular/material";
 import {ShareDialogComponent} from "../../../../../shared/share-dialog/share-dialog.component";
 import {ResponsibilityService} from "../../../../shared/services/responsibility.service";
+import {ShoppingCartOption} from "../../../../../shared/model/shopping-cart-item";
 
 
 @Component({
@@ -110,7 +111,6 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		.pipe(
 			mergeMap(event => this.responsibilityService.getResponsible(event.id))
 		);
-
 
 
 	constructor(private participantService: ParticipantsService,
@@ -267,8 +267,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				//fills the amountOptions variable with integers from 0 to maxAmount
 				this.amountOptions = Array((this.maxAmount === undefined) ? 0 : this.maxAmount + 1).fill(0).map((_, i) => i);
 
+				const options = new Array(this.model.amount).fill({color: this.color, size: this.size});
 				const shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-					this.event.id, {color: this.color, size: this.size});
+					this.event.id, options);
 
 				if (shoppingCartItem) {
 					this.model.amount = shoppingCartItem.amount;
@@ -293,50 +294,43 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 *
 	 */
 	updateShoppingCart() {
-		const shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-			this.event.id, {color: this.color, size: this.size});
+		const options: ShoppingCartOption[] = this.isMerch(this.event)
+			? new Array(this.model.amount).fill({color: this.color, size: this.size})
+			: (this.isTour(this.event)
+				? new Array(this.model.amount).fill({needsTicket: true, isDriver: false})
+				: []);
 		const eventType = EventUtilityService.getEventType(this.event);
 		const newItem = {
 			id: this.event.id,
+			item: this.event,
 			amount: this.model.amount,
-			options: {color: this.color, size: this.size},
+			options: options,
 		};
 
-		if (shoppingCartItem) {
-			this.shoppingCartService.pushItem(eventType, newItem)
-		}
-
-		if (this.model.amount === 0) {
-			this.shoppingCartService.deleteItem(eventType, newItem.id, newItem.options);
-			this.isPartOfShoppingCart = false;
-		}
+		this.shoppingCartService.pushItem(eventType, newItem);
+		this.isPartOfShoppingCart = this.model.amount > 0;
 	}
 
 	/**
 	 * Fügt das aktuelle Item dem Warenkorb hinzu.
 	 */
 	addOrDeleteFromCart(item: Event) {
+		const options: ShoppingCartOption[] = this.isMerch(this.event)
+			? new Array(this.model.amount).fill({color: this.color, size: this.size})
+			: (this.isTour(this.event)
+				? new Array(this.model.amount).fill({needsTicket: true, isDriver: false})
+				: []);
+
 		let shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-			this.event.id, {color: this.color, size: this.size});
+			this.event.id, options);
 
-		if (shoppingCartItem) {
-			//delete
-			this.shoppingCartService.deleteItem(EventUtilityService.getEventType(this.event), this.event.id, {
-				color: this.color,
-				size: this.size
-			});
-			this.isPartOfShoppingCart = false;
-		}
-
-		else {
-			//add
-			this.shoppingCartService.pushItem(EventUtilityService.getEventType(item), {
-				id: item.id,
-				options: {color: this.color, size: this.size},
-				amount: this.model.amount,
-			});
-			this.isPartOfShoppingCart = true;
-		}
+		this.isPartOfShoppingCart = !shoppingCartItem;
+		this.shoppingCartService.pushItem(EventUtilityService.getEventType(item), {
+			id: item.id,
+			options,
+			item,
+			amount: this.isPartOfShoppingCart ? this.model.amount : 0,
+		});
 	}
 
 	openShareDialog() {

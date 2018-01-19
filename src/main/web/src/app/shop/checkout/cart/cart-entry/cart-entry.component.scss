@@ -1,8 +1,23 @@
 :host {
+	display: block;
+	border-bottom: 1px solid #E0E0E0;
+}
+
+.participants-container {
+	border: 1px solid #dfdfdf;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	background: #F5F5F5;
+	margin-bottom: 1rem;
+	memo-cart-tour-participant:not(:first-child) {
+		border-top: 1px solid #ededed;
+	}
+}
+
+.main-cart-entry-container {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	border-bottom: 1px solid #E0E0E0;
 	justify-content: space-between;
 	margin: 10px 0;
 	padding: 10px 0;
