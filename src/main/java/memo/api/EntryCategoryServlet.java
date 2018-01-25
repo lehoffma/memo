@@ -1,8 +1,8 @@
 package memo.api;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import memo.model.EntryCategory;
+import memo.util.ApiUtils;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,29 +18,25 @@ import java.util.stream.Collectors;
 @WebServlet(name = "EntryCategoryServlet", value = "/api/entryCategory")
 public class EntryCategoryServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    final static Logger logger = Logger.getLogger(EntryCategoryServlet.class);
 
-        setContentType(request, response);
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+
+        ApiUtils.getInstance().setContentType(request, response);
         List<EntryCategory> entries = createTestData();
+
+        logger.debug("Method GET called");
 
         if (request.getParameter("categoryId") != null) {
             entries = entries.stream()
                     .filter(entryCategory -> Objects.equals(entryCategory.getId().toString(), request.getParameter("categoryId")))
                     .collect(Collectors.toList());
         }
-
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String output = gson.toJson(entries);
-
-        response.getWriter().append("{ \"categories\": " + output + " }");
-
+        ApiUtils.getInstance().serializeObject(response,entries, "categories");
 
     }
 
-    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/util;charset=UTF-8");
-    }
 
     private List<EntryCategory> createTestData() {
         List<EntryCategory> entries = new ArrayList<>();

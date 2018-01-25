@@ -1,13 +1,11 @@
 package memo.api;
 
-import com.google.common.io.CharStreams;
-import com.google.gson.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
 import memo.model.Entry;
-import memo.model.EntryCategory;
+import org.apache.log4j.Logger;
 
-import javax.persistence.EntityManager;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,18 +19,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//Tested
 
 @WebServlet(name = "EntryServlet", value = "/api/entry")
 public class EntryServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: implement
-        setContentType(request, response);
+    final static Logger logger = Logger.getLogger(EntryServlet.class);
 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+
+        ApiUtils.getInstance().setContentType(request, response);
         String Sid = request.getParameter("id");
         String SeventId = request.getParameter("eventId");
         String sType = request.getParameter("eventType");
+
+        logger.debug("Method GET called with param ID = " + Sid);
 
         List<Entry> entries = getEntriesFromDatabase(Sid, SeventId, sType, response);
 
@@ -62,127 +62,86 @@ public class EntryServlet extends HttpServlet {
         }
 
 
-        /*
         if (entries.isEmpty()) {
-            response.setStatus(404);
-            response.getWriter().append("Not found");
+            ApiUtils.getInstance().processNotFoundError(response);
             return;
         }
-        */
-
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String output = gson.toJson(entries);
-
-        response.getWriter().append("{ \"entries\": " + output + " }");
+        ApiUtils.getInstance().serializeObject(response, entries, "entries");
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: implement
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
-        setContentType(request, response);
+        ApiUtils.getInstance().setContentType(request, response);
 
-        JsonObject jEntry = getJsonEntry(request, response);
+        JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "entry");
+        logger.debug("Method POST called");
 
-        Entry e = createEntryFromJson(jEntry);
-
-        saveEntryToDatabase(e);
+        Entry a = ApiUtils.getInstance().updateFromJson(jObj, new Entry(), Entry.class);
+        DatabaseManager.getInstance().save(a);
 
         response.setStatus(201);
-        response.getWriter().append("{ \"id\": " + e.getId() + " }");
+        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
 
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
 
-        setContentType(request, response);
+        ApiUtils.getInstance().setContentType(request, response);
 
-        JsonObject jEntry = getJsonEntry(request, response);
+        logger.debug("Method PUT called");
+        JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "entry");
 
-        String jId = jEntry.get("id").getAsString();
 
-        Entry e = getEntryByID(jId, response);
-
-        if (e == null) {
-            response.getWriter().append("Not found");
-            response.setStatus(404);
+        if (!jObj.has("id")) {
+            ApiUtils.getInstance().processNotInvalidError(response);
             return;
         }
 
-        e = updateEntryFromJson(jEntry, e);
-        e.setId(jEntry.get("id").getAsInt());
+        Entry a = DatabaseManager.getInstance().getById(Entry.class, jObj.get("id").asInt());
 
-        updateEntryAtDatabase(e);
+        if (a == null) {
+            ApiUtils.getInstance().processNotFoundError(response);
+            return;
+        }
+
+
+        a = ApiUtils.getInstance().updateFromJson(jObj, a, Entry.class);
+        DatabaseManager.getInstance().update(a);
 
         response.setStatus(201);
-        response.getWriter().append("{ \"id\": " + e.getId() + " }");
-
-
+        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
     }
 
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        //TODO: implement
-        setContentType(request, response);
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
 
-        String Sid = request.getParameter("id");
-
-        Entry e = getEntryByID(Sid, response);
-
-        if (e == null) {
-            response.setStatus(404);
-            response.getWriter().append("Not Found");
-            return;
-        }
-
-        removeEntryFromDatabase(e);
+        ApiUtils.getInstance().deleteFromDatabase(Entry.class, request, response);
     }
 
-    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/util;charset=UTF-8");
-    }
 
-    private boolean isStringNotEmpty(String s) {
-        return (s != null && !s.isEmpty());
-    }
+    private List<Entry> getEntriesFromDatabase(String Sid, String SeventId, String sType, HttpServletResponse response) {
 
-    private List<Entry> getEntriesFromDatabase(String Sid, String SeventId, String sType, HttpServletResponse response) throws IOException {
-
-        List<Entry> orders = new ArrayList<>();
+        List<Entry> entries = new ArrayList<>();
 
         // if ID is submitted
-        if (isStringNotEmpty(Sid)) {
+        if (ApiUtils.getInstance().isStringNotEmpty(Sid)) {
 
-            Entry e = getEntryByID(Sid, response);
+            Entry e = DatabaseManager.getInstance().getByStringId(Entry.class,Sid);
             if (e != null) {
-                orders.add(e);
-                return orders;
+                entries.add(e);
+                return entries;
             }
         }
 
-        if (isStringNotEmpty(SeventId)) return getEntriesByEventId(SeventId, response);
+        if (ApiUtils.getInstance().isStringNotEmpty(SeventId)) return getEntriesByEventId(SeventId, response);
 
-        if (isStringNotEmpty(sType)) return getEntriesByEventType(EventServlet.getType(sType), response);
+        if (ApiUtils.getInstance().isStringNotEmpty(sType)) return getEntriesByEventType(EventServlet.getType(sType), response);
 
         return getEntries();
     }
 
-    private JsonObject getJsonEntry(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /*
+    private Entry updateEntryFromJson(JsonNode jEntry, Entry entry) {
 
-        String body = CharStreams.toString(request.getReader());
-
-        JsonElement jElement = new JsonParser().parse(body);
-        return jElement.getAsJsonObject().getAsJsonObject("entry");
-    }
-
-    private Entry createEntryFromJson(JsonObject jEntry) {
-        return updateEntryFromJson(jEntry, new Entry());
-    }
-
-    private Entry updateEntryFromJson(JsonObject jEntry, Entry entry) {
-
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        // save params to new user
-        entry = gson.fromJson(jEntry, Entry.class);
 
         try {
             entry.setItem(new EventServlet().getEventByID(jEntry.getAsJsonObject("event").get("id").getAsString(), null));
@@ -197,56 +156,30 @@ public class EntryServlet extends HttpServlet {
         entry.setDate(date);
 
         return entry;
+
     }
-
-    private void saveEntryToDatabase(Entry e) {
-        EntityManager em = DatabaseManager.createEntityManager();
-
-        em.getTransaction().begin();
-        em.persist(e);
-        em.getTransaction().commit();
-    }
-
-    private void updateEntryAtDatabase(Entry newEntry) {
-
-        EntityManager em = DatabaseManager.createEntityManager();
-
-        em.getTransaction().begin();
-        em.merge(newEntry);
-        em.getTransaction().commit();
-    }
+    */
 
 
-    private List<Entry> getEntriesByEventId(String SeventId, HttpServletResponse response) throws IOException {
+    private List<Entry> getEntriesByEventId(String SeventId, HttpServletResponse response) {
         try {
             Integer id = Integer.parseInt(SeventId);
 
             return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e " +
-                    " WHERE e.event.id = :Id", Entry.class)
+                    " WHERE e.item.id = :Id", Entry.class)
                     .setParameter("Id", id)
                     .getResultList();
 
         } catch (NumberFormatException e) {
-            response.getWriter().append("Bad ID Value");
-            response.setStatus(400);
-        }
-        return null;
-    }
-
-    private Entry getEntryByID(String Sid, HttpServletResponse response) throws IOException {
-        try {
-            Integer id = Integer.parseInt(Sid);
-            return DatabaseManager.createEntityManager().find(Entry.class, id);
-        } catch (NumberFormatException e) {
-            response.getWriter().append("Bad ID Value");
-            response.setStatus(400);
+            logger.error("Parsing error", e);
+            ApiUtils.getInstance().processNotInvalidError(response);
         }
         return null;
     }
 
     private List<Entry> getEntriesByEventType(Integer type, HttpServletResponse response) {
         return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e " +
-                " WHERE e.event.type = :typ", Entry.class)
+                " WHERE e.item.type = :typ", Entry.class)
                 .setParameter("typ", type)
                 .getResultList();
     }
@@ -254,15 +187,5 @@ public class EntryServlet extends HttpServlet {
     private List<Entry> getEntries() {
         return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e", Entry.class).getResultList();
     }
-
-    private void removeEntryFromDatabase(Entry e) {
-
-        DatabaseManager.createEntityManager().getTransaction().begin();
-        e = DatabaseManager.createEntityManager().merge(e);
-        DatabaseManager.createEntityManager().remove(e);
-        DatabaseManager.createEntityManager().getTransaction().commit();
-
-    }
-
 
 }

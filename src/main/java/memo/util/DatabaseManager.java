@@ -22,15 +22,19 @@ public class DatabaseManager {
         em = emf.createEntityManager();
     }
 
+    public static DatabaseManager getInstance() {
+        if (dbm == null) dbm = new DatabaseManager();
+        return dbm;
+    }
+
     public static EntityManager createEntityManager() {
         if (dbm == null) dbm = new DatabaseManager();
         return dbm.em;
     }
 
-    //ToDo: diese funktionen benutzen statt für jedes servlet wieder neu saveToDatabase zu implementieren
 
 
-    public static <T> T getById(Class<T> clazz, String primaryKey) {
+    public <T> T getByStringId(Class<T> clazz, String primaryKey) {
         try {
             logger.trace("Tries to Parse " + primaryKey + " to Integer");
             Integer id = Integer.parseInt(primaryKey);
@@ -49,7 +53,7 @@ public class DatabaseManager {
      * @param <PrimaryKey>
      * @return
      */
-    public static <T, PrimaryKey> T getById(Class<T> clazz, PrimaryKey primaryKey) {
+    public <T, PrimaryKey> T getById(Class<T> clazz, PrimaryKey primaryKey) {
         logger.debug("Database Query by Id: " + primaryKey + " on Class: " + clazz.getName());
         return performActionOnDb(em -> em.find(clazz, primaryKey));
     }
@@ -60,7 +64,7 @@ public class DatabaseManager {
      * @param object
      * @param <T>
      */
-    public static <T> void save(T object) {
+    public <T> void save(T object) {
         performSideEffectOnDb(em -> em.persist(object));
     }
 
@@ -70,7 +74,7 @@ public class DatabaseManager {
      * @param objects
      * @param <T>
      */
-    public static <T> void saveAll(List<T> objects) {
+    public <T> void saveAll(List<T> objects) {
         performSideEffectOnDb(em -> objects.forEach(em::persist));
     }
 
@@ -80,7 +84,7 @@ public class DatabaseManager {
      * @param object
      * @param <T>
      */
-    public static <T> T update(T object) {
+    public <T> T update(T object) {
         return performActionOnDb(em -> em.merge(object));
     }
 
@@ -90,7 +94,7 @@ public class DatabaseManager {
      * @param objects
      * @param <T>
      */
-    public static <T> List<T> updateAll(List<T> objects) {
+    public <T> List<T> updateAll(List<T> objects) {
         return performActionOnDb(em -> objects.stream().map(em::merge).collect(Collectors.toList()));
     }
 
@@ -101,7 +105,7 @@ public class DatabaseManager {
      * @param object
      * @param <T>
      */
-    private static <T> void removeObject(EntityManager em, T object) {
+    private <T> void removeObject(EntityManager em, T object) {
         T mergedObject = em.merge(object);
         em.remove(mergedObject);
     }
@@ -112,7 +116,7 @@ public class DatabaseManager {
      * @param object
      * @param <T>
      */
-    public static <T> void remove(T object) {
+    public <T> void remove(T object) {
         performSideEffectOnDb(em -> removeObject(em, object));
     }
 
@@ -122,7 +126,7 @@ public class DatabaseManager {
      * @param objects
      * @param <T>
      */
-    public static <T> void removeAll(List<T> objects) {
+    public <T> void removeAll(List<T> objects) {
         performSideEffectOnDb(em -> objects.forEach(object -> removeObject(em, object)));
     }
 
@@ -132,7 +136,7 @@ public class DatabaseManager {
      *
      * @param action
      */
-    public static <T> T performActionOnDb(Function<EntityManager, T> action) {
+    public <T> T performActionOnDb(Function<EntityManager, T> action) {
 
         logger.debug("Performs Database Action: " + action.toString());
         EntityManager em = DatabaseManager.createEntityManager();
@@ -145,7 +149,7 @@ public class DatabaseManager {
     /**
      * @param consumer
      */
-    public static void performSideEffectOnDb(Consumer<EntityManager> consumer) {
+    public void performSideEffectOnDb(Consumer<EntityManager> consumer) {
 
         logger.debug("Performs Database Side Effect on: " + consumer.toString());
         EntityManager em = DatabaseManager.createEntityManager();

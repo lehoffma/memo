@@ -16,7 +16,18 @@ public class ApiUtils {
 
     static final Logger logger = Logger.getLogger(ApiUtils.class);
 
-    public static void setContentType(HttpServletRequest request, HttpServletResponse response) {
+    private static ApiUtils instance;
+
+    private ApiUtils() {}
+
+    public static ApiUtils getInstance()
+    {
+        if (instance == null) instance = new ApiUtils();
+        return instance;
+    }
+
+
+    public void setContentType(HttpServletRequest request, HttpServletResponse response) {
 
         try {
             logger.trace("Set Character Encoding to UTF-8");
@@ -30,11 +41,11 @@ public class ApiUtils {
 
     }
 
-    public static boolean isStringNotEmpty(String s) {
+    public boolean isStringNotEmpty(String s) {
         return (s != null && !s.isEmpty());
     }
 
-    public static JsonNode getJsonObject(HttpServletRequest request, String objectName) {
+    public JsonNode getJsonObject(HttpServletRequest request, String objectName) {
 
         try {
             logger.trace("Parse Input Body and search for " + objectName);
@@ -55,7 +66,7 @@ public class ApiUtils {
         return null;
     }
 
-    public static <T> T updateFromJson(JsonNode jObject, T obj, Class<T> clazz) {
+    public <T> T updateFromJson(JsonNode jObject, T obj, Class<T> clazz) {
 
 
         try {
@@ -74,5 +85,57 @@ public class ApiUtils {
             logger.error("Error while parsing JSON to Java Object", e);
         }
         return null;
+    }
+
+    public <T> void deleteFromDatabase(Class<T> clazz, HttpServletRequest request, HttpServletResponse response)
+    {
+        ApiUtils.getInstance().setContentType(request, response);
+        String Sid = request.getParameter("id");
+        logger.debug("Method DELETE called");
+
+        T x = DatabaseManager.getInstance().getById(clazz, Sid);
+
+        if (x == null) {
+            ApiUtils.getInstance().processNotFoundError(response);
+            return;
+        }
+        logger.debug("Object: " + x.toString() + " will be removed");
+        DatabaseManager.getInstance().remove(x);
+    }
+
+    public void processNotFoundError(HttpServletResponse response) {
+        try {
+            response.setStatus(404);
+            logger.trace("No object found");
+            response.getWriter().append("not found");
+            return;
+
+        } catch (IOException e) {
+            logger.warn("IO Error", e);
+        }
+    }
+
+    public void processNotInvalidError(HttpServletResponse response) {
+        try {
+            response.setStatus(400);
+            response.getWriter().append("invalid data");
+            return;
+        } catch (Exception e) {
+            logger.warn("IO Error", e);
+        }
+    }
+
+    public <T> void serializeObject(HttpServletResponse response, T obj, String objectName)
+    {
+        try {
+
+            ObjectMapper mapper = new ObjectMapper();
+            String output = mapper.writeValueAsString(obj);
+            logger.trace("Serialization of object " + objectName + ": " + obj.toString());
+            response.getWriter().append("{ \" " + objectName + "\": " + output + " }");
+
+        } catch (Exception e) {
+            logger.error("Unhandled Exception", e);
+        }
     }
 }

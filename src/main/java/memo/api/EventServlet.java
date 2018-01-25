@@ -1,10 +1,12 @@
 package memo.api;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.io.CharStreams;
-import com.google.gson.*;
+import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
 import memo.model.*;
+import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -28,7 +31,7 @@ import java.util.List;
 public class EventServlet extends HttpServlet {
 
 
-
+    final static Logger logger = Logger.getLogger(EventServlet.class);
 
     public EventServlet() {
         super();
@@ -54,7 +57,7 @@ public class EventServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request, response);
+        ApiUtils.getInstance().setContentType(request, response);
 
         String Sid = request.getParameter("id");
         String searchTerm = request.getParameter("searchTerm");
@@ -62,113 +65,87 @@ public class EventServlet extends HttpServlet {
         String userId = request.getParameter("userId");
         String authorId = request.getParameter("authorId");
 
+        logger.debug("Method GET called with param ID = " + Sid + " + searchTerm = " + searchTerm + " + type = " + sType + " + userId = " + userId + " + authorId = " + authorId);
 
         List<ShopItem> shopItems = getEventsFromDatabase(Sid, searchTerm, sType, userId, authorId, response);
 
-        /*
         if (shopItems.isEmpty()) {
-            response.setStatus(404);
-            response.getWriter().append("Not found");
+            ApiUtils.getInstance().processNotFoundError(response);
             return;
         }
-        */
-
-
-        Gson gson = new GsonBuilder().serializeNulls().create();
-
-        //todo sowas ähnliches in den anderen servlets auch machen
-        JsonObject responseJson = new JsonObject();
-        responseJson.add("shopItems", gson.toJsonTree(shopItems));
-        response.getWriter().append(responseJson.toString());
+        ApiUtils.getInstance().serializeObject(response, shopItems, "shopItems");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request, response);
+        ApiUtils.getInstance().setContentType(request, response);
 
-        JsonObject jEvent = getJsonEvent(request, response);
+        JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "event");
+        logger.debug("Method POST called");
 
         //ToDo: Duplicate Events
 
-        ShopItem e = createEventFromJson(jEvent);
+        ShopItem s = ApiUtils.getInstance().updateFromJson(jObj, new ShopItem(), ShopItem.class);
 
         List<Color> colorList = new ArrayList<>();
         List<Stock> stockList = new ArrayList<>();
 
-        if (e.getType() == 3) fillSizesFromJson(jEvent, colorList, stockList, e);
+        if (s.getType() == 3) fillSizesFromJson(jObj, colorList, stockList, s);
 
-        saveEventToDatabase(e, colorList, stockList);
+        List<Serializable> x = new ArrayList<>();
+        x.add(s);
+        x.addAll(colorList);
+        x.addAll(stockList);
+
+        DatabaseManager.getInstance().save(x);
 
         response.setStatus(201);
-        response.getWriter().append("{ \"id\": " + e.getId() + " }");
+        ApiUtils.getInstance().serializeObject(response,s.getId(),"id");
 
 
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request, response);
+        ApiUtils.getInstance().setContentType(request, response);
 
-        JsonObject jEvent = getJsonEvent(request, response);
+        logger.debug("Method PUT called");
+        JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "event");
 
-        Integer jId = jEvent.get("id").getAsInt();
-
-        ShopItem e = DatabaseManager.createEntityManager().find(ShopItem.class, jId);
-
-        if (e == null) {
-            response.getWriter().append("Not found");
-            response.setStatus(404);
+        if (!jObj.has("id")) {
+            ApiUtils.getInstance().processNotInvalidError(response);
             return;
         }
 
-        e = updateEventFromJson(jEvent, e);
-        e.setId(jEvent.get("id").getAsInt());
+        ShopItem s = DatabaseManager.getInstance().getById(ShopItem.class, jObj.get("id").asInt());
+
+        if (s == null) {
+            ApiUtils.getInstance().processNotFoundError(response);
+            return;
+        }
+
+        s = ApiUtils.getInstance().updateFromJson(jObj,s,ShopItem.class);//updateEventFromJson(jObj, s);
         List<Color> colorList = new ArrayList<>();
         List<Stock> stockList = new ArrayList<>();
 
-        if (e.getType() == 3) fillSizesFromJson(jEvent, colorList, stockList, e);
+        if (s.getType() == 3) fillSizesFromJson(jObj, colorList, stockList, s);
 
-        //todo lel
-        updateEventAtDatabase(e, colorList, stockList);
+        List<Serializable> x = new ArrayList<>();
+        x.add(s);
+        x.addAll(colorList);
+        x.addAll(stockList);
+
+        DatabaseManager.getInstance().update(x);
 
         response.setStatus(201);
-        response.getWriter().append("{ \"id\": " + e.getId() + " }");
+        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request, response);
-
-        String Sid = request.getParameter("id");
-        ShopItem e = getEventByID(Sid, response);
-
-        if (e == null) {
-            response.setStatus(404);
-            response.getWriter().append("Not Found");
-            return;
-        }
-
-        removeEventFromDatabase(e);
-
-
+        ApiUtils.getInstance().deleteFromDatabase(ShopItem.class,request,response);
     }
 
-    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/util;charset=UTF-8");
-    }
-
-    private boolean isStringNotEmpty(String s) {
-        return (s != null && !s.isEmpty());
-    }
-
-    private JsonObject getJsonEvent(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        String body = CharStreams.toString(request.getReader());
-
-        JsonElement jElement = new JsonParser().parse(body);
-        return jElement.getAsJsonObject().getAsJsonObject("event");
-    }
 
     public ShopItem getEventByID(String Sid, HttpServletResponse response) throws IOException {
 

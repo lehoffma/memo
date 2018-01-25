@@ -1,20 +1,15 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.CharStreams;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
 import memo.model.Address;
 import org.apache.log4j.Logger;
 
-import javax.persistence.EntityManager;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +22,7 @@ public class AddressServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
 
-        ApiUtils.setContentType(request, response);
-
+        ApiUtils.getInstance().setContentType(request, response);
         String Sid = request.getParameter("id");
 
         logger.debug("Method GET called with param ID = " + Sid);
@@ -36,127 +30,65 @@ public class AddressServlet extends HttpServlet {
         List<Address> addresses = getAddressesFromDatabase(Sid, response);
 
         if (addresses.isEmpty()) {
-            try {
-                response.setStatus(404);
-                logger.trace("No object found with id = " + Sid);
-                response.getWriter().append("not found");
-                return;
-
-            } catch (IOException e) {
-                logger.warn("IO Error", e);
-            }
-
+            ApiUtils.getInstance().processNotFoundError(response);
+            return;
         }
-
-        try {
-
-            ObjectMapper mapper = new ObjectMapper();
-            String output = mapper.writeValueAsString(addresses);
-            logger.trace("Serialization of object with id =" + Sid);
-            response.getWriter().append("{ \"addresses\": " + output + " }");
-
-        } catch (Exception e) {
-            logger.error("Unhandled Exception", e);
-        }
-
+        ApiUtils.getInstance().serializeObject(response, addresses, "adresses");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 
-        ApiUtils.setContentType(request, response);
+        ApiUtils.getInstance().setContentType(request, response);
 
-        JsonNode jObj = ApiUtils.getJsonObject(request, "address");
-
+        JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "address");
         logger.debug("Method POST called");
 
-        Address a = ApiUtils.updateFromJson(jObj, new Address(), Address.class);
-
-        DatabaseManager.save(a);
+        Address a = ApiUtils.getInstance().updateFromJson(jObj, new Address(), Address.class);
+        DatabaseManager.getInstance().save(a);
 
         response.setStatus(201);
-
-        try {
-            response.getWriter().append("{\"id\": " + a.getId() + "}");
-        } catch (IOException e) {
-            logger.warn("IO Error", e);
-        }
-
+        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) {
 
-        ApiUtils.setContentType(request, response);
+        ApiUtils.getInstance().setContentType(request, response);
 
         logger.debug("Method PUT called");
-
-        JsonNode jObj = ApiUtils.getJsonObject(request, "address");
+        JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "address");
 
 
         if (!jObj.has("id")) {
-            try {
-                response.setStatus(400);
-                response.getWriter().append("invalid data");
-                return;
-            } catch (Exception e) {
-                logger.warn("IO Error", e);
-            }
+            ApiUtils.getInstance().processNotInvalidError(response);
+            return;
         }
 
-        Address a = DatabaseManager.getById(Address.class, jObj.get("id").asInt());
-
+        Address a = DatabaseManager.getInstance().getById(Address.class, jObj.get("id").asInt());
 
         if (a == null) {
-            try {
-                response.setStatus(404);
-                response.getWriter().append("not found");
-                logger.debug("Object not found");
-                return;
-            } catch (Exception e) {
-                logger.warn("IO Error", e);
-            }
+           ApiUtils.getInstance().processNotFoundError(response);
+           return;
         }
 
 
-        a = ApiUtils.updateFromJson(jObj, a, Address.class);
-
-        DatabaseManager.update(a);
+        a = ApiUtils.getInstance().updateFromJson(jObj, a, Address.class);
+        DatabaseManager.getInstance().update(a);
 
         response.setStatus(201);
-        try {
-            response.getWriter().append("{\"id\": " + a.getId() + "}");
-        } catch (IOException e) {
-            logger.warn("IO Error", e);
-        }
-
+        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
 
-        ApiUtils.setContentType(request, response);
-
-        String Sid = request.getParameter("id");
-
-        Address a = DatabaseManager.getById(Address.class, Sid);
-
-        if (a == null) {
-            response.setStatus(404);
-            try {
-                response.getWriter().append("Not Found");
-            } catch (IOException e) {
-                logger.warn("IO Error",e);
-            }
-            return;
-        }
-
-        DatabaseManager.remove(a);
+       ApiUtils.getInstance().deleteFromDatabase(Address.class, request, response);
 
     }
 
     private List<Address> getAddressesFromDatabase(String Sid, HttpServletResponse response) {
 
         // if ID is submitted
-        if (ApiUtils.isStringNotEmpty(Sid)) {
-            Address a = DatabaseManager.getById(Address.class, Sid);
+        if (ApiUtils.getInstance().isStringNotEmpty(Sid)) {
+            Address a = DatabaseManager.getInstance().getByStringId(Address.class, Sid);
             if (a != null) {
                 List<Address> addresses = new ArrayList<>();
                 addresses.add(a);
