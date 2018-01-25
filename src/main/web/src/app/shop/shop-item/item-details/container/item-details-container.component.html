@@ -1,4 +1,13 @@
-<div>
+<div class="item-details-parent-container">
+	<a class="conclude-event-header"
+	   routerLink="conclude"
+	   *ngIf="showConcludeEventHeader$ | async">
+		<span>Event abschließen</span>
+		<mat-icon>
+			keyboard_arrow_right
+		</mat-icon>
+	</a>
+
 	<div class="item-details-card">
 		<memo-multi-image-container
 			class="mat-elevation-z3"

@@ -4,7 +4,7 @@ import {Event} from "../../shop/shared/model/event";
 
 export interface OrderedItem {
 	id: number,
-	event: Event,
+	item: Event,
 	price: number,
 	status: OrderStatus,
 	size?: string,

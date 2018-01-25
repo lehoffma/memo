@@ -1,0 +1,21 @@
+<div *ngFor="let user of _users$ | async; let i = index" class="user-list-row">
+	<a class="user-info" routerLink="/members/{{user.id}}">
+		<img src="{{user.imagePaths[0]}}"/>
+		<span class="user-name">{{user.firstName}} {{user.surname}}</span>
+	</a>
+	<div class="user-list-row-actions">
+		<button mat-icon-button
+				matTooltip="User aus dieser Liste löschen"
+				(click)="removeUser(i)">
+			<mat-icon>
+				clear
+			</mat-icon>
+		</button>
+	</div>
+</div>
+
+<div class="user-list-row">
+	<memo-user-autocomplete [userList]="availableUsers$ | async"
+							(userChanged)="addUser($event)">
+	</memo-user-autocomplete>
+</div>

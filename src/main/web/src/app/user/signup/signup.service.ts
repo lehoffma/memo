@@ -15,6 +15,8 @@ import {ImageUploadService} from "../../shared/services/api/image-upload.service
 import {catchError, filter, first, map, mergeMap, tap} from "rxjs/operators";
 import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
+import {Observable} from "rxjs/Observable";
+import {of} from "rxjs/observable/of";
 
 @Injectable()
 export class SignUpService {
@@ -126,7 +128,11 @@ export class SignUpService {
 	 * @param {FormData} pictures
 	 * @returns {Promise<User>}
 	 */
-	uploadProfilePicture(user: User, pictures: FormData) {
+	uploadProfilePicture(user: User, pictures: FormData): Observable<User> {
+		if (!pictures) {
+			//no images were specified => dont bother performing the request
+			return of(user);
+		}
 
 		return this.imageUploadService.uploadImages(pictures)
 			.pipe(
@@ -141,6 +147,17 @@ export class SignUpService {
 	 * @param event
 	 */
 	async onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
+		//todo 11.12.
+		//bankdaten addresse address-selection benutzen
+		//todo user bestätigung => screen: "email wurde an dich geschickt"
+		//todo if admin: show "isMember"
+		//todo banner: mitglied werden/bin schon mitglied
+		//todo get image returned {fileName: str}
+		//todo permission api
+		//		
+
+		//image: post -> response.imagePaths in objekt tun
+
 		//extract section, email and password properties
 		const {
 			email,
@@ -167,7 +184,6 @@ export class SignUpService {
 				this.newUserDebitInfo = paymentInfo;
 				//add bank account address to user
 				if (paymentInfo && paymentInfo.address) {
-					//todo 8.12.
 					await this.addressService.add(Address.create()
 						.setProperties({
 							...paymentInfo.address
@@ -213,7 +229,7 @@ export class SignUpService {
 					}),
 					catchError(error => {
 						this.snackBar.open(
-							"Bei der Registrierung ist leider ein Fehler aufgetreten!" + error.message,
+							"Bei der Registrierung ist leider ein Fehler aufgetreten! Grund: " + error.message,
 							"Schließen",
 							{
 								duration: 10000,

@@ -56,7 +56,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 	"None": {
 		funds: 0,
 		party: 1,
-		user: 0,
+		userManagement: 0,
 		merch: 0,
 		tour: 1,
 		stock: 0,
@@ -65,7 +65,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 	"Mitglied": {
 		funds: 0,
 		party: 1,
-		user: 0,
+		userManagement: 0,
 		merch: 1,
 		tour: 1,
 		stock: 0,
@@ -74,7 +74,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 	"Vorstand": {
 		funds: 1,
 		party: 2,
-		user: 3,
+		userManagement: 3,
 		merch: 2,
 		tour: 1,
 		stock: 3,
@@ -83,7 +83,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 	"Schriftfuehrer": {
 		funds: 1,
 		party: 2,
-		user: 3,
+		userManagement: 3,
 		merch: 2,
 		tour: 1,
 		stock: 3,
@@ -92,7 +92,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 	"Kassenwart": {
 		funds: 4,
 		party: 2,
-		user: 3,
+		userManagement: 3,
 		merch: 2,
 		tour: 1,
 		stock: 3,
@@ -101,7 +101,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 	"Organizer": {
 		funds: 3,
 		party: 4,
-		user: 3,
+		userManagement: 3,
 		merch: 4,
 		tour: 4,
 		stock: 4,
@@ -110,7 +110,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 	"Admin": {
 		funds: 5,
 		party: 5,
-		user: 5,
+		userManagement: 5,
 		merch: 5,
 		tour: 5,
 		stock: 5,

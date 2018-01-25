@@ -8,6 +8,7 @@ import {CartEntryComponent} from "./cart/cart-entry/cart-entry.component";
 import {MemoMaterialModule} from "../../../material.module";
 import {FormsModule} from "@angular/forms";
 import {SignUpModule} from "../../user/signup/signup.module";
+import { CartTourParticipantComponent } from './cart/cart-entry/cart-tour-participant/cart-tour-participant.component';
 
 @NgModule({
 	imports: [
@@ -22,7 +23,8 @@ import {SignUpModule} from "../../user/signup/signup.module";
 		CartEntryComponent,
 		PaymentMethodSelectionComponent,
 		PaymentComponent,
-		AddressSelectionComponent
+		AddressSelectionComponent,
+		CartTourParticipantComponent
 	]
 })
 export class CheckoutModule{}

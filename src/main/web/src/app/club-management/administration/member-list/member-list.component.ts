@@ -1,11 +1,7 @@
 import {Component, OnInit} from "@angular/core";
-import {UserService} from "../../../shared/services/api/user.service";
 import {User} from "../../../shared/model/user";
-import {NavigationService} from "../../../shared/services/navigation.service";
-import {LogInService} from "../../../shared/services/api/login.service";
 import {RowAction} from "../../../shared/expandable-table/row-action";
-import {WindowService} from "../../../shared/services/window.service";
-import {memberListRowActions} from "./member-list-row-actions";
+import {MemberListRowAction} from "./member-list-row-actions";
 import {MemberListService} from "./member-list.service";
 
 @Component({
@@ -15,11 +11,11 @@ import {MemberListService} from "./member-list.service";
 	providers: [MemberListService]
 })
 export class MemberListComponent implements OnInit {
-	rowActions:{
+	rowActions: {
 		icon?: string;
 		name: string | RowAction;
-		link?: (user:User) => string;
-		route?: (user:User) => string;
+		link?: (user: User) => string;
+		route?: (user: User) => string;
 	}[] = [
 		{
 			icon: "edit",
@@ -31,32 +27,28 @@ export class MemberListComponent implements OnInit {
 		},
 		{
 			icon: "phone",
-			name: memberListRowActions.phone,
+			name: MemberListRowAction.phone,
 			link: user => "tel:" + user.telephone
 		},
 		{
 			icon: "smartphone",
-			name: memberListRowActions.call,
+			name: MemberListRowAction.call,
 			link: user => "tel:" + user.mobile
 		},
 		{
 			icon: "email",
-			name: memberListRowActions.email,
+			name: MemberListRowAction.email,
 			link: user => "mailto:" + user.email
 		},
 		{
 			icon: "person",
-			name: memberListRowActions.showProfile,
+			name: MemberListRowAction.showProfile,
 			route: user => "/members/" + user.id
 		}
 	];
 
 
-	constructor(private userService: UserService,
-				public memberListService: MemberListService,
-				private loginService: LogInService,
-				private windowService: WindowService,
-				private navigationService: NavigationService) {
+	constructor(public memberListService: MemberListService) {
 	}
 
 	ngOnInit() {

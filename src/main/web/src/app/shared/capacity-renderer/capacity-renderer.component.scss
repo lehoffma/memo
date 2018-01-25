@@ -1,0 +1,14 @@
+@import "~@angular/material/theming";
+@import "../theme";
+
+.red {
+	color: mat-color($warn);
+}
+
+.yellow {
+	color: #ff9800;
+}
+
+.green {
+	color: mat-color($primary);
+}

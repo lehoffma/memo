@@ -1,13 +1,13 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {ShoppingCartService} from "../../../../shared/services/shopping-cart.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
-import {CartItem} from "../cart-item";
 import {Event} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
 import {map} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {Subscription} from "rxjs/Subscription";
+import {ShoppingCartItem, ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
 
 
 @Component({
@@ -17,7 +17,7 @@ import {Subscription} from "rxjs/Subscription";
 })
 export class CartEntryComponent implements OnInit, OnDestroy {
 
-	@Input() cartItem: CartItem;
+	@Input() cartItem: ShoppingCartItem;
 	amountOptions = [];
 
 	subscription: Subscription;
@@ -32,26 +32,35 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		let maxAmount: Observable<number>;
+		let maxAmount: Observable<number> = this.getMaxAmount(this.cartItem);
+		this.subscription = maxAmount.subscribe(maxAmount => {
+			this.amountOptions = Array.from(Array(maxAmount + 1).keys());
+		})
+	}
+
+	/**
+	 *
+	 * @returns {Observable<number>}
+	 */
+	getMaxAmount(cartItem: ShoppingCartItem): Observable<number> {
 		//if the cart item is a merchandise object,
 		//we have to extract the number from the item's stock (by calling the stockservice function)
-		if (EventUtilityService.isMerchandise(this.cartItem.item)) {
-			maxAmount = this.stockService.getByEventId(this.cartItem.item.id)
+		if (EventUtilityService.isMerchandise(cartItem.item)) {
+			return this.stockService.getByEventId(cartItem.item.id)
 				.pipe(
 					map(stock => stock
 					// we have to consider the selected color and size attributes
+					//we can just look at the first value since the color and size values should not change
+					//across the options array, only stuff like isDriver and needsTicket might be different
 						.filter(stockItem =>
-							stockItem.color.hex === this.cartItem.options.color.hex
-							&& stockItem.size === this.cartItem.options.size
+							stockItem.color.hex === cartItem.options[0].color.hex
+							&& stockItem.size === cartItem.options[0].size
 						)
 						.reduce((acc, stockItem) => acc + stockItem.amount, 0))
 				);
 		} else {
-			maxAmount = of(this.cartItem.item.capacity);
+			return of(cartItem.item.capacity);
 		}
-		this.subscription = maxAmount.subscribe(maxAmount => {
-			this.amountOptions = Array.from(Array(maxAmount + 1).keys());
-		})
 	}
 
 
@@ -61,11 +70,20 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 
 	/**
 	 * Delegates the call to the isMerchandise function of the util service (so we can use it in the template)
-	 * @param result
+	 * @param event
 	 * @returns {boolean}
 	 */
-	itemIsMerch(result: Event) {
-		return EventUtilityService.isMerchandise(result);
+	itemIsMerch(event: Event) {
+		return EventUtilityService.isMerchandise(event);
+	}
+
+	/**
+	 *
+	 * @param {Event} event
+	 * @returns {event is Tour}
+	 */
+	itemIsTour(event: Event) {
+		return EventUtilityService.isTour(event);
 	}
 
 	/**
@@ -78,15 +96,70 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 	}
 
 	/**
+	 * Callback of the remove icon of the participants list
+	 * @param {number} index
+	 */
+	deleteOption(index: number) {
+		const eventType = EventUtilityService.getEventType(this.cartItem.item);
+		const options = [...this.cartItem.options];
+		options.splice(index, 1);
+		this.shoppingCartService.pushItem(eventType, {
+			id: this.cartItem.item.id,
+			item: this.cartItem.item,
+			amount: this.cartItem.amount - 1,
+			options
+		});
+	}
+
+	/**
+	 *
+	 * @param {ShoppingCartItem} cartItem
+	 * @returns {ShoppingCartOption}
+	 */
+	updateOptions(cartItem: ShoppingCartItem): ShoppingCartOption[] {
+		const options = [...cartItem.options];
+
+		//parties don't have any options to update
+		if (!this.itemIsTour(cartItem.item) && !this.itemIsMerch(cartItem.item)) {
+			return options;
+		}
+
+		let diff = cartItem.amount - options.length;
+
+		//we have to delete options
+		if (diff < 0) {
+			while (diff++ < 0) {
+				options.splice(options.length - 1, 1);
+			}
+		}
+
+		//we have to add dummy options
+		else {
+			const dummyOption: ShoppingCartOption = this.itemIsTour(cartItem.item)
+				? {isDriver: false, needsTicket: true}
+				: {color: options[options.length - 1].color, size: options[options.length - 1].size};
+
+			while (diff-- > 0) {
+				options.push({...dummyOption})
+			}
+		}
+		return options;
+	}
+
+	/**
 	 * Callback of the amount dropdown
 	 * Pushes a new amount value to the cart service
 	 */
 	updateEventAmount() {
 		const eventType = EventUtilityService.getEventType(this.cartItem.item);
+
+		const options = this.updateOptions(this.cartItem);
+
 		this.shoppingCartService.pushItem(eventType, {
 			id: this.cartItem.item.id,
+			item: this.cartItem.item,
 			amount: this.cartItem.amount,
-			options: this.cartItem.options
+			options: [...options]
 		});
 	}
 }

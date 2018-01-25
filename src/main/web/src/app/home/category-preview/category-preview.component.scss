@@ -56,6 +56,24 @@
 	}
 }
 
+memo-price-renderer {
+	/deep/ .price-container {
+		flex-direction: column-reverse;
+		align-items: flex-end;
+	}
+
+	/deep/ .percentage-saved {
+		display: none;
+	}
+	/deep/ .base-price {
+		font-size: 0.85em;
+	}
+
+	/deep/ .actual-price {
+		color: mat-color($warn);
+	}
+}
+
 .no-events {
 	height: 261px;
 	display: flex;

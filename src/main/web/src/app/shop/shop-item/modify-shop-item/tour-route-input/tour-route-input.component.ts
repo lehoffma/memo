@@ -1,34 +1,12 @@
 import {
-	AfterViewInit,
-	Component,
-	ElementRef,
-	EventEmitter,
-	Input,
-	NgZone,
-	OnChanges, OnDestroy,
-	OnInit,
-	Output,
-	QueryList,
-	SimpleChanges,
-	ViewChildren
+	AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output,
+	QueryList, SimpleChanges, ViewChildren
 } from "@angular/core";
 import {MapsAPILoader} from "@agm/core";
 import {Address} from "../../../../shared/model/address";
 import {defaultIfEmpty, map} from "rxjs/operators";
+import {RoutingService} from "../../../shared/services/routing.service";
 
-enum AddressComponentType {
-	street = <any>"route",
-	streetNr = <any>"street_number",
-	city = <any>"locality",
-	country = <any>"country",
-	zip = <any>"postal_code"
-}
-
-interface AddressComponent {
-	long_name: string;
-	short_name: string;
-	types: string[];
-}
 
 declare var google;
 
@@ -48,29 +26,7 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, Af
 
 	centerOfTour$ = this.routeChange
 		.pipe(
-			map(route => {
-				const initializedRoute = route
-					? route
-						.filter(it => it.latitude !== 0 && it.longitude !== 0)
-					: [];
-
-				if (initializedRoute.length === 0) {
-					return {longitude: 0, latitude: 0};
-				}
-
-				let longitude = 0;
-				let latitude = 0;
-				initializedRoute.forEach(tourRoute => {
-					longitude += tourRoute.longitude;
-					latitude += tourRoute.latitude;
-				});
-
-				const length = initializedRoute.length;
-				longitude /= length;
-				latitude /= length;
-
-				return {longitude, latitude};
-			}),
+			map(this.routingService.centerOfRoute),
 			defaultIfEmpty({
 				longitude: 0,
 				latitude: 0
@@ -98,7 +54,9 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, Af
 
 
 	subscriptions = [];
+
 	constructor(private mapsAPILoader: MapsAPILoader,
+				private routingService: RoutingService,
 				private ngZone: NgZone) {
 	}
 
@@ -180,19 +138,6 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, Af
 		]
 	}
 
-	/**
-	 *
-	 * @returns {string}
-	 * @param components
-	 * @param type
-	 */
-	findNameOfAddressComponent(components: AddressComponent[], type: AddressComponentType): string {
-		const component = components.find(component => component.types.includes(type.toString()));
-		if (component && component !== null) {
-			return component.long_name;
-		}
-		return null;
-	}
 
 	/**
 	 *
@@ -210,25 +155,11 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, Af
 				//get the place result
 				let place = autocomplete.getPlace();
 
-				this.modelRoute = [...this.modelRoute.map((route, i) => {
-					if (i === index) {
-						const addressComponents: AddressComponent[] = place.address_components;
-
-						route.setProperties({
-							street: this.findNameOfAddressComponent(addressComponents, AddressComponentType.street),
-							streetNr: this.findNameOfAddressComponent(addressComponents, AddressComponentType.streetNr),
-							city: this.findNameOfAddressComponent(addressComponents, AddressComponentType.city),
-							country: this.findNameOfAddressComponent(addressComponents, AddressComponentType.country),
-							zip: this.findNameOfAddressComponent(addressComponents, AddressComponentType.zip)
-						});
-
-						return route.setProperties({
-							latitude: place.geometry.location.lat(),
-							longitude: place.geometry.location.lng()
-						});
-					}
-					return route;
-				})];
+				this.modelRoute = [
+					...this.modelRoute.slice(0, index),
+					this.routingService.transformToMemoFormat(place, this.modelRoute[index]),
+					...this.modelRoute.slice(index + 1)
+				];
 
 				//verify result
 				if (place.geometry === undefined || place.geometry === null) {

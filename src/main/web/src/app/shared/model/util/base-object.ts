@@ -46,7 +46,7 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 						// value = moment.tz(value, "Europe/Berlin");
 						value = moment(value);
 					}
-				} else if (isNumber(value)) {
+				} else if (isNumber(value) && key !== "mobile" && key !== "telephone") {
 					value = +value;
 				}
 				if (key === "event") {
@@ -69,6 +69,9 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 					value = Gender[Gender[(<any>properties[key])]];
 				} else if (key === "method" && isNumber(value)) {
 					value = toPaymentMethod(value);
+				} else if (key === "images") {
+					//todo 11.12. test
+					key = (<any>"imagePaths");
 				}
 
 				this[key] = value;

@@ -14,7 +14,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
 
 @WebServlet(name = "ImageServlet", value = "/api/image")
@@ -23,7 +26,7 @@ public class ImageServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        ServletContext cntx= request.getServletContext();
+        ServletContext cntx = request.getServletContext();
 
         String url = request.getRequestURI();
         Image i = getByFilePath(url);
@@ -37,46 +40,43 @@ public class ImageServlet extends HttpServlet {
 
         response.setContentType(mime);
         File file = new File(i.getFullPath());
-        response.setContentLength((int)file.length());
+        response.setContentLength((int) file.length());
 
-        FileInputStream in = new FileInputStream(file);
-        OutputStream out = response.getOutputStream();
+        try (FileInputStream in = new FileInputStream(file);
+             OutputStream out = response.getOutputStream()) {
 
-        // Copy the contents of the file to the output stream
-        byte[] buf = new byte[1024];
-        int count = 0;
-        while ((count = in.read(buf)) >= 0) {
-            out.write(buf, 0, count);
+            // Copy the contents of the file to the output stream
+            byte[] buf = new byte[1024];
+            int count = 0;
+            while ((count = in.read(buf)) >= 0) {
+                out.write(buf, 0, count);
+            }
         }
-        out.close();
-        in.close();
-
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
-       Collection<Part> parts = request.getParts();
+        Collection<Part> parts = request.getParts();
 
-            JsonArray arr = new JsonArray();
+        JsonArray arr = new JsonArray();
 
-            for (Part p : parts) {
+        for (Part p : parts) {
 
-                Image i = new Image();
-                i.saveToFile(p);
-                arr.add(i.getFileName());
-            }
+            Image i = new Image();
+            i.saveToFile(p);
+            arr.add(i.getFileName());
+        }
 
-            Gson gson = new Gson();
+        Gson gson = new Gson();
 
-            JsonObject obj = new JsonObject();
-            obj.add("imagePaths", arr);
-            response.getWriter().append(gson.toJson(obj));
+        JsonObject obj = new JsonObject();
+        obj.add("imagePaths", arr);
+        response.getWriter().append(gson.toJson(obj));
 
     }
 
-    private Image getByFilePath(String fileName)
-    {
+    private Image getByFilePath(String fileName) {
         return DatabaseManager.createEntityManager().createQuery("SELECT i FROM Image i " +
                 " WHERE i.fileName = :name", Image.class)
                 .setParameter("name", fileName)

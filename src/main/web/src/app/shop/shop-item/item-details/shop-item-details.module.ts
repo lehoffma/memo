@@ -2,7 +2,7 @@ import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {routedComponents, ShopItemDetailsRoutingModule} from "../shop-item-details.routing";
 import {SizeTableComponent} from "./size-table/size-table.component";
-import {RouteComponent} from "./route/route.component";
+import {RouteMapComponent} from "./route/route-map.component";
 import {FullNameTableCellComponent} from "./participants/participant-list/full-name-table-cell.component";
 import {ParticipantsComponent} from "./participants/participants.component";
 import {ModifyParticipantComponent} from "./participants/participant-list/modify-participant/modify-participant.component";
@@ -18,7 +18,10 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MemoMaterialModule} from "../../../../material.module";
 import {SharedModule} from "../../../shared/shared.module";
 import {AgmCoreModule} from "@agm/core";
-import { OrderStatusTableCellComponent } from './participants/order-status-table-cell.component';
+import {OrderStatusTableCellComponent} from './participants/order-status-table-cell.component';
+import {RouteListComponent} from './route/route-list.component';
+import {AddressRendererPipe} from "./route/address-renderer.pipe";
+import {SharedShopModule} from "../../shared/shop-shared.module";
 
 @NgModule({
 	imports: [
@@ -28,6 +31,7 @@ import { OrderStatusTableCellComponent } from './participants/order-status-table
 		MemoMaterialModule,
 		ShareButtonsModule,
 		SharedModule,
+		SharedShopModule,
 		AgmCoreModule,
 		ShopItemDetailsRoutingModule,
 		CommentsSectionModule
@@ -35,7 +39,7 @@ import { OrderStatusTableCellComponent } from './participants/order-status-table
 	declarations: [
 		routedComponents,
 		SizeTableComponent,
-		RouteComponent,
+		RouteMapComponent,
 
 		FullNameTableCellComponent,
 		ParticipantsComponent,
@@ -44,12 +48,14 @@ import { OrderStatusTableCellComponent } from './participants/order-status-table
 		ItemTableComponent,
 
 		ClothesSizePipe,
+		AddressRendererPipe,
 
 		ItemDetailsContentComponent,
 		ItemDetailsContainerComponent,
 		ItemDetailsOverviewComponent,
 		ItemImagePopupComponent,
 		OrderStatusTableCellComponent,
+		RouteListComponent,
 	],
 	entryComponents: [
 		FullNameTableCellComponent,

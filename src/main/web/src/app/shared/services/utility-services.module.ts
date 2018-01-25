@@ -6,6 +6,8 @@ import {NavigationService} from "./navigation.service";
 import {QueryParameterService} from "./query-parameter.service";
 import {ShoppingCartService} from "./shopping-cart.service";
 import {WindowService} from "./window.service";
+import {OverlayService} from "./overlay.service";
+import {ScrollingService} from "./scrolling.service";
 
 
 const providers = [
@@ -15,14 +17,16 @@ const providers = [
 	NavigationService,
 	QueryParameterService,
 	ShoppingCartService,
-	WindowService
+	WindowService,
+	ScrollingService,
+	OverlayService
 ];
 
 @NgModule({
 	imports: []
 })
-export class UtilityServicesModule{
-	static forRoot() : ModuleWithProviders {
+export class UtilityServicesModule {
+	static forRoot(): ModuleWithProviders {
 		return {
 			ngModule: UtilityServicesModule,
 			providers: [...providers]

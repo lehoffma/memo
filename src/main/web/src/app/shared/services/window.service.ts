@@ -31,6 +31,13 @@ export class WindowService {
 		return getWindow();
 	}
 
+	get dimensions() {
+		return {
+			width: this._dimensions$.getValue().width,
+			height: this._dimensions$.getValue().height
+		}
+	}
+
 	isTouchDevice() {
 		return "ontouchstart" in this.window   // works on most browsers
 			|| navigator.maxTouchPoints;       // works on IE10/11 and Surface

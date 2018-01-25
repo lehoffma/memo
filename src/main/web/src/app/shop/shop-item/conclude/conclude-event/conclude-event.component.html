@@ -1,0 +1,22 @@
+<memo-participant-list class="participants-list mat-elevation-z3"
+					   (participantsChanged)="updateParticipants($event)"></memo-participant-list>
+
+<div class="secondary-event-information">
+	<memo-item-details-content [title]="'Gruppenbild'">
+		<memo-multi-image-upload [limit]="1" (onFormDataChange)="updateFormData($event)"></memo-multi-image-upload>
+	</memo-item-details-content>
+
+	<memo-item-details-content [title]="'Bericht-Verantwortliche'" class="responsible-user-input-container">
+		<memo-responsible-user-input (usersChanged)="updateResponsibleUsers($event)"></memo-responsible-user-input>
+	</memo-item-details-content>
+</div>
+
+
+<div class="conclude-event-button mat-elevation-z6"
+	 [class.disabled]="!(everythingDone$ | async)"
+	 (click)="concludeEvent()">
+	<span>Event abschließen</span>
+	<mat-icon>
+		keyboard_arrow_right
+	</mat-icon>
+</div>

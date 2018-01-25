@@ -1,0 +1,24 @@
+<div class="participant-entry-container">
+	<span class="participant-title">
+		<span class="participant-index">{{index}}.</span><span class="participant-name">{{name}}</span>
+	</span>
+	<div class="participant-options">
+		<div class="is-driver-container">
+			<mat-checkbox name="isDriverCheckbox" [(ngModel)]="option.isDriver"
+						  (ngModelChange)="optionChange.emit(option)">
+				Ist Fahrer
+			</mat-checkbox>
+		</div>
+		<div class="needs-ticket-container">
+			<mat-checkbox name="needsTicketCheckbox"
+						  [(ngModel)]="option.needsTicket" (ngModelChange)="optionChange.emit(option)">
+				Braucht Ticket
+			</mat-checkbox>
+		</div>
+	</div>
+</div>
+<div class="remove-button-container">
+	<button mat-icon-button (click)="onRemove.emit(true)">
+		<mat-icon>close</mat-icon>
+	</button>
+</div>

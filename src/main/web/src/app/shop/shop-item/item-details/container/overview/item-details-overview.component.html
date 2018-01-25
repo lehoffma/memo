@@ -1,11 +1,27 @@
 <div class="centered-container">
 	<div class="object-overview-container" *ngIf="event">
 		<div class="object-info-title">
-			<span>
-			{{event.title}}
-			</span>
+			<div class="object-title">
+				<span>
+				{{event.title}}
+				</span>
+				<div class="responsible-person" *ngIf="responsible$ | async; let responsible">
+					<span>Verantwortlich: </span>
+					<div>
+						<memo-profile-link *ngFor="let user of responsible" [user]="user"></memo-profile-link>
+					</div>
+
+				</div>
+			</div>
 
 			<mat-menu #menu="matMenu">
+				<button mat-menu-item
+						matTooltip="Dieses Event teilen"
+						(click)="openShareDialog()"
+				>
+					<mat-icon>share</mat-icon>
+					<span>Teilen</span>
+				</button>
 				<a mat-menu-item
 				   *ngIf="userCanEditEvent$ | async"
 				   matTooltip="Dieses Event bearbeiten"
@@ -22,28 +38,60 @@
 					Kosten
 				</a>
 			</mat-menu>
-			<button mat-icon-button [matMenuTriggerFor]="menu"
-					*ngIf="(userCanEditEvent$ | async) || (userCanAccessEntries$ | async)">
+			<button mat-icon-button [matMenuTriggerFor]="menu">
 				<mat-icon>
 					more_vert
 				</mat-icon>
 			</button>
 		</div>
 
-		<div class="object-info-container">
-			<div class="object-info" *ngFor="let overviewKey of overviewKeys">
-				<div [ngSwitch]="overviewKey.pipe">
-					<ng-template [ngSwitchCase]="'price'">{{getValue(overviewKey.key) | async | currency:'EUR':'symbol'}}
-					</ng-template>
-					<ng-template [ngSwitchCase]="'date'">{{getValue(overviewKey.key) | async | moment:'DD.MM.'}}
-					</ng-template>
-					<ng-template ngSwitchDefault>{{getValue(overviewKey.key) | async}}</ng-template>
-				</div>
-				<div class="secondary-text">
-					{{overviewKey.label}}
-				</div>
-			</div>
+		<div class="item-price-container item-details-row">
+			<mat-icon>
+				attach_money
+			</mat-icon>
+			<memo-price-renderer [price]="event.price"
+								 [discounts]="discounts$ | async"
+								 [showDiscountPossibilities]="true"
+								 [showExplanation]="true">
+
+			</memo-price-renderer>
 		</div>
+
+		<div class="item-date-container item-details-row" *ngIf="!isMerch(event)">
+			<mat-icon>access_time</mat-icon>
+			<span>{{event.date | moment:'DD. MMMM YYYY'}}, {{event.date | moment:'HH:mm'}} Uhr</span>
+		</div>
+
+		<div class="available-tickets-container item-details-row" *ngIf="!isMerch(event)">
+			<memo-capacity-renderer [available]="maxAmount"
+									[icon]="'local_play'"
+									[maxAmount]="event.capacity"
+									[textOptions]="{
+										singular: 'Platz',
+										plural: 'Plätzen'
+									}"
+									[coloring]="{
+										red: 0,
+										yellow: 0.01,
+										green: 0.9
+									}"
+
+			>
+
+			</memo-capacity-renderer>
+		</div>
+
+		<div class="item-details-row material-container" *ngIf="isMerch(event)">
+			<mat-icon>content_cut</mat-icon>
+			<span>{{event.material}}</span>
+		</div>
+
+		<div class="miles-vehicle-container item-vehicle item-details-row" *ngIf="isTour(event)">
+			<mat-icon>directions_bus</mat-icon>
+			<span>{{event.vehicle}}</span>
+		</div>
+
+
 		<div class="add-to-cart-container">
 			<form #addToCartForm="ngForm" (ngSubmit)="addOrDeleteFromCart(event)">
 				<ng-template [ngIf]="isMerch(event)">
@@ -83,25 +131,15 @@
 					</mat-select>
 				</mat-form-field>
 
-				<button [disabled]="(!addToCartForm.valid || model.amount === 0) || (!isMerch(event) && isPastEvent)"
-						mat-raised-button
-						color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
-						class="add-to-cart-button">
+				<button
+					[disabled]="(!addToCartForm.valid || model.amount === 0) || (!isMerch(event) && isPastEvent)"
+					mat-raised-button
+					color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
+					class="add-to-cart-button">
 					{{(isPartOfShoppingCart) ? 'Aus dem Warenkorb löschen' : 'In den Warenkorb'}}
 				</button>
 			</form>
 		</div>
-
-		<share-buttons
-			*ngIf="event"
-			[theme]="'default'"
-			[include]="['facebook','twitter','whatsapp','telegram','copy']"
-			[size]="-2"
-			[title]="event.title"
-			[image]="event.imagePaths[0]"
-			[description]="event.description"
-			[tags]="['Meilenwoelfe', 'Meilenwoelfe-Shop']"
-		></share-buttons>
 	</div>
 
 

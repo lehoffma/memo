@@ -10,15 +10,18 @@
 					<span *ngIf="!resultIsMerch(result)">{{result.date | moment}}</span>
 					<!--todo: if merch: show color options-->
 					<span *ngIf="resultIsMerch(result)" class="merch-available-colors-container">
-						<span *ngFor="let color of colors"
+						<span *ngFor="let color of (colors$ | async)"
 							  class="merch-available-colors"
 							  [style.background-color]="color.hex">
 						</span>
 					</span>
 				</div>
-				<div class="result-price">
-					{{result.price | currency:'EUR':'symbol'}}
-				</div>
+
+				<memo-price-renderer class="result-price"
+									 [showDiscountPossibilities]="false" [showExplanation]="false"
+									 [price]="result.price" [discounts]="discounts$ | async">
+
+				</memo-price-renderer>
 			</div>
 		</div>
 		<div class="result-entry-image-container">

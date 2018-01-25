@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {ShoppingCartService} from "../../../shared/services/shopping-cart.service";
 import {EventService} from "../../../shared/services/api/event.service";
-import {CartItem} from "./cart-item";
 import {ShoppingCartContent} from "../../../shared/model/shopping-cart-content";
 import {ShoppingCartItem} from "app/shared/model/shopping-cart-item";
 import {defaultIfEmpty, map, mergeMap} from "rxjs/operators";
@@ -14,7 +13,7 @@ import {Observable} from "rxjs/Observable";
 	styleUrls: ["./cart.component.scss"]
 })
 export class CartComponent implements OnInit {
-	public shoppingCartItems: Observable<{ tours: CartItem[], merch: CartItem[], partys: CartItem[] }> =
+	public shoppingCartItems: Observable<{ tours: ShoppingCartItem[], merch: ShoppingCartItem[], partys: ShoppingCartItem[] }> =
 		this.shoppingCartService.content
 			.pipe(
 				mergeMap(content => {
@@ -57,13 +56,14 @@ export class CartComponent implements OnInit {
 	 *
 	 * @param {ShoppingCartContent} content
 	 * @param {string} contentKey
-	 * @returns {Observable<CartItem[]>}
+	 * @returns {Observable<ShoppingCartItem[]>}
 	 */
-	getEventsFromShoppingCart(content: ShoppingCartContent, contentKey: string): Observable<CartItem[]> {
+	getEventsFromShoppingCart(content: ShoppingCartContent, contentKey: string): Observable<ShoppingCartItem[]> {
 		return combineLatest(...content[contentKey]
 			.map((item: ShoppingCartItem) => this.eventService.getById(item.id)
 				.pipe(
 					map(event => ({
+						id: event.id,
 						item: event,
 						amount: item.amount,
 						options: item.options

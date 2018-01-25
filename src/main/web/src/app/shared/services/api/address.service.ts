@@ -74,7 +74,6 @@ export class AddressService extends ServletService<Address> {
 	 * @returns {Observable<T>}
 	 */
 	remove(id: number): Observable<Object> {
-		//todo invalidate stuff
 		return this.performRequest(this.http.delete(this.baseUrl, {
 			params: new HttpParams().set("id", "" + id)
 		}))
@@ -93,7 +92,6 @@ export class AddressService extends ServletService<Address> {
 	private addOrModify(requestMethod: AddOrModifyRequest,
 						address: Address): Observable<Address> {
 
-		//todo invalidate stuff
 		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/address", {address}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))

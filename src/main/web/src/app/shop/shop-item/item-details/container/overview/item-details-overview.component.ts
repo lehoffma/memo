@@ -18,6 +18,14 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {of} from "rxjs/observable/of";
 import {Permission} from "app/shared/model/permission";
 import {LogInService} from "../../../../../shared/services/api/login.service";
+import {User} from "../../../../../shared/model/user";
+import {Discount} from "../../../../../shared/price-renderer/discount";
+import {DiscountService} from "../../../../shared/services/discount.service";
+import {Tour} from "../../../../shared/model/tour";
+import {MatDialog} from "@angular/material";
+import {ShareDialogComponent} from "../../../../../shared/share-dialog/share-dialog.component";
+import {ResponsibilityService} from "../../../../shared/services/responsibility.service";
+import {ShoppingCartOption} from "../../../../../shared/model/shopping-cart-item";
 
 
 @Component({
@@ -84,10 +92,34 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			})
 		);
 
+	discounts$: Observable<Discount[]> =
+		combineLatest(
+			this._event$,
+			this.loginService.accountObservable
+		)
+			.pipe(
+				mergeMap(([event, userId]) => this.discountService.getEventDiscounts(event.id, userId))
+			);
+
+	capacityText$: Observable<string> = this._event$
+		.pipe(
+			map(event => (event.capacity !== 1) ? 'Plätzen' : 'Platz'),
+			defaultIfEmpty("Plätzen")
+		);
+
+	responsible$: Observable<User[]> = this._event$
+		.pipe(
+			mergeMap(event => this.responsibilityService.getResponsible(event.id))
+		);
+
+
 	constructor(private participantService: ParticipantsService,
+				private discountService: DiscountService,
 				private stockService: StockService,
 				private loginService: LogInService,
-				private shoppingCartService: ShoppingCartService) {
+				private shoppingCartService: ShoppingCartService,
+				private responsibilityService: ResponsibilityService,
+				private matDialog: MatDialog) {
 	}
 
 	get event() {
@@ -235,8 +267,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				//fills the amountOptions variable with integers from 0 to maxAmount
 				this.amountOptions = Array((this.maxAmount === undefined) ? 0 : this.maxAmount + 1).fill(0).map((_, i) => i);
 
+				const options = new Array(this.model.amount).fill({color: this.color, size: this.size});
 				const shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-					this.event.id, {color: this.color, size: this.size});
+					this.event.id, options);
 
 				if (shoppingCartItem) {
 					this.model.amount = shoppingCartItem.amount;
@@ -253,53 +286,61 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		return EventUtilityService.isMerchandise(event);
 	}
 
+	isTour(event): event is Tour {
+		return EventUtilityService.isTour(event);
+	}
+
 	/**
 	 *
 	 */
 	updateShoppingCart() {
-		const shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-			this.event.id, {color: this.color, size: this.size});
+		const options: ShoppingCartOption[] = this.isMerch(this.event)
+			? new Array(this.model.amount).fill({color: this.color, size: this.size})
+			: (this.isTour(this.event)
+				? new Array(this.model.amount).fill({needsTicket: true, isDriver: false})
+				: []);
 		const eventType = EventUtilityService.getEventType(this.event);
 		const newItem = {
 			id: this.event.id,
+			item: this.event,
 			amount: this.model.amount,
-			options: {color: this.color, size: this.size}
+			options: options,
 		};
 
-		if (shoppingCartItem) {
-			this.shoppingCartService.pushItem(eventType, newItem)
-		}
-
-		if (this.model.amount === 0) {
-			this.shoppingCartService.deleteItem(eventType, newItem.id, newItem.options);
-			this.isPartOfShoppingCart = false;
-		}
+		this.shoppingCartService.pushItem(eventType, newItem);
+		this.isPartOfShoppingCart = this.model.amount > 0;
 	}
 
 	/**
 	 * Fügt das aktuelle Item dem Warenkorb hinzu.
 	 */
 	addOrDeleteFromCart(item: Event) {
-		let shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-			this.event.id, {color: this.color, size: this.size});
+		const options: ShoppingCartOption[] = this.isMerch(this.event)
+			? new Array(this.model.amount).fill({color: this.color, size: this.size})
+			: (this.isTour(this.event)
+				? new Array(this.model.amount).fill({needsTicket: true, isDriver: false})
+				: []);
 
-		if (shoppingCartItem) {
-			//delete
-			this.shoppingCartService.deleteItem(EventUtilityService.getEventType(this.event), this.event.id, {
-				color: this.color,
-				size: this.size
-			});
-			this.isPartOfShoppingCart = false;
-		}
-		else {
-			//add
-			this.shoppingCartService.pushItem(EventUtilityService.getEventType(item), {
-				id: item.id,
-				options: {color: this.color, size: this.size},
-				amount: this.model.amount
-			});
-			this.isPartOfShoppingCart = true;
-		}
+		let shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
+			this.event.id, options);
+
+		this.isPartOfShoppingCart = !shoppingCartItem;
+		this.shoppingCartService.pushItem(EventUtilityService.getEventType(item), {
+			id: item.id,
+			options,
+			item,
+			amount: this.isPartOfShoppingCart ? this.model.amount : 0,
+		});
 	}
 
+	openShareDialog() {
+		this.matDialog.open(ShareDialogComponent, {
+			data: {
+				title: this.event.title,
+				description: this.event.description,
+				image: this.event.imagePaths[0],
+				additionalTags: []
+			}
+		})
+	}
 }

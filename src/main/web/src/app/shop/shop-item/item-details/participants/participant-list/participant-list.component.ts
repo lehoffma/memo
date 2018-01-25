@@ -1,4 +1,4 @@
-import {Component, HostListener, OnDestroy, OnInit, Type} from "@angular/core";
+import {Component, EventEmitter, HostListener, OnDestroy, OnInit, Output, Type} from "@angular/core";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {ParticipantUser} from "../../../../shared/model/participant";
 import {EventType} from "../../../../shared/model/event-type";
@@ -29,7 +29,6 @@ import {OrderStatusTableCellComponent} from "../order-status-table-cell.componen
 
 const participantListColumns = {
 	name: new ExpandableTableColumn<ParticipantUser>("Name", "user", FullNameTableCellComponent),
-	//todo order-status cell component => call statusToString function at least, maybe use color
 	status: new ExpandableTableColumn<ParticipantUser>("Status", "status", OrderStatusTableCellComponent),
 	isDriver: new ExpandableTableColumn<ParticipantUser>("Fahrer", "isDriver", BooleanCheckMarkCellComponent),
 	needsTicket: new ExpandableTableColumn<ParticipantUser>("Benötigt Ticket", "needsTicket", BooleanCheckMarkCellComponent),
@@ -84,6 +83,8 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 
 	subscriptions: Subscription[] = [];
 
+	@Output() participantsChanged: EventEmitter<ParticipantUser[]> = new EventEmitter<ParticipantUser[]>();
+
 	constructor(private activatedRoute: ActivatedRoute,
 				private dialog: MatDialog,
 				private loginService: LogInService,
@@ -94,7 +95,8 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.updateColumnKeys(window.innerWidth);
 		this.subscriptions.push(
-			this.getParticipants().subscribe(this.participants$)
+			this.getParticipants().subscribe(this.participants$),
+			this.participants$.subscribe(value => this.participantsChanged.emit(value))
 		);
 	}
 

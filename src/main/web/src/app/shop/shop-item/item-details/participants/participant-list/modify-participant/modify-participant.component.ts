@@ -60,7 +60,7 @@ export class ModifyParticipantComponent implements OnInit {
 				needsTicket: false,
 				status: OrderStatus.RESERVED,
 				price: 0,
-				event: this.associatedEvent,
+				item: this.associatedEvent,
 				id: -1,
 				user: null
 			}

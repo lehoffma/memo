@@ -22,7 +22,7 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 				key: "id",
 				descending: false
 			},
-			loginService.getActionPermissions("user"),
+			loginService.getActionPermissions("userManagement"),
 			[]);
 
 
