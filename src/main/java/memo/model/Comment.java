@@ -1,6 +1,13 @@
 package memo.model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.serialization.CommentIdListSerializer;
+import memo.serialization.CommentIdSerializer;
+import memo.serialization.UserIdDeserializer;
+import memo.serialization.UserIdSerializer;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -34,13 +41,17 @@ public class Comment implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "AUTHOR")
+    @JsonSerialize(using = UserIdSerializer.class)
+    @JsonDeserialize(using = UserIdDeserializer.class)
     private User author;
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "CHILDREN")
+    @JsonSerialize(using = CommentIdListSerializer.class)
     private List<Comment> children = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonSerialize(using = CommentIdSerializer.class)
     private Comment parent;
 
     @Column(nullable = false)
@@ -50,7 +61,9 @@ public class Comment implements Serializable {
     //  constructor
     //**************************************************************
 
-    public Comment(){super();}
+    public Comment() {
+        super();
+    }
 
     //**************************************************************
     //  getters and setters
@@ -96,7 +109,9 @@ public class Comment implements Serializable {
         this.children = children;
     }
 
-    public void addChild(Comment c){ this.children.add(c);}
+    public void addChild(Comment c) {
+        this.children.add(c);
+    }
 
     public Comment getParent() {
         return parent;

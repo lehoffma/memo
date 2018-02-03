@@ -2,13 +2,15 @@ package memo.api;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.io.CharStreams;
+import memo.data.EventRepository;
+import memo.model.Color;
+import memo.model.ShopItem;
+import memo.model.Stock;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
-import memo.model.*;
+import memo.util.ListBuilder;
 import org.apache.log4j.Logger;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,11 +18,45 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
+enum EventType {
+    tours(1, "tours"),
+    partys(2, "partys"),
+    merch(3, "merch");
+
+
+    private int value;
+    private String stringRepresentation;
+
+    EventType(int value, String stringRepresentation) {
+        this.value = value;
+        this.stringRepresentation = stringRepresentation;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public String getStringRepresentation() {
+        return stringRepresentation;
+    }
+
+    public static Optional<EventType> findByValue(int value) {
+        return Arrays.stream(EventType.values())
+                .filter(type -> type.value == value)
+                .findFirst();
+    }
+
+    public static Optional<EventType> findByString(String value) {
+        return Arrays.stream(EventType.values())
+                .filter(type -> type.stringRepresentation.equals(value))
+                .findFirst();
+    }
+}
 
 /**
  * Servlet implementation class EventServlet
@@ -37,39 +73,27 @@ public class EventServlet extends HttpServlet {
         super();
     }
 
-    //todo as enum
-    static Integer getType(String sType) {
-        switch (sType) {
-            case "tours":
-                return 1;
-
-            case "partys":
-                return 2;
-
-            case "merch":
-                return 3;
-
-            default:
-                return 0;
-
-        }
+    public static Integer getType(String sType) {
+        return EventType.findByString(sType)
+                .map(EventType::getValue)
+                .orElse(0);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         ApiUtils.getInstance().setContentType(request, response);
 
-        String Sid = request.getParameter("id");
+        String eventId = request.getParameter("id");
         String searchTerm = request.getParameter("searchTerm");
         String sType = request.getParameter("type");
         String userId = request.getParameter("userId");
         String authorId = request.getParameter("authorId");
 
-        logger.debug("Method GET called with param ID = " + Sid + " + searchTerm = " + searchTerm + " + type = " + sType + " + userId = " + userId + " + authorId = " + authorId);
+        logger.debug("Method GET called with param ID = " + eventId + " + searchTerm = " + searchTerm + " + type = " + sType + " + userId = " + userId + " + authorId = " + authorId);
 
-        List<ShopItem> shopItems = getEventsFromDatabase(Sid, searchTerm, sType, userId, authorId, response);
+        List<ShopItem> shopItems = EventRepository.getInstance().get(eventId, searchTerm, sType, userId, authorId, response);
 
-        if (shopItems.isEmpty()) {
+        if (ApiUtils.stringIsNotEmpty(eventId) && shopItems.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
             return;
         }
@@ -77,7 +101,6 @@ public class EventServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         ApiUtils.getInstance().setContentType(request, response);
 
         JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "event");
@@ -85,218 +108,92 @@ public class EventServlet extends HttpServlet {
 
         //ToDo: Duplicate Events
 
-        ShopItem s = ApiUtils.getInstance().updateFromJson(jObj, new ShopItem(), ShopItem.class);
+        ShopItem shopItem = ApiUtils.getInstance().updateFromJson(jObj, new ShopItem(), ShopItem.class);
 
         List<Color> colorList = new ArrayList<>();
         List<Stock> stockList = new ArrayList<>();
 
-        if (s.getType() == 3) fillSizesFromJson(jObj, colorList, stockList, s);
+        if (shopItem.getType() == EventType.merch.getValue()) {
+            fillSizesFromJson(jObj, colorList, stockList, shopItem);
+        }
 
-        List<Serializable> x = new ArrayList<>();
-        x.add(s);
-        x.addAll(colorList);
-        x.addAll(stockList);
+        List<Serializable> objectsToSave = new ArrayList<>();
+        objectsToSave.add(shopItem);
+        objectsToSave.addAll(colorList);
+        objectsToSave.addAll(stockList);
 
-        DatabaseManager.getInstance().save(x);
+        DatabaseManager.getInstance().saveAll(objectsToSave);
 
-        response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response,s.getId(),"id");
-
-
+        response.setStatus(HttpServletResponse.SC_CREATED);
+        ApiUtils.getInstance().serializeObject(response, shopItem.getId(), "id");
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         ApiUtils.getInstance().setContentType(request, response);
 
         logger.debug("Method PUT called");
-        JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "event");
+        JsonNode jsonShopItem = ApiUtils.getInstance().getJsonObject(request, "event");
 
-        if (!jObj.has("id")) {
-            ApiUtils.getInstance().processNotInvalidError(response);
+        if (!jsonShopItem.has("id")) {
+            ApiUtils.getInstance().processInvalidError(response);
             return;
         }
 
-        ShopItem s = DatabaseManager.getInstance().getById(ShopItem.class, jObj.get("id").asInt());
+        ShopItem shopItem = DatabaseManager.getInstance().getById(ShopItem.class, jsonShopItem.get("id").asInt());
 
-        if (s == null) {
+        if (shopItem == null) {
             ApiUtils.getInstance().processNotFoundError(response);
             return;
         }
 
-        s = ApiUtils.getInstance().updateFromJson(jObj,s,ShopItem.class);//updateEventFromJson(jObj, s);
+        shopItem = ApiUtils.getInstance().updateFromJson(jsonShopItem, shopItem, ShopItem.class);
         List<Color> colorList = new ArrayList<>();
         List<Stock> stockList = new ArrayList<>();
 
-        if (s.getType() == 3) fillSizesFromJson(jObj, colorList, stockList, s);
+        if (shopItem.getType() == EventType.merch.getValue()) {
+            fillSizesFromJson(jsonShopItem, colorList, stockList, shopItem);
+        }
 
-        List<Serializable> x = new ArrayList<>();
-        x.add(s);
-        x.addAll(colorList);
-        x.addAll(stockList);
+        DatabaseManager.getInstance().updateAll(new ListBuilder<>()
+                .buildAdd(shopItem)
+                .buildAll(colorList)
+                .buildAll(stockList)
+        );
 
-        DatabaseManager.getInstance().update(x);
-
-        response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
+        response.setStatus(HttpServletResponse.SC_CREATED);
+        ApiUtils.getInstance().serializeObject(response, shopItem.getId(), "id");
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        ApiUtils.getInstance().deleteFromDatabase(ShopItem.class,request,response);
+        ApiUtils.getInstance().deleteFromDatabase(ShopItem.class, request, response);
     }
 
 
-    public ShopItem getEventByID(String Sid, HttpServletResponse response) throws IOException {
-
+    private ShopItem getEventByID(String eventId, HttpServletResponse response) throws IOException {
         try {
-            Integer id = Integer.parseInt(Sid);
+            Integer id = Integer.parseInt(eventId);
             return DatabaseManager.createEntityManager().find(ShopItem.class, id);
         } catch (NumberFormatException e) {
             response.getWriter().append("Bad ID Value");
-            response.setStatus(400);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
         return null;
     }
 
-    private ShopItem createEventFromJson(JsonObject jEvent) {
-        return updateEventFromJson(jEvent, new ShopItem());
-    }
+    private void fillSizesFromJson(JsonNode event, List<Color> colorList, List<Stock> stockList, ShopItem shopItem) {
+        JsonNode jsonStockList = event.get("stock");
 
-    private ShopItem updateEventFromJson(JsonObject jEvent, ShopItem e) {
-
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-        e = gson.fromJson(jEvent, ShopItem.class);
-
-        e.setPriceMember(e.getPrice());
-
-        if (jEvent.has("date")) {
-            TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEvent.get("date").getAsString());
-            LocalDateTime date = LocalDateTime.from(day);
-            e.setDate(date);
+        for (int i = 0; i < jsonStockList.size(); ++i) {
+            JsonNode jsonStock = jsonStockList.get(i);
+            JsonNode jsonColor = jsonStock.get("color");
+            Color color = ApiUtils.getInstance().updateFromJson(jsonColor, new Color(), Color.class);
+            Stock stock = new Stock();
+            stock.setColor(color);
+            stock.setItem(shopItem);
+            stock.setSize(jsonStock.get("size").asText());
+            stock.setAmount(jsonStock.get("amount").asInt());
+            colorList.add(color);
+            stockList.add(stock);
         }
-
-
-        if (jEvent.has("stock")) {
-            e.setType(3);
-        } else {
-            if (e.getVehicle() == null) e.setType(2);
-            else e.setType(1);
-
-        }
-
-        return e;
-    }
-
-    private void removeEventFromDatabase(ShopItem e) {
-
-        DatabaseManager.createEntityManager().getTransaction().begin();
-        e = DatabaseManager.createEntityManager().merge(e);
-        DatabaseManager.createEntityManager().remove(e);
-        DatabaseManager.createEntityManager().getTransaction().commit();
-    }
-
-    private void fillSizesFromJson(JsonObject jEvent, List<Color> colorList, List<Stock> stockList, ShopItem e) {
-
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-        JsonArray stock = jEvent.getAsJsonArray("stock");
-
-        for (int i = 0; i < stock.size(); ++i) {
-            JsonObject st = stock.get(i).getAsJsonObject();
-            JsonObject color = st.get("color").getAsJsonObject();
-            Color c = gson.fromJson(color, Color.class);
-            Stock s = new Stock();
-            s.setColor(c);
-            s.setItem(e);
-            s.setSize(st.get("size").getAsString());
-            s.setAmount(st.get("amount").getAsInt());
-            colorList.add(c);
-            stockList.add(s);
-        }
-
-
-    }
-
-    private void saveEventToDatabase(ShopItem newShopItem, List<Color> colorList, List<Stock> stockList) {
-
-        EntityManager em = DatabaseManager.createEntityManager();
-
-        em.getTransaction().begin();
-
-        for (Color i : colorList) {
-            em.persist(i);
-        }
-        for (Stock i : stockList) {
-            em.persist(i);
-        }
-        em.persist(newShopItem);
-
-        em.getTransaction().commit();
-    }
-
-    private List<ShopItem> getEventsFromDatabase(String Sid, String searchTerm, String sType, String userId, String authorId,
-                                                 HttpServletResponse response) throws IOException {
-
-        List<ShopItem> shopItems = new ArrayList<>();
-
-        // if ID is submitted
-        if (isStringNotEmpty(Sid)) {
-
-            ShopItem e = getEventByID(Sid, response);
-            if (e != null) {
-                shopItems.add(e);
-                return shopItems;
-            }
-        }
-
-        if (isStringNotEmpty(searchTerm)) return getEventsBySearchTerm(searchTerm);
-
-        if (isStringNotEmpty(sType)) return getEventsByType(getType(sType));
-
-        if(isStringNotEmpty(userId)) return getEventsByUser(new Integer(userId));
-
-        if(isStringNotEmpty(authorId)) return getEventsByAuthor(new Integer(authorId));
-
-        return getEvents();
-    }
-
-    private List<ShopItem> getEventsBySearchTerm(String searchTerm) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e " +
-                " WHERE UPPER(e.title) LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", ShopItem.class)
-                .setParameter("searchTerm", "%" + searchTerm + "%")
-                .getResultList();
-    }
-
-    private List<ShopItem> getEventsByType(Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e " +
-                " WHERE e.type = :type", ShopItem.class)
-                .setParameter("type", type)
-                .getResultList();
-    }
-
-    private List<ShopItem> getEventsByUser(Integer userId){
-        //todo implement
-        return new ArrayList<>();
-    }
-
-    private List<ShopItem> getEventsByAuthor(Integer authorId){
-        return DatabaseManager.createEntityManager().createQuery("SELECT distinct e FROM ShopItem e " +
-                " JOIN e.author a WHERE a.id = :author", ShopItem.class)
-                .setParameter("author", authorId)
-                .getResultList();
-    }
-
-    private List<ShopItem> getEvents() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e", ShopItem.class).getResultList();
-    }
-
-    private void updateEventAtDatabase(ShopItem e, List<Color> colorList, List<Stock> stockList) {
-        EntityManager em = DatabaseManager.createEntityManager();
-
-
-        em.getTransaction().begin();
-        em.merge(e);
-        em.getTransaction().commit();
     }
 }

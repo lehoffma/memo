@@ -91,23 +91,19 @@ export class UserService extends ServletService<User> {
 	 * Sendet ein User Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
 	 * gibt dann das erstellte Objekt wieder an den Client zurück
 	 * @param user
-	 * @param profilePicture todo type
-	 * @param paymentInfo todo type
 	 * @returns {Observable<T>}
 	 */
-	add(user: User, profilePicture?: any, paymentInfo?: any): Observable<User> {
-		return this.addOrModify(this.http.post.bind(this.http), user, profilePicture, paymentInfo);
+	add(user: User): Observable<User> {
+		return this.addOrModify(this.http.post.bind(this.http), user);
 	}
 
 	/**
 	 *
 	 * @param user
-	 * @param profilePicture todo type
-	 * @param paymentInfo todo type
 	 * @returns {Observable<User>}
 	 */
-	modify(user: User, profilePicture?: any, paymentInfo?: any): Observable<User> {
-		return this.addOrModify(this.http.put.bind(this.http), user, profilePicture, paymentInfo);
+	modify(user: User): Observable<User> {
+		return this.addOrModify(this.http.put.bind(this.http), user);
 	}
 
 	/**
@@ -128,17 +124,11 @@ export class UserService extends ServletService<User> {
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
 	 * @param user
-	 * @param profilePicture todo type
-	 * @param paymentInfo todo type
 	 * @returns {Observable<T>}
 	 */
 	private addOrModify(requestMethod: AddOrModifyRequest,
-						user: User, profilePicture?: any, paymentInfo?: any): Observable<User> {
-		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {
-			user,
-			profilePicture,
-			paymentInfo
-		}, {
+						user: User): Observable<User> {
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, user, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
 			.pipe(

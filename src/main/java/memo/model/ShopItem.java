@@ -1,6 +1,10 @@
 package memo.model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.serialization.*;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -47,7 +51,8 @@ public class ShopItem implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedWriteRole = ClubRole.Vorstand;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,mappedBy = "item")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    @JsonSerialize(using = ImagePathListSerializer.class)
     private List<Image> images;
 
     @Column(nullable = false)
@@ -69,15 +74,19 @@ public class ShopItem implements Serializable {
     private Integer miles = 0;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authoredItems")
+    @JsonSerialize(using = UserIdListSerializer.class)
+    @JsonDeserialize(using = UserIdListDeserializer.class)
     private List<User> author = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    @JsonSerialize(using = CommentIdListSerializer.class)
+    @JsonDeserialize(using = CommentIdListDeserializer.class)
     private List<Comment> comments;
 
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "item")
     private List<Entry> entries;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "item")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
     private List<OrderedItem> orders = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
@@ -218,7 +227,9 @@ public class ShopItem implements Serializable {
         this.images = images;
     }
 
-    public void addImage(Image i) { this.images.add(i);}
+    public void addImage(Image i) {
+        this.images.add(i);
+    }
 
     public List<Address> getRoute() {
         return route;
@@ -228,7 +239,9 @@ public class ShopItem implements Serializable {
         this.route = route;
     }
 
-    public void addAddress(Address a) { this.route.add(a);}
+    public void addAddress(Address a) {
+        this.route.add(a);
+    }
 
     public List<User> getAuthor() {
         return author;
@@ -238,7 +251,9 @@ public class ShopItem implements Serializable {
         this.author = author;
     }
 
-    public void addAuthor(User a) { this.author.add(a);}
+    public void addAuthor(User a) {
+        this.author.add(a);
+    }
 
     public List<Comment> getComments() {
         return comments;
@@ -248,7 +263,9 @@ public class ShopItem implements Serializable {
         this.comments = comments;
     }
 
-    public void addComment(Comment c) { this.comments.add(c);}
+    public void addComment(Comment c) {
+        this.comments.add(c);
+    }
 
     public List<Entry> getEntries() {
         return entries;
@@ -258,7 +275,9 @@ public class ShopItem implements Serializable {
         this.entries = entries;
     }
 
-    public void addEntry(Entry e) { this.entries.add(e);}
+    public void addEntry(Entry e) {
+        this.entries.add(e);
+    }
 
     public List<OrderedItem> getOrders() {
         return orders;
@@ -268,7 +287,9 @@ public class ShopItem implements Serializable {
         this.orders = orders;
     }
 
-    public void addOrder(OrderedItem o) { this.orders.add(o);}
+    public void addOrder(OrderedItem o) {
+        this.orders.add(o);
+    }
 
     public List<Stock> getStock() {
         return stock;
@@ -278,7 +299,9 @@ public class ShopItem implements Serializable {
         this.stock = stock;
     }
 
-    public void addStock(Stock s) { this.stock.add(s);}
+    public void addStock(Stock s) {
+        this.stock.add(s);
+    }
 
     //**************************************************************
     //  methods

@@ -1,9 +1,10 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import memo.data.CommentRepository;
+import memo.model.Comment;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
-import memo.model.Comment;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -22,13 +23,13 @@ public class CommentServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
         ApiUtils.getInstance().setContentType(request, response);
-        String Sid = request.getParameter("id");
-        String SEventID = request.getParameter("eventId");
-        String SAuthorID = request.getParameter("authorId");
+        String commentId = request.getParameter("id");
+        String eventId = request.getParameter("eventId");
+        String authorId = request.getParameter("authorId");
 
-        List<Comment> comments = getCommentsFromDatabase(Sid, SEventID, SAuthorID, response);
+        List<Comment> comments = CommentRepository.getInstance().get(commentId, eventId, authorId, response);
 
-        if (comments.isEmpty()) {
+        if (ApiUtils.stringIsNotEmpty(commentId) && comments.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
             return;
         }
@@ -59,96 +60,27 @@ public class CommentServlet extends HttpServlet {
 
 
         if (!jObj.has("id")) {
-            ApiUtils.getInstance().processNotInvalidError(response);
+            ApiUtils.getInstance().processInvalidError(response);
             return;
         }
 
-        Comment a = DatabaseManager.getInstance().getById(Comment.class, jObj.get("id").asInt());
+        Comment comment = DatabaseManager.getInstance().getById(Comment.class, jObj.get("id").asInt());
 
-        if (a == null) {
+        if (comment == null) {
             ApiUtils.getInstance().processNotFoundError(response);
             return;
         }
 
 
-        a = ApiUtils.getInstance().updateFromJson(jObj, a, Comment.class);
-        DatabaseManager.getInstance().update(a);
+        comment = ApiUtils.getInstance().updateFromJson(jObj, comment, Comment.class);
+        DatabaseManager.getInstance().update(comment);
 
         response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response, a.getId(), "id");
+        ApiUtils.getInstance().serializeObject(response, comment.getId(), "id");
 
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
-
         ApiUtils.getInstance().deleteFromDatabase(Comment.class, request, response);
-    }
-
-
-    private Comment updateCommentFromJson(JsonNode jComment, Comment c) {
-
-       /*
-
-        TemporalAccessor timeStamp = DateTimeFormatter.ISO_DATE_TIME.parse(jComment.get("timeStamp").getAsString());
-        LocalDateTime date = LocalDateTime.from(timeStamp);
-        c.setTimeStamp(date);
-*/
-        return c;
-    }
-
-
-    private List<Comment> getCommentsFromDatabase(String Sid, String SEventID, String SAuthorID, HttpServletResponse response) {
-
-        // if ID is submitted
-        if (ApiUtils.getInstance().isStringNotEmpty(Sid)) {
-            Comment c = DatabaseManager.getInstance().getByStringId(Comment.class, Sid);
-            if (c != null) {
-                List<Comment> addresses = new ArrayList<>();
-                addresses.add(c);
-                return addresses;
-            }
-        }
-
-        if (ApiUtils.getInstance().isStringNotEmpty(SEventID)) return getCommentsByEventID(SEventID, response);
-        if (ApiUtils.getInstance().isStringNotEmpty(SAuthorID)) return getCommentsByAuthorID(SAuthorID, response);
-
-        return getComments();
-
-    }
-
-    private List<Comment> getComments() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c", Comment.class).getResultList();
-    }
-
-    private List<Comment> getCommentsByEventID(String SEventID, HttpServletResponse response) {
-        try {
-            Integer eventID = Integer.parseInt(SEventID);
-            //ToDo: gibt null aus wenn id nicht vergeben
-            return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
-                    " WHERE c.item.id = :eventID", Comment.class)
-                    .setParameter("eventID", eventID)
-                    .getResultList();
-
-        } catch (NumberFormatException e) {
-            logger.error("Parsing error", e);
-            ApiUtils.getInstance().processNotInvalidError(response);
-        }
-        return null;
-    }
-
-    private List<Comment> getCommentsByAuthorID(String SAuthorID, HttpServletResponse response) {
-        try {
-            Integer authorID = Integer.parseInt(SAuthorID);
-            //ToDo: gibt null aus wenn id nicht vergeben
-            return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
-                    " WHERE c.author.id = :authorID", Comment.class)
-                    .setParameter("authorID", "%" + authorID + "%")
-                    .getResultList();
-
-        } catch (NumberFormatException e) {
-            logger.error("Parsing error", e);
-            ApiUtils.getInstance().processNotInvalidError(response);
-        }
-        return null;
     }
 }

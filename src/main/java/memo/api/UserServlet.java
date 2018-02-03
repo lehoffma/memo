@@ -1,24 +1,26 @@
 package memo.api;
 
-import com.google.common.io.CharStreams;
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-import memo.util.DatabaseManager;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import memo.data.EventRepository;
+import memo.data.UserRepository;
 import memo.model.*;
+import memo.util.ApiUtils;
+import memo.util.DatabaseManager;
+import org.apache.log4j.Logger;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 /**
  * Servlet implementation class UserServlet
@@ -30,357 +32,211 @@ import java.util.List;
 @WebServlet(name = "UserServlet", value = "/api/user")
 public class UserServlet extends HttpServlet {
 
+    private static final Logger logger = Logger.getLogger(UserServlet.class);
+
     private static final long serialVersionUID = 1L;
 
 
     public UserServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ApiUtils.getInstance().setContentType(request, response);
 
-        setContentType(request, response);
-
-        String Sid = request.getParameter("id");
+        String userId = request.getParameter("id");
         String email = request.getParameter("email");
         String searchTerm = request.getParameter("searchTerm");
 
-        List<User> users = getUsersFromDatabase(Sid, email, searchTerm, response);
+        logger.trace("GET called with parameters userId = " + userId + ", email = " + email + ", searchTerm = " + searchTerm);
+
+        List<User> users = UserRepository.getInstance().get(userId, email, searchTerm);
 
         if (users.isEmpty()) {
-            response.setStatus(404);
+            logger.warn("No users were found");
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             response.getWriter().append("Not found");
             return;
         }
 
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String output = gson.toJson(users);
-
-        response.getWriter().append("{ \"users\": " + output + " }");
-
+        logger.trace("At least one user was found");
+        ApiUtils.getInstance().serializeObject(response, users, "users");
     }
 
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        setContentType(request, response);
+        ApiUtils.getInstance().setContentType(request, response);
 
         String email = request.getParameter("email");
+        logger.trace("HEAD called with email = " + email);
 
-        List<User> users = getUserByEmail(email);
+        List<User> users = UserRepository.getInstance().getUserByEmail(email);
 
         if (users.isEmpty()) {
-            response.setStatus(200);
+            logger.trace("Email is not used yet.");
+            response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().append("Okay");
-            return;
         } else {
-            response.setStatus(409);
+            logger.trace("Email is already taken.");
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
             response.getWriter().append("Email already taken");
-            return;
         }
 
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        setContentType(request, response);
+        ApiUtils.getInstance().setContentType(request, response);
 
-        JsonObject jUser = getJsonUser(request, response);
+        logger.trace("POST called");
 
+        Optional<JsonNode> jsonUserOptional = ApiUtils.getInstance().getJsonObject(request);
 
-        String email = jUser.get("email").getAsString();
+        if (jsonUserOptional.isPresent()) {
+            JsonNode jsonUser = jsonUserOptional.get();
+            String email = jsonUser.get("email").asText();
 
+            if (email == null) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().append("Email must not be empty");
+                return;
+            }
 
-        if (email == null) {
-            response.setStatus(400);
-            response.getWriter().append("Email must not be empty");
-            return;
+            //check if email is in db
+            List<User> users = UserRepository.getInstance().getUserByEmail(email);
+
+            if (!users.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().append("email already taken");
+                return;
+            }
+
+            User newUser = createUserFromJson(jsonUser);
+            DatabaseManager.getInstance().saveAll(Arrays.asList(newUser, newUser.getPermissions()));
+
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            ApiUtils.getInstance().serializeObject(response, newUser.getId(), "id");
+        } else {
+            logger.error("Could not parse JSON.");
+            ApiUtils.getInstance().processInvalidError(response);
         }
 
-        //check if email is in db
-        List<User> users = getUserByEmail(email);
-
-
-        if (!users.isEmpty()) {
-            response.setStatus(400);
-            response.getWriter().append("email already taken");
-            return;
-        }
-
-        User newUser = createUserFromJson(jUser);
-        saveUserToDatabase(newUser);
-
-        response.setStatus(201);
-        response.getWriter().append("{ \"id\": " + newUser.getId() + " }");
-
-        System.out.println(newUser.toString());
 
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ApiUtils.getInstance().setContentType(request, response);
 
-        setContentType(request, response);
+        logger.trace("PUT called");
 
-        JsonObject jUser = getJsonUser(request, response);
+        Optional<JsonNode> jsonUserOptional = ApiUtils.getInstance().getJsonObject(request);
 
-        String email = jUser.get("email").getAsString();
-        Integer id = jUser.get("id").getAsInt();
+        if (jsonUserOptional.isPresent()) {
+            JsonNode jsonUser = jsonUserOptional.get();
 
-        List<User> users = getUsersFromDatabase(id.toString(), email, null, response);
+            String email = jsonUser.get("email").asText();
+            Integer id = jsonUser.get("id").asInt();
 
-        if (users.isEmpty()) {
-            response.getWriter().append("Not found");
-            response.setStatus(404);
-            return;
+            List<User> users = UserRepository.getInstance().get(id.toString(), email, null);
+
+            if (users.isEmpty()) {
+                response.getWriter().append("Not found");
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            if (users.size() > 1) {
+                response.getWriter().append("Ambiguous results");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            User user = users.get(0);
+
+            user = updateUserFromJson(jsonUser, user);
+
+            DatabaseManager.getInstance().updateAll(Arrays.asList(user.getPermissions(), user));
+
+            response.setStatus(HttpServletResponse.SC_OK);
+            ApiUtils.getInstance().serializeObject(response, user.getId(), "id");
+        } else {
+            logger.error("Could not parse JSON.");
+            ApiUtils.getInstance().processInvalidError(response);
         }
-
-        if (users.size() > 1) {
-            response.getWriter().append("Ambiguous results");
-            response.setStatus(400);
-            return;
-        }
-
-        User u = users.get(0);
-
-        u = updateUserFromJson(jUser, u);
-        u.setId(jUser.get("id").getAsInt());
-
-        updateUserAtDatabase(u);
-
-        response.setStatus(200);
-        response.getWriter().append("{ \"id\": " + u.getId() + " }");
-
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        setContentType(request, response);
-
-        String Sid = request.getParameter("id");
-
-        User u = getUserByID(Sid, response);
-
-        if (u == null) {
-            response.setStatus(404);
-            response.getWriter().append("Not Found");
-            return;
-        }
-
-        removeUserFromDatabase(u);
-
+        ApiUtils.getInstance().deleteFromDatabase(User.class, request, response);
     }
 
 
-    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/util;charset=UTF-8");
+    private User createUserFromJson(JsonNode jsonUser) {
+        return updateUserFromJson(jsonUser, new User());
     }
 
-    private boolean isStringNotEmpty(String s) {
-        return (s != null && !s.isEmpty());
-    }
+    private User updateUserFromJson(JsonNode jsonUser, User user) {
 
-    private User getUserByID(String Sid, HttpServletResponse response) throws IOException {
-
-        try {
-            Integer id = Integer.parseInt(Sid);
-            //ToDo: gibt null aus wenn id nicht vergeben
-            return DatabaseManager.createEntityManager().find(User.class, id);
-        } catch (NumberFormatException e) {
-            response.getWriter().append("Bad ID Value");
-            response.setStatus(400);
-        }
-        return null;
-    }
-
-    private List<User> getUserByEmail(String email) {
-
-        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
-                " WHERE u.email = :email", User.class)
-                .setParameter("email", email)
-                .getResultList();
-    }
-
-    private List<User> getUserBySearchterm(String searchTerm) {
-
-        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
-                " WHERE UPPER(u.surname) LIKE UPPER(:searchTerm) OR UPPER(u.firstName) LIKE UPPER(:searchTerm)", User.class)
-                .setParameter("searchTerm", "%" + searchTerm + "%")
-                .getResultList();
-    }
-
-    private List<User> getUsers() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u", User.class).getResultList();
-    }
-
-    private JsonObject getJsonUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        String body = CharStreams.toString(request.getReader());
-
-        JsonElement jElement = new JsonParser().parse(body);
-        return jElement.getAsJsonObject().getAsJsonObject("user");
-    }
-
-    private User createUserFromJson(JsonObject jUser) {
-
-        return updateUserFromJson(jUser, new User());
-    }
-
-    private User updateUserFromJson(JsonObject jUser, User u) {
-
-        final User existing = u;
-        InstanceCreator<User> creator = type -> existing;
-
-        Gson gson = new GsonBuilder().registerTypeAdapter(User.class,creator).excludeFieldsWithoutExposeAnnotation().create();
         // save params to new user
-        u = gson.fromJson(jUser, User.class);
+        user = ApiUtils.getInstance().updateFromJson(jsonUser, user, User.class);
 
-
-        if (jUser.has("clubRole")) {
-            String srole = jUser.get("clubRole").getAsString();
-            switch (srole) {
-                case "none":
-                    u.setClubRole(ClubRole.none);
-                    break;
-
-                case "mitglied":
-                    u.setClubRole(ClubRole.Mitglied);
-                    break;
-
-                case "vorstand":
-                    u.setClubRole(ClubRole.Vorstand);
-                    break;
-
-                case "schriftfuehrer":
-                    u.setClubRole(ClubRole.Schriftführer);
-                    break;
-
-                case "kassenwart":
-                    u.setClubRole(ClubRole.Kassenwart);
-                    break;
-
-                case "organizer":
-                    u.setClubRole(ClubRole.Organisator);
-                    break;
-
-                case "admin":
-                    u.setClubRole(ClubRole.Admin);
-                    break;
-
-                default:
-                    u.setClubRole(ClubRole.none);
-            }
+        if (jsonUser.has("clubRole")) {
+            user.setClubRole(ClubRole.None);
+            UserRepository.clubRoleFromString(jsonUser.get("clubRole").asText())
+                    .ifPresent(user::setClubRole);
         }
+
         //todo remove demo
-        u.setClubRole(ClubRole.Admin);
+        user.setClubRole(ClubRole.Admin);
 
-        if (jUser.has("birthday")) {
-            TemporalAccessor birthday = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("birthday").getAsString());
-            LocalDateTime date = LocalDateTime.from(birthday);
-            u.setBirthday(date);
+        //todo überhaupt noch nötig?
+//        if (jsonUser.has("birthday")) {
+//            TemporalAccessor birthday = DateTimeFormatter.ISO_DATE_TIME.parse(jsonUser.get("birthday").asText());
+//            LocalDateTime date = LocalDateTime.from(birthday);
+//            user.setBirthday(date);
+//        }
+
+        if (jsonUser.has("addresses")) {
+            ArrayNode jsonAddresses = (ArrayNode) jsonUser.get("addresses");
+
+            StreamSupport.stream(jsonAddresses.spliterator(), false)
+                    .map(jsonId -> DatabaseManager.createEntityManager().find(Address.class, jsonId.asInt()))
+                    .forEach(user::addAddress);
         }
+        if (jsonUser.has("bankAccounts")) {
+            ArrayNode jsonBankAccounts = (ArrayNode) jsonUser.get("bankAccounts");
 
-        if (jUser.has("addresses")) {
-            Type collectionType = new TypeToken<List<Integer>>() {
-            }.getType();
-            //todo macht dann ja keinen sinn mehr oder?
-            List<Integer> addresses = gson.fromJson(jUser.getAsJsonArray("addresses"), collectionType);
-
-            for (Integer i : addresses) {
-
-                Address addr = DatabaseManager.createEntityManager().find(Address.class, i);
-                u.addAddress(addr);
-            }
-        }
-        if (jUser.has("bankAccounts")) {
-            Type collectionType = new TypeToken<List<Integer>>() {
-            }.getType();
-            List<Integer> bankAccounts = gson.fromJson(jUser.getAsJsonArray("bankAccounts"), collectionType);
-
-            //todo macht dann ja keinen sinn mehr oder?
-            for (Integer i : bankAccounts) {
-
-                BankAcc bank = DatabaseManager.createEntityManager().find(BankAcc.class, i);
-                u.addBankAccount(bank);
-            }
-
-        }
-
-        if (jUser.has("joinDate")) {
-
-            TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jUser.get("joinDate").getAsString());
-            LocalDateTime jDate = LocalDateTime.from(join);
-            u.setJoinDate(jDate);
-
-        } else {
-            u.setJoinDate(LocalDateTime.now());
+            StreamSupport.stream(jsonBankAccounts.spliterator(), false)
+                    .map(jsonId -> DatabaseManager.createEntityManager().find(BankAcc.class, jsonId.asInt()))
+                    .forEach(user::addBankAccount);
         }
 
 
-        if (jUser.has("permissions")) {
+        //todo überhaupt noch nötig?
+//        if (jsonUser.has("joinDate")) {
+//            TemporalAccessor join = DateTimeFormatter.ISO_DATE_TIME.parse(jsonUser.get("joinDate").getAsString());
+//            LocalDateTime jDate = LocalDateTime.from(join);
+//            user.setJoinDate(jDate);
+//
+//        } else {
+//            user.setJoinDate(LocalDateTime.now());
+//        }
+        if (user.getJoinDate() == null) {
+            user.setJoinDate(LocalDateTime.now());
+        }
 
 
-            PermissionState permissions = new PermissionState(u.getClubRole());
+        if (jsonUser.has("permissions")) {
+            PermissionState permissions = new PermissionState(user.getClubRole());
 
             //If null, use a default value
-            JsonElement nullableText = jUser.get("permissions");
-            if (!(nullableText instanceof JsonNull)) {
-                JsonObject jPermissions = jUser.getAsJsonObject("permissions");
-                permissions = gson.fromJson(jPermissions, PermissionState.class);
-
+            JsonNode jsonPermissions = jsonUser.get("permissions");
+            if (!(jsonPermissions == null || jsonPermissions.isNull())) {
+                permissions = ApiUtils.getInstance().updateFromJson(jsonPermissions, permissions, PermissionState.class);
             }
 
-            u.setPermissions(permissions);
+            user.setPermissions(permissions);
         }
 
-        return u;
+        return user;
     }
 
-    private void saveUserToDatabase(User newUser) {
-
-        EntityManager em = DatabaseManager.createEntityManager();
-
-        em.getTransaction().begin();
-        em.persist(newUser.getPermissions());
-        em.persist(newUser);
-        em.getTransaction().commit();
-    }
-
-    private void updateUserAtDatabase(User newUser) {
-
-
-        DatabaseManager.createEntityManager().getTransaction().begin();
-        DatabaseManager.createEntityManager().merge(newUser.getPermissions());
-        DatabaseManager.createEntityManager().merge(newUser);
-        DatabaseManager.createEntityManager().getTransaction().commit();
-    }
-
-    private void removeUserFromDatabase(User u) {
-
-        DatabaseManager.createEntityManager().getTransaction().begin();
-        u = DatabaseManager.createEntityManager().merge(u);
-        DatabaseManager.createEntityManager().remove(u);
-        DatabaseManager.createEntityManager().getTransaction().commit();
-    }
-
-    private List<User> getUsersFromDatabase(String Sid, String email, String searchTerm, HttpServletResponse response) throws IOException {
-        List<User> users = new ArrayList<>();
-
-        // if ID is submitted
-        if (isStringNotEmpty(Sid)) {
-
-            User u = getUserByID(Sid, response);
-            if (u != null) {
-                users.add(u);
-                return users;
-            }
-        }
-
-        if (isStringNotEmpty(email)) return getUserByEmail(email);
-
-        if (isStringNotEmpty(searchTerm)) return getUserBySearchterm(searchTerm);
-
-        return getUsers();
-
-    }
 }

@@ -44,8 +44,6 @@ export function idToClubRoleEnum(clubRole: number): ClubRole {
 	}
 }
 
-//todo clubrole with 0-5 values
-
 function clubRoles() {
 	return [ClubRole.None, ClubRole.Mitglied, ClubRole.Vorstand, ClubRole.Schriftfuehrer,
 		ClubRole.Kassenwart, ClubRole.Organizer, ClubRole.Admin];

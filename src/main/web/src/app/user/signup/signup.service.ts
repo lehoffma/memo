@@ -154,7 +154,7 @@ export class SignUpService {
 		//todo banner: mitglied werden/bin schon mitglied
 		//todo get image returned {fileName: str}
 		//todo permission api
-		//		
+		//
 
 		//image: post -> response.imagePaths in objekt tun
 
@@ -212,7 +212,7 @@ export class SignUpService {
 			//upload profile picture
 			this.uploadProfilePicture(this.newUser, this.newUserProfilePicture)
 				.pipe(
-					mergeMap(newUser => this.userService.add(newUser, this.newUserProfilePicture)),
+					mergeMap(newUser => this.userService.add(newUser)),
 					tap(() => this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
 						duration: 1000
 					})),

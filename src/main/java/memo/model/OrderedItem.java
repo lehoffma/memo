@@ -1,12 +1,17 @@
 package memo.model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.serialization.ShopItemIdDeserializer;
+import memo.serialization.ShopItemIdSerializer;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "ORDERED_ITEMS")
-public class OrderedItem implements Serializable{
+public class OrderedItem implements Serializable {
 
     //**************************************************************
     //  static members
@@ -24,6 +29,8 @@ public class OrderedItem implements Serializable{
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
+    @JsonSerialize(using = ShopItemIdSerializer.class)
+    @JsonDeserialize(using = ShopItemIdDeserializer.class)
     private ShopItem item;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,7 +58,9 @@ public class OrderedItem implements Serializable{
     //  constructor
     //**************************************************************
 
-    public OrderedItem() {super();}
+    public OrderedItem() {
+        super();
+    }
 
     //**************************************************************
     //  getters and setters

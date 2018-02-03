@@ -6,5 +6,7 @@ public enum PaymentMethod {
     Bar,
     Lastschrift,
     Ueberweisung,
-    Paypal
+    Paypal;
+
+
 }

@@ -14,7 +14,7 @@ import java.io.*;
 
 @Entity
 @Table(name = "IMAGES")
-public class Image implements Serializable{
+public class Image implements Serializable {
 
     //**************************************************************
     //  static members
@@ -52,7 +52,9 @@ public class Image implements Serializable{
     //  constructor
     //**************************************************************
 
-    public Image(){super();}
+    public Image() {
+        super();
+    }
 
     //**************************************************************
     //  getters and setters
@@ -98,7 +100,9 @@ public class Image implements Serializable{
         this.fileName = fileName;
     }
 
-    public String getFullPath() { return filePath + fileName;}
+    public String getFullPath() {
+        return filePath + fileName;
+    }
 
     //**************************************************************
     //  methods
@@ -115,23 +119,23 @@ public class Image implements Serializable{
                 '}';
     }
 
-    public void saveToFile(Part p) {
+    public Image saveToFile(Part p) {
 
-        String ext = FilenameUtils.getExtension(getUploadedName(p));
-        File f;
+        String extension = FilenameUtils.getExtension(getUploadedName(p));
+        File file;
         do {
             String filename = RandomStringUtils.randomAlphanumeric(10);
-            f = new File(filePath + filename + FilenameUtils.EXTENSION_SEPARATOR + ext);
+            file = new File(filePath + filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
             setFileName(filename);
-        } while (f.exists());
+        } while (file.exists());
 
-        try(InputStream stream = p.getInputStream()){
-            writeToFile(stream, f);
-        }catch (Exception e)
-        {
+        try (InputStream stream = p.getInputStream()) {
+            writeToFile(stream, file);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
+        return this;
     }
 
     // save uploaded file to new location
@@ -141,13 +145,12 @@ public class Image implements Serializable{
         int read;
         byte[] bytes = new byte[1024];
 
-        try(OutputStream out = new FileOutputStream(uploadedFileLocation)){
+        try (OutputStream out = new FileOutputStream(uploadedFileLocation)) {
 
             while ((read = uploadedInputStream.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

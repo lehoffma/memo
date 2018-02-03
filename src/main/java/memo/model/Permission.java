@@ -1,7 +1,7 @@
 package memo.model;
 
 /*
-     0 : none,
+     0 : None,
 	 1 : read,
 	 2 : write,
 	 3 : create,

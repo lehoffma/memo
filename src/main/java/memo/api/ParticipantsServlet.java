@@ -1,12 +1,12 @@
 package memo.api;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import memo.util.DatabaseManager;
-import memo.model.ShopItem;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import memo.data.EventRepository;
+import memo.data.ParticipantRepository;
 import memo.model.OrderedItem;
+import memo.model.ShopItem;
+import memo.util.ApiUtils;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,111 +14,36 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebServlet(name = "ParticipantsServlet", value = "/api/participants")
 public class ParticipantsServlet extends HttpServlet {
 
+    private static final Logger logger = Logger.getLogger(ParticipantsServlet.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ApiUtils.getInstance().setContentType(request, response);
 
-        setContentType(request, response);
-
-        String SeventId = request.getParameter("eventId");
-        String sType = request.getParameter("type");
+        String eventId = request.getParameter("eventId");
+        String type = request.getParameter("type");
         String userId = request.getParameter("userId");
 
+        logger.trace("GET called");
 
-        List<OrderedItem> result = getParticipantsFromDatabase(SeventId, sType, response);
+        List<OrderedItem> result = ParticipantRepository.getInstance().get(eventId, type, response);
 
-        //todo wohin soll der getUserEvents call?
-        if(isStringNotEmpty(userId)){
-            List<ShopItem> shopItems = this.getEventsByUserId(Integer.valueOf(userId));
-            Gson gson = new GsonBuilder().serializeNulls().create();
-            JsonObject responseJson = new JsonObject();
-            Type eventType = new TypeToken<List<ShopItem>>() {}.getType();
-            responseJson.add("shopItems", gson.toJsonTree(shopItems, eventType));
-            response.getWriter().append(responseJson.toString());
+        if (ApiUtils.stringIsNotEmpty(userId)) {
+            logger.trace("Returning list of events the user participated in");
+            List<ShopItem> shopItems = EventRepository.getInstance().getEventsByUser(Integer.valueOf(userId));
+
+            ObjectNode jsonShopItems = ApiUtils.getInstance().toObjectNode(shopItems, "shopItems");
+            response.getWriter().append(jsonShopItems.toString());
             return;
         }
 
-        /*
-        if (result.isEmpty()) {
-            response.setStatus(404);
-            response.getWriter().append("Not found");
-            return;
-        }
-*/
-
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        JsonObject responseJson = new JsonObject();
-        responseJson.add("participants", gson.toJsonTree(result));
-        response.getWriter().append(responseJson.toString());
-    }
-
-
-    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/util;charset=UTF-8");
-    }
-
-    private boolean isStringNotEmpty(String s) {
-        return (s != null && !s.isEmpty());
-    }
-
-    private List<OrderedItem> getParticipantsFromDatabase(String SeventId, String sType, HttpServletResponse response) throws IOException {
-
-        if (isStringNotEmpty(SeventId)) {
-            return getParticipantsByEventId(SeventId, response);
-        }
-
-        if (isStringNotEmpty(sType)) {
-            Integer type = EventServlet.getType(sType);
-            return getParticipantsByEventType(type);
-        }
-        return getParticipants();
-
-    }
-
-    private List<OrderedItem> getParticipants() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o ", OrderedItem.class)
-                .getResultList();
-    }
-
-    private List<OrderedItem> getParticipantsByEventType(Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                " WHERE o.item.type = :typ", OrderedItem.class)
-                .setParameter("typ", type)
-                .getResultList();
-    }
-
-    private List<ShopItem> getEventsByUserId(Integer userId){
-        return DatabaseManager.createEntityManager().createQuery(
-                "SELECT item from Order o join OrderedItem item \n" +
-                        "    WHERE o.user.id =:userId", OrderedItem.class)
-                .setParameter("userId", userId)
-                .getResultList()
-                .stream()
-                .map(OrderedItem::getItem)
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    private List<OrderedItem> getParticipantsByEventId(String SeventId, HttpServletResponse response) throws IOException {
-        try {
-            Integer id = Integer.parseInt(SeventId);
-            //ToDo: gibt null aus wenn id nicht vergeben
-            return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                    " WHERE o.item.id = :id", OrderedItem.class)
-                    .setParameter("id", id)
-                    .getResultList();
-        } catch (NumberFormatException e) {
-            response.getWriter().append("Bad ID Value");
-            response.setStatus(400);
-        }
-        return null;
+        logger.trace("Returning list of participants");
+        ObjectNode jsonParticipants = ApiUtils.getInstance().toObjectNode(result, "participants");
+        response.getWriter().append(jsonParticipants.toString());
     }
 
 

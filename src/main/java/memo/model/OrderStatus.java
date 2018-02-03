@@ -2,7 +2,6 @@ package memo.model;
 
 
 public enum OrderStatus {
-
     Reserved,
     Ordered,
     Paid,
@@ -11,5 +10,4 @@ public enum OrderStatus {
     Cancelled,
     Refused,
     UnderApproval
-
 }

@@ -1,16 +1,16 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import memo.data.AddressRepository;
+import memo.model.Address;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
-import memo.model.Address;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "AddressServlet", value = "/api/address")
@@ -27,13 +27,13 @@ public class AddressServlet extends HttpServlet {
 
         logger.debug("Method GET called with param ID = " + Sid);
 
-        List<Address> addresses = getAddressesFromDatabase(Sid, response);
+        List<Address> addresses = AddressRepository.getInstance().get(Sid);
 
         if (addresses.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
             return;
         }
-        ApiUtils.getInstance().serializeObject(response, addresses, "adresses");
+        ApiUtils.getInstance().serializeObject(response, addresses, "addresses");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
@@ -47,7 +47,7 @@ public class AddressServlet extends HttpServlet {
         DatabaseManager.getInstance().save(a);
 
         response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
+        ApiUtils.getInstance().serializeObject(response, a.getId(), "id");
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) {
@@ -59,15 +59,15 @@ public class AddressServlet extends HttpServlet {
 
 
         if (!jObj.has("id")) {
-            ApiUtils.getInstance().processNotInvalidError(response);
+            ApiUtils.getInstance().processInvalidError(response);
             return;
         }
 
         Address a = DatabaseManager.getInstance().getById(Address.class, jObj.get("id").asInt());
 
         if (a == null) {
-           ApiUtils.getInstance().processNotFoundError(response);
-           return;
+            ApiUtils.getInstance().processNotFoundError(response);
+            return;
         }
 
 
@@ -75,33 +75,12 @@ public class AddressServlet extends HttpServlet {
         DatabaseManager.getInstance().update(a);
 
         response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
+        ApiUtils.getInstance().serializeObject(response, a.getId(), "id");
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
 
-       ApiUtils.getInstance().deleteFromDatabase(Address.class, request, response);
+        ApiUtils.getInstance().deleteFromDatabase(Address.class, request, response);
 
     }
-
-    private List<Address> getAddressesFromDatabase(String Sid, HttpServletResponse response) {
-
-        // if ID is submitted
-        if (ApiUtils.getInstance().isStringNotEmpty(Sid)) {
-            Address a = DatabaseManager.getInstance().getByStringId(Address.class, Sid);
-            if (a != null) {
-                List<Address> addresses = new ArrayList<>();
-                addresses.add(a);
-                return addresses;
-            }
-        }
-
-        return getAddresses();
-
-    }
-
-    private List<Address> getAddresses() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT a FROM Address a", Address.class).getResultList();
-    }
-
 }

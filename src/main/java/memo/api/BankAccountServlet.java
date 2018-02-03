@@ -1,16 +1,16 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import memo.data.BankAccountRepository;
+import memo.model.BankAcc;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
-import memo.model.BankAcc;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,15 +20,14 @@ public class BankAccountServlet extends HttpServlet {
     final static Logger logger = Logger.getLogger(BankAccountServlet.class);
 
 
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
         ApiUtils.getInstance().setContentType(request, response);
-        String Sid = request.getParameter("id");
+        String accountId = request.getParameter("id");
 
-        logger.debug("Method GET called with param ID = " + Sid);
+        logger.debug("Method GET called with param ID = " + accountId);
 
-        List<BankAcc> addresses = getAccountsFromDatabase(Sid, response);
+        List<BankAcc> addresses = BankAccountRepository.getInstance().get(accountId);
 
         if (addresses.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
@@ -48,7 +47,7 @@ public class BankAccountServlet extends HttpServlet {
         DatabaseManager.getInstance().save(a);
 
         response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
+        ApiUtils.getInstance().serializeObject(response, a.getId(), "id");
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) {
@@ -60,7 +59,7 @@ public class BankAccountServlet extends HttpServlet {
 
 
         if (!jObj.has("id")) {
-            ApiUtils.getInstance().processNotInvalidError(response);
+            ApiUtils.getInstance().processInvalidError(response);
             return;
         }
 
@@ -76,38 +75,11 @@ public class BankAccountServlet extends HttpServlet {
         DatabaseManager.getInstance().update(a);
 
         response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
+        ApiUtils.getInstance().serializeObject(response, a.getId(), "id");
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
 
-       ApiUtils.getInstance().deleteFromDatabase(BankAcc.class, request,response);
+        ApiUtils.getInstance().deleteFromDatabase(BankAcc.class, request, response);
     }
-
-
-
-    private List<BankAcc> getAccountsFromDatabase(String Sid, HttpServletResponse response) {
-
-        List<BankAcc> accounts = new ArrayList<>();
-
-        // if ID is submitted
-        if (ApiUtils.getInstance().isStringNotEmpty(Sid)) {
-
-            BankAcc a = DatabaseManager.getInstance().getByStringId(BankAcc.class, Sid);
-            if (a != null) {
-                accounts.add(a);
-                return accounts;
-            }
-        }
-
-        return getAccounts();
-
-    }
-
-
-    private List<BankAcc> getAccounts() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT a FROM BankAcc a", BankAcc.class).getResultList();
-    }
-
-
 }

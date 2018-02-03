@@ -1,12 +1,11 @@
 package memo.api;
 
-import com.google.common.io.CharStreams;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import memo.util.DatabaseManager;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import memo.model.User;
+import memo.util.ApiUtils;
+import memo.util.DatabaseManager;
+import memo.util.MapBuilder;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,49 +14,89 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-
+import java.util.Optional;
 
 @WebServlet(name = "LoginServlet", value = "/api/login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+
+    final static Logger logger = Logger.getLogger(LoginServlet.class);
+
     public LoginServlet() {
         super();
+    }
 
+    private static class LoginInformation {
+        public String email;
+        public String password;
+
+        public LoginInformation(String email, String password) {
+            this.email = email;
+            this.password = password;
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+        logger.trace("Trying to login..");
 
-        String body = CharStreams.toString(request.getReader());
+        Optional<LoginInformation> loginInformation = ApiUtils.getInstance().getJsonObject(request)
+                .map(jsonNode -> new LoginInformation(
+                        jsonNode.get("email").asText(),
+                        jsonNode.get("password").asText()
+                ));
 
-        JsonElement jElement = new JsonParser().parse(body);
-        String email = jElement.getAsJsonObject().get("email").getAsString();
-        String password = jElement.getAsJsonObject().get("password").getAsString();
+        if (loginInformation.isPresent()) {
+            LoginInformation information = loginInformation.get();
+            //I feel like it would be a security risk to just log the password as well
+            logger.trace("Trying to login with email = " + information.email);
 
+            List<User> users = DatabaseManager.createEntityManager()
+                    .createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", information.email)
+                    .getResultList();
 
-        List<User> users = DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u WHERE u.email = :email", User.class).setParameter("email", email).getResultList();
+            if (users.isEmpty()) {
+                logger.error("Could not find user with email = " + information.email);
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter()
+                        .append("Not Found");
+                return;
+            }
 
-        if (users.isEmpty()) {
-            response.setStatus(404);
-            response.getWriter().append("Not Found");
-            return;
-        }
+            User user = users.get(0);
 
-        User user = users.get(0);
+            if (user.getPassword().equals(information.password)) {
+                logger.trace("Login was successful!");
+                String authenticationToken = getAuthenticationToken();
+                response.setStatus(HttpServletResponse.SC_ACCEPTED);
 
-        if (user.getPassword().equals(password)) {
-            response.setStatus(202);
-            response.getWriter().append("{ \"id\": " + user.getId() + ", \"auth_token\": null }");
+                ObjectNode jsonResponse = ApiUtils.getInstance().toObjectNode(new MapBuilder<String, Object>()
+                        .buildPut("id", String.valueOf(user.getId()))
+                        .buildPut("auth_token", authenticationToken)
+                );
+                response.getWriter().append(jsonResponse.toString());
+            } else {
+                logger.error("The given password for email = " + information.email + " was incorrect");
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter()
+                        .append("Not Found");
+            }
         } else {
-            response.setStatus(404);
-            response.getWriter().append("Not Found");
-            return;
+            logger.error("Login failed: Could not parse email and password correctly.");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().append("Could not parse email and password correctly");
         }
 
 
+    }
+
+
+    private String getAuthenticationToken() {
+        //todo implement
+        return null;
     }
 
 }

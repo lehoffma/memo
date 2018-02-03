@@ -1,217 +1,144 @@
 package memo.api;
 
-import com.google.common.io.CharStreams;
-import com.google.gson.*;
-import memo.util.DatabaseManager;
+import com.fasterxml.jackson.databind.JsonNode;
+import memo.data.StockRepository;
 import memo.model.Color;
 import memo.model.ShopItem;
 import memo.model.Stock;
+import memo.util.ApiUtils;
+import memo.util.DatabaseManager;
+import org.apache.log4j.Logger;
 
-import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet(name = "StockServlet", value = "/api/stock")
 public class StockServlet extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(StockServlet.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ApiUtils.getInstance().setContentType(request, response);
 
-        setContentType(request, response);
+        String eventId = request.getParameter("eventId");
+        String type = request.getParameter("type");
 
-        String SeventId = request.getParameter("eventId");
-        String sType = request.getParameter("type");
+        logger.trace("GET called with parameters eventId = " + eventId + ", type = " + type);
 
+        List<Stock> stock = StockRepository.getInstance().get(eventId, type, response);
 
-        List<Stock> stock = getStockFromDatabase(SeventId, sType, response);
-
-
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        String output = gson.toJson(stock);
-
-        response.getWriter().append("{ \"stock\": " + output + " }");
+        ApiUtils.getInstance().serializeObject(response, stock, "stock");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ApiUtils.getInstance().setContentType(request, response);
 
-        setContentType(request, response);
+        Optional<JsonNode> jsonStockOptional = ApiUtils.getInstance().getJsonObject(request);
 
-        JsonObject jStock = getJsonStock(request, response);
+        logger.trace("POST called");
 
-        //ToDo: Duplicate Events
+        if (jsonStockOptional.isPresent()) {
+            JsonNode jsonStock = jsonStockOptional.get();
+            //ToDo: Duplicate Events
 
-        Stock s = createStockFromJson(jStock);
+            Stock stock = createStockFromJson(jsonStock);
 
-        saveStockToDatabase(s);
+            DatabaseManager.getInstance().save(stock);
+            logger.trace("Saved Stock to the database");
 
-        response.setStatus(201);
-        response.getWriter().append("{ \"id\": " + s.getId() + " }");
-
-
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            ApiUtils.getInstance().serializeObject(response, stock.getId(), "id");
+        } else {
+            logger.error("Could not parse JSON.");
+            ApiUtils.getInstance().processInvalidError(response);
+        }
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ApiUtils.getInstance().setContentType(request, response);
 
-        setContentType(request, response);
+        logger.trace("PUT called");
 
-        JsonObject jStock = getJsonStock(request, response);
+        Optional<JsonNode> jsonStockOptional = ApiUtils.getInstance().getJsonObject(request);
 
-        Integer jId = jStock.get("id").getAsInt();
+        if (jsonStockOptional.isPresent()) {
+            JsonNode jsonStock = jsonStockOptional.get();
+            Integer id = jsonStock.get("id").asInt();
 
-        Stock s = DatabaseManager.createEntityManager().find(Stock.class, jId);
+            Stock stock = DatabaseManager.getInstance().getById(Stock.class, id);
 
-        if (s == null) {
-            response.getWriter().append("Not found");
-            response.setStatus(404);
-            return;
+            if (stock == null) {
+                response.getWriter().append("Not found");
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            stock = updateStockFromJson(jsonStock, stock);
+
+            DatabaseManager.getInstance().updateAll(Arrays.asList(stock, stock.getColor()));
+
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            ApiUtils.getInstance().serializeObject(response, stock.getId(), "id");
+        } else {
+            logger.error("Could not parse JSON.");
+            ApiUtils.getInstance().processInvalidError(response);
         }
-
-        s = updateStockFromJson(jStock, s);
-        s.setId(jStock.get("id").getAsInt());
-
-
-        updateStockAtDatabase(s);
-
-        response.setStatus(201);
-        response.getWriter().append("{ \"id\": " + s.getId() + " }");
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ApiUtils.getInstance().deleteFromDatabase(Stock.class, request, response);
+    }
 
-        setContentType(request, response);
+    private List<Stock> getStockFromDatabase(String eventId, String type, HttpServletResponse response) throws IOException {
+        StockRepository repository = StockRepository.getInstance();
 
-        String Sid = request.getParameter("id");
-        Integer id = Integer.parseInt(Sid);
-        Stock s = DatabaseManager.createEntityManager().find(Stock.class, id);
-
-
-        if (s == null) {
-            response.setStatus(404);
-            response.getWriter().append("Not Found");
-            return;
+        if (ApiUtils.stringIsNotEmpty(eventId)) {
+            try {
+                return repository.getStockByEventId(eventId);
+            } catch (NumberFormatException e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().append("Could not parse event Id.");
+                logger.error("Could not parse event id.", e);
+                return new ArrayList<>();
+            }
         }
 
-        removeStockFromDatabase(s);
-
-
-    }
-
-    private void setContentType(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/util;charset=UTF-8");
-    }
-
-    private boolean isStringNotEmpty(String s) {
-        return (s != null && !s.isEmpty());
-    }
-
-    private List<Stock> getStockFromDatabase(String SeventId, String sType, HttpServletResponse response) throws IOException {
-
-        if (isStringNotEmpty(SeventId)) {
-            return getStockByEventId(SeventId, response);
+        if (ApiUtils.stringIsNotEmpty(type)) {
+            return repository.getStockByEventType(EventServlet.getType(type));
         }
-
-        if (isStringNotEmpty(sType)) {
-            Integer type = EventServlet.getType(sType);
-            return getStockByEventType(type);
-        }
-        return getStock();
+        return repository.getAll();
 
     }
 
-    private List<Stock> getStock() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s ", Stock.class)
-                .getResultList();
+    private Stock createStockFromJson(JsonNode jsonStock) {
+        return updateStockFromJson(jsonStock, new Stock());
     }
 
-    private List<Stock> getStockByEventType(Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s " +
-                " WHERE s.item.type = :typ", Stock.class)
-                .setParameter("typ", type)
-                .getResultList();
-    }
+    private Stock updateStockFromJson(JsonNode jsonStock, Stock previousStockValue) {
+        Stock stock = ApiUtils.getInstance().updateFromJson(jsonStock, previousStockValue, Stock.class);
 
-    private List<Stock> getStockByEventId(String SeventId, HttpServletResponse response) throws IOException {
-        try {
-            Integer id = Integer.parseInt(SeventId);
-            //ToDo: gibt null aus wenn id nicht vergeben (ich bin für optionals)
-            return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s " +
-                    " WHERE s.item.id = :id", Stock.class)
-                    .setParameter("id", id)
-                    .getResultList();
-        } catch (NumberFormatException e) {
-            response.getWriter().append("Bad ID Value");
-            response.setStatus(400);
-        }
-        return null;
-    }
+        JsonNode jsonColor = jsonStock.get("color");
+        Color color = ApiUtils.getInstance().updateFromJson(jsonColor, new Color(), Color.class);
+        stock.setColor(color);
 
-    private void saveStockToDatabase(Stock s) {
-
-        EntityManager em = DatabaseManager.createEntityManager();
-
-        em.getTransaction().begin();
-        em.persist(s.getColor());
-        em.persist(s);
-
-        em.getTransaction().commit();
-    }
-
-    private JsonObject getJsonStock(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        String body = CharStreams.toString(request.getReader());
-
-        JsonElement jElement = new JsonParser().parse(body);
-        return jElement.getAsJsonObject().getAsJsonObject("stock");
-    }
-
-    private Stock createStockFromJson(JsonObject jStock) {
-        return updateStockFromJson(jStock, new Stock());
-    }
-
-    private Stock updateStockFromJson(JsonObject jStock, Stock s) {
-
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-        s = gson.fromJson(jStock, Stock.class);
-        JsonObject jColor = jStock.get("color").getAsJsonObject();
-        Color color = gson.fromJson(jColor, Color.class);
-        s.setColor(color);
-
-        JsonObject jsonEvent = jStock.getAsJsonObject("event");
-        if(jsonEvent != null){
-            Integer eventId = jsonEvent.get("id").getAsInt();
-            ShopItem e = DatabaseManager.createEntityManager().find(ShopItem.class, eventId);
-            s.setItem(e);
-        }
-        else{
+        JsonNode jsonEvent = jsonStock.get("event");
+        if (jsonEvent != null) {
+            Integer eventId = jsonEvent.get("id").asInt();
+            ShopItem shopItem = DatabaseManager.getInstance().getById(ShopItem.class, eventId);
+            stock.setItem(shopItem);
+        } else {
             //todo error handling
 //            throw new NoSuchFieldException();
         }
 
-        return s;
-    }
-
-    private void updateStockAtDatabase(Stock s) {
-        EntityManager em = DatabaseManager.createEntityManager();
-
-
-        em.getTransaction().begin();
-        em.merge(s.getColor());
-        em.merge(s);
-        em.getTransaction().commit();
-    }
-
-    private void removeStockFromDatabase(Stock s) {
-
-        DatabaseManager.createEntityManager().getTransaction().begin();
-        s = DatabaseManager.createEntityManager().merge(s);
-        DatabaseManager.createEntityManager().remove(s);
-        DatabaseManager.createEntityManager().getTransaction().commit();
+        return stock;
     }
 
 

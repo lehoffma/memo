@@ -1,5 +1,9 @@
 package memo.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.serialization.*;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -37,9 +41,11 @@ public class User implements Serializable {
     private String surname;
 
     @Enumerated(EnumType.ORDINAL)
-    private ClubRole clubRole = ClubRole.none;
+    private ClubRole clubRole = ClubRole.None;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonSerialize(using = AddressIdListSerializer.class)
+    @JsonDeserialize(using = AddressIdListDeserializer.class)
     private List<Address> addresses = new ArrayList<>();
 
     @Column(nullable = false)
@@ -63,9 +69,13 @@ public class User implements Serializable {
     private Boolean hasDebitAuth = false;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    @JsonSerialize(using = ImagePathListSerializer.class)
+    @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonSerialize(using = BankAccIdListSerializer.class)
+    @JsonDeserialize(using = BankAccIdListDeserializer.class)
     private List<BankAcc> bankAccounts = new ArrayList<>();
 
     @Column(name = "JOIN_DATE", nullable = false)
@@ -83,7 +93,7 @@ public class User implements Serializable {
     @JoinColumn
     private PermissionState permissions;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
@@ -257,7 +267,9 @@ public class User implements Serializable {
         this.addresses = addresses;
     }
 
-    public void addAddress(Address a) {this.addresses.add(a);}
+    public void addAddress(Address a) {
+        this.addresses.add(a);
+    }
 
     public List<Image> getImages() {
         return images;
@@ -267,7 +279,9 @@ public class User implements Serializable {
         this.images = images;
     }
 
-    public void addImage(Image i) {this.images.add(i);}
+    public void addImage(Image i) {
+        this.images.add(i);
+    }
 
     public List<BankAcc> getBankAccounts() {
         return bankAccounts;
@@ -277,7 +291,9 @@ public class User implements Serializable {
         this.bankAccounts = bankAccounts;
     }
 
-    public void addBankAccount(BankAcc b) {this.bankAccounts.add(b);}
+    public void addBankAccount(BankAcc b) {
+        this.bankAccounts.add(b);
+    }
 
     public List<Order> getOrders() {
         return orders;
@@ -287,7 +303,9 @@ public class User implements Serializable {
         this.orders = orders;
     }
 
-    public void addOrder(Order o) { this.orders.add(o);}
+    public void addOrder(Order o) {
+        this.orders.add(o);
+    }
 
     public List<Comment> getComments() {
         return comments;
@@ -297,7 +315,9 @@ public class User implements Serializable {
         this.comments = comments;
     }
 
-    public void addComment(Comment c) { this.comments.add(c);}
+    public void addComment(Comment c) {
+        this.comments.add(c);
+    }
 
     public List<ShopItem> getAuthoredItems() {
         return authoredItems;
@@ -307,7 +327,10 @@ public class User implements Serializable {
         this.authoredItems = authoredItems;
     }
 
-    public void addAuthoredItem(ShopItem i) { this.authoredItems.add(i);}
+    public void addAuthoredItem(ShopItem i) {
+        this.authoredItems.add(i);
+    }
+
 
     //**************************************************************
     //  methods

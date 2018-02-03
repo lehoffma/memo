@@ -1,9 +1,17 @@
 package memo.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.serialization.EntryCategoryIdDeserializer;
+import memo.serialization.EntryCategoryIdSerializer;
+import memo.serialization.ImagePathListDeserializer;
+import memo.serialization.ImagePathListSerializer;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entity implementation class for Entity: Entry
@@ -12,7 +20,6 @@ import java.util.*;
 @Table(name = "ENTRIES")
 
 public class Entry implements Serializable {
-
 
 
     //**************************************************************
@@ -35,6 +42,8 @@ public class Entry implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
+    @JsonDeserialize(using = EntryCategoryIdDeserializer.class)
+    @JsonSerialize(using = EntryCategoryIdSerializer.class)
     private EntryCategory category;
 
     @Column(nullable = false)
@@ -50,6 +59,8 @@ public class Entry implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn
+    @JsonSerialize(using = ImagePathListSerializer.class)
+    @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images = new ArrayList<>();
 
     @Column(nullable = false)
@@ -123,7 +134,9 @@ public class Entry implements Serializable {
         this.images = images;
     }
 
-    public void addImage(Image i) {this.images.add(i);}
+    public void addImage(Image i) {
+        this.images.add(i);
+    }
 
     public Integer getId() {
         return id;

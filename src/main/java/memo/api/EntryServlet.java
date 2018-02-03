@@ -1,21 +1,20 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import memo.data.EntryRepository;
+import memo.model.Entry;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
-import memo.model.Entry;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +33,12 @@ public class EntryServlet extends HttpServlet {
 
         logger.debug("Method GET called with param ID = " + Sid);
 
-        List<Entry> entries = getEntriesFromDatabase(Sid, SeventId, sType, response);
+        List<Entry> entries = EntryRepository.getInstance().get(Sid, SeventId, sType, response);
 
+        if (entries == null) {
+            ApiUtils.getInstance().processInvalidError(response);
+            return;
+        }
 
         //todo durch sql ersetzen keine ahnung
         if (request.getParameter("minDate") != null) {
@@ -80,7 +83,7 @@ public class EntryServlet extends HttpServlet {
         DatabaseManager.getInstance().save(a);
 
         response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
+        ApiUtils.getInstance().serializeObject(response, a.getId(), "id");
 
     }
 
@@ -93,7 +96,7 @@ public class EntryServlet extends HttpServlet {
 
 
         if (!jObj.has("id")) {
-            ApiUtils.getInstance().processNotInvalidError(response);
+            ApiUtils.getInstance().processInvalidError(response);
             return;
         }
 
@@ -109,83 +112,12 @@ public class EntryServlet extends HttpServlet {
         DatabaseManager.getInstance().update(a);
 
         response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response,a.getId(),"id");
+        ApiUtils.getInstance().serializeObject(response, a.getId(), "id");
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
 
         ApiUtils.getInstance().deleteFromDatabase(Entry.class, request, response);
-    }
-
-
-    private List<Entry> getEntriesFromDatabase(String Sid, String SeventId, String sType, HttpServletResponse response) {
-
-        List<Entry> entries = new ArrayList<>();
-
-        // if ID is submitted
-        if (ApiUtils.getInstance().isStringNotEmpty(Sid)) {
-
-            Entry e = DatabaseManager.getInstance().getByStringId(Entry.class,Sid);
-            if (e != null) {
-                entries.add(e);
-                return entries;
-            }
-        }
-
-        if (ApiUtils.getInstance().isStringNotEmpty(SeventId)) return getEntriesByEventId(SeventId, response);
-
-        if (ApiUtils.getInstance().isStringNotEmpty(sType)) return getEntriesByEventType(EventServlet.getType(sType), response);
-
-        return getEntries();
-    }
-
-    /*
-    private Entry updateEntryFromJson(JsonNode jEntry, Entry entry) {
-
-
-        try {
-            entry.setItem(new EventServlet().getEventByID(jEntry.getAsJsonObject("event").get("id").getAsString(), null));
-        } catch (IOException e) {
-            //todo logger.log(Level.DANGER, "Could not find event associated with entry", e)
-        }
-
-        entry.setCategory(DatabaseManager.createEntityManager().find(EntryCategory.class,jEntry.get("category").getAsJsonObject().get("id").getAsInt()));
-
-        TemporalAccessor day = DateTimeFormatter.ISO_DATE_TIME.parse(jEntry.get("date").getAsString());
-        LocalDateTime date = LocalDateTime.from(day);
-        entry.setDate(date);
-
-        return entry;
-
-    }
-    */
-
-
-    private List<Entry> getEntriesByEventId(String SeventId, HttpServletResponse response) {
-        try {
-            Integer id = Integer.parseInt(SeventId);
-
-            return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e " +
-                    " WHERE e.item.id = :Id", Entry.class)
-                    .setParameter("Id", id)
-                    .getResultList();
-
-        } catch (NumberFormatException e) {
-            logger.error("Parsing error", e);
-            ApiUtils.getInstance().processNotInvalidError(response);
-        }
-        return null;
-    }
-
-    private List<Entry> getEntriesByEventType(Integer type, HttpServletResponse response) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e " +
-                " WHERE e.item.type = :typ", Entry.class)
-                .setParameter("typ", type)
-                .getResultList();
-    }
-
-    private List<Entry> getEntries() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e", Entry.class).getResultList();
     }
 
 }

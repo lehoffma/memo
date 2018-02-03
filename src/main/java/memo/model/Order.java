@@ -1,6 +1,11 @@
 package memo.model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.serialization.UserIdDeserializer;
+import memo.serialization.UserIdSerializer;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -9,7 +14,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "ORDERS")
-public class Order implements Serializable{
+public class Order implements Serializable {
 
 
     //**************************************************************
@@ -28,6 +33,8 @@ public class Order implements Serializable{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @JsonSerialize(using = UserIdSerializer.class)
+    @JsonDeserialize(using = UserIdDeserializer.class)
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "order")
@@ -88,7 +95,9 @@ public class Order implements Serializable{
         this.items = items;
     }
 
-    public void addItem(OrderedItem o) { this.items.add(o);}
+    public void addItem(OrderedItem o) {
+        this.items.add(o);
+    }
 
     public String getText() {
         return text;
