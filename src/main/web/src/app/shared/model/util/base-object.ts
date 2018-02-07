@@ -87,7 +87,7 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 					value = toPaymentMethod(value);
 				} else if (key === "images") {
 					//todo 11.12. test
-					key = (<any>"imagePaths");
+					key = (<any>"images");
 				}
 
 				this[key] = value;

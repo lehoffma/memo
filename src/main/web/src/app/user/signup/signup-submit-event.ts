@@ -12,7 +12,7 @@ export interface SignUpSubmitEvent {
 	telephone?: string,
 	mobile?: string,
 	isStudent?: boolean,
-	imagePaths?: string[],
+	images?: string[],
 	profilePicture?: FormData,
 	paymentInfo?: PaymentInfo
 }

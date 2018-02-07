@@ -235,12 +235,22 @@ public class User implements Serializable {
         this.hasSeasonTicket = hasSeasonTicket;
     }
 
-    public Boolean getWoelfeClubMember() {
+//    public Boolean getWoelfeClubMember() {
+//        return isWoelfeClubMember;
+//    }
+//
+//    public void setWoelfeClubMember(Boolean woelfeClubMember) {
+//        isWoelfeClubMember = woelfeClubMember;
+//    }
+
+
+    public Boolean getIsWoelfeClubMember() {
         return isWoelfeClubMember;
     }
 
-    public void setWoelfeClubMember(Boolean woelfeClubMember) {
-        isWoelfeClubMember = woelfeClubMember;
+    public User setIsWoelfeClubMember(Boolean isWoelfeClubMember) {
+        this.isWoelfeClubMember = isWoelfeClubMember;
+        return this;
     }
 
     public PermissionState getPermissions() {

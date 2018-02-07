@@ -31,7 +31,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 		);
 	author$: Observable<User> = this.comment$
 		.pipe(
-			mergeMap(comment => this.userService.getById(comment.authorId))
+			mergeMap(comment => this.userService.getById(comment.author))
 		);
 	children$: Observable<Comment[]> = this.comment$
 		.pipe(
@@ -184,7 +184,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 		dialogRef.afterClosed()
 			.pipe(
 				mergeMap((newComment: Comment) => {
-					if (newComment && newComment.text) {
+					if (newComment && newComment.content) {
 						return this.commentService.modify(newComment, this.parentId);
 					}
 					//otherwise, the user clicked close/cancel

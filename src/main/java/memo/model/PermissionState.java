@@ -206,11 +206,11 @@ public class PermissionState implements Serializable {
         this.stock = stock;
     }
 
-    public Permission getAccount() {
+    public Permission getSettings() {
         return settings;
     }
 
-    public void setAccount(Permission account) {
+    public void setSettings(Permission account) {
         this.settings = account;
     }
 
@@ -228,7 +228,7 @@ public class PermissionState implements Serializable {
                 ", merch=" + merch +
                 ", tour=" + tour +
                 ", stock=" + stock +
-                ", settings=" + settings +
+                ", account=" + settings +
                 '}';
     }
 }

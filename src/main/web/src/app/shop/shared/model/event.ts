@@ -13,7 +13,7 @@ export class Event extends BaseObject<Event> {
 				public description: string,
 				public expectedRole: ClubRole,
 				public route: EventRoute,
-				public imagePaths: string[],
+				public images: string[],
 				public capacity: number,
 				public priceMember: number,
 				public price: number = priceMember) {

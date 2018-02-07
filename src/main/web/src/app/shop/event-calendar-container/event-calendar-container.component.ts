@@ -120,7 +120,10 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 		const dialogRef = this.mdDialog.open(EventContextMenuComponent, {
 			data: {
 				id: eventId,
-				title: this.eventService.getById(eventId).map(event => event.title),
+				title: this.eventService.getById(eventId)
+					.pipe(
+						map(event => event.title)
+					),
 				eventType: observable
 					.pipe(map(([permissions, eventType]) => eventType)),
 				view: permission$

@@ -12,7 +12,7 @@ export class Entry extends BaseObject<Entry> {
 				public readonly event: Event,
 				public readonly date: Moment,
 				public readonly comment: string,
-				public readonly imagePaths: string[],
+				public readonly images: string[],
 				public readonly category: EntryCategory) {
 		super(id);
 	}

@@ -5,11 +5,10 @@ import {Link} from "../../../shared/model/link";
 import {UserPermissions, visitorPermissions} from "../../../shared/model/permission";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {LogInService} from "../../../shared/services/api/login.service";
-import {UserService} from "../../../shared/services/api/user.service";
 import {Location} from "@angular/common";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {mergeMap, map} from "rxjs/operators";
+import {map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Component({
@@ -30,6 +29,7 @@ export class SideNavComponent implements OnInit {
 	public links = combineLatest(this.user, this.navigationService.sidenavLinks)
 		.pipe(
 			map(([user, links]) => {
+				console.log(user);
 				const linksCopy = [...links];
 				const permissions = user === null || user.id === -1
 					? visitorPermissions
@@ -95,7 +95,7 @@ export class SideNavComponent implements OnInit {
 
 	logout() {
 		this.logInService.logout()
-			.subscribe(logout => null);
+			.subscribe(() => null);
 	}
 
 	saveUrl() {

@@ -17,7 +17,7 @@ import {LeaderboardRow} from "./leaderboard-row";
 					</svg>
 					{{user.position}}
 				</h2>
-				<img src="{{user.imagePaths[0]}}">
+				<img src="{{user.images[0]}}">
 				<span class="user-name">{{user.firstName}} {{user.surname}}</span>
 			</div>
 			<span class="miles-container">

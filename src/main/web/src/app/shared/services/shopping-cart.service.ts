@@ -7,6 +7,7 @@ import {MerchColor} from "../../shop/shared/model/merch-color";
 import {EventService} from "./api/event.service";
 import {map, mergeMap} from "rxjs/operators";
 import {Event} from "../../shop/shared/model/event";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -38,7 +39,7 @@ export class ShoppingCartService implements OnInit {
 		return this.content
 			.pipe(
 				mergeMap(content =>
-					Observable.combineLatest(
+					combineLatest(
 						...[...content.merch, ...content.partys, ...content.tours]
 							.map(item => this.eventService.getById(item.id)
 								.map(event => event.price * item.amount)))

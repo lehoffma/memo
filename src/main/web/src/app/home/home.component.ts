@@ -7,6 +7,7 @@ import {EventType} from "../shop/shared/model/event-type";
 import * as moment from "moment";
 import {ShopItemType} from "../shop/shared/model/shop-item-type";
 import {LogInService} from "../shared/services/api/login.service";
+import {map} from "rxjs/operators";
 
 interface EventsPreview {
 	title: string,
@@ -27,22 +28,29 @@ export class HomeComponent implements OnInit {
 			route: "tours",
 			type: ShopItemType.tour,
 			events: this.eventService.search("", EventType.tours)
-				.map(tours => this.removePastEvents(tours))
-				.map(tours => tours.slice(0, 7))
+				.pipe(
+					map(tours => this.removePastEvents(tours)),
+					map(tours => tours.slice(0, 7))
+				)
 		},
 		{
 			title: "Veranstaltungen",
 			route: "partys",
 			type: ShopItemType.party,
 			events: this.eventService.search("", EventType.partys)
-				.map(tours => this.removePastEvents(tours))
-				.map(partys => partys.slice(0, 7))
+				.pipe(
+					map(partys => this.removePastEvents(partys)),
+					map(partys => partys.slice(0, 7))
+				)
 		},
 		{
 			title: "Merchandise",
 			route: "merch",
 			type: ShopItemType.merch,
-			events: this.eventService.search("", EventType.merch).map(merch => merch.slice(0, 7))
+			events: this.eventService.search("", EventType.merch)
+				.pipe(
+					map(merch => merch.slice(0, 7))
+				)
 		},
 	];
 

@@ -1,8 +1,10 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
-import {tap} from "rxjs/operators";
+import {catchError, mergeMap, tap} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import {_throw} from "rxjs/observable/throw";
+import {of} from "rxjs/observable/of";
 
 @Injectable()
 export class AuthService {
@@ -83,6 +85,31 @@ export class AuthService {
 			);
 	}
 
+
+	public getRefreshedAccessToken(): Observable<{ auth_token: string } | null> {
+		if (this.isAuthenticated()) {
+			return of({auth_token: this.getToken()});
+		}
+		else {
+			//try refreshing token
+			return this.refreshAccessToken()
+				.pipe(
+					mergeMap(() => {
+						//refreshing token worked
+						if (this.isAuthenticated()) {
+							return of({auth_token: this.getToken()});
+						}
+						//refreshing token didn't work for some other reason
+						return _throw(new Error());
+					}),
+					//refresh-token expired
+					catchError(() => {
+						return of({auth_token: null});
+					})
+				)
+		}
+	}
+
 	/**
 	 *
 	 * @returns {boolean}
@@ -90,8 +117,13 @@ export class AuthService {
 	public isAuthenticated(): boolean {
 		const token = this.getToken();
 
-		if(token !== null){
-			return this.jwtHelperService.isTokenExpired(token);
+		try {
+			if (token !== null) {
+				return !this.jwtHelperService.isTokenExpired(token);
+			}
+		}
+			//catch error that could occur when auth_token is not a valid jwt
+		catch (e) {
 		}
 		return false;
 	}

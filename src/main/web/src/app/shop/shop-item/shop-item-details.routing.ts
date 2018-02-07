@@ -5,7 +5,6 @@ import {ParticipantListComponent} from "./item-details/participants/participant-
 import {PartyDetailComponent} from "./item-details/details/party-detail.component";
 import {MerchandiseDetailComponent} from "./item-details/details/merchandise-detail.component";
 import {ConcludeEventComponent} from "./conclude/conclude-event/conclude-event.component";
-import {SharedModule} from "../../shared/shared.module";
 
 const routes: Route[] = [
 	{path: "tours/:id", component: TourDetailComponent},

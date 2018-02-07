@@ -3,7 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 
 export interface ImageUploadApiResponse {
-	imagePaths: string[];
+	images: string[];
 }
 
 @Injectable()

@@ -10,7 +10,7 @@ export function attributeSortingFunction<ObjectType>(attribute: string, descendi
 	return sortingFunction(obj => obj[attribute], descending);
 }
 
-export function dateSortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => Date|Moment, descending: boolean): SortingFunction<ObjectType> {
+export function dateSortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => Date | Moment, descending: boolean): SortingFunction<ObjectType> {
 	return (a, b) => {
 		let dateA = moment(getAttribute(a)),
 			dateB = moment(getAttribute(b));
@@ -88,18 +88,18 @@ export function getId(object: any): number {
 	return getHashOfObject(object);
 }
 
-export function isObservable(value:any): value is Observable<any>{
+export function isObservable(value: any): value is Observable<any> {
 	return (<Observable<any>>value).subscribe !== undefined;
 }
 
 
-const concat = (x,y) =>
-	x.concat(y)
+const concat = (x, y) =>
+	x.concat(y);
 
-const flatMap = (f,xs) =>
-	xs.map(f).reduce(concat, [])
+const flatMap = (f, xs) =>
+	xs.map(f).reduce(concat, []);
 
 
-export function isArrayType(value) : value is any[]{
+export function isArrayType(value): value is any[] {
 	return isArray(value);
 }

@@ -2,7 +2,7 @@
 <div *ngIf="user | async; let account;">
 	<div class="account-header">
 		<div *ngIf="account.id !== -1; else loggedOutHeader;">
-			<img src="{{account.imagePaths[0]}}" class="profile-picture">
+			<img src="{{account.images[0]}}" class="profile-picture">
 			<div>
 				<span class="profile-name">{{account.firstName}}</span>
 				<div class="profile-email-container">

@@ -72,7 +72,9 @@ export class CommentService extends ServletService<Comment> {
 	 */
 	addOrModify(requestMethod: AddOrModifyRequest,
 				comment: Comment, parentId?: number): Observable<Comment> {
-		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {comment, parentId}))
+
+		const {eventId, ...commentWithoutEventId} = comment;
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {comment: commentWithoutEventId, parentId}))
 			.pipe(
 				tap(() => this._cache.invalidateById(comment.id)),
 				mergeMap(response => this.getById(response.id))

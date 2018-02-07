@@ -102,10 +102,6 @@ export class EntryService extends ServletService<Entry> {
 	 * @param options
 	 */
 	add(entry: Entry, options?: any): Observable<Entry> {
-		if (!entry["entryCategoryID"]) {
-			entry["entryCategoryID"] = entry.category.id;
-		}
-
 		return this.addOrModify(this.http.post.bind(this.http), entry, options);
 	}
 
@@ -116,9 +112,6 @@ export class EntryService extends ServletService<Entry> {
 	 * @returns {Observable<Entry>}
 	 */
 	modify(entry: Entry, options?: any): Observable<Entry> {
-		if (!entry["entryCategoryID"]) {
-			entry["entryCategoryID"] = entry.category.id;
-		}
 		return this.addOrModify(this.http.put.bind(this.http), entry, options);
 	}
 
@@ -153,7 +146,14 @@ export class EntryService extends ServletService<Entry> {
 				.forEach(key => body[key] = options[key]);
 		}
 
-		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/entry", {entry, ...body}, {
+		if (entry["addresses"]) {
+			delete entry["addresses"];
+		}
+		let {event, category, ...fixedEntry} = entry;
+		fixedEntry["item"] = event.id;
+		fixedEntry["category"] = category.id;
+
+		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/entry", {entry: fixedEntry, ...body}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json"),
 		}))
 			.pipe(

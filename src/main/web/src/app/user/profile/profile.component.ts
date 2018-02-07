@@ -82,8 +82,9 @@ export class ProfileComponent implements OnInit {
 	}
 
 	editProfile() {
-		this.route.params.map(params => +params["id"])
+		this.route.params
 			.pipe(
+				map(params => +params["id"]),
 				first()
 			)
 			.subscribe(

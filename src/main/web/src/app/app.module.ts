@@ -17,7 +17,6 @@ import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
-import {ShareButtonsModule} from "ngx-sharebuttons";
 import {DateAdapter, MAT_DATE_FORMATS} from "@angular/material";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./shared/authentication/auth.interceptor";
@@ -34,6 +33,7 @@ import {AuthService} from "./shared/authentication/auth.service";
 
 import {registerLocaleData} from '@angular/common';
 import localeDe from '@angular/common/locales/de';
+import {ShareButtonsModule} from "@ngx-share/buttons";
 
 registerLocaleData(localeDe);
 

@@ -338,7 +338,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			data: {
 				title: this.event.title,
 				description: this.event.description,
-				image: this.event.imagePaths[0],
+				image: this.event.images[0],
 				additionalTags: []
 			}
 		})

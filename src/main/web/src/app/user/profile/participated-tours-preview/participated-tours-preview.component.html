@@ -3,7 +3,7 @@
             <span *ngFor="let recentEvent of (userEvents | slice:0:amountOfEventsShown); let lastTour = last"
 				  (click)="showEvent(recentEvent)">
                 <mat-list-item>
-                    <img mat-list-avatar src="{{recentEvent?.imagePaths[0]}}"
+                    <img mat-list-avatar src="{{recentEvent?.images[0]}}"
 						 alt="picture of the {{recentEvent.title}} event">
                     <h3 matLine> {{recentEvent.title}} </h3>
                     <p matLine>

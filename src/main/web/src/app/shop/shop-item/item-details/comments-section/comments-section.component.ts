@@ -1,12 +1,4 @@
-import {
-	ChangeDetectionStrategy,
-	ChangeDetectorRef,
-	Component,
-	EventEmitter,
-	Input,
-	OnInit,
-	Output
-} from "@angular/core";
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Comment} from "../../../shared/model/comment";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {LogInService} from "../../../../shared/services/api/login.service";
@@ -71,8 +63,8 @@ export class CommentsSectionComponent implements OnInit {
 					mergeMap(user => {
 						let comment = new Comment(this.eventId, -1, moment(), user.id, commentText);
 						this.dummyComment = this.dummyComment.setProperties({
-							text: "",
-							authorId: user.id,
+							content: "",
+							author: user.id,
 							timeStamp: comment.timeStamp,
 							eventId: this.eventId,
 						});

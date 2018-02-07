@@ -6,7 +6,7 @@ import {Permission} from "../model/permission";
 import {UserService} from "../services/api/user.service";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {map, mergeMap} from "rxjs/operators";
+import {combineLatest, map, mergeMap} from "rxjs/operators";
 
 @Injectable()
 export class IsTreasurerGuard implements CanActivate {

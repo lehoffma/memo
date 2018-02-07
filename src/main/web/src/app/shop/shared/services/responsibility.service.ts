@@ -4,6 +4,7 @@ import {of} from "rxjs/observable/of";
 import {UserService} from "../../../shared/services/api/user.service";
 import {EventService} from "../../../shared/services/api/event.service";
 import {User} from "../../../shared/model/user";
+import {map} from "rxjs/operators";
 
 @Injectable()
 export class ResponsibilityService {
@@ -31,19 +32,7 @@ export class ResponsibilityService {
 	 */
 	public getResponsible(eventId: number): Observable<User[]> {
 		//todo remove demo
-		return of(
-			[
-				User.create().setProperties({
-					firstName: "Nils",
-					surname: "Pöcking",
-					mobile: "017684806285"
-				}),
-				User.create().setProperties({
-					firstName: "Lennart",
-					surname: "Hoffmann",
-					mobile: "015170881887"
-				})
-			]);
+		return this.userService.getById(1).pipe(map(it => [it]));
 	}
 
 	/**

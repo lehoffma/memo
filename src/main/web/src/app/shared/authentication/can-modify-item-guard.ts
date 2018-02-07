@@ -58,12 +58,6 @@ export class CanModifyItemGuard implements CanActivate {
 	}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
-
-		//todo remove demo
-		if (route.toString().includes("")) {
-			return true;
-		}
-
 		return this.loginService
 			.accountObservable
 			.pipe(

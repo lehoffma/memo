@@ -10,7 +10,6 @@ import {ItemTableComponent} from "./details-table/item-table.component";
 import {ClothesSizePipe} from "./details/clothes-size.pipe";
 import {ItemDetailsContentComponent} from "./content/item-details-content.component";
 import {ItemDetailsContainerComponent} from "./container/item-details-container.component";
-import {ShareButtonsModule} from "ngx-sharebuttons";
 import {ItemDetailsOverviewComponent} from "./container/overview/item-details-overview.component";
 import {ItemImagePopupComponent} from "./container/image-popup/item-image-popup.component";
 import {CommentsSectionModule} from "./comments-section/comments-section.module";
@@ -18,10 +17,11 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MemoMaterialModule} from "../../../../material.module";
 import {SharedModule} from "../../../shared/shared.module";
 import {AgmCoreModule} from "@agm/core";
-import {OrderStatusTableCellComponent} from './participants/order-status-table-cell.component';
-import {RouteListComponent} from './route/route-list.component';
+import {OrderStatusTableCellComponent} from "./participants/order-status-table-cell.component";
+import {RouteListComponent} from "./route/route-list.component";
 import {AddressRendererPipe} from "./route/address-renderer.pipe";
 import {SharedShopModule} from "../../shared/shop-shared.module";
+import {ShareButtonsModule} from "@ngx-share/buttons";
 
 @NgModule({
 	imports: [

@@ -1,9 +1,12 @@
-package memo.api;
+package memo.auth;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import memo.data.UserRepository;
 import memo.model.User;
 import memo.util.ApiUtils;
-import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
@@ -37,6 +40,29 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String accessToken = request.getParameter("auth_token");
+
+        Jws<Claims> accessTokenJws = Jwts.parser()
+                .setSigningKey(KeyGenerator.getAccessKey())
+                .parseClaimsJws(accessToken);
+        String email = accessTokenJws.getBody().getSubject();
+
+        List<User> users = UserRepository.getInstance().getUserByEmail(email);
+        if (users.isEmpty()) {
+            ApiUtils.getInstance().processNotFoundError(response);
+            logger.error("Login failed: could not find user with email = " + email);
+            return;
+        }
+
+        User user = users.get(0);
+
+        logger.trace("Login with email = " + email + " was successful");
+        ApiUtils.getInstance().serializeObject(response, user.getId(), "user");
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
@@ -53,10 +79,7 @@ public class LoginServlet extends HttpServlet {
             //I feel like it would be a security risk to just log the password as well
             logger.trace("Trying to login with email = " + information.email);
 
-            List<User> users = DatabaseManager.createEntityManager()
-                    .createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                    .setParameter("email", information.email)
-                    .getResultList();
+            List<User> users = UserRepository.getInstance().getUserByEmail(information.email);
 
             if (users.isEmpty()) {
                 logger.error("Could not find user with email = " + information.email);
@@ -70,12 +93,15 @@ public class LoginServlet extends HttpServlet {
 
             if (user.getPassword().equals(information.password)) {
                 logger.trace("Login was successful!");
-                String authenticationToken = getAuthenticationToken();
+
+                String accessToken = TokenService.getAccessToken(information.email);
+                String refreshToken = TokenService.getRefreshToken(information.email);
                 response.setStatus(HttpServletResponse.SC_ACCEPTED);
 
                 ObjectNode jsonResponse = ApiUtils.getInstance().toObjectNode(new MapBuilder<String, Object>()
                         .buildPut("id", String.valueOf(user.getId()))
-                        .buildPut("auth_token", authenticationToken)
+                        .buildPut("auth_token", accessToken)
+                        .buildPut("refresh_token", refreshToken)
                 );
                 response.getWriter().append(jsonResponse.toString());
             } else {
@@ -93,11 +119,6 @@ public class LoginServlet extends HttpServlet {
 
     }
 
-
-    private String getAuthenticationToken() {
-        //todo implement
-        return null;
-    }
 
 }
 

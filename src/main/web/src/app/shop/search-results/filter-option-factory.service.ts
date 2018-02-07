@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {FilterOptionType} from "./filter-option-type";
 import {MultiLevelSelectParent} from "../../shared/multi-level-select/shared/multi-level-select-parent";
 import {Event} from "../shared/model/event";
@@ -145,13 +145,15 @@ export class FilterOptionFactoryService {
 				queryValue: material,
 				selected: false
 			})))
-			.map(materials => [{
-				name: "Material",
-				queryKey: "material",
-				selectType: (<"multiple" | "single">"multiple"),
-				expanded: false,
-				children: materials
-			}])
+			.pipe(
+				map(materials => [{
+					name: "Material",
+					queryKey: "material",
+					selectType: (<"multiple" | "single">"multiple"),
+					expanded: false,
+					children: materials
+				}])
+			);
 	}
 
 	private getColorFilterOptions(results: Event[]): Observable<MultiLevelSelectParent[]> {

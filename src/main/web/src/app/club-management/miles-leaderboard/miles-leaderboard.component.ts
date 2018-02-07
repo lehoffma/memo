@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {UserService} from "../../shared/services/api/user.service";
 import {attributeSortingFunction} from "../../util/util";
@@ -6,7 +6,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {LeaderboardRow} from "./leaderboard-row";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {map} from "rxjs/operators";
+import {map, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 
 export interface LoggedInUserPosition extends LeaderboardRow {
@@ -14,9 +14,9 @@ export interface LoggedInUserPosition extends LeaderboardRow {
 }
 
 @Component({
-	selector: 'memo-miles-leaderboard',
-	templateUrl: './miles-leaderboard.component.html',
-	styleUrls: ['./miles-leaderboard.component.scss']
+	selector: "memo-miles-leaderboard",
+	templateUrl: "./miles-leaderboard.component.html",
+	styleUrls: ["./miles-leaderboard.component.scss"]
 })
 export class MilesLeaderboardComponent implements OnInit {
 	//how many rows we want to show (useful for dashboard mini-version)
@@ -32,6 +32,7 @@ export class MilesLeaderboardComponent implements OnInit {
 			//sort by miles
 			map(users => users.sort(attributeSortingFunction<User>("miles", true))
 				.sort(attributeSortingFunction<User>("surname", true))),
+			tap(users => console.log(users)),
 			map(users => users.reduce((acc, user, index) => {
 				let position = index + 1;
 

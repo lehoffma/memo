@@ -35,7 +35,7 @@
 		"name": "Accountverwaltung",
 		"loginNeeded": true,
 		"minimumPermission": {
-			"user": 1,
+			"userManagement": 1,
 			"merch": 1,
 			"tour": 1,
 			"party": 1,
@@ -72,7 +72,7 @@
 		"name": "Vereinsverwaltung",
 		"loginNeeded": true,
 		"minimumPermission": {
-			"user": 1,
+			"userManagement": 1,
 			"merch": 1,
 			"tour": 1,
 			"party": 1,
@@ -86,7 +86,7 @@
 				"icon": "payment",
 				"name": "Kostenübersicht",
 				"minimumPermission": {
-					"user": 1,
+					"userManagement": 1,
 					"merch": 1,
 					"tour": 1,
 					"party": 1,
@@ -105,7 +105,7 @@
 				"icon": "local_shipping",
 				"name": "Bestand",
 				"minimumPermission": {
-					"user": 1,
+					"userManagement": 1,
 					"merch": 1,
 					"tour": 1,
 					"party": 1,

@@ -13,11 +13,11 @@ export class Party extends Event {
 				description: string,
 				expectedRole: ClubRole,
 				route: EventRoute,
-				imagePaths: string[],
+				images: string[],
 				capacity: number,
 				priceMember: number,
 				public emptySeats: number) {
-		super(id, title, date, description, expectedRole, route, imagePaths, capacity, priceMember);
+		super(id, title, date, description, expectedRole, route, images, capacity, priceMember);
 	}
 
 	get overviewKeys(): EventOverviewKey[] {

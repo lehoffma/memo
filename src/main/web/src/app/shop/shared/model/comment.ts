@@ -6,8 +6,8 @@ export class Comment extends BaseObject<Comment> {
 	constructor(public readonly eventId: number,
 				public readonly id: number,
 				public readonly timeStamp: Moment,
-				public readonly authorId: number,
-				public text: string,
+				public readonly author: number,
+				public content: string,
 				public readonly children: number[] = []) {
 		super(id);
 	}

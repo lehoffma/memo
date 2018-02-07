@@ -3,6 +3,7 @@ import {Address} from "../../../shared/model/address";
 import {Router} from "@angular/router";
 import {AddressService} from "../../../shared/services/api/address.service";
 import {LogInService} from "../../../shared/services/api/login.service";
+import {map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-address-selection",
@@ -13,9 +14,11 @@ export class AddressSelectionComponent implements OnInit {
 
 	// => mobile: long press opens menu?
 	editUrl$ = this.loginService.accountObservable
-		.map(id => id === null
-			? "/address"
-			: `/members/${id}/address`);
+		.pipe(
+			map(id => id === null
+				? "/address"
+				: `/members/${id}/address`)
+		);
 	@Output() addressChange = new EventEmitter<Address>();
 
 	constructor(private router: Router,

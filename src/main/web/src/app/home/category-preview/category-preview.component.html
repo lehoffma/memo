@@ -2,7 +2,7 @@
 	<mat-card class="preview-card"
 			  *ngFor="let event of events"
 			  (click)="showDetails(event)">
-		<img mat-card-image src="{{!!event.imagePaths ? event.imagePaths[0] : 'resources/images/Logo.png'}}">
+		<img mat-card-image src="{{!!event.images ? event.images[0] : 'resources/images/Logo.png'}}">
 		<mat-card-content>
 			<div class="card-content-container">
 				<div class="event-content">

@@ -30,7 +30,7 @@ export class User extends BaseObject<User> {
 	 * @param hasSeasonTicket ob der User eine Dauerkarte besitzt
 	 * @param isStudent ob der User ein Student is (Studenten bekommen einen Discount)
 	 * @param hasDebitAuth ob der User Lastschrift Verfahren als Bezahlmethode ausgewählt hat
-	 * @param imagePaths
+	 * @param images
 	 */
 	constructor(public readonly id: number,
 				public readonly firstName: string,
@@ -52,7 +52,7 @@ export class User extends BaseObject<User> {
 				public readonly hasSeasonTicket: boolean,
 				public readonly isStudent: boolean,
 				public readonly hasDebitAuth: boolean,
-				public readonly imagePaths: string[]) {
+				public readonly images: string[]) {
 		super(id);
 	}
 

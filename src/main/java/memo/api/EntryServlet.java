@@ -65,7 +65,7 @@ public class EntryServlet extends HttpServlet {
         }
 
 
-        if (entries.isEmpty()) {
+        if (ApiUtils.stringIsNotEmpty(Sid) && entries.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
             return;
         }

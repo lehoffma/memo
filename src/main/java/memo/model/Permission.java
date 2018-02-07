@@ -9,13 +9,20 @@ package memo.model;
 	 5 : admin
 	  */
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Permission {
     none,
     read,
     write,
     create,
     delete,
-    admin
+    admin;
+
+    @JsonValue
+    public int toValue() {
+        return ordinal();
+    }
 }
 
 

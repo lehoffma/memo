@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import memo.data.ImageRepository;
 import memo.model.Image;
 import memo.util.ApiUtils;
+import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -20,7 +21,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "ImageServlet", value = "/api/image")
 @MultipartConfig()
@@ -73,13 +76,20 @@ public class ImageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Collection<Part> parts = request.getParts();
 
-        ArrayNode jsonImageList = new ArrayNode(JsonNodeFactory.instance);
-        parts.stream()
+
+        List<Image> images = parts.stream()
                 .map(part -> new Image().saveToFile(part))
+                .collect(Collectors.toList());
+
+        DatabaseManager.getInstance().saveAll(images);
+
+        ArrayNode jsonImageList = new ArrayNode(JsonNodeFactory.instance);
+        images.stream()
                 .map(Image::getFileName)
                 .forEach(jsonImageList::add);
 
-        ApiUtils.getInstance().serializeObject(response, jsonImageList, "imagePaths");
+
+        ApiUtils.getInstance().serializeObject(response, jsonImageList, "images");
     }
 
 }

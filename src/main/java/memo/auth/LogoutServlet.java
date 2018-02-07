@@ -1,4 +1,4 @@
-package memo.api;
+package memo.auth;
 
 import com.google.common.io.CharStreams;
 

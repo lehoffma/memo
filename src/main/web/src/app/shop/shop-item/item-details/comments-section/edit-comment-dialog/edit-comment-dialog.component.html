@@ -1,14 +1,14 @@
 <form #editCommentDialogForm="ngForm" (ngSubmit)="saveComment()">
 	<div class="input-container">
 		<h2 matDialogTitle>Ändere deinen Kommentar</h2>
-		<textarea autosize matInput #commentInput="ngModel" name="commentInput" [(ngModel)]="comment.text"></textarea>
+		<textarea autosize matInput #commentInput="ngModel" name="commentInput" [(ngModel)]="comment.content"></textarea>
 	</div>
 
 	<div>
 		<button mat-icon-button type="button" matDialogClose>
 			<mat-icon>arrow_back</mat-icon>
 		</button>
-		<button mat-icon-button [disabled]="text === comment.text" color="primary">
+		<button mat-icon-button [disabled]="text === comment.content" color="primary">
 			<mat-icon>done</mat-icon>
 		</button>
 	</div>

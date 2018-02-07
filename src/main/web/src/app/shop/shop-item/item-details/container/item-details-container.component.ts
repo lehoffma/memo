@@ -84,9 +84,6 @@ export class ItemDetailsContainerComponent implements OnInit {
 	 * @returns {Observable<boolean>}
 	 */
 	checkResponsibility(user: User): Observable<boolean> {
-		//todo remove demo
-		user = User.create();
-
 		if (user !== null && this.event !== null) {
 			return this.concludeEventService.hasConcluded(this.event.id)
 				.pipe(

@@ -18,11 +18,12 @@ import {PriceRendererComponent} from "./price-renderer/price-renderer.component"
 import {RouterModule} from "@angular/router";
 import {ProfileLinkComponent} from "./profile-renderer/profile-link/profile-link.component";
 import {ProfilePreviewComponent} from "./profile-renderer/profile-preview/profile-preview.component";
-import {CapacityRendererComponent} from './capacity-renderer/capacity-renderer.component';
-import {ShareDialogComponent} from './share-dialog/share-dialog.component';
-import {ShareButtonsModule} from "ngx-sharebuttons";
-import {UserAutocompleteComponent} from './user-autocomplete/user-autocomplete.component';
+import {CapacityRendererComponent} from "./capacity-renderer/capacity-renderer.component";
+import {ShareDialogComponent} from "./share-dialog/share-dialog.component";
+import {UserAutocompleteComponent} from "./user-autocomplete/user-autocomplete.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {ShareButtonsModule} from "@ngx-share/buttons";
+import {DisplayErrorDirective} from "./template-validators/display-error.directive";
 
 @NgModule({
 	imports: [
@@ -56,7 +57,8 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 		ProfilePreviewComponent,
 		CapacityRendererComponent,
 		ShareDialogComponent,
-		UserAutocompleteComponent
+		UserAutocompleteComponent,
+		DisplayErrorDirective
 	],
 	exports: [
 		ExpandableTableModule,
@@ -84,7 +86,9 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 		ProfileLinkComponent,
 
 		CapacityRendererComponent,
-		UserAutocompleteComponent
+		UserAutocompleteComponent,
+
+		DisplayErrorDirective
 	],
 	entryComponents: [
 		ConfirmationDialogComponent,

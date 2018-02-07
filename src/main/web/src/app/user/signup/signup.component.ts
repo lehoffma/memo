@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {SignUpSubmitEvent} from "./signup-submit-event";
 import {SignUpSection, toTitle} from "./signup-section";
 import {SignUpService} from "./signup.service";
+import {filter, map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-signup",
@@ -12,7 +13,10 @@ import {SignUpService} from "./signup.service";
 })
 export class SignUpComponent implements OnInit {
 	sectionEnum = SignUpSection;
-	public currentSection: Observable<SignUpSection> = this.activatedRoute.params.map(params => params["step"]);
+	public currentSection: Observable<SignUpSection> = this.activatedRoute.params
+		.pipe(
+			map(params => params["step"])
+		);
 	getTitleOfSection = toTitle;
 
 	constructor(public signUpService: SignUpService,
@@ -23,8 +27,10 @@ export class SignUpComponent implements OnInit {
 		//falls der user manuell eine section eingibt, obwohl eine vorherige noch nicht abgeschlossen
 		//wurde, wird er zur ersten weitergeleitet
 		this.currentSection
-			.filter(section => section !== SignUpSection.AccountData)
-			.filter(section => this.signUpService.newUser.email === "" || this.signUpService.newUser.password === "")
+			.pipe(
+				filter(section => section !== SignUpSection.AccountData),
+				filter(section => this.signUpService.newUser.email === "" || this.signUpService.newUser.password === "")
+			)
 			.subscribe(
 				section => this.signUpService.navigateToSection(SignUpSection.AccountData)
 			);

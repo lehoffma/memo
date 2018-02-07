@@ -1,6 +1,6 @@
 <div *ngFor="let user of _users$ | async; let i = index" class="user-list-row">
 	<a class="user-info" routerLink="/members/{{user.id}}">
-		<img src="{{user.imagePaths[0]}}"/>
+		<img src="{{user.images[0]}}"/>
 		<span class="user-name">{{user.firstName}} {{user.surname}}</span>
 	</a>
 	<div class="user-list-row-actions">

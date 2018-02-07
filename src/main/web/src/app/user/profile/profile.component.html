@@ -3,7 +3,7 @@
 	<div class="profile-background">
 		<div class="no-height-image-container">
 			<div class="profile-background-image"
-				 [ngStyle]="{'background': 'url(' + user.imagePaths[0] + ') center'}">
+				 [ngStyle]="{'background': 'url(' + user.images[0] + ') center'}">
 
 			</div>
 		</div>
@@ -23,7 +23,7 @@
 			</mat-menu>
 		</div>
 		<div class="profile-header">
-			<img class="profile-picture" src={{user.imagePaths[0]}}>
+			<img class="profile-picture" src="{{user.images[0]}}">
 		</div>
 		<div class="profile-title-container">
 			<h1 class="profile-name">{{user.firstName}} {{user.surname}}</h1>

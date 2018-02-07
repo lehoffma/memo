@@ -48,25 +48,6 @@ export class UserService extends ServletService<User> {
 				map(json => json.users.map(jsonUser => User.create().setProperties(jsonUser)))
 			);
 
-		//todo remove demo
-		if (searchTerm !== null) {
-			return of(
-				[
-					User.create().setProperties({
-						id: 0,
-						firstName: "Nils",
-						surname: "Pöcking",
-						mobile: "017684806285"
-					}),
-					User.create().setProperties({
-						id: 1,
-						firstName: "Lennart",
-						surname: "Hoffmann",
-						mobile: "015170881887"
-					})
-				]);
-		}
-
 		return this._cache.search(params, request);
 	}
 

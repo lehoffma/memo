@@ -17,7 +17,7 @@ export class EditCommentDialogComponent implements OnInit {
 
 	ngOnInit() {
 		this.comment = this.data.comment;
-		this.text = this.comment.text;
+		this.text = this.comment.content;
 	}
 
 	saveComment() {

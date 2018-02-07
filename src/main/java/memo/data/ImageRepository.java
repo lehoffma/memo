@@ -25,10 +25,13 @@ public class ImageRepository extends AbstractRepository<Image> {
 
 
     public Optional<Image> getByFilePath(String fileName) {
-        return Optional.ofNullable(DatabaseManager.createEntityManager().createQuery("SELECT i FROM Image i " +
+        return Optional.of(DatabaseManager.createEntityManager().createQuery("SELECT i FROM Image i " +
                 " WHERE i.fileName = :name", Image.class)
                 .setParameter("name", fileName)
-                .getSingleResult());
+                .getResultList()
+        )
+                .filter(list -> !list.isEmpty())
+                .map(list -> list.get(0));
     }
 
 

@@ -129,7 +129,7 @@ public class ApiUtils {
 
     public void processInvalidError(HttpServletResponse response) {
         try {
-            response.setStatus(400);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().append("invalid data");
         } catch (Exception e) {
             logger.warn("IO Error", e);

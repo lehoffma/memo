@@ -8,6 +8,8 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {Permission, UserPermissions} from "../../shared/model/permission";
 import {Discount} from "../../shared/price-renderer/discount";
 import {DiscountService} from "../../shop/shared/services/discount.service";
+import {map} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Component({
 	selector: "memo-category-preview",
@@ -29,20 +31,22 @@ export class CategoryPreviewComponent implements OnInit, OnDestroy {
 
 	userCanCreateEvent: Observable<boolean> = this.loginService
 		.currentUser$
-		.map(user => {
-			if (user === null) {
-				return false;
-			}
-			const permissions = user.userPermissions;
-			const permissionKey: keyof UserPermissions = EventUtilityService
-				.shopItemSwitch<keyof UserPermissions>(this.itemType, {
-					tours: () => "tour",
-					partys: () => "party",
-					merch: () => "merch"
-				});
+		.pipe(
+			map(user => {
+				if (user === null) {
+					return false;
+				}
+				const permissions = user.userPermissions;
+				const permissionKey: keyof UserPermissions = EventUtilityService
+					.shopItemSwitch<keyof UserPermissions>(this.itemType, {
+						tours: () => "tour",
+						partys: () => "party",
+						merch: () => "merch"
+					});
 
-			return permissions[permissionKey] >= Permission.create;
-		});
+				return permissions[permissionKey] >= Permission.create;
+			})
+		);
 
 	subscriptions = [];
 
@@ -67,7 +71,7 @@ export class CategoryPreviewComponent implements OnInit, OnDestroy {
 		this.createLink = "/" + this.itemType + "/create";
 
 		this.subscriptions.push(
-			Observable.combineLatest(this.events$, this.loginService.accountObservable)
+			combineLatest(this.events$, this.loginService.accountObservable)
 				.subscribe(([events, userId]) => {
 					this.discounts = {};
 					events.forEach(event => {

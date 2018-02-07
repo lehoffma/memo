@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} fr
 import {animate, style, transition, trigger} from "@angular/animations";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {WindowService} from "../../../../shared/services/window.service";
+import {map} from "rxjs/operators";
 
 export enum SearchInputState {
 	ACTIVE = <any> "active",
@@ -39,7 +40,9 @@ export class SearchInputComponent implements OnInit {
 
 
 	screenState$ = this.windowService.dimension$
-		.map(dim => dim.width < 600 ? 'mobile' : 'desktop');
+		.pipe(
+			map(dim => dim.width < 600 ? "mobile" : "desktop")
+		);
 
 	constructor(private navigationService: NavigationService,
 				private windowService: WindowService,

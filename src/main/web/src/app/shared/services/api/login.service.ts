@@ -1,16 +1,16 @@
 import {Injectable} from "@angular/core";
 import {UserService} from "./user.service";
 import {User} from "../../model/user";
-import {isNullOrUndefined} from "util";
 import {MatSnackBar} from "@angular/material";
 import {ActionPermissions} from "../../expandable-table/expandable-table.component";
 import {Permission, UserPermissions} from "../../model/permission";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {AuthService} from "../../authentication/auth.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap, catchError, share, retry} from "rxjs/operators";
+import {catchError, filter, map, mergeMap, retry, share} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 interface LoginApiResponse {
 	id: number;
@@ -21,11 +21,22 @@ interface LoginApiResponse {
 @Injectable()
 export class LogInService {
 	public redirectUrl = "/";
-	private accountSubject: BehaviorSubject<number> = new BehaviorSubject(null);
-	public accountObservable: Observable<number> = this.accountSubject.asObservable();
+	public initialized$ = new BehaviorSubject(false);
 
-	private _currentUser$ = new BehaviorSubject(null);
-	public currentUser$: Observable<User> = this._currentUser$.asObservable();
+	private accountSubject: BehaviorSubject<number> = new BehaviorSubject(null);
+	public accountObservable: Observable<number> =
+		combineLatest(this.accountSubject, this.initialized$)
+			.pipe(
+				filter(([id, initialized]) => initialized),
+				map(([id, _]) => id)
+			);
+
+	public currentUser$: Observable<User> = this.accountObservable
+		.pipe(
+			mergeMap(id => id !== null ? this.userService.getById(id) : of(null))
+		);
+
+
 	private readonly loginUrl = "/api/login";
 	private readonly logoutUrl = "/api/logout";
 
@@ -35,15 +46,41 @@ export class LogInService {
 				private authService: AuthService,
 				private snackBar: MatSnackBar,
 				private userService: UserService) {
-		const currentUserId = JSON.parse(localStorage.getItem(this.profileKey));
-		if (currentUserId && !isNullOrUndefined(currentUserId) && this.authService.isAuthenticated()) {
-			this.pushNewData(+currentUserId);
-		}
-		this.accountObservable
+		this.loginFromToken();
+	}
+
+	/**
+	 *
+	 */
+	loginFromToken() {
+		let request = this.authService.getRefreshedAccessToken();
+
+		request
 			.pipe(
-				mergeMap(id => id !== null ? this.userService.getById(id) : of(null))
+				filter(({auth_token}) => {
+					if (auth_token !== null) {
+						return true;
+					}
+					this.initialized$.next(true);
+					return false;
+				}),
+				mergeMap(({auth_token}) =>
+					this.http.get<{ user: number }>(this.loginUrl, {
+						params: new HttpParams().set("auth_token", auth_token)
+					})),
+				catchError((err, caught) => {
+					console.error(err);
+					return of(null);
+				})
 			)
-			.subscribe(user => this._currentUser$.next(user));
+			.subscribe((response) => {
+				let user = null;
+				if (response !== null) {
+					user = response.user;
+				}
+				this.pushNewData(user);
+				this.initialized$.next(true);
+			})
 	}
 
 	/**

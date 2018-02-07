@@ -8,7 +8,7 @@
 <div *ngFor="let item of orderedEventItems" class="ordered-items">
 	<a routerLink="{{item.link}}">
 		<div class="order-entry-picture">
-			<img src="{{!!item.item.imagePaths[0] ? item.item.imagePaths[0] : 'resources/images/Logo.png'}}"/>
+			<img src="{{!!item.item.images[0] ? item.item.images[0] : 'resources/images/Logo.png'}}"/>
 		</div>
 		<div class="order-entry-header order-entry-info">
 			<div class="order-entry-info-container">

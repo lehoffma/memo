@@ -1,60 +1,53 @@
-<form (ngSubmit)="submit()" #accountDataForm="ngForm" novalidate>
-	<mat-form-field
-		[dividerColor]="(email.touched && email.invalid) ? 'warn' : 'primary'">
+<form [formGroup]="accountDataForm" novalidate (ngSubmit)="submit()">
+	<mat-form-field>
 		<input matInput
+			   formControlName="email"
 			   placeholder="Email"
-			   type="email"
-			   name="email"
-			   [ngClass]="{'has-error': email.touched && email.invalid}"
-			   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
-			   [(ngModel)]="userEmail"
-			   (ngModelChange)="emailIsAlreadyUsed = false"
-			   #email="ngModel"
-			   required>
-		<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-		<mat-error align="end" *ngIf="email.touched && (email.invalid)">
-			Email-Adresse muss in der Form <i>test@email.de</i> sein
-		</mat-error>
-		<mat-error align="end" *ngIf="emailIsAlreadyUsed">
+			   required
+
+		>
+		<mat-error align="end" *ngIf="accountDataForm.get('email').hasError('emailTaken')">
 			Die angegebene Email-Adresse wird bereits verwendet. <a routerLink="/login">Weiter zum Login?</a>
 		</mat-error>
+		<mat-error align="end" *ngIf="accountDataForm.get('email').hasError('email')">
+			Email-Adresse muss in der Form <i>test@email.de</i> sein
+		</mat-error>
 	</mat-form-field>
+
+
 	<mat-form-field>
 		<input matInput
 			   placeholder="Passwort"
+			   formControlName="password"
 			   type="password"
-			   name="password"
-			   [(ngModel)]="password"
-			   #passwordInput="ngModel"
 			   required>
+		<mat-error align="end" *ngIf="accountDataForm.get('password').hasError('required')">
+			Das Passwort darf nicht leer sein!
+		</mat-error>
 		<mat-hint align="end">
 			<ng2-password-strength-bar
-				[passwordToCheck]="password"
+				[passwordToCheck]="accountDataForm.controls['password'].value"
 				[barLabel]="''">
 			</ng2-password-strength-bar>
 		</mat-hint>
 	</mat-form-field>
-	<mat-form-field
-		[dividerColor]="(confirmPasswordInput.touched &&  (password !== confirmedPassword)) ? 'warn' : 'primary'">
+
+	<mat-form-field>
 		<input matInput
 			   placeholder="Passwort bestätigen"
+			   formControlName="confirmedPassword"
 			   type="password"
-			   name="confirm-password-input"
-			   #confirmPasswordInput="ngModel"
-			   [(ngModel)]="confirmedPassword"
 			   required>
-		<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
+
 		<mat-error align="end"
-				 *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (password !== confirmedPassword)">
+				   *ngIf="accountDataForm.get('confirmedPassword').hasError('passwordDoesNotMatch')">
 			Passwörter stimmen nicht überein
 		</mat-error>
 	</mat-form-field>
 
-	<button type="submit"
-			color="primary"
-			[disabled]="!accountDataForm.form.valid || (password !== confirmedPassword) || emailIsAlreadyUsed"
-			mat-raised-button>
-		<mat-icon *ngIf="loading" class="loading-spinner">refresh</mat-icon>
-		Weiter
+	<button mat-raised-button [disabled]="accountDataForm.invalid || accountDataForm.pending" color="primary"
+			type="submit">
+		<mat-icon *ngIf="accountDataForm.pending" class="loading-spinner">refresh</mat-icon>
+		{{accountDataForm.pending ? 'Überprüfe...' : 'Weiter'}}
 	</button>
 </form>

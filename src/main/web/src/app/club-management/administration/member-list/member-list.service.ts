@@ -63,7 +63,7 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 			},
 			{
 				width: 1200,
-				columns: [memberListColumns.imagePaths]
+				columns: [memberListColumns.images]
 			}
 		];
 

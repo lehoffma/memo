@@ -338,17 +338,17 @@ export class ModifyItemService {
 
 			if (uploadedImage) {
 				//todo: error handling, progress report
-				let imagePaths = await this.imageUploadService.uploadImages(uploadedImage)
+				let images = await this.imageUploadService.uploadImages(uploadedImage)
 					.pipe(
-						map(response => response.imagePaths)
+						map(response => response.images)
 					)
 					.toPromise();
 
 				//thanks typescript..
 				if (EventUtilityService.isUser(newObject)) {
-					return newObject.setProperties({imagePaths});
+					return newObject.setProperties({images});
 				}
-				return newObject.setProperties({imagePaths});
+				return newObject.setProperties({images});
 			}
 		}
 

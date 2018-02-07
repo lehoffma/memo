@@ -2,10 +2,7 @@ package memo.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import memo.serialization.EntryCategoryIdDeserializer;
-import memo.serialization.EntryCategoryIdSerializer;
-import memo.serialization.ImagePathListDeserializer;
-import memo.serialization.ImagePathListSerializer;
+import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,6 +35,7 @@ public class Entry implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @JsonDeserialize(using = ShopItemIdDeserializer.class)
     private ShopItem item;
 
     @ManyToOne(fetch = FetchType.EAGER)

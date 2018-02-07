@@ -194,20 +194,20 @@ public class UserServlet extends HttpServlet {
 //            user.setBirthday(date);
 //        }
 
-        if (jsonUser.has("addresses")) {
-            ArrayNode jsonAddresses = (ArrayNode) jsonUser.get("addresses");
-
-            StreamSupport.stream(jsonAddresses.spliterator(), false)
-                    .map(jsonId -> DatabaseManager.createEntityManager().find(Address.class, jsonId.asInt()))
-                    .forEach(user::addAddress);
-        }
-        if (jsonUser.has("bankAccounts")) {
-            ArrayNode jsonBankAccounts = (ArrayNode) jsonUser.get("bankAccounts");
-
-            StreamSupport.stream(jsonBankAccounts.spliterator(), false)
-                    .map(jsonId -> DatabaseManager.createEntityManager().find(BankAcc.class, jsonId.asInt()))
-                    .forEach(user::addBankAccount);
-        }
+//        if (jsonUser.has("addresses")) {
+//            ArrayNode jsonAddresses = (ArrayNode) jsonUser.get("addresses");
+//
+//            StreamSupport.stream(jsonAddresses.spliterator(), false)
+//                    .map(jsonId -> DatabaseManager.createEntityManager().find(Address.class, jsonId.asInt()))
+//                    .forEach(user::addAddress);
+//        }
+//        if (jsonUser.has("bankAccounts")) {
+//            ArrayNode jsonBankAccounts = (ArrayNode) jsonUser.get("bankAccounts");
+//
+//            StreamSupport.stream(jsonBankAccounts.spliterator(), false)
+//                    .map(jsonId -> DatabaseManager.createEntityManager().find(BankAcc.class, jsonId.asInt()))
+//                    .forEach(user::addBankAccount);
+//        }
 
 
         //todo überhaupt noch nötig?

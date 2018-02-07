@@ -2,7 +2,7 @@
             <span *ngFor="let participant of (participants | slice:0:amountOfParticipantsShown)">
                 <mat-list-item
 					(click)="showDetailsOfUser(participant.user)">
-                    <img mat-list-avatar src="{{participant?.user?.imagePaths[0]}}"
+                    <img mat-list-avatar src="{{participant?.user?.images[0]}}"
 						 alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
                     <h3 matLine> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
                     <p matLine>

@@ -6,7 +6,7 @@
 			<memo-item-details-content [title]="'Profilbild'">
 				<memo-multi-image-upload
 					[images]="loginService.isLoggedIn()
-					? userModel['imagePaths']
+					? userModel['images']
 					: [profilePicture]"
 					[limit]="1"
 					(onFormDataChange)="profilePictureChanged($event)">

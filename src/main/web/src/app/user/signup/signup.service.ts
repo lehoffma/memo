@@ -136,8 +136,8 @@ export class SignUpService {
 
 		return this.imageUploadService.uploadImages(pictures)
 			.pipe(
-				map(response => response.imagePaths),
-				map(imagePaths => user.setProperties({imagePaths}))
+				map(response => response.images),
+				map(images => user.setProperties({images}))
 			);
 	}
 
@@ -156,7 +156,7 @@ export class SignUpService {
 		//todo permission api
 		//
 
-		//image: post -> response.imagePaths in objekt tun
+		//image: post -> response.images in objekt tun
 
 		//extract section, email and password properties
 		const {

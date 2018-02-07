@@ -5,7 +5,7 @@ import {AuthService} from "./shared/authentication/auth.service";
 import {Router} from "@angular/router";
 
 @Component({
-	selector: "app",
+	selector: "memo-app",
 	templateUrl: "./app.component.html",
 	styleUrls: ["./app.component.scss"],
 })

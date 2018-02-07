@@ -156,14 +156,14 @@ export class Merchandise extends Event {
 				description: string,
 				expectedRole: ClubRole,
 				route: EventRoute,
-				imagePaths: string[],
+				images: string[],
 				capacity: number,
 				public colors: MerchColor[],
 				public material: string,
 				private _sizeTable: SizeTable,
 				priceMember: number,
 				price: number) {
-		super(id, title, date, description, expectedRole, route, imagePaths, capacity, priceMember, price);
+		super(id, title, date, description, expectedRole, route, images, capacity, priceMember, price);
 	}
 
 	get sizeTable() {
