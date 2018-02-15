@@ -35,16 +35,17 @@ public class ImageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletContext context = request.getServletContext();
 
-        String url = request.getRequestURI();
-        logger.trace("Attempting to send image at url '" + url + "'.");
+        String fileName = request.getParameter("fileName");
+        logger.trace("Attempting to send image at url '" + Image.filePath + fileName + "'.");
 
-        Optional<Image> optionalImage = ImageRepository.getInstance().getByFilePath(url);
+        Optional<Image> optionalImage = ImageRepository.getInstance().getByFilePath(fileName);
 
         if (optionalImage.isPresent()) {
             Image image = optionalImage.get();
+            String fullPath = image.getFullPath();
 
             // retrieve mimeType dynamically
-            String mime = context.getMimeType(image.getFullPath());
+            String mime = context.getMimeType(fullPath);
             if (mime == null) {
                 logger.error("No MIME-type was set");
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -52,7 +53,7 @@ public class ImageServlet extends HttpServlet {
             }
 
             response.setContentType(mime);
-            File file = new File(image.getFullPath());
+            File file = new File(fullPath);
             response.setContentLength((int) file.length());
 
             try (FileInputStream in = new FileInputStream(file);
@@ -66,9 +67,9 @@ public class ImageServlet extends HttpServlet {
                 }
             }
 
-            logger.trace("Image at url '" + url + "' was sent successfully.");
+            logger.trace("Image at url '" + fileName + "' was sent successfully.");
         } else {
-            logger.error("Could not find image at url '" + url + "'.");
+            logger.error("Could not find image at url '" + fileName + "'.");
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
@@ -85,7 +86,7 @@ public class ImageServlet extends HttpServlet {
 
         ArrayNode jsonImageList = new ArrayNode(JsonNodeFactory.instance);
         images.stream()
-                .map(Image::getFileName)
+                .map(Image::getApiPath)
                 .forEach(jsonImageList::add);
 
 

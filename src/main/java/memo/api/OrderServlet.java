@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,7 +50,7 @@ public class OrderServlet extends HttpServlet {
                     //add the ordered items property to the util object
 
                     List<OrderedItem> orderedItems = OrderRepository.getInstance().getOrderedItemsByOrderId(order.getId());
-                    ((ObjectNode) jsonOrder).set("orderedItems", ApiUtils.getInstance().toJsonNode(orderedItems));
+                    ((ObjectNode) jsonOrder).set("items", ApiUtils.getInstance().toJsonNode(orderedItems));
                     return jsonOrder;
                 })
                 .forEach(arrayNode::add);
@@ -64,27 +63,17 @@ public class OrderServlet extends HttpServlet {
 
         logger.trace("POST called");
 
-        Optional<JsonNode> jsonOrderOptional = ApiUtils.getInstance().getJsonObject(request);
+        Optional<JsonNode> jsonOrderOptional = ApiUtils.getInstance().getJsonObject(request)
+                .map(it -> it.get("order"));
 
         if (jsonOrderOptional.isPresent()) {
             JsonNode jsonOrder = jsonOrderOptional.get();
-            // ToDo: find multiple
             Order newOrder = ApiUtils.getInstance().updateFromJson(jsonOrder, new Order(), Order.class);
 
             // update Dependencies
-            ArrayNode jsonOrderedItems = (ArrayNode) jsonOrder.get("orderedItems");
+            newOrder.getItems().forEach(it -> it.setOrder(newOrder));
 
-            List<Stock> updatedStocks = new ArrayList<>();
-            List<OrderedItem> items = updateOrderedItemsFromJson(jsonOrderedItems, updatedStocks, newOrder);
-
-            DatabaseManager.getInstance().saveAll(
-                    new ListBuilder<Serializable>()
-                            .buildAdd(newOrder)
-                            .buildAll(updatedStocks)
-                            .buildAll(items.stream()
-                                    .peek(item -> item.setOrder(newOrder))
-                                    .collect(Collectors.toList()))
-            );
+            DatabaseManager.getInstance().save(newOrder);
 
             response.setStatus(HttpServletResponse.SC_CREATED);
             ApiUtils.getInstance().serializeObject(response, newOrder.getId(), "id");
@@ -117,8 +106,8 @@ public class OrderServlet extends HttpServlet {
             List<Stock> updatedStocks = new ArrayList<>();
 
             List<OrderedItem> items = new ArrayList<>();
-            if (jsonOrder.has("orderedItems")) {
-                ArrayNode jsonOrderedItems = (ArrayNode) jsonOrder.get("orderedItems");
+            if (jsonOrder.has("items")) {
+                ArrayNode jsonOrderedItems = (ArrayNode) jsonOrder.get("items");
                 items = updateOrderedItemsFromJson(jsonOrderedItems, updatedStocks, order);
             }
 

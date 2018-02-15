@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,8 +71,11 @@ public class Color implements Serializable {
         this.orderedItems = orderedItems;
     }
 
-    public void addOrderedItem(OrderedItem o) { this.orderedItems.add(o);}
+    public void addOrderedItem(OrderedItem o) {
+        this.orderedItems.add(o);
+    }
 
+    @JsonIgnore
     public List<Stock> getStock() {
         return stock;
     }
@@ -79,7 +84,9 @@ public class Color implements Serializable {
         this.stock = stock;
     }
 
-    public void addStock(Stock s) {this.stock.add(s);}
+    public void addStock(Stock s) {
+        this.stock.add(s);
+    }
 
     public String getName() {
         return name;

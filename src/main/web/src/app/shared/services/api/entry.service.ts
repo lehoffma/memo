@@ -8,6 +8,7 @@ import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
 import {defaultIfEmpty, map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {EventService} from "./event.service";
 
 interface EntryApiResponse {
 	entries: Entry[];
@@ -19,6 +20,7 @@ export class EntryService extends ServletService<Entry> {
 	baseUrl = "/api/entry";
 
 	constructor(private http: HttpClient,
+				private eventService: EventService,
 				private entryCategoryService: EntryCategoryService) {
 		super();
 	}
@@ -30,10 +32,13 @@ export class EntryService extends ServletService<Entry> {
 	 */
 	private getEntryFromJSON(json: any): Observable<Entry> {
 		//todo...
-		if (json["entryCategoryID"]) {
-			return this.entryCategoryService.getById(json["entryCategoryID"])
+		if (json["category"] !== undefined && json["item"] !== undefined) {
+			return combineLatest(
+				this.entryCategoryService.getById(json["category"]),
+				this.eventService.getById(json["item"])
+			)
 				.pipe(
-					map(category => Entry.create().setProperties(json).setProperties({category}))
+					map(([category, item]) => Entry.create().setProperties(json).setProperties({category, item}))
 				)
 		}
 		return of(Entry.create().setProperties(json));
@@ -149,8 +154,8 @@ export class EntryService extends ServletService<Entry> {
 		if (entry["addresses"]) {
 			delete entry["addresses"];
 		}
-		let {event, category, ...fixedEntry} = entry;
-		fixedEntry["item"] = event.id;
+		let {item, category, ...fixedEntry} = entry;
+		fixedEntry["item"] = item.id;
 		fixedEntry["category"] = category.id;
 
 		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/entry", {entry: fixedEntry, ...body}, {

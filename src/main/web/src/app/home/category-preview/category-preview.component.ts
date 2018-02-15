@@ -68,7 +68,7 @@ export class CategoryPreviewComponent implements OnInit, OnDestroy {
 			merch: () => "Artikel erstellen",
 			partys: () => "Veranstaltung erstellen"
 		});
-		this.createLink = "/" + this.itemType + "/create";
+		this.createLink = "create/" + this.itemType + "/";
 
 		this.subscriptions.push(
 			combineLatest(this.events$, this.loginService.accountObservable)

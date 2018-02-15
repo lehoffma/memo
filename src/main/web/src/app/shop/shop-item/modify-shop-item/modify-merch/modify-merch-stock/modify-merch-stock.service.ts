@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {ExpandableTableContainerService} from "../../../../../shared/expandable-table/expandable-table-container.service";
 import {MerchStock} from "../../../../shared/model/merch-stock";
 import {ColumnSortingEvent} from "../../../../../shared/expandable-table/column-sorting-event";
@@ -45,7 +45,7 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 			if (index === -1) {
 				this.dataSubject$.next([...this.dataSubject$.getValue(), {
 					id: getId(size + event.color.name),
-					event: event.event,
+					item: event.event,
 					size: size,
 					color: Object.assign({}, event.color),
 					amount: event.sizes[size]
@@ -76,7 +76,7 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 				const firstSize = Object.keys(event.sizes)[0];
 				return {
 					id: event.modifiedStock.id,
-					event: event.event,
+					item: event.event,
 					size: firstSize,
 					color: Object.assign({}, event.color),
 					amount: event.sizes[firstSize]
@@ -124,7 +124,7 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 	edit(event: MerchStock) {
 		this.openModifyStockItemDialog({
 			color: event.color,
-			event: event.event,
+			event: event.item,
 			size: event.size,
 			amount: event.amount,
 			modifiedStock: Object.assign({}, event)

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {EventType} from "../../../shop/shared/model/event-type";
+import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 import {Participant, ParticipantUser} from "../../../shop/shared/model/participant";
 import {UserService} from "./user.service";
 import {HttpClient, HttpParams} from "@angular/common/http";
@@ -41,18 +41,18 @@ export class ParticipantsService extends ServletService<Participant> {
 
 	add(participant: Participant, eventType: EventType, eventId: number): Observable<Participant> {
 		//todo use order service, but how?
-		return this.addOrModify(this.http.post.bind(this.http), eventId, eventType, participant);
+		return this.addOrModify(this.http.post.bind(this.http), eventId, typeToInteger(eventType), participant);
 	}
 
 	modify(participant: Participant, eventType: EventType, eventId: number): Observable<Participant> {
-		return this.addOrModify(this.http.put.bind(this.http), eventId, eventType, participant);
+		return this.addOrModify(this.http.put.bind(this.http), eventId, typeToInteger(eventType), participant);
 	}
 
 	remove(participantId: number, eventType: EventType, eventId: number): Observable<Object> {
 		return this.performRequest(
 			this.http.delete("/api/participants", {
 				params: new HttpParams().set("eventId", "" + eventId)
-					.set("type", "" + eventType)
+					.set("type", "" + typeToInteger(eventType))
 					.set("id", "" + participantId)
 			})
 		)
@@ -75,7 +75,7 @@ export class ParticipantsService extends ServletService<Participant> {
 		}
 
 		const params = new HttpParams().set("eventId", "" + eventId)
-			.set("type", "" + eventType);
+			.set("type", "" + typeToInteger(eventType));
 
 		const request = this.performRequest(
 			this.http.get<ParticipantApiResponse>(this.baseUrl, {params})
@@ -141,7 +141,7 @@ export class ParticipantsService extends ServletService<Participant> {
 	 * @returns {Observable<T>}
 	 */
 	addOrModify(requestMethod: AddOrModifyRequest,
-				eventId: number, eventType: EventType, participant: Participant): Observable<Participant> {
+				eventId: number, eventType: number, participant: Participant): Observable<Participant> {
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {eventId, eventType, participant}))
 			.pipe(
 				map(response => response.id),

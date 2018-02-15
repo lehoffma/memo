@@ -3,6 +3,8 @@ package memo.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.serialization.BankAccIdDeserializer;
+import memo.serialization.BankAccIdSerializer;
 import memo.serialization.UserIdDeserializer;
 import memo.serialization.UserIdSerializer;
 
@@ -37,6 +39,11 @@ public class Order implements Serializable {
     @JsonDeserialize(using = UserIdDeserializer.class)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonDeserialize(using = BankAccIdDeserializer.class)
+    @JsonSerialize(using = BankAccIdSerializer.class)
+    private BankAcc bankAccount;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "order")
     private List<OrderedItem> items = new ArrayList<>();
 
@@ -46,6 +53,9 @@ public class Order implements Serializable {
     private PaymentMethod method = PaymentMethod.Lastschrift;
 
     private String text;
+
+    public Order() {
+    }
 
     //**************************************************************
     //  constructor
@@ -107,6 +117,15 @@ public class Order implements Serializable {
         this.text = text;
     }
 
+    public BankAcc getBankAccount() {
+        return bankAccount;
+    }
+
+    public Order setBankAccount(BankAcc bankAccount) {
+        this.bankAccount = bankAccount;
+        return this;
+    }
+
     //**************************************************************
     //  methods
     //**************************************************************
@@ -115,7 +134,6 @@ public class Order implements Serializable {
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", user=" + user +
                 ", timeStamp=" + timeStamp +
                 ", method=" + method +
                 ", text='" + text + '\'' +

@@ -3,10 +3,7 @@ package memo.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import memo.serialization.CommentIdListSerializer;
-import memo.serialization.CommentIdSerializer;
-import memo.serialization.UserIdDeserializer;
-import memo.serialization.UserIdSerializer;
+import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -34,6 +31,8 @@ public class Comment implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "ITEM")
+    @JsonDeserialize(using = ShopItemIdDeserializer.class)
+    @JsonSerialize(using = ShopItemIdSerializer.class)
     private ShopItem item;
 
     @Column(nullable = false)
@@ -48,10 +47,12 @@ public class Comment implements Serializable {
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "CHILDREN")
     @JsonSerialize(using = CommentIdListSerializer.class)
+    @JsonDeserialize(using = CommentIdListDeserializer.class)
     private List<Comment> children = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonSerialize(using = CommentIdSerializer.class)
+    @JsonDeserialize(using = CommentIdDeserializer.class)
     private Comment parent;
 
     @Column(nullable = false)
@@ -139,8 +140,7 @@ public class Comment implements Serializable {
                 "id=" + id +
                 ", itemId=" + item +
                 ", timeStamp=" + timeStamp +
-                ", author=" + author +
-                ", children=" + children +
+                ", children=" + children.size() +
                 ", content='" + content + '\'' +
                 '}';
     }

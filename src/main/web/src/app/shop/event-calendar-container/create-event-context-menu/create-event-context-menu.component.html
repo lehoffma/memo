@@ -1,12 +1,12 @@
 <h2 matDialogTitle>Was für eine Veranstaltung möchtest du hinzufügen?</h2>
 <mat-dialog-content>
-	<a mat-button routerLink="/tours/create" [queryParams]="{date: isoDate}"
+	<a mat-button routerLink="/create/tours" [queryParams]="{date: isoDate}"
 	   (click)="close()"
 	   [disabled]="!(data?.tours | async)">
 		<mat-icon>directions_bus</mat-icon>
 		Tour
 	</a>
-	<a mat-button routerLink="/partys/create" [queryParams]="{date: isoDate}"
+	<a mat-button routerLink="/create/partys" [queryParams]="{date: isoDate}"
 	   (click)="close()"
 	   [disabled]="!(data?.partys | async)">
 		<mat-icon>event</mat-icon>

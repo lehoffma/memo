@@ -1,13 +1,13 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from "@angular/core";
 import {Discount} from "./discount";
 import {MatDialog} from "@angular/material";
 import {DiscountOverlayComponent} from "./discount-overlay.component";
 import {DiscountService} from "../../shop/shared/services/discount.service";
 
 @Component({
-	selector: 'memo-price-renderer',
-	templateUrl: './price-renderer.component.html',
-	styleUrls: ['./price-renderer.component.scss']
+	selector: "memo-price-renderer",
+	templateUrl: "./price-renderer.component.html",
+	styleUrls: ["./price-renderer.component.scss"]
 })
 export class PriceRendererComponent implements OnInit {
 
@@ -58,10 +58,11 @@ export class PriceRendererComponent implements OnInit {
 	 * @param {Discount[]} discounts
 	 */
 	@Input() set discounts(discounts: Discount[]) {
-		this._discounts = discounts;
+		let discountsCopy = discounts ? discounts : [];
+		this._discounts = discountsCopy;
 		//update the actual price value
 		this.price = this.price;
-		this.nonEligibleDiscounts = discounts
+		this.nonEligibleDiscounts = discountsCopy
 			.filter(discount => !discount.eligible);
 	}
 

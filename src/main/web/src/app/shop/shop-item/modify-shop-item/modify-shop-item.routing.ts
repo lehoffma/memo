@@ -24,7 +24,7 @@ const routes: Routes = [
 		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
 	},
 	{
-		path: ":itemType/create",
+		path: "create/:itemType",
 		component: ModifyShopItemComponent,
 		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
 	},

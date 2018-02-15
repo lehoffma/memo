@@ -25,18 +25,18 @@ function getIsoDateFromDateTimeObject(dateTime: DateTimeObject): string {
 	let {year, monthValue, dayOfMonth, hour, minute, second} = dateTime;
 
 	return year + "-" +
-		((+monthValue < 10) ? '0' + monthValue : monthValue) + "-" +
-		((+dayOfMonth < 10) ? '0' + dayOfMonth : dayOfMonth) + "T" +
-		((+hour < 10) ? '0' + hour : hour) + ":" +
-		((+minute < 10) ? '0' + minute : minute) + ":" +
-		((+second < 10) ? '0' + second : second) + "Z";
+		((+monthValue < 10) ? "0" + monthValue : monthValue) + "-" +
+		((+dayOfMonth < 10) ? "0" + dayOfMonth : dayOfMonth) + "T" +
+		((+hour < 10) ? "0" + hour : hour) + ":" +
+		((+minute < 10) ? "0" + minute : minute) + ":" +
+		((+second < 10) ? "0" + second : second) + "Z";
 
 
 }
 
 export abstract class BaseObject<T extends BaseObject<T>> {
 
-	constructor(public readonly id: number) {
+	protected constructor(public readonly id: number) {
 
 	}
 
@@ -52,8 +52,8 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 				if (isArray(value)) {
 
 				} else if ((key.toLowerCase().includes("date")
-						|| key.toLowerCase().includes("day")
-						|| key.toLowerCase().includes("time"))) {
+					|| key.toLowerCase().includes("day")
+					|| key.toLowerCase().includes("time"))) {
 					if (value.dayOfMonth && value.minute) {
 						// value = moment.tz(this.getIsoDateFromDateTimeObject(value), "Europe/Berlin");
 						value = moment(getIsoDateFromDateTimeObject(value)).tz("Europe/Berlin").locale("de");
@@ -68,7 +68,7 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 				if (key === "event") {
 
 				}
-				if (key === "expectedRole") {
+				if (key.startsWith("expected")) {
 					value = ClubRole[properties[key]]
 				} else if (key === "clubRole") {
 					value = isNumber(value) ? idToClubRoleEnum(value) : ClubRole[properties[key]];
@@ -85,9 +85,6 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 					value = Gender[Gender[(<any>properties[key])]];
 				} else if (key === "method" && isNumber(value)) {
 					value = toPaymentMethod(value);
-				} else if (key === "images") {
-					//todo 11.12. test
-					key = (<any>"images");
 				}
 
 				this[key] = value;

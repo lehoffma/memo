@@ -108,20 +108,23 @@
 								<a *ngIf="action?.link !== undefined"
 								   href="{{action?.link(dataObject)}}"
 								   mat-menu-item
-								   [disabled]="permissions[action?.name] === undefined ? false : !permissions[action?.name]">
+								   [disabled]="!permissions ||
+								   		(permissions[action?.name] === undefined ? false : !permissions[action?.name])">
 									<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 									<span>{{action?.name}}</span>
 								</a>
 								<a *ngIf="action?.route !== undefined"
 								   routerLink="{{action?.route(dataObject)}}"
 								   mat-menu-item
-								   [disabled]="permissions[action?.name] === undefined ? false : !permissions[action?.name]">
+								   [disabled]="!permissions ||
+								   		(permissions[action?.name] === undefined ? false : !permissions[action?.name])">
 									<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 									<span>{{action?.name}}</span>
 								</a>
 								<button *ngIf="!action?.link && !action?.route" mat-menu-item
 										type="button"
-										[disabled]="permissions[action?.name] === undefined ? false : !permissions[action?.name]"
+										[disabled]="!permissions ||
+								   			(permissions[action?.name] === undefined ? false : !permissions[action?.name])"
 										(click)="actionCallback(action?.name, [dataObject])">
 									<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 									<span>{{action?.name}}</span>

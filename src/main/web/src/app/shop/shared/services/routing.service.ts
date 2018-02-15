@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {Address} from "../../../shared/model/address";
 import {AddressComponentType} from "../maps-address-component-type";
 import {AddressComponent} from "../maps-address-component";
@@ -49,6 +49,7 @@ export class RoutingService {
 	transformToMemoFormat(place: any, address: Address) {
 		const addressComponents: AddressComponent[] = place.address_components;
 
+		console.log(addressComponents);
 		address.setProperties({
 			street: this.findNameOfAddressComponent(addressComponents, AddressComponentType.street),
 			streetNr: this.findNameOfAddressComponent(addressComponents, AddressComponentType.streetNr),

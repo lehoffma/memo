@@ -1,6 +1,7 @@
 package memo.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.serialization.*;
@@ -53,13 +54,11 @@ public class ShopItem implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
     @JsonSerialize(using = ImagePathListSerializer.class)
+    @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images;
 
     @Column(nullable = false)
     private Integer capacity = 0;
-
-    @Column(name = "PRICE_MEMBER", nullable = false, precision = 12, scale = 2)
-    private BigDecimal priceMember;
 
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
@@ -81,10 +80,11 @@ public class ShopItem implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
     @JsonSerialize(using = CommentIdListSerializer.class)
     @JsonDeserialize(using = CommentIdListDeserializer.class)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "item")
-    private List<Entry> entries;
+    @JsonIgnore
+    private List<Entry> entries = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
     private List<OrderedItem> orders = new ArrayList<>();
@@ -161,14 +161,6 @@ public class ShopItem implements Serializable {
 
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
-    }
-
-    public BigDecimal getPriceMember() {
-        return this.priceMember;
-    }
-
-    public void setPriceMember(BigDecimal priceMember) {
-        this.priceMember = priceMember;
     }
 
     public BigDecimal getPrice() {
@@ -279,6 +271,7 @@ public class ShopItem implements Serializable {
         this.entries.add(e);
     }
 
+    @JsonIgnore
     public List<OrderedItem> getOrders() {
         return orders;
     }
@@ -291,6 +284,7 @@ public class ShopItem implements Serializable {
         this.orders.add(o);
     }
 
+    @JsonIgnore
     public List<Stock> getStock() {
         return stock;
     }
@@ -317,19 +311,12 @@ public class ShopItem implements Serializable {
                 ", expectedReadRole=" + expectedReadRole +
                 ", expectedCheckInRole=" + expectedCheckInRole +
                 ", expectedWriteRole=" + expectedWriteRole +
-                ", images=" + images +
                 ", capacity=" + capacity +
-                ", priceMember=" + priceMember +
                 ", price=" + price +
                 ", route=" + route +
                 ", material='" + material + '\'' +
                 ", vehicle='" + vehicle + '\'' +
                 ", miles=" + miles +
-                ", author=" + author +
-                ", comments=" + comments +
-                ", entries=" + entries +
-                ", orders=" + orders +
-                ", stock=" + stock +
                 ", type=" + type +
                 '}';
     }

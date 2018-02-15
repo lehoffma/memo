@@ -5,6 +5,7 @@ import memo.model.EntryCategory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EntryCategoryRepository extends AbstractRepository<EntryCategory> {
@@ -26,6 +27,17 @@ public class EntryCategoryRepository extends AbstractRepository<EntryCategory> {
         entryCategory.setCategory(category);
         entryCategory.setId(id);
         return entryCategory;
+    }
+
+    @Override
+    public Optional<EntryCategory> getById(Integer id) {
+        return this.getById("" + id);
+    }
+
+    @Override
+    public Optional<EntryCategory> getById(String id) {
+        return Optional.of(this.get(id))
+                .map(categories -> categories.size() > 0 ? categories.get(0) : null);
     }
 
     @Override

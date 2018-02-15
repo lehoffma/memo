@@ -24,15 +24,19 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 	selector: "memo-party-details",
 	templateUrl: "./party-detail.component.html",
 	styles: [
-		`
-			.description{
+			`
+			.description {
 				white-space: pre-wrap;
+			}
+
+			memo-comments-section {
+				width: 100%;
 			}
 		`
 	]
 })
 
-export class PartyDetailComponent implements OnInit, OnDestroy{
+export class PartyDetailComponent implements OnInit, OnDestroy {
 	_party$: BehaviorSubject<Party> = new BehaviorSubject(Party.create());
 
 	party$: Observable<Party> = this._party$
@@ -98,7 +102,7 @@ export class PartyDetailComponent implements OnInit, OnDestroy{
 		this.subscriptions.push(this.comments$.subscribe(this.commentsSubject$));
 	}
 
-	ngOnDestroy(){
+	ngOnDestroy() {
 		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 

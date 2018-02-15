@@ -7,7 +7,6 @@ import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -35,7 +34,7 @@ public class CommentRepository extends AbstractRepository<Comment> {
             Integer eventID = Integer.parseInt(SEventID);
             //ToDo: gibt null aus wenn id nicht vergeben
             return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
-                    " WHERE c.item.id = :eventID", Comment.class)
+                    " WHERE c.item.id = :eventID AND c.parent = NULL ", Comment.class)
                     .setParameter("eventID", eventID)
                     .getResultList();
 

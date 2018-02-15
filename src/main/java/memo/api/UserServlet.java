@@ -1,10 +1,10 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import memo.data.EventRepository;
 import memo.data.UserRepository;
-import memo.model.*;
+import memo.model.ClubRole;
+import memo.model.PermissionState;
+import memo.model.User;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
@@ -17,10 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 /**
  * Servlet implementation class UserServlet
@@ -153,8 +151,10 @@ public class UserServlet extends HttpServlet {
             User user = users.get(0);
 
             user = updateUserFromJson(jsonUser, user);
+            User finalUser = user;
+            user.getAddresses().forEach(it -> it.setUser(finalUser));
 
-            DatabaseManager.getInstance().updateAll(Arrays.asList(user.getPermissions(), user));
+            DatabaseManager.getInstance().update(user);
 
             response.setStatus(HttpServletResponse.SC_OK);
             ApiUtils.getInstance().serializeObject(response, user.getId(), "id");

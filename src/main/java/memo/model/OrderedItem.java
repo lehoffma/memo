@@ -1,6 +1,7 @@
 package memo.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.serialization.ShopItemIdDeserializer;
@@ -29,7 +30,6 @@ public class OrderedItem implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
-    @JsonSerialize(using = ShopItemIdSerializer.class)
     @JsonDeserialize(using = ShopItemIdDeserializer.class)
     private ShopItem item;
 
@@ -82,6 +82,7 @@ public class OrderedItem implements Serializable {
         this.item = shopItem;
     }
 
+    @JsonIgnore
     public Order getOrder() {
         return order;
     }
@@ -122,11 +123,11 @@ public class OrderedItem implements Serializable {
         this.color = color;
     }
 
-    public Boolean getDriver() {
+    public Boolean getIsDriver() {
         return isDriver;
     }
 
-    public void setDriver(Boolean driver) {
+    public void setIsDriver(Boolean driver) {
         isDriver = driver;
     }
 
@@ -146,12 +147,9 @@ public class OrderedItem implements Serializable {
     public String toString() {
         return "OrderedItem{" +
                 "id=" + id +
-                ", item=" + item +
-                ", order=" + order +
                 ", price=" + price +
                 ", status=" + status +
                 ", size='" + size + '\'' +
-                ", color=" + color +
                 ", isDriver=" + isDriver +
                 ", needsTicket=" + needsTicket +
                 '}';

@@ -1,4 +1,7 @@
-<div *ngFor="let user of _users$ | async; let i = index" class="user-list-row">
+<div *ngFor="let user of _users$ | async; let i = index"
+	 class="user-list-row"
+	 memoUserPreview [user]="user" [hoverDelay]="500"
+>
 	<a class="user-info" routerLink="/members/{{user.id}}">
 		<img src="{{user.images[0]}}"/>
 		<span class="user-name">{{user.firstName}} {{user.surname}}</span>

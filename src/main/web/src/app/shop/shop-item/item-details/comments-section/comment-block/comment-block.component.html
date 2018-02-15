@@ -3,13 +3,14 @@
 <div class="comment-block-container" *ngIf="comment$ | async; let commentObject">
 	<div class="main-comment-container" *ngIf="author$ | async; let author">
 		<a class="comment-image-container" routerLink="/members/{{author.id}}">
-			<img class="comment-image" [ngClass]="{'dummy': dummy}" src="{{author.images[0]}}"/>
+			<img class="comment-image" [ngClass]="{'dummy': dummy}"
+				 memoUserPreview [user]="author"
+				 src="{{author.images[0]}}"/>
 		</a>
 		<div class="comment-container">
 			<div class="comment-header">
 				<div class="comment-header-info">
-					<a class="comment-author-name" routerLink="/members/{{author.id}}">{{author.firstName + ' ' +
-						author.surname}}</a>
+					<memo-profile-link class="comment-author-name" [user]="author"></memo-profile-link>
 
 					<div class="comment-timestamp secondary-text"
 						 title="{{commentObject.timeStamp | moment:'DD.MM.YYYY HH:mm:ss'}}">
@@ -19,10 +20,10 @@
 			</div>
 			<div class="comment-body">
 				<!--todo directive that transforms @Username mentions to links?-->
-				{{commentObject.text}}
+				{{commentObject.content}}
 
-				<div class="bubble-loader" *ngIf="dummy">
-					submitting...
+				<div class="dummy-comment-text secondary-text" *ngIf="dummy">
+
 				</div>
 			</div>
 			<div class="comment-footer" [ngClass]="{'dummy': dummy}">
@@ -30,8 +31,6 @@
 			</div>
 		</div>
 
-
-		<!--todo only show if logged in user is author of comment or admin-->
 		<!--todo edit => inline editing-->
 		<div class="comment-options"
 			 [style.visibility]="((loggedInUser$ | async)?.id === author.id && !dummy) ? 'visible' : 'hidden'"
@@ -41,8 +40,6 @@
 				[matMenuTriggerFor]="menu">
 				more_horiz
 			</mat-icon>
-			<!--todo mat-menu-->
-			<!--(loggedInUser$ | async)?.id === author.id-->
 
 			<mat-menu #menu="matMenu" xPosition="before">
 				<button mat-menu-item type="button" (click)="editComment(commentObject)">

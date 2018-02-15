@@ -79,11 +79,13 @@ public class EntryServlet extends HttpServlet {
         JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "entry");
         logger.debug("Method POST called");
 
-        Entry a = ApiUtils.getInstance().updateFromJson(jObj, new Entry(), Entry.class);
-        DatabaseManager.getInstance().save(a);
+        Entry entry = ApiUtils.getInstance().updateFromJson(jObj, new Entry(), Entry.class);
+        //todo remove (das is nur nötig, weil die kategorien hardgecoded sind)
+        DatabaseManager.getInstance().save(entry.getCategory());
+        DatabaseManager.getInstance().save(entry);
 
         response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response, a.getId(), "id");
+        ApiUtils.getInstance().serializeObject(response, entry.getId(), "id");
 
     }
 

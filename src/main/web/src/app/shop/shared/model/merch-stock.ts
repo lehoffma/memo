@@ -6,8 +6,8 @@ export type MerchStockList = MerchStock[];
 export type MerchStock = {
 	id: number;
 	size: string,
-	event: Event,
+	item: Event,
 	color: MerchColor,
 	amount: number
-	//todo: sizetable objekt
+	//todo: sizetable object
 }

@@ -36,6 +36,7 @@ public class Entry implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     @JsonDeserialize(using = ShopItemIdDeserializer.class)
+    @JsonSerialize(using = ShopItemIdSerializer.class)
     private ShopItem item;
 
     @ManyToOne(fetch = FetchType.EAGER)

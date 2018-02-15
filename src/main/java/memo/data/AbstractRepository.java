@@ -24,6 +24,15 @@ public abstract class AbstractRepository<T> implements Repository<T> {
     }
 
     @Override
+    public List<T> getIfAllMatch(Map<List<String>, Function<List<String>, List<T>>> predicateMap, List<T> defaultValue) {
+        return predicateMap.entrySet().stream()
+                .filter(entry -> entry.getKey().stream().allMatch(ApiUtils::stringIsNotEmpty))
+                .map(entry -> entry.getValue().apply(entry.getKey()))
+                .findFirst()
+                .orElse(defaultValue);
+    }
+
+    @Override
     public List<T> get(String id) {
         return this.getById(id)
                 .map(Collections::singletonList)

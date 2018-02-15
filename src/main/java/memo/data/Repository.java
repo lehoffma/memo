@@ -12,5 +12,7 @@ public interface Repository<T> {
 
     List<T> getIf(Map<String, Function<String, List<T>>> predicateMap, List<T> defaultValue);
 
+    List<T> getIfAllMatch(Map<List<String>, Function<List<String>, List<T>>> predicateMap, List<T> defaultValue);
+
     List<T> getAll();
 }

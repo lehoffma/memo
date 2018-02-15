@@ -42,7 +42,9 @@ export class ShoppingCartService implements OnInit {
 					combineLatest(
 						...[...content.merch, ...content.partys, ...content.tours]
 							.map(item => this.eventService.getById(item.id)
-								.map(event => event.price * item.amount)))
+								.pipe(
+									map(event => event.price * item.amount))
+							))
 				),
 				map(prices => prices.reduce((acc, price) => acc + price, 0))
 			);
@@ -90,7 +92,8 @@ export class ShoppingCartService implements OnInit {
 			);
 
 		return itemA.id === itemB.id &&
-			((!itemA.options && !itemB.options) || optionsAreEqual);
+			((!itemA.options && !itemB.options) || optionsAreEqual ||
+				(itemA.options && itemA.options.length === 0) || (itemB.options && itemB.options.length === 0));
 	}
 
 	/**

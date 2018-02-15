@@ -2,13 +2,12 @@ package memo.api;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import memo.data.EventRepository;
-import memo.model.Color;
 import memo.model.ShopItem;
 import memo.model.Stock;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
-import memo.util.ListBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -17,11 +16,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 enum EventType {
     tours(1, "tours"),
@@ -110,19 +110,18 @@ public class EventServlet extends HttpServlet {
 
         ShopItem shopItem = ApiUtils.getInstance().updateFromJson(jObj, new ShopItem(), ShopItem.class);
 
-        List<Color> colorList = new ArrayList<>();
         List<Stock> stockList = new ArrayList<>();
 
         if (shopItem.getType() == EventType.merch.getValue()) {
-            fillSizesFromJson(jObj, colorList, stockList, shopItem);
+            stockList = fillSizesFromJson(jObj);
         }
 
-        List<Serializable> objectsToSave = new ArrayList<>();
-        objectsToSave.add(shopItem);
-        objectsToSave.addAll(colorList);
-        objectsToSave.addAll(stockList);
+        shopItem.getImages().forEach(image -> image.setItem(shopItem));
+        shopItem.setStock(stockList);
+        stockList.forEach(it -> it.setItem(shopItem));
 
-        DatabaseManager.getInstance().saveAll(objectsToSave);
+        DatabaseManager.getInstance().save(shopItem);
+
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, shopItem.getId(), "id");
@@ -147,18 +146,18 @@ public class EventServlet extends HttpServlet {
         }
 
         shopItem = ApiUtils.getInstance().updateFromJson(jsonShopItem, shopItem, ShopItem.class);
-        List<Color> colorList = new ArrayList<>();
         List<Stock> stockList = new ArrayList<>();
 
         if (shopItem.getType() == EventType.merch.getValue()) {
-            fillSizesFromJson(jsonShopItem, colorList, stockList, shopItem);
+            stockList = fillSizesFromJson(jsonShopItem);
         }
 
-        DatabaseManager.getInstance().updateAll(new ListBuilder<>()
-                .buildAdd(shopItem)
-                .buildAll(colorList)
-                .buildAll(stockList)
-        );
+        shopItem.setStock(stockList);
+        ShopItem finalShopItem = shopItem;
+        shopItem.getImages().forEach(image -> image.setItem(finalShopItem));
+        stockList.forEach(it -> it.setItem(finalShopItem));
+
+        DatabaseManager.getInstance().save(shopItem);
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, shopItem.getId(), "id");
@@ -180,20 +179,11 @@ public class EventServlet extends HttpServlet {
         return null;
     }
 
-    private void fillSizesFromJson(JsonNode event, List<Color> colorList, List<Stock> stockList, ShopItem shopItem) {
-        JsonNode jsonStockList = event.get("stock");
+    private List<Stock> fillSizesFromJson(JsonNode event) {
+        ArrayNode jsonStockList = (ArrayNode) event.get("stock");
 
-        for (int i = 0; i < jsonStockList.size(); ++i) {
-            JsonNode jsonStock = jsonStockList.get(i);
-            JsonNode jsonColor = jsonStock.get("color");
-            Color color = ApiUtils.getInstance().updateFromJson(jsonColor, new Color(), Color.class);
-            Stock stock = new Stock();
-            stock.setColor(color);
-            stock.setItem(shopItem);
-            stock.setSize(jsonStock.get("size").asText());
-            stock.setAmount(jsonStock.get("amount").asInt());
-            colorList.add(color);
-            stockList.add(stock);
-        }
+        return StreamSupport.stream(jsonStockList.spliterator(), false)
+                .map(jsonStock -> ApiUtils.getInstance().updateFromJson(jsonStock, new Stock(), Stock.class))
+                .collect(Collectors.toList());
     }
 }

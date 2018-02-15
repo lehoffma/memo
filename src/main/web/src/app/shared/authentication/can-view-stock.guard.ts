@@ -7,6 +7,7 @@ import {UserService} from "../services/api/user.service";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
 import {map, mergeMap} from "rxjs/operators";
+import {User} from "../model/user";
 
 @Injectable()
 export class CanViewStockGuard implements CanActivate {
@@ -20,7 +21,7 @@ export class CanViewStockGuard implements CanActivate {
 			.accountObservable
 			.pipe(
 				mergeMap(id => id === null ? of(null) : this.userService.getById(id)),
-				map(user => {
+				map((user: User) => {
 					if (user === null) {
 						this.loginService.redirectUrl = state.url;
 						this.router.navigate(["login"]);

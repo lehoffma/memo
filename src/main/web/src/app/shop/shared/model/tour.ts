@@ -4,6 +4,7 @@ import {EventOverviewKey} from "../../shop-item/item-details/container/overview/
 import {EventRoute} from "./route";
 import * as moment from "moment";
 import {Moment} from "moment";
+import {EventType, typeToInteger} from "./event-type";
 
 ;
 
@@ -13,16 +14,19 @@ export class Tour extends Event {
 				title: string,
 				date: Moment,
 				description: string,
-				expectedRole: ClubRole,
+				expectedReadRole: ClubRole,
+				expectedCheckInRole: ClubRole,
+				expectedWriteRole: ClubRole,
 				route: EventRoute,
 				images: string[],
 				capacity: number,
-				priceMember: number,
+				price: number,
 				public vehicle: string,
 				public miles: number,
 				public emptySeats: number) {
 
-		super(id, title, date, description, expectedRole, route, images, capacity, priceMember);
+		super(id, title, date, description, expectedReadRole, expectedCheckInRole, expectedWriteRole,
+			route, images, capacity, price, typeToInteger(EventType.tours));
 	}
 
 	get overviewKeys(): EventOverviewKey[] {
@@ -81,7 +85,7 @@ export class Tour extends Event {
 	}
 
 	static create() {
-		return new Tour(-1, "", moment(), "", ClubRole.None, [],
+		return new Tour(-1, "", moment(), "", ClubRole.None, ClubRole.None, ClubRole.None, [],
 			["resources/images/Logo.png"], -1, -1, "", -1, -1);
 	}
 }

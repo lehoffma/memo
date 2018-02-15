@@ -9,6 +9,7 @@ import {Moment} from "moment";
 import {StockService} from "../../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
 import {map} from "rxjs/operators";
+import {EventType, typeToInteger} from "./event-type";
 
 //todo remove demo
 const sizeTable = `{
@@ -154,16 +155,18 @@ export class Merchandise extends Event {
 				title: string,
 				date: Moment,
 				description: string,
-				expectedRole: ClubRole,
+				expectedReadRole: ClubRole,
+				expectedCheckInRole: ClubRole,
+				expectedWriteRole: ClubRole,
 				route: EventRoute,
 				images: string[],
 				capacity: number,
 				public colors: MerchColor[],
 				public material: string,
 				private _sizeTable: SizeTable,
-				priceMember: number,
 				price: number) {
-		super(id, title, date, description, expectedRole, route, images, capacity, priceMember, price);
+		super(id, title, date, description, expectedReadRole, expectedCheckInRole,
+			expectedWriteRole, route, images, capacity, price, typeToInteger(EventType.merch));
 	}
 
 	get sizeTable() {
@@ -240,8 +243,8 @@ export class Merchandise extends Event {
 	}
 
 	static create() {
-		return new Merchandise(-1, "", moment(), "", ClubRole.None, [],
+		return new Merchandise(-1, "", moment(), "", ClubRole.None, ClubRole.None, ClubRole.None, [],
 			["resources/images/Logo.png"], -1, [], "",
-			JSON.parse(sizeTable), -1, -1);
+			JSON.parse(sizeTable), -1);
 	}
 }

@@ -8,7 +8,7 @@ import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
-import {map, share, tap, mergeMap} from "rxjs/operators";
+import {map, mergeMap, share, tap} from "rxjs/operators";
 
 interface EventApiResponse {
 	shopItems: (Party | Merchandise | Tour)[];
@@ -41,7 +41,7 @@ export class EventService extends ServletService<Event> {
 
 
 	/**
-	 * Requested das Event (mit einem bestimmten Event-Typen) vom Server, welches die gegebene ID besitzt
+	 * Requested das Event (mit einem bestimdimten Event-Typen) vom Server, welches die gegebene ID besitzt
 	 * @param eventId
 	 * @param refresh
 	 * @returns {Observable<T>}
@@ -50,7 +50,7 @@ export class EventService extends ServletService<Event> {
 		const params = new HttpParams().set("id", "" + eventId);
 		const request = this.http.get<EventApiResponse>(this.baseUrl, {params})
 			.pipe(
-				map(json => this.getFactoryFromType(json.shopItems[0]["type"])().setProperties(json.shopItems[0])),
+				map(json => this.getFactoryFromType((<any>json.shopItems[0]["type"]))().setProperties(json.shopItems[0])),
 				share()
 			);
 
@@ -74,12 +74,32 @@ export class EventService extends ServletService<Event> {
 	}
 
 	/**
+	 *
+	 * @param {EventType} eventType
+	 * @returns {Observable<Event[]>}
+	 */
+	getByEventType(eventType: EventType): Observable<Event[]> {
+		const params = new HttpParams().set("type", "" + eventType);
+		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
+			.pipe(
+				map(json => json.shopItems.map(event =>
+					EventFactoryService.build(eventType).setProperties(event)))
+			);
+
+		return this._cache.search(params, request);
+	}
+
+	/**
 	 * Requested alle Events (mit dem gegebenen event typen), die auf den search term matchen
 	 * @param searchTerm
 	 * @param eventType
 	 * @returns {Observable<T>}
 	 */
 	search(searchTerm: string, eventType: EventType): Observable<Event[]> {
+		if (!searchTerm) {
+			return this.getByEventType(eventType);
+		}
+
 		const params = new HttpParams().set("searchTerm", searchTerm).set("type", "" + eventType);
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.pipe(
@@ -108,7 +128,17 @@ export class EventService extends ServletService<Event> {
 				.forEach(key => body[key] = options[key]);
 		}
 
-		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {event, ...body}))
+		const allowedAttributes = ["priceMember", "expectedReadRole", "orders", "material", "price", "expectedCheckInRole",
+			"vehicle", "date", "entries", "comments", "stock", "title", "capacity", "id", "description", "expectedWriteRole",
+			"miles", "route", "author", "images", "type"];
+		let modifiedEvent = {...event};
+		Object.keys(modifiedEvent).forEach(attr => {
+			if (!allowedAttributes.includes(attr)) {
+				delete modifiedEvent[attr];
+			}
+		});
+
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {event: modifiedEvent, ...body}))
 			.pipe(
 				tap(() => this._cache.invalidateById(event.id)),
 				mergeMap(response => this.getById(response.id))

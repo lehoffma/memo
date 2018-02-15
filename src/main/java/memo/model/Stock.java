@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,19 +29,20 @@ public class Stock implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
+    @JsonIgnore
     private ShopItem item;
 
     private String size = "oneSize";
 
     private Integer amount = 0;
 
-    @ManyToOne(cascade = {CascadeType.REMOVE},fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn
     private Color color;
 
-    @OneToMany(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn
     private List<SizeTable> sizeTable = new ArrayList<>();
 
@@ -110,7 +113,9 @@ public class Stock implements Serializable {
         this.sizeTable = sizeTable;
     }
 
-    public void addSizeTable(SizeTable s) {this.sizeTable.add(s);}
+    public void addSizeTable(SizeTable s) {
+        this.sizeTable.add(s);
+    }
 
     //**************************************************************
     //  methods
@@ -120,10 +125,8 @@ public class Stock implements Serializable {
     public String toString() {
         return "Stock{" +
                 "id=" + id +
-                ", shopItem=" + item +
                 ", name='" + size + '\'' +
                 ", amount=" + amount +
-                ", color=" + color +
                 ", sizeTable" + sizeTable +
                 '}';
     }

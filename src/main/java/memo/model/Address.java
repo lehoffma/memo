@@ -136,7 +136,9 @@ public class Address implements Serializable {
         this.country = country;
     }
 
-    public double getLatitude() { return latitude; }
+    public double getLatitude() {
+        return latitude;
+    }
 
     public void setLatitude(double latitude) {
         this.latitude = latitude;
@@ -158,8 +160,6 @@ public class Address implements Serializable {
     public String toString() {
         return "Address{" +
                 "id=" + id +
-                ", user=" + user +
-                ", item=" + item +
                 ", name='" + name + '\'' +
                 ", street='" + street + '\'' +
                 ", streetNr='" + streetNr + '\'' +

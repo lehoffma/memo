@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {ExpandableTableContainerService} from "../../../shared/expandable-table/expandable-table-container.service";
 import {User} from "../../../shared/model/user";
 import {ColumnSortingEvent} from "../../../shared/expandable-table/column-sorting-event";
@@ -22,7 +22,14 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 				key: "id",
 				descending: false
 			},
-			loginService.getActionPermissions("userManagement"),
+			loginService.getActionPermissions("userManagement")
+				.pipe(
+					defaultIfEmpty({
+						Hinzufuegen: false,
+						Bearbeiten: false,
+						Loeschen: false
+					})
+				),
 			[]);
 
 
@@ -88,7 +95,7 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 	 *
 	 */
 	add() {
-		this.navigationService.navigateByUrl("/members/create");
+		this.navigationService.navigateByUrl("/create/members");
 	}
 
 	/**

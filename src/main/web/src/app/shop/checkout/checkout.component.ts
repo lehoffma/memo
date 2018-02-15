@@ -102,7 +102,7 @@ export class CheckoutComponent implements OnInit {
 				.map(event => this.eventService.getById(event.id)
 					.pipe(
 						map(it => ({
-							event: it,
+							item: it,
 							...event
 						}))
 					)
@@ -116,16 +116,17 @@ export class CheckoutComponent implements OnInit {
 	 * @returns {OrderedItem[]}
 	 */
 	private mapToOrderedItems(events): OrderedItem[] {
-		//todo 2017 interface change
 		return events
 			.reduce((acc, event) => [...acc, ...new Array(event.amount)
 				.fill(({
-					id: undefined,
-					event: event.event,
-					price: event.event.price,
+					id: null,
+					item: event.item.id,
+					price: event.item.price,
 					status: OrderStatus.RESERVED,
-					size: event.options ? event.options.size : undefined,
-					color: event.options ? event.options.color : undefined,
+					size: event.options ? event.options.size : null,
+					color: event.options ? event.options.color : null,
+					isDriver: event.isDriver ? event.isDriver : false,
+					needsTicket: event.needsTicket ? event.needsTicket : false
 				}))], []);
 	}
 
@@ -153,11 +154,11 @@ export class CheckoutComponent implements OnInit {
 						map(events => this.mapToOrderedItems(events)),
 						map(orderedItems => Order.create()
 							.setProperties({
-								userId,
+								user: userId,
 								timeStamp: moment(),
 								method: event.method,
 								bankAccount: bankAccountId,
-								orderedItems
+								items: orderedItems
 							})),
 						mergeMap(order => this.orderService.add(order))
 					)

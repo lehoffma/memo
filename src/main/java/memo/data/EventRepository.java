@@ -8,6 +8,7 @@ import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -26,9 +27,12 @@ public class EventRepository extends AbstractRepository<ShopItem> {
         return instance;
     }
 
-    public List<ShopItem> getEventsBySearchTerm(String searchTerm) {
+    public List<ShopItem> getEventsBySearchTerm(String searchTerm, Integer type) {
         return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e " +
-                " WHERE UPPER(e.title) LIKE UPPER(:searchTerm) OR UPPER(e.description) LIKE UPPER(:searchTerm)", ShopItem.class)
+                " WHERE e.type = :type " +
+                "       AND (UPPER(e.title) LIKE UPPER(:searchTerm) " +
+                "              OR UPPER(e.description) LIKE UPPER(:searchTerm))", ShopItem.class)
+                .setParameter("type", type)
                 .setParameter("searchTerm", "%" + searchTerm + "%")
                 .getResultList();
     }
@@ -63,8 +67,13 @@ public class EventRepository extends AbstractRepository<ShopItem> {
                               HttpServletResponse response) {
         return this.getIf(new MapBuilder<String, Function<String, List<ShopItem>>>()
                         .buildPut(eventId, this::get)
-                        .buildPut(searchTerm, this::getEventsBySearchTerm)
-                        .buildPut(eventType, s -> this.getEventsByType(EventServlet.getType(s)))
+                        .buildPut(searchTerm, it -> this.getEventsBySearchTerm(searchTerm, EventServlet.getType(eventType)))
+                        .buildPut(eventType, s -> {
+                            if (searchTerm == null) {
+                                return this.getEventsByType(EventServlet.getType(s));
+                            }
+                            return new ArrayList<>();
+                        })
                         .buildPut(userId, s -> this.getEventsByUser(Integer.valueOf(s)))
                         .buildPut(authorId, s -> this.getEventsByAuthor(Integer.valueOf(s))),
                 this.getAll());

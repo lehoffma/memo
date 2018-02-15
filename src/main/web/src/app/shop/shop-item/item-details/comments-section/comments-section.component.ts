@@ -61,17 +61,17 @@ export class CommentsSectionComponent implements OnInit {
 				.pipe(
 					first(),
 					mergeMap(user => {
-						let comment = new Comment(this.eventId, -1, moment(), user.id, commentText);
+						let comment = new Comment(this.eventId, -1, moment(), user.id, commentText, null);
 						this.dummyComment = this.dummyComment.setProperties({
 							content: "",
 							author: user.id,
 							timeStamp: comment.timeStamp,
-							eventId: this.eventId,
+							item: this.eventId,
 						});
 						this.loadingAddedComment = true;
 						this.changeDetectorRef.detectChanges();
 
-						return this.commentService.add(comment, parentId);
+						return this.commentService.add(comment);
 					}),
 					tap(addResult => {
 						console.log(addResult);

@@ -89,7 +89,7 @@ public class User implements Serializable {
     @Column(name = "IS_WOELFE_CLUB_MEMBER")
     private Boolean isWoelfeClubMember = false;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn
     private PermissionState permissions;
 
@@ -353,7 +353,6 @@ public class User implements Serializable {
                 ", firstName='" + firstName + '\'' +
                 ", surname='" + surname + '\'' +
                 ", clubRole=" + clubRole +
-                ", addresses=" + addresses +
                 ", birthday=" + birthday +
                 ", telephone='" + telephone + '\'' +
                 ", mobile='" + mobile + '\'' +
@@ -363,15 +362,11 @@ public class User implements Serializable {
                 ", isStudent=" + isStudent +
                 ", hasDebitAuth=" + hasDebitAuth +
                 ", images=" + images +
-                ", bankAccounts=" + bankAccounts +
                 ", joinDate=" + joinDate +
                 ", gender='" + gender + '\'' +
                 ", hasSeasonTicket=" + hasSeasonTicket +
                 ", isWoelfeClubMember=" + isWoelfeClubMember +
                 ", permissions=" + permissions +
-                ", orders=" + orders +
-                ", comments=" + comments +
-                ", authoredItems=" + authoredItems +
                 '}';
     }
 }

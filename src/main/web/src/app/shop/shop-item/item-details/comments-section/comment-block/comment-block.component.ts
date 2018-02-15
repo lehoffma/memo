@@ -126,7 +126,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 				.pipe(
 					first(),
 					mergeMap(user => {
-						let comment = new Comment(this.eventId, -1, moment(), user.id, commentText);
+						let comment = new Comment(this.eventId, -1, moment(), user.id, commentText, currentComment.id);
 						//todo demo
 						// this.dummyComment = this.dummyComment.setProperties({
 						// 	text: "",
@@ -137,7 +137,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 						this.showChildren = true;
 						// this.loadingChildren = true;
 						this.changeDetectorRef.detectChanges();
-						return this.commentService.add(comment, currentComment.id)
+						return this.commentService.add(comment)
 							.pipe(
 								tap(addResult => {
 									currentComment.children.push(addResult.id);
@@ -185,7 +185,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 			.pipe(
 				mergeMap((newComment: Comment) => {
 					if (newComment && newComment.content) {
-						return this.commentService.modify(newComment, this.parentId);
+						return this.commentService.modify(newComment);
 					}
 					//otherwise, the user clicked close/cancel
 					return empty()

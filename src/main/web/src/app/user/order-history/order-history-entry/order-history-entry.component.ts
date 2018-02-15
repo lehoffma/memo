@@ -24,7 +24,7 @@ export class OrderHistoryEntryComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		const events = this.orderEntry.orderedItems
+		const events = this.orderEntry.items
 			.reduce((events, item) => {
 				const eventId = item.item.id;
 				const eventIndex = EventUtilityService.isMerchandise(item.item)

@@ -11,12 +11,14 @@ export class Event extends BaseObject<Event> {
 				public title: string,
 				public date: Moment,
 				public description: string,
-				public expectedRole: ClubRole,
+				public expectedReadRole: ClubRole,
+				public expectedCheckInRole: ClubRole,
+				public expectedWriteRole: ClubRole,
 				public route: EventRoute,
 				public images: string[],
 				public capacity: number,
-				public priceMember: number,
-				public price: number = priceMember) {
+				public price: number,
+				public type: number) {
 		super(id);
 	}
 
@@ -29,6 +31,7 @@ export class Event extends BaseObject<Event> {
 	}
 
 	static create() {
-		return new Event(-1, "", moment(), "", ClubRole.None, [], ["resources/images/Logo.png"], -1, -1, -1);
+		return new Event(-1, "", moment(), "", ClubRole.None, ClubRole.None, ClubRole.None,
+			[], ["resources/images/Logo.png"], -1, -1, -1);
 	}
 }

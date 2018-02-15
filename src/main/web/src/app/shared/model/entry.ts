@@ -9,7 +9,7 @@ export class Entry extends BaseObject<Entry> {
 	constructor(public readonly id: number,
 				public readonly name: string,
 				public readonly value: number,
-				public readonly event: Event,
+				public readonly item: Event,
 				public readonly date: Moment,
 				public readonly comment: string,
 				public readonly images: string[],

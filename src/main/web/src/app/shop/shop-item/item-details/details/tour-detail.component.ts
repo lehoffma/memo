@@ -37,6 +37,10 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 				margin: -1rem -1rem 1rem;
 				padding: 0 1rem;
 			}
+			
+			memo-comments-section{
+				width: 100%;
+			}
 
 			@media all and (min-width: 1050px) {
 				memo-route-list {
@@ -127,6 +131,7 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 				private commentService: CommentService,
 				private addressService: AddressService,
 				private eventService: EventService) {
+		console.log(this.activatedRoute);
 		this.subscriptions.push(
 			this.comments$.subscribe(this.commentsSubject$)
 		);

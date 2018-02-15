@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {ExpandableTableContainerService} from "../../shared/expandable-table/expandable-table-container.service";
 import {Entry} from "../../shared/model/entry";
 import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
@@ -17,13 +17,13 @@ import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-categor
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs/Observable";
-import {catchError, defaultIfEmpty, first, map, mergeMap, tap} from "rxjs/operators";
+import {catchError, defaultIfEmpty, first, map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {of} from "rxjs/observable/of";
 
 @Injectable()
-export class AccountingTableContainerService extends ExpandableTableContainerService<Entry>{
+export class AccountingTableContainerService extends ExpandableTableContainerService<Entry> {
 
 	columns = {
 		date: new ExpandableTableColumn<Entry>("Datum", "date", DateTableCellComponent),
@@ -33,6 +33,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	};
 
 	subscriptions = [];
+
 	constructor(protected loginService: LogInService,
 				protected router: Router,
 				protected navigationService: NavigationService,
@@ -53,7 +54,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 			.subscribe(dimensions => this.onResize(dimensions)));
 	}
 
-	ngOnDestroy(){
+	ngOnDestroy() {
 		super.ngOnDestroy();
 		this.subscriptions.forEach(it => it.unsubscribe());
 	}
@@ -161,10 +162,10 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 		this.navigationService.queryParamMap$
 			.pipe(
 				first(),
-				mergeMap(this.getQueryParamsForEntryModification)
+				mergeMap(this.getQueryParamsForEntryModification.bind(this))
 			)
 			.subscribe(queryParams => {
-				this.router.navigate(["entries", "create"], {queryParams});
+				this.router.navigate(["create", "entries"], {queryParams});
 			});
 	}
 
@@ -177,7 +178,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 		this.navigationService.queryParamMap$
 			.pipe(
 				first(),
-				mergeMap(this.getQueryParamsForEntryModification)
+				mergeMap(this.getQueryParamsForEntryModification.bind(this))
 			)
 			.subscribe(queryParams => {
 				if (!isNullOrUndefined(entryObj.id) && entryObj.id >= 0) {
@@ -203,7 +204,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	satisfiesFilter(entry: Entry, queryParamMap: ParamMap): boolean {
 		let entryRemains = true;
 		if (queryParamMap.has("eventIds")) {
-			entryRemains = entryRemains && queryParamMap.getAll("eventIds").some(id => entry.event.id === +id);
+			entryRemains = entryRemains && queryParamMap.getAll("eventIds").some(id => entry.item.id === +id);
 		}
 		if (queryParamMap.has("costTypes")) {
 			entryRemains = entryRemains && queryParamMap.getAll("costTypes")

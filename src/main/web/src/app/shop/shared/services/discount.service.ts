@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {ApiCache} from "../../../shared/cache/api-cache";
 import {Permission} from "../../../shared/model/permission";
 import {HttpClient, HttpParams} from "@angular/common/http";
@@ -109,6 +109,9 @@ export class DiscountService {
 	 * @returns {number}
 	 */
 	getTotalDiscount(discounts: Discount[]): number {
+		if (!discounts) {
+			return 0;
+		}
 		return discounts
 			.filter(discount => discount.eligible)
 			.reduce((acc, discount) => acc + discount.amount, 0);

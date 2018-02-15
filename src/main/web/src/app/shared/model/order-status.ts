@@ -1,12 +1,12 @@
 export enum OrderStatus {
-	RESERVED = <any>"0",
-	ORDERED = <any>"1",
-	PAID = <any>"2",
-	SENT = <any>"3",
-	COMPLETED = <any>"4",
-	CANCELLED = <any>"5",
-	REFUSED = <any>"6",
-	UNDER_APPROVAL = <any>"7"
+	RESERVED = "Reserved",
+	ORDERED = "Ordered",
+	PAID = "Paid",
+	SENT = "Sent",
+	COMPLETED = "Completed",
+	CANCELLED = "Cancelled",
+	REFUSED = "Refused",
+	UNDER_APPROVAL = "UnderApproval"
 }
 
 export const OrderStatusList: OrderStatus[] = [

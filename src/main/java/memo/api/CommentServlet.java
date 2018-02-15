@@ -3,8 +3,10 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.data.CommentRepository;
 import memo.model.Comment;
+import memo.model.ShopItem;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
+import memo.util.ListBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @WebServlet(name = "CommentServlet", value = "/api/comment")
@@ -43,11 +46,26 @@ public class CommentServlet extends HttpServlet {
         JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "comment");
         logger.debug("Method POST called");
 
-        Comment a = ApiUtils.getInstance().updateFromJson(jObj, new Comment(), Comment.class);
-        DatabaseManager.getInstance().save(a);
+        Comment comment = ApiUtils.getInstance().updateFromJson(jObj, new Comment(), Comment.class);
+
+        DatabaseManager.getInstance().save(comment);
+        if (comment.getParent() != null) {
+            Comment parent = comment.getParent();
+            ListBuilder<Comment> newChildren = new ListBuilder<Comment>()
+                    .buildAll(Optional.ofNullable(parent.getChildren()).orElse(new ArrayList<>()))
+                    .buildAdd(comment);
+            parent.setChildren(newChildren);
+            DatabaseManager.getInstance().update(parent);
+        }
+        ShopItem item = comment.getItem();
+        ListBuilder<Comment> newComments = new ListBuilder<Comment>()
+                .buildAll(Optional.ofNullable(item.getComments()).orElse(new ArrayList<>()))
+                .buildAdd(comment);
+        item.setComments(newComments);
+        DatabaseManager.getInstance().update(item);
 
         response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response, a.getId(), "id");
+        ApiUtils.getInstance().serializeObject(response, comment.getId(), "id");
 
     }
 

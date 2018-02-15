@@ -1,18 +1,22 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {User} from "../model/user";
 import {FormControl} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
 import {EventUtilityService} from "../services/event-utility.service";
-import {map, mergeMap, startWith} from "rxjs/operators";
+import {filter, map, mergeMap, startWith} from "rxjs/operators";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Component({
-	selector: 'memo-user-autocomplete',
-	templateUrl: './user-autocomplete.component.html',
-	styleUrls: ['./user-autocomplete.component.scss']
+	selector: "memo-user-autocomplete",
+	templateUrl: "./user-autocomplete.component.html",
+	styleUrls: ["./user-autocomplete.component.scss"]
 })
 export class UserAutocompleteComponent implements OnInit, OnDestroy {
 	_userList$ = new BehaviorSubject<User[]>([]);
+	userList$ = this._userList$
+		.pipe(
+			filter(userList => userList !== undefined && userList !== null)
+		);
 
 	@Input() set userList(userList: User[]) {
 		this._userList$.next(userList);
@@ -51,7 +55,7 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 					? value
 					: null),
 
-			this._userList$
+			this.userList$
 				.subscribe(userList => {
 					if (userList.length === 0) {
 						this.autocompleteFormControl.disable();
@@ -63,7 +67,7 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 		);
 
 
-		this.filteredOptions = this._userList$
+		this.filteredOptions = this.userList$
 		//dont filter out the user that is being edited so we can still select him while editing
 			.pipe(
 				map(userList => userList.filter(it => this.user === null || this.user.id !== it.id)),

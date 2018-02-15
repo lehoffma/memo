@@ -24,6 +24,11 @@ public class ImageRepository extends AbstractRepository<Image> {
     }
 
 
+    public Optional<Image> getByApiPath(String apiPath) {
+        return Image.getFileNameFromApiPath(apiPath)
+                .flatMap(this::getByFilePath);
+    }
+
     public Optional<Image> getByFilePath(String fileName) {
         return Optional.of(DatabaseManager.createEntityManager().createQuery("SELECT i FROM Image i " +
                 " WHERE i.fileName = :name", Image.class)

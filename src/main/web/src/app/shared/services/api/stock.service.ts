@@ -330,10 +330,10 @@ export class StockService extends ServletService<MerchStock[]> {
 		const editRequests = [...previous
 			.map(stockItem => current.find(it => it.id === stockItem.id && (
 				it.size !== stockItem.size || it.amount !== stockItem.amount || it.color.name !== stockItem.color.name ||
-				it.color.hex !== stockItem.color.hex || it.event.id !== stockItem.event.id
+				it.color.hex !== stockItem.color.hex || it.item.id !== stockItem.item.id
 			)))
 			.filter(editedItem => editedItem !== undefined)
-			.map(editedItem => this.modify(editedItem, editedItem.event.id)
+			.map(editedItem => this.modify(editedItem, editedItem.item.id)
 				.pipe(share()))
 		];
 
@@ -341,10 +341,10 @@ export class StockService extends ServletService<MerchStock[]> {
 		const addRequests = [...current
 			.filter(stockItem => !previous.find(it => it.id === stockItem.id))
 			.map(addedItem => {
-				addedItem.event = merch;
+				addedItem.item = merch;
 				return addedItem;
 			})
-			.map(addedItem => this.add(addedItem, addedItem.event.id)
+			.map(addedItem => this.add(addedItem, addedItem.item.id)
 				.pipe(share()))
 		];
 

@@ -2,8 +2,7 @@
 							 [overviewKeys]="overViewKeys$"
 							 [event]="tour">
 	<memo-item-details-content [title]="'Route'" *ngIf="(tourRoute$ | async) as route">
-		<!--todo remove demo: route as input-->
-		<memo-route-list></memo-route-list>
+		<memo-route-list [route]="route"></memo-route-list>
 		<memo-route-map [tourRoute]="route" content></memo-route-map>
 	</memo-item-details-content>
 

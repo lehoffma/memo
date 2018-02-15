@@ -6,10 +6,10 @@ import {Moment} from "moment";
 
 export class Order extends BaseObject<Order> {
 	constructor(public readonly id: number,
-				public readonly userId: number,
+				public readonly user: number,
 				public readonly timeStamp: Moment,
 				public method: PaymentMethod,
-				public readonly orderedItems: OrderedItem[],
+				public readonly items: OrderedItem[],
 				public text: string,
 				public bankAccount?: number) {
 		super(id);

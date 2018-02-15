@@ -1,11 +1,17 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.log4j.Logger;
 
 import javax.persistence.*;
 import javax.servlet.http.Part;
 import java.io.*;
+import java.net.URLEncoder;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Entity implementation class for Entity: Images
@@ -15,6 +21,7 @@ import java.io.*;
 @Entity
 @Table(name = "IMAGES")
 public class Image implements Serializable {
+    private static final Logger logger = Logger.getLogger(Image.class);
 
     //**************************************************************
     //  static members
@@ -22,7 +29,7 @@ public class Image implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String filePath = System.getProperty("user.home") +
+    public static final String filePath = System.getProperty("user.home") +
             System.getProperty("file.separator") + "MemoShop" + System.getProperty("file.separator") +
             "pictures" + System.getProperty("file.separator");
 
@@ -76,6 +83,7 @@ public class Image implements Serializable {
         this.user = user;
     }
 
+    @JsonIgnore
     public ShopItem getItem() {
         return item;
     }
@@ -104,6 +112,25 @@ public class Image implements Serializable {
         return filePath + fileName;
     }
 
+    public String getApiPath() {
+        try {
+            return "/api/image?fileName=" + URLEncoder.encode(fileName, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.error("Could not encode file name with UTF-8, trying without encoding", e);
+            return "/api/image?fileName=" + fileName;
+        }
+    }
+
+    public static Optional<String> getFileNameFromApiPath(String apiPath) {
+        Pattern pattern = Pattern.compile("/api/image\\?fileName=(?<FileName>.*)");
+        Matcher matcher = pattern.matcher(apiPath);
+
+        if (matcher.find() && matcher.matches()) {
+            return Optional.ofNullable(matcher.group("FileName"));
+        }
+        return Optional.empty();
+    }
+
     //**************************************************************
     //  methods
     //**************************************************************
@@ -126,7 +153,7 @@ public class Image implements Serializable {
         do {
             String filename = RandomStringUtils.randomAlphanumeric(10);
             file = new File(filePath + filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
-            setFileName(filename);
+            this.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
         } while (file.exists());
 
         try (InputStream stream = p.getInputStream()) {

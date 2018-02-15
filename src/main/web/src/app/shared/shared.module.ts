@@ -24,6 +24,7 @@ import {UserAutocompleteComponent} from "./user-autocomplete/user-autocomplete.c
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ShareButtonsModule} from "@ngx-share/buttons";
 import {DisplayErrorDirective} from "./template-validators/display-error.directive";
+import {UserPreviewDirective} from "./profile-renderer/user-preview.directive";
 
 @NgModule({
 	imports: [
@@ -58,7 +59,8 @@ import {DisplayErrorDirective} from "./template-validators/display-error.directi
 		CapacityRendererComponent,
 		ShareDialogComponent,
 		UserAutocompleteComponent,
-		DisplayErrorDirective
+		DisplayErrorDirective,
+		UserPreviewDirective
 	],
 	exports: [
 		ExpandableTableModule,
@@ -88,7 +90,9 @@ import {DisplayErrorDirective} from "./template-validators/display-error.directi
 		CapacityRendererComponent,
 		UserAutocompleteComponent,
 
-		DisplayErrorDirective
+		DisplayErrorDirective,
+
+		UserPreviewDirective
 	],
 	entryComponents: [
 		ConfirmationDialogComponent,

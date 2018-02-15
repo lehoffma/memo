@@ -23,7 +23,12 @@ import {empty} from "rxjs/observable/empty";
 			background-color: #f2f2f2;
 
 		}
-		.description{
+
+		memo-comments-section {
+			width: 100%;
+		}
+
+		.description {
 			white-space: pre-wrap;
 		}
 	`]
