@@ -28,9 +28,9 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 		.pipe(
 			map(([data, sortBy, ...options]: [T[], ColumnSortingEvent<T>, any[]]) => data
 				.filter(dataObject => this.satisfiesFilter(dataObject, ...options))
-				.sort((a,b) => this.comparator(sortBy)(a,b))),
+				.sort((a, b) => this.comparator(sortBy)(a, b))),
 			map(data => [...data]),
-			defaultIfEmpty([])
+			defaultIfEmpty([]),
 		);
 
 	private dataSubscription: Subscription;

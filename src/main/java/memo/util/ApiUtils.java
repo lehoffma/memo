@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.io.CharStreams;
+import memo.auth.api.ShopItemAuthHelper;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -100,21 +101,6 @@ public class ApiUtils {
             logger.error("Error while parsing JSON to Java Object", e);
         }
         return null;
-    }
-
-    public <T> void deleteFromDatabase(Class<T> clazz, HttpServletRequest request, HttpServletResponse response) {
-        ApiUtils.getInstance().setContentType(request, response);
-        String id = request.getParameter("id");
-        logger.debug("Method DELETE called");
-
-        T itemToDelete = DatabaseManager.getInstance().getById(clazz, Integer.valueOf(id));
-
-        if (itemToDelete == null) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return;
-        }
-        logger.debug("Object: " + itemToDelete.toString() + " will be removed");
-        DatabaseManager.getInstance().remove(itemToDelete);
     }
 
     public void processNotFoundError(HttpServletResponse response) {

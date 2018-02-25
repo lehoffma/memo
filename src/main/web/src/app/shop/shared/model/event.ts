@@ -34,4 +34,10 @@ export class Event extends BaseObject<Event> {
 		return new Event(-1, "", moment(), "", ClubRole.None, ClubRole.None, ClubRole.None,
 			[], ["resources/images/Logo.png"], -1, -1, -1);
 	}
+
+	static isEvent(value: any): value is Event {
+		const _value = (<Event>value);
+		return _value && _value.expectedWriteRole !== undefined && _value.expectedCheckInRole !== undefined &&
+			_value.expectedWriteRole !== undefined;
+	}
 }

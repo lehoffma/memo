@@ -49,6 +49,7 @@ export class MemberListComponent implements OnInit {
 
 
 	constructor(public memberListService: MemberListService) {
+		this.memberListService.data$.subscribe(val => console.log(val));
 	}
 
 	ngOnInit() {

@@ -14,15 +14,16 @@
 			 class="multi-level-select-entry-child"
 			 title="{{child.selected ? 'Filter löschen' : 'Filter auswählen'}}"
 			 [ngClass]="{'selected': option.selectType === 'single' && child.selected}"
-			 (click)="childOnClick(child, $event)"
+			 (click)="childOnClick(child, $event); $event.stopPropagation(); $event.preventDefault()"
 			 mat-menu-item>
 
 			{{child.name}}
 			<mat-checkbox *ngIf="option.selectType === 'multiple'"
-						 class="multi-level-select-checkbox"
-						 [(ngModel)]="child.selected"
-						 name="multiSelectCheckbox"
-						 #multiSelectCheckbox="ngModel">
+						  class="multi-level-select-checkbox"
+						  (click)="childOnClick(child, $event); $event.stopPropagation(); $event.preventDefault()"
+						  [(ngModel)]="child.selected"
+						  name="multiSelectCheckbox"
+						  #multiSelectCheckbox="ngModel">
 
 			</mat-checkbox>
 		</div>

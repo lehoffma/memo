@@ -116,7 +116,7 @@ export class ParticipantsService extends ServletService<Participant> {
 	getParticipatedEventsOfUser(userId: number): Observable<(Tour | Party)[]> {
 		const params = new HttpParams().set("userId", "" + userId);
 		const request = this.performRequest(
-			this.http.get<{ shopItems: (Party | Merchandise | Tour)[] }>(this.baseUrl, {params})
+			this.http.get<{ shopItems: (Party | Merchandise | Tour)[] }>("/api/participatedEvents", {params})
 		).pipe(
 			map(json => json.shopItems
 				.filter(event => !EventUtilityService.isMerchandise(event))

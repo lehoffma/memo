@@ -2,6 +2,8 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
 import {ModifyItemEvent} from "../modify-item-event";
+import {User} from "../../../../shared/model/user";
+import {ClubRole} from "../../../../shared/model/club-role";
 
 @Component({
 	selector: "memo-modify-merch",
@@ -31,6 +33,26 @@ export class ModifyMerchComponent implements OnInit {
 		this.modelChange.emit(this.model);
 	}
 
+
+	get permissions(): { [p: string]: ClubRole } {
+		const permissions: { [p: string]: ClubRole } = {};
+		/**
+		 *
+		 public expectedReadRole: ClubRole,
+		 public expectedCheckInRole: ClubRole,
+		 public expectedWriteRole: ClubRole,
+		 */
+		const possiblePermissions = ["expectedReadRole", "expectedCheckInRole", "expectedWriteRole"];
+		if (this.merchModel) {
+			possiblePermissions
+				.filter(key => !!this.merchModel[key])
+				.forEach(key => {
+					permissions[key] = this.merchModel[key];
+				})
+		}
+		return permissions;
+	}
+
 	ngOnInit() {
 	}
 
@@ -41,6 +63,17 @@ export class ModifyMerchComponent implements OnInit {
 	cancel() {
 		this.location.back();
 	}
+
+
+	permissionChange(event: { [key: string]: ClubRole }) {
+		Object.keys(event).forEach(permissionKey => this.model[permissionKey] = event[permissionKey]);
+	}
+
+	responsibleUsersChange(users: User[]) {
+		//todo responsibility api
+		console.log(users);
+	}
+
 
 	submitModifiedObject() {
 		this.onSubmit.emit({

@@ -1,12 +1,15 @@
 package memo.auth;
 
+import com.google.common.net.HttpHeaders;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import memo.util.Util;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Optional;
 
 public class TokenService {
 
@@ -39,5 +42,37 @@ public class TokenService {
     public static String getRefreshToken(String subject) {
         Date refreshTokenExpiry = Util.toDate(LocalDateTime.now().plusWeeks(2));
         return getToken(subject, KeyGenerator.getRefreshKey(), refreshTokenExpiry);
+    }
+
+
+    /**
+     * @param request
+     * @return
+     */
+    public static Optional<String> getJwtFromRequest(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION))
+                .filter(header -> header.startsWith("Bearer "))
+                .map(header -> header.substring("Bearer ".length()));
+    }
+
+    /**
+     *
+     * @param key
+     * @param jwtToken
+     * @return
+     */
+    public static Optional<String> getSubjectOfToken(Key key, String jwtToken) {
+        try{
+            return Optional.ofNullable(
+                    Jwts.parser()
+                            .setSigningKey(key)
+                            .parseClaimsJws(jwtToken)
+                            .getBody()
+                            .getSubject()
+            );
+        }
+        catch(Exception e){
+            return Optional.empty();
+        }
     }
 }

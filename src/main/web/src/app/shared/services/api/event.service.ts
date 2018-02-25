@@ -66,7 +66,7 @@ export class EventService extends ServletService<Event> {
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.pipe(
 				map(json => json.shopItems.map(event =>
-					event.setProperties(event))),
+					Event.create().setProperties(event))),
 				share()
 			);
 
@@ -182,4 +182,12 @@ export class EventService extends ServletService<Event> {
 			);
 	}
 
+	/**
+	 * Invalidates all caches.
+	 * This function is used for logout events, since the canRead property has to be evaluated again, which only
+	 * happens when the corresponding request isn't cached anymore and the service has to request new data.
+	 */
+	clearCaches(){
+		this._cache.invalidateAll();
+	}
 }

@@ -31,7 +31,7 @@ export class ModifyMerchStockComponent implements OnInit, OnDestroy{
 	subscription;
 	constructor(public modifyMerchStockService: ModifyMerchStockService) {
 		this.modifyMerchStockService.init(this.merchStockSubject);
-		this.subscription = this.modifyMerchStockService.dataSubject$
+		this.subscription = this.modifyMerchStockService.data$
 			.subscribe(value => this.stockChange.emit(value))
 	}
 

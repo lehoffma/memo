@@ -1,11 +1,22 @@
 import {
-	AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output,
-	QueryList, SimpleChanges, ViewChildren
+	AfterViewInit,
+	Component,
+	ElementRef,
+	EventEmitter,
+	Input,
+	NgZone,
+	OnChanges,
+	OnDestroy,
+	OnInit,
+	Output,
+	QueryList,
+	SimpleChanges,
+	ViewChildren
 } from "@angular/core";
 import {MapsAPILoader} from "@agm/core";
-import {Address} from "../../../../shared/model/address";
+import {Address} from "../../../../../shared/model/address";
 import {defaultIfEmpty, map} from "rxjs/operators";
-import {RoutingService} from "../../../shared/services/routing.service";
+import {RoutingService} from "../../../../shared/services/routing.service";
 
 
 declare var google;
@@ -16,6 +27,7 @@ declare var google;
 	styleUrls: ["./tour-route-input.component.scss"]
 })
 export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+	//todo 23.02.2018: address-autocomplete dazu
 	@Input() isTour: boolean = false;
 	@Input() route: Address[] = [];
 
@@ -86,7 +98,7 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, Af
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes["route"] && !this.modelRoute) {
+		if (changes["route"] && (!this.modelRoute || this.modelRoute.length < 1 || this.modelRoute.length > 2)) {
 			if (this.isTour) {
 				this.modelRoute = [Address.create(), Address.create()];
 			}

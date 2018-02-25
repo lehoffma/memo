@@ -28,8 +28,6 @@ import java.util.stream.Collectors;
 @WebServlet(name = "ImageServlet", value = "/api/image")
 @MultipartConfig()
 public class ImageServlet extends HttpServlet {
-
-
     final static Logger logger = Logger.getLogger(ImageServlet.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

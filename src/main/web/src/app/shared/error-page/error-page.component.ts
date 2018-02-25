@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from "@angular/core";
 import {Location} from "@angular/common";
 
 @Component({
-	selector: 'memo-error-page',
+	selector: "memo-error-page",
 	template: `
 		<div class="sad-emoji">😞</div>
 		<div class="error-code">
@@ -35,6 +35,10 @@ import {Location} from "@angular/common";
 
 		.error-code {
 			font-size: 8rem;
+		}
+
+		.error-message {
+			text-align: center;
 		}
 
 		.actions {

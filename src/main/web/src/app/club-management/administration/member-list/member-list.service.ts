@@ -33,9 +33,7 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 			[]);
 
 
-		this.init(this.userService.search("").pipe(
-			defaultIfEmpty([])
-		));
+		this.init(this.userService.search(""));
 
 		this.windowService.dimension$
 			.subscribe(dimensions => this.onResize(dimensions));

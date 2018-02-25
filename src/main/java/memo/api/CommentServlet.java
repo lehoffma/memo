@@ -1,54 +1,43 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import memo.api.util.ApiServletPostOptions;
+import memo.api.util.ApiServletPutOptions;
+import memo.auth.api.CommentAuthStrategy;
 import memo.data.CommentRepository;
 import memo.model.Comment;
 import memo.model.ShopItem;
-import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
 import memo.util.ListBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
 @WebServlet(name = "CommentServlet", value = "/api/comment")
-public class CommentServlet extends HttpServlet {
+public class CommentServlet extends AbstractApiServlet<Comment> {
 
-    final static Logger logger = Logger.getLogger(CommentServlet.class);
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-
-        ApiUtils.getInstance().setContentType(request, response);
-        String commentId = request.getParameter("id");
-        String eventId = request.getParameter("eventId");
-        String authorId = request.getParameter("authorId");
-
-        List<Comment> comments = CommentRepository.getInstance().get(commentId, eventId, authorId, response);
-
-        if (ApiUtils.stringIsNotEmpty(commentId) && comments.isEmpty()) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return;
-        }
-        ApiUtils.getInstance().serializeObject(response, comments, "comments");
+    public CommentServlet() {
+        super(new CommentAuthStrategy());
+        logger = Logger.getLogger(CommentServlet.class);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        this.get(request, response,
+                (paramMap, _response) -> CommentRepository.getInstance().get(
+                        getParameter(paramMap, "id"),
+                        getParameter(paramMap, "eventId"),
+                        getParameter(paramMap, "authorId"),
+                        response
+                ),
+                "comments");
+    }
 
-        ApiUtils.getInstance().setContentType(request, response);
-
-        JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "comment");
-        logger.debug("Method POST called");
-
-        Comment comment = ApiUtils.getInstance().updateFromJson(jObj, new Comment(), Comment.class);
-
-        DatabaseManager.getInstance().save(comment);
+    private void updateDependencies(JsonNode jsonNode, Comment comment) {
         if (comment.getParent() != null) {
             Comment parent = comment.getParent();
             ListBuilder<Comment> newChildren = new ListBuilder<Comment>()
@@ -63,42 +52,24 @@ public class CommentServlet extends HttpServlet {
                 .buildAdd(comment);
         item.setComments(newComments);
         DatabaseManager.getInstance().update(item);
+    }
 
-        response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response, comment.getId(), "id");
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        this.post(request, response, new ApiServletPostOptions<>(
+                "comment", new Comment(), Comment.class, Comment::getId,
+                this::updateDependencies
+        ));
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) {
-
-        ApiUtils.getInstance().setContentType(request, response);
-
-        logger.debug("Method PUT called");
-        JsonNode jObj = ApiUtils.getInstance().getJsonObject(request, "address");
-
-
-        if (!jObj.has("id")) {
-            ApiUtils.getInstance().processInvalidError(response);
-            return;
-        }
-
-        Comment comment = DatabaseManager.getInstance().getById(Comment.class, jObj.get("id").asInt());
-
-        if (comment == null) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return;
-        }
-
-
-        comment = ApiUtils.getInstance().updateFromJson(jObj, comment, Comment.class);
-        DatabaseManager.getInstance().update(comment);
-
-        response.setStatus(201);
-        ApiUtils.getInstance().serializeObject(response, comment.getId(), "id");
-
+        this.put(request, response, new ApiServletPutOptions<>(
+                        "address", Comment.class, Comment::getId
+                )
+                        .setUpdateDependencies(this::updateDependencies)
+        );
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
-        ApiUtils.getInstance().deleteFromDatabase(Comment.class, request, response);
+        this.delete(Comment.class, request, response);
     }
 }

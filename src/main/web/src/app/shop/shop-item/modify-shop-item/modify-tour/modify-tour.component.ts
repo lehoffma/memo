@@ -3,6 +3,8 @@ import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
 import {ModifyItemEvent} from "../modify-item-event";
 import {Moment} from "moment";
+import {User} from "../../../../shared/model/user";
+import {ClubRole} from "../../../../shared/model/club-role";
 
 @Component({
 	selector: "memo-modify-tour",
@@ -32,6 +34,25 @@ export class ModifyTourComponent implements OnInit {
 	set tourModel(model: any) {
 		this.model = model;
 		this.modelChange.emit(this.model);
+	}
+
+	get permissions(): { [p: string]: ClubRole } {
+		const permissions: { [p: string]: ClubRole } = {};
+		/**
+		 *
+		 public expectedReadRole: ClubRole,
+		 public expectedCheckInRole: ClubRole,
+		 public expectedWriteRole: ClubRole,
+		 */
+		const possiblePermissions = ["expectedReadRole", "expectedCheckInRole", "expectedWriteRole"];
+		if (this.tourModel) {
+			possiblePermissions
+				.filter(key => !!this.tourModel[key])
+				.forEach(key => {
+					permissions[key] = this.tourModel[key];
+				})
+		}
+		return permissions;
 	}
 
 	ngOnInit() {
@@ -69,6 +90,15 @@ export class ModifyTourComponent implements OnInit {
 		}
 	}
 
+	permissionChange(event: { [key: string]: ClubRole }) {
+		Object.keys(event).forEach(permissionKey => this.model[permissionKey] = event[permissionKey]);
+	}
+
+	responsibleUsersChange(users: User[]) {
+		//todo responsibility api
+		console.log(users);
+	}
+
 	/**
 	 * Emit submit event
 	 */
@@ -82,7 +112,7 @@ export class ModifyTourComponent implements OnInit {
 	}
 
 
-	meterToMiles(meters:number){
+	meterToMiles(meters: number) {
 		return meters * 0.000621371;
 	}
 

@@ -1,5 +1,5 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {NgModule} from "@angular/core";
+import {RouterModule, Routes} from "@angular/router";
 import {ModifyShopItemComponent} from "./modify-shop-item.component";
 import {IsValidItemTypeGuard} from "../../../shared/authentication/is-valid-itemtype.guard";
 import {CanModifyItemGuard} from "../../../shared/authentication/can-modify-item-guard";
@@ -13,6 +13,7 @@ import {ModifyMerchStockContainerComponent} from "./modify-merch/modify-merch-st
 const routes: Routes = [
 	{
 		path: ":itemType/:id/stock/edit", component: ModifyMerchStockContainerComponent,
+		pathMatch: "full",
 		canActivate: [AuthenticatedGuard, CanModifyItemGuard, IsMerchandiseGuard]
 	},
 
@@ -21,22 +22,26 @@ const routes: Routes = [
 	{
 		path: ":itemType/:id/edit",
 		component: ModifyShopItemComponent,
+		pathMatch: "full",
 		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
 	},
 	{
 		path: "create/:itemType",
 		component: ModifyShopItemComponent,
+		pathMatch: "full",
 		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
 	},
 
 	{
 		path: ":itemType/:eventId/costs/:id/edit",
 		component: ModifyShopItemComponent,
+		pathMatch: "full",
 		canActivate: [/*todo is-event guard*/ CanModifyItemGuard]
 	},
 	{
 		path: ":itemType/:eventId/costs/create",
 		component: ModifyShopItemComponent,
+		pathMatch: "full",
 		canActivate: [/*todo is-event guard*/ CanModifyItemGuard]
 	},
 ];

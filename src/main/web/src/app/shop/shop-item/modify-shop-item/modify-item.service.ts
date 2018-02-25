@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {ModifyType} from "./modify-type";
 import {ShopItemType} from "../../shared/model/shop-item-type";
 import {ShopItem} from "../../../shared/model/shop-item";
@@ -25,7 +25,7 @@ import {ModifyItemEvent} from "./modify-item-event";
 import {MerchStockList} from "../../shared/model/merch-stock";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {filter, first, map, mergeMap, scan} from "rxjs/operators";
+import {defaultIfEmpty, filter, first, map, mergeMap, scan, take} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shared/model/event";
 import {of} from "rxjs/observable/of";
@@ -125,8 +125,9 @@ export class ModifyItemService {
 	 * @param {keyof Party | keyof Tour | keyof User} addressKey
 	 */
 	extractAddresses(objectToModify: ShopItem, addressKey: (keyof Party | keyof Tour | keyof User)) {
+		this.model[addressKey] = undefined;
 		combineLatest(...objectToModify[addressKey].map(addressId => this.addressService.getById(addressId)))
-			.pipe(first())
+			.pipe(take(1))
 			.subscribe(addresses => {
 				this.model[addressKey] = [...addresses];
 				this.model = {...this.model};

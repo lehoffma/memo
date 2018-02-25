@@ -5,10 +5,13 @@ import {EventService} from "../services/api/event.service";
 import {EntryService} from "../services/api/entry.service";
 import {UserService} from "../services/api/user.service";
 import {Permission} from "../model/permission";
-import {rolePermissions} from "../model/club-role";
+import {isAuthenticated, rolePermissions} from "../model/club-role";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, tap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
+import {ShopItem} from "../model/shop-item";
+import {Event} from "../../shop/shared/model/event";
+import {User} from "../model/user";
 
 @Injectable()
 export class CanModifyItemGuard implements CanActivate {
@@ -19,9 +22,10 @@ export class CanModifyItemGuard implements CanActivate {
 				private router: Router) {
 	}
 
-	getShopItemFromRoute(route: ActivatedRouteSnapshot, id: number) {
+	getShopItemFromRoute(route: ActivatedRouteSnapshot, id: number): { permissionKey: string, shopItem: Observable<ShopItem | Event> } {
 		let permissionKey = "";
-		let shopItem = of(null);
+		let shopItem: Observable<ShopItem | Event> = of(null);
+
 		switch (route.paramMap.get("itemType")) {
 			case "tours":
 				if (id >= 0) {
@@ -45,7 +49,7 @@ export class CanModifyItemGuard implements CanActivate {
 				if (id >= 0) {
 					shopItem = this.userService.getById(id);
 				}
-				permissionKey = "user";
+				permissionKey = "userManagement";
 				break;
 			case "entries":
 				if (id >= 0) {
@@ -62,7 +66,7 @@ export class CanModifyItemGuard implements CanActivate {
 			.accountObservable
 			.pipe(
 				mergeMap(id => id === null ? of(null) : this.userService.getById(id)),
-				mergeMap(user => {
+				mergeMap((user: User) => {
 					if (user === null) {
 						this.loginService.redirectUrl = state.url;
 						this.router.navigate(["login"]);
@@ -75,10 +79,14 @@ export class CanModifyItemGuard implements CanActivate {
 
 					return shopItem
 						.pipe(
+							tap(console.log),
 							map(item => {
-								//todo update once the item supports special user rights
 								if (item === null) {
 									return permissions[permissionKey] >= Permission.create;
+								}
+								if (Event.isEvent(item)) {
+									return isAuthenticated(user.clubRole, item.expectedWriteRole) ||
+										permissions[permissionKey] >= Permission.write;
 								}
 								return permissions[permissionKey] >= Permission.write;
 							}),

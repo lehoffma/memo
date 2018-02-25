@@ -6,6 +6,7 @@
 		   tabindex="-1"
 		   placeholder="Nutzer"
 		   name="userInput"
+		   #userInput
 		   [formControl]="autocompleteFormControl"
 		   [matAutocomplete]="auto">
 	<mat-error *ngIf="autocompleteFormControl.dirty && user === null ||

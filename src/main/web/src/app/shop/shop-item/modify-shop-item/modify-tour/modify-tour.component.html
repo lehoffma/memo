@@ -122,11 +122,19 @@
 			</memo-item-details-content>
 		</div>
 
-		<!--<memo-modify-item-inner-container [title]="'Route'"-->
-		<!--[formIsValid]="modifyShopItemForm.form.valid"-->
-		<!--[saveButton]="false"-->
-		<!--(onSave)="submitModifiedObject()">-->
-		<!--</memo-modify-item-inner-container>-->
+		<memo-item-details-content [title]="'Berechtigungen'">
+			<memo-item-permissions-input
+				[values]="permissions"
+				(onChange)="permissionChange($event)">
+
+			</memo-item-permissions-input>
+		</memo-item-details-content>
+
+		<memo-item-details-content [title]="'Zusätzliche verantwortliche User'" class="no-padding">
+			<memo-responsible-user-input (usersChanged)="responsibleUsersChange($event)">
+
+			</memo-responsible-user-input>
+		</memo-item-details-content>
 
 
 		<!--below all that-->

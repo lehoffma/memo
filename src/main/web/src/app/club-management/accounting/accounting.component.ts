@@ -10,7 +10,7 @@ import {map} from "rxjs/operators";
 	providers: [AccountingTableContainerService]
 })
 export class AccountingComponent implements OnInit, OnDestroy {
-	total$ = this.accountingTableContainerService.dataSubject$
+	total$ = this.accountingTableContainerService.data$
 		.pipe(
 			map(entries => entries.reduce((acc, entry) => acc + entry.value, 0))
 		);

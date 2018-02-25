@@ -1,6 +1,6 @@
 import {GoogleMapsAPIWrapper} from "@agm/core";
 import {Directive, EventEmitter, Input, Output} from "@angular/core";
-import {Address} from "../../../../shared/model/address";
+import {Address} from "../../../../../shared/model/address";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {filter} from "rxjs/operators";
 

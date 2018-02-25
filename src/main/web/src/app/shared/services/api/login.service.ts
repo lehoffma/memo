@@ -11,6 +11,7 @@ import {Observable} from "rxjs/Observable";
 import {catchError, filter, map, mergeMap, retry, share} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {EventService} from "./event.service";
 
 interface LoginApiResponse {
 	id: number;
@@ -44,6 +45,7 @@ export class LogInService {
 
 	constructor(private http: HttpClient,
 				private authService: AuthService,
+				private eventService: EventService,
 				private snackBar: MatSnackBar,
 				private userService: UserService) {
 		this.loginFromToken();
@@ -101,9 +103,7 @@ export class LogInService {
 					if (id !== null && id >= 0) {
 						this.authService.setAccessToken(auth_token);
 						this.authService.setRefreshToken(refresh_token);
-						//store profile data in local storage (so the user won't get logged out if he closes the tab)
-						//todo use cookie instead
-						localStorage.setItem(this.profileKey, "" + id);
+						this.eventService.clearCaches();
 
 						this.pushNewData(id);
 					}
@@ -130,10 +130,17 @@ export class LogInService {
 		})
 			.pipe(
 				map(() => {
+					//clear auth tokens
 					this.authService.setAccessToken(null);
 					this.authService.setRefreshToken("");
-					localStorage.removeItem(this.profileKey);
+
+					//clear event caches
+					this.eventService.clearCaches();
+
+					//clear login data from this service
 					this.pushNewData(null);
+
+					//notify user
 					this.snackBar.open("Du wurdest ausgeloggt.", "Schließen", {
 						duration: 2000
 					});

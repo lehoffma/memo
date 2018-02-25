@@ -7,7 +7,7 @@ export enum ClubRole {
 	Schriftfuehrer = <any> "Schriftführer",
 	Vorstand = <any> "Vorstand",
 	Mitglied = <any> "Mitglied",
-	None = <any> "None"
+	None = <any> "Gast"
 }
 
 /*
@@ -44,14 +44,14 @@ export function idToClubRoleEnum(clubRole: number): ClubRole {
 	}
 }
 
-function clubRoles() {
+export function clubRoles() {
 	return [ClubRole.None, ClubRole.Mitglied, ClubRole.Vorstand, ClubRole.Schriftfuehrer,
 		ClubRole.Kassenwart, ClubRole.Organizer, ClubRole.Admin];
 }
 
 
 export const rolePermissions: { [role: string]: UserPermissions } = {
-	"None": {
+	"Gaeste": {
 		funds: 0,
 		party: 1,
 		userManagement: 0,
