@@ -6,6 +6,7 @@ import memo.api.util.ApiServletPutOptions;
 import memo.api.util.ModifyPrecondition;
 import memo.auth.AuthenticationService;
 import memo.auth.api.AuthenticationStrategy;
+import memo.model.User;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
@@ -228,9 +229,8 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         T itemToDelete = DatabaseManager.getInstance().getById(clazz, Integer.valueOf(id));
 
-        boolean isAuthorized = AuthenticationService.parseUserFromRequestHeader(request)
-                .map(user -> authenticationStrategy.isAllowedToDelete(user, itemToDelete))
-                .orElse(false);
+        User user = AuthenticationService.parseNullableUserFromRequestHeader(request);
+        boolean isAuthorized = authenticationStrategy.isAllowedToDelete(user, itemToDelete);
 
         if (!isAuthorized) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

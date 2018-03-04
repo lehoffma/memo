@@ -14,7 +14,7 @@ public class CommentAuthStrategy implements AuthenticationStrategy<Comment> {
     public boolean isAllowedToRead(User user, Comment object) {
         return userIsAuthorized(user, object, Arrays.asList(
                 //user has to be able to view the associated shopItem
-                userFulfillsMinimumRole(Comment::getItem, ShopItem::getExpectedReadRole)
+                userFulfillsMinimumRoleOfItem(Comment::getItem, ShopItem::getExpectedReadRole)
         ));
     }
 
@@ -22,7 +22,7 @@ public class CommentAuthStrategy implements AuthenticationStrategy<Comment> {
     public boolean isAllowedToCreate(User user, Comment object) {
         return userIsAuthorized(user, object, Arrays.asList(
                 //user has to be able to view the associated shopItem
-                userFulfillsMinimumRole(Comment::getItem, ShopItem::getExpectedReadRole)
+                userFulfillsMinimumRoleOfItem(Comment::getItem, ShopItem::getExpectedReadRole)
                         //user has to be logged in to comment
                         .and(userIsLoggedOut().negate())
         ));
@@ -32,18 +32,18 @@ public class CommentAuthStrategy implements AuthenticationStrategy<Comment> {
     public boolean isAllowedToModify(User user, Comment object) {
         return userIsAuthorized(user, object, Arrays.asList(
                 //user has to be able to view the associated shopItem
-                userFulfillsMinimumRole(Comment::getItem, ShopItem::getExpectedReadRole)
+                userFulfillsMinimumRoleOfItem(Comment::getItem, ShopItem::getExpectedReadRole)
                         //user has to be logged in to comment
                         .and(userIsLoggedOut().negate())
                         //only the author can change the content of a comment
-                        .and(userIsAuthor(comment -> Arrays.asList(comment.getAuthor()))),
+                        .and(userIsAuthor(Comment::getAuthor)),
 
                 //user has to be able to view the associated shopItem
-                userFulfillsMinimumRole(Comment::getItem, ShopItem::getExpectedReadRole)
+                userFulfillsMinimumRoleOfItem(Comment::getItem, ShopItem::getExpectedReadRole)
                         //user has to be logged in to comment
                         .and(userIsLoggedOut().negate())
                         //admins can change the content of a comment, too
-                        .and(userFulfillsMinimumRole(Comment::getItem, shopItem -> ClubRole.Admin))
+                        .and(userFulfillsMinimumRoleOfItem(Comment::getItem, shopItem -> ClubRole.Admin))
         ));
     }
 
@@ -51,18 +51,18 @@ public class CommentAuthStrategy implements AuthenticationStrategy<Comment> {
     public boolean isAllowedToDelete(User user, Comment object) {
         return userIsAuthorized(user, object, Arrays.asList(
                 //user has to be able to view the associated shopItem
-                userFulfillsMinimumRole(Comment::getItem, ShopItem::getExpectedReadRole)
+                userFulfillsMinimumRoleOfItem(Comment::getItem, ShopItem::getExpectedReadRole)
                         //user has to be logged in to comment
                         .and(userIsLoggedOut().negate())
                         //only the author can change the content of a comment
-                        .and(userIsAuthor(comment -> Arrays.asList(comment.getAuthor()))),
+                        .and(userIsAuthor(Comment::getAuthor)),
 
                 //user has to be able to view the associated shopItem
-                userFulfillsMinimumRole(Comment::getItem, ShopItem::getExpectedReadRole)
+                userFulfillsMinimumRoleOfItem(Comment::getItem, ShopItem::getExpectedReadRole)
                         //user has to be logged in to comment
                         .and(userIsLoggedOut().negate())
                         //admins can change the content of a comment, too
-                        .and(userFulfillsMinimumRole(Comment::getItem, shopItem -> ClubRole.Admin))
+                        .and(userFulfillsMinimumRoleOfItem(Comment::getItem, shopItem -> ClubRole.Admin))
         ));
     }
 }

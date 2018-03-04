@@ -34,20 +34,22 @@ public class AuthenticationService {
         return isAuthorized(clubRoleSupplier.apply(user), permissionSupplier.apply(user), minimumRole, minimumPermission);
     }
 
-    public static Optional<User> parseUserFromRequestHeader(HttpServletRequest request) {
+    private static Optional<User> parseUserFromRequestHeader(HttpServletRequest request) {
         return TokenService.getJwtFromRequest(request)
                 .flatMap(jwt -> TokenService.getSubjectOfToken(KeyGenerator.getAccessKey(), jwt))
                 .map(email -> UserRepository.getInstance().getUserByEmail(email))
                 .map(users -> users.get(0));
     }
 
+    public static User parseNullableUserFromRequestHeader(HttpServletRequest request) {
+        return parseUserFromRequestHeader(request).orElse(null);
+    }
+
     public static <T> List<T> filterUnauthorized(List<T> items,
                                                  BiPredicate<User, T> itemIsAllowed,
                                                  HttpServletRequest request) {
         //parse user from authorization header of request
-        User authorizedUser = parseUserFromRequestHeader(request)
-                .orElse(null);
-
+        User authorizedUser = parseNullableUserFromRequestHeader(request);
         return items.stream()
                 .filter(item -> itemIsAllowed.test(authorizedUser, item))
                 .collect(Collectors.toList());
@@ -57,9 +59,7 @@ public class AuthenticationService {
     public static <T> boolean userIsAuthorized(HttpServletRequest request,
                                                BiPredicate<User, T> isAllowed,
                                                T item) {
-        //todo doesnt work when registering a new user
-        return AuthenticationService.parseUserFromRequestHeader(request)
-                .map(user -> isAllowed.test(user, item))
-                .orElse(false);
+        User user = AuthenticationService.parseNullableUserFromRequestHeader(request);
+        return isAllowed.test(user, item);
     }
 }

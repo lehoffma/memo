@@ -5,13 +5,19 @@ import memo.model.Permission;
 import memo.model.ShopItem;
 import memo.model.User;
 
-import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class AuthenticationConditionFactory {
 
     public static <T> BiPredicate<User, T> userFulfillsMinimumRole(
+            Supplier<ClubRole> expectedRoleSupplier
+    ) {
+        return (user, item) -> user.getClubRole().ordinal() >= expectedRoleSupplier.get().ordinal();
+    }
+
+    public static <T> BiPredicate<User, T> userFulfillsMinimumRoleOfItem(
             Function<T, ShopItem> getShopItem,
             Function<ShopItem, ClubRole> expectedRoleSupplier
     ) {
@@ -21,7 +27,7 @@ public class AuthenticationConditionFactory {
                 ClubRole expectedRole = expectedRoleSupplier.apply(shopItem);
                 if (user != null) {
                     //user either created the shopItem or is allowed to see/modify it
-                    return user.getClubRole().ordinal() >= expectedRole.ordinal();
+                    return userFulfillsMinimumRole(() -> expectedRole).test(user, item);
                 }
                 //if the user is logged out, he can only see this item if the expectedRole is None
                 return expectedRole == ClubRole.None;
@@ -30,11 +36,11 @@ public class AuthenticationConditionFactory {
         };
     }
 
-    public static <T> BiPredicate<User, T> userIsAuthor(Function<T, List<User>> getAuthors) {
+    public static <T> BiPredicate<User, T> userIsAuthor(Function<T, User> getAuthor) {
         return (loggedInUser, object) -> {
-            List<User> authors = getAuthors.apply(object);
-            if (loggedInUser != null) {
-                return authors.stream().anyMatch(author -> loggedInUser.getId().equals(author.getId()));
+            User authors = getAuthor.apply(object);
+            if (loggedInUser != null && authors != null) {
+                return loggedInUser.getId().equals(authors.getId());
             }
             return false;
         };

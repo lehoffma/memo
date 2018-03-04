@@ -6,7 +6,6 @@ import memo.model.ShopItem;
 import memo.model.User;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static memo.auth.api.AuthenticationConditionFactory.userHasCorrectPermission;
 import static memo.auth.api.AuthenticationConditionFactory.userIsLoggedIn;
@@ -17,10 +16,10 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
         return userIsAuthorized(user, object, Arrays.asList(
                 //if user is logged in:
                 //address is part of item: fulfills read role of shopItem
-                AuthenticationConditionFactory.userFulfillsMinimumRole(Address::getItem, ShopItem::getExpectedReadRole)
+                AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(Address::getItem, ShopItem::getExpectedReadRole)
                         .and(userIsLoggedIn()),
                 //  address is part of user: is author or fulfills userManagement permission
-                (AuthenticationConditionFactory.<Address>userIsAuthor(o -> Collections.singletonList(o.getUser()))
+                (AuthenticationConditionFactory.userIsAuthor(Address::getUser)
                         .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.read))),
 
                 //if user is logged out:
@@ -35,10 +34,10 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
         return userIsAuthorized(user, object, Arrays.asList(
                 //if user is logged in:
                 //address is part of item: fulfills read role of shopItem
-                AuthenticationConditionFactory.userFulfillsMinimumRole(Address::getItem, ShopItem::getExpectedWriteRole)
+                AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(Address::getItem, ShopItem::getExpectedWriteRole)
                         .and(userIsLoggedIn()),
                 //  address is part of user: is author or fulfills userManagement permission
-                (AuthenticationConditionFactory.<Address>userIsAuthor(o -> Collections.singletonList(o.getUser()))
+                (AuthenticationConditionFactory.userIsAuthor(Address::getUser)
                         .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.create))),
 
                 //if user is logged out:
@@ -53,10 +52,10 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
         return userIsAuthorized(user, object, Arrays.asList(
                 //if user is logged in:
                 //address is part of item: fulfills read role of shopItem
-                AuthenticationConditionFactory.userFulfillsMinimumRole(Address::getItem, ShopItem::getExpectedWriteRole)
+                AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(Address::getItem, ShopItem::getExpectedWriteRole)
                         .and(userIsLoggedIn()),
                 //  address is part of user: is author or fulfills userManagement permission
-                (AuthenticationConditionFactory.<Address>userIsAuthor(o -> Collections.singletonList(o.getUser()))
+                (AuthenticationConditionFactory.userIsAuthor(Address::getUser)
                         .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.write))),
 
                 //if user is logged out:
@@ -71,10 +70,10 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
         return userIsAuthorized(user, object, Arrays.asList(
                 //if user is logged in:
                 //address is part of item: fulfills read role of shopItem
-                AuthenticationConditionFactory.userFulfillsMinimumRole(Address::getItem, ShopItem::getExpectedWriteRole)
+                AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(Address::getItem, ShopItem::getExpectedWriteRole)
                         .and(userIsLoggedIn()),
                 //  address is part of user: is author or fulfills userManagement permission
-                (AuthenticationConditionFactory.<Address>userIsAuthor(o -> Collections.singletonList(o.getUser()))
+                (AuthenticationConditionFactory.userIsAuthor(Address::getUser)
                         .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.delete))),
 
                 //if user is logged out:
