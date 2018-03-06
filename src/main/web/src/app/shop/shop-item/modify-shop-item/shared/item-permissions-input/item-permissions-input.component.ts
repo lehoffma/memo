@@ -68,7 +68,7 @@ export class ItemPermissionsInputComponent implements OnInit {
 		const controlsConfig = this.permissions
 			.map(it => it.key)
 			.reduce((config, permissionKey) => {
-				const initValue = (this.values && this.values[permissionKey]) || ClubRole.None;
+				const initValue = (this.values && this.values[permissionKey]) || ClubRole.Gast;
 				config[permissionKey] = this.fb.control(initValue);
 				return config;
 			}, {});

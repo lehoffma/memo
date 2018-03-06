@@ -8,10 +8,10 @@ import {catchError, retry} from "rxjs/operators";
 
 export type AddOrModifyRequest = <T>(url: string, body: any | null, options?: {
 	headers?: HttpHeaders;
-	observe?: 'body';
+	observe?: "body";
 	params?: HttpParams;
 	reportProgress?: boolean;
-	responseType?: 'json';
+	responseType?: "json";
 	withCredentials?: boolean;
 }) => Observable<T>
 
@@ -23,7 +23,7 @@ export interface AddOrModifyResponse {
 export abstract class ServletService<T> implements ServletServiceInterface<T> {
 	protected _cache: ApiCache<T> = new ApiCache<T>();
 
-	constructor() {
+	protected constructor() {
 	}
 
 	/**
@@ -49,11 +49,11 @@ export abstract class ServletService<T> implements ServletServiceInterface<T> {
 				//log any errors
 				catchError(error => this.handleError(error))
 			)
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			// 		.publish().refCount()
-			// .shareReplay(3, 10000)
-			// .publishReplay(1)
+		//convert the observable to a hot observable, i.e. immediately perform the http request
+		//instead of waiting for someone to subscribe
+		// 		.publish().refCount()
+		// .shareReplay(3, 10000)
+		// .publishReplay(1)
 	}
 
 

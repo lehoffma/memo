@@ -51,7 +51,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     }
 
     protected String getParameter(Map<String, String[]> paramMap, String key) {
-        return getParameter(paramMap, key, "");
+        return getParameter(paramMap, key, null);
     }
 
     protected void get(HttpServletRequest request,
@@ -66,21 +66,28 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         logger.debug("Method GET called with params " + paramMapToString(parameterMap));
         List<T> items = itemSupplier.apply(parameterMap, response);
 
+        items = items.stream()
+                .filter(isFiltered)
+                .collect(Collectors.toList());
+        String id = getParameter(parameterMap, "id");
+
+        if (ApiUtils.stringIsNotEmpty(id) && items.isEmpty()) {
+            ApiUtils.getInstance().processNotFoundError(response);
+            return;
+        }
+
         items = AuthenticationService.filterUnauthorized(
                 items,
                 this.authenticationStrategy::isAllowedToRead,
                 request
         );
 
-        items = items.stream()
-                .filter(isFiltered)
-                .collect(Collectors.toList());
-
-        String id = getParameter(parameterMap, "id");
         if (ApiUtils.stringIsNotEmpty(id) && items.isEmpty()) {
-            ApiUtils.getInstance().processNotFoundError(response);
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            logger.error("User is not logged in or is not allowed to see this item");
             return;
         }
+
         ApiUtils.getInstance().serializeObject(response, items, serializedKey);
     }
 
@@ -123,10 +130,10 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return;
         }
 
+        DatabaseManager.getInstance().save(item);
+
         //update cyclic dependencies etc.
         updateDependencies.accept(jsonItem, item);
-
-        DatabaseManager.getInstance().save(item);
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
@@ -220,14 +227,14 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         );
     }
 
-    protected void delete(Class<T> clazz,
-                          HttpServletRequest request,
-                          HttpServletResponse response) {
+    protected void delete(HttpServletRequest request,
+                          HttpServletResponse response,
+                          Function<HttpServletRequest, T> itemSupplier
+    ) {
         ApiUtils.getInstance().setContentType(request, response);
-        String id = request.getParameter("id");
         logger.debug("Method DELETE called with params " + paramMapToString(request.getParameterMap()));
 
-        T itemToDelete = DatabaseManager.getInstance().getById(clazz, Integer.valueOf(id));
+        T itemToDelete = itemSupplier.apply(request);
 
         User user = AuthenticationService.parseNullableUserFromRequestHeader(request);
         boolean isAuthorized = authenticationStrategy.isAllowedToDelete(user, itemToDelete);
@@ -244,5 +251,14 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         }
         logger.debug("Object: " + itemToDelete.toString() + " will be removed");
         DatabaseManager.getInstance().remove(itemToDelete);
+    }
+
+    protected void delete(Class<T> clazz,
+                          HttpServletRequest request,
+                          HttpServletResponse response) {
+        this.delete(request, response, req -> {
+            String id = request.getParameter("id");
+            return DatabaseManager.getInstance().getById(clazz, Integer.valueOf(id));
+        });
     }
 }

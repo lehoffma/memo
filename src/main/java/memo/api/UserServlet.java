@@ -64,7 +64,15 @@ public class UserServlet extends AbstractApiServlet<User> {
             response.setStatus(HttpServletResponse.SC_CONFLICT);
             response.getWriter().append("Email already taken");
         }
+    }
 
+    private void updateCyclicDependencies(User user) {
+        user.getAddresses().forEach(it -> it.setUser(user));
+        user.getBankAccounts().forEach(it -> it.setUser(user));
+        user.getImages().forEach(it -> it.setUser(user));
+        //todo authored items maybe updaten?
+        user.getComments().forEach(it -> it.setAuthor(user));
+        user.getOrders().forEach(it -> it.setUser(user));
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -73,7 +81,7 @@ public class UserServlet extends AbstractApiServlet<User> {
                         (jsonNode, user) -> {
                             updateUserFromJson(jsonNode, user);
                             DatabaseManager.getInstance().save(user.getPermissions());
-                            user.getAddresses().forEach(it -> it.setUser(user));
+                            updateCyclicDependencies(user);
                         }
                 )
                         .setPreconditions(Arrays.asList(
@@ -83,7 +91,7 @@ public class UserServlet extends AbstractApiServlet<User> {
                                         () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
                                 ),
                                 new ModifyPrecondition<>(
-                                        user -> (UserRepository.getInstance().getUserByEmail(user.getEmail()).isEmpty()),
+                                        user -> !(UserRepository.getInstance().getUserByEmail(user.getEmail()).isEmpty()),
                                         "Email already taken",
                                         () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
                                 )
@@ -97,7 +105,7 @@ public class UserServlet extends AbstractApiServlet<User> {
                         "user", User.class, User::getId, "id",
                         (jsonNode, user) -> {
                             updateUserFromJson(jsonNode, user);
-                            user.getAddresses().forEach(it -> it.setUser(user));
+                            this.updateCyclicDependencies(user);
                         }
                 )
                         .setPreconditions(Arrays.asList(
@@ -126,7 +134,7 @@ public class UserServlet extends AbstractApiServlet<User> {
 
     private User updateUserFromJson(JsonNode jsonUser, User user) {
         if (jsonUser.has("clubRole")) {
-            user.setClubRole(ClubRole.None);
+            user.setClubRole(ClubRole.Gast);
             UserRepository.clubRoleFromString(jsonUser.get("clubRole").asText())
                     .ifPresent(user::setClubRole);
         }

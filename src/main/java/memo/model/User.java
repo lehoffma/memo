@@ -41,7 +41,7 @@ public class User implements Serializable {
     private String surname;
 
     @Enumerated(EnumType.ORDINAL)
-    private ClubRole clubRole = ClubRole.None;
+    private ClubRole clubRole = ClubRole.Gast;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonSerialize(using = AddressIdListSerializer.class)
@@ -361,7 +361,6 @@ public class User implements Serializable {
                 ", password='" + password + '\'' +
                 ", isStudent=" + isStudent +
                 ", hasDebitAuth=" + hasDebitAuth +
-                ", images=" + images +
                 ", joinDate=" + joinDate +
                 ", gender='" + gender + '\'' +
                 ", hasSeasonTicket=" + hasSeasonTicket +

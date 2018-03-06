@@ -20,7 +20,7 @@ export class Party extends Event {
 				capacity: number,
 				price: number,
 				public emptySeats: number) {
-		super(id, title, date, description, expectedReadRole, expectedCheckInRole, expectedWriteRole,
+		super(id, title, date, description, [], expectedReadRole, expectedCheckInRole, expectedWriteRole,
 			route, images, capacity, price, typeToInteger(EventType.partys));
 	}
 
@@ -72,7 +72,7 @@ export class Party extends Event {
 	}
 
 	static create() {
-		return new Party(-1, "", moment(), "", ClubRole.None, ClubRole.None, ClubRole.None, [],
+		return new Party(-1, "", moment(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
 			["resources/images/Logo.png"], -1, -1, -1);
 	}
 }

@@ -11,6 +11,7 @@ export class Event extends BaseObject<Event> {
 				public title: string,
 				public date: Moment,
 				public description: string,
+				public author: number[],
 				public expectedReadRole: ClubRole,
 				public expectedCheckInRole: ClubRole,
 				public expectedWriteRole: ClubRole,
@@ -31,7 +32,7 @@ export class Event extends BaseObject<Event> {
 	}
 
 	static create() {
-		return new Event(-1, "", moment(), "", ClubRole.None, ClubRole.None, ClubRole.None,
+		return new Event(-1, "", moment(), "", [], ClubRole.Gast, ClubRole.Gast, ClubRole.Gast,
 			[], ["resources/images/Logo.png"], -1, -1, -1);
 	}
 

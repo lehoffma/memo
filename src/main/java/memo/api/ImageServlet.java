@@ -2,6 +2,8 @@ package memo.api;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import memo.auth.AuthenticationService;
+import memo.auth.api.ImageAuthStrategy;
 import memo.data.ImageRepository;
 import memo.model.Image;
 import memo.util.ApiUtils;
@@ -12,7 +14,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -27,10 +28,14 @@ import java.util.stream.Collectors;
 
 @WebServlet(name = "ImageServlet", value = "/api/image")
 @MultipartConfig()
-public class ImageServlet extends HttpServlet {
-    final static Logger logger = Logger.getLogger(ImageServlet.class);
+public class ImageServlet extends AbstractApiServlet<Image> {
+    public ImageServlet() {
+        super(new ImageAuthStrategy());
+        logger = Logger.getLogger(ImageServlet.class);
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //todo use the authentication strategy
         ServletContext context = request.getServletContext();
 
         String fileName = request.getParameter("fileName");
@@ -73,9 +78,16 @@ public class ImageServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        boolean userIsAuthorized = AuthenticationService
+                .userIsAuthorized(request, authenticationStrategy::isAllowedToCreate, new Image());
+
+        if (!userIsAuthorized) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().append("The user is not authorized to create these images");
+        }
+
+
         Collection<Part> parts = request.getParts();
-
-
         List<Image> images = parts.stream()
                 .map(part -> new Image().saveToFile(part))
                 .collect(Collectors.toList());
@@ -87,8 +99,14 @@ public class ImageServlet extends HttpServlet {
                 .map(Image::getApiPath)
                 .forEach(jsonImageList::add);
 
-
         ApiUtils.getInstance().serializeObject(response, jsonImageList, "images");
     }
 
+
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        this.delete(request, response, it -> {
+            String fileName = it.getParameter("fileName");
+            return ImageRepository.getInstance().getByFilePath(fileName).orElse(null);
+        });
+    }
 }

@@ -123,7 +123,8 @@
 				<mat-form-field>
 					<mat-select placeholder="Anzahl" name="amount"
 								[(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
-								[disabled]="!isMerch(event) && isPastEvent"
+								[disabled]="(!isMerch(event) && isPastEvent)
+								|| !(userCanCheckIn$ | async)"
 								[required]="true">
 						<mat-option *ngFor="let number of amountOptions" [value]="number">
 							{{number}}
@@ -132,7 +133,10 @@
 				</mat-form-field>
 
 				<button
-					[disabled]="(!addToCartForm.valid || model.amount === 0) || (!isMerch(event) && isPastEvent)"
+					[disabled]="(!addToCartForm.valid || model.amount === 0)
+								|| (!isMerch(event) && isPastEvent)
+								|| !(userCanCheckIn$ | async)
+					"
 					mat-raised-button
 					color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
 					class="add-to-cart-button">

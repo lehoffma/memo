@@ -26,7 +26,7 @@ public class BankAcc implements Serializable {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn()
     private User user;
 
     @Column

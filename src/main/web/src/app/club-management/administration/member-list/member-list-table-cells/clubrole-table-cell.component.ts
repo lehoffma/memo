@@ -35,11 +35,11 @@ export class ClubRoleTableCellComponent implements OnInit, OnChanges, Expandable
 				return "attach_money";
 			case ClubRole.Mitglied:
 				return "account_box";
-			case ClubRole.Organizer:
+			case ClubRole.Organisator:
 				return "assignment";
 			case ClubRole.Vorstand:
 				return "gavel";
-			case ClubRole.None:
+			case ClubRole.Gast:
 				return "do_not_disturb";
 		}
 	}

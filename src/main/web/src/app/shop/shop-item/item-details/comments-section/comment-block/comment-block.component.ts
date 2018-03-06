@@ -126,16 +126,17 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 				.pipe(
 					first(),
 					mergeMap(user => {
+						console.log(this.eventId);
 						let comment = new Comment(this.eventId, -1, moment(), user.id, commentText, currentComment.id);
-						//todo demo
-						// this.dummyComment = this.dummyComment.setProperties({
-						// 	text: "",
-						// 	authorId: user.id,
-						// 	timeStamp: comment.timeStamp,
-						// 	eventId: this.eventId,
-						// });
+						this.dummyComment = this.dummyComment.setProperties({
+							content: "",
+							author: user.id,
+							timeStamp: comment.timeStamp,
+							item: this.eventId,
+						});
 						this.showChildren = true;
-						// this.loadingChildren = true;
+						this.showReplyBox = false;
+						this.loadingChildren = true;
 						this.changeDetectorRef.detectChanges();
 						return this.commentService.add(comment)
 							.pipe(
@@ -143,7 +144,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 									currentComment.children.push(addResult.id);
 									this.comment = Object.assign({}, currentComment);
 									this.showReplyBox = false;
-									// this.loadingChildren = false;
+									this.loadingChildren = false;
 								})
 							);
 					})

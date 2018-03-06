@@ -9,6 +9,8 @@ import javax.persistence.*;
 import javax.servlet.http.Part;
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -146,41 +148,36 @@ public class Image implements Serializable {
                 '}';
     }
 
-    public Image saveToFile(Part p) {
+    public Image saveToFile(Part part) {
 
-        String extension = FilenameUtils.getExtension(getUploadedName(p));
+        String extension = FilenameUtils.getExtension(getUploadedName(part));
         File file;
+        //repeat until we get an unused file name
         do {
             String filename = RandomStringUtils.randomAlphanumeric(10);
             file = new File(filePath + filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
             this.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
         } while (file.exists());
 
-        try (InputStream stream = p.getInputStream()) {
+        try (InputStream stream = part.getInputStream()) {
             writeToFile(stream, file);
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
         return this;
     }
 
     // save uploaded file to new location
-    private void writeToFile(InputStream uploadedInputStream, File uploadedFileLocation) {
-
-        uploadedFileLocation.getParentFile().mkdirs();
-        int read;
-        byte[] bytes = new byte[1024];
-
-        try (OutputStream out = new FileOutputStream(uploadedFileLocation)) {
-
-            while ((read = uploadedInputStream.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
+    private void writeToFile(InputStream uploadedInputStream, File uploadedFileLocation) throws IOException {
+        if (!uploadedFileLocation.getParentFile().exists()) {
+            boolean directoriesWereCreated = uploadedFileLocation.getParentFile().mkdirs();
+            if (!directoriesWereCreated) {
+                throw new RuntimeException("Could not create the directory for the images at "
+                        + uploadedFileLocation.getParentFile().getAbsolutePath());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
+        Files.copy(uploadedInputStream, uploadedFileLocation.toPath());
     }
 
     /**
@@ -198,7 +195,14 @@ public class Image implements Serializable {
         return "";
     }
 
-    protected void finalize() throws Throwable {
-        // ToDo: implement
+
+    //method that gets called after the entity is deleted from the database
+    @PostRemove
+    void onPostRemove() {
+        try {
+            Files.delete(Paths.get(this.getFullPath()));
+        } catch (IOException e) {
+            logger.error("Deleting the image at " + this.getFullPath() + " went wrong", e);
+        }
     }
 }

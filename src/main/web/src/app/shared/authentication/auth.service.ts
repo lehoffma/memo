@@ -4,7 +4,8 @@ import {Observable} from "rxjs/Observable";
 import {catchError, mergeMap, tap} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {_throw} from "rxjs/observable/throw";
-import {of} from "rxjs/observable/of";
+import {of} from "rxjs/observable/of"
+import {empty} from "rxjs/observable/empty";
 
 @Injectable()
 export class AuthService {
@@ -35,8 +36,14 @@ export class AuthService {
 	}
 
 	public setRefreshToken(token: string) {
-		localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
+		if (!token) {
+			localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+		}
+		else {
+			localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
+		}
 	}
+
 
 	/**
 	 *
@@ -64,11 +71,19 @@ export class AuthService {
 	 * @returns {Observable<{auth_token: string}>}
 	 */
 	refreshAccessToken(): Observable<{ auth_token: string }> {
+		if (!this.getRefreshToken()) {
+			return of({auth_token: null});
+		}
+
 		return this.http.get<{ auth_token: string }>("/api/refreshAccessToken", {
 			params: new HttpParams().set("refreshToken", this.getRefreshToken())
 		})
 			.pipe(
-				tap(response => this.setAccessToken(response.auth_token))
+				tap(response => this.setAccessToken(response.auth_token)),
+				catchError(error => {
+					this.setAccessToken("");
+					return empty<{ auth_token: string }>();
+				})
 			);
 	}
 
@@ -77,11 +92,19 @@ export class AuthService {
 	 * @returns {Observable<{refresh_token: string}>}
 	 */
 	refreshRefreshToken(): Observable<{ refresh_token: string }> {
+		if (!this.getRefreshToken()) {
+			return of({refresh_token: null});
+		}
+
 		return this.http.get<{ refresh_token: string }>("/api/refreshRefreshToken", {
 			params: new HttpParams().set("refreshToken", this.getRefreshToken())
 		})
 			.pipe(
-				tap(response => this.setRefreshToken(response.refresh_token))
+				tap(response => this.setRefreshToken(response.refresh_token)),
+				catchError(error => {
+					this.setRefreshToken("");
+					return empty<{ refresh_token: string }>();
+				})
 			);
 	}
 

@@ -13,7 +13,7 @@ import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property"
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {defaultIfEmpty, filter, first, map, mergeMap, tap} from "rxjs/operators";
+import {defaultIfEmpty, filter, first, map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {of} from "rxjs/observable/of";
 import {Permission} from "app/shared/model/permission";
@@ -26,6 +26,7 @@ import {MatDialog} from "@angular/material";
 import {ShareDialogComponent} from "../../../../../shared/share-dialog/share-dialog.component";
 import {ResponsibilityService} from "../../../../shared/services/responsibility.service";
 import {ShoppingCartOption} from "../../../../../shared/model/shopping-cart-item";
+import {isAuthenticated} from "../../../../../shared/model/club-role";
 
 
 @Component({
@@ -63,6 +64,16 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
 	} = {};
 
+
+	userCanCheckIn$: Observable<boolean> =
+		combineLatest(
+			this.loginService.currentUser$,
+			this._event$
+		)
+			.pipe(
+				map(([currentUser, event]) => isAuthenticated(currentUser.clubRole, event.expectedCheckInRole))
+			);
+
 	userCanEditEvent$: Observable<boolean> = this.loginService.currentUser$
 		.pipe(
 			map((user) => {
@@ -74,7 +85,8 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 						party => "party"
 					);
 					if (permissionKey) {
-						return permissions[permissionKey] >= Permission.write;
+						return permissions[permissionKey] >= Permission.write
+							|| isAuthenticated(user.clubRole, this.event.expectedWriteRole);
 					}
 				}
 

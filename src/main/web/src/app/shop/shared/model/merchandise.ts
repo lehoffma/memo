@@ -165,7 +165,7 @@ export class Merchandise extends Event {
 				public material: string,
 				private _sizeTable: SizeTable,
 				price: number) {
-		super(id, title, date, description, expectedReadRole, expectedCheckInRole,
+		super(id, title, date, description, [], expectedReadRole, expectedCheckInRole,
 			expectedWriteRole, route, images, capacity, price, typeToInteger(EventType.merch));
 	}
 
@@ -243,7 +243,7 @@ export class Merchandise extends Event {
 	}
 
 	static create() {
-		return new Merchandise(-1, "", moment(), "", ClubRole.None, ClubRole.None, ClubRole.None, [],
+		return new Merchandise(-1, "", moment(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
 			["resources/images/Logo.png"], -1, [], "",
 			JSON.parse(sizeTable), -1);
 	}

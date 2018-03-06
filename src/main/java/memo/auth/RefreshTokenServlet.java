@@ -1,6 +1,10 @@
 package memo.auth;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import memo.data.UserRepository;
+import memo.model.User;
 import memo.util.ApiUtils;
 import org.apache.log4j.Logger;
 
@@ -11,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Key;
+import java.util.List;
 
 
 @WebServlet(name = "RefreshTokenServlet", value = "/api/refreshRefreshToken")
@@ -31,6 +36,12 @@ public class RefreshTokenServlet extends HttpServlet {
                     .setSigningKey(key)
                     .parseClaimsJws(refreshToken);
             String email = refreshTokenJws.getBody().getSubject();
+
+            List<User> users = UserRepository.getInstance().getUserByEmail(email);
+            if (users.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
 
             String newlyRefreshedToken = TokenService.getRefreshToken(email);
 

@@ -38,6 +38,7 @@ public class AuthenticationService {
         return TokenService.getJwtFromRequest(request)
                 .flatMap(jwt -> TokenService.getSubjectOfToken(KeyGenerator.getAccessKey(), jwt))
                 .map(email -> UserRepository.getInstance().getUserByEmail(email))
+                .filter(users -> users.size() > 0)
                 .map(users -> users.get(0));
     }
 

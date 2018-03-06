@@ -52,6 +52,7 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
         shopItem.setStock(stockList);
         shopItem.getImages().forEach(image -> image.setItem(shopItem));
         stockList.forEach(it -> it.setItem(shopItem));
+        //todo databaseManager.save() bla
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

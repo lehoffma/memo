@@ -3,7 +3,7 @@ package memo.model;
 
 
 /*
- 0 : None,
+ 0 : Gast,
  1 : member,
  2 : board,
  3 : secretary,
@@ -14,7 +14,7 @@ package memo.model;
 
 
 public enum ClubRole {
-    None,
+    Gast,
     Mitglied,
     Vorstand,
     Schriftfuehrer,

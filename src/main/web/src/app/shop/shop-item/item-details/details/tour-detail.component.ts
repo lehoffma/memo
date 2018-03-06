@@ -37,8 +37,8 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 				margin: -1rem -1rem 1rem;
 				padding: 0 1rem;
 			}
-			
-			memo-comments-section{
+
+			memo-comments-section {
 				width: 100%;
 			}
 

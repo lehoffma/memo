@@ -10,7 +10,7 @@ import {ParticipantsService} from "../../../../../../shared/services/api/partici
 import {EventType} from "../../../../../shared/model/event-type";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, startWith} from "rxjs/operators";
-import {OrderStatus, OrderStatusPairList, OrderStatusStringList} from "../../../../../../shared/model/order-status";
+import {OrderStatus, OrderStatusPairList} from "../../../../../../shared/model/order-status";
 import {Event} from "../../../../../shared/model/event";
 
 export interface ModifyParticipantEvent {

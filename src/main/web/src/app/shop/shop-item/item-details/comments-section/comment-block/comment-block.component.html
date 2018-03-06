@@ -80,6 +80,7 @@
 			<div>
 				<memo-comment-block *ngFor="let child of children; trackBy:trackCommentBy"
 									[parentId]="commentObject.id"
+									[eventId]="eventId"
 									(onDelete)="deleteChildComment($event)"
 									(onAddComment)="addComment($event.commentText, $event.parentCommentId)"
 									[comment]="child"></memo-comment-block>

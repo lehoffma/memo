@@ -1,13 +1,13 @@
 import {UserPermissions} from "./permission";
 
 export enum ClubRole {
-	Admin = <any> "Admin",
-	Kassenwart = <any> "Kassenwart",
-	Organizer = <any> "Organizer", //todo umbenennen?
-	Schriftfuehrer = <any> "Schriftführer",
-	Vorstand = <any> "Vorstand",
-	Mitglied = <any> "Mitglied",
-	None = <any> "Gast"
+	Admin = "Admin",
+	Kassenwart = "Kassenwart",
+	Organisator = "Organisator", //todo umbenennen?
+	Schriftfuehrer = "Schriftführer",
+	Vorstand = "Vorstand",
+	Mitglied = "Mitglied",
+	Gast = "Gast"
 }
 
 /*
@@ -28,7 +28,7 @@ export enum ClubRole {
 export function idToClubRoleEnum(clubRole: number): ClubRole {
 	switch (clubRole) {
 		case 0:
-			return ClubRole.None;
+			return ClubRole.Gast;
 		case 1:
 			return ClubRole.Mitglied;
 		case 2:
@@ -38,15 +38,15 @@ export function idToClubRoleEnum(clubRole: number): ClubRole {
 		case 4:
 			return ClubRole.Kassenwart;
 		case 5:
-			return ClubRole.Organizer;
+			return ClubRole.Organisator;
 		case 6:
 			return ClubRole.Admin;
 	}
 }
 
 export function clubRoles() {
-	return [ClubRole.None, ClubRole.Mitglied, ClubRole.Vorstand, ClubRole.Schriftfuehrer,
-		ClubRole.Kassenwart, ClubRole.Organizer, ClubRole.Admin];
+	return [ClubRole.Gast, ClubRole.Mitglied, ClubRole.Vorstand, ClubRole.Schriftfuehrer,
+		ClubRole.Kassenwart, ClubRole.Organisator, ClubRole.Admin];
 }
 
 
@@ -96,7 +96,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 		stock: 3,
 		settings: 1
 	},
-	"Organizer": {
+	"Organisator": {
 		funds: 3,
 		party: 4,
 		userManagement: 3,

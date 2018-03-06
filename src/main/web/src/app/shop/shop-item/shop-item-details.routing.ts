@@ -5,17 +5,24 @@ import {ParticipantListComponent} from "./item-details/participants/participant-
 import {PartyDetailComponent} from "./item-details/details/party-detail.component";
 import {MerchandiseDetailComponent} from "./item-details/details/merchandise-detail.component";
 import {ConcludeEventComponent} from "./conclude/conclude-event/conclude-event.component";
+import {ShopItemExistsGuard} from "../../shared/authentication/http-error-handling-guards/shop-item-exists.guard";
+import {ShopItemIsVisibleToUserGuard} from "../../shared/authentication/http-error-handling-guards/shop-item-is-visible-to-user.guard";
+
 
 const routes: Route[] = [
-	{path: "tours/:id", component: TourDetailComponent},
-	{path: "tours/:id/participants", component: ParticipantListComponent},
-	{path: "tours/:id/conclude", component: ConcludeEventComponent},
+	{path: "tours/:id", component: TourDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "tours/:id/participants", component: ParticipantListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "tours/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
-	{path: "partys/:id", component: PartyDetailComponent},
-	{path: "partys/:id/participants", component: ParticipantListComponent},
-	{path: "partys/:id/conclude", component: ConcludeEventComponent},
+	{path: "partys/:id", component: PartyDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{
+		path: "partys/:id/participants",
+		component: ParticipantListComponent,
+		canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
+	},
+	{path: "partys/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
-	{path: "merch/:id", component: MerchandiseDetailComponent},
+	{path: "merch/:id", component: MerchandiseDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 ];
 
 @NgModule({

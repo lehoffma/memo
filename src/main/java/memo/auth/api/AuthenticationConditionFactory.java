@@ -14,7 +14,7 @@ public class AuthenticationConditionFactory {
     public static <T> BiPredicate<User, T> userFulfillsMinimumRole(
             Supplier<ClubRole> expectedRoleSupplier
     ) {
-        return (user, item) -> user.getClubRole().ordinal() >= expectedRoleSupplier.get().ordinal();
+        return (user, item) -> user != null && user.getClubRole().ordinal() >= expectedRoleSupplier.get().ordinal();
     }
 
     public static <T> BiPredicate<User, T> userFulfillsMinimumRoleOfItem(
@@ -29,8 +29,8 @@ public class AuthenticationConditionFactory {
                     //user either created the shopItem or is allowed to see/modify it
                     return userFulfillsMinimumRole(() -> expectedRole).test(user, item);
                 }
-                //if the user is logged out, he can only see this item if the expectedRole is None
-                return expectedRole == ClubRole.None;
+                //if the user is logged out, he can only see this item if the expectedRole is Gast
+                return expectedRole == ClubRole.Gast;
             }
             return false;
         };

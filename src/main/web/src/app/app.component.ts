@@ -2,7 +2,8 @@ import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {DateAdapter} from "@angular/material";
 import {Moment} from "moment";
 import {AuthService} from "./shared/authentication/auth.service";
-import {Router} from "@angular/router";
+import {NavigationEnd, NavigationStart, Router} from "@angular/router";
+import {filter} from "rxjs/operators";
 
 @Component({
 	selector: "memo-app",
@@ -16,6 +17,16 @@ export class AppComponent implements OnInit {
 				private router: Router,
 				@Inject(LOCALE_ID) public locale: any) {
 		dateAdapter.setLocale(locale); // DD.MM.YYYY
+
+
+		this.router.events
+			.pipe(
+				filter(event => event instanceof NavigationStart || event instanceof NavigationEnd)
+			)
+			.subscribe((event: NavigationStart | NavigationEnd) => {
+				// You only receive NavigationStart events
+				console.log(event);
+			});
 	}
 
 	ngOnInit() {

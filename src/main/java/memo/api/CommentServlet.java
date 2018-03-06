@@ -63,7 +63,7 @@ public class CommentServlet extends AbstractApiServlet<Comment> {
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) {
         this.put(request, response, new ApiServletPutOptions<>(
-                        "address", Comment.class, Comment::getId
+                        "comment", Comment.class, Comment::getId
                 )
                         .setUpdateDependencies(this::updateDependencies)
         );

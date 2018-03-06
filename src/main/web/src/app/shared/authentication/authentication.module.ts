@@ -8,6 +8,9 @@ import {IsOwnProfileGuard} from "./is-own-profile.guard";
 import {IsTreasurerGuard} from "./is-treasurer.guard";
 import {IsValidItemTypeGuard} from "./is-valid-itemtype.guard";
 import {CanViewStockGuard} from "./can-view-stock.guard";
+import {ShopItemExistsGuard} from "./http-error-handling-guards/shop-item-exists.guard";
+import {ShopItemIsVisibleToUserGuard} from "./http-error-handling-guards/shop-item-is-visible-to-user.guard";
+import {ShopItemGuardHelper} from "./shop-item-guard.helper";
 
 
 const providers = [
@@ -18,11 +21,14 @@ const providers = [
 	CanViewStockGuard,
 	IsOwnProfileGuard,
 	IsTreasurerGuard,
-	IsValidItemTypeGuard
+	IsValidItemTypeGuard,
+	ShopItemExistsGuard,
+	ShopItemIsVisibleToUserGuard,
 ];
 
 @NgModule({
 	imports: [HttpClientModule],
+	providers: [ShopItemGuardHelper]
 })
 export class AuthenticationModule {
 	static forRoot(): ModuleWithProviders {

@@ -29,7 +29,6 @@ export class SideNavComponent implements OnInit {
 	public links = combineLatest(this.user, this.navigationService.sidenavLinks)
 		.pipe(
 			map(([user, links]) => {
-				console.log(user);
 				const linksCopy = [...links];
 				const permissions = user === null || user.id === -1
 					? visitorPermissions

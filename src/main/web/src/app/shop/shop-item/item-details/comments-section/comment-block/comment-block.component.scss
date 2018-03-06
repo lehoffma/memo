@@ -27,6 +27,7 @@
 			border: 1px solid #c1c1c1;
 			width: 40px;
 			height: 40px;
+			object-fit: cover;
 
 			&.dummy {
 				filter: grayscale(100%);

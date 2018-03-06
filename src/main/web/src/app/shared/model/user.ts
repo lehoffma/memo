@@ -1,5 +1,5 @@
 import {ClubRole, rolePermissions} from "./club-role";
-import {UserPermissions} from "./permission";
+import {Permission, UserPermissions, visitorPermissions} from "./permission";
 import {BaseObject} from "./util/base-object";
 import {Gender} from "./gender";
 import * as moment from "moment";
@@ -56,16 +56,25 @@ export class User extends BaseObject<User> {
 		super(id);
 	}
 
+	_userPermissions: UserPermissions;
 	get userPermissions() {
-		if (this.permissions) {
-			return this.permissions;
+		if (!this._userPermissions) {
+			let userPermissions = this.permissions;
+			let clubRolePermissions = rolePermissions[this.clubRole];
+			this._userPermissions = Object.keys(visitorPermissions).reduce((permissions, key) => {
+				permissions[key] = Math.max(permissions[key],
+					userPermissions[key] || Permission.none,
+					clubRolePermissions[key] || Permission.none
+				);
+				return permissions;
+			}, {...visitorPermissions});
 		}
-		return rolePermissions[this.clubRole];
+		return this._userPermissions;
 	}
 
 	static create() {
 		return new User(-1, "", "", Gender.OTHER, null, "", "",
-			ClubRole.None, moment(), [], [], [],
+			ClubRole.Gast, moment(), [], [], [],
 			null, 0, "", "", false, false, false, false, ["resources/images/Logo.png"]);
 	}
 

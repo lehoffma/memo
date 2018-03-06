@@ -104,6 +104,7 @@ export class ModifyTourComponent implements OnInit {
 	 */
 	submitModifiedObject() {
 		this.updateTimeOfDate();
+		this.initPermissions();
 
 		this.onSubmit.emit({
 			model: this.model,
@@ -111,6 +112,12 @@ export class ModifyTourComponent implements OnInit {
 		});
 	}
 
+	initPermissions() {
+		const possiblePermissions = ["expectedReadRole", "expectedCheckInRole", "expectedWriteRole"];
+		possiblePermissions.forEach(permission => {
+			this.model[permission] = this.model[permission] || ClubRole.Gast;
+		})
+	}
 
 	meterToMiles(meters: number) {
 		return meters * 0.000621371;

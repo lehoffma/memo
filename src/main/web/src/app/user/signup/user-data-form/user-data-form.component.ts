@@ -35,7 +35,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 				: `/members/${id}/address`)
 		);
 	genderOptions = [Gender.FEMALE, Gender.MALE, Gender.OTHER];
-	clubRoleOptions = [ClubRole.Organizer, ClubRole.Admin, ClubRole.Vorstand, ClubRole.Kassenwart, ClubRole.Mitglied, ClubRole.None];
+	clubRoleOptions = [ClubRole.Organisator, ClubRole.Admin, ClubRole.Vorstand, ClubRole.Kassenwart, ClubRole.Mitglied, ClubRole.Gast];
 	isAdmin = this.loginService.currentUser$
 		.pipe(
 			map(user => user !== null && user.clubRole === ClubRole.Admin)

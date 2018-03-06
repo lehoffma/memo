@@ -56,7 +56,7 @@ public class PermissionState implements Serializable {
 
     public PermissionState(ClubRole role) {
         switch (role) {
-            case None:
+            case Gast:
 
                 this.funds = Permission.none;
                 this.party = Permission.read;
@@ -143,7 +143,7 @@ public class PermissionState implements Serializable {
     }
 
     public PermissionState() {
-        this(ClubRole.None);
+        this(ClubRole.Gast);
     }
 
     //**************************************************************

@@ -17,7 +17,7 @@ public abstract class AbstractRepository<T> implements Repository<T> {
     @Override
     public List<T> getIf(Map<String, Function<String, List<T>>> predicateMap, List<T> defaultValue) {
         return predicateMap.entrySet().stream()
-                .filter(entry -> ApiUtils.stringIsNotEmpty(entry.getKey()))
+                .filter(entry -> entry.getKey() != null)
                 .map(entry -> entry.getValue().apply(entry.getKey()))
                 .findFirst()
                 .orElse(defaultValue);

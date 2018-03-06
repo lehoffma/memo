@@ -27,10 +27,9 @@ export class CanViewStockGuard implements CanActivate {
 						this.router.navigate(["login"]);
 						return false;
 					}
-					const defaultPermissions = rolePermissions[user.clubRole];
 					const userPermissions = user.userPermissions;
 
-					if (defaultPermissions.stock > Permission.read || userPermissions.stock > Permission.read) {
+					if (userPermissions.stock > Permission.read) {
 						return true;
 					}
 					if (isAuthenticated(user.clubRole, ClubRole.Kassenwart)) {

@@ -69,14 +69,13 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 
 				}
 				if (key.startsWith("expected")) {
-					value = ClubRole[properties[key]]
+					value = ClubRole["" + properties[key]];
 				} else if (key === "clubRole") {
-					value = isNumber(value) ? idToClubRoleEnum(value) : ClubRole[properties[key]];
+					value = isNumber(value) ? idToClubRoleEnum(value) : ClubRole["" + properties[key]];
 				} else if (key === "permissions") {
-					if (properties[key] === null || properties[key] === "null") {
+					if (properties[key] === null || ("" + properties[key]) === "null") {
 						//todo demo permissions
 						value = adminPermissions;
-
 					}
 					else {
 						value = jsonToPermissions(properties[key]);

@@ -13,7 +13,7 @@ public class ApiServletPostOptions<T, SerializedType> {
     private Class<T> clazz;
     private BiConsumer<JsonNode, T> updateDependencies;
     private Function<T, SerializedType> getSerialized;
-    private List<ModifyPrecondition<T>> preconditions;
+    private List<ModifyPrecondition<T>> preconditions = new ArrayList<>();
     private String serializedKey;
 
     public ApiServletPostOptions() {

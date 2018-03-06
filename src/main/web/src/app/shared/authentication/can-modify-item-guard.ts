@@ -12,10 +12,12 @@ import {of} from "rxjs/observable/of";
 import {ShopItem} from "../model/shop-item";
 import {Event} from "../../shop/shared/model/event";
 import {User} from "../model/user";
+import {ShopItemGuardHelper} from "./shop-item-guard.helper";
 
 @Injectable()
 export class CanModifyItemGuard implements CanActivate {
 	constructor(private loginService: LogInService,
+				private shopItemGuardHelper: ShopItemGuardHelper,
 				private eventService: EventService,
 				private entryService: EntryService,
 				private userService: UserService,
@@ -23,41 +25,13 @@ export class CanModifyItemGuard implements CanActivate {
 	}
 
 	getShopItemFromRoute(route: ActivatedRouteSnapshot, id: number): { permissionKey: string, shopItem: Observable<ShopItem | Event> } {
-		let permissionKey = "";
+		let permissionKey = this.shopItemGuardHelper.getPermissionKeyFromType(route.paramMap.get("itemType"));
 		let shopItem: Observable<ShopItem | Event> = of(null);
-
-		switch (route.paramMap.get("itemType")) {
-			case "tours":
-				if (id >= 0) {
-					shopItem = this.eventService.getById(id);
-				}
-				permissionKey = "tour";
-				break;
-			case "partys":
-				if (id >= 0) {
-					shopItem = this.eventService.getById(id);
-				}
-				permissionKey = "party";
-				break;
-			case "merch":
-				if (id >= 0) {
-					shopItem = this.eventService.getById(id);
-				}
-				permissionKey = "merch";
-				break;
-			case "members":
-				if (id >= 0) {
-					shopItem = this.userService.getById(id);
-				}
-				permissionKey = "userManagement";
-				break;
-			case "entries":
-				if (id >= 0) {
-					shopItem = this.entryService.getById(id);
-				}
-				permissionKey = "funds";
-				break;
+		const service = this.shopItemGuardHelper.getServletServiceFromType(route.paramMap.get("itemType"));
+		if (service !== null && id >= 0) {
+			shopItem = service.getById(id);
 		}
+
 		return {permissionKey, shopItem}
 	}
 
@@ -79,7 +53,6 @@ export class CanModifyItemGuard implements CanActivate {
 
 					return shopItem
 						.pipe(
-							tap(console.log),
 							map(item => {
 								if (item === null) {
 									return permissions[permissionKey] >= Permission.create;

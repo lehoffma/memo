@@ -147,16 +147,10 @@ export class SignUpService {
 	 * @param event
 	 */
 	async onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
-		//todo 11.12.
-		//bankdaten addresse address-selection benutzen
+		//todo bankdaten addresse address-selection benutzen
 		//todo user bestätigung => screen: "email wurde an dich geschickt"
 		//todo if admin: show "isMember"
 		//todo banner: mitglied werden/bin schon mitglied
-		//todo get image returned {fileName: str}
-		//todo permission api
-		//
-
-		//image: post -> response.images in objekt tun
 
 		//extract section, email and password properties
 		const {

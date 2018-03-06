@@ -14,7 +14,7 @@ export class Comment extends BaseObject<Comment> {
 	}
 
 	static create() {
-		return new Comment(-1, -1, moment(), -1, "", -1, []);
+		return new Comment(-1, null, moment(), -1, "", -1, []);
 	}
 
 	static isComment(value: any): value is Comment {

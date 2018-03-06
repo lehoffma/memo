@@ -26,10 +26,9 @@ export class IsTreasurerGuard implements CanActivate {
 						this.router.navigate(["login"]);
 						return false;
 					}
-					let defaultPermissions = rolePermissions[user.clubRole];
 					let userPermissions = user.userPermissions;
 
-					if (defaultPermissions.funds > Permission.read || userPermissions.funds > Permission.read) {
+					if (userPermissions.funds >= Permission.read) {
 						return true;
 					}
 					if (isAuthenticated(user.clubRole, ClubRole.Kassenwart)) {

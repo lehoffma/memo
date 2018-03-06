@@ -13,6 +13,7 @@
 		img {
 			width: 30px;
 			height: 30px;
+			object-fit: cover;
 			border-radius: 50%;
 			border: 1px solid #c1c1c1;
 
@@ -42,12 +43,12 @@
 			}
 		}
 
-		div{
+		div {
 			margin-top: 10px;
 			display: flex;
 			justify-content: flex-end;
 
-			button:first-child{
+			button:first-child {
 				margin-right: 10px;
 			}
 		}

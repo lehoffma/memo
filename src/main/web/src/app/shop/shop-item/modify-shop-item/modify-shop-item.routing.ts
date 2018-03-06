@@ -8,22 +8,26 @@ import {AuthenticatedGuard} from "../../../shared/authentication/authenticated.g
 import {IsOwnProfileGuard} from "../../../shared/authentication/is-own-profile.guard";
 import {IsMerchandiseGuard} from "../../../shared/authentication/is-merchandise.guard";
 import {ModifyMerchStockContainerComponent} from "./modify-merch/modify-merch-stock-container/modify-merch-stock-container.component";
+import {ShopItemExistsGuard} from "../../../shared/authentication/http-error-handling-guards/shop-item-exists.guard";
+import {ShopItemIsVisibleToUserGuard} from "../../../shared/authentication/http-error-handling-guards/shop-item-is-visible-to-user.guard";
 
 
 const routes: Routes = [
 	{
 		path: ":itemType/:id/stock/edit", component: ModifyMerchStockContainerComponent,
 		pathMatch: "full",
-		canActivate: [AuthenticatedGuard, CanModifyItemGuard, IsMerchandiseGuard]
+		canActivate: [AuthenticatedGuard, CanModifyItemGuard, IsMerchandiseGuard,
+			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 
 	//todo implement
-	//nur eingeloggte user, die die Tour erstellt haben oder Organizer oder Admin sind
+	//nur eingeloggte user, die die Tour erstellt haben oder Organisator oder Admin sind
 	{
 		path: ":itemType/:id/edit",
 		component: ModifyShopItemComponent,
 		pathMatch: "full",
-		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
+		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard,
+			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 	{
 		path: "create/:itemType",
@@ -36,13 +40,15 @@ const routes: Routes = [
 		path: ":itemType/:eventId/costs/:id/edit",
 		component: ModifyShopItemComponent,
 		pathMatch: "full",
-		canActivate: [/*todo is-event guard*/ CanModifyItemGuard]
+		canActivate: [/*todo is-event guard*/ CanModifyItemGuard,
+			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 	{
 		path: ":itemType/:eventId/costs/create",
 		component: ModifyShopItemComponent,
 		pathMatch: "full",
-		canActivate: [/*todo is-event guard*/ CanModifyItemGuard]
+		canActivate: [/*todo is-event guard*/ CanModifyItemGuard,
+			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 ];
 

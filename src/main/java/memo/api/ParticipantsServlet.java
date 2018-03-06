@@ -1,5 +1,6 @@
 package memo.api;
 
+import memo.api.util.ApiServletPostOptions;
 import memo.auth.api.ParticipantsAuthStrategy;
 import memo.data.ParticipantRepository;
 import memo.model.OrderedItem;
@@ -30,5 +31,11 @@ public class ParticipantsServlet extends AbstractApiServlet<OrderedItem> {
         );
     }
 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        this.post(request, response, new ApiServletPostOptions<>(
+                        "participant", new OrderedItem(), OrderedItem.class, OrderedItem::getId
+                )
+        );
+    }
 
 }

@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.List;
 import java.util.function.Consumer;
@@ -31,7 +32,6 @@ public class DatabaseManager {
         if (dbm == null) dbm = new DatabaseManager();
         return dbm.em;
     }
-
 
 
     public <T> T getByStringId(Class<T> clazz, String primaryKey) {
@@ -140,9 +140,11 @@ public class DatabaseManager {
 
         logger.debug("Performs Database Action: " + action.toString());
         EntityManager em = DatabaseManager.createEntityManager();
-        em.getTransaction().begin();
+
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
         T result = action.apply(em);
-        em.getTransaction().commit();
+        transaction.commit();
         return result;
     }
 
@@ -153,8 +155,9 @@ public class DatabaseManager {
 
         logger.debug("Performs Database Side Effect on: " + consumer.toString());
         EntityManager em = DatabaseManager.createEntityManager();
-        em.getTransaction().begin();
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
         consumer.accept(em);
-        em.getTransaction().commit();
+        transaction.commit();
     }
 }

@@ -24,15 +24,6 @@ export class ConcludeEventService {
 		return of(false);
 	}
 
-	/**
-	 *
-	 * @param {Event} event
-	 * @returns {Observable<boolean>}
-	 */
-	public eventHasConcluded(event: Event): Observable<boolean> {
-		//todo remove demo
-		return of(true);
-	}
 
 	/**
 	 *
