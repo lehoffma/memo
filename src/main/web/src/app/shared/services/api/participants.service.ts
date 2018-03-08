@@ -14,6 +14,7 @@ import {map, mergeMap, share} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {OrderService} from "./order.service";
+import {Order} from "../../model/order";
 
 interface ParticipantApiResponse {
 	participants: Participant[]
@@ -98,7 +99,7 @@ export class ParticipantsService extends ServletService<Participant> {
 		return this.getParticipantIdsByEvent(eventId, eventType)
 			.pipe(
 				mergeMap(participants => combineLatest(
-					...participants.map(participant => this.userService.getById(participant.id)
+					...participants.map(participant => this.userService.getByParticipantId(participant.id)
 						.pipe(
 							map(user => ({
 								...participant,
@@ -142,7 +143,19 @@ export class ParticipantsService extends ServletService<Participant> {
 	 */
 	addOrModify(requestMethod: AddOrModifyRequest,
 				eventId: number, eventType: number, participant: Participant): Observable<Participant> {
-		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {eventId, eventType, participant}))
+
+		const newParticipant: any = {...participant};
+		if (newParticipant["user"]) {
+			delete newParticipant["user"];
+		}
+		if (newParticipant["item"] && newParticipant["item"]["id"] !== undefined) {
+			newParticipant.item = participant.item.id;
+		}
+		let order = Order.create();
+		//todo add order first, then add participant/orderedItem to it?
+		//todo what kind of information do we store in the new order?
+
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {eventId, eventType, participant: newParticipant}))
 			.pipe(
 				map(response => response.id),
 				mergeMap(response => this.getById(response)),

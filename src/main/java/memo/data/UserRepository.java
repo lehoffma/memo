@@ -58,12 +58,22 @@ public class UserRepository extends AbstractRepository<User> {
                 .getResultList();
     }
 
-    public List<User> get(String userId, String email, String searchTerm) {
+    public List<User> getUserByOrderedItemId(String orderedItemId) {
+        Integer id = Integer.valueOf(orderedItemId);
+        return DatabaseManager.createEntityManager()
+                .createQuery("SELECT distinct user from Order order JOIN order.user user JOIN order.items item" +
+                        " WHERE item.id = :orderedItemId", User.class)
+                .setParameter("orderedItemId", id)
+                .getResultList();
+    }
+
+    public List<User> get(String userId, String email, String searchTerm, String participantId) {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<User>>>()
                         .buildPut(userId, this::get)
                         .buildPut(email, this::getUserByEmail)
-                        .buildPut(searchTerm, this::getUserBySearchterm),
+                        .buildPut(searchTerm, this::getUserBySearchterm)
+                        .buildPut(participantId, this::getUserByOrderedItemId),
                 this.getAll()
         );
     }

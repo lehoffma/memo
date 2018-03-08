@@ -2,6 +2,7 @@ package memo.auth.api;
 
 import memo.model.User;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
@@ -13,11 +14,12 @@ public class ConfigurableAuthStrategy<T> implements AuthenticationStrategy<T> {
     private boolean defaultValue = false;
 
     public ConfigurableAuthStrategy() {
-
+        predicateMap = new HashMap<>();
     }
 
     public ConfigurableAuthStrategy(boolean defaultValue) {
         this.defaultValue = defaultValue;
+        predicateMap = new HashMap<>();
     }
 
     private boolean getDefault(User user, T object) {

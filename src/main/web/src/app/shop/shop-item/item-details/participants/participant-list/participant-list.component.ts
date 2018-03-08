@@ -243,7 +243,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 								.pipe(
 									tap(() => {
 										let indexOfParticipant = this.participants$.value.findIndex(
-											participant => participant.user.id === result.participant.id
+											participant => participant.id === result.participant.id
 										);
 										this.participants$.next([
 											...this.participants$.value.slice(0, indexOfParticipant),
@@ -269,7 +269,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 					.remove(participantUser.id, eventInfo.eventType, eventInfo.eventId)
 					.subscribe(response => {
 						let indexOfParticipant = this.participants$.value.findIndex(
-							participant => participant.user.id === participantUser.id
+							participant => participant.id === participantUser.id
 						);
 						this.participants$.next([
 							...this.participants$.value.slice(0, indexOfParticipant),

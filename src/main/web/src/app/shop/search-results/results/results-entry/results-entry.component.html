@@ -8,7 +8,6 @@
 			<div class="result-info">
 				<div class="secondary-text">
 					<span *ngIf="!resultIsMerch(result)">{{result.date | moment}}</span>
-					<!--todo: if merch: show color options-->
 					<span *ngIf="resultIsMerch(result)" class="merch-available-colors-container">
 						<span *ngFor="let color of (colors$ | async)"
 							  class="merch-available-colors"

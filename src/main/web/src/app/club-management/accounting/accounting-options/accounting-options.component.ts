@@ -11,7 +11,7 @@ import {EntryCategoryService} from "../../../shared/services/api/entry-category.
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {Subscription} from "rxjs/Subscription";
-import {filter, first, map, startWith, tap} from "rxjs/operators";
+import {filter, first, map, share, startWith, tap} from "rxjs/operators";
 import {EntryCategory} from "../../../shared/model/entry-category";
 import {combineLatest} from "rxjs/observable/combineLatest";
 
@@ -31,7 +31,8 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 
 	costTypes = {};
 
-	costCategories$ = this.entryCategoryService.getCategories();
+	costCategories$ = this.entryCategoryService.getCategories()
+		.pipe(share());
 
 	events: Event[] = [];
 

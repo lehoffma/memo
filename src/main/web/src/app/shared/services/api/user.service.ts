@@ -36,6 +36,22 @@ export class UserService extends ServletService<User> {
 	}
 
 	/**
+	 *
+	 * @param {number} participantId
+	 * @returns {Observable<User>}
+	 */
+	getByParticipantId(participantId: number): Observable<User> {
+		const params = new HttpParams().set("participantId", "" + participantId);
+		const request = this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {params}))
+			.pipe(
+				map(json => User.create().setProperties(json.users[0])),
+				share()
+			);
+
+		return this._cache.getById(params, request);
+	}
+
+	/**
 	 * Requested alle Users die auf den search term matchen
 	 * @param searchTerm
 	 * @param options

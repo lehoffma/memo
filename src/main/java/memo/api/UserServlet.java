@@ -41,7 +41,8 @@ public class UserServlet extends AbstractApiServlet<User> {
                 (paramMap, _response) -> UserRepository.getInstance().get(
                         getParameter(paramMap, "id"),
                         getParameter(paramMap, "email"),
-                        getParameter(paramMap, "searchTerm")
+                        getParameter(paramMap, "searchTerm"),
+                        getParameter(paramMap, "participantId")
                 ),
                 "users"
         );
@@ -111,14 +112,14 @@ public class UserServlet extends AbstractApiServlet<User> {
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
                                         user -> UserRepository.getInstance()
-                                                .get(String.valueOf(user.getId()), user.getEmail(), null)
+                                                .get(String.valueOf(user.getId()), user.getEmail(), null, null)
                                                 .isEmpty(),
                                         "Not found",
                                         () -> response.setStatus(HttpServletResponse.SC_NOT_FOUND)
                                 ),
                                 new ModifyPrecondition<>(
                                         user -> UserRepository.getInstance()
-                                                .get(String.valueOf(user.getId()), user.getEmail(), null)
+                                                .get(String.valueOf(user.getId()), user.getEmail(), null, null)
                                                 .size() > 1,
                                         "Ambiguous results",
                                         () -> response.setStatus(HttpServletResponse.SC_NOT_FOUND)

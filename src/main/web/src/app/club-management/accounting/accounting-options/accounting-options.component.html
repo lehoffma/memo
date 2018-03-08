@@ -64,13 +64,14 @@
 	</mat-autocomplete>
 </div>
 
-<div *ngIf="!hidden">
-	<h3>Kostenarten</h3>
-
-	<mat-checkbox *ngFor="let costType of (costCategories$|async)"
-				  [(ngModel)]="costTypes[costType.name]"
-				  [disabled]="isLoading"
-				  (ngModelChange)="updateQueryParams()">
-		{{costType.name}}
-	</mat-checkbox>
+<div *ngFor="let categories of [(costCategories$ | async)]">
+	<ng-template [ngIf]="!hidden">
+		<h3>Kostenarten</h3>
+		<mat-checkbox *ngFor="let costType of categories"
+					  [(ngModel)]="costTypes[costType.name]"
+					  [disabled]="isLoading"
+					  (ngModelChange)="updateQueryParams()">
+			{{costType.name}}
+		</mat-checkbox>
+	</ng-template>
 </div>
