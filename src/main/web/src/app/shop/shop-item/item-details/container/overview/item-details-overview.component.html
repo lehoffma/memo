@@ -138,9 +138,9 @@
 								|| !(userCanCheckIn$ | async)
 					"
 					mat-raised-button
-					color="{{(isPartOfShoppingCart) ? 'warn' : 'accent'}}"
+					color="{{(isPartOfShoppingCart$ | async) ? 'warn' : 'accent'}}"
 					class="add-to-cart-button">
-					{{(isPartOfShoppingCart) ? 'Aus dem Warenkorb löschen' : 'In den Warenkorb'}}
+					{{(isPartOfShoppingCart$ | async) ? 'Aus dem Warenkorb löschen' : 'In den Warenkorb'}}
 				</button>
 			</form>
 		</div>

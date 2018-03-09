@@ -159,6 +159,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                                          String objectName,
                                          T baseValue,
                                          Class<T> clazz,
+                                         Function<T, T> transform,
                                          List<ModifyPrecondition<T>> preconditions,
                                          Function<T, SerializedType> getSerialized,
                                          String serializedKey
@@ -170,7 +171,10 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         //ToDo: Duplicate Items :/
         //          ^-- huh?
-        T item = ApiUtils.getInstance().updateFromJson(jsonItem, baseValue, clazz);
+        //perform transformations on the parsed item, i.e. hashing
+        T item = transform.apply(
+                ApiUtils.getInstance().updateFromJson(jsonItem, baseValue, clazz)
+        );
 
         //check if user is authorized to create item
         if (!AuthenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToCreate, item)) {
@@ -187,6 +191,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return;
         }
 
+
         DatabaseManager.getInstance().save(item);
 
         //update cyclic dependencies etc.
@@ -202,6 +207,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                 options.getObjectName(),
                 options.getBaseValue(),
                 options.getClazz(),
+                options.getTransform(),
                 options.getPreconditions(),
                 options.getGetSerialized(),
                 options.getSerializedKey()
@@ -212,6 +218,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                                         String objectName,
                                         String jsonId,
                                         Class<T> clazz,
+                                        Function<T, T> transform,
                                         List<ModifyPrecondition<T>> preconditions,
                                         Function<T, SerializedType> getSerialized,
                                         String serializedKey) {
@@ -225,7 +232,9 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return;
         }
 
-        T item = DatabaseManager.getInstance().getById(clazz, jsonItem.get(jsonId).asInt());
+        T item = transform.apply(
+                DatabaseManager.getInstance().getById(clazz, jsonItem.get(jsonId).asInt())
+        );
 
         //check if user is authorized to modify item
         if (!AuthenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToModify, item)) {
@@ -276,6 +285,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                 options.getObjectName(),
                 options.getJsonId(),
                 options.getClazz(),
+                options.getTransform(),
                 options.getPreconditions(),
                 options.getGetSerialized(),
                 options.getSerializedKey()

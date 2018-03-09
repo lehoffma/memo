@@ -60,13 +60,13 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
         this.manyToOne(object, Entry::getItem, Entry::getId, ShopItem::getEntries, shopItem -> shopItem::setEntries);
         this.manyToOne(object, Entry::getCategory, Entry::getId, EntryCategory::getEntry, entryCategory -> entryCategory::setEntry);
         this.oneToMany(object, Entry::getImages, image -> image::setEntry);
+        //todo remove (das is nur nötig, weil die kategorien hardgecoded sind)
+        DatabaseManager.getInstance().save(object.getCategory());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         this.post(request, response, new ApiServletPostOptions<>(
-                "entry", new Entry(), Entry.class, Entry::getId,
-                //todo remove (das is nur nötig, weil die kategorien hardgecoded sind)
-                (jsonNode, entry) -> DatabaseManager.getInstance().save(entry.getCategory())
+                "entry", new Entry(), Entry.class, Entry::getId
         ));
     }
 

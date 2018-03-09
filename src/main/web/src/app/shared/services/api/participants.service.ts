@@ -152,6 +152,8 @@ export class ParticipantsService extends ServletService<Participant> {
 			newParticipant.item = participant.item.id;
 		}
 		let order = Order.create();
+		//todo add name/phone number to text or order
+
 		//todo add order first, then add participant/orderedItem to it?
 		//todo what kind of information do we store in the new order?
 

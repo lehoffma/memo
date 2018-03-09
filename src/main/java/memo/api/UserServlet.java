@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.api.util.ModifyPrecondition;
+import memo.auth.BCryptHelper;
 import memo.auth.api.UserAuthStrategy;
 import memo.data.UserRepository;
 import memo.model.ClubRole;
@@ -33,6 +34,21 @@ public class UserServlet extends AbstractApiServlet<User> {
     public UserServlet() {
         super(new UserAuthStrategy());
         logger = Logger.getLogger(UserServlet.class);
+    }
+
+    /**
+     * Hashes the password of a user, if it hasn't been hashed already.
+     *
+     * @param user the user whose password we want to hash
+     * @return the modified user
+     */
+    private User hashPassword(User user) {
+        String password = user.getPassword();
+        if (!BCryptHelper.isBCryptHash(password)) {
+            String hashedPassword = BCryptHelper.hashPassword(password);
+            user.setPassword(hashedPassword);
+        }
+        return user;
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -84,6 +100,7 @@ public class UserServlet extends AbstractApiServlet<User> {
         this.post(request, response, new ApiServletPostOptions<>(
                         "user", new User(), User.class, User::getId
                 )
+                        .setTransform(this::hashPassword)
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
                                         user -> user.getEmail() == null,
@@ -104,6 +121,7 @@ public class UserServlet extends AbstractApiServlet<User> {
         this.put(request, response, new ApiServletPutOptions<>(
                         "user", User.class, User::getId, "id"
                 )
+                        .setTransform(this::hashPassword)
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
                                         user -> UserRepository.getInstance()

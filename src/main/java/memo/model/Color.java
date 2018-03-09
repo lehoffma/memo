@@ -112,7 +112,6 @@ public class Color implements Serializable {
     public String toString() {
         return "Color{" +
                 "id=" + id +
-                ", orderedItems=" + orderedItems +
                 ", name='" + name + '\'' +
                 ", hex='" + hex + '\'' +
                 '}';

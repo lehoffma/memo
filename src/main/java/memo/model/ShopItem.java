@@ -313,7 +313,6 @@ public class ShopItem implements Serializable {
                 ", expectedWriteRole=" + expectedWriteRole +
                 ", capacity=" + capacity +
                 ", price=" + price +
-                ", route=" + route +
                 ", material='" + material + '\'' +
                 ", vehicle='" + vehicle + '\'' +
                 ", miles=" + miles +

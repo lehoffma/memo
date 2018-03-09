@@ -175,7 +175,6 @@ public class Entry implements Serializable {
                 ", value=" + value +
                 ", isIncome=" + isIncome +
                 ", comment='" + comment + '\'' +
-                ", images=" + images +
                 ", date=" + date +
                 '}';
     }

@@ -365,7 +365,6 @@ public class User implements Serializable {
                 ", gender='" + gender + '\'' +
                 ", hasSeasonTicket=" + hasSeasonTicket +
                 ", isWoelfeClubMember=" + isWoelfeClubMember +
-                ", permissions=" + permissions +
                 '}';
     }
 }

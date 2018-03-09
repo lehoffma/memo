@@ -92,7 +92,6 @@ public class EntryCategory implements Serializable {
     public String toString() {
         return "EntryCategory{" +
                 "id=" + id +
-                ", entry=" + entry +
                 ", name='" + name + '\'' +
                 ", category=" + category +
                 '}';

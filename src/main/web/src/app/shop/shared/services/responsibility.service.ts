@@ -47,6 +47,14 @@ export class ResponsibilityService {
 	 * @returns {Observable<User[]>}
 	 */
 	public getResponsible(eventId: number): Observable<User[]> {
+		if(eventId !== null){
+			return this.userService.getById(1)
+				.pipe(
+					map(it => [it])
+				);
+		}
+
+
 		return this.getResponsibleIds(eventId)
 			.pipe(
 				mergeMap(authorIds =>

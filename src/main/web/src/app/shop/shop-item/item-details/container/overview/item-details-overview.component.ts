@@ -13,7 +13,7 @@ import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property"
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {defaultIfEmpty, filter, first, map, mergeMap} from "rxjs/operators";
+import {defaultIfEmpty, filter, first, map, mergeMap, take} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {of} from "rxjs/observable/of";
 import {Permission} from "app/shared/model/permission";
@@ -26,7 +26,7 @@ import {MatDialog} from "@angular/material";
 import {ShareDialogComponent} from "../../../../../shared/share-dialog/share-dialog.component";
 import {ResponsibilityService} from "../../../../shared/services/responsibility.service";
 import {ShoppingCartOption} from "../../../../../shared/model/shopping-cart-item";
-import {isAuthenticated} from "../../../../../shared/model/club-role";
+import {ClubRole, isAuthenticated} from "../../../../../shared/model/club-role";
 
 
 @Component({
@@ -58,7 +58,10 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	};
 	public amountOptions: number[] = [];
 	public maxAmount: number = 0;
-	public isPartOfShoppingCart: boolean;
+	public isPartOfShoppingCart$ = this._event$
+		.pipe(
+			mergeMap(event => this.shoppingCartService.isPartOfShoppingCart(event.id))
+		);
 	public isPastEvent: boolean = false;
 	values: {
 		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
@@ -71,7 +74,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			this._event$
 		)
 			.pipe(
-				map(([currentUser, event]) => isAuthenticated(currentUser.clubRole, event.expectedCheckInRole))
+				map(([currentUser, event]) => isAuthenticated(currentUser === null
+					? ClubRole.Gast
+					: currentUser.clubRole, event.expectedCheckInRole))
 			);
 
 	userCanEditEvent$: Observable<boolean> = this.loginService.currentUser$
@@ -259,7 +264,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 * Updates maxAmount and amountOptions (i.e. the amount-dropdown)
 	 */
 	updateMaxAmount() {
-		const maxAmount$ = this.isMerch(this.event)
+		const maxAmount$: Observable<number> = this.isMerch(this.event)
 			? combineLatest(this.stock$, this._color$, this._size$)
 				.pipe(
 					map(([stock, color, size]) => stock
@@ -291,7 +296,6 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				else {
 					this.model.amount = 0;
 				}
-				this.isPartOfShoppingCart = this.model.amount > 0;
 			});
 
 	}
@@ -309,9 +313,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	updateShoppingCart() {
 		const options: ShoppingCartOption[] = this.isMerch(this.event)
-			? new Array(this.model.amount).fill({color: this.color, size: this.size})
+			? new Array(this.model.amount).fill(0).map(it => ({color: this.color, size: this.size}))
 			: (this.isTour(this.event)
-				? new Array(this.model.amount).fill({needsTicket: true, isDriver: false})
+				? new Array(this.model.amount).fill(0).map(it => ({needsTicket: true, isDriver: false}))
 				: []);
 		const eventType = EventUtilityService.getEventType(this.event);
 		const newItem = {
@@ -321,8 +325,13 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			options: options,
 		};
 
-		this.shoppingCartService.pushItem(eventType, newItem);
-		this.isPartOfShoppingCart = this.model.amount > 0;
+		this.isPartOfShoppingCart$
+			.pipe(take(1))
+			.subscribe(isPartOfShoppingCart => {
+				if (isPartOfShoppingCart) {
+					this.shoppingCartService.pushItem(eventType, newItem);
+				}
+			});
 	}
 
 	/**
@@ -330,21 +339,21 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	addOrDeleteFromCart(item: Event) {
 		const options: ShoppingCartOption[] = this.isMerch(this.event)
-			? new Array(this.model.amount).fill({color: this.color, size: this.size})
+			? new Array(this.model.amount).fill(0).map(it => ({color: this.color, size: this.size}))
 			: (this.isTour(this.event)
-				? new Array(this.model.amount).fill({needsTicket: true, isDriver: false})
+				? new Array(this.model.amount).fill(0).map(it => ({needsTicket: true, isDriver: false}))
 				: []);
 
-		let shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-			this.event.id, options);
-
-		this.isPartOfShoppingCart = !shoppingCartItem;
-		this.shoppingCartService.pushItem(EventUtilityService.getEventType(item), {
-			id: item.id,
-			options,
-			item,
-			amount: this.isPartOfShoppingCart ? this.model.amount : 0,
-		});
+		this.isPartOfShoppingCart$
+			.pipe(take(1))
+			.subscribe(isPartOfShoppingCart => {
+				this.shoppingCartService.pushItem(EventUtilityService.getEventType(item), {
+					id: item.id,
+					options,
+					item,
+					amount: !isPartOfShoppingCart ? this.model.amount : 0,
+				});
+			});
 	}
 
 	openShareDialog() {

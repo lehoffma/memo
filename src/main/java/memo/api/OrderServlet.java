@@ -42,16 +42,13 @@ public class OrderServlet extends AbstractApiServlet<Order> {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.post(request, response, new ApiServletPostOptions<>(
-                "order", new Order(), Order.class, Order::getId,
-                (jsonNode, order) -> order.getItems().forEach(it -> it.setOrder(order))
+                "order", new Order(), Order.class, Order::getId
         ));
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.put(request, response, new ApiServletPutOptions<>(
-                "order", Order.class, Order::getId, "id",
-                //todo update dependencies
-                (jsonNode, order) -> order.getItems().forEach(it -> it.setOrder(order))
+                "order", Order.class, Order::getId, "id"
         ));
     }
 

@@ -91,7 +91,7 @@ public class LoginServlet extends HttpServlet {
 
             User user = users.get(0);
 
-            if (user.getPassword().equals(information.password)) {
+            if (BCryptHelper.checkPasswords(information.password, user.getPassword())) {
                 logger.trace("Login was successful!");
 
                 String accessToken = TokenService.getAccessToken(information.email);

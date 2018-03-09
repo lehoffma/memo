@@ -43,6 +43,15 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	};
 	autocompleteFormControl: FormControl = new FormControl();
 	filteredOptions: Observable<Event[]>;
+	subscription: Subscription;
+
+	constructor(private queryParameterService: QueryParameterService,
+				private router: Router,
+				private changeDetectorRef: ChangeDetectorRef,
+				private entryCategoryService: EntryCategoryService,
+				private eventService: EventService,
+				private activatedRoute: ActivatedRoute) {
+	}
 
 	_isLoading = false;
 
@@ -58,17 +67,6 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 		else {
 			this.autocompleteFormControl.enable();
 		}
-	}
-
-
-	subscription: Subscription;
-
-	constructor(private queryParameterService: QueryParameterService,
-				private router: Router,
-				private changeDetectorRef: ChangeDetectorRef,
-				private entryCategoryService: EntryCategoryService,
-				private eventService: EventService,
-				private activatedRoute: ActivatedRoute) {
 	}
 
 	get availableEvents() {

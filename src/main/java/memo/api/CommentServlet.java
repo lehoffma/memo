@@ -41,8 +41,7 @@ public class CommentServlet extends AbstractApiServlet<Comment> {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         this.post(request, response, new ApiServletPostOptions<>(
-                "comment", new Comment(), Comment.class, Comment::getId,
-                this::updateDependencies
+                "comment", new Comment(), Comment.class, Comment::getId
         ));
     }
 
@@ -50,7 +49,6 @@ public class CommentServlet extends AbstractApiServlet<Comment> {
         this.put(request, response, new ApiServletPutOptions<>(
                         "comment", Comment.class, Comment::getId
                 )
-                        .setUpdateDependencies(this::updateDependencies)
         );
     }
 

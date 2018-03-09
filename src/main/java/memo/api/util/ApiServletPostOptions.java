@@ -11,36 +11,34 @@ public class ApiServletPostOptions<T, SerializedType> {
     private String objectName;
     private T baseValue;
     private Class<T> clazz;
-    private BiConsumer<JsonNode, T> updateDependencies;
+    private Function<T, T> transform;
     private Function<T, SerializedType> getSerialized;
     private List<ModifyPrecondition<T>> preconditions = new ArrayList<>();
     private String serializedKey;
 
     public ApiServletPostOptions() {
-        this.updateDependencies = (jsonNode, t) -> {
-        };
+        this.transform = Function.identity();
         this.serializedKey = "id";
     }
 
     public ApiServletPostOptions(String objectName, T baseValue, Class<T> clazz, Function<T, SerializedType> getSerialized) {
-        this(objectName, baseValue, clazz, getSerialized, ((jsonNode, t) -> {
-        }), "id");
+        this(objectName, baseValue, clazz, getSerialized, Function.identity(), "id");
     }
 
     public ApiServletPostOptions(String objectName, T baseValue, Class<T> clazz,
-                                 Function<T, SerializedType> getSerialized, BiConsumer<JsonNode, T> updateDependencies) {
-        this(objectName, baseValue, clazz, getSerialized, updateDependencies, "id");
+                                 Function<T, SerializedType> getSerialized, Function<T, T> transform) {
+        this(objectName, baseValue, clazz, getSerialized, transform, "id");
 
     }
 
     public ApiServletPostOptions(String objectName, T baseValue, Class<T> clazz,
-                                 Function<T, SerializedType> getSerialized, BiConsumer<JsonNode, T> updateDependencies,
+                                 Function<T, SerializedType> getSerialized, Function<T, T> transform,
                                  String serializedKey) {
         this.objectName = objectName;
         this.baseValue = baseValue;
         this.clazz = clazz;
         this.getSerialized = getSerialized;
-        this.updateDependencies = updateDependencies;
+        this.transform = transform;
         this.serializedKey = serializedKey;
         this.preconditions = new ArrayList<>();
     }
@@ -72,12 +70,12 @@ public class ApiServletPostOptions<T, SerializedType> {
         return this;
     }
 
-    public BiConsumer<JsonNode, T> getUpdateDependencies() {
-        return updateDependencies;
+    public Function<T, T> getTransform() {
+        return transform;
     }
 
-    public ApiServletPostOptions<T, SerializedType> setUpdateDependencies(BiConsumer<JsonNode, T> updateDependencies) {
-        this.updateDependencies = updateDependencies;
+    public ApiServletPostOptions<T, SerializedType> setTransform(Function<T, T> transform) {
+        this.transform = transform;
         return this;
     }
 

@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -64,6 +66,7 @@ public class Address implements Serializable {
     //  getters and setters
     //**************************************************************
 
+    @JsonIgnore
     public User getUser() {
         return user;
     }
@@ -72,6 +75,7 @@ public class Address implements Serializable {
         this.user = user;
     }
 
+    @JsonIgnore
     public ShopItem getItem() {
         return item;
     }

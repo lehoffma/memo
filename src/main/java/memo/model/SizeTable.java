@@ -104,7 +104,6 @@ public class SizeTable implements Serializable {
     public String toString() {
         return "SizeTable{" +
                 "id=" + id +
-                ", stock=" + stock +
                 ", name='" + name + '\'' +
                 ", min=" + min +
                 ", max=" + max +

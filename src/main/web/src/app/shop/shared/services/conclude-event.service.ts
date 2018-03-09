@@ -1,8 +1,7 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {EventService} from "../../../shared/services/api/event.service";
 import {of} from "rxjs/observable/of";
-import {Event} from "../model/event";
 import {Participant} from "../model/participant";
 import {User} from "../../../shared/model/user";
 
@@ -21,7 +20,7 @@ export class ConcludeEventService {
 		//todo check if the date is set + ask backend if group photo/responsible users was set
 
 		//todo remove demo
-		return of(false);
+		return of(true);
 	}
 
 

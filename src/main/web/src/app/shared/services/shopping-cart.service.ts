@@ -61,6 +61,14 @@ export class ShoppingCartService implements OnInit {
 		localStorage.setItem(this.localStorageKey, "");
 	}
 
+	isPartOfShoppingCart(id: number){
+		return this.content.pipe(
+			map(content => !!([...content.merch, ...content.tours, ...content.partys]
+				.find(value => value.id === id))
+			)
+		)
+	}
+
 	/**
 	 *
 	 * @param {T} valueA

@@ -108,7 +108,6 @@ public class BankAcc implements Serializable {
     public String toString() {
         return "BankAcc{" +
                 "id=" + id +
-                ", user=" + user +
                 ", name='" + name + '\'' +
                 ", iban='" + iban + '\'' +
                 ", bic='" + bic + '\'' +

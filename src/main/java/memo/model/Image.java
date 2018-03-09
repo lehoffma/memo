@@ -77,6 +77,7 @@ public class Image implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     public User getUser() {
         return user;
     }
@@ -94,6 +95,7 @@ public class Image implements Serializable {
         this.item = item;
     }
 
+    @JsonIgnore
     public Entry getEntry() {
         return entry;
     }
@@ -141,9 +143,6 @@ public class Image implements Serializable {
     public String toString() {
         return "Image{" +
                 "id=" + id +
-                ", user=" + user +
-                ", item=" + item +
-                ", entry=" + entry +
                 ", fileName='" + fileName + '\'' +
                 '}';
     }

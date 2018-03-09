@@ -127,7 +127,6 @@ public class Stock implements Serializable {
                 "id=" + id +
                 ", name='" + size + '\'' +
                 ", amount=" + amount +
-                ", sizeTable" + sizeTable +
                 '}';
     }
 }

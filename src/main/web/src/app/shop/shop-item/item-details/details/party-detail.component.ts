@@ -18,6 +18,7 @@ import {_throw} from "rxjs/observable/throw";
 import {catchError, filter, first, map, mergeMap} from "rxjs/operators";
 import {empty} from "rxjs/observable/empty";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {AddressService} from "../../../../shared/services/api/address.service";
 
 
 @Component({
@@ -31,6 +32,34 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 
 			memo-comments-section {
 				width: 100%;
+			}
+
+			memo-route-list {
+				display: block;
+				border-bottom: 1px solid #ededed;
+				margin: -1rem -1rem 1rem;
+				padding: 0 1rem;
+			}
+
+			@media all and (min-width: 1050px) {
+				memo-route-list {
+					width: calc(50% + 2rem);
+					background: white;
+					border-right: 1px solid #ededed;
+					border-bottom: none;
+					margin-bottom: -1rem;
+					height: 410px;
+					overflow-y: auto;
+				}
+
+				memo-item-details-content /deep/ .object-details-content {
+					display: flex;
+				}
+
+				memo-route-map {
+					width: 50%;
+					margin-left: 2rem;
+				}
 			}
 		`
 	]
@@ -53,6 +82,11 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
 	overViewKeys$: Observable<EventOverviewKey[]> = this._party$
 		.pipe(
 			map(party => party.overviewKeys)
+		);
+
+	meetingPoint$ = this._party$
+		.pipe(
+			map(party => party.route)
 		);
 
 	participants$ = this._party$
@@ -86,6 +120,7 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
 
 	constructor(private route: ActivatedRoute,
 				private router: Router,
+				private addressService: AddressService,
 				private participantService: ParticipantsService,
 				private commentService: CommentService,
 				private loginService: LogInService,
