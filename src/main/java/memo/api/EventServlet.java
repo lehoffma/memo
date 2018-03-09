@@ -9,6 +9,7 @@ import memo.auth.api.ShopItemAuthStrategy;
 import memo.data.EventRepository;
 import memo.model.ShopItem;
 import memo.model.Stock;
+import memo.model.User;
 import memo.util.ApiUtils;
 import memo.util.EventType;
 import org.apache.log4j.Logger;
@@ -40,6 +41,18 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
         return EventType.findByString(sType)
                 .map(EventType::getValue)
                 .orElse(0);
+    }
+
+
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, ShopItem object) {
+        this.oneToMany(object, ShopItem::getEntries, entry -> entry::setItem);
+        this.oneToMany(object, ShopItem::getComments, comment -> comment::setItem);
+        this.manyToMany(object, ShopItem::getAuthor, ShopItem::getId, User::getAuthoredItems, user -> user::setAuthoredItems);
+        this.oneToMany(object, ShopItem::getImages, image -> image::setItem);
+        this.oneToMany(object, ShopItem::getOrders, orderedItem -> orderedItem::setItem);
+        this.oneToMany(object, ShopItem::getRoute, address -> address::setItem);
+        this.oneToMany(object, ShopItem::getStock, stock -> stock::setItem);
     }
 
     private void updateShopItemDependencies(JsonNode jsonShopItem, ShopItem shopItem) {
@@ -101,4 +114,5 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
                 .map(jsonStock -> ApiUtils.getInstance().updateFromJson(jsonStock, new Stock(), Stock.class))
                 .collect(Collectors.toList());
     }
+
 }

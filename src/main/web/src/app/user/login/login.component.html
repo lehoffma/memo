@@ -40,9 +40,8 @@
 
 			</label>
 
-			<!--todo test-->
-			<mat-error *ngIf="wrongInput" class="wrong-input error-message">
-				Die eingebenen Daten sind falsch.
+			<mat-error *ngIf="error" class="wrong-input error-message">
+				{{error}}
 				<!--todo passwort vergessen link-->
 			</mat-error>
 

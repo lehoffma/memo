@@ -1,10 +1,12 @@
 package memo.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.auth.api.OrderAuthStrategy;
 import memo.data.OrderRepository;
 import memo.model.Order;
+import memo.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -16,10 +18,15 @@ import java.io.IOException;
 
 @WebServlet(name = "OrderServlet", value = "/api/order")
 public class OrderServlet extends AbstractApiServlet<Order> {
-
     public OrderServlet() {
         super(new OrderAuthStrategy());
         logger = Logger.getLogger(OrderServlet.class);
+    }
+
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, Order object) {
+        this.manyToOne(object, Order::getUser, Order::getId, User::getOrders, user -> user::setOrders);
+        this.oneToMany(object, Order::getItems, orderedItem -> orderedItem::setOrder);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -51,4 +58,5 @@ public class OrderServlet extends AbstractApiServlet<Order> {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.delete(Order.class, request, response);
     }
+
 }

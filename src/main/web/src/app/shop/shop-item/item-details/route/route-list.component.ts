@@ -33,7 +33,6 @@ export class RouteListComponent implements OnInit {
 	}
 
 	/**
-	 * Todo: list of route stops
 	 */
 
 	constructor(private routingService: RoutingService) {

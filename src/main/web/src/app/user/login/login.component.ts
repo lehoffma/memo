@@ -12,7 +12,7 @@ export class LoginComponent implements OnInit {
 	public password: string = "";
 
 	public loading: boolean = false;
-	public wrongInput: boolean = false;
+	public error: string = "";
 
 	constructor(private loginService: LogInService,
 				private router: Router) {
@@ -33,12 +33,16 @@ export class LoginComponent implements OnInit {
 			.subscribe(
 				loginWasSuccessful => {
 					this.loading = false;
-					this.wrongInput = !loginWasSuccessful;
+					if (!loginWasSuccessful) {
+						this.error = "Die eingegebenen Daten sind falsch."
+					}
 					if (loginWasSuccessful) {
 						this.router.navigateByUrl(this.loginService.redirectUrl, {replaceUrl: true});
 					}
 				},
-				error => console.error(error) //todo remove?
+				error => {
+					this.error = "Etwas ist schief gelaufen. Probier es in einigen Momenten noch mal!"
+				}
 			)
 	}
 }

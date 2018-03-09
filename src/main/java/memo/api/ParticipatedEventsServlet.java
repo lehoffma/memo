@@ -1,5 +1,6 @@
 package memo.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import memo.auth.api.ParticipatedEventsAuthStrategy;
 import memo.data.EventRepository;
 import memo.model.ShopItem;
@@ -24,5 +25,10 @@ public class ParticipatedEventsServlet extends AbstractApiServlet<ShopItem> {
                 )),
                 "shopItems"
         );
+    }
+
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, ShopItem object) {
+
     }
 }

@@ -1,10 +1,13 @@
 package memo.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.auth.api.AddressAuthStrategy;
 import memo.data.AddressRepository;
 import memo.model.Address;
+import memo.model.ShopItem;
+import memo.model.User;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +22,11 @@ public class AddressServlet extends AbstractApiServlet<Address> {
         logger = Logger.getLogger(AddressServlet.class);
     }
 
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, Address object) {
+        this.manyToOne(object, Address::getUser, Address::getId, User::getAddresses, user -> user::setAddresses);
+        this.manyToOne(object, Address::getItem, Address::getId, ShopItem::getRoute, item -> item::setRoute);
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         this.get(request, response,

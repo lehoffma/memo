@@ -7,15 +7,11 @@ import memo.auth.api.CommentAuthStrategy;
 import memo.data.CommentRepository;
 import memo.model.Comment;
 import memo.model.ShopItem;
-import memo.util.DatabaseManager;
-import memo.util.ListBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Optional;
 
 
 @WebServlet(name = "CommentServlet", value = "/api/comment")
@@ -37,21 +33,10 @@ public class CommentServlet extends AbstractApiServlet<Comment> {
                 "comments");
     }
 
-    private void updateDependencies(JsonNode jsonNode, Comment comment) {
-        if (comment.getParent() != null) {
-            Comment parent = comment.getParent();
-            ListBuilder<Comment> newChildren = new ListBuilder<Comment>()
-                    .buildAll(Optional.ofNullable(parent.getChildren()).orElse(new ArrayList<>()))
-                    .buildAdd(comment);
-            parent.setChildren(newChildren);
-            DatabaseManager.getInstance().update(parent);
-        }
-        ShopItem item = comment.getItem();
-        ListBuilder<Comment> newComments = new ListBuilder<Comment>()
-                .buildAll(Optional.ofNullable(item.getComments()).orElse(new ArrayList<>()))
-                .buildAdd(comment);
-        item.setComments(newComments);
-        DatabaseManager.getInstance().update(item);
+    @Override
+    public void updateDependencies(JsonNode jsonNode, Comment object) {
+        this.manyToOne(object, Comment::getParent, Comment::getId, Comment::getChildren, comment -> comment::setChildren);
+        this.manyToOne(object, Comment::getItem, Comment::getId, ShopItem::getComments, shopItem -> shopItem::setComments);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {

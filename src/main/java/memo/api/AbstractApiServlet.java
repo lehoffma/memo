@@ -3,6 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
+import memo.api.util.DependencyUpdateService;
 import memo.api.util.ModifyPrecondition;
 import memo.auth.AuthenticationService;
 import memo.auth.api.AuthenticationStrategy;
@@ -17,21 +18,75 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static memo.util.ApiUtils.stringIsNotEmpty;
+
 public abstract class AbstractApiServlet<T> extends HttpServlet {
     protected AuthenticationStrategy<T> authenticationStrategy;
     protected Logger logger = Logger.getLogger(AbstractApiServlet.class);
+    private DependencyUpdateService dependencyUpdateService;
 
     public AbstractApiServlet(AuthenticationStrategy<T> authenticationStrategy) {
         super();
         this.authenticationStrategy = authenticationStrategy;
+        this.dependencyUpdateService = new DependencyUpdateService();
     }
+
+    /**
+     * Updates the database record of a manyToOne relationship
+     */
+    protected <DependencyType, IdType> void manyToOne(T objectToUpdate,
+                                                      Function<T, DependencyType> getDependency,
+                                                      Function<T, IdType> getId,
+                                                      Function<DependencyType, List<T>> getCyclicListDependency,
+                                                      Function<DependencyType, Consumer<List<T>>> updateDependencyValues
+    ) {
+        dependencyUpdateService.manyToOne(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues)
+                .ifPresent(it -> DatabaseManager.getInstance().update(it));
+    }
+
+    /**
+     * Updates the database record of a oneToMany relationship
+     */
+    protected <DependencyType> void oneToMany(T objectToUpdate,
+                                              Function<T, List<DependencyType>> getDependency,
+                                              Function<DependencyType, Consumer<T>> updateDependencyValue
+    ) {
+        List<DependencyType> values = dependencyUpdateService
+                .oneToMany(objectToUpdate, getDependency, updateDependencyValue);
+        DatabaseManager.getInstance().updateAll(values);
+    }
+
+    /**
+     * Updates the database record of a oneToOne relationship
+     */
+    protected <DependencyType> void oneToOne(T objectToUpdate,
+                                             Function<T, DependencyType> getDependency,
+                                             Function<DependencyType, Consumer<T>> updateDependencyValue) {
+        dependencyUpdateService.oneToOne(objectToUpdate, getDependency, updateDependencyValue)
+                .ifPresent(it -> DatabaseManager.getInstance().update(it));
+    }
+
+    /**
+     * Updates the database record of a manyToMany relationship
+     */
+    protected <DependencyType, IdType> void manyToMany(T objectToUpdate,
+                                                       Function<T, List<DependencyType>> getDependency,
+                                                       Function<T, IdType> getId,
+                                                       Function<DependencyType, List<T>> getCyclicListDependency,
+                                                       Function<DependencyType, Consumer<List<T>>> updateDependencyValues
+    ) {
+        dependencyUpdateService.manyToMany(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues)
+                .forEach(it -> DatabaseManager.getInstance().update(it));
+    }
+
+    protected abstract void updateDependencies(JsonNode jsonNode, T object);
 
     /**
      * Transforms the given parameter map to a string representation for logging purposes
@@ -71,18 +126,19 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                 .collect(Collectors.toList());
         String id = getParameter(parameterMap, "id");
 
-        if (ApiUtils.stringIsNotEmpty(id) && items.isEmpty()) {
+        if (stringIsNotEmpty(id) && items.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
             return;
         }
 
+        //remove items from the result the user is not allowed to see
         items = AuthenticationService.filterUnauthorized(
                 items,
                 this.authenticationStrategy::isAllowedToRead,
                 request
         );
 
-        if (ApiUtils.stringIsNotEmpty(id) && items.isEmpty()) {
+        if (stringIsNotEmpty(id) && items.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to see this item");
             return;
@@ -103,7 +159,6 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                                          String objectName,
                                          T baseValue,
                                          Class<T> clazz,
-                                         BiConsumer<JsonNode, T> updateDependencies,
                                          List<ModifyPrecondition<T>> preconditions,
                                          Function<T, SerializedType> getSerialized,
                                          String serializedKey
@@ -114,6 +169,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         logger.debug("Method POST called with params " + paramMapToString(request.getParameterMap()));
 
         //ToDo: Duplicate Items :/
+        //          ^-- huh?
         T item = ApiUtils.getInstance().updateFromJson(jsonItem, baseValue, clazz);
 
         //check if user is authorized to create item
@@ -123,6 +179,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return;
         }
 
+        //check if any of the preconditions failed (i.e. the email is already taken or something)
         Optional<ModifyPrecondition<T>> failedCondition = preconditions.stream()
                 .filter(it -> it.getPredicate().test(item)).findFirst();
 
@@ -133,7 +190,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         DatabaseManager.getInstance().save(item);
 
         //update cyclic dependencies etc.
-        updateDependencies.accept(jsonItem, item);
+        this.updateDependencies(jsonItem, item);
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
@@ -145,7 +202,6 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                 options.getObjectName(),
                 options.getBaseValue(),
                 options.getClazz(),
-                options.getUpdateDependencies(),
                 options.getPreconditions(),
                 options.getGetSerialized(),
                 options.getSerializedKey()
@@ -156,7 +212,6 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                                         String objectName,
                                         String jsonId,
                                         Class<T> clazz,
-                                        BiConsumer<JsonNode, T> updateDependencies,
                                         List<ModifyPrecondition<T>> preconditions,
                                         Function<T, SerializedType> getSerialized,
                                         String serializedKey) {
@@ -180,6 +235,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         }
 
         T finalItem = item;
+        //check if any of the preconditions failed (i.e. the email is already taken or something)
         Optional<ModifyPrecondition<T>> failedCondition = preconditions.stream()
                 .filter(it -> it.getPredicate().test(finalItem)).findFirst();
 
@@ -195,7 +251,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         item = ApiUtils.getInstance().updateFromJson(jsonItem, item, clazz);
 
         //update cyclic dependencies etc.
-        updateDependencies.accept(jsonItem, item);
+        this.updateDependencies(jsonItem, item);
 
         DatabaseManager.getInstance().save(item);
 
@@ -220,7 +276,6 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                 options.getObjectName(),
                 options.getJsonId(),
                 options.getClazz(),
-                options.getUpdateDependencies(),
                 options.getPreconditions(),
                 options.getGetSerialized(),
                 options.getSerializedKey()

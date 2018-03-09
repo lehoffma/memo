@@ -8,6 +8,7 @@ import memo.auth.api.UserAuthStrategy;
 import memo.data.UserRepository;
 import memo.model.ClubRole;
 import memo.model.PermissionState;
+import memo.model.ShopItem;
 import memo.model.User;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
@@ -25,8 +26,6 @@ import java.util.List;
 /**
  * Servlet implementation class UserServlet
  */
-
-//TODO: checks for address and bank account in database
 
 @WebServlet(name = "UserServlet", value = "/api/user")
 public class UserServlet extends AbstractApiServlet<User> {
@@ -67,23 +66,23 @@ public class UserServlet extends AbstractApiServlet<User> {
         }
     }
 
-    private void updateCyclicDependencies(User user) {
-        user.getAddresses().forEach(it -> it.setUser(user));
-        user.getBankAccounts().forEach(it -> it.setUser(user));
-        user.getImages().forEach(it -> it.setUser(user));
-        //todo authored items maybe updaten?
-        user.getComments().forEach(it -> it.setAuthor(user));
-        user.getOrders().forEach(it -> it.setUser(user));
+
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, User object) {
+        updateUserFromJson(jsonNode, object);
+        DatabaseManager.getInstance().save(object.getPermissions());
+
+        this.oneToMany(object, User::getAddresses, address -> address::setUser);
+        this.oneToMany(object, User::getBankAccounts, bankAcc -> bankAcc::setUser);
+        this.oneToMany(object, User::getImages, image -> image::setUser);
+        this.oneToMany(object, User::getComments, comment -> comment::setAuthor);
+        this.oneToMany(object, User::getOrders, order -> order::setUser);
+        this.manyToMany(object, User::getAuthoredItems, User::getId, ShopItem::getAuthor, shopItem -> shopItem::setAuthor);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.post(request, response, new ApiServletPostOptions<>(
-                        "user", new User(), User.class, User::getId,
-                        (jsonNode, user) -> {
-                            updateUserFromJson(jsonNode, user);
-                            DatabaseManager.getInstance().save(user.getPermissions());
-                            updateCyclicDependencies(user);
-                        }
+                        "user", new User(), User.class, User::getId
                 )
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
@@ -103,11 +102,7 @@ public class UserServlet extends AbstractApiServlet<User> {
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.put(request, response, new ApiServletPutOptions<>(
-                        "user", User.class, User::getId, "id",
-                        (jsonNode, user) -> {
-                            updateUserFromJson(jsonNode, user);
-                            this.updateCyclicDependencies(user);
-                        }
+                        "user", User.class, User::getId, "id"
                 )
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(

@@ -1,13 +1,17 @@
 package memo.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import memo.auth.AuthenticationService;
 import memo.auth.api.ImageAuthStrategy;
 import memo.data.ImageRepository;
+import memo.model.Entry;
 import memo.model.Image;
+import memo.model.ShopItem;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -32,6 +36,13 @@ public class ImageServlet extends AbstractApiServlet<Image> {
     public ImageServlet() {
         super(new ImageAuthStrategy());
         logger = Logger.getLogger(ImageServlet.class);
+    }
+
+
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, Image object) {
+        this.manyToOne(object, Image::getItem, Image::getId, ShopItem::getImages, shopItem -> shopItem::setImages);
+        this.manyToOne(object, Image::getEntry, Image::getId, Entry::getImages, entry -> entry::setImages);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -61,13 +72,8 @@ public class ImageServlet extends AbstractApiServlet<Image> {
 
             try (FileInputStream in = new FileInputStream(file);
                  OutputStream out = response.getOutputStream()) {
-
                 // Copy the contents of the file to the output stream
-                byte[] buf = new byte[1024];
-                int count;
-                while ((count = in.read(buf)) >= 0) {
-                    out.write(buf, 0, count);
-                }
+                IOUtils.copy(in, out);
             }
 
             logger.trace("Image at url '" + fileName + "' was sent successfully.");
@@ -109,4 +115,5 @@ public class ImageServlet extends AbstractApiServlet<Image> {
             return ImageRepository.getInstance().getByFilePath(fileName).orElse(null);
         });
     }
+
 }

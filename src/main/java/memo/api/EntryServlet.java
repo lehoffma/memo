@@ -1,10 +1,13 @@
 package memo.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.auth.api.EntryAuthStrategy;
 import memo.data.EntryRepository;
 import memo.model.Entry;
+import memo.model.EntryCategory;
+import memo.model.ShopItem;
 import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
 
@@ -50,6 +53,13 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
                 entry -> matchesDate(entry, request.getParameter("minDate"), true)
                         && matchesDate(entry, request.getParameter("maxDate"), false)
         );
+    }
+
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, Entry object) {
+        this.manyToOne(object, Entry::getItem, Entry::getId, ShopItem::getEntries, shopItem -> shopItem::setEntries);
+        this.manyToOne(object, Entry::getCategory, Entry::getId, EntryCategory::getEntry, entryCategory -> entryCategory::setEntry);
+        this.oneToMany(object, Entry::getImages, image -> image::setEntry);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {

@@ -1,9 +1,12 @@
 package memo.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.auth.api.StockAuthStrategy;
 import memo.data.StockRepository;
+import memo.model.Color;
+import memo.model.ShopItem;
 import memo.model.Stock;
 import org.apache.log4j.Logger;
 
@@ -19,6 +22,13 @@ public class StockServlet extends AbstractApiServlet<Stock> {
     public StockServlet() {
         super(new StockAuthStrategy());
         logger = Logger.getLogger(StockServlet.class);
+    }
+
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, Stock object) {
+        this.manyToOne(object, Stock::getItem, Stock::getId, ShopItem::getStock, shopItem -> shopItem::setStock);
+        this.manyToOne(object, Stock::getColor, Stock::getId, Color::getStock, color -> color::setStock);
+        this.oneToMany(object, Stock::getSizeTable, sizeTable -> sizeTable::setStock);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
