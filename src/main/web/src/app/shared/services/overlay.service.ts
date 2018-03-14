@@ -118,7 +118,6 @@ export class OverlayService {
 		const overlayHeight: string | number = (config && config.height) ? config.height : this.DEFAULT_CONFIG.height;
 		if (isNumber(overlayHeight)) {
 			const scrolledPixels = this.scrollingService.scrollTop;
-			//todo scrollservice? something that watches the scrolled position of the main div
 			//element's height causes it to be lower than the bottom of the screen
 			//	=> move to the top of the reference element
 			if ((elementY + elementHeight / 2 + overlayHeight) > (this.windowService.dimensions.height + scrolledPixels)) {

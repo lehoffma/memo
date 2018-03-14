@@ -140,7 +140,7 @@ export class EventUtilityService {
 	}
 
 	static isParty(event: any): event is Party {
-		return event && (<Party>event).emptySeats !== undefined && (<Party>event).emptySeats !== null
+		return event && (<Party>event).route && (<Party>event).route.length === 1
 			&& ((<Tour>event).vehicle === undefined || (<Tour>event).vehicle === null);
 	}
 

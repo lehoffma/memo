@@ -39,7 +39,7 @@ public class Entry implements Serializable {
     @JsonSerialize(using = ShopItemIdSerializer.class)
     private ShopItem item;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(nullable = false)
     @JsonDeserialize(using = EntryCategoryIdDeserializer.class)
     @JsonSerialize(using = EntryCategoryIdSerializer.class)

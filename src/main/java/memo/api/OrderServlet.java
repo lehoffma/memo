@@ -14,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 
 @WebServlet(name = "OrderServlet", value = "/api/order")
@@ -42,14 +43,30 @@ public class OrderServlet extends AbstractApiServlet<Order> {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.post(request, response, new ApiServletPostOptions<>(
-                "order", new Order(), Order.class, Order::getId
-        ));
+                        "order", new Order(), Order.class, Order::getId
+                )
+                        .setTransform(order -> {
+                            order.setItems(order.getItems().stream()
+                                    .peek(orderedItem -> orderedItem.setOrder(order))
+                                    .collect(Collectors.toList()));
+                            return order;
+                        })
+        )
+
+        ;
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.put(request, response, new ApiServletPutOptions<>(
-                "order", Order.class, Order::getId, "id"
-        ));
+                        "order", Order.class, Order::getId, "id"
+                )
+                        .setTransform(order -> {
+                            order.setItems(order.getItems().stream()
+                                    .peek(orderedItem -> orderedItem.setOrder(order))
+                                    .collect(Collectors.toList()));
+                            return order;
+                        })
+        );
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -11,7 +11,7 @@ import {User} from "../model/user";
 @Directive({
 	selector: "[memoUserPreview]"
 })
-export class UserPreviewDirective implements OnDestroy{
+export class UserPreviewDirective implements OnDestroy {
 	@Input() user: User;
 	@Input() mouseLeaveDelay: number = 300;
 	@Input() hoverDelay: number = 250;
@@ -23,6 +23,8 @@ export class UserPreviewDirective implements OnDestroy{
 	subscriptions: Subscription[] = [];
 
 	dialogIsInitialized = false;
+
+	clicked = false;
 
 	constructor(private elementRef: ElementRef,
 				private overlayService: OverlayService) {
@@ -60,12 +62,17 @@ export class UserPreviewDirective implements OnDestroy{
 
 	@HostListener("mouseenter")
 	openPreview() {
+		console.log("mouseenter");
 		this.disposeStream.next(false);
 		if (!this.dialogIsInitialized && (!this.overlayRef || (this.overlayRef && !this.overlayRef.hasAttached()))) {
 			this.dialogIsInitialized = true;
 			timer(this.hoverDelay)
 				.pipe(take(1))
 				.subscribe(() => {
+					if(this.clicked){
+						return;
+					}
+
 					const {overlay, component} = this.overlayService.open(this.elementRef, ProfilePreviewComponent,
 						{
 							user: this.user
@@ -87,8 +94,14 @@ export class UserPreviewDirective implements OnDestroy{
 	}
 
 	@HostListener("mouseleave")
-	@HostListener("click")
 	closePreview() {
 		this.disposeStream.next(true);
 	}
+
+	@HostListener("click")
+	onClick(){
+		this.clicked = true;
+		this.closePreview();
+	}
+
 }

@@ -25,7 +25,7 @@ import {ModifyItemEvent} from "./modify-item-event";
 import {MerchStockList} from "../../shared/model/merch-stock";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {defaultIfEmpty, filter, first, map, mergeMap, scan, take} from "rxjs/operators";
+import {filter, first, map, mergeMap, scan, take} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shared/model/event";
 import {of} from "rxjs/observable/of";

@@ -61,8 +61,8 @@ public class UserRepository extends AbstractRepository<User> {
     public List<User> getUserByOrderedItemId(String orderedItemId) {
         Integer id = Integer.valueOf(orderedItemId);
         return DatabaseManager.createEntityManager()
-                .createQuery("SELECT distinct user from Order order JOIN order.user user JOIN order.items item" +
-                        " WHERE item.id = :orderedItemId", User.class)
+                .createQuery("SELECT distinct u from Order o JOIN o.user u JOIN o.items i" +
+                        " WHERE i.id = :orderedItemId", User.class)
                 .setParameter("orderedItemId", id)
                 .getResultList();
     }

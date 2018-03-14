@@ -52,8 +52,6 @@
 			</div>
 		</div>
 
-		<!--todo auto complete für event das dem entry zugewiesen ist-->
-
 		<mat-form-field>
 			<input matInput
 				   tabindex="-1"
@@ -61,6 +59,9 @@
 				   name="eventInput"
 				   [formControl]="autocompleteFormControl"
 				   [matAutocomplete]="auto" required>
+			<mat-error *ngIf="autocompleteFormControl.hasError('isNotAValidEvent') || autocompleteFormControl.hasError('required')">
+				Bitte wähle ein gültiges Item aus.
+			</mat-error>
 		</mat-form-field>
 		<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
 			<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
@@ -74,7 +75,7 @@
 			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
 			<button mat-raised-button color="accent"
-					[disabled]="!modifyShopItemForm.form.valid"
+					[disabled]="!modifyShopItemForm.form.valid || autocompleteFormControl.invalid"
 					type="submit">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
 			</button>

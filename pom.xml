@@ -150,12 +150,12 @@
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
                     <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.2</version>
+                    <version>LATEST</version>
                     <configuration>
                         <update>true</update>
-                        <url>http://h2701145.stratoserver.net:8080/manager/text</url>
+                        <url>http://81.169.246.104:8080/manager/text</url>
                         <!--<server>memo-server</server>-->
-                        <username>manager</username>
+                        <username>deployer</username>
                         <password>gzaeBonacci</password>
                         <path>/</path>
                     </configuration>

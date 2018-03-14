@@ -191,7 +191,6 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return;
         }
 
-
         DatabaseManager.getInstance().save(item);
 
         //update cyclic dependencies etc.

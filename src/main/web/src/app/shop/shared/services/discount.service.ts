@@ -51,7 +51,8 @@ export class DiscountService {
 		if (userId) {
 			params = params.set("userId", "" + userId);
 		}
-		const request = this.request(this.http.get<Discount[]>(this.baseUrl, {params}));
+		const request = this.request(this.http.get<{ discounts: Discount[] }>(this.baseUrl, {params}))
+			.pipe(map(response => response.discounts));
 
 		return this._cache.other(params, request);
 	}
@@ -63,28 +64,13 @@ export class DiscountService {
 	 * @returns {Observable<Discount[]>}
 	 */
 	getEventDiscounts(eventId: number, userId?: number): Observable<Discount[]> {
-		//todo remove demo
-		if (eventId !== -500) {
-			console.warn("discount service demo");
-			return of([
-				{
-					amount: 5,
-					eligible: true,
-					link: {
-						url: "/applyForMembership",
-						text: "Werde jetzt Mitglied, um 5 Euro auf alle Touren zu sparen!"
-					},
-					reason: "Mitglieder-Rabatt"
-				}
-			])
-		}
-
 		let params = new HttpParams()
 			.set("eventId", "" + eventId);
 		if (userId) {
 			params = params.set("userId", "" + userId);
 		}
-		const request = this.request(this.http.get<Discount[]>(this.baseUrl, {params}));
+		const request = this.request(this.http.get<{ discounts: Discount[] }>(this.baseUrl, {params}))
+			.pipe(map(response => response.discounts));
 
 		return this._cache.other(params, request);
 	}

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
-import {FormControl} from "@angular/forms";
+import {FormControl, Validators} from "@angular/forms";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {Event} from "../../../shared/model/event";
@@ -13,6 +13,7 @@ import {EntryCategory} from "../../../../shared/model/entry-category";
 import {Observable} from "rxjs/Observable";
 import {filter, map, mergeMap, startWith, take} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {isEventValidator} from "../../../../shared/validators/is-event.validator";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -32,14 +33,14 @@ export class ModifyEntryComponent implements OnInit {
 
 	set associatedEvent(event: Event) {
 		this._associatedEvent = event;
-		this.model["event"] = event;
+		this.model["item"] = event;
 	}
 
 	ModifyType = ModifyType;
 
 	entryCategories$ = this.entryCategoryService.getCategories();
 
-	autocompleteFormControl: FormControl = new FormControl();
+	autocompleteFormControl: FormControl = new FormControl("",);
 	filteredOptions: Observable<Event[]>;
 
 	constructor(private location: Location,
@@ -58,11 +59,11 @@ export class ModifyEntryComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		if (this.model["event"] && this.model["event"] !== null &&
-			(EventUtilityService.isMerchandise(this.model["event"]) ||
-				EventUtilityService.isTour(this.model["event"]) ||
-				EventUtilityService.isParty(this.model["event"]))) {
-			this.associatedEvent = this.model["event"];
+		if (this.model["item"] && this.model["item"] !== null &&
+			(EventUtilityService.isMerchandise(this.model["item"]) ||
+				EventUtilityService.isTour(this.model["item"]) ||
+				EventUtilityService.isParty(this.model["item"]))) {
+			this.associatedEvent = this.model["item"];
 			this.autocompleteFormControl.setValue(this.associatedEvent);
 		}
 		this.activatedRoute.queryParamMap
@@ -102,6 +103,10 @@ export class ModifyEntryComponent implements OnInit {
 						)
 				)
 			);
+
+		this.autocompleteFormControl.setValidators(
+			[Validators.required, isEventValidator()]
+		)
 	}
 
 	/**
