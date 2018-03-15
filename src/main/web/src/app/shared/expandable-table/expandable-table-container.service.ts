@@ -20,7 +20,7 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 	expandedRowKeys$: BehaviorSubject<ExpandableTableColumn<T>[]> = new BehaviorSubject([]);
 
 	dataSubject$: BehaviorSubject<T[]> = new BehaviorSubject([]);
-	data$ = combineLatest(
+	data$: Observable<T[]> = combineLatest(
 		this.dataSubject$,
 		this._sortBy$,
 		...this.options$,
@@ -35,20 +35,26 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 
 	private dataSubscription: Subscription;
 
-	constructor(sortBy: ColumnSortingEvent<T>,
-				public permissions$: Observable<ActionPermissions>,
-				public options$: Observable<any>[],
-				public rowComponent: Type<ExpandedRowComponent<T>> = SingleValueListExpandedRowComponent) {
+	protected constructor(sortBy: ColumnSortingEvent<T>,
+						  public permissions$: Observable<ActionPermissions>,
+						  public options$: Observable<any>[],
+						  public rowComponent: Type<ExpandedRowComponent<T>> = SingleValueListExpandedRowComponent) {
 		this._sortBy$.next(sortBy);
 	}
 
 	public init(dataSource$: Observable<T[]>) {
-		this.dataSubscription = dataSource$
-			.subscribe(this.dataSubject$);
+		if (this.dataSubscription) {
+			console.debug("cancelling previous subscription");
+			this.dataSubscription.unsubscribe();
+		}
+
+		this.dataSubscription = dataSource$.subscribe(it => this.dataSubject$.next(it));
 	}
 
 	ngOnDestroy() {
-		this.dataSubscription.unsubscribe();
+		if (this.dataSubscription) {
+			this.dataSubscription.unsubscribe();
+		}
 	}
 
 	/**

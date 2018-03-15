@@ -1,7 +1,8 @@
 import {Subject} from "rxjs/Subject";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {take, tap} from "rxjs/operators";
+import {catchError, take, tap} from "rxjs/operators";
+import {empty} from "rxjs/observable/empty";
 
 interface CacheContent<T> {
 	expiry: number;
@@ -57,6 +58,10 @@ export class Cache<T> {
 					tap(value => this.setValue(value)),
 					//avoid memory leaks by only subscribing to the first value
 					take(1),
+					catchError(error => {
+						console.error(error);
+						return empty<T>();
+					})
 				)
 				//push result of http request into inFlightRequest
 				.subscribe(this.inFlightRequest);

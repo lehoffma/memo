@@ -3,6 +3,8 @@ import {User} from "../../../shared/model/user";
 import {RowAction} from "../../../shared/expandable-table/row-action";
 import {MemberListRowAction} from "./member-list-row-actions";
 import {MemberListService} from "./member-list.service";
+import {UserService} from "../../../shared/services/api/user.service";
+import {empty} from "rxjs/observable/empty";
 
 @Component({
 	selector: "memo-member-list",
@@ -47,9 +49,7 @@ export class MemberListComponent implements OnInit {
 		}
 	];
 
-
 	constructor(public memberListService: MemberListService) {
-		this.memberListService.data$.subscribe(val => console.log(val));
 	}
 
 	ngOnInit() {

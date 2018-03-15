@@ -55,19 +55,6 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
         this.oneToMany(object, ShopItem::getStock, stock -> stock::setItem);
     }
 
-    private void updateShopItemDependencies(JsonNode jsonShopItem, ShopItem shopItem) {
-        List<Stock> stockList = new ArrayList<>();
-
-        if (shopItem.getType() == EventType.merch.getValue()) {
-            stockList = fillSizesFromJson(jsonShopItem);
-        }
-
-        shopItem.setStock(stockList);
-        shopItem.getImages().forEach(image -> image.setItem(shopItem));
-        stockList.forEach(it -> it.setItem(shopItem));
-        //todo databaseManager.save() bla
-    }
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.get(
                 request, response,
@@ -105,14 +92,4 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.delete(ShopItem.class, request, response);
     }
-
-
-    private List<Stock> fillSizesFromJson(JsonNode event) {
-        ArrayNode jsonStockList = (ArrayNode) event.get("stock");
-
-        return StreamSupport.stream(jsonStockList.spliterator(), false)
-                .map(jsonStock -> ApiUtils.getInstance().updateFromJson(jsonStock, new Stock(), Stock.class))
-                .collect(Collectors.toList());
-    }
-
 }

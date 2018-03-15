@@ -70,8 +70,7 @@ export class ModifyMerchComponent implements OnInit {
 	}
 
 	responsibleUsersChange(users: User[]) {
-		//todo responsibility api
-		console.log(users);
+		this.model["author"] = [...users];
 	}
 
 

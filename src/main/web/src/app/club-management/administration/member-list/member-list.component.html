@@ -1,5 +1,6 @@
+
 <memo-expandable-table
-	[data]="memberListService.data$ | async"
+	[data]="(memberListService.data$ | async)"
 	[rowActions]="rowActions"
 	(onSort)="memberListService.onSort($event)"
 	(onAction)="memberListService.handleTableAction($event)"

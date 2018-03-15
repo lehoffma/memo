@@ -5,6 +5,7 @@ import {ModifyItemEvent} from "../modify-item-event";
 import {Moment} from "moment";
 import {User} from "../../../../shared/model/user";
 import {ClubRole} from "../../../../shared/model/club-role";
+import {LogInService} from "../../../../shared/services/api/login.service";
 
 @Component({
 	selector: "memo-modify-tour",
@@ -24,7 +25,8 @@ export class ModifyTourComponent implements OnInit {
 
 	ModifyType = ModifyType;
 
-	constructor(private location: Location) {
+	constructor(private location: Location,
+				private loginService: LogInService) {
 	}
 
 	get tourModel() {
@@ -95,8 +97,7 @@ export class ModifyTourComponent implements OnInit {
 	}
 
 	responsibleUsersChange(users: User[]) {
-		//todo responsibility api
-		console.log(users);
+		this.model["author"] = [...users];
 	}
 
 	/**

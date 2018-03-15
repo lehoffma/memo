@@ -131,7 +131,7 @@
 		</memo-item-details-content>
 
 		<memo-item-details-content [title]="'Zusätzliche verantwortliche User'" class="no-padding">
-			<memo-responsible-user-input (usersChanged)="responsibleUsersChange($event)">
+			<memo-responsible-user-input [users]="model['author']" (usersChanged)="responsibleUsersChange($event)">
 
 			</memo-responsible-user-input>
 		</memo-item-details-content>

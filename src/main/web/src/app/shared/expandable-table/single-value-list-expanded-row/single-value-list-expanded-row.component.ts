@@ -1,12 +1,4 @@
-import {
-	AfterViewInit,
-	Component,
-	ComponentFactoryResolver,
-	Input,
-	OnInit,
-	QueryList,
-	ViewChildren
-} from "@angular/core";
+import {AfterViewInit, Component, ComponentFactoryResolver, Input, OnInit, QueryList, ViewChildren} from "@angular/core";
 import {ExpandedRowComponent} from "../expanded-row.component";
 import {ExpandableTableColumn} from "../expandable-table-column";
 import {ExpandableTableColumnContainerDirective} from "../expandable-table-column-container.directive";

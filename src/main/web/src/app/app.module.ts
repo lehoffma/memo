@@ -31,9 +31,10 @@ import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from "@angular/material-mome
 import {JwtModule} from "@auth0/angular-jwt";
 import {AuthService} from "./shared/authentication/auth.service";
 
-import {registerLocaleData} from '@angular/common';
-import localeDe from '@angular/common/locales/de';
+import {registerLocaleData} from "@angular/common";
+import localeDe from "@angular/common/locales/de";
 import {ShareButtonsModule} from "@ngx-share/buttons";
+import {MemberListService} from "./club-management/administration/member-list/member-list.service";
 
 registerLocaleData(localeDe);
 

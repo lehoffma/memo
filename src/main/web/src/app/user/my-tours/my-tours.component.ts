@@ -7,7 +7,7 @@ import {dateSortingFunction} from "../../util/util";
 import {ParticipantsService} from "../../shared/services/api/participants.service";
 import {empty} from "rxjs/observable/empty";
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap, share} from "rxjs/operators";
+import {catchError, map, mergeMap, tap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-my-tours",
@@ -23,20 +23,22 @@ export class MyToursComponent implements OnInit {
 			map((events: (Tour | Party)[]) => {
 				events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
 				return events;
-			}),
-			share()
+			})
 		);
 
-	public participatedTours$ = this.loginService.accountObservable
+	public participatedTours$: Observable<(Tour | Party)[]> = this.loginService.accountObservable
 		.pipe(
 			mergeMap(accountId => accountId === null
-				? empty()
+				? empty<(Tour | Party)[]>()
 				: this.participantService.getParticipatedEventsOfUser(accountId)),
 			map((events: (Tour | Party)[]) => {
 				events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
 				return events;
 			}),
-			share()
+			catchError(error => {
+				console.error(error);
+				return empty<(Tour | Party)[]>();
+			})
 		);
 
 	//todo: past/future/all events filter dropdown

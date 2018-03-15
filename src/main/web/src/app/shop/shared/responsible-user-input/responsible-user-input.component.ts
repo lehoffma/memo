@@ -1,17 +1,24 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {User} from "../../../shared/model/user";
 import {UserService} from "../../../shared/services/api/user.service";
 import {map} from "rxjs/operators";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {LogInService} from "../../../shared/services/api/login.service";
 
 @Component({
-	selector: 'memo-responsible-user-input',
-	templateUrl: './responsible-user-input.component.html',
-	styleUrls: ['./responsible-user-input.component.scss']
+	selector: "memo-responsible-user-input",
+	templateUrl: "./responsible-user-input.component.html",
+	styleUrls: ["./responsible-user-input.component.scss"]
 })
 export class ResponsibleUserInputComponent implements OnInit, OnDestroy {
 	_users$ = new BehaviorSubject<User[]>([]);
+
+	@Input() users(users: User[]) {
+		if(users){
+			this._users$.next(users);
+		}
+	}
 
 	@Output() usersChanged = new EventEmitter<User[]>();
 

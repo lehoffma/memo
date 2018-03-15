@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {User} from "../model/user";
-import {FormControl} from "@angular/forms";
+import {FormControl, Validators} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
 import {EventUtilityService} from "../services/event-utility.service";
 import {filter, map, mergeMap, startWith} from "rxjs/operators";
@@ -23,6 +23,17 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 		this._userList$.next(userList);
 	}
 
+	@Input() set required(required: boolean) {
+		if (required) {
+			this.autocompleteFormControl.setValidators(Validators.required)
+		}
+		else {
+			this.autocompleteFormControl.clearValidators();
+		}
+	}
+
+	@Input() resetOnSelect = true;
+
 	@Output() userChanged = new EventEmitter<User>();
 
 	_user: User = null;
@@ -31,11 +42,14 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 		return this._user;
 	}
 
-	set user(user: User) {
-		this._user = user;
-		this.userChanged.emit(user);
-		if (user !== null) {
-			this.autocompleteFormControl.reset();
+	@Input() set user(user: User) {
+		if (user !== this.user || (this.user && user && user.id !== this.user.id)) {
+			this._user = user;
+			this.autocompleteFormControl.setValue(user);
+			this.userChanged.emit(user);
+			if (user !== null && this.resetOnSelect) {
+				this.autocompleteFormControl.reset();
+			}
 		}
 	}
 
@@ -85,10 +99,6 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy(): void {
 		this.subscriptions.forEach(it => it.unsubscribe());
-	}
-
-	public setValue(user: User) {
-		this.user = user;
 	}
 
 

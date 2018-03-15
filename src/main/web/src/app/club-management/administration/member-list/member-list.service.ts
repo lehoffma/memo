@@ -9,7 +9,9 @@ import {UserService} from "../../../shared/services/api/user.service";
 import {Dimension, WindowService} from "../../../shared/services/window.service";
 import {memberListColumns} from "./member-list-columns";
 import {ExpandableTableColumn} from "../../../shared/expandable-table/expandable-table-column";
-import {defaultIfEmpty} from "rxjs/operators";
+import {catchError, defaultIfEmpty} from "rxjs/operators";
+import {empty} from "rxjs/observable/empty";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class MemberListService extends ExpandableTableContainerService<User> {
@@ -31,7 +33,6 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 					})
 				),
 			[]);
-
 
 		this.init(this.userService.search(""));
 

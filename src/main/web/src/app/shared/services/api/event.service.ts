@@ -9,6 +9,7 @@ import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, share, tap} from "rxjs/operators";
+import {User} from "../../model/user";
 
 interface EventApiResponse {
 	shopItems: (Party | Merchandise | Tour)[];
@@ -62,7 +63,7 @@ export class EventService extends ServletService<Event> {
 	 * @param userId
 	 */
 	getHostedEventsOfUser(userId: number): Observable<Event[]> {
-		const params = new HttpParams().set("userId", "" + userId);
+		const params = new HttpParams().set("authorId", "" + userId);
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.pipe(
 				map(json => json.shopItems.map(event =>
@@ -137,6 +138,10 @@ export class EventService extends ServletService<Event> {
 				delete modifiedEvent[attr];
 			}
 		});
+
+		if(modifiedEvent.author.length > 0 && User.isUser(modifiedEvent.author[0])){
+			modifiedEvent.author = modifiedEvent.author.map(it => it["id"]);
+		}
 
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {event: modifiedEvent, ...body}))
 			.pipe(

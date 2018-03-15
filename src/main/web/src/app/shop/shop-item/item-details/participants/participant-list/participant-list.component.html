@@ -1,14 +1,15 @@
-<div class="participant-table-container" *ngIf="(participantList | async); let participants; else loading">
+<div class="participant-table-container" *ngIf="(participantListService.data$ | async); let participants; else loading">
 	<memo-expandable-table
 		[data]="participants"
-		[expandable]="isExpandable | async"
-		[title]="'Teilnehmer von ' + (eventTitle | async)"
-		[columnKeys]="columnKeys | async"
-		[expandedRowComponent]="expandedRowComponent"
-		[expandedRowKeys]="expandedKeys | async"
-		[permissions]="permissions$ | async"
-		(onSort)="updateSortBy($event)"
-		(onAction)="handleParticipantAction($event)"
+		[rowActions]="rowActions"
+		[expandable]="isExpandable$ | async"
+		[title]="'Teilnehmer von ' + (participantListService.eventTitle | async)"
+		[columnKeys]="participantListService.primaryColumnKeys$ | async"
+		[expandedRowComponent]="participantListService.rowComponent"
+		[expandedRowKeys]="participantListService.expandedRowKeys$ | async"
+		[permissions]="participantListService.permissions$ | async"
+		(onSort)="participantListService.onSort($event)"
+		(onAction)="participantListService.handleTableAction($event)"
 	>
 
 	</memo-expandable-table>

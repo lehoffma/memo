@@ -1,6 +1,4 @@
-<mat-form-field
-	[dividerColor]="(autocompleteFormControl.dirty && user === null ||
-					user?.id === -1) ? 'warn' : 'primary'">
+<mat-form-field>
 	<input type="text"
 		   matInput
 		   tabindex="-1"
@@ -9,8 +7,7 @@
 		   #userInput
 		   [formControl]="autocompleteFormControl"
 		   [matAutocomplete]="auto">
-	<mat-error *ngIf="autocompleteFormControl.dirty && user === null ||
-					user?.id === -1">
+	<mat-error *ngIf="autocompleteFormControl.hasError('required')">
 		Bitte wähle einen Nutzer aus der Liste!
 	</mat-error>
 </mat-form-field>

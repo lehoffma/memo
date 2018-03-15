@@ -2,14 +2,10 @@ import {Component, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {ParticipantUser} from "../../../../../shared/model/participant";
 import {ModifyType} from "../../../../modify-shop-item/modify-type";
-import {FormControl} from "@angular/forms";
 import {User} from "../../../../../../shared/model/user";
 import {UserService} from "../../../../../../shared/services/api/user.service";
-import {EventUtilityService} from "../../../../../../shared/services/event-utility.service";
 import {ParticipantsService} from "../../../../../../shared/services/api/participants.service";
 import {EventType} from "../../../../../shared/model/event-type";
-import {Observable} from "rxjs/Observable";
-import {map, mergeMap, startWith} from "rxjs/operators";
 import {OrderStatus, OrderStatusPairList} from "../../../../../../shared/model/order-status";
 import {Event} from "../../../../../shared/model/event";
 
@@ -32,15 +28,13 @@ export class ModifyParticipantComponent implements OnInit {
 	};
 	associatedEvent: Event;
 
-	autocompleteFormControl = new FormControl();
-	filteredOptions: Observable<User[]>;
-
 	availableStatus = OrderStatusPairList;
 
 	constructor(private dialogRef: MatDialogRef<ModifyParticipantComponent>,
 				private participantsService: ParticipantsService,
-				private userService: UserService,
+				public userService: UserService,
 				@Inject(MAT_DIALOG_DATA) public data: any) {
+		console.log(this.data);
 	}
 
 	get isEditing() {
@@ -52,7 +46,6 @@ export class ModifyParticipantComponent implements OnInit {
 		this.associatedEvent = this.data.event;
 		if (this.isEditing) {
 			this.participant = Object.assign({}, this.data.participant);
-			this.autocompleteFormControl.setValue(Object.assign({}, this.data.participant.user));
 		}
 		else {
 			this.participant = {
@@ -65,29 +58,6 @@ export class ModifyParticipantComponent implements OnInit {
 				user: null
 			}
 		}
-		this.autocompleteFormControl.valueChanges
-			.subscribe(value => this.participant.user = EventUtilityService.isUser(value)
-				? value
-				: null);
-
-
-		this.filteredOptions = this.participantsService
-			.getParticipantIdsByEvent(this.associatedEventInfo.eventId, this.associatedEventInfo.eventType)
-			//dont filter out the user that is being edited so we can still select him while editing
-			.pipe(
-				map(participantIds => participantIds.filter(participant => this.participant.id !== participant.id)),
-				mergeMap(participantIds => this.userService.search("")
-					.pipe(
-						map(users => users.filter(user => participantIds.every(participant => participant.id !== user.id)))
-					)
-				),
-				mergeMap(users => this.autocompleteFormControl.valueChanges
-					.pipe(
-						startWith(null),
-						map(user => user && typeof user === "object" ? user.name : user),
-						map(name => name ? this.filter(users, name) : users.slice()))
-					)
-			);
 	}
 
 	/**
