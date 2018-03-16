@@ -17,7 +17,7 @@ import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
-import {DateAdapter, MAT_DATE_FORMATS} from "@angular/material";
+import {DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, NativeDateAdapter} from "@angular/material";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./shared/authentication/auth.interceptor";
 import {ClubManagementModule} from "./club-management/club-management.module";
@@ -27,14 +27,13 @@ import {ShopModule} from "./shop/shop.module";
 import {ApiServicesModule} from "./shared/services/api/api-services.module";
 import {UtilityServicesModule} from "./shared/services/utility-services.module";
 import {AuthenticationModule} from "./shared/authentication/authentication.module";
-import {MAT_MOMENT_DATE_FORMATS, MomentDateAdapter} from "@angular/material-moment-adapter";
 import {JwtModule} from "@auth0/angular-jwt";
 import {AuthService} from "./shared/authentication/auth.service";
 
 import {registerLocaleData} from "@angular/common";
 import localeDe from "@angular/common/locales/de";
 import {ShareButtonsModule} from "@ngx-share/buttons";
-import {MemberListService} from "./club-management/administration/member-list/member-list.service";
+import {CalendarModule} from "angular-calendar";
 
 registerLocaleData(localeDe);
 
@@ -66,6 +65,7 @@ export function tokenGetter() {
 			libraries: ["places"]
 		}),
 		ShareButtonsModule.forRoot(),
+		CalendarModule.forRoot(),
 		JwtModule.forRoot(
 			// {
 			// 	jwtOptionsProvider: {
@@ -113,8 +113,8 @@ export function tokenGetter() {
 	],
 	providers: [
 		{provide: LOCALE_ID, useValue: "de-DE"},
-		{provide: DateAdapter, useClass: MomentDateAdapter},
-		{provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+		{provide: DateAdapter, useClass: NativeDateAdapter},
+		{provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS},
 		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
 	]
 })

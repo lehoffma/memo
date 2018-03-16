@@ -1,5 +1,4 @@
 import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
-import * as moment from "moment";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
 import {Event} from "../../../shop/shared/model/event";
@@ -14,6 +13,11 @@ import {Subscription} from "rxjs/Subscription";
 import {filter, first, map, share, startWith, tap} from "rxjs/operators";
 import {EntryCategory} from "../../../shared/model/entry-category";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {isAfter, isBefore, parse} from "date-fns"
+// import * as isAfter from "date-fns/is_after";
+// import * as isBefore from "date-fns/is_before";
+// import * as toDate from "date-fns/parse";
+
 
 @Component({
 	selector: "memo-accounting-options",
@@ -173,11 +177,10 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 				tap(([tours, partys, merch]) => {
 					this.availableEvents = [...tours, ...partys, ...merch]
 						.filter(event => {
-							let from = !this.dateOptions.from ? moment("1970-01-01") : this.dateOptions.from;
-							let to = !this.dateOptions.to ? moment("2100-01-01") : this.dateOptions.to;
+							let from = !this.dateOptions.from ? parse("1970-01-01") : this.dateOptions.from;
+							let to = !this.dateOptions.to ? parse("2100-01-01") : this.dateOptions.to;
 
-							return moment(event.date)
-								.isBetween(moment(from), moment(to));
+							return isAfter(event.date, from) && isBefore(event.date, to);
 						});
 					this.autocompleteFormControl.setValue("", {emitEvent: true});
 				})
@@ -210,8 +213,8 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 			.subscribe(async ([paramMap, queryParamMap]) => {
 				this.isLoading = true;
 				this.changeDetectorRef.detectChanges();
-				this.dateOptions.from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : undefined;
-				this.dateOptions.to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : undefined;
+				this.dateOptions.from = queryParamMap.has("from") ? parse(queryParamMap.get("from")) : undefined;
+				this.dateOptions.to = queryParamMap.has("to") ? parse(queryParamMap.get("to")) : undefined;
 				await this.getAvailableEvents();
 				if (queryParamMap.has("eventTypes")) {
 					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.getAll("eventTypes"));

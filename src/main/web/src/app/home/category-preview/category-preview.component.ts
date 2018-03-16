@@ -1,7 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {Event} from "../../shop/shared/model/event";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {Observable} from "rxjs";
 import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {LogInService} from "../../shared/services/api/login.service";
@@ -10,6 +9,9 @@ import {Discount} from "../../shared/price-renderer/discount";
 import {DiscountService} from "../../shop/shared/services/discount.service";
 import {map} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {Observable} from "rxjs/Observable";
+import {distanceInWordsStrict} from "date-fns";
+import * as deLocale from "date-fns/locale/de";
 
 @Component({
 	selector: "memo-category-preview",
@@ -86,6 +88,9 @@ export class CategoryPreviewComponent implements OnInit, OnDestroy {
 		)
 	}
 
+	distanceInWords(date: Date){
+		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
+	}
 
 	ngOnDestroy(): void {
 		this.subscriptions.forEach(subscription => subscription.unsubscribe());

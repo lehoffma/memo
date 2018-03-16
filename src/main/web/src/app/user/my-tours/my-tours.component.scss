@@ -1,6 +1,6 @@
-@import "~@angular/material/theming";
-@import "../../../theme";
+@import "theme";
 @import "variables";
+@import "~@angular/material/theming";
 
 :host {
 	display: flex;
@@ -10,7 +10,8 @@
 	mat-tab-group{
 		background-color: #fafafa;
 		width: 100%;
-		@extend .mat-elevation-z3;
+		@include mat-elevation(3);
+		@include mat-elevation-transition;
 
 
 		@media all and (min-width: 530px) {

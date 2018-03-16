@@ -1,4 +1,4 @@
-@import "../../../../theme";
+@import "theme";
 @import "~@angular/material/theming";
 @import "variables";
 
@@ -122,7 +122,7 @@
 				color: #009688;
 			}
 			.Bezahlt {
-				color: mat-color($primary);
+				color: $primary-default;
 			}
 			.Verschickt {
 				color: #2196f3;
@@ -131,7 +131,7 @@
 				color: #F57F17;
 			}
 			.Abgelehnt {
-				color: mat-color($warn);
+				color: $warn-default;
 			}
 			.Unter-Begutachtung {
 				color: #9C27B0;

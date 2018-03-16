@@ -1,10 +1,9 @@
 import {NgModule} from "@angular/core";
 import {ExpandableTableModule} from "./expandable-table/expandable-table.module";
-import {MomentPipe} from "./pipes/moment.pipe";
+import {DateFormatPipe} from "./pipes/date-format.pipe";
 import {MultiLevelSelectModule} from "./multi-level-select/multi-level-select.module";
 import {EventCalendarComponent} from "./event-calendar/event-calendar.component";
 import {CommonModule} from "@angular/common";
-import {ScheduleModule} from "primeng/primeng";
 import {BadgeComponent} from "./badge/badge.component";
 import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
 import {ErrorPageComponent} from "./error-page/error-page.component";
@@ -25,6 +24,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ShareButtonsModule} from "@ngx-share/buttons";
 import {DisplayErrorDirective} from "./template-validators/display-error.directive";
 import {UserPreviewDirective} from "./profile-renderer/user-preview.directive";
+import {CalendarModule} from "angular-calendar";
 
 @NgModule({
 	imports: [
@@ -33,13 +33,13 @@ import {UserPreviewDirective} from "./profile-renderer/user-preview.directive";
 		FormsModule,
 		ReactiveFormsModule,
 		ShareButtonsModule,
-		ScheduleModule,
 		ExpandableTableModule,
 		MemoMaterialModule,
 		MultiLevelSelectModule,
+		CalendarModule
 	],
 	declarations: [
-		MomentPipe,
+		DateFormatPipe,
 		EventCalendarComponent,
 
 		ConfirmationDialogComponent,
@@ -74,7 +74,7 @@ import {UserPreviewDirective} from "./profile-renderer/user-preview.directive";
 		PageNotFoundComponent,
 		ErrorPageComponent,
 
-		MomentPipe,
+		DateFormatPipe,
 
 		AutoSizeTextAreaDirective,
 

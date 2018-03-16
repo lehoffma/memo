@@ -7,7 +7,7 @@
 						 alt="picture of the {{recentEvent.title}} event">
                     <h3 matLine> {{recentEvent.title}} </h3>
                     <p matLine>
-                        <span class="secondary-text"> {{recentEvent.date.locale("de").fromNow()}} </span>
+                        <span class="secondary-text"> {{distanceInWords(recentEvent.date)}} </span>
                     </p>
                 </mat-list-item>
                 <mat-divider *ngIf="!lastTour"></mat-divider>

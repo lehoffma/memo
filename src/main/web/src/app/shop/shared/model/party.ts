@@ -2,15 +2,13 @@ import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
-import * as moment from "moment";
-import {Moment} from "moment";
 import {EventType, typeToInteger} from "./event-type";
 
 export class Party extends Event {
 
 	constructor(id: number,
 				title: string,
-				date: Moment,
+				date: Date,
 				description: string,
 				expectedReadRole: ClubRole,
 				expectedCheckInRole: ClubRole,
@@ -72,7 +70,7 @@ export class Party extends Event {
 	}
 
 	static create() {
-		return new Party(-1, "", moment(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
+		return new Party(-1, "", new Date(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
 			["resources/images/Logo.png"], -1, -1, -1);
 	}
 }

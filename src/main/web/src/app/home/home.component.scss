@@ -1,6 +1,6 @@
 @import "~@angular/material/theming";
-@import "../../theme";
-@import "../../mixins";
+@import "theme";
+@import "mixins";
 @import "variables";
 
 :host {
@@ -61,7 +61,7 @@ div.overview-preview-container > .overview-preview-header {
 }
 
 .home-header {
-	background: mat-color($primary);
+	background: $primary-default;
 	height: 30rem;
 	padding-bottom: 2rem;
 	width: 100%;
@@ -103,13 +103,6 @@ div.overview-preview-container > .overview-preview-header {
 		max-width: 80%;
 		font-size: 2.2rem;
 		font-weight: 100;
-
-		//@media all and (min-width: 600px) {
-		//	margin-left: 0;
-		//	width: calc(100% - 5%);
-		//	left: 5%;
-		//	top: 75%;
-		//}
 
 		@media all and (min-width: 800px) {
 			font-size: 3rem;

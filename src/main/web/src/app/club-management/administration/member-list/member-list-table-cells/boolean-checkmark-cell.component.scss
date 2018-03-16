@@ -1,17 +1,12 @@
-@import "../../../../../theme.scss";
-@import '~@angular/material/theming';
-
-:host {
-	//text-align: center;
-}
+@import "theme";
 
 .data-as-icon {
 	margin-left: 1.8rem;
 
 	.true {
-		color: mat-color($primary);
+		color: $primary-default;
 	}
 	:not(.true) {
-		color: mat-color($warn);
+		color: $warn-default;
 	}
 }

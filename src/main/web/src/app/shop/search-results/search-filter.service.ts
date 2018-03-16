@@ -3,7 +3,6 @@ import {MultiLevelSelectParent} from "../../shared/multi-level-select/shared/mul
 import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {ShopItem} from "../../shared/model/shop-item";
 import {Event} from "../shared/model/event";
-import * as moment from "moment";
 import {StockService} from "../../shared/services/api/stock.service";
 import {isObservable} from "../../util/util";
 import {isNullOrUndefined} from "util";
@@ -13,6 +12,7 @@ import {Observable} from "rxjs/Observable";
 import {defaultIfEmpty, first, map} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {isAfter, isBefore, isEqual, startOfDay} from "date-fns";
 
 @Injectable()
 export class SearchFilterService {
@@ -53,9 +53,9 @@ export class SearchFilterService {
 			if (EventUtilityService.isParty(item) || EventUtilityService.isTour(item)) {
 				switch (filterValue) {
 					case "past":
-						return moment().startOf("day").isAfter(moment(item.date));
+						return isBefore(item.date, startOfDay(new Date()));
 					case "upcoming":
-						return moment().startOf("day").isSameOrBefore(moment(item.date));
+						return isEqual(item.date, new Date()) || isAfter(item.date, new Date());
 				}
 			}
 			return false;

@@ -1,7 +1,6 @@
 import {isArray, isNullOrUndefined} from "util";
-import * as moment from "moment";
-import {Moment} from "moment";
 import {Observable} from "rxjs/Observable";
+import {isAfter, isBefore} from "date-fns";
 
 export type SortingFunction<T> = (a: T, b: T) => number;
 
@@ -10,19 +9,17 @@ export function attributeSortingFunction<ObjectType>(attribute: string, descendi
 	return sortingFunction(obj => obj[attribute], descending);
 }
 
-export function dateSortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => Date | Moment, descending: boolean): SortingFunction<ObjectType> {
+export function dateSortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => Date, descending: boolean): SortingFunction<ObjectType> {
 	return (a, b) => {
-		let dateA = moment(getAttribute(a)),
-			dateB = moment(getAttribute(b));
+		let dateA = getAttribute(a),
+			dateB = getAttribute(b);
 
-		if (dateA.isValid() && dateB.isValid()) {
-			const descendingMultiplier = descending ? -1 : 1;
-			if (dateA.isBefore(dateB)) {
-				return -1 * descendingMultiplier;
-			}
-			if (dateA.isAfter(dateB)) {
-				return descendingMultiplier;
-			}
+		const descendingMultiplier = descending ? -1 : 1;
+		if (isBefore(dateA, dateB)) {
+			return -1 * descendingMultiplier;
+		}
+		if (isAfter(dateA, dateB)) {
+			return descendingMultiplier;
 		}
 
 		return 0;

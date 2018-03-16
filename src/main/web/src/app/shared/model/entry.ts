@@ -1,7 +1,5 @@
 import {BaseObject} from "./util/base-object";
 import {EntryCategory} from "./entry-category";
-import * as moment from "moment";
-import {Moment} from "moment";
 import {Event} from "../../shop/shared/model/event";
 
 export class Entry extends BaseObject<Entry> {
@@ -10,7 +8,7 @@ export class Entry extends BaseObject<Entry> {
 				public readonly name: string,
 				public readonly value: number,
 				public readonly item: Event,
-				public readonly date: Moment,
+				public readonly date: Date,
 				public readonly comment: string,
 				public readonly images: string[],
 				public readonly category: EntryCategory) {
@@ -18,7 +16,7 @@ export class Entry extends BaseObject<Entry> {
 	}
 
 	static create() {
-		return new Entry(-1, "", 0, null, moment(), "", [], null);
+		return new Entry(-1, "", 0, null, new Date(), "", [], null);
 	}
 
 	static isEntry(entry: any): entry is Entry {

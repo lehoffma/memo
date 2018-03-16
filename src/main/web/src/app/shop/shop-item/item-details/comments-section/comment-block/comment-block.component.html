@@ -13,8 +13,8 @@
 					<memo-profile-link class="comment-author-name" [user]="author"></memo-profile-link>
 
 					<div class="comment-timestamp secondary-text"
-						 title="{{commentObject.timeStamp | moment:'DD.MM.YYYY HH:mm:ss'}}">
-						{{commentObject.timeStamp.fromNow()}}
+						 title="{{commentObject.timeStamp | dateFormat:'DD.MM.YYYY HH:mm:ss'}}">
+						{{distanceInWords(commentObject.timeStamp)}}
 					</div>
 				</div>
 			</div>

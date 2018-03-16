@@ -3,7 +3,7 @@ import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/
 
 @Component({
 	selector: "td [memoDateTableCell]",
-	template: `{{data | moment}}`,
+	template: `{{data | dateFormat}}`,
 })
 export class DateTableCellComponent implements OnInit, ExpandableTableCellComponent {
 	data: any;

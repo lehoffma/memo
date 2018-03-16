@@ -2,8 +2,6 @@ import {ClubRole, rolePermissions} from "./club-role";
 import {Permission, UserPermissions, visitorPermissions} from "./permission";
 import {BaseObject} from "./util/base-object";
 import {Gender} from "./gender";
-import * as moment from "moment";
-import {Moment} from "moment";
 import {Event} from "../../shop/shared/model/event";
 
 
@@ -36,11 +34,11 @@ export class User extends BaseObject<User> {
 				public readonly firstName: string,
 				public readonly surname: string,
 				public readonly gender: Gender,
-				public readonly birthday: Moment,
+				public readonly birthday: Date,
 				public readonly telephone: string,
 				public readonly mobile: string,
 				public readonly clubRole: ClubRole,
-				public readonly joinDate: Moment,
+				public readonly joinDate: Date,
 				public readonly addresses: number[],
 				public readonly authoredItems: Event[],
 				public readonly bankAccounts: number[],
@@ -74,7 +72,7 @@ export class User extends BaseObject<User> {
 
 	static create() {
 		return new User(-1, "", "", Gender.OTHER, null, "", "",
-			ClubRole.Gast, moment(), [], [], [],
+			ClubRole.Gast, new Date(), [], [], [],
 			null, 0, "", "", false, false, false, false, ["resources/images/Logo.png"]);
 	}
 

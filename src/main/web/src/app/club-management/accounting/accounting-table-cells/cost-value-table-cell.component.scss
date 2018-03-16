@@ -1,10 +1,9 @@
-@import "../../../../theme";
-@import "~@angular/material/theming";
+@import "theme";
 
 span {
-	color: mat-color($warn);
+	color: $warn-default;
 
 	&.positive {
-		color: mat-color($primary);
+		color: $primary-default;
 	}
 }

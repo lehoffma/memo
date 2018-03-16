@@ -26,7 +26,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	events$: Observable<Event[]> = this.getUpdatedEvents();
 	editable: Observable<boolean> = of(false); //todo true if permissions of tour/party >= write, else false
 
-	subscriptions = [this.events$.subscribe()];
+	subscriptions = [];
 
 	selectedView: "calendar" | "list" = "calendar";
 
@@ -139,7 +139,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 			.subscribe(value => {
 					if (value === "deleted") {
 						this.events$ = this.getUpdatedEvents();
-						this.subscriptions.push(this.events$.subscribe());
+						// this.subscriptions.push(this.events$.subscribe());
 						this.snackBar.open("Löschen erfolgreich.", "Schließen", {
 							duration: 1000
 						});

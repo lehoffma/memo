@@ -36,7 +36,7 @@
 						<mat-icon class="middle-icon mat-dark">{{item.icon}}</mat-icon>
 						<span class="secondary-text">{{item.name}}</span>
 					</div>
-					<span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | moment}}</span>
+					<span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | dateFormat}}</span>
 					<span *ngIf="!item.isDate" class="icon-text secondary-text">{{user[item.key]}}</span>
 				</div>
 			</div>

@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Observable} from "rxjs";
 import {MatDialog} from "@angular/material";
 import {ItemImagePopupComponent} from "./image-popup/item-image-popup.component";
 import {Event} from "../../../shared/model/event";
@@ -12,6 +11,7 @@ import {map, mergeMap} from "rxjs/operators";
 import {ResponsibilityService} from "../../../shared/services/responsibility.service";
 import {ConcludeEventService} from "../../../shared/services/conclude-event.service";
 import {User} from "../../../../shared/model/user";
+import {Observable} from "rxjs/Observable";
 
 
 @Component({

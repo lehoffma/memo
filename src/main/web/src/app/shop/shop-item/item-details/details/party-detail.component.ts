@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Party} from "../../../shared/model/party";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Observable} from "rxjs";
 import {EventOverviewKey} from "../container/overview/event-overview-key";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {EventType} from "../../../shared/model/event-type";
@@ -19,6 +18,7 @@ import {catchError, filter, first, map, mergeMap} from "rxjs/operators";
 import {empty} from "rxjs/observable/empty";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {AddressService} from "../../../../shared/services/api/address.service";
+import {Observable} from "rxjs/Observable";
 
 
 @Component({

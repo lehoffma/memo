@@ -14,7 +14,6 @@ import {UserBankAccountService} from "../../shared/services/api/user-bank-accoun
 import {BankAccount} from "../../shared/model/bank-account";
 import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
-import * as moment from "moment";
 import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {catchError, first, map, mergeMap, retry} from "rxjs/operators";
@@ -155,7 +154,7 @@ export class CheckoutComponent implements OnInit {
 						map(orderedItems => Order.create()
 							.setProperties({
 								user: userId,
-								timeStamp: moment(),
+								timeStamp: new Date(),
 								method: event.method,
 								bankAccount: bankAccountId,
 								items: orderedItems

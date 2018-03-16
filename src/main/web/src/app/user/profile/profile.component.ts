@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {ActivatedRoute} from "@angular/router";
-import {Observable} from "rxjs";
 import {profileCategories} from "./profile-info-category";
 import {UserService} from "../../shared/services/api/user.service";
 import {Event} from "../../shop/shared/model/event";
@@ -13,6 +12,7 @@ import {Address} from "../../shared/model/address";
 import {ParticipantsService} from "../../shared/services/api/participants.service";
 import {defaultIfEmpty, first, map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {Observable} from "rxjs/Observable";
 
 
 @Component({

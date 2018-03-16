@@ -1,5 +1,4 @@
-@import "../../../../theme";
-@import "~@angular/material/theming";
+@import "theme";
 
 :host {
 	max-width: 510px;
@@ -55,10 +54,10 @@ mat-card {
 
 			&:not(.past-event) {
 				.event-date-top {
-					color: mat-color($primary);
+					color: $primary-default;
 				}
 				.event-date-bottom {
-					color: mat-color($accent);
+					color: $accent-default;
 				}
 			}
 

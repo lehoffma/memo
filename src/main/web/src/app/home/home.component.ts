@@ -1,13 +1,13 @@
 import {Component, OnInit} from "@angular/core";
 import {Merchandise} from "../shop/shared/model/merchandise";
 import {Event} from "../shop/shared/model/event";
-import {Observable} from "rxjs";
 import {EventService} from "../shared/services/api/event.service";
 import {EventType} from "../shop/shared/model/event-type";
-import * as moment from "moment";
 import {ShopItemType} from "../shop/shared/model/shop-item-type";
 import {LogInService} from "../shared/services/api/login.service";
 import {map} from "rxjs/operators";
+import {Observable} from "rxjs/Observable";
+import {isAfter} from "date-fns";
 
 interface EventsPreview {
 	title: string,
@@ -75,6 +75,6 @@ export class HomeComponent implements OnInit {
 			return events;
 		}
 
-		return events.filter(event => moment(event.date).isAfter(moment()));
+		return events.filter(event => isAfter(event.date, new Date()));
 	}
 }

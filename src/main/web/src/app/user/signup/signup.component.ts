@@ -1,10 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {Observable} from "rxjs";
 import {SignUpSubmitEvent} from "./signup-submit-event";
 import {SignUpSection, toTitle} from "./signup-section";
 import {SignUpService} from "./signup.service";
 import {filter, map} from "rxjs/operators";
+import {Observable} from "rxjs/Observable";
 
 @Component({
 	selector: "memo-signup",

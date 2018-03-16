@@ -3,7 +3,6 @@ import {Comment} from "../../../shared/model/comment";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {CommentService} from "../../../../shared/services/api/comment.service";
-import * as moment from "moment";
 import {empty} from "rxjs/observable/empty";
 import {of} from "rxjs/observable/of";
 import {catchError, first, mergeMap, tap} from "rxjs/operators";
@@ -61,7 +60,7 @@ export class CommentsSectionComponent implements OnInit {
 				.pipe(
 					first(),
 					mergeMap(user => {
-						let comment = new Comment(this.eventId, -1, moment(), user.id, commentText, null);
+						let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText, null);
 						this.dummyComment = this.dummyComment.setProperties({
 							content: "",
 							author: user.id,

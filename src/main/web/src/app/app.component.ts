@@ -1,6 +1,5 @@
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {DateAdapter} from "@angular/material";
-import {Moment} from "moment";
 import {AuthService} from "./shared/authentication/auth.service";
 import {NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {filter} from "rxjs/operators";
@@ -13,7 +12,7 @@ import {filter} from "rxjs/operators";
 export class AppComponent implements OnInit {
 
 	constructor(private authService: AuthService,
-				private dateAdapter: DateAdapter<Moment>,
+				private dateAdapter: DateAdapter<Date>,
 				private router: Router,
 				@Inject(LOCALE_ID) public locale: any) {
 		dateAdapter.setLocale(locale); // DD.MM.YYYY

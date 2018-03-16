@@ -5,12 +5,12 @@
 		<mat-card-content>
 			<div class="event-date" [ngClass]="{'past-event': eventIsInThePast}">
 				<span class="event-date-top">
-				{{event?.date | moment:'MMM'}}
+				{{event?.date | dateFormat:'MMM'}}
 
 
 				</span>
 				<span class="event-date-bottom">
-				{{event?.date | moment:'DD'}}
+				{{event?.date | dateFormat:'DD'}}
 				</span>
 			</div>
 			<div class="event-other-info">

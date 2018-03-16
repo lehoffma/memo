@@ -1,18 +1,24 @@
-@import "../../../theme";
-@import "~@angular/material/theming";
+@import "theme";
 
 $max-width: 1200px;
 
 .calendar-container {
-	padding: 20px 2% 2%;
+	margin-top: 20px;
+
+	@media all and (min-width: 700px) {
+		padding: 20px 2% 2%;
+		margin: auto;
+	}
 
 	min-height: 100%;
 }
 
-
-.calendar-container,
 .calendar-options{
 	margin: auto;
+}
+
+.calendar-container,
+.calendar-options {
 	max-width: $max-width;
 	position: relative;
 	z-index: 1;
@@ -26,28 +32,28 @@ $max-width: 1200px;
 		background-color: white;
 	}
 
-	.calendar-options-actions{
+	.calendar-options-actions {
 		display: flex;
 		justify-content: space-between;
 	}
 
-	@media all and (min-width: 600px){
-		.secondary-text{
+	@media all and (min-width: 600px) {
+		.secondary-text {
 			color: white;
 		}
 	}
 }
 
-.background{
+.background {
 	position: absolute;
 	height: 200px;
 	width: 100%;
 	top: 64px;
-	background-color: mat-color($primary);
+	background-color: $primary-default;
 	opacity: 0;
 	transition: opacity 1s ease;
 
-	@media all and (min-width: 600px){
+	@media all and (min-width: 600px) {
 		opacity: 1;
 	}
 }

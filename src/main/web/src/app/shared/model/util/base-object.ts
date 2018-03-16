@@ -3,9 +3,8 @@ import {adminPermissions, jsonToPermissions, UserPermissions} from "../permissio
 import {isArray} from "util";
 import {Gender} from "../gender";
 import {isNumber} from "../../../util/util";
-import * as moment from "moment-timezone";
 import {toPaymentMethod} from "../../../shop/checkout/payment/payment-method";
-import {Moment} from "moment";
+import {parse} from "date-fns";
 
 
 interface DateTimeObject {
@@ -48,19 +47,17 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 	setProperties(properties: Partial<T>) {
 		Object.keys(properties)
 			.forEach((key: keyof (T | this)) => {
-				let value: (string | number | number[] | Moment | UserPermissions | any) = (<any>properties)[key];
+				let value: (string | number | number[] | Date | UserPermissions | any) = (<any>properties)[key];
 				if (isArray(value)) {
 
 				} else if ((key.toLowerCase().includes("date")
 					|| key.toLowerCase().includes("day")
 					|| key.toLowerCase().includes("time"))) {
 					if (value.dayOfMonth && value.minute) {
-						// value = moment.tz(this.getIsoDateFromDateTimeObject(value), "Europe/Berlin");
-						value = moment(getIsoDateFromDateTimeObject(value)).tz("Europe/Berlin").locale("de");
+						value = parse(getIsoDateFromDateTimeObject(value));
 					}
 					else {
-						// value = moment.tz(value, "Europe/Berlin");
-						value = moment(value).tz("Europe/Berlin").locale("de");
+						value = parse(value);
 					}
 				} else if (isNumber(value) && key !== "mobile" && key !== "telephone") {
 					value = +value;

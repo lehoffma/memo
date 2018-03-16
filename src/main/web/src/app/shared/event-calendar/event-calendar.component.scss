@@ -1,95 +1,107 @@
-@import "../../../theme";
+@import "theme";
 @import "~@angular/material/theming";
 
 .calendar-container {
 	height: 100%;
+	background: white;
 
-	/deep/ .fc-toolbar.fc-header-toolbar {
-		padding: 1rem;
-		background-color: white;
-		margin-bottom: 0;
-	}
+	.calendar-header {
+		display: flex;
+		align-items: center;
+		padding: 0.5rem;
+		justify-content: space-between;
+		border-bottom: 1px solid #E0E0E0;
 
-	/deep/ .fc th {
-		height: 30px;
-		vertical-align: middle;
-		color: grey;
-		font-weight: bold;
-		background: white;
-	}
-
-	/deep/ .fc td,
-	/deep/ .fc th {
-		border-left: 0;
-		border-right: 0;
-
-	}
-
-	/deep/ .fc td.fc-day {
-		cursor: pointer;
-		&:not(.ui-state-highlight):hover {
-			background-color: mat-color($primary, 200);
+		h2 {
+			font-size: 1em;
+			margin: 0;
+			color: rgba(0, 0, 0, 0.84);
 		}
 	}
 
-	/deep/ .fc-event {
-		background-color: mat-color($accent);
-		border-color: mat-color($accent);
+	.cal-day-badge {
+		background-color: $primary-default;
+	}
+
+	/deep/ .cal-month-view .cal-day-cell.cal-today .cal-day-number{
+		font-size: 1.2em;
+	}
+
+	.calendar-event-time {
+		font-weight: 100;
+	}
+	.calendar-event-title {
+		font-weight: 500;
+	}
+
+	.cal-cell-top .cal-day-badge,
+	.calendar-event-container {
+		display: none;
+	}
+
+	.calendar-event-indicator{
+		font-weight: 100;
+	}
+
+	@media all and (min-width: 500px){
+		.cal-month-view .cal-day-cell.cal-today .cal-day-number{
+			font-size: 1.9em;
+		}
+	}
+
+	@media all and (min-width: 700px) {
+		.cal-cell-top .cal-day-badge {
+			display: inline-block;
+		}
+		.calendar-event-container {
+			display: block;
+		}
+		.calendar-event-indicator {
+			display: none;
+		}
+	}
+
+	.calendar-event {
+		background: #9E9E9E;
+
+		&.party {
+			background: $accent-default;
+		}
+
+		&.tour {
+			background: $primary-default;
+		}
+
+		color: #fff;
+
+		margin: 2px;
+		padding: 0 4px;
+		line-height: 20px;
+		font-size: 12px;
+		font-weight: 500;
+
+		border-radius: 2px;
+
+		display: flex;
+		align-items: center;
+		outline: none;
 		cursor: pointer;
 
 		&:hover {
-			background-color: darken(mat-color($accent), 5%);
+			background: lighten($primary-default, 5%);
+		}
+
+		span {
+			word-break: break-all;
+			//white-space: nowrap;
+			//text-overflow: ellipsis;
+			//overflow: hidden;
 		}
 	}
 
-	/deep/ .ui-widget-header .ui-state-highlight,
-	/deep/ .ui-widget-content .ui-state-highlight, .ui-state-highlight {
-		background-color: mat-color($primary);
-		border-color: mat-color($primary);
-	}
-
-	/deep/ *:not(.fc-button-group) > .ui-button,
-	/deep/ .fc-button-group {
-		//box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-		//transition: background .4s cubic-bezier(.25,.8,.25,1),box-shadow 280ms cubic-bezier(.4,0,.2,1);
-		//border-radius: 8%;
-	}
-	/deep/ .fc-button-group {
-		background-color: transparent;
-	}
-	/deep/ .ui-button {
-		background-color: white;
+	/deep/ .cal-month-view .cal-header .cal-cell {
 		color: grey;
-		//background-color: mat-color($primary);
-		border: 0;
-
-		:hover {
-
-		}
-
-		position: relative;
-		overflow: hidden;
-		transform: translate3d(0, 0, 0);
-
-		&:after {
-			content: "";
-			display: block;
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			top: 0;
-			left: 0;
-			pointer-events: none;
-			background: radial-gradient(circle, #000000 10%, transparent 10.01%) no-repeat 50%;
-			transform: scale(10, 10);
-			opacity: 0;
-			transition: transform .5s, opacity 1s;
-		}
-
-		&:active:after {
-			transform: scale(0, 0);
-			opacity: .2;
-			transition: 0s;
-		}
+		font-weight: lighter;
 	}
+
 }

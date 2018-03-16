@@ -1,5 +1,4 @@
-@import "../../../../../../theme";
-@import "~@angular/material/theming";
+@import "theme";
 
 .comment-block-container {
 	margin: 12px 0;
@@ -123,7 +122,7 @@
 	margin-left: 50px;
 
 	@media all and (max-width: 800px) {
-		border-left: 5px solid mat-color($primary);
+		border-left: 5px solid $primary-default;
 		margin: 0 0 10px;
 	}
 

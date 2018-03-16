@@ -59,7 +59,7 @@
 
 		<div class="item-date-container item-details-row" *ngIf="!isMerch(event)">
 			<mat-icon>access_time</mat-icon>
-			<span>{{event.date | moment:'DD. MMMM YYYY'}}, {{event.date | moment:'HH:mm'}} Uhr</span>
+			<span>{{event.date | dateFormat:'DD. MMMM YYYY'}}, {{event.date | dateFormat:'HH:mm'}} Uhr</span>
 		</div>
 
 		<div class="available-tickets-container item-details-row" *ngIf="!isMerch(event)">

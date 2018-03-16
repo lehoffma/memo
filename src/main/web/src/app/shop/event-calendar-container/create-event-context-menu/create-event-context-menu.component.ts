@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import * as moment from "moment";
 import {Observable} from "rxjs/Observable";
 
 @Component({
@@ -21,7 +20,7 @@ export class CreateEventContextMenuComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.isoDate = moment(this.data.date).toISOString();
+		this.isoDate = this.data.date.toISOString();
 	}
 
 	close() {

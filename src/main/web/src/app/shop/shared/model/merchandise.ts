@@ -4,8 +4,6 @@ import {SizeTable} from "./size-table";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
 import {MerchColor} from "./merch-color";
-import * as moment from "moment";
-import {Moment} from "moment";
 import {StockService} from "../../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
 import {map} from "rxjs/operators";
@@ -153,7 +151,7 @@ export class Merchandise extends Event {
 
 	constructor(id: number,
 				title: string,
-				date: Moment,
+				date: Date,
 				description: string,
 				expectedReadRole: ClubRole,
 				expectedCheckInRole: ClubRole,
@@ -243,7 +241,7 @@ export class Merchandise extends Event {
 	}
 
 	static create() {
-		return new Merchandise(-1, "", moment(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
+		return new Merchandise(-1, "",new Date(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
 			["resources/images/Logo.png"], -1, [], "",
 			JSON.parse(sizeTable), -1);
 	}

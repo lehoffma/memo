@@ -17,7 +17,6 @@ import {CommonModule} from "@angular/common";
 import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {PieChartModule} from "@swimlane/ngx-charts";
 import {MerchStockTableCellComponent} from "./administration/stock/merch-stock/merch-stock-table-cell.component";
 import {MerchStockFeedComponent} from "./administration/stock/merch-stock/merch-stock-feed/merch-stock-feed.component";
 import {MerchStockEntryComponent} from "app/club-management/administration/stock/merch-stock/merch-stock-entry/merch-stock-entry.component";
@@ -55,7 +54,6 @@ const tableCellComponents = [
 		ReactiveFormsModule,
 		CommonModule,
 		MemoMaterialModule,
-		PieChartModule,
 		SharedModule,
 		SearchModule,
 		ModifyShopItemModule,

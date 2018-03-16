@@ -1,26 +1,29 @@
+@import "theme";
 
-@import "~@angular/material/theming";
-@import "../../../../../theme";
-
-.data-as-text{
+.data-as-text {
 	font-weight: bold;
 }
 
-.Admin{
+.Admin {
 	color: red;
 }
-.Kassenwart{
+
+.Kassenwart {
 	color: yellow;
 }
-.Mitglied{
-	color: mat-color($primary);
+
+.Mitglied {
+	color: $primary-default;
 }
-.Organisator{
+
+.Organisator {
 	color: #f315a1;
 }
-.Vorstand{
+
+.Vorstand {
 	color: #2196F3;
 }
-.Gast{
+
+.Gast {
 	color: grey;
 }

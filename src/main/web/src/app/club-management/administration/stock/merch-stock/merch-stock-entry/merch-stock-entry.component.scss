@@ -1,12 +1,13 @@
-@import "~@angular/material/theming";
-@import "../../../../../../theme";
+@import "theme";
 @import "variables";
+@import "~@angular/material/theming";
 
 
 :host{
 	display: flex;
 	flex-direction: column;
-	@extend .mat-elevation-z3;
+	@include mat-elevation(3);
+	@include mat-elevation-transition;
 	background-color: $container-content--background-color;
 	color: $container-content--color;
 

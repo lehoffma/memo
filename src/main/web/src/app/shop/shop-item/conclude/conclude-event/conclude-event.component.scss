@@ -1,5 +1,4 @@
-@import "~@angular/material/theming";
-@import "../theme";
+@import "theme";
 
 .responsible-user-input-container /deep/ .object-details-content {
 	padding: 0;
@@ -24,7 +23,7 @@ memo-participant-list.participants-list /deep/ .expandable-table-component-conta
 	padding: 1.5rem;
 	margin-top: 1rem;
 
-	background-color: mat-color($accent);
+	background-color: $accent-default;
 	transition: all ease-in 0.2s;
 	color: white;
 	font-size: 1.3rem;
@@ -41,7 +40,7 @@ memo-participant-list.participants-list /deep/ .expandable-table-component-conta
 	}
 	&:not(.disabled) {
 		&:hover {
-			background: lighten(mat-color($accent), 5%);
+			background: lighten($accent-default, 5%);
 			mat-icon {
 				margin-right: 0;
 			}

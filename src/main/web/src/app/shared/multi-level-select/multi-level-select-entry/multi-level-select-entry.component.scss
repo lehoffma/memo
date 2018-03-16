@@ -1,5 +1,5 @@
 @import "~@angular/material/theming";
-@import "../../../../theme";
+@import "theme";
 
 .multi-level-select-entry-parent,
 .multi-level-select-entry-child {
@@ -29,7 +29,7 @@
 		color: white;
 
 		&:hover {
-			background-color: mat-color($accent) !important;
+			background-color: $accent-default !important;
 
 		}
 	}

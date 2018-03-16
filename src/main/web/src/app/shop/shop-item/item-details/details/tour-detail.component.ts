@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Tour} from "../../../shared/model/tour";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Observable} from "rxjs";
 import {EventOverviewKey} from "../container/overview/event-overview-key";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {EventType} from "../../../shared/model/event-type";
@@ -20,6 +19,7 @@ import {of} from "rxjs/observable/of";
 import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {Observable} from "rxjs/Observable";
 
 
 @Component({

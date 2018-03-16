@@ -1,5 +1,4 @@
-@import "~@angular/material/theming";
-@import "../../../theme";
+@import "theme";
 
 
 @mixin resizeRow($factor) {
@@ -40,12 +39,12 @@
 	}
 
 	&.logged-in-user{
-		background-color: rgba(mat-color($accent), 0.2);
-		border-left: 5px solid mat-color($accent);
+		background-color: rgba($accent-default, 0.2);
+		border-left: 5px solid $accent-default;
 		padding-left: calc(1rem - 5px);
 
 		&:hover{
-			background-color: rgba(mat-color($accent), 0.3);
+			background-color: rgba($accent-default, 0.3);
 		}
 	}
 
@@ -68,7 +67,7 @@
 		border-radius: 50%;
 		margin-right: 20px;
 		margin-left: 20px;
-		background: mat-color($primary);
+		background: $primary-default;
 		object-fit: cover;
 	}
 

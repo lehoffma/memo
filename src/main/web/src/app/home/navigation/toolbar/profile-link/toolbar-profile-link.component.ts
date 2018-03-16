@@ -1,12 +1,11 @@
 import {Component, OnInit} from "@angular/core";
-import {Observable} from "rxjs";
 import {Link} from "../../../../shared/model/link";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {User} from "../../../../shared/model/user";
-import {UserService} from "../../../../shared/services/api/user.service";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {map} from "rxjs/operators";
+import {Observable} from "rxjs/Observable";
 
 @Component({
 	selector: "memo-toolbar-profile-link",

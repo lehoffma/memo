@@ -7,7 +7,7 @@
 			</div>
 			<div class="result-info">
 				<div class="secondary-text">
-					<span *ngIf="!resultIsMerch(result)">{{result.date | moment}}</span>
+					<span *ngIf="!resultIsMerch(result)">{{result.date | dateFormat}}</span>
 					<span *ngIf="resultIsMerch(result)" class="merch-available-colors-container">
 						<span *ngFor="let color of (colors$ | async)"
 							  class="merch-available-colors"

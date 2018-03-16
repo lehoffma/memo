@@ -1,13 +1,11 @@
 import {BaseObject} from "./util/base-object";
 import {PaymentMethod} from "../../shop/checkout/payment/payment-method";
 import {OrderedItem} from "./ordered-item";
-import * as moment from "moment";
-import {Moment} from "moment";
 
 export class Order extends BaseObject<Order> {
 	constructor(public readonly id: number,
 				public readonly user: number,
-				public readonly timeStamp: Moment,
+				public readonly timeStamp: Date,
 				public method: PaymentMethod,
 				public readonly items: OrderedItem[],
 				public text: string,
@@ -17,7 +15,7 @@ export class Order extends BaseObject<Order> {
 
 
 	static create(): Order {
-		return new Order(-1, -1, moment(), PaymentMethod.CASH, [], "");
+		return new Order(-1, -1, new Date(), PaymentMethod.CASH, [], "");
 	}
 
 	static isOrder(object: any): object is Order {

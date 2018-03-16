@@ -4,6 +4,8 @@ import {NavigationService} from "../../../shared/services/navigation.service";
 import {EventType} from "../../../shop/shared/model/event-type";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {distanceInWordsStrict} from "date-fns";
+import * as deLocale from "date-fns/locale/de";
 
 const DEFAULT_AMOUNT_SHOWN = 3;
 
@@ -46,6 +48,9 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 	ngOnInit() {
 	}
 
+	distanceInWords(date: Date){
+		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
+	}
 
 	showEvent(recentEvent: Event) {
 		const eventType: EventType = EventUtilityService.getEventType(recentEvent);

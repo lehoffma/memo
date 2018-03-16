@@ -17,8 +17,6 @@ import {Entry} from "../../../shared/model/entry";
 import {Location} from "@angular/common";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {NavigationEnd, ParamMap, Params, Router} from "@angular/router";
-import * as moment from "moment";
-import {isMoment, Moment} from "moment";
 import {Address} from "../../../shared/model/address";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 import {ModifyItemEvent} from "./modify-item-event";
@@ -29,6 +27,7 @@ import {filter, first, map, mergeMap, scan, take} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shared/model/event";
 import {of} from "rxjs/observable/of";
+import {format, parse} from "date-fns";
 
 @Injectable()
 export class ModifyItemService {
@@ -112,7 +111,7 @@ export class ModifyItemService {
 	 */
 	readQueryParams(queryParamMap: ParamMap) {
 		if (queryParamMap.has("date")) {
-			this.model["date"] = moment(queryParamMap.get("date"));
+			this.model["date"] = parse(queryParamMap.get("date"));
 		}
 		if (queryParamMap.has("eventId")) {
 			this.eventId = +queryParamMap.get("eventId");
@@ -159,9 +158,9 @@ export class ModifyItemService {
 	 *
 	 */
 	init() {
-		const setDateAndTime = (value: Moment) => {
+		const setDateAndTime = (value: Date) => {
 			this.model["date"] = value;
-			this.model["time"] = value.format("HH:mm");
+			this.model["time"] = format(value, "HH:mm");
 		};
 
 		//service was already initialized. reset() needs to be called before the user can use it any further
@@ -192,9 +191,7 @@ export class ModifyItemService {
 
 					//initialize time as well, if a date is specified
 					const date = this.model["date"];
-					if (isMoment(date)) {
-						this.model["time"] = date.format("HH:mm");
-					}
+					this.model["time"] = format(date, "HH:mm");
 				}
 				else if (this.itemType === ShopItemType.user) {
 					if ((<User>objectToModify).addresses.length > 0) {
@@ -221,8 +218,8 @@ export class ModifyItemService {
 			EventUtilityService.shopItemSwitch<any>(
 				this.itemType,
 				{
-					tours: () => setDateAndTime(moment()),
-					partys: () => setDateAndTime(moment()),
+					tours: () => setDateAndTime(new Date()),
+					partys: () => setDateAndTime(new Date()),
 				});
 		}
 		else if (!this.model["time"]) {

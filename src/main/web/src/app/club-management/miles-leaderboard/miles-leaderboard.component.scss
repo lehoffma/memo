@@ -1,5 +1,5 @@
+@import "theme";
 @import "~@angular/material/theming";
-@import "../../../theme";
 
 :host {
 	display: block;
@@ -12,13 +12,14 @@
 		margin-top: 20px;
 	}
 
-	@extend .mat-elevation-z3;
+	@include mat-elevation(3);
+	@include mat-elevation-transition;
 
 	.leaderboard-header {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: mat-color($primary);
+		background-color: $primary-default;
 		color: white;
 
 		svg {

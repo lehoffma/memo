@@ -1,6 +1,5 @@
 import {SignUpSection} from "./signup-section";
 import {PaymentInfo} from "./payment-methods-form/debit-input-form/payment-info";
-import {Moment} from "moment";
 
 export interface SignUpSubmitEvent {
 	section: SignUpSection,
@@ -8,7 +7,7 @@ export interface SignUpSubmitEvent {
 	password?: string,
 	firstName?: string,
 	surname?: string,
-	birthday?: Moment,
+	birthday?: Date,
 	telephone?: string,
 	mobile?: string,
 	isStudent?: boolean,

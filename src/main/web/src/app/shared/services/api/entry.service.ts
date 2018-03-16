@@ -3,7 +3,6 @@ import {Entry} from "../../model/entry";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/api/servlet.service";
 import {EntryCategoryService} from "./entry-category.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {Moment} from "moment";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
 import {defaultIfEmpty, map, mergeMap, tap} from "rxjs/operators";
@@ -87,7 +86,7 @@ export class EntryService extends ServletService<Entry> {
 	 * @param searchTerm
 	 * @param dateRange
 	 */
-	search(searchTerm: string, dateRange?: { minDate: Moment, maxDate: Moment }): Observable<Entry[]> {
+	search(searchTerm: string, dateRange?: { minDate: Date, maxDate: Date }): Observable<Entry[]> {
 		let params = new HttpParams().set("searchTerm", searchTerm);
 		if (dateRange && dateRange.minDate && dateRange.maxDate) {
 			params = params.set("minDate", dateRange.minDate.toISOString())

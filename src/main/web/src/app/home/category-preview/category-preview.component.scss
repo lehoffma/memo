@@ -1,5 +1,4 @@
-@import "~@angular/material/theming";
-@import "../../../theme";
+@import "theme";
 
 .preview-container {
 	width: auto;
@@ -70,7 +69,7 @@ memo-price-renderer {
 	}
 
 	/deep/ .actual-price {
-		color: mat-color($warn);
+		color: $warn-default;
 	}
 }
 

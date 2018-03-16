@@ -8,7 +8,7 @@
 				<div class="event-content">
 					<span>{{event.title}}</span>
 					<span [style.visibility]="(showDate) ? 'visible' : 'hidden'" class="secondary-text">
-						{{event.date.fromNow()}}
+						{{distanceInWords(event.date)}}
 					</span>
 				</div>
 				<memo-price-renderer class="event-price"

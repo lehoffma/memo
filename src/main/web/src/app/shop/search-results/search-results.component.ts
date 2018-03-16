@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
-import {Observable, Subscription} from "rxjs";
 import {EventService} from "../../shared/services/api/event.service";
 import {EventType} from "../shared/model/event-type";
 import {Event} from "../shared/model/event";
@@ -16,6 +15,8 @@ import {FilterOptionType} from "./filter-option-type";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {debounceTime, defaultIfEmpty, map, mergeMap, scan, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {Observable} from "rxjs/Observable";
+import {Subscription} from "rxjs/Subscription";
 
 type sortingQueryParameter = { sortedBy: string; descending: string; };
 

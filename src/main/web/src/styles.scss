@@ -1,6 +1,5 @@
 @import "theme";
 @import "mixins";
-@import '~font-awesome/css/font-awesome.min.css';
 @import '~@ngx-share/button/styles/share-buttons';
 @import '~@ngx-share/button/styles/themes/default/default-theme';
 
@@ -121,6 +120,7 @@ mat-select{
 	transition: all .15s ease !important;
 	&:hover{
 		transform: translateY(-1px);
-		@extend .mat-elevation-z3;
+		@include mat-elevation(3);
+		@include mat-elevation-transition;
 	}
 }

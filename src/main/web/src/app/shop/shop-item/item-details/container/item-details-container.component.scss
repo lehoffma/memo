@@ -1,6 +1,5 @@
 @import "../centered-container";
-@import "../theme";
-@import "~@angular/material/theming";
+@import "theme";
 
 .conclude-event-header {
 	display: flex;
@@ -9,7 +8,7 @@
 	padding: 1rem;
 	max-width: 500px;
 
-	background: mat-color($accent);
+	background: $accent-default;
 	color: white;
 	text-decoration: none;
 
@@ -22,7 +21,7 @@
 	}
 
 	&:hover {
-		background: lighten(mat-color($accent), 5%);
+		background: lighten($accent-default, 5%);
 		mat-icon {
 			margin-right: 0;
 		}

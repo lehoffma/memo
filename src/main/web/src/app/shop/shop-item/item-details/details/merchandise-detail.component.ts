@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Merchandise} from "../../../shared/model/merchandise";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Observable} from "rxjs";
 import {isNullOrUndefined} from "util";
 import {MerchandiseOptions} from "./merchandise-options";
 import {EventOverviewKey} from "../container/overview/event-overview-key";
@@ -14,6 +13,7 @@ import {catchError, filter, map, mergeMap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
+import {Observable} from "rxjs/Observable";
 
 @Component({
 	selector: "memo-merchandise-details",

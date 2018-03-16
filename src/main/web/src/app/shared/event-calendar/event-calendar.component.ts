@@ -4,6 +4,11 @@ import {Tour} from "../../shop/shared/model/tour";
 import {WindowService} from "../services/window.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {defaultIfEmpty, filter, map} from "rxjs/operators";
+import {CalendarEvent} from "angular-calendar";
+import {Observable} from "rxjs/Observable";
+import {MonthViewDay} from "calendar-utils";
+import {EventType} from "../../shop/shared/model/event-type";
+import {EventUtilityService} from "../services/event-utility.service";
 
 @Component({
 	selector: "memo-event-calendar",
@@ -12,25 +17,34 @@ import {defaultIfEmpty, filter, map} from "rxjs/operators";
 })
 export class EventCalendarComponent implements OnInit {
 	events$: BehaviorSubject<(Tour | Party)[]> = new BehaviorSubject<(Tour | Party)[]>([]);
-	@Input() editable: boolean; //todo mit options verknüpfen
-	calendarEvents$ = this.events$
-		.pipe(
-			filter(events => events !== null),
-			map(events => events.map(event => ({
-				id: event.id,
-				title: event.title,
-				start: event.date,
-				//todo combineLatest
-				editable: this.editable
-			}))),
-			defaultIfEmpty([])
-		);
-	@Input() height: string;
 	@Output() onDayClick: EventEmitter<Date> = new EventEmitter();
 	@Output() onEventClick: EventEmitter<number> = new EventEmitter();
 
-	height$ = this.windowService.dimension$
-		.pipe(map(dimensions => dimensions.height));
+	date = new Date();
+	calendarEvents$: Observable<CalendarEvent[]> = this.events$
+		.pipe(
+			filter(events => events !== null),
+			map(events => events.map(event => ({
+				start: event.date,
+				title: event.title,
+				color: {
+					primary: "green",
+					secondary: "white"
+				},
+				meta: event
+			}))),
+			defaultIfEmpty([])
+		);
+
+	eventTypeMap$: Observable<{[id: number]: string}> = this.events$
+		.pipe(
+			filter(events => events !== null),
+			map(events => events.reduce((typeMap, event) => {
+				typeMap[event.id] = EventUtilityService.getEventTypeAsString(event);
+				return typeMap;
+			}, {})),
+			defaultIfEmpty({})
+		);
 
 	constructor(private windowService: WindowService) {
 	}
@@ -47,23 +61,15 @@ export class EventCalendarComponent implements OnInit {
 	 *
 	 * @param event
 	 */
-	dayClickHandler(event) {
-		if (event.date) {
-			let clickEventDate: any = event.date;
-			let date: Date = clickEventDate.toDate();
-			this.onDayClick.emit(date);
-		}
+	dayClickHandler(event: { day: MonthViewDay<any> }) {
+		this.onDayClick.emit(event.day.date);
 	}
 
 	/**
 	 *
 	 * @param event
 	 */
-	eventClickHandler(event) {
-		if (event.calEvent) {
-			let calendarEvent: any = event.calEvent;
-			let id = calendarEvent.id;
-			this.onEventClick.emit(id);
-		}
+	eventClickHandler(event: CalendarEvent) {
+		this.onEventClick.emit(event.meta.id);
 	}
 }

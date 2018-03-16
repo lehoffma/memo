@@ -5,7 +5,6 @@ import {ShoppingCartService} from "../../../../../shared/services/shopping-cart.
 import {EventUtilityService} from "../../../../../shared/services/event-utility.service";
 import {EventOverviewKey} from "./event-overview-key";
 import {StockService} from "../../../../../shared/services/api/stock.service";
-import * as moment from "moment";
 import {MerchColor} from "../../../../shared/model/merch-color";
 import {MerchStockList} from "../../../../shared/model/merch-stock";
 import {ShopItem} from "../../../../../shared/model/shop-item";
@@ -27,6 +26,7 @@ import {ShareDialogComponent} from "../../../../../shared/share-dialog/share-dia
 import {ResponsibilityService} from "../../../../shared/services/responsibility.service";
 import {ShoppingCartOption} from "../../../../../shared/model/shopping-cart-item";
 import {ClubRole, isAuthenticated} from "../../../../../shared/model/club-role";
+import {isBefore} from "date-fns";
 
 
 @Component({
@@ -170,8 +170,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		if (this.event && this.event.id !== -1) {
 			this.updateMaxAmount();
 			if (this.event.date) {
-				//todo as observable
-				this.isPastEvent = moment(this.event.date).isBefore(moment());
+				this.isPastEvent = isBefore(this.event.date, new Date());
 			}
 		}
 	}

@@ -2,10 +2,9 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
 import {ModifyItemEvent} from "../modify-item-event";
-import {Moment} from "moment";
-import {Permission} from "../../../../shared/model/permission";
 import {ClubRole} from "../../../../shared/model/club-role";
 import {User} from "../../../../shared/model/user";
+import {setHours, setMinutes} from "date-fns";
 
 @Component({
 	selector: "memo-modify-party",
@@ -74,7 +73,7 @@ export class ModifyPartyComponent implements OnInit {
 		if (result) {
 			const hours = +result[1];
 			const minutes = +result[2];
-			(<Moment>this.model["date"]).hours(hours).minutes(minutes);
+			this.model["date"] = setMinutes(setHours(this.model["date"], hours), minutes);
 		}
 		else {
 			console.error("Time value " + this.model["time"] + " is not valid");

@@ -1,5 +1,4 @@
-@import "~@angular/material/theming";
-@import "../theme";
+@import "theme";
 
 .user-list-row {
 	display: flex;
@@ -41,7 +40,7 @@
 	img {
 		width: 50px;
 		border-radius: 50%;
-		border: 2px solid mat-color($primary);
+		border: 2px solid $primary-default;
 		height: 50px;
 		object-fit: cover;
 		margin-right: 15px;

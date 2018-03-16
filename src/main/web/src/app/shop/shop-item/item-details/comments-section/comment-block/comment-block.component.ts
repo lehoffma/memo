@@ -8,7 +8,6 @@ import {Router} from "@angular/router";
 import {MatDialog} from "@angular/material";
 import {EditCommentDialogComponent} from "../edit-comment-dialog/edit-comment-dialog.component";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
-import * as moment from "moment-timezone";
 import {WindowService} from "../../../../../shared/services/window.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
@@ -17,6 +16,8 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {of} from "rxjs/observable/of";
 import {empty} from "rxjs/observable/empty";
 import {Subscription} from "rxjs/Subscription";
+import {distanceInWordsStrict} from "date-fns";
+import * as deLocale from "date-fns/locale/de";
 
 @Component({
 	selector: "memo-comment-block",
@@ -127,7 +128,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 					first(),
 					mergeMap(user => {
 						console.log(this.eventId);
-						let comment = new Comment(this.eventId, -1, moment(), user.id, commentText, currentComment.id);
+						let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText, currentComment.id);
 						this.dummyComment = this.dummyComment.setProperties({
 							content: "",
 							author: user.id,
@@ -248,5 +249,8 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 
 	trackCommentBy(index: number, comment: Comment) {
 		return comment.id;
+	}
+	distanceInWords(date: Date){
+		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
 	}
 }

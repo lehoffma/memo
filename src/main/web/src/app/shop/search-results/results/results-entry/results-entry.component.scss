@@ -1,6 +1,5 @@
-@import "../../../../../mixins";
-@import "../theme";
-@import "~@angular/material/theming";
+@import "mixins";
+@import "theme";
 
 .result-entry-container {
 	@include card-like();
@@ -115,7 +114,7 @@ memo-price-renderer {
 		}
 
 		.actual-price {
-			color: mat-color($warn);
+			color: $warn-default;
 		}
 
 		.base-price {

@@ -1,6 +1,5 @@
-@import "~@angular/material/theming";
-@import "../../../theme";
-@import "../../../mixins";
+@import "theme";
+@import "mixins";
 
 $breakpoint: 600px;
 $options-breakpoint: 850px;
@@ -17,7 +16,7 @@ $options-breakpoint: 850px;
 
 	.options-button {
 		width: 100%;
-		background-color: mat-color($primary);
+		background-color: $primary-default;
 		color: white;
 		@media all and (min-width: $options-breakpoint) {
 			display: none;
@@ -87,13 +86,13 @@ $options-breakpoint: 850px;
 		}
 
 		&.positive {
-			background-color: mat-color($primary);
+			background-color: $primary-default;
 		}
 		&.negative {
-			background-color: mat-color($warn);
+			background-color: $warn-default
 		}
 		&:not(.positive):not(.negative) {
-			background-color: mat-color($accent);
+			background-color: $accent-default;
 		}
 	}
 }

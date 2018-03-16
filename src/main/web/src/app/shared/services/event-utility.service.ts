@@ -30,6 +30,19 @@ export class EventUtilityService {
 			});
 	}
 
+	static getEventTypeAsString(event: Event): string{
+		return EventUtilityService.handleShopItem(event,
+			merch => "Merch",
+			tour => "Tour",
+			party => "Party",
+			user => "",
+			entry => "",
+			error => {
+				console.error(`Could not deduce type from event ${error}`);
+				return null;
+			});
+	}
+
 	static handleShopItem<T>(item: ShopItem | Event,
 							 merchCallback: (merch: Merchandise) => T = () => null,
 							 tourCallback: (tour: Tour) => T = () => null,

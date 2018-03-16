@@ -5,8 +5,6 @@ import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-e
 import {LogInService} from "../../shared/services/api/login.service";
 import {ParamMap, Router} from "@angular/router";
 import {EntryService} from "../../shared/services/api/entry.service";
-import * as moment from "moment";
-import {Moment} from "moment";
 import {attributeSortingFunction, dateSortingFunction, SortingFunction, sortingFunction} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {EventService} from "../../shared/services/api/event.service";
@@ -21,6 +19,8 @@ import {catchError, defaultIfEmpty, first, map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {of} from "rxjs/observable/of";
+import {parse} from "date-fns";
+
 
 @Injectable()
 export class AccountingTableContainerService extends ExpandableTableContainerService<Entry> {
@@ -82,9 +82,9 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	 * Extracts the dateRange from the queryParameters so it can be used in the API call
 	 * @returns {{minDate: Date; maxDate: Date}}
 	 */
-	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Moment, maxDate: Moment } {
-		const from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : moment("1970-01-01");
-		const to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : moment("2100-01-01");
+	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Date, maxDate: Date } {
+		const from = queryParamMap.has("from") ? parse(queryParamMap.get("from")) : parse("1970-01-01");
+		const to = queryParamMap.has("to") ? parse(queryParamMap.get("to")) : parse("2100-01-01");
 
 		//default: this month
 		return {
@@ -117,9 +117,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 
 					//otherwise, we're looking at the general club accounting table
 					return this.entryService.search("", dateRange)
-						.pipe(
-							defaultIfEmpty([])
-						);
+						.pipe(defaultIfEmpty([]));
 				}),
 				catchError(error => {
 					console.error(error);

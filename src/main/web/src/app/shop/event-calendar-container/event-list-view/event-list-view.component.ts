@@ -1,14 +1,40 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Party} from "../../shared/model/party";
 import {Tour} from "../../shared/model/tour";
 import {GroupedEventList} from "./grouped-event-list";
-import * as moment from "moment";
-import {Moment} from "moment";
+import {
+	addDays,
+	endOfMonth,
+	endOfWeek,
+	format,
+	getDayOfYear,
+	isAfter,
+	isBefore,
+	isEqual,
+	setMonth,
+	setYear,
+	startOfDay,
+	startOfMonth,
+	startOfWeek
+} from "date-fns";
+
+// import * as addDays from "date-fns/add_days";
+// import * as endOfMonth,
+// 	endOfWeek,
+// 	format,
+// 	getDayOfYear,
+// 	isAfter,
+// 	isBefore,
+// 	isEqual,
+// 	parse,
+// 	startOfDay,
+// 	startOfMonth,
+// 	startOfWeek
 
 @Component({
-	selector: 'memo-event-list-view',
-	templateUrl: './event-list-view.component.html',
-	styleUrls: ['./event-list-view.component.scss']
+	selector: "memo-event-list-view",
+	templateUrl: "./event-list-view.component.html",
+	styleUrls: ["./event-list-view.component.scss"]
 })
 export class EventListViewComponent implements OnInit {
 	groupedEventList: GroupedEventList = {
@@ -29,7 +55,7 @@ export class EventListViewComponent implements OnInit {
 	}
 
 
-	@Output() onAddEvent = new EventEmitter<Moment>();
+	@Output() onAddEvent = new EventEmitter<Date>();
 
 	constructor() {
 	}
@@ -55,25 +81,30 @@ export class EventListViewComponent implements OnInit {
 	 */
 	groupEvents(events: (Party | Tour)[]): GroupedEventList {
 		const upcomingEvents = events
-			.filter(event => event.date.isSameOrAfter(moment().startOf("day")));
-
-		console.log(upcomingEvents);
+			.filter(event => {
+				const start = startOfDay(new Date());
+				return isAfter(event.date, start) || isEqual(event.date, start);
+			});
 
 		const today = upcomingEvents
-			.filter(event => event.date.dayOfYear() === moment().dayOfYear());
+			.filter(event => getDayOfYear(event.date) === getDayOfYear(new Date()));
 
 		const tomorrow = upcomingEvents
-			.filter(event => event.date.dayOfYear() === moment().add(1, "day" ).dayOfYear());
+			.filter(event => getDayOfYear(event.date) === getDayOfYear(addDays(new Date(), 1)));
 
 		const thisWeek = upcomingEvents
 		//remove events that are already part of "today" and "tomorrow"
 			.filter(event => this.eventIsNotPartOf(event, today, tomorrow))
-			.filter(event => event.date.isAfter(moment().add(1, "day" ).startOf("day"))
-				&& event.date.isSameOrBefore(moment().endOf("week")));
+			.filter(event => {
+				const _tomorrow = addDays(new Date(), 1);
+				const startOfTomorrow = startOfDay(_tomorrow);
+				const endOfTheWeek = endOfWeek(new Date());
+				return isAfter(event.date, startOfTomorrow) && (isBefore(event.date, endOfTheWeek) || isEqual(event.date, endOfTheWeek))
+			});
 
 		const thisMonth = upcomingEvents
 			.filter(event => this.eventIsNotPartOf(event, today, tomorrow, thisWeek))
-			.filter(event => event.date.isBetween(moment().startOf("month"), moment().endOf("month")));
+			.filter(event => isAfter(event.date, startOfMonth(new Date())) && isBefore(event.date, endOfMonth(new Date())));
 
 		const remainingEvents = upcomingEvents
 			.filter(event => this.eventIsNotPartOf(event, today, tomorrow, thisWeek, thisMonth));
@@ -82,7 +113,7 @@ export class EventListViewComponent implements OnInit {
 			[month: string]: (Party | Tour)[];
 		} = remainingEvents
 			.reduce((groups, event) => {
-				const monthName = event.date.format('MMMM YYYY');
+				const monthName = format(event.date, "MMMM YYYY");
 				if (groups[monthName]) {
 					groups[monthName].push(event);
 				}
@@ -104,28 +135,30 @@ export class EventListViewComponent implements OnInit {
 
 
 	onAddCallback(key: keyof GroupedEventList, groupedEventList: (Party | Tour)[]) {
-		let date = moment();
+		let date = new Date();
 
 		switch (key) {
 			case "Heute":
-				date = moment().startOf("day");
+				date = startOfDay(date);
 				break;
 			case "Morgen":
-				date = moment().add(1, "day" );
+				date = startOfDay(addDays(date, 1));
 				break;
 			case "Diese Woche":
-				date = moment().startOf("week");
+				date = startOfWeek(date);
 				break;
 			case "Dieser Monat":
-				date = moment().startOf("month");
+				date = startOfMonth(date);
 				break;
-				//example: "Juni 2017", "Juli 2017", "August 2018" etc.
+			//example: "Juni 2017", "Juli 2017", "August 2018" etc.
 			default:
 				const pattern = /(\w+) (\d+)/;
 				const patternResults = pattern.exec(key);
-				const month = patternResults[1];
+				const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober",
+					"November", "Dezember"];
+				const month = months.indexOf(patternResults[1]);
 				const year = +patternResults[2];
-				date = moment().locale("de").month(month).year(year).startOf("month");
+				date = setMonth(setYear(date, year), month);
 				break;
 		}
 

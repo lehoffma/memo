@@ -1,5 +1,4 @@
-@import "~@angular/material/theming";
-@import "../../../theme";
+@import "theme";
 
 :host{
 	display: flex;
@@ -13,7 +12,7 @@
 	height: 200px;
 	width: 100%;
 	top: 64px;
-	background-color: mat-color($primary);
+	background-color: $primary-default;
 }
 
 

@@ -1,6 +1,5 @@
 import {Injectable, OnInit} from "@angular/core";
 import {EventType} from "../../shop/shared/model/event-type";
-import {BehaviorSubject, Observable} from "rxjs";
 import {ShoppingCartContent} from "../model/shopping-cart-content";
 import {ShoppingCartItem, ShoppingCartOption} from "../model/shopping-cart-item";
 import {MerchColor} from "../../shop/shared/model/merch-color";
@@ -8,6 +7,8 @@ import {EventService} from "./api/event.service";
 import {map, mergeMap} from "rxjs/operators";
 import {Event} from "../../shop/shared/model/event";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {Observable} from "rxjs/Observable";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {

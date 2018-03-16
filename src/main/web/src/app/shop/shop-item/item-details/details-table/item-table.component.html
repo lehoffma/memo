@@ -4,7 +4,7 @@
 		<td [ngSwitch]="category.pipe" align="right" *ngIf="getValue(category.key) | async; let value"
 			class="row secondary-text">
 			<ng-template [ngSwitchCase]="'price'">{{value | currency:'EUR':'symbol'}}</ng-template>
-			<ng-template [ngSwitchCase]="'date'">{{value | moment:'DD.MM.YYYY'}}</ng-template>
+			<ng-template [ngSwitchCase]="'date'">{{value | dateFormat:'DD.MM.YYYY'}}</ng-template>
 			<ng-template ngSwitchDefault>{{value}}</ng-template>
 		</td>
 	</tr>
