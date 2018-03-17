@@ -7,7 +7,6 @@ import {IsTreasurerGuard} from "../shared/authentication/is-treasurer.guard";
 import {NgModule} from "@angular/core";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {MilesLeaderboardComponent} from "./miles-leaderboard/miles-leaderboard.component";
-import {MemberListService} from "./administration/member-list/member-list.service";
 import {CanViewStockGuard} from "../shared/authentication/can-view-stock.guard";
 
 const routes: Route[] = [

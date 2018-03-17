@@ -1,5 +1,6 @@
 import {SignUpSection} from "./signup-section";
 import {PaymentInfo} from "./payment-methods-form/debit-input-form/payment-info";
+import {ImageToUpload} from "../../shared/multi-image-upload/multi-image-upload.component";
 
 export interface SignUpSubmitEvent {
 	section: SignUpSection,
@@ -12,6 +13,6 @@ export interface SignUpSubmitEvent {
 	mobile?: string,
 	isStudent?: boolean,
 	images?: string[],
-	profilePicture?: FormData,
+	profilePicture?: ImageToUpload[],
 	paymentInfo?: PaymentInfo
 }

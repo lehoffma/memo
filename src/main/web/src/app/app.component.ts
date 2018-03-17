@@ -13,19 +13,8 @@ export class AppComponent implements OnInit {
 
 	constructor(private authService: AuthService,
 				private dateAdapter: DateAdapter<Date>,
-				private router: Router,
 				@Inject(LOCALE_ID) public locale: any) {
 		dateAdapter.setLocale(locale); // DD.MM.YYYY
-
-
-		this.router.events
-			.pipe(
-				filter(event => event instanceof NavigationStart || event instanceof NavigationEnd)
-			)
-			.subscribe((event: NavigationStart | NavigationEnd) => {
-				// You only receive NavigationStart events
-				console.log(event);
-			});
 	}
 
 	ngOnInit() {

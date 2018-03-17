@@ -9,6 +9,7 @@ import {UserService} from "../../../shared/services/api/user.service";
 import {FormControlDirective} from "@angular/forms";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {first, map} from "rxjs/operators";
+import {ImageToUpload} from "../../../shared/multi-image-upload/multi-image-upload.component";
 
 @Component({
 	selector: "memo-user-data-form",
@@ -16,13 +17,17 @@ import {first, map} from "rxjs/operators";
 	styleUrls: ["./user-data-form.component.scss"]
 })
 export class UserDataFormComponent implements OnInit, OnChanges {
+	//todo rewrite with reactive forms
+	//todo email input component
+
+
 	@Output() onSubmit = new EventEmitter<any>();
 	@Input() withSubmitButton = true;
 	@Input() withEmailAndPassword = false;
 	@Input() previousValue = {};
 	confirmedPassword = "";
 	@Input() model = {};
-	@Input() profilePicture: any = "resources/images/Logo.png";
+	@Input() profilePicture: ImageToUpload[] = [];
 	@Output() modelChange = new EventEmitter();
 	@Output() onCancel = new EventEmitter();
 	@Output() onAddressModification = new EventEmitter();
@@ -118,8 +123,8 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	userCanSaveChanges(userDataForm: FormControlDirective): boolean {
 		return userDataForm.form.valid
 			&& (this.previousValueIsEmpty() || !this.modelHasNotChanged())
-			&& (!this.userModel['password'] || this.userModel['password'].length === 0
-				|| !this.withEmailAndPassword || this.userModel['password'] === this.confirmedPassword)
+			&& (!this.userModel["password"] || this.userModel["password"].length === 0
+				|| !this.withEmailAndPassword || this.userModel["password"] === this.confirmedPassword)
 			&& !this.emailIsAlreadyTaken
 			&& this.userModel["addresses"] && this.userModel["addresses"].length > 0;
 	}
@@ -150,7 +155,7 @@ export class UserDataFormComponent implements OnInit, OnChanges {
 	 *
 	 * @param {FormData} event
 	 */
-	profilePictureChanged(event: FormData) {
+	profilePictureChanged(event: ImageToUpload[]) {
 		this.profilePicture = event;
 		console.log(event);
 	}

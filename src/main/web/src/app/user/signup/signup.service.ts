@@ -17,11 +17,12 @@ import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
+import {ImageToUpload} from "../../shared/multi-image-upload/multi-image-upload.component";
 
 @Injectable()
 export class SignUpService {
 	newUser: User = User.create();
-	newUserProfilePicture;
+	newUserProfilePicture: ImageToUpload[];
 	newUserDebitInfo: PaymentInfo;
 	newUserAddresses: Address[] = [];
 	submittingFinalUser = false;
@@ -122,19 +123,46 @@ export class SignUpService {
 		}
 	}
 
+	dataURItoBlob(dataURI: string): Blob {
+		// convert base64/URLEncoded data component to raw binary data held in a string
+		let byteString;
+		if (dataURI.split(",")[0].indexOf("base64") >= 0)
+			byteString = atob(dataURI.split(",")[1]);
+		else
+			byteString = decodeURI(dataURI.split(",")[1]);
+
+		// separate out the mime component
+		const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+
+		// write the bytes of the string to a typed array
+		const uint8Array = new Uint8Array(byteString.length);
+		for (let i = 0; i < byteString.length; i++) {
+			uint8Array[i] = byteString.charCodeAt(i);
+		}
+
+		console.log(mimeString);
+		return new Blob([uint8Array], {type: mimeString});
+	}
+
 	/**
 	 *
 	 * @param {User} user
 	 * @param {FormData} pictures
 	 * @returns {Promise<User>}
 	 */
-	uploadProfilePicture(user: User, pictures: FormData): Observable<User> {
+	uploadProfilePicture(user: User, pictures: ImageToUpload[]): Observable<User> {
 		if (!pictures) {
-			//no images were specified => dont bother performing the request
+			//no images were specified => don't bother performing the request
 			return of(user);
 		}
 
-		return this.imageUploadService.uploadImages(pictures)
+		let formData = new FormData();
+		pictures.forEach(image => {
+			const blob = this.dataURItoBlob(image.data);
+			formData.append("file[]", blob, image.name);
+		});
+
+		return this.imageUploadService.uploadImages(formData)
 			.pipe(
 				map(response => response.images),
 				map(images => user.setProperties({images}))
