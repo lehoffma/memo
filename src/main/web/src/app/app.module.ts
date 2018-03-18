@@ -17,7 +17,7 @@ import {SettingsComponent} from "./home/settings/settings.component";
 import {ImprintComponent} from "./home/imprint/imprint.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
-import {DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS, NativeDateAdapter} from "@angular/material";
+import {DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS} from "@angular/material";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./shared/authentication/auth.interceptor";
 import {ClubManagementModule} from "./club-management/club-management.module";
@@ -34,6 +34,7 @@ import {registerLocaleData} from "@angular/common";
 import localeDe from "@angular/common/locales/de";
 import {ShareButtonsModule} from "@ngx-share/buttons";
 import {CalendarModule} from "angular-calendar";
+import {DateFnsAdapter} from "./util/date-fns-adapter";
 
 registerLocaleData(localeDe);
 
@@ -113,7 +114,7 @@ export function tokenGetter() {
 	],
 	providers: [
 		{provide: LOCALE_ID, useValue: "de-DE"},
-		{provide: DateAdapter, useClass: NativeDateAdapter},
+		{provide: DateAdapter, useClass: DateFnsAdapter},
 		{provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS},
 		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
 	]
