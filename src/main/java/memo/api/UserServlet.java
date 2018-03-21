@@ -157,7 +157,7 @@ public class UserServlet extends AbstractApiServlet<User> {
         user.setClubRole(ClubRole.Admin);
 
         if (user.getJoinDate() == null) {
-            user.setJoinDate(LocalDateTime.now());
+            user.setJoinDate(new java.sql.Date(new java.util.Date().getTime()));
         }
 
         if (jsonUser.has("permissions")) {

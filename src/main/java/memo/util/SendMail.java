@@ -59,7 +59,7 @@ public class SendMail {
             message.setText(text);
 
             //send the message
-            Transport.send(message);
+//            Transport.send(message);
 
             logger.trace("message sent successfully");
 
