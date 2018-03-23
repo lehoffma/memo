@@ -1,19 +1,21 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from "@angular/core";
 import {ExpandableTableContainerService} from "../expandable-table/expandable-table-container.service";
-import {ImageToUpload} from "./multi-image-upload.component";
-import {attributeSortingFunction, SortingFunction} from "../../util/util";
+import {ImageToUpload, isImageToUpload} from "./multi-image-upload.component";
+import {isString, sortingFunction, SortingFunction} from "../../util/util";
 import {ColumnSortingEvent} from "../expandable-table/column-sorting-event";
 import {of} from "rxjs/observable/of";
 import {map, take} from "rxjs/operators";
+import {FormGroup} from "@angular/forms";
 
 @Injectable()
 export class MultiImageUploadService extends ExpandableTableContainerService<ImageToUpload> {
 
 	onAdd: EventEmitter<any> = new EventEmitter();
+	onDelete: EventEmitter<(ImageToUpload)[]> = new EventEmitter<(ImageToUpload)[]>();
 
 	constructor() {
 		super({
-			key: "name",
+			key: null,
 			descending: true
 		}, of({
 			"Hinzufuegen": true,
@@ -32,36 +34,16 @@ export class MultiImageUploadService extends ExpandableTableContainerService<Ima
 	}
 
 
-	/**
-	 *
-	 * @param {number[]} indices
-	 */
-	deleteImages(indices: number[]) {
-		const currentValue = this.dataSubject$.getValue();
-		const indicesCopy = [...indices].sort();
-		for (let i = indicesCopy.length - 1; i >= 0; i--) {
-			currentValue.splice(indicesCopy[i], 1);
-		}
-		this.dataSubject$.next([...currentValue]);
+	remove(entries: (ImageToUpload)[]): void {
+		this.onDelete.emit(entries);
 	}
 
-
-	remove(entries: ImageToUpload[]): void {
-		this.dataSubject$
-			.pipe(
-				take(1),
-				map(imagesToUpload => entries
-					.map(image => imagesToUpload.findIndex(it => it.id === image.id)))
-			)
-			.subscribe(indices => this.deleteImages(indices))
-	}
-
-	satisfiesFilter(entry: ImageToUpload, ...options): boolean {
+	satisfiesFilter(entry: (ImageToUpload), ...options): boolean {
 		//there is no filtering, so no need for overriding
 		return true;
 	}
 
-	comparator(sortBy: ColumnSortingEvent<ImageToUpload>, ...options): SortingFunction<ImageToUpload> {
-		return attributeSortingFunction(sortBy.key, sortBy.descending);
+	comparator(sortBy: ColumnSortingEvent<(ImageToUpload)>, ...options): SortingFunction<(ImageToUpload)> {
+		return sortingFunction<ImageToUpload>(image => image.name, sortBy.descending);
 	}
 }

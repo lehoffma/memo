@@ -6,15 +6,14 @@
 	justify-content: space-between;
 	flex-direction: column;
 
-
 	> div:not(:first-child) {
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
-		> *:not(.time-selection){
+		> *:not(.time-selection) {
 			width: 45%;
 		}
-		.time-selection{
+		.time-selection {
 			width: 100%;
 			display: flex;
 			justify-content: space-between;
@@ -35,8 +34,15 @@
 		}
 
 		memo-tour-route-input {
-			display: block;
-			margin-bottom: 1.5rem;
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 0;
+
+			/deep/ agm-map {
+				width: calc(100% + 1rem);
+				margin: -1rem;
+				margin-bottom: 1rem;
+			}
 		}
 	}
 }

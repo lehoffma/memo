@@ -1,6 +1,7 @@
 package memo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import memo.serialization.ShopItemIdDeserializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -31,7 +32,7 @@ public class Stock implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn
-    @JsonIgnore
+    @JsonDeserialize(using = ShopItemIdDeserializer.class)
     private ShopItem item;
 
     private String size = "oneSize";

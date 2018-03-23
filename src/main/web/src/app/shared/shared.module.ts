@@ -25,6 +25,26 @@ import {ShareButtonsModule} from "@ngx-share/buttons";
 import {DisplayErrorDirective} from "./template-validators/display-error.directive";
 import {UserPreviewDirective} from "./profile-renderer/user-preview.directive";
 import {CalendarModule} from "angular-calendar";
+import {DisableIfDirective} from "./forms/directives/disable-if.directive";
+import {EmailInputComponent} from "./forms/email-input/email-input.component";
+import {ClubInformationFormComponent} from "./forms/club-information/club-information-form.component";
+import {PasswordInputComponent} from "./forms/password-input/password-input.component";
+import {PersonalDataFormComponent} from "./forms/personal-data-form/personal-data-form.component";
+import {AddressFormComponent} from "./forms/address-form/address-form.component";
+import {AddressInputFormComponent} from "./forms/address-form/address-input-form.component";
+import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
+import {AddressEntryComponent} from "./forms/address-form/address-entry.component";
+
+const forms = [
+	DisableIfDirective,
+	EmailInputComponent,
+	PasswordInputComponent,
+	PersonalDataFormComponent,
+	ClubInformationFormComponent,
+	AddressFormComponent,
+	AddressInputFormComponent,
+	AddressEntryComponent
+];
 
 @NgModule({
 	imports: [
@@ -33,6 +53,7 @@ import {CalendarModule} from "angular-calendar";
 		FormsModule,
 		ReactiveFormsModule,
 		ShareButtonsModule,
+		PasswordStrengthBarModule,
 		ExpandableTableModule,
 		MemoMaterialModule,
 		MultiLevelSelectModule,
@@ -60,7 +81,9 @@ import {CalendarModule} from "angular-calendar";
 		ShareDialogComponent,
 		UserAutocompleteComponent,
 		DisplayErrorDirective,
-		UserPreviewDirective
+		UserPreviewDirective,
+
+		...forms,
 	],
 	exports: [
 		ExpandableTableModule,
@@ -92,7 +115,9 @@ import {CalendarModule} from "angular-calendar";
 
 		DisplayErrorDirective,
 
-		UserPreviewDirective
+		UserPreviewDirective,
+
+		...forms
 	],
 	entryComponents: [
 		ConfirmationDialogComponent,

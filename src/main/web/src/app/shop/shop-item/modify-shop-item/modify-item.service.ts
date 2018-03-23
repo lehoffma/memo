@@ -6,28 +6,25 @@ import {EventUtilityService} from "../../../shared/services/event-utility.servic
 import {EventService} from "../../../shared/services/api/event.service";
 import {UserService} from "../../../shared/services/api/user.service";
 import {EntryService} from "../../../shared/services/api/entry.service";
-import {Party} from "../../shared/model/party";
 import {Tour} from "../../shared/model/tour";
 import {AddressService} from "../../../shared/services/api/address.service";
 import {Merchandise} from "../../shared/model/merchandise";
 import {StockService} from "../../../shared/services/api/stock.service";
-import {User} from "app/shared/model/user";
 import {ServletServiceInterface} from "../../../shared/model/servlet-service";
-import {Entry} from "../../../shared/model/entry";
 import {Location} from "@angular/common";
 import {NavigationService} from "../../../shared/services/navigation.service";
-import {NavigationEnd, ParamMap, Params, Router} from "@angular/router";
+import {ParamMap, Params, Router} from "@angular/router";
 import {Address} from "../../../shared/model/address";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 import {ModifyItemEvent} from "./modify-item-event";
 import {MerchStockList} from "../../shared/model/merch-stock";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {filter, first, map, mergeMap, scan, take} from "rxjs/operators";
+import {first, map, mergeMap, take, tap} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shared/model/event";
 import {of} from "rxjs/observable/of";
-import {format, parse} from "date-fns";
+import {ImageToUpload} from "../../../shared/multi-image-upload/multi-image-upload.component";
+import {timer} from "rxjs/observable/timer";
 
 @Injectable()
 export class ModifyItemService {
@@ -48,9 +45,6 @@ export class ModifyItemService {
 	//only used if itemType === merch
 	previousStock: MerchStockList = [];
 
-	private _model$ = new BehaviorSubject<any>({});
-	public model$ = this._model$.asObservable();
-
 	constructor(public eventService: EventService,
 				public imageUploadService: ImageUploadService,
 				public userService: UserService,
@@ -60,14 +54,6 @@ export class ModifyItemService {
 				public entryService: EntryService,
 				public addressService: AddressService,
 				public stockService: StockService) {
-	}
-
-	get model() {
-		return this._model$.getValue();
-	}
-
-	set model(model: any) {
-		this._model$.next(model);
 	}
 
 	/**
@@ -87,7 +73,6 @@ export class ModifyItemService {
 
 		this.previousValue = undefined;
 		this.previousStock = [];
-		this.model = {};
 	}
 
 	/**
@@ -107,12 +92,23 @@ export class ModifyItemService {
 
 	/**
 	 *
+	 * @param {ShopItem} objectToModify
+	 */
+	extractStock(objectToModify: ShopItem) {
+		let merch: Merchandise = (<Merchandise>objectToModify);
+		this.stockService.getByEventId(merch.id)
+			.pipe(take(1))
+			.subscribe(stockList => {
+				this.previousStock = [...stockList];
+			});
+	}
+
+
+	/**
+	 *
 	 * @param {ParamMap} queryParamMap
 	 */
 	readQueryParams(queryParamMap: ParamMap) {
-		if (queryParamMap.has("date")) {
-			this.model["date"] = parse(queryParamMap.get("date"));
-		}
 		if (queryParamMap.has("eventId")) {
 			this.eventId = +queryParamMap.get("eventId");
 		}
@@ -120,49 +116,8 @@ export class ModifyItemService {
 
 	/**
 	 *
-	 * @param {ShopItem} objectToModify
-	 * @param {keyof Party | keyof Tour | keyof User} addressKey
-	 */
-	extractAddresses(objectToModify: ShopItem, addressKey: (keyof Party | keyof Tour | keyof User)) {
-		this.model[addressKey] = undefined;
-		combineLatest(...objectToModify[addressKey].map(addressId => this.addressService.getById(addressId)))
-			.pipe(take(1))
-			.subscribe(addresses => {
-				this.model[addressKey] = [...addresses];
-				this.model = {...this.model};
-				if (objectToModify && objectToModify.id !== -1) {
-					this.previousValue = objectToModify;
-				}
-			});
-	}
-
-	/**
-	 *
-	 * @param {ShopItem} objectToModify
-	 */
-	extractStock(objectToModify: ShopItem) {
-		let merch: Merchandise = (<Merchandise>objectToModify);
-		this.stockService.getByEventId(merch.id)
-			.pipe(first())
-			.subscribe(stockList => {
-				this.model["stock"] = stockList;
-				this.model = {...this.model};
-				this.previousStock = [...stockList];
-				if (objectToModify && objectToModify.id !== -1) {
-					this.previousValue = objectToModify;
-				}
-			});
-	}
-
-	/**
-	 *
 	 */
 	init() {
-		const setDateAndTime = (value: Date) => {
-			this.model["date"] = value;
-			this.model["time"] = format(value, "HH:mm");
-		};
-
 		//service was already initialized. reset() needs to be called before the user can use it any further
 		if (this.mode !== undefined) {
 			return;
@@ -180,29 +135,9 @@ export class ModifyItemService {
 
 			//initialize model with object
 			objectToModifyObservable.pipe(first()).subscribe(objectToModify => {
-				Object.keys(objectToModify).forEach(key => {
-					this.model[key] = objectToModify[key];
-				});
-
-
-				//extract addresses if we're editing a tour or a party
-				if (this.itemType === ShopItemType.tour || this.itemType === ShopItemType.party) {
-					this.extractAddresses(objectToModify, "route");
-
-					//initialize time as well, if a date is specified
-					const date = this.model["date"];
-					this.model["time"] = format(date, "HH:mm");
-				}
-				else if (this.itemType === ShopItemType.user) {
-					if ((<User>objectToModify).addresses.length > 0) {
-						this.extractAddresses(objectToModify, "addresses");
-					}
-				}
-				//extract the stock if we're editing a merchandise object
-				else if (this.itemType === ShopItemType.merch) {
+				if (this.itemType === ShopItemType.merch) {
 					this.extractStock(objectToModify);
 				}
-
 				//modus === EDIT
 				if (objectToModify && objectToModify.id !== -1) {
 					this.previousValue = objectToModify;
@@ -213,84 +148,60 @@ export class ModifyItemService {
 		else {
 			this.mode = ModifyType.ADD;
 		}
-
-		if (!this.model["date"]) {
-			EventUtilityService.shopItemSwitch<any>(
-				this.itemType,
-				{
-					tours: () => setDateAndTime(new Date()),
-					partys: () => setDateAndTime(new Date()),
-				});
-		}
-		else if (!this.model["time"]) {
-			EventUtilityService.shopItemSwitch(
-				this.itemType,
-				{
-					tours: () => setDateAndTime(this.model["date"]),
-					partys: () => setDateAndTime(this.model["date"]),
-				}
-			)
-		}
-		if (!this.model["addresses"]) {
-			this.model["addresses"] = [];
-		}
-
-		this.router.events
-			.pipe(
-				filter(event => event instanceof NavigationEnd),
-				map(event => (<NavigationEnd>event)),
-				scan((acc: NavigationEnd[], value: NavigationEnd) => {
-					return [...acc, value];
-				}, []),
-				//check that the url currently routed to isn't the one we started at AND not the address-modification route
-				filter(events => events.length > 1 && !events[events.length - 1].urlAfterRedirects.includes("address") &&
-					events[events.length - 1].urlAfterRedirects !== events[0].urlAfterRedirects),
-				first()
-			)
-			.subscribe(() => this.reset());
 	}
 
 	/**
 	 *
-	 * @param model
+	 * @param {Address[]} addresses
+	 * @returns {Observable<any>}
 	 */
-	watchForAddressModification(model: any) {
-		const currentAddresses: Address[] = [...this.model["addresses"]];
-		if (model.action && model.action === "delete") {
-			const addressToDelete: Address = model.address;
-			const deletedAddressId: number = currentAddresses
-				.findIndex(currentAddress => currentAddress.id === addressToDelete.id);
+	removeOldAddresses(addresses: Address[]): Observable<any> {
+		if (this.previousValue) {
+			let previousAddresses: number[] = [];
+			if (EventUtilityService.isTour(this.previousValue) || EventUtilityService.isParty(this.previousValue)) {
+				previousAddresses = this.previousValue.route;
+			}
+			if (EventUtilityService.isUser(this.previousValue)) {
+				previousAddresses = this.previousValue.addresses;
+			}
+			const addressesToDelete = previousAddresses
+				.filter(id => addresses.findIndex(address => address.id === id) === -1);
 
-			if (deletedAddressId >= 0) {
-				currentAddresses.splice(deletedAddressId, 1);
+			if (addressesToDelete.length === 0 || (previousAddresses.length === 0 && addresses.length === 0)) {
+				return of([]);
 			}
 
-			this.model["addresses"] = [...currentAddresses];
-			this.model = {...this.model};
-		}
-		this.addressService.addressModificationDone
-			.pipe(first())
-			.subscribe(address => {
-				if (address) {
-					const modifiedAddressIndex = currentAddresses
-						.findIndex(currentAddress => currentAddress.id === address.id);
-					//address was added
-					if (modifiedAddressIndex === -1) {
-						currentAddresses.push(address);
-					}
-					//address was modified => push back into array
-					else {
-						this.model["addresses"] = currentAddresses.splice(modifiedAddressIndex, 1, address);
-					}
 
-					this.model["addresses"] = [...currentAddresses];
-					this.model = {...this.model};
-				}
-			})
+			return combineLatest(
+				...addressesToDelete
+					.map(id => this.addressService.remove(id))
+			)
+		}
+		return of([]);
 	}
 
-	isAddressArray(value: any[]): value is Address[] {
-		return value[0].latitude !== undefined;
+	/**
+	 *
+	 * @param {Address[]} addresses
+	 * @returns {Observable<Address[]>}
+	 */
+	updateAddresses(addresses: Address[]): Observable<Address[]> {
+		if (addresses.length === 0) {
+			return of([]);
+		}
+
+		return combineLatest(
+			...addresses.map((route: Address) => {
+				//only add routes that aren't already part of the system
+				if (route.id >= 0) {
+					//but modify them in case they're different
+					return this.addressService.modify(route);
+				}
+				else {
+					return this.addressService.add(route)
+				}
+			})
+		);
 	}
 
 	/**
@@ -298,19 +209,35 @@ export class ModifyItemService {
 	 * @param {ShopItem} newObject
 	 * @returns {Promise<ShopItem>}
 	 */
-	async addAddresses(newObject: ShopItem): Promise<ShopItem> {
+	handleAddresses(newObject: ShopItem): Observable<ShopItem> {
+		let addresses: any[] = [];
+		let key = "addresses";
 		if (EventUtilityService.isTour(newObject) || EventUtilityService.isParty(newObject)) {
-			//todo instead of combineLatest: add routes one after another (to avoid transaction errors)
-			if (this.isAddressArray(newObject.route)) {
-				let addresses = await combineLatest(
-					...newObject.route.map((route: Address) => this.addressService.add(route))
-				)
-					.toPromise();
-
-				newObject.setProperties({route: [...addresses]});
-			}
+			addresses = newObject.route;
+			key = "route";
 		}
-		return newObject
+		if (newObject["addresses"]) {
+			addresses = newObject["addresses"];
+		}
+
+		//delete old addresses if length < previousLength
+		return this.removeOldAddresses(addresses)
+			.pipe(
+				mergeMap(() => {
+					//no need to modify/add the addresses if there are none
+					if (!addresses || addresses.length === 0) {
+						return of([]);
+					}
+
+					//todo instead of combineLatest: add routes one after another (to avoid transaction errors)
+					return this.updateAddresses(addresses);
+				}),
+				map(addresses => {
+					(<any>newObject)[key] = [...addresses.map(it => it.id)];
+					return newObject;
+				})
+			);
+
 	}
 
 	/**
@@ -327,37 +254,63 @@ export class ModifyItemService {
 
 	/**
 	 *
-	 * @param newObject
-	 * @param {FormData} uploadedImage
+	 * @param {string[]} imagePaths
+	 * @returns {Observable<any[]>}
 	 */
-	async uploadImage(newObject: ShopItem, uploadedImage: FormData): Promise<ShopItem> {
+	deleteOldImages(imagePaths: string[]) {
+		if (this.previousValue) {
+			const previousImagePaths = this.previousValue.images;
+			const imagesToDelete = previousImagePaths
+				.filter(path => imagePaths.indexOf(path) === -1);
+
+			if (imagesToDelete.length === 0) {
+				return of([]);
+			}
+
+			return combineLatest(
+				...imagesToDelete
+					.map(path => this.imageUploadService.deleteImage(path))
+			);
+		}
+		return of([]);
+	}
+
+	/**
+	 *
+	 * @param newObject
+	 * @param images
+	 */
+	uploadImage(newObject: ShopItem, images: { imagePaths: string[], imagesToUpload: ImageToUpload[] }): Observable<ShopItem> {
+		const {imagePaths, imagesToUpload} = images;
+
 		if (EventUtilityService.isMerchandise(newObject) || EventUtilityService.isTour(newObject) ||
 			EventUtilityService.isUser(newObject) || EventUtilityService.isParty(newObject)) {
 
-			if (uploadedImage) {
+			if (imagesToUpload) {
 				//todo: error handling, progress report
-				let images = await this.imageUploadService.uploadImages(uploadedImage)
-					.pipe(
-						map(response => response.images)
-					)
-					.toPromise();
+				let formData = new FormData();
+				imagesToUpload.forEach(image => {
+					const blob = this.imageUploadService.dataURItoBlob(image.data);
+					formData.append("file[]", blob, image.name);
+				});
 
-				//thanks typescript..
-				if (EventUtilityService.isUser(newObject)) {
-					return newObject.setProperties({images});
-				}
-				return newObject.setProperties({images});
+				return this.imageUploadService.uploadImages(formData)
+					.pipe(
+						map(response => response.images),
+						map(images => (<any>newObject).setProperties({images: [...imagePaths, ...images]}))
+					)
+
 			}
 		}
 
-		return newObject;
+		return of((<any>newObject).setProperties({images: [...imagePaths]}));
 	}
 
 	/**
 	 *
 	 * @param modifyItemEvent
 	 */
-	async submitModifiedEvent(modifyItemEvent: ModifyItemEvent) {
+	submitModifiedEvent(modifyItemEvent: ModifyItemEvent) {
 		const service: ServletServiceInterface<ShopItem | Event> = EventUtilityService.shopItemSwitch<ServletServiceInterface<ShopItem | Event>>(
 			this.itemType,
 			{
@@ -369,59 +322,39 @@ export class ModifyItemService {
 			}
 		);
 
-		let newObject: ShopItem = EventUtilityService.shopItemSwitch<ShopItem>(
-			this.itemType,
-			{
-				merch: () => Merchandise.create().setProperties(this.model),
-				tours: () => Tour.create().setProperties(this.model),
-				partys: () => Party.create().setProperties(this.model),
-				members: () => User.create().setProperties(this.model),
-				entries: () => Entry.create().setProperties(this.model)
-			}
-		);
+		let newObject: ShopItem = modifyItemEvent.item;
+		if (this.idOfObjectToModify && this.idOfObjectToModify >= 0) {
+			(<any>newObject).setProperties({id: this.idOfObjectToModify});
+		}
 
-		const options: any = EventUtilityService.shopItemSwitch<any>(this.itemType,
-			{
-				entries: () => ({eventId: modifyItemEvent.eventId})
-			});
+		of("hallo")
+			.pipe(
+				tap(() => timer(0, 500).pipe(first()))
+			)
+			.subscribe(it => console.log(it));
 
 		//handle addresses correctly
-		if (EventUtilityService.isUser(newObject)) {
-			newObject.setProperties({addresses: newObject.addresses.map((it: any) => it.id)});
-		}
-		newObject = await this.addAddresses(newObject);
-		newObject = this.setDefaultValues(newObject);
-
-		//todo display progress-bar while uploading
-		newObject = await this.uploadImage(newObject, modifyItemEvent.uploadedImage);
-
-
-		//todo display "submitting..." while waiting for response from server
-		let requestMethod = service.add.bind(service);
-		if (this.mode === ModifyType.EDIT) {
-			requestMethod = service.modify.bind(service);
-		}
-
-		requestMethod(newObject, options)
+		const request = this.handleAddresses(newObject)
 			.pipe(
-				mergeMap((result: ShopItem) => {
-					if (EventUtilityService.isMerchandise(result)) {
-						// this.stockService.add(model["stock"], newObject.id)
-						console.log(modifyItemEvent.model["stock"]);
-
-						return this.stockService.pushChanges(
-							result,
-							[...this.previousStock],
-							[...modifyItemEvent.model["stock"]]
-						)
-							.pipe(
-								map(() => (<any>result))
-							)
-					}
-					return of(result);
-				}),
+				map(newObject => this.setDefaultValues(newObject)),
+				tap(() => this.deleteOldImages(modifyItemEvent.images.imagePaths)),
+				//todo display progress-bar while uploading
+				mergeMap(newObject => this.uploadImage(newObject, modifyItemEvent.images)),
+				mergeMap(newObject => this.mode === ModifyType.EDIT
+					? service.modify.bind(service)(newObject)
+					: service.add.bind(service)(newObject)
+				),
+				mergeMap((result: ShopItem) => EventUtilityService.isMerchandise(result) && modifyItemEvent.stock
+					? this.stockService.pushChanges(result, [...this.previousStock], [...modifyItemEvent.stock])
+						.pipe(map(() => result))
+					: of(result)
+				),
 				first()
 			)
+		;
+
+		//perform request
+		request
 			.subscribe(
 				(result: ShopItem) => {
 					if (this.itemType === ShopItemType.entry) {
@@ -437,6 +370,7 @@ export class ModifyItemService {
 					this.reset();
 				},
 				error => {
+					//todo global error handler that shows toast or some kind of notification
 					console.log("adding or editing object went wrong");
 					console.error(error);
 					console.log(newObject);
@@ -445,5 +379,8 @@ export class ModifyItemService {
 					this.reset();
 				}
 			);
+
+		//return request for additional error handling / whatever
+		return request;
 	}
 }

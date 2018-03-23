@@ -38,13 +38,6 @@ export class SignUpComponent implements OnInit {
 
 	/**
 	 *
-	 */
-	watchForAddressModification(model: any) {
-		this.signUpService.watchForAddressModification(model);
-	}
-
-	/**
-	 *
 	 * @param section
 	 * @param event
 	 */

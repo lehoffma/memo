@@ -64,6 +64,8 @@ public class ShopItem implements Serializable {
     private BigDecimal price;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "item")
+    @JsonSerialize(using = AddressIdListSerializer.class)
+    @JsonDeserialize(using = AddressIdListDeserializer.class)
     private List<Address> route = new ArrayList<>();
 
     private String material;

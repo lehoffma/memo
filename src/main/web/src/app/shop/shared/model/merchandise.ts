@@ -191,11 +191,6 @@ export class Merchandise extends Event {
 				key: "capacity",
 				label: "Auf Lager",
 			},
-			//todo besseres label oder komplett weg?
-			// {
-			// 	key: "expectedRole",
-			// 	label: "Für"
-			// },
 		];
 	}
 

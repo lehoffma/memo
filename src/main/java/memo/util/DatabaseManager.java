@@ -142,6 +142,14 @@ public class DatabaseManager {
         EntityManager em = DatabaseManager.createEntityManager();
 
         EntityTransaction transaction = em.getTransaction();
+        while(transaction.isActive()){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                logger.error("Thread was interrupted!", e);
+                return null;
+            }
+        }
         transaction.begin();
         T result = action.apply(em);
         transaction.commit();

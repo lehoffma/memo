@@ -1,8 +1,8 @@
-<form [formGroup]="permissionsInputForm" novalidate>
+<form [formGroup]="formGroup" novalidate>
 	<div *ngFor="let permission of permissions">
 		<mat-input-container>
 			<mat-select
-				formControlName="{{permission.key}}"
+				[formControl]="formGroup.get(permission.key)"
 				placeholder="{{permission.label}}"
 				class="aligned-mat-select">
 				<mat-option *ngFor="let option of clubRoleOptions" [value]="option">

@@ -5,6 +5,7 @@ import {ApiCache} from "../../cache/api-cache";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
 import {catchError, retry} from "rxjs/operators";
+import {_throw} from "rxjs/observable/throw";
 
 export type AddOrModifyRequest = <T>(url: string, body: any | null, options?: {
 	headers?: HttpHeaders;
@@ -33,7 +34,7 @@ export abstract class ServletService<T> implements ServletServiceInterface<T> {
 	 */
 	handleError(error: Error): Observable<any> {
 		console.error(error);
-		return of(error);
+		return _throw(error);
 	}
 
 	/**

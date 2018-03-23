@@ -6,6 +6,18 @@
 
 }
 
+@media all and (max-width: 800px) {
+	:host /deep/ memo-multi-image-upload /deep/ memo-multi-image-container {
+		margin: -1rem;
+		width: calc(100% + 2rem) !important;
+		max-width: none;
+
+		/deep/ img.current-image {
+			border: none !important;
+		}
+	}
+}
+
 .modify-shop-item-container {
 	//@include card-like();
 	padding: 1rem;
@@ -21,8 +33,15 @@
 		}
 
 		memo-tour-route-input {
-			display: block;
-			margin-bottom: 1.5rem;
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 0;
+
+			/deep/ agm-map {
+				width: calc(100% + 1rem);
+				margin: -1rem;
+				margin-bottom: 1rem;
+			}
 		}
 
 		@media all and (max-width: 800px) {
@@ -148,4 +167,8 @@
 		}
 
 	}
+}
+
+.no-padding /deep/ .object-details-content {
+	padding: 0;
 }

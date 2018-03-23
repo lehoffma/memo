@@ -80,7 +80,7 @@ export class Tour extends Event {
 		]
 	}
 
-	static create() {
+	static create(): Tour{
 		return new Tour(-1, "", new Date(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
 			["resources/images/Logo.png"], -1, -1, "", -1, -1);
 	}

@@ -1,15 +1,14 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {StockEntry} from "./stock-entry";
 import {WindowService} from "../../../../../shared/services/window.service";
 import {MatDialog} from "@angular/material";
-import {ModifyStockDialogComponent} from "./modify-stock-dialog.component";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {filter, map} from "rxjs/operators";
 
 @Component({
-	selector: 'memo-merch-stock-entry',
-	templateUrl: './merch-stock-entry.component.html',
-	styleUrls: ['./merch-stock-entry.component.scss']
+	selector: "memo-merch-stock-entry",
+	templateUrl: "./merch-stock-entry.component.html",
+	styleUrls: ["./merch-stock-entry.component.scss"]
 })
 export class MerchStockEntryComponent implements OnInit {
 	private _stockEntry$ = new BehaviorSubject<StockEntry>(null);
@@ -63,14 +62,4 @@ export class MerchStockEntryComponent implements OnInit {
 		this.onDelete.emit(id);
 	}
 
-	/**
-	 *
-	 */
-	openModifyStockDialog() {
-		this.mdDialog.open(ModifyStockDialogComponent, {
-			data: {
-				merch: this._stockEntry$.getValue().item
-			}
-		})
-	}
 }

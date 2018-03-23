@@ -36,7 +36,7 @@ public abstract class AbstractRepository<T> implements Repository<T> {
     public List<T> get(String id) {
         return this.getById(id)
                 .map(Collections::singletonList)
-                .orElse(this.getAll());
+                .orElse(new ArrayList<>());
     }
 
     public Optional<T> getById(Integer id){

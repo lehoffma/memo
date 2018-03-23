@@ -3,7 +3,7 @@ import {BaseObject} from "./util/base-object";
 export class EntryCategory extends BaseObject<EntryCategory> {
 	constructor(public readonly id: number,
 				public readonly name: string,
-				public readonly category: number	//todo wtf?
+				public readonly category: number
 	) {
 		super(id);
 	}

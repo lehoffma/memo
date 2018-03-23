@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import static memo.auth.api.ShopItemAuthHelper.getEventPermission;
 
 public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
-    //todo refactor
     @Override
     public boolean isAllowedToRead(User user, ShopItem object) {
 

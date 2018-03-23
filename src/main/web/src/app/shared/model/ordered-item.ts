@@ -3,7 +3,7 @@ import {OrderStatus} from "./order-status";
 import {Event} from "../../shop/shared/model/event";
 
 export interface OrderedItem {
-	id: number,	//todo is used as user id, but that's wrong
+	id: number,
 	item: Event,
 	price: number,
 	status: OrderStatus,

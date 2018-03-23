@@ -17,6 +17,7 @@ public class ApiServletPutOptions<T, SerializedType> {
         this.jsonId = "id";
         this.transform = Function.identity();
         this.serializedKey = "id";
+        this.preconditions = new ArrayList<>();
     }
 
     public ApiServletPutOptions(String objectName, Class<T> clazz, Function<T, SerializedType> getSerialized) {

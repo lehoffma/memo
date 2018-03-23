@@ -1,5 +1,5 @@
 <div class="stock-table-container">
-	<memo-modify-merch-stock [(stock)]="stock" [merchTitle]="merch.title">
+	<memo-modify-merch-stock [previousValue]="stock" [formControl]="formControl" [merchTitle]="merch.title">
 
 	</memo-modify-merch-stock>
 </div>
@@ -9,7 +9,7 @@
 	<button mat-button (click)="goBack()">
 		Abbrechen
 	</button>
-	<button mat-raised-button color="accent" (click)="saveChanges()" [disabled]="noChanges">
+	<button mat-raised-button color="accent" (click)="saveChanges()">
 		Änderungen speichern
 	</button>
 </div>

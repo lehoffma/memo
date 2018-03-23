@@ -5,8 +5,10 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {MerchColor} from "../../../shop/shared/model/merch-color";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap, share, tap} from "rxjs/operators";
+import {catchError, map, mergeMap, share, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {empty} from "rxjs/observable/empty";
+import {isArrayType} from "../../../util/util";
 
 const stockMockData = [
 	{
@@ -172,9 +174,9 @@ export class StockService extends ServletService<MerchStock[]> {
 			.set("eventId", "" + eventId);
 		const request = this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {params}))
 			.pipe(
-				//todo update when merchstock is a class?
 				map(response => response.stock),
-				share()
+				share(),
+				catchError(error => empty<MerchStock[]>())
 			);
 
 		return this._cache.getById(params, request);
@@ -255,7 +257,6 @@ export class StockService extends ServletService<MerchStock[]> {
 		const params = new HttpParams().set("searchTerm", searchTerm);
 		const request = this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {params}))
 			.pipe(
-				//todo update when merchstock is a class
 				map(response => [response.stock]),
 				share()
 			);
@@ -270,12 +271,17 @@ export class StockService extends ServletService<MerchStock[]> {
 	 * @param eventId
 	 */
 	addOrModify(requestMethod: AddOrModifyRequest,
-				stock: MerchStock | MerchStockList, eventId: number): Observable<MerchStockList> {
-		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {stock}, {
+				stock: MerchStock, eventId: number): Observable<MerchStockList> {
+		const modifiedStock = {
+			...stock,
+			item: stock.item.id
+		};
+
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {stock: modifiedStock}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
 			.pipe(
-				tap(() => this._cache.invalidateByPartialParams(new HttpParams().set("eventId", ""+eventId))),
+				tap(() => this._cache.invalidateByPartialParams(new HttpParams().set("eventId", "" + eventId))),
 				mergeMap(response => this.getById(response.id, eventId))
 			);
 	}
@@ -285,8 +291,20 @@ export class StockService extends ServletService<MerchStock[]> {
 	 * @param stock
 	 * @param eventId
 	 */
-	add(stock: MerchStock | MerchStockList, eventId: number): Observable<MerchStockList> {
-		return this.addOrModify(this.http.post.bind(this.http), stock, eventId);
+	add(stock: MerchStock | MerchStock[], eventId: number): Observable<MerchStockList> {
+		if (isArrayType(stock)) {
+			stock.forEach(it => it.id = -1);
+			return combineLatest(
+				...stock.map(it => this.addOrModify(this.http.post.bind(this.http), it, eventId))
+			)
+				.pipe(
+					map(listList =>  [].concat(...listList))
+				)
+		}
+		else {
+			stock.id = -1;
+			return this.addOrModify(this.http.post.bind(this.http), stock, eventId);
+		}
 	}
 
 	/**
@@ -295,7 +313,17 @@ export class StockService extends ServletService<MerchStock[]> {
 	 * @param eventId
 	 */
 	modify(stock: MerchStock | MerchStockList, eventId: number): Observable<MerchStockList> {
-		return this.addOrModify(this.http.put.bind(this.http), stock, eventId);
+		if (isArrayType(stock)) {
+			return combineLatest(
+				...stock.map(it => this.addOrModify(this.http.post.bind(this.http), it, eventId))
+			)
+				.pipe(
+					map(listList =>  [].concat(...listList))
+				)
+		}
+		else {
+			return this.addOrModify(this.http.post.bind(this.http), stock, eventId);
+		}
 	}
 
 	/**
@@ -319,7 +347,7 @@ export class StockService extends ServletService<MerchStock[]> {
 	 * @param {MerchStockList} current
 	 * @returns {Observable<any>}
 	 */
-	pushChanges(merch: Merchandise, previous: MerchStockList, current: MerchStockList):Observable<any>{
+	pushChanges(merch: Merchandise, previous: MerchStockList, current: MerchStockList): Observable<any> {
 		//delete objects that are part of the previous stock, but are not contained in the final object
 		const removeRequests = [...previous
 			.filter(stockItem => !current.find(it => it.id === stockItem.id))

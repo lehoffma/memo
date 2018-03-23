@@ -1,4 +1,4 @@
-<div *ngFor="let user of _users$ | async; let i = index"
+<div *ngFor="let user of users$ | async; let i = index"
 	 class="user-list-row"
 >
 	<a class="user-info" routerLink="/members/{{user.id}}"

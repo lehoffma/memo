@@ -32,4 +32,17 @@ export class Address extends BaseObject<Address> {
 	static isAddress(obj: any): obj is Address {
 		return obj && obj.street !== undefined && obj.zip !== undefined;
 	}
+
+	toString() {
+		return Address.toString(this);
+	}
+
+	static toString(address: Address) {
+		const ifNotEmpty = (value: string, options: { suffix?: string, prefix?: string } = {suffix: "", prefix: ""}) => {
+			return !value ? "" : ifNotEmpty(options && options.prefix) + value + ifNotEmpty(options && options.suffix);
+		};
+
+		return address.street + ifNotEmpty(address.streetNr, {prefix: " "}) + ", "
+			+ ifNotEmpty(address.zip, {suffix: " "}) + address.city + ", " + address.country;
+	}
 }

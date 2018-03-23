@@ -1,9 +1,9 @@
-import {AbstractControl, ValidatorFn} from "@angular/forms";
+import {AbstractControl, AsyncValidatorFn, ValidatorFn} from "@angular/forms";
 import {map, mergeMap} from "rxjs/operators";
 import {timer} from "rxjs/observable/timer";
 
 
-export function emailAlreadyTakenValidator(that: any): ValidatorFn {
+export function emailAlreadyTakenValidator(that: any): AsyncValidatorFn {
 	return (control: AbstractControl) => {
 		return timer(500)
 			.pipe(

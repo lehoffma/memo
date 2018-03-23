@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
-import {FormControl, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {Event} from "../../../shared/model/event";
@@ -14,6 +14,7 @@ import {Observable} from "rxjs/Observable";
 import {filter, map, mergeMap, startWith, take} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {isEventValidator} from "../../../../shared/validators/is-event.validator";
+import {Entry} from "../../../../shared/model/entry";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -21,51 +22,65 @@ import {isEventValidator} from "../../../../shared/validators/is-event.validator
 	styleUrls: ["./modify-entry.component.scss"]
 })
 export class ModifyEntryComponent implements OnInit {
-	@Input() model: any;
+	autocompleteFormControl: FormControl = new FormControl("");
+	filteredOptions: Observable<Event[]>;
+	formGroup: FormGroup = this.formBuilder.group({
+		"name": ["", {
+			validators: [Validators.required]
+		}],
+		"value": [undefined, {
+			validators: [Validators.required]
+		}],
+		"item": this.autocompleteFormControl,
+		"date": [new Date(), {
+			validators: [Validators.required]
+		}],
+		"comment": ["", {
+			validators: []
+		}],
+		"images": this.formBuilder.group({
+			"imagePaths": [[], {validators: []}],
+			"imagesToUpload": [[], {validators: []}]
+		}),
+		"category": [undefined, {
+			validators: [Validators.required]
+		}]
+	});
+
+	_previousValue: Entry;
+	@Input() set previousValue(previousValue: Entry) {
+		this._previousValue = previousValue;
+
+		if (!previousValue) {
+			return;
+		}
+
+		this.formGroup.get("name").patchValue(previousValue.name);
+		this.formGroup.get("value").patchValue(previousValue.value);
+		this.formGroup.get("item").patchValue(previousValue.item);
+		this.formGroup.get("date").patchValue(previousValue.date);
+		this.formGroup.get("comment").patchValue(previousValue.comment);
+		this.formGroup.get("category").patchValue(previousValue.category);
+		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
+	}
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
 	@Input() mode: ModifyType;
-	@Output() modelChange: EventEmitter<any> = new EventEmitter();
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
-	_associatedEvent: Event;
 
-	get associatedEvent() {
-		return this._associatedEvent;
-	}
-
-	set associatedEvent(event: Event) {
-		this._associatedEvent = event;
-		this.model["item"] = event;
-	}
 
 	ModifyType = ModifyType;
-
 	entryCategories$ = this.entryCategoryService.getCategories();
 
-	autocompleteFormControl: FormControl = new FormControl("",);
-	filteredOptions: Observable<Event[]>;
 
 	constructor(private location: Location,
+				private formBuilder: FormBuilder,
 				private activatedRoute: ActivatedRoute,
 				private entryCategoryService: EntryCategoryService,
 				private eventService: EventService) {
-	}
-
-	get entryModel() {
-		return this.model;
-	}
-
-	set entryModel(model: any) {
-		this.model = model;
-		this.modelChange.emit(this.model);
-	}
-
-	ngOnInit() {
-		if (this.model["item"] && this.model["item"] !== null &&
-			(EventUtilityService.isMerchandise(this.model["item"]) ||
-				EventUtilityService.isTour(this.model["item"]) ||
-				EventUtilityService.isParty(this.model["item"]))) {
-			this.associatedEvent = this.model["item"];
-			this.autocompleteFormControl.setValue(this.associatedEvent);
-		}
 		this.activatedRoute.queryParamMap
 			.pipe(
 				filter(queryParamMap => queryParamMap.has("eventId")),
@@ -73,15 +88,8 @@ export class ModifyEntryComponent implements OnInit {
 				take(1),
 			)
 			.subscribe(event => {
-				this.associatedEvent = event;
 				this.autocompleteFormControl.setValue(event);
 			});
-
-		this.autocompleteFormControl.valueChanges
-			.pipe(
-				filter(value => EventUtilityService.isEvent(value))
-			)
-			.subscribe(value => this.associatedEvent = value);
 
 		this.filteredOptions = this.autocompleteFormControl.valueChanges
 			.pipe(
@@ -103,10 +111,10 @@ export class ModifyEntryComponent implements OnInit {
 						)
 				)
 			);
+	}
 
-		this.autocompleteFormControl.setValidators(
-			[Validators.required, isEventValidator()]
-		)
+	ngOnInit() {
+		this.autocompleteFormControl.setValidators([Validators.required, isEventValidator()]);
 	}
 
 	/**
@@ -144,9 +152,19 @@ export class ModifyEntryComponent implements OnInit {
 	}
 
 	submitModifiedObject() {
+		const entry = Entry.create().setProperties({
+			id: this.previousValue ? this.previousValue.id : -1,
+			name: this.formGroup.get("name").value,
+			value: this.formGroup.get("value").value,
+			date: this.formGroup.get("date").value,
+			comment: this.formGroup.get("comment").value,
+			category: this.formGroup.get("category").value,
+			item: this.formGroup.get("item").value.id
+		});
+
 		this.onSubmit.emit({
-			model: this.model,
-			eventId: this.associatedEvent.id
+			item: entry,
+			images: this.formGroup.get("images").value
 		});
 	}
 }

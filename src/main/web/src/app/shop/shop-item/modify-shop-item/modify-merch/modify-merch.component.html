@@ -1,13 +1,11 @@
 <div class="modify-shop-item-container">
 	<h2>Merch {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
-	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
+	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
 
 		<div class="image-upload-container">
 			<memo-item-details-content [title]="'Bilder'">
-				<memo-multi-image-upload
-					(onFormDataChange)="profilePictureChanged($event)"
-					[images]="merchModel['images']"
-
+				<memo-multi-image-upload [previousValue]="previousValue?.images"
+										 [formGroup]="formGroup.get('images')"
 				>
 
 				</memo-multi-image-upload>
@@ -19,19 +17,21 @@
 			<!--<memo-item-details-content [title]="'Bestand'">-->
 			<!--</memo-item-details-content>-->
 			<div class="modify-merch-stock-container">
-				<memo-modify-merch-stock [(stock)]="merchModel['stock']">
+				<memo-modify-merch-stock
+					[previousValue]="_previousStock"
+					[formControl]="formGroup.get('event-data').get('stock')">
 				</memo-modify-merch-stock>
 			</div>
 
-			<memo-item-details-content [title]="'Merch-Informationen'">
+			<memo-item-details-content [title]="'Merch-Informationen'" [formGroup]="formGroup.get('event-data')">
 
 				<mat-form-field>
 					<input matInput name="titleInput"
 						   required
 						   placeholder="Titel"
-						   #titleInput="ngModel"
-						   [(ngModel)]="merchModel['title']">
-					<mat-error *ngIf="titleInput.touched && !titleInput.valid" align="end">
+						   formControlName="title"
+					>
+					<mat-error *ngIf="formGroup.get('event-data').get('title').hasError('required')" align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
@@ -40,49 +40,41 @@
 					<mat-form-field>
 						<input matInput name="priceInput"
 							   type="number" required
-							   pattern="^[\d]+((\.|\,)[\d]{1,2})?$"
 							   placeholder="Preis (max. 2 Nachkommastellen)"
-							   (input)="checkValidityOfPrice()"
-							   #priceInput="ngModel"
-							   [(ngModel)]="merchModel['price']">
+							   formControlName="price"
+						>
 						<span matSuffix>€</span>
-						<mat-error *ngIf="priceInput.touched && !priceInput.valid && priceInput.value === ''"
-								   align="end">
+						<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('required')" align="end">
 							Dieses Feld darf nicht leer bleiben!
 						</mat-error>
-						<mat-error *ngIf="!priceIsValid" align="end">
-							Der Preis ist inkorrekt formatiert!
+						<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('pattern')" align="end">
+							Dieses Feld darf nicht leer bleiben!
 						</mat-error>
 					</mat-form-field>
 					<mat-form-field>
 						<input matInput name="materialInput"
 							   type="text" required
-							   placeholder="Material"
-							   #materialInput="ngModel"
-							   [(ngModel)]="merchModel['material']">
-						<mat-error *ngIf="materialInput.touched && !materialInput.valid" align="end">
+							   formControlName="material"
+							   placeholder="Material">
+						<mat-error *ngIf="formGroup.get('event-data').get('material').hasError('required')" align="end">
 							Dieses Feld darf nicht leer bleiben!
 						</mat-error>
 					</mat-form-field>
 				</div>
 
 				<mat-form-field class="description-input">
-			<textarea autosize matInput name="descriptionInput"
-					  class="not-resizable-textarea" required
-					  type="text"
-					  #descriptionInput="ngModel"
-					  placeholder="Beschreibung"
-					  [(ngModel)]="merchModel['description']">
-			</textarea>
-					<mat-error *ngIf="descriptionInput.touched && !descriptionInput.valid"
-							   align="end">
+					<textarea autosize matInput name="descriptionInput"
+							  class="not-resizable-textarea" required
+							  type="text"
+							  formControlName="description"
+							  placeholder="Beschreibung">
+					</textarea>
+					<mat-error *ngIf="formGroup.get('event-data').get('description').hasError('required')" align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
 			</memo-item-details-content>
 		</div>
-
-		<!--todo? date: Date,-->
 
 		<!--<h2>Grössentabelle</h2>-->
 		<div>
@@ -93,14 +85,19 @@
 
 		<memo-item-details-content [title]="'Berechtigungen'">
 			<memo-item-permissions-input
-				[values]="permissions"
-				(onChange)="permissionChange($event)">
+				[formGroup]="formGroup.get('permissions')"
+				[previousValue]="{
+					'expectedReadRole': previousValue?.expectedReadRole,
+					'expectedWriteRole': previousValue?.expectedWriteRole,
+					'expectedCheckInRole': previousValue?.expectedCheckInRole
+				}">
 
 			</memo-item-permissions-input>
 		</memo-item-details-content>
 
 		<memo-item-details-content [title]="'Zusätzliche verantwortliche User'" class="no-padding">
-			<memo-responsible-user-input (usersChanged)="responsibleUsersChange($event)">
+			<memo-responsible-user-input [previousValue]="previousValue?.author"
+										 [formControl]="formGroup.get('responsible-users')">
 
 			</memo-responsible-user-input>
 		</memo-item-details-content>
@@ -111,7 +108,7 @@
 			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
 			<button mat-raised-button color="accent"
-					[disabled]="!modifyShopItemForm.form.valid"
+					[disabled]="!formGroup.valid || formGroup.pending"
 					type="submit">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
 			</button>

@@ -10,7 +10,6 @@ import java.util.Arrays;
 public class StockAuthStrategy implements AuthenticationStrategy<Stock> {
     @Override
     public boolean isAllowedToRead(User user, Stock object) {
-        //todo see entryAuthStrategy - same question
         return userIsAuthorized(user, object, Arrays.asList(
                 //the user is logged in..
                 AuthenticationConditionFactory.<Stock>userIsLoggedIn()

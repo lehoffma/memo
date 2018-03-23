@@ -71,6 +71,34 @@ export class EventUtilityService {
 		return defaultCallback(item);
 	}
 
+	static handleShopItemOptional<T>(item: ShopItem | Event, callbacks: {
+		merch?: (merch: Merchandise) => T,
+		tours?: (tour: Tour) => T,
+		partys?: (party: Party) => T,
+		members?: (member: User) => T,
+		entries?: (entry: Entry) => T
+	}): T {
+		if (isNullOrUndefined(item)) {
+			return null;
+		}
+		if (EventUtilityService.isMerchandise(item) && callbacks.merch) {
+			return callbacks.merch(item);
+		}
+		if (EventUtilityService.isTour(item) && callbacks.tours) {
+			return callbacks.tours(item);
+		}
+		if (EventUtilityService.isParty(item) && callbacks.partys) {
+			return callbacks.partys(item);
+		}
+		if (EventUtilityService.isUser(item) && callbacks.members) {
+			return callbacks.members(item);
+		}
+		if (EventUtilityService.isEntry(item) && callbacks.entries) {
+			return callbacks.entries(item);
+		}
+		return null;
+	}
+
 	static optionalShopItemSwitch<T>(item: ShopItem | Event, callbacks: {
 		merch?: () => T,
 		tours?: () => T,

@@ -82,8 +82,8 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                                                        Function<DependencyType, List<T>> getCyclicListDependency,
                                                        Function<DependencyType, Consumer<List<T>>> updateDependencyValues
     ) {
-        dependencyUpdateService.manyToMany(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues)
-                .forEach(it -> DatabaseManager.getInstance().update(it));
+        List<DependencyType> dependencyTypes = dependencyUpdateService.manyToMany(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues);
+        DatabaseManager.getInstance().updateAll(dependencyTypes);
     }
 
     protected abstract void updateDependencies(JsonNode jsonNode, T object);
@@ -170,7 +170,6 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         logger.debug("Method POST called with params " + paramMapToString(request.getParameterMap()));
 
         //ToDo: Duplicate Items :/
-        //          ^-- huh?
         //perform transformations on the parsed item, i.e. hashing
         T item = transform.apply(
                 ApiUtils.getInstance().updateFromJson(jsonItem, baseValue, clazz)

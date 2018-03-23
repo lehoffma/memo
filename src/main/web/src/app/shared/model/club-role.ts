@@ -3,7 +3,7 @@ import {UserPermissions} from "./permission";
 export enum ClubRole {
 	Admin = "Admin",
 	Kassenwart = "Kassenwart",
-	Organisator = "Organisator", //todo umbenennen?
+	Organisator = "Organisator",
 	Schriftfuehrer = "Schriftführer",
 	Vorstand = "Vorstand",
 	Mitglied = "Mitglied",

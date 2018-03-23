@@ -1,15 +1,21 @@
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
+import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ExpandableTableColumn} from "../expandable-table/expandable-table-column";
 import {RowAction} from "../expandable-table/row-action";
 import {MultiImageUploadService} from "./multi-image-upload.service";
-import {filter, map, take, tap} from "rxjs/operators";
-import {isString} from "../../util/util";
+import {filter, map, take} from "rxjs/operators";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Subscription} from "rxjs/Subscription";
 
 export interface ImageToUpload {
 	id: string;
 	name: string;
 	data: any
+}
+
+export function isImageToUpload(value: any): value is ImageToUpload {
+	return value.id !== undefined && value.name !== undefined && value.data !== undefined
+		&& value.name !== value.data;
 }
 
 @Component({
@@ -23,57 +29,45 @@ export interface ImageToUpload {
 export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	//todo maximum size stuff
 
-	private _images$ = new BehaviorSubject<ImageToUpload[]>([]);
-	images$ = this.multiImageUploadService.data$
-		.pipe(
-			tap(it => console.log(it)),
-			map(images => [...images.map(it => it.data)])
-		);
-
-	@Input()
-	set images(images: string[] | FormData[] | ImageToUpload[]) {
-		console.log(images);
-
-		if (images && images.length > 0) {
-			if (isString(images[0])) {
-				const imagesToUpload = (<string[]>images).filter(it => it !== undefined);
-				if (imagesToUpload && imagesToUpload.length > 0) {
-					const currentValue = this._images$.getValue();
-					this._images$.next([...currentValue, ...imagesToUpload.map(image => ({
-						id: image,
-						name: image,
-						data: image
-					}))]
-						.filter((value, index, array) => array.findIndex(it => it.id === value.id) === index));
-				}
-			}
-			else if ((<ImageToUpload>images[0]).data !== undefined) {
-				const imagesToUpload = (<ImageToUpload[]>images).filter(it => it !== undefined);
-				if (imagesToUpload && imagesToUpload.length > 0) {
-					const currentValue = this._images$.getValue();
-					this._images$.next([...currentValue, ...imagesToUpload.map(image => ({
-						id: image.id,
-						name: image.name,
-						data: image.data
-					}))]
-						.filter((value, index, array) => array.findIndex(it => it.id === value.id) === index));
-				}
-			}
-			else {
-				const imagesToUpload = (<FormData[]>images).filter(it => it !== undefined);
-				if (imagesToUpload) {
-					const files: File[] = [];
-					imagesToUpload.forEach(formData => {
-						console.log(formData);
-						for (let entry of (<any>formData).values()) {
-							files.push(entry);
-						}
-					});
-					console.log(files);
-				}
-			}
-		}
+	_previousValue: string[] = [];
+	@Input() set previousValue(previousValue: string[]) {
+		this._previousValue = previousValue;
+		this.formGroup.get("imagePaths").setValue(previousValue);
 	}
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
+	_formGroup: FormGroup = this.formBuilder.group({
+		"imagePaths": this.formBuilder.control([]),
+		"imagesToUpload": this.formBuilder.control([])
+	});
+
+	@Input() set formGroup(formGroup: FormGroup) {
+		this._formGroup = formGroup;
+
+		if (this.previousValue) {
+			this.formGroup.get("imagePaths").setValue(this.previousValue);
+		}
+		this.images$.next(this.getValueFromForm(formGroup.value));
+		if (this.imageSubscription) {
+			this.imageSubscription.unsubscribe();
+		}
+		this.imageSubscription = this.formGroup.valueChanges
+			.pipe(map(this.getValueFromForm))
+			.subscribe(value => this.images$.next(value));
+	}
+
+	get formGroup() {
+		return this._formGroup;
+	}
+
+	//contains: imagePaths (string[]) + imagesToUpload (ImageToUpload[])
+	images$ = new BehaviorSubject<ImageToUpload[]>([]);
+	imagePaths$ = this.images$.pipe(
+		map(images => images.map(it => it.data))
+	);
 
 	@Input() limit: number = Infinity;
 
@@ -94,27 +88,37 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	@ViewChild("fileUpload") fileUpload: ElementRef;
 
 	currentFiles: File[] = [];
-	@Output() onFormDataChange = new EventEmitter<any>();
-	@Output() onImageChange = new EventEmitter<ImageToUpload[]>();
-
-
+	imageSubscription: Subscription;
 	subscriptions = [];
 
-	constructor(public multiImageUploadService: MultiImageUploadService) {
+	constructor(public multiImageUploadService: MultiImageUploadService,
+				private formBuilder: FormBuilder) {
 	}
 
 	ngOnInit() {
+		this.images$.subscribe(console.log);
 		this.subscriptions.push(
 			this.multiImageUploadService.onAdd.subscribe(
 				() => this.fileUpload.nativeElement.click()
+			),
+			this.multiImageUploadService.onDelete.subscribe(
+				entries => this.deleteEntries(entries)
 			)
 		);
-		this.multiImageUploadService.init(this._images$);
+		this.multiImageUploadService.init(this.images$);
 	}
-
 
 	ngOnDestroy(): void {
 		this.subscriptions.forEach(it => it.unsubscribe());
+		if (this.imageSubscription) {
+			this.imageSubscription.unsubscribe();
+		}
+	}
+
+
+	getValueFromForm(value: { imagePaths: string[], imagesToUpload: ImageToUpload[] }): ImageToUpload[] {
+		return [...value.imagePaths.map(path => ({id: path, name: path, data: path})),
+			...value.imagesToUpload];
 	}
 
 	/**
@@ -149,10 +153,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 				take(1)
 			)
 			.subscribe(images => {
-				// const currentValue = this._images$.getValue();
-				// images.forEach(image => currentValue.push(image));
-				this._images$.next([...images]);
-				this.onImageChange.emit([...images]);
+				this.formGroup.get("imagesToUpload").patchValue(images, {emitEvent: true});
 			})
 	}
 
@@ -164,7 +165,9 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	onFileSelect(event) {
 		const fileList: FileList = event.target.files;
 		const fileCount: number = fileList.length;
-		const formData = new FormData();
+
+		//todo consider the imagePaths when calculating the limit
+
 		if (fileCount > 0) { // a file was selected
 			//examples
 			// [] + [a,b,c,d,e] => [a,b,c,d,e]
@@ -190,10 +193,31 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 
 		}
 
-		this.currentFiles.forEach(file => formData.append("file[]", file));
-		this.onFormDataChange.emit(formData);
 		this.addImages(this.currentFiles);
 	}
+
+
+	deleteEntries(entries: (ImageToUpload)[]) {
+		const deletedUploaded = entries.filter(it => isImageToUpload(it))
+			.map((entry: ImageToUpload) => this.formGroup.get("imagesToUpload").value.findIndex(it => it.id === entry.id))
+			.sort();
+		const deletedPrevious = entries.filter(it => !isImageToUpload(it))
+			.map((entry: ImageToUpload) => this.formGroup.get("imagePaths").value.indexOf(entry.id))
+			.sort();
+		const uploaded: ImageToUpload[] = this.formGroup.get("imagesToUpload").value;
+		for (let i = deletedUploaded.length - 1; i >= 0; i--) {
+			uploaded.splice(deletedUploaded[i], 1);
+		}
+
+		const previous: string[] = this.formGroup.get("imagePaths").value;
+		for (let i = deletedPrevious.length - 1; i >= 0; i--) {
+			previous.splice(deletedPrevious[i], 1);
+		}
+
+		this.formGroup.get("imagesToUpload").patchValue(uploaded);
+		this.formGroup.get("imagePaths").patchValue(previous);
+	}
+
 
 	isFinite(number: number) {
 		return isFinite(number);

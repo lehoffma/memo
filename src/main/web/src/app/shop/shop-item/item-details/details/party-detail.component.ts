@@ -19,6 +19,7 @@ import {empty} from "rxjs/observable/empty";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {Observable} from "rxjs/Observable";
+import {Address} from "app/shared/model/address";
 
 
 @Component({
@@ -84,9 +85,12 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
 			map(party => party.overviewKeys)
 		);
 
-	meetingPoint$ = this._party$
+	meetingPoint$: Observable<Address[]> = this._party$
 		.pipe(
-			map(party => party.route)
+			map(party => party.route),
+			mergeMap(ids => combineLatest(
+				...ids.map(id => this.addressService.getById(id))
+			))
 		);
 
 	participants$ = this._party$

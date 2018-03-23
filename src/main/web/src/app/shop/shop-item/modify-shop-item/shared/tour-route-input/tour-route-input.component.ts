@@ -1,22 +1,29 @@
 import {
 	AfterViewInit,
+	ChangeDetectorRef,
 	Component,
 	ElementRef,
 	EventEmitter,
 	Input,
 	NgZone,
-	OnChanges,
 	OnDestroy,
 	OnInit,
 	Output,
 	QueryList,
-	SimpleChanges,
 	ViewChildren
 } from "@angular/core";
 import {MapsAPILoader} from "@agm/core";
 import {Address} from "../../../../../shared/model/address";
-import {defaultIfEmpty, map} from "rxjs/operators";
+import {debounceTime, defaultIfEmpty, filter, map, mergeMap, startWith, take} from "rxjs/operators";
 import {RoutingService} from "../../../../shared/services/routing.service";
+import {ControlValueAccessor, FormArray, FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators} from "@angular/forms";
+import {AddressService} from "../../../../../shared/services/api/address.service";
+import {Observable} from "rxjs/Observable";
+import {GMapsService} from "../../../../shared/services/gmaps.service";
+import {Subscription} from "rxjs/Subscription";
+import {MapsGeocodingResult} from "../../../../shared/maps-geocoding-result";
+import {timer} from "rxjs/observable/timer";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 
 declare var google;
@@ -24,33 +31,62 @@ declare var google;
 @Component({
 	selector: "memo-tour-route-input",
 	templateUrl: "./tour-route-input.component.html",
-	styleUrls: ["./tour-route-input.component.scss"]
+	styleUrls: ["./tour-route-input.component.scss"],
+	providers: [{
+		provide: NG_VALUE_ACCESSOR,
+		useExisting: TourRouteInputComponent,
+		multi: true
+	}]
 })
-export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
-	//todo 23.02.2018: address-autocomplete dazu
+export class TourRouteInputComponent implements OnInit, OnDestroy, AfterViewInit, ControlValueAccessor {
 	@Input() isTour: boolean = false;
-	@Input() route: Address[] = [];
+	@Input() formControl: FormControl;
+	route$: Observable<Address[]>;
 
-	@Output() routeChange = new EventEmitter<Address[]>();
+	inputControls: FormArray;
+	loading: { [index: number]: boolean } = {};
+
+	_previousValue = [];
+	@Input() set previousValue(previousValue: number[]) {
+		this._previousValue = previousValue;
+
+		if (!previousValue || previousValue.length === 0) {
+			this.onChange(this.isTour ? [Address.create(), Address.create()] : [Address.create()]);
+			return;
+		}
+
+		combineLatest(
+			...previousValue.map(id => this.addressService.getById(id))
+		)
+			.pipe(
+				mergeMap(addresses => timer(0, 500)
+					.pipe(
+						filter(it => !!this.inputControls),
+						map(it => addresses)
+					)
+				),
+				take(1)
+			)
+			.subscribe(addresses => {
+				this.onChange(addresses);
+				this.clearInputs();
+				addresses.forEach((address, index) => {
+					this.addInput();
+					this.inputControls.at(index).setValue(address.toString());
+				})
+			})
+	}
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
 	@Output() distanceChange = new EventEmitter<number>();
 	@ViewChildren("routeInput") inputs: QueryList<ElementRef>;
 
-
-	centerOfTour$ = this.routeChange
-		.pipe(
-			map(this.routingService.centerOfRoute),
-			defaultIfEmpty({
-				longitude: 0,
-				latitude: 0
-			})
-		);
-
-	initializedRoute$ = this.routeChange
-		.pipe(
-			map(route => route.filter(it => it.longitude !== 0 && it.latitude !== 0)),
-			defaultIfEmpty([])
-		);
-
+	_onChange = null;
+	centerOfTour$;
+	initializedRoute$;
 	directionsDisplay;
 	showDirective = false;
 	private _totalDistance = 0;
@@ -66,24 +102,54 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, Af
 
 
 	subscriptions = [];
+	inputCallbackSubscriptions: { [index: number]: Subscription } = {};
 
 	constructor(private mapsAPILoader: MapsAPILoader,
+				private gMapsService: GMapsService,
+				private formBuilder: FormBuilder,
+				private cdRef: ChangeDetectorRef,
 				private routingService: RoutingService,
+				private addressService: AddressService,
 				private ngZone: NgZone) {
 	}
 
-
-	get modelRoute() {
-		return this.route;
+	onChange(values: Address[]) {
+		timer(0, 500)
+			.pipe(
+				//hack: sometimes _onChange is not yet initialized when we're attempting to set the value
+				filter(it => this._onChange !== null),
+				take(1),
+				map(it => values)
+			)
+			.subscribe(values => {
+				this._onChange(values);
+			})
 	}
-
-	set modelRoute(newRoute: Address[]) {
-		this.route = newRoute;
-		this.routeChange.emit(this.route);
-	}
-
 
 	ngOnInit() {
+		const inputs = this.isTour ? [this.getInput(0), this.getInput(1)] : [this.getInput(0)];
+		this.inputControls = this.formBuilder.array(inputs);
+
+		this.centerOfTour$ = this.formControl.valueChanges
+			.pipe(
+				map(this.routingService.centerOfRoute),
+				defaultIfEmpty({
+					longitude: 0,
+					latitude: 0
+				})
+			);
+
+		this.formControl.valueChanges.subscribe(it => console.log(it));
+
+		this.initializedRoute$ = this.formControl.valueChanges
+			.pipe(
+				map(route => route.filter(it => it.longitude !== 0 && it.latitude !== 0)),
+				defaultIfEmpty([]),
+				startWith([])
+			);
+
+		this.route$ = this.formControl.valueChanges;
+
 		if (this.directionsDisplay === undefined) {
 			this.mapsAPILoader.load().then(() => {
 				this.directionsDisplay = new google.maps.DirectionsRenderer;
@@ -95,89 +161,112 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, OnChanges, Af
 
 	ngOnDestroy(): void {
 		this.subscriptions.forEach(it => it.unsubscribe());
-	}
-
-	ngOnChanges(changes: SimpleChanges): void {
-		if (changes["route"] && (!this.modelRoute || this.modelRoute.length < 1 || this.modelRoute.length > 2)) {
-			if (this.isTour) {
-				this.modelRoute = [Address.create(), Address.create()];
-			}
-			else {
-				this.modelRoute = [Address.create()];
-			}
-		}
+		Object.keys(this.inputCallbackSubscriptions).forEach(it => this.inputCallbackSubscriptions[it].unsubscribe());
 	}
 
 	ngAfterViewInit() {
-		//if the route is pre-configured (i.e. we're editing something), the transformedRoute will be initialized.
-		//otherwise, nothing happens
-		this.modelRoute = this.modelRoute;
+	}
 
-		if (this.inputs.length > 0) {
-			this.mapsAPILoader.load().then(() => {
-				this.inputs.forEach((input, index) => {
-					this.initAutoComplete(input.nativeElement, index);
-				})
-			})
+	getInput(index: number) {
+		const input = this.formBuilder.control("", [Validators.required]);
+
+		this.inputCallbackSubscriptions[index] = input.valueChanges
+			.pipe(debounceTime(750))
+			.subscribe(value => this.search(value, index));
+		return input;
+	}
+
+	addInput(index?: number) {
+		if (!index) {
+			this.inputControls.push(this.getInput(this.inputControls.length));
 		}
-		this.subscriptions.push(this.inputs.changes.subscribe(queryList => {
-			if (queryList) {
-				this.mapsAPILoader.load().then(() => {
-					queryList.forEach((input, index) => {
-						this.initAutoComplete(input.nativeElement, index);
-					})
-				})
-			}
-		}));
+		else {
+			this.inputControls.insert(index, this.getInput(index));
+		}
 	}
 
-	addNewStop() {
-		this.modelRoute.splice(this.modelRoute.length - 1, 0, Address.create());
-		this.modelRoute = this.modelRoute;
+	removeInput(index: number) {
+		if (this.inputCallbackSubscriptions[index]) {
+			this.inputCallbackSubscriptions[index].unsubscribe();
+		}
+		this.inputControls.removeAt(index);
 	}
 
-	removeStop(index) {
-		this.modelRoute.splice(index, 1);
-		this.modelRoute = this.modelRoute;
+	clearInputs() {
+		Object.keys(this.inputCallbackSubscriptions).forEach(index => this.removeInput(+index));
 	}
 
-	swapRoutes(first, second) {
-		this.modelRoute = [
-			...this.modelRoute.filter((it, i) => i < first),
-			this.modelRoute[second],
-			this.modelRoute[first],
-			...this.modelRoute.filter((it, i) => i > second)
-		]
+	search(input: any, index: number) {
+		this.loading[index] = true;
+		this.gMapsService.getGeocodedAddress(input)
+			.subscribe(it => {
+				if (!it || Object.keys(it).length === 0 || it.length < 1) {
+					this.inputControls.at(index).setErrors({"not-a-valid-address": true}, {emitEvent: true});
+					return;
+				}
+				this.insertStop(it[0], index);
+				this.loading[index] = false;
+				setTimeout(() => this.cdRef.detectChanges(), 1);
+			});
 	}
-
 
 	/**
 	 *
-	 * @param inputElement
+	 */
+	addNewStop() {
+		const currentValue = this.formControl.value;
+		const index = currentValue.length - 1;
+		currentValue.splice(index, 0, Address.create());
+		this.onChange(currentValue);
+		this.addInput(index);
+	}
+
+	/**
+	 *
+	 * @param place
 	 * @param {number} index
 	 */
-	initAutoComplete(inputElement: any, index: number) {
-		let autocomplete = new google.maps.places.Autocomplete(inputElement, {
-			types: ["address"]
-		});
+	insertStop(place: MapsGeocodingResult | any, index: number) {
+		const currentValue = this.formControl.value;
+		this.onChange([
+			...currentValue.slice(0, index),
+			this.routingService.transformToMemoFormat(place, currentValue[index]),
+			...currentValue.slice(index + 1)
+		]);
+	}
+
+	/**
+	 *
+	 * @param index
+	 */
+	removeStop(index) {
+		const currentValue = this.formControl.value;
+		currentValue.splice(index, 1);
+		this.onChange(currentValue);
+		this.removeInput(index);
+	}
 
 
-		autocomplete.addListener("place_changed", () => {
-			this.ngZone.run(() => {
-				//get the place result
-				let place = autocomplete.getPlace();
+	//control-value-accessor requirements
 
-				this.modelRoute = [
-					...this.modelRoute.slice(0, index),
-					this.routingService.transformToMemoFormat(place, this.modelRoute[index]),
-					...this.modelRoute.slice(index + 1)
-				];
+	registerOnChange(fn: any): void {
+		this._onChange = fn;
+	}
 
-				//verify result
-				if (place.geometry === undefined || place.geometry === null) {
-					return;
-				}
-			});
-		});
+	registerOnTouched(fn: any): void {
+		//nothing
+	}
+
+	setDisabledState(isDisabled: boolean): void {
+		if (isDisabled) {
+			this.formControl.disable();
+		}
+		else {
+			this.formControl.enable();
+		}
+	}
+
+	writeValue(obj: Address[]): void {
+		this.formControl.setValue(obj);
 	}
 }

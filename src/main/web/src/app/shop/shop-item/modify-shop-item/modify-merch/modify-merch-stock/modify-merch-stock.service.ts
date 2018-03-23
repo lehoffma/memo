@@ -30,6 +30,9 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 		]);
 	}
 
+	setValue(merchStock: MerchStock[]){
+		this.dataSubject$.next(merchStock);
+	}
 
 	/**
 	 *

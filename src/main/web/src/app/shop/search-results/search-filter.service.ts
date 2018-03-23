@@ -169,7 +169,7 @@ export class SearchFilterService {
 			}
 		}
 
-		//modify children values (todo make more generic, only supports parent->child structures)
+		//modify children values
 		options
 			.filter(option => !!acc.find(prevOption => prevOption.queryKey === option.queryKey))
 			.forEach(option => {

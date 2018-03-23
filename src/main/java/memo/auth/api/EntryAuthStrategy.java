@@ -10,7 +10,6 @@ import java.util.Arrays;
 public class EntryAuthStrategy implements AuthenticationStrategy<Entry> {
     @Override
     public boolean isAllowedToRead(User user, Entry object) {
-        //todo can a user read entries of shopItems he's not allowed to look at?
         return userIsAuthorized(user, object, Arrays.asList(
                 //the user is logged in..
                 AuthenticationConditionFactory.<Entry>userIsLoggedIn()

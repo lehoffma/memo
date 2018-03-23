@@ -1,10 +1,15 @@
 package memo.data;
 
 import memo.model.Address;
+import memo.model.ShopItem;
 import memo.util.DatabaseManager;
+import memo.util.MapBuilder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 public class AddressRepository extends AbstractRepository<Address> {
     protected static AddressRepository instance;

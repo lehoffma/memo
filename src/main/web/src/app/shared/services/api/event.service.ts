@@ -42,7 +42,7 @@ export class EventService extends ServletService<Event> {
 
 
 	/**
-	 * Requested das Event (mit einem bestimdimten Event-Typen) vom Server, welches die gegebene ID besitzt
+	 * Requested das Event (mit einem bestimmten Event-Typen) vom Server, welches die gegebene ID besitzt
 	 * @param eventId
 	 * @param refresh
 	 * @returns {Observable<T>}
@@ -51,7 +51,7 @@ export class EventService extends ServletService<Event> {
 		const params = new HttpParams().set("id", "" + eventId);
 		const request = this.http.get<EventApiResponse>(this.baseUrl, {params})
 			.pipe(
-				map(json => this.getFactoryFromType((<any>json.shopItems[0]["type"]))().setProperties(json.shopItems[0])),
+				map((json: any) => this.getFactoryFromType((<any>json.shopItems[0]["type"]))().setProperties(json.shopItems[0])),
 				share()
 			);
 
@@ -66,8 +66,8 @@ export class EventService extends ServletService<Event> {
 		const params = new HttpParams().set("authorId", "" + userId);
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.pipe(
-				map(json => json.shopItems.map(event =>
-					Event.create().setProperties(event))),
+				map(json => json.shopItems.map((event: any) =>
+					Event.create().setProperties({...event}))),
 				share()
 			);
 
@@ -83,8 +83,8 @@ export class EventService extends ServletService<Event> {
 		const params = new HttpParams().set("type", "" + eventType);
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.pipe(
-				map(json => json.shopItems.map(event =>
-					EventFactoryService.build(eventType).setProperties(event)))
+				map(json => json.shopItems.map((event: any) =>
+					EventFactoryService.build(eventType).setProperties({...event})))
 			);
 
 		return this._cache.search(params, request);
@@ -104,8 +104,8 @@ export class EventService extends ServletService<Event> {
 		const params = new HttpParams().set("searchTerm", searchTerm).set("type", "" + eventType);
 		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
 			.pipe(
-				map(json => json.shopItems.map(event =>
-					EventFactoryService.build(eventType).setProperties(event)))
+				map(json => json.shopItems.map((event: any) =>
+					EventFactoryService.build(eventType).setProperties({...event})))
 			);
 
 		return this._cache.search(params, request);
@@ -139,7 +139,7 @@ export class EventService extends ServletService<Event> {
 			}
 		});
 
-		if(modifiedEvent.author.length > 0 && User.isUser(modifiedEvent.author[0])){
+		if (modifiedEvent.author.length > 0 && User.isUser(modifiedEvent.author[0])) {
 			modifiedEvent.author = modifiedEvent.author.map(it => it["id"]);
 		}
 
@@ -192,7 +192,7 @@ export class EventService extends ServletService<Event> {
 	 * This function is used for logout events, since the canRead property has to be evaluated again, which only
 	 * happens when the corresponding request isn't cached anymore and the service has to request new data.
 	 */
-	clearCaches(){
+	clearCaches() {
 		this._cache.invalidateAll();
 	}
 }

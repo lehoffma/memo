@@ -38,11 +38,6 @@ export class Party extends Event {
 				key: "emptySeats",
 				label: "Freie Plätze"
 			},
-			//todo besseres label oder komplett weg?
-			// {
-			// 	key: "expectedRole",
-			// 	label: "Für"
-			// },
 		];
 	}
 

@@ -154,8 +154,8 @@ export class EntryService extends ServletService<Entry> {
 			delete entry["addresses"];
 		}
 		let {item, category, ...fixedEntry} = entry;
-		fixedEntry["item"] = item.id;
-		fixedEntry["category"] = category.id;
+		fixedEntry["item"] = item.id === undefined ? item : item.id;
+		fixedEntry["category"] = category.id === undefined ? category : category.id;
 
 		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/entry", {entry: fixedEntry, ...body}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json"),

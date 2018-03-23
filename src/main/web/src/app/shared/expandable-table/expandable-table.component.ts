@@ -151,7 +151,12 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 
 				//create new view and set the data attribute
 				let componentRef = viewContainerRef.createComponent(componentFactory);
-				componentRef.instance.data = dataObject[columnKey.key];
+				if(columnKey.key){
+					componentRef.instance.data = dataObject[columnKey.key];
+				}
+				else{
+					componentRef.instance.data = dataObject;
+				}
 				componentRef.changeDetectorRef.detectChanges();
 
 				index++;

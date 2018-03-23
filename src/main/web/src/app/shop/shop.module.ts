@@ -8,8 +8,7 @@ import {DiscountService} from "./shared/services/discount.service";
 import {CommonModule} from "@angular/common";
 import {MemoMaterialModule} from "../../material.module";
 import {RouterModule} from "@angular/router";
-import {DiscountOverlayComponent} from '../shared/price-renderer/discount-overlay.component';
-import {RoutingService} from "./shared/services/routing.service";
+import {DiscountOverlayComponent} from "../shared/price-renderer/discount-overlay.component";
 import {ResponsibilityService} from "./shared/services/responsibility.service";
 import {ConcludeEventService} from "./shared/services/conclude-event.service";
 
@@ -34,8 +33,7 @@ const providers = [
 		DiscountOverlayComponent,
 	],
 	providers: [
-		...providers,
-		RoutingService
+		...providers
 	],
 	exports: [
 		CheckoutModule,

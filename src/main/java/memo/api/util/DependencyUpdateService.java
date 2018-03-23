@@ -1,5 +1,7 @@
 package memo.api.util;
 
+import org.eclipse.persistence.indirection.IndirectList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +10,10 @@ import java.util.function.Function;
 
 public class DependencyUpdateService {
 
+    private <T> List<T> convertFromIndirectList(List<T> list) {
+        return list instanceof IndirectList ? new ArrayList<>(list) : list;
+    }
+
     private <T, DependencyType, IdType> List<T> getUpdatedValues(
             T objectToUpdate,
             DependencyType dependency,
@@ -15,7 +21,7 @@ public class DependencyUpdateService {
             Function<DependencyType, List<T>> getCyclicListDependency
     ) {
         IdType id = getId.apply(objectToUpdate);
-        List<T> currentValues = Optional.ofNullable(getCyclicListDependency.apply(dependency))
+        List<T> currentValues = Optional.ofNullable(convertFromIndirectList(getCyclicListDependency.apply(dependency)))
                 .orElse(new ArrayList<>());
 
         //check if value is already part of the list
@@ -56,7 +62,7 @@ public class DependencyUpdateService {
                                                               Function<T, List<DependencyType>> getDependency,
                                                               Function<DependencyType, Consumer<T>> updateDependencyValue
     ) {
-        List<DependencyType> dependencies = getDependency.apply(objectToUpdate);
+        List<DependencyType> dependencies = convertFromIndirectList(getDependency.apply(objectToUpdate));
         if (dependencies != null) {
             dependencies.stream().map(updateDependencyValue).forEach(it -> it.accept(objectToUpdate));
         }
@@ -74,14 +80,13 @@ public class DependencyUpdateService {
         return Optional.ofNullable(dependency);
     }
 
-    //todo many to many
     public <T, DependencyType, IdType> List<DependencyType> manyToMany(T objectToUpdate,
                                                                        Function<T, List<DependencyType>> getDependency,
                                                                        Function<T, IdType> getId,
                                                                        Function<DependencyType, List<T>> getCyclicListDependency,
                                                                        Function<DependencyType, Consumer<List<T>>> updateDependencyValues
     ) {
-        List<DependencyType> dependencies = getDependency.apply(objectToUpdate);
+        List<DependencyType> dependencies = convertFromIndirectList(getDependency.apply(objectToUpdate));
         if (dependencies != null) {
             dependencies.forEach(dependency -> {
                 List<T> currentValues = this.getUpdatedValues(objectToUpdate, dependency, getId, getCyclicListDependency);

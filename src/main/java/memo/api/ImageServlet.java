@@ -31,7 +31,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "ImageServlet", value = "/api/image")
-@MultipartConfig()
+//max file size is 5 MB
+@MultipartConfig(maxFileSize = 1024 * 1024 * 5)
 public class ImageServlet extends AbstractApiServlet<Image> {
     public ImageServlet() {
         super(new ImageAuthStrategy());

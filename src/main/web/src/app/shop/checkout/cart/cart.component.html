@@ -19,8 +19,8 @@
 
 		<div class="btn-flexbox">
 			<a mat-raised-button color="accent"
-			   [disabled]="(totalAmount|async) === 0"
-			   [class.disabled]="(totalAmount|async) === 0"
+			   [disabled]="(amountOfItems$|async) === 0"
+			   [class.disabled]="(amountOfItems$|async) === 0"
 			   routerLink="/checkout">
 				{{'Zur Kasse'|uppercase}}
 			</a>

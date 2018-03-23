@@ -1,7 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {User} from "../../../../shared/model/user";
+import {ImageToUpload} from "../../../../shared/multi-image-upload/multi-image-upload.component";
+import {ModifyItemEvent} from "../modify-item-event";
+import {ModifyItemService} from "../modify-item.service";
 
 @Component({
 	selector: "memo-modify-user",
@@ -11,33 +14,11 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 export class ModifyUserComponent implements OnInit {
 	@Input() previousValue: any;
 	@Input() mode: ModifyType;
-	@Output() modelChange: EventEmitter<any> = new EventEmitter();
-	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
-	@Output() watchForAddressModification: EventEmitter<any> = new EventEmitter();
+	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 	ModifyType = ModifyType;
-	private _model$ = new BehaviorSubject<any>({});
-	public model$ = this._model$.asObservable();
 
-
-	constructor(private location: Location) {
-	}
-
-	get model() {
-		return this._model$.getValue();
-	}
-
-	@Input()
-	set model(model: any) {
-		this._model$.next(model);
-	}
-
-	get userModel() {
-		return this.model;
-	}
-
-	set userModel(model: any) {
-		this.model = model;
-		this.modelChange.emit(this.model);
+	constructor(private location: Location,
+				private modifyItemService: ModifyItemService) {
 	}
 
 	ngOnInit() {
@@ -45,13 +26,13 @@ export class ModifyUserComponent implements OnInit {
 
 	cancel() {
 		this.location.back();
+		this.modifyItemService.reset();
 	}
 
-	submitModifiedObject(event) {
-		this.onSubmit.emit(event);
-	}
-
-	emitWatchForAddressModification(model: any) {
-		this.watchForAddressModification.emit(model);
+	submitModifiedObject(event: { user: User, images: { imagePaths: string[], imagesToUpload: ImageToUpload[] } }) {
+		this.onSubmit.emit({
+			item: event.user,
+			images: event.images
+		});
 	}
 }

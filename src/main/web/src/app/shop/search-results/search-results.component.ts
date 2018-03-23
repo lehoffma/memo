@@ -103,7 +103,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 			.pipe(
 				//reset results so the result screen can show a loading screen while the http call is performed
 				//todo isLoading = true; + use Observable.scan
-				//todo loading screen is broken right now -- is it?
 				// tap(() => this.results$ = empty()),
 				mergeMap(([keywords, sortedBy, filteredBy]) =>
 					combineLatest(

@@ -1,6 +1,14 @@
 @import "../modify-shop-item.component";
 @import "variables";
 
+form > mat-form-field {
+	margin-top: 1rem;
+
+	@media all and (min-width: 600px) {
+		margin-top: 0;
+	}
+}
+
 .modify-shop-item-container {
 	background: $container-content--background-color;
 	color: $container-content--color;
@@ -55,6 +63,6 @@
 	}
 }
 
-.form-buttons{
+.form-buttons {
 	margin-top: 20px;
 }

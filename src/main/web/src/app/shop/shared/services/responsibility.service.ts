@@ -34,7 +34,6 @@ export class ResponsibilityService {
 	 */
 	public getResponsibleIds(eventId: number): Observable<number[]> {
 		//all authors are responsible
-		//todo: additional responsible users
 		return this.eventService.getById(eventId)
 			.pipe(
 				map(event => event.author)
@@ -55,14 +54,5 @@ export class ResponsibilityService {
 					)
 				)
 			);
-	}
-
-	/**
-	 * Sets the given users as the responsible persons of the given event
-	 * @param {number} eventId
-	 * @param responsibleUsers
-	 */
-	public setAsResponsible(eventId: number, responsibleUsers: number[]) {
-		//todo eventService.modifyEvent(id)
 	}
 }

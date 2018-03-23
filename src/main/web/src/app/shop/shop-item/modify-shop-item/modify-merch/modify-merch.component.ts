@@ -2,8 +2,12 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
 import {ModifyItemEvent} from "../modify-item-event";
-import {User} from "../../../../shared/model/user";
-import {ClubRole} from "../../../../shared/model/club-role";
+import {Permission} from "../../../../shared/model/permission";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {minArraySizeValidator} from "../../../../shared/validators/min-array-size.validator";
+import {Merchandise} from "../../../shared/model/merchandise";
+import {StockService} from "../../../../shared/services/api/stock.service";
+import {MerchStock} from "../../../shared/model/merch-stock";
 
 @Component({
 	selector: "memo-modify-merch",
@@ -11,77 +15,114 @@ import {ClubRole} from "../../../../shared/model/club-role";
 	styleUrls: ["./modify-merch.component.scss"]
 })
 export class ModifyMerchComponent implements OnInit {
-	@Input() model: any = {stock: []};
+	formGroup: FormGroup;
+
+	_previousValue: Merchandise;
+	_previousStock: MerchStock[];
+	@Input() set previousValue(previousValue: Merchandise) {
+		this._previousValue = previousValue;
+
+		if (!previousValue) {
+			return;
+		}
+
+		this.formGroup.get("event-data").get("title").patchValue(previousValue.title);
+		this.formGroup.get("event-data").get("description").patchValue(previousValue.description);
+		this.formGroup.get("event-data").get("capacity").patchValue(previousValue.capacity);
+		this.formGroup.get("event-data").get("price").patchValue(previousValue.price);
+		this.formGroup.get("event-data").get("material").patchValue(previousValue.material);
+		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
+		this.formGroup.get("permissions").get("expectedReadRole").patchValue(previousValue.expectedReadRole);
+		this.formGroup.get("permissions").get("expectedWriteRole").patchValue(previousValue.expectedWriteRole);
+		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);
+		this.stockService.getByEventId(previousValue.id)
+			.subscribe(stock => this._previousStock = stock);
+	}
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
 	@Input() mode: ModifyType;
-	@Output() modelChange: EventEmitter<any> = new EventEmitter();
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 
 	ModifyType = ModifyType;
-	priceIsValid = true;
-	uploadedImage: FormData;
-	defaultImageUrl = "resources/images/Logo.png";
 
-	constructor(private location: Location) {
-	}
-
-	get merchModel() {
-		return this.model;
-	}
-
-	set merchModel(model: any) {
-		this.model = model;
-		this.modelChange.emit(this.model);
-	}
-
-
-	get permissions(): { [p: string]: ClubRole } {
-		const permissions: { [p: string]: ClubRole } = {};
-		/**
-		 *
-		 public expectedReadRole: ClubRole,
-		 public expectedCheckInRole: ClubRole,
-		 public expectedWriteRole: ClubRole,
-		 */
-		const possiblePermissions = ["expectedReadRole", "expectedCheckInRole", "expectedWriteRole"];
-		if (this.merchModel) {
-			possiblePermissions
-				.filter(key => !!this.merchModel[key])
-				.forEach(key => {
-					permissions[key] = this.merchModel[key];
-				})
-		}
-		return permissions;
+	constructor(private location: Location,
+				private stockService: StockService,
+				private formBuilder: FormBuilder) {
+		this.formGroup = this.formBuilder.group({
+			"event-data": this.formBuilder.group({
+				"title": ["", {
+					validators: [Validators.required]
+				}],
+				"description": ["", {
+					validators: [Validators.required]
+				}],
+				"price": [0, {
+					validators: [Validators.required, Validators.pattern(/^[\d]+((\.|\,)[\d]{1,2})?$/)]
+				}],
+				"stock": [[], {
+					validators: []
+				}],
+				"material": ["", {
+					validators: [Validators.required]
+				}],
+				"capacity": [0, {
+					validators: [Validators.required, Validators.min(0)]
+				}]
+			}),
+			"images": this.formBuilder.group({
+				"imagePaths": [[], {validators: []}],
+				"imagesToUpload": [[], {validators: []}]
+			}),
+			"permissions": this.formBuilder.group({
+				"expectedReadRole": [Permission.none, {
+					validators: []
+				}],
+				"expectedWriteRole": [Permission.none, {
+					validators: []
+				}],
+				"expectedCheckInRole": [Permission.none, {
+					validators: []
+				}]
+			}),
+			"responsible-users": [[]]
+		})
 	}
 
 	ngOnInit() {
+		this.formGroup.get("responsible-users").setValidators([minArraySizeValidator(1)]);
 	}
 
-	checkValidityOfPrice() {
-		this.priceIsValid = new RegExp(/^[\d]+(([.,])[\d]{1,2})?$/).test(this.merchModel["price"])
-	}
-
+	/**
+	 * Go back to where the user came from
+	 */
 	cancel() {
 		this.location.back();
 	}
 
 
-	permissionChange(event: { [key: string]: ClubRole }) {
-		Object.keys(event).forEach(permissionKey => this.model[permissionKey] = event[permissionKey]);
-	}
-
-	responsibleUsersChange(users: User[]) {
-		this.model["author"] = [...users];
-	}
-
-
+	/**
+	 * Emit submit event
+	 */
 	submitModifiedObject() {
-		this.onSubmit.emit({
-			model: this.model,
-			uploadedImage: this.uploadedImage
+		const merch = Merchandise.create().setProperties<Merchandise>({
+			title: this.formGroup.get("event-data").get("title").value,
+			description: this.formGroup.get("event-data").get("description").value,
+			capacity: this.formGroup.get("event-data").get("capacity").value,
+			price: this.formGroup.get("event-data").get("price").value,
+			material: this.formGroup.get("event-data").get("material").value,
+			expectedReadRole: this.formGroup.get("permissions").get("expectedReadRole").value,
+			expectedWriteRole: this.formGroup.get("permissions").get("expectedWriteRole").value,
+			expectedCheckInRole: this.formGroup.get("permissions").get("expectedCheckInRole").value,
+			author: this.formGroup.get("responsible-users").value
 		});
-	}
-
-	profilePictureChanged(event) {
-		this.uploadedImage = event;
+		//todo emit merch object + images + stock
+		this.onSubmit.emit({
+			item: merch,
+			images: this.formGroup.get("images").value,
+			stock: this.formGroup.get("event-data").get("stock").value
+		});
 	}
 }

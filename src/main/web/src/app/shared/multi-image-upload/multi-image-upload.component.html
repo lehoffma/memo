@@ -1,4 +1,4 @@
-<memo-multi-image-container [images]="images$ | async"
+<memo-multi-image-container [images]="imagePaths$ | async"
 							(onClick)="fileUpload.click()"
 							[style.width]="limit === 1 ? '100%' : ''"
 >

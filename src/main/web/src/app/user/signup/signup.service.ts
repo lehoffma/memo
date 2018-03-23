@@ -49,46 +49,6 @@ export class SignUpService {
 
 	/**
 	 *
-	 */
-	watchForAddressModification(model: any) {
-		if (model.action && model.action === "delete") {
-			const addressToDelete = model.address;
-			const currentAddresses = this.newUserAddresses;
-			const deletedAddressId = currentAddresses
-				.findIndex(currentAddress => currentAddress.id === addressToDelete.id);
-
-			if (deletedAddressId >= 0) {
-				currentAddresses.splice(deletedAddressId, 1);
-			}
-
-			this.newUserAddresses = [...currentAddresses];
-			this.newUser.setProperties({addresses: currentAddresses.map(it => it.id)})
-		}
-		if (model && model.profilePicture) {
-			this.newUserProfilePicture = model.profilePicture;
-		}
-		this.addressService.addressModificationDone
-			.pipe(first(), filter(it => !!it))
-			.subscribe(address => {
-				const currentAddresses = this.newUserAddresses;
-				const modifiedAddressIndex = currentAddresses
-					.findIndex(currentAddress => currentAddress.id === address.id);
-				//address was added, not modified
-				if (modifiedAddressIndex === -1) {
-					currentAddresses.push(address);
-				}
-				//address was modified
-				else {
-					currentAddresses.splice(modifiedAddressIndex, 1, address);
-				}
-				this.newUserAddresses = [...currentAddresses];
-				this.newUser.setProperties({addresses: currentAddresses.map(it => it.id)})
-			})
-	}
-
-
-	/**
-	 *
 	 * @param section
 	 */
 	navigateToSection(section: SignUpSection) {
@@ -123,27 +83,6 @@ export class SignUpService {
 		}
 	}
 
-	dataURItoBlob(dataURI: string): Blob {
-		// convert base64/URLEncoded data component to raw binary data held in a string
-		let byteString;
-		if (dataURI.split(",")[0].indexOf("base64") >= 0)
-			byteString = atob(dataURI.split(",")[1]);
-		else
-			byteString = decodeURI(dataURI.split(",")[1]);
-
-		// separate out the mime component
-		const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-
-		// write the bytes of the string to a typed array
-		const uint8Array = new Uint8Array(byteString.length);
-		for (let i = 0; i < byteString.length; i++) {
-			uint8Array[i] = byteString.charCodeAt(i);
-		}
-
-		console.log(mimeString);
-		return new Blob([uint8Array], {type: mimeString});
-	}
-
 	/**
 	 *
 	 * @param {User} user
@@ -158,7 +97,7 @@ export class SignUpService {
 
 		let formData = new FormData();
 		pictures.forEach(image => {
-			const blob = this.dataURItoBlob(image.data);
+			const blob = this.imageUploadService.dataURItoBlob(image.data);
 			formData.append("file[]", blob, image.name);
 		});
 
@@ -190,17 +129,19 @@ export class SignUpService {
 			telephone,
 			mobile,
 			isStudent,
-			profilePicture,
+			addresses,
 			paymentInfo
 		} = event;
+
 
 		switch (section) {
 			case SignUpSection.AccountData:
 				this.newUser.setProperties({email, password});
 				break;
 			case SignUpSection.PersonalData:
-				this.newUser.setProperties({firstName, surname, birthday, telephone, mobile, isStudent});
-				this.newUserProfilePicture = profilePicture;
+				const images: { imagePaths: string[], imagesToUpload: ImageToUpload[] } = event.images;
+				this.newUser.setProperties({firstName, surname, birthday, telephone, mobile, isStudent, addresses});
+				this.newUserProfilePicture = images.imagesToUpload;
 				break;
 			case SignUpSection.PaymentMethods:
 				this.newUserDebitInfo = paymentInfo;

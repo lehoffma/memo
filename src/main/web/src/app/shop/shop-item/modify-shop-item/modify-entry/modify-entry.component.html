@@ -1,22 +1,22 @@
 <div class="modify-shop-item-container">
 	<h2>Posten {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
-	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
-
+	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
 		<div class="entry-info-container">
 			<mat-form-field>
-				<input matInput name="titleInput"
+				<input matInput
+					   name="titleInput"
 					   required
 					   placeholder="Titel"
-					   #titleInput="ngModel"
-					   [(ngModel)]="entryModel['name']">
-				<mat-error *ngIf="titleInput.touched && !titleInput.valid" align="end">
+					   formControlName="name"
+				>
+				<mat-error *ngIf="formGroup.get('name').hasError('required')" align="end">
 					Dieses Feld darf nicht leer bleiben!
 				</mat-error>
 			</mat-form-field>
 			<mat-form-field>
-				<mat-select [(ngModel)]="entryModel['category']"
+				<mat-select [formControl]="formGroup.get('category')"
 							[compareWith]="compareCategories"
-							placeholder="Kategorie" #categorySelect="ngModel"
+							placeholder="Kategorie"
 							name="categorySelect">
 					<mat-option *ngFor="let option of (entryCategories$ | async)" [value]="option">
 						{{option.name}}
@@ -30,10 +30,12 @@
 				<mat-form-field>
 					<input matInput [matDatepicker]="myDatepicker"
 						   placeholder="Datum"
-						   [(ngModel)]="entryModel['date']"
-						   #dateInput="ngModel"
+						   formControlName="date"
 						   name="dateInput" required>
 					<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+					<mat-error *ngIf="formGroup.get('date').hasError('required')">
+						Wert muss im Format DD.MM.YYYY vorliegen.
+					</mat-error>
 				</mat-form-field>
 				<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
 			</div>
@@ -42,10 +44,10 @@
 					<input matInput name="valueInput"
 						   type="number" required
 						   placeholder="Wert"
-						   #valueInput="ngModel"
-						   [(ngModel)]="entryModel['value']">
+						   formControlName="value"
+					>
 					<span matSuffix>€</span>
-					<mat-error *ngIf="valueInput.touched && !valueInput.valid" align="end">
+					<mat-error *ngIf="formGroup.get('value').hasError('required')" align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
@@ -59,7 +61,8 @@
 				   name="eventInput"
 				   [formControl]="autocompleteFormControl"
 				   [matAutocomplete]="auto" required>
-			<mat-error *ngIf="autocompleteFormControl.hasError('isNotAValidEvent') || autocompleteFormControl.hasError('required')">
+			<mat-error
+				*ngIf="autocompleteFormControl.hasError('isNotAValidEvent') || autocompleteFormControl.hasError('required')">
 				Bitte wähle ein gültiges Item aus.
 			</mat-error>
 		</mat-form-field>
@@ -75,7 +78,7 @@
 			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
 			<button mat-raised-button color="accent"
-					[disabled]="!modifyShopItemForm.form.valid || autocompleteFormControl.invalid"
+					[disabled]="!formGroup.valid || formGroup.pending"
 					type="submit">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
 			</button>

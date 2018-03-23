@@ -1,12 +1,10 @@
-<div class="modify-shop-item-container">
+<div class="modify-shop-item-container" *ngIf="formGroup">
 	<h2>Party {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
-	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
+	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
 
 		<div class="image-upload-container">
 			<memo-item-details-content [title]="'Bilder'">
-				<memo-multi-image-upload
-					(onFormDataChange)="profilePictureChanged($event)"
-					[images]="partyModel['images']">
+				<memo-multi-image-upload [previousValue]="previousValue?.images" [formGroup]="formGroup.get('images')">
 				</memo-multi-image-upload>
 			</memo-item-details-content>
 		</div>
@@ -14,31 +12,30 @@
 
 		<div class="information-container">
 			<memo-item-details-content [title]="'Treffpunkt'">
-				<memo-tour-route-input [(route)]="partyModel['route']"></memo-tour-route-input>
+				<memo-tour-route-input [previousValue]="previousValue.route" [formControl]="formGroup.get('addresses')"
+				></memo-tour-route-input>
 			</memo-item-details-content>
 
-			<memo-item-details-content [title]="'Party-Informationen'">
+			<memo-item-details-content [title]="'Party-Informationen'" [formGroup]="formGroup.get('event-data')">
 				<mat-form-field>
 					<input matInput name="titleInput"
 						   type="text" required
 						   placeholder="Titel"
-						   #titleInput="ngModel"
-						   [(ngModel)]="partyModel['title']">
-					<mat-error *ngIf="titleInput.touched && !titleInput.valid" align="end">
+						   formControlName="title"
+					>
+					<mat-error *ngIf="formGroup.get('event-data').get('title').hasError('required')" align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
 
 				<mat-form-field class="description-input">
-			<textarea autosize matInput name="descriptionInput"
-					  class="not-resizable-textarea" required
-					  type="text"
-					  #descriptionInput="ngModel"
-					  placeholder="Beschreibung"
-					  [(ngModel)]="partyModel['description']">
-			</textarea>
-					<mat-error *ngIf="descriptionInput.touched && !descriptionInput.valid"
-							   align="end">
+					<textarea autosize matInput name="descriptionInput"
+							  class="not-resizable-textarea" required
+							  type="text"
+							  formControlName="description"
+							  placeholder="Beschreibung">
+					</textarea>
+					<mat-error *ngIf="formGroup.get('event-data').get('description').hasError('required')" align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
@@ -49,12 +46,14 @@
 							<mat-form-field>
 								<input matInput [matDatepicker]="myDatepicker"
 									   placeholder="Datum"
-									   [(ngModel)]="partyModel['date']"
-									   #dateInput="ngModel"
+									   formControlName="date"
 									   name="dateInput" required>
 								<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
 							</mat-form-field>
 							<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
+							<mat-error *ngIf="formGroup.get('event-data').get('date').hasError('required')" align="end">
+								Das Datum muss im Format DD.MM.YYYY vorliegen.
+							</mat-error>
 						</div>
 					</div>
 
@@ -63,19 +62,15 @@
 							<mat-form-field>
 								<input matInput
 									   placeholder="Uhrzeit"
-									   [(ngModel)]="partyModel['time']"
-									   pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
-									   #timeInput="ngModel"
+									   formControlName="time"
 									   name="timeInput" required>
 
-								<mat-error
-									*ngIf="timeInput.touched && !timeInput.valid && partyModel['time'].length === 0"
-									align="end">
+								<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('required')"
+										   align="end">
 									Dieses Feld darf nicht leer bleiben!
 								</mat-error>
-								<mat-error
-									*ngIf="timeInput.touched && !timeInput.valid && partyModel['time'].length > 0"
-									align="end">
+								<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('pattern')"
+										   align="end">
 									Die Uhrzeit muss im Format "HH:MM" vorliegen!
 								</mat-error>
 							</mat-form-field>
@@ -85,12 +80,16 @@
 						<mat-form-field>
 							<input matInput name="priceInput"
 								   type="number" required
-								   placeholder="Preis"
-								   #priceInput="ngModel"
-								   [(ngModel)]="partyModel['price']">
+								   formControlName="price"
+								   placeholder="Preis">
 							<span matSuffix>€</span>
-							<mat-error *ngIf="priceInput.touched && !priceInput.valid" align="end">
+							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('required')"
+									   align="end">
 								Dieses Feld darf nicht leer bleiben!
+							</mat-error>
+							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('pattern')"
+									   align="end">
+								Maximal 2 Nachkommastellen!
 							</mat-error>
 						</mat-form-field>
 
@@ -98,11 +97,14 @@
 							<input matInput name="capacityInput"
 								   type="number" required
 								   placeholder="Kapazität"
-								   #capacityInput="ngModel"
-								   [(ngModel)]="partyModel['capacity']">
-							<mat-error *ngIf="capacityInput.touched && !capacityInput.valid"
+								   formControlName="capacity"
+							>
+							<mat-error *ngIf="formGroup.get('event-data').get('capacity').hasError('required')"
 									   align="end">
 								Dieses Feld darf nicht leer bleiben!
+							</mat-error>
+							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('min')" align="end">
+								Die Kapazität muss größer als 0 sein!
 							</mat-error>
 						</mat-form-field>
 					</div>
@@ -114,14 +116,18 @@
 
 		<memo-item-details-content [title]="'Berechtigungen'">
 			<memo-item-permissions-input
-				[values]="permissions"
-				(onChange)="permissionChange($event)">
+				[formGroup]="formGroup.get('permissions')"
+				[previousValue]="{
+					'expectedReadRole': previousValue?.expectedReadRole,
+					'expectedWriteRole': previousValue?.expectedWriteRole,
+					'expectedCheckInRole': previousValue?.expectedCheckInRole
+				}">
 
 			</memo-item-permissions-input>
 		</memo-item-details-content>
 
 		<memo-item-details-content [title]="'Zusätzliche verantwortliche User'" class="no-padding">
-			<memo-responsible-user-input (usersChanged)="responsibleUsersChange($event)">
+			<memo-responsible-user-input [previousValue]="previousValue?.author" [formControl]="formGroup.get('responsible-users')">
 
 			</memo-responsible-user-input>
 		</memo-item-details-content>
@@ -133,7 +139,7 @@
 			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
 			<button mat-raised-button color="accent"
-					[disabled]="!modifyShopItemForm.form.valid"
+					[disabled]="!formGroup.valid || formGroup.pending"
 					type="submit">
 				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
 			</button>

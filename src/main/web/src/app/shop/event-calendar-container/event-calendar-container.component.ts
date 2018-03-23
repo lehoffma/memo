@@ -22,9 +22,7 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 	styleUrls: ["./event-calendar-container.component.scss"]
 })
 export class EventCalendarContainerComponent implements OnInit, OnDestroy {
-
 	events$: Observable<Event[]> = this.getUpdatedEvents();
-	editable: Observable<boolean> = of(false); //todo true if permissions of tour/party >= write, else false
 
 	subscriptions = [];
 

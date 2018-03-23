@@ -13,11 +13,10 @@
 	</button>
 </div>
 <mat-menu #menu="matMenu">
-	<a mat-menu-item (click)="navigateToAddressModifications()"
-	   routerLink="{{editUrl}}" [queryParams]="{'id': address.id}">
+	<button mat-menu-item (click)="onEdit.emit(true)">
 		<mat-icon>edit</mat-icon>
 		<span>Bearbeiten</span>
-	</a>
+	</button>
 	<button mat-menu-item type="button" (click)="deleteAddress()">
 		<mat-icon>delete</mat-icon>
 		<span>Löschen</span>

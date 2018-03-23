@@ -41,7 +41,6 @@ export class ParticipantsService extends ServletService<Participant> {
 	}
 
 	add(participant: Participant, eventType: EventType, eventId: number): Observable<Participant> {
-		//todo use order service, but how?
 		return this.addOrModify(this.http.post.bind(this.http), eventId, typeToInteger(eventType), participant);
 	}
 
@@ -121,10 +120,10 @@ export class ParticipantsService extends ServletService<Participant> {
 		).pipe(
 			map(json => json.shopItems
 				.filter(event => !EventUtilityService.isMerchandise(event))
-				.map(event => EventUtilityService.optionalShopItemSwitch(event,
+				.map(event => EventUtilityService.handleShopItemOptional(event,
 					{
-						tours: () => Tour.create().setProperties(event),
-						partys: () => Party.create().setProperties(event)
+						tours: it => Tour.create().setProperties({...it}),
+						partys: it => Party.create().setProperties({...it})
 					})
 				)),
 			share()

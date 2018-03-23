@@ -17,21 +17,6 @@ export class ModifyShopItemComponent implements OnInit, OnDestroy {
 	ModifyType = ModifyType;
 	ItemType = ShopItemType;
 
-	// //either add or edit
-	// mode: ModifyType;
-	//
-	// //either merch, tour, party, user or entry
-	// itemType: ShopItemType;
-	// eventType: (ShopItemType);
-	//
-	// //wenn id === -1 oder undefined, ist mode === ADD (da ein leeres Objekt übergeben wurde),
-	// //ansonsten wird das übergebene Objekt editiert
-	// idOfObjectToModify: number;
-	// eventId: number = -1;
-	//
-	// previousValue: ShopItem;
-	// model: any = {};
-
 	constructor(public modifyItemService: ModifyItemService,
 				private location: Location,
 				private activatedRoute: ActivatedRoute) {
@@ -51,7 +36,6 @@ export class ModifyShopItemComponent implements OnInit, OnDestroy {
 	 *
 	 */
 	ngOnInit() {
-		// this.modifyItemService.init();
 	}
 
 	ngOnDestroy(): void {
@@ -70,9 +54,5 @@ export class ModifyShopItemComponent implements OnInit, OnDestroy {
 	 */
 	submitModifiedObject(result: ModifyItemEvent) {
 		this.modifyItemService.submitModifiedEvent(result);
-	}
-
-	watchForAddressModification(event: any) {
-		this.modifyItemService.watchForAddressModification(event);
 	}
 }

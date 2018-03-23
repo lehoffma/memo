@@ -20,6 +20,7 @@ import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
+import {Address} from "../../../../shared/model/address";
 
 
 @Component({
@@ -85,9 +86,12 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 			map(tour => tour.overviewKeys)
 		);
 
-	tourRoute$ = this._tour$
+	tourRoute$: Observable<Address[]> = this._tour$
 		.pipe(
 			map(tour => tour.route),
+			mergeMap(ids => combineLatest(
+				...ids.map(id => this.addressService.getById(id))
+			))
 		);
 
 	participants$ = this._tour$

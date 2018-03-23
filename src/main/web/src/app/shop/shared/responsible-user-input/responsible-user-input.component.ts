@@ -1,37 +1,51 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {User} from "../../../shared/model/user";
 import {UserService} from "../../../shared/services/api/user.service";
-import {map} from "rxjs/operators";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {filter, first, map, startWith, take, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {LogInService} from "../../../shared/services/api/login.service";
+import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {Observable} from "rxjs/Observable";
+import {empty} from "rxjs/observable/empty";
+import {timer} from "rxjs/observable/timer";
 
 @Component({
 	selector: "memo-responsible-user-input",
 	templateUrl: "./responsible-user-input.component.html",
-	styleUrls: ["./responsible-user-input.component.scss"]
+	styleUrls: ["./responsible-user-input.component.scss"],
+	providers: [{
+		provide: NG_VALUE_ACCESSOR,
+		useExisting: ResponsibleUserInputComponent,
+		multi: true
+	}]
 })
-export class ResponsibleUserInputComponent implements OnInit, OnDestroy {
-	_users$ = new BehaviorSubject<User[]>([]);
+export class ResponsibleUserInputComponent implements OnInit, OnDestroy, ControlValueAccessor {
+	@Input() formControl: FormControl;
 
-	@Input() users(users: User[]) {
-		if(users){
-			this._users$.next(users);
+	_previousValue: number[];
+	@Input() set previousValue(previousValue: number[]) {
+		this._previousValue = previousValue;
+
+		if (!previousValue || previousValue.length === 0) {
+			this.setValue([]);
+			return;
 		}
+
+		combineLatest(
+			...previousValue.map(it => this.userService.getById(it))
+		)
+			.pipe(first(), tap(it => console.log(it)))
+			.subscribe(users => this.setValue(users));
+
 	}
 
-	@Output() usersChanged = new EventEmitter<User[]>();
+	users$: Observable<User[]> = empty();
 
-	availableUsers$ = combineLatest(
-		this._users$,
-		this.userService.search("")
-	)
-		.pipe(
-			//filter out already listed users
-			map(([responsibleUsers, users]) => users.filter(user =>
-				!responsibleUsers.find(responsible => user.id === responsible.id)
-			))
-		);
+	get previousValue() {
+		return this._previousValue;
+	}
+
+	availableUsers$ = empty();
+	onChange;
 
 	subscriptions = [];
 
@@ -39,9 +53,20 @@ export class ResponsibleUserInputComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.subscriptions.push(
-			this._users$.subscribe(users => this.usersChanged.emit(users))
+		this.users$ = this.formControl.valueChanges;
+
+		this.availableUsers$ = combineLatest(
+			this.formControl.valueChanges.pipe(startWith([])),
+			this.userService.search("")
 		)
+			.pipe(
+				tap(it => console.log(it)),
+				//filter out already listed users
+				map(([responsibleUsers, users]) => users.filter(user =>
+					!responsibleUsers.find(responsible => user.id === responsible.id)
+				))
+			);
+		this.formControl.setValue([], {emitEvent: true});
 	}
 
 	ngOnDestroy(): void {
@@ -50,14 +75,48 @@ export class ResponsibleUserInputComponent implements OnInit, OnDestroy {
 
 	addUser(user: User) {
 		if (user !== null) {
-			this._users$.next([...this._users$.getValue(), user]);
+			this.setValue([...this.formControl.value, user]);
 		}
 	}
 
 	removeUser(index: number) {
-		const currentValue = this._users$.getValue();
+		const currentValue = this.formControl.value;
 		currentValue.splice(index, 1);
-		this._users$.next(currentValue);
+		this.setValue(currentValue);
+	}
+
+	setValue(users: User[]) {
+		timer(0, 500)
+			.pipe(
+				//hack: sometimes _onChange is not yet initialized when we're attempting to set the value
+				filter(it => this.onChange !== null),
+				take(1),
+				map(it => users)
+			)
+			.subscribe(values => {
+				this.onChange(values);
+			});
+	}
+
+	registerOnChange(fn: any): void {
+		this.onChange = fn;
+	}
+
+	registerOnTouched(fn: any): void {
+		//nothing, we don't care about the touched events
+	}
+
+	setDisabledState(isDisabled: boolean): void {
+		if (isDisabled) {
+			this.formControl.disable();
+		}
+		else {
+			this.formControl.enable();
+		}
+	}
+
+	writeValue(obj: User[]): void {
+		this.formControl.setValue(obj);
 	}
 
 }

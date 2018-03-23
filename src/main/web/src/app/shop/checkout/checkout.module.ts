@@ -8,7 +8,8 @@ import {CartEntryComponent} from "./cart/cart-entry/cart-entry.component";
 import {MemoMaterialModule} from "../../../material.module";
 import {FormsModule} from "@angular/forms";
 import {SignUpModule} from "../../user/signup/signup.module";
-import { CartTourParticipantComponent } from './cart/cart-entry/cart-tour-participant/cart-tour-participant.component';
+import {CartTourParticipantComponent} from "./cart/cart-entry/cart-tour-participant/cart-tour-participant.component";
+import {SharedModule} from "../../shared/shared.module";
 
 @NgModule({
 	imports: [
@@ -16,6 +17,7 @@ import { CartTourParticipantComponent } from './cart/cart-entry/cart-tour-partic
 		FormsModule,
 		MemoMaterialModule,
 		CheckoutRoutingModule,
+		SharedModule,
 		SignUpModule
 	],
 	declarations: [
@@ -27,4 +29,5 @@ import { CartTourParticipantComponent } from './cart/cart-entry/cart-tour-partic
 		CartTourParticipantComponent
 	]
 })
-export class CheckoutModule{}
+export class CheckoutModule {
+}

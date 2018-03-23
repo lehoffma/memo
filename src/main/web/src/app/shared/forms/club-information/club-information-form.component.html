@@ -1,0 +1,31 @@
+<div class="club-information-forms" [formGroup]="formGroup">
+	<mat-form-field>
+		<mat-select [formControl]="formGroup.get('clubRole')"
+					placeholder="Vereinsrolle"
+					[disableIf]="!(isAdmin$ | async)"
+					class="aligned-mat-select"
+					matTooltip="{{!(isAdmin$ | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
+					matTooltipPosition="above">
+			<mat-option *ngFor="let option of clubRoleOptions" [value]="option">
+				{{option}}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+	<div>
+		<mat-form-field matTooltip="{{!(isAdmin$ | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
+						[matTooltipPosition]="'above'">
+			<input matInput
+				   name="joinDate"
+				   formControlName="joinDate"
+				   [matDatepicker]="joinDatePicker"
+				   placeholder="Mitglied seit"
+				   [disabled]="!(isAdmin$ | async)">
+			<mat-datepicker-toggle [disabled]="!(isAdmin$ | async)" matSuffix
+								   [for]="joinDatePicker"></mat-datepicker-toggle>
+			<mat-error *ngIf="formGroup.get('joinDate').hasError('required')">
+				Dieses Feld darf nicht leer bleiben!
+			</mat-error>
+		</mat-form-field>
+		<mat-datepicker [touchUi]="true" #joinDatePicker></mat-datepicker>
+	</div>
+</div>

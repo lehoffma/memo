@@ -44,6 +44,11 @@ export class CartComponent implements OnInit {
 			)
 		);
 
+	public amountOfItems$: Observable<number> = this.shoppingCartItems
+		.pipe(
+			map(items => items.tours.length + items.merch.length + items.partys.length)
+		);
+
 	constructor(private shoppingCartService: ShoppingCartService,
 				private eventService: EventService) {
 	}

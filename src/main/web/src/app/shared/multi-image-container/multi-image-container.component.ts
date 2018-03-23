@@ -1,13 +1,13 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {scan} from "rxjs/operators";
 
 
 @Component({
-	selector: 'memo-multi-image-container',
-	templateUrl: './multi-image-container.component.html',
-	styleUrls: ['./multi-image-container.component.scss'],
+	selector: "memo-multi-image-container",
+	templateUrl: "./multi-image-container.component.html",
+	styleUrls: ["./multi-image-container.component.scss"],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MultiImageContainerComponent implements OnInit {
@@ -47,6 +47,9 @@ export class MultiImageContainerComponent implements OnInit {
 
 	@Input()
 	set images(images: string[]) {
+		if (images === null) {
+			return;
+		}
 		console.log(images);
 		this._images$.next(images);
 

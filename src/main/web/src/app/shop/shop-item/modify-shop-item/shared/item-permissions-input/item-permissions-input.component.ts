@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {Component, Input, OnInit} from "@angular/core";
+import {FormGroup} from "@angular/forms";
 import {ClubRole, clubRoles} from "../../../../../shared/model/club-role";
 import {Subscription} from "rxjs/Subscription";
 
@@ -14,10 +14,20 @@ export interface PermissionInput {
 	styleUrls: ["./item-permissions-input.component.scss"]
 })
 export class ItemPermissionsInputComponent implements OnInit {
-	permissionsInputForm: FormGroup;
+	@Input() formGroup: FormGroup;
 	clubRoleOptions = clubRoles();
 
-	_permissions: PermissionInput[] = [{
+	@Input() set previousValue(previousValue: { [p: string]: ClubRole }) {
+		Object.keys(previousValue)
+			.filter(key => !!previousValue[key])
+			.forEach(key => {
+				if (this.formGroup.get(key) !== null) {
+					this.formGroup.get(key).patchValue(previousValue[key]);
+				}
+			})
+	}
+
+	permissions: PermissionInput[] = [{
 		key: "expectedReadRole",
 		label: "Wer kann dies sehen?"
 	}, {
@@ -28,67 +38,11 @@ export class ItemPermissionsInputComponent implements OnInit {
 		label: "Wer kann modifizieren?"
 	}];
 
-	_values: { [p: string]: ClubRole };
-	@Input() set values(permissionMap: { [p: string]: ClubRole }) {
-		this._values = permissionMap;
-		this.updateForm();
-	}
-
-	get values() {
-		return this._values;
-	}
-
-	@Input() set permissions(permissions: PermissionInput[]) {
-		const hasChanged = permissions.some(value => !this._permissions.includes(value)) ||
-			this._permissions.some(value => !permissions.includes(value));
-		this._permissions = [...permissions];
-		if (hasChanged) {
-			this.updateForm();
-		}
-	}
-
-	get permissions() {
-		return this._permissions;
-	}
-
-	@Output() onChange: EventEmitter<{
-		[p: string]: ClubRole
-	}> = new EventEmitter<{ [p: string]: ClubRole }>();
-
 	subscriptions: Subscription[] = [];
 
-	constructor(private fb: FormBuilder) {
-		this.updateForm();
+	constructor() {
 	}
 
 	ngOnInit() {
-	}
-
-	updateForm() {
-		const controlsConfig = this.permissions
-			.map(it => it.key)
-			.reduce((config, permissionKey) => {
-				const initValue = (this.values && this.values[permissionKey]) || ClubRole.Gast;
-				config[permissionKey] = this.fb.control(initValue);
-				return config;
-			}, {});
-		this.permissionsInputForm = this.fb.group(controlsConfig);
-		this.subscriptions.forEach(it => it.unsubscribe());
-		this.subscriptions = this.permissions
-			.map(it => it.key)
-			.map(key => this.permissionsInputForm
-				.get(key)
-				.valueChanges
-				.subscribe(value => this.onChange.emit(this.getValuesAsMap()))
-			)
-	}
-
-	getValuesAsMap(): { [key: string]: ClubRole } {
-		return this.permissions
-			.map(it => it.key)
-			.reduce((map, permissionKey) => {
-				map[permissionKey] = this.permissionsInputForm.get(permissionKey).value;
-				return map;
-			}, {})
 	}
 }
