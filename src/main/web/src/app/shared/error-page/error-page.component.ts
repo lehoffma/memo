@@ -8,14 +8,14 @@ import {Location} from "@angular/common";
 		<div class="error-code">
 			{{errorCode}}
 		</div>
-		<div class="error-message">
+		<div>
 			{{errorMessage}}
 		</div>
 		<div class="actions">
-			<button mat-raised-button color="primary" (click)="location.back()">
+			<button mat-raised-button color="accent" (click)="location.back()">
 				Zurück
 			</button>
-			<a mat-raised-button color="primary" routerLink="/">
+			<a mat-raised-button color="accent" routerLink="/">
 				Startseite
 			</a>
 		</div>
@@ -26,7 +26,12 @@ import {Location} from "@angular/common";
 			justify-content: center;
 			flex-direction: column;
 			align-items: center;
-			height: calc(100% - 204px);
+			position: absolute;
+			background: #43a047;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
 		}
 
 		.sad-emoji {

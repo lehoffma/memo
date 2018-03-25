@@ -11,6 +11,7 @@ import {CanViewStockGuard} from "./can-view-stock.guard";
 import {ShopItemExistsGuard} from "./http-error-handling-guards/shop-item-exists.guard";
 import {ShopItemIsVisibleToUserGuard} from "./http-error-handling-guards/shop-item-is-visible-to-user.guard";
 import {ShopItemGuardHelper} from "./shop-item-guard.helper";
+import {IsNotLoggedInGuard} from "./is-not-logged-in.guard";
 
 
 const providers = [
@@ -24,6 +25,7 @@ const providers = [
 	IsValidItemTypeGuard,
 	ShopItemExistsGuard,
 	ShopItemIsVisibleToUserGuard,
+	IsNotLoggedInGuard
 ];
 
 @NgModule({

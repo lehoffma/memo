@@ -2,7 +2,7 @@
 	<memo-email-input [form]="accountDataForm"></memo-email-input>
 	<memo-password-input [form]="accountDataForm"></memo-password-input>
 
-	<button mat-raised-button [disabled]="accountDataForm.invalid || accountDataForm.pending" color="primary"
+	<button mat-raised-button [disabled]="accountDataForm.invalid || accountDataForm.pending" color="accent"
 			type="submit">
 		<mat-icon *ngIf="accountDataForm.pending" class="loading-spinner">refresh</mat-icon>
 		{{accountDataForm.pending ? 'Überprüfe...' : 'Weiter'}}

@@ -47,7 +47,10 @@ export function jwtOptionsFactory(tokenService: AuthService) {
 }
 
 export function tokenGetter() {
-	return localStorage.getItem("auth_token");
+	if(localStorage.getItem("remember_me") === "true"){
+		return localStorage.getItem("auth_token");
+	}
+	return null;
 }
 
 @NgModule({

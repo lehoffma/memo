@@ -38,7 +38,7 @@ export class SignUpComponent implements OnInit {
 			);
 	}
 
-	submitUserDataForm(event: ModifyItemEvent){
+	submitUserDataForm(event: ModifyItemEvent) {
 		const user: User = (<User>event.item);
 		this.onSubmit(SignUpSection.PersonalData, {...user, images: event.images});
 	}

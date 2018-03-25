@@ -11,36 +11,76 @@ import {empty} from "rxjs/observable/empty";
 export class AuthService {
 	private readonly AUTH_TOKEN_KEY = "auth_token";
 	private readonly REFRESH_TOKEN_KEY = "refresh_token";
+	private readonly REMEMBER_ME_KEY = "remember_me";
 	private readonly REFRESH_DELAY = 600000;
+
+	public _saveLogin = null;
+	private _accessToken = null;
+	private _refreshToken = null;
 
 	constructor(private http: HttpClient,
 				private jwtHelperService: JwtHelperService) {
 
 	}
 
+	get saveLogin() {
+		if (this._saveLogin !== null) {
+			return this._saveLogin;
+		}
+
+		const saveLogin = localStorage.getItem(this.REMEMBER_ME_KEY);
+		return saveLogin === "true";
+	}
+
+	set saveLogin(saveLogin: boolean) {
+		this._saveLogin = saveLogin;
+		localStorage.setItem(this.REMEMBER_ME_KEY, "" + saveLogin);
+	}
+
+
 	public getToken(): string {
-		return localStorage.getItem(this.AUTH_TOKEN_KEY);
+		if (this._accessToken !== null) {
+			return this._accessToken;
+		}
+		if (this.saveLogin) {
+			return localStorage.getItem(this.AUTH_TOKEN_KEY);
+		}
+		return null;
 	}
 
 	public setAccessToken(token: string): void {
 		if (!token) {
+			this._accessToken = null;
 			localStorage.removeItem(this.AUTH_TOKEN_KEY);
 		}
 		else {
-			localStorage.setItem(this.AUTH_TOKEN_KEY, token);
+			this._accessToken = token;
+			if (this.saveLogin) {
+				localStorage.setItem(this.AUTH_TOKEN_KEY, token);
+			}
 		}
 	}
 
 	public getRefreshToken() {
-		return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+		if (this._refreshToken !== null) {
+			return this._refreshToken;
+		}
+		if (this.saveLogin) {
+			return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+		}
+		return null;
 	}
 
 	public setRefreshToken(token: string) {
 		if (!token) {
+			this._refreshToken = null;
 			localStorage.removeItem(this.REFRESH_TOKEN_KEY);
 		}
 		else {
-			localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
+			this._refreshToken = token;
+			if(this.saveLogin){
+				localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
+			}
 		}
 	}
 

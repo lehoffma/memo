@@ -1,1 +1,8 @@
-@import "../../login/login.component";
+form {
+	display: flex;
+	flex-direction: column;
+
+	button {
+		align-self: flex-end;
+	}
+}

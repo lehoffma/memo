@@ -1,8 +1,7 @@
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {routedComponents, UserRoutingModule} from "./user.routing";
-import {PasswordRecoveryComponent} from "./password-recovery/password-recovery.component";
 import {OrderHistoryEntryComponent} from "./order-history/order-history-entry/order-history-entry.component";
 import {MyToursEntryComponent} from "./my-tours/entry/my-tours-entry.component";
 import {ParticipatedToursPreviewComponent} from "./profile/participated-tours-preview/participated-tours-preview.component";
@@ -12,13 +11,13 @@ import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
 import {AgmCoreModule} from "@agm/core";
 import {SearchModule} from "../shop/search-results/search.module";
-import {ProfilePreviewComponent} from '../shared/profile-renderer/profile-preview/profile-preview.component';
-import {ProfileLinkComponent} from '../shared/profile-renderer/profile-link/profile-link.component';
+import { PasswordRecoveryLandingPageComponent } from './password-recovery/password-recovery-landing-page.component';
 
 @NgModule({
 	imports: [
 		CommonModule,
 		FormsModule,
+		ReactiveFormsModule,
 		SharedModule,
 		SearchModule,
 		MemoMaterialModule,
@@ -29,13 +28,14 @@ import {ProfileLinkComponent} from '../shared/profile-renderer/profile-link/prof
 	],
 	declarations: [
 		routedComponents,
-		PasswordRecoveryComponent,
 
 		OrderHistoryEntryComponent,
 
 		MyToursEntryComponent,
 
 		ParticipatedToursPreviewComponent,
+
+		PasswordRecoveryLandingPageComponent,
 	],
 	exports: [
 		SignUpModule,

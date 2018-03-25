@@ -1,21 +1,28 @@
-<div class="login-container">
-	<mat-card *ngIf="currentSection | async as section">
-		<div class="account-signup-progress">
-			<ng-template ngFor let-item [ngForOf]="signUpService.sections" let-i="index">
-				<div class="progress-indicator" [ngClass]="{
+
+<div class="signup-title">
+	<img src="../../../resources/images/Logo.png"/>
+	<span>Meilenwoelfe e.V.</span>
+</div>
+
+
+<div class="signup-container">
+	<div class="account-signup-progress" *ngIf="currentSection | async as section">
+		<ng-template ngFor let-item [ngForOf]="signUpService.sections" let-i="index">
+			<div class="progress-indicator" [ngClass]="{
 					'active': item === section,
 					'completed': signUpService.sections.indexOf(section) > i
 				}">
-					<mat-icon *ngIf="signUpService.sections.indexOf(section) > i; else indexContainer">done</mat-icon>
-					<ng-template #indexContainer>{{i + 1}}</ng-template>
-				</div>
-				<div class="progress-label desktop" [class.active]="item === section">
-					{{getTitleOfSection(item)}}
-				</div>
-				<span class="progress-line" *ngIf="item !== sectionEnum.PaymentMethods"></span>
-			</ng-template>
-		</div>
+				<mat-icon *ngIf="signUpService.sections.indexOf(section) > i; else indexContainer">done</mat-icon>
+				<ng-template #indexContainer>{{i + 1}}</ng-template>
+			</div>
+			<div class="progress-label desktop" [class.active]="item === section">
+				{{getTitleOfSection(item)}}
+			</div>
+			<span class="progress-line" *ngIf="item !== sectionEnum.PaymentMethods"></span>
+		</ng-template>
+	</div>
 
+	<div *ngIf="currentSection | async as section" class="form-container">
 		<div [ngSwitch]="section">
 			<memo-account-data-form *ngSwitchCase="sectionEnum.AccountData"
 									(onSubmit)="onSubmit(sectionEnum.AccountData, $event)"></memo-account-data-form>
@@ -34,7 +41,6 @@
 				Something went wrong.
 			</div>
 		</div>
-
-	</mat-card>
+	</div>
 
 </div>

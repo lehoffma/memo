@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Router} from "@angular/router";
+import {AuthService} from "../../shared/authentication/auth.service";
 
 @Component({
 	selector: "memo-login",
@@ -15,11 +16,13 @@ export class LoginComponent implements OnInit {
 	public error: string = "";
 
 	constructor(private loginService: LogInService,
+				public authService: AuthService,
 				private router: Router) {
 	}
 
 	ngOnInit() {
 	}
+
 
 	/**
 	 * Performs a POST request to the server with the entered email and password.
