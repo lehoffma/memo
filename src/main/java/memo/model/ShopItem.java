@@ -9,7 +9,6 @@ import memo.serialization.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class ShopItem implements Serializable {
     private String title;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private java.sql.Timestamp date;
 
     @Lob
     private String description;
@@ -125,11 +124,11 @@ public class ShopItem implements Serializable {
         this.title = title;
     }
 
-    public LocalDateTime getDate() {
+    public java.sql.Timestamp getDate() {
         return this.date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(java.sql.Timestamp date) {
         this.date = date;
     }
 

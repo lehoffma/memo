@@ -6,7 +6,7 @@ import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class User implements Serializable {
     private List<Address> addresses = new ArrayList<>();
 
     @Column(nullable = false)
-    private LocalDateTime birthday = LocalDateTime.now();
+    private java.sql.Date birthday = new java.sql.Date(new java.util.Date().getTime());
 
     private String telephone;
 
@@ -79,7 +79,7 @@ public class User implements Serializable {
     private List<BankAcc> bankAccounts = new ArrayList<>();
 
     @Column(name = "JOIN_DATE", nullable = false)
-    private LocalDateTime joinDate = LocalDateTime.now();
+    private java.sql.Date joinDate = new java.sql.Date(new java.util.Date().getTime());
 
     private String gender;
 
@@ -131,11 +131,11 @@ public class User implements Serializable {
         this.firstName = firstName;
     }
 
-    public LocalDateTime getBirthday() {
+    public java.sql.Date getBirthday() {
         return this.birthday;
     }
 
-    public void setBirthday(LocalDateTime birthday) {
+    public void setBirthday(java.sql.Date birthday) {
         this.birthday = birthday;
     }
 
@@ -195,11 +195,11 @@ public class User implements Serializable {
         isStudent = student;
     }
 
-    public LocalDateTime getJoinDate() {
+    public java.sql.Date getJoinDate() {
         return joinDate;
     }
 
-    public void setJoinDate(LocalDateTime joinDate) {
+    public void setJoinDate(java.sql.Date joinDate) {
         this.joinDate = joinDate;
     }
 

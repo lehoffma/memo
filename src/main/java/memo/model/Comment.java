@@ -7,7 +7,6 @@ import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class Comment implements Serializable {
     private ShopItem item;
 
     @Column(nullable = false)
-    private LocalDateTime timeStamp;   //muss jetzt unbedingt nich 'Date' sein, aber halt nen Datumstyp
+    private java.sql.Timestamp timeStamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "AUTHOR")
@@ -86,11 +85,11 @@ public class Comment implements Serializable {
         this.item = item;
     }
 
-    public LocalDateTime getTimeStamp() {
+    public java.sql.Timestamp getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(LocalDateTime timeStamp) {
+    public void setTimeStamp(java.sql.Timestamp timeStamp) {
         this.timeStamp = timeStamp;
     }
 

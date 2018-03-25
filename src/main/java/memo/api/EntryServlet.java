@@ -34,7 +34,7 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
             TemporalAccessor minDateTemporalAccessor = DateTimeFormatter.ISO_DATE_TIME
                     .parse(requestString);
             LocalDateTime requestDate = LocalDateTime.from(minDateTemporalAccessor);
-            LocalDate date = entry.getDate().toLocalDate();
+            LocalDate date = entry.getDate().toLocalDateTime().toLocalDate();
             return isMinDate
                     ? (requestDate.isBefore(date.atStartOfDay()) || requestDate.isEqual(date.atStartOfDay()))
                     : (requestDate.isAfter(date.atStartOfDay()) || requestDate.isEqual(date.atStartOfDay()));

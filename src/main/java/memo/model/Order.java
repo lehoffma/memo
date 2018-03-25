@@ -10,7 +10,6 @@ import memo.serialization.UserIdSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class Order implements Serializable {
     private List<OrderedItem> items = new ArrayList<>();
 
     @Column(nullable = false)
-    private LocalDateTime timeStamp;
+    private java.sql.Timestamp timeStamp;
 
     private PaymentMethod method = PaymentMethod.Lastschrift;
 
@@ -81,11 +80,11 @@ public class Order implements Serializable {
         this.user = user;
     }
 
-    public LocalDateTime getTimeStamp() {
+    public java.sql.Timestamp getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(LocalDateTime timeStamp) {
+    public void setTimeStamp(java.sql.Timestamp timeStamp) {
         this.timeStamp = timeStamp;
     }
 

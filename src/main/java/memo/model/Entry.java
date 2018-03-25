@@ -6,7 +6,6 @@ import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class Entry implements Serializable {
     private List<Image> images = new ArrayList<>();
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private java.sql.Timestamp date;
 
     //**************************************************************
     //  constructor
@@ -153,11 +152,11 @@ public class Entry implements Serializable {
         this.name = name;
     }
 
-    public LocalDateTime getDate() {
+    public java.sql.Timestamp getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(java.sql.Timestamp date) {
         this.date = date;
     }
 
