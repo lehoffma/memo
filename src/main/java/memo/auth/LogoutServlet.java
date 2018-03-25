@@ -1,7 +1,5 @@
 package memo.auth;
 
-import com.google.common.io.CharStreams;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,8 +18,6 @@ public class LogoutServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-
-        String body = CharStreams.toString(request.getReader());
 
         //lel
         //token check

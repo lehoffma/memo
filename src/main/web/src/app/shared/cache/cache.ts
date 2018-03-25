@@ -2,7 +2,7 @@ import {Subject} from "rxjs/Subject";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
 import {catchError, take, tap} from "rxjs/operators";
-import {empty} from "rxjs/observable/empty";
+import {_throw} from "rxjs/observable/throw";
 
 interface CacheContent<T> {
 	expiry: number;
@@ -60,7 +60,7 @@ export class Cache<T> {
 					take(1),
 					catchError(error => {
 						console.error(error);
-						return empty<T>();
+						return _throw(error);
 					})
 				)
 				//push result of http request into inFlightRequest

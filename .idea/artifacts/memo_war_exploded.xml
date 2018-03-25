@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="memo:war exploded">
-    <output-path>$PROJECT_DIR$/target/memo-0.1</output-path>
+    <output-path>$PROJECT_DIR$/target/memo-0.2</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
@@ -19,7 +19,6 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.4" />
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4" />
           <element id="library" level="project" name="Maven: io.jsonwebtoken:jjwt:0.9.0" />
-          <element id="library" level="project" name="Maven: com.google.guava:guava:21.0" />
           <element id="library" level="project" name="Maven: org.mindrot:jbcrypt:0.4" />
           <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.6" />
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.5" />
@@ -29,7 +28,7 @@
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/target/memo-0.1/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/target/memo-0.2/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="memo/web/Web" />
     </root>

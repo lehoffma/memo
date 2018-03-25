@@ -1,11 +1,9 @@
 import {EventEmitter, Injectable} from "@angular/core";
 import {ExpandableTableContainerService} from "../expandable-table/expandable-table-container.service";
-import {ImageToUpload, isImageToUpload} from "./multi-image-upload.component";
-import {isString, sortingFunction, SortingFunction} from "../../util/util";
+import {ImageToUpload} from "./image-to-upload";
+import {sortingFunction, SortingFunction} from "../../util/util";
 import {ColumnSortingEvent} from "../expandable-table/column-sorting-event";
 import {of} from "rxjs/observable/of";
-import {map, take} from "rxjs/operators";
-import {FormGroup} from "@angular/forms";
 
 @Injectable()
 export class MultiImageUploadService extends ExpandableTableContainerService<ImageToUpload> {

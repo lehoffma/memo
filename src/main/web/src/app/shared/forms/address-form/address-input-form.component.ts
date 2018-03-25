@@ -1,6 +1,8 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, NgZone, OnInit, Output} from "@angular/core";
 import {Address} from "../../model/address";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {GMapsService} from "../../../shop/shared/services/gmaps.service";
+import {first} from "rxjs/operators";
 
 @Component({
 	selector: "memo-address-input-form",
@@ -27,7 +29,9 @@ export class AddressInputFormComponent implements OnInit {
 
 	formGroup: FormGroup;
 
-	constructor(private formBuilder: FormBuilder) {
+	constructor(private formBuilder: FormBuilder,
+				private zone: NgZone,
+				private gmapService: GMapsService) {
 		this.formGroup = this.formBuilder.group({
 			name: ["", {
 				validators: [Validators.required]
@@ -50,20 +54,13 @@ export class AddressInputFormComponent implements OnInit {
 				validators: [Validators.required]
 			}]
 		});
-
-
-		this.formGroup.valueChanges.subscribe(it => console.log(this.formGroup));
 	}
 
 	ngOnInit() {
 	}
 
 	submit() {
-		//todo query google geocoding api to get longitude/latitude
-		const longitude = 0;
-		const latitude = 0;
-
-		this.onSubmit.emit(Address.create().setProperties({
+		const address = Address.create().setProperties({
 			id: this.id,
 			name: this.formGroup.value.name,
 			street: this.formGroup.value.street,
@@ -71,9 +68,20 @@ export class AddressInputFormComponent implements OnInit {
 			zip: this.formGroup.value.zip,
 			city: this.formGroup.value.city,
 			country: this.formGroup.value.country,
-			latitude,
-			longitude
-		}))
+		});
+
+		this.gmapService.getGeocodedAddress(address.toString())
+			.pipe(first())
+			.subscribe(results => {
+				this.zone.run(() => {
+					const longitude = results[0].geometry.location.lng();
+					const latitude = results[0].geometry.location.lat();
+					this.onSubmit.emit(address.setProperties({
+						latitude,
+						longitude
+					}))
+				})
+			})
 	}
 
 }

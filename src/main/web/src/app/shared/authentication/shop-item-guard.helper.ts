@@ -48,12 +48,12 @@ export class ShopItemGuardHelper {
 		return null;
 	}
 
-	public getItemTypeFromRoute(route: ActivatedRouteSnapshot){
+	public getItemTypeFromRoute(route: ActivatedRouteSnapshot) {
 		const possibleTypes = ["tours", "merch", "partys", "members", "entries"];
 		let itemType = route.paramMap.get("itemType");
-		if(itemType === null){
+		if (itemType === null) {
 			let type = possibleTypes.find(type => route.toString().includes(type));
-			if(!type){
+			if (!type) {
 				return null;
 			}
 			itemType = type;

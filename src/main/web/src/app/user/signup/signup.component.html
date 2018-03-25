@@ -20,7 +20,7 @@
 			<memo-account-data-form *ngSwitchCase="sectionEnum.AccountData"
 									(onSubmit)="onSubmit(sectionEnum.AccountData, $event)"></memo-account-data-form>
 			<memo-user-data-form *ngSwitchCase="sectionEnum.PersonalData"
-								 (onSubmit)="onSubmit(sectionEnum.PersonalData, $event)">
+								 (onSubmit)="submitUserDataForm($event)">
 
 			</memo-user-data-form>
 

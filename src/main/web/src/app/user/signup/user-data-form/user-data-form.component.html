@@ -27,7 +27,9 @@
 		<div class="account-information" *ngIf="withEmailAndPassword">
 			<memo-item-details-content [title]="'Account Informationen'">
 				<memo-email-input [form]="userDataForm.get('account-data')"></memo-email-input>
-				<memo-password-input [form]="userDataForm.get('account-data')"></memo-password-input>
+				<memo-password-input [form]="userDataForm.get('account-data')" [required]="false">
+
+				</memo-password-input>
 			</memo-item-details-content>
 		</div>
 

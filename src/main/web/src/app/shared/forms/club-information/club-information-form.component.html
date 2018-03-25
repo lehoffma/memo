@@ -18,8 +18,7 @@
 				   name="joinDate"
 				   formControlName="joinDate"
 				   [matDatepicker]="joinDatePicker"
-				   placeholder="Mitglied seit"
-				   [disabled]="!(isAdmin$ | async)">
+				   placeholder="Mitglied seit">
 			<mat-datepicker-toggle [disabled]="!(isAdmin$ | async)" matSuffix
 								   [for]="joinDatePicker"></mat-datepicker-toggle>
 			<mat-error *ngIf="formGroup.get('joinDate').hasError('required')">

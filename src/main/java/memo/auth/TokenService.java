@@ -1,6 +1,5 @@
 package memo.auth;
 
-import com.google.common.net.HttpHeaders;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import memo.util.Util;
@@ -50,7 +49,7 @@ public class TokenService {
      * @return
      */
     public static Optional<String> getJwtFromRequest(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION))
+        return Optional.ofNullable(request.getHeader("Authorization"))
                 .filter(header -> header.startsWith("Bearer "))
                 .map(header -> header.substring("Bearer ".length()));
     }

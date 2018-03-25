@@ -3,28 +3,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.wasdev.maven.parent</groupId>
-        <artifactId>java7-parent</artifactId>
-        <version>1.4</version>
-        <relativePath></relativePath>
-    </parent>
-
     <groupId>org.meilenwoelfe.shop</groupId>
     <artifactId>memo</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
     <packaging>war</packaging>
 
     <name>Meilenshop</name>
     <url>https://www.meilenwoelfe.de</url>
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>https://raw.github.com/WASdev/sample.servlet/master/LICENSE</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+    <!--<licenses>-->
+    <!--<license>-->
+    <!--<name>The Apache Software License, Version 2.0</name>-->
+    <!--<url>https://raw.github.com/WASdev/sample.servlet/master/LICENSE</url>-->
+    <!--<distribution>repo</distribution>-->
+    <!--</license>-->
+    <!--</licenses>-->
 
 
     <properties>
@@ -32,22 +25,8 @@
         <jackson.version>2.9.4</jackson.version>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                <version>1.0</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-servlet_3.0_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- include JPA for Database <-> Java conversion
         -->
@@ -96,12 +75,6 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>21.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.mindrot/jbcrypt -->

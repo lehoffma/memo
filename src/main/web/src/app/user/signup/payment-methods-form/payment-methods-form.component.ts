@@ -42,7 +42,6 @@ export class PaymentMethodsFormComponent implements OnInit {
 
 	submit() {
 		this.onSubmit.emit({
-			section: SignUpSection.PaymentMethods,
 			paymentInfo: this.debitFormIsValid ? this.debitInfo : undefined
 		})
 	}

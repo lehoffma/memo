@@ -5,6 +5,8 @@ import {SignUpSection, toTitle} from "./signup-section";
 import {SignUpService} from "./signup.service";
 import {filter, map} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
+import {ModifyItemEvent} from "../../shop/shop-item/modify-shop-item/modify-item-event";
+import {User} from "../../shared/model/user";
 
 @Component({
 	selector: "memo-signup",
@@ -34,6 +36,11 @@ export class SignUpComponent implements OnInit {
 			.subscribe(
 				section => this.signUpService.navigateToSection(SignUpSection.AccountData)
 			);
+	}
+
+	submitUserDataForm(event: ModifyItemEvent){
+		const user: User = (<User>event.item);
+		this.onSubmit(SignUpSection.PersonalData, {...user, images: event.images});
 	}
 
 	/**

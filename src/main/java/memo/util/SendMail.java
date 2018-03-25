@@ -1,10 +1,18 @@
 package memo.util;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
-import javax.mail.*;
-import javax.mail.internet.*;
 
 
 public class SendMail {
@@ -18,12 +26,12 @@ public class SendMail {
         return instance;
     }
 
-    SendMail(){
+    SendMail() {
 
-        HOST ="smtp.strato.de";
-        USER ="shop@meilenwoelfe.de";
+        HOST = "smtp.strato.de";
+        USER = "shop@meilenwoelfe.de";
         USER_NAME = "Meilenshop";
-        PASSWORD ="Wh2k15nb,e!";
+        PASSWORD = "Wh2k15nb,e!";
         PORT = "465";
     }
 
@@ -33,7 +41,13 @@ public class SendMail {
     private String PASSWORD;
     private String PORT;
 
-    public void send(String to, String subject, String text) {
+    private void logEmail(Priority priority, String to, String subject, String text) {
+        logger.log(priority, "recipient: " + to);
+        logger.log(priority, "subject: " + subject);
+        logger.log(priority, "email text: " + text);
+    }
+
+    public void send(String to, String subject, String text) throws UnsupportedEncodingException, MessagingException {
 
         //Get the session object
         Properties props = new Properties();
@@ -54,15 +68,28 @@ public class SendMail {
 
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(USER, USER_NAME));
-            message.addRecipient(Message.RecipientType.TO,new InternetAddress(to));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject(subject);
             message.setText(text);
 
             //send the message
 //            Transport.send(message);
 
-            logger.trace("message sent successfully");
-
-        } catch (Exception e) {e.printStackTrace();}
+            logger.trace("Message sent successfully");
+        } catch (Exception e) {
+            if (e instanceof UnsupportedEncodingException) {
+                logger.error("Encoding the charset failed, the Email was not sent.", e);
+                this.logEmail(Level.ERROR, to, subject, text);
+                throw e;
+            } else if (e instanceof AddressException) {
+                logger.error("Could not parse the recipient's email address. ", e);
+                this.logEmail(Level.ERROR, to, subject, text);
+                throw e;
+            } else {
+                logger.error("Something went wrong when trying to send an email from ", e);
+                this.logEmail(Level.ERROR, to, subject, text);
+                throw e;
+            }
+        }
     }
 }

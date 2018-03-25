@@ -20,6 +20,10 @@ export class ModifyTourComponent implements OnInit {
 	@Input() set previousValue(previousValue: Tour) {
 		this._previousValue = previousValue;
 
+		if (!previousValue) {
+			return;
+		}
+
 		this.formGroup.get("event-data").get("title").patchValue(previousValue.title);
 		this.formGroup.get("event-data").get("description").patchValue(previousValue.description);
 		this.formGroup.get("event-data").get("date").patchValue(previousValue.date);

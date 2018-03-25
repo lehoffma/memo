@@ -2,9 +2,9 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
 import {User} from "../../../../shared/model/user";
-import {ImageToUpload} from "../../../../shared/multi-image-upload/multi-image-upload.component";
 import {ModifyItemEvent} from "../modify-item-event";
 import {ModifyItemService} from "../modify-item.service";
+import {ModifiedImages} from "../modified-images";
 
 @Component({
 	selector: "memo-modify-user",
@@ -29,10 +29,7 @@ export class ModifyUserComponent implements OnInit {
 		this.modifyItemService.reset();
 	}
 
-	submitModifiedObject(event: { user: User, images: { imagePaths: string[], imagesToUpload: ImageToUpload[] } }) {
-		this.onSubmit.emit({
-			item: event.user,
-			images: event.images
-		});
+	submitModifiedObject(event: { item: User, images: ModifiedImages }) {
+		this.onSubmit.emit(event);
 	}
 }

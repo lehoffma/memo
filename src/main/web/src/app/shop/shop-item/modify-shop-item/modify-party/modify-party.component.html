@@ -12,7 +12,7 @@
 
 		<div class="information-container">
 			<memo-item-details-content [title]="'Treffpunkt'">
-				<memo-tour-route-input [previousValue]="previousValue.route" [formControl]="formGroup.get('addresses')"
+				<memo-tour-route-input [previousValue]="previousValue?.route" [formControl]="formGroup.get('addresses')"
 				></memo-tour-route-input>
 			</memo-item-details-content>
 
@@ -49,11 +49,11 @@
 									   formControlName="date"
 									   name="dateInput" required>
 								<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+								<mat-error *ngIf="formGroup.get('event-data').get('date').hasError('required')" align="end">
+									Das Datum muss im Format DD.MM.YYYY vorliegen.
+								</mat-error>
 							</mat-form-field>
 							<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
-							<mat-error *ngIf="formGroup.get('event-data').get('date').hasError('required')" align="end">
-								Das Datum muss im Format DD.MM.YYYY vorliegen.
-							</mat-error>
 						</div>
 					</div>
 

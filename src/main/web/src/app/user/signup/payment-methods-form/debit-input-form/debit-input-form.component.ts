@@ -13,11 +13,7 @@ export class DebitInputFormComponent implements OnInit, OnChanges {
 	@Input() name: string = "";
 	model: PaymentInfo = {
 		iban: "",
-		bic: "",
-		address: Address.create()
-			.setProperties({
-				name: this.name
-			})
+		bic: ""
 	};
 	@Output() onChange = new EventEmitter<{ formIsValid: boolean, paymentInfo: PaymentInfo }>();
 	@Output() onAddressModification = new EventEmitter();
@@ -30,12 +26,6 @@ export class DebitInputFormComponent implements OnInit, OnChanges {
 
 
 	ngOnChanges(changes: SimpleChanges): void {
-		// throw new Error("Method not implemented.");
-		if (changes["name"]) {
-			this.model.address.setProperties({
-				name: changes["name"].currentValue
-			});
-		}
 	}
 
 	isValidIBAN(iban: string) {

@@ -6,17 +6,8 @@ import {MultiImageUploadService} from "./multi-image-upload.service";
 import {filter, map, take} from "rxjs/operators";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Subscription} from "rxjs/Subscription";
-
-export interface ImageToUpload {
-	id: string;
-	name: string;
-	data: any
-}
-
-export function isImageToUpload(value: any): value is ImageToUpload {
-	return value.id !== undefined && value.name !== undefined && value.data !== undefined
-		&& value.name !== value.data;
-}
+import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
+import {ImageToUpload, isImageToUpload} from "./image-to-upload";
 
 @Component({
 	selector: "memo-multi-image-upload",
@@ -116,7 +107,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	}
 
 
-	getValueFromForm(value: { imagePaths: string[], imagesToUpload: ImageToUpload[] }): ImageToUpload[] {
+	getValueFromForm(value: ModifiedImages): ImageToUpload[] {
 		return [...value.imagePaths.map(path => ({id: path, name: path, data: path})),
 			...value.imagesToUpload];
 	}

@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.io.CharStreams;
-import memo.auth.api.ShopItemAuthHelper;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +58,7 @@ public class ApiUtils {
         try {
             logger.trace("Parse Input Body");
 
-            String body = CharStreams.toString(request.getReader());
+            String body = org.apache.commons.io.IOUtils.toString(request.getReader());
 
             JsonNode node = mapper.readTree(body);
 

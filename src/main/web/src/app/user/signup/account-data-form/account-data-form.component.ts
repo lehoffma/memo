@@ -40,7 +40,6 @@ export class AccountDataFormComponent implements OnInit {
 
 	submit() {
 		this.onSubmit.emit({
-			section: SignUpSection.AccountData,
 			email: this.accountDataForm.get("email").value,
 			password: this.accountDataForm.get("password").value
 		});

@@ -12,12 +12,14 @@ import {AddressService} from "../../shared/services/api/address.service";
 import {UserBankAccountService} from "../../shared/services/api/user-bank-account.service";
 import {BankAccount} from "../../shared/model/bank-account";
 import {ImageUploadService} from "../../shared/services/api/image-upload.service";
-import {catchError, filter, first, map, mergeMap, tap} from "rxjs/operators";
+import {catchError, first, map, mergeMap, tap} from "rxjs/operators";
 import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {ImageToUpload} from "../../shared/multi-image-upload/multi-image-upload.component";
+import {ImageToUpload} from "../../shared/multi-image-upload/image-to-upload";
+import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Injectable()
 export class SignUpService {
@@ -86,6 +88,47 @@ export class SignUpService {
 	/**
 	 *
 	 * @param {User} user
+	 * @param {PaymentInfo} paymentInfo
+	 * @returns {Observable<User>}
+	 */
+	uploadBankAccount(user: User, paymentInfo: PaymentInfo): Observable<User> {
+		if (!paymentInfo) {
+			return of(user);
+		}
+
+		return this.bankAccountService.add(BankAccount.create()
+			.setProperties({
+				bic: this.newUserDebitInfo.bic,
+				iban: this.newUserDebitInfo.iban,
+				name: user.firstName + " " + user.surname
+			}))
+			.pipe(
+				map(bankAccount => user.setProperties({bankAccounts: bankAccount}))
+			);
+	}
+
+	/**
+	 *
+	 * @param {User} user
+	 * @param {Address[]} addresses
+	 * @returns {Observable<User>}
+	 */
+	uploadAddresses(user: User, addresses: Address[]): Observable<User> {
+		if (addresses.length === 0) {
+			return of(user);
+		}
+
+		return combineLatest(
+			...addresses.map(it => this.addressService.add(it))
+		)
+			.pipe(
+				map(addressIds => user.setProperties({addresses: addressIds}))
+			);
+	}
+
+	/**
+	 *
+	 * @param {User} user
 	 * @param {FormData} pictures
 	 * @returns {Promise<User>}
 	 */
@@ -139,31 +182,12 @@ export class SignUpService {
 				this.newUser.setProperties({email, password});
 				break;
 			case SignUpSection.PersonalData:
-				const images: { imagePaths: string[], imagesToUpload: ImageToUpload[] } = event.images;
+				const images: ModifiedImages = event.images;
 				this.newUser.setProperties({firstName, surname, birthday, telephone, mobile, isStudent, addresses});
 				this.newUserProfilePicture = images.imagesToUpload;
 				break;
 			case SignUpSection.PaymentMethods:
 				this.newUserDebitInfo = paymentInfo;
-				//add bank account address to user
-				if (paymentInfo && paymentInfo.address) {
-					await this.addressService.add(Address.create()
-						.setProperties({
-							...paymentInfo.address
-						}))
-						.pipe(
-							tap(address => this.newUserAddresses.push(address)),
-							tap(address => this.newUser.addresses.push(address.id)),
-							mergeMap(_ => this.bankAccountService.add(BankAccount.create()
-								.setProperties({
-									bic: this.newUserDebitInfo.bic,
-									iban: this.newUserDebitInfo.iban,
-									name: this.newUserDebitInfo.address.name
-								}))),
-							tap(bankAccount => this.newUser.bankAccounts.push(bankAccount.id))
-						)
-						.toPromise();
-				}
 				break;
 		}
 
@@ -172,9 +196,14 @@ export class SignUpService {
 
 		if (isLastScreen) {
 			this.submittingFinalUser = true;
+
+
 			//upload profile picture
 			this.uploadProfilePicture(this.newUser, this.newUserProfilePicture)
 				.pipe(
+					mergeMap(newUser => this.uploadAddresses(newUser, (<any>this.newUser.addresses))),
+					//add bank account and its address to user
+					mergeMap(newUser => this.uploadBankAccount(newUser, this.newUserDebitInfo)),
 					mergeMap(newUser => this.userService.add(newUser)),
 					tap(() => this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
 						duration: 1000

@@ -23,8 +23,8 @@ import {first, map, mergeMap, take, tap} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shared/model/event";
 import {of} from "rxjs/observable/of";
-import {ImageToUpload} from "../../../shared/multi-image-upload/multi-image-upload.component";
 import {timer} from "rxjs/observable/timer";
+import {ModifiedImages} from "./modified-images";
 
 @Injectable()
 export class ModifyItemService {
@@ -280,7 +280,7 @@ export class ModifyItemService {
 	 * @param newObject
 	 * @param images
 	 */
-	uploadImage(newObject: ShopItem, images: { imagePaths: string[], imagesToUpload: ImageToUpload[] }): Observable<ShopItem> {
+	uploadImage(newObject: ShopItem, images: ModifiedImages): Observable<ShopItem> {
 		const {imagePaths, imagesToUpload} = images;
 
 		if (EventUtilityService.isMerchandise(newObject) || EventUtilityService.isTour(newObject) ||

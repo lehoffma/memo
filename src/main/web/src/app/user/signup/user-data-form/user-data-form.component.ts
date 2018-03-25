@@ -10,7 +10,8 @@ import {emailAlreadyTakenValidator} from "../../../shared/validators/email-alrea
 import {confirmPasswordValidator} from "../../../shared/validators/confirm-password.validator";
 import {User} from "../../../shared/model/user";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {first} from "rxjs/operators";
+import {first, map} from "rxjs/operators";
+import {ModifyItemEvent} from "../../../shop/shop-item/modify-shop-item/modify-item-event";
 
 @Component({
 	selector: "memo-user-data-form",
@@ -20,7 +21,7 @@ import {first} from "rxjs/operators";
 export class UserDataFormComponent implements OnInit {
 	userDataForm: FormGroup;
 
-	@Output() onSubmit = new EventEmitter<any>();
+	@Output() onSubmit = new EventEmitter<ModifyItemEvent>();
 
 	_checkEmail = false;
 	@Input() set checkEmail(checkEmail: boolean) {
@@ -82,6 +83,10 @@ export class UserDataFormComponent implements OnInit {
 		});
 		this.userDataForm.get("images").get("imagePaths").patchValue(previousValue.images);
 
+		if (previousValue.addresses.length === 0) {
+			return;
+		}
+
 		combineLatest(...previousValue.addresses.map(id => this.addressService.getById(id)))
 			.pipe(first())
 			.subscribe(addresses => {
@@ -109,7 +114,7 @@ export class UserDataFormComponent implements OnInit {
 				"surname": ["", {
 					validators: [Validators.required]
 				}],
-				"birthday": ["", {
+				"birthday": [undefined, {
 					validators: [Validators.required]
 				}],
 				"gender": [Gender.OTHER, {
@@ -149,10 +154,10 @@ export class UserDataFormComponent implements OnInit {
 				validators: [Validators.required, Validators.email]
 			}],
 			"password": ["", {
-				validators: [Validators.required]
+				validators: []
 			}],
 			"confirmedPassword": ["", {
-				validators: [Validators.required]
+				validators: []
 			}]
 		}, {
 			validator: confirmPasswordValidator()
@@ -203,7 +208,7 @@ export class UserDataFormComponent implements OnInit {
 			addresses: this.userDataForm.get("addresses").value,
 		});
 		this.onSubmit.emit({
-			user,
+			item: user,
 			images: this.userDataForm.get("images").value
 		});
 	}
