@@ -106,7 +106,6 @@ export class ModifyMerchComponent implements OnInit {
 		const merch = Merchandise.create().setProperties<Merchandise>({
 			title: this.formGroup.get("event-data").get("title").value,
 			description: this.formGroup.get("event-data").get("description").value,
-			capacity: this.formGroup.get("event-data").get("capacity").value,
 			price: this.formGroup.get("event-data").get("price").value,
 			material: this.formGroup.get("event-data").get("material").value,
 			expectedReadRole: this.formGroup.get("permissions").get("expectedReadRole").value,

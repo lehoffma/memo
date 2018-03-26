@@ -9,6 +9,7 @@ import {catchError, map, mergeMap, share, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {isArrayType} from "../../../util/util";
+import {of} from "rxjs/observable/of";
 
 const stockMockData = [
 	{
@@ -376,11 +377,12 @@ export class StockService extends ServletService<MerchStock[]> {
 				.pipe(share()))
 		];
 
+		const requests = [...removeRequests, ...editRequests, ...addRequests];
 
-		return combineLatest(
-			...removeRequests,
-			...editRequests,
-			...addRequests
-		);
+		if(requests.length === 0){
+			return of([]);
+		}
+
+		return combineLatest(...requests);
 	}
 }

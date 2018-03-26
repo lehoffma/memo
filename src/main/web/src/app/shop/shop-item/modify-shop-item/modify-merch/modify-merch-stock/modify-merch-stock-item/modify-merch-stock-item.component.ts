@@ -1,50 +1,88 @@
-import {Component, Inject, OnInit} from "@angular/core";
+import {Component, Inject, OnDestroy, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {ModifyType} from "../../../modify-type";
-import {StockService} from "../../../../../../shared/services/api/stock.service";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {noDuplicatesValidator} from "../../../../../../shared/validators/no-duplicates.validator";
+import {minChildrenValidator} from "../../../../../../shared/validators/min-children.validator";
 
 @Component({
 	selector: "memo-modify-merch-stock-item",
 	templateUrl: "./modify-merch-stock-item.component.html",
 	styleUrls: ["./modify-merch-stock-item.component.scss"]
 })
-export class ModifyMerchStockItemComponent implements OnInit {
+export class ModifyMerchStockItemComponent implements OnInit, OnDestroy {
+	public formGroup: FormGroup;
+	public addSizeFormGroup: FormGroup;
+
 	public availableSizes = [];
+	public readonly availableAmounts = Array.from(Array(100).keys()).map(it => it + 1);
 
-	public newSize = "";
-	public model: {
-		[size: string]: number
-	} = {};
-	public readonly availableAmounts = Array.from(Array(101).keys());
-
-	public color: string = "#ff0000";
 	public textColor: string = "white";
-	public colorName: string;
+
+	subscriptions = [];
 
 	constructor(private dialogRef: MatDialogRef<ModifyMerchStockItemComponent>,
+				private formBuilder: FormBuilder,
 				@Inject(MAT_DIALOG_DATA) public data: any) {
+		this.formGroup = this.formBuilder.group({
+			"color": this.formBuilder.group({
+				"hex": ["#ff0000", {
+					validators: [Validators.required]
+				}],
+				"name": ["", {
+					validators: [Validators.required]
+				}]
+			}),
+			"sizes": this.formBuilder.group({})
+		});
+
+		this.addSizeFormGroup = this.formBuilder.group({
+			"size": ["", {
+				validators: [noDuplicatesValidator(this.availableSizes)]
+			}]
+		});
+
+		this.subscriptions.push(
+			this.formGroup.get("color").get("hex").valueChanges
+				.subscribe(value => this.updateTextColor(value)),
+		)
 	}
-
-
-	addSize(size: string) {
-		this.newSize = "";
-		this.availableSizes.push(size);
-		this.model[size] = 0;
-	}
-
 
 	get isEditing() {
 		return this.data && this.data.color && this.data.color.hex && this.data.color.name;
 	}
 
 	ngOnInit() {
+		this.formGroup.get("sizes").setValidators([minChildrenValidator(1)]);
 		if (this.isEditing) {
 			this.availableSizes = [this.data.size];
-			this.model[this.data.size] = this.data.amount;
-			this.color = this.data.color.hex;
-			this.colorName = this.data.color.name;
+			this.formGroup.get("sizes").patchValue({
+				[this.data.size]: this.data.amount
+			});
+			this.formGroup.get("color").patchValue({
+				hex: this.data.color.hex,
+				name: this.data.color.name
+			});
 		}
 	}
+
+	ngOnDestroy(): void {
+		this.subscriptions.forEach(it => it.unsubscribe());
+	}
+
+
+	addSize(size: string) {
+		(this.formGroup.get("sizes") as FormGroup).addControl(size, this.formBuilder.control(1));
+		this.addSizeFormGroup.patchValue({size: ""});
+		this.availableSizes.push(size);
+		this.addSizeFormGroup.get("size").setValidators([noDuplicatesValidator(this.availableSizes)]);
+	}
+
+	deleteSize(size: string, index: number) {
+		(this.formGroup.get("sizes") as FormGroup).removeControl(size);
+		this.availableSizes.splice(index, 1);
+	}
+
 
 	private hexToRgb(hex: string): { r: number, g: number, b: number } {
 		// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -68,8 +106,8 @@ export class ModifyMerchStockItemComponent implements OnInit {
 		return (a < 0.5);
 	}
 
-	updateTextColor() {
-		const rgb = this.hexToRgb(this.color);
+	updateTextColor(hex: string) {
+		const rgb = this.hexToRgb(hex);
 		this.textColor = this.colorIsLight(rgb.r, rgb.g, rgb.b) ? "black" : "white";
 	}
 
@@ -78,10 +116,11 @@ export class ModifyMerchStockItemComponent implements OnInit {
 		let modifiedStock: number = this.isEditing ? this.data.modifiedStock : null;
 		this.dialogRef.close({
 			event: this.data.event,
-			color: {hex: this.color, name: this.colorName},
-			sizes: this.model,
+			color: this.formGroup.get("color").value,
+			sizes: this.formGroup.get("sizes").value,
 			modifyType,
 			modifiedStock
 		});
 	}
+
 }

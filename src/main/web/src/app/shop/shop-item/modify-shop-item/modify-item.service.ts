@@ -327,12 +327,6 @@ export class ModifyItemService {
 			(<any>newObject).setProperties({id: this.idOfObjectToModify});
 		}
 
-		of("hallo")
-			.pipe(
-				tap(() => timer(0, 500).pipe(first()))
-			)
-			.subscribe(it => console.log(it));
-
 		//handle addresses correctly
 		const request = this.handleAddresses(newObject)
 			.pipe(

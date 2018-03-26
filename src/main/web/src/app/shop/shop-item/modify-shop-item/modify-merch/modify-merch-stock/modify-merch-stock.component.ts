@@ -24,7 +24,6 @@ export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValu
 			return;
 		}
 		this._previousValue = previousValue;
-		console.log(previousValue);
 		this.modifyMerchStockService.setValue(previousValue);
 	}
 
@@ -45,7 +44,6 @@ export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValu
 	ngOnInit() {
 		this.subscription = this.modifyMerchStockService.dataSubject$
 			.subscribe(value => this.onChange(value));
-		this.formControl.valueChanges.subscribe(it => console.log(it));
 	}
 
 	ngOnDestroy(): void {
