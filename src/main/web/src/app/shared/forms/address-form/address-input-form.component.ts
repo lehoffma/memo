@@ -74,12 +74,16 @@ export class AddressInputFormComponent implements OnInit {
 			.pipe(first())
 			.subscribe(results => {
 				this.zone.run(() => {
-					const longitude = results[0].geometry.location.lng();
-					const latitude = results[0].geometry.location.lat();
-					this.onSubmit.emit(address.setProperties({
-						latitude,
-						longitude
-					}))
+					let addressToSubmit = address;
+					if (results && results.length > 0) {
+						const longitude = results[0].geometry.location.lng();
+						const latitude = results[0].geometry.location.lat();
+						addressToSubmit = addressToSubmit.setProperties({
+							latitude,
+							longitude
+						})
+					}
+					this.onSubmit.emit(addressToSubmit)
 				})
 			})
 	}

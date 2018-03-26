@@ -344,8 +344,7 @@ export class ModifyItemService {
 					: of(result)
 				),
 				first()
-			)
-		;
+			);
 
 		//perform request
 		request

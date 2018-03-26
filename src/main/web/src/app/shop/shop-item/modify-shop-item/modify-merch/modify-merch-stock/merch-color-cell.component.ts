@@ -13,6 +13,7 @@ import {MerchColor} from "../../../../shared/model/merch-color";
 	styles: [`
 		span {
 			padding: 0.5rem;
+			white-space: nowrap;
 		}
 	`]
 })

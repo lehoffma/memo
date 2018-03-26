@@ -26,11 +26,8 @@ export class ModifyMerchComponent implements OnInit {
 			return;
 		}
 
-		console.log(previousValue);
-
 		this.formGroup.get("event-data").get("title").patchValue(previousValue.title);
 		this.formGroup.get("event-data").get("description").patchValue(previousValue.description);
-		this.formGroup.get("event-data").get("capacity").patchValue(previousValue.capacity);
 		this.formGroup.get("event-data").get("price").patchValue(previousValue.price);
 		this.formGroup.get("event-data").get("material").patchValue(previousValue.material);
 		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
