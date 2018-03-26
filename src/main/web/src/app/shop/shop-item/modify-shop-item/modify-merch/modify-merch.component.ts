@@ -4,7 +4,6 @@ import {Location} from "@angular/common";
 import {ModifyItemEvent} from "../modify-item-event";
 import {Permission} from "../../../../shared/model/permission";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {minArraySizeValidator} from "../../../../shared/validators/min-array-size.validator";
 import {Merchandise} from "../../../shared/model/merchandise";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {MerchStock} from "../../../shared/model/merch-stock";
@@ -19,12 +18,15 @@ export class ModifyMerchComponent implements OnInit {
 
 	_previousValue: Merchandise;
 	_previousStock: MerchStock[];
+
 	@Input() set previousValue(previousValue: Merchandise) {
 		this._previousValue = previousValue;
 
 		if (!previousValue) {
 			return;
 		}
+
+		console.log(previousValue);
 
 		this.formGroup.get("event-data").get("title").patchValue(previousValue.title);
 		this.formGroup.get("event-data").get("description").patchValue(previousValue.description);
@@ -62,14 +64,9 @@ export class ModifyMerchComponent implements OnInit {
 				"price": [0, {
 					validators: [Validators.required, Validators.pattern(/^[\d]+((\.|\,)[\d]{1,2})?$/)]
 				}],
-				"stock": [[], {
-					validators: []
-				}],
+				"stock": [[], {validators: [Validators.required]}],
 				"material": ["", {
 					validators: [Validators.required]
-				}],
-				"capacity": [0, {
-					validators: [Validators.required, Validators.min(0)]
 				}]
 			}),
 			"images": this.formBuilder.group({
@@ -78,21 +75,20 @@ export class ModifyMerchComponent implements OnInit {
 			}),
 			"permissions": this.formBuilder.group({
 				"expectedReadRole": [Permission.none, {
-					validators: []
+					validators: [Validators.required]
 				}],
 				"expectedWriteRole": [Permission.none, {
-					validators: []
+					validators: [Validators.required]
 				}],
 				"expectedCheckInRole": [Permission.none, {
-					validators: []
+					validators: [Validators.required]
 				}]
 			}),
-			"responsible-users": [[]]
+			"responsible-users": [[], {validators: [Validators.required]}]
 		})
 	}
 
 	ngOnInit() {
-		this.formGroup.get("responsible-users").setValidators([minArraySizeValidator(1)]);
 	}
 
 	/**

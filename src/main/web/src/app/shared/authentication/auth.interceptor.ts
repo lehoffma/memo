@@ -13,12 +13,11 @@ export class AuthInterceptor implements HttpInterceptor {
 	}
 
 	intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
 		// Get the auth header from the service.
 		const authService = this.inj.get(AuthService);
 
 		const authReq = req.clone({
-			setHeaders: {Authorization: 'Bearer ' + authService.getToken()}
+			setHeaders: {Authorization: "Bearer " + authService.getToken()}
 		});
 		return next.handle(authReq)
 			.pipe(
@@ -28,7 +27,7 @@ export class AuthInterceptor implements HttpInterceptor {
 							.pipe(
 								mergeMap(response => {
 									const repeatedAuthReq = req.clone({
-										setHeaders: {Authorization: 'Bearer ' + response.auth_token}
+										setHeaders: {Authorization: "Bearer " + response.auth_token}
 									});
 									return next.handle(repeatedAuthReq);
 								})

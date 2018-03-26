@@ -17,10 +17,9 @@ export class AuthService {
 	public _saveLogin = null;
 	private _accessToken = null;
 	private _refreshToken = null;
+	private jwtHelperService: JwtHelperService = new JwtHelperService({});
 
-	constructor(private http: HttpClient,
-				private jwtHelperService: JwtHelperService) {
-
+	constructor(private http: HttpClient,) {
 	}
 
 	get saveLogin() {
@@ -78,7 +77,7 @@ export class AuthService {
 		}
 		else {
 			this._refreshToken = token;
-			if(this.saveLogin){
+			if (this.saveLogin) {
 				localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
 			}
 		}

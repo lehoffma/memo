@@ -5,7 +5,6 @@ import {ModifyItemEvent} from "../modify-item-event";
 import {format, setHours, setMinutes} from "date-fns";
 import {Permission} from "../../../../shared/model/permission";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {minArraySizeValidator} from "../../../../shared/validators/min-array-size.validator";
 import {Tour} from "../../../shared/model/tour";
 
 @Component({
@@ -74,7 +73,7 @@ export class ModifyTourComponent implements OnInit {
 					validators: [Validators.required, Validators.min(0)]
 				}]
 			}),
-			"addresses": [[]],
+			"addresses": [[], {validators: [Validators.required]}],
 			"images": this.formBuilder.group({
 				"imagePaths": [[], {validators: []}],
 				"imagesToUpload": [[], {validators: []}]
@@ -90,13 +89,11 @@ export class ModifyTourComponent implements OnInit {
 					validators: []
 				}]
 			}),
-			"responsible-users": [[]]
+			"responsible-users": [[], {validators: [Validators.required]}]
 		})
 	}
 
 	ngOnInit() {
-		this.formGroup.get("addresses").setValidators([Validators.required, minArraySizeValidator(1)]);
-		this.formGroup.get("responsible-users").setValidators([minArraySizeValidator(1)]);
 	}
 
 	/**

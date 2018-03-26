@@ -48,7 +48,7 @@
 							Dieses Feld darf nicht leer bleiben!
 						</mat-error>
 						<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('pattern')" align="end">
-							Dieses Feld darf nicht leer bleiben!
+							Der Preis darf nur aus Zahlen bestehen (max. 2 Nachkommastellen).
 						</mat-error>
 					</mat-form-field>
 					<mat-form-field>
@@ -87,9 +87,9 @@
 			<memo-item-permissions-input
 				[formGroup]="formGroup.get('permissions')"
 				[previousValue]="{
-					'expectedReadRole': previousValue?.expectedReadRole,
-					'expectedWriteRole': previousValue?.expectedWriteRole,
-					'expectedCheckInRole': previousValue?.expectedCheckInRole
+					'expectedReadRole': previousValue?.expectedReadRole || 'Gast',
+					'expectedWriteRole': previousValue?.expectedWriteRole || 'Gast',
+					'expectedCheckInRole': previousValue?.expectedCheckInRole || 'Gast'
 				}">
 
 			</memo-item-permissions-input>

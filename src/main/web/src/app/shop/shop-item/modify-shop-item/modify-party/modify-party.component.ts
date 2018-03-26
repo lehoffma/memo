@@ -5,7 +5,6 @@ import {ModifyItemEvent} from "../modify-item-event";
 import {format, setHours, setMinutes} from "date-fns";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Party} from "../../../shared/model/party";
-import {minArraySizeValidator} from "../../../../shared/validators/min-array-size.validator";
 import {Permission} from "../../../../shared/model/permission";
 import {AddressService} from "../../../../shared/services/api/address.service";
 
@@ -71,7 +70,7 @@ export class ModifyPartyComponent implements OnInit {
 					validators: [Validators.required, Validators.min(0)]
 				}]
 			}),
-			"addresses": [[]],
+			"addresses": [[], {validators: [Validators.required]}],
 			"images": this.formBuilder.group({
 				"imagePaths": [[], {validators: []}],
 				"imagesToUpload": [[], {validators: []}]
@@ -87,13 +86,11 @@ export class ModifyPartyComponent implements OnInit {
 					validators: []
 				}]
 			}),
-			"responsible-users": [[]]
+			"responsible-users": [[], {validators: [Validators.required]}]
 		})
 	}
 
 	ngOnInit() {
-		this.formGroup.get("addresses").setValidators([Validators.required, minArraySizeValidator(1)]);
-		this.formGroup.get("responsible-users").setValidators([minArraySizeValidator(1)]);
 	}
 
 	/**

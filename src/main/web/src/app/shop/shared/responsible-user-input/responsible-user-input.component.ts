@@ -60,7 +60,6 @@ export class ResponsibleUserInputComponent implements OnInit, OnDestroy, Control
 			this.userService.search("")
 		)
 			.pipe(
-				tap(it => console.log(it)),
 				//filter out already listed users
 				map(([responsibleUsers, users]) => users.filter(user =>
 					!responsibleUsers.find(responsible => user.id === responsible.id)

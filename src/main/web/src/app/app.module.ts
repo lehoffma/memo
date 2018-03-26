@@ -27,31 +27,15 @@ import {ShopModule} from "./shop/shop.module";
 import {ApiServicesModule} from "./shared/services/api/api-services.module";
 import {UtilityServicesModule} from "./shared/services/utility-services.module";
 import {AuthenticationModule} from "./shared/authentication/authentication.module";
-import {JwtModule} from "@auth0/angular-jwt";
-import {AuthService} from "./shared/authentication/auth.service";
 
 import {registerLocaleData} from "@angular/common";
 import localeDe from "@angular/common/locales/de";
 import {ShareButtonsModule} from "@ngx-share/buttons";
 import {CalendarModule} from "angular-calendar";
 import {DateFnsAdapter} from "./util/date-fns-adapter";
+import {UnauthorizedHttpClient} from "./shared/authentication/unauthorized-http-client.service";
 
 registerLocaleData(localeDe);
-
-export function jwtOptionsFactory(tokenService: AuthService) {
-	return {
-		tokenGetter: () => {
-			return tokenService.getToken();
-		}
-	}
-}
-
-export function tokenGetter() {
-	if(localStorage.getItem("remember_me") === "true"){
-		return localStorage.getItem("auth_token");
-	}
-	return null;
-}
 
 @NgModule({
 	imports: [
@@ -70,20 +54,6 @@ export function tokenGetter() {
 		}),
 		ShareButtonsModule.forRoot(),
 		CalendarModule.forRoot(),
-		JwtModule.forRoot(
-			// {
-			// 	jwtOptionsProvider: {
-			// 		provide: JWT_OPTIONS,
-			// 		useFactory: jwtOptionsFactory,
-			// 		deps: [AuthService]
-			// 	}
-			// }
-			{
-				config: {
-					tokenGetter: tokenGetter
-				}
-			}
-		),
 
 		//memo modules
 		SharedModule,
@@ -116,6 +86,7 @@ export function tokenGetter() {
 		AppComponent
 	],
 	providers: [
+		UnauthorizedHttpClient,
 		{provide: LOCALE_ID, useValue: "de-DE"},
 		{provide: DateAdapter, useClass: DateFnsAdapter},
 		{provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS},
