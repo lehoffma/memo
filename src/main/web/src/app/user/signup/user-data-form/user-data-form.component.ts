@@ -117,14 +117,14 @@ export class UserDataFormComponent implements OnInit {
 				"birthday": [undefined, {
 					validators: [Validators.required]
 				}],
-				"gender": [Gender.OTHER, {
+				"gender": [undefined, {
 					validators: [Validators.required]
 				}],
 				"phone": ["", {
-					validators: [Validators.required, Validators.pattern(/^[0-9\-+\s()]*$/)]
+					validators: [Validators.pattern(/^[0-9\-+\s()]*$/)]
 				}],
 				"mobile": ["", {
-					validators: [Validators.required, Validators.pattern(/^[0-9\-+\s()]*$/)]
+					validators: [Validators.pattern(/^[0-9\-+\s()]*$/)]
 				}],
 				"isStudent": [false, {validators: []}],
 				"hasSeasonTicket": [false, {validators: []}],
