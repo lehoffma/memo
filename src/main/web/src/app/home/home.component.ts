@@ -8,6 +8,7 @@ import {LogInService} from "../shared/services/api/login.service";
 import {map} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {isAfter} from "date-fns";
+import {dateSortingFunction} from "../util/util";
 
 interface EventsPreview {
 	title: string,
@@ -29,8 +30,7 @@ export class HomeComponent implements OnInit {
 			type: ShopItemType.tour,
 			events: this.eventService.search("", EventType.tours)
 				.pipe(
-					map(tours => this.removePastEvents(tours)),
-					map(tours => tours.slice(0, 7))
+					map(tours => this.filterEvents(tours))
 				)
 		},
 		{
@@ -39,8 +39,7 @@ export class HomeComponent implements OnInit {
 			type: ShopItemType.party,
 			events: this.eventService.search("", EventType.partys)
 				.pipe(
-					map(partys => this.removePastEvents(partys)),
-					map(partys => partys.slice(0, 7))
+					map(partys => this.filterEvents(partys))
 				)
 		},
 		{
@@ -64,17 +63,9 @@ export class HomeComponent implements OnInit {
 	}
 
 
-	/**
-	 * Filters events out that have already happened
-	 * @param {Event[]} events
-	 * @returns {Event[]}
-	 */
-	removePastEvents(events: Event[]): Event[] {
-		//todo remove demo
-		if (events.length > 0) {
-			return events;
-		}
-
-		return events.filter(event => isAfter(event.date, new Date()));
+	filterEvents(events: Event[]): Event[]{
+		return events.filter(event => isAfter(event.date, new Date()))
+			.sort(dateSortingFunction<Event>(it => it.date, false))
+			.slice(0, 7);
 	}
 }

@@ -111,6 +111,6 @@ export class DiscountService {
 	 * @returns {number}
 	 */
 	getDiscountedPrice(basePrice: number, discounts: Discount[]): number {
-		return basePrice - this.getTotalDiscount(discounts);
+		return Math.max(basePrice - this.getTotalDiscount(discounts), 0);
 	}
 }

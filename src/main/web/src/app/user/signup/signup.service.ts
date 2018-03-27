@@ -19,7 +19,7 @@ import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
 import {ImageToUpload} from "../../shared/multi-image-upload/image-to-upload";
 import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {processSequentially} from "../../util/observable-util";
 
 @Injectable()
 export class SignUpService {
@@ -118,8 +118,8 @@ export class SignUpService {
 			return of(user);
 		}
 
-		return combineLatest(
-			...addresses.map(it => this.addressService.add(it))
+		return processSequentially(
+			addresses.map(it => this.addressService.add(it))
 		)
 			.pipe(
 				map(addressIds => user.setProperties({addresses: addressIds}))

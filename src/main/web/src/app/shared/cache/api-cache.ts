@@ -1,7 +1,6 @@
 import {Cache} from "./cache";
 import {HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
-import {tap} from "rxjs/operators";
 
 interface ApiInnerCache<T> {
 	getById: {
