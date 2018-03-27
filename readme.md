@@ -1,4 +1,8 @@
-this is a readme
+[![Build Status](https://travis-ci.org/lehoffma/memo.svg?branch=develop)](https://travis-ci.org/lehoffma/memo)
+
+
+
+
 
 https://www.owasp.org/index.php/Session_Management_Cheat_Sheet
 
