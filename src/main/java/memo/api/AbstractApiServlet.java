@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -109,7 +110,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return getParameter(paramMap, key, null);
     }
 
-    protected void get(HttpServletRequest request,
+    protected List<T> get(HttpServletRequest request,
                        HttpServletResponse response,
                        BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
                        String serializedKey,
@@ -128,7 +129,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         if (stringIsNotEmpty(id) && items.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
-            return;
+            return new ArrayList<>();
         }
 
         //remove items from the result the user is not allowed to see
@@ -141,20 +142,21 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         if (stringIsNotEmpty(id) && items.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to see this item");
-            return;
+            return new ArrayList<>();
         }
 
         ApiUtils.getInstance().serializeObject(response, items, serializedKey);
+        return items;
     }
 
-    protected void get(HttpServletRequest request,
+    protected List<T> get(HttpServletRequest request,
                        HttpServletResponse response,
                        BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
                        String serializedKey) {
-        this.get(request, response, itemSupplier, serializedKey, t -> true);
+        return this.get(request, response, itemSupplier, serializedKey, t -> true);
     }
 
-    protected <SerializedType> void post(HttpServletRequest request,
+    protected <SerializedType> T post(HttpServletRequest request,
                                          HttpServletResponse response,
                                          String objectName,
                                          T baseValue,
@@ -179,7 +181,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         if (!AuthenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToCreate, item)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to create this item");
-            return;
+            return null;
         }
 
         //check if any of the preconditions failed (i.e. the email is already taken or something)
@@ -187,7 +189,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                 .filter(it -> it.getPredicate().test(item)).findFirst();
 
         if (handleFailedCondition(failedCondition)) {
-            return;
+            return null;
         }
 
         DatabaseManager.getInstance().save(item);
@@ -197,11 +199,12 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
+        return item;
     }
 
-    protected <SerializedType> void post(HttpServletRequest request, HttpServletResponse response,
+    protected <SerializedType> T post(HttpServletRequest request, HttpServletResponse response,
                                          ApiServletPostOptions<T, SerializedType> options) {
-        this.post(request, response,
+        return this.post(request, response,
                 options.getObjectName(),
                 options.getBaseValue(),
                 options.getClazz(),
@@ -212,7 +215,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         );
     }
 
-    protected <SerializedType> void put(HttpServletRequest request, HttpServletResponse response,
+    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
                                         String objectName,
                                         String jsonId,
                                         Class<T> clazz,
@@ -227,7 +230,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         if (!jsonItem.has(jsonId)) {
             ApiUtils.getInstance().processInvalidError(response);
-            return;
+            return null;
         }
 
         T item = transform.apply(
@@ -238,7 +241,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         if (!AuthenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToModify, item)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to modify this shop item");
-            return;
+            return null;
         }
 
         T finalItem = item;
@@ -247,12 +250,12 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                 .filter(it -> it.getPredicate().test(finalItem)).findFirst();
 
         if (handleFailedCondition(failedCondition)) {
-            return;
+            return null;
         }
 
         if (item == null) {
             ApiUtils.getInstance().processNotFoundError(response);
-            return;
+            return null;
         }
 
         item = ApiUtils.getInstance().updateFromJson(jsonItem, item, clazz);
@@ -264,6 +267,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
+        return finalItem;
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -277,9 +281,9 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return false;
     }
 
-    protected <SerializedType> void put(HttpServletRequest request, HttpServletResponse response,
+    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
                                         ApiServletPutOptions<T, SerializedType> options) {
-        this.put(request, response,
+        return this.put(request, response,
                 options.getObjectName(),
                 options.getJsonId(),
                 options.getClazz(),
@@ -290,7 +294,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         );
     }
 
-    protected void delete(HttpServletRequest request,
+    protected T delete(HttpServletRequest request,
                           HttpServletResponse response,
                           Function<HttpServletRequest, T> itemSupplier
     ) {
@@ -305,21 +309,23 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         if (!isAuthorized) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to modify this shop item");
-            return;
+            return null;
         }
 
         if (itemToDelete == null) {
             ApiUtils.getInstance().processNotFoundError(response);
-            return;
+            return null;
         }
         logger.debug("Object: " + itemToDelete.toString() + " will be removed");
         DatabaseManager.getInstance().remove(itemToDelete);
+        return itemToDelete;
     }
 
-    protected void delete(Class<T> clazz,
+    protected T delete(Class<T> clazz,
                           HttpServletRequest request,
                           HttpServletResponse response) {
-        this.delete(request, response, req -> {
+
+        return this.delete(request, response, req -> {
             String id = request.getParameter("id");
             return DatabaseManager.getInstance().getById(clazz, Integer.valueOf(id));
         });

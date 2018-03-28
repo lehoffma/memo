@@ -28,8 +28,8 @@ export class OrderHistoryEntryComponent implements OnInit {
 			.reduce((events, item) => {
 				const eventId = item.item.id;
 				const eventIndex = EventUtilityService.isMerchandise(item.item)
-					? events.findIndex(it => it.event.id === eventId && it.color.name === item.color.name && it.size === item.size)
-					: events.findIndex(it => it.event.id === eventId);
+					? events.findIndex(it => it.item.id === eventId && it.color.name === item.color.name && it.size === item.size)
+					: events.findIndex(it => it.item.id === eventId);
 				//it's not already part of the array
 				if (eventIndex === -1) {
 					events.push({
