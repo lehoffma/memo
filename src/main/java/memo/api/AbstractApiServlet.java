@@ -230,9 +230,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return;
         }
 
-        T item = transform.apply(
-                DatabaseManager.getInstance().getById(clazz, jsonItem.get(jsonId).asInt())
-        );
+        T item = DatabaseManager.getInstance().getById(clazz, jsonItem.get(jsonId).asInt());
 
         //check if user is authorized to modify item
         if (!AuthenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToModify, item)) {
@@ -255,10 +253,14 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return;
         }
 
-        item = ApiUtils.getInstance().updateFromJson(jsonItem, item, clazz);
+        item = transform.apply(
+                ApiUtils.getInstance().updateFromJson(jsonItem, item, clazz)
+        );
 
         //update cyclic dependencies etc.
         this.updateDependencies(jsonItem, item);
+
+
 
         DatabaseManager.getInstance().save(item);
 

@@ -26,7 +26,7 @@ export class IsTreasurerGuard implements CanActivate {
 						this.router.navigate(["login"]);
 						return false;
 					}
-					let userPermissions = user.userPermissions;
+					let userPermissions = user.userPermissions();
 
 					if (userPermissions.funds >= Permission.read) {
 						return true;

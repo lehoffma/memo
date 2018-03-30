@@ -4,10 +4,15 @@ import {EventUtilityService} from "../../../../shared/services/event-utility.ser
 import {Event} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
-import {map} from "rxjs/operators";
+import {map, mergeMap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {Subscription} from "rxjs/Subscription";
 import {ShoppingCartItem, ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
+import {Discount} from "../../../../shared/price-renderer/discount";
+import {DiscountService} from "../../../shared/services/discount.service";
+import {LogInService} from "../../../../shared/services/api/login.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 
 @Component({
@@ -17,12 +22,25 @@ import {ShoppingCartItem, ShoppingCartOption} from "../../../../shared/model/sho
 })
 export class CartEntryComponent implements OnInit, OnDestroy {
 
-	@Input() cartItem: ShoppingCartItem;
+	_cartItem$ = new BehaviorSubject(null);
+
+	@Input() set cartItem(cartItem: ShoppingCartItem) {
+		this._cartItem$.next(cartItem);
+	}
+
+	get cartItem() {
+		return this._cartItem$.getValue();
+	}
+
 	amountOptions = [];
 
 	subscription: Subscription;
+	discounts$: Observable<Discount[]> = of([]);
+	discountValue$: Observable<number> = of(0);
 
 	constructor(private shoppingCartService: ShoppingCartService,
+				private discountService: DiscountService,
+				private loginService: LogInService,
 				private stockService: StockService) {
 	}
 
@@ -33,6 +51,31 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		let maxAmount: Observable<number> = this.getMaxAmount(this.cartItem);
+		this.discounts$ = combineLatest(
+			this._cartItem$,
+			this.loginService.currentUser$
+		)
+			.pipe(
+				mergeMap(([cartItem, user]) =>
+					this.discountService.getEventDiscounts(
+						cartItem.id, user !== null ? user.id : null
+					)
+						.pipe(
+							map(discounts => discounts.map(it => {
+								return {
+									...it,
+									amount: it.amount * cartItem.amount
+								}
+							}))
+						)
+				)
+			);
+		this.discountValue$ = this.discounts$
+			.pipe(
+				map(discounts => discounts.reduce((acc, discount) =>
+					acc + (discount.eligible ? discount.amount : 0), 0))
+			);
+
 		this.subscription = maxAmount.subscribe(maxAmount => {
 			this.amountOptions = Array.from(Array(maxAmount + 1).keys());
 		})

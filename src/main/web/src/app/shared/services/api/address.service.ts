@@ -4,6 +4,10 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Address} from "../../model/address";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, tap} from "rxjs/operators";
+import {processSequentially} from "../../../util/observable-util";
+import {isEdited} from "../../../util/util";
+import {User} from "../../model/user";
+import {UserService} from "./user.service";
 
 interface AddressApiResponse {
 	addresses: Partial<Address>[]
@@ -15,7 +19,8 @@ export class AddressService extends ServletService<Address> {
 	addressModificationDone: EventEmitter<Address> = new EventEmitter();
 	redirectUrl: string;
 
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient,
+				private userService: UserService) {
 		super();
 	}
 
@@ -100,5 +105,64 @@ export class AddressService extends ServletService<Address> {
 				mergeMap(json => this.getById(json.id)),
 				tap(address => this.addressModificationDone.emit(address))
 			);
+	}
+
+
+	/**
+	 *
+	 * @param {Address[]} previousValue
+	 * @param {Address[]} addresses
+	 * @param user$
+	 */
+	public updateAddressesOfUser(previousValue: Address[], addresses: Address[], user$: Observable<User>): Observable<User> {
+		const addedAddresses = addresses.filter(it => it.id === -1);
+		const removedAddresses = previousValue.filter(address => !addresses.find(it => address.id === it.id));
+		const editedAddresses = addresses
+			.filter(newAddr => {
+				return previousValue.find(prevAddr =>
+					prevAddr.id === newAddr.id && (isEdited(newAddr, prevAddr, ["id"]))
+				)
+			});
+
+		const addRequests = addedAddresses.map(it => this.add(it));
+		const removeRequests = removedAddresses.map(it => this.remove(it.id));
+		const editRequests = editedAddresses.map(it => this.modify(it));
+
+		return processSequentially(
+			[
+				...addRequests,
+				...removeRequests,
+				...editRequests,
+			]
+		)
+			.pipe(
+				mergeMap(result => {
+					if (!result || result.length === 0) {
+						return user$;
+					}
+
+					let newAddresses = [];
+					if (addRequests.length > 0) {
+						newAddresses.push(...result.slice(0, addRequests.length));
+					}
+					if (editRequests.length > 0) {
+						newAddresses.push(...result.slice(
+							addRequests.length + removeRequests.length));
+					}
+
+
+					return user$
+						.pipe(mergeMap(user => {
+							const addressIds = newAddresses.map(it => it.id);
+							addressIds.push(...user.addresses
+								.filter(id => !removedAddresses.find(removed => removed.id === id))
+							);
+
+							return this.userService.modify(user.setProperties({
+								addresses: addressIds
+							}))
+						}))
+				})
+			)
 	}
 }

@@ -24,6 +24,7 @@ import {Event} from "../../shared/model/event";
 import {of} from "rxjs/observable/of";
 import {ModifiedImages} from "./modified-images";
 import {processSequentially} from "../../../util/observable-util";
+import {isEdited} from "../../../util/util";
 
 @Injectable()
 export class ModifyItemService {
@@ -190,12 +191,22 @@ export class ModifyItemService {
 		}
 
 		return processSequentially(
-			addresses.map(address => (address.id >= 0
-					//only add routes that aren't already part of the system
-					//but modify them in case they're different
-					? this.addressService.modify(address)
-					: this.addressService.add(address)
-			))
+			addresses.map(address => {
+				//only add routes that aren't already part of the system
+				if (address.id >= 0) {
+					return this.addressService.getById(address.id)
+						.pipe(
+							//but modify them in case they're different
+							mergeMap(prevAddress => isEdited(prevAddress, address, ["id"])
+								? this.addressService.modify(address)
+								//otherwise don't do anything
+								: of(prevAddress)
+							)
+						);
+				}
+
+				return this.addressService.add(address);
+			})
 		);
 	}
 

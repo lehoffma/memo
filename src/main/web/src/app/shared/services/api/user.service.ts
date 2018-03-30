@@ -125,6 +125,8 @@ export class UserService extends ServletService<User> {
 	 */
 	private addOrModify(requestMethod: AddOrModifyRequest,
 						user: User): Observable<User> {
+
+
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {user}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))

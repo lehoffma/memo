@@ -21,7 +21,12 @@
 		</div>
 
 		<div class="price">
-			{{(cartItem.item.price*cartItem.amount).toFixed(2)}} €
+			<memo-price-renderer [price]="cartItem.item.price*cartItem.amount"
+								 [class.hasDiscounts]="((discountValue$ | async) > 0)"
+								 [discounts]="discounts$ | async"
+								 [showDiscountPossibilities]="false" [showExplanation]="false">
+
+			</memo-price-renderer>
 		</div>
 		<!--<mat-icon mat-icon-button (click)="deleteItem()">close</mat-icon>-->
 	</div>

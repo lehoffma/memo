@@ -106,6 +106,24 @@
 }
 
 .price {
+
+	memo-price-renderer {
+		/deep/ .price-container{
+			flex-direction: column-reverse;
+			align-items: flex-end;
+		}
+
+		&.hasDiscounts{
+			/deep/ .price-container {
+				margin-top: -20px;
+			}
+
+			/deep/ .percentage-saved {
+				display: none;
+			}
+		}
+	}
+
 	font-weight: bold;
 	color: rgba(0, 0, 0, 0.70);
 	text-align: end;

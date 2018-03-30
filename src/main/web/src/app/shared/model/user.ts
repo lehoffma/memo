@@ -54,20 +54,23 @@ export class User extends BaseObject<User> {
 		super(id);
 	}
 
-	_userPermissions: UserPermissions;
+
 	get userPermissions() {
-		if (!this._userPermissions) {
-			let userPermissions = this.permissions;
-			let clubRolePermissions = rolePermissions[this.clubRole];
-			this._userPermissions = Object.keys(visitorPermissions).reduce((permissions, key) => {
-				permissions[key] = Math.max(permissions[key],
-					userPermissions[key] || Permission.none,
-					clubRolePermissions[key] || Permission.none
-				);
-				return permissions;
-			}, {...visitorPermissions});
+		let _userPermissions: UserPermissions;
+		return () => {
+			if (!_userPermissions) {
+				let userPermissions = this.permissions;
+				let clubRolePermissions = rolePermissions[this.clubRole];
+				_userPermissions = Object.keys(visitorPermissions).reduce((permissions, key) => {
+					permissions[key] = Math.max(permissions[key],
+						userPermissions[key] || Permission.none,
+						clubRolePermissions[key] || Permission.none
+					);
+					return permissions;
+				}, {...visitorPermissions});
+			}
+			return _userPermissions;
 		}
-		return this._userPermissions;
 	}
 
 	static create() {

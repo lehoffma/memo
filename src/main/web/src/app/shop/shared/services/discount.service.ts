@@ -69,7 +69,7 @@ export class DiscountService {
 		if (userId) {
 			params = params.set("userId", "" + userId);
 		}
-		const request = this.request(this.http.get<{ discounts: Discount[] }>(this.baseUrl, {params}))
+		let request = this.request(this.http.get<{ discounts: Discount[] }>(this.baseUrl, {params}))
 			.pipe(map(response => response.discounts));
 
 		return this._cache.other(params, request);

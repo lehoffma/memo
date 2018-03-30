@@ -7,6 +7,10 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {User} from "../../model/user";
+import {Address} from "../../model/address";
+import {processSequentially} from "../../../util/observable-util";
+import {isEdited} from "../../../util/util";
 
 interface UserBankAccountApiResponse {
 	bankAccounts: BankAccount[];
@@ -16,8 +20,6 @@ interface UserBankAccountApiResponse {
 export class UserBankAccountService extends ServletService<BankAccount> {
 	baseUrl = "/api/bankAccount";
 
-	//todo select from bank account list when ordering (similar to address-selection maybe)
-	//todo manage bank accounts somewhere (on user edit page?)
 	constructor(public http: HttpClient,
 				public userService: UserService) {
 		super();
@@ -121,5 +123,64 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 			.pipe(
 				tap(() => this._cache.invalidateById(id))
 			);
+	}
+
+
+	/**
+	 *
+	 * @param {Address[]} previousValue
+	 * @param {Address[]} accounts
+	 * @param user$
+	 */
+	public updateAccountsOfUser(previousValue: BankAccount[], accounts: BankAccount[], user$: Observable<User>): Observable<User> {
+		const addedAccounts = accounts.filter(it => it.id === -1);
+		const removedAccounts = previousValue.filter(address => !accounts.find(it => address.id === it.id));
+		const editedAccounts = accounts
+			.filter(newAcc => {
+				return previousValue.find(prevAcc =>
+					prevAcc.id === newAcc.id && (isEdited(newAcc, prevAcc, ["id"]))
+				)
+			});
+
+		const addRequests = addedAccounts.map(it => this.add(it));
+		const removeRequests = removedAccounts.map(it => this.remove(it.id));
+		const editRequests = editedAccounts.map(it => this.modify(it));
+
+		return processSequentially(
+			[
+				...addRequests,
+				...removeRequests,
+				...editRequests,
+			]
+		)
+			.pipe(
+				mergeMap(result => {
+					if (!result || result.length === 0) {
+						return user$;
+					}
+
+					let newAccounts = [];
+					if (addRequests.length > 0) {
+						newAccounts.push(...result.slice(0, addRequests.length));
+					}
+					if (editRequests.length > 0) {
+						newAccounts.push(...result.slice(
+							addRequests.length + removeRequests.length));
+					}
+
+
+					return user$
+						.pipe(mergeMap(user => {
+							const accountIds = newAccounts.map(it => it.id);
+							accountIds.push(...user.bankAccounts
+								.filter(id => !removedAccounts.find(removed => removed.id === id))
+							);
+
+							return this.userService.modify(user.setProperties({
+								bankAccounts: accountIds
+							}))
+						}))
+				})
+			)
 	}
 }

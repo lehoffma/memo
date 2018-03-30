@@ -1,8 +1,6 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Address} from "../../model/address";
 import {ConfirmationDialogService} from "../../services/confirmation-dialog.service";
-import {AddressService} from "../../services/api/address.service";
-import {Router} from "@angular/router";
 
 @Component({
 	selector: "memo-address-entry",
@@ -12,7 +10,6 @@ import {Router} from "@angular/router";
 })
 export class AddressEntryComponent implements OnInit {
 	@Input() address: Address;
-	@Input() editUrl: string;
 
 	@Output() onDelete = new EventEmitter<boolean>();
 	@Output() onEdit = new EventEmitter<boolean>();

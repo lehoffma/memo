@@ -34,6 +34,9 @@ import {AddressFormComponent} from "./forms/address-form/address-form.component"
 import {AddressInputFormComponent} from "./forms/address-form/address-input-form.component";
 import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {AddressEntryComponent} from "./forms/address-form/address-entry.component";
+import {BankAccountFormComponent} from "./forms/bank-account-form/bank-account-form.component";
+import {BankAccountEntryComponent} from "./forms/bank-account-form/bank-account-entry.component";
+import {BankAccountInputFormComponent} from "./forms/bank-account-form/bank-account-input-form.component";
 
 const forms = [
 	DisableIfDirective,
@@ -43,7 +46,10 @@ const forms = [
 	ClubInformationFormComponent,
 	AddressFormComponent,
 	AddressInputFormComponent,
-	AddressEntryComponent
+	AddressEntryComponent,
+	BankAccountFormComponent,
+	BankAccountEntryComponent,
+	BankAccountInputFormComponent,
 ];
 
 @NgModule({
@@ -84,6 +90,7 @@ const forms = [
 		UserPreviewDirective,
 
 		...forms,
+
 	],
 	exports: [
 		ExpandableTableModule,

@@ -2,7 +2,6 @@
 	<div *ngFor="let address of addresses">
 		<mat-radio-button [value]="address">
 			<memo-address-entry [address]="address"
-								[editUrl]="editUrl$|async"
 								(onDelete)="deleteAddress(address)"
 			>
 

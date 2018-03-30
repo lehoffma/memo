@@ -38,7 +38,7 @@ export class CategoryPreviewComponent implements OnInit, OnDestroy {
 				if (user === null) {
 					return false;
 				}
-				const permissions = user.userPermissions;
+				const permissions = user.userPermissions();
 				const permissionKey: keyof UserPermissions = EventUtilityService
 					.shopItemSwitch<keyof UserPermissions>(this.itemType, {
 						tours: () => "tour",

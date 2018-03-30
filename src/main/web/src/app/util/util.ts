@@ -100,3 +100,15 @@ const flatMap = (f, xs) =>
 export function isArrayType(value): value is any[] {
 	return isArray(value);
 }
+
+/**
+ * Checks if any of the values associated with their keys don't match on both values
+ * @param {T} previous
+ * @param {T} updated
+ * @param except
+ * @returns {boolean}
+ */
+export function isEdited<T>(previous: T, updated: T, except?: string[]): boolean {
+	return Object.keys(previous)
+		.some(key => previous[key] !== updated[key]);
+}

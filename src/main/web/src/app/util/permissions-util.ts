@@ -13,7 +13,7 @@ export function canCheckIn(user: User, event: Event) {
 
 export function canEdit(user: User, event: Event) {
 	if (user !== null && event !== null) {
-		const permissions = user.userPermissions;
+		const permissions = user.userPermissions();
 		const permissionKey = EventUtilityService.handleShopItem(event,
 			() => "merch", () => "tour", () => "party"
 		);
@@ -27,7 +27,7 @@ export function canEdit(user: User, event: Event) {
 
 export function canReadEntries(user: User, event: Event) {
 	if (user !== null && event !== null) {
-		let permissions = user.userPermissions;
+		let permissions = user.userPermissions();
 		return permissions.funds >= Permission.read;
 	}
 	return false;
@@ -35,7 +35,7 @@ export function canReadEntries(user: User, event: Event) {
 
 export function canDeleteEntries(user: User, event: Event) {
 	if (user !== null && event !== null) {
-		const permissions = user.userPermissions;
+		const permissions = user.userPermissions();
 		const permissionKey = EventUtilityService.handleShopItem(event,
 			() => "merch", () => "tour", () => "party"
 		);
