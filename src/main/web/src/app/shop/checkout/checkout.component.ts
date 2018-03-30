@@ -202,16 +202,16 @@ export class CheckoutComponent implements OnInit {
 				)
 			)
 			.subscribe(
-				value => {
+				order => {
+					this.orderService.completedOrder = order.id;
 					this.loading = false;
-					//todo redirect to "order done" page
 					this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
 					this.cartService.reset();
-					this.router.navigateByUrl("/");
+					this.router.navigateByUrl("/order-complete");
 				},
 				error => {
 					console.error(error);
-					this.snackBar.open(error, "Schließen", {duration: 2000});
+					this.snackBar.open(error, "Schließen");
 				},
 				() => {
 				}

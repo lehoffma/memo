@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Order} from "../../model/order";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
@@ -11,7 +11,8 @@ interface OrderApiResponse {
 
 @Injectable()
 export class OrderService extends ServletService<Order> {
-	baseUrl = "/api/order";
+	private baseUrl = "/api/order";
+	completedOrder: number = null;
 
 	constructor(public http: HttpClient) {
 		super();

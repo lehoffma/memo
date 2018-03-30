@@ -11,6 +11,7 @@ import {SignUpModule} from "../../user/signup/signup.module";
 import {CartTourParticipantComponent} from "./cart/cart-entry/cart-tour-participant/cart-tour-participant.component";
 import {SharedModule} from "../../shared/shared.module";
 import {ShopItemDetailsModule} from "../shop-item/item-details/shop-item-details.module";
+import {UserModule} from "../../user/user.module";
 
 @NgModule({
 	imports: [
@@ -18,6 +19,7 @@ import {ShopItemDetailsModule} from "../shop-item/item-details/shop-item-details
 		FormsModule,
 		ReactiveFormsModule,
 		MemoMaterialModule,
+		UserModule,
 		CheckoutRoutingModule,
 		ShopItemDetailsModule,
 		SharedModule,

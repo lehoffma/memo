@@ -20,6 +20,7 @@ export class OrderHistoryEntryComponent implements OnInit {
 	orderedEventItems: OrderedEventItem[] = [];
 	total: number = 0;
 
+	//todo: if bankAccount => show iban/bic (but with ***)
 	constructor() {
 	}
 
