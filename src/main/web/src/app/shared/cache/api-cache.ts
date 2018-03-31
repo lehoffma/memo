@@ -149,10 +149,15 @@ export class ApiCache<T> {
 	 * @returns {string}
 	 */
 	private getKeyFromParams(params: HttpParams): string {
-		return params.keys()
+		const key = params.keys()
 			.sort()
 			.map(key => key + "=" + params.get(key))
 			.join("&")
 			.toLowerCase();
+
+		if (key.length > 0) {
+			return key;
+		}
+		return "none";
 	}
 }

@@ -25,7 +25,11 @@ public class UserRepository extends AbstractRepository<User> {
         return instance;
     }
 
-
+    /**
+     * Converts the given string into a ClubRole enum value.
+     * @param value the value to convert
+     * @return the ClubRole value corresponding to the given string, empty if none is found
+     */
     public static Optional<ClubRole> clubRoleFromString(String value) {
         return Arrays.stream(ClubRole.values())
                 .filter(it -> it.toString().equalsIgnoreCase(value))
@@ -43,15 +47,12 @@ public class UserRepository extends AbstractRepository<User> {
     }
 
     public List<User> getUserByEmail(String email) {
-
-        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
-                " WHERE u.email = :email", User.class)
+        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
                 .setParameter("email", email)
                 .getResultList();
     }
 
     public List<User> getUserBySearchterm(String searchTerm) {
-
         return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
                 " WHERE UPPER(u.surname) LIKE UPPER(:searchTerm) OR UPPER(u.firstName) LIKE UPPER(:searchTerm)", User.class)
                 .setParameter("searchTerm", "%" + searchTerm + "%")
@@ -67,6 +68,10 @@ public class UserRepository extends AbstractRepository<User> {
                 .getResultList();
     }
 
+
+
+
+
     public List<User> get(String userId, String email, String searchTerm, String participantId) {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<User>>>()
@@ -77,6 +82,8 @@ public class UserRepository extends AbstractRepository<User> {
                 this.getAll()
         );
     }
+
+
 
     @Override
     public List<User> getAll() {

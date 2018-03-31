@@ -13,6 +13,7 @@ import {ParticipantsService} from "../../shared/services/api/participants.servic
 import {defaultIfEmpty, first, map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
+import {MilesService} from "../../shared/services/api/miles.service";
 
 
 @Component({
@@ -29,7 +30,12 @@ export class ProfileComponent implements OnInit {
 		);
 	userObservable: Observable<User> = this.userId
 		.pipe(
-			mergeMap(id => this.userService.getById(id))
+			mergeMap(id => this.userService.getById(id)),
+			mergeMap(user => this.milesService.get(user.id)
+				.pipe(
+					map(entry => user.setProperties({miles: entry.miles}))
+				)
+			)
 		);
 	userEvents: Observable<Event[]> = this.userObservable
 		.pipe(
@@ -74,6 +80,7 @@ export class ProfileComponent implements OnInit {
 
 	constructor(private route: ActivatedRoute,
 				private navigationService: NavigationService,
+				private milesService: MilesService,
 				private addressService: AddressService,
 				private participantService: ParticipantsService,
 				private loginService: LogInService,

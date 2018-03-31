@@ -1,6 +1,5 @@
 @import "theme";
 
-
 @mixin resizeRow($factor) {
 	h2 {
 		font-size: $factor * 100%;
@@ -8,47 +7,52 @@
 
 	img {
 		width: $factor * 50px;
+		min-width: $factor * 50px;
 		height: $factor * 50px;
+		min-height: $factor * 50px;
 	}
 	div > span {
 		font-size: $factor * 100%;
 	}
 
-	.miles-container{
-		> span{
+	.miles-container {
+		> span {
 			font-size: $factor * 100%;
 		}
-		> span:first-child{
+		> span:first-child {
 			font-size: $factor * 150%;
 		}
 	}
 }
-
 
 :host > .leaderboard-entry {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	border-bottom: 1px solid #ededed;
-	padding: 1rem;
+	padding-left: 1rem;
 	text-decoration: none;
 	color: black;
+	border-left: 5px solid transparent;
 
-	&:hover{
+	&:hover {
 		background-color: #ededed;
 	}
 
-	&.logged-in-user{
+	.user-name {
+		margin-left: 10px;
+	}
+
+	&.logged-in-user {
 		background-color: rgba($accent-default, 0.2);
 		border-left: 5px solid $accent-default;
-		padding-left: calc(1rem - 5px);
 
-		&:hover{
+		&:hover {
 			background-color: rgba($accent-default, 0.3);
 		}
 	}
 
-	 > div {
+	> div {
 		display: flex;
 		align-items: center;
 	}
@@ -100,32 +104,31 @@
 		}
 	}
 
-	@media all and (min-width: 800px) {
-		@include resizeRow(1);
-		&.position-1 {
-			@include resizeRow(1.5);
-		}
-		&.position-2 {
-			@include resizeRow(1.33);
-		}
-		&.position-3 {
-			@include resizeRow(1.2);
-		}
-	}
+	//@media all and (min-width: 800px) {
+	//	@include resizeRow(1);
+	//	&.position-1 {
+	//		@include resizeRow(1.5);
+	//	}
+	//	&.position-2 {
+	//		@include resizeRow(1.33);
+	//	}
+	//	&.position-3 {
+	//		@include resizeRow(1.2);
+	//	}
+	//}
 }
 
-
-.dummy-leaderboard-entry{
+.dummy-leaderboard-entry {
 	text-align: center;
 	cursor: pointer;
 	font-size: 200%;
 	padding: 10px;
 
-	@media all and (min-width: 800px){
+	@media all and (min-width: 800px) {
 		padding: 1rem;
 	}
 
-	&:hover{
+	&:hover {
 		background-color: #ededed;
 	}
 }

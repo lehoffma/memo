@@ -190,7 +190,6 @@ export class UserDataFormComponent implements OnInit {
 			email: accountData.email,
 			password,
 			permissions: previousValue.permissions,
-			miles: previousValue.miles,
 			authoredItems: previousValue.authoredItems,
 			bankAccounts: previousValue.bankAccounts,
 			firstName: personalData.firstName,
