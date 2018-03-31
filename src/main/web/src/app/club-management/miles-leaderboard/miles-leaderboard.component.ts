@@ -84,7 +84,7 @@ export class MilesLeaderboardComponent implements OnInit {
 				: Math.min(this.amountOfRowsShown, leaderboard.length))
 		);
 
-	selectedSeason$ = new BehaviorSubject<string>("Allzeit");
+	selectedSeason$ = new BehaviorSubject<string>("Gesamt");
 
 	get selectedSeason() {
 		return this.selectedSeason$.getValue();
@@ -118,7 +118,7 @@ export class MilesLeaderboardComponent implements OnInit {
 						return false;
 					});
 					if(!seasonWasSet){
-						this.selectedSeason = "Allzeit";
+						this.selectedSeason = "Gesamt";
 					}
 				}),
 			this.selectedSeason$.subscribe(season => {
@@ -139,7 +139,7 @@ export class MilesLeaderboardComponent implements OnInit {
 	}
 
 	private getMiles$(season: string): Observable<MilesListEntry[]> {
-		if (season === "Allzeit") {
+		if (season === "Gesamt") {
 			return this.milesService.getAll();
 		}
 		return this.milesService.getAllForSeason(season);

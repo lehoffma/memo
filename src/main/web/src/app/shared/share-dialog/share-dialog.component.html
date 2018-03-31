@@ -2,15 +2,15 @@
 	{{title}} teilen
 </div>
 <mat-dialog-content>
-	<share-buttons
-		[theme]="'default'"
-		[showText]="false"
-		[include]="['facebook','twitter','whatsapp','telegram','copy']"
-		[size]="-2"
-		[title]="title"
-		[image]="image"
-		[description]="description"
-		[tags]="tags"
+
+	<share-buttons [theme]="'default'"
+				   [include]="['facebook','twitter','whatsapp','telegram','copy']"
+				   [show]="5"
+				   [size]="-2"
+				   [title]="title"
+				   [image]="image"
+				   [description]="description"
+				   [tags]="tags"
 	></share-buttons>
 </mat-dialog-content>
 <mat-dialog-actions>

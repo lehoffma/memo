@@ -21,6 +21,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../shared/services/api/user.service";
 import {of} from "rxjs/observable/of";
 import {debitRequiresAccountValidator} from "../../shared/validators/debit-requires-account.validator";
+import {ShoppingCartItem} from "../../shared/model/shopping-cart-item";
+import {flatMap} from "../../util/util";
+import {DiscountService} from "app/shop/shared/services/discount.service";
 
 @Component({
 	selector: "memo-checkout",
@@ -40,6 +43,7 @@ export class CheckoutComponent implements OnInit {
 	constructor(private bankAccountService: UserBankAccountService,
 				private formBuilder: FormBuilder,
 				private cartService: ShoppingCartService,
+				private discountService: DiscountService,
 				private eventService: EventService,
 				private orderService: OrderService,
 				private snackBar: MatSnackBar,
@@ -144,7 +148,7 @@ export class CheckoutComponent implements OnInit {
 	 * @param {ShoppingCartContent} content
 	 * @returns {Observable<any[]>}
 	 */
-	private combineCartContent(content: ShoppingCartContent) {
+	private combineCartContent(content: ShoppingCartContent): Observable<ShoppingCartItem[]> {
 		return of(
 			[...content.partys, ...content.tours, ...content.merch]
 		);
@@ -153,21 +157,40 @@ export class CheckoutComponent implements OnInit {
 	/**
 	 *
 	 * @param events
+	 * @param userId
 	 * @returns {OrderedItem[]}
 	 */
-	private mapToOrderedItems(events): OrderedItem[] {
-		return events
-			.reduce((acc, event) => [...acc, ...new Array(event.amount)
-				.fill(({
-					id: null,
-					item: event.item.id,
-					price: event.item.price,
-					status: OrderStatus.RESERVED,
-					size: event.options ? event.options.size : null,
-					color: event.options ? event.options.color : null,
-					isDriver: event.isDriver ? event.isDriver : false,
-					needsTicket: event.needsTicket ? event.needsTicket : false
-				}))], []);
+	private mapToOrderedItems(events: ShoppingCartItem[], userId: number) {
+		const items = flatMap(it => {
+			const partialItem = {
+				id: it.id,
+				item: it.item.id,
+				price: 0,
+				status: OrderStatus.RESERVED
+			};
+			if (it.options) {
+				return it.options.map(option => ({
+					...partialItem,
+					...option
+				}))
+			}
+			return [...new Array(it.amount)
+				.fill({
+					...partialItem,
+					size: null,
+					color: null,
+					isDriver: false,
+					needsTicket: false
+				})]
+		}, events);
+
+		//setting discounted prices
+		return combineLatest(
+			...items.map(it => this.discountService.getDiscountedPriceOfEvent(it.item, userId)
+				.pipe(
+					map(discountedPrice => ({...it, price: discountedPrice}))
+				))
+		)
 	}
 
 	/**
@@ -177,6 +200,7 @@ export class CheckoutComponent implements OnInit {
 	 */
 	submit() {
 		const bankAccount = this.formGroup.get("payment").get("selectedAccount").value;
+
 
 		this.loading = true;
 		this.logInService.accountObservable
@@ -188,7 +212,7 @@ export class CheckoutComponent implements OnInit {
 						//combine cart content into one array
 						mergeMap(content => this.combineCartContent(content)),
 						//map events to orderedItem interface to make it usable on the backend
-						map(events => this.mapToOrderedItems(events)),
+						mergeMap(events => this.mapToOrderedItems(events, userId)),
 						map(orderedItems => Order.create()
 							.setProperties({
 								user: userId,

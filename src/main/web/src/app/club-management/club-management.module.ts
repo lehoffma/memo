@@ -24,6 +24,8 @@ import {SearchFilterService} from "../shop/search-results/search-filter.service"
 import {SearchModule} from "../shop/search-results/search.module";
 import {MilesLeaderboardEntryComponent} from "app/club-management/miles-leaderboard/miles-leaderboard-entry.component";
 import {ModifyShopItemModule} from "../shop/shop-item/modify-shop-item/modify-shop-item.module";
+import {OrderOptionsComponent} from "./order-overview/order-options.component";
+import {UserModule} from "../user/user.module";
 
 const tableCellComponents = [
 	//accounting table cells
@@ -55,6 +57,7 @@ const tableCellComponents = [
 		MemoMaterialModule,
 		SharedModule,
 		SearchModule,
+		UserModule,
 		ModifyShopItemModule,
 		ClubManagementRoutingModule
 	],
@@ -65,10 +68,12 @@ const tableCellComponents = [
 		MerchStockFeedComponent,
 		MerchStockEntryComponent,
 		MilesLeaderboardEntryComponent,
+		OrderOptionsComponent,
 	],
 	providers: [
-		SearchFilterService,
+		SearchFilterService
 	],
 	entryComponents: [tableCellComponents]
 })
-export class ClubManagementModule{}
+export class ClubManagementModule {
+}

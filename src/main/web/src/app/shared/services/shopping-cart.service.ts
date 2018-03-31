@@ -48,7 +48,7 @@ export class ShoppingCartService implements OnInit {
 					...[...items.tours, ...items.partys, ...items.merch]
 						.map(cartItem => this.loginService.currentUser$
 							.pipe(
-								mergeMap(user => this.discountService.getDiscountedPriceOfEvent(
+								mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
 									cartItem.item.id, cartItem.item.price, user !== null ? user.id : null
 								)),
 								map(discountedPrice => discountedPrice * cartItem.amount)

@@ -18,6 +18,7 @@ $options-breakpoint: 850px;
 		width: 100%;
 		background-color: $primary-default;
 		color: white;
+		border-radius: 0;
 		@media all and (min-width: $options-breakpoint) {
 			display: none;
 		}

@@ -2,7 +2,7 @@ import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 import {ModifyShopItemComponent} from "./modify-shop-item.component";
 import {IsValidItemTypeGuard} from "../../../shared/authentication/is-valid-itemtype.guard";
-import {CanModifyItemGuard} from "../../../shared/authentication/can-modify-item-guard";
+import {CanModifyItemGuard} from "../../../shared/authentication/can-modify-item.guard";
 import {ModifyUserComponent} from "./modify-user/modify-user.component";
 import {AuthenticatedGuard} from "../../../shared/authentication/authenticated.guard";
 import {IsOwnProfileGuard} from "../../../shared/authentication/is-own-profile.guard";

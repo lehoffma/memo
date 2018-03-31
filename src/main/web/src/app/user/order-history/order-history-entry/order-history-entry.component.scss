@@ -113,38 +113,72 @@
 				font-size: 85%;
 				text-transform: uppercase;
 			}
+		}
 
-			.status {
-				font-weight: bold;
-			}
+		.status {
+			font-weight: bold;
+		}
 
-			.Reserviert {
-				color: #009688;
-			}
-			.Bezahlt {
-				color: $primary-default;
-			}
-			.Verschickt {
-				color: #2196f3;
-			}
-			.Abgebrochen {
-				color: #F57F17;
-			}
-			.Abgelehnt {
-				color: $warn-default;
-			}
-			.Unter-Begutachtung {
-				color: #9C27B0;
-			}
-			.Abgeschlossen {
-				color: rgba(0, 0, 0, 0.4);
-			}
-			.Bestellt {
+		.Reserviert {
+			color: #009688;
+		}
+		.Bezahlt {
+			color: $primary-default;
+		}
+		.Verschickt {
+			color: #2196f3;
+		}
+		.Abgebrochen {
+			color: #F57F17;
+		}
+		.Abgelehnt {
+			color: $warn-default;
+		}
+		.Unter-Begutachtung {
+			color: #9C27B0;
+		}
+		.Abgeschlossen {
+			color: rgba(0, 0, 0, 0.4);
+		}
+		.Bestellt {
 
-			}
 		}
 	}
 
+}
+
+.order-entry-info-container {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+
+	.label {
+		color: rgba(0, 0, 0, 0.4);
+		font-size: 85%;
+		text-transform: uppercase;
+	}
+}
+
+.bank-account {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	border-bottom: 1px solid #E0E0E0;
+	padding-top: 10px;
+	padding-bottom: 10px;
+
+	.order-entry-info-container:last-child{
+		margin-top: 5px;
+	}
+
+	@media all and (min-width: 450px) {
+		flex-direction: row;
+
+		.order-entry-info-container:last-child {
+			align-items: flex-end;
+			margin-top: 0;
+		}
+	}
 }
 
 h2.header {

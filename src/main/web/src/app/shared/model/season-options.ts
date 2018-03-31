@@ -1,7 +1,7 @@
 import {getYear} from "date-fns";
 
 export const seasonOptions = [
-	"Allzeit",
+	"Gesamt",
 	...calculateSeasonOptions()
 ];
 

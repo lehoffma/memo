@@ -1,0 +1,63 @@
+@import "~@angular/material/theming";
+@import "theme";
+
+div {
+	display: flex;
+	flex-direction: column;
+}
+
+:host {
+	mat-form-field {
+		width: 100%;
+	}
+}
+
+.events-container {
+	mat-form-field {
+		margin-top: 5px;
+	}
+
+	mat-chip {
+		display: flex !important;
+		justify-content: space-between;
+		align-items: center;
+		cursor: pointer;
+		background-color: $primary-default;
+		color: white;
+		&:hover {
+			background-color: mat-color($primary, 800);
+		}
+
+		&.chip-accent {
+			cursor: auto;
+			background-color: $accent-default;
+		}
+
+		a {
+			text-decoration: none;
+			color: white;
+			flex-grow: 2;
+		}
+
+		.remove-chip-button {
+			font-size: 1.5rem;
+			height: 1.5rem;
+			width: 1.5rem;
+			margin-left: 0.5rem;
+		}
+	}
+}
+
+.options-title {
+	font-weight: 200;
+	border-bottom: 1px solid #E0E0E0;
+	background-color: $primary-default;
+	color: white;
+	padding: 24px 16px 10px 24px;
+	margin: -16px -16px 10px !important;
+
+	@media all and (max-width: 600px) {
+		margin-left: -16px !important;
+		margin-right: -16px !important;
+	}
+}

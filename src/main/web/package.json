@@ -30,6 +30,7 @@
 		"@angular/platform-browser-dynamic": "^5.2.7",
 		"@angular/router": "^5.2.7",
 		"@auth0/angular-jwt": "^1.1.0",
+		"@fortawesome/fontawesome-free-webfonts": "^1.0.5",
 		"@ngx-share/button": "^5.0.0",
 		"@ngx-share/buttons": "^5.0.0",
 		"@ngx-share/core": "^5.0.0",

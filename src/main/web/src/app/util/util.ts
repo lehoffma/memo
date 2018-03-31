@@ -93,8 +93,9 @@ export function isObservable(value: any): value is Observable<any> {
 const concat = (x, y) =>
 	x.concat(y);
 
-const flatMap = (f, xs) =>
-	xs.map(f).reduce(concat, []);
+export function flatMap<T, U>(f: (val: T) => U[], xs: T[]): U[] {
+	return xs.map(f).reduce(concat, []);
+}
 
 
 export function isArrayType(value): value is any[] {

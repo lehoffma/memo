@@ -3,7 +3,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {AuthService} from "./auth.service";
 import {AuthInterceptor} from "./auth.interceptor";
 import {AuthenticatedGuard} from "./authenticated.guard";
-import {CanModifyItemGuard} from "./can-modify-item-guard";
+import {CanModifyItemGuard} from "./can-modify-item.guard";
 import {IsOwnProfileGuard} from "./is-own-profile.guard";
 import {IsTreasurerGuard} from "./is-treasurer.guard";
 import {IsValidItemTypeGuard} from "./is-valid-itemtype.guard";

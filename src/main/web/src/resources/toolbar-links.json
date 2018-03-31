@@ -43,6 +43,11 @@
 				"name": "Kostenübersicht"
 			},
 			{
+				"route": "management/orders",
+				"icon": "",
+				"name": "Bestellungen"
+			},
+			{
 				"route": "members",
 				"icon": "",
 				"name": "Mitgliederliste"

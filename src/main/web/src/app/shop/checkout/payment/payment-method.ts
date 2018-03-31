@@ -12,6 +12,10 @@ const paymentMethodMap = {
 	// 3: PaymentMethod.PAYPAL
 };
 
-export function toPaymentMethod(index: number){
+export function toPaymentMethod(index: number) {
 	return paymentMethodMap[index];
+}
+
+export function paymentMethodList() {
+	return Object.keys(paymentMethodMap).map(key => paymentMethodMap[key]);
 }
