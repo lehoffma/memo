@@ -11,15 +11,9 @@ public class StockAuthStrategy implements AuthenticationStrategy<Stock> {
     @Override
     public boolean isAllowedToRead(User user, Stock object) {
         return userIsAuthorized(user, object, Arrays.asList(
-                //the user is logged in..
-                AuthenticationConditionFactory.<Stock>userIsLoggedIn()
-                        //..has the correct permissions necessary..
-                        .and(AuthenticationConditionFactory
-                                .userHasCorrectPermission(it -> it.getPermissions().getFunds(), Permission.read))
-                        //..and is allowed to read the associated shopItem..
-                        .and(AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(
-                                Stock::getItem, ShopItem::getExpectedReadRole
-                        ))
+                AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(
+                        Stock::getItem, ShopItem::getExpectedReadRole
+                )
         ));
     }
 

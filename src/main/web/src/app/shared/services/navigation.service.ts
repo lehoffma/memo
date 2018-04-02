@@ -9,13 +9,12 @@ import {EventType} from "../../shop/shared/model/event-type";
 import {Event} from "../../shop/shared/model/event";
 import {HttpClient} from "@angular/common/http";
 import {LogInService} from "./api/login.service";
-import {Subject} from "rxjs/Subject";
 import {Observable} from "rxjs/Observable";
-import {defaultIfEmpty, filter, map, tap} from "rxjs/operators";
+import {filter, map} from "rxjs/operators";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 @Injectable()
-export class NavigationService implements OnDestroy{
+export class NavigationService implements OnDestroy {
 	public toolbarLinks: Observable<Link[]>;
 	public sidenavLinks: Observable<Link[]>;
 	public accountLinks: Observable<Link[]>;
@@ -26,6 +25,7 @@ export class NavigationService implements OnDestroy{
 	queryParamMap$: BehaviorSubject<ParamMap> = new BehaviorSubject(null);
 
 	subscriptions = [];
+
 	constructor(private http: HttpClient,
 				private loginService: LogInService,
 				private router: Router) {
@@ -36,7 +36,9 @@ export class NavigationService implements OnDestroy{
 				filter(val => val instanceof RoutesRecognized),
 				map(val => (<RoutesRecognized>val).state.root.queryParamMap)
 			)
-			.subscribe(this.queryParamMap$));
+			.subscribe(it => {
+				this.queryParamMap$.next(it);
+			}));
 	}
 
 	ngOnDestroy(): void {

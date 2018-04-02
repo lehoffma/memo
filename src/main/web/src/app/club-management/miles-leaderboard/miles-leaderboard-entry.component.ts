@@ -1,12 +1,12 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {LeaderboardRow} from "./leaderboard-row";
 
 @Component({
-	selector: 'memo-miles-leaderboard-entry-component',
-	template: `		
+	selector: "memo-miles-leaderboard-entry",
+	template: `
 		<a routerLink="/members/{{user.id}}"
 		   *ngIf="user; else dummy"
-		   [ngClass]="{'logged-in-user': loggedInUser?.id === user.id}"
+		   [ngClass]="{'logged-in-user': loggedInUser === user.id}"
 		   class="leaderboard-entry position-{{user.position}}">
 			<div>
 				<h2>
@@ -17,12 +17,12 @@ import {LeaderboardRow} from "./leaderboard-row";
 					</svg>
 					{{user.position}}
 				</h2>
-				<img src="{{user.images[0]}}">
+				<!--<img src="{{user.images[0]}}">-->
 				<span class="user-name">{{user.firstName}} {{user.surname}}</span>
 			</div>
 			<span class="miles-container">
 				<span>{{user.miles}}</span>
-				<span>Meilen</span>
+				<span>{{user?.miles === 1 ? 'Meile' : 'Meilen'}}</span>
 			</span>
 		</a>
 		<ng-template #dummy>
@@ -37,8 +37,8 @@ import {LeaderboardRow} from "./leaderboard-row";
 
 export class MilesLeaderboardEntryComponent implements OnInit {
 	@Input() user: LeaderboardRow;
-	@Input() loggedInUser: LeaderboardRow;
 
+	@Input() loggedInUser: number;
 	@Output() onShowMore = new EventEmitter();
 
 	constructor() {
@@ -47,7 +47,7 @@ export class MilesLeaderboardEntryComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	showMore(){
+	showMore() {
 		this.onShowMore.emit(true)
 	}
 }

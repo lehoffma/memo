@@ -9,6 +9,8 @@ import {Event} from "../../shop/shared/model/event";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {LogInService} from "./api/login.service";
+import {DiscountService} from "app/shop/shared/services/discount.service";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -24,7 +26,10 @@ export class ShoppingCartService implements OnInit {
 	 */
 	private readonly localStorageKey = "shoppingCart";
 
-	constructor(private eventService: EventService,) {
+	constructor(private eventService: EventService,
+				private loginService: LogInService,
+				private discountService: DiscountService
+				) {
 		this.initFromLocalStorage();
 	}
 
@@ -36,18 +41,21 @@ export class ShoppingCartService implements OnInit {
 			);
 	}
 
-	get total(): Observable<number> {
+	get total$(): Observable<number> {
 		return this.content
 			.pipe(
-				mergeMap(content =>
-					combineLatest(
-						...[...content.merch, ...content.partys, ...content.tours]
-							.map(item => this.eventService.getById(item.id)
-								.pipe(
-									map(event => event.price * item.amount))
-							))
-				),
-				map(prices => prices.reduce((acc, price) => acc + price, 0))
+				mergeMap(items => combineLatest(
+					...[...items.tours, ...items.partys, ...items.merch]
+						.map(cartItem => this.loginService.currentUser$
+							.pipe(
+								mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
+									cartItem.item.id, cartItem.item.price, user !== null ? user.id : null
+								)),
+								map(discountedPrice => discountedPrice * cartItem.amount)
+							)
+						)
+				)),
+				map(prices => prices.reduce((acc, current) => acc + current, 0))
 			);
 	}
 

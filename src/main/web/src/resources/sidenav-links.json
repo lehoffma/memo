@@ -91,9 +91,14 @@
 					"tour": 1,
 					"party": 1,
 					"funds": 1,
-					"stock": 0,
+					"stock": 1,
 					"accountManagement": 0
 				}
+			},
+			{
+				"route": "management/orders",
+				"icon": "assignment",
+				"name": "Bestellungen"
 			},
 			{
 				"route": "members",

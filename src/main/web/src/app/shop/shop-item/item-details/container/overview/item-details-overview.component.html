@@ -16,27 +16,30 @@
 
 			<mat-menu #menu="matMenu">
 				<button mat-menu-item
-						matTooltip="Dieses Event teilen"
 						(click)="openShareDialog()"
 				>
 					<mat-icon>share</mat-icon>
 					<span>Teilen</span>
 				</button>
 				<a mat-menu-item
-				   *ngIf="userCanEditEvent$ | async"
-				   matTooltip="Dieses Event bearbeiten"
+				   *ngIf="(permissions$ | async)?.edit"
 				   routerLink="./edit">
 					<mat-icon>edit</mat-icon>
 					<span>Bearbeiten</span>
 				</a>
 				<a mat-menu-item
-				   *ngIf="userCanAccessEntries$ | async"
-				   matTooltip="Kosten dieses Events anzeigen"
+				   *ngIf="(permissions$ | async)?.entries"
 				   routerLink="/management/costs"
 				   [queryParams]="{eventIds: event.id}">
 					<mat-icon>payment</mat-icon>
 					Kosten
 				</a>
+				<button mat-menu-item
+						*ngIf="(permissions$ | async)?.delete"
+						(click)="deleteItem()">
+					<mat-icon>delete</mat-icon>
+					Löschen
+				</button>
 			</mat-menu>
 			<button mat-icon-button [matMenuTriggerFor]="menu">
 				<mat-icon>
@@ -124,7 +127,7 @@
 					<mat-select placeholder="Anzahl" name="amount"
 								[(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
 								[disabled]="(!isMerch(event) && isPastEvent)
-								|| !(userCanCheckIn$ | async)"
+								|| !((permissions$ | async)?.checkIn)"
 								[required]="true">
 						<mat-option *ngFor="let number of amountOptions" [value]="number">
 							{{number}}
@@ -135,7 +138,7 @@
 				<button
 					[disabled]="(!addToCartForm.valid || model.amount === 0)
 								|| (!isMerch(event) && isPastEvent)
-								|| !(userCanCheckIn$ | async)
+								|| !((permissions$ | async)?.checkIn)
 					"
 					mat-raised-button
 					color="{{(isPartOfShoppingCart$ | async) ? 'warn' : 'accent'}}"

@@ -37,8 +37,11 @@
 			}
 		}
 	}
+
 	.profile-component {
-		@include card-like();
+		@include mat-elevation(3);
+		@include mat-elevation-transition();
+
 		background-color: $container-content--background-color;
 		color: $container-content--color;
 		width: 95%;
@@ -47,10 +50,25 @@
 		max-width: 500px;
 	}
 
+
+	.participated-tours {
+		margin-bottom: 1rem;
+		margin-top: 1rem;
+		padding: 0;
+
+		memo-participated-tours-preview {
+			display: block;
+			margin-top: -8px;
+		}
+
+		.profile-tours-title {
+			margin: 0;
+		}
+	}
+
 	.profile-details-container {
 		margin-top: 128px;
 		z-index: 1;
-
 
 		.profile-header {
 			align-items: center;
@@ -76,7 +94,6 @@
 			height: 40px;
 			margin-top: -20px;
 			margin-right: -20px;
-			color: white;
 		}
 
 		.profile-title-container {
@@ -110,16 +127,16 @@
 
 			> div {
 				> div,
-				> div > div{
+				> div > div {
 					align-items: center;
 					justify-content: space-between;
 					display: flex;
 
-					.secondary-text{
+					.secondary-text {
 						margin-left: 10px;
 					}
 				}
-				> div{
+				> div {
 					margin-top: 2px;
 				}
 
@@ -135,7 +152,7 @@
 			a {
 				//width: 45%;
 
-				span{
+				span {
 
 					display: flex;
 					justify-content: center;

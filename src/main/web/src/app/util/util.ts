@@ -93,10 +93,23 @@ export function isObservable(value: any): value is Observable<any> {
 const concat = (x, y) =>
 	x.concat(y);
 
-const flatMap = (f, xs) =>
-	xs.map(f).reduce(concat, []);
+export function flatMap<T, U>(f: (val: T) => U[], xs: T[]): U[] {
+	return xs.map(f).reduce(concat, []);
+}
 
 
 export function isArrayType(value): value is any[] {
 	return isArray(value);
+}
+
+/**
+ * Checks if any of the values associated with their keys don't match on both values
+ * @param {T} previous
+ * @param {T} updated
+ * @param except
+ * @returns {boolean}
+ */
+export function isEdited<T>(previous: T, updated: T, except?: string[]): boolean {
+	return Object.keys(previous)
+		.some(key => previous[key] !== updated[key]);
 }

@@ -5,6 +5,16 @@
 	<span>Bezahlmethode</span>
 	<span>{{orderEntry?.method}}</span>
 </div>
+<div class="bank-account" *ngIf="bankAccount$ | async as bankAccount">
+	<div class="order-entry-info-container">
+		<span class="label">IBAN</span>
+		<span>{{bankAccount.iban}}</span>
+	</div>
+	<div class="order-entry-info-container">
+		<span class="label">BIC</span>
+		<span>{{bankAccount.bic}}</span>
+	</div>
+</div>
 <div *ngFor="let item of orderedEventItems" class="ordered-items">
 	<a routerLink="{{item.link}}">
 		<div class="order-entry-picture">

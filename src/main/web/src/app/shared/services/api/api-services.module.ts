@@ -13,6 +13,7 @@ import {UserService} from "./user.service";
 import {UserBankAccountService} from "./user-bank-account.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MemoMaterialModule} from "../../../../material.module";
+import {MilesService} from "./miles.service";
 
 const providers = [
 	AddressService,
@@ -22,6 +23,7 @@ const providers = [
 	EventService,
 	ImageUploadService,
 	LogInService,
+	MilesService,
 	OrderService,
 	ParticipantsService,
 	StockService,
@@ -35,10 +37,11 @@ const providers = [
 		MemoMaterialModule
 	]
 })
-export class ApiServicesModule{
-	static forRoot() : ModuleWithProviders {
+export class ApiServicesModule {
+	static forRoot(): ModuleWithProviders {
 		return {
 			ngModule: ApiServicesModule,
 			providers: [...providers]
 		};
-	}}
+	}
+}

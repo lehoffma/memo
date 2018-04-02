@@ -32,7 +32,7 @@ export class SideNavComponent implements OnInit {
 				const linksCopy = [...links];
 				const permissions = user === null || user.id === -1
 					? visitorPermissions
-					: user.userPermissions;
+					: user.userPermissions();
 
 				const setId = (link: Link): Link => {
 					let newLink = {...link};

@@ -6,7 +6,7 @@ import {EventUtilityService} from "../../../../../shared/services/event-utility.
 import {EventOverviewKey} from "./event-overview-key";
 import {StockService} from "../../../../../shared/services/api/stock.service";
 import {MerchColor} from "../../../../shared/model/merch-color";
-import {MerchStockList} from "../../../../shared/model/merch-stock";
+import {MerchStock, MerchStockList} from "../../../../shared/model/merch-stock";
 import {ShopItem} from "../../../../../shared/model/shop-item";
 import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property";
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
@@ -15,18 +15,21 @@ import {Observable} from "rxjs/Observable";
 import {defaultIfEmpty, filter, first, map, mergeMap, take} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {of} from "rxjs/observable/of";
-import {Permission} from "app/shared/model/permission";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {User} from "../../../../../shared/model/user";
 import {Discount} from "../../../../../shared/price-renderer/discount";
 import {DiscountService} from "../../../../shared/services/discount.service";
 import {Tour} from "../../../../shared/model/tour";
-import {MatDialog} from "@angular/material";
+import {MatDialog, MatSnackBar} from "@angular/material";
 import {ShareDialogComponent} from "../../../../../shared/share-dialog/share-dialog.component";
 import {ResponsibilityService} from "../../../../shared/services/responsibility.service";
 import {ShoppingCartOption} from "../../../../../shared/model/shopping-cart-item";
-import {ClubRole, isAuthenticated} from "../../../../../shared/model/club-role";
 import {isBefore} from "date-fns";
+import {ObservableCache} from "../../../../../shared/cache/observable-cache";
+import {canCheckIn, canDeleteEntries, canEdit, canReadEntries} from "app/util/permissions-util";
+import {EventService} from "../../../../../shared/services/api/event.service";
+import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -63,51 +66,40 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			mergeMap(event => this.shoppingCartService.isPartOfShoppingCart(event.id))
 		);
 	public isPastEvent: boolean = false;
-	values: {
-		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
-	} = {};
-
-
-	userCanCheckIn$: Observable<boolean> =
-		combineLatest(
-			this.loginService.currentUser$,
-			this._event$
-		)
+	private _cache: ObservableCache<Event> = new ObservableCache(this._event$)
+		.withAsyncFallback("capacity", () => this.stock$
+			.pipe(map(stock => stock.reduce((sum, it) => sum + it.amount, 0))))
+		.withAsyncFallback("emptySeats", () => this._event$
 			.pipe(
-				map(([currentUser, event]) => isAuthenticated(currentUser === null
-					? ClubRole.Gast
-					: currentUser.clubRole, event.expectedCheckInRole))
-			);
+				mergeMap(event =>
+					this.participantService
+						.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
+						.pipe(
+							map(participants => event.capacity - participants.length)
+						)
+				),
+				defaultIfEmpty(0)
+			));
 
-	userCanEditEvent$: Observable<boolean> = this.loginService.currentUser$
-		.pipe(
-			map((user) => {
-				if (user !== null && this.event !== null) {
-					let permissions = user.userPermissions;
-					let permissionKey = EventUtilityService.handleShopItem(this.event,
-						merch => "merch",
-						tour => "tour",
-						party => "party"
-					);
-					if (permissionKey) {
-						return permissions[permissionKey] >= Permission.write
-							|| isAuthenticated(user.clubRole, this.event.expectedWriteRole);
-					}
-				}
 
-				return false;
-			})
-		);
-	userCanAccessEntries$: Observable<boolean> = this.loginService.currentUser$
+	permissions$: Observable<{
+		checkIn: boolean;
+		edit: boolean;
+		entries: boolean;
+		delete: boolean;
+	}> = combineLatest(
+		this.loginService.currentUser$,
+		this._event$
+	)
 		.pipe(
-			map((user) => {
-				if (user !== null && this.event !== null) {
-					let permissions = user.userPermissions;
-					return permissions.funds >= Permission.read;
-				}
-				return false;
-			})
+			map(([currentUser, event]) => ({
+				checkIn: canCheckIn(currentUser, event),
+				edit: canEdit(currentUser, event),
+				entries: canReadEntries(currentUser, event),
+				delete: canDeleteEntries(currentUser, event)
+			}))
 		);
+
 
 	discounts$: Observable<Discount[]> =
 		combineLatest(
@@ -120,16 +112,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				defaultIfEmpty([]),
 			);
 
-	capacityText$: Observable<string> = this._event$
-		.pipe(
-			map(event => (event.capacity !== 1) ? "Plätzen" : "Platz"),
-			defaultIfEmpty("Plätzen")
-		);
 
 	responsible$: Observable<User[]> = this._event$
-		.pipe(
-			mergeMap(event => this.responsibilityService.getResponsible(event.id))
-		);
+		.pipe(mergeMap(event => this.responsibilityService.getResponsible(event.id)));
 
 
 	constructor(private participantService: ParticipantsService,
@@ -137,6 +122,10 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				private stockService: StockService,
 				private loginService: LogInService,
 				private shoppingCartService: ShoppingCartService,
+				private eventService: EventService,
+				private snackBar: MatSnackBar,
+				private router: Router,
+				private confirmationDialogService: ConfirmationDialogService,
 				private responsibilityService: ResponsibilityService,
 				private matDialog: MatDialog) {
 	}
@@ -186,35 +175,38 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 * @param {string} key
 	 * @returns {Observable<TypeOfProperty<ShopItem>>}
 	 */
-	getValue(key: string): Observable<TypeOfProperty<ShopItem>> {
-		if (!this.values[key]) {
-			//cache observable so we only have to query the value once
-			if (this.isMerch(this.event) && key === "capacity") {
-				this.values[key] = this.stock$
-					.pipe(
-						map(stock => stock.reduce((sum, it) => sum + it.amount, 0))
-					);
-			}
-			else if (key === "emptySeats") {
-				this.values[key] = this._event$
-					.pipe(
-						mergeMap(event =>
-							this.participantService
-								.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
-								.pipe(
-									map(participants => event.capacity - participants.length))
-						),
-						defaultIfEmpty(0)
-					);
-			}
-			else {
-				this.values[key] = this._event$
-					.pipe(
-						map(event => event[key])
-					);
-			}
-		}
-		return this.values[key];
+	getValue(key: keyof Event): Observable<TypeOfProperty<Event>> {
+		return this._cache.get(key);
+	}
+
+	/**
+	 *
+	 * @param {T} selectedValue
+	 * @param {(value: T) => U} valueId
+	 * @param {(value: MerchStock) => U} getValueFromStock
+	 * @param {(value: MerchStock) => V} getSelectionValue
+	 * @param {(value: V) => W} selectionValueId
+	 * @returns {Observable<V[]>}
+	 */
+	private getSelection$<T, U, V, W>(
+		selectedValue: T,
+		valueId: (value: T) => U,
+		getValueFromStock: (value: MerchStock) => U,
+		getSelectionValue: (value: MerchStock) => V,
+		selectionValueId: (value: V) => W
+	) {
+		return this.stock$
+			.pipe(
+				map((stock: MerchStockList) => {
+					return stock
+					//remove values that aren't possible with the current size selection
+						.filter(stockItem => !selectedValue ? true : getValueFromStock(stockItem) === valueId(selectedValue))
+						.map(stockItem => getSelectionValue(stockItem))
+						//remove duplicates
+						.filter((_value, index, array) => array
+							.findIndex(it => selectionValueId(_value) === selectionValueId(it)) === index);
+				})
+			);
 	}
 
 	/**
@@ -224,18 +216,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 * @returns {Observable<MerchColor[]>}
 	 */
 	getColorSelection(size: string): Observable<MerchColor[]> {
-		return this.stock$
-			.pipe(
-				map((stock: MerchStockList) => {
-					return stock
-					//remove values that aren't possible with the current size selection
-						.filter(stockItem => !size ? true : stockItem.size === size)
-						.map(stockItem => stockItem.color)
-						//remove duplicates
-						.filter((stockColor, index, array) => array
-							.findIndex(color => stockColor.name === color.name) === index);
-				})
-			);
+		return this.getSelection$(size,
+			it => it, it => it.size, it => it.color, it => it.name
+		);
 	}
 
 
@@ -245,18 +228,35 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 * @returns {Observable<MerchColor[]>}
 	 */
 	getSizeSelection(color: MerchColor): Observable<string[]> {
-		return this.stock$
-			.pipe(
-				map((stock: MerchStockList) => {
-					return stock
-					//remove values that aren't possible with the current color selection
-						.filter(stockItem => !color ? true : stockItem.color.name === color.name)
-						.map(stockItem => stockItem.size)
-						//remove duplicates
-						.filter((stockSize, index, array) => array
-							.findIndex(size => size === stockSize) === index);
-				})
-			);
+		return this.getSelection$(color,
+			it => it.name, it => it.color.name, it => it.size, it => it
+		);
+	}
+
+	/**
+	 * Deletes the current item, after showing a confirmation dialog
+	 */
+	deleteItem() {
+		this.confirmationDialogService.openDialog("Möchtest du dieses Item wirklich löschen?")
+			.subscribe(yes => {
+				if (yes) {
+					this.eventService.remove(this.event.id)
+						.subscribe(
+							success => {
+								this.snackBar.open("Das Item wurde erfolgreich gelöscht", null, {
+									duration: 5000
+								});
+								this.router.navigateByUrl("/");
+							},
+							error => {
+								console.error(error);
+								this.snackBar.open("Das Item konnte nicht gelöscht werden.", null, {
+									duration: 5000
+								});
+							}
+						)
+				}
+			})
 	}
 
 	/**

@@ -13,7 +13,6 @@ import java.io.IOException;
 @WebServlet(name = "WebRoutesServlet",
         value = {
                 "/login",
-//                "/signup",
                 "/signup/*",
                 "/my-events",
                 "/order-history",
@@ -44,6 +43,7 @@ import java.io.IOException;
 
                 "/cart",
                 "/checkout",
+                "/order-complete",
                 "/address"
         }
 )

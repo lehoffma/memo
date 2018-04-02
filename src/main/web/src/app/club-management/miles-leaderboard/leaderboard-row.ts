@@ -1,7 +1,8 @@
 import {User} from "../../shared/model/user";
 
-export interface LeaderboardRow extends UserInterface{
+export interface LeaderboardRow extends UserInterface {
 	position: number;
+	miles: number;
 }
 
 type UserInterface = {

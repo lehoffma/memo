@@ -1,0 +1,25 @@
+<div class="overview-options" [ngClass]="{showOptions: showOptions}">
+	<memo-order-options [hidden]="!(!mobile || showOptions)">
+	</memo-order-options>
+
+	<button mat-button color="primary" class="options-button" (click)="showOptions = !showOptions">
+		<mat-icon>{{showOptions ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
+	</button>
+</div>
+
+
+<div class="overview-data-container"
+	 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 36px)' : 'calc(100%)')">
+
+	<memo-order-history-entry *ngFor="let order of (orderOverviewService.orders$|async)" [orderEntry]="order">
+	</memo-order-history-entry>
+
+	<div *ngIf="(orderOverviewService.orders$|async)?.length === 0" class="no-results">
+		Es existieren Ergebnisse für diese Parameter.
+	</div>
+
+	<ng-template #loadingContainer>
+		Lade Daten...
+	</ng-template>
+
+</div>

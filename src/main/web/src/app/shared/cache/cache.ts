@@ -15,10 +15,9 @@ interface CacheContent<T> {
 export class Cache<T> {
 	private cache: CacheContent<T>;
 	private inFlightRequest: Subject<T>;
-	readonly DEFAULT_EXPIRY = 300000;
 
-	constructor(public load: () => Observable<T>) {
-
+	constructor(public load: () => Observable<T>,
+				private expiry = 300000) {
 	}
 
 	/**
@@ -76,7 +75,7 @@ export class Cache<T> {
 	 */
 	private setValue(value: T) {
 		this.cache = {
-			expiry: Date.now() + this.DEFAULT_EXPIRY,
+			expiry: Date.now() + this.expiry,
 			value
 		}
 	}

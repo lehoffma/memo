@@ -1,8 +1,12 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core";
 import {Order} from "../../../shared/model/order";
 import {OrderedItem} from "../../../shared/model/ordered-item";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {orderStatusToString} from "../../../shared/model/order-status";
+import {UserBankAccountService} from "../../../shared/services/api/user-bank-account.service";
+import {BankAccount} from "../../../shared/model/bank-account";
+import {Observable} from "rxjs/Observable";
+import {empty} from "rxjs/observable/empty";
 
 interface OrderedEventItem extends OrderedItem {
 	link: string;
@@ -10,8 +14,8 @@ interface OrderedEventItem extends OrderedItem {
 }
 
 @Component({
-	selector: 'memo-order-history-entry',
-	templateUrl: './order-history-entry.component.html',
+	selector: "memo-order-history-entry",
+	templateUrl: "./order-history-entry.component.html",
 	styleUrls: ["./order-history-entry.component.scss"],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -20,7 +24,9 @@ export class OrderHistoryEntryComponent implements OnInit {
 	orderedEventItems: OrderedEventItem[] = [];
 	total: number = 0;
 
-	constructor() {
+	bankAccount$: Observable<BankAccount> = empty();
+
+	constructor(private bankAccountService: UserBankAccountService) {
 	}
 
 	ngOnInit() {
@@ -28,8 +34,8 @@ export class OrderHistoryEntryComponent implements OnInit {
 			.reduce((events, item) => {
 				const eventId = item.item.id;
 				const eventIndex = EventUtilityService.isMerchandise(item.item)
-					? events.findIndex(it => it.event.id === eventId && it.color.name === item.color.name && it.size === item.size)
-					: events.findIndex(it => it.event.id === eventId);
+					? events.findIndex(it => it.item.id === eventId && it.color.name === item.color.name && it.size === item.size)
+					: events.findIndex(it => it.item.id === eventId);
 				//it's not already part of the array
 				if (eventIndex === -1) {
 					events.push({
@@ -45,6 +51,7 @@ export class OrderHistoryEntryComponent implements OnInit {
 				return events;
 			}, []);
 
+		this.bankAccount$ = +(this.orderEntry.bankAccount) > 0 ? this.bankAccountService.getById(this.orderEntry.bankAccount) : empty();
 		this.orderedEventItems = events;
 		this.total = events
 			.reduce((acc, event) => acc + event.price * event.amount, 0);

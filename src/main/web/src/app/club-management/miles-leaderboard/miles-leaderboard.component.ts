@@ -6,8 +6,11 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {LeaderboardRow} from "./leaderboard-row";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {map, tap} from "rxjs/operators";
+import {map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {MilesListEntry, MilesService} from "../../shared/services/api/miles.service";
+import {ActivatedRoute, Router} from "@angular/router";
+import {seasonOptions} from "../../shared/model/season-options";
 
 export interface LoggedInUserPosition extends LeaderboardRow {
 	index: number;
@@ -21,18 +24,19 @@ export interface LoggedInUserPosition extends LeaderboardRow {
 export class MilesLeaderboardComponent implements OnInit {
 	//how many rows we want to show (useful for dashboard mini-version)
 	//doesn't include the logged in user's row if he is not in one of the first N places
-	@Input() amountOfRowsShown: number = 2;
+	@Input() amountOfRowsShown: number = Infinity;
 
 	showAll$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
 	users$ = this.userService.search("");
 
+
 	leaderBoard$: Observable<LeaderboardRow[]> = this.users$
 		.pipe(
 			//sort by miles
+			mergeMap(users => this.addMiles(users)),
 			map(users => users.sort(attributeSortingFunction<User>("miles", true))
 				.sort(attributeSortingFunction<User>("surname", true))),
-			tap(users => console.log(users)),
 			map(users => users.reduce((acc, user, index) => {
 				let position = index + 1;
 
@@ -49,6 +53,7 @@ export class MilesLeaderboardComponent implements OnInit {
 
 	loggedInUserId$ = this.loginService.accountObservable;
 
+
 	loggedInUserPosition$: Observable<LoggedInUserPosition> = combineLatest(
 		this.loggedInUserId$,
 		this.leaderBoard$
@@ -57,9 +62,12 @@ export class MilesLeaderboardComponent implements OnInit {
 			map(([id, leaderboard]) => {
 				const index = leaderboard.findIndex(item => item.id === id);
 
+				if (index === -1) {
+					return undefined;
+				}
+
 				return {
 					...leaderboard[index],
-					position: leaderboard[index].position,
 					index: index + 1
 				}
 			})
@@ -76,8 +84,47 @@ export class MilesLeaderboardComponent implements OnInit {
 				: Math.min(this.amountOfRowsShown, leaderboard.length))
 		);
 
+	selectedSeason$ = new BehaviorSubject<string>("Gesamt");
+
+	get selectedSeason() {
+		return this.selectedSeason$.getValue();
+	}
+
+	set selectedSeason(selectedSeason: string) {
+		this.selectedSeason$.next(selectedSeason);
+	}
+
+
+	seasonOptions = seasonOptions;
+	subscriptions = [];
+
 	constructor(private userService: UserService,
+				private milesService: MilesService,
+				private activatedRoute: ActivatedRoute,
+				private router: Router,
 				private loginService: LogInService) {
+
+		this.subscriptions.push(this.activatedRoute.queryParamMap
+				.subscribe(queryParamMap => {
+					if (!queryParamMap.has("t")) {
+						return;
+					}
+					const seasonWasSet = this.seasonOptions.some(option => {
+						if (queryParamMap.get("t") === option) {
+							this.selectedSeason = option;
+							return true;
+						}
+
+						return false;
+					});
+					if(!seasonWasSet){
+						this.selectedSeason = "Gesamt";
+					}
+				}),
+			this.selectedSeason$.subscribe(season => {
+				this.router.navigate([], {queryParams: {t: season}})
+			})
+		);
 	}
 
 	ngOnInit() {
@@ -89,5 +136,31 @@ export class MilesLeaderboardComponent implements OnInit {
 	 */
 	toggleShowAll(value: boolean) {
 		this.showAll$.next(value);
+	}
+
+	private getMiles$(season: string): Observable<MilesListEntry[]> {
+		if (season === "Gesamt") {
+			return this.milesService.getAll();
+		}
+		return this.milesService.getAllForSeason(season);
+	}
+
+	private addMiles(users: User[]): Observable<any[]> {
+		return this.selectedSeason$.pipe(
+			mergeMap(season => this.getMiles$(season)),
+			map(milesList => [
+				...users.map(user => {
+					const entry = milesList.find(it => it.userId === user.id);
+					let miles = 0;
+					if (entry) {
+						miles = entry.miles;
+					}
+					return {
+						...user,
+						miles
+					}
+				})
+			])
+		);
 	}
 }

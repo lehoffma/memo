@@ -8,12 +8,14 @@ import {NgModule} from "@angular/core";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {MilesLeaderboardComponent} from "./miles-leaderboard/miles-leaderboard.component";
 import {CanViewStockGuard} from "../shared/authentication/can-view-stock.guard";
+import {OrderOverviewComponent} from "./order-overview/order-overview.component";
 
 const routes: Route[] = [
 	{path: "dashboard", component: DashboardComponent},
 	{path: "leaderboard", component: MilesLeaderboardComponent},
 	{path: "members", component: MemberListComponent},
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
+	{path: "management/orders", component: OrderOverviewComponent, canActivate: [AuthenticatedGuard]},
 	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
 
 	{
@@ -43,5 +45,6 @@ export const routedComponents = [
 	AccountingComponent,
 	MerchStockComponent,
 	DashboardComponent,
-	MilesLeaderboardComponent
+	MilesLeaderboardComponent,
+	OrderOverviewComponent
 ];

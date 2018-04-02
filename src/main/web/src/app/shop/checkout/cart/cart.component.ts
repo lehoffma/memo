@@ -6,6 +6,8 @@ import {ShoppingCartItem} from "app/shared/model/shopping-cart-item";
 import {defaultIfEmpty, map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
+import {LogInService} from "../../../shared/services/api/login.service";
+import {DiscountService} from "../../shared/services/discount.service";
 
 @Component({
 	selector: "memo-cart",
@@ -35,21 +37,13 @@ export class CartComponent implements OnInit {
 				})
 			);
 
-	public totalAmount: Observable<number> = this.shoppingCartItems
-		.pipe(
-			map(items =>
-				items.tours.reduce((prev, curr) => prev + curr.amount * curr.item.price, 0) +
-				items.merch.reduce((prev, curr) => prev + curr.amount * curr.item.price, 0) +
-				items.partys.reduce((prev, curr) => prev + curr.amount * curr.item.price, 0)
-			)
-		);
+	public totalAmount$ = this.shoppingCartService.total$;
 
-	public amountOfItems$: Observable<number> = this.shoppingCartItems
-		.pipe(
-			map(items => items.tours.length + items.merch.length + items.partys.length)
-		);
+	public amountOfItems$: Observable<number> = this.shoppingCartService.amountOfCartItems;
 
 	constructor(private shoppingCartService: ShoppingCartService,
+				private loginService: LogInService,
+				private discountService: DiscountService,
 				private eventService: EventService) {
 	}
 

@@ -6,17 +6,22 @@ import {AddressSelectionComponent} from "./address-selection/address-selection.c
 import {CommonModule} from "@angular/common";
 import {CartEntryComponent} from "./cart/cart-entry/cart-entry.component";
 import {MemoMaterialModule} from "../../../material.module";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SignUpModule} from "../../user/signup/signup.module";
 import {CartTourParticipantComponent} from "./cart/cart-entry/cart-tour-participant/cart-tour-participant.component";
 import {SharedModule} from "../../shared/shared.module";
+import {ShopItemDetailsModule} from "../shop-item/item-details/shop-item-details.module";
+import {UserModule} from "../../user/user.module";
 
 @NgModule({
 	imports: [
 		CommonModule,
 		FormsModule,
+		ReactiveFormsModule,
 		MemoMaterialModule,
+		UserModule,
 		CheckoutRoutingModule,
+		ShopItemDetailsModule,
 		SharedModule,
 		SignUpModule
 	],

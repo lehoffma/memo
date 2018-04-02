@@ -21,19 +21,6 @@ import {Observable} from "rxjs/Observable";
 })
 export class ItemDetailsContainerComponent implements OnInit {
 	@Input() event: Event;
-	userCanEditEvent: Observable<boolean> = this.loginService.currentUser$
-		.pipe(
-			map(user => this.checkPermissions(user, Permission.write,
-				u => (<any>EventUtilityService.handleShopItem(this.event,
-					merch => "merch",
-					tour => "tour",
-					party => "party"
-				))))
-		);
-	userCanAccessEntries$: Observable<boolean> = this.loginService.currentUser$
-		.pipe(
-			map(user => this.checkPermissions(user, Permission.read, _ => "funds"))
-		);
 	showConcludeEventHeader$: Observable<boolean> = this.loginService.currentUser$
 		.pipe(
 			mergeMap(user => this.checkResponsibility(user))
@@ -57,27 +44,6 @@ export class ItemDetailsContainerComponent implements OnInit {
 			}
 		})
 	}
-
-	/**
-	 *
-	 * @param {User} user
-	 * @param minimumPermission
-	 * @param getPermissionKey
-	 * @returns {boolean}
-	 */
-	checkPermissions(user: User, minimumPermission: Permission,
-					 getPermissionKey: (user: User) => keyof UserPermissions): boolean {
-		if (user !== null && this.event !== null) {
-			let permissions = user.userPermissions;
-			let permissionKey = getPermissionKey(user);
-			if (permissionKey) {
-				return permissions[permissionKey] >= minimumPermission;
-			}
-		}
-
-		return false;
-	}
-
 	/**
 	 *
 	 * @param {User} user

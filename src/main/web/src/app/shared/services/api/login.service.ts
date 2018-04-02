@@ -174,11 +174,11 @@ export class LogInService {
 					}
 					: {
 						"Hinzufuegen": permissionsKeys.some(permissionsKey =>
-							user.userPermissions[permissionsKey] >= Permission.create),
+							user.userPermissions()[permissionsKey] >= Permission.create),
 						"Bearbeiten": permissionsKeys.some(permissionsKey =>
-							user.userPermissions[permissionsKey] >= Permission.write),
+							user.userPermissions()[permissionsKey] >= Permission.write),
 						"Loeschen": permissionsKeys.some(permissionsKey =>
-							user.userPermissions[permissionsKey] >= Permission.delete)
+							user.userPermissions()[permissionsKey] >= Permission.delete)
 					})
 			);
 	}

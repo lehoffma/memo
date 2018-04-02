@@ -48,8 +48,19 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	distanceInWords(date: Date){
+	distanceInWords(date: Date) {
 		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
+	}
+
+	_links: { [id: number]: string }
+
+	getLink(event: Event): string {
+		if (!this._links[event.id]) {
+			const eventType: EventType = EventUtilityService.getEventType(event);
+			this._links[event.id] = `/${eventType}/${event.id}`;
+		}
+
+		return this._links[event.id];
 	}
 
 	showEvent(recentEvent: Event) {

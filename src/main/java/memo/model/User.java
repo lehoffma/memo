@@ -1,12 +1,12 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -305,6 +305,7 @@ public class User implements Serializable {
         this.bankAccounts.add(b);
     }
 
+    @JsonIgnore
     public List<Order> getOrders() {
         return orders;
     }

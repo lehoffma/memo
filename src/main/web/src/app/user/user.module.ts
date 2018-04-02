@@ -39,6 +39,7 @@ import { PasswordRecoveryLandingPageComponent } from './password-recovery/passwo
 	],
 	exports: [
 		SignUpModule,
+		OrderHistoryEntryComponent
 	]
 })
 export class UserModule {

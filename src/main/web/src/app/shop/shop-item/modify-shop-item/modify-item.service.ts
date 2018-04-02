@@ -18,13 +18,13 @@ import {Address} from "../../../shared/model/address";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 import {ModifyItemEvent} from "./modify-item-event";
 import {MerchStockList} from "../../shared/model/merch-stock";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {first, map, mergeMap, take, tap} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shared/model/event";
 import {of} from "rxjs/observable/of";
-import {timer} from "rxjs/observable/timer";
 import {ModifiedImages} from "./modified-images";
+import {processSequentially} from "../../../util/observable-util";
+import {isEdited} from "../../../util/util";
 
 @Injectable()
 export class ModifyItemService {
@@ -172,8 +172,8 @@ export class ModifyItemService {
 			}
 
 
-			return combineLatest(
-				...addressesToDelete
+			return processSequentially(
+				addressesToDelete
 					.map(id => this.addressService.remove(id))
 			)
 		}
@@ -190,16 +190,22 @@ export class ModifyItemService {
 			return of([]);
 		}
 
-		return combineLatest(
-			...addresses.map((route: Address) => {
+		return processSequentially(
+			addresses.map(address => {
 				//only add routes that aren't already part of the system
-				if (route.id >= 0) {
-					//but modify them in case they're different
-					return this.addressService.modify(route);
+				if (address.id >= 0) {
+					return this.addressService.getById(address.id)
+						.pipe(
+							//but modify them in case they're different
+							mergeMap(prevAddress => isEdited(prevAddress, address, ["id"])
+								? this.addressService.modify(address)
+								//otherwise don't do anything
+								: of(prevAddress)
+							)
+						);
 				}
-				else {
-					return this.addressService.add(route)
-				}
+
+				return this.addressService.add(address);
 			})
 		);
 	}
@@ -229,7 +235,6 @@ export class ModifyItemService {
 						return of([]);
 					}
 
-					//todo instead of combineLatest: add routes one after another (to avoid transaction errors)
 					return this.updateAddresses(addresses);
 				}),
 				map(addresses => {
@@ -267,8 +272,8 @@ export class ModifyItemService {
 				return of([]);
 			}
 
-			return combineLatest(
-				...imagesToDelete
+			return processSequentially(
+				imagesToDelete
 					.map(path => this.imageUploadService.deleteImage(path))
 			);
 		}
