@@ -52,9 +52,13 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
 	}
 
-	_links: { [id: number]: string }
+	_links: { [id: number]: string} = {};
 
 	getLink(event: Event): string {
+		if (!event) {
+			return "";
+		}
+
 		if (!this._links[event.id]) {
 			const eventType: EventType = EventUtilityService.getEventType(event);
 			this._links[event.id] = `/${eventType}/${event.id}`;

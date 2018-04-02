@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Order} from "../../../shared/model/order";
 import {OrderedItem} from "../../../shared/model/ordered-item";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
@@ -9,6 +9,7 @@ import {Observable} from "rxjs/Observable";
 import {empty} from "rxjs/observable/empty";
 
 interface OrderedEventItem extends OrderedItem {
+	cssStatus: string;
 	link: string;
 	amount: number;
 }
@@ -21,10 +22,15 @@ interface OrderedEventItem extends OrderedItem {
 })
 export class OrderHistoryEntryComponent implements OnInit {
 	@Input() orderEntry: Order;
+	@Input() withActions = false;
 	orderedEventItems: OrderedEventItem[] = [];
 	total: number = 0;
 
 	bankAccount$: Observable<BankAccount> = empty();
+
+	//todo show isDriver/needsTicket stuff
+	@Output() onEdit: EventEmitter<Order> = new EventEmitter<Order>();
+	@Output() onRemove: EventEmitter<Order> = new EventEmitter<Order>();
 
 	constructor(private bankAccountService: UserBankAccountService) {
 	}
@@ -42,6 +48,7 @@ export class OrderHistoryEntryComponent implements OnInit {
 						link: "/" + EventUtilityService.getEventType(item.item) + "/" + item.item.id,
 						amount: 1,
 						...item,
+						cssStatus: orderStatusToString(item.status).replace(" ", "-"),
 						status: orderStatusToString(item.status),
 					})
 				}
@@ -55,5 +62,14 @@ export class OrderHistoryEntryComponent implements OnInit {
 		this.orderedEventItems = events;
 		this.total = events
 			.reduce((acc, event) => acc + event.price * event.amount, 0);
+	}
+
+
+	edit() {
+		this.onEdit.emit(this.orderEntry);
+	}
+
+	remove() {
+		this.onRemove.emit(this.orderEntry);
 	}
 }

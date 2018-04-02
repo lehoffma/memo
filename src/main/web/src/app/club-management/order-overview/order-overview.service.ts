@@ -3,13 +3,16 @@ import {Order} from "../../shared/model/order";
 import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {defaultIfEmpty, map, tap} from "rxjs/operators";
+import {defaultIfEmpty, filter, map, mergeMap} from "rxjs/operators";
 import {isAfter, isBefore, isEqual, parse} from "date-fns";
-import {ParamMap} from "@angular/router";
+import {ParamMap, Router} from "@angular/router";
 import {OrderService} from "../../shared/services/api/order.service";
 import {attributeSortingFunction, dateSortingFunction, SortingFunction} from "../../util/util";
 import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {ConfirmationDialogService} from "../../shared/services/confirmation-dialog.service";
+import {MatSnackBar} from "@angular/material";
+import {LogInService} from "../../shared/services/api/login.service";
 
 @Injectable()
 export class OrderOverviewService {
@@ -29,14 +32,20 @@ export class OrderOverviewService {
 				.filter(dataObject => this.satisfiesFilter(dataObject, queryParamMap))
 				.sort((a, b) => this.comparator(sortBy)(a, b))),
 			map(data => [...data]),
-			tap(it => console.log(it)),
 			defaultIfEmpty([]),
 		);
 
-
+	userCanAddOrders$ = this.loginService.getActionPermissions("funds")
+		.pipe(
+			map(permission => permission.Hinzufuegen)
+		);
 	dataSubscription;
 
 	constructor(private navigationService: NavigationService,
+				private loginService: LogInService,
+				private snackBar: MatSnackBar,
+				private router: Router,
+				private confirmationDialogService: ConfirmationDialogService,
 				private orderService: OrderService) {
 		this.initData();
 
@@ -105,5 +114,28 @@ export class OrderOverviewService {
 			return dateSortingFunction<Order>(order => order.timeStamp, sortBy.descending);
 		}
 		return attributeSortingFunction(sortBy.key, sortBy.descending);
+	}
+
+
+	editOrder(order: Order) {
+		this.router.navigate(["orders", order.id, "edit"]);
+	}
+
+	removeOrder(order: Order) {
+		this.confirmationDialogService.openDialog("Möchtest du diese Bestellung wirklich löschen?")
+			.pipe(
+				filter(yes => yes),
+				mergeMap(yes => this.orderService.remove(order.id))
+			)
+			.subscribe(() => {
+				this.snackBar.open("Das Löschen der Bestellung war erfolgreich.", "Schließen");
+			}, error => {
+				console.error(error);
+				this.snackBar.open("Ein Fehler ist aufgetreten!", "Nochmal?", {
+					duration: 3000
+				})
+					.onAction()
+					.subscribe(() => this.removeOrder(order));
+			});
 	}
 }

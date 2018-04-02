@@ -7,6 +7,7 @@ import {ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
 import {_throw} from "rxjs/observable/throw";
 import {ShopItem} from "../model/shop-item";
 import {Observable} from "rxjs/Observable";
+import {OrderService} from "../services/api/order.service";
 
 @Injectable()
 export class ShopItemGuardHelper {
@@ -14,7 +15,8 @@ export class ShopItemGuardHelper {
 	constructor(
 		private eventService: EventService,
 		private userService: UserService,
-		private entryService: EntryService
+		private entryService: EntryService,
+		private orderService: OrderService
 	) {
 	}
 
@@ -28,6 +30,7 @@ export class ShopItemGuardHelper {
 				return "merch";
 			case "members":
 				return "userManagement";
+			case "orders":
 			case "entries":
 				return "funds";
 		}
@@ -44,12 +47,14 @@ export class ShopItemGuardHelper {
 				return this.userService;
 			case "entries":
 				return this.entryService;
+			case "orders":
+				return this.orderService;
 		}
 		return null;
 	}
 
 	public getItemTypeFromRoute(route: ActivatedRouteSnapshot) {
-		const possibleTypes = ["tours", "merch", "partys", "members", "entries"];
+		const possibleTypes = ["tours", "merch", "partys", "members", "entries", "orders"];
 		let itemType = route.paramMap.get("itemType");
 		if (itemType === null) {
 			let type = possibleTypes.find(type => route.toString().includes(type));

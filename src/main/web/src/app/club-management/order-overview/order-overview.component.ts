@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {Dimension, WindowService} from "../../shared/services/window.service";
 import {OrderOverviewService} from "./order-overview.service";
+import {ConfirmationDialogService} from "../../shared/services/confirmation-dialog.service";
 
 @Component({
 	selector: "memo-order-overview",
@@ -36,5 +37,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 		this.showOptions = !mobile;
 		this.mobile = mobile;
 	}
+
 
 }

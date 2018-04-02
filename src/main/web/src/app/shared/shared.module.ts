@@ -19,7 +19,7 @@ import {ProfileLinkComponent} from "./profile-renderer/profile-link/profile-link
 import {ProfilePreviewComponent} from "./profile-renderer/profile-preview/profile-preview.component";
 import {CapacityRendererComponent} from "./capacity-renderer/capacity-renderer.component";
 import {ShareDialogComponent} from "./share-dialog/share-dialog.component";
-import {UserAutocompleteComponent} from "./user-autocomplete/user-autocomplete.component";
+import {UserAutocompleteComponent} from "./forms/autocomplete/user-autocomplete/user-autocomplete.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ShareButtonsModule} from "@ngx-share/buttons";
 import {DisplayErrorDirective} from "./template-validators/display-error.directive";
@@ -37,6 +37,10 @@ import {AddressEntryComponent} from "./forms/address-form/address-entry.componen
 import {BankAccountFormComponent} from "./forms/bank-account-form/bank-account-form.component";
 import {BankAccountEntryComponent} from "./forms/bank-account-form/bank-account-entry.component";
 import {BankAccountInputFormComponent} from "./forms/bank-account-form/bank-account-input-form.component";
+import {EventAutocompleteComponent} from "./forms/autocomplete/event-autocomplete/event-autocomplete.component";
+import {OrderedItemFormComponent} from "./forms/ordered-item-form/ordered-item-form.component";
+import {OrderedItemInputFormComponent} from "./forms/ordered-item-form/ordered-item-input-form.component";
+import {OrderedItemEntryComponent} from "./forms/ordered-item-form/ordered-item-entry.component";
 
 const forms = [
 	DisableIfDirective,
@@ -50,6 +54,12 @@ const forms = [
 	BankAccountFormComponent,
 	BankAccountEntryComponent,
 	BankAccountInputFormComponent,
+
+	EventAutocompleteComponent,
+
+	OrderedItemEntryComponent,
+	OrderedItemFormComponent,
+	OrderedItemInputFormComponent
 ];
 
 @NgModule({
@@ -90,6 +100,8 @@ const forms = [
 		UserPreviewDirective,
 
 		...forms,
+
+		EventAutocompleteComponent,
 
 	],
 	exports: [

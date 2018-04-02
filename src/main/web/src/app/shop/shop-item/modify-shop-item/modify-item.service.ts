@@ -60,6 +60,7 @@ export class ModifyItemService {
 	 *
 	 */
 	reset() {
+		//todo add order modifying
 		this.mode = undefined;
 
 		//either merch, tour, party, user or entry

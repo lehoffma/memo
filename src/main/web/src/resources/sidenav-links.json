@@ -121,15 +121,11 @@
 			}
 		]
 	},
-	{
-		"route": "settings",
-		"icon": "settings",
-		"name": "Einstellungen",
-		"drawLineAbove": true
-	},
+
 	{
 		"route": "impressum",
 		"icon": "info",
-		"name": "Impressum"
+		"name": "Impressum",
+		"drawLineAbove": true
 	}
 ]

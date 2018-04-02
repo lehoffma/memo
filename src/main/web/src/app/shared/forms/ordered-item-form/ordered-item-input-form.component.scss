@@ -1,0 +1,25 @@
+:host {
+	display: block;
+	background: white;
+	padding: 1rem;
+	border-bottom: 1px solid #ededed;
+}
+
+form > div {
+	display: flex;
+	justify-content: space-between;
+
+	mat-form-field {
+		width: 45%;
+	}
+
+	&.form-actions {
+		justify-content: flex-end;
+		margin-top: 15px;
+
+		button:last-child {
+			margin-left: 10px;
+		}
+	}
+}
+

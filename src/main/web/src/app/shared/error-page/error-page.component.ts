@@ -8,7 +8,7 @@ import {Location} from "@angular/common";
 		<div class="error-code">
 			{{errorCode}}
 		</div>
-		<div>
+		<div class="message">
 			{{errorMessage}}
 		</div>
 		<div class="actions">
@@ -42,7 +42,7 @@ import {Location} from "@angular/common";
 			font-size: 8rem;
 		}
 
-		.error-message {
+		.message {
 			text-align: center;
 		}
 

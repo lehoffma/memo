@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
-import {User} from "../model/user";
+import {User} from "../../../model/user";
 import {FormControl, Validators} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
-import {EventUtilityService} from "../services/event-utility.service";
+import {EventUtilityService} from "../../../services/event-utility.service";
 import {filter, map, mergeMap, startWith} from "rxjs/operators";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {MatInput} from "@angular/material";
