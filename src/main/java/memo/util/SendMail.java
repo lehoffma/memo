@@ -4,10 +4,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
+import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -70,10 +67,10 @@ public class SendMail {
             message.setFrom(new InternetAddress(USER, USER_NAME));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject(subject);
-            message.setText(text);
+            message.setContent(text,"text/html");
 
             //send the message
-//            Transport.send(message);
+            Transport.send(message);
 
             logger.trace("Message sent successfully");
         } catch (Exception e) {
