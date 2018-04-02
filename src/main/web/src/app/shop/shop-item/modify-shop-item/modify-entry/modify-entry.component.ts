@@ -91,60 +91,16 @@ export class ModifyEntryComponent implements OnInit {
 				this.autocompleteFormControl.setValue(event);
 			});
 
-		this.filteredOptions = this.autocompleteFormControl.valueChanges
-			.pipe(
-				startWith(""),
-				map(event => event && EventUtilityService.isEvent(event) ? event.title : event),
-				mergeMap(title =>
-					combineLatest(
-						this.eventService.search("", EventType.tours),
-						this.eventService.search("", EventType.partys),
-						this.eventService.search("", EventType.merch)
-					)
-						.pipe(
-							map(([tours, partys, merch]) => {
-								let availableEvents = [...tours, ...partys, ...merch];
-								return title
-									? this.filter(availableEvents, title)
-									: availableEvents.slice()
-							})
-						)
-				)
-			);
 	}
 
 	ngOnInit() {
-		this.autocompleteFormControl.setValidators([Validators.required, isEventValidator()]);
 	}
 
-	/**
-	 * Defines how the event will be presented in the autocomplete box
-	 * @returns {any}
-	 * @param event
-	 */
-	displayFn(event: Event): string {
-		if (event) {
-			return event.title;
-		}
-		return "";
-	}
 
 	compareCategories(value1: EntryCategory, value2: EntryCategory) {
 		return value1 && value2 && value1.id === value2.id;
 	}
 
-	/**
-	 * Filters the options array by checking the events title
-	 * @param options
-	 * @param name
-	 * @returns {any[]}
-	 */
-	filter(options: Event[], name: string): Event[] {
-		return options.filter(option => {
-			const regex = new RegExp(`${name}`, "gi");
-			return regex.test(option.title);
-		});
-	}
 
 
 	cancel() {

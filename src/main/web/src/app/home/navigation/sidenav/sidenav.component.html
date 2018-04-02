@@ -1,5 +1,5 @@
 <!--header (link to profile)-->
-<div *ngIf="user | async; let account;">
+<div *ngIf="user | async as account;">
 	<div class="account-header">
 		<div *ngIf="account.id !== -1; else loggedOutHeader;">
 			<img src="{{account.images[0]}}" class="profile-picture">
@@ -28,7 +28,7 @@
 			</a>
 		</div>
 		<div *ngFor="let link of (links | async);">
-			<hr *ngIf="link.drawLineAbove || link.children">
+			<mat-divider *ngIf="link.drawLineAbove || link.children"></mat-divider>
 			<!--"main" link-->
 			<a routerLink="{{link.route}}">
 				<mat-icon class="mat-dark" *ngIf="!link.children">{{link.icon}}</mat-icon>

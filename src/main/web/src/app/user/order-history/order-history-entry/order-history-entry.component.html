@@ -1,6 +1,13 @@
-<h2 class="header">
-	Bestellung vom {{orderEntry?.timeStamp | dateFormat}}
-</h2>
+<div class="header">
+	<h2>
+		Bestellung vom {{orderEntry?.timeStamp | dateFormat}}
+	</h2>
+	<button mat-icon-button type="button" *ngIf="withActions"
+			(click)="$event.stopPropagation(); false"
+			[matMenuTriggerFor]="menu">
+		<mat-icon>more_vert</mat-icon>
+	</button>
+</div>
 <div class="method">
 	<span>Bezahlmethode</span>
 	<span>{{orderEntry?.method}}</span>
@@ -44,7 +51,7 @@
 		<div>
 			<div class="order-entry-info-container">
 				<span class="label">Status</span>
-				<span class="status {{item.status}}">{{item.status}}</span>
+				<span class="status {{item.cssStatus}}">{{item.status}}</span>
 			</div>
 		</div>
 		<div>
@@ -65,3 +72,15 @@
 	<span>Gesamt</span>
 	<span class="order-total-price-amount">{{total | currency:'EUR':'symbol'}}</span>
 </div>
+
+
+<mat-menu #menu="matMenu">
+	<button mat-menu-item (click)="edit()">
+		<mat-icon>edit</mat-icon>
+		<span>Bearbeiten</span>
+	</button>
+	<button mat-menu-item type="button" (click)="remove()">
+		<mat-icon>delete</mat-icon>
+		<span>Löschen</span>
+	</button>
+</mat-menu>

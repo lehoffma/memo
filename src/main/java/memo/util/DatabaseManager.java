@@ -106,8 +106,7 @@ public class DatabaseManager {
      * @param <T>
      */
     private <T> void removeObject(EntityManager em, T object) {
-        T mergedObject = em.merge(object);
-        em.remove(mergedObject);
+        em.remove(object);
     }
 
     /**

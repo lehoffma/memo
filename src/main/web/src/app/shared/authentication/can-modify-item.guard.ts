@@ -25,9 +25,9 @@ export class CanModifyItemGuard implements CanActivate {
 	}
 
 	getShopItemFromRoute(route: ActivatedRouteSnapshot, id: number): { permissionKey: string, shopItem: Observable<ShopItem | Event> } {
-		let permissionKey = this.shopItemGuardHelper.getPermissionKeyFromType(route.paramMap.get("itemType"));
+		let permissionKey = this.shopItemGuardHelper.getPermissionKeyFromType(route.paramMap.get("itemType") || "orders");
 		let shopItem: Observable<ShopItem | Event> = of(null);
-		const service = this.shopItemGuardHelper.getServletServiceFromType(route.paramMap.get("itemType"));
+		const service = this.shopItemGuardHelper.getServletServiceFromType(route.paramMap.get("itemType") || "orders");
 		if (service !== null && id >= 0) {
 			shopItem = service.getById(id);
 		}

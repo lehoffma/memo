@@ -1,0 +1,25 @@
+<div [formGroup]="formGroup">
+	<h2>Bestellte Items</h2>
+	<div class="ordered-item-container" *ngFor="let item of formGroup.get('items').value; let i = index">
+		<memo-ordered-item-entry *ngIf="showInlineForm !== i; else inlineEditForm"
+								 (onEdit)="showInlineForm = i;"
+								 (onRemove)="removeItem(item, i)"
+								 [orderedItem]="item">
+
+		</memo-ordered-item-entry>
+		<ng-template #inlineEditForm>
+			<memo-ordered-item-input-form [orderedItem]="item"
+										  (onCancel)="showInlineForm = -1"
+										  (onSubmit)="updateItem($event, i); showInlineForm = -1"></memo-ordered-item-input-form>
+		</ng-template>
+	</div>
+	<button mat-button type="button"
+			class="add-item-button"
+			*ngIf="!showNewItemForm && showInlineForm === -1"
+			(click)="showNewItemForm = true">
+		Hinzufügen
+	</button>
+	<memo-ordered-item-input-form *ngIf="showNewItemForm && showInlineForm === -1"
+								  (onCancel)="showNewItemForm = false"
+								  (onSubmit)="updateItem($event, i); showNewItemForm = false"></memo-ordered-item-input-form>
+</div>

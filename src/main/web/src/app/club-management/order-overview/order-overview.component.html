@@ -11,11 +11,15 @@
 <div class="overview-data-container"
 	 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 36px)' : 'calc(100%)')">
 
-	<memo-order-history-entry *ngFor="let order of (orderOverviewService.orders$|async)" [orderEntry]="order">
+	<memo-order-history-entry *ngFor="let order of (orderOverviewService.orders$|async)"
+							  [withActions]="true"
+							  (onEdit)="orderOverviewService.editOrder($event)"
+							  (onRemove)="orderOverviewService.removeOrder($event)"
+							  [orderEntry]="order">
 	</memo-order-history-entry>
 
 	<div *ngIf="(orderOverviewService.orders$|async)?.length === 0" class="no-results">
-		Es existieren Ergebnisse für diese Parameter.
+		Keine Ergebnisse.
 	</div>
 
 	<ng-template #loadingContainer>
@@ -23,3 +27,12 @@
 	</ng-template>
 
 </div>
+
+
+<a mat-fab color="accent" *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !(!mobile || showOptions)"
+   [matTooltip]="'Bestellung hinzufügen'"
+   [matTooltipPosition]="'above'"
+   routerLink="/create/orders"
+   class="add-order-button">
+	<mat-icon>add</mat-icon>
+</a>

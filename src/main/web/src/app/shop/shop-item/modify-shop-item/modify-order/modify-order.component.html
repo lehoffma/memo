@@ -1,0 +1,77 @@
+<div class="form-container">
+	<div class="modify-header">
+		<h2>Bestellung bearbeiten</h2>
+	</div>
+	<form [formGroup]="modifyOrderService.formGroup" (ngSubmit)="modifyOrderService.submit()"
+		  *ngIf="modifyOrderService">
+		<memo-user-autocomplete
+			[resetOnSelect]="false" [required]="true" [userList]="userService.search('') | async"
+			[user]="modifyOrderService.formGroup.get('user').value"
+			(userChanged)="modifyOrderService.updateUser($event)"
+		>
+		</memo-user-autocomplete>
+		<div>
+			<mat-form-field>
+				<input matInput [matDatepicker]="myDatepicker"
+					   placeholder="Datum"
+					   formControlName="date"
+					   name="dateInput" required>
+				<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+				<mat-error *ngIf="modifyOrderService.formGroup.get('date').hasError('required')" align="end">
+					Das Datum muss im Format DD.MM.YYYY vorliegen.
+				</mat-error>
+			</mat-form-field>
+			<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
+		</div>
+		<div class="time-selection">
+			<mat-form-field>
+				<input matInput
+					   placeholder="Uhrzeit"
+					   formControlName="time"
+					   name="timeInput" required>
+
+				<mat-error *ngIf="modifyOrderService.formGroup.get('time').hasError('required')"
+						   align="end">
+					Dieses Feld darf nicht leer bleiben!
+				</mat-error>
+				<mat-error *ngIf="modifyOrderService.formGroup.get('time').hasError('pattern')"
+						   align="end">
+					Die Uhrzeit muss im Format "HH:MM" vorliegen!
+				</mat-error>
+			</mat-form-field>
+		</div>
+
+		<mat-form-field>
+			<mat-select [formControl]="modifyOrderService.formGroup.get('method')"
+						placeholder="Bezahlmethode"
+						name="Bezahlmethode"
+			>
+				<mat-option *ngFor="let option of paymentMethods" [value]="option">
+					{{option}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+		<!--<div *ngIf="modifyOrderService.formGroup.get('method').value === paymentMethod.DEBIT">-->
+			<!--<memo-bank-->
+		<!--</div>-->
+
+		<div class="ordered-item-container">
+			<memo-ordered-item-form [formGroup]="modifyOrderService.formGroup">
+
+			</memo-ordered-item-form>
+		</div>
+
+
+		<div class="form-actions">
+			<button mat-raised-button type="button" (click)="modifyOrderService.cancel()">
+				Abbrechen
+			</button>
+			<button mat-raised-button color="accent"
+					[disabled]="!modifyOrderService.formGroup.valid || modifyOrderService.formGroup.pending">
+				Speichern
+			</button>
+		</div>
+	</form>
+
+</div>

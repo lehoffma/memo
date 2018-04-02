@@ -10,9 +10,20 @@ import {IsMerchandiseGuard} from "../../../shared/authentication/is-merchandise.
 import {ModifyMerchStockContainerComponent} from "./modify-merch/modify-merch-stock-container/modify-merch-stock-container.component";
 import {ShopItemExistsGuard} from "../../../shared/authentication/http-error-handling-guards/shop-item-exists.guard";
 import {ShopItemIsVisibleToUserGuard} from "../../../shared/authentication/http-error-handling-guards/shop-item-is-visible-to-user.guard";
+import {ModifyOrderComponent} from "./modify-order/modify-order.component";
 
 
 const routes: Routes = [
+	{
+		path: "orders/:id/edit", component: ModifyOrderComponent, pathMatch: "full", canActivate: [
+			AuthenticatedGuard, CanModifyItemGuard, ShopItemIsVisibleToUserGuard
+		]
+	},
+	{
+		path: "create/orders", component: ModifyOrderComponent, pathMatch: "full", canActivate: [
+			AuthenticatedGuard, CanModifyItemGuard
+		]
+	},
 	{
 		path: ":itemType/:id/stock/edit", component: ModifyMerchStockContainerComponent,
 		pathMatch: "full",
@@ -67,4 +78,4 @@ export class ModifyShopItemRoutingModule {
 }
 
 export const routedComponents = [ModifyShopItemComponent, ModifyUserComponent,
-	ModifyMerchStockContainerComponent];
+	ModifyMerchStockContainerComponent, ModifyOrderComponent];

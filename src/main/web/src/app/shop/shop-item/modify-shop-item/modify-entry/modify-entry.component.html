@@ -54,24 +54,9 @@
 			</div>
 		</div>
 
-		<mat-form-field>
-			<input matInput
-				   tabindex="-1"
-				   placeholder="Event"
-				   name="eventInput"
-				   [formControl]="autocompleteFormControl"
-				   [matAutocomplete]="auto" required>
-			<mat-error
-				*ngIf="autocompleteFormControl.hasError('isNotAValidEvent') || autocompleteFormControl.hasError('required')">
-				Bitte wähle ein gültiges Item aus.
-			</mat-error>
-		</mat-form-field>
-		<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-			<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-				{{option.title}}
-			</mat-option>
-		</mat-autocomplete>
+		<memo-event-autocomplete [formControl]="formGroup.get('item')">
 
+		</memo-event-autocomplete>
 		<!--below all that-->
 		<div class="form-buttons">
 			<!--	cancel button-->
