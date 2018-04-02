@@ -44,8 +44,6 @@ public class SendMail {
         Properties props = new Properties();
         props.put("mail.smtp.host", getHost());
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.user", getUser());
-        props.put("mail.smtp.port", getPort());
 
         Session session = Session.getDefaultInstance(props,
                 new javax.mail.Authenticator() {
