@@ -87,4 +87,8 @@ a.add-order-button {
 	z-index: 10;
 	right: 1rem;
 	bottom: 1rem;
+
+	@media all and (min-width: 800px) {
+		right: 2rem;
+	}
 }

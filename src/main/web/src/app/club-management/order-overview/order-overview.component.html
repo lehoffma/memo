@@ -29,7 +29,7 @@
 </div>
 
 
-<a mat-fab color="accent" *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !(!mobile || showOptions)"
+<a mat-fab color="accent" *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !(showOptions && mobile)"
    [matTooltip]="'Bestellung hinzufügen'"
    [matTooltipPosition]="'above'"
    routerLink="/create/orders"
