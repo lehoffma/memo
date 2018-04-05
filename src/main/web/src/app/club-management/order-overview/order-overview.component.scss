@@ -92,3 +92,10 @@ a.add-order-button {
 		right: 2rem;
 	}
 }
+
+@media all and (min-width: $options-breakpoint) {
+	.loader {
+		left: 65%;
+	}
+}
+

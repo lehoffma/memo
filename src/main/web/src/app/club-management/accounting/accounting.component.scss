@@ -123,3 +123,9 @@ memo-expandable-table {
 	}
 
 }
+
+@media all and (min-width: $options-breakpoint) {
+	.loader {
+		left: 65%;
+	}
+}

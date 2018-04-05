@@ -63,6 +63,7 @@ public class Color implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     public List<OrderedItem> getOrderedItems() {
         return orderedItems;
     }

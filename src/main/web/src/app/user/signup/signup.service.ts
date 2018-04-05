@@ -103,7 +103,7 @@ export class SignUpService {
 				name: user.firstName + " " + user.surname
 			}))
 			.pipe(
-				map(bankAccount => user.setProperties({bankAccounts: bankAccount}))
+				map(bankAccount => user.setProperties({bankAccounts: [bankAccount.id]}))
 			);
 	}
 
@@ -122,6 +122,7 @@ export class SignUpService {
 			addresses.map(it => this.addressService.add(it))
 		)
 			.pipe(
+				map(addresses => addresses.map(it => it.id)),
 				map(addressIds => user.setProperties({addresses: addressIds}))
 			);
 	}

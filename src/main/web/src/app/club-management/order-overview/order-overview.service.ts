@@ -40,6 +40,7 @@ export class OrderOverviewService {
 			map(permission => permission.Hinzufuegen)
 		);
 	dataSubscription;
+	loading = false;
 
 	constructor(private navigationService: NavigationService,
 				private loginService: LogInService,
@@ -57,7 +58,11 @@ export class OrderOverviewService {
 			this.dataSubscription.unsubscribe();
 		}
 
-		this.dataSubscription = this.orderService.search("").subscribe(it => this._orders$.next(it));
+		this.loading = true;
+		this.dataSubscription = this.orderService.search("").subscribe(it => {
+			this.loading = false;
+			this._orders$.next(it)
+		});
 	}
 
 

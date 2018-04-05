@@ -18,13 +18,15 @@
 							  [orderEntry]="order">
 	</memo-order-history-entry>
 
-	<div *ngIf="(orderOverviewService.orders$|async)?.length === 0" class="no-results">
+	<div *ngIf="!orderOverviewService.loading && (orderOverviewService.orders$|async)?.length === 0" class="no-results">
 		Keine Ergebnisse.
 	</div>
 
-	<ng-template #loadingContainer>
-		Lade Daten...
-	</ng-template>
+	<div *ngIf="orderOverviewService.loading">
+		<div class="loader-wrapper">
+			<div class="loader"></div>
+		</div>
+	</div>
 
 </div>
 

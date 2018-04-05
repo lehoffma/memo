@@ -15,7 +15,7 @@ import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-categor
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs/Observable";
-import {catchError, defaultIfEmpty, first, map, mergeMap} from "rxjs/operators";
+import {catchError, defaultIfEmpty, first, map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {of} from "rxjs/observable/of";
@@ -33,6 +33,8 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	};
 
 	subscriptions = [];
+
+	loading = false;
 
 	constructor(protected loginService: LogInService,
 				protected router: Router,
@@ -98,6 +100,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 		return this.navigationService.queryParamMap$
 			.pipe(
 				mergeMap(queryParamMap => {
+					this.loading = true;
 					const dateRange = this.extractDateRangeFromQueryParams(queryParamMap);
 
 					//we're looking at an event's accounting table
@@ -119,6 +122,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 					return this.entryService.search("", dateRange)
 						.pipe(defaultIfEmpty([]));
 				}),
+				tap(() => this.loading = false),
 				catchError(error => {
 					console.error(error);
 					return empty<Entry[]>()
