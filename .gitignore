@@ -65,3 +65,5 @@ target/
 .idea/dataSources/
 /src/main/web/coverage/
 /META-INF/config.properties
+/src/main/resources/config.properties
+

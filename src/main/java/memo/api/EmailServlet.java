@@ -3,16 +3,12 @@ package memo.api;
 import memo.util.SendMail;
 import org.apache.log4j.Logger;
 
-import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 @WebServlet(name = "EmailServlet", value = "/api/email")
 public class EmailServlet extends HttpServlet {
@@ -21,18 +17,9 @@ public class EmailServlet extends HttpServlet {
     protected Logger logger = Logger.getLogger(EmailServlet.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            SendMail.getInstance().send(
-                    "nils.poecking@hotmail.de",
-                    "Testmail!",
-                    text
-            );
-        } catch (MessagingException e) {
-            //todo
-        }
+        SendMail emailSender = SendMail.getInstance();
+        System.out.println(emailSender);
     }
-
-
 
 
     String text = "<!doctype html>\n" +

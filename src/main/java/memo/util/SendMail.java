@@ -23,7 +23,13 @@ public class SendMail {
         return instance;
     }
 
-    SendMail() {}
+    private SendMail() {
+        this.host = Configuration.get("EMAIL_HOST");
+        this.user = Configuration.get("EMAIL_USER");
+        this.userName = Configuration.get("EMAIL_USER_NAME");
+        this.password = Configuration.get("EMAIL_PASSWORD");
+        this.port = Configuration.get("EMAIL_PORT");
+    }
 
     private String host;
     private String user;
@@ -59,7 +65,7 @@ public class SendMail {
             message.setFrom(new InternetAddress(getUser(), getUserName()));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject(subject);
-            message.setContent(text,"text/html");
+            message.setContent(text, "text/html");
 
             //send the message
             Transport.send(message);
@@ -85,30 +91,39 @@ public class SendMail {
     public String getHost() {
         return host;
     }
+
     public void setHost(String host) {
         this.host = host;
     }
+
     public String getUser() {
         return user;
     }
+
     public void setUser(String user) {
         this.user = user;
     }
+
     public String getUserName() {
         return userName;
     }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String getPort() {
         return port;
     }
+
     public void setPort(String port) {
         this.port = port;
     }
