@@ -12,6 +12,7 @@ import memo.model.PermissionState;
 import memo.model.ShopItem;
 import memo.model.User;
 import memo.util.ApiUtils;
+import memo.util.Configuration;
 import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
 
@@ -20,8 +21,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,7 +70,10 @@ public class UserServlet extends AbstractApiServlet<User> {
         String email = request.getParameter("email");
         logger.trace("HEAD called with email = " + email);
 
-        List<User> users = UserRepository.getInstance().getUserByEmail(email);
+        String adminEmail = Configuration.get("admin.email");
+        List<User> users = adminEmail.equalsIgnoreCase(email)
+                ? Collections.singletonList(UserRepository.getInstance().getAdmin())
+                : UserRepository.getInstance().getUserByEmail(email);
 
         if (users.isEmpty()) {
             logger.trace("Email is not used yet.");
@@ -152,9 +156,6 @@ public class UserServlet extends AbstractApiServlet<User> {
             UserRepository.clubRoleFromString(jsonUser.get("clubRole").asText())
                     .ifPresent(user::setClubRole);
         }
-
-        //todo remove demo
-        user.setClubRole(ClubRole.Admin);
 
         if (user.getJoinDate() == null) {
             user.setJoinDate(new java.sql.Date(new java.util.Date().getTime()));

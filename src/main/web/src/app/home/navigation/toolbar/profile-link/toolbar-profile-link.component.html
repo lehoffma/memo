@@ -1,7 +1,7 @@
 <!--user is logged in -> show profile picture -->
 <div *ngIf="user | async as loggedInUser; else logInButton" class="dropdown profile-picture-container">
 	<button mat-button class="dropbtn" routerLink="{{'members/' + loggedInUser.id}}">
-		<img class="profile-picture" src="{{loggedInUser.images[0]}}">
+		<img class="profile-picture" src="{{loggedInUser.images.length > 0 ? loggedInUser.images[0] : 'resources/images/Logo.png'}}">
 	</button>
 
 	<div class="dropdown-content profile-picture-dropdown-content">
