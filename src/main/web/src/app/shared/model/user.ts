@@ -19,6 +19,7 @@ export class User extends BaseObject<User> {
 	 * @param joinDate das Eintrittsdatum des Users
 	 * @param addresses Die ID der Adresse des Nutzers
 	 * @param authoredItems
+	 * @param reportResponsibilities
 	 * @param bankAccounts
 	 * @param permissions Auf was der User zugreifen darf (kosten, schreibrechte für events etc)
 	 * @param miles Die vom User bisher gefahreren Meilen
@@ -41,6 +42,7 @@ export class User extends BaseObject<User> {
 				public readonly joinDate: Date,
 				public readonly addresses: number[],
 				public readonly authoredItems: Event[],
+				public readonly reportResponsibilities: number[],
 				public readonly bankAccounts: number[],
 				public readonly permissions: UserPermissions,
 				public readonly miles: number,
@@ -75,7 +77,7 @@ export class User extends BaseObject<User> {
 
 	static create() {
 		return new User(-1, "", "", Gender.OTHER, null, "", "",
-			ClubRole.Gast, new Date(), [], [], [],
+			ClubRole.Gast, new Date(), [], [], [],[],
 			null, 0, "", "", false, false, false, false, ["resources/images/Logo.png"]);
 	}
 

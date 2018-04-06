@@ -3,6 +3,7 @@ import {Permission} from "../shared/model/permission";
 import {Event} from "../shop/shared/model/event";
 import {EventUtilityService} from "../shared/services/event-utility.service";
 import {User} from "../shared/model/user";
+import {isBefore} from "date-fns";
 
 
 export function canCheckIn(user: User, event: Event) {
@@ -21,6 +22,13 @@ export function canEdit(user: User, event: Event) {
 			return permissions[permissionKey] >= Permission.write
 				|| isAuthenticated(user.clubRole, event.expectedWriteRole);
 		}
+	}
+	return false;
+}
+
+export function canConclude(user: User, event: Event) {
+	if (user !== null && event !== null) {
+		return !EventUtilityService.isMerchandise(event) && isBefore(event.date, new Date()) && event.author.includes(user.id);
 	}
 	return false;
 }

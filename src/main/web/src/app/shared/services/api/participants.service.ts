@@ -3,7 +3,7 @@ import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 import {Participant, ParticipantUser} from "../../../shop/shared/model/participant";
 import {UserService} from "./user.service";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
+import {ServletService} from "./servlet.service";
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
@@ -15,6 +15,7 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {OrderService} from "./order.service";
 import {Order} from "../../model/order";
+import {PaymentMethod} from "../../../shop/checkout/payment/payment-method";
 
 interface ParticipantApiResponse {
 	participants: Participant[]
@@ -40,12 +41,50 @@ export class ParticipantsService extends ServletService<Participant> {
 		return empty();
 	}
 
-	add(participant: Participant, eventType: EventType, eventId: number): Observable<Participant> {
-		return this.addOrModify(this.http.post.bind(this.http), eventId, typeToInteger(eventType), participant);
+	add(participant: ParticipantUser, eventType: EventType, eventId: number): Observable<Participant> {
+		let {user, ...newParticipant} = participant;
+		if (newParticipant["item"] && newParticipant["item"]["id"] !== undefined) {
+			(<any>newParticipant).item = participant.item.id;
+		}
+		let order = Order.create().setProperties({
+			timeStamp: new Date(),
+			items: [newParticipant],
+			user: user.id,
+			method: PaymentMethod.CASH,
+			text: ""
+		});
+		//todo add name/phone number to text or order
+
+		return this.orderService.add(order)
+			.pipe(map(order => order.items[0]));
 	}
 
-	modify(participant: Participant, eventType: EventType, eventId: number): Observable<Participant> {
-		return this.addOrModify(this.http.put.bind(this.http), eventId, typeToInteger(eventType), participant);
+	modify(participant: ParticipantUser, eventType: EventType, eventId: number): Observable<Participant> {
+		let {user, ...modifiedParticipant} = participant;
+
+		if (modifiedParticipant["item"] && modifiedParticipant["item"]["id"] !== undefined) {
+			(<any>modifiedParticipant).item = participant.item.id;
+		}
+
+		//todo add name/phone number to text or order
+		return this.orderService.getByOrderedItemId(modifiedParticipant.id)
+			.pipe(
+				mergeMap((order: Order) => {
+					order.setProperties({
+						items: [...order.items].map(it => {
+							return {
+								...it,
+								item: it.item.id
+							}
+						})
+					});
+					const itemIndex = order.items.findIndex(it => it.id === modifiedParticipant.id);
+					order.items.splice(itemIndex, 1, modifiedParticipant);
+
+					return this.orderService.modify(order);
+				}),
+				map(order => order.items[0])
+			);
 	}
 
 	remove(participantId: number, eventType: EventType, eventId: number): Observable<Object> {
@@ -69,7 +108,7 @@ export class ParticipantsService extends ServletService<Participant> {
 	 * @param eventType
 	 * @returns {any}
 	 */
-	getParticipantIdsByEvent(eventId: number, eventType: EventType): Observable<Participant[]> {
+	getParticipantIdsByEvent(eventId: number, eventType?: EventType): Observable<Participant[]> {
 		if (eventType === EventType.merch) {
 			return of([]);
 		}
@@ -94,17 +133,23 @@ export class ParticipantsService extends ServletService<Participant> {
 	 * @param eventId
 	 * @param eventType
 	 */
-	getParticipantUsersByEvent(eventId: number, eventType: EventType): Observable<ParticipantUser[]> {
+	getParticipantUsersByEvent(eventId: number, eventType?: EventType): Observable<ParticipantUser[]> {
 		return this.getParticipantIdsByEvent(eventId, eventType)
 			.pipe(
-				mergeMap(participants => combineLatest(
-					...participants.map(participant => this.userService.getByParticipantId(participant.id)
-						.pipe(
-							map(user => ({
-								...participant,
-								user,
-							}))
-						))))
+				mergeMap(participants => {
+					if (!participants || participants.length === 0) {
+						return of([]);
+					}
+
+					return combineLatest(
+						...participants.map(participant => this.userService.getByParticipantId(participant.id)
+							.pipe(
+								map(user => ({
+									...participant,
+									user,
+								}))
+							)))
+				})
 			)
 	}
 
@@ -132,37 +177,4 @@ export class ParticipantsService extends ServletService<Participant> {
 		return this._cache.other<(Tour | Party)[]>(params, request);
 	}
 
-	/**
-	 *
-	 * @param requestMethod
-	 * @param eventId
-	 * @param eventType
-	 * @param participant
-	 * @returns {Observable<T>}
-	 */
-	addOrModify(requestMethod: AddOrModifyRequest,
-				eventId: number, eventType: number, participant: Participant): Observable<Participant> {
-
-		const newParticipant: any = {...participant};
-		if (newParticipant["user"]) {
-			delete newParticipant["user"];
-		}
-		if (newParticipant["item"] && newParticipant["item"]["id"] !== undefined) {
-			newParticipant.item = participant.item.id;
-		}
-		let order = Order.create();
-		//todo add name/phone number to text or order
-
-		//todo add order first, then add participant/orderedItem to it?
-		//todo what kind of information do we store in the new order?
-
-		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {eventId, eventType, participant: newParticipant}))
-			.pipe(
-				map(response => response.id),
-				mergeMap(response => this.getById(response)),
-				//convert the observable to a hot observable, i.e. immediately perform the http request
-				//instead of waiting for someone to subscribe
-				share()
-			);
-	}
 }

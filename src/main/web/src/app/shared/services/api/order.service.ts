@@ -36,6 +36,22 @@ export class OrderService extends ServletService<Order> {
 
 	/**
 	 *
+	 * @param {number} id
+	 * @returns {Observable<Order>}
+	 */
+	getByOrderedItemId(id: number): Observable<Order>{
+		const params = new HttpParams().set("orderedItemId", "" + id);
+		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
+			.pipe(
+				map(response => response.orders[0]),
+				map(order => Order.create().setProperties(order))
+			);
+
+		return this._cache.getById(params, request);
+	}
+
+	/**
+	 *
 	 * @param {string} searchTerm
 	 * @returns {Observable<Order[]>}
 	 */

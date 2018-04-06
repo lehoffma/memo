@@ -58,8 +58,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 
 	@Output() participantsChanged: EventEmitter<ParticipantUser[]> = new EventEmitter<ParticipantUser[]>();
 
-	constructor(public participantListService: ParticipantListService,
-				private participantService: ParticipantsService) {
+	constructor(public participantListService: ParticipantListService) {
 		this.subscriptions.push(
 			this.participantListService.participantsChanged.subscribe(value => this.participantsChanged.emit(value))
 		);

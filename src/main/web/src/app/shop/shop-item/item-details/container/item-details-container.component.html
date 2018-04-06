@@ -11,13 +11,13 @@
 	<div class="item-details-card">
 		<memo-multi-image-container
 			class="mat-elevation-z3"
-			[images]="event.images"
+			[images]="images$ | async"
 			(onClick)="showDetailedImage($event)"
 		>
 
 		</memo-multi-image-container>
 
-		<memo-item-details-overview [event]="event" [overviewKeys]="overviewKeys | async"></memo-item-details-overview>
+		<memo-item-details-overview [event]="event$ | async" [overviewKeys]="overviewKeys | async"></memo-item-details-overview>
 	</div>
 
 	<div class="item-details-container">

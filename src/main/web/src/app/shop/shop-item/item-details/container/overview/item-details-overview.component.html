@@ -22,10 +22,10 @@
 					<span>Teilen</span>
 				</button>
 				<a mat-menu-item
-				   *ngIf="(permissions$ | async)?.edit"
-				   routerLink="./edit">
-					<mat-icon>edit</mat-icon>
-					<span>Bearbeiten</span>
+				   *ngIf="(permissions$ | async)?.conclude"
+				   routerLink="./conclude">
+					<mat-icon>assignment</mat-icon>
+					Abschluss
 				</a>
 				<a mat-menu-item
 				   *ngIf="(permissions$ | async)?.entries"
@@ -33,6 +33,12 @@
 				   [queryParams]="{eventIds: event.id}">
 					<mat-icon>payment</mat-icon>
 					Kosten
+				</a>
+				<a mat-menu-item
+				   *ngIf="(permissions$ | async)?.edit"
+				   routerLink="./edit">
+					<mat-icon>edit</mat-icon>
+					<span>Bearbeiten</span>
 				</a>
 				<button mat-menu-item
 						*ngIf="(permissions$ | async)?.delete"

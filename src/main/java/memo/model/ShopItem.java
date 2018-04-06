@@ -56,6 +56,11 @@ public class ShopItem implements Serializable {
     @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images;
 
+    @OneToOne()
+    @JsonSerialize(using = ImagePathSerializer.class)
+    @JsonDeserialize(using = ImagePathDeserializer.class)
+    private Image groupPicture;
+
     @Column(nullable = false)
     private Integer capacity = 0;
 
@@ -77,6 +82,11 @@ public class ShopItem implements Serializable {
     @JsonSerialize(using = UserIdListSerializer.class)
     @JsonDeserialize(using = UserIdListDeserializer.class)
     private List<User> author = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "reportResponsibilities")
+    @JsonSerialize(using = UserIdListSerializer.class)
+    @JsonDeserialize(using = UserIdListDeserializer.class)
+    private List<User> reportWriters = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
     @JsonSerialize(using = CommentIdListSerializer.class)
@@ -296,6 +306,24 @@ public class ShopItem implements Serializable {
 
     public void addStock(Stock s) {
         this.stock.add(s);
+    }
+
+    public Image getGroupPicture() {
+        return groupPicture;
+    }
+
+    public ShopItem setGroupPicture(Image groupPicture) {
+        this.groupPicture = groupPicture;
+        return this;
+    }
+
+    public List<User> getReportWriters() {
+        return reportWriters;
+    }
+
+    public ShopItem setReportWriters(List<User> reportWriters) {
+        this.reportWriters = reportWriters;
+        return this;
     }
 
     //**************************************************************

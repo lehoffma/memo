@@ -131,7 +131,7 @@ export class EventService extends ServletService<Event> {
 
 		const allowedAttributes = ["priceMember", "expectedReadRole", "orders", "material", "price", "expectedCheckInRole",
 			"vehicle", "date", "entries", "comments", "stock", "title", "capacity", "id", "description", "expectedWriteRole",
-			"miles", "route", "author", "images", "type"];
+			"miles", "route", "author", "images", "type", "groupPicture", "reportWriters"];
 		let modifiedEvent = {...event};
 		Object.keys(modifiedEvent).forEach(attr => {
 			if (!allowedAttributes.includes(attr)) {

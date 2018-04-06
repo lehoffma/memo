@@ -26,7 +26,7 @@ import {ResponsibilityService} from "../../../../shared/services/responsibility.
 import {ShoppingCartOption} from "../../../../../shared/model/shopping-cart-item";
 import {isBefore} from "date-fns";
 import {ObservableCache} from "../../../../../shared/cache/observable-cache";
-import {canCheckIn, canDeleteEntries, canEdit, canReadEntries} from "app/util/permissions-util";
+import {canCheckIn, canConclude, canDeleteEntries, canEdit, canReadEntries} from "app/util/permissions-util";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
 import {Router} from "@angular/router";
@@ -85,6 +85,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	permissions$: Observable<{
 		checkIn: boolean;
 		edit: boolean;
+		conclude: boolean;
 		entries: boolean;
 		delete: boolean;
 	}> = combineLatest(
@@ -95,6 +96,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			map(([currentUser, event]) => ({
 				checkIn: canCheckIn(currentUser, event),
 				edit: canEdit(currentUser, event),
+				conclude: canConclude(currentUser, event),
 				entries: canReadEntries(currentUser, event),
 				delete: canDeleteEntries(currentUser, event)
 			}))

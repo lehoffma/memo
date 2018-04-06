@@ -60,7 +60,6 @@ export class ModifyItemService {
 	 *
 	 */
 	reset() {
-		//todo add order modifying
 		this.mode = undefined;
 
 		//either merch, tour, party, user or entry
@@ -268,11 +267,12 @@ export class ModifyItemService {
 	/**
 	 *
 	 * @param {string[]} imagePaths
+	 * @param previousValue
 	 * @returns {Observable<any[]>}
 	 */
-	deleteOldImages(imagePaths: string[]): Observable<any[]> {
-		if (this.previousValue) {
-			const previousImagePaths = this.previousValue.images;
+	deleteOldImages(imagePaths: string[], previousValue: ShopItem = this.previousValue): Observable<any[]> {
+		if (previousValue) {
+			const previousImagePaths = previousValue.images;
 			const imagesToDelete = previousImagePaths
 				.filter(path => imagePaths.indexOf(path) === -1);
 
@@ -321,6 +321,20 @@ export class ModifyItemService {
 
 	/**
 	 *
+	 * @param {ShopItem} newObject
+	 * @param {ModifiedImages} images
+	 * @param previousValue
+	 * @returns {Observable<ShopItem>}
+	 */
+	handleImages(newObject: ShopItem, images: ModifiedImages, previousValue: ShopItem = this.previousValue): Observable<ShopItem> {
+		return this.deleteOldImages(images.imagePaths, previousValue)
+			.pipe(
+				mergeMap(() => this.uploadImage(newObject, images))
+			)
+	}
+
+	/**
+	 *
 	 * @param modifyItemEvent
 	 */
 	submitModifiedEvent(modifyItemEvent: ModifyItemEvent) {
@@ -339,16 +353,18 @@ export class ModifyItemService {
 		if (this.idOfObjectToModify && this.idOfObjectToModify >= 0) {
 			(<any>newObject).setProperties({id: this.idOfObjectToModify});
 		}
+		if (this.previousValue && EventUtilityService.isEvent(this.previousValue)) {
+			(<any>newObject).setProperties({
+				groupPicture: this.previousValue.groupPicture,
+				reportWriters: this.previousValue.reportWriters
+			})
+		}
 
 		//handle addresses correctly
 		const request = this.handleAddresses(newObject)
 			.pipe(
 				map(newObject => this.setDefaultValues(newObject)),
-				mergeMap(newObject => this.deleteOldImages(modifyItemEvent.images.imagePaths)
-					.pipe(map(() => newObject))
-				),
-				//todo display progress-bar while uploading
-				mergeMap(newObject => this.uploadImage(newObject, modifyItemEvent.images)),
+				mergeMap(newObject => this.handleImages(newObject, modifyItemEvent.images)),
 				mergeMap(newObject => this.mode === ModifyType.EDIT
 					? service.modify.bind(service)(newObject)
 					: service.add.bind(service)(newObject)

@@ -118,7 +118,6 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 				mergeMap(eventInfo => this.eventService.getById(eventInfo.eventId)
 					.pipe(map(event => ({event, eventInfo})))
 				),
-				//todo add event to data object
 				mergeMap(info =>
 					this.dialog.open(ModifyParticipantComponent, {
 						data: {associatedEventInfo: info.eventInfo, event: info.event}

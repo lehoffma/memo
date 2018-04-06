@@ -43,16 +43,10 @@ public class OrderRepository extends AbstractRepository<Order> {
 
     }
 
-
-    public List<Order> getOrderByUserId(String SuserId, HttpServletResponse response) {
+    private List<Order> withParsedId(String id, HttpServletResponse response, Function<Integer, List<Order>> getValues) {
         try {
-            Integer id = Integer.parseInt(SuserId);
-
-            return DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o " +
-                    " WHERE o.user.id = :userId", Order.class)
-                    .setParameter("userId", id)
-                    .getResultList();
-
+            Integer parsedId = Integer.parseInt(id);
+            return getValues.apply(parsedId);
         } catch (NumberFormatException e) {
             try {
                 response.getWriter().append("Bad ID Value");
@@ -64,10 +58,27 @@ public class OrderRepository extends AbstractRepository<Order> {
         return null;
     }
 
-    public List<Order> get(String orderId, String userId, HttpServletResponse response) {
+    public List<Order> getOrderByOrderedItemId(String orderedItemId, HttpServletResponse response) {
+        return this.withParsedId(orderedItemId, response,
+                id -> DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o " +
+                        " WHERE :orderedItemId IN (SELECT item.id FROM o.items item)", Order.class)
+                        .setParameter("orderedItemId", id)
+                        .getResultList());
+    }
+
+    public List<Order> getOrderByUserId(String userId, HttpServletResponse response) {
+        return this.withParsedId(userId, response,
+                id -> DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o " +
+                        " WHERE o.user.id = :userId", Order.class)
+                        .setParameter("userId", id)
+                        .getResultList());
+    }
+
+    public List<Order> get(String orderId, String userId, String orderedItemId, HttpServletResponse response) {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<Order>>>()
                         .buildPut(orderId, this::get)
+                        .buildPut(orderedItemId, s -> this.getOrderByOrderedItemId(s, response))
                         .buildPut(userId, s -> this.getOrderByUserId(s, response)),
                 this.getAll()
         );

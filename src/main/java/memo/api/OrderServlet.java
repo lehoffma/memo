@@ -35,6 +35,7 @@ public class OrderServlet extends AbstractApiServlet<Order> {
                 (paramMap, _response) -> OrderRepository.getInstance().get(
                         getParameter(paramMap, "id"),
                         getParameter(paramMap, "userId"),
+                        getParameter(paramMap, "orderedItemId"),
                         _response
                 ),
                 "orders"

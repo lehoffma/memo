@@ -45,7 +45,7 @@ public class ParticipantRepository extends AbstractRepository<OrderedItem> {
 
     public List<OrderedItem> getParticipantsByEventId(Integer id) {
         //ToDo: gibt null aus wenn id nicht vergeben
-        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
+        return DatabaseManager.createEntityManager().createQuery("SELECT DISTINCT o FROM OrderedItem o " +
                 " WHERE o.item.id = :id", OrderedItem.class)
                 .setParameter("id", id)
                 .getResultList();
@@ -67,11 +67,10 @@ public class ParticipantRepository extends AbstractRepository<OrderedItem> {
         return new ArrayList<>();
     }
 
-    public List<OrderedItem> get(String eventId, String type, HttpServletResponse response) {
+    public List<OrderedItem> get(String eventId, HttpServletResponse response) {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<OrderedItem>>>()
-                        .buildPut(eventId, s -> this.getParticipantsByEventId(s, response))
-                        .buildPut(type, s -> this.getParticipantsByEventType(Integer.valueOf(s))),
+                        .buildPut(eventId, s -> this.getParticipantsByEventId(s, response)),
                 this.getAll()
         );
     }

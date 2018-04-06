@@ -1,23 +1,39 @@
-import {Component, OnInit} from "@angular/core";
-import {first, map} from "rxjs/operators";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {map, mergeMap} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {EventType} from "../../../shared/model/event-type";
 import {Participant, ParticipantUser} from "../../../shared/model/participant";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {User} from "../../../../shared/model/user";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {ConcludeEventService} from "../../../shared/services/conclude-event.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {EventService} from "../../../../shared/services/api/event.service";
+import {of} from "rxjs/observable/of";
+import {UserService} from "../../../../shared/services/api/user.service";
+import {ImageToUpload} from "../../../../shared/multi-image-upload/image-to-upload";
+import {Event} from "../../../shared/model/event";
+import {ParticipantsService} from "../../../../shared/services/api/participants.service";
 
 @Component({
 	selector: "memo-conclude-event",
 	templateUrl: "./conclude-event.component.html",
 	styleUrls: ["./conclude-event.component.scss"]
 })
-export class ConcludeEventComponent implements OnInit {
-	//todo reactive..
-	eventInfo: Observable<{
+export class ConcludeEventComponent implements OnInit, OnDestroy {
+	loading = false;
+	formGroup: FormGroup = this.formBuilder.group({
+		"participants": [[]],
+		"images": this.formBuilder.group({
+			"imagePaths": [],
+			"imagesToUpload": [[]]
+		}),
+		"responsibleUsers": [[], {
+			validators: [Validators.required]
+		}]
+	});
+
+	eventInfo$: Observable<{
 		eventType: EventType,
 		eventId: number
 	}> = this.activatedRoute.url
@@ -32,27 +48,58 @@ export class ConcludeEventComponent implements OnInit {
 			})
 		);
 
-	participants$: BehaviorSubject<ParticipantUser[]> = new BehaviorSubject([]);
-	groupImageFormData$: BehaviorSubject<FormData> = new BehaviorSubject(null);
-	reportResponsibleUsers$: BehaviorSubject<User[]> = new BehaviorSubject([]);
+	event$ = this.eventInfo$.pipe(
+		mergeMap(info => this.eventService.getById(info.eventId))
+	);
 
-	everythingDone$ = combineLatest(
-		this.participants$,
-		this.groupImageFormData$,
-		this.reportResponsibleUsers$
-	)
-		.pipe(
-			map(([participants, formData, responsibleUsers]) => {
-				return formData !== null && responsibleUsers.length > 0;
-			})
-		);
+	previousValue$: Observable<{ images: string[], participants: ParticipantUser[], responsible: number[] }> = this.event$.pipe(
+		mergeMap((event: Event) => {
+			let images$ = of(event.groupPicture ? [event.groupPicture] : []);
+			let users$ = of([]);
+			let participants$ = this.participantsService.getParticipantUsersByEvent(event.id);
+
+			if (event.reportWriters.length > 0) {
+				users$ = combineLatest(
+					...event.reportWriters.map(id => this.userService.getById(id))
+				);
+			}
+
+			return combineLatest(
+				images$,
+				participants$,
+				users$
+			)
+				.pipe(
+					map(([images, participants, users]) => ({
+						images: images,
+						participants: participants,
+						responsible: users.map(it => it.id)
+					}))
+				)
+		})
+	);
+
+	subscription = null;
 
 	constructor(private activatedRoute: ActivatedRoute,
+				private formBuilder: FormBuilder,
+				private eventService: EventService,
+				private userService: UserService,
+				private participantsService: ParticipantsService,
 				private navigationService: NavigationService,
 				private concludeEventService: ConcludeEventService) {
 	}
 
 	ngOnInit() {
+		this.subscription = this.previousValue$.subscribe(value => {
+			this.updateParticipants(value.participants);
+		})
+	}
+
+	ngOnDestroy(): void {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
 	}
 
 	/**
@@ -60,42 +107,34 @@ export class ConcludeEventComponent implements OnInit {
 	 * @param {ParticipantUser[]} participants
 	 */
 	updateParticipants(participants: ParticipantUser[]) {
-		this.participants$.next(participants);
+		this.formGroup.get("participants").setValue(participants);
 	}
 
-	/**
-	 *
-	 * @param {FormData} formData
-	 */
-	updateFormData(formData: FormData) {
-		this.groupImageFormData$.next(formData);
-	}
-
-
-	updateResponsibleUsers(users: User[]) {
-		this.reportResponsibleUsers$.next(users);
-	}
 
 	/**
 	 *
 	 */
-	concludeEvent() {
-		combineLatest(
-			this.eventInfo,
-			this.participants$,
-			this.groupImageFormData$,
-			this.reportResponsibleUsers$
-		)
-			.pipe(first())
-			.subscribe(([eventInfo, participantUsers, groupImageFormData, responsibleUsers]) => {
-				const participants: Participant[] = participantUsers
-					.map(participantUser => {
-						const {user, ...participant} = participantUser;
-						return participant;
-					});
-				this.concludeEventService.concludeEvent(eventInfo.eventId, participants, groupImageFormData, responsibleUsers);
+	submit() {
+		this.loading = true;
+		this.event$
+			.pipe(
+				mergeMap(event => {
+					const participants: Participant[] = this.formGroup.get("participants").value
+						.map(participantUser => {
+							const {user, ...participant} = participantUser;
+							return participant;
+						});
+					//don't perform the PUT request for the group picture if it hasn't been changed
+					const image: ImageToUpload = this.formGroup.get("images").get("imagesToUpload").value[0];
+					const responsible = [...this.formGroup.get("responsibleUsers").value];
 
-				this.navigationService.navigateToItemWithId(eventInfo.eventType, eventInfo.eventId);
-			})
+					return this.concludeEventService.concludeEvent(event.id, participants, image, responsible);
+				})
+			)
+			.subscribe(event => {
+				this.loading = false;
+				this.navigationService.navigateToItem(event);
+			});
 	}
+
 }

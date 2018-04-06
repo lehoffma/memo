@@ -1,17 +1,17 @@
 <mat-list>
-            <span *ngFor="let participant of (participants | slice:0:amountOfParticipantsShown)">
-                <mat-list-item
-					(click)="showDetailsOfUser(participant.user)">
-                    <img mat-list-avatar src="{{participant?.user?.images[0]}}"
-						 alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
-                    <h3 matLine> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
-                    <p matLine>
-                        <span> {{participant?.user?.clubRole}} </span>
-                        <span class="secondary-text"> -- {{participant?.user?.miles}} Meilen </span>
-                    </p>
-                </mat-list-item>
-                <mat-divider></mat-divider>
-            </span>
+	<span *ngFor="let participant of (participants | slice:0:amountOfParticipantsShown)">
+		<mat-list-item
+			(click)="showDetailsOfUser(participant.user)">
+			<img mat-list-avatar src="{{participant?.user?.images[0]}}"
+				 alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
+			<h3 matLine> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
+			<p matLine>
+				<span> {{participant?.user?.clubRole}} </span>
+				<span class="secondary-text"> -- {{participant?.user?.miles}} Meilen </span>
+			</p>
+		</mat-list-item>
+		<mat-divider></mat-divider>
+	</span>
 	<mat-list-item *ngIf="!participants || participants.length === 0">
 		Bisher keine Teilnehmer vorhanden.
 	</mat-list-item>

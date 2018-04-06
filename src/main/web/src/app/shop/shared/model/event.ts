@@ -9,11 +9,13 @@ export class Event extends BaseObject<Event> {
 				public date: Date,
 				public description: string,
 				public author: number[],
+				public reportWriters: number[],
 				public expectedReadRole: ClubRole,
 				public expectedCheckInRole: ClubRole,
 				public expectedWriteRole: ClubRole,
 				public route: EventRoute,
 				public images: string[],
+				public groupPicture: string,
 				public capacity: number,
 				public price: number,
 				public type: number) {
@@ -29,8 +31,9 @@ export class Event extends BaseObject<Event> {
 	}
 
 	static create() {
-		return new Event(-1, "", new Date(), "", [], ClubRole.Gast, ClubRole.Gast, ClubRole.Gast,
-			[], ["resources/images/Logo.png"], -1, -1, -1);
+		return new Event(-1, "", new Date(), "", [], [],
+			ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [], ["resources/images/Logo.png"], "",
+			-1, -1, -1);
 	}
 
 	static isEvent(value: any): value is Event {

@@ -9,7 +9,7 @@
 	<span (click)="fileUpload.click()">
 		Durchsuchen
 	</span>
-	<span (click)="deleteEntries(images$.getValue()); deleteButton.blur();" #deleteButton
+	<span (click)="deleteWithConfirmation(images$.getValue()); deleteButton.blur();" #deleteButton
 		  [class.disabled]="(imagePaths$ | async).length === 0">
 		Löschen
 	</span>

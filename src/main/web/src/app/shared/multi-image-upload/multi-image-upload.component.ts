@@ -213,29 +213,30 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 			})
 	}
 
+	deleteWithConfirmation(entries: ImageToUpload[]){
+		const message = `Möchtest du diese${entries.length === 1 ? "s Bild" : " Bilder"} wirklich löschen?`;
+		this.confirmationDialogService.open(message, () => this.deleteEntries(entries));
+	}
 
 	deleteEntries(entries: (ImageToUpload)[]) {
-		const message = `Möchtest du diese${entries.length === 1 ? "s Bild" : " Bilder"} wirklich löschen?`;
-		this.confirmationDialogService.open(message, () => {
-			const deletedUploaded = entries.filter(it => isImageToUpload(it))
-				.map((entry: ImageToUpload) => this.formGroup.get("imagesToUpload").value.findIndex(it => it.id === entry.id))
-				.sort();
-			const deletedPrevious = entries.filter(it => !isImageToUpload(it))
-				.map((entry: ImageToUpload) => this.formGroup.get("imagePaths").value.indexOf(entry.id))
-				.sort();
-			const uploaded: ImageToUpload[] = [...this.formGroup.get("imagesToUpload").value];
-			for (let i = deletedUploaded.length - 1; i >= 0; i--) {
-				uploaded.splice(deletedUploaded[i], 1);
-			}
+		const deletedUploaded = entries.filter(it => isImageToUpload(it))
+			.map((entry: ImageToUpload) => this.formGroup.get("imagesToUpload").value.findIndex(it => it.id === entry.id))
+			.sort();
+		const deletedPrevious = entries.filter(it => !isImageToUpload(it))
+			.map((entry: ImageToUpload) => this.formGroup.get("imagePaths").value.indexOf(entry.id))
+			.sort();
+		const uploaded: ImageToUpload[] = [...this.formGroup.get("imagesToUpload").value];
+		for (let i = deletedUploaded.length - 1; i >= 0; i--) {
+			uploaded.splice(deletedUploaded[i], 1);
+		}
 
-			const previous: string[] = [...this.formGroup.get("imagePaths").value];
-			for (let i = deletedPrevious.length - 1; i >= 0; i--) {
-				previous.splice(deletedPrevious[i], 1);
-			}
+		const previous: string[] = [...this.formGroup.get("imagePaths").value];
+		for (let i = deletedPrevious.length - 1; i >= 0; i--) {
+			previous.splice(deletedPrevious[i], 1);
+		}
 
-			this.formGroup.get("imagesToUpload").setValue(uploaded);
-			this.formGroup.get("imagePaths").setValue(previous);
-		})
+		this.formGroup.get("imagesToUpload").setValue(uploaded);
+		this.formGroup.get("imagePaths").setValue(previous);
 	}
 
 

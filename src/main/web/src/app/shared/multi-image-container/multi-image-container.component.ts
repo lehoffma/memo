@@ -50,7 +50,6 @@ export class MultiImageContainerComponent implements OnInit {
 		if (images === null) {
 			return;
 		}
-		console.log(images);
 		this._images$.next(images);
 
 		//currently selected image was deleted

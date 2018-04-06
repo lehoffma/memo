@@ -37,7 +37,6 @@ public class ParticipantsServlet extends AbstractApiServlet<OrderedItem> {
         this.get(request, response,
                 (paramMap, _response) -> ParticipantRepository.getInstance().get(
                         getParameter(paramMap, "eventId"),
-                        getParameter(paramMap, "type"),
                         _response
                 ),
                 "participants"

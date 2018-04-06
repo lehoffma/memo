@@ -23,7 +23,9 @@ public class MilesRepository {
      * @return the all-time accumulated miles of the user
      */
     public static Integer milesOfUser(Integer userId) {
-        List<ShopItem> participatedEvents = EventRepository.getInstance().getEventsByUser(userId);
+        List<ShopItem> participatedEvents = EventRepository.getInstance().getEventsByUser(userId).stream()
+                .filter(item -> item.getDate().toLocalDateTime().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toList());
         return participatedEvents.stream()
                 .mapToInt(ShopItem::getMiles)
                 .sum();
@@ -41,28 +43,27 @@ public class MilesRepository {
     public static Integer milesOfUser(Integer userId, LocalDateTime start, LocalDateTime end) {
         List<ShopItem> participatedEvents = EventRepository.getInstance().getEventsByUser(userId);
         return participatedEvents.stream()
+                .filter(item -> item.getDate().toLocalDateTime().isBefore(LocalDateTime.now()))
                 .filter(item -> isBetween(item.getDate().toLocalDateTime(), start, end))
                 .mapToInt(ShopItem::getMiles)
                 .sum();
     }
 
     /**
-     *
      * @param userId a value > 0 representing the ID of a memoshop user
      * @return the all-time accumulated miles of the user, wrapped in a milesListEntry object
      */
-    public static MilesListEntry milesListEntryOfUser(Integer userId){
+    public static MilesListEntry milesListEntryOfUser(Integer userId) {
         return new MilesListEntry().setUserId(userId).setMiles(milesOfUser(userId));
     }
 
     /**
-     *
      * @param userId a value > 0 representing the ID of a memoshop user
      * @param start  all events before this date will be filtered out
      * @param end    all events after this date will be filtered out
      * @return the accumulated miles of the user for the given season/date-range, wrapped in a milesListEntry object
      */
-    public static MilesListEntry milesListEntryOfUser(Integer userId, LocalDateTime start, LocalDateTime end){
+    public static MilesListEntry milesListEntryOfUser(Integer userId, LocalDateTime start, LocalDateTime end) {
         return new MilesListEntry().setUserId(userId).setMiles(milesOfUser(userId, start, end));
     }
 

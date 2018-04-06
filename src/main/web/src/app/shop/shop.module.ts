@@ -11,6 +11,7 @@ import {RouterModule} from "@angular/router";
 import {DiscountOverlayComponent} from "../shared/price-renderer/discount-overlay.component";
 import {ResponsibilityService} from "./shared/services/responsibility.service";
 import {ConcludeEventService} from "./shared/services/conclude-event.service";
+import {ModifyItemService} from "./shop-item/modify-shop-item/modify-item.service";
 
 const providers = [
 	DiscountService,
@@ -33,7 +34,8 @@ const providers = [
 		DiscountOverlayComponent,
 	],
 	providers: [
-		...providers
+		...providers,
+		ModifyItemService
 	],
 	exports: [
 		CheckoutModule,

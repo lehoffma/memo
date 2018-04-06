@@ -103,6 +103,10 @@ public class User implements Serializable {
     @JoinColumn
     private List<ShopItem> authoredItems = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn
+    private List<ShopItem> reportResponsibilities = new ArrayList<>();
+
     //**************************************************************
     //  constructor
     //**************************************************************
@@ -330,6 +334,7 @@ public class User implements Serializable {
         this.comments.add(c);
     }
 
+    @JsonIgnore
     public List<ShopItem> getAuthoredItems() {
         return authoredItems;
     }
