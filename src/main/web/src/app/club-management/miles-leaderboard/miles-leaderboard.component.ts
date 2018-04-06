@@ -1,12 +1,12 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {UserService} from "../../shared/services/api/user.service";
-import {attributeSortingFunction} from "../../util/util";
+import {attributeSortingFunction, combinedSortFunction} from "../../util/util";
 import {LogInService} from "../../shared/services/api/login.service";
 import {LeaderboardRow} from "./leaderboard-row";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap} from "rxjs/operators";
+import {map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {MilesListEntry, MilesService} from "../../shared/services/api/miles.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -35,8 +35,10 @@ export class MilesLeaderboardComponent implements OnInit {
 		.pipe(
 			//sort by miles
 			mergeMap(users => this.addMiles(users)),
-			map(users => users.sort(attributeSortingFunction<User>("miles", true))
-				.sort(attributeSortingFunction<User>("surname", true))),
+			map(users => users.sort(combinedSortFunction(
+				attributeSortingFunction<User>("miles", true),
+				attributeSortingFunction<User>("surname", true)
+			))),
 			map(users => users.reduce((acc, user, index) => {
 				let position = index + 1;
 
@@ -117,7 +119,7 @@ export class MilesLeaderboardComponent implements OnInit {
 
 						return false;
 					});
-					if(!seasonWasSet){
+					if (!seasonWasSet) {
 						this.selectedSeason = "Gesamt";
 					}
 				}),

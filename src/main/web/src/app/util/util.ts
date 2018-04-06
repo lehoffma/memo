@@ -51,6 +51,18 @@ export function sortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => a
 	}
 }
 
+export function combinedSortFunction<T>(...functions: SortingFunction<T>[]): SortingFunction<T> {
+	return (a, b) => {
+		let value: number = 0;
+		const sortingFunctions = [...functions];
+		while (sortingFunctions.length > 0 && (value === 0)) {
+			const sortingFunction: SortingFunction<T> = sortingFunctions.splice(0, 1)[0];
+			value = sortingFunction(a, b);
+		}
+		return value;
+	}
+}
+
 export function isString(value: any): value is string {
 	return value && (<string>value).toLowerCase !== undefined;
 }
