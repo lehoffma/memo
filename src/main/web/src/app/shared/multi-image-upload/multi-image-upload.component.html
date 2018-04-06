@@ -5,6 +5,16 @@
 
 </memo-multi-image-container>
 
+<div class="actions-container" *ngIf="limit === 1">
+	<span (click)="fileUpload.click()">
+		Durchsuchen
+	</span>
+	<span (click)="deleteEntries(images$.getValue()); deleteButton.blur();" #deleteButton
+		  [class.disabled]="(imagePaths$ | async).length === 0">
+		Löschen
+	</span>
+</div>
+
 <!--todo drag-n-dropable list/table of currently uploaded images with a big "upload" or "browse" button at the bottom-->
 
 <div class="upload-container" *ngIf="limit > 1">

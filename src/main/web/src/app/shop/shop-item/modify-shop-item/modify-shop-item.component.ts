@@ -39,6 +39,7 @@ export class ModifyShopItemComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
+		this.modifyItemService.reset();
 	}
 
 	/**

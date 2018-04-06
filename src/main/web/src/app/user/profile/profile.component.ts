@@ -14,6 +14,8 @@ import {defaultIfEmpty, first, map, mergeMap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
 import {MilesService} from "../../shared/services/api/miles.service";
+import {ClubRole, isAuthenticated} from "../../shared/model/club-role";
+import {Permission} from "../../shared/model/permission";
 
 
 @Component({
@@ -72,9 +74,12 @@ export class ProfileComponent implements OnInit {
 				latitude: 0
 			})
 		);
-	isOwnProfile: Observable<boolean> = combineLatest(this.userId, this.loginService.accountObservable)
+	canEditUser: Observable<boolean> = combineLatest(this.userId, this.loginService.currentUser$)
 		.pipe(
-			map(([profileId, currentUserId]) => profileId === currentUserId)
+			map(([profileId, currentUser]) => {
+				return profileId === currentUser.id || isAuthenticated(currentUser.clubRole, ClubRole.Admin)
+					|| currentUser.userPermissions().userManagement >= Permission.write;
+			})
 		);
 	profileCategories = profileCategories;
 

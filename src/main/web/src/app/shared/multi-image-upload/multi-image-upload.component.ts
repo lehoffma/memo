@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ExpandableTableColumn} from "../expandable-table/expandable-table-column";
 import {RowAction} from "../expandable-table/row-action";
@@ -9,6 +9,7 @@ import {Subscription} from "rxjs/Subscription";
 import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
 import {ImageToUpload, isImageToUpload} from "./image-to-upload";
 import {Observable} from "rxjs/Observable";
+import {ConfirmationDialogService} from "../services/confirmation-dialog.service";
 
 @Component({
 	selector: "memo-multi-image-upload",
@@ -62,6 +63,8 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	);
 
 	@Input() limit: number = Infinity;
+	@HostBinding("class.single-picture") singlePicture: boolean = false;
+
 
 	columnKeys: ExpandableTableColumn<ImageToUpload>[] = [
 		new ExpandableTableColumn<ImageToUpload>("Name", "name")
@@ -84,10 +87,12 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	subscriptions = [];
 
 	constructor(public multiImageUploadService: MultiImageUploadService,
+				private confirmationDialogService: ConfirmationDialogService,
 				private formBuilder: FormBuilder) {
 	}
 
 	ngOnInit() {
+		this.singlePicture = this.limit === 1;
 		this.subscriptions.push(
 			this.multiImageUploadService.onAdd.subscribe(
 				() => this.fileUpload.nativeElement.click()
@@ -210,24 +215,27 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 
 
 	deleteEntries(entries: (ImageToUpload)[]) {
-		const deletedUploaded = entries.filter(it => isImageToUpload(it))
-			.map((entry: ImageToUpload) => this.formGroup.get("imagesToUpload").value.findIndex(it => it.id === entry.id))
-			.sort();
-		const deletedPrevious = entries.filter(it => !isImageToUpload(it))
-			.map((entry: ImageToUpload) => this.formGroup.get("imagePaths").value.indexOf(entry.id))
-			.sort();
-		const uploaded: ImageToUpload[] = this.formGroup.get("imagesToUpload").value;
-		for (let i = deletedUploaded.length - 1; i >= 0; i--) {
-			uploaded.splice(deletedUploaded[i], 1);
-		}
+		const message = `Möchtest du diese${entries.length === 1 ? "s Bild" : " Bilder"} wirklich löschen?`;
+		this.confirmationDialogService.open(message, () => {
+			const deletedUploaded = entries.filter(it => isImageToUpload(it))
+				.map((entry: ImageToUpload) => this.formGroup.get("imagesToUpload").value.findIndex(it => it.id === entry.id))
+				.sort();
+			const deletedPrevious = entries.filter(it => !isImageToUpload(it))
+				.map((entry: ImageToUpload) => this.formGroup.get("imagePaths").value.indexOf(entry.id))
+				.sort();
+			const uploaded: ImageToUpload[] = [...this.formGroup.get("imagesToUpload").value];
+			for (let i = deletedUploaded.length - 1; i >= 0; i--) {
+				uploaded.splice(deletedUploaded[i], 1);
+			}
 
-		const previous: string[] = this.formGroup.get("imagePaths").value;
-		for (let i = deletedPrevious.length - 1; i >= 0; i--) {
-			previous.splice(deletedPrevious[i], 1);
-		}
+			const previous: string[] = [...this.formGroup.get("imagePaths").value];
+			for (let i = deletedPrevious.length - 1; i >= 0; i--) {
+				previous.splice(deletedPrevious[i], 1);
+			}
 
-		this.formGroup.get("imagesToUpload").patchValue(uploaded);
-		this.formGroup.get("imagePaths").patchValue(previous);
+			this.formGroup.get("imagesToUpload").setValue(uploaded);
+			this.formGroup.get("imagePaths").setValue(previous);
+		})
 	}
 
 

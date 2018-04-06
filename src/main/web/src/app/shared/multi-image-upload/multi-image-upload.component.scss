@@ -1,6 +1,35 @@
 :host {
 	display: block;
 	background: white;
+	margin: -1rem;
+	padding: 1rem;
+
+}
+
+.actions-container {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 2rem;
+	width: 100%;
+
+	span {
+		color: #2196F3;
+		cursor: pointer;
+
+		&.disabled {
+			pointer-events: none;
+			color: rgba(0, 0, 0, 0.64);
+		}
+
+		&:hover {
+			color: lighten(#2196F3, 10%);
+			text-decoration: underline;
+		}
+
+		&:not(:first-child) {
+			margin-left: 10px;
+		}
+	}
 }
 
 .images-list {
@@ -40,6 +69,16 @@ memo-multi-image-container {
 @media all and (min-width: 800px) {
 	:host {
 		display: flex;
+		padding: 0;
+
+		&.single-picture {
+			flex-direction: column;
+
+			.actions-container {
+				padding: 1rem;
+				margin-top: 0;
+			}
+		}
 
 		memo-multi-image-container {
 			max-width: none;

@@ -12,7 +12,7 @@
 	<div class="profile-details-container profile-component">
 		<div class="profile-other-actions">
 			<button mat-icon-button
-					*ngIf="isOwnProfile | async"
+					*ngIf="canEditUser | async"
 					[matMenuTriggerFor]="menu">
 				<mat-icon>more_vert</mat-icon>
 			</button>
