@@ -17,12 +17,13 @@ export class Tour extends Event {
 				images: string[],
 				capacity: number,
 				price: number,
+				groupPicture: string,
 				public vehicle: string,
 				public miles: number,
 				public emptySeats: number) {
 
-		super(id, title, date, description, [], expectedReadRole, expectedCheckInRole, expectedWriteRole,
-			route, images, capacity, price, typeToInteger(EventType.tours));
+		super(id, title, date, description, [], [], expectedReadRole, expectedCheckInRole, expectedWriteRole,
+			route, images, groupPicture, capacity, price, typeToInteger(EventType.tours));
 	}
 
 	get overviewKeys(): EventOverviewKey[] {
@@ -80,8 +81,8 @@ export class Tour extends Event {
 		]
 	}
 
-	static create(): Tour{
+	static create(): Tour {
 		return new Tour(-1, "", new Date(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
-			["resources/images/Logo.png"], -1, -1, "", -1, -1);
+			["resources/images/Logo.png"], -1, -1, "", "", -1, -1);
 	}
 }
