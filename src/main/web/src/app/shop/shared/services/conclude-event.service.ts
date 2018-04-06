@@ -17,10 +17,10 @@ export class ConcludeEventService {
 	 * @returns {Observable<boolean>}
 	 */
 	public hasConcluded(eventId: number): Observable<boolean> {
-		//todo check if the date is set + ask backend if group photo/responsible users was set
+		//todo check if the date is in the past + ask backend if group photo/responsible users was set
 
 		//todo remove demo
-		return of(true);
+		return of(false);
 	}
 
 

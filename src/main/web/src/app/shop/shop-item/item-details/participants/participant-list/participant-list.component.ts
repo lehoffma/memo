@@ -1,12 +1,12 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from "@angular/core";
 import {ParticipantUser} from "../../../../shared/model/participant";
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
-import {RowAction} from "../../../../../shared/expandable-table/row-action";
+import {RowActionType} from "../../../../../shared/expandable-table/row-action-type";
 import {map} from "rxjs/operators";
 import {Subscription} from "rxjs/Subscription";
-import {User} from "../../../../../shared/model/user";
 import {MemberListRowAction} from "../../../../../club-management/administration/member-list/member-list-row-actions";
 import {ParticipantListService} from "./participant-list.service";
+import {RowAction} from "../../../../../shared/expandable-table/expandable-table.component";
 
 
 @Component({
@@ -17,39 +17,36 @@ import {ParticipantListService} from "./participant-list.service";
 })
 export class ParticipantListComponent implements OnInit, OnDestroy {
 
-	rowActions: {
-		icon?: string;
-		name: string | RowAction;
-		link?: (user: User) => string;
-		route?: (user: User) => string;
-	}[] = [
+	rowActions: RowAction<ParticipantUser>[] = [
 		{
 			icon: "edit",
-			name: RowAction.EDIT
+			name: RowActionType.EDIT
 		},
 		{
 			icon: "delete",
-			name: RowAction.DELETE
+			name: RowActionType.DELETE
 		},
 		{
 			icon: "phone",
 			name: MemberListRowAction.phone,
-			link: user => "tel:" + user.telephone
+			predicate: participant => !!participant.user.telephone,
+			link: participant => "tel:" + participant.user.telephone
 		},
 		{
 			icon: "smartphone",
 			name: MemberListRowAction.call,
-			link: user => "tel:" + user.mobile
+			predicate: participant => !!participant.user.mobile,
+			link: participant => "tel:" + participant.user.mobile
 		},
 		{
 			icon: "email",
 			name: MemberListRowAction.email,
-			link: user => "mailto:" + user.email
+			link: participant => "mailto:" + participant.user.email
 		},
 		{
 			icon: "person",
 			name: MemberListRowAction.showProfile,
-			route: user => "/members/" + user.id
+			route: participant => "/members/" + participant.user.id
 		}
 	];
 

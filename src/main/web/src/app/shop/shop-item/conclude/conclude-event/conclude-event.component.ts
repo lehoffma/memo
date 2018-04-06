@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {first, map} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
@@ -11,11 +11,12 @@ import {ConcludeEventService} from "../../../shared/services/conclude-event.serv
 import {NavigationService} from "../../../../shared/services/navigation.service";
 
 @Component({
-	selector: 'memo-conclude-event',
-	templateUrl: './conclude-event.component.html',
-	styleUrls: ['./conclude-event.component.scss']
+	selector: "memo-conclude-event",
+	templateUrl: "./conclude-event.component.html",
+	styleUrls: ["./conclude-event.component.scss"]
 })
 export class ConcludeEventComponent implements OnInit {
+	//todo reactive..
 	eventInfo: Observable<{
 		eventType: EventType,
 		eventId: number

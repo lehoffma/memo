@@ -1,5 +1,5 @@
 import {TableActionEvent} from "./table-action-event";
-import {RowAction} from "./row-action";
+import {RowActionType} from "./row-action-type";
 import {ExpandableTableColumn} from "./expandable-table-column";
 import {OnDestroy, Type} from "@angular/core";
 import {ExpandedRowComponent} from "./expanded-row.component";
@@ -10,7 +10,7 @@ import {SortingFunction} from "../../util/util";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {defaultIfEmpty, map, tap} from "rxjs/operators";
+import {defaultIfEmpty, map} from "rxjs/operators";
 import {Subscription} from "rxjs/Subscription";
 
 export abstract class ExpandableTableContainerService<T> implements OnDestroy {
@@ -107,11 +107,11 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 	 */
 	handleTableAction(event: TableActionEvent<T>) {
 		switch (event.action) {
-			case RowAction.ADD:
+			case RowActionType.ADD:
 				return this.add();
-			case RowAction.EDIT:
+			case RowActionType.EDIT:
 				return this.edit(event.entries[0]);
-			case RowAction.DELETE:
+			case RowActionType.DELETE:
 				return this.remove(event.entries);
 		}
 	}

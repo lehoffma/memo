@@ -4,11 +4,11 @@ import {EventService} from "../../shared/services/api/event.service";
 import {mergeMap} from "rxjs/operators";
 
 @Component({
-	selector: "memo-imprint",
-	templateUrl: "./imprint.component.html",
-	styleUrls: ["./imprint.component.scss"]
+	selector: "memo-impressum",
+	templateUrl: "./impressum.component.html",
+	styleUrls: ["./impressum.component.scss"]
 })
-export class ImprintComponent implements OnInit {
+export class ImpressumComponent implements OnInit {
 	result;
 
 	constructor(private userService: UserService,

@@ -1,7 +1,7 @@
 import {Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {ExpandableTableColumn} from "../expandable-table/expandable-table-column";
-import {RowAction} from "../expandable-table/row-action";
+import {RowActionType} from "../expandable-table/row-action-type";
 import {MultiImageUploadService} from "./multi-image-upload.service";
 import {filter, map, take} from "rxjs/operators";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -71,13 +71,13 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	];
 	rowActions: {
 		icon?: string;
-		name: string | RowAction;
+		name: string | RowActionType;
 		link?: (object: ImageToUpload) => string;
 		route?: (object: ImageToUpload) => string;
 	}[] = [
 		{
 			icon: "delete",
-			name: RowAction.DELETE
+			name: RowActionType.DELETE
 		},
 	];
 	@ViewChild("fileUpload") fileUpload: ElementRef;

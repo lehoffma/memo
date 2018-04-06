@@ -18,7 +18,7 @@ import {ColumnSortingEvent} from "./column-sorting-event";
 import {ExpandableTableColumn} from "./expandable-table-column";
 import {ExpandableTableColumnContainerDirective} from "./expandable-table-column-container.directive";
 import {ConfirmationDialogService} from "../services/confirmation-dialog.service";
-import {RowAction} from "./row-action";
+import {RowActionType} from "./row-action-type";
 import {TableActionEvent} from "./table-action-event";
 
 
@@ -26,6 +26,14 @@ export interface ActionPermissions {
 	"Hinzufuegen": boolean;
 	"Bearbeiten": boolean;
 	"Loeschen": boolean;
+}
+
+export interface RowAction<T> {
+	icon?: string;
+	name: string | RowActionType;
+	predicate?: (object: T) => boolean;
+	link?: (object: T) => string;
+	route?: (object: T) => string;
 }
 
 @Component({
@@ -43,7 +51,7 @@ export interface ActionPermissions {
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExpandableTableComponent<T extends { id: number }> implements OnInit, AfterViewInit {
-	rowAction = RowAction;
+	rowAction = RowActionType;
 
 	@Input() data: T[];
 	@Input() columnKeys: ExpandableTableColumn<T>[];
@@ -58,19 +66,14 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 		Loeschen: true
 	};
 
-	@Input() rowActions: {
-		icon?: string;
-		name: string | RowAction;
-		link?: (object: T) => string;
-		route?: (object: T) => string;
-	}[] = [
+	@Input() rowActions: RowAction<T>[] = [
 		{
 			icon: "edit",
-			name: RowAction.EDIT
+			name: RowActionType.EDIT
 		},
 		{
 			icon: "delete",
-			name: RowAction.DELETE
+			name: RowActionType.DELETE
 		}
 	];
 
@@ -132,6 +135,17 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	}
 
 	/**
+	 *
+	 * @param object
+	 * @param action
+	 * @returns {boolean}
+	 */
+	actionIsDisabled(object: T, action: RowAction<T>): boolean {
+		return !this.permissions || (action.predicate && !action.predicate(object)) ||
+			(this.permissions[action.name] === undefined ? false : !this.permissions[action.name])
+	}
+
+	/**
 	 * Initializes the table cell components
 	 * @param tableCellList
 	 * @param data
@@ -151,10 +165,10 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 
 				//create new view and set the data attribute
 				let componentRef = viewContainerRef.createComponent(componentFactory);
-				if(columnKey.key){
+				if (columnKey.key) {
 					componentRef.instance.data = dataObject[columnKey.key];
 				}
-				else{
+				else {
 					componentRef.instance.data = dataObject;
 				}
 				componentRef.changeDetectorRef.detectChanges();
@@ -277,8 +291,8 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 	 * @param {string} action
 	 * @param {T[]} data
 	 */
-	actionCallback(action: string | RowAction, data: T[]) {
-		if (action === RowAction.DELETE && data.length === 1) {
+	actionCallback(action: string | RowActionType, data: T[]) {
+		if (action === RowActionType.DELETE && data.length === 1) {
 			this.confirmationDialogService.openDialog(
 				"Wollen Sie diesen Eintrag wirklich löschen?"
 			)
@@ -309,7 +323,7 @@ export class ExpandableTableComponent<T extends { id: number }> implements OnIni
 		)
 			.subscribe(accepted => {
 				if (accepted) {
-					this.onAction.emit({action: RowAction.DELETE, entries: entriesToDelete});
+					this.onAction.emit({action: RowActionType.DELETE, entries: entriesToDelete});
 					this.selectedStatusList = {};
 				}
 			});

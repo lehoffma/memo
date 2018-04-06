@@ -1,6 +1,6 @@
-import {RowAction} from "./row-action";
+import {RowActionType} from "./row-action-type";
 
 export interface TableActionEvent<T> {
-	action: string|RowAction,
+	action: string|RowActionType,
 	entries: T[]
 }
