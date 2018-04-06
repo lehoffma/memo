@@ -119,7 +119,9 @@ export class SignUpService {
 		}
 
 		return processSequentially(
-			addresses.map(it => this.addressService.add(it))
+			addresses
+				.map(it => it.setProperties({user: user.id}))
+				.map(it => this.addressService.add(it))
 		)
 			.pipe(
 				map(addresses => addresses.map(it => it.id)),
@@ -158,7 +160,6 @@ export class SignUpService {
 	 * @param event
 	 */
 	async onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
-		//todo bankdaten addresse address-selection benutzen
 		//todo user bestätigung => screen: "email wurde an dich geschickt"
 		//todo if admin: show "isMember"
 		//todo banner: mitglied werden/bin schon mitglied
@@ -171,6 +172,10 @@ export class SignUpService {
 			surname,
 			birthday,
 			telephone,
+			hasSeasonTicket,
+			isWoelfeClubMember,
+			gender,
+			hasDebitAuth,
 			mobile,
 			isStudent,
 			addresses,
@@ -184,7 +189,10 @@ export class SignUpService {
 				break;
 			case SignUpSection.PersonalData:
 				const images: ModifiedImages = event.images;
-				this.newUser.setProperties({firstName, surname, birthday, telephone, mobile, isStudent, addresses});
+				this.newUser.setProperties({
+					firstName, surname, birthday, telephone, mobile, isStudent, addresses,
+					hasSeasonTicket, isWoelfeClubMember, gender, hasDebitAuth
+				});
 				this.newUserProfilePicture = images.imagesToUpload;
 				break;
 			case SignUpSection.PaymentMethods:

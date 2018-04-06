@@ -3,7 +3,7 @@
 	<div class="profile-background">
 		<div class="no-height-image-container">
 			<div class="profile-background-image"
-				 [ngStyle]="{'background': 'url(' + user.images.length > 0 ? user.images[0] : 'resources/images/Logo.png' + ') center'}">
+				 [ngStyle]="{'background': 'url(' + (user.images.length > 0 ? user.images[0] : 'resources/images/Logo.png') + ') center'}">
 
 			</div>
 		</div>

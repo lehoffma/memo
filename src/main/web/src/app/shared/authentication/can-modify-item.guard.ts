@@ -61,6 +61,11 @@ export class CanModifyItemGuard implements CanActivate {
 									return isAuthenticated(user.clubRole, item.expectedWriteRole) ||
 										permissions[permissionKey] >= Permission.write;
 								}
+								//the user is always allowed to modify his own profile
+								if (User.isUser(item) && item.id === user.id) {
+									return true;
+								}
+
 								return permissions[permissionKey] >= Permission.write;
 							}),
 							tap(isAuthenticated => {

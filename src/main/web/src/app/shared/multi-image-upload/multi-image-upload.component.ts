@@ -8,6 +8,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {Subscription} from "rxjs/Subscription";
 import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
 import {ImageToUpload, isImageToUpload} from "./image-to-upload";
+import {Observable} from "rxjs/Observable";
 
 @Component({
 	selector: "memo-multi-image-upload",
@@ -87,7 +88,6 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.images$.subscribe(console.log);
 		this.subscriptions.push(
 			this.multiImageUploadService.onAdd.subscribe(
 				() => this.fileUpload.nativeElement.click()
@@ -116,8 +116,10 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	 *
 	 * @param {FileList} fileList
 	 */
-	addImages(fileList: File[]) {
-		const addedImages$ = new BehaviorSubject<ImageToUpload[]>([]);
+	readImages(fileList: File[]): Observable<ImageToUpload[]> {
+		const value: ImageToUpload[] = Array.from(Array(length).keys())
+			.map(it => ({id: null, name: null, data: null}));
+		const addedImages$ = new BehaviorSubject<ImageToUpload[]>(value);
 
 		for (let i = 0; i < fileList.length; i++) {
 			(() => {
@@ -125,7 +127,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 
 				reader.onload = (event) => {
 					const currentValue = addedImages$.getValue();
-					currentValue.push({
+					currentValue[i] = ({
 						id: fileList[i].name,
 						name: fileList[i].name,
 						data: (<any>event.target).result
@@ -137,15 +139,12 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 			})();
 		}
 
-		addedImages$
+		return addedImages$
 			.pipe(
 				//only update the list if all images have been read by the file reader
-				filter(images => images.length === fileList.length),
+				filter(images => images.filter(it => it.id !== null).length === fileList.length),
 				take(1)
-			)
-			.subscribe(images => {
-				this.formGroup.get("imagesToUpload").patchValue(images, {emitEvent: true});
-			})
+			);
 	}
 
 
@@ -155,36 +154,58 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	 */
 	onFileSelect(event) {
 		const fileList: FileList = event.target.files;
-		const fileCount: number = fileList.length;
+		let imagePaths = [...this.formGroup.value.imagePaths];
+		let imagesToUpload = [...this.formGroup.value.imagesToUpload];
+		let filesToUpload: File[] = [];
 
-		//todo consider the imagePaths when calculating the limit
-
-		if (fileCount > 0) { // a file was selected
+		if (fileList.length > 0) { // a file was selected
 			//examples
 			// [] + [a,b,c,d,e] => [a,b,c,d,e]
 			// [a,b,c,d] + [e] => [a,b,c,d,e]
 			// [a,b,c] + [d,e,f] => [f,b,c,d,e] //fill up and then start from the beginning
 
 			let files = Array.from(fileList);
-			//only look at the first N files and completely replace the old ones
-			if (fileCount > this.limit) {
-				this.currentFiles = [...files.splice(0, this.limit)];
-			}
-			else {
-				const after = files.splice(0, this.limit - this.currentFiles.length);
-				//there are still some files left => wrap around and start from the beginning
-				const before = [...files];
-
-				//fill up until limit is reached
-				this.currentFiles = [
-					...before,
-					...this.currentFiles.slice(before.length, before.length + this.limit - after.length),
-					...after];
-			}
-
+			//only look at the first N files to avoid unnecessary loading times
+			filesToUpload = [...files.splice(0, this.limit)];
 		}
 
-		this.addImages(this.currentFiles);
+		this.readImages(filesToUpload)
+			.subscribe(images => {
+				//examples (limit=5)
+				// paths		toUpload	 input		  	  result
+				// [a,b]		  [c,d]   	 [e]   	      [a,b],[c,d,e]
+				// [a,b]		  [c,d]   	 [e,f,g]      [],[c,d,e,f,g]
+				// [a,b]		  []     	 [e,f,g]      [a,b],[e,f,g]
+				// [a,b]		  []     	 [c,d,e,f]    [b],[c,d,e,f]
+
+				//how many files don't fit into the list
+				const nonOverflowedImages = images.slice(0, this.limit - imagePaths.length - imagesToUpload.length);
+				const overflowedImages = images.slice(this.limit - imagePaths.length - imagesToUpload.length);
+
+				//for all non-overflowed items:
+				//	add them to the end of the toUpload array
+				imagesToUpload = [...imagesToUpload, ...nonOverflowedImages];
+
+				//for every overflowed item:
+				// 	if there are imagePaths left: remove one entry from imagePaths
+				//	if there are none: push into toUpload list or replace one entry from toUpload list with the new images
+				let replaceIndex = 0;
+				for (let overflowedImage of overflowedImages) {
+					if (imagePaths.length > 0) {
+						imagePaths.splice(0, 1);
+					}
+					if (imagesToUpload.length < this.limit) {
+						imagesToUpload.push(overflowedImage);
+					}
+					else {
+						imagesToUpload.splice(replaceIndex, 1, overflowedImage);
+						replaceIndex++;
+					}
+				}
+
+				this.formGroup.get("imagePaths").setValue(imagePaths, {emitEvent: true});
+				this.formGroup.get("imagesToUpload").setValue(imagesToUpload, {emitEvent: true});
+			})
 	}
 
 

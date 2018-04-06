@@ -1,4 +1,4 @@
-<mat-tab-group [dynamicHeight]="true">
+<mat-tab-group [dynamicHeight]="false">
 	<mat-tab label="Teilgenommen">
 		<div class="tour-entry-container">
 			<memo-my-tours-entry *ngFor="let event of (participatedTours$ | async)" [event]="event">

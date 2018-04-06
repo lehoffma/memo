@@ -1,6 +1,12 @@
 package memo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.serialization.ShopItemIdDeserializer;
+import memo.serialization.ShopItemIdSerializer;
+import memo.serialization.UserIdDeserializer;
+import memo.serialization.UserIdSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,10 +35,14 @@ public class Address implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn()
+    @JsonDeserialize(using = UserIdDeserializer.class)
+    @JsonSerialize(using = UserIdSerializer.class)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn()
+    @JsonDeserialize(using = ShopItemIdDeserializer.class)
+    @JsonSerialize(using = ShopItemIdSerializer.class)
     private ShopItem item;
 
     private String name;
@@ -66,7 +76,6 @@ public class Address implements Serializable {
     //  getters and setters
     //**************************************************************
 
-    @JsonIgnore
     public User getUser() {
         return user;
     }
@@ -75,7 +84,6 @@ public class Address implements Serializable {
         this.user = user;
     }
 
-    @JsonIgnore
     public ShopItem getItem() {
         return item;
     }

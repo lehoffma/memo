@@ -31,7 +31,6 @@ const routes: Routes = [
 			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 
-	//todo implement
 	//nur eingeloggte user, die die Tour erstellt haben oder Organisator oder Admin sind
 	{
 		path: ":itemType/:id/edit",

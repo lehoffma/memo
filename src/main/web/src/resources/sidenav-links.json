@@ -34,15 +34,6 @@
 		"icon": "",
 		"name": "Accountverwaltung",
 		"loginNeeded": true,
-		"minimumPermission": {
-			"userManagement": 1,
-			"merch": 1,
-			"tour": 1,
-			"party": 1,
-			"funds": 0,
-			"stock": 0,
-			"settings": 0
-		},
 		"children": [
 			{
 				"route": "members/PROFILE_ID",

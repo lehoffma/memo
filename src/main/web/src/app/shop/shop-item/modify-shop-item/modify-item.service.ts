@@ -18,7 +18,7 @@ import {Address} from "../../../shared/model/address";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 import {ModifyItemEvent} from "./modify-item-event";
 import {MerchStockList} from "../../shared/model/merch-stock";
-import {first, map, mergeMap, take, tap} from "rxjs/operators";
+import {first, map, mergeMap, take} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shared/model/event";
 import {of} from "rxjs/observable/of";
@@ -227,6 +227,13 @@ export class ModifyItemService {
 			addresses = newObject["addresses"];
 		}
 
+		if (EventUtilityService.isUser(newObject)) {
+			addresses = addresses.map(it => it.setProperties({user: newObject.id}));
+		}
+		else {
+			addresses = addresses.map(it => it.setProperties({item: newObject.id}));
+		}
+
 		//delete old addresses if length < previousLength
 		return this.removeOldAddresses(addresses)
 			.pipe(
@@ -263,7 +270,7 @@ export class ModifyItemService {
 	 * @param {string[]} imagePaths
 	 * @returns {Observable<any[]>}
 	 */
-	deleteOldImages(imagePaths: string[]) {
+	deleteOldImages(imagePaths: string[]): Observable<any[]> {
 		if (this.previousValue) {
 			const previousImagePaths = this.previousValue.images;
 			const imagesToDelete = previousImagePaths
@@ -337,7 +344,9 @@ export class ModifyItemService {
 		const request = this.handleAddresses(newObject)
 			.pipe(
 				map(newObject => this.setDefaultValues(newObject)),
-				tap(() => this.deleteOldImages(modifyItemEvent.images.imagePaths)),
+				mergeMap(newObject => this.deleteOldImages(modifyItemEvent.images.imagePaths)
+					.pipe(map(() => newObject))
+				),
 				//todo display progress-bar while uploading
 				mergeMap(newObject => this.uploadImage(newObject, modifyItemEvent.images)),
 				mergeMap(newObject => this.mode === ModifyType.EDIT

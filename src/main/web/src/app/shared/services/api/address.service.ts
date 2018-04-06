@@ -115,54 +115,62 @@ export class AddressService extends ServletService<Address> {
 	 * @param user$
 	 */
 	public updateAddressesOfUser(previousValue: Address[], addresses: Address[], user$: Observable<User>): Observable<User> {
-		const addedAddresses = addresses.filter(it => it.id === -1);
-		const removedAddresses = previousValue.filter(address => !addresses.find(it => address.id === it.id));
-		const editedAddresses = addresses
-			.filter(newAddr => {
-				return previousValue.find(prevAddr =>
-					prevAddr.id === newAddr.id && (isEdited(newAddr, prevAddr, ["id"]))
-				)
-			});
+		const updateUserId = (address: Address, user: number): Address => address.setProperties({user});
 
-		const addRequests = addedAddresses.map(it => this.add(it));
-		const removeRequests = removedAddresses.map(it => this.remove(it.id));
-		const editRequests = editedAddresses.map(it => this.modify(it));
-
-		return processSequentially(
-			[
-				...addRequests,
-				...removeRequests,
-				...editRequests,
-			]
-		)
+		return user$
 			.pipe(
-				mergeMap(result => {
-					if (!result || result.length === 0) {
-						return user$;
-					}
+				mergeMap(user => {
+					const addedAddresses = addresses.filter(it => it.id === -1)
+						.map(it => updateUserId(it, user.id));
+					const removedAddresses = previousValue.filter(address => !addresses.find(it => address.id === it.id))
+						.map(it => updateUserId(it, user.id));
+					const editedAddresses = addresses
+						.filter(newAddr => {
+							return previousValue.find(prevAddr =>
+								prevAddr.id === newAddr.id && (isEdited(newAddr, prevAddr, ["id"]))
+							)
+						})
+						.map(it => updateUserId(it, user.id));
 
-					let newAddresses = [];
-					if (addRequests.length > 0) {
-						newAddresses.push(...result.slice(0, addRequests.length));
-					}
-					if (editRequests.length > 0) {
-						newAddresses.push(...result.slice(
-							addRequests.length + removeRequests.length));
-					}
+					const addRequests = addedAddresses.map(it => this.add(it));
+					const removeRequests = removedAddresses.map(it => this.remove(it.id));
+					const editRequests = editedAddresses.map(it => this.modify(it));
+
+					return processSequentially(
+						[
+							...addRequests,
+							...removeRequests,
+							...editRequests,
+						]
+					)
+						.pipe(
+							mergeMap(result => {
+								if (!result || result.length === 0) {
+									return user$;
+								}
+
+								let newAddresses = [];
+								if (addRequests.length > 0) {
+									newAddresses.push(...result.slice(0, addRequests.length));
+								}
+								if (editRequests.length > 0) {
+									newAddresses.push(...result.slice(
+										addRequests.length + removeRequests.length));
+								}
 
 
-					return user$
-						.pipe(mergeMap(user => {
-							const addressIds = newAddresses.map(it => it.id);
-							addressIds.push(...user.addresses
-								.filter(id => !removedAddresses.find(removed => removed.id === id))
-							);
+								const addressIds = newAddresses.map(it => it.id);
+								addressIds.push(...user.addresses
+									.filter(id => !removedAddresses.find(removed => removed.id === id))
+								);
 
-							return this.userService.modify(user.setProperties({
-								addresses: addressIds
-							}))
-						}))
+								return this.userService.modify(user.setProperties({
+									addresses: addressIds
+								}))
+							})
+						)
 				})
 			)
+
 	}
 }

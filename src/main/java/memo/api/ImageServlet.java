@@ -113,7 +113,7 @@ public class ImageServlet extends AbstractApiServlet<Image> {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         this.delete(request, response, it -> {
             String fileName = it.getParameter("fileName");
-            return ImageRepository.getInstance().getByFilePath(fileName).orElse(null);
+            return ImageRepository.getInstance().getByApiPath(fileName).orElse(null);
         });
     }
 
