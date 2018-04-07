@@ -10,13 +10,34 @@ import {Event} from "../../shop/shared/model/event";
 import {HttpClient} from "@angular/common/http";
 import {LogInService} from "./api/login.service";
 import {Observable} from "rxjs/Observable";
-import {filter, map} from "rxjs/operators";
+import {filter, map, mergeMap, tap} from "rxjs/operators";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {UserPermissions, visitorPermissions} from "../model/permission";
+import {User} from "../model/user";
+import {isNullOrUndefined} from "util";
 
 @Injectable()
 export class NavigationService implements OnDestroy {
-	public toolbarLinks: Observable<Link[]>;
-	public sidenavLinks: Observable<Link[]>;
+	private _toolbarLinks$: BehaviorSubject<Link[]> = new BehaviorSubject<Link[]>([]);
+	public toolbarLinks$: Observable<Link[]> = this._toolbarLinks$
+		.pipe(
+			mergeMap(links => this.loginService.currentUser$
+				.pipe(
+					tap(it => console.log([...links])),
+					map(user => this.filterLinks(user, links)),
+					tap(it => console.log([...links])),
+				)
+			)
+		);
+	private _sidenavLinks$: BehaviorSubject<Link[]> = new BehaviorSubject<Link[]>([]);
+	public sidenavLinks$: Observable<Link[]> = this._sidenavLinks$
+		.pipe(
+			mergeMap(links => this.loginService.currentUser$
+				.pipe(
+					map(user => this.filterLinks(user, links))
+				)
+			)
+		);
 	public accountLinks: Observable<Link[]>;
 
 	public redirectToTour: Address[] = [];
@@ -77,9 +98,72 @@ export class NavigationService implements OnDestroy {
 			)
 	}
 
+	private filterLinks(user: User, links: Link[]): Link[] {
+		const linksCopy: Link[] = [...links];
+		const permissions = !user || user.id === -1
+			? visitorPermissions
+			: user.userPermissions();
+
+		const setId = (link: Link): Link => {
+			let newLink = {...link};
+			if (newLink.children) {
+				newLink.children = newLink.children.map(childLink => setId(childLink))
+			}
+			if (newLink.route !== null) {
+				newLink.route = newLink.route.replace("PROFILE_ID", "" + (user ? user.id : -1));
+			}
+			return newLink;
+		};
+
+		const isShown = (link: Link) => (!link.loginNeeded || (user && user.id !== -1))
+			&& this.checkPermissions(link.minimumPermission, permissions);
+
+		const filterOutChildren = (link: Link): Link => {
+			if (link.children) {
+				link.children = link.children
+					.filter(it => isShown(it))
+					.map(it => filterOutChildren(it));
+			}
+			return link;
+		};
+
+		console.log(permissions);
+		return linksCopy.map(setId)
+			.filter(link => isShown(link))
+			.map(link => filterOutChildren(link))
+	}
+
+
+	/**
+	 *
+	 * @param minimumPermissions die minimalen Berechtigungsstufen, die der Nutzer erreichen/überschreiten muss,
+	 *                           um den link anzusehen
+	 * @param userPermissions die Berechtigungsstufen des Nutzers
+	 * @returns {boolean}
+	 */
+	private checkPermissions(minimumPermissions: UserPermissions, userPermissions: UserPermissions = visitorPermissions) {
+		if (isNullOrUndefined(minimumPermissions)) {
+			return true;
+		}
+		if (isNullOrUndefined(userPermissions)) {
+			userPermissions = visitorPermissions;
+		}
+
+		return Object.keys(minimumPermissions)
+			.every(
+				(key: string) =>
+					!isNullOrUndefined(userPermissions[key])
+					&& !isNullOrUndefined(minimumPermissions[key])
+					&& userPermissions[key] >= minimumPermissions[key]
+			);
+	}
+
+
 	private initialize() {
-		this.toolbarLinks = this.http.get<Link[]>("/resources/toolbar-links.json");
-		this.sidenavLinks = this.http.get<Link[]>("/resources/sidenav-links.json");
+		this.http.get<Link[]>("/resources/toolbar-links.json")
+			.subscribe(links => this._toolbarLinks$.next(links));
+		this.http.get<Link[]>("/resources/sidenav-links.json")
+			.subscribe(links => this._sidenavLinks$.next(links));
 		this.accountLinks = this.http.get<Link[]>("/resources/account-links.json");
 	}
 }

@@ -226,11 +226,12 @@ export class ModifyItemService {
 			addresses = newObject["addresses"];
 		}
 
+		const id = newObject.id === -1 ? null : newObject.id;
 		if (EventUtilityService.isUser(newObject)) {
-			addresses = addresses.map(it => it.setProperties({user: newObject.id}));
+			addresses = addresses.map(it => it.setProperties({user: id}));
 		}
 		else {
-			addresses = addresses.map(it => it.setProperties({item: newObject.id}));
+			addresses = addresses.map(it => it.setProperties({item: id}));
 		}
 
 		//delete old addresses if length < previousLength

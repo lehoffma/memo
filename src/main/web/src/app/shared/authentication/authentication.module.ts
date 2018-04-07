@@ -12,6 +12,7 @@ import {ShopItemExistsGuard} from "./http-error-handling-guards/shop-item-exists
 import {ShopItemIsVisibleToUserGuard} from "./http-error-handling-guards/shop-item-is-visible-to-user.guard";
 import {ShopItemGuardHelper} from "./shop-item-guard.helper";
 import {IsNotLoggedInGuard} from "./is-not-logged-in.guard";
+import {SignupWasJustCompletedGuard} from "./signup-was-just-completed.guard";
 
 
 const providers = [
@@ -25,7 +26,8 @@ const providers = [
 	IsValidItemTypeGuard,
 	ShopItemExistsGuard,
 	ShopItemIsVisibleToUserGuard,
-	IsNotLoggedInGuard
+	IsNotLoggedInGuard,
+	SignupWasJustCompletedGuard
 ];
 
 @NgModule({

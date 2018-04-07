@@ -50,7 +50,8 @@ export class MilesLeaderboardComponent implements OnInit {
 					...user,
 					position
 				}];
-			}, []))
+			}, [])),
+			tap(() => this.loading = false)
 		);
 
 	loggedInUserId$ = this.loginService.accountObservable;
@@ -100,6 +101,7 @@ export class MilesLeaderboardComponent implements OnInit {
 	seasonOptions = seasonOptions;
 	subscriptions = [];
 
+	loading = true;
 	constructor(private userService: UserService,
 				private milesService: MilesService,
 				private activatedRoute: ActivatedRoute,

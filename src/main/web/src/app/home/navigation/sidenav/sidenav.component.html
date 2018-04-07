@@ -31,16 +31,25 @@
 		<div *ngFor="let link of (links | async);">
 			<mat-divider *ngIf="link.drawLineAbove || link.children"></mat-divider>
 			<!--"main" link-->
-			<a routerLink="{{link.route}}">
+			<a routerLink="{{link.route}}" *ngIf="link.route !== null">
+				<mat-icon class="mat-dark" *ngIf="!link.children">{{link.icon}}</mat-icon>
+				<span>{{link.name}}</span>
+			</a>
+			<a href="{{link.link}}" *ngIf="link.link">
 				<mat-icon class="mat-dark" *ngIf="!link.children">{{link.icon}}</mat-icon>
 				<span>{{link.name}}</span>
 			</a>
 			<!--child links-->
-			<a *ngFor="let childLink of link.children"
-			   routerLink="{{childLink.route}}">
-				<mat-icon class="mat-dark">{{childLink.icon}}</mat-icon>
-				<span>{{childLink.name}}</span>
-			</a>
+			<ng-container *ngFor="let childLink of link.children">
+				<a routerLink="{{childLink.route}}" *ngIf="childLink.route !== null">
+					<mat-icon class="mat-dark">{{childLink.icon}}</mat-icon>
+					<span>{{childLink.name}}</span>
+				</a>
+				<a href="{{childLink.link}}" *ngIf="childLink.link">
+					<mat-icon class="mat-dark">{{childLink.icon}}</mat-icon>
+					<span>{{childLink.name}}</span>
+				</a>
+			</ng-container>
 		</div>
 		<div *ngIf="account.id !== -1">
 			<a routerLink="/" (click)="logout()">

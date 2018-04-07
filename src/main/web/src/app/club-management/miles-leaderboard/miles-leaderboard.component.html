@@ -5,6 +5,13 @@
 	</mat-select>
 </div>
 
+
+<div *ngIf="loading">
+	<div class="loader-wrapper">
+		<div class="loader"></div>
+	</div>
+</div>
+
 <memo-miles-leaderboard-entry
 	*ngFor="let user of (leaderBoard$|async|slice:0:(rowsAmount$|async)); let i = index"
 	[user]="user"

@@ -12,6 +12,7 @@ import {DebitInputFormComponent} from "./payment-methods-form/debit-input-form/d
 import {RouterModule} from "@angular/router";
 import {SharedModule} from "../../shared/shared.module";
 import {ShopItemDetailsModule} from "../../shop/shop-item/item-details/shop-item-details.module";
+import { SignupCompletedComponent } from './signup-completed.component';
 
 @NgModule({
 	imports: [
@@ -30,6 +31,7 @@ import {ShopItemDetailsModule} from "../../shop/shop-item/item-details/shop-item
 		DebitInputFormComponent,
 		PaymentMethodsFormComponent,
 		UserDataFormComponent,
+		SignupCompletedComponent,
 	],
 	providers: [
 		SignUpService

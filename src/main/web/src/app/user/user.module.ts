@@ -11,7 +11,8 @@ import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
 import {AgmCoreModule} from "@agm/core";
 import {SearchModule} from "../shop/search-results/search.module";
-import { PasswordRecoveryLandingPageComponent } from './password-recovery/password-recovery-landing-page.component';
+import {ApplyForMembershipComponent} from "./membership/apply-for-membership/apply-for-membership.component";
+import {RequestMembershipComponent} from "./membership/request-membership/request-membership.component";
 
 @NgModule({
 	imports: [
@@ -34,8 +35,6 @@ import { PasswordRecoveryLandingPageComponent } from './password-recovery/passwo
 		MyToursEntryComponent,
 
 		ParticipatedToursPreviewComponent,
-
-		PasswordRecoveryLandingPageComponent,
 	],
 	exports: [
 		SignUpModule,

@@ -347,6 +347,14 @@ public class User implements Serializable {
         this.authoredItems.add(i);
     }
 
+    public List<ShopItem> getReportResponsibilities() {
+        return reportResponsibilities;
+    }
+
+    public User setReportResponsibilities(List<ShopItem> reportResponsibilities) {
+        this.reportResponsibilities = reportResponsibilities;
+        return this;
+    }
 
     //**************************************************************
     //  methods

@@ -24,7 +24,7 @@ export class ToolbarComponent implements OnInit {
 
 
 	//die links die vom User gesehen werden dürfen als observable
-	links: Observable<Link[]> = this.navigationService.toolbarLinks;
+	links: Observable<Link[]> = this.navigationService.toolbarLinks$;
 
 
 	shoppingCartContent: Observable<number> = this.shoppingCartService.amountOfCartItems;

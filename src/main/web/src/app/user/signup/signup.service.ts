@@ -29,6 +29,7 @@ export class SignUpService {
 	newUserAddresses: Address[] = [];
 	submittingFinalUser = false;
 
+	signUpWasJustCompleted = false;
 	sections = [SignUpSection.AccountData, SignUpSection.PersonalData, SignUpSection.PaymentMethods];
 
 	constructor(private navigationService: NavigationService,
@@ -120,7 +121,6 @@ export class SignUpService {
 
 		return processSequentially(
 			addresses
-				.map(it => it.setProperties({user: user.id}))
 				.map(it => this.addressService.add(it))
 		)
 			.pipe(
@@ -220,12 +220,13 @@ export class SignUpService {
 					mergeMap(() => this.loginService.login(this.newUser.email, this.newUser.password)),
 					tap(wereCorrect => {
 						if (wereCorrect) {
-							this.navigationService.navigateByUrl("/");
+							this.signUpWasJustCompleted = true;
+							this.navigationService.navigateByUrl("/signup/completed");
 							this.reset();
 							this.submittingFinalUser = false;
 						}
 						else {
-							return _throw(new Error());
+							_throw(new Error());
 						}
 					}),
 					catchError(error => {

@@ -30,7 +30,7 @@ export class Address extends BaseObject<Address> {
 	}
 
 	static create() {
-		return new Address(-1, "", "", "", "", "", "", -1, -1, 0, 0);
+		return new Address(-1, "", "", "", "", "", "", null, null, 0, 0);
 	}
 
 	static isAddress(obj: any): obj is Address {

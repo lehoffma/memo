@@ -30,6 +30,24 @@
 		"name": "Meilentabelle"
 	},
 	{
+		"name": "Mitgliedschaft",
+		"icon": "",
+		"route": "",
+		"children": [
+			{
+				"route": "/applyForMembership",
+				"name": "Mitglied werden",
+				"icon": "book"
+			},
+			{
+				"route": "/requestMembership",
+				"loginNeeded": true,
+				"name": "Mitgliedsstatus ändern",
+				"icon": "email"
+			}
+		]
+	},
+	{
 		"route": "",
 		"icon": "",
 		"name": "Accountverwaltung",
@@ -82,8 +100,7 @@
 					"tour": 1,
 					"party": 1,
 					"funds": 1,
-					"stock": 1,
-					"accountManagement": 0
+					"stock": 1
 				}
 			},
 			{
@@ -106,17 +123,21 @@
 					"tour": 1,
 					"party": 1,
 					"funds": 0,
-					"stock": 1,
-					"accountManagement": 0
+					"stock": 1
 				}
 			}
 		]
 	},
-
 	{
 		"route": "impressum",
 		"icon": "info",
 		"name": "Impressum",
 		"drawLineAbove": true
+	},
+	{
+		"route": null,
+		"link": "http://meilenwoelfe.de/meilenblog",
+		"icon": "web",
+		"name": "Blog"
 	}
 ]
