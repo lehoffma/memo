@@ -15,7 +15,7 @@ public class DatabaseManager {
 
     private static final Logger logger = Logger.getLogger(DatabaseManager.class);
 
-    private static DatabaseManager dbm;
+    private static ThreadLocal<DatabaseManager> threadedDatabaseManager;
     private EntityManager em;
 
     private DatabaseManager() {
@@ -24,13 +24,14 @@ public class DatabaseManager {
     }
 
     public static DatabaseManager getInstance() {
-        if (dbm == null) dbm = new DatabaseManager();
-        return dbm;
+        if (threadedDatabaseManager == null) {
+            threadedDatabaseManager = ThreadLocal.withInitial(DatabaseManager::new);
+        }
+        return threadedDatabaseManager.get();
     }
 
     public static EntityManager createEntityManager() {
-        if (dbm == null) dbm = new DatabaseManager();
-        return dbm.em;
+        return getInstance().em;
     }
 
 

@@ -2,15 +2,18 @@ package memo.api;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.auth.api.ShopItemAuthStrategy;
+import memo.communication.CommunicationManager;
+import memo.communication.MessageType;
 import memo.data.EventRepository;
+import memo.model.Order;
+import memo.model.OrderedItem;
 import memo.model.ShopItem;
-import memo.model.Stock;
 import memo.model.User;
 import memo.util.ApiUtils;
+import memo.util.DatabaseManager;
 import memo.util.EventType;
 import org.apache.log4j.Logger;
 
@@ -21,8 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Servlet implementation class EventServlet
@@ -77,7 +78,10 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
                 .setClazz(ShopItem.class)
                 .setGetSerialized(ShopItem::getId);
 
-        this.post(request, response, options);
+        ShopItem item = this.post(request, response, options);
+
+        List<User> responsibleUsers = item.getAuthor();
+        responsibleUsers.forEach(user -> CommunicationManager.getInstance().send(user, item, MessageType.RESPONSIBLE_USER));
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -86,7 +90,23 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
                 .setClazz(ShopItem.class)
                 .setGetSerialized(ShopItem::getId);
 
-        this.put(request, response, options);
+        JsonNode jsonItem = ApiUtils.getInstance().getJsonObject(request, options.getObjectName());
+        ShopItem previousValue = DatabaseManager.getInstance().getById(ShopItem.class, jsonItem.get(options.getJsonId()).asInt());
+        List<User> previouslyResponsible = new ArrayList<>(previousValue.getAuthor());
+
+        ShopItem changedItem = this.put(request, response, options);
+
+        //notify participants of changes
+        changedItem.getOrders().stream()
+                .map(OrderedItem::getOrder)
+                .map(Order::getUser)
+                .forEach(participant -> CommunicationManager.getInstance().send(participant, changedItem, MessageType.OBJECT_HAS_CHANGED));
+        //notify newly added responsible users
+        List<User> newResponsible = changedItem.getAuthor();
+        newResponsible.stream()
+                //only send mails to newly added users
+                .filter(user -> previouslyResponsible.stream().noneMatch(it -> it.getId().equals(user.getId())))
+                .forEach(user -> CommunicationManager.getInstance().send(user, changedItem, MessageType.RESPONSIBLE_USER));
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

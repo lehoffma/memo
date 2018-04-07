@@ -6,6 +6,8 @@ import memo.api.util.ApiServletPutOptions;
 import memo.api.util.ModifyPrecondition;
 import memo.auth.BCryptHelper;
 import memo.auth.api.UserAuthStrategy;
+import memo.communication.CommunicationManager;
+import memo.communication.MessageType;
 import memo.data.UserRepository;
 import memo.model.ClubRole;
 import memo.model.PermissionState;
@@ -101,7 +103,7 @@ public class UserServlet extends AbstractApiServlet<User> {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.post(request, response, new ApiServletPostOptions<>(
+        User createdUser = this.post(request, response, new ApiServletPostOptions<>(
                         "user", new User(), User.class, User::getId
                 )
                         .setTransform(this::hashPassword)
@@ -117,8 +119,9 @@ public class UserServlet extends AbstractApiServlet<User> {
                                         () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
                                 )
                         ))
-
         );
+
+        CommunicationManager.getInstance().send(createdUser, null, MessageType.REGISTRATION);
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

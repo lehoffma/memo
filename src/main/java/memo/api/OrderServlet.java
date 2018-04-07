@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.auth.api.OrderAuthStrategy;
+import memo.communication.CommunicationManager;
+import memo.communication.MessageType;
 import memo.data.OrderRepository;
 import memo.model.Order;
+import memo.model.ShopItem;
 import memo.model.User;
 import org.apache.log4j.Logger;
 
@@ -43,18 +46,21 @@ public class OrderServlet extends AbstractApiServlet<Order> {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.post(request, response, new ApiServletPostOptions<>(
+        Order order = this.post(request, response, new ApiServletPostOptions<>(
                         "order", new Order(), Order.class, Order::getId
                 )
-                        .setTransform(order -> {
-                            order.setItems(order.getItems().stream()
-                                    .peek(orderedItem -> orderedItem.setOrder(order))
+                        .setTransform(it -> {
+                            it.setItems(it.getItems().stream()
+                                    .peek(orderedItem -> orderedItem.setOrder(it))
                                     .collect(Collectors.toList()));
-                            return order;
+                            return it;
                         })
-        )
+        );
 
-        ;
+        User user = order.getUser();
+        //todo only one item is possible at the moment
+        ShopItem orderedItem = order.getItems().get(0).getItem();
+        CommunicationManager.getInstance().send(user, orderedItem, MessageType.ORDER_CONFIRMATION);
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

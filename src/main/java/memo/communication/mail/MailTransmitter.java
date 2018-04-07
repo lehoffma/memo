@@ -1,5 +1,10 @@
-package memo.util;
+package memo.communication.mail;
 
+import memo.communication.MessageTransmitter;
+import memo.communication.MessageType;
+import memo.model.ShopItem;
+import memo.model.User;
+import memo.util.Configuration;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
@@ -9,21 +14,14 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 import java.util.Properties;
 
 
-public class SendMail {
+public class MailTransmitter implements MessageTransmitter {
+    protected Logger logger = Logger.getLogger(MailTransmitter.class);
 
-    protected Logger logger = Logger.getLogger(SendMail.class);
-
-    private static SendMail instance;
-
-    public static SendMail getInstance() {
-        if (instance == null) instance = new SendMail();
-        return instance;
-    }
-
-    private SendMail() {
+    public MailTransmitter() {
         this.host = Configuration.get("EMAIL_HOST");
         this.user = Configuration.get("EMAIL_USER");
         this.userName = Configuration.get("EMAIL_USER_NAME");
@@ -31,21 +29,26 @@ public class SendMail {
         this.port = Configuration.get("EMAIL_PORT");
     }
 
-    private String host;
-    private String user;
-    private String userName;
-    private String password;
-    private String port;
+    private final String host;
+    private final String user;
+    private final String userName;
+    private final String password;
+    private final String port;
 
-
+    /**
+     * @param priority
+     * @param to
+     * @param subject
+     * @param text
+     */
     private void logEmail(Priority priority, String to, String subject, String text) {
         logger.log(priority, "recipient: " + to);
         logger.log(priority, "subject: " + subject);
         logger.log(priority, "email text: " + text);
     }
 
-    public void send(String to, String subject, String text) throws UnsupportedEncodingException, MessagingException {
 
+    public void send(User to, String subject, String content) throws UnsupportedEncodingException, MessagingException {
         //Get the session object
         Properties props = new Properties();
         props.put("mail.smtp.host", getHost());
@@ -63,9 +66,9 @@ public class SendMail {
 
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(getUser(), getUserName()));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to.getEmail()));
             message.setSubject(subject);
-            message.setContent(text, "text/html");
+            message.setContent(content, "text/html");
 
             //send the message
             Transport.send(message);
@@ -74,57 +77,46 @@ public class SendMail {
         } catch (Exception e) {
             if (e instanceof UnsupportedEncodingException) {
                 logger.error("Encoding the charset failed, the Email was not sent.", e);
-                this.logEmail(Level.ERROR, to, subject, text);
+                this.logEmail(Level.ERROR, to.getEmail(), subject, content);
                 throw e;
             } else if (e instanceof AddressException) {
                 logger.error("Could not parse the recipient's email address. ", e);
-                this.logEmail(Level.ERROR, to, subject, text);
+                this.logEmail(Level.ERROR, to.getEmail(), subject, content);
                 throw e;
             } else {
                 logger.error("Something went wrong when trying to send an email from ", e);
-                this.logEmail(Level.ERROR, to, subject, text);
+                this.logEmail(Level.ERROR, to.getEmail(), subject, content);
                 throw e;
             }
         }
+    }
+
+    @Override
+    public String getEmailContent(User recipient, ShopItem item, MessageType type) {
+        String rawText = MailLoader.loadAsText(type);
+        Map<String, String> placeHolderReplacement = MailPlaceholderFactory.getPlaceHolderReplacement(type, recipient, item);
+        return MailLoader.replacePlaceholders(rawText, placeHolderReplacement);
     }
 
     public String getHost() {
         return host;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
     public String getUser() {
         return user;
     }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
 
     public String getUserName() {
         return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getPort() {
         return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
     }
 }
