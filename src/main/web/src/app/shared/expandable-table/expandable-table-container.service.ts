@@ -16,6 +16,9 @@ import {Subscription} from "rxjs/Subscription";
 export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 	protected _sortBy$ = new BehaviorSubject<ColumnSortingEvent<T>>(null);
 
+	actionHandlers: {
+		[rowActionName: string]: (entries: T[]) => any
+	} = {};
 	primaryColumnKeys$: BehaviorSubject<ExpandableTableColumn<T>[]> = new BehaviorSubject([]);
 	expandedRowKeys$: BehaviorSubject<ExpandableTableColumn<T>[]> = new BehaviorSubject([]);
 
@@ -113,6 +116,9 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 				return this.edit(event.entries[0]);
 			case RowActionType.DELETE:
 				return this.remove(event.entries);
+		}
+		if (this.actionHandlers[event.action]) {
+			return this.actionHandlers[event.action](event.entries);
 		}
 	}
 }

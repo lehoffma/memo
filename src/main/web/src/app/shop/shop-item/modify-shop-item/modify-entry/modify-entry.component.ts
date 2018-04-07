@@ -2,18 +2,14 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {Event} from "../../../shared/model/event";
-import {EventType} from "../../../shared/model/event-type";
 import {ActivatedRoute} from "@angular/router";
 import {EntryCategoryService} from "../../../../shared/services/api/entry-category.service";
 import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/modify-item-event";
 import {EntryCategory} from "../../../../shared/model/entry-category";
 import {Observable} from "rxjs/Observable";
-import {filter, map, mergeMap, startWith, take} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {isEventValidator} from "../../../../shared/validators/is-event.validator";
+import {filter, mergeMap, take} from "rxjs/operators";
 import {Entry} from "../../../../shared/model/entry";
 
 @Component({

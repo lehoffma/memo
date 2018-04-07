@@ -1,3 +1,14 @@
-<div *ngIf="data?.imagePath">
-	<img src="{{data?.imagePath}}">
+<div *ngIf="data?.images[selected]">
+	<img src="{{data?.images[selected]}}" (click)="hideButtons = !hideButtons">
+	<button mat-mini-fab type="button" (click)="prev()" [style.opacity]="hideButtons ? '0' : '1'">
+		<mat-icon>keyboard_arrow_left</mat-icon>
+	</button>
+	<button mat-mini-fab type="button" (click)="next()" [style.opacity]="hideButtons ? '0' : '1'">
+		<mat-icon>keyboard_arrow_right</mat-icon>
+	</button>
+	<mat-chip-list>
+		<mat-chip [style.opacity]="hideButtons ? '0' : '1'">
+			{{selected + 1}} / {{data?.images.length}}
+		</mat-chip>
+	</mat-chip-list>
 </div>

@@ -1,5 +1,11 @@
-import {Component, Inject, OnInit} from "@angular/core";
+import {Component, HostListener, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA} from "@angular/material";
+
+
+export enum KEY_CODE {
+	RIGHT_ARROW = 39,
+	LEFT_ARROW = 37
+}
 
 @Component({
 	selector: "memo-item-image-popup",
@@ -7,12 +13,31 @@ import {MAT_DIALOG_DATA} from "@angular/material";
 	styleUrls: ["./item-image-popup.component.scss"]
 })
 export class ItemImagePopupComponent implements OnInit {
+	@HostListener("keydown", ["$event"]) onKeyDown(event: KeyboardEvent) {
+		if (event.key === "ArrowLeft") {
+			this.prev();
+		}
+		if (event.key === "ArrowRight") {
+			this.next()
+		}
+	}
 
-	constructor(//Injecte das 'data' object, welches wir im Parent übergeben haben
-		@Inject(MAT_DIALOG_DATA) public data: any) {
+	selected = -1;
+	hideButtons = false;
+	constructor(@Inject(MAT_DIALOG_DATA) public data: { imagePath: string, images: string[] }) {
+
 	}
 
 	ngOnInit() {
+		this.selected = this.data.images.indexOf(this.data.imagePath);
+	}
 
+	next() {
+		const length = this.data.images.length;
+		this.selected = (this.selected + 1) % length;
+	}
+
+	prev() {
+		this.selected = this.selected === 0 ? (this.data.images.length - 1) : this.selected - 1;
 	}
 }

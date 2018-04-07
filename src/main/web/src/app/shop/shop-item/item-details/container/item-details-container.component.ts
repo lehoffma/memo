@@ -5,12 +5,11 @@ import {Event} from "../../../shared/model/event";
 import {EventOverviewKey} from "./overview/event-overview-key";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {of} from "rxjs/observable/of";
-import {map, mergeMap} from "rxjs/operators";
+import {map, mergeMap, take} from "rxjs/operators";
 import {ResponsibilityService} from "../../../shared/services/responsibility.service";
 import {ConcludeEventService} from "../../../shared/services/conclude-event.service";
 import {User} from "../../../../shared/model/user";
 import {Observable} from "rxjs/Observable";
-import {Subject} from "rxjs/Subject";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 
 
@@ -26,11 +25,11 @@ export class ItemDetailsContainerComponent implements OnInit {
 		this.event$.next(event);
 	}
 
-	get event(){
+	get event() {
 		return this.event$.getValue();
 	}
 
-	images$ = this.event$
+	images$: Observable<string[]> = this.event$
 		.pipe(
 			map(event => {
 				if (!event) {
@@ -61,12 +60,16 @@ export class ItemDetailsContainerComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	showDetailedImage(imagePath: string) {
-		this.mdDialog.open(ItemImagePopupComponent, {
-			data: {
-				imagePath: imagePath
-			}
-		})
+	showDetailedImage(selectedImage: string) {
+		this.images$.pipe(take(1))
+			.subscribe(images => {
+				this.mdDialog.open(ItemImagePopupComponent, {
+					data: {
+						images: images,
+						imagePath: selectedImage
+					}
+				})
+			})
 	}
 
 	/**

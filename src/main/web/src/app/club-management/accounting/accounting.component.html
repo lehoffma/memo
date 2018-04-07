@@ -15,6 +15,7 @@
 		*ngIf="!accountingTableContainerService.loading && (accountingTableContainerService.data$ | async); else loadingContainer"
 		[data]="accountingTableContainerService.data$ | async"
 		[expandedRowKeys]="accountingTableContainerService.expandedRowKeys$ | async"
+		[rowActions]="accountingTableContainerService.rowActions"
 		[expandable]="mobile"
 		[expandedRowComponent]="accountingTableContainerService.rowComponent"
 		[columnKeys]="accountingTableContainerService.primaryColumnKeys$ | async"

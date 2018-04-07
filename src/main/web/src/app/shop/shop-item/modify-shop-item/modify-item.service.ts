@@ -297,24 +297,20 @@ export class ModifyItemService {
 	uploadImage(newObject: ShopItem, images: ModifiedImages): Observable<ShopItem> {
 		const {imagePaths, imagesToUpload} = images;
 
-		if (EventUtilityService.isMerchandise(newObject) || EventUtilityService.isTour(newObject) ||
-			EventUtilityService.isUser(newObject) || EventUtilityService.isParty(newObject)) {
+		if (imagesToUpload) {
+			//todo: error handling, progress report
+			let formData = new FormData();
+			imagesToUpload.forEach(image => {
+				const blob = this.imageUploadService.dataURItoBlob(image.data);
+				formData.append("file[]", blob, image.name);
+			});
 
-			if (imagesToUpload) {
-				//todo: error handling, progress report
-				let formData = new FormData();
-				imagesToUpload.forEach(image => {
-					const blob = this.imageUploadService.dataURItoBlob(image.data);
-					formData.append("file[]", blob, image.name);
-				});
+			return this.imageUploadService.uploadImages(formData)
+				.pipe(
+					map(response => response.images),
+					map(images => (<any>newObject).setProperties({images: [...imagePaths, ...images]}))
+				)
 
-				return this.imageUploadService.uploadImages(formData)
-					.pipe(
-						map(response => response.images),
-						map(images => (<any>newObject).setProperties({images: [...imagePaths, ...images]}))
-					)
-
-			}
 		}
 
 		return of((<any>newObject).setProperties({images: [...imagePaths]}));

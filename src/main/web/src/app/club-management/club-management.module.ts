@@ -26,6 +26,7 @@ import {MilesLeaderboardEntryComponent} from "app/club-management/miles-leaderbo
 import {ModifyShopItemModule} from "../shop/shop-item/modify-shop-item/modify-shop-item.module";
 import {OrderOptionsComponent} from "./order-overview/order-options.component";
 import {UserModule} from "../user/user.module";
+import {ShopItemDetailsModule} from "../shop/shop-item/item-details/shop-item-details.module";
 
 const tableCellComponents = [
 	//accounting table cells
@@ -58,6 +59,7 @@ const tableCellComponents = [
 		SharedModule,
 		SearchModule,
 		UserModule,
+		ShopItemDetailsModule,
 		ModifyShopItemModule,
 		ClubManagementRoutingModule
 	],

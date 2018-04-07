@@ -20,10 +20,30 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {of} from "rxjs/observable/of";
 import {parse} from "date-fns";
+import {RowAction} from "../../shared/expandable-table/expandable-table.component";
+import {RowActionType} from "../../shared/expandable-table/row-action-type";
+import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
+import {MatDialog} from "@angular/material";
 
 
 @Injectable()
 export class AccountingTableContainerService extends ExpandableTableContainerService<Entry> {
+
+	rowActions: RowAction<Entry>[] = [
+		{
+			icon: "collections",
+			predicate: entry => entry.images.length > 0,
+			name: "Bilder"
+		},
+		{
+			icon: "edit",
+			name: RowActionType.EDIT
+		},
+		{
+			icon: "delete",
+			name: RowActionType.DELETE
+		},
+	];
 
 	columns = {
 		date: new ExpandableTableColumn<Entry>("Datum", "date", DateTableCellComponent),
@@ -41,6 +61,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 				protected navigationService: NavigationService,
 				protected eventService: EventService,
 				protected windowService: WindowService,
+				protected matDialog: MatDialog,
 				protected entryService: EntryService) {
 		super({
 				key: "id",
@@ -50,6 +71,16 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 			[navigationService.queryParamMap$],
 		);
 
+		this.actionHandlers["Bilder"] = entries => {
+			const images = entries[0].images;
+			const selectedImage = images[0];
+			this.matDialog.open(ItemImagePopupComponent, {
+				data: {
+					images: images,
+					imagePath: selectedImage
+				}
+			})
+		};
 		this.init(this.getDataSource$());
 
 		this.subscriptions.push(this.windowService.dimension$
