@@ -13,7 +13,7 @@ public class MailLoader {
     private static final Logger logger = Logger.getLogger(MailLoader.class);
 
     public static String loadAsText(MessageType type) {
-        String path = "mail/" + type.getName() + ".html";
+        String path = "mails/" + type.getName() + ".html";
         try (InputStream resource = MailLoader.class.getClassLoader().getResourceAsStream(path)) {
             return IOUtils.toString(resource, StandardCharsets.UTF_8);
         } catch (IOException e) {

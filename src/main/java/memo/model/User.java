@@ -100,11 +100,13 @@ public class User implements Serializable {
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinTable(name = "user_authoreditems", joinColumns = @JoinColumn(name = "authoreditems_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
     private List<ShopItem> authoredItems = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinTable(name = "user_reportresponsibilities", joinColumns = @JoinColumn(name = "reportresponsibilities_id"),
+            inverseJoinColumns = @JoinColumn(name = "reportwriters_id"))
     private List<ShopItem> reportResponsibilities = new ArrayList<>();
 
     //**************************************************************

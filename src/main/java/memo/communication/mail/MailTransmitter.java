@@ -14,6 +14,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -89,6 +90,13 @@ public class MailTransmitter implements MessageTransmitter {
                 throw e;
             }
         }
+    }
+
+    @Override
+    public String getEmailContent(User recipient, List<ShopItem> items, MessageType type) {
+        String rawText = MailLoader.loadAsText(type);
+        Map<String, String> placeHolderReplacement = MailPlaceholderFactory.getPlaceHolderReplacement(type, recipient, items);
+        return MailLoader.replacePlaceholders(rawText, placeHolderReplacement);
     }
 
     @Override

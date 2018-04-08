@@ -80,7 +80,7 @@ public class ApiUtils {
         if (optionalJsonNode.isPresent()) {
             logger.debug("Input Body parsed. " + objectName + " found!");
         }
-        //todo move to optional instead
+
         return optionalJsonNode.orElse(null);
     }
 

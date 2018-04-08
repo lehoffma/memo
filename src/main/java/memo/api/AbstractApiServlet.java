@@ -33,6 +33,16 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     protected Logger logger = Logger.getLogger(AbstractApiServlet.class);
     private DependencyUpdateService dependencyUpdateService;
 
+    protected class ApiResponse {
+        public T item;
+        public JsonNode jsonNode;
+
+        public ApiResponse(T item, JsonNode jsonNode) {
+            this.item = item;
+            this.jsonNode = jsonNode;
+        }
+    }
+
     public AbstractApiServlet(AuthenticationStrategy<T> authenticationStrategy) {
         super();
         this.authenticationStrategy = authenticationStrategy;
@@ -111,10 +121,10 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     }
 
     protected List<T> get(HttpServletRequest request,
-                       HttpServletResponse response,
-                       BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
-                       String serializedKey,
-                       Predicate<T> isFiltered
+                          HttpServletResponse response,
+                          BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
+                          String serializedKey,
+                          Predicate<T> isFiltered
     ) {
         Map<String, String[]> parameterMap = request.getParameterMap();
         ApiUtils.getInstance().setContentType(request, response);
@@ -150,21 +160,21 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     }
 
     protected List<T> get(HttpServletRequest request,
-                       HttpServletResponse response,
-                       BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
-                       String serializedKey) {
+                          HttpServletResponse response,
+                          BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
+                          String serializedKey) {
         return this.get(request, response, itemSupplier, serializedKey, t -> true);
     }
 
-    protected <SerializedType> T post(HttpServletRequest request,
-                                         HttpServletResponse response,
-                                         String objectName,
-                                         T baseValue,
-                                         Class<T> clazz,
-                                         Function<T, T> transform,
-                                         List<ModifyPrecondition<T>> preconditions,
-                                         Function<T, SerializedType> getSerialized,
-                                         String serializedKey
+    protected <SerializedType> ApiResponse post(HttpServletRequest request,
+                                                HttpServletResponse response,
+                                                String objectName,
+                                                T baseValue,
+                                                Class<T> clazz,
+                                                Function<T, T> transform,
+                                                List<ModifyPrecondition<T>> preconditions,
+                                                Function<T, SerializedType> getSerialized,
+                                                String serializedKey
     ) {
         ApiUtils.getInstance().setContentType(request, response);
 
@@ -199,11 +209,11 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
-        return item;
+        return new ApiResponse(item, jsonItem);
     }
 
-    protected <SerializedType> T post(HttpServletRequest request, HttpServletResponse response,
-                                         ApiServletPostOptions<T, SerializedType> options) {
+    protected <SerializedType> ApiResponse post(HttpServletRequest request, HttpServletResponse response,
+                                                ApiServletPostOptions<T, SerializedType> options) {
         return this.post(request, response,
                 options.getObjectName(),
                 options.getBaseValue(),
@@ -215,14 +225,14 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         );
     }
 
-    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
-                                        String objectName,
-                                        String jsonId,
-                                        Class<T> clazz,
-                                        Function<T, T> transform,
-                                        List<ModifyPrecondition<T>> preconditions,
-                                        Function<T, SerializedType> getSerialized,
-                                        String serializedKey) {
+    protected <SerializedType> ApiResponse put(HttpServletRequest request, HttpServletResponse response,
+                                               String objectName,
+                                               String jsonId,
+                                               Class<T> clazz,
+                                               Function<T, T> transform,
+                                               List<ModifyPrecondition<T>> preconditions,
+                                               Function<T, SerializedType> getSerialized,
+                                               String serializedKey) {
         ApiUtils.getInstance().setContentType(request, response);
 
         logger.debug("Method PUT called with params " + paramMapToString(request.getParameterMap()));
@@ -264,12 +274,11 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         this.updateDependencies(jsonItem, item);
 
 
-
         DatabaseManager.getInstance().save(item);
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
-        return finalItem;
+        return new ApiResponse(finalItem, jsonItem);
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -283,8 +292,8 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return false;
     }
 
-    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
-                                        ApiServletPutOptions<T, SerializedType> options) {
+    protected <SerializedType> ApiResponse put(HttpServletRequest request, HttpServletResponse response,
+                                               ApiServletPutOptions<T, SerializedType> options) {
         return this.put(request, response,
                 options.getObjectName(),
                 options.getJsonId(),
@@ -297,8 +306,8 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     }
 
     protected T delete(HttpServletRequest request,
-                          HttpServletResponse response,
-                          Function<HttpServletRequest, T> itemSupplier
+                       HttpServletResponse response,
+                       Function<HttpServletRequest, T> itemSupplier
     ) {
         ApiUtils.getInstance().setContentType(request, response);
         logger.debug("Method DELETE called with params " + paramMapToString(request.getParameterMap()));
@@ -324,8 +333,8 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     }
 
     protected T delete(Class<T> clazz,
-                          HttpServletRequest request,
-                          HttpServletResponse response) {
+                       HttpServletRequest request,
+                       HttpServletResponse response) {
 
         return this.delete(request, response, req -> {
             String id = request.getParameter("id");

@@ -31,7 +31,10 @@ public class PasswordRecoveryServlet extends HttpServlet {
             return;
         }
         User user = users.get(0);
-        CommunicationManager.getInstance().send(user, null, MessageType.FORGOT_PASSWORD);
+        boolean success = CommunicationManager.getInstance().send(user, null, MessageType.FORGOT_PASSWORD);
+        if (!success) {
+            ApiUtils.getInstance().processInvalidError(response);
+        }
     }
 
     @Override

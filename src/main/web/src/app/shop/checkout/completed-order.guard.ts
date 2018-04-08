@@ -11,8 +11,8 @@ export class CompletedOrderGuard implements CanActivate {
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		const userCompletedOrder = this.orderService.completedOrder !== null;
 
-		if(!userCompletedOrder){
-			this.router.navigateByUrl("/");
+		if (!userCompletedOrder) {
+			this.router.navigate([""])
 		}
 
 		return userCompletedOrder;

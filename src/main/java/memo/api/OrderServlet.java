@@ -8,6 +8,7 @@ import memo.communication.CommunicationManager;
 import memo.communication.MessageType;
 import memo.data.OrderRepository;
 import memo.model.Order;
+import memo.model.OrderedItem;
 import memo.model.ShopItem;
 import memo.model.User;
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -55,12 +57,15 @@ public class OrderServlet extends AbstractApiServlet<Order> {
                                     .collect(Collectors.toList()));
                             return it;
                         })
-        );
+        ).item;
 
-        User user = order.getUser();
-        //todo only one item is possible at the moment
-        ShopItem orderedItem = order.getItems().get(0).getItem();
-        CommunicationManager.getInstance().send(user, orderedItem, MessageType.ORDER_CONFIRMATION);
+        if (order != null) {
+            User user = order.getUser();
+            List<ShopItem> orderedItems = order.getItems().stream()
+                    .map(OrderedItem::getItem)
+                    .collect(Collectors.toList());
+            CommunicationManager.getInstance().sendList(user, orderedItems, MessageType.ORDER_CONFIRMATION);
+        }
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
