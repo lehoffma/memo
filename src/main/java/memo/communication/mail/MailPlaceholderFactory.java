@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class MailPlaceholderFactory {
 
-    private static String getReplacement(String placeholder, MessageType type, User recipient, List<ShopItem> items) {
+    private static String getReplacement(String placeholder, MessageType type, User recipient, List<ShopItem> items, Map<String, Object> options) {
         switch (placeholder) {
             case "~Name~":
                 return recipient.getFirstName() + " " + recipient.getSurname();
@@ -33,7 +33,7 @@ public class MailPlaceholderFactory {
         return "";
     }
 
-    private static String getReplacement(String placeholder, MessageType type, User recipient, ShopItem item) {
+    private static String getReplacement(String placeholder, MessageType type, User recipient, ShopItem item, Map<String, Object> options) {
         switch (placeholder) {
             case "~OrdersLink~":
                 return "http://www.meilenwoelfe.org/order-history";
@@ -71,12 +71,12 @@ public class MailPlaceholderFactory {
                 ));
     }
 
-    public static Map<String, String> getPlaceHolderReplacement(MessageType type, User recipient, List<ShopItem> item) {
-        return getPlaceHolderReplacement(type, (placeholder) -> getReplacement(placeholder, type, recipient, item));
+    public static Map<String, String> getPlaceHolderReplacement(MessageType type, User recipient, List<ShopItem> item, Map<String, Object> options) {
+        return getPlaceHolderReplacement(type, (placeholder) -> getReplacement(placeholder, type, recipient, item, options));
     }
 
-    public static Map<String, String> getPlaceHolderReplacement(MessageType type, User recipient, ShopItem item) {
-        return getPlaceHolderReplacement(type, (placeholder) -> getReplacement(placeholder, type, recipient, item));
+    public static Map<String, String> getPlaceHolderReplacement(MessageType type, User recipient, ShopItem item, Map<String, Object> options) {
+        return getPlaceHolderReplacement(type, (placeholder) -> getReplacement(placeholder, type, recipient, item, options));
     }
 
     public static List<String> getPlaceHolders(MessageType type) {

@@ -57,7 +57,7 @@ public class OrderServlet extends AbstractApiServlet<Order> {
                                     .collect(Collectors.toList()));
                             return it;
                         })
-        ).item;
+        );
 
         if (order != null) {
             User user = order.getUser();

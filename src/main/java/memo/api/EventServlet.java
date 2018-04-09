@@ -78,7 +78,7 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
                 .setClazz(ShopItem.class)
                 .setGetSerialized(ShopItem::getId);
 
-        ShopItem item = this.post(request, response, options).item;
+        ShopItem item = this.post(request, response, options);
 
         if (item != null) {
             List<User> responsibleUsers = item.getAuthor();
@@ -92,28 +92,27 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
                 .setClazz(ShopItem.class)
                 .setGetSerialized(ShopItem::getId);
 
+//        String id = request.getParameter(options.getJsonId());
+//        ShopItem previousValue = DatabaseManager.getInstance().getById(ShopItem.class, id);
+//        List<User> previouslyResponsible = new ArrayList<>(previousValue.getAuthor());
 
-        ApiResponse result = this.put(request, response, options);
-        ShopItem changedItem = result.item;
-        JsonNode jsonNode = result.jsonNode;
-
-        ShopItem previousValue = DatabaseManager.getInstance().getById(ShopItem.class, jsonNode.get(options.getJsonId()).asInt());
-        List<User> previouslyResponsible = new ArrayList<>(previousValue.getAuthor());
+        ShopItem changedItem = this.put(request, response, options);
 
         if (changedItem == null) {
             return;
         }
         //notify participants of changes
-        //todo getOrders is empty
-        changedItem.getOrders().stream()
+        List<OrderedItem> orders = new ArrayList<>(changedItem.getOrders());
+        orders.stream()
                 .map(OrderedItem::getOrder)
                 .map(Order::getUser)
+                .distinct()
                 .forEach(participant -> CommunicationManager.getInstance().send(participant, changedItem, MessageType.OBJECT_HAS_CHANGED));
         //notify newly added responsible users
-        List<User> newResponsible = changedItem.getAuthor();
+        List<User> newResponsible = new ArrayList<>(changedItem.getAuthor());
         newResponsible.stream()
                 //todo only send mails to newly added users
-                .filter(user -> previouslyResponsible.stream().noneMatch(it -> it.getId().equals(user.getId())))
+//                .filter(user -> previouslyResponsible.stream().noneMatch(it -> it.getId().equals(user.getId())))
                 .forEach(user -> CommunicationManager.getInstance().send(user, changedItem, MessageType.RESPONSIBLE_USER));
     }
 

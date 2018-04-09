@@ -7,12 +7,13 @@ import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @FunctionalInterface
 interface SendMessage<T> {
-    void accept(MessageTransmitter transmitter, User to, T value, MessageType type) throws Exception;
+    void accept(MessageTransmitter transmitter, User to, T value, MessageType type, Map<String, Object> options) throws Exception;
 }
 
 public class CommunicationManager {
@@ -32,13 +33,13 @@ public class CommunicationManager {
 
     }
 
-    private <T> boolean send(User to, T item, MessageType type, SendMessage<T> send) {
+    private <T> boolean send(User to, T item, MessageType type, Map<String, Object> options, SendMessage<T> send) {
         List<TransmitterType> transmitters = getTransmitters(to, type);
         boolean atLeastOneSucceeded = false;
         for (TransmitterType it : transmitters) {
             MessageTransmitter transmitter = this.transmitters.get(it);
             try {
-                send.accept(transmitter, to, item, type);
+                send.accept(transmitter, to, item, type, options);
                 atLeastOneSucceeded = true;
             } catch (Exception e) {
                 String name = to == null ? "null" : to.getFirstName() + " " + to.getSurname();
@@ -52,11 +53,19 @@ public class CommunicationManager {
     }
 
     public boolean send(User to, ShopItem item, MessageType type) {
-        return this.send(to, item, type, MessageTransmitter::send);
+        return this.send(to, item, type, new HashMap<>(), MessageTransmitter::send);
+    }
+
+    public boolean send(User to, ShopItem item, MessageType type, Map<String, Object> options) {
+        return this.send(to, item, type, options, MessageTransmitter::send);
     }
 
     public boolean sendList(User to, List<ShopItem> items, MessageType type) {
-        return this.send(to, items, type, MessageTransmitter::send);
+        return this.send(to, items, type, new HashMap<>(), MessageTransmitter::send);
+    }
+
+    public boolean sendList(User to, List<ShopItem> items, MessageType type, Map<String, Object> options) {
+        return this.send(to, items, type, options, MessageTransmitter::send);
     }
 
     private List<TransmitterType> getTransmitters(User user, MessageType type) {

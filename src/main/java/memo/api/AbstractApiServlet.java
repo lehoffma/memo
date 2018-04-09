@@ -33,16 +33,6 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     protected Logger logger = Logger.getLogger(AbstractApiServlet.class);
     private DependencyUpdateService dependencyUpdateService;
 
-    protected class ApiResponse {
-        public T item;
-        public JsonNode jsonNode;
-
-        public ApiResponse(T item, JsonNode jsonNode) {
-            this.item = item;
-            this.jsonNode = jsonNode;
-        }
-    }
-
     public AbstractApiServlet(AuthenticationStrategy<T> authenticationStrategy) {
         super();
         this.authenticationStrategy = authenticationStrategy;
@@ -166,7 +156,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return this.get(request, response, itemSupplier, serializedKey, t -> true);
     }
 
-    protected <SerializedType> ApiResponse post(HttpServletRequest request,
+    protected <SerializedType> T post(HttpServletRequest request,
                                                 HttpServletResponse response,
                                                 String objectName,
                                                 T baseValue,
@@ -209,10 +199,10 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
-        return new ApiResponse(item, jsonItem);
+        return item;
     }
 
-    protected <SerializedType> ApiResponse post(HttpServletRequest request, HttpServletResponse response,
+    protected <SerializedType> T post(HttpServletRequest request, HttpServletResponse response,
                                                 ApiServletPostOptions<T, SerializedType> options) {
         return this.post(request, response,
                 options.getObjectName(),
@@ -225,7 +215,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         );
     }
 
-    protected <SerializedType> ApiResponse put(HttpServletRequest request, HttpServletResponse response,
+    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
                                                String objectName,
                                                String jsonId,
                                                Class<T> clazz,
@@ -278,7 +268,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
-        return new ApiResponse(finalItem, jsonItem);
+        return finalItem;
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -292,7 +282,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return false;
     }
 
-    protected <SerializedType> ApiResponse put(HttpServletRequest request, HttpServletResponse response,
+    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
                                                ApiServletPutOptions<T, SerializedType> options) {
         return this.put(request, response,
                 options.getObjectName(),

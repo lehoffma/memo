@@ -27,6 +27,10 @@ form,
 	max-width: 400px;
 }
 
+.success-message {
+	color: green;
+}
+
 @media all and (min-width: 600px) {
 	:host {
 		margin: 1rem auto;

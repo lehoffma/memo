@@ -119,7 +119,7 @@ public class UserServlet extends AbstractApiServlet<User> {
                                         () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
                                 )
                         ))
-        ).item;
+        );
 
         if (createdUser != null) {
             CommunicationManager.getInstance().send(createdUser, null, MessageType.REGISTRATION);

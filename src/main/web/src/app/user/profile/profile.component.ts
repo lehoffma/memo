@@ -77,8 +77,8 @@ export class ProfileComponent implements OnInit {
 	canEditUser: Observable<boolean> = combineLatest(this.userId, this.loginService.currentUser$)
 		.pipe(
 			map(([profileId, currentUser]) => {
-				return profileId === currentUser.id || isAuthenticated(currentUser.clubRole, ClubRole.Admin)
-					|| currentUser.userPermissions().userManagement >= Permission.write;
+				return currentUser && (profileId === currentUser.id || isAuthenticated(currentUser.clubRole, ClubRole.Admin)
+					|| currentUser.userPermissions().userManagement >= Permission.write);
 			})
 		);
 	profileCategories = profileCategories;
