@@ -7,6 +7,7 @@ import memo.auth.api.EntryAuthStrategy;
 import memo.data.EntryRepository;
 import memo.model.Entry;
 import memo.model.EntryCategory;
+import memo.model.Image;
 import memo.model.ShopItem;
 import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
@@ -57,11 +58,11 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, Entry object) {
-        this.manyToOne(object, Entry::getItem, Entry::getId, ShopItem::getEntries, shopItem -> shopItem::setEntries);
-        this.manyToOne(object, Entry::getCategory, Entry::getId, EntryCategory::getEntry, entryCategory -> entryCategory::setEntry);
-        this.oneToMany(object, Entry::getImages, image -> image::setEntry);
+        this.manyToOne(object, ShopItem.class, Entry::getItem, Entry::getId, ShopItem::getEntries, shopItem -> shopItem::setEntries);
+        this.manyToOne(object, EntryCategory.class, Entry::getCategory, Entry::getId, EntryCategory::getEntry, entryCategory -> entryCategory::setEntry);
+        this.oneToMany(object, Image.class, Entry::getImages, image -> image::setEntry);
         //todo remove (das is nur nötig, weil die kategorien hardgecoded sind)
-        DatabaseManager.getInstance().save(object.getCategory());
+        DatabaseManager.getInstance().save(object.getCategory(), EntryCategory.class);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {

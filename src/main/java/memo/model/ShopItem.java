@@ -11,12 +11,32 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: ShopItem
  */
 @Entity
 @Table(name = "SHOP_ITEMS")
+@NamedQueries({
+        @NamedQuery(
+                name = "ShopItem.findBySearchTerm",
+                query = "SELECT e FROM ShopItem e " +
+                        " WHERE e.type = :type " +
+                        "       AND (UPPER(e.title) LIKE UPPER(:searchTerm) " +
+                        "              OR UPPER(e.description) LIKE UPPER(:searchTerm))"
+        ),
+        @NamedQuery(
+                name = "ShopItem.findByType",
+                query = "SELECT e FROM ShopItem e " +
+                        " WHERE e.type = :type"
+        ),
+        @NamedQuery(
+                name = "ShopItem.findByAuthor",
+                query = "SELECT distinct e FROM ShopItem e " +
+                        " JOIN e.author a WHERE a.id = :author"
+        )
+})
 public class ShopItem implements Serializable {
 
     //**************************************************************
@@ -347,5 +367,19 @@ public class ShopItem implements Serializable {
                 ", miles=" + miles +
                 ", type=" + type +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShopItem shopItem = (ShopItem) o;
+        return Objects.equals(id, shopItem.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

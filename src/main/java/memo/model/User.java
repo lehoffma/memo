@@ -9,14 +9,28 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: User
  */
 @Entity
 @Table(name = "USERS")
-
-
+@NamedQueries({
+        @NamedQuery(
+                name = "User.findBySearchTerm",
+                query = "SELECT u FROM User u " +
+                        " WHERE UPPER(u.surname) LIKE UPPER(:searchTerm) OR UPPER(u.firstName) LIKE UPPER(:searchTerm)"
+        ),
+        @NamedQuery(
+                name = "User.findByEmail",
+                query = "SELECT u FROM User u WHERE u.email = :email"
+        ),
+        @NamedQuery(
+                name = "User.findByOrderedItemId",
+                query = "SELECT distinct u from Order o JOIN o.user u JOIN o.items i WHERE i.id = :orderedItemId"
+        )
+})
 public class User implements Serializable {
 
     //**************************************************************
@@ -40,8 +54,8 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String surname;
 
-    @Enumerated(EnumType.ORDINAL)
-    private ClubRole clubRole = ClubRole.Gast;
+    @Enumerated(EnumType.STRING)
+    private ClubRole clubRole;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonSerialize(using = AddressIdListSerializer.class)
@@ -358,6 +372,7 @@ public class User implements Serializable {
         return this;
     }
 
+
     //**************************************************************
     //  methods
     //**************************************************************
@@ -382,5 +397,19 @@ public class User implements Serializable {
                 ", hasSeasonTicket=" + hasSeasonTicket +
                 ", isWoelfeClubMember=" + isWoelfeClubMember +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

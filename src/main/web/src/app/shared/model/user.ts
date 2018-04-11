@@ -77,7 +77,7 @@ export class User extends BaseObject<User> {
 
 	static create() {
 		return new User(-1, "", "", Gender.OTHER, null, "", "",
-			ClubRole.Gast, new Date(), [], [], [],[],
+			null, new Date(), [], [], [], [],
 			null, 0, "", "", false, false, false, false, ["resources/images/Logo.png"]);
 	}
 

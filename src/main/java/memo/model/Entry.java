@@ -8,13 +8,23 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: Entry
  */
 @Entity
 @Table(name = "ENTRIES")
-
+@NamedQueries({
+        @NamedQuery(
+                name = "Entry.findByEventId",
+                query = "SELECT e FROM Entry e WHERE e.item.id = :Id"
+        ),
+        @NamedQuery(
+                name = "Entry.findByType",
+                query = "SELECT e FROM Entry e WHERE e.item.type = :type"
+        )
+})
 public class Entry implements Serializable {
 
 
@@ -176,5 +186,19 @@ public class Entry implements Serializable {
                 ", comment='" + comment + '\'' +
                 ", date=" + date +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Entry entry = (Entry) o;
+        return Objects.equals(id, entry.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

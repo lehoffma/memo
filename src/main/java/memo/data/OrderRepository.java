@@ -1,17 +1,13 @@
 package memo.data;
 
 import memo.model.Order;
-import memo.model.OrderedItem;
-import memo.model.PaymentMethod;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 public class OrderRepository extends AbstractRepository<Order> {
@@ -26,21 +22,6 @@ public class OrderRepository extends AbstractRepository<Order> {
     public static OrderRepository getInstance() {
         if (instance == null) instance = new OrderRepository();
         return instance;
-    }
-
-
-    public static Optional<PaymentMethod> paymentMethodFromString(String value) {
-        return Arrays.stream(PaymentMethod.values())
-                .filter(it -> it.toString().equalsIgnoreCase(value))
-                .findFirst();
-    }
-
-    public List<OrderedItem> getOrderedItemsByOrderId(Integer id) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                " WHERE o.order.id = :Id", OrderedItem.class)
-                .setParameter("Id", id)
-                .getResultList();
-
     }
 
     private List<Order> withParsedId(String id, HttpServletResponse response, Function<Integer, List<Order>> getValues) {
@@ -58,18 +39,18 @@ public class OrderRepository extends AbstractRepository<Order> {
         return null;
     }
 
-    public List<Order> getOrderByOrderedItemId(String orderedItemId, HttpServletResponse response) {
+    public List<Order> findByOrderedItem(String orderedItemId, HttpServletResponse response) {
         return this.withParsedId(orderedItemId, response,
-                id -> DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o " +
-                        " WHERE :orderedItemId IN (SELECT item.id FROM o.items item)", Order.class)
+                id -> DatabaseManager.createEntityManager()
+                        .createNamedQuery("Order.findByOrderedItem", Order.class)
                         .setParameter("orderedItemId", id)
                         .getResultList());
     }
 
-    public List<Order> getOrderByUserId(String userId, HttpServletResponse response) {
+    public List<Order> findByUser(String userId, HttpServletResponse response) {
         return this.withParsedId(userId, response,
-                id -> DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o " +
-                        " WHERE o.user.id = :userId", Order.class)
+                id -> DatabaseManager.createEntityManager()
+                        .createNamedQuery("Order.findByUser", Order.class)
                         .setParameter("userId", id)
                         .getResultList());
     }
@@ -78,8 +59,8 @@ public class OrderRepository extends AbstractRepository<Order> {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<Order>>>()
                         .buildPut(orderId, this::get)
-                        .buildPut(orderedItemId, s -> this.getOrderByOrderedItemId(s, response))
-                        .buildPut(userId, s -> this.getOrderByUserId(s, response)),
+                        .buildPut(orderedItemId, s -> this.findByOrderedItem(s, response))
+                        .buildPut(userId, s -> this.findByUser(s, response)),
                 this.getAll()
         );
     }

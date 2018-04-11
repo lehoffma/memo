@@ -2,7 +2,6 @@ package memo.data;
 
 import memo.auth.BCryptHelper;
 import memo.model.ClubRole;
-import memo.model.Image;
 import memo.model.PermissionState;
 import memo.model.User;
 import memo.util.Configuration;
@@ -11,7 +10,6 @@ import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -53,24 +51,24 @@ public class UserRepository extends AbstractRepository<User> {
         return DatabaseManager.createEntityManager().find(User.class, id);
     }
 
-    public List<User> getUserByEmail(String email) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+    public List<User> findByEmail(String email) {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("User.findByEmail", User.class)
                 .setParameter("email", email)
                 .getResultList();
     }
 
-    public List<User> getUserBySearchterm(String searchTerm) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u " +
-                " WHERE UPPER(u.surname) LIKE UPPER(:searchTerm) OR UPPER(u.firstName) LIKE UPPER(:searchTerm)", User.class)
+    public List<User> findBySearchTerm(String searchTerm) {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("User.findBySearchTerm", User.class)
                 .setParameter("searchTerm", "%" + searchTerm + "%")
                 .getResultList();
     }
 
-    public List<User> getUserByOrderedItemId(String orderedItemId) {
+    public List<User> findByOrderedItemId(String orderedItemId) {
         Integer id = Integer.valueOf(orderedItemId);
         return DatabaseManager.createEntityManager()
-                .createQuery("SELECT distinct u from Order o JOIN o.user u JOIN o.items i" +
-                        " WHERE i.id = :orderedItemId", User.class)
+                .createNamedQuery("User.findByOrderedItemId", User.class)
                 .setParameter("orderedItemId", id)
                 .getResultList();
     }
@@ -80,9 +78,9 @@ public class UserRepository extends AbstractRepository<User> {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<User>>>()
                         .buildPut(userId, this::get)
-                        .buildPut(email, this::getUserByEmail)
-                        .buildPut(searchTerm, this::getUserBySearchterm)
-                        .buildPut(participantId, this::getUserByOrderedItemId),
+                        .buildPut(email, this::findByEmail)
+                        .buildPut(searchTerm, this::findBySearchTerm)
+                        .buildPut(participantId, this::findByOrderedItemId),
                 this.getAll()
         );
     }
@@ -93,7 +91,7 @@ public class UserRepository extends AbstractRepository<User> {
     public User getAdmin() {
         String email = Configuration.get("admin.email");
         String password = Configuration.get("admin.password");
-        List<User> userList = this.getUserByEmail(email);
+        List<User> userList = this.findByEmail(email);
 
         logger.trace("Querying admin user with email = " + email);
         if (userList.isEmpty()) {
@@ -110,8 +108,8 @@ public class UserRepository extends AbstractRepository<User> {
             admin.setClubRole(ClubRole.Admin);
 
             logger.trace("Creating admin user with email = " + email);
-            DatabaseManager.getInstance().save(admin);
-            userList = this.getUserByEmail(email);
+            DatabaseManager.getInstance().save(admin, User.class);
+            userList = this.findByEmail(email);
         }
         return userList.get(0);
     }

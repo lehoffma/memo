@@ -24,18 +24,18 @@ public class StockRepository extends AbstractRepository<Stock> {
     }
 
 
-    public List<Stock> getStockByEventType(Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s " +
-                " WHERE s.item.type = :typ", Stock.class)
+    public List<Stock> findByShopItemType(Integer type) {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("Stock.findByShopItemType", Stock.class)
                 .setParameter("typ", type)
                 .getResultList();
     }
 
-    public List<Stock> getStockByEventId(String eventId) throws NumberFormatException {
+    public List<Stock> findByShopItem(String eventId) throws NumberFormatException {
         Integer id = Integer.parseInt(eventId);
         //ToDo: gibt null aus wenn id nicht vergeben (ich bin für optionals)
-        return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s " +
-                " WHERE s.item.id = :id", Stock.class)
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("Stock.findByShopItem", Stock.class)
                 .setParameter("id", id)
                 .getResultList();
     }
@@ -43,8 +43,8 @@ public class StockRepository extends AbstractRepository<Stock> {
 
     public List<Stock> get(String eventId, String type, HttpServletResponse response) {
         return this.getIf(new MapBuilder<String, Function<String, List<Stock>>>()
-                        .buildPut(eventId, this::getStockByEventId)
-                        .buildPut(type, s -> this.getStockByEventType(Integer.valueOf(type))),
+                        .buildPut(eventId, this::findByShopItem)
+                        .buildPut(type, s -> this.findByShopItemType(Integer.valueOf(type))),
                 this.getAll());
     }
 

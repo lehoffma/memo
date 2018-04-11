@@ -25,7 +25,7 @@ public class PasswordRecoveryServlet extends HttpServlet {
         JsonNode jsonItem = ApiUtils.getInstance().getJsonObject(request, "email");
         String emailToReset = jsonItem.asText();
 
-        List<User> users = UserRepository.getInstance().getUserByEmail(emailToReset);
+        List<User> users = UserRepository.getInstance().findByEmail(emailToReset);
         if (users.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
             return;
@@ -50,7 +50,7 @@ public class PasswordRecoveryServlet extends HttpServlet {
 
         String hashedPassword = BCryptHelper.hashPassword(newPassword);
         user.setPassword(hashedPassword);
-        DatabaseManager.getInstance().update(user);
+        DatabaseManager.getInstance().update(user, User.class);
     }
 
 }

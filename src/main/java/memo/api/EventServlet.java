@@ -8,11 +8,7 @@ import memo.auth.api.ShopItemAuthStrategy;
 import memo.communication.CommunicationManager;
 import memo.communication.MessageType;
 import memo.data.EventRepository;
-import memo.model.Order;
-import memo.model.OrderedItem;
-import memo.model.ShopItem;
-import memo.model.User;
-import memo.util.DatabaseManager;
+import memo.model.*;
 import memo.util.EventType;
 import org.apache.log4j.Logger;
 
@@ -46,14 +42,14 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, ShopItem object) {
-        this.oneToMany(object, ShopItem::getEntries, entry -> entry::setItem);
-        this.oneToMany(object, ShopItem::getComments, comment -> comment::setItem);
-        this.manyToMany(object, ShopItem::getAuthor, ShopItem::getId, User::getAuthoredItems, user -> user::setAuthoredItems);
-        this.manyToMany(object, ShopItem::getReportWriters, ShopItem::getId, User::getReportResponsibilities, user -> user::setReportResponsibilities);
-        this.oneToMany(object, ShopItem::getImages, image -> image::setItem);
-        this.oneToMany(object, ShopItem::getOrders, orderedItem -> orderedItem::setItem);
-        this.oneToMany(object, ShopItem::getRoute, address -> address::setItem);
-        this.oneToMany(object, ShopItem::getStock, stock -> stock::setItem);
+        this.oneToMany(object, Entry.class, ShopItem::getEntries, entry -> entry::setItem);
+        this.oneToMany(object, Comment.class, ShopItem::getComments, comment -> comment::setItem);
+        this.manyToMany(object, User.class, ShopItem::getAuthor, ShopItem::getId, User::getAuthoredItems, user -> user::setAuthoredItems);
+        this.manyToMany(object, User.class, ShopItem::getReportWriters, ShopItem::getId, User::getReportResponsibilities, user -> user::setReportResponsibilities);
+        this.oneToMany(object, Image.class, ShopItem::getImages, image -> image::setItem);
+        this.oneToMany(object, OrderedItem.class, ShopItem::getOrders, orderedItem -> orderedItem::setItem);
+        this.oneToMany(object, Address.class, ShopItem::getRoute, address -> address::setItem);
+        this.oneToMany(object, Stock.class, ShopItem::getStock, stock -> stock::setItem);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -26,42 +26,34 @@ public class ParticipantRepository extends AbstractRepository<OrderedItem> {
     }
 
     public List<OrderedItem> getParticipants() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o ", OrderedItem.class)
-                .getResultList();
-    }
-
-    public List<OrderedItem> getParticipantsByEventType(Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                " WHERE o.item.type = :typ", OrderedItem.class)
-                .setParameter("typ", type)
-                .getResultList();
-    }
-
-    public List<OrderedItem> getParticipantsByEventId(String eventId) throws NumberFormatException {
-        Integer id = Integer.parseInt(eventId);
-        return getParticipantsByEventId(id);
+        return this.getAll();
     }
 
 
-    public List<OrderedItem> getParticipantsByEventId(Integer id) {
+    public List<OrderedItem> findByEvent(Integer id) {
         //ToDo: gibt null aus wenn id nicht vergeben
-        return DatabaseManager.createEntityManager().createQuery("SELECT DISTINCT o FROM OrderedItem o " +
-                " WHERE o.item.id = :id", OrderedItem.class)
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("OrderedItem.findByEvent", OrderedItem.class)
                 .setParameter("id", id)
                 .getResultList();
     }
 
-    public List<OrderedItem> getParticipantsByEventId(String eventId, HttpServletResponse response) {
+    public List<OrderedItem> findByEvent(String eventId) throws NumberFormatException {
+        Integer id = Integer.parseInt(eventId);
+        return findByEvent(id);
+    }
+
+
+    public List<OrderedItem> findByEvent(String eventId, HttpServletResponse response) {
         try {
-            return ParticipantRepository.getInstance().getParticipantsByEventId(eventId);
+            return findByEvent(eventId);
         } catch (NumberFormatException e) {
-            logger.error("Could not parse event ID value");
+            logger.error("Could not parse event ID value", e);
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             try {
                 response.getWriter().append("Bad ID value");
             } catch (IOException exc) {
-                logger.error("Could not write to response");
-                exc.printStackTrace();
+                logger.error("Could not write to response", exc);
             }
         }
         return new ArrayList<>();
@@ -70,7 +62,7 @@ public class ParticipantRepository extends AbstractRepository<OrderedItem> {
     public List<OrderedItem> get(String eventId, HttpServletResponse response) {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<OrderedItem>>>()
-                        .buildPut(eventId, s -> this.getParticipantsByEventId(s, response)),
+                        .buildPut(eventId, s -> this.findByEvent(s, response)),
                 this.getAll()
         );
     }

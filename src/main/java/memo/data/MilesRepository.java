@@ -23,7 +23,7 @@ public class MilesRepository {
      * @return the all-time accumulated miles of the user
      */
     public static Integer milesOfUser(Integer userId) {
-        List<ShopItem> participatedEvents = EventRepository.getInstance().getEventsByUser(userId).stream()
+        List<ShopItem> participatedEvents = EventRepository.getInstance().findByParticipant(userId).stream()
                 .filter(item -> item.getDate().toLocalDateTime().isBefore(LocalDateTime.now()))
                 .collect(Collectors.toList());
         return participatedEvents.stream()
@@ -41,7 +41,7 @@ public class MilesRepository {
      * @return the accumulated miles of the user for the given season/date-range
      */
     public static Integer milesOfUser(Integer userId, LocalDateTime start, LocalDateTime end) {
-        List<ShopItem> participatedEvents = EventRepository.getInstance().getEventsByUser(userId);
+        List<ShopItem> participatedEvents = EventRepository.getInstance().findByParticipant(userId);
         return participatedEvents.stream()
                 .filter(item -> item.getDate().toLocalDateTime().isBefore(LocalDateTime.now()))
                 .filter(item -> isBetween(item.getDate().toLocalDateTime(), start, end))

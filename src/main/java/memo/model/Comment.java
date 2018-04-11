@@ -9,9 +9,20 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "COMMENTS")
+@NamedQueries({
+        @NamedQuery(
+                name = "Comment.findTopLevelByEventId",
+                query = "SELECT c FROM Comment c WHERE c.item.id = :eventID AND c.parent = NULL "
+        ),
+        @NamedQuery(
+                name = "Comment.findByAuthorId",
+                query = "SELECT c FROM Comment c WHERE c.author.id = :authorID"
+        )
+})
 public class Comment implements Serializable {
 
     //**************************************************************
@@ -142,5 +153,19 @@ public class Comment implements Serializable {
                 ", children=" + children.size() +
                 ", content='" + content + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id == comment.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

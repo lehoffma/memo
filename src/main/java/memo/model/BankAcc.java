@@ -2,6 +2,7 @@ package memo.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: BankAcc
@@ -113,5 +114,19 @@ public class BankAcc implements Serializable {
                 ", bic='" + bic + '\'' +
                 ", bankName='" + bankName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BankAcc bankAcc = (BankAcc) o;
+        return Objects.equals(id, bankAcc.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

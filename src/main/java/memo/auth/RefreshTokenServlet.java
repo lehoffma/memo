@@ -37,7 +37,7 @@ public class RefreshTokenServlet extends HttpServlet {
                     .parseClaimsJws(refreshToken);
             String email = refreshTokenJws.getBody().getSubject();
 
-            List<User> users = UserRepository.getInstance().getUserByEmail(email);
+            List<User> users = UserRepository.getInstance().findByEmail(email);
             if (users.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;

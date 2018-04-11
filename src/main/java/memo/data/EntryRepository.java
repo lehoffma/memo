@@ -25,12 +25,12 @@ public class EntryRepository extends AbstractRepository<Entry> {
     }
 
 
-    public List<Entry> getEntriesByEventId(String SeventId) {
+    public List<Entry> findByEventId(String SeventId) {
         try {
             Integer id = Integer.parseInt(SeventId);
 
-            return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e " +
-                    " WHERE e.item.id = :Id", Entry.class)
+            return DatabaseManager.createEntityManager()
+                    .createNamedQuery("Entry.findByEventId", Entry.class)
                     .setParameter("Id", id)
                     .getResultList();
 
@@ -40,18 +40,18 @@ public class EntryRepository extends AbstractRepository<Entry> {
         return null;
     }
 
-    public List<Entry> getEntriesByEventType(Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e " +
-                " WHERE e.item.type = :typ", Entry.class)
-                .setParameter("typ", type)
+    public List<Entry> findByEventType(Integer type) {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("Entry.findByType", Entry.class)
+                .setParameter("type", type)
                 .getResultList();
     }
 
     public List<Entry> get(String Sid, String SeventId, String sType, HttpServletResponse response) {
         return this.getIf(new MapBuilder<String, Function<String, List<Entry>>>()
                         .buildPut(Sid, this::get)
-                        .buildPut(SeventId, this::getEntriesByEventId)
-                        .buildPut(sType, s -> this.getEntriesByEventType(EventServlet.getType(sType))),
+                        .buildPut(SeventId, this::findByEventId)
+                        .buildPut(sType, s -> this.findByEventType(EventServlet.getType(sType))),
                 this.getAll()
         );
     }

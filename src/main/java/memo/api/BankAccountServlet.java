@@ -3,12 +3,10 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
-import memo.api.util.DependencyUpdateService;
 import memo.auth.api.BankAccAuthStrategy;
 import memo.data.BankAccountRepository;
 import memo.model.BankAcc;
 import memo.model.User;
-import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -27,7 +25,7 @@ public class BankAccountServlet extends AbstractApiServlet<BankAcc> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, BankAcc object) {
-        this.manyToOne(object, BankAcc::getUser, BankAcc::getId, User::getBankAccounts, user -> user::setBankAccounts);
+        this.manyToOne(object, User.class, BankAcc::getUser, BankAcc::getId, User::getBankAccounts, user -> user::setBankAccounts);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {

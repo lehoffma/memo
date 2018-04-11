@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +58,7 @@ public class LoginServlet extends HttpServlet {
                 .parseClaimsJws(accessToken);
         String email = accessTokenJws.getBody().getSubject();
 
-        List<User> users = UserRepository.getInstance().getUserByEmail(email);
+        List<User> users = UserRepository.getInstance().findByEmail(email);
         if (users.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
             logger.error("Login failed: could not find user with email = " + email);
@@ -91,7 +90,7 @@ public class LoginServlet extends HttpServlet {
 
             List<User> users = this.adminLoginInfo.email.equalsIgnoreCase(information.email)
                     ? Collections.singletonList(UserRepository.getInstance().getAdmin())
-                    : UserRepository.getInstance().getUserByEmail(information.email);
+                    : UserRepository.getInstance().findByEmail(information.email);
 
             if (users.isEmpty()) {
                 logger.error("Could not find user with email = " + information.email);

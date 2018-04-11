@@ -132,6 +132,7 @@ export class UserService extends ServletService<User> {
 		}))
 			.pipe(
 				tap(() => this._cache.invalidateById(user.id)),
+				tap(() => this._cache.invalidateType("search")),
 				mergeMap(response => this.getById(response.id))
 			)
 	}

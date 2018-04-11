@@ -25,11 +25,11 @@ public class ParticipantsServlet extends AbstractApiServlet<OrderedItem> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, OrderedItem object) {
-        this.manyToOne(object, OrderedItem::getItem, OrderedItem::getId, ShopItem::getOrders,
+        this.manyToOne(object, ShopItem.class, OrderedItem::getItem, OrderedItem::getId, ShopItem::getOrders,
                 shopItem -> shopItem::setOrders);
-        this.manyToOne(object, OrderedItem::getColor, OrderedItem::getId, Color::getOrderedItems,
+        this.manyToOne(object, Color.class, OrderedItem::getColor, OrderedItem::getId, Color::getOrderedItems,
                 color -> color::setOrderedItems);
-        this.manyToOne(object, OrderedItem::getOrder, OrderedItem::getId, Order::getItems,
+        this.manyToOne(object, Order.class, OrderedItem::getOrder, OrderedItem::getId, Order::getItems,
                 order -> order::setItems);
     }
 

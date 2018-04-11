@@ -29,12 +29,11 @@ public class CommentRepository extends AbstractRepository<Comment> {
         return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c", Comment.class).getResultList();
     }
 
-    public List<Comment> getCommentsByEventID(String SEventID, HttpServletResponse response) {
+    public List<Comment> findByEventId(String SEventID, HttpServletResponse response) {
         try {
             Integer eventID = Integer.parseInt(SEventID);
-            //ToDo: gibt null aus wenn id nicht vergeben
-            return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
-                    " WHERE c.item.id = :eventID AND c.parent = NULL ", Comment.class)
+            return DatabaseManager.createEntityManager()
+                    .createNamedQuery("Comment.findTopLevelByEventId", Comment.class)
                     .setParameter("eventID", eventID)
                     .getResultList();
 
@@ -45,12 +44,11 @@ public class CommentRepository extends AbstractRepository<Comment> {
         return null;
     }
 
-    public List<Comment> getCommentsByAuthorID(String SAuthorID, HttpServletResponse response) {
+    public List<Comment> findByAuthorId(String SAuthorID, HttpServletResponse response) {
         try {
             Integer authorID = Integer.parseInt(SAuthorID);
-            //ToDo: gibt null aus wenn id nicht vergeben
-            return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c " +
-                    " WHERE c.author.id = :authorID", Comment.class)
+            return DatabaseManager.createEntityManager()
+                    .createNamedQuery("Comment.findByAuthorId", Comment.class)
                     .setParameter("authorID", "%" + authorID + "%")
                     .getResultList();
 
@@ -64,8 +62,8 @@ public class CommentRepository extends AbstractRepository<Comment> {
     public List<Comment> get(String id, String SEventID, String SAuthorID, HttpServletResponse response) {
         return this.getIf(new MapBuilder<String, Function<String, List<Comment>>>()
                         .buildPut(id, this::get)
-                        .buildPut(SEventID, s -> this.getCommentsByEventID(SEventID, response))
-                        .buildPut(SAuthorID, s -> this.getCommentsByAuthorID(SAuthorID, response)),
+                        .buildPut(SEventID, s -> this.findByEventId(SEventID, response))
+                        .buildPut(SAuthorID, s -> this.findByAuthorId(SAuthorID, response)),
                 this.getAll()
         );
     }

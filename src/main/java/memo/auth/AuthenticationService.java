@@ -37,7 +37,7 @@ public class AuthenticationService {
     private static Optional<User> parseUserFromRequestHeader(HttpServletRequest request) {
         return TokenService.getJwtFromRequest(request)
                 .flatMap(jwt -> TokenService.getSubjectOfToken(KeyGenerator.getAccessKey(), jwt))
-                .map(email -> UserRepository.getInstance().getUserByEmail(email))
+                .map(email -> UserRepository.getInstance().findByEmail(email))
                 .filter(users -> users.size() > 0)
                 .map(users -> users.get(0));
     }

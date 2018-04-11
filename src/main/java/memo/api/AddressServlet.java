@@ -24,8 +24,8 @@ public class AddressServlet extends AbstractApiServlet<Address> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, Address object) {
-        this.manyToOne(object, Address::getUser, Address::getId, User::getAddresses, user -> user::setAddresses);
-        this.manyToOne(object, Address::getItem, Address::getId, ShopItem::getRoute, item -> item::setRoute);
+        this.manyToOne(object, User.class, Address::getUser, Address::getId, User::getAddresses, user -> user::setAddresses);
+        this.manyToOne(object, ShopItem.class, Address::getItem, Address::getId, ShopItem::getRoute, item -> item::setRoute);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {

@@ -9,10 +9,7 @@ import memo.auth.api.UserAuthStrategy;
 import memo.communication.CommunicationManager;
 import memo.communication.MessageType;
 import memo.data.UserRepository;
-import memo.model.ClubRole;
-import memo.model.PermissionState;
-import memo.model.ShopItem;
-import memo.model.User;
+import memo.model.*;
 import memo.util.ApiUtils;
 import memo.util.Configuration;
 import memo.util.DatabaseManager;
@@ -75,7 +72,7 @@ public class UserServlet extends AbstractApiServlet<User> {
         String adminEmail = Configuration.get("admin.email");
         List<User> users = adminEmail.equalsIgnoreCase(email)
                 ? Collections.singletonList(UserRepository.getInstance().getAdmin())
-                : UserRepository.getInstance().getUserByEmail(email);
+                : UserRepository.getInstance().findByEmail(email);
 
         if (users.isEmpty()) {
             logger.trace("Email is not used yet.");
@@ -92,14 +89,14 @@ public class UserServlet extends AbstractApiServlet<User> {
     @Override
     protected void updateDependencies(JsonNode jsonNode, User object) {
         updateUserFromJson(jsonNode, object);
-        DatabaseManager.getInstance().save(object.getPermissions());
+        DatabaseManager.getInstance().save(object.getPermissions(), PermissionState.class);
 
-        this.oneToMany(object, User::getAddresses, address -> address::setUser);
-        this.oneToMany(object, User::getBankAccounts, bankAcc -> bankAcc::setUser);
-        this.oneToMany(object, User::getImages, image -> image::setUser);
-        this.oneToMany(object, User::getComments, comment -> comment::setAuthor);
-        this.oneToMany(object, User::getOrders, order -> order::setUser);
-        this.manyToMany(object, User::getAuthoredItems, User::getId, ShopItem::getAuthor, shopItem -> shopItem::setAuthor);
+        this.oneToMany(object, Address.class, User::getAddresses, address -> address::setUser);
+        this.oneToMany(object, BankAcc.class, User::getBankAccounts, bankAcc -> bankAcc::setUser);
+        this.oneToMany(object, Image.class, User::getImages, image -> image::setUser);
+        this.oneToMany(object, Comment.class, User::getComments, comment -> comment::setAuthor);
+        this.oneToMany(object, Order.class, User::getOrders, order -> order::setUser);
+        this.manyToMany(object, ShopItem.class, User::getAuthoredItems, User::getId, ShopItem::getAuthor, shopItem -> shopItem::setAuthor);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -114,7 +111,7 @@ public class UserServlet extends AbstractApiServlet<User> {
                                         () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
                                 ),
                                 new ModifyPrecondition<>(
-                                        user -> !(UserRepository.getInstance().getUserByEmail(user.getEmail()).isEmpty()),
+                                        user -> !(UserRepository.getInstance().findByEmail(user.getEmail()).isEmpty()),
                                         "Email already taken",
                                         () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
                                 )

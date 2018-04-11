@@ -24,14 +24,14 @@ public class ImageRepository extends AbstractRepository<Image> {
     }
 
 
-    public Optional<Image> getByApiPath(String apiPath) {
+    public Optional<Image> findByApiPath(String apiPath) {
         return Image.getFileNameFromApiPath(apiPath)
-                .flatMap(this::getByFilePath);
+                .flatMap(this::findByFilePath);
     }
 
-    public Optional<Image> getByFilePath(String fileName) {
-        return Optional.of(DatabaseManager.createEntityManager().createQuery("SELECT i FROM Image i " +
-                " WHERE i.fileName = :name", Image.class)
+    public Optional<Image> findByFilePath(String fileName) {
+        return Optional.of(DatabaseManager.createEntityManager()
+                .createNamedQuery("Image.findByFileName", Image.class)
                 .setParameter("name", fileName)
                 .getResultList()
         )

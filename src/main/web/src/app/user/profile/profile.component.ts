@@ -10,7 +10,7 @@ import {AddressService} from "../../shared/services/api/address.service";
 import {EventRoute} from "../../shop/shared/model/route";
 import {Address} from "../../shared/model/address";
 import {ParticipantsService} from "../../shared/services/api/participants.service";
-import {defaultIfEmpty, first, map, mergeMap} from "rxjs/operators";
+import {defaultIfEmpty, first, map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
 import {MilesService} from "../../shared/services/api/miles.service";
@@ -33,6 +33,7 @@ export class ProfileComponent implements OnInit {
 	userObservable: Observable<User> = this.userId
 		.pipe(
 			mergeMap(id => this.userService.getById(id)),
+			tap(user => console.log(user)),
 			mergeMap(user => this.milesService.get(user.id)
 				.pipe(
 					map(entry => user.setProperties({miles: entry.miles}))

@@ -27,38 +27,35 @@ public class EventRepository extends AbstractRepository<ShopItem> {
         return instance;
     }
 
-    public List<ShopItem> getEventsBySearchTerm(String searchTerm, Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e " +
-                " WHERE e.type = :type " +
-                "       AND (UPPER(e.title) LIKE UPPER(:searchTerm) " +
-                "              OR UPPER(e.description) LIKE UPPER(:searchTerm))", ShopItem.class)
+    public List<ShopItem> findBySearchTerm(String searchTerm, Integer type) {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("ShopItem.findBySearchTerm", ShopItem.class)
                 .setParameter("type", type)
                 .setParameter("searchTerm", "%" + searchTerm + "%")
                 .getResultList();
     }
 
-    public List<ShopItem> getEventsByType(Integer type) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e " +
-                " WHERE e.type = :type", ShopItem.class)
+    public List<ShopItem> findByType(Integer type) {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("ShopItem.findByType", ShopItem.class)
                 .setParameter("type", type)
                 .getResultList();
     }
 
-    public List<ShopItem> getEventsByUser(Integer userId) {
-        return DatabaseManager.createEntityManager().createQuery(
-                "SELECT item from Order o join OrderedItem item \n" +
-                        "    WHERE o.user.id =:userId", OrderedItem.class)
+    public List<ShopItem> findByParticipant(Integer userId) {
+        List<OrderedItem> orderedItems = DatabaseManager.createEntityManager()
+                .createNamedQuery("OrderedItem.findByUser", OrderedItem.class)
                 .setParameter("userId", userId)
-                .getResultList()
-                .stream()
+                .getResultList();
+        return new ArrayList<>(orderedItems).stream()
                 .map(OrderedItem::getItem)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-    public List<ShopItem> getEventsByAuthor(Integer authorId) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT distinct e FROM ShopItem e " +
-                " JOIN e.author a WHERE a.id = :author", ShopItem.class)
+    public List<ShopItem> findByAuthor(Integer authorId) {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("ShopItem.findByAuthor", ShopItem.class)
                 .setParameter("author", authorId)
                 .getResultList();
     }
@@ -67,15 +64,15 @@ public class EventRepository extends AbstractRepository<ShopItem> {
                               HttpServletResponse response) {
         return this.getIf(new MapBuilder<String, Function<String, List<ShopItem>>>()
                         .buildPut(eventId, this::get)
-                        .buildPut(searchTerm, it -> this.getEventsBySearchTerm(searchTerm, EventServlet.getType(eventType)))
+                        .buildPut(searchTerm, it -> this.findBySearchTerm(searchTerm, EventServlet.getType(eventType)))
                         .buildPut(eventType, s -> {
                             if (searchTerm == null) {
-                                return this.getEventsByType(EventServlet.getType(s));
+                                return this.findByType(EventServlet.getType(s));
                             }
                             return new ArrayList<>();
                         })
-                        .buildPut(userId, s -> this.getEventsByUser(Integer.valueOf(s)))
-                        .buildPut(authorId, s -> this.getEventsByAuthor(Integer.valueOf(s))),
+                        .buildPut(userId, s -> this.findByParticipant(Integer.valueOf(s)))
+                        .buildPut(authorId, s -> this.findByAuthor(Integer.valueOf(s))),
                 this.getAll());
     }
 

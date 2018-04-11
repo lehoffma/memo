@@ -3,15 +3,26 @@ package memo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.serialization.ShopItemIdDeserializer;
-import memo.serialization.ShopItemIdSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "ORDERED_ITEMS")
+@NamedQueries({
+        @NamedQuery(
+                name = "OrderedItem.findByUser",
+                query = "SELECT item from Order o join OrderedItem item \n" +
+                        "    WHERE o.user.id =:userId"
+        ),
+        @NamedQuery(
+                name = "OrderedItem.findByEvent",
+                query = "SELECT DISTINCT o FROM OrderedItem o " +
+                        " WHERE o.item.id = :id"
+        )
+})
 public class OrderedItem implements Serializable {
 
     //**************************************************************
@@ -153,5 +164,19 @@ public class OrderedItem implements Serializable {
                 ", isDriver=" + isDriver +
                 ", needsTicket=" + needsTicket +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderedItem that = (OrderedItem) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

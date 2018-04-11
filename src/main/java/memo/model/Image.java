@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +23,13 @@ import java.util.regex.Pattern;
 
 @Entity
 @Table(name = "IMAGES")
+@NamedQueries({
+        @NamedQuery(
+                name = "Image.findByFileName",
+                query = "SELECT i FROM Image i " +
+                        " WHERE i.fileName = :name"
+        )
+})
 public class Image implements Serializable {
     private static final Logger logger = Logger.getLogger(Image.class);
 
@@ -203,5 +211,19 @@ public class Image implements Serializable {
         } catch (IOException e) {
             logger.error("Deleting the image at " + this.getFullPath() + " went wrong", e);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Image image = (Image) o;
+        return Objects.equals(id, image.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

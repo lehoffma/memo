@@ -43,48 +43,52 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
      * Updates the database record of a manyToOne relationship
      */
     protected <DependencyType, IdType> void manyToOne(T objectToUpdate,
+                                                      Class<DependencyType> clazz,
                                                       Function<T, DependencyType> getDependency,
                                                       Function<T, IdType> getId,
                                                       Function<DependencyType, List<T>> getCyclicListDependency,
                                                       Function<DependencyType, Consumer<List<T>>> updateDependencyValues
     ) {
         dependencyUpdateService.manyToOne(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues)
-                .ifPresent(it -> DatabaseManager.getInstance().update(it));
+                .ifPresent(it -> DatabaseManager.getInstance().update(it, clazz));
     }
 
     /**
      * Updates the database record of a oneToMany relationship
      */
     protected <DependencyType> void oneToMany(T objectToUpdate,
+                                              Class<DependencyType> clazz,
                                               Function<T, List<DependencyType>> getDependency,
                                               Function<DependencyType, Consumer<T>> updateDependencyValue
     ) {
         List<DependencyType> values = dependencyUpdateService
                 .oneToMany(objectToUpdate, getDependency, updateDependencyValue);
-        DatabaseManager.getInstance().updateAll(values);
+        DatabaseManager.getInstance().updateAll(values, clazz);
     }
 
     /**
      * Updates the database record of a oneToOne relationship
      */
     protected <DependencyType> void oneToOne(T objectToUpdate,
+                                             Class<DependencyType> clazz,
                                              Function<T, DependencyType> getDependency,
                                              Function<DependencyType, Consumer<T>> updateDependencyValue) {
         dependencyUpdateService.oneToOne(objectToUpdate, getDependency, updateDependencyValue)
-                .ifPresent(it -> DatabaseManager.getInstance().update(it));
+                .ifPresent(it -> DatabaseManager.getInstance().update(it, clazz));
     }
 
     /**
      * Updates the database record of a manyToMany relationship
      */
     protected <DependencyType, IdType> void manyToMany(T objectToUpdate,
+                                                       Class<DependencyType> clazz,
                                                        Function<T, List<DependencyType>> getDependency,
                                                        Function<T, IdType> getId,
                                                        Function<DependencyType, List<T>> getCyclicListDependency,
                                                        Function<DependencyType, Consumer<List<T>>> updateDependencyValues
     ) {
         List<DependencyType> dependencyTypes = dependencyUpdateService.manyToMany(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues);
-        DatabaseManager.getInstance().updateAll(dependencyTypes);
+        DatabaseManager.getInstance().updateAll(dependencyTypes, clazz);
     }
 
     protected abstract void updateDependencies(JsonNode jsonNode, T object);
@@ -157,14 +161,14 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     }
 
     protected <SerializedType> T post(HttpServletRequest request,
-                                                HttpServletResponse response,
-                                                String objectName,
-                                                T baseValue,
-                                                Class<T> clazz,
-                                                Function<T, T> transform,
-                                                List<ModifyPrecondition<T>> preconditions,
-                                                Function<T, SerializedType> getSerialized,
-                                                String serializedKey
+                                      HttpServletResponse response,
+                                      String objectName,
+                                      T baseValue,
+                                      Class<T> clazz,
+                                      Function<T, T> transform,
+                                      List<ModifyPrecondition<T>> preconditions,
+                                      Function<T, SerializedType> getSerialized,
+                                      String serializedKey
     ) {
         ApiUtils.getInstance().setContentType(request, response);
 
@@ -192,7 +196,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return null;
         }
 
-        DatabaseManager.getInstance().save(item);
+        DatabaseManager.getInstance().save(item, clazz);
 
         //update cyclic dependencies etc.
         this.updateDependencies(jsonItem, item);
@@ -203,7 +207,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     }
 
     protected <SerializedType> T post(HttpServletRequest request, HttpServletResponse response,
-                                                ApiServletPostOptions<T, SerializedType> options) {
+                                      ApiServletPostOptions<T, SerializedType> options) {
         return this.post(request, response,
                 options.getObjectName(),
                 options.getBaseValue(),
@@ -216,13 +220,13 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     }
 
     protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
-                                               String objectName,
-                                               String jsonId,
-                                               Class<T> clazz,
-                                               Function<T, T> transform,
-                                               List<ModifyPrecondition<T>> preconditions,
-                                               Function<T, SerializedType> getSerialized,
-                                               String serializedKey) {
+                                     String objectName,
+                                     String jsonId,
+                                     Class<T> clazz,
+                                     Function<T, T> transform,
+                                     List<ModifyPrecondition<T>> preconditions,
+                                     Function<T, SerializedType> getSerialized,
+                                     String serializedKey) {
         ApiUtils.getInstance().setContentType(request, response);
 
         logger.debug("Method PUT called with params " + paramMapToString(request.getParameterMap()));
@@ -263,8 +267,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         //update cyclic dependencies etc.
         this.updateDependencies(jsonItem, item);
 
-
-        DatabaseManager.getInstance().save(item);
+        DatabaseManager.getInstance().update(item, clazz);
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
@@ -283,7 +286,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     }
 
     protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
-                                               ApiServletPutOptions<T, SerializedType> options) {
+                                     ApiServletPutOptions<T, SerializedType> options) {
         return this.put(request, response,
                 options.getObjectName(),
                 options.getJsonId(),
@@ -297,6 +300,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
     protected T delete(HttpServletRequest request,
                        HttpServletResponse response,
+                       Class<T> clazz,
                        Function<HttpServletRequest, T> itemSupplier
     ) {
         ApiUtils.getInstance().setContentType(request, response);
@@ -318,7 +322,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return null;
         }
         logger.debug("Object: " + itemToDelete.toString() + " will be removed");
-        DatabaseManager.getInstance().remove(itemToDelete);
+        DatabaseManager.getInstance().remove(itemToDelete, clazz);
         return itemToDelete;
     }
 
@@ -326,7 +330,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                        HttpServletRequest request,
                        HttpServletResponse response) {
 
-        return this.delete(request, response, req -> {
+        return this.delete(request, response, clazz, req -> {
             String id = request.getParameter("id");
             return DatabaseManager.getInstance().getById(clazz, Integer.valueOf(id));
         });

@@ -31,8 +31,8 @@ public class OrderServlet extends AbstractApiServlet<Order> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, Order object) {
-        this.manyToOne(object, Order::getUser, Order::getId, User::getOrders, user -> user::setOrders);
-        this.oneToMany(object, Order::getItems, orderedItem -> orderedItem::setOrder);
+        this.manyToOne(object, User.class, Order::getUser, Order::getId, User::getOrders, user -> user::setOrders);
+        this.oneToMany(object, OrderedItem.class, Order::getItems, orderedItem -> orderedItem::setOrder);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
