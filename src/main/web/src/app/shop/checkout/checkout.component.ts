@@ -168,7 +168,7 @@ export class CheckoutComponent implements OnInit {
 				price: 0,
 				status: OrderStatus.RESERVED
 			};
-			if (it.options) {
+			if (it.options && it.options.length > 0) {
 				return it.options.map(option => ({
 					...partialItem,
 					...option
@@ -183,6 +183,10 @@ export class CheckoutComponent implements OnInit {
 					needsTicket: false
 				})]
 		}, events);
+
+		if (items.length === 0) {
+			return of([]);
+		}
 
 		//setting discounted prices
 		return combineLatest(

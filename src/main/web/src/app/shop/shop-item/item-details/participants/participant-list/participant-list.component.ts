@@ -1,6 +1,5 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from "@angular/core";
 import {ParticipantUser} from "../../../../shared/model/participant";
-import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
 import {RowActionType} from "../../../../../shared/expandable-table/row-action-type";
 import {map} from "rxjs/operators";
 import {Subscription} from "rxjs/Subscription";

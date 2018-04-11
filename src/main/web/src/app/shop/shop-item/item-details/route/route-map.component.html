@@ -1,9 +1,6 @@
 <agm-map *ngIf="(_tourRoute$ | async) as route"
 		 [latitude]="(centerOfTour$ | async).latitude"
 		 [longitude]="(centerOfTour$ | async).longitude"
-		 [mapDraggable]="false"
-		 [scrollwheel]="false"
-		 [zoomControl]="false"
 		 [zoom]="7"
 		 (tap)="openRouteOnGoogleMaps(route)">
 	<agm-marker *ngFor="let tourStop of route"

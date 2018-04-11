@@ -51,6 +51,26 @@ public class UserServlet extends AbstractApiServlet<User> {
         return user;
     }
 
+    /**
+     * @param user
+     * @return
+     */
+    private User setDefaultPermissions(User user) {
+        if (user.getPermissions() == null) {
+            user.setPermissions(new PermissionState(user.getClubRole()));
+        }
+        return user;
+    }
+
+    /**
+     * @param user
+     * @return
+     */
+    private User setDefaultValues(User user) {
+        user = this.hashPassword(user);
+        return this.setDefaultPermissions(user);
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.get(request, response,
                 (paramMap, _response) -> UserRepository.getInstance().get(
@@ -103,7 +123,7 @@ public class UserServlet extends AbstractApiServlet<User> {
         User createdUser = this.post(request, response, new ApiServletPostOptions<>(
                         "user", new User(), User.class, User::getId
                 )
-                        .setTransform(this::hashPassword)
+                        .setTransform(this::setDefaultValues)
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
                                         user -> user.getEmail() == null,
@@ -127,7 +147,7 @@ public class UserServlet extends AbstractApiServlet<User> {
         this.put(request, response, new ApiServletPutOptions<>(
                         "user", User.class, User::getId, "id"
                 )
-                        .setTransform(this::hashPassword)
+                        .setTransform(this::setDefaultValues)
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
                                         user -> UserRepository.getInstance()

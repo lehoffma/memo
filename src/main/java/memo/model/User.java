@@ -54,7 +54,7 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String surname;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private ClubRole clubRole;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")

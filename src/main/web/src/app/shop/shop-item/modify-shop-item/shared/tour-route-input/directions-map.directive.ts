@@ -7,7 +7,7 @@ import {filter} from "rxjs/operators";
 declare var google;
 
 @Directive({
-	selector: 'sebm-google-map-directions'
+	selector: "sebm-google-map-directions"
 })
 export class DirectionsMapDirective {
 	_route$: BehaviorSubject<Address[]> = new BehaviorSubject([]);
@@ -82,13 +82,13 @@ export class DirectionsMapDirective {
 							destination,
 							waypoints,
 							optimizeWaypoints: true,
-							travelMode: 'DRIVING'
+							travelMode: "DRIVING"
 						}, (response, status) => {
-							if (status === 'OK') {
+							if (status === "OK") {
 								this.totalDistance.next(this.getTotalDistance(response));
 								this.directionsDisplay.setDirections(response);
 							} else {
-								window.alert('Directions request failed due to ' + status);
+								window.alert("Directions request failed due to " + status);
 							}
 						});
 
