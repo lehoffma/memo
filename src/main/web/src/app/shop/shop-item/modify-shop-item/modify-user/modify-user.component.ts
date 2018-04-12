@@ -9,7 +9,7 @@ import {ModifiedImages} from "../modified-images";
 @Component({
 	selector: "memo-modify-user",
 	templateUrl: "./modify-user.component.html",
-	styleUrls: ["./modify-user.component.scss"]
+	styleUrls: ["./modify-user.component.scss"],
 })
 export class ModifyUserComponent implements OnInit {
 	@Input() previousValue: any;

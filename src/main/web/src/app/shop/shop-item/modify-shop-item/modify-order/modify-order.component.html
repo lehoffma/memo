@@ -52,9 +52,6 @@
 			</mat-select>
 		</mat-form-field>
 
-		<!--<div *ngIf="modifyOrderService.formGroup.get('method').value === paymentMethod.DEBIT">-->
-			<!--<memo-bank-->
-		<!--</div>-->
 
 		<div class="ordered-item-container">
 			<memo-ordered-item-form [formGroup]="modifyOrderService.formGroup">
@@ -68,8 +65,14 @@
 				Abbrechen
 			</button>
 			<button mat-raised-button color="accent"
-					[disabled]="!modifyOrderService.formGroup.valid || modifyOrderService.formGroup.pending">
-				Speichern
+					[disabled]="!modifyOrderService.formGroup.valid || modifyOrderService.formGroup.pending || modifyItemService.loading">
+				<span *ngIf="!modifyItemService.loading; else loadingSpinner">
+					{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+				</span>
+				<ng-template #loadingSpinner>
+					<mat-icon class="loading-spinner">refresh</mat-icon>
+					<span>Speichert...</span>
+				</ng-template>
 			</button>
 		</div>
 	</form>

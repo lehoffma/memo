@@ -11,6 +11,7 @@ import {User} from "../../../shared/model/user";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {first} from "rxjs/operators";
 import {ModifyItemEvent} from "../../../shop/shop-item/modify-shop-item/modify-item-event";
+import {ModifyItemService} from "../../../shop/shop-item/modify-shop-item/modify-item.service";
 
 @Component({
 	selector: "memo-user-data-form",
@@ -102,6 +103,7 @@ export class UserDataFormComponent implements OnInit {
 	constructor(public loginService: LogInService,
 				private formBuilder: FormBuilder,
 				public userService: UserService,
+				public modifyItemService: ModifyItemService,
 				public router: Router,
 				public activatedRoute: ActivatedRoute,
 				public addressService: AddressService) {

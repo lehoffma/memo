@@ -7,6 +7,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Merchandise} from "../../../shared/model/merchandise";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {MerchStock} from "../../../shared/model/merch-stock";
+import {ModifyItemService} from "../modify-item.service";
 
 @Component({
 	selector: "memo-modify-merch",
@@ -48,6 +49,7 @@ export class ModifyMerchComponent implements OnInit {
 	ModifyType = ModifyType;
 
 	constructor(private location: Location,
+				public modifyItemService: ModifyItemService,
 				private stockService: StockService,
 				private formBuilder: FormBuilder) {
 		this.formGroup = this.formBuilder.group({

@@ -45,6 +45,8 @@ export class ModifyItemService {
 	//only used if itemType === merch
 	previousStock: MerchStockList = [];
 
+	loading = false;
+
 	constructor(public eventService: EventService,
 				public imageUploadService: ImageUploadService,
 				public userService: UserService,
@@ -60,6 +62,7 @@ export class ModifyItemService {
 	 *
 	 */
 	reset() {
+		this.loading = false;
 		this.mode = undefined;
 
 		//either merch, tour, party, user or entry
@@ -335,6 +338,8 @@ export class ModifyItemService {
 	 * @param modifyItemEvent
 	 */
 	submitModifiedEvent(modifyItemEvent: ModifyItemEvent) {
+		this.loading = true;
+
 		const service: ServletServiceInterface<ShopItem | Event> = EventUtilityService.shopItemSwitch<ServletServiceInterface<ShopItem | Event>>(
 			this.itemType,
 			{
@@ -395,6 +400,7 @@ export class ModifyItemService {
 					console.log("adding or editing object went wrong");
 					console.error(error);
 					console.log(newObject);
+					this.loading = false;
 				},
 				() => {
 					this.reset();

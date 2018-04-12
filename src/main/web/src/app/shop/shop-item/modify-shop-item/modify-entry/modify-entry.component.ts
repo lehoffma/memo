@@ -11,6 +11,7 @@ import {EntryCategory} from "../../../../shared/model/entry-category";
 import {Observable} from "rxjs/Observable";
 import {filter, mergeMap, take} from "rxjs/operators";
 import {Entry} from "../../../../shared/model/entry";
+import {ModifyItemService} from "../modify-item.service";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -75,6 +76,7 @@ export class ModifyEntryComponent implements OnInit {
 	constructor(private location: Location,
 				private formBuilder: FormBuilder,
 				private activatedRoute: ActivatedRoute,
+				public modifyItemService: ModifyItemService,
 				private entryCategoryService: EntryCategoryService,
 				private eventService: EventService) {
 		this.activatedRoute.queryParamMap

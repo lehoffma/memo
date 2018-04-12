@@ -98,7 +98,8 @@
 									   formControlName="date"
 									   name="dateInput" required>
 								<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-								<mat-error *ngIf="formGroup.get('event-data').get('date').hasError('required')" align="end">
+								<mat-error *ngIf="formGroup.get('event-data').get('date').hasError('required')"
+										   align="end">
 									Das Datum muss im Format DD.MM.YYYY vorliegen.
 								</mat-error>
 							</mat-form-field>
@@ -151,8 +152,14 @@
 			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
 			<button mat-raised-button color="accent"
-					[disabled]="!formGroup.valid || formGroup.pending">
-				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+					[disabled]="!formGroup.valid || formGroup.pending || modifyItemService.loading">
+				<span *ngIf="!modifyItemService.loading; else loadingSpinner">
+					{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+				</span>
+				<ng-template #loadingSpinner>
+					<mat-icon class="loading-spinner">refresh</mat-icon>
+					<span>Speichert...</span>
+				</ng-template>
 			</button>
 		</div>
 	</form>
