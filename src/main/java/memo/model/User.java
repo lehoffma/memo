@@ -55,6 +55,7 @@ public class User implements Serializable {
     private String surname;
 
     @Enumerated(EnumType.ORDINAL)
+    @JsonDeserialize(using = ClubRoleDeserializer.class)
     private ClubRole clubRole;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")

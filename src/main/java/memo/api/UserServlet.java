@@ -108,9 +108,6 @@ public class UserServlet extends AbstractApiServlet<User> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, User object) {
-        updateUserFromJson(jsonNode, object);
-        DatabaseManager.getInstance().save(object.getPermissions(), PermissionState.class);
-
         this.oneToMany(object, Address.class, User::getAddresses, address -> address::setUser);
         this.oneToMany(object, BankAcc.class, User::getBankAccounts, bankAcc -> bankAcc::setUser);
         this.oneToMany(object, Image.class, User::getImages, image -> image::setUser);

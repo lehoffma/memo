@@ -1,7 +1,10 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,6 +32,9 @@ public class BankAcc implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn()
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "bankAccount")
+    private List<Order> order;
 
     @Column
     private String name;
@@ -99,6 +105,16 @@ public class BankAcc implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @JsonIgnore
+    public List<Order> getOrder() {
+        return order;
+    }
+
+    public BankAcc setOrder(List<Order> order) {
+        this.order = order;
+        return this;
     }
 
     //**************************************************************

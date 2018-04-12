@@ -122,6 +122,18 @@ export function isArrayType(value): value is any[] {
  * @returns {boolean}
  */
 export function isEdited<T>(previous: T, updated: T, except?: string[]): boolean {
-	return Object.keys(previous)
-		.some(key => previous[key] !== updated[key]);
+	let keys = Object.keys(previous);
+	if (except) {
+		keys = keys.filter(key => except.includes(key));
+	}
+
+	return keys.some(key => previous[key] !== updated[key]);
+}
+
+
+export function arrayIsEqual<T>(left: T[], right:T[]): boolean{
+	if(left.length !== right.length){
+		return false;
+	}
+	return left.every(leftObject => right.some(rightObject => isEdited(leftObject, rightObject)))
 }

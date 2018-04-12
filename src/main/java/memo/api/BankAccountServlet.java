@@ -6,6 +6,7 @@ import memo.api.util.ApiServletPutOptions;
 import memo.auth.api.BankAccAuthStrategy;
 import memo.data.BankAccountRepository;
 import memo.model.BankAcc;
+import memo.model.Order;
 import memo.model.User;
 import org.apache.log4j.Logger;
 
@@ -26,6 +27,7 @@ public class BankAccountServlet extends AbstractApiServlet<BankAcc> {
     @Override
     protected void updateDependencies(JsonNode jsonNode, BankAcc object) {
         this.manyToOne(object, User.class, BankAcc::getUser, BankAcc::getId, User::getBankAccounts, user -> user::setBankAccounts);
+        this.oneToMany(object, Order.class, BankAcc::getOrder, order -> order::setBankAccount);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {

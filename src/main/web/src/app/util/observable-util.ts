@@ -1,6 +1,7 @@
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap} from "rxjs/operators";
+import {filter, map, mergeMap, take} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
+import {forkJoin} from "rxjs/observable/forkJoin";
 
 
 export function processSequentially<T>(observables: Observable<T>[]): Observable<T[]> {
@@ -12,4 +13,18 @@ export function processSequentially<T>(observables: Observable<T>[]): Observable
 				)
 			);
 	}, of([]));
+}
+
+export function processSequentiallyAndWait<T>(observables: Observable<T>[]): Observable<T[]> {
+	return processSequentially(observables)
+		.pipe(
+			filter(it => it.length === observables.length),
+		)
+}
+
+export function processInParallelAndWait<T>(observables: Observable<T>[]): Observable<T[]> {
+	if (observables.length === 0) {
+		return of([]);
+	}
+	return forkJoin(...observables)
 }

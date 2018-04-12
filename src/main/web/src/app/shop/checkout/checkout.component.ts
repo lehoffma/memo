@@ -15,7 +15,7 @@ import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
 import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {first, map, mergeMap} from "rxjs/operators";
+import {distinctUntilChanged, first, map, mergeMap, tap} from "rxjs/operators";
 import {OrderedItem} from "../../shared/model/ordered-item";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../shared/services/api/user.service";
@@ -24,6 +24,7 @@ import {debitRequiresAccountValidator} from "../../shared/validators/debit-requi
 import {ShoppingCartItem} from "../../shared/model/shopping-cart-item";
 import {flatMap} from "../../util/util";
 import {DiscountService} from "app/shop/shared/services/discount.service";
+import {processInParallelAndWait} from "../../util/observable-util";
 
 @Component({
 	selector: "memo-checkout",
@@ -39,6 +40,10 @@ export class CheckoutComponent implements OnInit {
 	previousAccounts = [];
 
 	loading = false;
+
+	user: User;
+
+	subscriptions = [];
 
 	constructor(private bankAccountService: UserBankAccountService,
 				private formBuilder: FormBuilder,
@@ -74,39 +79,53 @@ export class CheckoutComponent implements OnInit {
 		this.formGroup.get("payment").setValidators([debitRequiresAccountValidator()]);
 
 		this.user$
-			.pipe(
-				mergeMap(user => combineLatest(
-					user.addresses.map(addressId => this.addressService.getById(addressId)))
-				),
-				first()
-			)
-			.subscribe(addresses => {
-				this.previousAddresses = [...addresses];
-				this.formGroup.get("address").get("addresses").patchValue(addresses)
-			});
+			.pipe(distinctUntilChanged((x, y) => x.id === y.id))
+			.subscribe(user => {
+				this.user = user;
 
-		this.user$
-			.pipe(
-				mergeMap(user => combineLatest(
+				processInParallelAndWait(
+					user.addresses.map(addressId => this.addressService.getById(addressId))
+				)
+					.pipe(first())
+					.subscribe(addresses => {
+						this.previousAddresses = [...addresses];
+						this.formGroup.get("address").get("addresses").patchValue(addresses)
+					});
+
+				processInParallelAndWait(
 					user.bankAccounts.map(id => this.bankAccountService.getById(id))
-				)),
-				first()
-			)
-			.subscribe(accounts => {
-				this.previousAccounts = [...accounts];
-				this.formGroup.get("payment").get("bankAccounts").patchValue(accounts);
+				)
+					.pipe(first())
+					.subscribe(accounts => {
+						console.log(accounts);
+						this.previousAccounts = [...accounts];
+						this.formGroup.get("payment").get("bankAccounts").setValue(accounts);
+					});
+
+				if (this.subscriptions) {
+					this.subscriptions.forEach(it => it.unsubscribe());
+				}
+
+				console.log("eh");
+				this.subscriptions = [
+					this.formGroup.get("address").get("addresses").valueChanges
+						.pipe(
+							mergeMap(addresses => this.updateAddresses(this.previousAddresses, addresses))
+						)
+						.subscribe(addresses => {
+							this.previousAddresses = [...addresses];
+						}),
+					this.formGroup.get("payment").get("bankAccounts").valueChanges
+						.pipe(
+							mergeMap(newAccounts => this.updateAccounts(this.previousAccounts, newAccounts))
+						)
+						.subscribe(newAccounts => {
+							this.previousAccounts = [...newAccounts];
+						})
+				];
 			});
 
 
-		this.formGroup.valueChanges.subscribe(it => {
-			const newAddresses = it.address.addresses;
-			this.updateAddresses(this.previousAddresses, newAddresses);
-			this.previousAddresses = [...newAddresses];
-
-			const newAccounts = it.payment.bankAccounts;
-			this.updateAccounts(this.previousAccounts, newAccounts);
-			this.previousAccounts = [...newAccounts];
-		});
 	}
 
 	ngOnInit() {
@@ -120,12 +139,7 @@ export class CheckoutComponent implements OnInit {
 	 * @returns {Observable<User>}
 	 */
 	updateAddresses(previousValue: Address[], addresses: Address[]) {
-		const combined$ = this.addressService.updateAddressesOfUser(previousValue, addresses, this.user$);
-
-		combined$.subscribe(() => {
-		}, error => console.error(error));
-
-		return combined$;
+		return this.addressService.updateAddressesOfUser(previousValue, addresses, this.user);
 	}
 
 	/**
@@ -135,12 +149,7 @@ export class CheckoutComponent implements OnInit {
 	 * @returns {Observable<User>}
 	 */
 	updateAccounts(previousValue: BankAccount[], accounts: BankAccount[]) {
-		const combined$ = this.bankAccountService.updateAccountsOfUser(previousValue, accounts, this.user$);
-
-		combined$.subscribe(() => {
-		}, error => console.error(error));
-
-		return combined$;
+		return this.bankAccountService.updateAccountsOfUser(previousValue, accounts, this.user);
 	}
 
 	/**
