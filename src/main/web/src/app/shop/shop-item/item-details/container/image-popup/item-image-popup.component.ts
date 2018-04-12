@@ -1,4 +1,4 @@
-import {Component, HostListener, Inject, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, HostListener, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA} from "@angular/material";
 
 
@@ -10,7 +10,8 @@ export enum KEY_CODE {
 @Component({
 	selector: "memo-item-image-popup",
 	templateUrl: "./item-image-popup.component.html",
-	styleUrls: ["./item-image-popup.component.scss"]
+	styleUrls: ["./item-image-popup.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemImagePopupComponent implements OnInit {
 	@HostListener("keydown", ["$event"]) onKeyDown(event: KeyboardEvent) {
@@ -24,12 +25,13 @@ export class ItemImagePopupComponent implements OnInit {
 
 	selected = -1;
 	hideButtons = false;
-	constructor(@Inject(MAT_DIALOG_DATA) public data: { imagePath: string, images: string[] }) {
 
+	constructor(@Inject(MAT_DIALOG_DATA) public data: { imagePath: string, images: string[] }) {
+		this.selected = this.data.images.indexOf(this.data.imagePath);
+		this.hideButtons = this.data.images.length === 1;
 	}
 
 	ngOnInit() {
-		this.selected = this.data.images.indexOf(this.data.imagePath);
 	}
 
 	next() {

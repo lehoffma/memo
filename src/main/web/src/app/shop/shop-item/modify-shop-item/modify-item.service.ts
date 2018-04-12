@@ -297,7 +297,7 @@ export class ModifyItemService {
 	uploadImage(newObject: ShopItem, images: ModifiedImages): Observable<ShopItem> {
 		const {imagePaths, imagesToUpload} = images;
 
-		if (imagesToUpload) {
+		if (imagesToUpload && imagesToUpload.length > 0) {
 			//todo: error handling, progress report
 			let formData = new FormData();
 			imagesToUpload.forEach(image => {
