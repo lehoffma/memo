@@ -131,8 +131,7 @@ export class UserService extends ServletService<User> {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
 			.pipe(
-				tap(() => this._cache.invalidateById(user.id)),
-				tap(() => this._cache.invalidateType("search")),
+				tap(() => this.invalidateValue(user.id)),
 				mergeMap(response => this.getById(response.id))
 			)
 	}

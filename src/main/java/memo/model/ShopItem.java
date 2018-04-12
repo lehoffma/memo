@@ -108,19 +108,19 @@ public class ShopItem implements Serializable {
     @JsonDeserialize(using = UserIdListDeserializer.class)
     private List<User> reportWriters = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "item")
     @JsonSerialize(using = CommentIdListSerializer.class)
     @JsonDeserialize(using = CommentIdListDeserializer.class)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "item")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "item")
     @JsonIgnore
     private List<Entry> entries = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
     private List<OrderedItem> orders = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "item")
     private List<Stock> stock = new ArrayList<>();
 
     @Column(nullable = false)

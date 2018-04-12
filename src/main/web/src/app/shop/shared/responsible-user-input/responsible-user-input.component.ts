@@ -33,7 +33,7 @@ export class ResponsibleUserInputComponent implements OnInit, OnDestroy, Control
 		combineLatest(
 			...previousValue.map(it => this.userService.getById(it))
 		)
-			.pipe(first(), tap(it => console.log(it)))
+			.pipe(first())
 			.subscribe(users => this.setValue(users));
 
 	}

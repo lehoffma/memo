@@ -7,6 +7,7 @@ import memo.serialization.ShopItemIdDeserializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -49,7 +50,7 @@ public class OrderedItem implements Serializable {
     private Order order;
 
     // Without Driver reduction
-    private int price = 0;
+    private BigDecimal price = BigDecimal.valueOf(0);
 
     private OrderStatus status = OrderStatus.Reserved;
 
@@ -102,11 +103,11 @@ public class OrderedItem implements Serializable {
         this.order = order;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

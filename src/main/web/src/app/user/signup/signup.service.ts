@@ -160,10 +160,6 @@ export class SignUpService {
 	 * @param event
 	 */
 	async onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
-		//todo user bestätigung => screen: "email wurde an dich geschickt"
-		//todo if admin: show "isMember"
-		//todo banner: mitglied werden/bin schon mitglied
-
 		//extract section, email and password properties
 		const {
 			email,

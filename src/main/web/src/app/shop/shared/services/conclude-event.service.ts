@@ -76,11 +76,9 @@ export class ConcludeEventService {
 		return this.eventService.getById(eventId)
 			.pipe(
 				mergeMap(event => this.replaceGroupImage(event, groupPicture)),
-				tap(it => console.log(it.groupPicture)),
 				map(event => event.setProperties({
 					reportWriters: reportResponsibleUsers.map(it => it.id)
 				})),
-				tap(it => console.log(it)),
 				mergeMap(event => this.eventService.modify(event))
 			);
 	}

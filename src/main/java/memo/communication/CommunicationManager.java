@@ -69,11 +69,6 @@ public class CommunicationManager {
     }
 
     private List<TransmitterType> getTransmitters(User user, MessageType type) {
-        //todo remove this if block if you want to test emails
-//        if (type.getName().length() > 0) {
-//            return new ArrayList<>();
-//        }
-
         //todo extract from notification preferences
         return Arrays.asList(TransmitterType.MAIL);
     }

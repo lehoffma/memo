@@ -93,14 +93,14 @@ public class MailTransmitter implements MessageTransmitter {
     }
 
     @Override
-    public String getEmailContent(User recipient, List<ShopItem> items, MessageType type, Map<String, Object> options) {
+    public String getContent(User recipient, List<ShopItem> items, MessageType type, Map<String, Object> options) {
         String rawText = MailLoader.loadAsText(type);
         Map<String, String> placeHolderReplacement = MailPlaceholderFactory.getPlaceHolderReplacement(type, recipient, items, options);
         return MailLoader.replacePlaceholders(rawText, placeHolderReplacement);
     }
 
     @Override
-    public String getEmailContent(User recipient, ShopItem item, MessageType type, Map<String, Object> options) {
+    public String getContent(User recipient, ShopItem item, MessageType type, Map<String, Object> options) {
         String rawText = MailLoader.loadAsText(type);
         Map<String, String> placeHolderReplacement = MailPlaceholderFactory.getPlaceHolderReplacement(type, recipient, item, options);
         return MailLoader.replacePlaceholders(rawText, placeHolderReplacement);

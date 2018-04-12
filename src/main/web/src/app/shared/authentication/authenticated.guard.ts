@@ -18,7 +18,6 @@ export class AuthenticatedGuard implements CanActivate {
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
 		return this.authService.getRefreshedAccessToken()
 			.pipe(
-				tap(it => console.log(it)),
 				mergeMap(token => {
 					const tokenIsValid = token.auth_token !== null;
 					if (!tokenIsValid) {

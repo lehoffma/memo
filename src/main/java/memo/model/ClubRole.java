@@ -14,11 +14,20 @@ package memo.model;
 
 
 public enum ClubRole {
-    Gast,
-    Mitglied,
-    Vorstand,
-    Schriftfuehrer,
-    Kassenwart,
-    Organisator,
-    Admin;
+    Gast("Gast"),
+    Mitglied("Mitglied"),
+    Vorstand("Vorstand"),
+    Schriftfuehrer("Schriftführer"),
+    Kassenwart("Kassenwart"),
+    Organisator("Organisator"),
+    Admin("Admin");
+
+    private String stringValue;
+    ClubRole(String stringValue){
+        this.stringValue = stringValue;
+    }
+
+    public String getStringValue() {
+        return stringValue;
+    }
 }

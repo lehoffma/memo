@@ -45,7 +45,7 @@ public class RoleChangeRequestServlet extends HttpServlet {
                 User admin = UserRepository.getInstance().getAdmin();
                 if (user != null) {
                     Map<String, Object> data = new MapBuilder<String, Object>()
-                            .buildPut("user", userId)
+                            .buildPut("user", user)
                             .buildPut("newRole", clubRole);
                     CommunicationManager.getInstance().send(admin, null, MessageType.CLUBROLE_CHANGE_REQUEST, data);
                     return;

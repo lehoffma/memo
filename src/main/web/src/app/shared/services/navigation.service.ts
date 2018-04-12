@@ -10,7 +10,7 @@ import {Event} from "../../shop/shared/model/event";
 import {HttpClient} from "@angular/common/http";
 import {LogInService} from "./api/login.service";
 import {Observable} from "rxjs/Observable";
-import {filter, map, mergeMap, tap} from "rxjs/operators";
+import {filter, map, mergeMap} from "rxjs/operators";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {UserPermissions, visitorPermissions} from "../model/permission";
 import {User} from "../model/user";
@@ -49,6 +49,8 @@ export class NavigationService implements OnDestroy {
 				private loginService: LogInService,
 				private router: Router) {
 		this.initialize();
+
+		this.loginService.currentUser$.subscribe(it => console.log(it));
 
 		this.subscriptions.push(this.router.events
 			.pipe(

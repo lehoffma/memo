@@ -1,12 +1,16 @@
 package memo.communication;
 
 public enum MessageType {
-    //todo
     REGISTRATION("Registration", "Registrierung erfolgreich!"),
     FORGOT_PASSWORD("ForgotPassword", "Passwort vergessen?"),
+    CLUBROLE_CHANGE_REQUEST("StatusChangeRequest", "Jemand hat eine Statusänderung beantragt!"),
+
     ORDER_CONFIRMATION("OrderConfirmation", "Bestellbestätigung"),
-    //todo remove?
-    CLUBROLE_CHANGE_REQUEST("ClubroleChangeRequest", "?"),
+    DEBIT_CUSTOMER("DebitCustomer", "Wichtige Informationen zu deiner Bestellung."),
+    DEBIT_TREASURER("DebitTreasurer", "Leite ein Lastschrift-Verfahren für die eingegangene Bestellung ein!"),
+    TRANSFER_CUSTOMER("TransferCustomer", "Wichtige Informationen zu deiner Bestellung."),
+    TRANSFER_TREASURER("TransferTreasurer", "Überprüfe die eingegangene Bestellung!"),
+
     RESPONSIBLE_USER("ResponsibleUser", "Du wurdest als Verantwortlicher hinzugefügt!"),
     OBJECT_HAS_CHANGED("ObjectHasChanged", "Ein Event an dem du teilnimmst wurde geändert!");
 

@@ -7,10 +7,9 @@ import memo.auth.api.OrderAuthStrategy;
 import memo.communication.CommunicationManager;
 import memo.communication.MessageType;
 import memo.data.OrderRepository;
-import memo.model.Order;
-import memo.model.OrderedItem;
-import memo.model.ShopItem;
-import memo.model.User;
+import memo.data.UserRepository;
+import memo.model.*;
+import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -65,6 +65,24 @@ public class OrderServlet extends AbstractApiServlet<Order> {
                     .map(OrderedItem::getItem)
                     .collect(Collectors.toList());
             CommunicationManager.getInstance().sendList(user, orderedItems, MessageType.ORDER_CONFIRMATION);
+
+            User admin = UserRepository.getInstance().getAdmin();
+            BankAcc bankAccount = order.getBankAccount();
+            Map<String, Object> options = new MapBuilder<String, Object>()
+                    .buildPut("order", order)
+                    .buildPut("bankAcc", bankAccount);
+            switch (order.getMethod()) {
+                case Bar:
+                    break;
+                case Lastschrift:
+                    CommunicationManager.getInstance().send(user, null, MessageType.DEBIT_CUSTOMER, options);
+                    CommunicationManager.getInstance().send(admin, null, MessageType.DEBIT_TREASURER, options);
+                    break;
+                case Überweisung:
+                    CommunicationManager.getInstance().send(user, null, MessageType.TRANSFER_CUSTOMER, options);
+                    CommunicationManager.getInstance().send(admin, null, MessageType.TRANSFER_TREASURER, options);
+                    break;
+            }
         }
     }
 

@@ -5,7 +5,7 @@ import {LogInService} from "../../../shared/services/api/login.service";
 import {Location} from "@angular/common";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {mergeMap} from "rxjs/operators";
+import {mergeMap, tap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-sidenav",

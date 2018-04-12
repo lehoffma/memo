@@ -83,12 +83,12 @@ public class User implements Serializable {
 
     private Boolean hasDebitAuth = false;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "user")
     @JsonSerialize(using = ImagePathListSerializer.class)
     @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonSerialize(using = BankAccIdListSerializer.class)
     @JsonDeserialize(using = BankAccIdListDeserializer.class)
     private List<BankAcc> bankAccounts = new ArrayList<>();
