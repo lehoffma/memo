@@ -75,6 +75,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 
 	filterSubscription: Subscription;
 	subscription: Subscription;
+	merchListSubscription: Subscription;
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
@@ -83,6 +84,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 				private activatedRoute: ActivatedRoute,
 				private searchFilterService: SearchFilterService,
 				private filterOptionBuilder: FilterOptionBuilder) {
+		this.merchListSubscription = this.merch$.subscribe(it => this.merchList = it);
 	}
 
 	ngOnInit() {
@@ -109,6 +111,9 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 		}
 		if (this.subscription) {
 			this.subscription.unsubscribe();
+		}
+		if (this.merchListSubscription) {
+			this.merchListSubscription.unsubscribe();
 		}
 	}
 

@@ -1,13 +1,16 @@
 package memo.data;
 
 import memo.model.Order;
+import memo.model.PaymentMethod;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class OrderRepository extends AbstractRepository<Order> {
@@ -22,6 +25,12 @@ public class OrderRepository extends AbstractRepository<Order> {
     public static OrderRepository getInstance() {
         if (instance == null) instance = new OrderRepository();
         return instance;
+    }
+
+    public static Optional<PaymentMethod> findPaymentMethodByString(String value) {
+        return Arrays.stream(PaymentMethod.values())
+                .filter(it -> it.getTextValue().equalsIgnoreCase(value))
+                .findFirst();
     }
 
     private List<Order> withParsedId(String id, HttpServletResponse response, Function<Integer, List<Order>> getValues) {

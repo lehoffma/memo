@@ -177,4 +177,8 @@ export class ParticipantsService extends ServletService<Participant> {
 		return this._cache.other<(Tour | Party)[]>(params, request);
 	}
 
+
+	invalidateCache() {
+		this._cache.invalidateAll();
+	}
 }

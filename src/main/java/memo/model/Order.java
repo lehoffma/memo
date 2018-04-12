@@ -3,10 +3,7 @@ package memo.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import memo.serialization.BankAccIdDeserializer;
-import memo.serialization.BankAccIdSerializer;
-import memo.serialization.UserIdDeserializer;
-import memo.serialization.UserIdSerializer;
+import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -62,6 +59,8 @@ public class Order implements Serializable {
     @Column(nullable = false)
     private java.sql.Timestamp timeStamp;
 
+    @Enumerated(EnumType.ORDINAL)
+    @JsonDeserialize(using = PaymentMethodDeserializer.class)
     private PaymentMethod method = PaymentMethod.Lastschrift;
 
     private String text;

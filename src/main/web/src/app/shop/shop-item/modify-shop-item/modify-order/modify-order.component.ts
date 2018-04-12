@@ -4,6 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {PaymentMethod, paymentMethodList} from "../../../checkout/payment/payment-method";
 import {UserService} from "../../../../shared/services/api/user.service";
 import {ModifyItemService} from "../modify-item.service";
+import {ModifyType} from "../modify-type";
 
 @Component({
 	selector: "memo-modify-order",
@@ -14,6 +15,7 @@ import {ModifyItemService} from "../modify-item.service";
 export class ModifyOrderComponent implements OnInit {
 	paymentMethods = paymentMethodList();
 	paymentMethod = PaymentMethod;
+	ModifyType = ModifyType;
 
 	constructor(public modifyOrderService: ModifyOrderService,
 				public modifyItemService: ModifyItemService,

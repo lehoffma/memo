@@ -15,7 +15,7 @@ import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
 import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {distinctUntilChanged, first, map, mergeMap, tap} from "rxjs/operators";
+import {distinctUntilChanged, first, map, mergeMap} from "rxjs/operators";
 import {OrderedItem} from "../../shared/model/ordered-item";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../shared/services/api/user.service";
@@ -25,6 +25,7 @@ import {ShoppingCartItem} from "../../shared/model/shopping-cart-item";
 import {flatMap} from "../../util/util";
 import {DiscountService} from "app/shop/shared/services/discount.service";
 import {processInParallelAndWait} from "../../util/observable-util";
+import {ParticipantsService} from "../../shared/services/api/participants.service";
 
 @Component({
 	selector: "memo-checkout",
@@ -49,6 +50,7 @@ export class CheckoutComponent implements OnInit {
 				private formBuilder: FormBuilder,
 				private cartService: ShoppingCartService,
 				private discountService: DiscountService,
+				private participantsService: ParticipantsService,
 				private eventService: EventService,
 				private orderService: OrderService,
 				private snackBar: MatSnackBar,
@@ -242,6 +244,7 @@ export class CheckoutComponent implements OnInit {
 				order => {
 					this.orderService.completedOrder = order.id;
 					this.loading = false;
+					this.participantsService.invalidateCache();
 					this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
 					this.cartService.reset();
 					this.router.navigateByUrl("/order-complete");
