@@ -70,18 +70,21 @@ export class ParticipantsService extends ServletService<Participant> {
 		return this.orderService.getByOrderedItemId(modifiedParticipant.id)
 			.pipe(
 				mergeMap((order: Order) => {
-					order.setProperties({
-						items: [...order.items].map(it => {
-							return {
-								...it,
-								item: it.item.id
-							}
-						})
-					});
-					const itemIndex = order.items.findIndex(it => it.id === modifiedParticipant.id);
-					order.items.splice(itemIndex, 1, modifiedParticipant);
+					let newOrder = Order.create().setProperties(
+						{
+							...order,
+							items: [...order.items].map(it => {
+								return {
+									...it,
+									item: it.item.id
+								}
+							})
+						}
+					);
+					const itemIndex = newOrder.items.findIndex(it => it.id === modifiedParticipant.id);
+					newOrder.items.splice(itemIndex, 1, modifiedParticipant);
 
-					return this.orderService.modify(order);
+					return this.orderService.modify(newOrder);
 				}),
 				map(order => order.items[0])
 			);
