@@ -182,7 +182,9 @@ export class EventService extends ServletService<Event> {
 		return this.performRequest(this.http.delete<AddOrModifyResponse>(this.baseUrl, {
 			params: new HttpParams().set("id", "" + eventId)
 		}))
-			.pipe(tap(() => this._cache.invalidateById(eventId)));
+			.pipe(
+				tap(() => this._cache.invalidateById(eventId)),
+			);
 	}
 
 	/**

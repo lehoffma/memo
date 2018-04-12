@@ -335,6 +335,21 @@ export class ModifyItemService {
 
 	/**
 	 *
+	 * @param {ShopItem} result
+	 * @param {ModifyItemEvent} modifyItemEvent
+	 * @returns {Observable<ShopItem>}
+	 */
+	handleStock(result: ShopItem, modifyItemEvent: ModifyItemEvent): Observable<ShopItem> {
+		return (EventUtilityService.isMerchandise(result) && modifyItemEvent.stock)
+			? (this.stockService.pushChanges(result, [...this.previousStock], [...modifyItemEvent.stock])
+				.pipe(
+					map(() => result),
+				))
+			: of(result)
+	}
+
+	/**
+	 *
 	 * @param modifyItemEvent
 	 */
 	submitModifiedEvent(modifyItemEvent: ModifyItemEvent) {
@@ -371,11 +386,7 @@ export class ModifyItemService {
 					? service.modify.bind(service)(newObject)
 					: service.add.bind(service)(newObject)
 				),
-				mergeMap((result: ShopItem) => EventUtilityService.isMerchandise(result) && modifyItemEvent.stock
-					? this.stockService.pushChanges(result, [...this.previousStock], [...modifyItemEvent.stock])
-						.pipe(map(() => result))
-					: of(result)
-				),
+				mergeMap((result: ShopItem) => this.handleStock(result, modifyItemEvent)),
 				first()
 			);
 

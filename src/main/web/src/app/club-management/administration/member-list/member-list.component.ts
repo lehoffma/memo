@@ -3,8 +3,6 @@ import {User} from "../../../shared/model/user";
 import {RowActionType} from "../../../shared/expandable-table/row-action-type";
 import {MemberListRowAction} from "./member-list-row-actions";
 import {MemberListService} from "./member-list.service";
-import {UserService} from "../../../shared/services/api/user.service";
-import {empty} from "rxjs/observable/empty";
 
 @Component({
 	selector: "memo-member-list",

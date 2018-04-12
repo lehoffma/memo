@@ -23,9 +23,7 @@ export class NavigationService implements OnDestroy {
 		.pipe(
 			mergeMap(links => this.loginService.currentUser$
 				.pipe(
-					tap(it => console.log([...links])),
-					map(user => this.filterLinks(user, links)),
-					tap(it => console.log([...links])),
+					map(user => this.filterLinks(user, links))
 				)
 			)
 		);
@@ -127,7 +125,6 @@ export class NavigationService implements OnDestroy {
 			return link;
 		};
 
-		console.log(permissions);
 		return linksCopy.map(setId)
 			.filter(link => isShown(link))
 			.map(link => filterOutChildren(link))

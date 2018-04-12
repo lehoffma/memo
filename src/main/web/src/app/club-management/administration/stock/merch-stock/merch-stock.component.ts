@@ -12,12 +12,15 @@ import {sortingFunction} from "../../../../util/util";
 import {FilterOptionBuilder} from "../../../../shop/search-results/filter-option-builder.service";
 import {FilterOptionType} from "../../../../shop/search-results/filter-option-type";
 import {Observable} from "rxjs/Observable";
-import {debounceTime, defaultIfEmpty, map, mergeMap, scan, share} from "rxjs/operators";
+import {debounceTime, map, mergeMap, scan} from "rxjs/operators";
 import {forkJoin} from "rxjs/observable/forkJoin";
 import {Event} from "../../../../shop/shared/model/event";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Subscription} from "rxjs/Subscription";
+import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
+import {Subject} from "rxjs/Subject";
+import {of} from "rxjs/observable/of";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -25,60 +28,11 @@ import {Subscription} from "rxjs/Subscription";
 	styleUrls: ["./merch-stock.component.scss"]
 })
 export class MerchStockComponent implements OnInit, OnDestroy {
-	stockEntryList$: Observable<StockEntry[]> = this.eventService.search("", EventType.merch)
-		.pipe(
-			mergeMap((merch: Event[]) => forkJoin(
-				...merch.map(merchItem => this.stockService.getByEventId(merchItem.id)
-					.pipe(
-						map(stockList => ({
-							stockMap: this.stockService.toStockMap(stockList),
-							options: this.stockService.getStockOptions([stockList]),
-							item: merchItem
-						}))
-					)
-				))
-				.pipe(defaultIfEmpty([]))),
-			share()
-		);
+	_merchList$: Subject<Event[]> = new Subject<Event[]>();
+	stockEntryList$: Observable<StockEntry[]> = this.getStockEntryList$();
 
-
-	merch$: Observable<StockEntry[]> = this.stockEntryList$
-		.pipe(
-			mergeMap((dataList: StockEntry[]) => this.activatedRoute.queryParamMap
-				.pipe(
-					mergeMap(queryParamMap => {
-						let list = [...dataList];
-
-						//todo filter => categories + search bar
-						const filteredBy = {};
-						queryParamMap.keys.forEach(key => filteredBy[key] = queryParamMap.get(key));
-
-						return combineLatest(
-							...list.map(item => this.searchFilterService.satisfiesFilters(item.item, filteredBy)
-								.pipe(
-									map(satisfiesFilter => ({
-										satisfiesFilter,
-										item
-									}))
-								)
-							)
-						)
-							.pipe(
-								map(list => list.filter(it => it.satisfiesFilter).map(it => it.item)),
-								map(list => {
-									if (queryParamMap.has("sortBy") && queryParamMap.has("descending")) {
-										const attribute = queryParamMap.get("sortBy");
-										const descending = queryParamMap.get("descending") === "true";
-										return list.sort(sortingFunction<StockEntry>(obj => obj.item[attribute], descending));
-									}
-									return list;
-								}),
-								defaultIfEmpty([])
-							);
-					})
-				)
-			)
-		);
+	merch$: Observable<StockEntry[]> = this.getMerch$();
+	merchList: StockEntry[] = [];
 
 	userCanAddMerch$ = this.loginService.getActionPermissions("merch")
 		.pipe(
@@ -119,18 +73,20 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 		},
 	];
 
+	filterSubscription: Subscription;
 	subscription: Subscription;
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
 				private stockService: StockService,
+				private confirmationDialogService: ConfirmationDialogService,
 				private activatedRoute: ActivatedRoute,
 				private searchFilterService: SearchFilterService,
 				private filterOptionBuilder: FilterOptionBuilder) {
 	}
 
 	ngOnInit() {
-		this.subscription = this.merch$
+		this.filterSubscription = this.merch$
 			.pipe(
 				mergeMap((dataList: StockEntry[]) => this.filterOptionBuilder.empty()
 					.withOptions(
@@ -143,16 +99,111 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 				mergeMap(filterOptions => this.searchFilterService.initFilterMenu(this.activatedRoute, filterOptions))
 			)
 			.subscribe(this._filterOptions$);
+
+		this.updateList();
 	}
 
 	ngOnDestroy(): void {
+		if (this.filterSubscription) {
+			this.filterSubscription.unsubscribe();
+		}
 		if (this.subscription) {
 			this.subscription.unsubscribe();
 		}
 	}
 
+	updateList() {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
+
+		this.subscription = this.eventService.search("", EventType.merch)
+			.subscribe(it => this._merchList$.next([...it]));
+	}
+
+	/**
+	 *
+	 * @returns {Observable<any[]>}
+	 */
+	getStockEntryList$() {
+		return this._merchList$
+			.pipe(
+				mergeMap((merch: Event[]) => {
+					if (merch.length === 0) {
+						return of([]);
+					}
+
+					return forkJoin(
+						...merch.map(merchItem => this.stockService.getByEventId(merchItem.id)
+							.pipe(
+								map(stockList => ({
+									stockMap: this.stockService.toStockMap(stockList),
+									options: this.stockService.getStockOptions([stockList]),
+									item: merchItem
+								}))
+							)
+						))
+				})
+			)
+	}
+
+	/**
+	 *
+	 * @returns {Observable<*[]>}
+	 */
+	getMerch$() {
+		return this.stockEntryList$
+			.pipe(
+				mergeMap((dataList: StockEntry[]) => this.activatedRoute.queryParamMap
+					.pipe(
+						mergeMap(queryParamMap => {
+							let list = [...dataList];
+
+							//todo filter => categories + search bar
+							const filteredBy = {};
+							queryParamMap.keys.forEach(key => filteredBy[key] = queryParamMap.get(key));
+
+							if (list.length === 0) {
+								return of([]);
+							}
+
+							return combineLatest(
+								...list.map(item => this.searchFilterService.satisfiesFilters(item.item, filteredBy)
+									.pipe(
+										map(satisfiesFilter => ({
+											satisfiesFilter,
+											item
+										}))
+									)
+								)
+							)
+								.pipe(
+									map(list => list.filter(it => it.satisfiesFilter).map(it => it.item)),
+									map(list => {
+										if (queryParamMap.has("sortBy") && queryParamMap.has("descending")) {
+											const attribute = queryParamMap.get("sortBy");
+											const descending = queryParamMap.get("descending") === "true";
+											return list.sort(sortingFunction<StockEntry>(obj => obj.item[attribute], descending));
+										}
+										return list;
+									}),
+								);
+						})
+					)
+				),
+				map(it => [...it])
+			);
+	}
+
 	deleteMerch(id: number) {
-		console.warn("delete merch not implemented yet. ", id);
+		this.confirmationDialogService.open("Möchtest du diesen Merch-Artikel wirklich löschen?",
+			() => {
+				this.eventService.remove(id)
+				//todo
+					.subscribe(() => {
+						this.updateList();
+					}, error => console.error(error));
+			})
 	}
 
 }

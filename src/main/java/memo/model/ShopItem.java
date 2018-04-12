@@ -71,7 +71,7 @@ public class ShopItem implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedWriteRole = ClubRole.Vorstand;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "item")
     @JsonSerialize(using = ImagePathListSerializer.class)
     @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images;
@@ -87,7 +87,7 @@ public class ShopItem implements Serializable {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "item")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
     @JsonSerialize(using = AddressIdListSerializer.class)
     @JsonDeserialize(using = AddressIdListDeserializer.class)
     private List<Address> route = new ArrayList<>();

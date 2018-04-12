@@ -271,7 +271,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
-        return finalItem;
+        return item;
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")

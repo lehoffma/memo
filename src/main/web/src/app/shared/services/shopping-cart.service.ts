@@ -6,11 +6,12 @@ import {MerchColor} from "../../shop/shared/model/merch-color";
 import {EventService} from "./api/event.service";
 import {map, mergeMap} from "rxjs/operators";
 import {Event} from "../../shop/shared/model/event";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {LogInService} from "./api/login.service";
 import {DiscountService} from "app/shop/shared/services/discount.service";
+import {of} from "rxjs/observable/of";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -29,7 +30,7 @@ export class ShoppingCartService implements OnInit {
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
 				private discountService: DiscountService
-				) {
+	) {
 		this.initFromLocalStorage();
 	}
 
@@ -44,19 +45,26 @@ export class ShoppingCartService implements OnInit {
 	get total$(): Observable<number> {
 		return this.content
 			.pipe(
-				mergeMap(items => combineLatest(
-					...[...items.tours, ...items.partys, ...items.merch]
-						.map(cartItem => this.loginService.currentUser$
-							.pipe(
-								mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
-									cartItem.item.id, cartItem.item.price, user !== null ? user.id : null
-								)),
-								map(discountedPrice => discountedPrice * cartItem.amount)
-							)
-						)
-				)),
+				mergeMap(items => {
+					const allItems = [...items.tours, ...items.partys, ...items.merch];
+					if (allItems.length === 0) {
+						return of([]);
+					}
+
+					return (combineLatest(
+							...allItems
+								.map(cartItem => this.loginService.currentUser$
+									.pipe(
+										mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
+											cartItem.item.id, cartItem.item.price, user !== null ? user.id : null
+										)),
+										map(discountedPrice => discountedPrice * cartItem.amount)
+									)
+							)))
+				}),
 				map(prices => prices.reduce((acc, current) => acc + current, 0))
-			);
+			)
+			;
 	}
 
 	ngOnInit() {
@@ -70,7 +78,7 @@ export class ShoppingCartService implements OnInit {
 		localStorage.setItem(this.localStorageKey, "");
 	}
 
-	isPartOfShoppingCart(id: number){
+	isPartOfShoppingCart(id: number) {
 		return this.content.pipe(
 			map(content => !!([...content.merch, ...content.tours, ...content.partys]
 				.find(value => value.id === id))

@@ -5,11 +5,12 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {MerchColor} from "../../../shop/shared/model/merch-color";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {Observable} from "rxjs/Observable";
-import {catchError, map, mergeMap, share, tap} from "rxjs/operators";
+import {catchError, map, mergeMap, share, take, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {isArrayType} from "../../../util/util";
 import {of} from "rxjs/observable/of";
+import {processInParallelAndWait, processSequentially} from "../../../util/observable-util";
 
 const stockMockData = [
 	{
@@ -294,12 +295,15 @@ export class StockService extends ServletService<MerchStock[]> {
 	 */
 	add(stock: MerchStock | MerchStock[], eventId: number): Observable<MerchStockList> {
 		if (isArrayType(stock)) {
+			if (stock.length === 0) {
+				return of([]);
+			}
 			stock.forEach(it => it.id = -1);
 			return combineLatest(
 				...stock.map(it => this.addOrModify(this.http.post.bind(this.http), it, eventId))
 			)
 				.pipe(
-					map(listList =>  [].concat(...listList))
+					map(listList => [].concat(...listList))
 				)
 		}
 		else {
@@ -315,11 +319,15 @@ export class StockService extends ServletService<MerchStock[]> {
 	 */
 	modify(stock: MerchStock | MerchStockList, eventId: number): Observable<MerchStockList> {
 		if (isArrayType(stock)) {
+			if (stock.length === 0) {
+				return of([]);
+			}
+
 			return combineLatest(
 				...stock.map(it => this.addOrModify(this.http.post.bind(this.http), it, eventId))
 			)
 				.pipe(
-					map(listList =>  [].concat(...listList))
+					map(listList => [].concat(...listList))
 				)
 		}
 		else {
@@ -352,8 +360,7 @@ export class StockService extends ServletService<MerchStock[]> {
 		//delete objects that are part of the previous stock, but are not contained in the final object
 		const removeRequests = [...previous
 			.filter(stockItem => !current.find(it => it.id === stockItem.id))
-			.map(previousItem => this.remove(previousItem.id)
-				.pipe(share()))];
+			.map(previousItem => this.remove(previousItem.id))];
 
 		//edit objects that are part of both objects, but contain different data
 		const editRequests = [...previous
@@ -362,8 +369,7 @@ export class StockService extends ServletService<MerchStock[]> {
 				it.color.hex !== stockItem.color.hex || it.item.id !== stockItem.item.id
 			)))
 			.filter(editedItem => editedItem !== undefined)
-			.map(editedItem => this.modify(editedItem, editedItem.item.id)
-				.pipe(share()))
+			.map(editedItem => this.modify(editedItem, editedItem.item.id))
 		];
 
 		//add objects that are not part of the previous list, but are contained in the new one
@@ -373,16 +379,19 @@ export class StockService extends ServletService<MerchStock[]> {
 				addedItem.item = merch;
 				return addedItem;
 			})
-			.map(addedItem => this.add(addedItem, addedItem.item.id)
-				.pipe(share()))
+			.map(addedItem => this.add(addedItem, addedItem.item.id))
 		];
 
 		const requests = [...removeRequests, ...editRequests, ...addRequests];
 
-		if(requests.length === 0){
+		if (requests.length === 0) {
 			return of([]);
 		}
 
-		return combineLatest(...requests);
+		return processInParallelAndWait([...requests])
+			.pipe(
+				take(1),
+				share()
+			);
 	}
 }
