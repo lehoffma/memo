@@ -6,6 +6,7 @@ import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -58,7 +59,7 @@ public class Entry implements Serializable {
     private String name;
 
     @Column(nullable = false)
-    private Integer value;
+    private BigDecimal value;
 
     @Column(name = "IS_INCOME")
     private Boolean isIncome = false;
@@ -102,11 +103,11 @@ public class Entry implements Serializable {
         this.category = category;
     }
 
-    public Integer getValue() {
+    public BigDecimal getValue() {
         return this.value;
     }
 
-    public void setValue(Integer amount) {
+    public void setValue(BigDecimal amount) {
         this.value = amount;
     }
 
