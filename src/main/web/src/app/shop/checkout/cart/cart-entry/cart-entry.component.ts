@@ -4,7 +4,7 @@ import {EventUtilityService} from "../../../../shared/services/event-utility.ser
 import {Event} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap} from "rxjs/operators";
+import {filter, map, mergeMap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {Subscription} from "rxjs/Subscription";
 import {ShoppingCartItem, ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
@@ -13,6 +13,7 @@ import {DiscountService} from "../../../shared/services/discount.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {CapacityService} from "../../../../shared/services/api/capacity.service";
 
 
 @Component({
@@ -40,6 +41,7 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 
 	constructor(private shoppingCartService: ShoppingCartService,
 				private discountService: DiscountService,
+				private capacityService: CapacityService,
 				private loginService: LogInService,
 				private stockService: StockService) {
 	}
@@ -102,7 +104,11 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 						.reduce((acc, stockItem) => acc + stockItem.amount, 0))
 				);
 		} else {
-			return of(cartItem.item.capacity);
+			return this.capacityService.valueChanges(cartItem.item.id)
+				.pipe(
+					filter(it => it !== null),
+					map(it => it.capacity)
+				);
 		}
 	}
 
