@@ -52,7 +52,7 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		let maxAmount: Observable<number> = this.getMaxAmount(this.cartItem);
+		let maxAmount$: Observable<number> = this.getMaxAmount(this.cartItem);
 		this.discounts$ = combineLatest(
 			this._cartItem$,
 			this.loginService.currentUser$
@@ -78,7 +78,7 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 					acc + (discount.eligible ? discount.amount : 0), 0))
 			);
 
-		this.subscription = maxAmount.subscribe(maxAmount => {
+		this.subscription = maxAmount$.subscribe(maxAmount => {
 			this.amountOptions = Array.from(Array(maxAmount + 1).keys());
 		})
 	}

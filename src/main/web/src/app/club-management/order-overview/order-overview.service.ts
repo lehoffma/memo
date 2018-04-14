@@ -3,7 +3,7 @@ import {Order} from "../../shared/model/order";
 import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {defaultIfEmpty, filter, map, mergeMap} from "rxjs/operators";
+import {defaultIfEmpty, filter, map, mergeMap, tap} from "rxjs/operators";
 import {isAfter, isBefore, isEqual, parse} from "date-fns";
 import {ParamMap, Router} from "@angular/router";
 import {OrderService} from "../../shared/services/api/order.service";
@@ -130,7 +130,8 @@ export class OrderOverviewService {
 		this.confirmationDialogService.openDialog("Möchtest du diese Bestellung wirklich löschen?")
 			.pipe(
 				filter(yes => yes),
-				mergeMap(yes => this.orderService.remove(order.id))
+				mergeMap(yes => this.orderService.remove(order.id)),
+				tap(() => this.initData())
 			)
 			.subscribe(() => {
 				this.snackBar.open("Das Löschen der Bestellung war erfolgreich.", "Schließen");

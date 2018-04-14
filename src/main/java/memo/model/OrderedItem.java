@@ -49,7 +49,6 @@ public class OrderedItem implements Serializable {
     @JoinColumn(nullable = false)
     private Order order;
 
-    // Without Driver reduction
     private BigDecimal price = BigDecimal.valueOf(0);
 
     private OrderStatus status = OrderStatus.Reserved;

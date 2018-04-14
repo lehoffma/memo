@@ -12,7 +12,7 @@ import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property"
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {defaultIfEmpty, filter, first, map, mergeMap, startWith, take, tap} from "rxjs/operators";
+import {defaultIfEmpty, filter, map, mergeMap, take, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {User} from "../../../../../shared/model/user";
@@ -69,22 +69,13 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	private _cache: ObservableCache<Event> = new ObservableCache(this._event$)
 		.withAsyncFallback("capacity", () => this._event$
 			.pipe(
+				filter(event => event.id >= 0),
 				mergeMap(event => this.capacityService.valueChanges(event.id)),
 				filter(it => it !== null),
-				map(it =>  it.capacity)
+				map(it => it.capacity)
 			)
 		)
-		.withAsyncFallback("emptySeats", () => this._event$
-			.pipe(
-				mergeMap(event =>
-					this.participantService
-						.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
-						.pipe(
-							map(participants => event.capacity - participants.length)
-						)
-				),
-				defaultIfEmpty(0)
-			));
+		.withAsyncFallback("emptySeats", () => this.getEmptySeats$());
 
 
 	permissions$: Observable<{
@@ -137,6 +128,10 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				private responsibilityService: ResponsibilityService,
 				private matDialog: MatDialog) {
 		this.updateMaxAmount();
+
+		this.stock$.subscribe(it => console.log(it));
+		this._color$.subscribe(it => console.log(it));
+		this._size$.subscribe(it => console.log(it));
 	}
 
 	get event() {
@@ -186,6 +181,47 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	getValue(key: keyof Event): Observable<TypeOfProperty<Event>> {
 		return this._cache.get(key);
+	}
+
+	/**
+	 *
+	 * @returns {Observable<number>}
+	 */
+	private getStockAmount$(): Observable<number> {
+		return combineLatest(
+			this.stock$,
+			this._color$,
+			this._size$
+		)
+			.pipe(
+				tap(it => console.log(it)),
+				map(([stock, color, size]) => stock
+				// we have to consider the selected color and size attributes
+					.filter(stockItem =>
+						color &&
+						stockItem.color.hex === color.hex
+						&& stockItem.size === size
+					)
+					.reduce((acc, stockItem) => acc + stockItem.amount, 0))
+			)
+	}
+
+	/**
+	 *
+	 * @returns {Observable<number>}
+	 */
+	private getEmptySeats$(): Observable<number> {
+		return this._event$
+			.pipe(
+				mergeMap(event =>
+					this.participantService
+						.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
+						.pipe(
+							map(participants => event.capacity - participants.length)
+						)
+				),
+				defaultIfEmpty(0)
+			)
 	}
 
 	/**
@@ -274,18 +310,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	updateMaxAmount() {
 		const maxAmount$: Observable<number> = this._event$
 			.pipe(
+				filter(event => event !== undefined && event.id >= 0),
 				mergeMap(event => this.isMerch(event)
-					? combineLatest(this.stock$, this._color$, this._size$)
-						.pipe(
-							map(([stock, color, size]) => stock
-							// we have to consider the selected color and size attributes
-								.filter(stockItem =>
-									color &&
-									stockItem.color.hex === color.hex
-									&& stockItem.size === size
-								)
-								.reduce((acc, stockItem) => acc + stockItem.amount, 0))
-						)
+					? this.getStockAmount$()
 					: (<Observable<number>>this.getValue("capacity"))
 				)
 			);

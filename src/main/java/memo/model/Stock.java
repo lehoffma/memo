@@ -23,9 +23,17 @@ import java.util.Objects;
         @NamedQuery(
                 name = "Stock.findByShopItem",
                 query = "SELECT s FROM Stock s " +
-                        " WHERE s.item.id = :id"
+                        "       WHERE s.item.id = :id " +
+                        "       AND s.id NOT IN " +
+                        "           (SELECT stock.id " +
+                        "               FROM Stock stock, OrderedItem orderedItem " +
+                        "               WHERE stock.item.id = orderedItem.item.id " +
+                        "                   AND stock.color.name = orderedItem.color.name" +
+                        "                   AND stock.size = orderedItem.size" +
+                        "           )"
         )
 })
+
 public class Stock implements Serializable {
 
     //**************************************************************

@@ -33,7 +33,7 @@ public class StockRepository extends AbstractRepository<Stock> {
 
     public List<Stock> findByShopItem(String eventId) throws NumberFormatException {
         Integer id = Integer.parseInt(eventId);
-        //ToDo: gibt null aus wenn id nicht vergeben (ich bin für optionals)
+
         return DatabaseManager.createEntityManager()
                 .createNamedQuery("Stock.findByShopItem", Stock.class)
                 .setParameter("id", id)

@@ -5,6 +5,7 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, tap} from "rxjs/operators";
 import {CapacityService} from "./capacity.service";
+import {StockService} from "./stock.service";
 
 interface OrderApiResponse {
 	orders: Order[];
@@ -16,6 +17,7 @@ export class OrderService extends ServletService<Order> {
 	completedOrder: number = null;
 
 	constructor(public http: HttpClient,
+				private stockService: StockService,
 				private capacityService: CapacityService) {
 		super();
 	}
@@ -96,9 +98,11 @@ export class OrderService extends ServletService<Order> {
 		})
 			.pipe(
 				//invalidate capacity values of every ordered item
-				tap(() => Array.from(new Set(order.items.map(it => it.item)))
-					.forEach(id => this.capacityService.invalidateValue((<any>id)))
-				),
+				tap(() => {
+					const items = Array.from(new Set(order.items.map(it => it.item)));
+					items.forEach(id => this.capacityService.invalidateValue(<any>id));
+					items.forEach(id => this.stockService.invalidateValue(<any>id));
+				}),
 				mergeMap(response => this.getById(response.id))
 			);
 	}
@@ -115,9 +119,11 @@ export class OrderService extends ServletService<Order> {
 			.pipe(
 				tap(() => this.invalidateValue(order.id)),
 				//invalidate capacity values of every ordered item
-				tap(() => Array.from(new Set(order.items.map(it => it.item.id)))
-					.forEach(id => this.capacityService.invalidateValue(id))
-				),
+				tap(() => {
+					const items = Array.from(new Set(order.items.map(it => it.item)));
+					items.forEach(id => this.capacityService.invalidateValue(<any>id));
+					items.forEach(id => this.stockService.invalidateValue(<any>id));
+				}),
 				mergeMap(response => this.getById(response.id))
 			);
 	}
@@ -132,7 +138,7 @@ export class OrderService extends ServletService<Order> {
 			params: new HttpParams().set("id", "" + id)
 		})
 			.pipe(
-				tap(() => this.invalidateValue(id)),
+				tap(() => this._cache.invalidateById(id)),
 			);
 	}
 }
