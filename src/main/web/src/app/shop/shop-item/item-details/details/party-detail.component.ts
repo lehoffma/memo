@@ -103,7 +103,7 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
 		.pipe(
 			map(([party, user]) => {
 				if (user !== null) {
-					let permissions = user.permissions ? user.permissions : rolePermissions[user.clubRole];
+					let permissions = user.userPermissions();
 					return permissions.party >= Permission.write
 						? "/partys/" + party.id + "/participants"
 						: null

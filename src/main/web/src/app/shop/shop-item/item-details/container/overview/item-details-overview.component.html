@@ -72,7 +72,8 @@
 		</div>
 
 		<div class="available-tickets-container item-details-row" *ngIf="!isMerch(event)">
-			<memo-capacity-renderer [available]="maxAmount"
+			<!--todo: cache capacity => request from server -->
+			<memo-capacity-renderer [available]="getValue('capacity') | async"
 									[icon]="'local_play'"
 									[maxAmount]="event.capacity"
 									[textOptions]="{
@@ -101,12 +102,12 @@
 		</div>
 
 
+		<!--todo: use getValue(capacity) for dropdown-->
 		<div class="add-to-cart-container">
 			<form #addToCartForm="ngForm" (ngSubmit)="addOrDeleteFromCart(event)">
 				<ng-template [ngIf]="isMerch(event)">
 					<mat-form-field>
 						<mat-select [(ngModel)]="color"
-									(change)="updateMaxAmount()"
 									placeholder="Farbe"
 									[required]="true"
 									name="colorSelectionInput">
@@ -118,7 +119,6 @@
 					</mat-form-field>
 					<mat-form-field>
 						<mat-select [(ngModel)]="size"
-									(change)="updateMaxAmount()"
 									placeholder="Größe"
 									[required]="true"
 									name="sizeSelectionInput">

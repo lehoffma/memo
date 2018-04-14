@@ -27,7 +27,7 @@ export class CapacityRendererComponent implements OnInit {
 		return this._maxAmount$.getValue();
 	}
 
-	_available$ = new BehaviorSubject<number>(0);
+	_available$ = new BehaviorSubject<number>(null);
 	@Input() set available(available: number){
 		this._available$.next(available);
 	}

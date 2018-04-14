@@ -12,9 +12,8 @@ import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property"
 import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {defaultIfEmpty, filter, first, map, mergeMap, take} from "rxjs/operators";
+import {defaultIfEmpty, filter, first, map, mergeMap, startWith, take, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {of} from "rxjs/observable/of";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {User} from "../../../../../shared/model/user";
 import {Discount} from "../../../../../shared/price-renderer/discount";
@@ -30,6 +29,7 @@ import {canCheckIn, canConclude, canDeleteEntries, canEdit, canReadEntries} from
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
 import {Router} from "@angular/router";
+import {CapacityService} from "../../../../../shared/services/api/capacity.service";
 
 
 @Component({
@@ -67,8 +67,13 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		);
 	public isPastEvent: boolean = false;
 	private _cache: ObservableCache<Event> = new ObservableCache(this._event$)
-		.withAsyncFallback("capacity", () => this.stock$
-			.pipe(map(stock => stock.reduce((sum, it) => sum + it.amount, 0))))
+		.withAsyncFallback("capacity", () => this._event$
+			.pipe(
+				mergeMap(event => this.capacityService.valueChanges(event.id)),
+				filter(it => it !== null),
+				map(it =>  it.capacity)
+			)
+		)
 		.withAsyncFallback("emptySeats", () => this._event$
 			.pipe(
 				mergeMap(event =>
@@ -126,10 +131,12 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 				private shoppingCartService: ShoppingCartService,
 				private eventService: EventService,
 				private snackBar: MatSnackBar,
+				private capacityService: CapacityService,
 				private router: Router,
 				private confirmationDialogService: ConfirmationDialogService,
 				private responsibilityService: ResponsibilityService,
 				private matDialog: MatDialog) {
+		this.updateMaxAmount();
 	}
 
 	get event() {
@@ -159,7 +166,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 
 	ngOnChanges() {
 		if (this.event && this.event.id !== -1) {
-			this.updateMaxAmount();
+			// this.updateMaxAmount();
 			if (this.event.date) {
 				this.isPastEvent = isBefore(this.event.date, new Date());
 			}
@@ -168,9 +175,9 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 
 	ngOnInit() {
 		if (this.event && this.event.id !== -1) {
-			this.updateMaxAmount();
 		}
 	}
+
 
 	/**
 	 *
@@ -265,23 +272,27 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 * Updates maxAmount and amountOptions (i.e. the amount-dropdown)
 	 */
 	updateMaxAmount() {
-		const maxAmount$: Observable<number> = this.isMerch(this.event)
-			? combineLatest(this.stock$, this._color$, this._size$)
-				.pipe(
-					map(([stock, color, size]) => stock
-					// we have to consider the selected color and size attributes
-						.filter(stockItem =>
-							color &&
-							stockItem.color.hex === color.hex
-							&& stockItem.size === size
+		const maxAmount$: Observable<number> = this._event$
+			.pipe(
+				mergeMap(event => this.isMerch(event)
+					? combineLatest(this.stock$, this._color$, this._size$)
+						.pipe(
+							map(([stock, color, size]) => stock
+							// we have to consider the selected color and size attributes
+								.filter(stockItem =>
+									color &&
+									stockItem.color.hex === color.hex
+									&& stockItem.size === size
+								)
+								.reduce((acc, stockItem) => acc + stockItem.amount, 0))
 						)
-						.reduce((acc, stockItem) => acc + stockItem.amount, 0))
+					: (<Observable<number>>this.getValue("capacity"))
 				)
-			: of(this.event.capacity);
+			);
 
 		maxAmount$
-			.pipe(first())
 			.subscribe(maxAmount => {
+				console.log(maxAmount);
 				this.maxAmount = maxAmount;
 
 				//fills the amountOptions variable with integers from 0 to maxAmount

@@ -49,7 +49,7 @@ export class CanModifyItemGuard implements CanActivate {
 
 					let id = route.paramMap.has("id") ? +route.paramMap.get("id") : -1;
 					const {permissionKey, shopItem} = this.getShopItemFromRoute(route, id);
-					let permissions = user.permissions ? user.permissions : rolePermissions[user.clubRole];
+					let permissions = user.userPermissions();
 
 					return shopItem
 						.pipe(

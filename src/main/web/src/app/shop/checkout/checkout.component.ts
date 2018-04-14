@@ -15,7 +15,7 @@ import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
 import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {distinctUntilChanged, first, map, mergeMap} from "rxjs/operators";
+import {distinctUntilChanged, filter, first, map, mergeMap} from "rxjs/operators";
 import {OrderedItem} from "../../shared/model/ordered-item";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../shared/services/api/user.service";
@@ -81,8 +81,14 @@ export class CheckoutComponent implements OnInit {
 		this.formGroup.get("payment").setValidators([debitRequiresAccountValidator()]);
 
 		this.user$
-			.pipe(distinctUntilChanged((x, y) => x.id === y.id))
+			.pipe(
+				filter(user => user != null),
+				distinctUntilChanged((x, y) => x.id === y.id)
+			)
 			.subscribe(user => {
+				if (user == null) {
+					return;
+				}
 				this.user = user;
 
 				processInParallelAndWait(
@@ -251,7 +257,7 @@ export class CheckoutComponent implements OnInit {
 				},
 				error => {
 					console.error(error);
-					this.snackBar.open(error, "Schließen");
+					this.snackBar.open(error.message, "Schließen");
 				},
 				() => {
 				}

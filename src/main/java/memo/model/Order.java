@@ -48,7 +48,7 @@ public class Order implements Serializable {
     @JsonDeserialize(using = UserIdDeserializer.class)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JsonDeserialize(using = BankAccIdDeserializer.class)
     @JsonSerialize(using = BankAccIdSerializer.class)
     private BankAcc bankAccount;

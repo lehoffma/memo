@@ -8,7 +8,6 @@ import {ParticipantsService} from "../../../../shared/services/api/participants.
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {Permission} from "../../../../shared/model/permission";
-import {rolePermissions} from "../../../../shared/model/club-role";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import {Comment} from "../../../shared/model/comment";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
@@ -109,7 +108,7 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 		.pipe(
 			map(([tour, user]) => {
 				if (user !== null) {
-					let permissions = user.permissions ? user.permissions : rolePermissions[user.clubRole];
+					let permissions = user.userPermissions();
 					return permissions.tour >= Permission.write
 						? "/tours/" + tour.id + "/participants"
 						: null

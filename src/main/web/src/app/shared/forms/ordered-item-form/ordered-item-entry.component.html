@@ -18,7 +18,7 @@
 
 <div class="section right-aligned">
 	<div class="options-container">
-		<ng-container *ngIf="getEventData(orderedItem?.item).type === eventType.tours; else merchOptions">
+		<ng-container *ngIf="getEventData(orderedItem?.item).type === eventType.tours;">
 			<div class="labelled-value">
 				<span class="label">Fahrer?</span>
 				<span>{{orderedItem.isDriver ? 'Ja' : 'Nein'}}</span>
@@ -28,7 +28,7 @@
 				<span>{{orderedItem.needsTicket ? 'Ja' : 'Nein'}}</span>
 			</div>
 		</ng-container>
-		<ng-template #merchOptions>
+		<ng-container *ngIf="getEventData(orderedItem?.item).type === eventType.merch;">
 			<div class="labelled-value">
 				<span class="label">Größe</span>
 				<span>{{orderedItem?.size}}</span>
@@ -37,7 +37,7 @@
 				<span class="label">Farbe</span>
 				<span>{{orderedItem?.color?.name}}</span>
 			</div>
-		</ng-template>
+		</ng-container>
 	</div>
 
 	<div class="options-container">

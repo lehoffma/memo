@@ -10,7 +10,7 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {isArrayType} from "../../../util/util";
 import {of} from "rxjs/observable/of";
-import {processInParallelAndWait, processSequentially} from "../../../util/observable-util";
+import {processInParallelAndWait, processSequentially, processSequentiallyAndWait} from "../../../util/observable-util";
 
 const stockMockData = [
 	{
@@ -388,9 +388,8 @@ export class StockService extends ServletService<MerchStock[]> {
 			return of([]);
 		}
 
-		return processInParallelAndWait([...requests])
+		return processSequentiallyAndWait(requests)
 			.pipe(
-				take(1),
 				share()
 			);
 	}

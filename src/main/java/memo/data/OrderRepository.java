@@ -1,7 +1,9 @@
 package memo.data;
 
 import memo.model.Order;
+import memo.model.OrderedItem;
 import memo.model.PaymentMethod;
+import memo.model.ShopItem;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
@@ -47,6 +49,7 @@ public class OrderRepository extends AbstractRepository<Order> {
         }
         return null;
     }
+
 
     public List<Order> findByOrderedItem(String orderedItemId, HttpServletResponse response) {
         return this.withParsedId(orderedItemId, response,

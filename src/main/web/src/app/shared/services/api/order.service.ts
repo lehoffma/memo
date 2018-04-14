@@ -4,6 +4,7 @@ import {Order} from "../../model/order";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, tap} from "rxjs/operators";
+import {CapacityService} from "./capacity.service";
 
 interface OrderApiResponse {
 	orders: Order[];
@@ -14,7 +15,8 @@ export class OrderService extends ServletService<Order> {
 	private baseUrl = "/api/order";
 	completedOrder: number = null;
 
-	constructor(public http: HttpClient) {
+	constructor(public http: HttpClient,
+				private capacityService: CapacityService) {
 		super();
 	}
 
@@ -39,7 +41,7 @@ export class OrderService extends ServletService<Order> {
 	 * @param {number} id
 	 * @returns {Observable<Order>}
 	 */
-	getByOrderedItemId(id: number): Observable<Order>{
+	getByOrderedItemId(id: number): Observable<Order> {
 		const params = new HttpParams().set("orderedItemId", "" + id);
 		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
 			.pipe(
@@ -93,7 +95,10 @@ export class OrderService extends ServletService<Order> {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
 			.pipe(
-				tap(() => this._cache.invalidateById(order.id)),
+				//invalidate capacity values of every ordered item
+				tap(() => Array.from(new Set(order.items.map(it => it.item)))
+					.forEach(id => this.capacityService.invalidateValue((<any>id)))
+				),
 				mergeMap(response => this.getById(response.id))
 			);
 	}
@@ -108,7 +113,11 @@ export class OrderService extends ServletService<Order> {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
 			.pipe(
-				tap(() => this._cache.invalidateById(order.id)),
+				tap(() => this.invalidateValue(order.id)),
+				//invalidate capacity values of every ordered item
+				tap(() => Array.from(new Set(order.items.map(it => it.item.id)))
+					.forEach(id => this.capacityService.invalidateValue(id))
+				),
 				mergeMap(response => this.getById(response.id))
 			);
 	}
@@ -123,7 +132,7 @@ export class OrderService extends ServletService<Order> {
 			params: new HttpParams().set("id", "" + id)
 		})
 			.pipe(
-				tap(() => this._cache.invalidateById(id))
+				tap(() => this.invalidateValue(id)),
 			);
 	}
 }

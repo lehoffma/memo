@@ -14,9 +14,11 @@ import {UserBankAccountService} from "./user-bank-account.service";
 import {HttpClientModule} from "@angular/common/http";
 import {MemoMaterialModule} from "../../../../material.module";
 import {MilesService} from "./miles.service";
+import {CapacityService} from "./capacity.service";
 
 const providers = [
 	AddressService,
+	CapacityService,
 	CommentService,
 	EntryService,
 	EntryCategoryService,

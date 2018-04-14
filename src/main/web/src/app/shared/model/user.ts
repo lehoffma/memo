@@ -58,11 +58,13 @@ export class User extends BaseObject<User> {
 
 
 	get userPermissions() {
+		//closure to avoid recalculating the value all the time
 		let _userPermissions: UserPermissions;
 		return () => {
 			if (!_userPermissions) {
 				let userPermissions = this.permissions;
 				let clubRolePermissions = rolePermissions[this.clubRole];
+				//combine both permission states
 				_userPermissions = Object.keys(visitorPermissions).reduce((permissions, key) => {
 					permissions[key] = Math.max(permissions[key],
 						userPermissions[key] || Permission.none,

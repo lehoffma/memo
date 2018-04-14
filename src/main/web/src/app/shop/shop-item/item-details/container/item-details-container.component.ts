@@ -42,7 +42,7 @@ export class ItemDetailsContainerComponent implements OnInit {
 					return [...event.images];
 				}
 			})
-		)
+		);
 
 	showConcludeEventHeader$: Observable<boolean> = this.loginService.currentUser$
 		.pipe(
