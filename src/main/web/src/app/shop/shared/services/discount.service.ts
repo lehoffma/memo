@@ -5,7 +5,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {catchError, map, mergeMap, retry} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {Discount} from "../../../shared/price-renderer/discount";
+import {Discount} from "../../../shared/renderers/price-renderer/discount";
 import {EventService} from "../../../shared/services/api/event.service";
 
 @Injectable()

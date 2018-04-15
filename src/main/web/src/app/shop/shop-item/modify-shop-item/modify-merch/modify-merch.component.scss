@@ -48,19 +48,23 @@
 	background: white;
 }
 
+memo-modify-merch-stock {
+	display: block;
+	border-top: 1px solid #ededed;
+}
+
 @media all and (min-width: 800px) {
-	.modify-merch-stock-container {
-		width: 50%;
-		margin-right: 10px;
+	:host {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		padding-bottom: 1rem;
+	}
+	memo-multi-image-upload {
+		display: block;
 
-		/deep/ memo-expandable-table {
-			display: flex;
-			justify-content: flex-end;
-			padding-top: 0.5rem;
-
-			> .expandable-table-component-container {
-				margin: 0;
-			}
+		/deep/ memo-multi-image-container,
+		/deep/ .upload-container {
+			width: 100% !important;
 		}
 	}
 }

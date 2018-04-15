@@ -1,5 +1,4 @@
 <div class="modify-shop-item-container" *ngIf="formGroup">
-	<h2>Tour {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
 	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
 		<div class="image-upload-container">
 			<memo-item-details-content [title]="'Bilder'">
@@ -9,7 +8,7 @@
 			</memo-item-details-content>
 		</div>
 
-		<div class="information-container">
+		<div>
 			<memo-item-details-content [title]="'Route'">
 				<memo-tour-route-input [previousValue]="previousValue?.route" [formControl]="formGroup.get('addresses')"
 									   (distanceChange)="formGroup.get('event-data').get('miles').patchValue(meterToMiles($event))"
@@ -138,7 +137,7 @@
 			</memo-item-permissions-input>
 		</memo-item-details-content>
 
-		<memo-item-details-content [title]="'Zusätzliche verantwortliche User'" class="no-padding">
+		<memo-item-details-content [title]="'Verantwortliche User'" class="no-padding">
 			<memo-responsible-user-input [previousValue]="previousValue?.author"
 										 [formControl]="formGroup.get('responsible-users')">
 

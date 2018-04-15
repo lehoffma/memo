@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
 import {Address} from "../../../../shared/model/address";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {Observable} from "rxjs/Observable";

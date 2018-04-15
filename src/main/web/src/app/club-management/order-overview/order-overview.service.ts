@@ -8,7 +8,7 @@ import {isAfter, isBefore, isEqual, parse} from "date-fns";
 import {ParamMap, Router} from "@angular/router";
 import {OrderService} from "../../shared/services/api/order.service";
 import {attributeSortingFunction, dateSortingFunction, SortingFunction} from "../../util/util";
-import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
+import {ColumnSortingEvent} from "../../shared/utility/expandable-table/column-sorting-event";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {ConfirmationDialogService} from "../../shared/services/confirmation-dialog.service";
 import {MatSnackBar} from "@angular/material";
@@ -121,10 +121,6 @@ export class OrderOverviewService {
 		return attributeSortingFunction(sortBy.key, sortBy.descending);
 	}
 
-
-	editOrder(order: Order) {
-		this.router.navigate(["orders", order.id, "edit"]);
-	}
 
 	removeOrder(order: Order) {
 		this.confirmationDialogService.openDialog("Möchtest du diese Bestellung wirklich löschen?")

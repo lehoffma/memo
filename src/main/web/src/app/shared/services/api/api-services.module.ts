@@ -7,7 +7,7 @@ import {EventService} from "./event.service";
 import {ImageUploadService} from "./image-upload.service";
 import {LogInService} from "./login.service";
 import {OrderService} from "./order.service";
-import {ParticipantsService} from "./participants.service";
+import {OrderedItemService} from "./ordered-item.service";
 import {StockService} from "./stock.service";
 import {UserService} from "./user.service";
 import {UserBankAccountService} from "./user-bank-account.service";
@@ -27,7 +27,7 @@ const providers = [
 	LogInService,
 	MilesService,
 	OrderService,
-	ParticipantsService,
+	OrderedItemService,
 	StockService,
 	UserService,
 	UserBankAccountService,

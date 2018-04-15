@@ -5,12 +5,12 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {MerchColor} from "../../../shop/shared/model/merch-color";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {Observable} from "rxjs/Observable";
-import {catchError, map, mergeMap, share, take, tap} from "rxjs/operators";
+import {catchError, map, mergeMap, share, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {isArrayType} from "../../../util/util";
 import {of} from "rxjs/observable/of";
-import {processInParallelAndWait, processSequentially, processSequentiallyAndWait} from "../../../util/observable-util";
+import {processSequentiallyAndWait} from "../../../util/observable-util";
 
 const stockMockData = [
 	{
@@ -162,18 +162,17 @@ export class StockService extends ServletService<MerchStock[]> {
 		"5XL"
 	];
 
-	constructor(protected http: HttpClient) {
-		super();
-	}
-
 	/**
 	 *
 	 * @param id
 	 * @param eventId
 	 */
 	getById(id: number, eventId: number): Observable<MerchStock[]> {
-		const params = new HttpParams().set("id", "" + id)
-			.set("eventId", "" + eventId);
+		let params = new HttpParams().set("id", "" + id);
+
+		if (eventId) {
+			params = params.set("eventId", "" + eventId);
+		}
 		const request = this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {params}))
 			.pipe(
 				map(response => response.stock),
@@ -182,6 +181,10 @@ export class StockService extends ServletService<MerchStock[]> {
 			);
 
 		return this._cache.getById(params, request);
+	}
+
+	constructor(protected http: HttpClient) {
+		super();
 	}
 
 	/**

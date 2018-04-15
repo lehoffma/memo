@@ -3,6 +3,7 @@ package memo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import memo.serialization.OrderIdDeserializer;
 import memo.serialization.ShopItemIdDeserializer;
 
 import javax.persistence.*;
@@ -46,7 +47,8 @@ public class OrderedItem implements Serializable {
     private ShopItem item;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
+    @JoinColumn()
+    @JsonDeserialize(using = OrderIdDeserializer.class)
     private Order order;
 
     private BigDecimal price = BigDecimal.valueOf(0);

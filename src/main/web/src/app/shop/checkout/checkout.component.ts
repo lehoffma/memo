@@ -25,7 +25,7 @@ import {ShoppingCartItem} from "../../shared/model/shopping-cart-item";
 import {flatMap} from "../../util/util";
 import {DiscountService} from "app/shop/shared/services/discount.service";
 import {processInParallelAndWait} from "../../util/observable-util";
-import {ParticipantsService} from "../../shared/services/api/participants.service";
+import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
 
 @Component({
 	selector: "memo-checkout",
@@ -50,7 +50,7 @@ export class CheckoutComponent implements OnInit {
 				private formBuilder: FormBuilder,
 				private cartService: ShoppingCartService,
 				private discountService: DiscountService,
-				private participantsService: ParticipantsService,
+				private orderedItemService: OrderedItemService,
 				private eventService: EventService,
 				private orderService: OrderService,
 				private snackBar: MatSnackBar,
@@ -214,6 +214,15 @@ export class CheckoutComponent implements OnInit {
 		)
 	}
 
+	handleOrderedItems(orderedItems: OrderedItem[]) {
+		if (orderedItems.length === 0) {
+			return of([]);
+		}
+		return combineLatest(
+			...orderedItems.map(item => this.orderedItemService.add(item))
+		);
+	}
+
 	/**
 	 *
 	 * @param event
@@ -234,12 +243,13 @@ export class CheckoutComponent implements OnInit {
 						mergeMap(content => this.combineCartContent(content)),
 						//map events to orderedItem interface to make it usable on the backend
 						mergeMap(events => this.mapToOrderedItems(events, userId)),
+						mergeMap(items => this.handleOrderedItems(items)),
 						map(orderedItems => Order.create()
 							.setProperties({
 								user: userId,
 								timeStamp: new Date(),
 								method: this.formGroup.get("payment").get("method").value,
-								items: orderedItems
+								items: orderedItems.map(it => it.id)
 							})),
 						map(order => bankAccount ? order.setProperties({bankAccount: bankAccount.id}) : order),
 						mergeMap(order => this.orderService.add(order))
@@ -250,7 +260,7 @@ export class CheckoutComponent implements OnInit {
 				order => {
 					this.orderService.completedOrder = order.id;
 					this.loading = false;
-					this.participantsService.invalidateCache();
+					this.orderedItemService.invalidateCache();
 					this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
 					this.cartService.reset();
 					this.router.navigateByUrl("/order-complete");

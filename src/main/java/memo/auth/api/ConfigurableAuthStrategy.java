@@ -26,7 +26,7 @@ public class ConfigurableAuthStrategy<T> implements AuthenticationStrategy<T> {
         return this.defaultValue;
     }
 
-    public ConfigurableAuthStrategy set(DatabaseAction key, BiPredicate<User, T> value) {
+    public ConfigurableAuthStrategy<T> set(DatabaseAction key, BiPredicate<User, T> value) {
         this.predicateMap.put(key, value);
         return this;
     }

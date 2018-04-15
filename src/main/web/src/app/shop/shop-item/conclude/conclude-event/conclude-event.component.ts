@@ -11,9 +11,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {of} from "rxjs/observable/of";
 import {UserService} from "../../../../shared/services/api/user.service";
-import {ImageToUpload} from "../../../../shared/multi-image-upload/image-to-upload";
 import {Event} from "../../../shared/model/event";
-import {ParticipantsService} from "../../../../shared/services/api/participants.service";
+import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
+import {ImageToUpload} from "../../../../shared/utility/multi-image-upload/image-to-upload";
 
 @Component({
 	selector: "memo-conclude-event",
@@ -85,7 +85,7 @@ export class ConcludeEventComponent implements OnInit, OnDestroy {
 				private formBuilder: FormBuilder,
 				private eventService: EventService,
 				private userService: UserService,
-				private participantsService: ParticipantsService,
+				private participantsService: OrderedItemService,
 				private navigationService: NavigationService,
 				private concludeEventService: ConcludeEventService) {
 	}

@@ -1,14 +1,14 @@
 import {Injectable} from "@angular/core";
-import {ExpandableTableContainerService} from "../../../../../shared/expandable-table/expandable-table-container.service";
+import {ExpandableTableContainerService} from "../../../../../shared/utility/expandable-table/expandable-table-container.service";
 import {MerchStock} from "../../../../shared/model/merch-stock";
-import {ColumnSortingEvent} from "../../../../../shared/expandable-table/column-sorting-event";
+import {ColumnSortingEvent} from "../../../../../shared/utility/expandable-table/column-sorting-event";
 import {attributeSortingFunction, getId, SortingFunction, sortingFunction} from "../../../../../util/util";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-merch-stock-item.component";
 import {ModifyStockItemEvent} from "./modify-merch-stock-item/modify-stock-item-event";
 import {ModifyType} from "../../modify-type";
 import {MatDialog} from "@angular/material";
-import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
+import {ExpandableTableColumn} from "../../../../../shared/utility/expandable-table/expandable-table-column";
 import {MerchColorCellComponent} from "./merch-color-cell.component";
 
 @Injectable()

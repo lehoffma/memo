@@ -15,6 +15,7 @@ import {of} from "rxjs/observable/of";
 export class OrderedItemInputFormService implements OnDestroy {
 
 	public addOrderedItemForm: FormGroup = this.formBuilder.group({
+		"id": [-1],
 		"item": [undefined, {
 			validators: [Validators.required]
 		}],
@@ -89,6 +90,7 @@ export class OrderedItemInputFormService implements OnDestroy {
 	 */
 	setOrderedItem(orderedItem: OrderedItem) {
 		this.addOrderedItemForm.setValue({
+			id: orderedItem.id,
 			item: orderedItem.item,
 			price: orderedItem.price,
 			status: orderedItem.status,

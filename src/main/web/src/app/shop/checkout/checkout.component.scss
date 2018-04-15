@@ -10,13 +10,16 @@
 .checkout-options-container {
 	display: flex;
 	flex-wrap: wrap;
+	@include mat-elevation(3);
+	@include mat-elevation-transition();
+
+	max-width: 500px;
 
 	width: 100%;
 	overflow-y: auto;
 
 	@media all and (min-width: 500px) {
-		padding-top: 20px;
-		padding-bottom: 20px;
+		margin: 20px auto;
 	}
 }
 
@@ -42,6 +45,7 @@ memo-payment /deep/ memo-bank-account-form /deep/ memo-bank-account-input-form /
 
 .checkout-total {
 	text-decoration: none;
+	border-top: 1px solid #ededed;
 
 	width: 100%;
 	display: flex;

@@ -27,26 +27,11 @@ memo-multi-image-upload /deep/ memo-multi-image-container {
 .modify-shop-item-container {
 	background: $container-content--background-color;
 	color: $container-content--color;
-	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 	padding-top: 0;
-	max-width: 900px;
+	max-width: 1000px;
 
 	@media all and (min-width: 600px) {
 		margin-top: 1rem;
-	}
-
-	h2 {
-		margin-top: 0;
-		box-shadow: none;
-		border-bottom: $container-divider--height solid $container-divider--color;
-		color: $container-header--color;
-		background-color: $container-header--background-color;
-
-		@media all and (min-width: 600px) {
-			max-width: none;
-			margin-left: -1rem;
-			margin-right: -1rem;
-		}
 	}
 }
 
@@ -78,10 +63,18 @@ memo-multi-image-upload /deep/ memo-multi-image-container {
 	}
 }
 
+memo-multi-image-upload {
+	margin: 0;
+
+	/deep/ memo-multi-image-container {
+		border-right: 1px solid #cdcbcb
+	}
+}
 
 .entry-info {
+	width: 90%;
 	max-width: 500px;
-	margin: auto;
+	margin: 1rem auto;
 }
 
 .form-buttons {

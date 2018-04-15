@@ -31,7 +31,7 @@ public class EventRepository extends AbstractRepository<ShopItem> {
         return DatabaseManager.createEntityManager()
                 .createNamedQuery("ShopItem.findBySearchTerm", ShopItem.class)
                 .setParameter("type", type)
-                .setParameter("searchTerm", "%" + searchTerm + "%")
+                .setParameter("searchTerm", searchTerm)
                 .getResultList();
     }
 
@@ -69,7 +69,7 @@ public class EventRepository extends AbstractRepository<ShopItem> {
                             if (searchTerm == null) {
                                 return this.findByType(EventServlet.getType(s));
                             }
-                            return new ArrayList<>();
+                            return this.findBySearchTerm(searchTerm, EventServlet.getType(eventType));
                         })
                         .buildPut(userId, s -> this.findByParticipant(Integer.valueOf(s)))
                         .buildPut(authorId, s -> this.findByAuthor(Integer.valueOf(s))),

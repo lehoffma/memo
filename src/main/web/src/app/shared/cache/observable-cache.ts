@@ -1,31 +1,35 @@
-import {TypeOfProperty} from "../model/util/type-of-property";
 import {Observable} from "rxjs/Observable";
 import {Cache} from "./cache";
-import {map} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
+import {empty} from "rxjs/observable/empty";
 
 
-export class ObservableCache<T> {
+export class ObservableCache<ValueType> {
 	private _cache: {
-		[key in keyof T]?: Cache<T[key]>
+		[key: string]: Cache<ValueType>
 	} = {};
 
-	constructor(private value$: Observable<T>) {
+	constructor() {
 
 	}
 
-	withAsyncFallback(key: string, fallback: () => Observable<TypeOfProperty<T>>): this {
+	withAsyncFallback(key: string, fallback: () => Observable<ValueType>): this {
 		this._cache[key] = new Cache(fallback, Infinity);
 		return this;
 	}
 
-	withFallback(key: string, fallback: () => TypeOfProperty<T>): this {
+	withFallback(key: string, fallback: () => ValueType): this {
 		return this.withAsyncFallback(key, () => of(fallback()));
 	}
 
-	get(key: keyof T): Observable<TypeOfProperty<T>> {
+	get(key: string, fallback?: () => ValueType): Observable<ValueType> {
 		if (!this._cache[key]) {
-			this._cache[key] = new Cache(() => this.value$.pipe(map(it => it[key])));
+			if (fallback) {
+				this.withFallback(key, fallback);
+			}
+			else {
+				return empty();
+			}
 		}
 
 		return this._cache[key].get();

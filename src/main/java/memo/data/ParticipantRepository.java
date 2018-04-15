@@ -59,9 +59,10 @@ public class ParticipantRepository extends AbstractRepository<OrderedItem> {
         return new ArrayList<>();
     }
 
-    public List<OrderedItem> get(String eventId, HttpServletResponse response) {
+    public List<OrderedItem> get(String id, String eventId, HttpServletResponse response) {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<OrderedItem>>>()
+                        .buildPut(id, this::get)
                         .buildPut(eventId, s -> this.findByEvent(s, response)),
                 this.getAll()
         );

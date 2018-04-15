@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {EventOverviewKey} from "../container/overview/event-overview-key";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {EventType} from "../../../shared/model/event-type";
-import {ParticipantsService} from "../../../../shared/services/api/participants.service";
+import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {Permission} from "../../../../shared/model/permission";
 import {rolePermissions} from "../../../../shared/model/club-role";
@@ -14,12 +14,13 @@ import {EventUtilityService} from "../../../../shared/services/event-utility.ser
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {of} from "rxjs/observable/of";
 import {_throw} from "rxjs/observable/throw";
-import {catchError, filter, first, map, mergeMap} from "rxjs/operators";
+import {catchError, filter, first, map, mergeMap, tap} from "rxjs/operators";
 import {empty} from "rxjs/observable/empty";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {Observable} from "rxjs/Observable";
 import {Address} from "app/shared/model/address";
+import {ParticipantUser} from "../../../shared/model/participant";
 
 
 @Component({
@@ -96,7 +97,12 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
 	participants$ = this._party$
 		.pipe(
 			filter(party => party.id !== -1),
-			mergeMap((party: Party) => this.participantService.getParticipantUsersByEvent(party.id, EventType.partys))
+			mergeMap((party: Party) => this.participantService.getParticipantUsersByEvent(party.id, EventType.partys)),
+			//remove duplicate entries
+			map((participants: ParticipantUser[]) => participants.reduce((acc: ParticipantUser[], user) => {
+				const index = acc.find(it => it.user.id === user.user.id);
+				return index === undefined ? [...acc, user] : acc;
+			}, []))
 		);
 
 	participantsLink$ = combineLatest(this._party$, this.loginService.currentUser$)
@@ -125,7 +131,7 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
 	constructor(private route: ActivatedRoute,
 				private router: Router,
 				private addressService: AddressService,
-				private participantService: ParticipantsService,
+				private participantService: OrderedItemService,
 				private commentService: CommentService,
 				private loginService: LogInService,
 				private eventService: EventService) {

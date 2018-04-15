@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {User} from "../../../shared/model/user";
-import {RowActionType} from "../../../shared/expandable-table/row-action-type";
+import {RowActionType} from "../../../shared/utility/expandable-table/row-action-type";
 import {MemberListRowAction} from "./member-list-row-actions";
 import {MemberListService} from "./member-list.service";
 

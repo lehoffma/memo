@@ -4,7 +4,7 @@ import {EventType} from "../../../../shop/shared/model/event-type";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {StockEntry} from "./merch-stock-entry/stock-entry";
-import {MultiLevelSelectParent} from "../../../../shared/multi-level-select/shared/multi-level-select-parent";
+import {MultiLevelSelectParent} from "../../../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {SearchFilterService} from "../../../../shop/search-results/search-filter.service";
 import {SortingOption} from "../../../../shared/model/sorting-option";
 import {ActivatedRoute} from "@angular/router";

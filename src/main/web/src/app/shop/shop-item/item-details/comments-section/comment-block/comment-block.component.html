@@ -5,7 +5,8 @@
 		<a class="comment-image-container" routerLink="/members/{{author.id}}">
 			<img class="comment-image" [ngClass]="{'dummy': dummy}"
 				 memoUserPreview [user]="author"
-				 src="{{author.images[0]}}"/>
+				 src="{{author?.images.length > 0 ? author.images[0] : 'resources/images/Logo.png'}}"/>
+
 		</a>
 		<div class="comment-container">
 			<div class="comment-header">

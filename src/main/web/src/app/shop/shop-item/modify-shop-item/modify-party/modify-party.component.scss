@@ -50,3 +50,19 @@
 .description-input {
 	margin-top: 15px;
 }
+
+@media all and (min-width: 800px) {
+	:host {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		padding-bottom: 1rem;
+	}
+	memo-multi-image-upload {
+		display: block;
+
+		/deep/ memo-multi-image-container,
+		/deep/ .upload-container {
+			width: 100% !important;
+		}
+	}
+}

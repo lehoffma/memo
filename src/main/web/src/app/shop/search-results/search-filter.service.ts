@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {MultiLevelSelectParent} from "../../shared/multi-level-select/shared/multi-level-select-parent";
+import {MultiLevelSelectParent} from "../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {ShopItem} from "../../shared/model/shop-item";
 import {Event} from "../shared/model/event";
@@ -7,7 +7,7 @@ import {StockService} from "../../shared/services/api/stock.service";
 import {isObservable} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute} from "@angular/router";
-import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
+import {isMultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-option";
 import {Observable} from "rxjs/Observable";
 import {defaultIfEmpty, first, map} from "rxjs/operators";
 import {of} from "rxjs/observable/of";

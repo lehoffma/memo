@@ -3,13 +3,13 @@ import {Observable} from "rxjs/Observable";
 import {EventService} from "../../../shared/services/api/event.service";
 import {Participant} from "../model/participant";
 import {User} from "../../../shared/model/user";
-import {ImageToUpload} from "../../../shared/multi-image-upload/image-to-upload";
-import {map, mergeMap, tap} from "rxjs/operators";
+import {map, mergeMap} from "rxjs/operators";
 import {isBefore} from "date-fns";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 import {of} from "rxjs/observable/of";
 import {Event} from "../model/event";
+import {ImageToUpload} from "../../../shared/utility/multi-image-upload/image-to-upload";
 
 @Injectable()
 export class ConcludeEventService {

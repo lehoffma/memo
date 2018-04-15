@@ -8,7 +8,7 @@ import {filter, map, mergeMap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {Subscription} from "rxjs/Subscription";
 import {ShoppingCartItem, ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
-import {Discount} from "../../../../shared/price-renderer/discount";
+import {Discount} from "../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../shared/services/discount.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";

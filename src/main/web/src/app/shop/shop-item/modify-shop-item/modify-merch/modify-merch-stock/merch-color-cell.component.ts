@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../../../shared/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../../../../../shared/utility/expandable-table/expandable-table-cell.component";
 import {MerchColor} from "../../../../shared/model/merch-color";
 
 @Component({

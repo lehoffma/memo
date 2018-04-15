@@ -1,12 +1,17 @@
 @import "../centered-container";
 @import "theme";
 
-.conclude-event-header {
+.item-details-parent-container {
+	max-width: 500px;
+	margin: auto;
+}
+
+.item-details-header {
 	display: flex;
 	justify-content: space-between;
-	margin: auto;
 	padding: 1rem;
 	max-width: 500px;
+	position: relative;
 
 	background: $accent-default;
 	color: white;
@@ -25,6 +30,37 @@
 		mat-icon {
 			margin-right: 0;
 		}
+	}
+}
+
+.ordered-header {
+	background: white;
+	color: black;
+	//border-bottom: 1px solid #ededed;
+	font-size: 0.85rem;
+	align-items: center;
+	font-weight: 500;
+
+	.ordered-header-main-message {
+		font-size: 1rem;
+	}
+
+	.options {
+		font-weight: 400;
+		color: rgba(0, 0, 0, 0.4);
+	}
+
+	> div {
+		display: flex;
+		flex-direction: column;
+	}
+
+	button {
+		color: black;
+	}
+
+	&:hover {
+		background: darken(white, 5%);
 	}
 }
 
@@ -63,17 +99,19 @@
 
 memo-multi-image-container {
 	max-width: 500px;
-	margin: auto;
+	//margin: auto;
 }
 
 @media all and (min-width: 1050px) {
 
-	.conclude-event-header {
+	.item-details-header {
 		max-width: 1000px;
 	}
 
 	.item-details-parent-container {
-		padding-top: 1rem;
+		max-width: 1000px;
+		margin-top: 1rem;
+		margin-bottom: 1rem;
 	}
 	.item-details-card {
 		display: flex;
@@ -100,6 +138,10 @@ memo-multi-image-container {
 	.item-actions {
 		left: calc((100% - 1000px) / 2 + 380px);
 		right: 0;
+	}
+
+	memo-item-details-overview {
+		border-left: 1px solid #ededed;
 	}
 
 	memo-item-details-overview /deep/ .centered-container {

@@ -14,7 +14,7 @@ export class OrderedItemFormComponent implements OnInit {
 	showInlineForm = -1;
 	showNewItemForm = false;
 
-	constructor(private modifyOrderService: ModifyOrderService) {
+	constructor() {
 	}
 
 	ngOnInit() {

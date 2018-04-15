@@ -72,7 +72,6 @@
 		</div>
 
 		<div class="available-tickets-container item-details-row" *ngIf="!isMerch(event)">
-			<!--todo: cache capacity => request from server -->
 			<memo-capacity-renderer [available]="getValue('capacity') | async"
 									[icon]="'local_play'"
 									[maxAmount]="event.capacity"
@@ -132,10 +131,10 @@
 				<mat-form-field>
 					<mat-select placeholder="Anzahl" name="amount"
 								[(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
-								[disabled]="(!isMerch(event) && isPastEvent)
+								[disabled]="(!isMerch(event) && (isPastEvent$ | async))
 								|| !((permissions$ | async)?.checkIn)"
 								[required]="true">
-						<mat-option *ngFor="let number of amountOptions" [value]="number">
+						<mat-option *ngFor="let number of (amountOptions$ | async)" [value]="number">
 							{{number}}
 						</mat-option>
 					</mat-select>
@@ -143,7 +142,7 @@
 
 				<button
 					[disabled]="(!addToCartForm.valid || model.amount === 0)
-								|| (!isMerch(event) && isPastEvent)
+								|| (!isMerch(event) && (isPastEvent$ | async))
 								|| !((permissions$ | async)?.checkIn)
 					"
 					mat-raised-button

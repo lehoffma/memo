@@ -5,13 +5,11 @@ import {BankAccount} from "../../model/bank-account";
 import {UserService} from "./user.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
-import {filter, map, mergeMap, share, take, tap} from "rxjs/operators";
+import {map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {User} from "../../model/user";
 import {Address} from "../../model/address";
-import {processInParallelAndWait, processSequentially, processSequentiallyAndWait} from "../../../util/observable-util";
-import {isEdited} from "../../../util/util";
-import {of} from "rxjs/observable/of";
+import {processInParallelAndWait, updateList, updateListOfItem} from "../../../util/observable-util";
 
 interface UserBankAccountApiResponse {
 	bankAccounts: BankAccount[];
@@ -134,91 +132,20 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 	 * @param user
 	 */
 	public updateAccountsOfUser(previousValue: BankAccount[], accounts: BankAccount[], user: User): Observable<BankAccount[]> {
-
-		let addedAccounts = [];
-		let removedAccounts = [];
-		let editedAccounts = [];
-		//both arrays are the same length => nothing has changed or something was edited
-		//accounts < previousValue => something was removed
-		if (previousValue.length === accounts.length) {
-			const index = previousValue.findIndex(it =>
-				!!accounts.find(prev => isEdited(prev, it, ["id"]))
-			);
-			if (index >= 0) {
-				editedAccounts.push(previousValue[index]);
-			}
-			//otherwise, nothing changed
-		}
-		//something was added
-		else if (previousValue.length < accounts.length) {
-			//find the address that is part of accounts, but not of previousValue
-			const index = accounts.findIndex(it =>
-				//there is no address in prevValues that is equal to the one that is being checked here
-				!previousValue.find(prev => !isEdited(it, prev, ["id"]))
-			);
-
-			addedAccounts.push(accounts[index]);
-		}
-		else if (previousValue.length > accounts.length) {
-			//find the address that is part of previousValue, but not of accounts
-			const index = previousValue.findIndex(it =>
-				//there is no address in accounts that is equal to the one that is being checked here
-				!accounts.find(prev => !isEdited(it, prev, ["id"]))
-			);
-
-			removedAccounts.push(previousValue[index]);
-		}
-
-
-		const addRequests = addedAccounts.map(it => this.add(it));
-		const removeRequests = removedAccounts.map(it => this.remove(it.id));
-		const editRequests = editedAccounts.map(it => this.modify(it));
-
-		const combined = [
-			...addRequests,
-			...removeRequests,
-			...editRequests,
-		];
-		if (combined.length === 0) {
-			return processInParallelAndWait(user.addresses.map(id => this.getById(id)));
-		}
-
-		return processSequentiallyAndWait(
-			combined
+		return updateListOfItem<BankAccount, User>(
+			previousValue,
+			accounts,
+			user,
+			"bankAccounts",
+			value => value,
+			object => processInParallelAndWait(
+				[...object.bankAccounts.map(id => this.getById(id))]
+			),
+			value => this.add(value),
+			value => this.modify(value),
+			value => this.remove(value),
+			object => this.userService.modify(object),
+			id => this.getById(id)
 		)
-			.pipe(
-				take(1),
-				share(),
-				mergeMap(result => {
-					if (!result || result.length === 0) {
-						return of([]);
-					}
-
-					let newAccounts = [];
-					if (addRequests.length > 0) {
-						newAccounts.push(...result.slice(0, addRequests.length));
-					}
-					if (editRequests.length > 0) {
-						newAccounts.push(...result.slice(
-							addRequests.length + removeRequests.length));
-					}
-
-					const accountIds = newAccounts.map(it => it.id);
-					accountIds.push(...user.bankAccounts
-						.filter(id => !removedAccounts.find(removed => removed.id === id))
-					);
-
-					return this.userService.modify(user.setProperties({
-						bankAccounts: accountIds
-					}))
-						.pipe(mergeMap(user => {
-							if (accountIds.length === 0) {
-								return of([]);
-							}
-							return combineLatest(...accountIds.map(id => this.getById(id)))
-								.pipe(filter(it => it.length === accountIds.length), take(1))
-						}))
-				})
-			)
 	}
 }

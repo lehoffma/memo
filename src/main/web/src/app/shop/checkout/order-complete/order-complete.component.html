@@ -12,7 +12,7 @@
 </div>
 
 <div class="order-container">
-	<memo-order-history-entry *ngIf="order$ | async as order" [orderEntry]="order">
+	<memo-order-renderer *ngIf="order$ | async as order" [orderEntry]="order">
 
-	</memo-order-history-entry>
+	</memo-order-renderer>
 </div>

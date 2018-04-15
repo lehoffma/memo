@@ -33,7 +33,7 @@ public class BankAcc implements Serializable {
     @JoinColumn()
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "bankAccount")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bankAccount")
     private List<Order> order;
 
     @Column

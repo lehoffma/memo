@@ -4,7 +4,7 @@ import {ParticipantUser} from "../../../../../shared/model/participant";
 import {ModifyType} from "../../../../modify-shop-item/modify-type";
 import {User} from "../../../../../../shared/model/user";
 import {UserService} from "../../../../../../shared/services/api/user.service";
-import {ParticipantsService} from "../../../../../../shared/services/api/participants.service";
+import {OrderedItemService} from "../../../../../../shared/services/api/ordered-item.service";
 import {EventType} from "../../../../../shared/model/event-type";
 import {OrderStatus, OrderStatusPairList} from "../../../../../../shared/model/order-status";
 import {Event} from "../../../../../shared/model/event";
@@ -31,7 +31,7 @@ export class ModifyParticipantComponent implements OnInit {
 	availableStatus = OrderStatusPairList;
 
 	constructor(private dialogRef: MatDialogRef<ModifyParticipantComponent>,
-				private participantsService: ParticipantsService,
+				private participantsService: OrderedItemService,
 				public userService: UserService,
 				@Inject(MAT_DIALOG_DATA) public data: any) {
 		console.log(this.data);

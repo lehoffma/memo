@@ -1,5 +1,4 @@
 <div class="modify-shop-item-container">
-	<h2>Posten {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
 	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
 		<div class="image-upload">
 			<memo-multi-image-upload [previousValue]="previousValue?.images" [formGroup]="formGroup.get('images')">

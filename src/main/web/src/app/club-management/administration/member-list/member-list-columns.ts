@@ -1,4 +1,4 @@
-import {ExpandableTableColumn} from "../../../shared/expandable-table/expandable-table-column";
+import {ExpandableTableColumn} from "../../../shared/utility/expandable-table/expandable-table-column";
 import {User} from "../../../shared/model/user";
 import {ClubRoleTableCellComponent} from "./member-list-table-cells/clubrole-table-cell.component";
 import {DateTableCellComponent} from "./member-list-table-cells/date-table-cell.component";

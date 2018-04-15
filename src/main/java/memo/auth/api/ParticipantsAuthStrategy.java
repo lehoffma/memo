@@ -1,5 +1,6 @@
 package memo.auth.api;
 
+import memo.model.ClubRole;
 import memo.model.OrderedItem;
 import memo.model.ShopItem;
 import memo.model.User;
@@ -30,7 +31,8 @@ public class ParticipantsAuthStrategy implements AuthenticationStrategy<OrderedI
 
     @Override
     public boolean isAllowedToDelete(User user, OrderedItem object) {
-        //dummy since the servlet only implements GET anyway
-        return true;
+        return userIsAuthorized(user, object, Arrays.asList(
+                AuthenticationConditionFactory.userFulfillsMinimumRole(() -> ClubRole.Admin)
+        ));
     }
 }

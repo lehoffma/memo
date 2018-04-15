@@ -9,6 +9,11 @@ import {OrderService} from "../../../../shared/services/api/order.service";
 import {Params, Router} from "@angular/router";
 import {User} from "../../../../shared/model/user";
 import {Observable} from "rxjs/Observable";
+import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
+import {processSequentially} from "../../../../util/observable-util";
+import {map, mergeMap} from "rxjs/operators";
+import {of} from "rxjs/observable/of";
+import {isEdited} from "../../../../util/util";
 
 @Injectable()
 export class ModifyOrderService {
@@ -35,10 +40,11 @@ export class ModifyOrderService {
 		}]
 	});
 
-	_previousValue = null;
+	_previousValue: Order = null;
 
 	constructor(private formBuilder: FormBuilder,
 				private orderService: OrderService,
+				private orderedItemService: OrderedItemService,
 				private router: Router,
 				private userService: UserService) {
 	}
@@ -98,17 +104,83 @@ export class ModifyOrderService {
 		return setMinutes(setHours(date, +hours), +minutes);
 	}
 
+	/**
+	 *
+	 * @param {OrderedItem[]} orderedItems
+	 * @returns {Observable<any>}
+	 */
+	removeOldOrderedItems(orderedItems: OrderedItem[]): Observable<any> {
+		if (this._previousValue) {
+			let previousItems: number[] = this._previousValue.items
+				.map(it => it.id);
+			const itemsToDelete = previousItems
+				.filter(id => orderedItems.findIndex(item => item.id === id) === -1);
+
+			if (itemsToDelete.length === 0 || (previousItems.length === 0 && orderedItems.length === 0)) {
+				return of([]);
+			}
+
+			return processSequentially(
+				itemsToDelete
+					.map(id => this.orderedItemService.remove(id))
+			)
+		}
+		return of([]);
+	}
+
+	updateOrderedItems(orderedItems: OrderedItem[]) {
+		if (orderedItems.length === 0) {
+			return of([]);
+		}
+
+		return processSequentially(
+			orderedItems.map(item => {
+				//only add routes that aren't already part of the system
+				if (item.id >= 0) {
+					return this.orderedItemService.getById(item.id)
+						.pipe(
+							//but modify them in case they're different
+							mergeMap(prevAddress => isEdited(prevAddress, item, ["id"])
+								? this.orderedItemService.modify(item)
+								//otherwise don't do anything
+								: of(prevAddress)
+							)
+						);
+				}
+
+				return this.orderedItemService.add(item);
+			})
+		);
+	}
+
+	/**
+	 *
+	 * @param {OrderedItem[]} orderedItems
+	 */
+	handleOrderedItems(orderedItems: OrderedItem[]): Observable<number[]> {
+		return this.removeOldOrderedItems(orderedItems)
+			.pipe(
+				mergeMap(() => {
+					//no need to modify/add the items if there are none
+					if (!orderedItems || orderedItems.length === 0) {
+						return of([]);
+					}
+
+					return this.updateOrderedItems(orderedItems);
+				}),
+				map(orderedItems => [...orderedItems].map(it => it.id))
+			);
+	}
+
+	/**
+	 *
+	 * @returns {Observable<Order>}
+	 */
 	getRequest(): Observable<Order> {
 		const value = {...this.formGroup.value};
 		let order: Order = Order.create().setProperties({
 			timeStamp: this.getDate(value.date, value.time),
 			method: value.method,
-			items: [...value.items].map(it => {
-				return {
-					...it,
-					item: it.item.id
-				}
-			}),
 			user: value.user.id,
 		});
 
@@ -118,15 +190,40 @@ export class ModifyOrderService {
 			})
 		}
 
-		if (this._previousValue !== null) {
-			return this.orderService.modify(this._previousValue.setProperties({
-				...order,
-				id: this._previousValue.id
+		console.log(value.items);
+		console.log(
+			[...value.items].map(it => {
+				return {
+					...it,
+					item: it.item.id
+				}
 			}));
-		}
-		return this.orderService.add(Order.create().setProperties({
-			...order
-		}));
+		return this.handleOrderedItems(
+			[...value.items].map(it => {
+				return {
+					...it,
+					item: it.item.id
+				}
+			})
+		)
+			.pipe(
+				mergeMap(newIds => {
+					order = order.setProperties({
+						items: newIds
+					});
+
+					if (this._previousValue !== null) {
+						return this.orderService.modify(this._previousValue.setProperties({
+							...order,
+							id: this._previousValue.id
+						}));
+					}
+					return this.orderService.add(Order.create().setProperties({
+						...order
+					}));
+				})
+			)
+
 	}
 
 	submit() {

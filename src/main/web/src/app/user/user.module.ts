@@ -2,7 +2,6 @@ import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {routedComponents, UserRoutingModule} from "./user.routing";
-import {OrderHistoryEntryComponent} from "./order-history/order-history-entry/order-history-entry.component";
 import {MyToursEntryComponent} from "./my-tours/entry/my-tours-entry.component";
 import {ParticipatedToursPreviewComponent} from "./profile/participated-tours-preview/participated-tours-preview.component";
 import {SignUpModule} from "./signup/signup.module";
@@ -11,8 +10,6 @@ import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
 import {AgmCoreModule} from "@agm/core";
 import {SearchModule} from "../shop/search-results/search.module";
-import {ApplyForMembershipComponent} from "./membership/apply-for-membership/apply-for-membership.component";
-import {RequestMembershipComponent} from "./membership/request-membership/request-membership.component";
 
 @NgModule({
 	imports: [
@@ -30,15 +27,12 @@ import {RequestMembershipComponent} from "./membership/request-membership/reques
 	declarations: [
 		routedComponents,
 
-		OrderHistoryEntryComponent,
-
 		MyToursEntryComponent,
 
 		ParticipatedToursPreviewComponent,
 	],
 	exports: [
-		SignUpModule,
-		OrderHistoryEntryComponent
+		SignUpModule
 	]
 })
 export class UserModule {

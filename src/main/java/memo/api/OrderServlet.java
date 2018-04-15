@@ -172,8 +172,6 @@ public class OrderServlet extends AbstractApiServlet<Order> {
                             return order;
                         })
         );
-
-        System.out.println(put);
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -5,7 +5,7 @@ import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Permission, UserPermissions} from "../../shared/model/permission";
-import {Discount} from "../../shared/price-renderer/discount";
+import {Discount} from "../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../shop/shared/services/discount.service";
 import {map} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
@@ -88,15 +88,16 @@ export class CategoryPreviewComponent implements OnInit, OnDestroy {
 		)
 	}
 
-	distanceInWords(date: Date){
+	getDetailUrl(event: Event): string {
+		const category = EventUtilityService.getEventType(event);
+		return `${category}/${event.id}`
+	}
+
+	distanceInWords(date: Date) {
 		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
 	}
 
 	ngOnDestroy(): void {
 		this.subscriptions.forEach(subscription => subscription.unsubscribe());
-	}
-
-	showDetails(event: Event) {
-		this.navigationService.navigateByUrl(`${this.route}/${event.id}`);
 	}
 }

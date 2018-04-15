@@ -4,7 +4,7 @@ import {Tour} from "../../shop/shared/model/tour";
 import {EventService} from "../../shared/services/api/event.service";
 import {Party} from "../../shop/shared/model/party";
 import {dateSortingFunction} from "../../util/util";
-import {ParticipantsService} from "../../shared/services/api/participants.service";
+import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
 import {empty} from "rxjs/observable/empty";
 import {Observable} from "rxjs/Observable";
 import {catchError, map, mergeMap} from "rxjs/operators";
@@ -49,7 +49,7 @@ export class MyToursComponent implements OnInit {
 	//todo: search bar?
 
 	constructor(private loginService: LogInService,
-				private participantService: ParticipantsService,
+				private participantService: OrderedItemService,
 				private eventService: EventService) {
 	}
 

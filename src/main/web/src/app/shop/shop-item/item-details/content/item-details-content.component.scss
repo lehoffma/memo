@@ -4,7 +4,8 @@
 @import "variables";
 
 .object-details-content-container {
-	@include card-like();
+	background-color: white;
+	border-top: 1px solid #ededed;
 }
 
 .object-details-content-title {
@@ -20,7 +21,9 @@
 
 	> h3 {
 		margin: 0;
-		font-weight: 200;
+		font-weight: 400;
+		font-size: 1.2rem;
+		padding-bottom: 0.2rem;
 	}
 
 	> a {

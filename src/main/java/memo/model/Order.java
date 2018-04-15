@@ -48,12 +48,13 @@ public class Order implements Serializable {
     @JsonDeserialize(using = UserIdDeserializer.class)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonDeserialize(using = BankAccIdDeserializer.class)
     @JsonSerialize(using = BankAccIdSerializer.class)
     private BankAcc bankAccount;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "order")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "order")
+    @JsonDeserialize(using = OrderedItemIdListDeserializer.class)
     private List<OrderedItem> items = new ArrayList<>();
 
     @Column(nullable = false)

@@ -2,7 +2,7 @@ import {Component, OnInit} from "@angular/core";
 import {LogInService} from "../../shared/services/api/login.service";
 import {OrderService} from "../../shared/services/api/order.service";
 import {Order} from "../../shared/model/order";
-import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
+import {ColumnSortingEvent} from "../../shared/utility/expandable-table/column-sorting-event";
 import {attributeSortingFunction, dateSortingFunction} from "../../util/util";
 import {SortingOption} from "../../shared/model/sorting-option";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";

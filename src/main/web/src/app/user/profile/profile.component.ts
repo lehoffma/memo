@@ -9,7 +9,7 @@ import {NavigationService} from "../../shared/services/navigation.service";
 import {AddressService} from "../../shared/services/api/address.service";
 import {EventRoute} from "../../shop/shared/model/route";
 import {Address} from "../../shared/model/address";
-import {ParticipantsService} from "../../shared/services/api/participants.service";
+import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
 import {defaultIfEmpty, first, map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
@@ -88,7 +88,7 @@ export class ProfileComponent implements OnInit {
 				private navigationService: NavigationService,
 				private milesService: MilesService,
 				private addressService: AddressService,
-				private participantService: ParticipantsService,
+				private participantService: OrderedItemService,
 				private loginService: LogInService,
 				private userService: UserService) {
 

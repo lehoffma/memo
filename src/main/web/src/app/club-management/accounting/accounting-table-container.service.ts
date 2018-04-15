@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
-import {ExpandableTableContainerService} from "../../shared/expandable-table/expandable-table-container.service";
+import {ExpandableTableContainerService} from "../../shared/utility/expandable-table/expandable-table-container.service";
 import {Entry} from "../../shared/model/entry";
-import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
+import {ColumnSortingEvent} from "../../shared/utility/expandable-table/column-sorting-event";
 import {LogInService} from "../../shared/services/api/login.service";
 import {ParamMap, Router} from "@angular/router";
 import {EntryService} from "../../shared/services/api/entry.service";
@@ -9,7 +9,7 @@ import {attributeSortingFunction, dateSortingFunction, SortingFunction, sortingF
 import {isNullOrUndefined} from "util";
 import {EventService} from "../../shared/services/api/event.service";
 import {Dimension, WindowService} from "../../shared/services/window.service";
-import {ExpandableTableColumn} from "../../shared/expandable-table/expandable-table-column";
+import {ExpandableTableColumn} from "../../shared/utility/expandable-table/expandable-table-column";
 import {DateTableCellComponent} from "../administration/member-list/member-list-table-cells/date-table-cell.component";
 import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
@@ -20,8 +20,8 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {of} from "rxjs/observable/of";
 import {parse} from "date-fns";
-import {RowAction} from "../../shared/expandable-table/expandable-table.component";
-import {RowActionType} from "../../shared/expandable-table/row-action-type";
+import {RowAction} from "../../shared/utility/expandable-table/expandable-table.component";
+import {RowActionType} from "../../shared/utility/expandable-table/row-action-type";
 import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
 import {MatDialog} from "@angular/material";
 

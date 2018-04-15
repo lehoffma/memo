@@ -5,12 +5,15 @@ import {Event} from "../../../shared/model/event";
 import {EventOverviewKey} from "./overview/event-overview-key";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {of} from "rxjs/observable/of";
-import {map, mergeMap, take} from "rxjs/operators";
+import {filter, map, mergeMap, take} from "rxjs/operators";
 import {ResponsibilityService} from "../../../shared/services/responsibility.service";
 import {ConcludeEventService} from "../../../shared/services/conclude-event.service";
 import {User} from "../../../../shared/model/user";
 import {Observable} from "rxjs/Observable";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {OrderService} from "../../../../shared/services/api/order.service";
+import {Order} from "../../../../shared/model/order";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 
 @Component({
@@ -44,6 +47,26 @@ export class ItemDetailsContainerComponent implements OnInit {
 			})
 		);
 
+	orderedItemDetails$: Observable<Order> = combineLatest(
+		this.loginService.currentUser$,
+		this.event$
+	)
+		.pipe(
+			filter(([user, event]) => user !== null && event !== null),
+			//check if there is an order for this item
+			mergeMap(([user, event]) => this.orderService.getByUserId(user.id)
+				.pipe(
+					map(orders => orders.find(order => order.items.some(item => item.item.id === event.id)
+						&& order.user === user.id))
+				)
+			),
+			filter(order => !!order)
+		);
+	linkToOrder$: Observable<string> = this.orderedItemDetails$
+		.pipe(
+			map(order => "/orders/" + order.id)
+		);
+
 	showConcludeEventHeader$: Observable<boolean> = this.loginService.currentUser$
 		.pipe(
 			mergeMap(user => this.checkResponsibility(user))
@@ -52,6 +75,7 @@ export class ItemDetailsContainerComponent implements OnInit {
 	@Input() overviewKeys: Observable<EventOverviewKey[]> = of([]);
 
 	constructor(private mdDialog: MatDialog,
+				private orderService: OrderService,
 				private responsibilityService: ResponsibilityService,
 				private concludeEventService: ConcludeEventService,
 				private loginService: LogInService) {

@@ -1,5 +1,6 @@
-<div class="item-details-parent-container">
-	<a class="conclude-event-header"
+<div class="item-details-parent-container mat-elevation-z3">
+
+	<a class="item-details-header"
 	   routerLink="conclude"
 	   *ngIf="showConcludeEventHeader$ | async">
 		<span>Event abschließen</span>
@@ -8,9 +9,24 @@
 		</mat-icon>
 	</a>
 
+	<a class="item-details-header ordered-header"
+	   routerLink="{{linkToOrder$ | async}}"
+	   *ngIf="orderedItemDetails$ | async as order"
+	>
+		<div>
+			<span class="ordered-header-main-message">Bestellt am {{order.timeStamp | dateFormat:'DD.MM.YYYY'}}</span>
+			<span class="options" *ngIf="true">
+				<!--{{order}}-->
+				<!--todo: order details => amount, color/size combination..-->
+			</span>
+		</div>
+		<mat-icon>
+			keyboard_arrow_right
+		</mat-icon>
+	</a>
+
 	<div class="item-details-card">
 		<memo-multi-image-container
-			class="mat-elevation-z3"
 			[images]="(images$ | async)"
 			(onClick)="showDetailedImage($event)"
 		>

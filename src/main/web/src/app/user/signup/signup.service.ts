@@ -17,9 +17,9 @@ import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {ImageToUpload} from "../../shared/multi-image-upload/image-to-upload";
 import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
 import {processSequentially} from "../../util/observable-util";
+import {ImageToUpload} from "../../shared/utility/multi-image-upload/image-to-upload";
 
 @Injectable()
 export class SignUpService {

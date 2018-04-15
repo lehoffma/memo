@@ -1,11 +1,11 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output} from "@angular/core";
 import {ParticipantUser} from "../../../../shared/model/participant";
-import {RowActionType} from "../../../../../shared/expandable-table/row-action-type";
+import {RowActionType} from "../../../../../shared/utility/expandable-table/row-action-type";
 import {map} from "rxjs/operators";
 import {Subscription} from "rxjs/Subscription";
 import {MemberListRowAction} from "../../../../../club-management/administration/member-list/member-list-row-actions";
 import {ParticipantListService} from "./participant-list.service";
-import {RowAction} from "../../../../../shared/expandable-table/expandable-table.component";
+import {RowAction} from "../../../../../shared/utility/expandable-table/expandable-table.component";
 
 
 @Component({

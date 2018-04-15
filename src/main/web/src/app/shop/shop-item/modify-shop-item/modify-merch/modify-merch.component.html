@@ -1,5 +1,4 @@
 <div class="modify-shop-item-container">
-	<h2>Merch {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
 	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
 
 		<div class="image-upload-container">
@@ -13,7 +12,7 @@
 		</div>
 
 
-		<div class="information-container">
+		<div>
 			<!--<memo-item-details-content [title]="'Bestand'">-->
 			<!--</memo-item-details-content>-->
 			<div class="modify-merch-stock-container">
@@ -95,7 +94,7 @@
 			</memo-item-permissions-input>
 		</memo-item-details-content>
 
-		<memo-item-details-content [title]="'Zusätzliche verantwortliche User'" class="no-padding">
+		<memo-item-details-content [title]="'Verantwortliche User'" class="no-padding">
 			<memo-responsible-user-input [previousValue]="previousValue?.author"
 										 [formControl]="formGroup.get('responsible-users')">
 
