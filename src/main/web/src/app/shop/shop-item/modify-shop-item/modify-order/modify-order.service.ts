@@ -190,14 +190,6 @@ export class ModifyOrderService {
 			})
 		}
 
-		console.log(value.items);
-		console.log(
-			[...value.items].map(it => {
-				return {
-					...it,
-					item: it.item.id
-				}
-			}));
 		return this.handleOrderedItems(
 			[...value.items].map(it => {
 				return {

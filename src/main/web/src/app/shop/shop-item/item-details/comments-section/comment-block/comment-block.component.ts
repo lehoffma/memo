@@ -120,14 +120,12 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 	 * @param parentCommentId
 	 */
 	addComment(commentText: string, parentCommentId: number) {
-		console.log(commentText, parentCommentId);
 		let currentComment: Comment = this._comment$.value;
 		if (parentCommentId === currentComment.id) {
 			this.loginService.currentUser$
 				.pipe(
 					first(),
 					mergeMap(user => {
-						console.log(this.eventId);
 						let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText, currentComment.id);
 						this.dummyComment = this.dummyComment.setProperties({
 							content: "",

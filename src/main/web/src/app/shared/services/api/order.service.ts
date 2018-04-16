@@ -6,6 +6,8 @@ import {Observable} from "rxjs/Observable";
 import {map, mergeMap, tap} from "rxjs/operators";
 import {CapacityService} from "./capacity.service";
 import {StockService} from "./stock.service";
+import {Event} from "../../../shop/shared/model/event";
+import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 
 interface OrderApiResponse {
 	orders: Order[];
@@ -98,13 +100,10 @@ export class OrderService extends ServletService<Order> {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
 			.pipe(
+				tap(() => this._cache.invalidateAll()),
+				mergeMap(response => this.getById(response.id)),
 				//invalidate capacity values of every ordered item
-				tap(() => {
-					const items = Array.from(new Set(order.items.map(it => it.item)));
-					items.forEach(id => this.capacityService.invalidateValue(<any>id));
-					items.forEach(id => this.stockService.invalidateValue(<any>id));
-				}),
-				mergeMap(response => this.getById(response.id))
+				tap((newOrder) => this.updateCapacities(newOrder)),
 			);
 	}
 
@@ -119,13 +118,9 @@ export class OrderService extends ServletService<Order> {
 		})
 			.pipe(
 				tap(() => this.invalidateValue(order.id)),
+				mergeMap(response => this.getById(response.id)),
 				//invalidate capacity values of every ordered item
-				tap(() => {
-					const items = Array.from(new Set(order.items.map(it => it.item)));
-					items.forEach(id => this.capacityService.invalidateValue(<any>id));
-					items.forEach(id => this.stockService.invalidateValue(<any>id));
-				}),
-				mergeMap(response => this.getById(response.id))
+				tap(modifiedOrder => this.updateCapacities(modifiedOrder)),
 			);
 	}
 
@@ -141,5 +136,24 @@ export class OrderService extends ServletService<Order> {
 			.pipe(
 				tap(() => this._cache.invalidateById(id)),
 			);
+	}
+
+	/**
+	 *
+	 * @param {Order} order
+	 */
+	updateCapacities(order: Order) {
+		const items: Event[] = Array.from(new Set(order.items.map(it => it.item)));
+		//for tours/partys: invalidate capacity
+		items
+			.filter(item => item.type !== typeToInteger(EventType.merch))
+			.map(item => item.id)
+			.forEach(id => this.capacityService.invalidateValue(id));
+
+		//for merch: invalidate stock
+		items
+			.filter(item => item.type === typeToInteger(EventType.merch))
+			.map(item => item.id)
+			.forEach(id => this.stockService.invalidateValue(id));
 	}
 }

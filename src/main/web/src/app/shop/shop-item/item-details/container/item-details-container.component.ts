@@ -14,6 +14,8 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {OrderService} from "../../../../shared/services/api/order.service";
 import {Order} from "../../../../shared/model/order";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {OrderedItem} from "../../../../shared/model/ordered-item";
+import {OrderStatus} from "../../../../shared/model/order-status";
 
 
 @Component({
@@ -56,8 +58,14 @@ export class ItemDetailsContainerComponent implements OnInit {
 			//check if there is an order for this item
 			mergeMap(([user, event]) => this.orderService.getByUserId(user.id)
 				.pipe(
-					map(orders => orders.find(order => order.items.some(item => item.item.id === event.id)
-						&& order.user === user.id))
+					map(orders =>
+						orders.find(order => order.items.some(
+							(item: OrderedItem) => item.item.id === event.id
+								&& item.status !== OrderStatus.CANCELLED
+							)
+							&& order.user === user.id
+						)
+					)
 				)
 			),
 			filter(order => !!order)

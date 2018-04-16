@@ -19,6 +19,8 @@ import {PaymentMethod} from "../../../shop/checkout/payment/payment-method";
 import {OrderedItem} from "../../model/ordered-item";
 import {processInParallelAndWait} from "../../../util/observable-util";
 import {OrderStatus} from "../../model/order-status";
+import {CapacityService} from "./capacity.service";
+import {StockService} from "./stock.service";
 
 interface ParticipantApiResponse {
 	orderedItems: Participant[]
@@ -29,6 +31,8 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	baseUrl = "/api/orderedItem";
 
 	constructor(private http: HttpClient,
+				private capacityService: CapacityService,
+				private stockService: StockService,
 				private orderService: OrderService,
 				private userService: UserService) {
 		super();
@@ -59,7 +63,11 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
 			.pipe(
-				mergeMap(response => this.getById(response.id))
+				tap((response) => {
+					this.invalidateValue(response.id);
+				}),
+				mergeMap(response => this.getById(response.id)),
+				tap(it => this.updateCapacities(it))
 			)
 	}
 
@@ -96,7 +104,11 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
 			.pipe(
-				mergeMap(response => this.getById(response.id))
+				tap((response) => {
+					this.invalidateValue(response.id);
+				}),
+				mergeMap(response => this.getById(response.id)),
+				tap(it => this.updateCapacities(it))
 			)
 	}
 
@@ -130,7 +142,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	 * @param {Order} order
 	 * @returns {Observable<Order>}
 	 */
-	cancelOrder(order: Order): Observable<OrderedItem[]> {
+	cancelOrder(order: Order): Observable<Order> {
 		return this.changeStatusOfOrder(order, OrderStatus.CANCELLED);
 	}
 
@@ -140,7 +152,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	 * @param {OrderStatus} newStatus
 	 * @returns {Observable<Order>}
 	 */
-	changeStatusOfOrder(order: Order, newStatus: OrderStatus): Observable<OrderedItem[]> {
+	changeStatusOfOrder(order: Order, newStatus: OrderStatus): Observable<Order> {
 		const items = [...order.items];
 
 		return processInParallelAndWait(
@@ -152,7 +164,9 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 				.map(item => this.modify(item))
 		)
 			.pipe(
-				tap(() => this.orderService.invalidateValue(order.id))
+				tap(() => this.orderService.invalidateValue(order.id)),
+				mergeMap(items => this.orderService.getById(order.id)),
+				tap(newOrder => this.orderService.updateCapacities(newOrder))
 			)
 	}
 
@@ -232,6 +246,20 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 		return this._cache.other<(Tour | Party)[]>(params, request);
 	}
 
+	/**
+	 *
+	 * @param {OrderedItem} orderedItem
+	 */
+	updateCapacities(orderedItem: OrderedItem) {
+		const item = orderedItem.item;
+
+		if (item.type === typeToInteger(EventType.merch)) {
+			this.stockService.invalidateValue(item.id);
+		}
+		else {
+			this.capacityService.invalidateValue(item.id);
+		}
+	}
 
 	invalidateCache() {
 		this._cache.invalidateAll();

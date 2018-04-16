@@ -92,7 +92,7 @@ export function updateList<T extends { id: number }, U extends { setProperties: 
 		...editRequests,
 	];
 	if (combined.length === 0) {
-		return null;
+		return of(null);
 	}
 
 	return processSequentiallyAndWait(

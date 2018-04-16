@@ -10,7 +10,7 @@ import {SortingFunction} from "../../../util/util";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {defaultIfEmpty, map} from "rxjs/operators";
+import {defaultIfEmpty, map, filter} from "rxjs/operators";
 import {Subscription} from "rxjs/Subscription";
 
 export abstract class ExpandableTableContainerService<T> implements OnDestroy {
@@ -22,18 +22,18 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 	primaryColumnKeys$: BehaviorSubject<ExpandableTableColumn<T>[]> = new BehaviorSubject([]);
 	expandedRowKeys$: BehaviorSubject<ExpandableTableColumn<T>[]> = new BehaviorSubject([]);
 
-	dataSubject$: BehaviorSubject<T[]> = new BehaviorSubject([]);
+	dataSubject$: BehaviorSubject<T[]> = new BehaviorSubject(null);
 	data$: Observable<T[]> = combineLatest(
 		this.dataSubject$,
 		this._sortBy$,
 		...this.options$,
 	)
 		.pipe(
+			filter(([data, sortBy, ...options]: [T[], ColumnSortingEvent<T>, any[]]) => data !== null),
 			map(([data, sortBy, ...options]: [T[], ColumnSortingEvent<T>, any[]]) => data
 				.filter(dataObject => this.satisfiesFilter(dataObject, ...options))
 				.sort((a, b) => this.comparator(sortBy)(a, b))),
 			map(data => [...data]),
-			defaultIfEmpty([]),
 		);
 
 	private dataSubscription: Subscription;

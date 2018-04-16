@@ -164,7 +164,7 @@ export class AuthService {
 							return of({auth_token: this.getToken()});
 						}
 						//refreshing token didn't work for some other reason
-						return _throw(new Error());
+						return of({auth_token: null});
 					}),
 					//refresh-token expired
 					catchError(() => {

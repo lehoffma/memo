@@ -49,7 +49,7 @@ public class Entry implements Serializable {
     @JsonSerialize(using = ShopItemIdSerializer.class)
     private ShopItem item;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     @JsonDeserialize(using = EntryCategoryIdDeserializer.class)
     @JsonSerialize(using = EntryCategoryIdSerializer.class)
@@ -66,8 +66,7 @@ public class Entry implements Serializable {
 
     private String comment;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "entry")
     @JsonSerialize(using = ImagePathListSerializer.class)
     @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images = new ArrayList<>();

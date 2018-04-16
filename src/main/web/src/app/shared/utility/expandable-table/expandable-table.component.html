@@ -139,7 +139,15 @@
 					</ng-template>
 				</ng-template>
 			</ng-template>
-			<tbody *ngIf="data?.length === 0">
+			<tbody *ngIf="data === undefined || data === null">
+			<tr class="expandable-table-body-main-row expandable-table-row">
+				<td colspan="20" class="loading-text">
+					Lade Daten
+				</td>
+			</tr>
+			</tbody>
+
+			<tbody *ngIf="!(data === undefined || data === null) && data?.length === 0">
 			<tr class="expandable-table-body-main-row expandable-table-row">
 				<td colspan="20" [style.text-align]="'center'">
 					Hier befinden sich keine Einträge.
@@ -157,8 +165,8 @@
 			</mat-select>
 			<span class="current-page-range">
 			{{1+(currentPage-1)*rowsPerPage +
-			'-' + (currentPage*rowsPerPage < data?.length ? currentPage*rowsPerPage : data?.length)
-			+ ' von ' + data?.length}}
+			'-' + ((currentPage*rowsPerPage < data?.length ? currentPage*rowsPerPage : data?.length) || 0)
+			+ ' von ' + (data?.length || 0)}}
 			</span>
 			<button mat-icon-button type="button" (click)="currentPage = currentPage-1"
 					[disabled]="(currentPage-2)*rowsPerPage < 0">

@@ -85,6 +85,7 @@
 		<memo-item-details-content [title]="'Berechtigungen'">
 			<memo-item-permissions-input
 				[formGroup]="formGroup.get('permissions')"
+				[isMerch]="true"
 				[previousValue]="{
 					'expectedReadRole': previousValue?.expectedReadRole || 'Gast',
 					'expectedWriteRole': previousValue?.expectedWriteRole || 'Gast',

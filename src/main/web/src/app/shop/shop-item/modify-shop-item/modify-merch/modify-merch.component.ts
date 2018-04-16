@@ -18,7 +18,7 @@ export class ModifyMerchComponent implements OnInit {
 	formGroup: FormGroup;
 
 	_previousValue: Merchandise;
-	_previousStock: MerchStock[];
+	_previousStock: MerchStock[] = [];
 
 	@Input() set previousValue(previousValue: Merchandise) {
 		this._previousValue = previousValue;

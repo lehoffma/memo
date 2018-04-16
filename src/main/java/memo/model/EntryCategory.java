@@ -12,7 +12,6 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "ENTRY_CATEGORIES")
-
 public class EntryCategory implements Serializable {
 
 
@@ -27,7 +26,6 @@ public class EntryCategory implements Serializable {
     //**************************************************************
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "category")

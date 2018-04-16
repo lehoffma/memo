@@ -32,6 +32,7 @@ import {Router} from "@angular/router";
 import {CapacityService} from "../../../../../shared/services/api/capacity.service";
 import {Subscription} from "rxjs/Subscription";
 import {of} from "rxjs/observable/of";
+import {NavigationService} from "../../../../../shared/services/navigation.service";
 
 
 @Component({
@@ -40,6 +41,7 @@ import {of} from "rxjs/observable/of";
 	styleUrls: ["./item-details-overview.component.scss"]
 })
 export class ItemDetailsOverviewComponent implements OnInit, OnDestroy {
+	//todo refactor into tinier components/services
 	_event$: BehaviorSubject<Event> = new BehaviorSubject(Event.create());
 
 	stock$: Observable<MerchStockList> = this._event$
@@ -69,7 +71,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnDestroy {
 				? this.getStockAmount$()
 				: (<Observable<number>>this.getValue("capacity"))
 			)
-		)
+		);
 	public amountOptions$: Observable<number[]> = of([]);
 	public isPartOfShoppingCart$ = this._event$
 		.pipe(
@@ -134,6 +136,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnDestroy {
 				private discountService: DiscountService,
 				private stockService: StockService,
 				private loginService: LogInService,
+				private navigationService: NavigationService,
 				private shoppingCartService: ShoppingCartService,
 				private eventService: EventService,
 				private snackBar: MatSnackBar,
@@ -405,6 +408,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnDestroy {
 		this.matDialog.open(ShareDialogComponent, {
 			data: {
 				title: this.event.title,
+				url: "http://meilenwoelfe.org/" + this.navigationService.getUrlOfItem(this.event),
 				description: this.event.description,
 				image: this.event.images[0],
 				additionalTags: []

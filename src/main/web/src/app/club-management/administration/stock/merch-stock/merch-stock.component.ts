@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from "@angular/core";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {EventType} from "../../../../shop/shared/model/event-type";
 import {StockService} from "../../../../shared/services/api/stock.service";
@@ -12,14 +12,13 @@ import {sortingFunction} from "../../../../util/util";
 import {FilterOptionBuilder} from "../../../../shop/search-results/filter-option-builder.service";
 import {FilterOptionType} from "../../../../shop/search-results/filter-option-type";
 import {Observable} from "rxjs/Observable";
-import {debounceTime, map, mergeMap, scan} from "rxjs/operators";
+import {debounceTime, filter, map, mergeMap, scan} from "rxjs/operators";
 import {forkJoin} from "rxjs/observable/forkJoin";
 import {Event} from "../../../../shop/shared/model/event";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Subscription} from "rxjs/Subscription";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
-import {Subject} from "rxjs/Subject";
 import {of} from "rxjs/observable/of";
 
 @Component({
@@ -28,7 +27,7 @@ import {of} from "rxjs/observable/of";
 	styleUrls: ["./merch-stock.component.scss"]
 })
 export class MerchStockComponent implements OnInit, OnDestroy {
-	_merchList$: Subject<Event[]> = new Subject<Event[]>();
+	_merchList$: BehaviorSubject<Event[]> = new BehaviorSubject<Event[]>(null);
 	stockEntryList$: Observable<StockEntry[]> = this.getStockEntryList$();
 
 	merch$: Observable<StockEntry[]> = this.getMerch$();
@@ -82,6 +81,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 				private stockService: StockService,
 				private confirmationDialogService: ConfirmationDialogService,
 				private activatedRoute: ActivatedRoute,
+				private cdRef: ChangeDetectorRef,
 				private searchFilterService: SearchFilterService,
 				private filterOptionBuilder: FilterOptionBuilder) {
 		this.merchListSubscription = this.merch$.subscribe(it => this.merchList = it);
@@ -123,7 +123,9 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 		}
 
 		this.subscription = this.eventService.search("", EventType.merch)
-			.subscribe(it => this._merchList$.next([...it]));
+			.subscribe(it => {
+				this._merchList$.next([...it]);
+			});
 	}
 
 	/**
@@ -133,6 +135,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 	getStockEntryList$() {
 		return this._merchList$
 			.pipe(
+				filter(it => it !== null),
 				mergeMap((merch: Event[]) => {
 					if (merch.length === 0) {
 						return of([]);

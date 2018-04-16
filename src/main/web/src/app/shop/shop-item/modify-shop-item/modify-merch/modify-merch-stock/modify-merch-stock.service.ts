@@ -15,7 +15,7 @@ import {MerchColorCellComponent} from "./merch-color-cell.component";
 export class ModifyMerchStockService extends ExpandableTableContainerService<MerchStock> {
 
 	constructor(private loginService: LogInService,
-				private mdDialog: MatDialog) {
+				private matDialog: MatDialog) {
 		super({
 				key: "size",
 				descending: true
@@ -96,7 +96,7 @@ export class ModifyMerchStockService extends ExpandableTableContainerService<Mer
 	 * @returns {Observable<any>}
 	 */
 	openModifyStockItemDialog(data: any = {}) {
-		this.mdDialog.open(ModifyMerchStockItemComponent, {data})
+		this.matDialog.open(ModifyMerchStockItemComponent, {data})
 			.afterClosed()
 			.subscribe((event: ModifyStockItemEvent) => {
 				if (event) {

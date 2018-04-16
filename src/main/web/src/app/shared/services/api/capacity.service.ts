@@ -22,6 +22,6 @@ export class CapacityService extends CachedService<EventCapacity> {
 		const request = this.http.get<{ capacity: EventCapacity[] }>(this.baseUrl, {params})
 			.pipe(map(it => it.capacity[0]));
 
-		return this._cache.other(params, request);
+		return this._cache.getById(params, request);
 	}
 }

@@ -4,7 +4,6 @@ import {ParamMap, Router, RoutesRecognized} from "@angular/router";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {EventUtilityService} from "./event-utility.service";
 import {ShopItem} from "../model/shop-item";
-import {Address} from "../model/address";
 import {EventType} from "../../shop/shared/model/event-type";
 import {Event} from "../../shop/shared/model/event";
 import {HttpClient} from "@angular/common/http";
@@ -38,9 +37,6 @@ export class NavigationService implements OnDestroy {
 		);
 	public accountLinks: Observable<Link[]>;
 
-	public redirectToTour: Address[] = [];
-
-
 	queryParamMap$: BehaviorSubject<ParamMap> = new BehaviorSubject(null);
 
 	subscriptions = [];
@@ -71,16 +67,51 @@ export class NavigationService implements OnDestroy {
 		this.navigateByUrl("/login");
 	}
 
+	/**
+	 *
+	 * @param {ShopItem | Event} item
+	 * @param {string} suffix
+	 */
 	public navigateToItem(item: ShopItem | Event, suffix?: string) {
 		this.navigateToItemWithId(EventUtilityService.getShopItemType(item), item.id, suffix);
 	}
 
+	/**
+	 *
+	 * @param {ShopItemType | EventType} category
+	 * @param {number} id
+	 * @param {string} suffix
+	 * @returns {string}
+	 */
+	public getUrl(category: ShopItemType | EventType, id: number, suffix?: string): string {
+		return `${category}/${id}${(suffix ? suffix : "")}`;
+	}
+
+	/**
+	 *
+	 * @param {ShopItem | Event} item
+	 * @param {string} suffix
+	 * @returns {string}
+	 */
+	public getUrlOfItem(item: ShopItem | Event, suffix?: string) {
+		return this.getUrl(EventUtilityService.getShopItemType(item), item.id, suffix);
+	}
+
+	/**
+	 *
+	 * @param {ShopItemType | EventType} category
+	 * @param {number} id
+	 * @param {string} suffix
+	 */
 	public navigateToItemWithId(category: ShopItemType | EventType, id: number, suffix?: string) {
-		let url = `${category}/${id}${(suffix ? suffix : "")}`;
+		let url = this.getUrl(category, id, suffix);
 		this.navigateByUrl(url);
 	}
 
-	//todo: do something other than just printing to console (show the error to the user or fallback to some default route)
+	/**
+	 *
+	 * @param {string} url
+	 */
 	public navigateByUrl(url: string): void {
 		this.router.navigateByUrl(url)
 			.then(
@@ -98,6 +129,12 @@ export class NavigationService implements OnDestroy {
 			)
 	}
 
+	/**
+	 *
+	 * @param {User} user
+	 * @param {Link[]} links
+	 * @returns {Link[]}
+	 */
 	private filterLinks(user: User, links: Link[]): Link[] {
 		const linksCopy: Link[] = [...links];
 		const permissions = !user || user.id === -1

@@ -51,6 +51,7 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			map(event => event.title)
 		);
 
+	loading = false;
 	constructor(private loginService: LogInService,
 				private activatedRoute: ActivatedRoute,
 				private participantService: OrderedItemService,
@@ -149,6 +150,7 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 		this.openModifyDialog()
 			.pipe(
 				mergeMap(({result, info}) => {
+					this.loading = true;
 					return this.participantService
 						.addParticipant(result.participant, info.eventInfo.eventType, info.eventInfo.eventId)
 						.pipe(
@@ -161,7 +163,13 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 						);
 				})
 			)
-			.subscribe(it => this.participantsChanged.emit(this.dataSubject$.getValue()))
+			.subscribe(it => {
+				this.participantsChanged.emit(this.dataSubject$.getValue());
+				this.loading = false;
+			}, error => {
+				console.error(error);
+				this.loading = false;
+			})
 	}
 
 	/**
@@ -169,24 +177,33 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 	 * @param {ParticipantUser} entry
 	 */
 	edit(entry: ParticipantUser): void {
-		this.openModifyDialog()
+		this.openModifyDialog(entry)
 			.pipe(
-				mergeMap(({result, info}) => this.participantService
-					.modifyParticipant(result.participant)
-					.pipe(
-						tap(() => {
-							const indexOfParticipant = this.dataSubject$.value.findIndex(
-								participant => participant.id === result.participant.id
-							);
-							this.dataSubject$.next([
-								...this.dataSubject$.value.slice(0, indexOfParticipant),
-								result.participant,
-								...this.dataSubject$.value.slice(indexOfParticipant + 1)
-							]);
-						})
-					))
+				mergeMap(({result, info}) => {
+					this.loading = true;
+					return this.participantService
+						.modifyParticipant(result.participant)
+						.pipe(
+							tap(() => {
+								const indexOfParticipant = this.dataSubject$.value.findIndex(
+									participant => participant.id === result.participant.id
+								);
+								this.dataSubject$.next([
+									...this.dataSubject$.value.slice(0, indexOfParticipant),
+									result.participant,
+									...this.dataSubject$.value.slice(indexOfParticipant + 1)
+								]);
+							})
+						)
+				})
 			)
-			.subscribe(it => this.participantsChanged.emit(this.dataSubject$.getValue()))
+			.subscribe(it => {
+				this.participantsChanged.emit(this.dataSubject$.getValue());
+				this.loading = false;
+			}, error => {
+				console.error(error);
+				this.loading = false;
+			})
 	}
 
 	/**
@@ -194,10 +211,13 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 	 * @param {ParticipantUser[]} entries
 	 */
 	remove(entries: ParticipantUser[]): void {
-		entries.forEach(participantUser => {
+		const loadingStatus = [...entries].map(it => false);
+		this.loading = true;
+		entries.forEach((participantUser, i) => {
 			this.participantService
 				.remove(participantUser.id)
 				.subscribe(response => {
+					loadingStatus[i] = true;
 					const indexOfParticipant = this.dataSubject$.value.findIndex(
 						participant => participant.id === participantUser.id
 					);
@@ -205,6 +225,12 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 						...this.dataSubject$.value.slice(0, indexOfParticipant),
 						...this.dataSubject$.value.slice(indexOfParticipant + 1)
 					]);
+
+					this.loading = !loadingStatus.every(it => it);
+				}, error => {
+					console.error(error);
+					loadingStatus[i] = true;
+					this.loading = !loadingStatus.every(it => it);
 				})
 		});
 	}

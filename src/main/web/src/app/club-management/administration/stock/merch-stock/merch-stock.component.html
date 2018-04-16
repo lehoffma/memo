@@ -22,7 +22,7 @@
 
 	</memo-merch-stock-entry>
 
-	<div *ngIf="!(merch$|async)" class="loading-container">
+	<div *ngIf="(merch$|async) === null" class="loading-container">
 		<div class="loader"></div>
 	</div>
 

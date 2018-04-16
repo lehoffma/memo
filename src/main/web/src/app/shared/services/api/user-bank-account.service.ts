@@ -9,7 +9,7 @@ import {map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {User} from "../../model/user";
 import {Address} from "../../model/address";
-import {processInParallelAndWait, updateList, updateListOfItem} from "../../../util/observable-util";
+import {processInParallelAndWait, updateListOfItem} from "../../../util/observable-util";
 
 interface UserBankAccountApiResponse {
 	bankAccounts: BankAccount[];
