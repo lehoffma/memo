@@ -8,7 +8,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {AuthService} from "../../authentication/auth.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {catchError, filter, map, mergeMap, retry, share, tap} from "rxjs/operators";
+import {catchError, filter, map, mergeMap, retry, share} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {EventService} from "./event.service";
@@ -73,7 +73,8 @@ export class LogInService {
 				catchError((err, caught) => {
 					console.error(err);
 					return of(null);
-				})
+				}),
+				share()
 			)
 			.subscribe((response) => {
 				let user = null;
@@ -83,6 +84,8 @@ export class LogInService {
 				this.pushNewData(user);
 				this.initialized$.next(true);
 			})
+
+		return request;
 	}
 
 	/**

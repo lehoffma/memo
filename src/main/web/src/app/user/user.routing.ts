@@ -14,6 +14,7 @@ import {SignupCompletedComponent} from "./signup/signup-completed.component";
 import {SignupWasJustCompletedGuard} from "../shared/authentication/signup-was-just-completed.guard";
 import {ApplyForMembershipComponent} from "./membership/apply-for-membership/apply-for-membership.component";
 import {RequestMembershipComponent} from "./membership/request-membership/request-membership.component";
+import {ConfirmEmailComponent} from "./confirm-email/confirm-email.component";
 
 const routes: Route[] = [
 
@@ -23,9 +24,10 @@ const routes: Route[] = [
 	{path: "signup/:step", component: SignUpComponent, canActivate: [IsNotLoggedInGuard]},
 	{path: "forgot-password", component: PasswordRecoveryComponent, canActivate: [IsNotLoggedInGuard]},
 	{path: "password-reset", component: PasswordRecoveryLandingPageComponent, canActivate: [IsNotLoggedInGuard]},
+	{path: "confirm-email", component: ConfirmEmailComponent, canActivate: [IsNotLoggedInGuard]},
 	//todo isNotAlreadyMemberGuard
-	{path: "applyForMembership", component: ApplyForMembershipComponent, canActivate: []},
-	{path: "requestMembership", component: RequestMembershipComponent, canActivate: []},
+	{path: "applyForMembership", component: ApplyForMembershipComponent, canActivate: [AuthenticatedGuard]},
+	{path: "requestMembership", component: RequestMembershipComponent, canActivate: [AuthenticatedGuard]},
 	{path: "members/:id", component: ProfileComponent},
 	//nur eingeloggte User können diese Routen sehen
 	{path: "my-events", component: MyToursComponent, canActivate: [AuthenticatedGuard]},

@@ -10,6 +10,7 @@ import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
 import {AgmCoreModule} from "@agm/core";
 import {SearchModule} from "../shop/search-results/search.module";
+import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 
 @NgModule({
 	imports: [
@@ -30,6 +31,8 @@ import {SearchModule} from "../shop/search-results/search.module";
 		MyToursEntryComponent,
 
 		ParticipatedToursPreviewComponent,
+
+		ConfirmEmailComponent,
 	],
 	exports: [
 		SignUpModule
