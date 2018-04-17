@@ -60,7 +60,7 @@ a.disabled {
 	background-color: white;
 }
 
-mat-select{
+mat-select {
 	padding-top: 0 !important;
 }
 
@@ -80,8 +80,6 @@ mat-select{
 		transform: rotate(360deg)
 	}
 }
-
-
 
 .loading-text:after {
 	overflow: hidden;
@@ -131,20 +129,19 @@ mat-select{
 	}
 }
 
-
 .mat-drawer-container, .mat-drawer-content {
 	transform: none !important;
 }
 
 .mat-button:not(.dropbtn),
 .mat-raised-button,
-.mat-icon-button{
+.mat-icon-button {
 	text-transform: uppercase
 }
 
-.mat-raised-button:not([disabled]){
+.mat-raised-button:not([disabled]) {
 	transition: all .15s ease !important;
-	&:hover{
+	&:hover {
 		transform: translateY(-1px);
 		@include mat-elevation(3);
 		@include mat-elevation-transition;
