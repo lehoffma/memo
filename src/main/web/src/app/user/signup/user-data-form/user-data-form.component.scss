@@ -3,6 +3,7 @@
 
 .modify-shop-item-container {
 	padding: 0;
+	box-shadow: none;
 }
 
 h3 {
@@ -132,10 +133,4 @@ memo-address-entry {
 
 .submit-button {
 	float: right;
-}
-
-.form-actions {
-	margin-top: 15px;
-	display: flex;
-	justify-content: center;
 }

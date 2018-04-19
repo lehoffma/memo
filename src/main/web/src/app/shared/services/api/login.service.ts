@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {UserService} from "./user.service";
 import {User} from "../../model/user";
 import {MatSnackBar} from "@angular/material";
-import {ActionPermissions} from "../../expandable-table/expandable-table.component";
+import {ActionPermissions} from "../../utility/expandable-table/expandable-table.component";
 import {Permission, UserPermissions} from "../../model/permission";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AuthService} from "../../authentication/auth.service";
@@ -34,7 +34,7 @@ export class LogInService {
 
 	public currentUser$: Observable<User> = this.accountObservable
 		.pipe(
-			mergeMap(id => id !== null ? this.userService.getById(id) : of(null))
+			mergeMap(id => id !== null ? this.userService.valueChanges(id) : of(null))
 		);
 
 
@@ -73,7 +73,8 @@ export class LogInService {
 				catchError((err, caught) => {
 					console.error(err);
 					return of(null);
-				})
+				}),
+				share()
 			)
 			.subscribe((response) => {
 				let user = null;
@@ -83,6 +84,8 @@ export class LogInService {
 				this.pushNewData(user);
 				this.initialized$.next(true);
 			})
+
+		return request;
 	}
 
 	/**
@@ -174,11 +177,11 @@ export class LogInService {
 					}
 					: {
 						"Hinzufuegen": permissionsKeys.some(permissionsKey =>
-							user.userPermissions[permissionsKey] >= Permission.create),
+							user.userPermissions()[permissionsKey] >= Permission.create),
 						"Bearbeiten": permissionsKeys.some(permissionsKey =>
-							user.userPermissions[permissionsKey] >= Permission.write),
+							user.userPermissions()[permissionsKey] >= Permission.write),
 						"Loeschen": permissionsKeys.some(permissionsKey =>
-							user.userPermissions[permissionsKey] >= Permission.delete)
+							user.userPermissions()[permissionsKey] >= Permission.delete)
 					})
 			);
 	}

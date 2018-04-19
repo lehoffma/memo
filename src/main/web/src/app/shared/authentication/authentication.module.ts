@@ -3,7 +3,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {AuthService} from "./auth.service";
 import {AuthInterceptor} from "./auth.interceptor";
 import {AuthenticatedGuard} from "./authenticated.guard";
-import {CanModifyItemGuard} from "./can-modify-item-guard";
+import {CanModifyItemGuard} from "./can-modify-item.guard";
 import {IsOwnProfileGuard} from "./is-own-profile.guard";
 import {IsTreasurerGuard} from "./is-treasurer.guard";
 import {IsValidItemTypeGuard} from "./is-valid-itemtype.guard";
@@ -12,6 +12,7 @@ import {ShopItemExistsGuard} from "./http-error-handling-guards/shop-item-exists
 import {ShopItemIsVisibleToUserGuard} from "./http-error-handling-guards/shop-item-is-visible-to-user.guard";
 import {ShopItemGuardHelper} from "./shop-item-guard.helper";
 import {IsNotLoggedInGuard} from "./is-not-logged-in.guard";
+import {SignupWasJustCompletedGuard} from "./signup-was-just-completed.guard";
 
 
 const providers = [
@@ -25,7 +26,8 @@ const providers = [
 	IsValidItemTypeGuard,
 	ShopItemExistsGuard,
 	ShopItemIsVisibleToUserGuard,
-	IsNotLoggedInGuard
+	IsNotLoggedInGuard,
+	SignupWasJustCompletedGuard
 ];
 
 @NgModule({

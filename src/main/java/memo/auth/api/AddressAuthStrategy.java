@@ -16,8 +16,7 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
         return userIsAuthorized(user, object, Arrays.asList(
                 //if user is logged in:
                 //address is part of item: fulfills read role of shopItem
-                AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(Address::getItem, ShopItem::getExpectedReadRole)
-                        .and(userIsLoggedIn()),
+                AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(Address::getItem, ShopItem::getExpectedReadRole),
                 //  address is part of user: is author or fulfills userManagement permission
                 (AuthenticationConditionFactory.userIsAuthor(Address::getUser)
                         .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.read))),

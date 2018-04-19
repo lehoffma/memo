@@ -14,6 +14,7 @@ export class AddressInputFormComponent implements OnInit {
 	@Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
 
 	id: number = -1;
+	loading = false;
 
 	@Input() set address(address: Address) {
 		this.formGroup.patchValue(({
@@ -70,10 +71,12 @@ export class AddressInputFormComponent implements OnInit {
 			country: this.formGroup.value.country,
 		});
 
+		this.loading = true;
 		this.gmapService.getGeocodedAddress(address.toString())
 			.pipe(first())
 			.subscribe(results => {
 				this.zone.run(() => {
+					this.loading = false;
 					let addressToSubmit = address;
 					if (results && results.length > 0) {
 						const longitude = results[0].geometry.location.lng();

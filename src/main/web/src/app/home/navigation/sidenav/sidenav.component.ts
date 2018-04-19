@@ -1,15 +1,11 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {isNullOrUndefined} from "util";
 import {User} from "../../../shared/model/user";
-import {Link} from "../../../shared/model/link";
-import {UserPermissions, visitorPermissions} from "../../../shared/model/permission";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {Location} from "@angular/common";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {map, mergeMap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {mergeMap, tap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-sidenav",
@@ -22,32 +18,11 @@ export class SideNavComponent implements OnInit {
 	public user: Observable<User> = this.logInService.currentUser$
 		.pipe(
 			mergeMap(user => user === null
-				? of(User.create().setProperties({id: -1}))
+				? of(User.create())
 				: of(user))
 		);
 
-	public links = combineLatest(this.user, this.navigationService.sidenavLinks)
-		.pipe(
-			map(([user, links]) => {
-				const linksCopy = [...links];
-				const permissions = user === null || user.id === -1
-					? visitorPermissions
-					: user.userPermissions;
-
-				const setId = (link: Link): Link => {
-					let newLink = {...link};
-					if (newLink.children) {
-						newLink.children = newLink.children.map(childLink => setId(childLink))
-					}
-					newLink.route = newLink.route.replace("PROFILE_ID", "" + user.id);
-					return newLink;
-				};
-
-				return linksCopy.map(setId)
-					.filter(link => (!link.loginNeeded || user !== null || user.id !== -1)
-						&& this.checkPermissions(link.minimumPermission, permissions))
-			})
-		);
+	public links = this.navigationService.sidenavLinks$;
 
 	constructor(private navigationService: NavigationService,
 				private logInService: LogInService,
@@ -67,30 +42,6 @@ export class SideNavComponent implements OnInit {
 		this.sideBarClosed.emit({value: true});
 	}
 
-
-	/**
-	 *
-	 * @param minimumPermissions die minimalen Berechtigungsstufen, die der Nutzer erreichen/überschreiten muss,
-	 *                           um den link anzusehen
-	 * @param userPermissions die Berechtigungsstufen des Nutzers
-	 * @returns {boolean}
-	 */
-	checkPermissions(minimumPermissions: UserPermissions, userPermissions: UserPermissions = visitorPermissions) {
-		if (isNullOrUndefined(minimumPermissions)) {
-			return true;
-		}
-		if (isNullOrUndefined(userPermissions)) {
-			userPermissions = visitorPermissions;
-		}
-
-		return Object.keys(minimumPermissions)
-			.every(
-				(key: string) =>
-					!isNullOrUndefined(userPermissions[key])
-					&& !isNullOrUndefined(minimumPermissions[key])
-					&& userPermissions[key] >= minimumPermissions[key]
-			);
-	}
 
 	logout() {
 		this.logInService.logout()

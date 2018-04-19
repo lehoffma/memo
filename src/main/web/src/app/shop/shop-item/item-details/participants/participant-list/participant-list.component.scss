@@ -23,7 +23,7 @@ memo-expandable-table {
 			th.sortable-column,
 			th.expandable-table-selectall-checkbox,
 			.expandable-table-body-main-row /deep/ td:not(.expandable-table-actions):not(.expand-icon) {
-				padding-left: 30px;
+				padding-left: 30px !important;
 			}
 		}
 
@@ -38,4 +38,8 @@ memo-expandable-table {
 		}
 	}
 
+}
+
+.loader-wrapper {
+	background: rgba(255, 255, 255, 0.2);
 }

@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import memo.data.UserRepository;
 import memo.model.User;
 import memo.util.ApiUtils;
+import memo.util.Configuration;
 import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +28,15 @@ public class LoginServlet extends HttpServlet {
 
     final static Logger logger = Logger.getLogger(LoginServlet.class);
 
+
+    private final LoginInformation adminLoginInfo;
+
     public LoginServlet() {
         super();
+        adminLoginInfo = new LoginInformation(
+                Configuration.get("admin.email"),
+                Configuration.get("admin.password")
+        );
     }
 
     private static class LoginInformation {
@@ -49,7 +58,7 @@ public class LoginServlet extends HttpServlet {
                 .parseClaimsJws(accessToken);
         String email = accessTokenJws.getBody().getSubject();
 
-        List<User> users = UserRepository.getInstance().getUserByEmail(email);
+        List<User> users = UserRepository.getInstance().findByEmail(email);
         if (users.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
             logger.error("Login failed: could not find user with email = " + email);
@@ -79,7 +88,9 @@ public class LoginServlet extends HttpServlet {
             //I feel like it would be a security risk to just log the password as well
             logger.trace("Trying to login with email = " + information.email);
 
-            List<User> users = UserRepository.getInstance().getUserByEmail(information.email);
+            List<User> users = this.adminLoginInfo.email.equalsIgnoreCase(information.email)
+                    ? Collections.singletonList(UserRepository.getInstance().getAdmin())
+                    : UserRepository.getInstance().findByEmail(information.email);
 
             if (users.isEmpty()) {
                 logger.error("Could not find user with email = " + information.email);

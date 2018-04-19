@@ -7,12 +7,10 @@ import {PaymentMethod} from "./payment-method";
 	styleUrls: ["./payment-method-selection.component.scss"]
 })
 export class PaymentMethodSelectionComponent implements OnInit {
-	paymentMethodEnum = PaymentMethod;
 	paymentMethods = [
 		PaymentMethod.CASH,
 		PaymentMethod.DEBIT,
-		PaymentMethod.TRANSFER,
-		PaymentMethod.PAYPAL
+		PaymentMethod.TRANSFER
 	];
 	@Output() methodSelected: EventEmitter<PaymentMethod> = new EventEmitter();
 

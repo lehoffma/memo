@@ -13,11 +13,13 @@ import java.io.IOException;
 @WebServlet(name = "WebRoutesServlet",
         value = {
                 "/login",
-//                "/signup",
                 "/signup/*",
                 "/my-events",
                 "/order-history",
                 "/not-allowed",
+                "/confirm-email",
+                "/applyForMembership",
+                "/requestMembership",
 
                 "/tours/*",
                 "/partys/*",
@@ -41,10 +43,17 @@ import java.io.IOException;
                 "/management/costs",
                 "/management/stock",
                 "/management/stock/merch",
+                "/management/orders",
 
                 "/cart",
                 "/checkout",
-                "/address"
+                "/order-complete",
+                "/address",
+
+
+                "/impressum",
+                "/settings",
+
         }
 )
 public class WebRoutesServlet extends HttpServlet {

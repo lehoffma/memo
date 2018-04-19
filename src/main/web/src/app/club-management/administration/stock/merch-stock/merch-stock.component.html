@@ -1,4 +1,3 @@
-
 <div class="stock-options-sidebar desktop">
 	<memo-filtering-menu class="desktop" [filterOptions]="filterOptions$ | async">
 
@@ -15,13 +14,17 @@
 
 		</memo-sorting-dropdown>
 	</div>
-	<memo-merch-stock-entry *ngFor="let stockEntry of merch$|async"
+	<memo-merch-stock-entry *ngFor="let stockEntry of merchList"
 							[stockEntry]="stockEntry"
 							(onDelete)="deleteMerch($event)"
 
 	>
 
 	</memo-merch-stock-entry>
+
+	<div *ngIf="(merch$|async) === null" class="loading-container">
+		<div class="loader"></div>
+	</div>
 
 	<div class="no-results" *ngIf="(merch$|async)?.length === 0">
 		Keine Merchandiseartikel vorhanden.
@@ -30,10 +33,10 @@
 
 
 <a mat-fab color="accent" *ngIf="userCanAddMerch$ | async"
-		[matTooltip]="'Artikel hinzufügen'"
-		[matTooltipPosition]="'above'"
-		routerLink="/create/merch"
-		class="add-merch-button">
+   [matTooltip]="'Artikel hinzufügen'"
+   [matTooltipPosition]="'above'"
+   routerLink="/create/merch"
+   class="add-merch-button">
 	<mat-icon>add</mat-icon>
 </a>
 

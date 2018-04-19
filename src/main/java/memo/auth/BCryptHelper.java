@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class BCryptHelper {
     private static int workload = 12;
-    private static Pattern bCryptPattern = Pattern.compile("^\\$2[ayb]\\$.{56}$\n");
+    private static Pattern bCryptPattern = Pattern.compile("^\\$2[ayb]\\$.{56}$");
 
     /**
      * Hashes the given password with the bcrypt algorithm

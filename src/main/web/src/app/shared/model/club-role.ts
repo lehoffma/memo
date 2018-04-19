@@ -51,7 +51,7 @@ export function clubRoles() {
 
 
 export const rolePermissions: { [role: string]: UserPermissions } = {
-	"Gaeste": {
+	[ClubRole.Gast]: {
 		funds: 0,
 		party: 1,
 		userManagement: 0,
@@ -60,7 +60,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 		stock: 0,
 		settings: 0
 	},
-	"Mitglied": {
+	[ClubRole.Mitglied]: {
 		funds: 0,
 		party: 1,
 		userManagement: 0,
@@ -69,7 +69,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 		stock: 0,
 		settings: 0
 	},
-	"Vorstand": {
+	[ClubRole.Vorstand]: {
 		funds: 1,
 		party: 2,
 		userManagement: 3,
@@ -78,7 +78,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 		stock: 3,
 		settings: 1
 	},
-	"Schriftfuehrer": {
+	[ClubRole.Schriftfuehrer]: {
 		funds: 1,
 		party: 2,
 		userManagement: 3,
@@ -87,7 +87,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 		stock: 3,
 		settings: 1
 	},
-	"Kassenwart": {
+	[ClubRole.Kassenwart]: {
 		funds: 4,
 		party: 2,
 		userManagement: 3,
@@ -96,7 +96,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 		stock: 3,
 		settings: 1
 	},
-	"Organisator": {
+	[ClubRole.Organisator]: {
 		funds: 3,
 		party: 4,
 		userManagement: 3,
@@ -105,7 +105,7 @@ export const rolePermissions: { [role: string]: UserPermissions } = {
 		stock: 4,
 		settings: 1
 	},
-	"Admin": {
+	[ClubRole.Admin]: {
 		funds: 5,
 		party: 5,
 		userManagement: 5,

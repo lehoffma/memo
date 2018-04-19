@@ -2,19 +2,16 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {Event} from "../../../shared/model/event";
-import {EventType} from "../../../shared/model/event-type";
 import {ActivatedRoute} from "@angular/router";
 import {EntryCategoryService} from "../../../../shared/services/api/entry-category.service";
 import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/modify-item-event";
 import {EntryCategory} from "../../../../shared/model/entry-category";
 import {Observable} from "rxjs/Observable";
-import {filter, map, mergeMap, startWith, take} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {isEventValidator} from "../../../../shared/validators/is-event.validator";
+import {filter, mergeMap, take} from "rxjs/operators";
 import {Entry} from "../../../../shared/model/entry";
+import {ModifyItemService} from "../modify-item.service";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -79,6 +76,7 @@ export class ModifyEntryComponent implements OnInit {
 	constructor(private location: Location,
 				private formBuilder: FormBuilder,
 				private activatedRoute: ActivatedRoute,
+				public modifyItemService: ModifyItemService,
 				private entryCategoryService: EntryCategoryService,
 				private eventService: EventService) {
 		this.activatedRoute.queryParamMap
@@ -91,60 +89,16 @@ export class ModifyEntryComponent implements OnInit {
 				this.autocompleteFormControl.setValue(event);
 			});
 
-		this.filteredOptions = this.autocompleteFormControl.valueChanges
-			.pipe(
-				startWith(""),
-				map(event => event && EventUtilityService.isEvent(event) ? event.title : event),
-				mergeMap(title =>
-					combineLatest(
-						this.eventService.search("", EventType.tours),
-						this.eventService.search("", EventType.partys),
-						this.eventService.search("", EventType.merch)
-					)
-						.pipe(
-							map(([tours, partys, merch]) => {
-								let availableEvents = [...tours, ...partys, ...merch];
-								return title
-									? this.filter(availableEvents, title)
-									: availableEvents.slice()
-							})
-						)
-				)
-			);
 	}
 
 	ngOnInit() {
-		this.autocompleteFormControl.setValidators([Validators.required, isEventValidator()]);
 	}
 
-	/**
-	 * Defines how the event will be presented in the autocomplete box
-	 * @returns {any}
-	 * @param event
-	 */
-	displayFn(event: Event): string {
-		if (event) {
-			return event.title;
-		}
-		return "";
-	}
 
 	compareCategories(value1: EntryCategory, value2: EntryCategory) {
 		return value1 && value2 && value1.id === value2.id;
 	}
 
-	/**
-	 * Filters the options array by checking the events title
-	 * @param options
-	 * @param name
-	 * @returns {any[]}
-	 */
-	filter(options: Event[], name: string): Event[] {
-		return options.filter(option => {
-			const regex = new RegExp(`${name}`, "gi");
-			return regex.test(option.title);
-		});
-	}
 
 
 	cancel() {

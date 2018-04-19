@@ -1,9 +1,0 @@
-<h2>{{title}}</h2>
-
-<ng-content></ng-content>
-
-<div class="save-button" *ngIf="saveButton">
-	<button mat-raised-button color="accent" type="button" (click)="onSave.emit($event)" [disabled]="!formIsValid">
-		Speichern
-	</button>
-</div>

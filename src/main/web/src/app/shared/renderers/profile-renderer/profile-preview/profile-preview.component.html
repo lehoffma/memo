@@ -1,0 +1,78 @@
+<div class="mat-elevation-z3"
+	 (mouseenter)="mouseIsOver.emit(true)"
+	 (mouseleave)="mouseIsOver.emit(false)">
+
+	<div class="preview-header">
+		<div class="preview-image">
+			<img src="{{user.images.length > 0 ? user.images[0]: 'resources/images/Logo.png'}}"/>
+		</div>
+		<div class="preview-name-container">
+			<a class="preview-username" routerLink="members/{{user.id}}">
+				{{user.firstName}} {{user.surname}}
+			</a>
+			<div class="preview-club-role">
+				{{user.clubRole}}
+			</div>
+		</div>
+	</div>
+
+	<div class="preview-user-info">
+		<div class="user-info-row">
+			<div class="row-header">
+				Mitglied seit
+			</div>
+			<div class="row-value">
+				{{user.joinDate | dateFormat:"DD.MM.YYYY"}}
+			</div>
+		</div>
+		<div class="user-info-row">
+			<div class="row-header">
+				Mitgefahrene Touren
+			</div>
+			<div class="row-value">
+				{{amountOfTours$ | async}}
+			</div>
+		</div>
+		<div class="user-info-row">
+			<div class="row-header">
+				Meilen
+			</div>
+			<div class="row-value">
+				{{user.miles}}
+			</div>
+		</div>
+	</div>
+
+	<div class="preview-card-actions">
+		<a mat-icon-button
+		   [disabled]="user?.mobile?.length === 0"
+		   href="https://api.whatsapp.com/send?phone={{formattedPhoneNumber}}"
+		   [matTooltip]="'Per WhatsApp kontaktieren'"
+		   [matTooltipPosition]="'below'"
+		   class="contact-button whatsapp-button">
+			<mat-icon>
+				sms
+			</mat-icon>
+		</a>
+		<a mat-icon-button
+		   [disabled]="user?.mobile?.length === 0"
+		   href="tel:{{user?.mobile}}"
+		   [matTooltip]="'Anrufen'"
+		   [matTooltipPosition]="'below'"
+		   class="contact-button calling-button">
+			<mat-icon>
+				phone
+			</mat-icon>
+		</a>
+		<a mat-icon-button
+		   [disabled]="user?.email?.length === 0"
+		   href="mailto:{{user?.email}}"
+		   [matTooltip]="'Email schreiben'"
+		   [matTooltipPosition]="'below'"
+		   class="contact-button email-button">
+			<mat-icon>
+				email
+			</mat-icon>
+		</a>
+	</div>
+</div>

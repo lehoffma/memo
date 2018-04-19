@@ -11,12 +11,32 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: ShopItem
  */
 @Entity
 @Table(name = "SHOP_ITEMS")
+@NamedQueries({
+        @NamedQuery(
+                name = "ShopItem.findBySearchTerm",
+                query = "SELECT e FROM ShopItem e " +
+                        " WHERE e.type = :type " +
+                        "       AND (UPPER(e.title) LIKE UPPER(:searchTerm) " +
+                        "              OR UPPER(e.description) LIKE UPPER(:searchTerm))"
+        ),
+        @NamedQuery(
+                name = "ShopItem.findByType",
+                query = "SELECT e FROM ShopItem e " +
+                        " WHERE e.type = :type"
+        ),
+        @NamedQuery(
+                name = "ShopItem.findByAuthor",
+                query = "SELECT distinct e FROM ShopItem e " +
+                        " JOIN e.author a WHERE a.id = :author"
+        )
+})
 public class ShopItem implements Serializable {
 
     //**************************************************************
@@ -51,10 +71,15 @@ public class ShopItem implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedWriteRole = ClubRole.Vorstand;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    @OneToMany(fetch = FetchType.EAGER, cascade= {CascadeType.REMOVE}, mappedBy = "item")
     @JsonSerialize(using = ImagePathListSerializer.class)
     @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images;
+
+    @OneToOne(cascade= {CascadeType.REMOVE})
+    @JsonSerialize(using = ImagePathSerializer.class)
+    @JsonDeserialize(using = ImagePathDeserializer.class)
+    private Image groupPicture;
 
     @Column(nullable = false)
     private Integer capacity = 0;
@@ -62,7 +87,7 @@ public class ShopItem implements Serializable {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "item")
+    @OneToMany(fetch = FetchType.LAZY, cascade= {CascadeType.REMOVE}, mappedBy = "item")
     @JsonSerialize(using = AddressIdListSerializer.class)
     @JsonDeserialize(using = AddressIdListDeserializer.class)
     private List<Address> route = new ArrayList<>();
@@ -78,19 +103,24 @@ public class ShopItem implements Serializable {
     @JsonDeserialize(using = UserIdListDeserializer.class)
     private List<User> author = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "reportResponsibilities")
+    @JsonSerialize(using = UserIdListSerializer.class)
+    @JsonDeserialize(using = UserIdListDeserializer.class)
+    private List<User> reportWriters = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "item")
     @JsonSerialize(using = CommentIdListSerializer.class)
     @JsonDeserialize(using = CommentIdListDeserializer.class)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "item")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "item")
     @JsonIgnore
     private List<Entry> entries = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "item")
+    @OneToMany(fetch = FetchType.LAZY, cascade= {CascadeType.REMOVE}, mappedBy = "item")
     private List<OrderedItem> orders = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "item")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "item")
     private List<Stock> stock = new ArrayList<>();
 
     @Column(nullable = false)
@@ -298,6 +328,24 @@ public class ShopItem implements Serializable {
         this.stock.add(s);
     }
 
+    public Image getGroupPicture() {
+        return groupPicture;
+    }
+
+    public ShopItem setGroupPicture(Image groupPicture) {
+        this.groupPicture = groupPicture;
+        return this;
+    }
+
+    public List<User> getReportWriters() {
+        return reportWriters;
+    }
+
+    public ShopItem setReportWriters(List<User> reportWriters) {
+        this.reportWriters = reportWriters;
+        return this;
+    }
+
     //**************************************************************
     //  methods
     //**************************************************************
@@ -319,5 +367,19 @@ public class ShopItem implements Serializable {
                 ", miles=" + miles +
                 ", type=" + type +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShopItem shopItem = (ShopItem) o;
+        return Objects.equals(id, shopItem.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

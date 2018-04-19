@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Gender} from "../../../shared/model/gender";
 import {ClubRole} from "../../../shared/model/club-role";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {AddressService} from "../../../shared/services/api/address.service";
@@ -10,8 +9,9 @@ import {emailAlreadyTakenValidator} from "../../../shared/validators/email-alrea
 import {confirmPasswordValidator} from "../../../shared/validators/confirm-password.validator";
 import {User} from "../../../shared/model/user";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {first, map} from "rxjs/operators";
+import {first} from "rxjs/operators";
 import {ModifyItemEvent} from "../../../shop/shop-item/modify-shop-item/modify-item-event";
+import {ModifyItemService} from "../../../shop/shop-item/modify-shop-item/modify-item.service";
 
 @Component({
 	selector: "memo-user-data-form",
@@ -103,6 +103,7 @@ export class UserDataFormComponent implements OnInit {
 	constructor(public loginService: LogInService,
 				private formBuilder: FormBuilder,
 				public userService: UserService,
+				public modifyItemService: ModifyItemService,
 				public router: Router,
 				public activatedRoute: ActivatedRoute,
 				public addressService: AddressService) {
@@ -191,7 +192,6 @@ export class UserDataFormComponent implements OnInit {
 			email: accountData.email,
 			password,
 			permissions: previousValue.permissions,
-			miles: previousValue.miles,
 			authoredItems: previousValue.authoredItems,
 			bankAccounts: previousValue.bankAccounts,
 			firstName: personalData.firstName,

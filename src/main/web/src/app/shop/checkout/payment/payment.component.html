@@ -1,77 +1,19 @@
 <memo-payment-selection (methodSelected)="updateSelectedMethod($event)"></memo-payment-selection>
 
 
-<div [ngSwitch]="selectedMethod">
-	<div *ngSwitchCase="paymentMethodEnum.CASH">
+<div [ngSwitch]="formGroup.get('method').value">
+	<div *ngSwitchCase="paymentMethodEnum.CASH" class="payment-selection-body">
 		<p>Die Rechnung wird dir per Email zugeschickt.</p>
 		<p>Gib das Geld bitte bei der nächsten Gelegenheit an eine zuständige Person.</p>
-		<button mat-raised-button color="accent" (click)="emitDoneEvent()">
-			Weiter
-		</button>
 	</div>
-	<div *ngSwitchCase="paymentMethodEnum.DEBIT">
-		<form #debitInputForm="ngForm" (ngSubmit)="emitDoneEvent()">
-			<h2>Inhaber</h2>
-			<div>
-				<mat-form-field>
-					<input matInput [(ngModel)]="dataModel.firstName"
-						   placeholder="Vorname"
-						   #firstNameInput="ngModel"
-						   name="firstNameInput"
-						   required>
-				</mat-form-field>
+	<memo-bank-account-form *ngSwitchCase="paymentMethodEnum.DEBIT" [formGroup]="formGroup" [selection]="true">
 
-				<mat-form-field>
-					<input matInput [(ngModel)]="dataModel.surname"
-						   placeholder="Nachname"
-						   #surnameInput="ngModel"
-						   name="surnameInput"
-						   required>
-				</mat-form-field>
-			</div>
-			<h2>Bankdaten</h2>
-			<mat-form-field
-				[dividerColor]="(ibanInput.touched && (ibanInput.invalid || !isValidIBAN(dataModel.IBAN))) ? 'warn'  : 'primary'">
-				<input matInput [(ngModel)]="dataModel.IBAN"
-					   placeholder="IBAN"
-					   #ibanInput="ngModel"
-					   name="ibanInput"
-					   required>
-				<mat-error align="end"
-						 *ngIf="ibanInput.touched && (ibanInput.invalid || !isValidIBAN(dataModel.IBAN))">
-					{{dataModel.IBAN.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist" +
-					" inkorrekt!"}}
-				</mat-error>
-			</mat-form-field>
-			<mat-form-field>
-				<input matInput [(ngModel)]="dataModel.BIC"
-					   placeholder="BIC"
-					   pattern="[a-zA-Z]{6}[a-zA-Z2-9][a-nA-Np-zP-Z0-9]([a-wyzA-WYZ0-9][a-zA-Z0-9]{2})?([xX]{3})?"
-					   #bicInput="ngModel"
-					   name="bicInput"
-					   required>
-			</mat-form-field>
-			<button mat-raised-button color="accent" [disabled]="!debitInputForm.form.valid">
-				Weiter
-			</button>
-		</form>
-	</div>
-	<div *ngSwitchCase="paymentMethodEnum.TRANSFER">
+	</memo-bank-account-form>
+	<div *ngSwitchCase="paymentMethodEnum.TRANSFER"  class="payment-selection-body">
 		<p>Die Überweisungsdaten werden dir per Email zugeschickt.</p>
-		<button mat-raised-button color="accent" (click)="emitDoneEvent()">
-			Weiter
-		</button>
 	</div>
-	<div *ngSwitchCase="paymentMethodEnum.PAYPAL">
-
-	</div>
-	<div *ngSwitchDefault>
+	<div *ngSwitchDefault class="payment-selection-body">
 		<p>Bitte wähle eine Bezahlmethode aus!</p>
-	</div>
-	<div class="paypal-button-container"
-		 [ngClass]="{'paypal-selected': selectedMethod === paymentMethodEnum.PAYPAL}">
-
-		<div id="paypal-button"></div>
 	</div>
 </div>
 

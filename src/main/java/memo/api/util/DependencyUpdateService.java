@@ -25,7 +25,9 @@ public class DependencyUpdateService {
                 .orElse(new ArrayList<>());
 
         //check if value is already part of the list
-        Optional<T> optionalValue = currentValues.stream().filter(it -> getId.apply(it).equals(id)).findAny();
+        Optional<T> optionalValue = currentValues.stream()
+                .filter(it -> getId.apply(it).equals(id))
+                .findAny();
         if (optionalValue.isPresent()) {
             T value = optionalValue.get();
             //they share the same Id, but are not equal => the object was updated via PUT or something else
@@ -95,4 +97,9 @@ public class DependencyUpdateService {
         }
         return Optional.ofNullable(dependencies).orElse(new ArrayList<>());
     }
+
+
+
+
+
 }

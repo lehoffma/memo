@@ -1,55 +1,27 @@
-<div class="login-title">
-	<img src="../../../resources/images/Logo.png"/>
+<div class="login-title" routerLink="/">
+	<a routerLink="/"><img src="../../../resources/images/Logo.png"/></a>
 	<span>Meilenwoelfe e.V.</span>
 </div>
 
 <mat-card>
 	<span mat-card-title>Login</span>
-	<form #loginForm="ngForm" (ngSubmit)="checkLogin()">
-		<mat-form-field
-			[dividerColor]="(emailInput.touched && emailInput.invalid) ? 'warn' : 'primary'">
-			<input matInput
-				   placeholder="Email"
-				   type="email"
-				   name="emailInput"
-				   [ngClass]="{'has-error': emailInput.touched && emailInput.invalid}"
-				   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
-				   [(ngModel)]="email"
-				   #emailInput="ngModel"
-				   required>
-			<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-			<mat-error align="end" *ngIf="emailInput.touched && (emailInput.invalid)">
-				Email-Adresse muss in der Form <i>test@email.de</i> sein
-			</mat-error>
-		</mat-form-field>
-		<mat-form-field>
-			<input matInput
-				   placeholder="Passwort"
-				   type="password"
-				   #passwordInput="ngModel"
-				   name="passwordInput"
-				   [(ngModel)]="password"
-				   required>
-			<mat-hint align="end">
-				<ng2-password-strength-bar
-					[passwordToCheck]="password"
-					[barLabel]="''">
-				</ng2-password-strength-bar>
-			</mat-hint>
-		</mat-form-field>
-
+	<form [formGroup]="formGroup" (ngSubmit)="checkLogin()">
+		<memo-email-input [form]="formGroup"></memo-email-input>
+		<memo-password-input [form]="formGroup" [showStrengthBar]="false"
+							 [repeatPassword]="false"></memo-password-input>
 
 		<span [style.visibility]="error ? 'visible' : 'hidden'" class="wrong-input error-message">
 			{{error ? error : 'Die eingegebenen Daten sind falsch.'}}
 		</span>
 
 		<div class="login-form-actions">
-			<mat-checkbox [(ngModel)]="authService.saveLogin" name="saveLogin">
+			<mat-checkbox [(ngModel)]="authService.saveLogin" [ngModelOptions]="{standalone: true}"
+						  name="saveLogin">
 				Login merken
 			</mat-checkbox>
 			<button type="submit"
 					mat-raised-button
-					[disabled]="!loginForm.form.valid"
+					[disabled]="!formGroup.valid || formGroup.pending"
 					color="primary">
 				<span *ngIf="!loading; else loadingSpinner">
 				{{'Einloggen' | uppercase}}

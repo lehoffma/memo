@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core";
 import {AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
 
 @Component({
@@ -10,6 +10,7 @@ import {AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular
 		useExisting: EmailInputComponent,
 		multi: true
 	}],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EmailInputComponent implements OnInit, ControlValueAccessor {
 	@Input() form: AbstractControl;

@@ -13,10 +13,7 @@ import {Subscription} from "rxjs/Subscription";
 import {filter, first, map, share, startWith, tap} from "rxjs/operators";
 import {EntryCategory} from "../../../shared/model/entry-category";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {isAfter, isBefore, parse} from "date-fns"
-// import * as isAfter from "date-fns/is_after";
-// import * as isBefore from "date-fns/is_before";
-// import * as toDate from "date-fns/parse";
+import {isAfter, isBefore, isValid, parse} from "date-fns"
 
 
 @Component({
@@ -41,7 +38,7 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	events: Event[] = [];
 
 	availableEvents$ = new BehaviorSubject<Event[]>([]);
-	dateOptions = {
+	dateOptions: { from: Date, to: Date } = {
 		from: undefined,
 		to: undefined
 	};
@@ -251,8 +248,8 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 
 		params["eventIds"] = this.events.map(event => event.id);
 
-		params["from"] = (!this.dateOptions.from || !this.dateOptions.from.isValid()) ? "" : this.dateOptions.from.toISOString();
-		params["to"] = (!this.dateOptions.to || !this.dateOptions.to.isValid()) ? "" : this.dateOptions.to.toISOString();
+		params["from"] = (!this.dateOptions.from || !isValid(this.dateOptions.from)) ? "" : this.dateOptions.from.toISOString();
+		params["to"] = (!this.dateOptions.to || !isValid(this.dateOptions.to)) ? "" : this.dateOptions.to.toISOString();
 
 		this.activatedRoute.queryParamMap
 			.pipe(

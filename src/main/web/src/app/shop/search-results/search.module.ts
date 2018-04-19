@@ -11,7 +11,6 @@ import {SharedModule} from "../../shared/shared.module";
 import {SearchFilterService} from "./search-filter.service";
 import {FilterOptionBuilder} from "./filter-option-builder.service";
 import {FilterOptionFactoryService} from "./filter-option-factory.service";
-import {ShopModule} from "../shop.module";
 
 @NgModule({
 	imports: [

@@ -1,22 +1,36 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: User
  */
 @Entity
 @Table(name = "USERS")
-
-
+@NamedQueries({
+        @NamedQuery(
+                name = "User.findBySearchTerm",
+                query = "SELECT u FROM User u " +
+                        " WHERE UPPER(u.surname) LIKE UPPER(:searchTerm) OR UPPER(u.firstName) LIKE UPPER(:searchTerm)"
+        ),
+        @NamedQuery(
+                name = "User.findByEmail",
+                query = "SELECT u FROM User u WHERE u.email = :email"
+        ),
+        @NamedQuery(
+                name = "User.findByOrderedItemId",
+                query = "SELECT distinct u from Order o JOIN o.user u JOIN o.items i WHERE i.id = :orderedItemId"
+        )
+})
 public class User implements Serializable {
 
     //**************************************************************
@@ -41,7 +55,8 @@ public class User implements Serializable {
     private String surname;
 
     @Enumerated(EnumType.ORDINAL)
-    private ClubRole clubRole = ClubRole.Gast;
+    @JsonDeserialize(using = ClubRoleDeserializer.class)
+    private ClubRole clubRole;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonSerialize(using = AddressIdListSerializer.class)
@@ -68,12 +83,12 @@ public class User implements Serializable {
 
     private Boolean hasDebitAuth = false;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "user")
     @JsonSerialize(using = ImagePathListSerializer.class)
     @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonSerialize(using = BankAccIdListSerializer.class)
     @JsonDeserialize(using = BankAccIdListDeserializer.class)
     private List<BankAcc> bankAccounts = new ArrayList<>();
@@ -100,8 +115,14 @@ public class User implements Serializable {
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinTable(name = "user_authoreditems", joinColumns = @JoinColumn(name = "authoreditems_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
     private List<ShopItem> authoredItems = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_reportresponsibilities", joinColumns = @JoinColumn(name = "reportresponsibilities_id"),
+            inverseJoinColumns = @JoinColumn(name = "reportwriters_id"))
+    private List<ShopItem> reportResponsibilities = new ArrayList<>();
 
     //**************************************************************
     //  constructor
@@ -305,6 +326,7 @@ public class User implements Serializable {
         this.bankAccounts.add(b);
     }
 
+    @JsonIgnore
     public List<Order> getOrders() {
         return orders;
     }
@@ -329,6 +351,7 @@ public class User implements Serializable {
         this.comments.add(c);
     }
 
+    @JsonIgnore
     public List<ShopItem> getAuthoredItems() {
         return authoredItems;
     }
@@ -339,6 +362,15 @@ public class User implements Serializable {
 
     public void addAuthoredItem(ShopItem i) {
         this.authoredItems.add(i);
+    }
+
+    public List<ShopItem> getReportResponsibilities() {
+        return reportResponsibilities;
+    }
+
+    public User setReportResponsibilities(List<ShopItem> reportResponsibilities) {
+        this.reportResponsibilities = reportResponsibilities;
+        return this;
     }
 
 
@@ -366,5 +398,19 @@ public class User implements Serializable {
                 ", hasSeasonTicket=" + hasSeasonTicket +
                 ", isWoelfeClubMember=" + isWoelfeClubMember +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

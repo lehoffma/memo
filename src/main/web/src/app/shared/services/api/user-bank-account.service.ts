@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Response} from "@angular/http";
 import {BankAccount} from "../../model/bank-account";
@@ -7,6 +7,9 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
+import {User} from "../../model/user";
+import {Address} from "../../model/address";
+import {processInParallelAndWait, updateListOfItem} from "../../../util/observable-util";
 
 interface UserBankAccountApiResponse {
 	bankAccounts: BankAccount[];
@@ -16,8 +19,6 @@ interface UserBankAccountApiResponse {
 export class UserBankAccountService extends ServletService<BankAccount> {
 	baseUrl = "/api/bankAccount";
 
-	//todo select from bank account list when ordering (similar to address-selection maybe)
-	//todo manage bank accounts somewhere (on user edit page?)
 	constructor(public http: HttpClient,
 				public userService: UserService) {
 		super();
@@ -121,5 +122,30 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 			.pipe(
 				tap(() => this._cache.invalidateById(id))
 			);
+	}
+
+
+	/**
+	 *
+	 * @param {Address[]} previousValue
+	 * @param {Address[]} accounts
+	 * @param user
+	 */
+	public updateAccountsOfUser(previousValue: BankAccount[], accounts: BankAccount[], user: User): Observable<BankAccount[]> {
+		return updateListOfItem<BankAccount, User>(
+			previousValue,
+			accounts,
+			user,
+			"bankAccounts",
+			value => value,
+			object => processInParallelAndWait(
+				[...object.bankAccounts.map(id => this.getById(id))]
+			),
+			value => this.add(value),
+			value => this.modify(value),
+			value => this.remove(value),
+			object => this.userService.modify(object),
+			id => this.getById(id)
+		)
 	}
 }

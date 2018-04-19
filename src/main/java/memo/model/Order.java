@@ -3,18 +3,28 @@ package memo.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import memo.serialization.BankAccIdDeserializer;
-import memo.serialization.BankAccIdSerializer;
-import memo.serialization.UserIdDeserializer;
-import memo.serialization.UserIdSerializer;
+import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "ORDERS")
+@NamedQueries({
+        @NamedQuery(
+                name = "Order.findByOrderedItem",
+                query = "SELECT o FROM Order o " +
+                        " WHERE :orderedItemId IN (SELECT item.id FROM o.items item)"
+        ),
+        @NamedQuery(
+                name = "Order.findByUser",
+                query = "SELECT o FROM Order o " +
+                        " WHERE o.user.id = :userId"
+        )
+})
 public class Order implements Serializable {
 
 
@@ -38,17 +48,20 @@ public class Order implements Serializable {
     @JsonDeserialize(using = UserIdDeserializer.class)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonDeserialize(using = BankAccIdDeserializer.class)
     @JsonSerialize(using = BankAccIdSerializer.class)
     private BankAcc bankAccount;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "order")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "order")
+    @JsonDeserialize(using = OrderedItemIdListDeserializer.class)
     private List<OrderedItem> items = new ArrayList<>();
 
     @Column(nullable = false)
     private java.sql.Timestamp timeStamp;
 
+    @Enumerated(EnumType.ORDINAL)
+    @JsonDeserialize(using = PaymentMethodDeserializer.class)
     private PaymentMethod method = PaymentMethod.Lastschrift;
 
     private String text;
@@ -137,5 +150,19 @@ public class Order implements Serializable {
                 ", method=" + method +
                 ", text='" + text + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return id == order.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

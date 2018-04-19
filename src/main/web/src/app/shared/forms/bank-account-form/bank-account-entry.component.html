@@ -1,0 +1,23 @@
+<div class="account-entry-container">
+	<div class="account-information">
+		<b>{{account.name}}</b>
+		<span>{{account.iban}}</span>
+		<span>{{account.bic}}</span>
+	</div>
+
+	<button mat-icon-button type="button"
+			(click)="$event.stopPropagation(); false"
+			[matMenuTriggerFor]="menu">
+		<mat-icon>more_vert</mat-icon>
+	</button>
+</div>
+<mat-menu #menu="matMenu">
+	<button mat-menu-item (click)="onEdit.emit(true)">
+		<mat-icon>edit</mat-icon>
+		<span>Bearbeiten</span>
+	</button>
+	<button mat-menu-item type="button" (click)="deleteAccount()">
+		<mat-icon>delete</mat-icon>
+		<span>Löschen</span>
+	</button>
+</mat-menu>

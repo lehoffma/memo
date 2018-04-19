@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<!--main page-->
+	<url>
+		<loc>https://meilenwoelfe.org/</loc>
+		<priority>1.0</priority>
+	</url>
+	<!--search url parameter combinations-->
+	<url>
+		<loc>https://meilenwoelfe.org/search</loc>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/search?category=tours</loc>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/search?category=merch</loc>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/search?category=partys</loc>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/search?category=tours%7Cpartys</loc>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/search?category=tours%7Cpartys</loc>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/search?category=tours%7Cpartys%7Cmerch</loc>
+		<priority>0.8</priority>
+	</url>
+
+	<!--calendar-->
+	<url>
+		<loc>https://meilenwoelfe.org/calendar</loc>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/calendar?view=list</loc>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/calendar?view=calendar</loc>
+		<priority>0.8</priority>
+	</url>
+
+	<!--meilentabelle-->
+	<url>
+		<loc>https://meilenwoelfe.org/leaderboard</loc>
+		<priority>0.8</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/leaderboard?t=Gesamt</loc>
+		<priority>0.8</priority>
+	</url>
+
+	<!--login etc.-->
+	<url>
+		<loc>https://meilenwoelfe.org/login</loc>
+		<priority>0.4</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/signup</loc>
+		<priority>0.4</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/forgot-password</loc>
+		<priority>0.2</priority>
+	</url>
+
+
+	<url>
+		<loc>https://meilenwoelfe.org/cart</loc>
+		<priority>0.2</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/applyForMembership</loc>
+		<priority>0.5</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/requestMembership</loc>
+		<priority>0.5</priority>
+	</url>
+	<url>
+		<loc>https://meilenwoelfe.org/impressum</loc>
+		<priority>0.2</priority>
+	</url>
+
+</urlset>

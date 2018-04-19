@@ -4,6 +4,10 @@
 .result-entry-container {
 	@include card-like();
 	padding: 10px;
+	display: block;
+	text-decoration: none;
+	color: black;
+
 
 	> div {
 		display: flex;

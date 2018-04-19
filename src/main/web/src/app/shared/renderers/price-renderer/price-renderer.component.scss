@@ -1,0 +1,32 @@
+@import "theme";
+@import "../../../../../node_modules/@angular/material/theming";
+
+.price-container {
+	display: flex;
+	align-items: center;
+}
+
+.actual-price {
+	color: rgba(0, 0, 0, 0.84);
+}
+
+.base-price {
+	margin-left: 15px;
+	color: rgba(0, 0, 0, 0.42);
+	text-decoration: line-through;
+}
+
+.discount-overlay-trigger {
+	margin-bottom: -2px;
+	margin-left: 10px;
+	color: rgba(0, 0, 0, 0.84);
+}
+
+.percentage-saved {
+	margin-left: 15px;
+	color: mat-color($primary);
+}
+
+.additional-discount-possibilities {
+	font-size: 0.85em;
+}

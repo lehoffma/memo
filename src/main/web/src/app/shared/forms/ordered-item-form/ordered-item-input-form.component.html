@@ -1,0 +1,71 @@
+<form [formGroup]="inputFormService.addOrderedItemForm" (ngSubmit)="submit()" novalidate>
+	<memo-event-autocomplete [formControl]="inputFormService.addOrderedItemForm.get('item')">
+
+	</memo-event-autocomplete>
+
+	<div>
+		<mat-form-field>
+			<input matInput
+				   placeholder="Preis"
+				   formControlName="price"
+				   pattern="^[\d]+((\.|\,)[\d]{1,2})?$"
+			>
+			<span matSuffix>€</span>
+			<mat-error *ngIf="inputFormService.addOrderedItemForm.get('price').hasError('required')">
+				Dieses Feld darf nicht leer bleiben!
+			</mat-error>
+			<mat-error *ngIf="inputFormService.addOrderedItemForm.get('price').hasError('pattern')">
+				Der Preis darf nur aus Zahlen bestehen (max. 2 Nachkommastellen).
+			</mat-error>
+		</mat-form-field>
+
+		<mat-form-field>
+			<mat-select
+				placeholder="Status"
+				[formControl]="inputFormService.addOrderedItemForm.get('status')">
+				<mat-option *ngFor="let status of statusOptions" [value]="status">
+					{{orderToString(status)}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+
+	<div *ngIf="inputFormService.isMerch$ | async">
+		<mat-form-field>
+			<mat-select placeholder="Farbe"
+						[formControl]="inputFormService.addOrderedItemForm.get('color')">
+				<mat-option *ngFor="let color of inputFormService.colorSelection$ | async" [value]="color">
+					{{color.name}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field>
+			<mat-select placeholder="Größe"
+						[formControl]="inputFormService.addOrderedItemForm.get('size')">
+				<mat-option *ngFor="let size of inputFormService.sizeSelection$ | async" [value]="size">
+					{{size}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+	<div *ngIf="inputFormService.isTour$ | async">
+		<mat-checkbox name="isDriverCheckbox"
+					  [formControl]="inputFormService.addOrderedItemForm.get('isDriver')">
+			Ist Fahrer
+		</mat-checkbox>
+		<mat-checkbox name="needsTicketCheckbox"
+					  [formControl]="inputFormService.addOrderedItemForm.get('needsTicket')">
+			Braucht Ticket
+		</mat-checkbox>
+	</div>
+
+	<div class="form-actions">
+		<button mat-raised-button type="button" (click)="cancel()">
+			Abbrechen
+		</button>
+		<button mat-raised-button color="accent"
+				[disabled]="!inputFormService.addOrderedItemForm.valid || inputFormService.addOrderedItemForm.pending">
+			Speichern
+		</button>
+	</div>
+</form>

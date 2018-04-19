@@ -1,14 +1,14 @@
 import {Injectable} from "@angular/core";
-import {ExpandableTableContainerService} from "../../../shared/expandable-table/expandable-table-container.service";
+import {ExpandableTableContainerService} from "../../../shared/utility/expandable-table/expandable-table-container.service";
 import {User} from "../../../shared/model/user";
-import {ColumnSortingEvent} from "../../../shared/expandable-table/column-sorting-event";
+import {ColumnSortingEvent} from "../../../shared/utility/expandable-table/column-sorting-event";
 import {attributeSortingFunction, dateSortingFunction, SortingFunction} from "../../../util/util";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {UserService} from "../../../shared/services/api/user.service";
 import {Dimension, WindowService} from "../../../shared/services/window.service";
 import {memberListColumns} from "./member-list-columns";
-import {ExpandableTableColumn} from "../../../shared/expandable-table/expandable-table-column";
+import {ExpandableTableColumn} from "../../../shared/utility/expandable-table/expandable-table-column";
 import {defaultIfEmpty} from "rxjs/operators";
 
 @Injectable()

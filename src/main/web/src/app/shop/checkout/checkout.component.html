@@ -1,20 +1,27 @@
 <div class="checkout-options-container">
 
-	<mat-card>
-		<h2 class="checkout-title mat-headline">{{'Addresse'|uppercase}}</h2>
 
-		<memo-address-selection [addresses]="(userAddresses$ | async)" (addressChange)="onAddressChange($event)">
-		</memo-address-selection>
+	<memo-item-details-content [title]="'Addressen'" class="no-padding">
+		<memo-address-form [selection]="true" [formGroup]="formGroup.get('address')"></memo-address-form>
+	</memo-item-details-content>
 
-	</mat-card>
 
-	<mat-card>
-		<h2 class="checkout-title mat-headline">{{'Bezahlmethode'|uppercase}}</h2>
-		<memo-payment (done)="paymentSelectionDone($event)"></memo-payment>
-	</mat-card>
+	<memo-item-details-content [title]="'Bezahlung'" class="no-padding">
+		<memo-payment [formGroup]="formGroup.get('payment')"></memo-payment>
+	</memo-item-details-content>
+	<div class="checkout-total">
+		<span>{{total$ | async | currency:'EUR':'symbol'}}</span>
+		<button mat-raised-button color="primary"
+				(click)="submit()"
+				[disabled]="!formGroup.valid || formGroup.pending || loading">
+		<span *ngIf="!loading; else loadingSpinner">
+			Abschließen
+		</span>
+			<ng-template #loadingSpinner>
+				<mat-icon class="loading-spinner">refresh</mat-icon>
+				<span>Lädt...</span>
+			</ng-template>
+		</button>
+	</div>
+
 </div>
-
-<a class="checkout-total mat-elevation-z6" routerLink="/cart">
-	<h3>Gesamt</h3>
-	<span>{{total$ | async | currency:'EUR':'symbol'}}</span>
-</a>

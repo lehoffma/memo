@@ -6,12 +6,12 @@ import memo.api.util.ApiServletPutOptions;
 import memo.api.util.ModifyPrecondition;
 import memo.auth.BCryptHelper;
 import memo.auth.api.UserAuthStrategy;
+import memo.communication.CommunicationManager;
+import memo.communication.MessageType;
 import memo.data.UserRepository;
-import memo.model.ClubRole;
-import memo.model.PermissionState;
-import memo.model.ShopItem;
-import memo.model.User;
+import memo.model.*;
 import memo.util.ApiUtils;
+import memo.util.Configuration;
 import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
 
@@ -20,8 +20,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,6 +51,26 @@ public class UserServlet extends AbstractApiServlet<User> {
         return user;
     }
 
+    /**
+     * @param user
+     * @return
+     */
+    private User setDefaultPermissions(User user) {
+        if (user.getPermissions() == null) {
+            user.setPermissions(new PermissionState(user.getClubRole()));
+        }
+        return user;
+    }
+
+    /**
+     * @param user
+     * @return
+     */
+    private User setDefaultValues(User user) {
+        user = this.hashPassword(user);
+        return this.setDefaultPermissions(user);
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.get(request, response,
                 (paramMap, _response) -> UserRepository.getInstance().get(
@@ -69,7 +89,10 @@ public class UserServlet extends AbstractApiServlet<User> {
         String email = request.getParameter("email");
         logger.trace("HEAD called with email = " + email);
 
-        List<User> users = UserRepository.getInstance().getUserByEmail(email);
+        String adminEmail = Configuration.get("admin.email");
+        List<User> users = adminEmail.equalsIgnoreCase(email)
+                ? Collections.singletonList(UserRepository.getInstance().getAdmin())
+                : UserRepository.getInstance().findByEmail(email);
 
         if (users.isEmpty()) {
             logger.trace("Email is not used yet.");
@@ -85,22 +108,19 @@ public class UserServlet extends AbstractApiServlet<User> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, User object) {
-        updateUserFromJson(jsonNode, object);
-        DatabaseManager.getInstance().save(object.getPermissions());
-
-        this.oneToMany(object, User::getAddresses, address -> address::setUser);
-        this.oneToMany(object, User::getBankAccounts, bankAcc -> bankAcc::setUser);
-        this.oneToMany(object, User::getImages, image -> image::setUser);
-        this.oneToMany(object, User::getComments, comment -> comment::setAuthor);
-        this.oneToMany(object, User::getOrders, order -> order::setUser);
-        this.manyToMany(object, User::getAuthoredItems, User::getId, ShopItem::getAuthor, shopItem -> shopItem::setAuthor);
+        this.oneToMany(object, Address.class, User::getAddresses, address -> address::setUser);
+        this.oneToMany(object, BankAcc.class, User::getBankAccounts, bankAcc -> bankAcc::setUser);
+        this.oneToMany(object, Image.class, User::getImages, image -> image::setUser);
+        this.oneToMany(object, Comment.class, User::getComments, comment -> comment::setAuthor);
+        this.oneToMany(object, Order.class, User::getOrders, order -> order::setUser);
+        this.manyToMany(object, ShopItem.class, User::getAuthoredItems, User::getId, ShopItem::getAuthor, shopItem -> shopItem::setAuthor);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.post(request, response, new ApiServletPostOptions<>(
+        User createdUser = this.post(request, response, new ApiServletPostOptions<>(
                         "user", new User(), User.class, User::getId
                 )
-                        .setTransform(this::hashPassword)
+                        .setTransform(this::setDefaultValues)
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
                                         user -> user.getEmail() == null,
@@ -108,20 +128,23 @@ public class UserServlet extends AbstractApiServlet<User> {
                                         () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
                                 ),
                                 new ModifyPrecondition<>(
-                                        user -> !(UserRepository.getInstance().getUserByEmail(user.getEmail()).isEmpty()),
+                                        user -> !(UserRepository.getInstance().findByEmail(user.getEmail()).isEmpty()),
                                         "Email already taken",
                                         () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
                                 )
                         ))
-
         );
+
+        if (createdUser != null) {
+            CommunicationManager.getInstance().send(createdUser, null, MessageType.REGISTRATION);
+        }
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.put(request, response, new ApiServletPutOptions<>(
                         "user", User.class, User::getId, "id"
                 )
-                        .setTransform(this::hashPassword)
+                        .setTransform(this::setDefaultValues)
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
                                         user -> UserRepository.getInstance()
@@ -152,9 +175,6 @@ public class UserServlet extends AbstractApiServlet<User> {
             UserRepository.clubRoleFromString(jsonUser.get("clubRole").asText())
                     .ifPresent(user::setClubRole);
         }
-
-        //todo remove demo
-        user.setClubRole(ClubRole.Admin);
 
         if (user.getJoinDate() == null) {
             user.setJoinDate(new java.sql.Date(new java.util.Date().getTime()));

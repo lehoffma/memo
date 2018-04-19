@@ -4,11 +4,10 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {EventOverviewKey} from "../container/overview/event-overview-key";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {EventType} from "../../../shared/model/event-type";
-import {ParticipantsService} from "../../../../shared/services/api/participants.service";
+import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {Permission} from "../../../../shared/model/permission";
-import {rolePermissions} from "../../../../shared/model/club-role";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import {Comment} from "../../../shared/model/comment";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
@@ -109,7 +108,7 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 		.pipe(
 			map(([tour, user]) => {
 				if (user !== null) {
-					let permissions = user.permissions ? user.permissions : rolePermissions[user.clubRole];
+					let permissions = user.userPermissions();
 					return permissions.tour >= Permission.write
 						? "/tours/" + tour.id + "/participants"
 						: null
@@ -130,12 +129,11 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private router: Router,
-				private participantService: ParticipantsService,
+				private participantService: OrderedItemService,
 				private loginService: LogInService,
 				private commentService: CommentService,
 				private addressService: AddressService,
 				private eventService: EventService) {
-		console.log(this.activatedRoute);
 		this.subscriptions.push(
 			this.comments$.subscribe(this.commentsSubject$)
 		);

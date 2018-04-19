@@ -1,4 +1,4 @@
-import {ImageToUpload} from "../../../shared/multi-image-upload/image-to-upload";
+import {ImageToUpload} from "../../../shared/utility/multi-image-upload/image-to-upload";
 
 export interface ModifiedImages {
 	imagePaths: string[],

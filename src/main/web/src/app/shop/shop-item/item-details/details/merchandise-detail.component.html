@@ -1,4 +1,3 @@
-
 <memo-item-details-container *ngIf="merch$ | async as merch"
 							 [overviewKeys]="overViewKeys$"
 							 [event]="merch">
@@ -7,9 +6,10 @@
 		<span class="description secondary-text" content>{{merch?.description}}</span>
 	</memo-item-details-content>
 
-	<memo-item-details-content [title]="'Größentabelle'">
-		<memo-size-table [merch]="merch" content></memo-size-table>
-	</memo-item-details-content>
+	<!--todo size table-->
+	<!--<memo-item-details-content [title]="'Größentabelle'">-->
+	<!--<memo-size-table [merch]="merch" content></memo-size-table>-->
+	<!--</memo-item-details-content>-->
 
 	<memo-item-details-content [title]="'Kommentare'">
 		<memo-comments-section [comments]="comments$ | async"

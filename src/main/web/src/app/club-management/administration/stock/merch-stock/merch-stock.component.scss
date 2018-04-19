@@ -1,12 +1,10 @@
 
-
-
-.desktop{
+.desktop {
 	display: none;
 }
 
-.stock-entry-container{
-	.stock-options{
+.stock-entry-container {
+	.stock-options {
 		display: flex;
 		background-color: white;
 		padding: 0.5rem;
@@ -17,37 +15,40 @@
 		}
 	}
 
-	memo-merch-stock-entry{
+	memo-merch-stock-entry {
 		margin-top: 15px;
 	}
 }
 
-a.add-merch-button{
+a.add-merch-button {
 	position: fixed;
 	z-index: 10;
 	right: 1rem;
 	bottom: 1rem;
 }
 
-memo-merch-stock-feed{
+memo-merch-stock-feed {
 	display: none;
 }
 
-
-img{
+img {
 	width: 50px;
 	height: 50px;
 	border-radius: 50%;
 }
 
-.no-results{
+.no-results {
 	display: flex;
-	justify-content:center;
+	justify-content: center;
 }
 
+.loading-container {
+	position: relative;
+	top: 200px;
+}
 
-@media all and (min-width: 800px){
-	.stock-options-sidebar{
+@media all and (min-width: 800px) {
+	.stock-options-sidebar {
 		display: block;
 		width: 250px;
 		z-index: 2;
@@ -55,15 +56,15 @@ img{
 		left: 30px;
 		top: 100px;
 		height: calc(100% - 90px);
-		overflow-y: hidden;
+		overflow-y: auto;
 	}
-	.stock-entry-container{
+	.stock-entry-container {
 		width: calc(100% - 350px);
 		position: relative;
 		left: 300px;
 		top: 20px;
 		margin-bottom: 30px;
-		.stock-options{
+		.stock-options {
 			background-color: transparent;
 			padding: 0;
 			justify-content: flex-end;
@@ -72,30 +73,28 @@ img{
 			}
 		}
 	}
-	a.add-merch-button{
+	a.add-merch-button {
 		right: calc(50px + 2rem);
 	}
 
-	.desktop{
+	.desktop {
 		display: block;
 	}
-	.mobile{
+	.mobile {
 		display: none;
 	}
 }
 
-
-@media all and (min-width: 1000px){
-	.stock-entry-container{
+@media all and (min-width: 1000px) {
+	.stock-entry-container {
 		width: calc(100% - 300px - 400px);
 	}
 
-	a.add-merch-button{
+	a.add-merch-button {
 		right: calc(400px + 2rem);
 	}
 
-
-	memo-merch-stock-feed{
+	memo-merch-stock-feed {
 		display: block;
 		width: 300px;
 		z-index: 2;

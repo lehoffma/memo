@@ -4,7 +4,7 @@ import {NavigationService} from "../../../../shared/services/navigation.service"
 import {Event} from "../../../shared/model/event";
 import {MerchColor} from "../../../shared/model/merch-color";
 import {StockService} from "../../../../shared/services/api/stock.service";
-import {Discount} from "../../../../shared/price-renderer/discount";
+import {Discount} from "../../../../shared/renderers/price-renderer/discount";
 import {Observable} from "rxjs/Observable";
 import {DiscountService} from "../../../shared/services/discount.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
@@ -43,6 +43,13 @@ export class ResultsEntryComponent implements OnInit {
 				private navigationService: NavigationService) {
 	}
 
+	resultUrl$ = this._result
+		.pipe(
+			map(result => {
+				const itemType = EventUtilityService.getShopItemType(result)
+				return `/${itemType}/${result.id}`;
+			})
+		);
 
 	get result() {
 		return this._result.getValue();
@@ -58,10 +65,6 @@ export class ResultsEntryComponent implements OnInit {
 
 	resultIsMerch(result: Event) {
 		return EventUtilityService.isMerchandise(result);
-	}
-
-	showResult(result: Event) {
-		this.navigationService.navigateToItemWithId(EventUtilityService.getShopItemType(result), result.id);
 	}
 
 }

@@ -15,6 +15,7 @@ export interface PermissionInput {
 })
 export class ItemPermissionsInputComponent implements OnInit {
 	@Input() formGroup: FormGroup;
+	@Input() isMerch = false;
 	clubRoleOptions = clubRoles();
 
 	@Input() set previousValue(previousValue: { [p: string]: ClubRole }) {
@@ -27,16 +28,7 @@ export class ItemPermissionsInputComponent implements OnInit {
 			})
 	}
 
-	permissions: PermissionInput[] = [{
-		key: "expectedReadRole",
-		label: "Wer kann dies sehen?"
-	}, {
-		key: "expectedCheckInRole",
-		label: "Wer kann teilnehmen?"
-	}, {
-		key: "expectedWriteRole",
-		label: "Wer kann modifizieren?"
-	}];
+	permissions: PermissionInput[] = [];
 
 	subscriptions: Subscription[] = [];
 
@@ -44,5 +36,22 @@ export class ItemPermissionsInputComponent implements OnInit {
 	}
 
 	ngOnInit() {
+		this.permissions = this.getPermissions();
+	}
+
+	getPermissions() {
+		return [
+			{
+				key: "expectedReadRole",
+				label: "Wer kann dies sehen?"
+			},
+			{
+				key: "expectedCheckInRole",
+				label: this.isMerch ? "Wer kann dies bestellen?" : "Wer kann teilnehmen?"
+			},
+			{
+				key: "expectedWriteRole",
+				label: "Wer kann modifizieren?"
+			}];
 	}
 }

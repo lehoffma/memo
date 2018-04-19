@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -42,48 +43,52 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
      * Updates the database record of a manyToOne relationship
      */
     protected <DependencyType, IdType> void manyToOne(T objectToUpdate,
+                                                      Class<DependencyType> clazz,
                                                       Function<T, DependencyType> getDependency,
                                                       Function<T, IdType> getId,
                                                       Function<DependencyType, List<T>> getCyclicListDependency,
                                                       Function<DependencyType, Consumer<List<T>>> updateDependencyValues
     ) {
         dependencyUpdateService.manyToOne(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues)
-                .ifPresent(it -> DatabaseManager.getInstance().update(it));
+                .ifPresent(it -> DatabaseManager.getInstance().update(it, clazz));
     }
 
     /**
      * Updates the database record of a oneToMany relationship
      */
     protected <DependencyType> void oneToMany(T objectToUpdate,
+                                              Class<DependencyType> clazz,
                                               Function<T, List<DependencyType>> getDependency,
                                               Function<DependencyType, Consumer<T>> updateDependencyValue
     ) {
         List<DependencyType> values = dependencyUpdateService
                 .oneToMany(objectToUpdate, getDependency, updateDependencyValue);
-        DatabaseManager.getInstance().updateAll(values);
+        DatabaseManager.getInstance().updateAll(values, clazz);
     }
 
     /**
      * Updates the database record of a oneToOne relationship
      */
     protected <DependencyType> void oneToOne(T objectToUpdate,
+                                             Class<DependencyType> clazz,
                                              Function<T, DependencyType> getDependency,
                                              Function<DependencyType, Consumer<T>> updateDependencyValue) {
         dependencyUpdateService.oneToOne(objectToUpdate, getDependency, updateDependencyValue)
-                .ifPresent(it -> DatabaseManager.getInstance().update(it));
+                .ifPresent(it -> DatabaseManager.getInstance().update(it, clazz));
     }
 
     /**
      * Updates the database record of a manyToMany relationship
      */
     protected <DependencyType, IdType> void manyToMany(T objectToUpdate,
+                                                       Class<DependencyType> clazz,
                                                        Function<T, List<DependencyType>> getDependency,
                                                        Function<T, IdType> getId,
                                                        Function<DependencyType, List<T>> getCyclicListDependency,
                                                        Function<DependencyType, Consumer<List<T>>> updateDependencyValues
     ) {
         List<DependencyType> dependencyTypes = dependencyUpdateService.manyToMany(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues);
-        DatabaseManager.getInstance().updateAll(dependencyTypes);
+        DatabaseManager.getInstance().updateAll(dependencyTypes, clazz);
     }
 
     protected abstract void updateDependencies(JsonNode jsonNode, T object);
@@ -109,11 +114,11 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return getParameter(paramMap, key, null);
     }
 
-    protected void get(HttpServletRequest request,
-                       HttpServletResponse response,
-                       BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
-                       String serializedKey,
-                       Predicate<T> isFiltered
+    protected List<T> get(HttpServletRequest request,
+                          HttpServletResponse response,
+                          BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
+                          String serializedKey,
+                          Predicate<T> isFiltered
     ) {
         Map<String, String[]> parameterMap = request.getParameterMap();
         ApiUtils.getInstance().setContentType(request, response);
@@ -128,7 +133,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         if (stringIsNotEmpty(id) && items.isEmpty()) {
             ApiUtils.getInstance().processNotFoundError(response);
-            return;
+            return new ArrayList<>();
         }
 
         //remove items from the result the user is not allowed to see
@@ -141,28 +146,29 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         if (stringIsNotEmpty(id) && items.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to see this item");
-            return;
+            return new ArrayList<>();
         }
 
         ApiUtils.getInstance().serializeObject(response, items, serializedKey);
+        return items;
     }
 
-    protected void get(HttpServletRequest request,
-                       HttpServletResponse response,
-                       BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
-                       String serializedKey) {
-        this.get(request, response, itemSupplier, serializedKey, t -> true);
+    protected List<T> get(HttpServletRequest request,
+                          HttpServletResponse response,
+                          BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
+                          String serializedKey) {
+        return this.get(request, response, itemSupplier, serializedKey, t -> true);
     }
 
-    protected <SerializedType> void post(HttpServletRequest request,
-                                         HttpServletResponse response,
-                                         String objectName,
-                                         T baseValue,
-                                         Class<T> clazz,
-                                         Function<T, T> transform,
-                                         List<ModifyPrecondition<T>> preconditions,
-                                         Function<T, SerializedType> getSerialized,
-                                         String serializedKey
+    protected <SerializedType> T post(HttpServletRequest request,
+                                      HttpServletResponse response,
+                                      String objectName,
+                                      T baseValue,
+                                      Class<T> clazz,
+                                      Function<T, T> transform,
+                                      List<ModifyPrecondition<T>> preconditions,
+                                      Function<T, SerializedType> getSerialized,
+                                      String serializedKey
     ) {
         ApiUtils.getInstance().setContentType(request, response);
 
@@ -179,7 +185,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         if (!AuthenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToCreate, item)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to create this item");
-            return;
+            return null;
         }
 
         //check if any of the preconditions failed (i.e. the email is already taken or something)
@@ -187,21 +193,22 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                 .filter(it -> it.getPredicate().test(item)).findFirst();
 
         if (handleFailedCondition(failedCondition)) {
-            return;
+            return null;
         }
 
-        DatabaseManager.getInstance().save(item);
+        DatabaseManager.getInstance().save(item, clazz);
 
         //update cyclic dependencies etc.
         this.updateDependencies(jsonItem, item);
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
+        return item;
     }
 
-    protected <SerializedType> void post(HttpServletRequest request, HttpServletResponse response,
-                                         ApiServletPostOptions<T, SerializedType> options) {
-        this.post(request, response,
+    protected <SerializedType> T post(HttpServletRequest request, HttpServletResponse response,
+                                      ApiServletPostOptions<T, SerializedType> options) {
+        return this.post(request, response,
                 options.getObjectName(),
                 options.getBaseValue(),
                 options.getClazz(),
@@ -212,14 +219,14 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         );
     }
 
-    protected <SerializedType> void put(HttpServletRequest request, HttpServletResponse response,
-                                        String objectName,
-                                        String jsonId,
-                                        Class<T> clazz,
-                                        Function<T, T> transform,
-                                        List<ModifyPrecondition<T>> preconditions,
-                                        Function<T, SerializedType> getSerialized,
-                                        String serializedKey) {
+    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
+                                     String objectName,
+                                     String jsonId,
+                                     Class<T> clazz,
+                                     Function<T, T> transform,
+                                     List<ModifyPrecondition<T>> preconditions,
+                                     Function<T, SerializedType> getSerialized,
+                                     String serializedKey) {
         ApiUtils.getInstance().setContentType(request, response);
 
         logger.debug("Method PUT called with params " + paramMapToString(request.getParameterMap()));
@@ -227,18 +234,16 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         if (!jsonItem.has(jsonId)) {
             ApiUtils.getInstance().processInvalidError(response);
-            return;
+            return null;
         }
 
-        T item = transform.apply(
-                DatabaseManager.getInstance().getById(clazz, jsonItem.get(jsonId).asInt())
-        );
+        T item = DatabaseManager.getInstance().getById(clazz, jsonItem.get(jsonId).asInt());
 
         //check if user is authorized to modify item
         if (!AuthenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToModify, item)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to modify this shop item");
-            return;
+            return null;
         }
 
         T finalItem = item;
@@ -247,23 +252,26 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
                 .filter(it -> it.getPredicate().test(finalItem)).findFirst();
 
         if (handleFailedCondition(failedCondition)) {
-            return;
+            return null;
         }
 
         if (item == null) {
             ApiUtils.getInstance().processNotFoundError(response);
-            return;
+            return null;
         }
 
-        item = ApiUtils.getInstance().updateFromJson(jsonItem, item, clazz);
+        item = transform.apply(
+                ApiUtils.getInstance().updateFromJson(jsonItem, item, clazz)
+        );
 
         //update cyclic dependencies etc.
         this.updateDependencies(jsonItem, item);
 
-        DatabaseManager.getInstance().save(item);
+        DatabaseManager.getInstance().update(item, clazz);
 
         response.setStatus(HttpServletResponse.SC_CREATED);
         ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
+        return item;
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -277,9 +285,9 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return false;
     }
 
-    protected <SerializedType> void put(HttpServletRequest request, HttpServletResponse response,
-                                        ApiServletPutOptions<T, SerializedType> options) {
-        this.put(request, response,
+    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
+                                     ApiServletPutOptions<T, SerializedType> options) {
+        return this.put(request, response,
                 options.getObjectName(),
                 options.getJsonId(),
                 options.getClazz(),
@@ -290,9 +298,10 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         );
     }
 
-    protected void delete(HttpServletRequest request,
-                          HttpServletResponse response,
-                          Function<HttpServletRequest, T> itemSupplier
+    protected T delete(HttpServletRequest request,
+                       HttpServletResponse response,
+                       Class<T> clazz,
+                       Function<HttpServletRequest, T> itemSupplier
     ) {
         ApiUtils.getInstance().setContentType(request, response);
         logger.debug("Method DELETE called with params " + paramMapToString(request.getParameterMap()));
@@ -305,21 +314,23 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         if (!isAuthorized) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to modify this shop item");
-            return;
+            return null;
         }
 
         if (itemToDelete == null) {
             ApiUtils.getInstance().processNotFoundError(response);
-            return;
+            return null;
         }
         logger.debug("Object: " + itemToDelete.toString() + " will be removed");
-        DatabaseManager.getInstance().remove(itemToDelete);
+        DatabaseManager.getInstance().remove(itemToDelete, clazz);
+        return itemToDelete;
     }
 
-    protected void delete(Class<T> clazz,
-                          HttpServletRequest request,
-                          HttpServletResponse response) {
-        this.delete(request, response, req -> {
+    protected T delete(Class<T> clazz,
+                       HttpServletRequest request,
+                       HttpServletResponse response) {
+
+        return this.delete(request, response, clazz, req -> {
             String id = request.getParameter("id");
             return DatabaseManager.getInstance().getById(clazz, Integer.valueOf(id));
         });

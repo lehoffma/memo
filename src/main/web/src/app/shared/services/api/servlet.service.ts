@@ -1,11 +1,8 @@
 import {Injectable} from "@angular/core";
 import {ServletServiceInterface} from "../../model/servlet-service";
 import {HttpHeaders, HttpParams} from "@angular/common/http";
-import {ApiCache} from "../../cache/api-cache";
 import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
-import {catchError, retry} from "rxjs/operators";
-import {_throw} from "rxjs/observable/throw";
+import {CachedService} from "./cached.service";
 
 export type AddOrModifyRequest = <T>(url: string, body: any | null, options?: {
 	headers?: HttpHeaders;
@@ -21,42 +18,10 @@ export interface AddOrModifyResponse {
 }
 
 @Injectable()
-export abstract class ServletService<T> implements ServletServiceInterface<T> {
-	protected _cache: ApiCache<T> = new ApiCache<T>();
-
+export abstract class ServletService<T> extends CachedService<T> implements ServletServiceInterface<T> {
 	protected constructor() {
+		super()
 	}
-
-	/**
-	 *
-	 * @param error
-	 * @returns {any}
-	 */
-	handleError(error: Error): Observable<any> {
-		console.error(error);
-		return _throw(error);
-	}
-
-	/**
-	 *
-	 * @param requestObservable
-	 * @returns {Observable<T>}
-	 */
-	performRequest<U>(requestObservable: Observable<U>): Observable<U> {
-		return requestObservable
-			.pipe(
-				//retry 2 times before throwing an error
-				retry(2),
-				//log any errors
-				catchError(error => this.handleError(error))
-			)
-		//convert the observable to a hot observable, i.e. immediately perform the http request
-		//instead of waiting for someone to subscribe
-		// 		.publish().refCount()
-		// .shareReplay(3, 10000)
-		// .publishReplay(1)
-	}
-
 
 	abstract getById(id: number, ...args: any[]): Observable<T>;
 

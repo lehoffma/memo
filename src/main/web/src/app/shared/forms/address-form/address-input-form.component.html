@@ -70,13 +70,20 @@
 	</div>
 
 
-	<div>
+	<div class="input-form-actions">
 		<button mat-raised-button color="default" type="button" (click)="onCancel.emit(true)">
 			Abbrechen
 		</button>
-		<button mat-raised-button color="accent" [disabled]="!formGroup.valid || formGroup.pending"
+		<button mat-raised-button color="accent"
+				[disabled]="!formGroup.valid || formGroup.pending || loading"
 				type="submit">
-			Speichern
+			<span *ngIf="!loading; else loadingSpinner">
+				Speichern
+			</span>
+			<ng-template #loadingSpinner>
+				<mat-icon class="loading-spinner">refresh</mat-icon>
+				<span>Speichert...</span>
+			</ng-template>
 		</button>
 	</div>
 </form>

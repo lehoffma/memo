@@ -15,7 +15,7 @@ public class ParticipatedEventsAuthStrategy implements AuthenticationStrategy<Sh
                 //user has to be logged in
                 //either the user is looking at his own participated events
                 AuthenticationConditionFactory.<ShopItem>userIsLoggedIn()
-                        .and((u, item) -> EventRepository.getInstance().getEventsByUser(u.getId()).stream()
+                        .and((u, item) -> EventRepository.getInstance().findByParticipant(u.getId()).stream()
                                 .anyMatch(shopItem -> shopItem.getId().equals(item.getId()))),
                 //or he is at least a member of the club and is allowed to view the event
                 AuthenticationConditionFactory.<ShopItem>userIsLoggedIn()

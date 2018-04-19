@@ -1,7 +1,11 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: BankAcc
@@ -28,6 +32,9 @@ public class BankAcc implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn()
     private User user;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "bankAccount")
+    private List<Order> order;
 
     @Column
     private String name;
@@ -100,6 +107,16 @@ public class BankAcc implements Serializable {
         this.name = name;
     }
 
+    @JsonIgnore
+    public List<Order> getOrder() {
+        return order;
+    }
+
+    public BankAcc setOrder(List<Order> order) {
+        this.order = order;
+        return this;
+    }
+
     //**************************************************************
     //  methods
     //**************************************************************
@@ -113,5 +130,19 @@ public class BankAcc implements Serializable {
                 ", bic='" + bic + '\'' +
                 ", bankName='" + bankName + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BankAcc bankAcc = (BankAcc) o;
+        return Objects.equals(id, bankAcc.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

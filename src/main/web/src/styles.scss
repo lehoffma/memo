@@ -1,5 +1,8 @@
 @import "theme";
 @import "mixins";
+@import "~@fortawesome/fontawesome-free-webfonts/css/fa-brands.css";
+@import "~@fortawesome/fontawesome-free-webfonts/css/fa-solid.css";
+@import "~@fortawesome/fontawesome-free-webfonts/css/fontawesome.css";
 @import '~@ngx-share/button/styles/share-buttons';
 @import '~@ngx-share/button/styles/themes/default/default-theme';
 
@@ -57,7 +60,7 @@ a.disabled {
 	background-color: white;
 }
 
-mat-select{
+mat-select {
 	padding-top: 0 !important;
 }
 
@@ -75,6 +78,27 @@ mat-select{
 	}
 	to {
 		transform: rotate(360deg)
+	}
+}
+
+.loading-text:after {
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
+	animation: ellipsis steps(6, end) 900ms infinite;
+	content: "\2026"; /* ascii code for the ellipsis character */
+	width: 0;
+}
+
+@keyframes ellipsis {
+	to {
+		width: 1.25em;
+	}
+}
+
+@-webkit-keyframes ellipsis {
+	to {
+		width: 1.25em;
 	}
 }
 
@@ -105,20 +129,19 @@ mat-select{
 	}
 }
 
-
 .mat-drawer-container, .mat-drawer-content {
 	transform: none !important;
 }
 
 .mat-button:not(.dropbtn),
 .mat-raised-button,
-.mat-icon-button{
+.mat-icon-button {
 	text-transform: uppercase
 }
 
-.mat-raised-button:not([disabled]){
+.mat-raised-button:not([disabled]) {
 	transition: all .15s ease !important;
-	&:hover{
+	&:hover {
 		transform: translateY(-1px);
 		@include mat-elevation(3);
 		@include mat-elevation-transition;

@@ -4,6 +4,9 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Address} from "../../model/address";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, tap} from "rxjs/operators";
+import {processInParallelAndWait, updateListOfItem} from "../../../util/observable-util";
+import {User} from "../../model/user";
+import {UserService} from "./user.service";
 
 interface AddressApiResponse {
 	addresses: Partial<Address>[]
@@ -15,7 +18,8 @@ export class AddressService extends ServletService<Address> {
 	addressModificationDone: EventEmitter<Address> = new EventEmitter();
 	redirectUrl: string;
 
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient,
+				private userService: UserService) {
 		super();
 	}
 
@@ -100,5 +104,32 @@ export class AddressService extends ServletService<Address> {
 				mergeMap(json => this.getById(json.id)),
 				tap(address => this.addressModificationDone.emit(address))
 			);
+	}
+
+
+	/**
+	 *
+	 * @param {Address[]} previousValue
+	 * @param {Address[]} addresses
+	 * @param user
+	 */
+	public updateAddressesOfUser(previousValue: Address[], addresses: Address[], user: User): Observable<Address[]> {
+		const updateUserId = (address: Address, user: number): Address => address.setProperties({user});
+
+		return updateListOfItem<Address, User>(
+			previousValue,
+			addresses,
+			user,
+			"addresses",
+			value => updateUserId(value, user.id),
+			object => processInParallelAndWait(
+				[...object.addresses.map(id => this.getById(id))]
+			),
+			value => this.add(value),
+			value => this.modify(value),
+			value => this.remove(value),
+			object => this.userService.modify(object),
+			id => this.getById(id)
+		)
 	}
 }

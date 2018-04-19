@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {Event} from "../../../../shared/model/event";
 import {Merchandise} from "../../../../shared/model/merchandise";
 import {ShoppingCartService} from "../../../../../shared/services/shopping-cart.service";
@@ -9,15 +9,14 @@ import {MerchColor} from "../../../../shared/model/merch-color";
 import {MerchStock, MerchStockList} from "../../../../shared/model/merch-stock";
 import {ShopItem} from "../../../../../shared/model/shop-item";
 import {TypeOfProperty} from "../../../../../shared/model/util/type-of-property";
-import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
+import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
-import {defaultIfEmpty, filter, first, map, mergeMap, take} from "rxjs/operators";
+import {defaultIfEmpty, filter, map, mergeMap, take, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {of} from "rxjs/observable/of";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {User} from "../../../../../shared/model/user";
-import {Discount} from "../../../../../shared/price-renderer/discount";
+import {Discount} from "../../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../../shared/services/discount.service";
 import {Tour} from "../../../../shared/model/tour";
 import {MatDialog, MatSnackBar} from "@angular/material";
@@ -26,10 +25,14 @@ import {ResponsibilityService} from "../../../../shared/services/responsibility.
 import {ShoppingCartOption} from "../../../../../shared/model/shopping-cart-item";
 import {isBefore} from "date-fns";
 import {ObservableCache} from "../../../../../shared/cache/observable-cache";
-import {canCheckIn, canDeleteEntries, canEdit, canReadEntries} from "app/util/permissions-util";
+import {canCheckIn, canConclude, canDeleteEntries, canEdit, canReadEntries} from "app/util/permissions-util";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
 import {Router} from "@angular/router";
+import {CapacityService} from "../../../../../shared/services/api/capacity.service";
+import {Subscription} from "rxjs/Subscription";
+import {of} from "rxjs/observable/of";
+import {NavigationService} from "../../../../../shared/services/navigation.service";
 
 
 @Component({
@@ -37,7 +40,8 @@ import {Router} from "@angular/router";
 	templateUrl: "./item-details-overview.component.html",
 	styleUrls: ["./item-details-overview.component.scss"]
 })
-export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
+export class ItemDetailsOverviewComponent implements OnInit, OnDestroy {
+	//todo refactor into tinier components/services
 	_event$: BehaviorSubject<Event> = new BehaviorSubject(Event.create());
 
 	stock$: Observable<MerchStockList> = this._event$
@@ -59,32 +63,40 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	model = {
 		amount: undefined
 	};
-	public amountOptions: number[] = [];
-	public maxAmount: number = 0;
+
+	public maxAmount$: Observable<number> = this._event$
+		.pipe(
+			filter(event => event !== undefined && event.id >= 0),
+			mergeMap(event => this.isMerch(event)
+				? this.getStockAmount$()
+				: (<Observable<number>>this.getValue("capacity"))
+			)
+		);
+	public amountOptions$: Observable<number[]> = of([]);
 	public isPartOfShoppingCart$ = this._event$
 		.pipe(
 			mergeMap(event => this.shoppingCartService.isPartOfShoppingCart(event.id))
 		);
-	public isPastEvent: boolean = false;
-	private _cache: ObservableCache<Event> = new ObservableCache(this._event$)
-		.withAsyncFallback("capacity", () => this.stock$
-			.pipe(map(stock => stock.reduce((sum, it) => sum + it.amount, 0))))
-		.withAsyncFallback("emptySeats", () => this._event$
+	public isPastEvent$: Observable<boolean> = this._event$
+		.pipe(
+			map(event => (event && event.id !== -1 && isBefore(event.date, new Date())))
+		);
+	private _cache: ObservableCache<number> = new ObservableCache<number>()
+		.withAsyncFallback("capacity", () => this._event$
 			.pipe(
-				mergeMap(event =>
-					this.participantService
-						.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
-						.pipe(
-							map(participants => event.capacity - participants.length)
-						)
-				),
-				defaultIfEmpty(0)
-			));
+				filter(event => event.id >= 0),
+				mergeMap(event => this.capacityService.valueChanges(event.id)),
+				filter(it => it !== null),
+				map(it => it.capacity)
+			)
+		)
+		.withAsyncFallback("emptySeats", () => this.getEmptySeats$());
 
 
 	permissions$: Observable<{
 		checkIn: boolean;
 		edit: boolean;
+		conclude: boolean;
 		entries: boolean;
 		delete: boolean;
 	}> = combineLatest(
@@ -95,6 +107,7 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 			map(([currentUser, event]) => ({
 				checkIn: canCheckIn(currentUser, event),
 				edit: canEdit(currentUser, event),
+				conclude: canConclude(currentUser, event),
 				entries: canReadEntries(currentUser, event),
 				delete: canDeleteEntries(currentUser, event)
 			}))
@@ -117,17 +130,26 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		.pipe(mergeMap(event => this.responsibilityService.getResponsible(event.id)));
 
 
-	constructor(private participantService: ParticipantsService,
+	maxAmountSubscription: Subscription;
+
+	constructor(private participantService: OrderedItemService,
 				private discountService: DiscountService,
 				private stockService: StockService,
 				private loginService: LogInService,
+				private navigationService: NavigationService,
 				private shoppingCartService: ShoppingCartService,
 				private eventService: EventService,
 				private snackBar: MatSnackBar,
+				private capacityService: CapacityService,
 				private router: Router,
 				private confirmationDialogService: ConfirmationDialogService,
 				private responsibilityService: ResponsibilityService,
 				private matDialog: MatDialog) {
+		this.updateMaxAmount();
+
+		this.stock$.subscribe(it => console.log(it));
+		this._color$.subscribe(it => console.log(it));
+		this._size$.subscribe(it => console.log(it));
 	}
 
 	get event() {
@@ -155,18 +177,12 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		this._size$.next(size);
 	}
 
-	ngOnChanges() {
-		if (this.event && this.event.id !== -1) {
-			this.updateMaxAmount();
-			if (this.event.date) {
-				this.isPastEvent = isBefore(this.event.date, new Date());
-			}
-		}
+	ngOnInit() {
 	}
 
-	ngOnInit() {
-		if (this.event && this.event.id !== -1) {
-			this.updateMaxAmount();
+	ngOnDestroy(): void {
+		if (this.maxAmountSubscription) {
+			this.maxAmountSubscription.unsubscribe();
 		}
 	}
 
@@ -177,6 +193,47 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 */
 	getValue(key: keyof Event): Observable<TypeOfProperty<Event>> {
 		return this._cache.get(key);
+	}
+
+	/**
+	 *
+	 * @returns {Observable<number>}
+	 */
+	private getStockAmount$(): Observable<number> {
+		return combineLatest(
+			this.stock$,
+			this._color$,
+			this._size$
+		)
+			.pipe(
+				tap(it => console.log(it)),
+				map(([stock, color, size]) => stock
+				// we have to consider the selected color and size attributes
+					.filter(stockItem =>
+						color &&
+						stockItem.color.hex === color.hex
+						&& stockItem.size === size
+					)
+					.reduce((acc, stockItem) => acc + stockItem.amount, 0))
+			)
+	}
+
+	/**
+	 *
+	 * @returns {Observable<number>}
+	 */
+	private getEmptySeats$(): Observable<number> {
+		return this._event$
+			.pipe(
+				mergeMap(event =>
+					this.participantService
+						.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
+						.pipe(
+							map(participants => event.capacity - participants.length)
+						)
+				),
+				defaultIfEmpty(0)
+			)
 	}
 
 	/**
@@ -263,27 +320,19 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 	 * Updates maxAmount and amountOptions (i.e. the amount-dropdown)
 	 */
 	updateMaxAmount() {
-		const maxAmount$: Observable<number> = this.isMerch(this.event)
-			? combineLatest(this.stock$, this._color$, this._size$)
-				.pipe(
-					map(([stock, color, size]) => stock
-					// we have to consider the selected color and size attributes
-						.filter(stockItem =>
-							color &&
-							stockItem.color.hex === color.hex
-							&& stockItem.size === size
-						)
-						.reduce((acc, stockItem) => acc + stockItem.amount, 0))
-				)
-			: of(this.event.capacity);
+		if (this.maxAmountSubscription) {
+			this.maxAmountSubscription.unsubscribe();
+		}
 
-		maxAmount$
-			.pipe(first())
-			.subscribe(maxAmount => {
-				this.maxAmount = maxAmount;
-
+		this.amountOptions$ = this.maxAmount$
+			.pipe(
 				//fills the amountOptions variable with integers from 0 to maxAmount
-				this.amountOptions = Array((this.maxAmount === undefined) ? 0 : this.maxAmount + 1).fill(0).map((_, i) => i);
+				map(maxAmount => Array((maxAmount === undefined) ? 0 : maxAmount + 1).fill(0).map((_, i) => i))
+			);
+
+		this.maxAmountSubscription = this.maxAmount$
+			.subscribe(maxAmount => {
+				console.log(maxAmount);
 
 				const options = new Array(this.model.amount).fill({color: this.color, size: this.size});
 				const shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
@@ -359,10 +408,12 @@ export class ItemDetailsOverviewComponent implements OnInit, OnChanges {
 		this.matDialog.open(ShareDialogComponent, {
 			data: {
 				title: this.event.title,
+				url: "http://meilenwoelfe.org/" + this.navigationService.getUrlOfItem(this.event),
 				description: this.event.description,
 				image: this.event.images[0],
 				additionalTags: []
 			}
 		})
 	}
+
 }

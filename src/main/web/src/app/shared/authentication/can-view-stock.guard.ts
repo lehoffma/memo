@@ -27,7 +27,7 @@ export class CanViewStockGuard implements CanActivate {
 						this.router.navigate(["login"]);
 						return false;
 					}
-					const userPermissions = user.userPermissions;
+					const userPermissions = user.userPermissions();
 
 					if (userPermissions.stock > Permission.read) {
 						return true;

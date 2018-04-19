@@ -1,6 +1,7 @@
 package memo.data;
 
 import memo.model.EntryCategory;
+import memo.util.DatabaseManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,14 +48,31 @@ public class EntryCategoryRepository extends AbstractRepository<EntryCategory> {
                 .collect(Collectors.toList());
     }
 
+    public List<EntryCategory> get(String searchTerm, String categoryId) {
+        if (categoryId != null) {
+            return this.get(categoryId);
+        }
+        return this.getAll();
+    }
+
     @Override
     public List<EntryCategory> getAll() {
-        return Arrays.asList(
-                this.build("Verpflegung", 1, 1),
-                this.build("Tickets", 1, 2),
-                this.build("Mietkosten", 1, 3),
-                this.build("Steuern", 1, 4),
-                this.build("Sonstiges", 1, 5)
-        );
+        List<EntryCategory> result = DatabaseManager.createEntityManager()
+                .createQuery("SELECT category FROM EntryCategory category", EntryCategory.class)
+                .getResultList();
+
+        if (result.isEmpty()) {
+            DatabaseManager.getInstance().saveAll(Arrays.asList(
+                    this.build("Verpflegung", 1, 1),
+                    this.build("Tickets", 1, 2),
+                    this.build("Mietkosten", 1, 3),
+                    this.build("Steuern", 1, 4),
+                    this.build("Sonstiges", 1, 5)
+            ), EntryCategory.class);
+        }
+
+        return DatabaseManager.createEntityManager()
+                .createQuery("SELECT category FROM EntryCategory category", EntryCategory.class)
+                .getResultList();
     }
 }

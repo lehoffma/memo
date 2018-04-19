@@ -2,6 +2,8 @@ import {Component, OnInit} from "@angular/core";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Router} from "@angular/router";
 import {AuthService} from "../../shared/authentication/auth.service";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {confirmPasswordValidator} from "../../shared/validators/confirm-password.validator";
 
 @Component({
 	selector: "memo-login",
@@ -9,14 +11,21 @@ import {AuthService} from "../../shared/authentication/auth.service";
 	styleUrls: ["./login.component.scss"]
 })
 export class LoginComponent implements OnInit {
-	public email: string = "";
-	public password: string = "";
+	public formGroup: FormGroup = this.formBuilder.group({
+		"email": ["", {
+			validators: [Validators.required, Validators.email]
+		}],
+		"password": ["", {
+			validators: []
+		}]
+	});
 
 	public loading: boolean = false;
 	public error: string = "";
 
 	constructor(private loginService: LogInService,
 				public authService: AuthService,
+				private formBuilder: FormBuilder,
 				private router: Router) {
 	}
 
@@ -32,7 +41,8 @@ export class LoginComponent implements OnInit {
 	checkLogin() {
 		this.loading = true;
 		//todo better error handling than "something went wrong"?
-		this.loginService.login(this.email, this.password)
+		const {email, password} = this.formGroup.value;
+		this.loginService.login(email, password)
 			.subscribe(
 				loginWasSuccessful => {
 					this.loading = false;

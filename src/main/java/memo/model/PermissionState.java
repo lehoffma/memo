@@ -2,6 +2,7 @@ package memo.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: PermissionState
@@ -230,5 +231,19 @@ public class PermissionState implements Serializable {
                 ", stock=" + stock +
                 ", account=" + settings +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PermissionState that = (PermissionState) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

@@ -9,6 +9,7 @@ import {Address} from "../../model/address";
 })
 export class AddressFormComponent implements OnInit {
 	@Input() formGroup: FormGroup;
+	@Input() selection = false;
 
 	constructor() {
 	}

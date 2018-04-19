@@ -1,21 +1,21 @@
 import {EventEmitter, Injectable} from "@angular/core";
-import {ExpandableTableContainerService} from "../../../../../shared/expandable-table/expandable-table-container.service";
+import {ExpandableTableContainerService} from "../../../../../shared/utility/expandable-table/expandable-table-container.service";
 import {ParticipantUser} from "../../../../shared/model/participant";
-import {ColumnSortingEvent} from "../../../../../shared/expandable-table/column-sorting-event";
+import {ColumnSortingEvent} from "../../../../../shared/utility/expandable-table/column-sorting-event";
 import {attributeSortingFunction, sortingFunction, SortingFunction} from "../../../../../util/util";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {MatDialog} from "@angular/material";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {filter, first, map, mergeMap, tap} from "rxjs/operators";
 import {EventType} from "../../../../shared/model/event-type";
-import {ParticipantsService} from "../../../../../shared/services/api/participants.service";
-import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
+import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
+import {ExpandableTableColumn} from "../../../../../shared/utility/expandable-table/expandable-table-column";
 import {OrderStatusTableCellComponent} from "../order-status-table-cell.component";
 import {BooleanCheckMarkCellComponent} from "../../../../../club-management/administration/member-list/member-list-table-cells/boolean-checkmark-cell.component";
 import {FullNameTableCellComponent} from "./full-name-table-cell.component";
 import {Dimension, WindowService} from "../../../../../shared/services/window.service";
 import {Observable} from "rxjs/Observable";
-import {ModifyParticipantComponent, ModifyParticipantEvent} from "./modify-participant/modify-participant.component";
+import {ModifyParticipantComponent} from "./modify-participant/modify-participant.component";
 import {EventService} from "../../../../../shared/services/api/event.service";
 
 
@@ -51,9 +51,10 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			map(event => event.title)
 		);
 
+	loading = false;
 	constructor(private loginService: LogInService,
 				private activatedRoute: ActivatedRoute,
-				private participantService: ParticipantsService,
+				private participantService: OrderedItemService,
 				private windowService: WindowService,
 				private eventService: EventService,
 				private dialog: MatDialog,
@@ -111,93 +112,127 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 		return attributeSortingFunction(sortBy.key, sortBy.descending);
 	}
 
-	add(): void {
-		this.eventInfo$
+	/**
+	 *
+	 * @param {ParticipantUser} entry
+	 * @returns {Observable<any>}
+	 */
+	openModifyDialog(entry?: ParticipantUser) {
+		return this.eventInfo$
 			.pipe(
 				first(),
+				//fetch the event object from the url parameters
 				mergeMap(eventInfo => this.eventService.getById(eventInfo.eventId)
 					.pipe(map(event => ({event, eventInfo})))
-				),
-				//todo add event to data object
-				mergeMap(info =>
-					this.dialog.open(ModifyParticipantComponent, {
-						data: {associatedEventInfo: info.eventInfo, event: info.event}
-					})
-						.afterClosed()
-						.pipe(
-							filter(result => result),
-							mergeMap((result: ModifyParticipantEvent) => {
-								return this.participantService
-									.add(result.participant, info.eventInfo.eventType, info.eventInfo.eventId)
-									.pipe(
-										tap(() =>
-											this.dataSubject$.next([
-												...this.dataSubject$.getValue(),
-												result.participant
-											])
-										)
-									);
-							})
-						))
-			)
-			.subscribe(it => this.participantsChanged.emit(this.dataSubject$.getValue()))
-	}
-
-	edit(entry: ParticipantUser): void {
-		this.eventInfo$
-			.pipe(
-				first(),
-				mergeMap(eventInfo => this.eventService.getById(eventInfo.eventId)
-					.pipe(
-						map(event => ({event, eventInfo}))
-					)
 				),
 				mergeMap(info =>
 					this.dialog.open(ModifyParticipantComponent, {
 						data: {
 							participant: entry,
-							event: info.event,
-							associatedEventInfo: info.eventInfo
+							associatedEventInfo: info.eventInfo,
+							event: info.event
 						}
 					})
 						.afterClosed()
 						.pipe(
+							//don't do anything if the user closed the dialog without confirmation
 							filter(result => result),
-							mergeMap((result: ModifyParticipantEvent) => this.participantService
-								.modify(result.participant, info.eventInfo.eventType, info.eventInfo.eventId)
-								.pipe(
-									tap(() => {
-										const indexOfParticipant = this.dataSubject$.value.findIndex(
-											participant => participant.id === result.participant.id
-										);
-										this.dataSubject$.next([
-											...this.dataSubject$.value.slice(0, indexOfParticipant),
-											result.participant,
-											...this.dataSubject$.value.slice(indexOfParticipant + 1)
-										]);
-									})
-								))
-						))
-			)
-			.subscribe(it => this.participantsChanged.emit(this.dataSubject$.getValue()))
+							map(result => ({result, info}))
+						)
+				)
+			);
 	}
 
-	remove(entries: ParticipantUser[]): void {
-		this.eventInfo$.pipe(first()).subscribe(eventInfo => {
-			entries.forEach(participantUser => {
-				this.participantService
-					.remove(participantUser.id, eventInfo.eventType, eventInfo.eventId)
-					.subscribe(response => {
-						const indexOfParticipant = this.dataSubject$.value.findIndex(
-							participant => participant.id === participantUser.id
+	/**
+	 *
+	 */
+	add(): void {
+		this.openModifyDialog()
+			.pipe(
+				mergeMap(({result, info}) => {
+					this.loading = true;
+					return this.participantService
+						.addParticipant(result.participant, info.eventInfo.eventType, info.eventInfo.eventId)
+						.pipe(
+							tap(() =>
+								this.dataSubject$.next([
+									...this.dataSubject$.getValue(),
+									result.participant
+								])
+							)
 						);
-						this.dataSubject$.next([
-							...this.dataSubject$.value.slice(0, indexOfParticipant),
-							...this.dataSubject$.value.slice(indexOfParticipant + 1)
-						]);
-					});
-			});
-		})
+				})
+			)
+			.subscribe(it => {
+				this.participantsChanged.emit(this.dataSubject$.getValue());
+				this.loading = false;
+			}, error => {
+				console.error(error);
+				this.loading = false;
+			})
+	}
+
+	/**
+	 *
+	 * @param {ParticipantUser} entry
+	 */
+	edit(entry: ParticipantUser): void {
+		this.openModifyDialog(entry)
+			.pipe(
+				mergeMap(({result, info}) => {
+					this.loading = true;
+					return this.participantService
+						.modifyParticipant(result.participant)
+						.pipe(
+							tap(() => {
+								const indexOfParticipant = this.dataSubject$.value.findIndex(
+									participant => participant.id === result.participant.id
+								);
+								this.dataSubject$.next([
+									...this.dataSubject$.value.slice(0, indexOfParticipant),
+									result.participant,
+									...this.dataSubject$.value.slice(indexOfParticipant + 1)
+								]);
+							})
+						)
+				})
+			)
+			.subscribe(it => {
+				this.participantsChanged.emit(this.dataSubject$.getValue());
+				this.loading = false;
+			}, error => {
+				console.error(error);
+				this.loading = false;
+			})
+	}
+
+	/**
+	 *
+	 * @param {ParticipantUser[]} entries
+	 */
+	remove(entries: ParticipantUser[]): void {
+		const loadingStatus = [...entries].map(it => false);
+		this.loading = true;
+		entries.forEach((participantUser, i) => {
+			this.participantService
+				.remove(participantUser.id)
+				.subscribe(response => {
+					loadingStatus[i] = true;
+					const indexOfParticipant = this.dataSubject$.value.findIndex(
+						participant => participant.id === participantUser.id
+					);
+					this.dataSubject$.next([
+						...this.dataSubject$.value.slice(0, indexOfParticipant),
+						...this.dataSubject$.value.slice(indexOfParticipant + 1)
+					]);
+
+					this.loading = !loadingStatus.every(it => it);
+				}, error => {
+					console.error(error);
+					loadingStatus[i] = true;
+					this.loading = !loadingStatus.every(it => it);
+				})
+		});
 	}
 
 	satisfiesFilter(entry: ParticipantUser, ...options): boolean {

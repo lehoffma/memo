@@ -1,27 +1,25 @@
 <div class="preview-container" *ngIf="events$ | async; let events">
-	<mat-card class="preview-card"
-			  *ngFor="let event of events"
-			  (click)="showDetails(event)">
-		<img mat-card-image src="{{!!event.images ? event.images[0] : 'resources/images/Logo.png'}}">
-		<mat-card-content>
-			<div class="card-content-container">
-				<div class="event-content">
-					<span>{{event.title}}</span>
-					<span [style.visibility]="(showDate) ? 'visible' : 'hidden'" class="secondary-text">
+	<a *ngFor="let event of events" routerLink="{{getDetailUrl(event)}}">
+		<mat-card class="preview-card">
+			<img mat-card-image src="{{event?.images?.length > 0 ? event.images[0] : 'resources/images/Logo.png'}}">
+			<mat-card-content>
+				<div class="card-content-container">
+					<div class="event-content">
+						<span>{{event.title}}</span>
+						<span [style.visibility]="(showDate) ? 'visible' : 'hidden'" class="secondary-text">
 						{{distanceInWords(event.date)}}
 					</span>
-				</div>
-				<memo-price-renderer class="event-price"
-									 [showDiscountPossibilities]="false" [showExplanation]="false"
-									 [price]="event.price" [discounts]="discounts[event.id] | async">
+					</div>
+					<memo-price-renderer class="event-price"
+										 [showDiscountPossibilities]="false" [showExplanation]="false"
+										 [price]="event.price" [discounts]="discounts[event.id] | async">
 
-				</memo-price-renderer>
-				<!--<span class="event-price">-->
-				<!--{{event.price | currency:'EUR':'symbol'}}-->
-				<!--</span>-->
-			</div>
-		</mat-card-content>
-	</mat-card>
+					</memo-price-renderer>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	</a>
+
 </div>
 
 <div class="no-events" *ngIf="(events$|async)?.length === 0 || (events$|async) === null">

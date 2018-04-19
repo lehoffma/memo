@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {FilterOptionType} from "./filter-option-type";
-import {MultiLevelSelectParent} from "../../shared/multi-level-select/shared/multi-level-select-parent";
+import {MultiLevelSelectParent} from "../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {Event} from "../shared/model/event";
 import {MerchStockList} from "../shared/model/merch-stock";
 import {Merchandise} from "../shared/model/merchandise";

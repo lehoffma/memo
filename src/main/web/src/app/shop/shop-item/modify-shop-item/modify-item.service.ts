@@ -18,12 +18,14 @@ import {Address} from "../../../shared/model/address";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 import {ModifyItemEvent} from "./modify-item-event";
 import {MerchStockList} from "../../shared/model/merch-stock";
-import {first, map, mergeMap, take, tap} from "rxjs/operators";
+import {first, map, mergeMap, share, take, tap} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {Event} from "../../shared/model/event";
 import {of} from "rxjs/observable/of";
 import {ModifiedImages} from "./modified-images";
 import {processSequentially} from "../../../util/observable-util";
+import {isEdited} from "../../../util/util";
+import {TransactionBuilder} from "../../../util/transaction-builder";
 
 @Injectable()
 export class ModifyItemService {
@@ -44,6 +46,8 @@ export class ModifyItemService {
 	//only used if itemType === merch
 	previousStock: MerchStockList = [];
 
+	loading = false;
+
 	constructor(public eventService: EventService,
 				public imageUploadService: ImageUploadService,
 				public userService: UserService,
@@ -59,6 +63,7 @@ export class ModifyItemService {
 	 *
 	 */
 	reset() {
+		this.loading = false;
 		this.mode = undefined;
 
 		//either merch, tour, party, user or entry
@@ -190,12 +195,22 @@ export class ModifyItemService {
 		}
 
 		return processSequentially(
-			addresses.map(address => (address.id >= 0
-					//only add routes that aren't already part of the system
-					//but modify them in case they're different
-					? this.addressService.modify(address)
-					: this.addressService.add(address)
-			))
+			addresses.map(address => {
+				//only add routes that aren't already part of the system
+				if (address.id >= 0) {
+					return this.addressService.getById(address.id)
+						.pipe(
+							//but modify them in case they're different
+							mergeMap(prevAddress => isEdited(prevAddress, address, ["id"])
+								? this.addressService.modify(address)
+								//otherwise don't do anything
+								: of(prevAddress)
+							)
+						);
+				}
+
+				return this.addressService.add(address);
+			})
 		);
 	}
 
@@ -213,6 +228,14 @@ export class ModifyItemService {
 		}
 		if (newObject["addresses"]) {
 			addresses = newObject["addresses"];
+		}
+
+		const id = newObject.id === -1 ? null : newObject.id;
+		if (EventUtilityService.isUser(newObject)) {
+			addresses = addresses.map(it => it.setProperties({user: id}));
+		}
+		else {
+			addresses = addresses.map(it => it.setProperties({item: id}));
 		}
 
 		//delete old addresses if length < previousLength
@@ -249,11 +272,12 @@ export class ModifyItemService {
 	/**
 	 *
 	 * @param {string[]} imagePaths
+	 * @param previousValue
 	 * @returns {Observable<any[]>}
 	 */
-	deleteOldImages(imagePaths: string[]) {
-		if (this.previousValue) {
-			const previousImagePaths = this.previousValue.images;
+	deleteOldImages(imagePaths: string[], previousValue: ShopItem = this.previousValue): Observable<any[]> {
+		if (previousValue) {
+			const previousImagePaths = previousValue.images;
 			const imagesToDelete = previousImagePaths
 				.filter(path => imagePaths.indexOf(path) === -1);
 
@@ -277,24 +301,20 @@ export class ModifyItemService {
 	uploadImage(newObject: ShopItem, images: ModifiedImages): Observable<ShopItem> {
 		const {imagePaths, imagesToUpload} = images;
 
-		if (EventUtilityService.isMerchandise(newObject) || EventUtilityService.isTour(newObject) ||
-			EventUtilityService.isUser(newObject) || EventUtilityService.isParty(newObject)) {
+		if (imagesToUpload && imagesToUpload.length > 0) {
+			//todo: error handling, progress report
+			let formData = new FormData();
+			imagesToUpload.forEach(image => {
+				const blob = this.imageUploadService.dataURItoBlob(image.data);
+				formData.append("file[]", blob, image.name);
+			});
 
-			if (imagesToUpload) {
-				//todo: error handling, progress report
-				let formData = new FormData();
-				imagesToUpload.forEach(image => {
-					const blob = this.imageUploadService.dataURItoBlob(image.data);
-					formData.append("file[]", blob, image.name);
-				});
+			return this.imageUploadService.uploadImages(formData)
+				.pipe(
+					map(response => response.images),
+					map(images => (<any>newObject).setProperties({images: [...imagePaths, ...images]}))
+				)
 
-				return this.imageUploadService.uploadImages(formData)
-					.pipe(
-						map(response => response.images),
-						map(images => (<any>newObject).setProperties({images: [...imagePaths, ...images]}))
-					)
-
-			}
 		}
 
 		return of((<any>newObject).setProperties({images: [...imagePaths]}));
@@ -302,9 +322,42 @@ export class ModifyItemService {
 
 	/**
 	 *
+	 * @param {ShopItem} newObject
+	 * @param {ModifiedImages} images
+	 * @param previousValue
+	 * @returns {Observable<ShopItem>}
+	 */
+	handleImages(newObject: ShopItem, images: ModifiedImages, previousValue: ShopItem = this.previousValue): Observable<ShopItem> {
+		return this.deleteOldImages(images.imagePaths, previousValue)
+			.pipe(
+				mergeMap(() => this.uploadImage(newObject, images))
+			)
+	}
+
+	/**
+	 *
+	 * @param {ShopItem} result
+	 * @param {ModifyItemEvent} modifyItemEvent
+	 * @returns {Observable<ShopItem>}
+	 */
+	handleStock(result: ShopItem, modifyItemEvent: ModifyItemEvent): Observable<ShopItem> {
+		return (EventUtilityService.isMerchandise(result) && modifyItemEvent.stock)
+			? (this.stockService.pushChanges(result, [...this.previousStock], [...modifyItemEvent.stock])
+				.pipe(
+					share(),
+					tap(it => console.log(result)),
+					map(() => result),
+				))
+			: of(result)
+	}
+
+	/**
+	 *
 	 * @param modifyItemEvent
 	 */
 	submitModifiedEvent(modifyItemEvent: ModifyItemEvent) {
+		this.loading = true;
+
 		const service: ServletServiceInterface<ShopItem | Event> = EventUtilityService.shopItemSwitch<ServletServiceInterface<ShopItem | Event>>(
 			this.itemType,
 			{
@@ -320,23 +373,25 @@ export class ModifyItemService {
 		if (this.idOfObjectToModify && this.idOfObjectToModify >= 0) {
 			(<any>newObject).setProperties({id: this.idOfObjectToModify});
 		}
+		if (this.previousValue && EventUtilityService.isEvent(this.previousValue)) {
+			(<any>newObject).setProperties({
+				groupPicture: this.previousValue.groupPicture,
+				reportWriters: this.previousValue.reportWriters
+			})
+		}
 
+		const isEditing = this.mode === ModifyType.EDIT;
 		//handle addresses correctly
-		const request = this.handleAddresses(newObject)
+		const request = new TransactionBuilder<ShopItem>()
+			.add(input => this.handleAddresses(input))
+			.add(input => this.handleImages(input, modifyItemEvent.images))
+			.add(input => isEditing
+				? service.modify.bind(service)(input)
+				: service.add.bind(service)(input))
+			.add(input => this.handleStock(input, modifyItemEvent))
+			.begin(newObject)
 			.pipe(
-				map(newObject => this.setDefaultValues(newObject)),
-				tap(() => this.deleteOldImages(modifyItemEvent.images.imagePaths)),
-				//todo display progress-bar while uploading
-				mergeMap(newObject => this.uploadImage(newObject, modifyItemEvent.images)),
-				mergeMap(newObject => this.mode === ModifyType.EDIT
-					? service.modify.bind(service)(newObject)
-					: service.add.bind(service)(newObject)
-				),
-				mergeMap((result: ShopItem) => EventUtilityService.isMerchandise(result) && modifyItemEvent.stock
-					? this.stockService.pushChanges(result, [...this.previousStock], [...modifyItemEvent.stock])
-						.pipe(map(() => result))
-					: of(result)
-				),
+				share(),
 				first()
 			);
 
@@ -344,6 +399,13 @@ export class ModifyItemService {
 		request
 			.subscribe(
 				(result: ShopItem) => {
+					console.log(newObject);
+					if (!this || this.itemType === undefined || !result) {
+						const type = EventUtilityService.getShopItemType(newObject);
+						this.navigationService.navigateToItemWithId(type, newObject.id);
+						return;
+					}
+
 					if (this.itemType === ShopItemType.entry) {
 						this.navigationService.navigateByUrl("/management/costs");
 					}
@@ -361,6 +423,7 @@ export class ModifyItemService {
 					console.log("adding or editing object went wrong");
 					console.error(error);
 					console.log(newObject);
+					this.loading = false;
 				},
 				() => {
 					this.reset();

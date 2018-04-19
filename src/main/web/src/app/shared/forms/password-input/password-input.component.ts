@@ -16,6 +16,7 @@ export class PasswordInputComponent implements OnInit, ControlValueAccessor {
 	@Input() form: FormGroup;
 	@Input() required: boolean = true;
 	@Input() repeatPassword: boolean = true;
+	@Input() showStrengthBar: boolean = true;
 
 	constructor() {
 	}

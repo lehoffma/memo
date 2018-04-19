@@ -7,12 +7,32 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: Stock
  */
 @Entity
 @Table(name = "STOCK")
+@NamedQueries({
+        @NamedQuery(
+                name = "Stock.findByShopItemType",
+                query = "SELECT s FROM Stock s " +
+                        " WHERE s.item.type = :typ"
+        ),
+        @NamedQuery(
+                name = "Stock.findByShopItem",
+                query = "SELECT s FROM Stock s " +
+                        "       WHERE s.item.id = :id " +
+                        "       AND s.id NOT IN " +
+                        "           (SELECT stock.id " +
+                        "               FROM Stock stock, OrderedItem orderedItem " +
+                        "               WHERE stock.item.id = orderedItem.item.id " +
+                        "                   AND stock.color.name = orderedItem.color.name" +
+                        "                   AND stock.size = orderedItem.size" +
+                        "           )"
+        )
+})
 
 public class Stock implements Serializable {
 
@@ -30,7 +50,7 @@ public class Stock implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     @JsonDeserialize(using = ShopItemIdDeserializer.class)
     private ShopItem item;
@@ -129,5 +149,19 @@ public class Stock implements Serializable {
                 ", name='" + size + '\'' +
                 ", amount=" + amount +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stock stock = (Stock) o;
+        return Objects.equals(id, stock.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

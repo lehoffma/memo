@@ -1,29 +1,25 @@
 import {NgModule} from "@angular/core";
-import {ExpandableTableModule} from "./expandable-table/expandable-table.module";
+import {ExpandableTableModule} from "./utility/expandable-table/expandable-table.module";
 import {DateFormatPipe} from "./pipes/date-format.pipe";
-import {MultiLevelSelectModule} from "./multi-level-select/multi-level-select.module";
-import {EventCalendarComponent} from "./event-calendar/event-calendar.component";
+import {MultiLevelSelectModule} from "./utility/multi-level-select/multi-level-select.module";
+import {EventCalendarComponent} from "./utility/event-calendar/event-calendar.component";
 import {CommonModule} from "@angular/common";
-import {BadgeComponent} from "./badge/badge.component";
-import {PageNotFoundComponent} from "./page-not-found/page-not-found.component";
-import {ErrorPageComponent} from "./error-page/error-page.component";
+import {BadgeComponent} from "./utility/badge/badge.component";
+import {PageNotFoundComponent} from "./utility/error-page/page-not-found.component";
 import {AutoSizeTextAreaDirective} from "./autosize-textarea.directive";
-import {ConfirmationDialogComponent} from "./confirmation-dialog/confirmation-dialog.component";
+import {ConfirmationDialogComponent} from "./utility/confirmation-dialog/confirmation-dialog.component";
 import {MemoMaterialModule} from "../../material.module";
-import {ModifyItemInnerContainerComponent} from "./modify-item-inner-container/modify-item-inner-container.component";
-import {MultiImageUploadComponent} from "./multi-image-upload/multi-image-upload.component";
-import {MultiImageContainerComponent} from "./multi-image-container/multi-image-container.component";
-import {PriceRendererComponent} from "./price-renderer/price-renderer.component";
+import {PriceRendererComponent} from "./renderers/price-renderer/price-renderer.component";
 import {RouterModule} from "@angular/router";
-import {ProfileLinkComponent} from "./profile-renderer/profile-link/profile-link.component";
-import {ProfilePreviewComponent} from "./profile-renderer/profile-preview/profile-preview.component";
-import {CapacityRendererComponent} from "./capacity-renderer/capacity-renderer.component";
+import {ProfileLinkComponent} from "./renderers/profile-renderer/profile-link/profile-link.component";
+import {ProfilePreviewComponent} from "./renderers/profile-renderer/profile-preview/profile-preview.component";
+import {CapacityRendererComponent} from "./renderers/capacity-renderer/capacity-renderer.component";
 import {ShareDialogComponent} from "./share-dialog/share-dialog.component";
-import {UserAutocompleteComponent} from "./user-autocomplete/user-autocomplete.component";
+import {UserAutocompleteComponent} from "./forms/autocomplete/user-autocomplete/user-autocomplete.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ShareButtonsModule} from "@ngx-share/buttons";
 import {DisplayErrorDirective} from "./template-validators/display-error.directive";
-import {UserPreviewDirective} from "./profile-renderer/user-preview.directive";
+import {UserPreviewDirective} from "./renderers/profile-renderer/user-preview.directive";
 import {CalendarModule} from "angular-calendar";
 import {DisableIfDirective} from "./forms/directives/disable-if.directive";
 import {EmailInputComponent} from "./forms/email-input/email-input.component";
@@ -34,6 +30,17 @@ import {AddressFormComponent} from "./forms/address-form/address-form.component"
 import {AddressInputFormComponent} from "./forms/address-form/address-input-form.component";
 import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {AddressEntryComponent} from "./forms/address-form/address-entry.component";
+import {BankAccountFormComponent} from "./forms/bank-account-form/bank-account-form.component";
+import {BankAccountEntryComponent} from "./forms/bank-account-form/bank-account-entry.component";
+import {BankAccountInputFormComponent} from "./forms/bank-account-form/bank-account-input-form.component";
+import {EventAutocompleteComponent} from "./forms/autocomplete/event-autocomplete/event-autocomplete.component";
+import {OrderedItemFormComponent} from "./forms/ordered-item-form/ordered-item-form.component";
+import {OrderedItemInputFormComponent} from "./forms/ordered-item-form/ordered-item-input-form.component";
+import {OrderedItemEntryComponent} from "./forms/ordered-item-form/ordered-item-entry.component";
+import {OrderRendererComponent} from "./renderers/order-renderer/order-renderer.component";
+import {MultiImageUploadComponent} from "./utility/multi-image-upload/multi-image-upload.component";
+import {MultiImageContainerComponent} from "./utility/multi-image-container/multi-image-container.component";
+import {ErrorPageComponent} from "./utility/error-page/error-page.component";
 
 const forms = [
 	DisableIfDirective,
@@ -43,7 +50,16 @@ const forms = [
 	ClubInformationFormComponent,
 	AddressFormComponent,
 	AddressInputFormComponent,
-	AddressEntryComponent
+	AddressEntryComponent,
+	BankAccountFormComponent,
+	BankAccountEntryComponent,
+	BankAccountInputFormComponent,
+
+	EventAutocompleteComponent,
+
+	OrderedItemEntryComponent,
+	OrderedItemFormComponent,
+	OrderedItemInputFormComponent
 ];
 
 @NgModule({
@@ -65,8 +81,6 @@ const forms = [
 
 		ConfirmationDialogComponent,
 
-		ModifyItemInnerContainerComponent,
-
 		BadgeComponent,
 		PageNotFoundComponent,
 		ErrorPageComponent,
@@ -82,16 +96,18 @@ const forms = [
 		UserAutocompleteComponent,
 		DisplayErrorDirective,
 		UserPreviewDirective,
+		OrderRendererComponent,
 
 		...forms,
+
+		EventAutocompleteComponent,
+
 	],
 	exports: [
 		ExpandableTableModule,
 		MultiLevelSelectModule,
 
 		EventCalendarComponent,
-
-		ModifyItemInnerContainerComponent,
 
 		BadgeComponent,
 		PageNotFoundComponent,
@@ -116,6 +132,7 @@ const forms = [
 		DisplayErrorDirective,
 
 		UserPreviewDirective,
+		OrderRendererComponent,
 
 		...forms
 	],

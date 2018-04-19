@@ -2,8 +2,8 @@
 					   [sortingOptions]="sortingOptions" (onSort)="sortBy$.next($event)">
 
 </memo-sorting-dropdown>
-<memo-order-history-entry *ngFor="let order of orders$|async" [orderEntry]="order">
-</memo-order-history-entry>
+<memo-order-renderer *ngFor="let order of orders$|async" [orderEntry]="order">
+</memo-order-renderer>
 
 <div *ngIf="(orders$|async)?.length === 0">
 	Du hast bisher keine Bestellungen getätigt.

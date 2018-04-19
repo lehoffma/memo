@@ -36,14 +36,15 @@ memo-participant-list.participants-list /deep/ .expandable-table-component-conta
 
 	&.disabled {
 		background-color: #9E9E9E;
+		pointer-events: none;
 		cursor: initial;
 	}
 	&:not(.disabled) {
 		&:hover {
 			background: lighten($accent-default, 5%);
-			mat-icon {
-				margin-right: 0;
-			}
+			//mat-icon {
+			//	margin-right: 0;
+			//}
 		}
 	}
 }

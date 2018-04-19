@@ -7,9 +7,11 @@ import {MerchandiseDetailComponent} from "./item-details/details/merchandise-det
 import {ConcludeEventComponent} from "./conclude/conclude-event/conclude-event.component";
 import {ShopItemExistsGuard} from "../../shared/authentication/http-error-handling-guards/shop-item-exists.guard";
 import {ShopItemIsVisibleToUserGuard} from "../../shared/authentication/http-error-handling-guards/shop-item-is-visible-to-user.guard";
+import {OrderDetailComponent} from "./item-details/details/order-detail.component";
 
 
 const routes: Route[] = [
+	{path: "orders/:id", component: OrderDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{path: "tours/:id", component: TourDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{path: "tours/:id/participants", component: ParticipantListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{path: "tours/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
@@ -36,6 +38,7 @@ export const routedComponents = [
 	TourDetailComponent,
 	ParticipantListComponent,
 	PartyDetailComponent,
+	OrderDetailComponent,
 	MerchandiseDetailComponent,
 	ConcludeEventComponent
 ];

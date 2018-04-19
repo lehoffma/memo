@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
-import {ExpandableTableContainerService} from "../../shared/expandable-table/expandable-table-container.service";
+import {ExpandableTableContainerService} from "../../shared/utility/expandable-table/expandable-table-container.service";
 import {Entry} from "../../shared/model/entry";
-import {ColumnSortingEvent} from "../../shared/expandable-table/column-sorting-event";
+import {ColumnSortingEvent} from "../../shared/utility/expandable-table/column-sorting-event";
 import {LogInService} from "../../shared/services/api/login.service";
 import {ParamMap, Router} from "@angular/router";
 import {EntryService} from "../../shared/services/api/entry.service";
@@ -9,21 +9,41 @@ import {attributeSortingFunction, dateSortingFunction, SortingFunction, sortingF
 import {isNullOrUndefined} from "util";
 import {EventService} from "../../shared/services/api/event.service";
 import {Dimension, WindowService} from "../../shared/services/window.service";
-import {ExpandableTableColumn} from "../../shared/expandable-table/expandable-table-column";
+import {ExpandableTableColumn} from "../../shared/utility/expandable-table/expandable-table-column";
 import {DateTableCellComponent} from "../administration/member-list/member-list-table-cells/date-table-cell.component";
 import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs/Observable";
-import {catchError, defaultIfEmpty, first, map, mergeMap} from "rxjs/operators";
+import {catchError, defaultIfEmpty, first, map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {of} from "rxjs/observable/of";
 import {parse} from "date-fns";
+import {RowAction} from "../../shared/utility/expandable-table/expandable-table.component";
+import {RowActionType} from "../../shared/utility/expandable-table/row-action-type";
+import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
+import {MatDialog} from "@angular/material";
 
 
 @Injectable()
 export class AccountingTableContainerService extends ExpandableTableContainerService<Entry> {
+
+	rowActions: RowAction<Entry>[] = [
+		{
+			icon: "collections",
+			predicate: entry => entry.images.length > 0,
+			name: "Bilder"
+		},
+		{
+			icon: "edit",
+			name: RowActionType.EDIT
+		},
+		{
+			icon: "delete",
+			name: RowActionType.DELETE
+		},
+	];
 
 	columns = {
 		date: new ExpandableTableColumn<Entry>("Datum", "date", DateTableCellComponent),
@@ -34,11 +54,14 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 
 	subscriptions = [];
 
+	loading = false;
+
 	constructor(protected loginService: LogInService,
 				protected router: Router,
 				protected navigationService: NavigationService,
 				protected eventService: EventService,
 				protected windowService: WindowService,
+				protected matDialog: MatDialog,
 				protected entryService: EntryService) {
 		super({
 				key: "id",
@@ -48,6 +71,16 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 			[navigationService.queryParamMap$],
 		);
 
+		this.actionHandlers["Bilder"] = entries => {
+			const images = entries[0].images;
+			const selectedImage = images[0];
+			this.matDialog.open(ItemImagePopupComponent, {
+				data: {
+					images: images,
+					imagePath: selectedImage
+				}
+			})
+		};
 		this.init(this.getDataSource$());
 
 		this.subscriptions.push(this.windowService.dimension$
@@ -98,6 +131,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 		return this.navigationService.queryParamMap$
 			.pipe(
 				mergeMap(queryParamMap => {
+					this.loading = true;
 					const dateRange = this.extractDateRangeFromQueryParams(queryParamMap);
 
 					//we're looking at an event's accounting table
@@ -119,6 +153,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 					return this.entryService.search("", dateRange)
 						.pipe(defaultIfEmpty([]));
 				}),
+				tap(() => this.loading = false),
 				catchError(error => {
 					console.error(error);
 					return empty<Entry[]>()

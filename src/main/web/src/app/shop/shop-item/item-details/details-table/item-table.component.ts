@@ -5,7 +5,7 @@ import {TypeOfProperty} from "../../../../shared/model/util/type-of-property";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {MerchStockList} from "../../../shared/model/merch-stock";
 import {StockService} from "../../../../shared/services/api/stock.service";
-import {ParticipantsService} from "../../../../shared/services/api/participants.service";
+import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {filter, map, mergeMap, share} from "rxjs/operators";
@@ -43,7 +43,7 @@ export class ItemTableComponent implements OnInit {
 		} = {};
 
 	constructor(private stockService: StockService,
-				private participantService: ParticipantsService) {
+				private participantService: OrderedItemService) {
 	}
 
 	tableCategories$ = this._event$.asObservable()

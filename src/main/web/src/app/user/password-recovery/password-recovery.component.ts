@@ -50,12 +50,11 @@ export class PasswordRecoveryComponent implements OnInit {
 				error => {
 					if (error.status) {
 						if (error.status === 404) {
-							this.error = "Diese Email existiert nicht."
-						}
-						else {
-							this.error = "Etwas ist schiefgelaufen."
+							this.error = "Diese Email existiert nicht.";
+							return;
 						}
 					}
+					this.error = "Etwas ist schiefgelaufen."
 				},
 				() => this.loading = false
 			)

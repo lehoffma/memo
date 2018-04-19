@@ -6,11 +6,7 @@
 			'badge-container': selectedMethod === paymentMethod
 		}">
 		<label for="{{'radioButton' + paymentMethod}}">
-			<img *ngIf="paymentMethod === paymentMethodEnum.PAYPAL; else textBox"
-				 src="https://www.paypalobjects.com/webstatic/de_DE/i/de-pp-logo-100px.png"/>
-			<ng-template #textBox>
-				<span>{{paymentMethod}}</span>
-			</ng-template>
+			<span>{{paymentMethod}}</span>
 		</label>
 		<input type="radio" name="method" [(ngModel)]="selectedMethod" id="{{'radioButton' + paymentMethod}}"
 			   [value]="paymentMethod" [hidden]="true">

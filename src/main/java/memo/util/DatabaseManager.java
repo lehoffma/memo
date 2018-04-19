@@ -15,22 +15,25 @@ public class DatabaseManager {
 
     private static final Logger logger = Logger.getLogger(DatabaseManager.class);
 
-    private static DatabaseManager dbm;
-    private EntityManager em;
+    private static ThreadLocal<DatabaseManager> threadedDatabaseManager;
+
+    private static EntityManagerFactory emf;
 
     private DatabaseManager() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("memoPersistence");
-        em = emf.createEntityManager();
     }
 
     public static DatabaseManager getInstance() {
-        if (dbm == null) dbm = new DatabaseManager();
-        return dbm;
+        if (threadedDatabaseManager == null) {
+            threadedDatabaseManager = ThreadLocal.withInitial(DatabaseManager::new);
+        }
+        return threadedDatabaseManager.get();
     }
 
     public static EntityManager createEntityManager() {
-        if (dbm == null) dbm = new DatabaseManager();
-        return dbm.em;
+        if (emf == null) {
+            emf = Persistence.createEntityManagerFactory("memoPersistence");
+        }
+        return emf.createEntityManager();
     }
 
 
@@ -64,8 +67,8 @@ public class DatabaseManager {
      * @param object
      * @param <T>
      */
-    public <T> void save(T object) {
-        performSideEffectOnDb(em -> em.persist(object));
+    public <T> void save(T object, Class<T> clazz) {
+        performSideEffectOnDb(em -> em.persist(object), clazz);
     }
 
     /**
@@ -74,8 +77,8 @@ public class DatabaseManager {
      * @param objects
      * @param <T>
      */
-    public <T> void saveAll(List<T> objects) {
-        performSideEffectOnDb(em -> objects.forEach(em::persist));
+    public <T> void saveAll(List<T> objects, Class<T> clazz) {
+        performSideEffectOnDb(em -> objects.forEach(em::persist), clazz);
     }
 
     /**
@@ -84,8 +87,8 @@ public class DatabaseManager {
      * @param object
      * @param <T>
      */
-    public <T> T update(T object) {
-        return performActionOnDb(em -> em.merge(object));
+    public <T> T update(T object, Class<T> clazz) {
+        return performActionOnDb(em -> em.merge(object), clazz);
     }
 
     /**
@@ -94,8 +97,8 @@ public class DatabaseManager {
      * @param objects
      * @param <T>
      */
-    public <T> List<T> updateAll(List<T> objects) {
-        return performActionOnDb(em -> objects.stream().map(em::merge).collect(Collectors.toList()));
+    public <T> List<T> updateAll(List<T> objects, Class<T> clazz) {
+        return performActionOnDb(em -> objects.stream().map(em::merge).collect(Collectors.toList()), clazz);
     }
 
     /**
@@ -106,18 +109,20 @@ public class DatabaseManager {
      * @param <T>
      */
     private <T> void removeObject(EntityManager em, T object) {
-        T mergedObject = em.merge(object);
-        em.remove(mergedObject);
+        if (!em.contains(object)) {
+            object = em.merge(object);
+        }
+        em.remove(object);
     }
 
     /**
-     * Removes a single object from the database
+     * Removes a single object from the database and clears the cache for the given class.
      *
      * @param object
      * @param <T>
      */
-    public <T> void remove(T object) {
-        performSideEffectOnDb(em -> removeObject(em, object));
+    public <T> void remove(T object, Class<T> clazz) {
+        performSideEffectOnDb(em -> removeObject(em, object), clazz);
     }
 
     /**
@@ -126,46 +131,66 @@ public class DatabaseManager {
      * @param objects
      * @param <T>
      */
-    public <T> void removeAll(List<T> objects) {
-        performSideEffectOnDb(em -> objects.forEach(object -> removeObject(em, object)));
+    public <T> void removeAll(List<T> objects, Class<T> clazz) {
+        performSideEffectOnDb(em -> objects.forEach(object -> removeObject(em, object)), clazz);
+    }
+
+    /**
+     * Performs the given action on the database this instance manages.
+     * Handles opening and committing the transaction.
+     * Doesn't evict the cache after performing the action
+     */
+    private <T> T performActionOnDb(Function<EntityManager, T> action) {
+        return performActionOnDb(action, null);
     }
 
     /**
      * Performs the given action on the database this instance manages.
      * Handles opening and committing the transaction
-     *
-     * @param action
+     * If classToEvict is specified, the cache for that class is evicted
      */
-    public <T> T performActionOnDb(Function<EntityManager, T> action) {
-
+    private <T, U> T performActionOnDb(Function<EntityManager, T> action, Class<U> classToEvict) {
         logger.debug("Performs Database Action: " + action.toString());
-        EntityManager em = DatabaseManager.createEntityManager();
+        EntityManager em = createEntityManager();
 
         EntityTransaction transaction = em.getTransaction();
-        while(transaction.isActive()){
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                logger.error("Thread was interrupted!", e);
-                return null;
-            }
-        }
         transaction.begin();
+
         T result = action.apply(em);
+        if (classToEvict != null) {
+            em.getEntityManagerFactory().getCache().evict(classToEvict);
+        }
+
         transaction.commit();
         return result;
     }
 
     /**
-     * @param consumer
+     * Performs the given side effect on the database this instance manages.
+     * Handles opening and committing the transaction
+     * If classToEvict is specified, the cache for that class is evicted
      */
-    public void performSideEffectOnDb(Consumer<EntityManager> consumer) {
+    private void performSideEffectOnDb(Consumer<EntityManager> consumer) {
+        this.performSideEffectOnDb(consumer, null);
+    }
 
+    /**
+     * Performs the given side effect on the database this instance manages.
+     * Handles opening and committing the transaction
+     * If classToEvict is specified, the cache for that class is evicted
+     */
+    private <T> void performSideEffectOnDb(Consumer<EntityManager> consumer, Class<T> classToEvict) {
         logger.debug("Performs Database Side Effect on: " + consumer.toString());
-        EntityManager em = DatabaseManager.createEntityManager();
+        EntityManager em = createEntityManager();
+
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
+
         consumer.accept(em);
+        if (classToEvict != null) {
+            em.getEntityManagerFactory().getCache().evict(classToEvict);
+        }
+
         transaction.commit();
     }
 }

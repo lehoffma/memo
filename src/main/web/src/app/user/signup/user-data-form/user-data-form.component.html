@@ -44,11 +44,18 @@
 		</div>
 
 
-		<div class="form-actions">
+		<div class="form-buttons">
 			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
-			<button color="accent" [disabled]="!userDataForm.valid || userDataForm.pending"
-					mat-raised-button>
-				Speichern
+
+			<button mat-raised-button color="accent"
+					[disabled]="!userDataForm.valid || userDataForm.pending || modifyItemService.loading">
+				<span *ngIf="!modifyItemService.loading; else loadingSpinner">
+					Speichern
+				</span>
+				<ng-template #loadingSpinner>
+					<mat-icon class="loading-spinner">refresh</mat-icon>
+					<span>Speichert...</span>
+				</ng-template>
 			</button>
 		</div>
 	</form>

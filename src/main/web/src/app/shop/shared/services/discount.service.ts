@@ -2,17 +2,19 @@ import {Injectable} from "@angular/core";
 import {ApiCache} from "../../../shared/cache/api-cache";
 import {Permission} from "../../../shared/model/permission";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {catchError, map, retry} from "rxjs/operators";
+import {catchError, map, mergeMap, retry} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {Discount} from "../../../shared/price-renderer/discount";
+import {Discount} from "../../../shared/renderers/price-renderer/discount";
+import {EventService} from "../../../shared/services/api/event.service";
 
 @Injectable()
 export class DiscountService {
 	protected _cache: ApiCache<Permission> = new ApiCache<Permission>();
 	private baseUrl = "/api/discounts";
 
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient,
+				private eventService: EventService) {
 	}
 
 	/**
@@ -69,7 +71,7 @@ export class DiscountService {
 		if (userId) {
 			params = params.set("userId", "" + userId);
 		}
-		const request = this.request(this.http.get<{ discounts: Discount[] }>(this.baseUrl, {params}))
+		let request = this.request(this.http.get<{ discounts: Discount[] }>(this.baseUrl, {params}))
 			.pipe(map(response => response.discounts));
 
 		return this._cache.other(params, request);
@@ -82,10 +84,29 @@ export class DiscountService {
 	 * @param {number} userId
 	 * @returns {Observable<number>}
 	 */
-	getDiscountedPriceOfEvent(eventId: number, eventPrice: number, userId?: number): Observable<number> {
+	calculateDiscountedPriceOfEvent(eventId: number, eventPrice: number, userId?: number): Observable<number> {
 		return this.getEventDiscounts(eventId, userId)
 			.pipe(
 				map(discounts => this.getDiscountedPrice(eventPrice, discounts))
+			);
+	}
+
+
+	/**
+	 *
+	 * @param {number} eventId
+	 * @param eventPrice
+	 * @param {number} userId
+	 * @returns {Observable<number>}
+	 */
+	getDiscountedPriceOfEvent(eventId: number, userId?: number): Observable<number> {
+		return this.getEventDiscounts(eventId, userId)
+			.pipe(
+				mergeMap(discounts => this.eventService.getById(eventId)
+					.pipe(
+						map(item => this.getDiscountedPrice(item.price, discounts))
+					)
+				)
 			);
 	}
 

@@ -1,0 +1,29 @@
+@import "~@angular/material/theming";
+
+:host {
+	display: block;
+	padding: 1rem;
+	background: white;
+	max-width: 800px;
+
+	h1:first-child {
+		margin-top: 0;
+		text-align: center;
+	}
+
+	h1{
+		word-break: break-all;
+	}
+
+	h1, h2, h3 {
+		font-weight: 100;
+	}
+}
+
+@media all and (min-width: 600px) {
+	:host {
+		margin: 1rem auto;
+		@include mat-elevation(3);
+		@include mat-elevation-transition();
+	}
+}

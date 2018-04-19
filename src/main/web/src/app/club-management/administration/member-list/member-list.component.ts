@@ -1,10 +1,8 @@
 import {Component, OnInit} from "@angular/core";
 import {User} from "../../../shared/model/user";
-import {RowAction} from "../../../shared/expandable-table/row-action";
+import {RowActionType} from "../../../shared/utility/expandable-table/row-action-type";
 import {MemberListRowAction} from "./member-list-row-actions";
 import {MemberListService} from "./member-list.service";
-import {UserService} from "../../../shared/services/api/user.service";
-import {empty} from "rxjs/observable/empty";
 
 @Component({
 	selector: "memo-member-list",
@@ -15,17 +13,17 @@ import {empty} from "rxjs/observable/empty";
 export class MemberListComponent implements OnInit {
 	rowActions: {
 		icon?: string;
-		name: string | RowAction;
+		name: string | RowActionType;
 		link?: (user: User) => string;
 		route?: (user: User) => string;
 	}[] = [
 		{
 			icon: "edit",
-			name: RowAction.EDIT
+			name: RowActionType.EDIT
 		},
 		{
 			icon: "delete",
-			name: RowAction.DELETE
+			name: RowActionType.DELETE
 		},
 		{
 			icon: "phone",

@@ -1,0 +1,72 @@
+@import "~@angular/material/theming";
+@import "variables";
+
+:host {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.form-container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: 500px;
+	background: $container-content--background-color;
+	padding: 1rem;
+
+	margin-bottom: 1rem;
+	@include mat-elevation(3);
+	@include mat-elevation-transition();
+}
+
+h2 {
+	font-weight: 200;
+	text-align: center;
+	padding: 1rem;
+	margin: -1rem -1rem 1rem;
+	box-shadow: none;
+	border-bottom: $container-divider--height solid $container-divider--color;
+	color: $container-header--color;
+	background-color: $container-header--background-color;
+
+	@media all and (min-width: 600px) {
+		max-width: none;
+		margin-left: -1rem;
+		margin-right: -1rem;
+	}
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+
+	/deep/ mat-form-field {
+		width: 100%;
+	}
+}
+
+.ordered-item-container {
+	margin-top: 0.5rem;
+	margin-left: -1rem;
+	margin-right: -1rem;
+	background: white;
+	border-bottom: 1px solid #ededed;
+}
+
+.form-actions {
+	margin-top: 1rem;
+	display: flex;
+	justify-content: space-between;
+
+	button:last-child {
+		margin-left: 15px;
+	}
+}
+
+@media all and (min-width: 500px) {
+	:host {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+	}
+}

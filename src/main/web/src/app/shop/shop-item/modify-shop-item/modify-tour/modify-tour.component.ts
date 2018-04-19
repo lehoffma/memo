@@ -6,6 +6,7 @@ import {format, setHours, setMinutes} from "date-fns";
 import {Permission} from "../../../../shared/model/permission";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Tour} from "../../../shared/model/tour";
+import {ModifyItemService} from "../modify-item.service";
 
 @Component({
 	selector: "memo-modify-tour",
@@ -47,6 +48,7 @@ export class ModifyTourComponent implements OnInit {
 	ModifyType = ModifyType;
 
 	constructor(private location: Location,
+				public modifyItemService: ModifyItemService,
 				private formBuilder: FormBuilder) {
 		this.formGroup = this.formBuilder.group({
 			"event-data": this.formBuilder.group({

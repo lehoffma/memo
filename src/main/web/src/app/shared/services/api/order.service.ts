@@ -1,9 +1,13 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Order} from "../../model/order";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, tap} from "rxjs/operators";
+import {CapacityService} from "./capacity.service";
+import {StockService} from "./stock.service";
+import {Event} from "../../../shop/shared/model/event";
+import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 
 interface OrderApiResponse {
 	orders: Order[];
@@ -11,9 +15,12 @@ interface OrderApiResponse {
 
 @Injectable()
 export class OrderService extends ServletService<Order> {
-	baseUrl = "/api/order";
+	private baseUrl = "/api/order";
+	completedOrder: number = null;
 
-	constructor(public http: HttpClient) {
+	constructor(public http: HttpClient,
+				private stockService: StockService,
+				private capacityService: CapacityService) {
 		super();
 	}
 
@@ -24,6 +31,22 @@ export class OrderService extends ServletService<Order> {
 	 */
 	getById(id: number): Observable<Order> {
 		const params = new HttpParams().set("id", "" + id);
+		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
+			.pipe(
+				map(response => response.orders[0]),
+				map(order => Order.create().setProperties(order))
+			);
+
+		return this._cache.getById(params, request);
+	}
+
+	/**
+	 *
+	 * @param {number} id
+	 * @returns {Observable<Order>}
+	 */
+	getByOrderedItemId(id: number): Observable<Order> {
+		const params = new HttpParams().set("orderedItemId", "" + id);
 		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
 			.pipe(
 				map(response => response.orders[0]),
@@ -65,6 +88,7 @@ export class OrderService extends ServletService<Order> {
 		return this._cache.search(params, request);
 	}
 
+
 	/**
 	 *
 	 * @param {Order} order
@@ -76,8 +100,10 @@ export class OrderService extends ServletService<Order> {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
 			.pipe(
-				tap(() => this._cache.invalidateById(order.id)),
-				mergeMap(response => this.getById(response.id))
+				tap(() => this._cache.invalidateAll()),
+				mergeMap(response => this.getById(response.id)),
+				//invalidate capacity values of every ordered item
+				tap((newOrder) => this.updateCapacities(newOrder)),
 			);
 	}
 
@@ -91,8 +117,10 @@ export class OrderService extends ServletService<Order> {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
 			.pipe(
-				tap(() => this._cache.invalidateById(order.id)),
-				mergeMap(response => this.getById(response.id))
+				tap(() => this.invalidateValue(order.id)),
+				mergeMap(response => this.getById(response.id)),
+				//invalidate capacity values of every ordered item
+				tap(modifiedOrder => this.updateCapacities(modifiedOrder)),
 			);
 	}
 
@@ -106,7 +134,26 @@ export class OrderService extends ServletService<Order> {
 			params: new HttpParams().set("id", "" + id)
 		})
 			.pipe(
-				tap(() => this._cache.invalidateById(id))
+				tap(() => this._cache.invalidateById(id)),
 			);
+	}
+
+	/**
+	 *
+	 * @param {Order} order
+	 */
+	updateCapacities(order: Order) {
+		const items: Event[] = Array.from(new Set(order.items.map(it => it.item)));
+		//for tours/partys: invalidate capacity
+		items
+			.filter(item => item.type !== typeToInteger(EventType.merch))
+			.map(item => item.id)
+			.forEach(id => this.capacityService.invalidateValue(id));
+
+		//for merch: invalidate stock
+		items
+			.filter(item => item.type === typeToInteger(EventType.merch))
+			.map(item => item.id)
+			.forEach(id => this.stockService.invalidateValue(id));
 	}
 }

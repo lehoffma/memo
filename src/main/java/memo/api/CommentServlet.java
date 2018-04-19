@@ -35,8 +35,8 @@ public class CommentServlet extends AbstractApiServlet<Comment> {
 
     @Override
     public void updateDependencies(JsonNode jsonNode, Comment object) {
-        this.manyToOne(object, Comment::getParent, Comment::getId, Comment::getChildren, comment -> comment::setChildren);
-        this.manyToOne(object, Comment::getItem, Comment::getId, ShopItem::getComments, shopItem -> shopItem::setComments);
+        this.manyToOne(object, Comment.class, Comment::getParent, Comment::getId, Comment::getChildren, comment -> comment::setChildren);
+        this.manyToOne(object, ShopItem.class, Comment::getItem, Comment::getId, ShopItem::getComments, shopItem -> shopItem::setComments);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {

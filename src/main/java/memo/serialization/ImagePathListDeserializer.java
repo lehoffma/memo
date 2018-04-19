@@ -5,6 +5,6 @@ import memo.model.Image;
 
 public class ImagePathListDeserializer extends IdListDeserializer<Image> {
     public ImagePathListDeserializer() {
-        super(ImageRepository::getInstance, (imageRepository, s) -> ((ImageRepository) imageRepository).getByApiPath(s), Image.class);
+        super(ImageRepository::getInstance, (imageRepository, s) -> ((ImageRepository) imageRepository).findByApiPath(s), Image.class);
     }
 }

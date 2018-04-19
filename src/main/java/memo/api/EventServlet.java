@@ -2,15 +2,13 @@ package memo.api;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.auth.api.ShopItemAuthStrategy;
+import memo.communication.CommunicationManager;
+import memo.communication.MessageType;
 import memo.data.EventRepository;
-import memo.model.ShopItem;
-import memo.model.Stock;
-import memo.model.User;
-import memo.util.ApiUtils;
+import memo.model.*;
 import memo.util.EventType;
 import org.apache.log4j.Logger;
 
@@ -21,8 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Servlet implementation class EventServlet
@@ -46,13 +42,14 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, ShopItem object) {
-        this.oneToMany(object, ShopItem::getEntries, entry -> entry::setItem);
-        this.oneToMany(object, ShopItem::getComments, comment -> comment::setItem);
-        this.manyToMany(object, ShopItem::getAuthor, ShopItem::getId, User::getAuthoredItems, user -> user::setAuthoredItems);
-        this.oneToMany(object, ShopItem::getImages, image -> image::setItem);
-        this.oneToMany(object, ShopItem::getOrders, orderedItem -> orderedItem::setItem);
-        this.oneToMany(object, ShopItem::getRoute, address -> address::setItem);
-        this.oneToMany(object, ShopItem::getStock, stock -> stock::setItem);
+        this.oneToMany(object, Entry.class, ShopItem::getEntries, entry -> entry::setItem);
+        this.oneToMany(object, Comment.class, ShopItem::getComments, comment -> comment::setItem);
+        this.manyToMany(object, User.class, ShopItem::getAuthor, ShopItem::getId, User::getAuthoredItems, user -> user::setAuthoredItems);
+        this.manyToMany(object, User.class, ShopItem::getReportWriters, ShopItem::getId, User::getReportResponsibilities, user -> user::setReportResponsibilities);
+        this.oneToMany(object, Image.class, ShopItem::getImages, image -> image::setItem);
+        this.oneToMany(object, OrderedItem.class, ShopItem::getOrders, orderedItem -> orderedItem::setItem);
+        this.oneToMany(object, Address.class, ShopItem::getRoute, address -> address::setItem);
+        this.oneToMany(object, Stock.class, ShopItem::getStock, stock -> stock::setItem);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -77,7 +74,12 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
                 .setClazz(ShopItem.class)
                 .setGetSerialized(ShopItem::getId);
 
-        this.post(request, response, options);
+        ShopItem item = this.post(request, response, options);
+
+        if (item != null) {
+            List<User> responsibleUsers = item.getAuthor();
+            responsibleUsers.forEach(user -> CommunicationManager.getInstance().send(user, item, MessageType.RESPONSIBLE_USER));
+        }
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -86,7 +88,28 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
                 .setClazz(ShopItem.class)
                 .setGetSerialized(ShopItem::getId);
 
-        this.put(request, response, options);
+//        String id = request.getParameter(options.getJsonId());
+//        ShopItem previousValue = DatabaseManager.getInstance().getById(ShopItem.class, id);
+//        List<User> previouslyResponsible = new ArrayList<>(previousValue.getAuthor());
+
+        ShopItem changedItem = this.put(request, response, options);
+
+        if (changedItem == null) {
+            return;
+        }
+        //notify participants of changes
+        List<OrderedItem> orders = new ArrayList<>(changedItem.getOrders());
+        orders.stream()
+                .map(OrderedItem::getOrder)
+                .map(Order::getUser)
+                .distinct()
+                .forEach(participant -> CommunicationManager.getInstance().send(participant, changedItem, MessageType.OBJECT_HAS_CHANGED));
+        //notify newly added responsible users
+        List<User> newResponsible = new ArrayList<>(changedItem.getAuthor());
+        newResponsible.stream()
+                //todo only send mails to newly added users
+//                .filter(user -> previouslyResponsible.stream().noneMatch(it -> it.getId().equals(user.getId())))
+                .forEach(user -> CommunicationManager.getInstance().send(user, changedItem, MessageType.RESPONSIBLE_USER));
     }
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

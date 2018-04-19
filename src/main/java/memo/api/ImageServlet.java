@@ -42,8 +42,8 @@ public class ImageServlet extends AbstractApiServlet<Image> {
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, Image object) {
-        this.manyToOne(object, Image::getItem, Image::getId, ShopItem::getImages, shopItem -> shopItem::setImages);
-        this.manyToOne(object, Image::getEntry, Image::getId, Entry::getImages, entry -> entry::setImages);
+        this.manyToOne(object, ShopItem.class, Image::getItem, Image::getId, ShopItem::getImages, shopItem -> shopItem::setImages);
+        this.manyToOne(object, Entry.class, Image::getEntry, Image::getId, Entry::getImages, entry -> entry::setImages);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -53,7 +53,7 @@ public class ImageServlet extends AbstractApiServlet<Image> {
         String fileName = request.getParameter("fileName");
         logger.trace("Attempting to send image at url '" + Image.filePath + fileName + "'.");
 
-        Optional<Image> optionalImage = ImageRepository.getInstance().getByFilePath(fileName);
+        Optional<Image> optionalImage = ImageRepository.getInstance().findByFilePath(fileName);
 
         if (optionalImage.isPresent()) {
             Image image = optionalImage.get();
@@ -99,7 +99,7 @@ public class ImageServlet extends AbstractApiServlet<Image> {
                 .map(part -> new Image().saveToFile(part))
                 .collect(Collectors.toList());
 
-        DatabaseManager.getInstance().saveAll(images);
+        DatabaseManager.getInstance().saveAll(images, Image.class);
 
         ArrayNode jsonImageList = new ArrayNode(JsonNodeFactory.instance);
         images.stream()
@@ -111,9 +111,9 @@ public class ImageServlet extends AbstractApiServlet<Image> {
 
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        this.delete(request, response, it -> {
+        this.delete(request, response, Image.class, it -> {
             String fileName = it.getParameter("fileName");
-            return ImageRepository.getInstance().getByFilePath(fileName).orElse(null);
+            return ImageRepository.getInstance().findByApiPath(fileName).orElse(null);
         });
     }
 

@@ -3,6 +3,7 @@ package memo.data;
 import memo.model.Order;
 import memo.model.OrderedItem;
 import memo.model.PaymentMethod;
+import memo.model.ShopItem;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
@@ -28,31 +29,16 @@ public class OrderRepository extends AbstractRepository<Order> {
         return instance;
     }
 
-
-    public static Optional<PaymentMethod> paymentMethodFromString(String value) {
+    public static Optional<PaymentMethod> findPaymentMethodByString(String value) {
         return Arrays.stream(PaymentMethod.values())
-                .filter(it -> it.toString().equalsIgnoreCase(value))
+                .filter(it -> it.getTextValue().equalsIgnoreCase(value))
                 .findFirst();
     }
 
-    public List<OrderedItem> getOrderedItemsByOrderId(Integer id) {
-        return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o " +
-                " WHERE o.order.id = :Id", OrderedItem.class)
-                .setParameter("Id", id)
-                .getResultList();
-
-    }
-
-
-    public List<Order> getOrderByUserId(String SuserId, HttpServletResponse response) {
+    private List<Order> withParsedId(String id, HttpServletResponse response, Function<Integer, List<Order>> getValues) {
         try {
-            Integer id = Integer.parseInt(SuserId);
-
-            return DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o " +
-                    " WHERE o.user.id = :userId", Order.class)
-                    .setParameter("userId", id)
-                    .getResultList();
-
+            Integer parsedId = Integer.parseInt(id);
+            return getValues.apply(parsedId);
         } catch (NumberFormatException e) {
             try {
                 response.getWriter().append("Bad ID Value");
@@ -64,11 +50,29 @@ public class OrderRepository extends AbstractRepository<Order> {
         return null;
     }
 
-    public List<Order> get(String orderId, String userId, HttpServletResponse response) {
+
+    public List<Order> findByOrderedItem(String orderedItemId, HttpServletResponse response) {
+        return this.withParsedId(orderedItemId, response,
+                id -> DatabaseManager.createEntityManager()
+                        .createNamedQuery("Order.findByOrderedItem", Order.class)
+                        .setParameter("orderedItemId", id)
+                        .getResultList());
+    }
+
+    public List<Order> findByUser(String userId, HttpServletResponse response) {
+        return this.withParsedId(userId, response,
+                id -> DatabaseManager.createEntityManager()
+                        .createNamedQuery("Order.findByUser", Order.class)
+                        .setParameter("userId", id)
+                        .getResultList());
+    }
+
+    public List<Order> get(String orderId, String userId, String orderedItemId, HttpServletResponse response) {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<Order>>>()
                         .buildPut(orderId, this::get)
-                        .buildPut(userId, s -> this.getOrderByUserId(s, response)),
+                        .buildPut(orderedItemId, s -> this.findByOrderedItem(s, response))
+                        .buildPut(userId, s -> this.findByUser(s, response)),
                 this.getAll()
         );
     }

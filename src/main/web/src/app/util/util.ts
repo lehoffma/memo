@@ -51,6 +51,18 @@ export function sortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => a
 	}
 }
 
+export function combinedSortFunction<T>(...functions: SortingFunction<T>[]): SortingFunction<T> {
+	return (a, b) => {
+		let value: number = 0;
+		const sortingFunctions = [...functions];
+		while (sortingFunctions.length > 0 && (value === 0)) {
+			const sortingFunction: SortingFunction<T> = sortingFunctions.splice(0, 1)[0];
+			value = sortingFunction(a, b);
+		}
+		return value;
+	}
+}
+
 export function isString(value: any): value is string {
 	return value && (<string>value).toLowerCase !== undefined;
 }
@@ -93,10 +105,35 @@ export function isObservable(value: any): value is Observable<any> {
 const concat = (x, y) =>
 	x.concat(y);
 
-const flatMap = (f, xs) =>
-	xs.map(f).reduce(concat, []);
+export function flatMap<T, U>(f: (val: T) => U[], xs: T[]): U[] {
+	return xs.map(f).reduce(concat, []);
+}
 
 
 export function isArrayType(value): value is any[] {
 	return isArray(value);
+}
+
+/**
+ * Checks if any of the values associated with their keys don't match on both values
+ * @param {T} previous
+ * @param {T} updated
+ * @param except
+ * @returns {boolean}
+ */
+export function isEdited<T>(previous: T, updated: T, except?: string[]): boolean {
+	let keys = Object.keys(previous);
+	if (except) {
+		keys = keys.filter(key => except.includes(key));
+	}
+
+	return keys.some(key => previous[key] !== updated[key]);
+}
+
+
+export function arrayIsEqual<T>(left: T[], right:T[]): boolean{
+	if(left.length !== right.length){
+		return false;
+	}
+	return left.every(leftObject => right.some(rightObject => isEdited(leftObject, rightObject)))
 }

@@ -1,9 +1,9 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {isMultiLevelSelectLeaf} from "../../../shared/multi-level-select/shared/multi-level-select-option";
+import {isMultiLevelSelectLeaf} from "../../../shared/utility/multi-level-select/shared/multi-level-select-option";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
-import {MultiLevelSelectParent} from "../../../shared/multi-level-select/shared/multi-level-select-parent";
-import {MultiLevelSelectLeaf} from "../../../shared/multi-level-select/shared/multi-level-select-leaf";
+import {MultiLevelSelectParent} from "../../../shared/utility/multi-level-select/shared/multi-level-select-parent";
+import {MultiLevelSelectLeaf} from "../../../shared/utility/multi-level-select/shared/multi-level-select-leaf";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {first, map} from "rxjs/operators";
 

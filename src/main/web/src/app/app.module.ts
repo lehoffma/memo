@@ -14,7 +14,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-link/toolbar-profile-link.component";
 import {SearchInputComponent} from "./home/navigation/toolbar/search-input/search-input.component";
 import {SettingsComponent} from "./home/settings/settings.component";
-import {ImprintComponent} from "./home/imprint/imprint.component";
+import {ImpressumComponent} from "./home/impressum/impressum.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS} from "@angular/material";
@@ -73,7 +73,7 @@ registerLocaleData(localeDe);
 
 		CategoryPreviewComponent,
 		HomeComponent,
-		ImprintComponent,
+		ImpressumComponent,
 
 		SearchInputComponent,
 		SettingsComponent,

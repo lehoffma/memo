@@ -6,15 +6,26 @@ import memo.serialization.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: Entry
  */
 @Entity
 @Table(name = "ENTRIES")
-
+@NamedQueries({
+        @NamedQuery(
+                name = "Entry.findByEventId",
+                query = "SELECT e FROM Entry e WHERE e.item.id = :Id"
+        ),
+        @NamedQuery(
+                name = "Entry.findByType",
+                query = "SELECT e FROM Entry e WHERE e.item.type = :type"
+        )
+})
 public class Entry implements Serializable {
 
 
@@ -38,7 +49,7 @@ public class Entry implements Serializable {
     @JsonSerialize(using = ShopItemIdSerializer.class)
     private ShopItem item;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     @JsonDeserialize(using = EntryCategoryIdDeserializer.class)
     @JsonSerialize(using = EntryCategoryIdSerializer.class)
@@ -48,15 +59,14 @@ public class Entry implements Serializable {
     private String name;
 
     @Column(nullable = false)
-    private Integer value;
+    private BigDecimal value;
 
     @Column(name = "IS_INCOME")
     private Boolean isIncome = false;
 
     private String comment;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "entry")
     @JsonSerialize(using = ImagePathListSerializer.class)
     @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images = new ArrayList<>();
@@ -92,11 +102,11 @@ public class Entry implements Serializable {
         this.category = category;
     }
 
-    public Integer getValue() {
+    public BigDecimal getValue() {
         return this.value;
     }
 
-    public void setValue(Integer amount) {
+    public void setValue(BigDecimal amount) {
         this.value = amount;
     }
 
@@ -176,5 +186,19 @@ public class Entry implements Serializable {
                 ", comment='" + comment + '\'' +
                 ", date=" + date +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Entry entry = (Entry) o;
+        return Objects.equals(id, entry.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

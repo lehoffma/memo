@@ -64,7 +64,8 @@ import {ShareButtonsModule} from "@ngx-share/buttons";
 		OrderStatusTableCellComponent
 	],
 	exports: [
-		ItemDetailsContentComponent
+		ItemDetailsContentComponent,
+		ItemImagePopupComponent,
 	]
 })
 export class ShopItemDetailsModule {

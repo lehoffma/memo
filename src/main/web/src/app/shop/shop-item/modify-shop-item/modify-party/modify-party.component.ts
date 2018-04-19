@@ -7,6 +7,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Party} from "../../../shared/model/party";
 import {Permission} from "../../../../shared/model/permission";
 import {AddressService} from "../../../../shared/services/api/address.service";
+import {ModifyItemService} from "../modify-item.service";
 
 @Component({
 	selector: "memo-modify-party",
@@ -47,6 +48,7 @@ export class ModifyPartyComponent implements OnInit {
 	ModifyType = ModifyType;
 
 	constructor(private location: Location,
+				public modifyItemService: ModifyItemService,
 				private addressService: AddressService,
 				private formBuilder: FormBuilder) {
 		this.formGroup = this.formBuilder.group({

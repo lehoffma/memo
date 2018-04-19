@@ -1,12 +1,23 @@
 <div class="dropdown">
-	<a class="dropbtn" mat-button routerLink="{{link.route}}" routerLinkActive="active">
+
+	<a class="dropbtn" mat-button routerLink="{{link.route}}" routerLinkActive="active" *ngIf="link.route !== null">
+		<mat-icon *ngIf="link.icon">{{link.icon}}</mat-icon>
+		{{link.name}}
+	</a>
+	<a class="dropbtn" mat-button href="{{link.link}}" routerLinkActive="active" *ngIf="link.link">
 		<mat-icon *ngIf="link.icon">{{link.icon}}</mat-icon>
 		{{link.name}}
 	</a>
 	<div *ngIf="link.children" class="dropdown-content">
-		<a *ngFor="let childLink of link.children" routerLink="{{childLink.route}}" routerLinkActive="active">
-			<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
-			{{childLink.name}}
-		</a>
+		<ng-container *ngFor="let childLink of link.children">
+			<a routerLink="{{childLink.route}}" routerLinkActive="active" *ngIf="childLink.route !== null">
+				<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
+				{{childLink.name}}
+			</a>
+			<a href="{{childLink.link}}" routerLinkActive="active" *ngIf="childLink.link">
+				<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
+				{{childLink.name}}
+			</a>
+		</ng-container>
 	</div>
 </div>

@@ -1,13 +1,19 @@
-<agm-map [latitude]="(centerOfTour$ | async)?.latitude"
+<agm-map *ngIf="(route$ | async) as route"
+		 [latitude]="(centerOfTour$ | async)?.latitude"
 		 [longitude]="(centerOfTour$ | async)?.longitude">
-	<sebm-google-map-directions *ngIf="showDirective"
+	<sebm-google-map-directions *ngIf="showDirective && route.length > 1"
 								[directionsDisplay]="directionsDisplay"
 								(totalDistanceChange)="totalDistance = $event"
 								[route]="(initializedRoute$ | async)">
 
 	</sebm-google-map-directions>
-</agm-map>
+	<agm-marker *ngIf="route.length === 1"
+				[latitude]="route[0].latitude"
+				[longitude]="route[0].longitude">
 
+	</agm-marker>
+
+</agm-map>
 
 
 <div *ngIf="(route$ | async) as route">

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -63,6 +64,7 @@ public class Color implements Serializable {
         this.id = id;
     }
 
+    @JsonIgnore
     public List<OrderedItem> getOrderedItems() {
         return orderedItems;
     }
@@ -115,5 +117,19 @@ public class Color implements Serializable {
                 ", name='" + name + '\'' +
                 ", hex='" + hex + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Color color = (Color) o;
+        return Objects.equals(id, color.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

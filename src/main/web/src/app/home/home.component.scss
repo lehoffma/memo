@@ -5,16 +5,6 @@
 
 :host {
 	display: block;
-	@include animation(slideUpFadeIn 0.5s ease);
-}
-
-@include keyframes(slideUpFadeIn) {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
 }
 
 .category-overview-container {
@@ -92,7 +82,7 @@ div.overview-preview-container > .overview-preview-header {
 	.header-logo {
 		width: 150px;
 		height: 150px;
-		background: url("../../resources/images/Logo.svg") no-repeat;
+		//background: url("../../resources/images/Logo.svg") no-repeat;
 		background-size: contain;
 	}
 

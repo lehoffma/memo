@@ -23,14 +23,17 @@ public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
                                 .map(it -> AuthenticationConditionFactory.<ShopItem>userIsAuthor(o -> it))
                                 .collect(Collectors.toList()))
                         //or the user fulfills the expected role (or the item's exp. role is "Gast" if he's logged out)
-                        .buildAdd(AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(
-                                Function.identity(),
-                                ShopItem::getExpectedReadRole
-                        ))
-                        //or the user fulfills the permission requirements
-                        .buildAdd(AuthenticationConditionFactory.userHasCorrectPermission(
-                                user1 -> getEventPermission(user1, object), Permission.read
-                        ))
+                        .buildAdd(
+                                AuthenticationConditionFactory
+                                        .userFulfillsMinimumRoleOfItem(
+                                                Function.identity(),
+                                                ShopItem::getExpectedReadRole
+                                        )
+                                        //and the user fulfills the permission requirements
+                                        .and(AuthenticationConditionFactory.userHasCorrectPermission(
+                                                user1 -> getEventPermission(user1, object), Permission.read
+                                        ))
+                        )
         );
     }
 
@@ -53,14 +56,17 @@ public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
                                 .map(it -> AuthenticationConditionFactory.<ShopItem>userIsAuthor(o -> it))
                                 .collect(Collectors.toList()))
                         //or the user fulfills the expected role (or the item's exp. role is "Gast" if he's logged out)
-                        .buildAdd(AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(
-                                Function.identity(),
-                                ShopItem::getExpectedWriteRole
-                        ))
-                        //or the user fulfills the permission requirements
-                        .buildAdd(AuthenticationConditionFactory.userHasCorrectPermission(
-                                user1 -> getEventPermission(user1, object), Permission.write
-                        ))
+                        .buildAdd(
+                                AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(
+                                        Function.identity(),
+                                        ShopItem::getExpectedWriteRole
+
+                                )
+                                        //and the user fulfills the permission requirements
+                                        .and(AuthenticationConditionFactory.userHasCorrectPermission(
+                                                user1 -> getEventPermission(user1, object), Permission.write
+                                        ))
+                        )
         );
     }
 
@@ -73,14 +79,16 @@ public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
                                 .map(it -> AuthenticationConditionFactory.<ShopItem>userIsAuthor(o -> it))
                                 .collect(Collectors.toList()))
                         //or the user fulfills the expected role (or the item's exp. role is "Gast" if he's logged out)
-                        .buildAdd(AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(
-                                Function.identity(),
-                                ShopItem::getExpectedWriteRole
-                        ))
-                        //or the user fulfills the permission requirements
-                        .buildAdd(AuthenticationConditionFactory.userHasCorrectPermission(
-                                user1 -> getEventPermission(user1, object), Permission.delete
-                        ))
+                        .buildAdd(
+                                AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(
+                                        Function.identity(),
+                                        ShopItem::getExpectedWriteRole
+                                )
+                                        //and the user fulfills the permission requirements
+                                        .and(AuthenticationConditionFactory.userHasCorrectPermission(
+                                                user1 -> getEventPermission(user1, object), Permission.delete
+                                        ))
+                        )
         );
     }
 }

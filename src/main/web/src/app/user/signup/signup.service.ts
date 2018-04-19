@@ -17,9 +17,9 @@ import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {ImageToUpload} from "../../shared/multi-image-upload/image-to-upload";
 import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
 import {processSequentially} from "../../util/observable-util";
+import {ImageToUpload} from "../../shared/utility/multi-image-upload/image-to-upload";
 
 @Injectable()
 export class SignUpService {
@@ -29,6 +29,7 @@ export class SignUpService {
 	newUserAddresses: Address[] = [];
 	submittingFinalUser = false;
 
+	signUpWasJustCompleted = false;
 	sections = [SignUpSection.AccountData, SignUpSection.PersonalData, SignUpSection.PaymentMethods];
 
 	constructor(private navigationService: NavigationService,
@@ -103,7 +104,7 @@ export class SignUpService {
 				name: user.firstName + " " + user.surname
 			}))
 			.pipe(
-				map(bankAccount => user.setProperties({bankAccounts: bankAccount}))
+				map(bankAccount => user.setProperties({bankAccounts: [bankAccount.id]}))
 			);
 	}
 
@@ -119,9 +120,11 @@ export class SignUpService {
 		}
 
 		return processSequentially(
-			addresses.map(it => this.addressService.add(it))
+			addresses
+				.map(it => this.addressService.add(it))
 		)
 			.pipe(
+				map(addresses => addresses.map(it => it.id)),
 				map(addressIds => user.setProperties({addresses: addressIds}))
 			);
 	}
@@ -157,11 +160,6 @@ export class SignUpService {
 	 * @param event
 	 */
 	async onSubmit(section: SignUpSection, event: SignUpSubmitEvent) {
-		//todo bankdaten addresse address-selection benutzen
-		//todo user bestätigung => screen: "email wurde an dich geschickt"
-		//todo if admin: show "isMember"
-		//todo banner: mitglied werden/bin schon mitglied
-
 		//extract section, email and password properties
 		const {
 			email,
@@ -170,6 +168,10 @@ export class SignUpService {
 			surname,
 			birthday,
 			telephone,
+			hasSeasonTicket,
+			isWoelfeClubMember,
+			gender,
+			hasDebitAuth,
 			mobile,
 			isStudent,
 			addresses,
@@ -183,7 +185,10 @@ export class SignUpService {
 				break;
 			case SignUpSection.PersonalData:
 				const images: ModifiedImages = event.images;
-				this.newUser.setProperties({firstName, surname, birthday, telephone, mobile, isStudent, addresses});
+				this.newUser.setProperties({
+					firstName, surname, birthday, telephone, mobile, isStudent, addresses,
+					hasSeasonTicket, isWoelfeClubMember, gender, hasDebitAuth
+				});
 				this.newUserProfilePicture = images.imagesToUpload;
 				break;
 			case SignUpSection.PaymentMethods:
@@ -211,12 +216,13 @@ export class SignUpService {
 					mergeMap(() => this.loginService.login(this.newUser.email, this.newUser.password)),
 					tap(wereCorrect => {
 						if (wereCorrect) {
-							this.navigationService.navigateByUrl("/");
+							this.signUpWasJustCompleted = true;
+							this.navigationService.navigateByUrl("/signup/completed");
 							this.reset();
 							this.submittingFinalUser = false;
 						}
 						else {
-							return _throw(new Error());
+							_throw(new Error());
 						}
 					}),
 					catchError(error => {

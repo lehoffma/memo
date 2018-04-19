@@ -1,0 +1,11 @@
+@import "theme";
+@import "../../../../../../node_modules/@angular/material/theming";
+
+a {
+	text-decoration: none;
+	color: mat-color($accent);
+
+	&:hover {
+		color: lighten(mat-color($accent), 10);
+	}
+}

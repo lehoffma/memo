@@ -3,6 +3,10 @@ mat-list > span:last-child > mat-divider {
 	display: none;
 }
 
+img{
+	object-fit: cover;
+}
+
 :host {
 	> mat-list {
 		margin-top: -1rem;

@@ -12,9 +12,10 @@
 	 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 110px)' : 'calc(100% - 74px)')">
 
 	<memo-expandable-table
-		*ngIf="(accountingTableContainerService.data$ | async); else loadingContainer"
+		*ngIf="!accountingTableContainerService.loading && (accountingTableContainerService.data$ | async); else loadingContainer"
 		[data]="accountingTableContainerService.data$ | async"
 		[expandedRowKeys]="accountingTableContainerService.expandedRowKeys$ | async"
+		[rowActions]="accountingTableContainerService.rowActions"
 		[expandable]="mobile"
 		[expandedRowComponent]="accountingTableContainerService.rowComponent"
 		[columnKeys]="accountingTableContainerService.primaryColumnKeys$ | async"
@@ -27,7 +28,9 @@
 	</memo-expandable-table>
 
 	<ng-template #loadingContainer>
-		Lade Daten...
+		<div class="loader-wrapper">
+			<div class="loader"></div>
+		</div>
 	</ng-template>
 
 </div>

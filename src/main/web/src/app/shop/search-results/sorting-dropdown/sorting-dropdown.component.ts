@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {SortingOption} from "../../../shared/model/sorting-option";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
-import {ColumnSortingEvent} from "../../../shared/expandable-table/column-sorting-event";
+import {ColumnSortingEvent} from "../../../shared/utility/expandable-table/column-sorting-event";
 import {first, map, tap} from "rxjs/operators";
 
 @Component({

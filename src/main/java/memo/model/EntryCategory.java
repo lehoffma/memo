@@ -5,13 +5,13 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: EntryCategory
  */
 @Entity
 @Table(name = "ENTRY_CATEGORIES")
-
 public class EntryCategory implements Serializable {
 
 
@@ -26,7 +26,6 @@ public class EntryCategory implements Serializable {
     //**************************************************************
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "category")
@@ -95,5 +94,19 @@ public class EntryCategory implements Serializable {
                 ", name='" + name + '\'' +
                 ", category=" + category +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EntryCategory that = (EntryCategory) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

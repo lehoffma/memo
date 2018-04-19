@@ -18,6 +18,7 @@ $options-breakpoint: 850px;
 		width: 100%;
 		background-color: $primary-default;
 		color: white;
+		border-radius: 0;
 		@media all and (min-width: $options-breakpoint) {
 			display: none;
 		}
@@ -110,7 +111,7 @@ memo-expandable-table {
 			th.sortable-column,
 			th.expandable-table-selectall-checkbox,
 			.expandable-table-body-main-row /deep/ td:not(.expandable-table-actions):not(.expand-icon) {
-				padding-left: 30px;
+				padding-left: 30px !important;
 			}
 		}
 
@@ -121,4 +122,10 @@ memo-expandable-table {
 		}
 	}
 
+}
+
+@media all and (min-width: $options-breakpoint) {
+	.loader {
+		left: 65%;
+	}
 }

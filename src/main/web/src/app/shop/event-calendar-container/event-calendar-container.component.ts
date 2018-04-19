@@ -91,7 +91,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 			this.loginService.currentUser$
 				.pipe(
 					filter(user => user !== null),
-					map(user => user.userPermissions),
+					map(user => user.userPermissions()),
 					filter(permissions => !isNullOrUndefined(permissions)),
 					defaultIfEmpty(visitorPermissions)
 				),
@@ -154,7 +154,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 		const permissions$ = this.loginService.currentUser$
 			.pipe(
 				filter(user => user !== null),
-				map(user => user.userPermissions),
+				map(user => user.userPermissions()),
 				filter(permissions => !isNullOrUndefined(permissions)),
 				defaultIfEmpty(visitorPermissions)
 			);

@@ -19,6 +19,7 @@ export class User extends BaseObject<User> {
 	 * @param joinDate das Eintrittsdatum des Users
 	 * @param addresses Die ID der Adresse des Nutzers
 	 * @param authoredItems
+	 * @param reportResponsibilities
 	 * @param bankAccounts
 	 * @param permissions Auf was der User zugreifen darf (kosten, schreibrechte für events etc)
 	 * @param miles Die vom User bisher gefahreren Meilen
@@ -41,6 +42,7 @@ export class User extends BaseObject<User> {
 				public readonly joinDate: Date,
 				public readonly addresses: number[],
 				public readonly authoredItems: Event[],
+				public readonly reportResponsibilities: number[],
 				public readonly bankAccounts: number[],
 				public readonly permissions: UserPermissions,
 				public readonly miles: number,
@@ -54,25 +56,30 @@ export class User extends BaseObject<User> {
 		super(id);
 	}
 
-	_userPermissions: UserPermissions;
+
 	get userPermissions() {
-		if (!this._userPermissions) {
-			let userPermissions = this.permissions;
-			let clubRolePermissions = rolePermissions[this.clubRole];
-			this._userPermissions = Object.keys(visitorPermissions).reduce((permissions, key) => {
-				permissions[key] = Math.max(permissions[key],
-					userPermissions[key] || Permission.none,
-					clubRolePermissions[key] || Permission.none
-				);
-				return permissions;
-			}, {...visitorPermissions});
+		//closure to avoid recalculating the value all the time
+		let _userPermissions: UserPermissions;
+		return () => {
+			if (!_userPermissions) {
+				let userPermissions = this.permissions;
+				let clubRolePermissions = rolePermissions[this.clubRole];
+				//combine both permission states
+				_userPermissions = Object.keys(visitorPermissions).reduce((permissions, key) => {
+					permissions[key] = Math.max(permissions[key],
+						userPermissions[key] || Permission.none,
+						clubRolePermissions[key] || Permission.none
+					);
+					return permissions;
+				}, {...visitorPermissions});
+			}
+			return _userPermissions;
 		}
-		return this._userPermissions;
 	}
 
 	static create() {
 		return new User(-1, "", "", Gender.OTHER, null, "", "",
-			ClubRole.Gast, new Date(), [], [], [],
+			null, new Date(), [], [], [], [],
 			null, 0, "", "", false, false, false, false, ["resources/images/Logo.png"]);
 	}
 

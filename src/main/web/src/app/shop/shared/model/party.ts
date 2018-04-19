@@ -17,9 +17,10 @@ export class Party extends Event {
 				images: string[],
 				capacity: number,
 				price: number,
+				groupPicture: string,
 				public emptySeats: number) {
-		super(id, title, date, description, [], expectedReadRole, expectedCheckInRole, expectedWriteRole,
-			route, images, capacity, price, typeToInteger(EventType.partys));
+		super(id, title, date, description, [], [], expectedReadRole, expectedCheckInRole, expectedWriteRole,
+			route, images, groupPicture, capacity, price, typeToInteger(EventType.partys));
 	}
 
 	get overviewKeys(): EventOverviewKey[] {
@@ -66,6 +67,6 @@ export class Party extends Event {
 
 	static create() {
 		return new Party(-1, "", new Date(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
-			["resources/images/Logo.png"], -1, -1, -1);
+			["resources/images/Logo.png"], -1, -1, "", -1);
 	}
 }

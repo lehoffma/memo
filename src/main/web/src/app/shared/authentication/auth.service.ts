@@ -12,7 +12,7 @@ export class AuthService {
 	private readonly AUTH_TOKEN_KEY = "auth_token";
 	private readonly REFRESH_TOKEN_KEY = "refresh_token";
 	private readonly REMEMBER_ME_KEY = "remember_me";
-	private readonly REFRESH_DELAY = 600000;
+	private readonly REFRESH_DELAY = 60 * 60 * 1000;	//every hour
 
 	public _saveLogin = null;
 	private _accessToken = null;
@@ -141,8 +141,10 @@ export class AuthService {
 			.pipe(
 				tap(response => this.setRefreshToken(response.refresh_token)),
 				catchError(error => {
-					this.setRefreshToken("");
-					return empty<{ refresh_token: string }>();
+					console.error(error);
+					return of({refresh_token: null})
+					// this.setRefreshToken("");
+					// return empty<{ refresh_token: string }>();
 				})
 			);
 	}
@@ -162,7 +164,7 @@ export class AuthService {
 							return of({auth_token: this.getToken()});
 						}
 						//refreshing token didn't work for some other reason
-						return _throw(new Error());
+						return of({auth_token: null});
 					}),
 					//refresh-token expired
 					catchError(() => {

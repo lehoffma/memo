@@ -10,6 +10,8 @@ export class Address extends BaseObject<Address> {
 	 * @param zip Die Postleitzahl, z.B. 39104
 	 * @param city Die Stadt, z.B. Magdeburg
 	 * @param country Das Land, z.B. Deutschland
+	 * @param user
+	 * @param item
 	 * @param latitude Breitengrad
 	 * @param longitude Längengrad
 	 */
@@ -20,13 +22,15 @@ export class Address extends BaseObject<Address> {
 				public zip: string,
 				public city: string,
 				public country: string,
+				public user: number,
+				public item: number,
 				public latitude: number,
 				public longitude: number) {
 		super(id);
 	}
 
 	static create() {
-		return new Address(-1, "", "", "", "", "", "", 0, 0);
+		return new Address(-1, "", "", "", "", "", "", null, null, 0, 0);
 	}
 
 	static isAddress(obj: any): obj is Address {

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
 import {OrderStatus, orderStatusToString} from "../../../../shared/model/order-status";
 
 @Component({

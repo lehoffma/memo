@@ -113,11 +113,6 @@
 	mat-card {
 		margin: 0;
 		max-width: 800px;
-
-		::ng-deep memo-modify-item-inner-container {
-			margin: 1rem -1.5rem;
-			box-shadow: none;
-		}
 	}
 }
 

@@ -1,5 +1,5 @@
 <!--todo: indication if tour/party/merch/user (/entry?) -->
-<div class="result-entry-container" (click)="showResult(result)">
+<a class="result-entry-container" routerLink="{{resultUrl$|async}}">
 	<div>
 		<div class="result-entry-info-container">
 			<div class="result-title">
@@ -27,4 +27,4 @@
 			<img src="{{!!result.images[0] ? result.images[0] : 'resources/images/Logo.png'}}">
 		</div>
 	</div>
-</div>
+</a>

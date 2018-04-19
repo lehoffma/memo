@@ -1,6 +1,6 @@
 import {FilterOptionFactoryService} from "./filter-option-factory.service";
 import {FilterOptionType} from "./filter-option-type";
-import {MultiLevelSelectParent} from "../../shared/multi-level-select/shared/multi-level-select-parent";
+import {MultiLevelSelectParent} from "../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {merge} from "rxjs/observable/merge";

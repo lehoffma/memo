@@ -1,0 +1,12 @@
+<mat-icon>{{icon}}</mat-icon>
+<span class="{{(currentColor$ | async)}}">
+	<ng-container *ngIf="(_available$ | async) !== null; else loading">
+		<span class="available-amount">{{_available$ | async}}</span>
+		<span> von </span>
+		<span class="max-amount">{{_maxAmount$ | async}}</span>
+		<span> {{currentText$ | async}} verfügbar</span>
+	</ng-container>
+	<ng-template #loading>
+		<span class="secondary-text loading-text">Lade verfügbare Tickets</span>
+	</ng-template>
+</span>
