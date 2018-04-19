@@ -17,6 +17,9 @@ import java.io.IOException;
                 "/my-events",
                 "/order-history",
                 "/not-allowed",
+                "/confirm-email",
+                "/applyForMembership",
+                "/requestMembership",
 
                 "/tours/*",
                 "/partys/*",
@@ -40,11 +43,17 @@ import java.io.IOException;
                 "/management/costs",
                 "/management/stock",
                 "/management/stock/merch",
+                "/management/orders",
 
                 "/cart",
                 "/checkout",
                 "/order-complete",
-                "/address"
+                "/address",
+
+
+                "/impressum",
+                "/settings",
+
         }
 )
 public class WebRoutesServlet extends HttpServlet {
