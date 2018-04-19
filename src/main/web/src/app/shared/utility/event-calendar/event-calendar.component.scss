@@ -1,0 +1,107 @@
+@import "theme";
+@import "../../../../../node_modules/@angular/material/theming";
+
+.calendar-container {
+	height: 100%;
+	background: white;
+
+	.calendar-header {
+		display: flex;
+		align-items: center;
+		padding: 0.5rem;
+		justify-content: space-between;
+		border-bottom: 1px solid #E0E0E0;
+
+		h2 {
+			font-size: 1em;
+			margin: 0;
+			color: rgba(0, 0, 0, 0.84);
+		}
+	}
+
+	.cal-day-badge {
+		background-color: $primary-default;
+	}
+
+	/deep/ .cal-month-view .cal-day-cell.cal-today .cal-day-number{
+		font-size: 1.2em;
+	}
+
+	.calendar-event-time {
+		font-weight: 100;
+	}
+	.calendar-event-title {
+		font-weight: 500;
+	}
+
+	.cal-cell-top .cal-day-badge,
+	.calendar-event-container {
+		display: none;
+	}
+
+	.calendar-event-indicator{
+		font-weight: 100;
+	}
+
+	@media all and (min-width: 500px){
+		.cal-month-view .cal-day-cell.cal-today .cal-day-number{
+			font-size: 1.9em;
+		}
+	}
+
+	@media all and (min-width: 700px) {
+		.cal-cell-top .cal-day-badge {
+			display: inline-block;
+		}
+		.calendar-event-container {
+			display: block;
+		}
+		.calendar-event-indicator {
+			display: none;
+		}
+	}
+
+	.calendar-event {
+		background: #9E9E9E;
+
+		&.party {
+			background: $accent-default;
+		}
+
+		&.tour {
+			background: $primary-default;
+		}
+
+		color: #fff;
+
+		margin: 2px;
+		padding: 0 4px;
+		line-height: 20px;
+		font-size: 12px;
+		font-weight: 500;
+
+		border-radius: 2px;
+
+		display: flex;
+		align-items: center;
+		outline: none;
+		cursor: pointer;
+
+		&:hover {
+			background: lighten($primary-default, 5%);
+		}
+
+		span {
+			word-break: break-all;
+			//white-space: nowrap;
+			//text-overflow: ellipsis;
+			//overflow: hidden;
+		}
+	}
+
+	/deep/ .cal-month-view .cal-header .cal-cell {
+		color: grey;
+		font-weight: lighter;
+	}
+
+}

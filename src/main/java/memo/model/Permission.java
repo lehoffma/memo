@@ -1,7 +1,7 @@
 package memo.model;
 
 /*
-	 0 : none,
+     0 : Gast,
 	 1 : read,
 	 2 : write,
 	 3 : create,
@@ -9,21 +9,20 @@ package memo.model;
 	 5 : admin
 	  */
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum Permission {
-	@SerializedName("0")
-	none,
-	@SerializedName("1")
-	read,
-	@SerializedName("2")
-	write,
-	@SerializedName("3")
-	create,
-	@SerializedName("4")
-	delete,
-	@SerializedName("5")
-	admin
+    none,
+    read,
+    write,
+    create,
+    delete,
+    admin;
+
+    @JsonValue
+    public int toValue() {
+        return ordinal();
+    }
 }
 
 

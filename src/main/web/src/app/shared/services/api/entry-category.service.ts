@@ -1,0 +1,85 @@
+import {Injectable} from '@angular/core';
+import {ServletService} from "./servlet.service";
+import {EntryCategory} from "../../model/entry-category";
+import {HttpClient, HttpParams} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
+import {map} from "rxjs/operators";
+
+interface EntryCategoryApiResponse {
+	categories: EntryCategory[]
+}
+
+@Injectable()
+export class EntryCategoryService extends ServletService<EntryCategory> {
+	baseUrl = "/api/entryCategory";
+
+	constructor(public http: HttpClient) {
+		super();
+	}
+
+	/**
+	 *
+	 * @param {number} id
+	 * @returns {Observable<EntryCategory>}
+	 */
+	getById(id: number): Observable<EntryCategory> {
+		const params = new HttpParams().set("categoryId", "" + id);
+		const request = this.http.get<EntryCategoryApiResponse>(this.baseUrl, {params})
+			.pipe(
+				map(json => EntryCategory.create().setProperties(json.categories[0]))
+			);
+
+		return this._cache.getById(params, request);
+	}
+
+	/**
+	 *
+	 * @returns {Observable<EntryCategory[]>}
+	 */
+	getCategories(): Observable<EntryCategory[]> {
+		return this.search("");
+	}
+
+	/**
+	 *
+	 * @param {string} searchTerm
+	 * @returns {Observable<EntryCategory[]>}
+	 */
+	search(searchTerm: string): Observable<EntryCategory[]> {
+		const params = new HttpParams().set("searchTerm", "" + searchTerm);
+		const request = this.http.get<EntryCategoryApiResponse>(this.baseUrl, {params})
+			.pipe(
+				map(response => response.categories)
+			);
+
+		return this._cache.search(params, request);
+	}
+
+	/**
+	 *
+	 * @param {EntryCategory} object
+	 * @returns {Observable<EntryCategory>}
+	 */
+	add(object: EntryCategory): Observable<EntryCategory> {
+		return undefined;
+	}
+
+	/**
+	 *
+	 * @param {EntryCategory} object
+	 * @returns {Observable<EntryCategory>}
+	 */
+	modify(object: EntryCategory): Observable<EntryCategory> {
+		return undefined;
+	}
+
+	/**
+	 *
+	 * @param {number} id
+	 * @returns {Observable<Object>}
+	 */
+	remove(id: number): Observable<Object> {
+		return undefined;
+	}
+
+}

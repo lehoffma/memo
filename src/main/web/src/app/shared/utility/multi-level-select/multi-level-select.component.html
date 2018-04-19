@@ -1,0 +1,14 @@
+<div [matMenuTriggerFor]="multilevelMenu" class="filter-dropdown secondary-text">
+	<mat-icon>{{icon}}</mat-icon>
+	<span>{{title}}</span>
+</div>
+
+<mat-menu #multilevelMenu>
+	<memo-multi-level-select-entry
+		(itemSelected)="emitItemSelectedEvent($event)"
+		*ngFor="let option of options"
+		[option]="option"
+		[selectType]="option.selectType">
+
+	</memo-multi-level-select-entry>
+</mat-menu>

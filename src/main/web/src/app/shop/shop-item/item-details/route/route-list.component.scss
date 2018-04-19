@@ -1,0 +1,25 @@
+.route-list-entry {
+	cursor: pointer;
+	margin-left: -1rem;
+	margin-right: -1rem;
+	padding: 0.5rem 1rem;
+	background-color: white;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	&:not(:first-child) {
+		border-top: 1px solid #ededed;
+	}
+}
+
+.index {
+	margin-right: 10px;
+	color: rgba(0, 0, 0, 0.6);
+}
+
+.route-list-entry-text {
+	width: calc(100% - 100px);
+	display: flex;
+	align-items: center;
+}

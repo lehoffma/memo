@@ -1,15 +1,15 @@
-<md-toolbar color="primary">
-	<div class="mobile-toolbar">
+<mat-toolbar color="primary">
+	<div class="mobile-toolbar" *ngIf="!(searchIsExpanded$ | async)">
 		<!--The left side-->
 		<div>
 			<!--The left side is hidden when the screen size is larger than small -->
 			<div class="menu ripple" (click)="sideBarChanged()">
-				<md-icon class="material-icons">menu</md-icon>
+				<mat-icon class="material-icons">menu</mat-icon>
 			</div>
 		</div>
 	</div>
 	<div class="desktop-toolbar meilenwoelfe-logo">
-		<a md-button routerLink="/">
+		<a mat-button routerLink="/">
 			<img src="../../../../resources/images/Logo.png"/>
 		</a>
 		<span>
@@ -20,8 +20,10 @@
 
 	<span class="navigation-fill-remaining-space navigation-left-space"></span>
 
-	<div class="toolbar-actions">
-		<memo-search-input></memo-search-input>
+	<div class="toolbar-actions" [class.expanded-mobile]="searchIsExpanded$ | async">
+		<memo-search-input (onFocus)="expandSearchBar($event)" [mobileExpanded]="searchIsExpanded$ | async">
+
+		</memo-search-input>
 	</div>
 
 	<div class="desktop-toolbar">
@@ -30,12 +32,12 @@
 		</memo-toolbar-element>
 	</div>
 
-	<div class="toolbar-action cart">
+	<div class="toolbar-action cart" *ngIf="!(searchIsExpanded$ | async)">
 		<memo-badge [value]="shoppingCartContent | async">
-			<a md-icon-button routerLink="/cart">
-				<md-icon class="cart-icon ">
+			<a mat-icon-button routerLink="/cart">
+				<mat-icon class="cart-icon ">
 					shopping_cart
-				</md-icon>
+				</mat-icon>
 			</a>
 		</memo-badge>
 	</div>
@@ -44,4 +46,4 @@
 		<memo-toolbar-profile-link></memo-toolbar-profile-link>
 	</div>
 
-</md-toolbar>
+</mat-toolbar>

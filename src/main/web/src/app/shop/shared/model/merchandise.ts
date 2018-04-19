@@ -1,10 +1,150 @@
 import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {SizeTable} from "./size-table";
-import {SelectionModel} from "../../../shared/model/selection-model";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
 import {MerchColor} from "./merch-color";
+import {StockService} from "../../../shared/services/api/stock.service";
+import {Observable} from "rxjs/Observable";
+import {map} from "rxjs/operators";
+import {EventType, typeToInteger} from "./event-type";
+
+//todo remove demo
+const sizeTable = `{
+				"XS": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"S": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"M": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"L": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"XL": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				},
+				"XXL": {
+					"Brustumfang": {
+						"min": 78,
+						"max": 81
+					},
+					"Tailenumfang": {
+						"min": 82,
+						"max": 85
+					},
+					"Hüftumfang": {
+						"min": 86,
+						"max": 89
+					},
+					"Modelllänge": {
+						"min": 90,
+						"max": 93
+					},
+					"Schulterbreite": {
+						"min": 94,
+						"max": 97
+					}
+				}
+			}`;
+
 
 export class Merchandise extends Event {
 	public sizes: string[];
@@ -13,22 +153,20 @@ export class Merchandise extends Event {
 				title: string,
 				date: Date,
 				description: string,
-				expectedRole: ClubRole,
+				expectedReadRole: ClubRole,
+				expectedCheckInRole: ClubRole,
+				expectedWriteRole: ClubRole,
 				route: EventRoute,
-				imagePath: string,
+				images: string[],
 				capacity: number,
+				groupPicture: string,
 				public colors: MerchColor[],
 				public material: string,
 				private _sizeTable: SizeTable,
-				priceMember: number,
 				price: number) {
-		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember, price);
+		super(id, title, date, description, [], [], expectedReadRole, expectedCheckInRole,
+			expectedWriteRole, route, images, groupPicture, capacity, price, typeToInteger(EventType.merch));
 	}
-
-	static create() {
-		return new Merchandise(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "", -1, [], "", {}, -1, -1);
-	}
-
 
 	get sizeTable() {
 		return this._sizeTable;
@@ -54,11 +192,6 @@ export class Merchandise extends Event {
 				key: "capacity",
 				label: "Auf Lager",
 			},
-			//todo besseres label oder komplett weg?
-			// {
-			// 	key: "expectedRole",
-			// 	label: "Für"
-			// },
 		];
 	}
 
@@ -89,18 +222,23 @@ export class Merchandise extends Event {
 		return Object.keys(this.sizeTable);
 	}
 
-	get clothesSizeSelections(): SelectionModel[] {
-		return this.clothesSizes.map(size => ({
-			value: size,
-			color: "white",
-			text: size
-		}));
-	}
-
 	get sizeTableCategories(): string[] {
 		return Object.keys(this.sizeTable).reduce((previousValue, currentValue) =>
 				previousValue.concat(...Object.keys(this.sizeTable[currentValue])
 					.filter(category => previousValue.indexOf(category) === -1)),
 			[])
+	}
+
+	static capacity$(stockService: StockService, id: number): Observable<number> {
+		return stockService.getByEventId(id)
+			.pipe(
+				map(stock => stock.reduce((sum, it) => sum + it.amount, 0))
+			);
+	}
+
+	static create() {
+		return new Merchandise(-1, "",new Date(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
+			["resources/images/Logo.png"], -1, "", [], "",
+			JSON.parse(sizeTable), -1);
 	}
 }

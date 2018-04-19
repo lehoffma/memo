@@ -14,20 +14,10 @@ button {
 	width: 100%;
 }
 
-.paypal-button-container {
-	visibility: hidden;
-	height: 0;
-
-	&.paypal-selected {
-		visibility: visible;
-		height: auto;
-		display: flex;
-		justify-content: center;
-		margin-top: 25px;
-	}
-}
-
-.loader-wrapper{
+.loader-wrapper {
 	background-color: rgba(0, 0, 0, 0.3);
 }
 
+.payment-selection-body {
+	padding: 1rem;
+}

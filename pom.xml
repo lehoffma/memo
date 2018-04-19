@@ -1,47 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.wasdev.maven.parent</groupId>
-        <artifactId>java7-parent</artifactId>
-        <version>1.4</version>
-        <relativePath></relativePath>
-    </parent>
-
-    <groupId>net.wasdev.wlp.sample</groupId>
+    <groupId>org.meilenwoelfe.shop</groupId>
     <artifactId>memo</artifactId>
-    <version>1.0</version>
+    <version>1.0.0-alpha-0</version>
     <packaging>war</packaging>
 
     <name>Meilenshop</name>
-    <url>https://www.meilenwoelfe.de</url>
+    <url>https://www.meilenwoelfe.org</url>
 
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>https://raw.github.com/WASdev/sample.servlet/master/LICENSE</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+    <!--<licenses>-->
+    <!--<license>-->
+    <!--<name>The Apache Software License, Version 2.0</name>-->
+    <!--<url>https://raw.github.com/WASdev/sample.servlet/master/LICENSE</url>-->
+    <!--<distribution>repo</distribution>-->
+    <!--</license>-->
+    <!--</licenses>-->
 
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-servlet_3.0_spec</artifactId>
-                <version>1.0</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <properties>
+        <!-- Use the latest version whenever possible. -->
+        <jackson.version>2.9.4</jackson.version>
+    </properties>
+
 
     <dependencies>
-        <dependency>
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-servlet_3.0_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- include JPA for Database <-> Java conversion
         -->
@@ -67,23 +52,69 @@
             <version>5.1.39</version>
         </dependency>
 
-        <!--  Gson: Java to Json conversion -->
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.0</version>
-            <scope>compile</scope>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+
+        <!--JSON to Java-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mindrot/jbcrypt -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
         </dependency>
 
 
+        <!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>21.0</version>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <!--logging-->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+
+
+        <!-- Mails -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
         </dependency>
 
     </dependencies>
-
 
 
     <build>
@@ -100,12 +131,12 @@
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
                     <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.2</version>
+                    <version>LATEST</version>
                     <configuration>
                         <update>true</update>
-                        <url>http://h2701145.stratoserver.net:8080/manager/text</url>
+                        <url>http://81.169.246.104:8080/manager/text</url>
                         <!--<server>memo-server</server>-->
-                        <username>manager</username>
+                        <username>deployer</username>
                         <password>gzaeBonacci</password>
                         <path>/</path>
                     </configuration>
@@ -113,6 +144,16 @@
             </plugins>
 
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

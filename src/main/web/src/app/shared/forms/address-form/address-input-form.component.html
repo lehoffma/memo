@@ -1,0 +1,89 @@
+<form [formGroup]="formGroup" (ngSubmit)="submit()" novalidate>
+	<mat-form-field>
+		<input matInput
+			   placeholder="Name"
+			   formControlName="name"
+			   name="name">
+		<mat-error *ngIf="formGroup.get('name').hasError('required')">
+			Der Name darf nicht leer bleiben!
+		</mat-error>
+	</mat-form-field>
+
+	<div>
+		<mat-form-field>
+			<input matInput
+				   placeholder="Straße"
+				   formControlName="street"
+				   name="street">
+			<mat-error *ngIf="formGroup.get('street').hasError('required')">
+				Der Straßenname darf nicht leer bleiben!
+			</mat-error>
+		</mat-form-field>
+		<mat-form-field>
+			<input matInput
+				   placeholder="Hausnummer"
+				   formControlName="streetNr"
+				   name="streetNr">
+			<mat-error *ngIf="formGroup.get('streetNr').hasError('required')">
+				Die Hausnummer darf nicht leer bleiben!
+			</mat-error>
+			<mat-error *ngIf="formGroup.get('streetNr').hasError('pattern')">
+				Die Hausnummer darf nur aus Zahlen und Buchstaben bestehen!
+			</mat-error>
+		</mat-form-field>
+	</div>
+
+	<div>
+		<mat-form-field>
+			<input matInput
+				   placeholder="Stadt"
+				   formControlName="city"
+				   name="city">
+			<mat-error *ngIf="formGroup.get('city').hasError('required')">
+				Die Stadt darf nicht leer bleiben!
+			</mat-error>
+		</mat-form-field>
+		<mat-form-field>
+			<input matInput
+				   placeholder="PLZ"
+				   formControlName="zip"
+				   name="zip">
+			<mat-error *ngIf="formGroup.get('zip').hasError('required')">
+				Die Postleitzahl darf nicht leer bleiben!
+			</mat-error>
+			<mat-error *ngIf="formGroup.get('zip').hasError('pattern')">
+				Diese Postleitzahl ist ungültig!
+			</mat-error>
+		</mat-form-field>
+	</div>
+
+	<div>
+		<mat-form-field>
+			<input matInput
+				   placeholder="Land"
+				   formControlName="country"
+				   name="country">
+			<mat-error *ngIf="formGroup.get('country').hasError('required')">
+				Das Land darf nicht leer bleiben!
+			</mat-error>
+		</mat-form-field>
+	</div>
+
+
+	<div class="input-form-actions">
+		<button mat-raised-button color="default" type="button" (click)="onCancel.emit(true)">
+			Abbrechen
+		</button>
+		<button mat-raised-button color="accent"
+				[disabled]="!formGroup.valid || formGroup.pending || loading"
+				type="submit">
+			<span *ngIf="!loading; else loadingSpinner">
+				Speichern
+			</span>
+			<ng-template #loadingSpinner>
+				<mat-icon class="loading-spinner">refresh</mat-icon>
+				<span>Speichert...</span>
+			</ng-template>
+		</button>
+	</div>
+</form>

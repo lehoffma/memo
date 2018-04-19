@@ -1,8 +1,32 @@
 
 div {
-	max-width: 35rem;
-	max-height: 35rem;
+	max-width: 26rem;
+	position: relative;
 	> img {
 		width: 100%;
+	}
+
+	button {
+		position: absolute;
+		top: calc(50% - 18px);
+		z-index: 2;
+
+		&:first-of-type {
+			left: -1rem;
+		}
+		&:last-of-type {
+			right: -1rem;
+		}
+	}
+
+	mat-chip,
+	button {
+		transition: opacity 0.2s ease-in;
+	}
+
+	mat-chip {
+		position: absolute;
+		top: -1rem;
+		left: calc(50% - 20px);
 	}
 }

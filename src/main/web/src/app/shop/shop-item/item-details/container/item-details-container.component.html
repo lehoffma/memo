@@ -1,31 +1,40 @@
-<div>
-	<div class="item-details-card">
-		<div class="image-overlay-container">
-			<!--display image with overlayed title if present-->
-			<div class="image-container" *ngIf="event?.imagePath"
-				 (click)="showDetailedImage(event?.imagePath)"
-				 [attr.object-title]="event.title">
-				<img class="image-detail" src="{{event?.imagePath}}">
-			</div>
+<div class="item-details-parent-container mat-elevation-z3">
 
-			<div class="item-actions">
-				<a md-icon-button
-				   *ngIf="userCanAccessEntries$ | async"
-				   mdTooltip="Kosten dieses Events anzeigen"
-				   routerLink="./costs">
-					<md-icon>payment</md-icon>
-				</a>
-				<a md-icon-button
-				   *ngIf="userCanEditEvent | async"
-				   mdTooltip="Dieses Event bearbeiten"
-				   routerLink="./edit">
-					<md-icon>edit</md-icon>
-				</a>
-			</div>
+	<a class="item-details-header"
+	   routerLink="conclude"
+	   *ngIf="showConcludeEventHeader$ | async">
+		<span>Event abschließen</span>
+		<mat-icon>
+			keyboard_arrow_right
+		</mat-icon>
+	</a>
 
+	<a class="item-details-header ordered-header"
+	   routerLink="{{linkToOrder$ | async}}"
+	   *ngIf="orderedItemDetails$ | async as order"
+	>
+		<div>
+			<span class="ordered-header-main-message">Bestellt am {{order.timeStamp | dateFormat:'DD.MM.YYYY'}}</span>
+			<span class="options" *ngIf="true">
+				<!--{{order}}-->
+				<!--todo: order details => amount, color/size combination..-->
+			</span>
 		</div>
+		<mat-icon>
+			keyboard_arrow_right
+		</mat-icon>
+	</a>
 
-		<memo-item-details-overview [event]="event" [overviewKeys]="overviewKeys | async"></memo-item-details-overview>
+	<div class="item-details-card">
+		<memo-multi-image-container
+			[images]="(images$ | async)"
+			(onClick)="showDetailedImage($event)"
+		>
+
+		</memo-multi-image-container>
+
+		<memo-item-details-overview [event]="event$ | async"
+									[overviewKeys]="overviewKeys | async"></memo-item-details-overview>
 	</div>
 
 	<div class="item-details-container">

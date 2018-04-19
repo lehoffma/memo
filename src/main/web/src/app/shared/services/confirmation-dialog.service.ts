@@ -1,12 +1,13 @@
 import {Injectable} from "@angular/core";
-import {MdDialog} from "@angular/material";
+import {MatDialog} from "@angular/material";
+import {ConfirmationDialogComponent} from "../utility/confirmation-dialog/confirmation-dialog.component";
 import {Observable} from "rxjs/Observable";
-import {ConfirmationDialogComponent} from "../confirmation-dialog/confirmation-dialog.component";
+import {map} from "rxjs/operators";
 
 @Injectable()
 export class ConfirmationDialogService {
 
-	constructor(private mdDialog: MdDialog) {
+	constructor(private mdDialog: MatDialog) {
 	}
 
 	openDialog(message: string): Observable<any> {
@@ -16,5 +17,19 @@ export class ConfirmationDialogService {
 			}
 		});
 		return dialogRef.afterClosed();
+	}
+
+	openWithCallback<T>(message: string, callback: () => T): Observable<T | null> {
+		return this.openDialog(message)
+			.pipe(map(yes => {
+				if (yes) {
+					return callback();
+				}
+				return null;
+			}))
+	}
+
+	open<T>(message: string, callback: () => T): void {
+		this.openWithCallback(message, callback).subscribe();
 	}
 }

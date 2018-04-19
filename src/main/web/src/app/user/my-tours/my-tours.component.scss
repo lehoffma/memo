@@ -1,13 +1,47 @@
+@import "theme";
+@import "variables";
+@import "~@angular/material/theming";
+
+:host,
+mat-tab-group,
+mat-tab,
+.tour-entry-container {
+	height: 100% !important;
+}
+
 :host {
 	display: flex;
 	justify-content: center;
 	width: 100%;
 
+	mat-tab-group {
+		background-color: #fafafa;
+		width: 100%;
+		@include mat-elevation(3);
+		@include mat-elevation-transition;
+
+		@media all and (min-width: 530px) {
+			margin: 20px auto auto;
+			width: 520px;
+			max-width: 520px;
+		}
+
+		@media all and (min-width: 1040px) {
+			width: 1020px;
+			max-width: 1020px;
+		}
+
+		@media all and (min-width: 1530px) {
+			width: 1530px;
+			max-width: 1530px;
+		}
+	}
+	/deep/ mat-tab-header {
+		background-color: white;
+	}
+
 	.tour-entry-container {
 		display: flex;
-		//justify-content: center;
-		//flex-direction: column;
-		//align-items: center;
 		flex-wrap: wrap;
 		width: 100%;
 		max-width: 500px;

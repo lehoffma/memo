@@ -2,26 +2,28 @@ import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
+import {EventType, typeToInteger} from "./event-type";
+
 export class Tour extends Event {
 
 	constructor(id: number,
 				title: string,
 				date: Date,
 				description: string,
-				expectedRole: ClubRole,
+				expectedReadRole: ClubRole,
+				expectedCheckInRole: ClubRole,
+				expectedWriteRole: ClubRole,
 				route: EventRoute,
-				imagePath: string,
+				images: string[],
 				capacity: number,
-				priceMember: number,
+				price: number,
+				groupPicture: string,
 				public vehicle: string,
 				public miles: number,
 				public emptySeats: number) {
 
-		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember);
-	}
-
-	static create() {
-		return new Tour(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "", -1, -1, "", -1, -1);
+		super(id, title, date, description, [], [], expectedReadRole, expectedCheckInRole, expectedWriteRole,
+			route, images, groupPicture, capacity, price, typeToInteger(EventType.tours));
 	}
 
 	get overviewKeys(): EventOverviewKey[] {
@@ -46,7 +48,6 @@ export class Tour extends Event {
 			}
 		];
 	}
-
 
 	get detailsTableKeys(): EventOverviewKey[] {
 		return [
@@ -78,5 +79,10 @@ export class Tour extends Event {
 			},
 
 		]
+	}
+
+	static create(): Tour {
+		return new Tour(-1, "", new Date(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
+			["resources/images/Logo.png"], -1, -1, "", "", -1, -1);
 	}
 }

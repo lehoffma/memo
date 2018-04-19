@@ -1,13 +1,12 @@
 <memo-expandable-table
-	[data]="merchStockObservable | async"
-	[title]="'Bestand'"
+	[data]="modifyMerchStockService.data$ | async"
+	[title]="'Bestand' + (merchTitle ? ' von ' + merchTitle : '')"
 	[expandable]="false"
-	[columnKeys]="primaryColumnKeys"
-	[permissions]="permissions$ | async"
-	(onEdit)="editStock($event)"
-	(onAdd)="addStock()"
-	(onSort)="updateSortBy($event)"
-	(onDelete)="deleteStock($event)"
+	[columnKeys]="modifyMerchStockService.primaryColumnKeys$ | async"
+	[permissions]="modifyMerchStockService.permissions$ | async"
+	[pagination]="false"
+	(onSort)="modifyMerchStockService.onSort($event)"
+	(onAction)="modifyMerchStockService.handleTableAction($event)"
 >
 
 </memo-expandable-table>

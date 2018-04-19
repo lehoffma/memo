@@ -35,4 +35,4 @@ matrix:
 
       script:
         - npm run test-once
-        - npm run build
+        - travis_wait npm run build

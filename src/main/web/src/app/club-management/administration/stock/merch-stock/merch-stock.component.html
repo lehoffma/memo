@@ -1,17 +1,45 @@
-<div class="merch-stock-container">
-	<memo-expandable-table
-		[expandedRowComponent]="expandedRowComponent"
-		[title]="'Bestand'"
-		[data]="merchListSubject$ | async"
-		[columnKeys]="primaryColumnKeys | async"
-		[expandedRowKeys]="expandedRowKeys | async"
-		[permissions]="permissions$ | async"
-		(onDelete)="deleteMerch($event)"
-		(onSort)="updateSortingKey($event)"
-		(onAdd)="addMerch($event)"
-		(onEdit)="edit($event)"
+<div class="stock-options-sidebar desktop">
+	<memo-filtering-menu class="desktop" [filterOptions]="filterOptions$ | async">
+
+	</memo-filtering-menu>
+</div>
+
+<div class="stock-entry-container">
+
+	<div class="stock-options">
+		<memo-filtering-menu class="mobile" [filterOptions]="filterOptions$ | async">
+
+		</memo-filtering-menu>
+		<memo-sorting-dropdown [sortingOptions]="sortingOptions">
+
+		</memo-sorting-dropdown>
+	</div>
+	<memo-merch-stock-entry *ngFor="let stockEntry of merchList"
+							[stockEntry]="stockEntry"
+							(onDelete)="deleteMerch($event)"
+
 	>
 
-	</memo-expandable-table>
+	</memo-merch-stock-entry>
 
+	<div *ngIf="(merch$|async) === null" class="loading-container">
+		<div class="loader"></div>
+	</div>
+
+	<div class="no-results" *ngIf="(merch$|async)?.length === 0">
+		Keine Merchandiseartikel vorhanden.
+	</div>
 </div>
+
+
+<a mat-fab color="accent" *ngIf="userCanAddMerch$ | async"
+   [matTooltip]="'Artikel hinzufügen'"
+   [matTooltipPosition]="'above'"
+   routerLink="/create/merch"
+   class="add-merch-button">
+	<mat-icon>add</mat-icon>
+</a>
+
+<memo-merch-stock-feed [stockEntryList]="stockEntryList$ | async">
+
+</memo-merch-stock-feed>

@@ -1,0 +1,60 @@
+<agm-map *ngIf="(route$ | async) as route"
+		 [latitude]="(centerOfTour$ | async)?.latitude"
+		 [longitude]="(centerOfTour$ | async)?.longitude">
+	<sebm-google-map-directions *ngIf="showDirective && route.length > 1"
+								[directionsDisplay]="directionsDisplay"
+								(totalDistanceChange)="totalDistance = $event"
+								[route]="(initializedRoute$ | async)">
+
+	</sebm-google-map-directions>
+	<agm-marker *ngIf="route.length === 1"
+				[latitude]="route[0].latitude"
+				[longitude]="route[0].longitude">
+
+	</agm-marker>
+
+</agm-map>
+
+
+<div *ngIf="(route$ | async) as route">
+	<div *ngFor="let tourStop of route; let i = index;" class="tour-route-input-container">
+		<div class="tour-route-indicators">
+
+			<span class="circle" *ngIf="i < route.length - 1"></span>
+			<mat-icon class="destination" *ngIf="i === route.length - 1">place</mat-icon>
+			<ng-template [ngIf]="i < route.length - 1">
+				<span class="waypoint-dot" *ngFor="let x of [1,2,3]"></span>
+			</ng-template>
+		</div>
+		<mat-form-field>
+			<!--Format: "Alexanderpl. 2, 10178 Berlin, Deutschland"-->
+
+			<input matInput (keydown.enter)="$event.preventDefault()" #routeInput
+				   [class.loading]="loading[i]"
+				   [formControl]="inputControls.at(i)"
+				   placeholder="{{i === 0 ? 'Treffpunkt' : ((i===route.length - 1) ? 'Ziel' : 'Zwischenstopp')}}">
+
+			<mat-error *ngIf="inputControls.at(i).hasError('required')">
+				Dieses Feld darf nicht leer bleiben!
+			</mat-error>
+			<mat-error *ngIf="inputControls.at(i).hasError('not-a-valid-address')">
+				Dies ist keine gültige Addresse.
+			</mat-error>
+
+			<button mat-icon-button type="button" matSuffix (click)="removeStop(i)"
+					*ngIf="i > 0 && (i < route.length - 1)">
+				<mat-icon>close</mat-icon>
+			</button>
+
+		</mat-form-field>
+	</div>
+</div>
+
+<button mat-button
+		color="primary"
+		type="button"
+		class="add-stop-button"
+		*ngIf="isTour"
+		(click)="addNewStop()">
+	Zwischenstopp hinzufügen
+</button>

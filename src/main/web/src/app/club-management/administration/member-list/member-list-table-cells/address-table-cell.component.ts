@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
 import {Address} from "../../../../shared/model/address";
-import {AddressService} from "../../../../shared/services/address.service";
+import {AddressService} from "../../../../shared/services/api/address.service";
 import {Observable} from "rxjs/Observable";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Component({
 	selector: "td [addressTableCell]",
@@ -29,7 +30,7 @@ export class AddressTableCellComponent implements OnInit, ExpandableTableCellCom
 	}
 
 	ngOnInit() {
-		this.addresses$ = Observable.combineLatest(...this.data.map(id => this.addressService.getById(id)));
+		this.addresses$ = combineLatest(...this.data.map(id => this.addressService.getById(id)));
 	}
 
 }

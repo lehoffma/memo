@@ -1,13 +1,16 @@
 <a routerLink="/{{eventType}}/{{event?.id}}">
-	<md-card>
-		<img mat-card-image src="{{event?.imagePath}}" [ngClass]="{'past-event-image': eventIsInThePast}">
-		<md-card-content>
+	<mat-card>
+		<img mat-card-image src="{{event?.images?.length > 0 ? event?.images[0] : 'resources/images/Logo.png'}}"
+			 [ngClass]="{'past-event-image': eventIsInThePast}">
+		<mat-card-content>
 			<div class="event-date" [ngClass]="{'past-event': eventIsInThePast}">
 				<span class="event-date-top">
-				{{event?.date | date:'MMM'}}
+				{{event?.date | dateFormat:'MMM'}}
+
+
 				</span>
 				<span class="event-date-bottom">
-				{{event?.date | date:'dd'}}
+				{{event?.date | dateFormat:'DD'}}
 				</span>
 			</div>
 			<div class="event-other-info">
@@ -16,11 +19,11 @@
 				</h3>
 				<span class="event-route">
 				<span>{{(from$ | async)?.city}}</span>
-				<md-icon [style.transform]="'rotate(-90deg)'">arrow_downward</md-icon>
+				<mat-icon *ngIf="event.route.length > 1" [style.transform]="'rotate(-90deg)'">arrow_downward</mat-icon>
 				<span>{{(to$ | async)?.city}}</span>
 			</span>
 			</div>
-		</md-card-content>
-	</md-card>
+		</mat-card-content>
+	</mat-card>
 
 </a>

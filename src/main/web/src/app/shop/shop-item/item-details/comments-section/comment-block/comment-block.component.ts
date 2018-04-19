@@ -1,75 +1,89 @@
-import {ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {Comment} from "../../../../shared/model/comment";
-import {CommentService} from "../../../../../shared/services/comment.service";
-import {Observable} from "rxjs/Observable";
+import {CommentService} from "../../../../../shared/services/api/comment.service";
 import {User} from "../../../../../shared/model/user";
-import {UserService} from "../../../../../shared/services/user.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {LogInService} from "../../../../../shared/services/login.service";
+import {UserService} from "../../../../../shared/services/api/user.service";
+import {LogInService} from "../../../../../shared/services/api/login.service";
 import {Router} from "@angular/router";
-import {MdDialog} from "@angular/material";
+import {MatDialog} from "@angular/material";
 import {EditCommentDialogComponent} from "../edit-comment-dialog/edit-comment-dialog.component";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
+import {WindowService} from "../../../../../shared/services/window.service";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {Observable} from "rxjs/Observable";
+import {filter, first, mergeMap, scan, tap} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {of} from "rxjs/observable/of";
+import {empty} from "rxjs/observable/empty";
+import {Subscription} from "rxjs/Subscription";
+import {distanceInWordsStrict} from "date-fns";
+import * as deLocale from "date-fns/locale/de";
 
 @Component({
 	selector: "memo-comment-block",
 	templateUrl: "./comment-block.component.html",
 	styleUrls: ["./comment-block.component.scss"]
 })
-export class CommentBlockComponent implements OnInit {
+export class CommentBlockComponent implements OnInit, OnDestroy {
 	_comment$ = new BehaviorSubject<Comment>(null);
 	comment$ = this._comment$.asObservable()
-		.filter(comment => comment !== null);
+		.pipe(
+			filter(comment => comment !== null)
+		);
+	author$: Observable<User> = this.comment$
+		.pipe(
+			mergeMap(comment => this.userService.getById(comment.author))
+		);
+	children$: Observable<Comment[]> = this.comment$
+		.pipe(
+			mergeMap(comment => comment.children.length === 0
+				? of([])
+				: combineLatest(...comment.children.map(child => this.commentService.getById(child)))),
+			//merge comments via scan to avoid a complete reload every time someones adds a comment
+			scan(this.mergeValues.bind(this), [])
+		);
+	@Input() parentId: number;
+	@Input() eventId: number;
+	@Input() dummy: boolean = false;
+	@Output() onAddComment = new EventEmitter<{ commentText: string, parentCommentId: number }>();
+	@Output() onDelete = new EventEmitter<{ comment: Comment, parentId: number }>();
+	loggedInUser: User | null = null;
+	loggedInUser$: Observable<User> = this.loginService.currentUser$
+		.pipe(
+			mergeMap(user => user === null ? empty() : of(user))
+		);
+	showChildren = false;
+	showReplyBox = false;
+	dummyComment: Comment = Comment.create();
+	loadingChildren: boolean = false;
+
+	private subscription: Subscription;
+
+	constructor(private commentService: CommentService,
+				private loginService: LogInService,
+				private confirmationDialogService: ConfirmationDialogService,
+				private dialogService: MatDialog,
+				private changeDetectorRef: ChangeDetectorRef,
+				private router: Router,
+				private windowService: WindowService,
+				private userService: UserService) {
+	}
 
 	@Input()
 	set comment(comment: Comment) {
 		this._comment$.next(comment);
 	}
 
-
-	@Input() parentId: number;
-	@Input() eventId: number;
-	@Input() dummy: boolean = false;
-	@Output() onAddComment = new EventEmitter<{ commentText: string, parentCommentId: number }>();
-	@Output() onDelete = new EventEmitter<{ comment: Comment, parentId: number }>();
-
-	author$: Observable<User> = this.comment$
-		.flatMap(comment => this.userService.getById(comment.authorId));
-	children$: Observable<Comment[]> = this.comment$
-		.flatMap(comment => comment.children.length === 0
-			? Observable.of([])
-			: Observable.combineLatest(...comment.children.map(child => this.commentService.getById(child)))
-		)
-		//merge comments via scan to avoid a complete reload every time someones adds a comment
-		.scan(this.mergeValues.bind(this), []);
-
-	loggedInUser: User | null = null;
-	loggedInUser$: Observable<User> = this.loginService.currentUser()
-		.flatMap(user => user === null ? Observable.empty() : Observable.of(user));
-
-	showChildren = false;
-	showReplyBox = false;
-
-	dummyComment: Comment = Comment.create();
-	loadingChildren: boolean = false;
-
-	constructor(private commentService: CommentService,
-				private loginService: LogInService,
-				private confirmationDialogService: ConfirmationDialogService,
-				private dialogService: MdDialog,
-				private changeDetectorRef: ChangeDetectorRef,
-				private router: Router,
-				private userService: UserService) {
+	ngOnInit() {
+		this.subscription = this.loginService.currentUser$.subscribe(value => this.loggedInUser = value);
 	}
 
-	ngOnInit() {
-		this.loginService.currentUser().subscribe(value => this.loggedInUser = value);
+	ngOnDestroy(): void {
+		this.subscription.unsubscribe();
 	}
 
 	isTouchDevice() {
-		//todo before converting to app: window/navigator service
-		return "ontouchstart" in window        // works on most browsers
-			|| navigator.maxTouchPoints;       // works on IE10/11 and Surface
+		return this.windowService.isTouchDevice();
 	};
 
 	/**
@@ -108,27 +122,33 @@ export class CommentBlockComponent implements OnInit {
 	addComment(commentText: string, parentCommentId: number) {
 		let currentComment: Comment = this._comment$.value;
 		if (parentCommentId === currentComment.id) {
-			this.loginService.currentUser()
-				.subscribe((user) => {
-					let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText);
-					this.dummyComment = this.dummyComment.setProperties({
-						text: "",
-						authorId: user.id,
-						timeStamp: comment.timeStamp,
-						eventId: this.eventId,
-					});
-					this.showChildren = true;
-					this.loadingChildren = true;
-					this.changeDetectorRef.detectChanges();
-					this.commentService.add(comment, currentComment.id)
-						.subscribe(addResult => {
-							currentComment.children.push(addResult.id);
-							this.comment = Object.assign({}, currentComment);
-							this.loadingChildren = false;
-						}, error => {
-							console.error("adding the comment went wrong", error);
-						})
-				});
+			this.loginService.currentUser$
+				.pipe(
+					first(),
+					mergeMap(user => {
+						let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText, currentComment.id);
+						this.dummyComment = this.dummyComment.setProperties({
+							content: "",
+							author: user.id,
+							timeStamp: comment.timeStamp,
+							item: this.eventId,
+						});
+						this.showChildren = true;
+						this.showReplyBox = false;
+						this.loadingChildren = true;
+						this.changeDetectorRef.detectChanges();
+						return this.commentService.add(comment)
+							.pipe(
+								tap(addResult => {
+									currentComment.children.push(addResult.id);
+									this.comment = Object.assign({}, currentComment);
+									this.showReplyBox = false;
+									this.loadingChildren = false;
+								})
+							);
+					})
+				)
+				.subscribe();
 		}
 		else {
 			this.onAddComment.emit({commentText, parentCommentId});
@@ -162,19 +182,17 @@ export class CommentBlockComponent implements OnInit {
 			}
 		});
 		dialogRef.afterClosed()
-			.flatMap((newComment: Comment) => {
-				if (newComment && newComment.text) {
-					return this.commentService.modify(newComment, this.parentId);
-				}
-				//otherwise, the user clicked close/cancel
-				return Observable.empty()
-			})
-			.subscribe(response => {
-					this.changeDetectorRef.detectChanges();
-				},
-				error => {
-					console.error(error);
-				})
+			.pipe(
+				mergeMap((newComment: Comment) => {
+					if (newComment && newComment.content) {
+						return this.commentService.modify(newComment);
+					}
+					//otherwise, the user clicked close/cancel
+					return empty()
+				}),
+				first()
+			)
+			.subscribe(() => this.changeDetectorRef.detectChanges(), console.error)
 	}
 
 	/**
@@ -186,7 +204,7 @@ export class CommentBlockComponent implements OnInit {
 		let currentComment: Comment = this._comment$.value;
 		if (parentId === currentComment.id) {
 			this.commentService.remove(comment.id, currentComment.id)
-				.subscribe(addResult => {
+				.subscribe(() => {
 					let indexOfChildId = currentComment.children.findIndex(childId => comment.id === childId);
 					if (indexOfChildId >= 0) {
 						currentComment.children.splice(indexOfChildId, 1);
@@ -195,6 +213,7 @@ export class CommentBlockComponent implements OnInit {
 						this.showChildren = false;
 					}
 					this.comment = Object.assign({}, currentComment);
+					this.changeDetectorRef.detectChanges();
 				}, error => {
 					console.error("removing the comment went wrong", error);
 				})
@@ -228,5 +247,8 @@ export class CommentBlockComponent implements OnInit {
 
 	trackCommentBy(index: number, comment: Comment) {
 		return comment.id;
+	}
+	distanceInWords(date: Date){
+		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
 	}
 }

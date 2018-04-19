@@ -1,135 +1,249 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
-import java.lang.Integer;
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: PermissionState
- *
  */
 @Entity
 @Table(name = "PERMISSION_STATES")
 
 public class PermissionState implements Serializable {
 
+    //**************************************************************
+    //  static members
+    //**************************************************************
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+    private static final long serialVersionUID = 1L;
 
-    @Expose
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "permissions")
+    private User user;
+
     @Enumerated(EnumType.ORDINAL)
-    private Permission funds;
+    private Permission funds = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission party;
+    private Permission party = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission user;
+    private Permission userManagement = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission merch;
+    private Permission merch = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission tour;
+    private Permission tour = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission stock;
+    private Permission stock = Permission.none;
 
-    @Expose
     @Enumerated(EnumType.ORDINAL)
-    private Permission settings;
+    private Permission settings = Permission.none;
 
-	private static final long serialVersionUID = 1L;
 
-	public PermissionState() {
-		super();
-	}
+    //**************************************************************
+    //  constructor
+    //**************************************************************
 
-	public Integer getId() {
-		return id;
-	}
+    public PermissionState(ClubRole role) {
+        switch (role) {
+            case Gast:
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+                this.funds = Permission.none;
+                this.party = Permission.read;
+                this.userManagement = Permission.none;
+                this.merch = Permission.none;
+                this.tour = Permission.read;
+                this.stock = Permission.none;
+                this.settings = Permission.none;
 
-	public Permission getFunds() {
-		return funds;
-	}
+                break;
 
-	public void setFunds(Permission funds) {
-		this.funds = funds;
-	}
+            case Mitglied:
 
-	public Permission getParty() {
-		return party;
-	}
+                this.funds = Permission.none;
+                this.party = Permission.read;
+                this.userManagement = Permission.none;
+                this.merch = Permission.read;
+                this.tour = Permission.read;
+                this.stock = Permission.none;
+                this.settings = Permission.none;
 
-	public void setParty(Permission party) {
-		this.party = party;
-	}
+                break;
 
-	public Permission getUser() {
-		return user;
-	}
+            case Vorstand:
 
-	public void setUser(Permission user) {
-		this.user = user;
-	}
+                this.funds = Permission.read;
+                this.party = Permission.write;
+                this.userManagement = Permission.create;
+                this.merch = Permission.write;
+                this.tour = Permission.read;
+                this.stock = Permission.create;
+                this.settings = Permission.read;
 
-	public Permission getMerch() {
-		return merch;
-	}
+                break;
 
-	public void setMerch(Permission merch) {
-		this.merch = merch;
-	}
+            case Schriftfuehrer:
 
-	public Permission getTour() {
-		return tour;
-	}
+                this.funds = Permission.read;
+                this.party = Permission.write;
+                this.userManagement = Permission.create;
+                this.merch = Permission.write;
+                this.tour = Permission.read;
+                this.stock = Permission.create;
+                this.settings = Permission.read;
 
-	public void setTour(Permission tour) {
-		this.tour = tour;
-	}
+                break;
 
-	public Permission getStock() {
-		return stock;
-	}
+            case Kassenwart:
 
-	public void setStock(Permission stock) {
-		this.stock = stock;
-	}
+                this.funds = Permission.delete;
+                this.party = Permission.write;
+                this.userManagement = Permission.create;
+                this.merch = Permission.write;
+                this.tour = Permission.read;
+                this.stock = Permission.create;
+                this.settings = Permission.read;
 
-	public Permission getAccount() {
-		return settings;
-	}
+                break;
 
-	public void setAccount(Permission account) {
-		this.settings = account;
-	}
+            case Organisator:
 
-	@Override
-	public String toString() {
-		return "PermissionState{" +
-				"id=" + id +
-				", funds=" + funds +
-				", party=" + party +
-				", user=" + user +
-				", merch=" + merch +
-				", tour=" + tour +
-				", stock=" + stock +
-				", settings=" + settings +
-				'}';
-	}
+                this.funds = Permission.create;
+                this.party = Permission.delete;
+                this.userManagement = Permission.create;
+                this.merch = Permission.delete;
+                this.tour = Permission.delete;
+                this.stock = Permission.delete;
+                this.settings = Permission.read;
+
+                break;
+
+            case Admin:
+
+                this.funds = Permission.admin;
+                this.party = Permission.admin;
+                this.userManagement = Permission.admin;
+                this.merch = Permission.admin;
+                this.tour = Permission.admin;
+                this.stock = Permission.admin;
+                this.settings = Permission.admin;
+
+                break;
+        }
+    }
+
+    public PermissionState() {
+        this(ClubRole.Gast);
+    }
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Permission getFunds() {
+        return funds;
+    }
+
+    public void setFunds(Permission funds) {
+        this.funds = funds;
+    }
+
+    public Permission getParty() {
+        return party;
+    }
+
+    public void setParty(Permission party) {
+        this.party = party;
+    }
+
+    public Permission getUserManagement() {
+        return userManagement;
+    }
+
+    public void setUserManagement(Permission userManagement) {
+        this.userManagement = userManagement;
+    }
+
+    public Permission getMerch() {
+        return merch;
+    }
+
+    public void setMerch(Permission merch) {
+        this.merch = merch;
+    }
+
+    public Permission getTour() {
+        return tour;
+    }
+
+    public void setTour(Permission tour) {
+        this.tour = tour;
+    }
+
+    public Permission getStock() {
+        return stock;
+    }
+
+    public void setStock(Permission stock) {
+        this.stock = stock;
+    }
+
+    public Permission getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Permission account) {
+        this.settings = account;
+    }
+
+    //**************************************************************
+    //  methods
+    //**************************************************************
+
+    @Override
+    public String toString() {
+        return "PermissionState{" +
+                "id=" + id +
+                ", funds=" + funds +
+                ", party=" + party +
+                ", userManagement=" + userManagement +
+                ", merch=" + merch +
+                ", tour=" + tour +
+                ", stock=" + stock +
+                ", account=" + settings +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PermissionState that = (PermissionState) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
+    }
 }

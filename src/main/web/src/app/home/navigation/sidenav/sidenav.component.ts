@@ -1,13 +1,11 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {Observable} from "rxjs/Observable";
-import {isNullOrUndefined} from "util";
 import {User} from "../../../shared/model/user";
-import {Link} from "../../../shared/model/link";
-import {UserPermissions, visitorPermissions} from "../../../shared/model/permission";
 import {NavigationService} from "../../../shared/services/navigation.service";
-import {LogInService} from "../../../shared/services/login.service";
-import {UserService} from "../../../shared/services/user.service";
+import {LogInService} from "../../../shared/services/api/login.service";
 import {Location} from "@angular/common";
+import {Observable} from "rxjs/Observable";
+import {of} from "rxjs/observable/of";
+import {mergeMap, tap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-sidenav",
@@ -17,35 +15,18 @@ import {Location} from "@angular/common";
 export class SideNavComponent implements OnInit {
 	@Output() sideBarClosed = new EventEmitter();
 
-	public user: Observable<User> = this.logInService.accountObservable
-		.flatMap(accountId => accountId === null
-			? Observable.of(User.create().setProperties({id: -1}))
-			: this.userService.getById(accountId));
+	public user: Observable<User> = this.logInService.currentUser$
+		.pipe(
+			mergeMap(user => user === null
+				? of(User.create())
+				: of(user))
+		);
 
-	public links = Observable.combineLatest(this.user, this.navigationService.sidenavLinks)
-		.map(([user, links]) => {
-			const linksCopy = [...links];
-			const permissions = user === null
-				? visitorPermissions
-				: user.userPermissions;
-
-			const setId = (link: Link): Link => {
-				if (link.children) {
-					link.children = link.children.map(childLink => setId(childLink))
-				}
-				link.route = link.route.replace("PROFILE_ID", "" + user.id);
-				return link;
-			};
-
-			return linksCopy.map(setId)
-				.filter(link => (!link.loginNeeded || user !== null)
-					&& this.checkPermissions(link.minimumPermission, permissions))
-		});
+	public links = this.navigationService.sidenavLinks$;
 
 	constructor(private navigationService: NavigationService,
 				private logInService: LogInService,
-				private location: Location,
-				private userService: UserService) {
+				private location: Location) {
 
 	}
 
@@ -62,32 +43,9 @@ export class SideNavComponent implements OnInit {
 	}
 
 
-	/**
-	 *
-	 * @param minimumPermissions die minimalen Berechtigungsstufen, die der Nutzer erreichen/überschreiten muss,
-	 *                           um den link anzusehen
-	 * @param userPermissions die Berechtigungsstufen des Nutzers
-	 * @returns {boolean}
-	 */
-	checkPermissions(minimumPermissions: UserPermissions, userPermissions: UserPermissions = visitorPermissions) {
-		if (isNullOrUndefined(minimumPermissions)) {
-			return true;
-		}
-		if (isNullOrUndefined(userPermissions)) {
-			userPermissions = visitorPermissions;
-		}
-
-		return Object.keys(minimumPermissions)
-			.every(
-				(key: string) =>
-					!isNullOrUndefined(userPermissions[key])
-					&& !isNullOrUndefined(minimumPermissions[key])
-					&& userPermissions[key] >= minimumPermissions[key]
-			);
-	}
-
 	logout() {
-		this.logInService.logout();
+		this.logInService.logout()
+			.subscribe(() => null);
 	}
 
 	saveUrl() {

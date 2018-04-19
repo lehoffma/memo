@@ -1,6 +1,5 @@
-@import "~@angular/material/theming";
-@import "../../../theme";
-@import "../../../mixins";
+@import "theme";
+@import "mixins";
 
 $breakpoint: 600px;
 $options-breakpoint: 850px;
@@ -17,8 +16,9 @@ $options-breakpoint: 850px;
 
 	.options-button {
 		width: 100%;
-		background-color: #4caf50;
+		background-color: $primary-default;
 		color: white;
+		border-radius: 0;
 		@media all and (min-width: $options-breakpoint) {
 			display: none;
 		}
@@ -87,13 +87,13 @@ $options-breakpoint: 850px;
 		}
 
 		&.positive {
-			background-color: mat-color($primary);
+			background-color: $primary-default;
 		}
 		&.negative {
-			background-color: mat-color($warn);
+			background-color: $warn-default
 		}
 		&:not(.positive):not(.negative) {
-			background-color: mat-color($accent);
+			background-color: $accent-default;
 		}
 	}
 }
@@ -111,7 +111,7 @@ memo-expandable-table {
 			th.sortable-column,
 			th.expandable-table-selectall-checkbox,
 			.expandable-table-body-main-row /deep/ td:not(.expandable-table-actions):not(.expand-icon) {
-				padding-left: 30px;
+				padding-left: 30px !important;
 			}
 		}
 
@@ -122,4 +122,10 @@ memo-expandable-table {
 		}
 	}
 
+}
+
+@media all and (min-width: $options-breakpoint) {
+	.loader {
+		left: 65%;
+	}
 }

@@ -4,16 +4,16 @@
 	height: 100%;
 }
 
-md-sidenav-container {
+mat-sidenav-container {
 	height: 100%;
 	background-color: rgba(255, 255, 255, 0);
 
-	/deep/ .mat-sidenav-content > div {
-		height: 100%;
+	/deep/ .mat-drawer-content > div {
+		min-height: 100%;
 	}
 }
 
-md-sidenav {
+mat-sidenav {
 	height: 100%;
 	width: 70%;
 }

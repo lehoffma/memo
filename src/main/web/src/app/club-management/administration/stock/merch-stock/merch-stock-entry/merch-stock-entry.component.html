@@ -1,0 +1,92 @@
+<div class="stock-entry-header">
+	<div>
+		<a routerLink="/merch/{{stockEntry?.item.id}}">
+			<img src="{{stockEntry?.item.images[0]}}"/>
+		</a>
+
+		<div>
+			<a routerLink="/merch/{{stockEntry?.item.id}}">
+				<h3>{{stockEntry?.item.title}}</h3>
+			</a>
+			<span class="secondary-text">{{stockEntry?.item.description}}</span>
+		</div>
+	</div>
+
+	<mat-menu #menu="matMenu">
+		<a mat-menu-item
+		   routerLink="/merch/{{stockEntry?.item.id}}/stock/edit">
+			<mat-icon>edit</mat-icon>
+			<span>Bearbeiten</span>
+		</a>
+		<button mat-menu-item type="button" (click)="deleteMerch(stockEntry?.item.id)">
+			<mat-icon>delete</mat-icon>
+			<span>Löschen</span>
+		</button>
+	</mat-menu>
+	<button mat-icon-button [matMenuTriggerFor]="menu">
+		<mat-icon>more_vert</mat-icon>
+	</button>
+
+
+</div>
+<table>
+	<thead>
+	<tr>
+		<th></th>
+		<th *ngFor="let size of stockEntry.options.size">
+			{{size}}
+		</th>
+		<th class="empty-column">
+			<!--todo add size-->
+			<!--<button mat-icon-button>-->
+			<!--<mat-icon>add</mat-icon>-->
+			<!--</button>-->
+		</th>
+		<th class="total-header">
+			Gesamt
+		</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr *ngFor="let color of stockEntry.options.color">
+		<th class="color-container">
+			<div class="merch-available-colors"
+				 [style.background-color]="color.hex">
+
+			</div>
+			<span>{{color.name}}</span>
+		</th>
+		<td *ngFor="let size of stockEntry.options.size; let i = index"
+			[ngClass]="{'is-zero': stockEntry.stockMap[size][color.name] === 0}"
+			class="stock-amount-cell">
+			{{stockEntry.stockMap[size][color.name]}}
+		</td>
+		<td>
+			<!--empty because of the add button-->
+		</td>
+		<th>
+			{{(totals$ | async)[color.name]}}
+		</th>
+	</tr>
+	<!--<tr>-->
+	<!--<td>-->
+	<!--&lt;!&ndash;todo add color&ndash;&gt;-->
+	<!--<button mat-icon-button>-->
+	<!--<mat-icon>add</mat-icon>-->
+	<!--</button>-->
+	<!--</td>-->
+	<!--</tr>-->
+	<tr>
+		<th>Gesamt</th>
+		<th *ngFor="let size of stockEntry.options.size">
+			{{(totals$ | async)[size]}}
+		</th>
+		<th>
+
+		</th>
+		<th class="total-sum">
+			{{(totals$ | async)["total"]}}
+		</th>
+	</tr>
+	</tbody>
+</table>

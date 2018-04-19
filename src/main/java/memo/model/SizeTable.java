@@ -1,91 +1,127 @@
 package memo.model;
 
-import java.io.Serializable;
-import java.lang.Integer;
-import java.lang.String;
 import javax.persistence.*;
-import memo.model.Size;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: SizeTable
- *
  */
 @Entity
 @Table(name = "SIZE_TABLE")
 
 public class SizeTable implements Serializable {
 
-	@Id
+    //**************************************************************
+    //  static members
+    //**************************************************************
+
+    private static final long serialVersionUID = 1L;
+
+    //**************************************************************
+    //  members
+    //**************************************************************
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	@ManyToOne(cascade = { CascadeType.REMOVE })
-	@JoinColumn(name = "SIZE_ID")
-	private Size size;
-	private String name;
-	private Integer min;
-	private Integer max;
-	private static final long serialVersionUID = 1L;
+    private Integer id;
 
-	public SizeTable() {
-		super();
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Stock stock;
 
-	public SizeTable(Size size, String name, Integer min, Integer max)   {
-        this.size = size;
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private Integer min;
+
+    private Integer max;
+
+    //**************************************************************
+    //  constructor
+    //**************************************************************
+
+    public SizeTable() {
+        super();
+    }
+
+    public SizeTable(Stock stock, String name, Integer min, Integer max) {
+        this.stock = stock;
         this.name = name;
         this.min = min;
         this.max = max;
     }
 
-	public Integer getId() {
-		return this.id;
-	}
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return this.id;
+    }
 
-	public Size getSize() {
-		return this.size;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setSize(Size size) {
-		this.size = size;
-	}
+    public Stock getStock() {
+        return this.stock;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setStock(Stock stock) {
+        this.stock = stock;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public Integer getMin() {
-		return this.min;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setMin(Integer min) {
-		this.min = min;
-	}
+    public Integer getMin() {
+        return this.min;
+    }
 
-	public Integer getMax() {
-		return this.max;
-	}
+    public void setMin(Integer min) {
+        this.min = min;
+    }
 
-	public void setMax(Integer max) {
-		this.max = max;
-	}
+    public Integer getMax() {
+        return this.max;
+    }
+
+    public void setMax(Integer max) {
+        this.max = max;
+    }
+
+    //**************************************************************
+    //  methods
+    //**************************************************************
 
     @Override
     public String toString() {
         return "SizeTable{" +
                 "id=" + id +
-                ", size=" + size +
                 ", name='" + name + '\'' +
                 ", min=" + min +
                 ", max=" + max +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SizeTable sizeTable = (SizeTable) o;
+        return Objects.equals(id, sizeTable.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

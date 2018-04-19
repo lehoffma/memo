@@ -1,0 +1,19 @@
+<mat-form-field>
+	<input type="text"
+		   matInput
+		   tabindex="-1"
+		   placeholder="Nutzer"
+		   name="userInput"
+		   #userInput
+		   [formControl]="autocompleteFormControl"
+		   [matAutocomplete]="auto">
+	<mat-error *ngIf="autocompleteFormControl.hasError('required')">
+		Bitte wähle einen Nutzer aus der Liste!
+	</mat-error>
+</mat-form-field>
+<mat-autocomplete #auto="matAutocomplete"
+				  [displayWith]="displayFn">
+	<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+		{{ option.firstName + " " + option.surname }}
+	</mat-option>
+</mat-autocomplete>

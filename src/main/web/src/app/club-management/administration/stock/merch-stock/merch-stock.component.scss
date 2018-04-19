@@ -1,28 +1,109 @@
 
-memo-expandable-table /deep/ .sortable-column:nth-child(2) {
-	min-width: 6rem;
+.desktop {
+	display: none;
 }
 
-$breakpoint: 600px;
-
-.merch-stock-container {
-
-	@media all and (min-width: $breakpoint) {
+.stock-entry-container {
+	.stock-options {
 		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-}
+		background-color: white;
+		padding: 0.5rem;
+		justify-content: space-evenly;
 
-memo-expandable-table {
-	/deep/ .expandable-table-component-container {
-		max-width: 800px;
-
-		@media all and (min-width: $breakpoint) {
-			margin: 2rem;
-			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+		* {
+			width: 50%;
 		}
-
 	}
 
+	memo-merch-stock-entry {
+		margin-top: 15px;
+	}
 }
+
+a.add-merch-button {
+	position: fixed;
+	z-index: 10;
+	right: 1rem;
+	bottom: 1rem;
+}
+
+memo-merch-stock-feed {
+	display: none;
+}
+
+img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+}
+
+.no-results {
+	display: flex;
+	justify-content: center;
+}
+
+.loading-container {
+	position: relative;
+	top: 200px;
+}
+
+@media all and (min-width: 800px) {
+	.stock-options-sidebar {
+		display: block;
+		width: 250px;
+		z-index: 2;
+		position: fixed;
+		left: 30px;
+		top: 100px;
+		height: calc(100% - 90px);
+		overflow-y: auto;
+	}
+	.stock-entry-container {
+		width: calc(100% - 350px);
+		position: relative;
+		left: 300px;
+		top: 20px;
+		margin-bottom: 30px;
+		.stock-options {
+			background-color: transparent;
+			padding: 0;
+			justify-content: flex-end;
+			* {
+				width: auto;
+			}
+		}
+	}
+	a.add-merch-button {
+		right: calc(50px + 2rem);
+	}
+
+	.desktop {
+		display: block;
+	}
+	.mobile {
+		display: none;
+	}
+}
+
+@media all and (min-width: 1000px) {
+	.stock-entry-container {
+		width: calc(100% - 300px - 400px);
+	}
+
+	a.add-merch-button {
+		right: calc(400px + 2rem);
+	}
+
+	memo-merch-stock-feed {
+		display: block;
+		width: 300px;
+		z-index: 2;
+		position: absolute;
+		right: 60px;
+		top: 123px;
+		height: calc(100% - 140px);
+		overflow-y: hidden;
+	}
+}
+
+

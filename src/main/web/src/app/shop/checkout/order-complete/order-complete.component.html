@@ -1,0 +1,18 @@
+
+<div class="order-complete-prompt mat-elevation-z3">
+	<div class="order-complete-prompt-header">
+		<mat-icon>check</mat-icon>
+	</div>
+	<span class="order-complete-prompt-text">Deine Bestellung wurde erfolgreich weitergeleitet!</span>
+	<div class="order-complete-prompt-actions">
+		<a mat-raised-button color="primary" routerLink="/">
+			Zur Startseite
+		</a>
+	</div>
+</div>
+
+<div class="order-container">
+	<memo-order-renderer *ngIf="order$ | async as order" [orderEntry]="order">
+
+	</memo-order-renderer>
+</div>

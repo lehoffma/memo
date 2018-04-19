@@ -1,11 +1,11 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
 import {Event} from "../../../shop/shared/model/event";
-import {AddressService} from "../../../shared/services/address.service";
 import {Address} from "../../../shared/model/address";
-import {Observable} from "rxjs/Observable";
 import {EventType} from "../../../shop/shared/model/event-type";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
-import * as moment from "moment";
+import {Observable} from "rxjs/Observable";
+import {isBefore} from "date-fns";
+import {AddressService} from "../../../shared/services/api/address.service";
 
 
 @Component({
@@ -31,10 +31,14 @@ export class MyToursEntryComponent implements OnInit, OnChanges {
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes["event"]) {
 			this.isTour = this.event.route.length > 1;
-			this.eventIsInThePast = moment(this.event.date).isBefore(moment());
+			this.eventIsInThePast = isBefore(this.event.date, new Date());
 			this.eventType = EventUtilityService.getEventType(this.event);
-			this.from$ = this.addressService.getById(this.event.route[0]);
-			this.to$ = this.addressService.getById(this.event.route[this.event.route.length - 1]);
+			if(this.event.route.length > 0){
+				this.from$ = this.addressService.getById(this.event.route[0]);
+				if (this.event.route.length > 1) {
+					this.to$ = this.addressService.getById(this.event.route[this.event.route.length - 1]);
+				}
+			}
 		}
 	}
 }

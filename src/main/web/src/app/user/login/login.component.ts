@@ -1,6 +1,9 @@
 import {Component, OnInit} from "@angular/core";
-import {LogInService} from "../../shared/services/login.service";
-import {NavigationService} from "../../shared/services/navigation.service";
+import {LogInService} from "../../shared/services/api/login.service";
+import {Router} from "@angular/router";
+import {AuthService} from "../../shared/authentication/auth.service";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {confirmPasswordValidator} from "../../shared/validators/confirm-password.validator";
 
 @Component({
 	selector: "memo-login",
@@ -8,18 +11,27 @@ import {NavigationService} from "../../shared/services/navigation.service";
 	styleUrls: ["./login.component.scss"]
 })
 export class LoginComponent implements OnInit {
-	public email: string = "";
-	public password: string = "";
+	public formGroup: FormGroup = this.formBuilder.group({
+		"email": ["", {
+			validators: [Validators.required, Validators.email]
+		}],
+		"password": ["", {
+			validators: []
+		}]
+	});
 
 	public loading: boolean = false;
-	public wrongInput: boolean = false;
+	public error: string = "";
 
 	constructor(private loginService: LogInService,
-				private navigationService: NavigationService) {
+				public authService: AuthService,
+				private formBuilder: FormBuilder,
+				private router: Router) {
 	}
 
 	ngOnInit() {
 	}
+
 
 	/**
 	 * Performs a POST request to the server with the entered email and password.
@@ -29,16 +41,21 @@ export class LoginComponent implements OnInit {
 	checkLogin() {
 		this.loading = true;
 		//todo better error handling than "something went wrong"?
-		this.loginService.login(this.email, this.password)
+		const {email, password} = this.formGroup.value;
+		this.loginService.login(email, password)
 			.subscribe(
 				loginWasSuccessful => {
 					this.loading = false;
-					this.wrongInput = !loginWasSuccessful;
+					if (!loginWasSuccessful) {
+						this.error = "Die eingegebenen Daten sind falsch."
+					}
 					if (loginWasSuccessful) {
-						this.navigationService.navigateByUrl(this.loginService.redirectUrl)
+						this.router.navigateByUrl(this.loginService.redirectUrl, {replaceUrl: true});
 					}
 				},
-				error => console.error(error) //todo remove?
+				error => {
+					this.error = "Etwas ist schief gelaufen. Probier es in einigen Momenten noch mal!"
+				}
 			)
 	}
 }

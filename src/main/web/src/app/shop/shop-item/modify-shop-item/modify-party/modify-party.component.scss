@@ -1,4 +1,4 @@
-@import "../../../../../mixins";
+@import "mixins";
 @import "../modify-shop-item.component";
 
 .additional-party-info-container {
@@ -6,11 +6,19 @@
 	justify-content: space-between;
 	flex-direction: column;
 
-	> div:nth-child(2) {
+	> div:not(:first-child) {
+		width: 100%;
 		display: flex;
 		justify-content: space-between;
-		> * {
+		> *:not(.time-selection) {
 			width: 45%;
+		}
+		.time-selection {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding-bottom: 6px;
 		}
 	}
 }
@@ -26,12 +34,35 @@
 		}
 
 		memo-tour-route-input {
-			display: block;
-			margin-bottom: 1.5rem;
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 0;
+
+			/deep/ agm-map {
+				width: calc(100% + 1rem);
+				margin: -1rem;
+				margin-bottom: 1rem;
+			}
 		}
 	}
 }
 
 .description-input {
 	margin-top: 15px;
+}
+
+@media all and (min-width: 800px) {
+	:host {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		padding-bottom: 1rem;
+	}
+	memo-multi-image-upload {
+		display: block;
+
+		/deep/ memo-multi-image-container,
+		/deep/ .upload-container {
+			width: 100% !important;
+		}
+	}
 }

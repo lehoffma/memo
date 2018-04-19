@@ -1,12 +1,12 @@
-<div class="sorting-dropdown" [mdMenuTriggerFor]="menu">
-	<span>Sortieren</span>
-	<md-icon>expand_more</md-icon>
+<div class="sorting-dropdown secondary-text" [matMenuTriggerFor]="menu">
+	<mat-icon>sort</mat-icon>
+	<span>SORTIEREN</span>
 </div>
-<md-menu #menu="mdMenu">
-	<button md-menu-item
+<mat-menu #menu="matMenu">
+	<button mat-menu-item
 			*ngFor="let sortingOption of sortingOptions"
 			[ngClass]="{'selected': selectedOption === sortingOption.name}"
 			(click)="selectedOption !== sortingOption.name ? updateQueryParams(sortingOption.queryParameters) : $event.stopPropagation()">
 		{{sortingOption.name}}
 	</button>
-</md-menu>
+</mat-menu>

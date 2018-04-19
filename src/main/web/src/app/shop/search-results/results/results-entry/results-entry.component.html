@@ -1,5 +1,5 @@
 <!--todo: indication if tour/party/merch/user (/entry?) -->
-<div class="result-entry-container" (click)="showResult(result)">
+<a class="result-entry-container" routerLink="{{resultUrl$|async}}">
 	<div>
 		<div class="result-entry-info-container">
 			<div class="result-title">
@@ -7,22 +7,24 @@
 			</div>
 			<div class="result-info">
 				<div class="secondary-text">
-					<span *ngIf="!resultIsMerch(result)">{{result.date | date}}</span>
-					<!--todo: if merch: show color options-->
+					<span *ngIf="!resultIsMerch(result)">{{result.date | dateFormat}}</span>
 					<span *ngIf="resultIsMerch(result)" class="merch-available-colors-container">
-						<span *ngFor="let color of result.colors"
+						<span *ngFor="let color of (colors$ | async)"
 							  class="merch-available-colors"
 							  [style.background-color]="color.hex">
 						</span>
 					</span>
 				</div>
-				<div class="result-price">
-					{{result.price | currency:'EUR':true}}
-				</div>
+
+				<memo-price-renderer class="result-price"
+									 [showDiscountPossibilities]="false" [showExplanation]="false"
+									 [price]="result.price" [discounts]="discounts$ | async">
+
+				</memo-price-renderer>
 			</div>
 		</div>
 		<div class="result-entry-image-container">
-			<img src="{{result.imagePath}}">
+			<img src="{{!!result.images[0] ? result.images[0] : 'resources/images/Logo.png'}}">
 		</div>
 	</div>
-</div>
+</a>

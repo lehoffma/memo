@@ -1,0 +1,20 @@
+
+
+<div *ngFor="let key of groupedListKeys" class="event-list-view-container mat-elevation-z1">
+	<div class="event-list-view-title">
+
+		<h3>{{key}}</h3>
+
+		<button mat-button color="accent" (click)="onAddCallback(key, groupedEventList[key])">
+			Hinzufügen
+		</button>
+	</div>
+
+	<div *ngIf="groupedEventList[key].length > 0; else noResults" class="event-list-container">
+		<memo-results-entry *ngFor="let event of groupedEventList[key]" [result]="event"></memo-results-entry>
+	</div>
+	<ng-template #noResults>
+		Keine bevorstehenden Veranstaltungen!
+
+	</ng-template>
+</div>

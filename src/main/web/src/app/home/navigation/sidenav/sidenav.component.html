@@ -1,8 +1,9 @@
 <!--header (link to profile)-->
-<div *ngIf="user | async; let account;">
+<div *ngIf="user | async as account;">
 	<div class="account-header">
 		<div *ngIf="account.id !== -1; else loggedOutHeader;">
-			<img src="{{account.imagePath}}" class="profile-picture">
+			<img src="{{account.images.length > 0 ? account.images[0] : 'resources/images/Logo.png'}}"
+				 class="profile-picture">
 			<div>
 				<span class="profile-name">{{account.firstName}}</span>
 				<div class="profile-email-container">
@@ -20,7 +21,7 @@
 	</div>
 	<!--navigation links-->
 	<nav class="navigation-links" (click)="closeSideNav()">
-		<a md-button style="height: 0; position: absolute;"> <!-- 'absorbs' the focus behavior -->
+		<a mat-button style="height: 0; position: absolute;"> <!-- 'absorbs' the focus behavior -->
 		</a>
 		<div id="navigation-links-login" *ngIf="account.id === -1">
 			<a routerLink="login" (click)="saveUrl()">
@@ -28,22 +29,31 @@
 			</a>
 		</div>
 		<div *ngFor="let link of (links | async);">
-			<hr *ngIf="link.drawLineAbove || link.children">
+			<mat-divider *ngIf="link.drawLineAbove || link.children"></mat-divider>
 			<!--"main" link-->
-			<a routerLink="{{link.route}}">
-				<md-icon class="md-dark" *ngIf="!link.children">{{link.icon}}</md-icon>
+			<a routerLink="{{link.route}}" *ngIf="link.route !== null">
+				<mat-icon class="mat-dark" *ngIf="!link.children">{{link.icon}}</mat-icon>
+				<span>{{link.name}}</span>
+			</a>
+			<a href="{{link.link}}" *ngIf="link.link">
+				<mat-icon class="mat-dark" *ngIf="!link.children">{{link.icon}}</mat-icon>
 				<span>{{link.name}}</span>
 			</a>
 			<!--child links-->
-			<a *ngFor="let childLink of link.children"
-			   routerLink="{{childLink.route}}">
-				<md-icon class="md-dark">{{childLink.icon}}</md-icon>
-				<span>{{childLink.name}}</span>
-			</a>
+			<ng-container *ngFor="let childLink of link.children">
+				<a routerLink="{{childLink.route}}" *ngIf="childLink.route !== null">
+					<mat-icon class="mat-dark">{{childLink.icon}}</mat-icon>
+					<span>{{childLink.name}}</span>
+				</a>
+				<a href="{{childLink.link}}" *ngIf="childLink.link">
+					<mat-icon class="mat-dark">{{childLink.icon}}</mat-icon>
+					<span>{{childLink.name}}</span>
+				</a>
+			</ng-container>
 		</div>
 		<div *ngIf="account.id !== -1">
 			<a routerLink="/" (click)="logout()">
-				<md-icon class="md-dark">exit_to_app</md-icon>
+				<mat-icon class="mat-dark">exit_to_app</mat-icon>
 				<span>Logout</span>
 			</a>
 		</div>

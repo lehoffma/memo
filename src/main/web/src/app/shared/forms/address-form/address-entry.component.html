@@ -1,0 +1,24 @@
+<div class="address-entry-container">
+	<div class="address-information">
+		<b>{{address.name}}</b>
+		<span>{{address.street}} {{address.streetNr}}</span>
+		<span>{{address.city}}, {{address.zip}}</span>
+		<span>{{address.country}}</span>
+	</div>
+
+	<button mat-icon-button type="button"
+			(click)="$event.stopPropagation(); false"
+			[matMenuTriggerFor]="menu">
+		<mat-icon>more_vert</mat-icon>
+	</button>
+</div>
+<mat-menu #menu="matMenu">
+	<button mat-menu-item (click)="onEdit.emit(true)">
+		<mat-icon>edit</mat-icon>
+		<span>Bearbeiten</span>
+	</button>
+	<button mat-menu-item type="button" (click)="deleteAddress()">
+		<mat-icon>delete</mat-icon>
+		<span>Löschen</span>
+	</button>
+</mat-menu>

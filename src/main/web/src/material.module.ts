@@ -1,38 +1,23 @@
 import {NgModule} from "@angular/core";
 import {
-	MdAutocompleteModule,
-	MdButtonModule,
-	MdCardModule,
-	MdCheckboxModule,
-	MdChipsModule,
-	MdDatepickerModule,
-	MdDialogModule,
-	MdIconModule,
-	MdInputModule,
-	MdListModule,
-	MdMenuModule,
-	MdNativeDateModule,
-	MdProgressSpinnerModule,
-	MdRadioModule,
-	MdSelectModule,
-	MdSidenavModule,
-	MdSnackBarModule,
-	MdToolbarModule,
-	MdTooltipModule
+	MatAutocompleteModule, MatButtonModule, MatButtonToggleModule, MatCardModule, MatCheckboxModule, MatChipsModule,
+	MatDatepickerModule, MatDialogModule, MatIconModule, MatInputModule, MatListModule, MatMenuModule,
+	MatNativeDateModule, MatProgressSpinnerModule, MatRadioModule, MatSelectModule, MatSidenavModule, MatSnackBarModule,
+	MatStepperModule, MatTabsModule, MatToolbarModule, MatTooltipModule,
 } from "@angular/material";
+import {ScrollDispatchModule} from "@angular/cdk/scrolling";
 
+const modules = [MatButtonModule, MatCheckboxModule, MatNativeDateModule, MatDatepickerModule,
+	MatMenuModule, MatSidenavModule, MatToolbarModule, MatCardModule,
+	MatIconModule, MatDialogModule, MatTooltipModule, MatSnackBarModule,
+	MatListModule, MatSelectModule, MatInputModule, MatRadioModule,
+	MatAutocompleteModule, MatChipsModule, MatProgressSpinnerModule,
+	MatButtonToggleModule, MatTabsModule, MatStepperModule, ScrollDispatchModule
+];
 
 @NgModule({
-	imports: [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepickerModule,
-		MdMenuModule, MdSidenavModule, MdToolbarModule, MdCardModule,
-		MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
-		MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
-		MdAutocompleteModule, MdChipsModule, MdProgressSpinnerModule],
-	exports: [MdButtonModule, MdCheckboxModule, MdNativeDateModule, MdDatepickerModule,
-		MdMenuModule, MdSidenavModule, MdToolbarModule, MdCardModule,
-		MdIconModule, MdDialogModule, MdTooltipModule, MdSnackBarModule,
-		MdListModule, MdSelectModule, MdInputModule, MdRadioModule,
-		MdAutocompleteModule, MdChipsModule, MdProgressSpinnerModule],
+	imports: modules,
+	exports: modules,
 })
 export class MemoMaterialModule {
 }

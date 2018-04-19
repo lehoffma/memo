@@ -1,34 +1,128 @@
 @import "../login/login.component";
+@import "~@angular/material/theming";
+
+:host {
+	justify-content: flex-start;
+	height: auto;
+	min-height: 100%;
+	padding-top: 2rem;
+
+	/deep/ .object-details-content-container {
+		max-width: none !important;
+		width: calc(100% + 2rem) !important;
+		margin: 0 !important;
+		margin-left: -1rem !important;
+		margin-right: -1rem !important;
+		box-shadow: none !important;
+		border-top: 1px solid #ededed;
+
+		/deep/ .current-image-container .current-image {
+			border: none !important;
+		}
+
+		@media all and (min-width: 550px) {
+			max-width: 550px !important;
+		}
+	}
+
+	memo-user-data-form {
+		margin-top: -1rem;
+		/deep/ .form-actions {
+			justify-content: space-between;
+			background: white;
+			padding: 0.5rem;
+			margin: auto -1rem -1rem;
+			border-top: 1px solid #E0E0E0;
+		}
+	}
+}
+
+.signup-title {
+	@include fullscreen-page-title();
+}
+
+.form-container {
+	width: 100%;
+}
+
+.signup-container {
+	@include fullscreen-page-content();
+}
 
 .account-signup-progress {
 	display: flex;
 	justify-content: space-between;
-	padding-left: 25%;
-	padding-right: 25%;
+	align-items: center;
+	height: 72px;
+	background: white;
 
-	> div {
-		height: 1rem;
-		width: 1rem;
+	border-bottom: 1px solid #ededed;
+	margin: -1rem -1rem 1rem;
+	padding: 1rem;
+
+	.progress-indicator {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 1.5rem;
+		width: 1.5rem;
 		border-radius: 50%;
 		background-color: grey;
-	}
+		color: white;
+		font-size: 12px;
 
-	> div.active {
-		background-color: mat-color($accent);
-	}
+		mat-icon {
+			width: 12px;
+			height: 12px;
+			font-size: 12px;
+		}
 
-	> div.completed {
-		background-color: mat-color($primary);
+		&.active {
+			background-color: mat-color($primary);
+		}
+
+		&.completed {
+			background-color: mat-color($primary);
+		}
 	}
 
 	> span {
-		width: 30%;
+		flex-grow: 2;
+		margin-left: 8px;
+		margin-right: 8px;
 		align-self: center;
 		height: 1px;
-		background-color: grey;
+		background-color: #ebebeb;
 	}
 
 	> span.completed {
 		background-color: mat-color($primary);
+	}
+
+}
+
+.progress-label {
+	color: rgba(0, 0, 0, 0.84);
+
+	&.active {
+		font-weight: bold;
+	}
+}
+
+:host {
+	mat-card {
+		margin: 0;
+		max-width: 800px;
+	}
+}
+
+.desktop {
+	display: none;
+}
+
+@media all and (min-width: 700px) {
+	.desktop {
+		display: block;
+		margin-left: 5px;
 	}
 }

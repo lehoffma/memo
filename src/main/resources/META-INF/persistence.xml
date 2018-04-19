@@ -7,13 +7,16 @@
         <class>memo.model.BankAcc</class>
         <class>memo.model.ClubRole</class>
         <class>memo.model.Color</class>
+        <class>memo.model.Comment</class>
+        <class>memo.model.EntryCategory</class>
         <class>memo.model.Entry</class>
-        <class>memo.model.Event</class>
-        <class>memo.model.HasEntry</class>
-        <class>memo.model.Participates</class>
+        <class>memo.model.Image</class>
+        <class>memo.model.Order</class>
+        <class>memo.model.OrderedItem</class>
         <class>memo.model.Permission</class>
         <class>memo.model.PermissionState</class>
-        <class>memo.model.Size</class>
+        <class>memo.model.ShopItem</class>
+        <class>memo.model.Stock</class>
         <class>memo.model.SizeTable</class>
         <class>memo.model.User</class>
 
@@ -24,15 +27,28 @@
             <property name="javax.persistence.jdbc.password" value="qwertzui"/>
             <!--
             // for generating the database from scratch
+            // bitte den unteren absatz auskommentieren bei bedarf und nicht den Code ändern
             -->
 
-            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/>
+            <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>
+            <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
+            <!--<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>-->
+            <!--<property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/>-->
             <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
             <property name="javax.persistence.schema-generation.drop-source" value="metadata"/>
             <property name="javax.persistence.schema-generation.scripts.create-target" value="create.sql"/>
             <property name="javax.persistence.schema-generation.scripts.drop-target" value="drop.sql"/>
             <property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
+
+
+            <!--<property-->
+                    <!--name="eclipselink.session-name"-->
+                    <!--value="memoshop-session"-->
+            <!--/>-->
+            <!--<property-->
+                    <!--name="eclipselink.sessions-xml"-->
+                    <!--value="sessions.xml"-->
+            <!--/>-->
 
 
         </properties>

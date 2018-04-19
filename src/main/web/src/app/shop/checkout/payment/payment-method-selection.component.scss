@@ -1,4 +1,4 @@
-@import "../../../util/badge/badge.component";
+@import "../../../shared/utility/badge/badge.component";
 
 :host > div:first-child {
 	display: flex;
@@ -8,14 +8,10 @@
 	overflow-y: auto;
 
 	padding: 1rem;
-	margin-left: -1rem;
-	margin-right: -1rem;
-	margin-top: -0.6rem;
-	background-color: #e9ebee;
+	background-color: #ffffff;
+	border-bottom: 1px solid #e6e6e6;
 
 	@media all and (min-width: 600px) {
-		margin-left: -1.5rem;
-		margin-right: -1.5rem;
 		font-size: 1.1rem;
 
 		> div > label > img {

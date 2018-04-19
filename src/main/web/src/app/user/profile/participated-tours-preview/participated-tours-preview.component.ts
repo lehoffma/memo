@@ -4,6 +4,8 @@ import {NavigationService} from "../../../shared/services/navigation.service";
 import {EventType} from "../../../shop/shared/model/event-type";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {distanceInWordsStrict} from "date-fns";
+import * as deLocale from "date-fns/locale/de";
 
 const DEFAULT_AMOUNT_SHOWN = 3;
 
@@ -33,6 +35,8 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 	@Input() userEvents: Event[] = [];
 	expandedStatus = false;
 
+	constructor(private navigationService: NavigationService) {
+	}
 
 	get amountOfEventsShown() {
 		if (this.expandedStatus) {
@@ -41,12 +45,27 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 		return DEFAULT_AMOUNT_SHOWN;
 	}
 
-	constructor(private navigationService: NavigationService) {
-	}
-
 	ngOnInit() {
 	}
 
+	distanceInWords(date: Date) {
+		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
+	}
+
+	_links: { [id: number]: string} = {};
+
+	getLink(event: Event): string {
+		if (!event) {
+			return "";
+		}
+
+		if (!this._links[event.id]) {
+			const eventType: EventType = EventUtilityService.getEventType(event);
+			this._links[event.id] = `/${eventType}/${event.id}`;
+		}
+
+		return this._links[event.id];
+	}
 
 	showEvent(recentEvent: Event) {
 		const eventType: EventType = EventUtilityService.getEventType(recentEvent);

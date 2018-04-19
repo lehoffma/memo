@@ -1,14 +1,14 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../../shared/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
 import {ClubRole} from "../../../../shared/model/club-role";
 
 @Component({
 	selector: "td [clubRoleTableCell]",
 	template: `
-		<span class="data-as-icon" title="{{data}}"><md-icon>{{icon}}</md-icon></span>
-		<span class="data-as-text">{{data}}</span>
+		<span class="data-as-icon" title="{{data}}"><mat-icon>{{icon}}</mat-icon></span>
+		<span class="data-as-text {{data}}">{{data}}</span>
 	`,
-	styleUrls: ["./icon-data-table-cell.component.scss"]
+	styleUrls: ["./icon-data-table-cell.component.scss", "./clubrole-table-cell.component.scss"]
 })
 export class ClubRoleTableCellComponent implements OnInit, OnChanges, ExpandableTableCellComponent {
 	@Input() data: ClubRole;
@@ -35,11 +35,11 @@ export class ClubRoleTableCellComponent implements OnInit, OnChanges, Expandable
 				return "attach_money";
 			case ClubRole.Mitglied:
 				return "account_box";
-			case ClubRole.Organizer:
+			case ClubRole.Organisator:
 				return "assignment";
 			case ClubRole.Vorstand:
 				return "gavel";
-			case ClubRole.None:
+			case ClubRole.Gast:
 				return "do_not_disturb";
 		}
 	}

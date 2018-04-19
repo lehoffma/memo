@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {PaymentInfo} from "./payment-info";
+import {Address} from "../../../../shared/model/address";
 
 declare var IBAN;
 
@@ -10,16 +11,12 @@ declare var IBAN;
 })
 export class DebitInputFormComponent implements OnInit, OnChanges {
 	@Input() name: string = "";
-	@Output() onChange = new EventEmitter<{ formIsValid: boolean, paymentInfo: PaymentInfo }>();
 	model: PaymentInfo = {
 		iban: "",
-		name: this.name,
-		company: "",
-		street: "",
-		plz: "",
-		residence: "",
-		country: ""
+		bic: ""
 	};
+	@Output() onChange = new EventEmitter<{ formIsValid: boolean, paymentInfo: PaymentInfo }>();
+	@Output() onAddressModification = new EventEmitter();
 
 	constructor() {
 	}
@@ -29,10 +26,6 @@ export class DebitInputFormComponent implements OnInit, OnChanges {
 
 
 	ngOnChanges(changes: SimpleChanges): void {
-		// throw new Error("Method not implemented.");
-		if (changes["name"]) {
-			this.model.name = changes["name"].currentValue;
-		}
 	}
 
 	isValidIBAN(iban: string) {

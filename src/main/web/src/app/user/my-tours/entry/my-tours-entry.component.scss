@@ -1,5 +1,4 @@
-@import "../../../../theme";
-@import "~@angular/material/theming";
+@import "theme";
 
 :host {
 	max-width: 510px;
@@ -17,10 +16,9 @@
 
 }
 
-md-card {
+mat-card {
 	padding: 0;
 	margin-bottom: 20px;
-
 
 	&:hover {
 		box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
@@ -33,7 +31,7 @@ md-card {
 	.mat-card-image {
 		margin-top: 0;
 		height: 10rem;
-		object-fit: cover;
+		object-fit: contain;
 		width: 100%;
 		margin-bottom: 0;
 		margin-left: 0;
@@ -43,7 +41,7 @@ md-card {
 		}
 	}
 
-	md-card-content {
+	mat-card-content {
 		display: flex;
 		padding: 1rem;
 
@@ -56,10 +54,10 @@ md-card {
 
 			&:not(.past-event) {
 				.event-date-top {
-					color: mat-color($primary);
+					color: $primary-default;
 				}
 				.event-date-bottom {
-					color: mat-color($accent);
+					color: $accent-default;
 				}
 			}
 

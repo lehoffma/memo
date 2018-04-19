@@ -1,4 +1,4 @@
-export enum ModifyType{
+export enum ModifyType {
 	ADD,
 	EDIT,
 	REMOVE

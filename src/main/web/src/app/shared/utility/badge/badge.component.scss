@@ -1,0 +1,43 @@
+@import "theme";
+@import "mixins";
+
+.badge-container {
+	height: 6vh;
+	width: 6vh;
+	position: relative;
+
+	.no-items::after {
+		content: none;
+	}
+
+	&:not(.no-items)::after {
+		content: attr(amount);
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-content: center;
+		align-items: center;
+		position: absolute;
+		top: -0.6rem;
+		right: -0.5rem;
+		font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+		font-weight: 600;
+		font-size: 0.7rem;
+		width: 1.3rem;
+		height: 1.3rem;
+		border-radius: 50%;
+		background: mat-color($accent);
+		color: #fff;
+		@include animation(memo-badge 100ms ease-in)
+	}
+}
+
+@include keyframes(memo-badge) {
+	0% {
+		@include transform(scale(0))
+	}
+	100% {
+		@include transform(scale(1))
+	}
+}

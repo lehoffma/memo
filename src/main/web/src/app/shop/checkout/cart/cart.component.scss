@@ -1,10 +1,12 @@
-@import "../../../../mixins";
-@import "../../../../theme";
-@import "~@angular/material/theming";
+@import "theme";
+@import "mixins";
+@import "variables";
 
 .cart {
-	> md-card {
+	> mat-card {
 		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 0px 0 rgba(0, 0, 0, .12) !important;
+		background: $container-content--background-color;
+		color: $container-content--color;
 	}
 
 	@media all and (min-width: 600px) {
@@ -12,7 +14,7 @@
 		justify-content: center;
 		margin-top: 25px;
 
-		> md-card {
+		> mat-card {
 			max-width: 500px;
 			width: 500px;
 			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12) !important;
@@ -27,9 +29,9 @@
 	//border-bottom: 1px solid #E0E0E0;
 
 	font-weight: 200;
-	border-bottom: 1px solid #E0E0E0;
-	background-color: mat-color($primary);
-	color: white;
+	border-bottom: $container-divider--height solid $container-divider--color;
+	background-color: $container-header--background-color;
+	color: $container-header--color;
 	padding: 24px 16px 10px 24px;
 	margin: -24px -24px 10px !important;
 

@@ -1,23 +1,30 @@
-//@import "../../login/login.component";
+@import "variables";
+@import "../../../shop/shop-item/modify-shop-item/modify-shop-item.component";
+
+.modify-shop-item-container {
+	padding: 0;
+	box-shadow: none;
+}
 
 h3 {
 	font-weight: 200;
 	text-align: center;
 	padding: 1rem;
 	margin: 20px -1rem;
-	background-color: #4caf50;
-	color: white;
+	background-color: $container-header--background-color;
+	color: $container-header--color;
+	border-bottom: $container-divider--height solid $container-divider--color;
 }
 
 .name-container {
 	display: flex;
 	justify-content: space-between;
-	md-input-container {
+	mat-form-field {
 		width: 45%;
 	}
 }
 
-.aligned-md-select {
+.aligned-mat-select {
 	margin-top: -8px;
 	/deep/ .mat-select-placeholder.mat-floating-placeholder {
 		top: -16px !important;
@@ -30,26 +37,34 @@ h3 {
 	.user-personal-data-input-container {
 		display: flex;
 		flex-direction: column;
-		margin-top: 15px;
 		margin-bottom: 10px;
 
 		.name-input,
 		.date-and-gender-input {
 			display: flex;
 			justify-content: space-between;
+			flex-wrap: wrap;
 			align-items: center;
 			margin-top: 10px;
 
-			md-input-container,
-			md-select,
+			mat-form-field,
 			> div {
-				width: 45%;
-				> md-input-container {
+				width: 100%;
+				> mat-form-field {
 					width: 100%;
 				}
 			}
-		}
 
+			@media all and (min-width: 500px) {
+				mat-form-field,
+				> div {
+					width: 45%;
+					> mat-form-field {
+						width: 100%;
+					}
+				}
+			}
+		}
 	}
 
 	.checkboxes-container {
@@ -63,6 +78,7 @@ h3 {
 			align-items: flex-start;
 		}
 	}
+
 }
 
 .club-information {
@@ -70,14 +86,23 @@ h3 {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-top: 15px;
+		flex-wrap: wrap;
 
-		md-select,
+		mat-form-field,
 		> div {
-			width: 45%;
-
-			> md-input-container {
+			width: 100%;
+			> mat-form-field {
 				width: 100%;
+			}
+		}
+
+		@media all and (min-width: 500px) {
+			mat-form-field,
+			> div {
+				width: 45%;
+				> mat-form-field {
+					width: 100%;
+				}
 			}
 		}
 	}
@@ -108,8 +133,4 @@ memo-address-entry {
 
 .submit-button {
 	float: right;
-}
-
-.form-actions {
-	margin-top: 15px;
 }

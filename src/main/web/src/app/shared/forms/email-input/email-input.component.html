@@ -1,0 +1,19 @@
+<div *ngIf="form" [formGroup]="form" novalidate>
+	<mat-form-field>
+		<input matInput
+			   type="email"
+			   formControlName="email"
+			   placeholder="Email"
+			   name="emailInput"
+			   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+			   required
+		>
+		<mat-error align="end" *ngIf="form.get('email')?.hasError('emailTaken')">
+			Die angegebene Email-Adresse wird bereits verwendet. <a routerLink="/login">Weiter zum Login?</a>
+		</mat-error>
+		<mat-error align="end" *ngIf="form.get('email')?.hasError('email')">
+			Email-Adresse muss in der Form <i>test@email.de</i> sein
+		</mat-error>
+	</mat-form-field>
+
+</div>

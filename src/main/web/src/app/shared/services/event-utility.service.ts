@@ -30,13 +30,13 @@ export class EventUtilityService {
 			});
 	}
 
-	getShopItemType(item: ShopItem | Event): ShopItemType {
-		return EventUtilityService.handleShopItem(item,
-			merch => ShopItemType.merch,
-			tour => ShopItemType.tour,
-			party => ShopItemType.party,
-			user => ShopItemType.user,
-			entry => ShopItemType.entry,
+	static getEventTypeAsString(event: Event): string{
+		return EventUtilityService.handleShopItem(event,
+			merch => "Merch",
+			tour => "Tour",
+			party => "Party",
+			user => "",
+			entry => "",
 			error => {
 				console.error(`Could not deduce type from event ${error}`);
 				return null;
@@ -71,7 +71,45 @@ export class EventUtilityService {
 		return defaultCallback(item);
 	}
 
-	static handleOptionalShopType<T>(type: ShopItemType, callbacks: {
+	static handleShopItemOptional<T>(item: ShopItem | Event, callbacks: {
+		merch?: (merch: Merchandise) => T,
+		tours?: (tour: Tour) => T,
+		partys?: (party: Party) => T,
+		members?: (member: User) => T,
+		entries?: (entry: Entry) => T
+	}): T {
+		if (isNullOrUndefined(item)) {
+			return null;
+		}
+		if (EventUtilityService.isMerchandise(item) && callbacks.merch) {
+			return callbacks.merch(item);
+		}
+		if (EventUtilityService.isTour(item) && callbacks.tours) {
+			return callbacks.tours(item);
+		}
+		if (EventUtilityService.isParty(item) && callbacks.partys) {
+			return callbacks.partys(item);
+		}
+		if (EventUtilityService.isUser(item) && callbacks.members) {
+			return callbacks.members(item);
+		}
+		if (EventUtilityService.isEntry(item) && callbacks.entries) {
+			return callbacks.entries(item);
+		}
+		return null;
+	}
+
+	static optionalShopItemSwitch<T>(item: ShopItem | Event, callbacks: {
+		merch?: () => T,
+		tours?: () => T,
+		partys?: () => T,
+		members?: () => T,
+		entries?: () => T
+	}): T {
+		return EventUtilityService.shopItemSwitch<T>(EventUtilityService.getShopItemType(item), callbacks);
+	}
+
+	static shopItemSwitch<T>(type: ShopItemType, callbacks: {
 		merch?: () => T,
 		tours?: () => T,
 		partys?: () => T,
@@ -93,10 +131,10 @@ export class EventUtilityService {
 		if (!callbacks.entries) {
 			callbacks.entries = () => null;
 		}
-		return EventUtilityService.handleShopType(type, callbacks.merch, callbacks.tours, callbacks.partys, callbacks.members, callbacks.entries);
+		return EventUtilityService.itemTypeSwitch(type, callbacks.merch, callbacks.tours, callbacks.partys, callbacks.members, callbacks.entries);
 	}
 
-	static handleShopType<T>(type: ShopItemType,
+	static itemTypeSwitch<T>(type: ShopItemType,
 							 merchCallback: () => T,
 							 tourCallback: () => T,
 							 partyCallback: () => T,
@@ -121,6 +159,11 @@ export class EventUtilityService {
 		return defaultCallback();
 	}
 
+	static isEvent(event: any): event is Party | Tour | Merchandise {
+		return event && (EventUtilityService.isParty(event)
+			|| EventUtilityService.isMerchandise(event) || EventUtilityService.isTour(event));
+	}
+
 	static isUser(event: any): event is User {
 		return event && (<User>event).email !== undefined;
 	}
@@ -129,16 +172,29 @@ export class EventUtilityService {
 		return event && (<Entry>event).category !== undefined;
 	}
 
-
 	static isMerchandise(event: any): event is Merchandise {
-		return event && (<Merchandise>event).colors !== undefined;
+		return event && (<Merchandise>event).material !== undefined && (<Merchandise>event).material !== null;
 	}
 
 	static isTour(event: any): event is Tour {
-		return event && (<Tour>event).vehicle !== undefined
+		return event && (<Tour>event).vehicle !== undefined && (<Tour>event).vehicle !== null
 	}
 
 	static isParty(event: any): event is Party {
-		return event && (<Party>event).emptySeats !== undefined && (<Tour>event).vehicle === undefined;
+		return event && (<Party>event).route && (<Party>event).route.length === 1
+			&& ((<Tour>event).vehicle === undefined || (<Tour>event).vehicle === null);
+	}
+
+	static getShopItemType(item: ShopItem | Event): ShopItemType {
+		return EventUtilityService.handleShopItem(item,
+			merch => ShopItemType.merch,
+			tour => ShopItemType.tour,
+			party => ShopItemType.party,
+			user => ShopItemType.user,
+			entry => ShopItemType.entry,
+			error => {
+				console.error(`Could not deduce type from event ${error}`);
+				return null;
+			});
 	}
 }

@@ -1,0 +1,24 @@
+<div *ngIf="(images$ | async).length > 1" class="available-images-list-container">
+	<div class="available-images-list">
+		<img *ngFor="let image of (images$ | async); let i = index"
+			 class="thumbnail"
+			 [class.selected]="currentImage === image"
+			 (click)="currentImage = image"
+			 (mouseover)="currentImage = image"
+			 src="{{image}}"/>
+	</div>
+</div>
+
+
+<div class="current-image-container">
+	<!--todo on click: open fullscreen-->
+	<!--todo on hover: show rect as larger version or something-->
+	<img *ngIf="currentImage !== ''; else placeholder"
+		 (click)="onClick.emit(currentImage)"
+		 class="current-image" src="{{(_currentImage$ | async)}}"/>
+	<ng-template #placeholder>
+		<div class="current-image placeholder" (click)="onClick.emit({})">
+
+		</div>
+	</ng-template>
+</div>

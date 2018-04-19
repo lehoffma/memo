@@ -1,0 +1,102 @@
+@import "theme";
+
+@mixin card-like() {
+	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+	margin: 0.5rem;
+	background-color: white;
+}
+
+@mixin fullscreen-page() {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+
+	top: 0;
+	left: 0;
+	background: $primary-default;
+	height: auto;
+	min-height: 100%;
+	width: 100%;
+	position: absolute;
+	align-items: center;
+}
+
+@mixin fullscreen-page-title(){
+	font-size: 2rem;
+	color: white;
+	font-weight: lighter;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	a, img {
+		width: 80px;
+		height: 80px;
+	}
+}
+
+@mixin fullscreen-page-content(){
+	display: block;
+	padding: 1rem;
+	width: 97%;
+	max-width: 550px;
+	border-radius: 2px;
+	background: white;
+	margin: 1rem auto;
+	@include mat-elevation(3);
+}
+
+@mixin border-radius($radius) {
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	-ms-border-radius: $radius;
+	border-radius: $radius;
+}
+
+//ANIMATION RELATED MIXINS
+@mixin transform($val) {
+	-webkit-transform: $val;
+	-moz-transform: $val;
+	-ms-transform: $val;
+	transform: $val;
+}
+
+@mixin transition($val) {
+	-webkit-transition: $val;
+	-moz-transition: $val;
+	-ms-transition: $val;
+	-o-transition: $val;
+	transition: $val;
+}
+
+@mixin animation($animate...) {
+	$max: length($animate);
+	$animations: '';
+
+	@for $i from 1 through $max {
+		$animations: #{$animations + nth($animate, $i)};
+
+		@if $i < $max {
+			$animations: #{$animations + ", "};
+		}
+	}
+	-webkit-animation: $animations;
+	-moz-animation: $animations;
+	-o-animation: $animations;
+	animation: $animations;
+}
+
+@mixin keyframes($animationName) {
+	@-webkit-keyframes #{$animationName} {
+		@content;
+	}
+	@-moz-keyframes #{$animationName} {
+		@content;
+	}
+	@-o-keyframes #{$animationName} {
+		@content;
+	}
+	@keyframes #{$animationName} {
+		@content;
+	}
+}

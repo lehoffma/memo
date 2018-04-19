@@ -1,0 +1,43 @@
+:host {
+	background: white;
+	display: block;
+
+	> div {
+		button {
+			width: 100%;
+			padding-top: 0.5rem;
+			padding-bottom: 0.5rem;
+		}
+
+		memo-address-input-form {
+			display: block;
+			padding: 1rem;
+		}
+
+	}
+}
+
+mat-radio-button,
+mat-radio-button /deep/ .mat-radio-label,
+mat-radio-button /deep/ .mat-radio-label-content {
+	width: 100%;
+}
+
+mat-radio-button /deep/ .mat-radio-label{
+	padding: 1rem;
+}
+
+.address-entry-container {
+	display: block;
+	margin-top: 0;
+	margin-bottom: 0;
+
+	&:not(.selection-container){
+		padding: 1rem;
+	}
+	background: white;
+
+	&:not(:last-child) {
+		border-bottom: 1px solid #ededed;
+	}
+}

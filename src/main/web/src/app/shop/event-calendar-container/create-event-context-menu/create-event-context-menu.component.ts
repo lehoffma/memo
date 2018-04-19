@@ -1,7 +1,6 @@
 import {Component, Inject, OnInit} from "@angular/core";
-import {MD_DIALOG_DATA, MdDialogRef} from "@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Observable} from "rxjs/Observable";
-import * as moment from "moment";
 
 @Component({
 	selector: "memo-create-event-context-menu",
@@ -11,8 +10,8 @@ import * as moment from "moment";
 export class CreateEventContextMenuComponent implements OnInit {
 	isoDate: string;
 
-	constructor(private dialogRef: MdDialogRef<CreateEventContextMenuComponent>,
-				@Inject(MD_DIALOG_DATA) public data: {
+	constructor(private dialogRef: MatDialogRef<CreateEventContextMenuComponent>,
+				@Inject(MAT_DIALOG_DATA) public data: {
 					date: Date,
 					partys: Observable<boolean>,
 					tours: Observable<boolean>
@@ -21,7 +20,7 @@ export class CreateEventContextMenuComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.isoDate = moment(this.data.date).toISOString();
+		this.isoDate = this.data.date.toISOString();
 	}
 
 	close() {

@@ -1,0 +1,13 @@
+<mat-dialog-content>
+	<div>
+		{{message}}
+	</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+	<button mat-button matDialogClose>
+		Nein
+	</button>
+	<button mat-raised-button color="primary" (click)="confirm()">
+		Ja
+	</button>
+</mat-dialog-actions>

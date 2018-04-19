@@ -1,34 +1,104 @@
 [
 	{
-		"route": "tours",
+		"route": "shop",
 		"icon": "",
-		"name": "Fahrten"
+		"name": "Shop",
+		"children": [
+			{
+				"route": "tours",
+				"icon": "",
+				"name": "Fahrten"
+			},
+			{
+				"route": "partys",
+				"icon": "",
+				"name": "Veranstaltungen"
+			},
+			{
+				"route": "merch",
+				"icon": "",
+				"name": "Merchandise"
+			},
+			{
+				"route": "calendar",
+				"icon": "",
+				"name": "Kalender"
+			}
+		]
 	},
 	{
-		"route": "partys",
+		"route": "",
 		"icon": "",
-		"name": "Veranstaltungen"
+		"name": "Verein",
+		"children": [
+			{
+				"route": "leaderboard",
+				"icon": "",
+				"name": "Meilentabelle"
+			},
+			{
+				"route": "/impressum",
+				"name": "Impressum",
+				"icon": ""
+			},
+			{
+				"route": null,
+				"link": "http://meilenwoelfe.de/meilenblog",
+				"name": "Blog",
+				"icon": ""
+			}
+		]
 	},
 	{
-		"route": "merch",
+		"name": "Mitgliedschaft",
 		"icon": "",
-		"name": "Merchandise"
+		"route": "",
+		"loginNeeded": true,
+		"children": [
+			{
+				"route": "/applyForMembership",
+				"name": "Mitglied werden",
+				"icon": ""
+			},
+			{
+				"route": "/requestMembership",
+				"name": "Mitgliedsstatus ändern",
+				"icon": ""
+			}
+		]
 	},
 	{
-		"route": "calendar",
-		"icon": "",
-		"name": "Kalender"
-	},
-	{
-		"route": "management",
+		"route": "dashboard",
 		"icon": "",
 		"name": "Vereinsverwaltung",
 		"loginNeeded": true,
+		"minimumPermission": {
+			"userManagement": 1,
+			"merch": 1,
+			"tour": 1,
+			"party": 1,
+			"funds": 0,
+			"stock": 0,
+			"settings": 0
+		},
 		"children": [
 			{
 				"route": "management/costs",
 				"icon": "",
-				"name": "Kostenübersicht"
+				"name": "Kostenübersicht",
+				"minimumPermission": {
+					"userManagement": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
+					"stock": 1
+				}
+			},
+			{
+				"route": "management/orders",
+				"icon": "",
+				"name": "Bestellungen"
 			},
 			{
 				"route": "members",
@@ -38,7 +108,15 @@
 			{
 				"route": "management/stock",
 				"icon": "",
-				"name": "Bestand"
+				"name": "Bestand",
+				"minimumPermission": {
+					"userManagement": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 0,
+					"stock": 1
+				}
 			}
 		]
 	}

@@ -1,3 +1,30 @@
 memo-multi-level-select {
 	cursor: pointer;
 }
+.filter-sidebar{
+ 	display: none;
+}
+
+@media all and (min-width: 650px){
+	memo-multi-level-select{
+		display: none;
+	}
+	.filter-sidebar{
+		display: block;
+		margin-left: 20px;
+	}
+
+	.filter-title{
+		text-transform: uppercase;
+	}
+
+	.option-children{
+		display: flex;
+		flex-direction: column;
+	}
+
+	mat-radio-group{
+		display: flex;
+		flex-direction: column;
+	}
+}

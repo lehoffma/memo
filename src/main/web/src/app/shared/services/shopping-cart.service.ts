@@ -1,10 +1,17 @@
 import {Injectable, OnInit} from "@angular/core";
 import {EventType} from "../../shop/shared/model/event-type";
-import {BehaviorSubject, Observable} from "rxjs";
 import {ShoppingCartContent} from "../model/shopping-cart-content";
-import {ShoppingCartItem} from "../model/shopping-cart-item";
+import {ShoppingCartItem, ShoppingCartOption} from "../model/shopping-cart-item";
 import {MerchColor} from "../../shop/shared/model/merch-color";
-import {EventService} from "./event.service";
+import {EventService} from "./api/event.service";
+import {map, mergeMap} from "rxjs/operators";
+import {Event} from "../../shop/shared/model/event";
+import {Observable} from "rxjs/Observable";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {LogInService} from "./api/login.service";
+import {DiscountService} from "app/shop/shared/services/discount.service";
+import {of} from "rxjs/observable/of";
+import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -13,37 +20,82 @@ export class ShoppingCartService implements OnInit {
 		partys: [],
 		tours: []
 	});
-	public content:Observable<ShoppingCartContent> = this._content.asObservable();
+	public content: Observable<ShoppingCartContent> = this._content.asObservable();
+	/**
+	 * Der Key, der für das Speichern des ShoppingCartContents im LocalStorage verwendet wird
+	 * @type {string}
+	 */
+	private readonly localStorageKey = "shoppingCart";
 
-
-	constructor(private eventService: EventService,) {
+	constructor(private eventService: EventService,
+				private loginService: LogInService,
+				private discountService: DiscountService
+	) {
 		this.initFromLocalStorage();
+	}
+
+	get amountOfCartItems(): Observable<number> {
+		return this.content
+			.pipe(
+				map(content => [...content.merch, ...content.partys, ...content.tours]
+					.reduce((previousValue, currentValue) => previousValue + currentValue.amount, 0))
+			);
+	}
+
+	get total$(): Observable<number> {
+		return this.content
+			.pipe(
+				mergeMap(items => {
+					const allItems = [...items.tours, ...items.partys, ...items.merch];
+					if (allItems.length === 0) {
+						return of([]);
+					}
+
+					return (combineLatest(
+							...allItems
+								.map(cartItem => this.loginService.currentUser$
+									.pipe(
+										mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
+											cartItem.item.id, cartItem.item.price, user !== null ? user.id : null
+										)),
+										map(discountedPrice => discountedPrice * cartItem.amount)
+									)
+							)))
+				}),
+				map(prices => prices.reduce((acc, current) => acc + current, 0))
+			)
+			;
 	}
 
 	ngOnInit() {
 	}
 
-	get amountOfCartItems(): Observable<number> {
-		return this.content.map(content => [...content.merch, ...content.partys, ...content.tours]
-			.reduce((previousValue, currentValue) => previousValue + currentValue.amount, 0))
-	}
-
-	get total(): Observable<number> {
-		return this.content
-			.flatMap(content =>
-				Observable.combineLatest(
-					...[...content.merch, ...content.partys, ...content.tours]
-						.map(item => this.eventService.getById(item.id)
-							.map(event => event.price * item.amount)))
-			)
-			.map(prices => prices.reduce((acc, price) => acc + price, 0));
-	}
-
 	/**
 	 * Resets the cart content
 	 */
-	reset(){
-		this._content.next({tours: [], partys: [], merch:[]});
+	reset() {
+		this._content.next({tours: [], partys: [], merch: []});
+		localStorage.setItem(this.localStorageKey, "");
+	}
+
+	isPartOfShoppingCart(id: number) {
+		return this.content.pipe(
+			map(content => !!([...content.merch, ...content.tours, ...content.partys]
+				.find(value => value.id === id))
+			)
+		)
+	}
+
+	/**
+	 *
+	 * @param {T} valueA
+	 * @param {T} valueB
+	 * @param {keyof T} key
+	 * @returns {boolean}
+	 */
+	doesntExistOrIsEqual<T>(valueA: T, valueB: T, key: keyof T): boolean {
+		return (!valueA && !valueB) ||
+			(valueA[key] === undefined && valueB[key] === undefined) || (valueA[key] === valueB[key]);
 	}
 
 	/**
@@ -53,11 +105,83 @@ export class ShoppingCartService implements OnInit {
 	 * @returns {boolean|{size?: string, color?: MerchColor}}
 	 */
 	itemsAreEqual(itemA: ShoppingCartItem, itemB: ShoppingCartItem) {
-		return itemA.id === itemB.id && (
-			(!itemA.options.size && !itemA.options.color && !itemB.options.size && !itemB.options.color) ||
-			(itemA.options.size === itemB.options.size
-				&& itemA.options.color.name === itemB.options.color.name
-				&& itemA.options.color.hex === itemB.options.color.hex))
+		const optionIsEqual = (optionA: ShoppingCartOption, optionB: ShoppingCartOption): boolean => {
+			return this.doesntExistOrIsEqual(optionA, optionB, "size") &&
+				this.doesntExistOrIsEqual(optionA.color, optionB.color, "hex") &&
+				this.doesntExistOrIsEqual(optionA.color, optionB.color, "name")
+		};
+
+		const optionsAreEqual = itemA.options
+			.every(option => !!itemB.options
+				.find(it => optionIsEqual(option, it))
+			);
+
+		return itemA.id === itemB.id &&
+			((!itemA.options && !itemB.options) || optionsAreEqual ||
+				(itemA.options && itemA.options.length === 0) || (itemB.options && itemB.options.length === 0));
+	}
+
+	/**
+	 *
+	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
+	 * @param item das Item welches hinzugefügt werden soll
+	 */
+	public pushItem(type: EventType, item: ShoppingCartItem) {
+		let newValue = this.push(type, item, this._content.value);
+		this.pushNewValue(newValue);
+	}
+
+	/**
+	 *
+	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
+	 * @param id die ID des Items, welches gelöscht werden soll
+	 * @param options
+	 */
+	public deleteItem(type: EventType, id: number, options?: ShoppingCartOption[]) {
+		let newValue = this.remove(this._content.value, type, id, options);
+		this.pushNewValue(newValue);
+	}
+
+	/**
+	 *
+	 * @param {ShoppingCartItem[]} items
+	 * @param {number} id
+	 * @param item
+	 * @param options
+	 * @returns {ShoppingCartItem | undefined}
+	 */
+	private findItem(items: ShoppingCartItem[], id: number, options?: ShoppingCartOption[]) {
+		return items.find((shoppingCartItem: ShoppingCartItem) =>
+			this.itemsAreEqual(shoppingCartItem, {id, item: Event.create(), options, amount: 0})
+		)
+	}
+
+	/**
+	 * Holt das Item mit den übergebenen werten aus dem shopping cart
+	 * Gibt null zurück, wenn das Objekt nicht im Warenkorb vorhanden ist
+	 * @param type
+	 * @param id
+	 * @param item
+	 * @param options
+	 */
+	public getItem(type: EventType, id: number, options?: ShoppingCartOption[]) {
+		return this.findItem(this._content.getValue()[type], id, options);
+	}
+
+	/**
+	 * Returned ein Observable, welches das objekt mit der gegebenen ID + den gegebenen options beinhaltet.
+	 * Falls dieses nicht vorhanden sein sollte, beinhaltet das Observable null.
+	 * @param type
+	 * @param id
+	 * @param item
+	 * @param options
+	 * @returns {Observable<R>}
+	 */
+	public getItemAsObservable(type: EventType, id: number, options?: ShoppingCartOption[]) {
+		return this._content
+			.pipe(
+				map(content => this.findItem(content[type], id, options))
+			);
 	}
 
 	/**
@@ -68,8 +192,14 @@ export class ShoppingCartService implements OnInit {
 	 * @param options
 	 * @returns {ShoppingCartContent}
 	 */
-	private remove(content: ShoppingCartContent, type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
-		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, {id, options, amount: 0}));
+	private remove(content: ShoppingCartContent, type: EventType,
+				   id: number, options?: ShoppingCartOption[]) {
+		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, {
+			id,
+			item: Event.create(),
+			options,
+			amount: 0
+		}));
 		if (itemIndex >= 0) {
 			//remove
 			content[type].splice(itemIndex, 1);
@@ -95,7 +225,8 @@ export class ShoppingCartService implements OnInit {
 				content[type].splice(itemIndex, 1);
 			}
 			else {
-				content[type][itemIndex].amount = item.amount;
+				// content[type][itemIndex].amount = item.amount;
+				content[type][itemIndex] = {...item};
 			}
 		}
 		//wenn nein, wird das item hinzugefügt
@@ -103,54 +234,6 @@ export class ShoppingCartService implements OnInit {
 			content[type].push(item);
 		}
 		return content;
-	}
-
-	/**
-	 *
-	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
-	 * @param item das Item welches hinzugefügt werden soll
-	 */
-	public pushItem(type: EventType, item: ShoppingCartItem) {
-		let newValue = this.push(type, item, this._content.value);
-		this.pushNewValue(newValue);
-	}
-
-	/**
-	 *
-	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
-	 * @param id die ID des Items, welches gelöscht werden soll
-	 * @param options
-	 */
-	public deleteItem(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
-		let newValue = this.remove(this._content.value, type, id, options);
-		this.pushNewValue(newValue);
-	}
-
-	/**
-	 * Holt das Item mit den übergebenen werten aus dem shopping cart
-	 * Gibt null zurück, wenn das Objekt nicht im Warenkorb vorhanden ist
-	 * @param type
-	 * @param id
-	 * @param options
-	 */
-	public getItem(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
-		return this._content.getValue()[type].find((shoppingCartItem: ShoppingCartItem) =>
-			this.itemsAreEqual(shoppingCartItem, {id, options, amount: 0})
-		)
-	}
-
-	/**
-	 * Returned ein Observable, welches das objekt mit der gegebenen ID + den gegebenen options beinhaltet.
-	 * Falls dieses nicht vorhanden sein sollte, beinhaltet das Observable null.
-	 * @param type
-	 * @param id
-	 * @param options
-	 * @returns {Observable<R>}
-	 */
-	public getItemAsObservable(type: EventType, id: number, options?: { size?: string, color?: MerchColor }) {
-		return this._content.map(content => content[type].find((shoppingCartItem: ShoppingCartItem) =>
-			this.itemsAreEqual(shoppingCartItem, {id, options, amount: 0}))
-		);
 	}
 
 	/**
@@ -171,12 +254,6 @@ export class ShoppingCartService implements OnInit {
 	}
 
 	/**
-	 * Der Key, der für das Speichern des ShoppingCartContents im LocalStorage verwendet wird
-	 * @type {string}
-	 */
-	private readonly localStorageKey = "shoppingCart";
-
-	/**
 	 * Speichert das gegebene ShoppingCartContent objekt im LocalStorage
 	 * @param content
 	 */
@@ -186,7 +263,7 @@ export class ShoppingCartService implements OnInit {
 
 	/**
 	 * Holt die gespeicherten ShoppingCartContent Daten aus dem LocalStorage des Browsers.
-	 * TODO: speichern, wann es das letzte mal gespeichert wurde und löschen, falls zu lange her (1 tag?)
+	 * TODO: update if content is too old (example: tour has already happened)
 	 * @returns {any}
 	 */
 	private getContentFromLocalStorage(): ShoppingCartContent {

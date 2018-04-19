@@ -1,11 +1,11 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../shared/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../../../shared/utility/expandable-table/expandable-table-cell.component";
 
 @Component({
 	selector: "td [costValueTableCell]",
 	template: `
 		<span [ngClass]="{'positive': data >= 0}">
-			{{data | currency:'EUR':true}}
+			{{data | currency:'EUR':'symbol'}}
 			<!--{{data.toFixed(2)}} €-->
 		</span>
 	`,

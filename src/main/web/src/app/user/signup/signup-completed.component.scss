@@ -1,0 +1,24 @@
+@import "mixins";
+
+:host {
+	@include fullscreen-page();
+}
+
+.title {
+	@include fullscreen-page-title();
+	margin-top: -10%;
+}
+
+.content {
+	@include fullscreen-page-content();
+}
+
+h3 {
+	margin-top: 0;
+	text-align: center;
+}
+
+.content-actions {
+	display: flex;
+	justify-content: center;
+}

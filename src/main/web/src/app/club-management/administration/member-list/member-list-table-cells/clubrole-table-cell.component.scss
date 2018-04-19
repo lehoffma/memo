@@ -1,0 +1,29 @@
+@import "theme";
+
+.data-as-text {
+	font-weight: bold;
+}
+
+.Admin {
+	color: red;
+}
+
+.Kassenwart {
+	color: yellow;
+}
+
+.Mitglied {
+	color: $primary-default;
+}
+
+.Organisator {
+	color: #f315a1;
+}
+
+.Vorstand {
+	color: #2196F3;
+}
+
+.Gast {
+	color: grey;
+}

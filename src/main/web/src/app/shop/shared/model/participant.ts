@@ -1,10 +1,7 @@
 import {User} from "../../../shared/model/user";
-export interface Participant {
-	id: number,
-	isDriver: boolean,
-	hasPaid: boolean,
-	comments: string
-}
+import {OrderedItem} from "../../../shared/model/ordered-item";
+
+export type Participant = OrderedItem;
 
 export interface ParticipantUser extends Participant {
 	user: User

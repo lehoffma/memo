@@ -1,24 +1,26 @@
-<!--<div>-->
-<md-list>
-            <span *ngFor="let participant of (participants | slice:0:amountOfParticipantsShown)">
-                <md-list-item
-					(click)="showDetailsOfUser(participant.user)">
-                    <img md-list-avatar src="{{participant?.user?.imagePath}}"
-						 alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
-                    <h3 md-line> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
-                    <p md-line>
-                        <span> {{participant?.user?.clubRole}} </span>
-                        <span class="secondary-text"> -- {{participant?.user?.miles}} Meilen </span>
-                    </p>
-                </md-list-item>
-                <md-divider></md-divider>
-            </span>
-</md-list>
+<mat-list>
+	<span *ngFor="let participant of (participants | slice:0:amountOfParticipantsShown)">
+		<mat-list-item
+			(click)="showDetailsOfUser(participant.user)">
+			<img mat-list-avatar
+				 src="{{participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png'}}"
+				 alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
+			<h3 matLine> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
+			<p matLine>
+				<span> {{participant?.user?.clubRole}} </span>
+				<span class="secondary-text"> -- {{participant?.user?.miles}} Meilen </span>
+			</p>
+		</mat-list-item>
+		<mat-divider></mat-divider>
+	</span>
+	<mat-list-item *ngIf="!participants || participants.length === 0">
+		Bisher keine Teilnehmer vorhanden.
+	</mat-list-item>
+</mat-list>
 
-<button md-button type="button" (click)="expandedStatus = !expandedStatus">
+<button mat-button type="button" *ngIf="participants?.length > 3" (click)="expandedStatus = !expandedStatus">
 	<span>{{expandedStatus ? 'Weniger' : 'Mehr'}}</span>
-	<md-icon [@expandedState]="expandedStatus">expand_more</md-icon>
+	<mat-icon [@expandedState]="expandedStatus">expand_more</mat-icon>
 </button>
 
-<!--</div>-->
 

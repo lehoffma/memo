@@ -1,0 +1,23 @@
+<div mat-dialog-title>
+	{{title}} teilen
+</div>
+<mat-dialog-content>
+
+	<share-buttons [theme]="'default'"
+				   [include]="['facebook','twitter','whatsapp','telegram','copy']"
+				   [show]="5"
+				   [size]="-2"
+				   [url]="url"
+				   [title]="title"
+				   [image]="image"
+				   [description]="description"
+				   [tags]="tags"
+	></share-buttons>
+</mat-dialog-content>
+<mat-dialog-actions>
+	<button mat-button matDialogClose>
+		Zurück
+	</button>
+</mat-dialog-actions>
+
+

@@ -1,0 +1,55 @@
+@import "theme";
+
+.user-list-row {
+	display: flex;
+	padding: 1rem;
+	background: white;
+	text-decoration: none;
+
+	a {
+		color: rgba(0, 0, 0, 0.84);
+		text-decoration: none;
+	}
+
+	&:not(:last-child) {
+		border-bottom: 1px solid #ededed;
+
+		&:hover {
+			background: #ededed;
+		}
+	}
+
+	.user-list-row-actions,
+	.user-info {
+		display: flex;
+		align-items: center;
+	}
+
+	.user-info {
+		width: calc(100% - 40px);
+
+		.user-name {
+			text-overflow: ellipsis;
+
+			/* Required for text-overflow to do anything */
+			white-space: nowrap;
+			overflow: hidden;
+		}
+	}
+
+	img {
+		width: 50px;
+		border-radius: 50%;
+		border: 2px solid $primary-default;
+		height: 50px;
+		object-fit: cover;
+		margin-right: 15px;
+	}
+}
+
+memo-user-autocomplete {
+	width: 100%;
+	/deep/ mat-form-field {
+		width: 100%;
+	}
+}

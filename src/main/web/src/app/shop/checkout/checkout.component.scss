@@ -1,96 +1,60 @@
-@import "../../../theme";
-@import "~@angular/material/theming";
+@import "theme";
+@import "variables";
 
 :host {
-	height: calc(100% - 64px);
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	position: absolute;
 }
 
 .checkout-options-container {
-	//display: flex;
-	//justify-content: center;
-	//flex-direction: column;
-	//align-items: center;
-
 	display: flex;
 	flex-wrap: wrap;
+	@include mat-elevation(3);
+	@include mat-elevation-transition();
 
-	position: absolute;
+	max-width: 500px;
+
 	width: 100%;
-
-	height: calc(100% - 80px);
 	overflow-y: auto;
 
 	@media all and (min-width: 500px) {
-		padding-top: 20px;
-		padding-bottom: 20px;
+		margin: 20px auto;
 	}
 }
 
-md-card{
-	max-width: 500px;
+/////////////
+
+memo-item-details-content {
 	width: 100%;
-	margin: auto;
-	//padding: 0 0 10px;
-
-	&:not(:first-child){
-		margin-top: 20px;
-	}
-
-	@media all and (min-width: 1000px) {
-		margin-top: 0 !important;
-
-		&:first-child {
-			margin-right: 5px;
-		}
-		&:not(:first-child) {
-			margin-left: 5px;
-		}
-	}
 }
 
-
-.checkout-title {
-	font-weight: 200;
-	border-bottom: 1px solid #E0E0E0;
-	background-color: mat-color($primary);
-	color: white;
-	padding: 24px 16px 10px 24px;
-	margin-top: -24px !important;
-	margin-left: -24px;
-	margin-right: -24px;
-	margin-bottom: 10px;
-
-	@media all and (max-width: 600px){
-		margin-left: -16px;
-		margin-right: -16px;
-	}
+.no-padding /deep/ .object-details-content {
+	padding: 0;
 }
+
+memo-address-form /deep/ memo-address-input-form /deep/ mat-form-field {
+	width: 100%;
+}
+
+memo-payment /deep/ memo-bank-account-form /deep/ memo-bank-account-input-form /deep/ mat-form-field {
+	width: 100%;
+}
+
+///////////////
 
 .checkout-total {
 	text-decoration: none;
+	border-top: 1px solid #ededed;
 
 	width: 100%;
-	//height: 64px;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	//background-color: mat-color($primary);
-	//color: white;
 
 	background-color: white;
 	color: rgba(0, 0, 0, 0.8);
 
-	bottom: 0;
-	padding: 1.5rem;
+	padding: 1rem;
 	font-size: 1.3rem;
-	position: absolute;
-
-	h3 {
-		margin: 0;
-		font-weight: 200;
-	}
 }

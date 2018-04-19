@@ -11,7 +11,7 @@ export class EventFactoryService {
 	constructor() {
 	}
 
-	build(eventType: EventType): Event {
+	static build(eventType: EventType): Event {
 		switch (eventType) {
 			case EventType.merch:
 				return Merchandise.create();

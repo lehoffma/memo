@@ -1,10 +1,11 @@
 import {Component, OnInit} from "@angular/core";
-import {Observable} from "rxjs";
 import {Link} from "../../../../shared/model/link";
-import {LogInService} from "../../../../shared/services/login.service";
+import {LogInService} from "../../../../shared/services/api/login.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {User} from "../../../../shared/model/user";
-import {UserService} from "../../../../shared/services/user.service";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {map} from "rxjs/operators";
+import {Observable} from "rxjs/Observable";
 
 @Component({
 	selector: "memo-toolbar-profile-link",
@@ -12,26 +13,26 @@ import {UserService} from "../../../../shared/services/user.service";
 	styleUrls: ["./toolbar-profile-link.component.scss"]
 })
 export class ToolbarProfileLinkComponent implements OnInit {
-	user: Observable<User> = this.loginService.accountObservable
-		.flatMap(accountId => accountId !== null ? this.userService.getById(accountId) : Observable.of(null));
+	user: Observable<User> = this.loginService.currentUser$;
 
-	accountLinks: Observable<Link[]> = Observable.combineLatest(this.navigationService.accountLinks, this.user)
-		.map(([links, user]) => {
-			if (user === null) {
-				return links;
-			}
-			const setId = (link: Link): Link => {
-				if (link.children) {
-					link.children = link.children.map(childLink => setId(childLink))
+	accountLinks: Observable<Link[]> = combineLatest(this.navigationService.accountLinks, this.user)
+		.pipe(
+			map(([links, user]) => {
+				if (user === null) {
+					return links;
 				}
-				link.route = link.route.replace("PROFILE_ID", "" + user.id);
-				return link;
-			};
-			return links.map(setId)
-		});
+				const setId = (link: Link): Link => {
+					if (link.children) {
+						link.children = link.children.map(childLink => setId(childLink))
+					}
+					link.route = link.route.replace("PROFILE_ID", "" + user.id);
+					return link;
+				};
+				return links.map(setId)
+			})
+		);
 
 	constructor(private loginService: LogInService,
-				private userService: UserService,
 				private navigationService: NavigationService) {
 	}
 
@@ -39,16 +40,16 @@ export class ToolbarProfileLinkComponent implements OnInit {
 	}
 
 	logout() {
-		this.loginService.logout();
+		this.loginService.logout()
+			.subscribe(logout => null);
 	}
 
 
 	/**
-	 * Navigiert zur angegebenen URL
-	 * @param url
+	 * Navigiert zum login screen
 	 */
-	takeToPage(url: string) {
-		this.navigationService.navigateByUrl(url);
+	takeToLogin() {
+		this.navigationService.navigateToLogin();
 	}
 
 }

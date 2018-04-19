@@ -1,0 +1,43 @@
+<div *ngIf="!hidden && orderOptionsService.formGroup" [formGroup]="orderOptionsService.formGroup">
+	<div *ngIf="!hidden">
+		<h2 class="options-title mat-headline">{{'Optionen'|uppercase}}</h2>
+		<h3>Datum</h3>
+		<mat-form-field>
+			<input matInput [matDatepicker]="startingDatePicker"
+				   placeholder="Von"
+				   formControlName="from"
+				   name="startingDateInput">
+			<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="startingDatePicker"></mat-datepicker-toggle>
+		</mat-form-field>
+		<mat-datepicker [disabled]="isLoading" #startingDatePicker
+						[touchUi]="true"></mat-datepicker>
+
+		<mat-form-field>
+			<input matInput [matDatepicker]="endDatePicker"
+				   placeholder="Bis"
+				   formControlName="to"
+				   name="endDateInput">
+			<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+		</mat-form-field>
+		<mat-datepicker #endDatePicker [disabled]="isLoading"
+						[touchUi]="true"></mat-datepicker>
+	</div>
+
+
+	<div *ngIf="!hidden">
+		<h3>Bestellstatus</h3>
+		<mat-checkbox *ngFor="let status of statusCategories"
+					  [formControl]="orderOptionsService.formGroup.get('status').get(status)">
+			{{statusToString(status)}}
+		</mat-checkbox>
+	</div>
+
+	<div *ngIf="!hidden">
+		<h3>Bezahlarten</h3>
+		<mat-checkbox *ngFor="let method of paymentMethods"
+					  [formControl]="orderOptionsService.formGroup.get('payment').get(method)">
+			{{method}}
+		</mat-checkbox>
+	</div>
+
+</div>

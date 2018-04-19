@@ -1,0 +1,50 @@
+<div [formGroup]="formGroup" *ngIf="!selection; else addressSelection">
+	<div *ngFor="let address of formGroup.get('addresses').value; let i = index" class="address-entry-container">
+		<memo-address-entry *ngIf="showInlineAddressForm !== i; else inlineEditForm"
+							[address]="address"
+							(onEdit)="showInlineAddressForm = i; showNewAddressForm = false"
+							(onDelete)="deleteAddress(i)">
+		</memo-address-entry>
+		<ng-template #inlineEditForm>
+			<memo-address-input-form [address]="address"
+									 (onCancel)="showInlineAddressForm = -1"
+									 (onSubmit)="updateAddress($event, i); showInlineAddressForm = -1"></memo-address-input-form>
+		</ng-template>
+	</div>
+	<button mat-button type="button" *ngIf="!showNewAddressForm && showInlineAddressForm === -1"
+			(click)="showNewAddressForm = true">
+		Neue Addresse hinzufügen
+	</button>
+	<memo-address-input-form *ngIf="showNewAddressForm && showInlineAddressForm === -1"
+							 (onCancel)="showNewAddressForm = false"
+							 (onSubmit)="updateAddress($event); showNewAddressForm = false"></memo-address-input-form>
+</div>
+
+<!--selection variant-->
+<ng-template #addressSelection>
+	<div [formGroup]="formGroup">
+		<mat-radio-group [formControl]="formGroup.get('selectedAddress')">
+			<div *ngFor="let address of formGroup.get('addresses').value; let i = index"
+				 class="address-entry-container selection-container">
+				<mat-radio-button [value]="address" *ngIf="showInlineAddressForm !== i; else inlineEditForm">
+					<memo-address-entry [address]="address"
+										(onEdit)="showInlineAddressForm = i; showNewAddressForm = false"
+										(onDelete)="deleteAddress(i)">
+					</memo-address-entry>
+				</mat-radio-button>
+				<ng-template #inlineEditForm>
+					<memo-address-input-form [address]="address"
+											 (onCancel)="showInlineAddressForm = -1"
+											 (onSubmit)="updateAddress($event, i); showInlineAddressForm = -1"></memo-address-input-form>
+				</ng-template>
+			</div>
+			<button mat-button type="button" *ngIf="!showNewAddressForm && showInlineAddressForm === -1"
+					(click)="showNewAddressForm = true">
+				Neue Addresse hinzufügen
+			</button>
+			<memo-address-input-form *ngIf="showNewAddressForm && showInlineAddressForm === -1"
+									 (onCancel)="showNewAddressForm = false"
+									 (onSubmit)="updateAddress($event); showNewAddressForm = false"></memo-address-input-form>
+		</mat-radio-group>
+	</div>
+</ng-template>

@@ -1,8 +1,10 @@
-import {Component, OnInit, Renderer, ViewChild} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from "@angular/core";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {NavigationService} from "../../../../shared/services/navigation.service";
+import {WindowService} from "../../../../shared/services/window.service";
+import {map} from "rxjs/operators";
 
-export enum SearchInputState{
+export enum SearchInputState {
 	ACTIVE = <any> "active",
 	INACTIVE = <any> "inactive"
 }
@@ -13,36 +15,38 @@ export enum SearchInputState{
 	styleUrls: ["./search-input.component.scss"],
 	animations: [
 		trigger("searchInputState", [
-			// state("inactive", style({
-			// 	width: "200px"
-			// })),
-			// state("active", style({
-			// 	width: "200px"
-			// })),
-			//todo angular bug! 'width: *' würde normalerweise funktionieren, aber lässt animation rumspringen
-			transition(":enter", [
+			transition("void => desktop", [
 				style({width: "0", opacity: "0"}),
-				animate("200ms ease-in", style({width: "160px", opacity: "1"}))
+				animate("100ms ease-in", style({width: "*", opacity: "1"}))
 			]),
-			transition(":leave", [
-				style({width: "160px", opacity: "1"}),
-				animate("200ms ease-out", style({width: "0", opacity: "0"}))
+			transition("desktop => void", [
+				style({width: "*", opacity: "1"}),
+				animate("100ms ease-out", style({width: "0", opacity: "0"}))
 			]),
-		])
+		]),
 	]
 })
 export class SearchInputComponent implements OnInit {
 	searchInputState = SearchInputState;
 	inputState = SearchInputState.INACTIVE;
 	showClear = false;
-	@ViewChild("searchInput") searchInput: any;
-
 	model = {
 		searchInput: ""
 	};
 
+	@ViewChild("searchInput") searchInput: any;
+	@Input() mobileExpanded = false;
+	@Output() onFocus: EventEmitter<boolean> = new EventEmitter();
+
+
+	screenState$ = this.windowService.dimension$
+		.pipe(
+			map(dim => dim.width < 600 ? "mobile" : "desktop")
+		);
+
 	constructor(private navigationService: NavigationService,
-				private renderer: Renderer) {
+				private windowService: WindowService,
+				private renderer: Renderer2) {
 	}
 
 	ngOnInit() {
@@ -54,9 +58,13 @@ export class SearchInputComponent implements OnInit {
 			? SearchInputState.ACTIVE
 			: SearchInputState.INACTIVE;
 		if (this.inputState === SearchInputState.ACTIVE) {
+			this.onFocus.emit(true);
 			setTimeout(() => {
-				this.renderer.invokeElementMethod(this.searchInput.nativeElement, "focus");
+				this.renderer.selectRootElement("#searchInput").focus();
 			}, 300);
+		}
+		else {
+			this.onFocus.emit(false);
 		}
 	}
 

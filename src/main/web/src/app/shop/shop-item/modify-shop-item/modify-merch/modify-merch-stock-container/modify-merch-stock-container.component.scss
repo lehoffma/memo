@@ -1,0 +1,20 @@
+.stock-table-container {
+	padding-left: 1rem;
+	padding-right: 1rem;
+	background: white;
+
+	@media all and (min-width: 800px) {
+		background: none;
+		padding: 0;
+	}
+}
+
+.action-buttons {
+	display: flex;
+	margin-top: 20px;
+	justify-content: flex-end;
+
+	@media all and (min-width: 1400px){
+		margin-right: 2rem;
+	}
+}

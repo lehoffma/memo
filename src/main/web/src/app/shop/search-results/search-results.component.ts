@@ -1,17 +1,22 @@
-import {Component, OnInit} from "@angular/core";
-import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {Observable} from "rxjs";
-import {EventService} from "../../shared/services/event.service";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {ActivatedRoute} from "@angular/router";
+import {EventService} from "../../shared/services/api/event.service";
 import {EventType} from "../shared/model/event-type";
 import {Event} from "../shared/model/event";
 import {SortingOption} from "../../shared/model/sorting-option";
 import {eventSortingOptions} from "./sorting-options";
 import {attributeSortingFunction} from "../../util/util";
 import {isNullOrUndefined} from "util";
-import {MultiLevelSelectParent} from "app/shared/multi-level-select/shared/multi-level-select-parent";
-import {isMultiLevelSelectLeaf} from "../../shared/multi-level-select/shared/multi-level-select-option";
-import {SearchFilterService} from "../../shared/services/search-filter.service";
+import {MultiLevelSelectParent} from "app/shared/utility/multi-level-select/shared/multi-level-select-parent";
+import {isMultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-option";
+import {SearchFilterService} from "./search-filter.service";
+import {FilterOptionBuilder} from "./filter-option-builder.service";
+import {FilterOptionType} from "./filter-option-type";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {debounceTime, defaultIfEmpty, map, mergeMap, scan, tap} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {Observable} from "rxjs/Observable";
+import {Subscription} from "rxjs/Subscription";
 
 type sortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -20,23 +25,55 @@ type sortingQueryParameter = { sortedBy: string; descending: string; };
 	templateUrl: "./search-results.component.html",
 	styleUrls: ["./search-results.component.scss"]
 })
-export class SearchResultComponent implements OnInit {
+export class SearchResultComponent implements OnInit, OnDestroy {
 	keywords: Observable<string> = this.activatedRoute.queryParamMap
-		.map(paramMap => paramMap.has("keywords")
-			? paramMap.get("keywords")
-			: "");
+		.pipe(
+			map(paramMap => paramMap.has("keywords")
+				? paramMap.get("keywords")
+				: "")
+		);
 	sortedBy: Observable<sortingQueryParameter> = this.activatedRoute.queryParamMap
-		.map(paramMap => paramMap.has("sortBy") && paramMap.has("descending")
-			? {sortedBy: paramMap.get("sortBy"), descending: paramMap.get("descending")}
-			: {});
+		.pipe(
+			map(paramMap => paramMap.has("sortBy") && paramMap.has("descending")
+				? ({sortedBy: paramMap.get("sortBy"), descending: paramMap.get("descending")})
+				: null)
+		);
 	filteredBy: Observable<any> = this.activatedRoute.queryParamMap
-		.map(paramMap => {
-			let paramObject = {};
-			paramMap.keys.forEach(key => paramObject[key] = paramMap.get(key));
-			return paramObject;
-		});
+		.pipe(
+			map(paramMap => {
+				let paramObject = {};
+				paramMap.keys.forEach(key => paramObject[key] = paramMap.get(key));
+				return paramObject;
+			})
+		);
 
 	resultsTitle: BehaviorSubject<string> = new BehaviorSubject("");
+	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
+	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
+	filterOptions$ = this._filterOptions$
+		.asObservable()
+		.pipe(
+			debounceTime(200),
+			scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService)),
+			map(options => options.filter(option => option.children && option.children.length > 0))
+		);
+
+	get filterOptions() {
+		return this._filterOptions$.getValue();
+	}
+
+	set filterOptions(options) {
+		this._filterOptions$.next(options);
+	}
+
+	subscription: Subscription;
+
+	constructor(private activatedRoute: ActivatedRoute,
+				private searchFilterService: SearchFilterService,
+				private filterOptionBuilder: FilterOptionBuilder,
+				private eventService: EventService) {
+	}
+
 	_results$: Observable<Event[]>;
 
 	get results$() {
@@ -47,90 +84,90 @@ export class SearchResultComponent implements OnInit {
 		this._results$ = results;
 	}
 
-	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
-	filterOptions: MultiLevelSelectParent[] = [];
-
-
-	constructor(private activatedRoute: ActivatedRoute,
-				private searchFilterService: SearchFilterService,
-				private router: Router,
-				private eventService: EventService) {
-	}
-
 	ngOnInit() {
 		this.fetchResults();
 	}
 
-	/**
-	 * Schaut, ob die Route query parameter beinhaltet und initialisiert die filter menü checkboxen mit den
-	 * jeweiligen werten
-	 */
-	initFilterMenu() {
-		//checks if the route includes query parameters and initializes the filtermenus checkboxes
-		this.activatedRoute.queryParamMap.first()
-			.subscribe(queryParamMap => {
-				this.filterOptions = this.filterOptions.map(filterOptionParent => {
-					let key = filterOptionParent.queryKey;
-					//if the key associated with the filter selection box is part of the query parameters,
-					//update the filterOption's selected values.
-					if (queryParamMap.has(key)) {
-						let values: string[] = queryParamMap.get(key).split("|"); //something like 'tours|partys|merch'
-						filterOptionParent.children.forEach(child => {
-							if (isMultiLevelSelectLeaf(child)) {
-								child.selected = values.includes(child.queryValue);
-							}
-						});
-					}
-					return filterOptionParent;
-				})
-			});
+	ngOnDestroy() {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
 	}
-
 
 	/**
 	 * Holt die Suchergebnisse aus den jeweiligen Services und sortiert und filtert sie anhand der
 	 * sortedBy und filteredBy werte.
 	 */
 	fetchResults() {
-		Observable.combineLatest(this.keywords, this.sortedBy, this.filteredBy)
-			.subscribe(([keywords, sortedBy, filteredBy]) => {
-					//reset results so the result screen can show a loading screen while the http call is performed
-					this.results$ = Observable.empty();
-
-					this.results$ = Observable.combineLatest(
+		this.results$ = combineLatest(this.keywords, this.sortedBy, this.filteredBy)
+			.pipe(
+				//reset results so the result screen can show a loading screen while the http call is performed
+				//todo isLoading = true; + use Observable.scan
+				// tap(() => this.results$ = empty()),
+				mergeMap(([keywords, sortedBy, filteredBy]) =>
+					combineLatest(
 						this.eventService.search(keywords, EventType.tours),
 						this.eventService.search(keywords, EventType.partys),
 						this.eventService.search(keywords, EventType.merch),
 						(tours, partys, merch) => [...tours, ...partys, ...merch]
 					)
-						.do(events => this.filterOptions = this.searchFilterService.getEventFilterOptionsFromResults(events))
-						.do(events => this.initFilterMenu())
-						//todo replace with actual api call?
-						.map(events => {
-							//sortiere events
-							if (sortedBy && sortedBy.sortedBy && !isNullOrUndefined(sortedBy)) {
-								events = events.sort(attributeSortingFunction(sortedBy.sortedBy, sortedBy.descending === "true"));
-							}
+						.pipe(
+							map(events => {
+								//sort events
+								if (sortedBy && sortedBy.sortedBy && !isNullOrUndefined(sortedBy)) {
+									events = events.sort(attributeSortingFunction(sortedBy.sortedBy,
+										sortedBy.descending === "true"));
+								}
+								return events;
+							}),
+							mergeMap(events =>
+								combineLatest(
+									...events.map(event => this.searchFilterService.satisfiesFilters(event, filteredBy)
+										.pipe(
+											map(satisfiesFilters => ({
+												event,
+												satisfiesFilters
+											}))
+										))
+								)
+									.pipe(
+										map((isFilteredList: { event: Event, satisfiesFilters: boolean }[]) =>
+											isFilteredList.filter(it => it.satisfiesFilters)
+												.map(it => it.event)),
+										defaultIfEmpty(events)
+									)
+							),
+							tap(events =>
+								this.subscription = this.filterOptionBuilder
+									.empty()
+									.withOptions(
+										FilterOptionType.EVENT_CATEGORY,
+										FilterOptionType.DATE,
+										FilterOptionType.PRICE,
+										FilterOptionType.COLOR,
+										FilterOptionType.MATERIAL,
+										FilterOptionType.SIZE
+									)
+									.build(events)
+									.pipe(
+										mergeMap(options => this.searchFilterService.initFilterMenu(this.activatedRoute, options)),
+										tap(filterOptions => {
+											this.filterOptions = filterOptions;
+											let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");
+											let selectedCategories: string[] = categoryFilterOption.children
+												.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
+												.map(child => child.name);
 
-							return events;
-						})
-						//todo replace with actual api call?
-						.map((events: Event[]) =>
-							events.filter(event => this.searchFilterService.satisfiesFilters(event, filteredBy))
+											//todo ausgewählte filter optionen in den title reintun
+											this.resultsTitle.next(events.length + " " + selectedCategories.join(", ") +
+												" Ergebnisse" + (keywords === "" ? "" : " für '" + keywords + "'") +
+												"");
+										})
+									)
+									.subscribe()
+							)
 						)
-						//Updated den Suchergebnisse Titel anhand der ausgewählten Kategorien und der Menge an Ergebnissen.
-						.do(events => {
-							let categoryFilterOption = this.filterOptions.find(option => option.queryKey === "category");
-							let selectedCategories: string[] = categoryFilterOption.children
-								.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
-								.map(child => child.name);
-
-							//todo ausgewählte filter optionen in den title reintun
-							this.resultsTitle.next(events.length + " " + selectedCategories.join(", ") +
-								" Ergebnisse" + (keywords === "" ? "" : " für '" + keywords + "'") +
-								"");
-						})
-				}
+				)
 			);
 	}
 

@@ -1,101 +1,172 @@
 package memo.model;
 
-import com.google.gson.annotations.Expose;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.serialization.ShopItemIdDeserializer;
+import memo.serialization.ShopItemIdSerializer;
+import memo.serialization.UserIdDeserializer;
+import memo.serialization.UserIdSerializer;
 
-import java.io.Serializable;
-import java.lang.Integer;
-import java.lang.String;
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Entity implementation class for Entity: AdDress
- *
  */
 @Entity
-@Table(name="ADDRESSES")
+@Table(name = "ADDRESSES")
 
-@NamedQuery(name = "getAddressById", query = "SELECT a FROM Address a WHERE a.id = :id")
 public class Address implements Serializable {
 
-    @Expose
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
-    @Expose
-	private String name;
-    @Expose
-	@Column(nullable=false)
-	private String street;
-    @Expose
-	@Column(nullable=false)
-	private String streetNr;
-    @Expose
-	@Column(nullable=false)
-	private String zip;
-    @Expose
-	@Column(nullable=false)
-	private String city;
-    @Expose
-	private String country = "Germany";
-    @Expose
-	private double latitude;
-    @Expose
-	private double longitude;
+    //**************************************************************
+    //  static members
+    //**************************************************************
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public Address() {
-		super();
-	}   
-	public Integer getId() {
-		return this.id;
-	}
+    //**************************************************************
+    //  members
+    //**************************************************************
 
-	public void setId(Integer id) {
-		this.id = id;
-	}   
-	public String getName() {
-		return this.name;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-	public void setName(String name) {
-		this.name = name;
-	}   
-	public String getStreet() {
-		return this.street;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn()
+    @JsonDeserialize(using = UserIdDeserializer.class)
+    @JsonSerialize(using = UserIdSerializer.class)
+    private User user;
 
-	public void setStreet(String street) {
-		this.street = street;
-	}   
-	public String getStreetNr() {
-		return this.streetNr;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn()
+    @JsonDeserialize(using = ShopItemIdDeserializer.class)
+    @JsonSerialize(using = ShopItemIdSerializer.class)
+    private ShopItem item;
 
-	public void setStreetNr(String streetNr) {
-		this.streetNr = streetNr;
-	}   
-	public String getZip() {
-		return this.zip;
-	}
+    private String name;
 
-	public void setZip(String zip) {
-		this.zip = zip;
-	}   
-	public String getCity() {
-		return this.city;
-	}
+    @Column(nullable = false)
+    private String street;
 
-	public void setCity(String city) {
-		this.city = city;
-	}   
-	public String getCountry() {
-		return this.country;
-	}
+    private String streetNr;
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
+    @Column(nullable = false)
+    private String zip;
+
+    @Column(nullable = false)
+    private String city;
+
+    private String country = "Germany";
+
+    private double latitude;
+
+    private double longitude;
+
+    //**************************************************************
+    //  constructor
+    //**************************************************************
+
+    public Address() {
+        super();
+    }
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public ShopItem getItem() {
+        return item;
+    }
+
+    public void setItem(ShopItem item) {
+        this.item = item;
+    }
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getStreet() {
+        return this.street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getStreetNr() {
+        return this.streetNr;
+    }
+
+    public void setStreetNr(String streetNr) {
+        this.streetNr = streetNr;
+    }
+
+    public String getZip() {
+        return this.zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public String getCity() {
+        return this.city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return this.country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    //**************************************************************
+    //  methods
+    //**************************************************************
 
     @Override
     public String toString() {
@@ -110,5 +181,19 @@ public class Address implements Serializable {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(id, address.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

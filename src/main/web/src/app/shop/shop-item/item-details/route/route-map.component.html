@@ -1,0 +1,18 @@
+<agm-map *ngIf="(_tourRoute$ | async) as route"
+		 [latitude]="(centerOfTour$ | async).latitude"
+		 [longitude]="(centerOfTour$ | async).longitude"
+		 [zoom]="7"
+		 (tap)="openRouteOnGoogleMaps(route)">
+	<agm-marker *ngFor="let tourStop of route"
+				[latitude]="tourStop.latitude"
+				[longitude]="tourStop.longitude">
+
+	</agm-marker>
+	<agm-polyline>
+		<agm-polyline-point *ngFor="let tourStop of route"
+							[latitude]="tourStop.latitude"
+							[longitude]="tourStop.longitude">
+
+		</agm-polyline-point>
+	</agm-polyline>
+</agm-map>

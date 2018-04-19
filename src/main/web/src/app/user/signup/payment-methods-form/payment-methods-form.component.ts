@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {PaymentInfo} from "./debit-input-form/payment-info";
 import {SignUpSubmitEvent} from "../signup-submit-event";
 import {SignUpSection} from "../signup-section";
+import {User} from "../../../shared/model/user";
 
 @Component({
 	selector: "memo-payment-methods-form",
@@ -9,7 +10,7 @@ import {SignUpSection} from "../signup-section";
 	styleUrls: ["./payment-methods-form.component.scss"]
 })
 export class PaymentMethodsFormComponent implements OnInit {
-	@Input() user: any;
+	@Input() user: User;
 	@Input() loading: boolean = false;
 	paymentMethod: { value: string, name: string };
 	paymentMethods = [
@@ -41,7 +42,6 @@ export class PaymentMethodsFormComponent implements OnInit {
 
 	submit() {
 		this.onSubmit.emit({
-			section: SignUpSection.PaymentMethods,
 			paymentInfo: this.debitFormIsValid ? this.debitInfo : undefined
 		})
 	}

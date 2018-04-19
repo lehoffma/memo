@@ -25,19 +25,33 @@
 		"name": "Kalender"
 	},
 	{
+		"route": "leaderboard",
+		"icon": "format_list_numbered",
+		"name": "Meilentabelle"
+	},
+	{
+		"name": "Mitgliedschaft",
+		"icon": "",
+		"route": "",
+		"children": [
+			{
+				"route": "/applyForMembership",
+				"name": "Mitglied werden",
+				"icon": "book"
+			},
+			{
+				"route": "/requestMembership",
+				"loginNeeded": true,
+				"name": "Mitgliedsstatus ändern",
+				"icon": "email"
+			}
+		]
+	},
+	{
 		"route": "",
 		"icon": "",
 		"name": "Accountverwaltung",
 		"loginNeeded": true,
-		"minimumPermission": {
-			"user": 1,
-			"merch": 1,
-			"tour": 1,
-			"party": 1,
-			"funds": 0,
-			"stock": 0,
-			"settings": 0
-		},
 		"children": [
 			{
 				"route": "members/PROFILE_ID",
@@ -67,7 +81,7 @@
 		"name": "Vereinsverwaltung",
 		"loginNeeded": true,
 		"minimumPermission": {
-			"user": 1,
+			"userManagement": 1,
 			"merch": 1,
 			"tour": 1,
 			"party": 1,
@@ -81,14 +95,18 @@
 				"icon": "payment",
 				"name": "Kostenübersicht",
 				"minimumPermission": {
-					"user": 1,
+					"userManagement": 1,
 					"merch": 1,
 					"tour": 1,
 					"party": 1,
 					"funds": 1,
-					"stock": 0,
-					"accountManagement": 0
+					"stock": 1
 				}
+			},
+			{
+				"route": "management/orders",
+				"icon": "assignment",
+				"name": "Bestellungen"
 			},
 			{
 				"route": "members",
@@ -100,26 +118,26 @@
 				"icon": "local_shipping",
 				"name": "Bestand",
 				"minimumPermission": {
-					"user": 1,
+					"userManagement": 1,
 					"merch": 1,
 					"tour": 1,
 					"party": 1,
 					"funds": 0,
-					"stock": 1,
-					"accountManagement": 0
+					"stock": 1
 				}
 			}
 		]
 	},
 	{
-		"route": "settings",
-		"icon": "settings",
-		"name": "Einstellungen",
+		"route": "impressum",
+		"icon": "info",
+		"name": "Impressum",
 		"drawLineAbove": true
 	},
 	{
-		"route": "impressum",
-		"icon": "info",
-		"name": "Impressum"
+		"route": null,
+		"link": "http://meilenwoelfe.de/meilenblog",
+		"icon": "web",
+		"name": "Blog"
 	}
 ]

@@ -1,147 +1,88 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {MerchStock} from "../../../../shared/model/merch-stock";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {ExpandableTableColumn} from "../../../../../shared/expandable-table/expandable-table-column";
-import {ColumnSortingEvent} from "../../../../../shared/expandable-table/column-sorting-event";
-import {Observable} from "rxjs/Observable";
-import {attributeSortingFunction, getId, sortingFunction} from "../../../../../util/util";
-import {MerchColorCellComponent} from "./merch-color-cell/merch-color-cell.component";
-import {MdDialog} from "@angular/material";
-import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-merch-stock-item.component";
-import {ModifyStockItemEvent} from "./modify-merch-stock-item/modify-stock-item-event";
-import {ModifyType} from "../../modify-type";
-import {ActionPermissions} from "../../../../../shared/expandable-table/expandable-table.component";
-import {LogInService} from "../../../../../shared/services/login.service";
+import {ModifyMerchStockService} from "./modify-merch-stock.service";
+import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
+import {filter, map, take} from "rxjs/operators";
+import {timer} from "rxjs/observable/timer";
 
 @Component({
 	selector: "memo-modify-merch-stock",
 	templateUrl: "./modify-merch-stock.component.html",
-	styleUrls: ["./modify-merch-stock.component.scss"]
+	styleUrls: ["./modify-merch-stock.component.scss"],
+	providers: [ModifyMerchStockService, {
+		provide: NG_VALUE_ACCESSOR,
+		useExisting: ModifyMerchStockComponent,
+		multi: true
+	}],
 })
-export class ModifyMerchStockComponent implements OnInit {
-	_sortBy: BehaviorSubject<ColumnSortingEvent<MerchStock>> = new BehaviorSubject<ColumnSortingEvent<MerchStock>>({
-		key: "size",
-		descending: true
-	});
-	sortBy = this._sortBy.asObservable();
+export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValueAccessor {
+	@Input() formControl: FormControl;
 
-	merchStockSubject: BehaviorSubject<MerchStock[]> = new BehaviorSubject([]);
-
-	@Input() set stock(value) {
-		this.merchStockSubject.next(value ? value : []);
+	_previousValue: MerchStock[];
+	@Input() set previousValue(previousValue: MerchStock[]) {
+		if (previousValue === undefined) {
+			return;
+		}
+		this._previousValue = previousValue;
+		this.modifyMerchStockService.setValue(previousValue);
 	}
 
-	@Output() stockChange = new EventEmitter();
-
-	get merchStock() {
-		return this.merchStockSubject.getValue();
+	get previousValue() {
+		return this._previousValue;
 	}
 
-	set merchStock(value: MerchStock[]) {
-		this.stock = value;
-		this.stockChange.emit(value);
+	@Input() merchTitle: string;
+
+	_onChange;
+
+	subscription;
+
+	constructor(public modifyMerchStockService: ModifyMerchStockService) {
 	}
 
-	merchStockObservable = Observable.combineLatest(this.merchStockSubject, this.sortBy)
-		.map(([merchStock, sortBy]) => {
-			return [...merchStock]
-				.map((stock) => ({
-					id: getId(stock),
-					size: stock.size,
-					color: Object.assign({}, stock.color),
-					amount: stock.amount,
-				}))
-				.sort(sortBy.key === "color"
-					? sortingFunction<MerchStock>(obj => obj.color.name, sortBy.descending)
-					: attributeSortingFunction(sortBy.key, sortBy.descending));
-		});
-
-	permissions$: Observable<ActionPermissions> = this.loginService.getActionPermissions("stock");
-
-	primaryColumnKeys: ExpandableTableColumn<MerchStock>[] = [
-		new ExpandableTableColumn<MerchStock>("Größe", "size"),
-		new ExpandableTableColumn<MerchStock>("Farbe", "color", MerchColorCellComponent),
-		new ExpandableTableColumn<MerchStock>("Anzahl", "amount")
-	];
-
-	constructor(private mdDialog: MdDialog,
-				private loginService: LogInService) {
-	}
 
 	ngOnInit() {
+		this.subscription = this.modifyMerchStockService.dataSubject$
+			.subscribe(value => this.onChange(value));
 	}
 
-	updateSortBy(event: ColumnSortingEvent<MerchStock>) {
-		this._sortBy.next(event);
+	ngOnDestroy(): void {
+		this.subscription.unsubscribe();
 	}
 
 
-	// edit ruft dann dialog auf, in dem size, color & amount felder drin sind
-	// beim editieren stehen für size&color dann bereits verwendete werte zur verfügung,
-	// aber es kann auch ein neuer hinzugefügt werden
-
-	/**
-	 * Ruft den modify dialog mit den gegebenen daten auf
-	 * @param data
-	 * @returns {Observable<any>}
-	 */
-	openModifyStockItemDialog(data: any = {}) {
-		this.mdDialog.open(ModifyMerchStockItemComponent, {data})
-			.afterClosed()
-			.subscribe((event: ModifyStockItemEvent) => {
-				switch (event.modifyType) {
-					case ModifyType.ADD:
-						this.merchStock = this.merchStock.concat({
-							size: event.size,
-							color: Object.assign({}, event.color),
-							amount: event.amount
-						});
-						break;
-					case ModifyType.EDIT:
-						this.merchStock = this.merchStock.map(stock => {
-							if (getId(stock) === event.modifiedStock["id"]) {
-								return {
-									size: event.size,
-									color: Object.assign({}, event.color),
-									amount: event.amount
-								}
-							}
-							return stock;
-						})
-				}
-			})
+	onChange(merchStock: MerchStock[]) {
+		timer(0, 500)
+			.pipe(
+				//hack: sometimes _onChange is not yet initialized when we're attempting to set the value
+				filter(it => this._onChange !== null),
+				take(1),
+				map(it => merchStock)
+			)
+			.subscribe(values => {
+				this._onChange(values);
+			});
 	}
 
-	/**
-	 *
-	 * @param event
-	 */
-	addStock() {
-		this.openModifyStockItemDialog()
+	registerOnChange(fn: any): void {
+		this._onChange = fn;
 	}
 
-	/**
-	 *
-	 * @param event
-	 */
-	editStock(event: MerchStock) {
-		this.openModifyStockItemDialog({
-			color: event.color,
-			size: event.size,
-			amount: event.amount,
-			modifiedStock: Object.assign({}, event)
-		});
+	registerOnTouched(fn: any): void {
 	}
 
-	/**
-	 *
-	 * @param stockEntriesToDelete
-	 */
-	deleteStock(stockEntriesToDelete: MerchStock[]) {
-		this.merchStock = this.merchStock
-			.filter(stock =>
-				!stockEntriesToDelete
-					.find(stockToDelete => stockToDelete.size === stock.size && stockToDelete.color.name === stock.color.name)
-			);
+	setDisabledState(isDisabled: boolean): void {
+		if (isDisabled) {
+			this.formControl.disable();
+		}
+		else {
+			this.formControl.enable();
+		}
 	}
+
+	writeValue(obj: MerchStock[]): void {
+		console.log(obj);
+		this.formControl.setValue(obj);
+	}
+
 }

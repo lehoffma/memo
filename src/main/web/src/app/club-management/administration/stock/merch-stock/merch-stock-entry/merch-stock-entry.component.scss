@@ -1,0 +1,206 @@
+@import "theme";
+@import "variables";
+@import "~@angular/material/theming";
+
+
+:host{
+	display: flex;
+	flex-direction: column;
+	@include mat-elevation(3);
+	@include mat-elevation-transition;
+	background-color: $container-content--background-color;
+	color: $container-content--color;
+
+
+	.stock-entry-header{
+		display: flex;
+		background-color: $container-header--background-color;
+		color: $container-header--color;
+		justify-content: space-between;
+		padding: 10px;
+		border-bottom: $container-divider--height solid $container-divider--color;
+
+		a{
+			color: rgba(0,0,0, 0.65);
+			text-decoration: none;
+
+			&:hover{
+				color: black;
+			}
+			h3{
+				margin: 0;
+			}
+		}
+
+		> div{
+			display: flex;
+			max-width: 85%;
+
+			> div{
+				margin-left: 10px;
+				display: flex;
+				flex-direction: column;
+				width: calc(100% - 50px);
+
+				span{
+					font-size: 0.9rem;
+
+					text-overflow: ellipsis;
+
+					/* Required for text-overflow to do anything */
+					white-space: nowrap;
+					overflow: hidden;
+				}
+			}
+		}
+
+		img{
+			width: 50px;
+			height: 50px;
+			object-fit: cover;
+		}
+
+		button{
+			margin-right: -10px;
+			margin-top: -10px;
+		}
+	}
+
+	table{
+		overflow-x: auto;
+		width: 95%;
+		border-collapse: collapse;
+		font-size: 0.8rem;
+		margin: 2.5%;
+
+
+		thead {
+			color: rgba(0, 0, 0, 0.54);
+			font-size: 0.75rem;
+
+			.sorted-column {
+				color: rgba(0, 0, 0, 0.87);
+			}
+
+			.sortable-column {
+				cursor: pointer;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+
+				mat-icon {
+					display: inline-flex;
+					vertical-align: middle;
+				}
+			}
+
+			th:not(.sortable-column):not(.empty-column) {
+				width: 50px;
+
+				@media all and (min-width: 1000px) {
+					width: 60px;
+				}
+			}
+
+
+		}
+
+		thead tr,
+		tr:not(:last-child){
+			border-bottom: 2px solid #ededed;
+		}
+
+		tr th:last-child,
+		tr td:last-child{
+			border-left: 2px solid #ededed;
+			padding-right: 20px;
+		}
+
+		.total-header{
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+
+
+		.empty-column{
+			width: 20px;
+		}
+
+		tbody {
+			color: rgba(0, 0, 0, 0.87);
+
+			tr:hover {
+				background-color: #EEEEEE;
+			}
+
+			.selected-row {
+				background-color: #F5F5F5;
+			}
+
+		}
+
+		tr{
+			height: 56px;
+		}
+
+		th{
+			color: rgba(0, 0, 0, 0.54);
+			font-size: 0.75rem;
+
+			&.total-sum{
+				font-size: 1rem;
+			}
+		}
+
+		th, td{
+			text-align: end;
+		}
+	}
+
+	.stock-amount-cell.is-zero{
+		color: grey;
+	}
+	.stock-amount-cell:not(.is-zero){
+		font-weight: bold;
+	}
+
+
+	.color-container{
+		align-items: center;
+		height: 56px;
+		display: inline-flex;
+
+		.merch-available-colors {
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+		}
+
+		span{
+			margin-left: 10px;
+		}
+	}
+}
+
+@media all and (min-width: 1200px){
+	:host{
+		table{
+			font-size: 1.1rem;
+
+			thead{
+				font-size: 0.95rem;
+			}
+
+			th{
+				color: rgba(0, 0, 0, 0.54);
+				font-size: 0.95rem;
+
+				&.total-sum{
+					font-size: 1.2rem;
+				}
+			}
+		}
+	}
+}

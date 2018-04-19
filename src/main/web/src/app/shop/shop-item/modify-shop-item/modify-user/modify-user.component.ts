@@ -1,31 +1,24 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ModifyType} from "../modify-type";
 import {Location} from "@angular/common";
+import {User} from "../../../../shared/model/user";
+import {ModifyItemEvent} from "../modify-item-event";
+import {ModifyItemService} from "../modify-item.service";
+import {ModifiedImages} from "../modified-images";
 
 @Component({
 	selector: "memo-modify-user",
 	templateUrl: "./modify-user.component.html",
-	styleUrls: ["./modify-user.component.scss"]
+	styleUrls: ["./modify-user.component.scss"],
 })
 export class ModifyUserComponent implements OnInit {
-	@Input() model: any;
+	@Input() previousValue: any;
 	@Input() mode: ModifyType;
-	@Output() modelChange: EventEmitter<any> = new EventEmitter();
-	@Output() onSubmit: EventEmitter<any> = new EventEmitter();
-
+	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 	ModifyType = ModifyType;
 
-
-	get userModel() {
-		return this.model;
-	}
-
-	set userModel(model: any) {
-		this.model = model;
-		this.modelChange.emit(this.model);
-	}
-
-	constructor(private location: Location) {
+	constructor(private location: Location,
+				private modifyItemService: ModifyItemService) {
 	}
 
 	ngOnInit() {
@@ -33,10 +26,10 @@ export class ModifyUserComponent implements OnInit {
 
 	cancel() {
 		this.location.back();
+		this.modifyItemService.reset();
 	}
 
-	submitModifiedObject(event) {
-		console.log(event);
-		this.onSubmit.emit(this.model);
+	submitModifiedObject(event: { item: User, images: ModifiedImages }) {
+		this.onSubmit.emit(event);
 	}
 }

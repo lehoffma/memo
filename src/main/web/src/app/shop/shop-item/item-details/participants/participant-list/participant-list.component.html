@@ -1,22 +1,21 @@
-<div class="participant-table-container" *ngIf="(participantList | async); let participants; else loading">
+<div class="participant-table-container" [class.loading]="participantListService.loading">
 	<memo-expandable-table
-		[data]="participants"
-		[expandable]="isExpandable | async"
-		[title]="'Teilnehmer von ' + (eventTitle | async)"
-		[columnKeys]="columnKeys | async"
-		[expandedRowComponent]="expandedRowComponent"
-		[expandedRowKeys]="expandedKeys | async"
-		[permissions]="permissions$ | async"
-		(onSort)="updateSortBy($event)"
-		(onAdd)="addParticipant()"
-		(onEdit)="editParticipant($event)"
-		(onDelete)="deleteParticipant($event)"
+		[data]="(participantListService.data$ | async)"
+		[rowActions]="rowActions"
+		[expandable]="isExpandable$ | async"
+		[title]="'Teilnehmer von ' + (participantListService.eventTitle | async)"
+		[columnKeys]="participantListService.primaryColumnKeys$ | async"
+		[expandedRowComponent]="participantListService.rowComponent"
+		[expandedRowKeys]="participantListService.expandedRowKeys$ | async"
+		[permissions]="participantListService.permissions$ | async"
+		(onSort)="participantListService.onSort($event)"
+		(onAction)="participantListService.handleTableAction($event)"
 	>
 
 	</memo-expandable-table>
 </div>
-<ng-template #loading>
+<ng-container *ngIf="participantListService.loading">
 	<div class="loader-wrapper">
 		<div class="loader"></div>
 	</div>
-</ng-template>
+</ng-container>

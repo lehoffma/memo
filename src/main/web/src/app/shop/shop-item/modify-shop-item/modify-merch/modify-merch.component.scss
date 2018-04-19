@@ -4,7 +4,7 @@
 	display: flex;
 	justify-content: space-between;
 
-	> md-input-container {
+	> mat-form-field {
 		width: 45%;
 	}
 }
@@ -25,3 +25,57 @@
 		}
 	}
 }
+
+.information-container /deep/ .expandable-table-header.expandable-table-row {
+	border-bottom: 1px solid #ededed;
+	padding: 1rem 1rem 0.5rem;
+
+	.expandable-table-header-title {
+		font-size: 1.5rem;
+		font-weight: 200;
+	}
+}
+
+.information-container /deep/ .expandable-table-component-container {
+	max-width: 500px;
+	width: 100%;
+	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.information-container /deep/ .expandable-table-container {
+	padding-left: 1rem;
+	padding-right: 1rem;
+	background: white;
+}
+
+memo-modify-merch-stock {
+	display: block;
+	border-top: 1px solid #ededed;
+}
+
+@media all and (min-width: 800px) {
+	:host {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		padding-bottom: 1rem;
+	}
+	memo-multi-image-upload {
+		display: block;
+
+		/deep/ memo-multi-image-container,
+		/deep/ .upload-container {
+			width: 100% !important;
+		}
+	}
+}
+
+//
+//:host /deep/ .expandable-table-component-container {
+//	margin-left: -1rem;
+//	padding-left: 1rem;
+//	margin-right: -1rem;
+//	padding-right: 1rem;
+//	margin-top: -1.2rem;
+//	background: white;
+//	border-bottom: 1px solid #ededed;
+//}

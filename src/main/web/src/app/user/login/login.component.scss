@@ -1,28 +1,71 @@
-@import "../../../theme";
-@import "../../../mixins.scss";
+@import "theme";
+@import "mixins";
 
-.login-container {
+:host {
+	@include fullscreen-page();
+}
+
+.login-title {
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	margin-top: -10%;
+
+	a, img {
+		height: 80px;
+		width: 80px;
+	}
+
+	span {
+		font-size: 2rem;
+		color: white;
+	}
 }
 
-md-card {
+mat-card {
 	margin: 1rem;
-	max-width: 500px;
+	max-width: 350px;
 	width: 100%;
 }
 
-md-input-container {
-	width: 100%;
+:host {
+	/deep/ mat-form-field {
+		width: 100%;
+	}
 }
 
 button, a {
 	width: 100%;
 }
 
-form button {
-	margin-top: 4vh;
-	margin-bottom: 2vh;
+form {
+	display: flex;
+	flex-direction: column;
+
+	.login-form-actions {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 0.9em;
+		padding-top: 1rem;
+		padding-bottom: 2rem;
+
+		button {
+			width: auto;
+		}
+	}
+}
+
+.non-login-actions {
+	display: flex;
+	justify-content: space-between;
+
+	a {
+		width: auto;
+		font-size: 0.8em;
+		color: #2196F3;
+		text-decoration: none;
+	}
 }
 
 h4, h3 {

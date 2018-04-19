@@ -1,23 +1,29 @@
-import {Component, Input, OnInit} from "@angular/core";
-import * as moment from "moment";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
 import {Event} from "../../../shop/shared/model/event";
-import {EventService} from "../../../shared/services/event.service";
+import {EventService} from "../../../shared/services/api/event.service";
 import {EventType} from "../../../shop/shared/model/event-type";
-import {Observable} from "rxjs/Observable";
 import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
+import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {EntryCategoryService} from "../../../shared/services/entry-category.service";
+import {Observable} from "rxjs/Observable";
+import {Subscription} from "rxjs/Subscription";
+import {filter, first, map, share, startWith, tap} from "rxjs/operators";
+import {EntryCategory} from "../../../shared/model/entry-category";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {isAfter, isBefore, isValid, parse} from "date-fns"
+
 
 @Component({
 	selector: "memo-accounting-options",
 	templateUrl: "./accounting-options.component.html",
 	styleUrls: ["./accounting-options.component.scss"]
 })
-export class AccountingOptionsComponent implements OnInit {
+export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	@Input() hidden: boolean = false;
+
 	eventTypes = {
 		tours: true,
 		events: true,
@@ -26,11 +32,43 @@ export class AccountingOptionsComponent implements OnInit {
 
 	costTypes = {};
 
-	costCategories$ = this.entryCategoryService.getCategories();
+	costCategories$ = this.entryCategoryService.getCategories()
+		.pipe(share());
 
 	events: Event[] = [];
 
 	availableEvents$ = new BehaviorSubject<Event[]>([]);
+	dateOptions: { from: Date, to: Date } = {
+		from: undefined,
+		to: undefined
+	};
+	autocompleteFormControl: FormControl = new FormControl();
+	filteredOptions: Observable<Event[]>;
+	subscription: Subscription;
+
+	constructor(private queryParameterService: QueryParameterService,
+				private router: Router,
+				private changeDetectorRef: ChangeDetectorRef,
+				private entryCategoryService: EntryCategoryService,
+				private eventService: EventService,
+				private activatedRoute: ActivatedRoute) {
+	}
+
+	_isLoading = false;
+
+	get isLoading() {
+		return this._isLoading;
+	}
+
+	set isLoading(value: boolean) {
+		this._isLoading = value;
+		if (value) {
+			this.autocompleteFormControl.disable();
+		}
+		else {
+			this.autocompleteFormControl.enable();
+		}
+	}
 
 	get availableEvents() {
 		return this.availableEvents$.value;
@@ -40,30 +78,21 @@ export class AccountingOptionsComponent implements OnInit {
 		this.availableEvents$.next(events);
 	}
 
-	dateOptions = {
-		from: undefined,
-		to: undefined
-	};
-
-
-	autocompleteFormControl: FormControl = new FormControl();
-	filteredOptions: Observable<Event[]>;
-
-	constructor(private queryParameterService: QueryParameterService,
-				private router: Router,
-				private entryCategoryService: EntryCategoryService,
-				private eventService: EventService,
-				private activatedRoute: ActivatedRoute) {
-	}
-
 	async ngOnInit() {
-		this.costCategories$.first().subscribe(categories => {
-			categories.forEach(category => this.costTypes[category.name] = true);
-			this.updateQueryParams();
-		});
-		await this.getAvailableEvents();
+		const categories: EntryCategory[] = await this.costCategories$
+			.pipe(first())
+			.toPromise();
+		categories.forEach(category => this.costTypes[category.name] = true);
+		// await this.getAvailableEvents();
 		this.readQueryParams();
 		this.initEventAutoComplete();
+	}
+
+
+	ngOnDestroy(): void {
+		if (this.subscription) {
+			this.subscription.unsubscribe();
+		}
 	}
 
 	/**
@@ -71,25 +100,28 @@ export class AccountingOptionsComponent implements OnInit {
 	 */
 	initEventAutoComplete() {
 		this.autocompleteFormControl.valueChanges
+			.pipe(
+				filter(value => EventUtilityService.isEvent(value)),
+			)
 			.subscribe(value => {
-				if (EventUtilityService.isTour(value) || EventUtilityService.isParty(value) || EventUtilityService.isMerchandise(value)) {
-					this.events.push(value);
-					this.autocompleteFormControl.reset();
-					this.updateQueryParams();
-				}
+				this.events.push(value);
+				this.autocompleteFormControl.reset();
+				this.updateQueryParams();
 			});
 
 
 		this.filteredOptions = this.autocompleteFormControl.valueChanges
-			.startWith("")
-			.map(event => event && typeof event === "object" ? event.title : event)
-			.map(title => {
-				let availableEvents = this.availableEvents
-					.filter(event => !this.events.find(selectedEvent => selectedEvent.id === event.id));
-				return title
-					? this.filter(availableEvents, title)
-					: availableEvents.slice()
-			})
+			.pipe(
+				startWith(""),
+				map(event => event && EventUtilityService.isEvent(event) ? event.title : event),
+				map(title => {
+					const availableEvents = this.availableEvents
+						.filter(event => !this.events.find(selectedEvent => selectedEvent.id === event.id));
+					return title
+						? this.filter(availableEvents, title)
+						: availableEvents.slice()
+				})
+			);
 	}
 
 	/**
@@ -132,25 +164,25 @@ export class AccountingOptionsComponent implements OnInit {
 	 *
 	 */
 	async getAvailableEvents() {
-		await Observable.combineLatest(
+		await combineLatest(
 			this.eventService.search("", EventType.tours),
 			this.eventService.search("", EventType.partys),
 			this.eventService.search("", EventType.merch)
 		)
-			.first()
+			.pipe(
+				first(),
+				tap(([tours, partys, merch]) => {
+					this.availableEvents = [...tours, ...partys, ...merch]
+						.filter(event => {
+							let from = !this.dateOptions.from ? parse("1970-01-01") : this.dateOptions.from;
+							let to = !this.dateOptions.to ? parse("2100-01-01") : this.dateOptions.to;
+
+							return isAfter(event.date, from) && isBefore(event.date, to);
+						});
+					this.autocompleteFormControl.setValue("", {emitEvent: true});
+				})
+			)
 			.toPromise()
-			.then(([tours, partys, merch]) => {
-				this.availableEvents = [...tours, ...partys, ...merch]
-					.filter(event => {
-						let from = !this.dateOptions.from ? moment("1970-01-01") : this.dateOptions.from;
-						let to = !this.dateOptions.to ? moment("2100-01-01") : this.dateOptions.to;
-
-						return moment(event.date)
-							.isBetween(moment(from), moment(to));
-					});
-				this.autocompleteFormControl.setValue("", {emitEvent: true});
-			})
-
 	}
 
 	/**
@@ -171,19 +203,21 @@ export class AccountingOptionsComponent implements OnInit {
 	 * Updates the values by extracting them from the url query parameters
 	 */
 	readQueryParams() {
-		Observable.combineLatest(
+		this.subscription = combineLatest(
 			this.activatedRoute.paramMap,
 			this.activatedRoute.queryParamMap
 		)
 			.subscribe(async ([paramMap, queryParamMap]) => {
-				this.dateOptions.from = queryParamMap.has("from") ? moment(queryParamMap.get("from")) : undefined;
-				this.dateOptions.to = queryParamMap.has("to") ? moment(queryParamMap.get("to")) : undefined;
+				this.isLoading = true;
+				this.changeDetectorRef.detectChanges();
+				this.dateOptions.from = queryParamMap.has("from") ? parse(queryParamMap.get("from")) : undefined;
+				this.dateOptions.to = queryParamMap.has("to") ? parse(queryParamMap.get("to")) : undefined;
 				await this.getAvailableEvents();
 				if (queryParamMap.has("eventTypes")) {
-					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.get("eventTypes").split("|"));
+					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.getAll("eventTypes"));
 				}
 				if (queryParamMap.has("costTypes")) {
-					this.readBinaryValuesFromQueryParams(this.costTypes, queryParamMap.get("costTypes").split("|"));
+					this.readBinaryValuesFromQueryParams(this.costTypes, queryParamMap.getAll("costTypes"));
 				}
 				//in case the route is something like /tours/:eventId/costs, extract the event id
 				if (paramMap.has("eventId")) {
@@ -192,57 +226,39 @@ export class AccountingOptionsComponent implements OnInit {
 						: [];
 				}
 				if (queryParamMap.has("eventIds")) {
-					this.events = queryParamMap.get("eventIds")
-						.split(",")
-						.filter(eventId => this.availableEvents.findIndex(event => event.id === +eventId) !== -1)
-						.map(eventId => this.availableEvents.find(event => event.id === +eventId));
+					this.events = queryParamMap.getAll("eventIds")
+						.map(eventId => this.availableEvents.find(event => event.id === +eventId))
+						.filter(event => event !== null)
 				}
 				this.updateQueryParams();
 			})
 	}
 
-	/**
-	 *
-	 * @param object
-	 * @returns {string}
-	 */
-	getBinaryQueryParamValue(object: {
-		[key: string]: boolean
-	}): string {
-		return Object.keys(object)
-			.filter(key => object[key])
-			.join("|");
-	}
 
 	/**
 	 * Updates the query parameters based on the values chosen by the user
 	 */
 	updateQueryParams() {
-		let params: Params = {};
-		let assignType = (paramKey: string, object: {
-			[key: string]: boolean
-		}) => {
-			params[paramKey] = "";
-			if (!Object.keys(object).every(key => object[key])) {
-				params[paramKey] = this.getBinaryQueryParamValue(object);
-				if (params[paramKey] === "") {
-					params[paramKey] = "none";
-				}
-			}
-		};
+		const params: Params = {};
 
-		assignType("eventTypes", this.eventTypes);
-		assignType("costTypes", this.costTypes);
+		params["eventTypes"] = Object.keys(this.eventTypes)
+			.filter(key => this.eventTypes[key]);
+		params["costTypes"] = Object.keys(this.costTypes)
+			.filter(key => this.costTypes[key]);
 
-		params["eventIds"] = this.events.map(event => "" + event.id).join(",");
+		params["eventIds"] = this.events.map(event => event.id);
 
-		params["from"] = !this.dateOptions.from ? "" : this.dateOptions.from.toISOString();
-		params["to"] = !this.dateOptions.to ? "" : this.dateOptions.to.toISOString();
+		params["from"] = (!this.dateOptions.from || !isValid(this.dateOptions.from)) ? "" : this.dateOptions.from.toISOString();
+		params["to"] = (!this.dateOptions.to || !isValid(this.dateOptions.to)) ? "" : this.dateOptions.to.toISOString();
 
-		this.activatedRoute.queryParamMap.first()
-			.map(queryParamMap =>
-				this.queryParameterService.updateQueryParams(queryParamMap, params))
-			.subscribe(newQueryParams =>
-				this.router.navigate(["management", "costs"], {queryParams: newQueryParams, replaceUrl: true}));
+		this.activatedRoute.queryParamMap
+			.pipe(
+				first(),
+				map(queryParamMap =>
+					this.queryParameterService.updateQueryParams(queryParamMap, params))
+			)
+			.subscribe(async newQueryParams => {
+				await this.router.navigate(["management", "costs"], {queryParams: newQueryParams, replaceUrl: true});
+			}, null, () => this.isLoading = false);
 	}
 }

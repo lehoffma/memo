@@ -1,0 +1,56 @@
+<h3>
+	Ausverkaufte Artikel
+</h3>
+
+<div>
+	<div *ngFor="let merch of merch$ | async">
+		<div class="out-of-stock-item-header">
+			<div>
+				<a routerLink="/merch/{{merch.item.id}}">
+					<img src="{{merch.item.images[0]}}"/>
+				</a>
+				<a routerLink="/merch/{{merch.item.id}}">
+					<h4>
+						{{merch.item.title}}
+					</h4>
+				</a>
+			</div>
+			<mat-menu #menu="matMenu">
+				<a mat-menu-item
+				   routerLink="/merch/{{merch.item.id}}/edit">
+					<mat-icon>edit</mat-icon>
+					<span>Bearbeiten</span>
+				</a>
+				<button mat-menu-item type="button" (click)="deleteMerch(merch.item)">
+					<mat-icon>delete</mat-icon>
+					<span>Löschen</span>
+				</button>
+			</mat-menu>
+			<button mat-icon-button [matMenuTriggerFor]="menu">
+				<mat-icon>more_vert</mat-icon>
+			</button>
+		</div>
+
+		<div class="out-of-stock-item-options">
+			<table>
+				<tbody>
+				<tr *ngFor="let size of keysOfObject(merch.emptyOptions)">
+					<th>
+						{{size}}
+					</th>
+					<td class="color-container">
+						<div *ngFor="let color of merch.emptyOptions[size]">
+							<span class="merch-available-colors"
+								  [style.background-color]="color.hex">
+
+							</span>
+							<span>{{color.name}}</span>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>

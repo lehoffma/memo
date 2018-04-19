@@ -1,4 +1,4 @@
-@import "../../../../theme";
+@import "theme";
 @import "~@angular/material/theming";
 
 .account-header {
@@ -35,6 +35,7 @@
 	height: 4.5rem;
 	width: 4.5rem;
 	border-radius: 50%;
+	object-fit: cover;
 }
 
 .profile-email-container {
@@ -101,7 +102,7 @@
 	margin-left: 0;
 }
 
-.navigation-links > div > a md-icon {
+.navigation-links > div > a mat-icon {
 	/*font-size: 1.6em;*/
 	height: 24px;
 	width: 24px;

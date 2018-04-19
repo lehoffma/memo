@@ -1,3 +1,4 @@
+
 <memo-comment-block *ngFor="let comment of comments | slice:0:amountOfCommentsShown; trackBy:trackCommentBy"
 					(onAddComment)="addComment($event.commentText, $event.parentCommentId)"
 					(onDelete)="deleteComment($event)"
@@ -14,18 +15,23 @@
 
 </memo-comment-block>
 
-<button md-button (click)="toggleShowMore()" *ngIf="comments?.length > DEFAULT_AMOUNT_OF_COMMENTS_SHOWN">
+<div *ngIf="comments?.length === 0" class="no-comments">
+	Bisher keine Kommentare vorhanden.
+</div>
+
+<button mat-button (click)="toggleShowMore()" *ngIf="comments?.length > DEFAULT_AMOUNT_OF_COMMENTS_SHOWN">
 		<span>
 			{{amountOfCommentsShown === DEFAULT_AMOUNT_OF_COMMENTS_SHOWN ? 'Mehr Kommentare' : 'Weniger Kommentare'}}
 		</span>
-	<md-icon [@expandedState]="expandState">
+	<mat-icon [@expandedState]="expandState">
 		expand_more
-	</md-icon>
+	</mat-icon>
 </button>
 
-<hr/>
+<hr *ngIf="loggedInUser$ | async"/>
 
 <div class="reply-form-container" *ngIf="loggedInUser$ | async; let loggedInUser">
-	<memo-comment-input (submitComment)="addComment($event, -1)" [author]="loggedInUser"
+	<memo-comment-input (submitComment)="addComment($event, -1)"
+						[author]="loggedInUser"
 						[commentText]="''"></memo-comment-input>
 </div>

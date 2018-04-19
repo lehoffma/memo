@@ -1,54 +1,88 @@
-<form #modifyStockItemForm="ngForm" class="dialog-container" (ngSubmit)="emitDoneEvent()">
+<form [formGroup]="formGroup" class="dialog-container" (ngSubmit)="emitDoneEvent()">
 	<div>
-		<!--<h1 md-dialog-title>Füge eine weitere Farbe hinzu</h1>-->
-		<div md-dialog-content class="dialog-content-container">
-			<md-input-container>
-				<input placeholder="Größe"
-					   #sizeInput="ngModel"
-					   name="sizeInput" required
-					   [(ngModel)]="size" mdInput>
-				<md-hint *ngIf="sizeInput.touched && !sizeInput.valid" class="error-message">
+		<div mat-dialog-content class="dialog-content-container">
+
+			<mat-form-field>
+				<input placeholder="Farbe"
+					   required
+					   [formControl]="formGroup.get('color').get('name')"
+					   name="colorInput" matInput>
+				<!--todo preset colors = colors that have been used in the table before?-->
+				<button mat-icon-button
+						type="button"
+						[colorPicker]="formGroup.get('color').get('hex').value"
+						[value]="formGroup.get('color').get('hex').value"
+						(colorPickerChange)="formGroup.get('color').get('hex').setValue($event)"
+						[style.background]="formGroup.get('color').get('hex').value"
+						[style.color]="textColor"
+						[cpPosition]="'left'"
+						matSuffix>
+					<mat-icon>
+						color_lens
+					</mat-icon>
+				</button>
+				<mat-error *ngIf="formGroup.get('color').hasError('required')">
 					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
-			<md-input-container>
-				<input placeholder="Anzahl"
-					   type="number" min="0" step="1" required
-					   (keypress)="($event.charCode == 8 || $event.charCode == 0) ? null : $event.charCode >= 48 && $event.charCode <= 57"
-					   #amountInput="ngModel"
-					   name="amountInput"
-					   [(ngModel)]="amount" mdInput>
-				<md-hint *ngIf="amountInput.touched && !amountInput.valid" class="error-message">
-					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
+				</mat-error>
+			</mat-form-field>
 
+			<div class="add-size-form">
+				<form [formGroup]="addSizeFormGroup" (ngSubmit)="addSize(addSizeFormGroup.get('size').value)">
+					<mat-form-field>
+						<input matInput
+							   placeholder="Größe"
+							   formControlName="size"
+							   name="addSizeInput">
+						<mat-error *ngIf="addSizeFormGroup.get('size').hasError('duplicate')">
+							Diese Größe ist bereits in der Liste vorhanden!
+						</mat-error>
 
-			<md-input-container>
-				<input placeholder="Name der Farbe"
-					   #colorInput="ngModel" required
-					   name="colorInput"
-					   [(ngModel)]="colorName" mdInput>
-				<md-hint *ngIf="colorInput.touched && !colorInput.valid" class="error-message">
-					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
+					</mat-form-field>
+					<button mat-icon-button
+							[disabled]="!addSizeFormGroup.valid || addSizeFormGroup.get('size').value.length === 0"
+							color="primary">
+						<mat-icon
+							[matTooltip]="'Größe hinzufügen'"
+							[matTooltipPosition]="'above'">
+							add_box
+						</mat-icon>
+					</button>
+					<!--todo autocomplete for possibleSizes-->
+				</form>
+			</div>
 
-			<span [(colorPicker)]="color"
-				  [cpWidth]="'230px'"
-				  [cpDialogDisplay]="'inline'"
-				  [style.background]="color"
-				  [cpToggle]="true"></span>
+			<div class="sizes-container">
+				<div *ngFor="let size of availableSizes; let i = index" class="size-amount-select-container">
+					<span>{{size}}</span>
 
+					<div>
+						<mat-select [formControl]="formGroup.get('sizes').get(size)">
+							<mat-option *ngFor="let amount of availableAmounts" [value]="amount">
+								{{amount}}
+							</mat-option>
+						</mat-select>
+
+						<button mat-icon-button
+								type="button"
+								(click)="deleteSize(size, i)">
+							<mat-icon
+								[matTooltip]="'Größe löschen'"
+								[matTooltipPosition]="'above'">
+								delete
+							</mat-icon>
+						</button>
+					</div>
+				</div>
+			</div>
 		</div>
 
 	</div>
-	<div md-dialog-actions>
-		<button md-icon-button type="button" md-dialog-close (click)="color=''">
-			<md-icon>arrow_back</md-icon>
+	<div mat-dialog-actions>
+		<button mat-icon-button type="button" matDialogClose>
+			<mat-icon>arrow_back</mat-icon>
 		</button>
-		<button md-icon-button [disabled]="!modifyStockItemForm.form.valid" type="submit" color="primary">
-			<md-icon>done</md-icon>
+		<button mat-icon-button [disabled]="!formGroup.valid || formGroup.pending" type="submit" color="primary">
+			<mat-icon>done</mat-icon>
 		</button>
 	</div>
 

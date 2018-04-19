@@ -1,0 +1,29 @@
+<div class="price-container">
+	<span class="actual-price">
+		{{price | number:'1.2-2'}}€
+	</span>
+	<span class="base-price" *ngIf="price < _basePrice">
+		{{_basePrice | number:'1.2-2'}}€
+	</span>
+	<span class="percentage-saved" *ngIf="price < _basePrice">
+		(-{{percentageSaved | percent:'2.2-2':'en'}})
+	</span>
+	<button mat-icon-button
+			class="discount-overlay-trigger"
+			*ngIf="(price < _basePrice) && showExplanation"
+			[matTooltip]="'Zeige Erklärung'"
+			[matTooltipPosition]="'below'"
+			(click)="openDiscountOverlay()"
+	>
+		<mat-icon>
+			help_outline
+		</mat-icon>
+	</button>
+</div>
+<div class="additional-discount-possibilities" *ngIf="showDiscountPossibilities">
+	<span *ngFor="let discountPossibility of nonEligibleDiscounts">
+		<a routerLink="{{discountPossibility.link.url}}">
+			{{discountPossibility.link.text}}
+		</a>
+	</span>
+</div>

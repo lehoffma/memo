@@ -1,106 +1,164 @@
-<div class="modify-shop-item-container">
-	<h2>Tour {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
+<div class="modify-shop-item-container" *ngIf="formGroup">
 	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
-
-		<h2>Bild</h2>
-		<memo-profile-picture-form
-			[image]="tourModel['imagePath'] ? tourModel['imagePath'] : defaultImageUrl"
-			(onChange)="profilePictureChanged($event)">
-
-		</memo-profile-picture-form>
-
-
-		<h2>Tour-Informationen</h2>
-		<md-input-container>
-			<input mdInput name="titleInput"
-				   required
-				   placeholder="Titel"
-				   #titleInput="ngModel"
-				   [(ngModel)]="tourModel['title']">
-			<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
-				Dieses Feld darf nicht leer bleiben!
-			</md-hint>
-		</md-input-container>
-
-
-		<md-input-container class="description-input">
-			<textarea autosize mdInput name="descriptionInput"
-					  class="not-resizable-textarea" required
-					  type="text"
-					  #descriptionInput="ngModel"
-					  placeholder="Beschreibung"
-					  [(ngModel)]="tourModel['description']">
-			</textarea>
-			<md-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
-					 align="end">
-				Dieses Feld darf nicht leer bleiben!
-			</md-hint>
-		</md-input-container>
-
-		<div class="additional-tour-info-container">
-			<div>
-				<md-input-container>
-					<input mdInput name="priceInput"
-						   type="number" required
-						   placeholder="Preis"
-						   #priceInput="ngModel"
-						   [(ngModel)]="tourModel['price']">
-					<span mdSuffix>€</span>
-					<md-hint *ngIf="priceInput.touched && !priceInput.valid" class="error-message" align="end">
-						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
-
-				<md-input-container>
-					<input mdInput name="capacityInput"
-						   type="number" required
-						   placeholder="Kapazität"
-						   #capacityInput="ngModel"
-						   [(ngModel)]="tourModel['capacity']">
-					<md-hint *ngIf="capacityInput.touched && !capacityInput.valid" class="error-message" align="end">
-						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
-			</div>
-
-			<div>
-				<md-input-container>
-					<input mdInput name="vehicleInput"
-						   type="text" required
-						   placeholder="Fahrzeug"
-						   #vehicleInput="ngModel"
-						   [(ngModel)]="tourModel['vehicle']">
-					<md-hint *ngIf="vehicleInput.touched && !vehicleInput.valid" class="error-message" align="end">
-						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
-
-				<div>
-					<md-input-container>
-						<input mdInput [mdDatepicker]="myDatepicker"
-							   placeholder="Datum"
-							   [(ngModel)]="tourModel['date']"
-							   #dateInput="ngModel"
-							   name="dateInput" required>
-						<button type="button" mdSuffix [mdDatepickerToggle]="myDatepicker"></button>
-					</md-input-container>
-					<md-datepicker [touchUi]="true" #myDatepicker></md-datepicker>
-				</div>
-			</div>
+		<div class="image-upload-container">
+			<memo-item-details-content [title]="'Bilder'">
+				<memo-multi-image-upload [formGroup]="formGroup.get('images')"
+										 [previousValue]="previousValue?.images">
+				</memo-multi-image-upload>
+			</memo-item-details-content>
 		</div>
 
-		<h2>Route</h2>
-		<memo-tour-route-input [(route)]="tourModel['route']" [isTour]="true"></memo-tour-route-input>
+		<div>
+			<memo-item-details-content [title]="'Route'">
+				<memo-tour-route-input [previousValue]="previousValue?.route" [formControl]="formGroup.get('addresses')"
+									   (distanceChange)="formGroup.get('event-data').get('miles').patchValue(meterToMiles($event))"
+									   [isTour]="true" content>
+
+				</memo-tour-route-input>
+			</memo-item-details-content>
+
+			<memo-item-details-content [title]="'Tour-Informationen'" [formGroup]="formGroup.get('event-data')">
+				<mat-form-field>
+					<input matInput name="titleInput"
+						   required
+						   formControlName="title"
+						   placeholder="Titel"
+					>
+					<mat-error *ngIf="formGroup.get('event-data').get('title').hasError('required')" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</mat-error>
+				</mat-form-field>
+
+				<mat-form-field class="description-input">
+					<textarea autosize matInput name="descriptionInput"
+							  class="not-resizable-textarea" required
+							  type="text"
+							  formControlName="description"
+							  placeholder="Beschreibung">
+					</textarea>
+					<mat-error *ngIf="formGroup.get('event-data').get('description').hasError('required')" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</mat-error>
+				</mat-form-field>
+
+				<div class="additional-tour-info-container">
+					<div>
+						<mat-form-field>
+							<input matInput name="priceInput"
+								   type="number" required
+								   placeholder="Preis"
+								   formControlName="price"
+							>
+							<span matSuffix>€</span>
+							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('required')"
+									   align="end">
+								Dieses Feld darf nicht leer bleiben!
+							</mat-error>
+							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('pattern')"
+									   align="end">
+								Maximal 2 Nachkommastellen!
+							</mat-error>
+						</mat-form-field>
+
+						<mat-form-field>
+							<input matInput name="capacityInput"
+								   type="number" required
+								   placeholder="Kapazität"
+								   formControlName="capacity"
+							>
+							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('capacity')"
+									   align="end">
+								Dieses Feld darf nicht leer bleiben!
+							</mat-error>
+							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('min')" align="end">
+								Die Kapazität muss größer als 0 sein!
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div class="column">
+						<mat-form-field>
+							<input matInput name="vehicleInput"
+								   type="text" required
+								   formControlName="vehicle"
+								   placeholder="Fahrzeug">
+							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('vehicle')" align="end">
+								Dieses Feld darf nicht leer bleiben!
+							</mat-error>
+						</mat-form-field>
+
+					</div>
+
+					<div class="column">
+						<div>
+							<mat-form-field>
+								<input matInput [matDatepicker]="myDatepicker"
+									   placeholder="Datum"
+									   formControlName="date"
+									   name="dateInput" required>
+								<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+								<mat-error *ngIf="formGroup.get('event-data').get('date').hasError('required')"
+										   align="end">
+									Das Datum muss im Format DD.MM.YYYY vorliegen.
+								</mat-error>
+							</mat-form-field>
+							<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
+						</div>
+
+						<mat-form-field>
+							<input matInput
+								   placeholder="Uhrzeit"
+								   formControlName="time"
+								   name="timeInput" required>
+
+							<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('required')" align="end">
+								Dieses Feld darf nicht leer bleiben!
+							</mat-error>
+							<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('pattern')" align="end">
+								align="end">
+								Die Uhrzeit muss im Format "HH:MM" vorliegen!
+							</mat-error>
+						</mat-form-field>
+
+					</div>
+				</div>
+			</memo-item-details-content>
+		</div>
+
+		<memo-item-details-content [title]="'Berechtigungen'">
+			<memo-item-permissions-input
+				[formGroup]="formGroup.get('permissions')"
+				[previousValue]="{
+					'expectedReadRole': previousValue?.expectedReadRole,
+					'expectedWriteRole': previousValue?.expectedWriteRole,
+					'expectedCheckInRole': previousValue?.expectedCheckInRole
+				}">
+
+			</memo-item-permissions-input>
+		</memo-item-details-content>
+
+		<memo-item-details-content [title]="'Verantwortliche User'" class="no-padding">
+			<memo-responsible-user-input [previousValue]="previousValue?.author"
+										 [formControl]="formGroup.get('responsible-users')">
+
+			</memo-responsible-user-input>
+		</memo-item-details-content>
 
 
 		<!--below all that-->
 		<div class="form-buttons">
 			<!--	cancel button-->
-			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
-			<button md-raised-button color="accent"
-					[disabled]="!modifyShopItemForm.form.valid">
-				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+			<button mat-raised-button color="accent"
+					[disabled]="!formGroup.valid || formGroup.pending || modifyItemService.loading">
+				<span *ngIf="!modifyItemService.loading; else loadingSpinner">
+					{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+				</span>
+				<ng-template #loadingSpinner>
+					<mat-icon class="loading-spinner">refresh</mat-icon>
+					<span>Speichert...</span>
+				</ng-template>
 			</button>
 		</div>
 	</form>

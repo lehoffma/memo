@@ -7,17 +7,17 @@ import {PaymentMethod} from "./payment-method";
 	styleUrls: ["./payment-method-selection.component.scss"]
 })
 export class PaymentMethodSelectionComponent implements OnInit {
-	paymentMethodEnum = PaymentMethod;
 	paymentMethods = [
 		PaymentMethod.CASH,
 		PaymentMethod.DEBIT,
-		PaymentMethod.TRANSFER,
-		PaymentMethod.PAYPAL
+		PaymentMethod.TRANSFER
 	];
+	@Output() methodSelected: EventEmitter<PaymentMethod> = new EventEmitter();
 
+	constructor() {
+	}
 
 	_selectedMethod: PaymentMethod;
-	@Output() methodSelected: EventEmitter<PaymentMethod> = new EventEmitter();
 
 	get selectedMethod() {
 		return this._selectedMethod;
@@ -26,9 +26,6 @@ export class PaymentMethodSelectionComponent implements OnInit {
 	set selectedMethod(method: PaymentMethod) {
 		this._selectedMethod = method;
 		this.methodSelected.emit(method);
-	}
-
-	constructor() {
 	}
 
 	ngOnInit() {

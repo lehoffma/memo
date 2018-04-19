@@ -1,8 +1,11 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {Observable} from "rxjs/Observable";
 import {ShoppingCartService} from "../../../shared/services/shopping-cart.service";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {Link} from "../../../shared/model/link";
+import {WindowService} from "../../../shared/services/window.service";
+import {Observable} from "rxjs/Observable";
+import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {filter, first, map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-toolbar",
@@ -10,6 +13,9 @@ import {Link} from "../../../shared/model/link";
 	styleUrls: ["./toolbar.component.scss", "./element/toolbar-element.component.scss"]
 })
 export class ToolbarComponent implements OnInit {
+	//todo fadeout on mobile when searching
+
+
 	/**
 	 * Ein Event, welches beim öffnen der Sidenav Navigation emitted wird
 	 * @type {EventEmitter}
@@ -18,12 +24,15 @@ export class ToolbarComponent implements OnInit {
 
 
 	//die links die vom User gesehen werden dürfen als observable
-	links: Observable<Link[]> = this.navigationService.toolbarLinks;
+	links: Observable<Link[]> = this.navigationService.toolbarLinks$;
 
 
 	shoppingCartContent: Observable<number> = this.shoppingCartService.amountOfCartItems;
 
+	searchIsExpanded$ = new BehaviorSubject(false);
+
 	constructor(private navigationService: NavigationService,
+				private windowService: WindowService,
 				private shoppingCartService: ShoppingCartService) {
 
 	}
@@ -42,4 +51,21 @@ export class ToolbarComponent implements OnInit {
 	}
 
 
+	expandSearchBar(event) {
+		this.windowService.dimension$
+			.pipe(
+				map(it => it.width),
+				first(),
+				filter(width => width < 400)
+			)
+			.subscribe(it => this.searchIsExpanded$.next(event), console.error);
+
+		this.windowService.dimension$
+			.pipe(
+				map(it => it.width),
+				filter(width => width >= 400),
+				first()
+			)
+			.subscribe(it => this.searchIsExpanded$.next(false), console.error);
+	}
 }

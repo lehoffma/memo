@@ -1,0 +1,25 @@
+@import "theme";
+
+:host{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.background{
+	position: absolute;
+	height: 200px;
+	width: 100%;
+	top: 64px;
+	background-color: $primary-default;
+}
+
+
+memo-event-calendar{
+	max-width: 80%;
+	display: block;
+	margin-top: 50px;
+	position: relative;
+	z-index: 5;
+}

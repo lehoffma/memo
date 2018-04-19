@@ -1,0 +1,30 @@
+
+:host{
+	width: 100%;
+	max-width: 400px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+
+	a div{
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		span{
+			margin-left:10px;
+		}
+	}
+
+
+	.icon-text{
+		display: none;
+	}
+
+	@media all and (min-width: 500px){
+		.icon-text{
+			display: block;
+		}
+	}
+}

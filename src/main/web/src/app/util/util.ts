@@ -1,5 +1,6 @@
-import {isNullOrUndefined} from "util";
-import * as moment from "moment";
+import {isArray, isNullOrUndefined} from "util";
+import {Observable} from "rxjs/Observable";
+import {isAfter, isBefore} from "date-fns";
 
 export type SortingFunction<T> = (a: T, b: T) => number;
 
@@ -10,17 +11,15 @@ export function attributeSortingFunction<ObjectType>(attribute: string, descendi
 
 export function dateSortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => Date, descending: boolean): SortingFunction<ObjectType> {
 	return (a, b) => {
-		let dateA = moment(getAttribute(a)),
-			dateB = moment(getAttribute(b));
+		let dateA = getAttribute(a),
+			dateB = getAttribute(b);
 
-		if (dateA.isValid() && dateB.isValid()) {
-			const descendingMultiplier = descending ? -1 : 1;
-			if (dateA.isBefore(dateB)) {
-				return -1 * descendingMultiplier;
-			}
-			if (dateA.isAfter(dateB)) {
-				return descendingMultiplier;
-			}
+		const descendingMultiplier = descending ? -1 : 1;
+		if (isBefore(dateA, dateB)) {
+			return -1 * descendingMultiplier;
+		}
+		if (isAfter(dateA, dateB)) {
+			return descendingMultiplier;
 		}
 
 		return 0;
@@ -49,6 +48,18 @@ export function sortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => a
 		}
 
 		return 0;
+	}
+}
+
+export function combinedSortFunction<T>(...functions: SortingFunction<T>[]): SortingFunction<T> {
+	return (a, b) => {
+		let value: number = 0;
+		const sortingFunctions = [...functions];
+		while (sortingFunctions.length > 0 && (value === 0)) {
+			const sortingFunction: SortingFunction<T> = sortingFunctions.splice(0, 1)[0];
+			value = sortingFunction(a, b);
+		}
+		return value;
 	}
 }
 
@@ -84,4 +95,45 @@ export function getId(object: any): number {
 	};
 
 	return getHashOfObject(object);
+}
+
+export function isObservable(value: any): value is Observable<any> {
+	return (<Observable<any>>value).subscribe !== undefined;
+}
+
+
+const concat = (x, y) =>
+	x.concat(y);
+
+export function flatMap<T, U>(f: (val: T) => U[], xs: T[]): U[] {
+	return xs.map(f).reduce(concat, []);
+}
+
+
+export function isArrayType(value): value is any[] {
+	return isArray(value);
+}
+
+/**
+ * Checks if any of the values associated with their keys don't match on both values
+ * @param {T} previous
+ * @param {T} updated
+ * @param except
+ * @returns {boolean}
+ */
+export function isEdited<T>(previous: T, updated: T, except?: string[]): boolean {
+	let keys = Object.keys(previous);
+	if (except) {
+		keys = keys.filter(key => except.includes(key));
+	}
+
+	return keys.some(key => previous[key] !== updated[key]);
+}
+
+
+export function arrayIsEqual<T>(left: T[], right:T[]): boolean{
+	if(left.length !== right.length){
+		return false;
+	}
+	return left.every(leftObject => right.some(rightObject => isEdited(leftObject, rightObject)))
 }

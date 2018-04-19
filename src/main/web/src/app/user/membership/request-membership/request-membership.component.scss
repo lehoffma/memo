@@ -1,0 +1,38 @@
+@import "~@angular/material/theming";
+
+:host {
+	display: block;
+	padding: 1rem;
+	background: white;
+	max-width: 800px;
+	@include mat-elevation(3);
+	@include mat-elevation-transition();
+
+	h1 {
+		text-align: center;
+		font-weight: 100;
+		margin-top: 0;
+	}
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+}
+
+form,
+.success-message,
+.error-message {
+	margin: auto;
+	max-width: 400px;
+}
+
+.success-message {
+	color: green;
+}
+
+@media all and (min-width: 600px) {
+	:host {
+		margin: 1rem auto;
+	}
+}

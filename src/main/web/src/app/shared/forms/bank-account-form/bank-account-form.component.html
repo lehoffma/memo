@@ -1,0 +1,52 @@
+<div [formGroup]="formGroup" *ngIf="!selection; else bankAccountSelection">
+	<div *ngFor="let account of formGroup.get('bankAccounts').value; let i = index" class="bankaccount-entry-container">
+		<memo-bank-account-entry *ngIf="showInlineForm !== i; else inlineEditForm"
+								 [account]="account"
+								 (onEdit)="showInlineForm = i; showNewInputForm = false"
+								 (onDelete)="deleteAccount(i)">
+		</memo-bank-account-entry>
+		<ng-template #inlineEditForm>
+			<memo-bank-account-input-form [account]="account"
+										  (onCancel)="showInlineForm = -1"
+										  (onSubmit)="updateAccount($event, i); showInlineForm = -1"></memo-bank-account-input-form>
+		</ng-template>
+	</div>
+	<button mat-button type="button" *ngIf="!showNewInputForm && showInlineForm === -1"
+			(click)="showNewInputForm = true">
+		Neue Bankdaten hinzufügen
+	</button>
+	<memo-bank-account-input-form *ngIf="showNewInputForm && showInlineForm === -1"
+								  (onCancel)="showNewInputForm = false"
+								  (onSubmit)="updateAccount($event); showNewInputForm = false"></memo-bank-account-input-form>
+</div>
+
+
+<ng-template #bankAccountSelection>
+	<div [formGroup]="formGroup">
+		<mat-radio-group [formControl]="formGroup.get('selectedAccount')">
+			<div *ngFor="let account of formGroup.get('bankAccounts').value; let i = index"
+				 class="bankaccount-entry-container selection-container">
+				<mat-radio-button [value]="account" *ngIf="showInlineForm !== i; else inlineEditForm">
+					<memo-bank-account-entry [account]="account"
+											 (onEdit)="showInlineForm = i; showNewInputForm = false"
+											 (onDelete)="deleteAccount(i)"
+					>
+
+					</memo-bank-account-entry>
+				</mat-radio-button>
+				<ng-template #inlineEditForm>
+					<memo-bank-account-input-form [account]="account"
+												  (onCancel)="showInlineForm = -1"
+												  (onSubmit)="updateAccount($event, i); showInlineForm = -1"></memo-bank-account-input-form>
+				</ng-template>
+			</div>
+			<button mat-button type="button" *ngIf="!showNewInputForm && showInlineForm === -1"
+					(click)="showNewInputForm = true">
+				Neue Bankdaten hinzufügen
+			</button>
+			<memo-bank-account-input-form *ngIf="showNewInputForm && showInlineForm === -1"
+										  (onCancel)="showNewInputForm = false"
+										  (onSubmit)="updateAccount($event); showNewInputForm = false"></memo-bank-account-input-form>
+		</mat-radio-group>
+	</div>
+</ng-template>

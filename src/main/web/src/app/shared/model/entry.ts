@@ -1,24 +1,26 @@
 import {BaseObject} from "./util/base-object";
 import {EntryCategory} from "./entry-category";
+import {Event} from "../../shop/shared/model/event";
 
 export class Entry extends BaseObject<Entry> {
 
 	constructor(public readonly id: number,
 				public readonly name: string,
 				public readonly value: number,
+				public readonly item: Event,
 				public readonly date: Date,
-				//todo public readonly comment:string,
-				//todo public readonly imagePath:string,
+				public readonly comment: string,
+				public readonly images: string[],
 				public readonly category: EntryCategory) {
 		super(id);
 	}
 
 	static create() {
-		return new Entry(-1, "", 0, new Date(), null);
+		return new Entry(-1, "", 0, null, new Date(), "", [], null);
 	}
 
 	static isEntry(entry: any): entry is Entry {
-		return (<Entry>entry).name !== undefined && (<Entry>entry).value !== undefined;
+		return entry && (<Entry>entry).name !== undefined && (<Entry>entry).value !== undefined;
 	}
 
 	/**
@@ -26,11 +28,13 @@ export class Entry extends BaseObject<Entry> {
 	 * @param {string} queryParameterValue
 	 * @returns {boolean}
 	 */
-	categoryMatchesQueryParameter(queryParameterValue: string){
+	categoryMatchesQueryParameter(queryParameterValue: string) {
 		if (queryParameterValue === "none") {
 			return false;
 		}
 		return queryParameterValue.split("|")
 			.some(type => type.toLowerCase() === this.category.name.toLowerCase());
 	}
+
+	// eventTypeMatchesQueryParameter()
 }

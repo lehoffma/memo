@@ -1,0 +1,84 @@
+@import "theme";
+
+:host {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.order-complete-prompt {
+	width: 100%;
+	max-width: 800px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	height: 350px;
+	background: white;
+
+	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 0px 0 rgba(0, 0, 0, .12) !important;
+
+	.order-complete-prompt-header {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 150px;
+		width: 100%;
+		text-align: center;
+		background: $primary-default;
+		color: white;
+
+		mat-icon {
+			font-size: 3rem;
+			height: 48px;
+			width: 48px;
+		}
+	}
+
+	.order-complete-prompt-text {
+		font-size: 1.2rem;
+		font-weight: 400;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		height: 150px;
+	}
+
+	.order-complete-prompt-actions {
+		height: 50px;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: flex-start;
+		margin-top: -1rem;
+	}
+}
+
+
+.order-container{
+	width: 100%;
+	max-width: 500px;
+}
+
+@media all and (min-width: 800px) {
+	:host {
+		padding-top: 1rem;
+		flex-direction: row-reverse;
+		justify-content: center;
+		align-items: flex-start;
+	}
+
+	.order-complete-prompt{
+		max-width: 500px;
+	}
+
+	.order-container{
+		margin-right: 20px;
+	}
+
+	memo-order-renderer {
+		margin-top: 0;
+	}
+
+}

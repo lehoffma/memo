@@ -34,14 +34,14 @@ export class ParticipantsComponent implements OnInit {
 	constructor(private navigationService: NavigationService) {
 	}
 
-	ngOnInit() {
-	}
-
 	get amountOfParticipantsShown() {
 		if (this.expandedStatus) {
 			return this.participants.length;
 		}
 		return DEFAULT_AMOUNT_SHOWN;
+	}
+
+	ngOnInit() {
 	}
 
 	showDetailsOfUser(user: User) {

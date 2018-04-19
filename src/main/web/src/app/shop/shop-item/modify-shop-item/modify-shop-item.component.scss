@@ -1,4 +1,4 @@
-@import "../../../../mixins";
+@import "mixins";
 
 :host {
 	display: flex;
@@ -6,38 +6,88 @@
 
 }
 
+@media all and (max-width: 800px) {
+	:host /deep/ memo-multi-image-upload /deep/ memo-multi-image-container {
+		margin: -1rem;
+		width: calc(100% + 2rem) !important;
+		max-width: none;
+
+		/deep/ img.current-image {
+			border: none !important;
+		}
+	}
+}
+
 .modify-shop-item-container {
-	@include card-like();
-	padding: 1rem;
+	width: 100%;
+	max-width: 500px;
+	background: white;
+	@include mat-elevation(3);
+	@include mat-elevation-transition();
+
+	> h2:first-child {
+		margin-bottom: 1rem;
+	}
+
+	form {
+		> h2:not(:first-child) {
+			margin-top: 1.5rem;
+		}
+
+		memo-tour-route-input {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 0;
+
+			/deep/ agm-map {
+				width: calc(100% + 1rem);
+				margin: -1rem;
+				margin-bottom: 1rem;
+			}
+		}
+
+		@media all and (max-width: 800px) {
+			memo-item-details-content {
+				::ng-deep .centered-container > .object-details-content-container {
+					max-width: 100%;
+					margin-left: 0;
+					margin-right: 0;
+				}
+			}
+		}
+	}
+
+	@media all and (min-width: 600px) {
+		width: 95%;
+	}
 
 	h2 {
 		font-weight: 200;
 		text-align: center;
+		background: white;
+		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 		padding: 1rem;
-		margin: 20px -1rem;
+		margin-left: -1rem;
 		margin-top: -1rem;
-		background-color: #4caf50;
-		color: white;
+		margin-right: -1rem;
+
+		@media all and (min-width: 600px) {
+			max-width: 1010px;
+			margin: auto;
+		}
 	}
 
-	/deep/ md-input-container,
-	md2-datepicker {
+	/deep/ mat-form-field {
 		width: 100%;
 	}
 
 	/deep/ input {
 		font-size: 1rem;
 	}
-
-	//max-width: 800px;
-
-	@media all and (min-width: 650px) {
-		width: 600px;
-	}
 }
 
 .modify-shop-item-component-container {
-	margin-bottom: 10px;
+	width: 100%;
 }
 
 .not-resizable-textarea {
@@ -52,3 +102,88 @@
 	color: red;
 }
 
+@media all and (max-width: 800px) {
+	form > .image-upload-container ::ng-deep .upload-container {
+		margin: 1rem -1rem -1rem;
+		border-top: 1px solid #ededed;
+		background: white;
+
+		/deep/ .expandable-table-header {
+			margin: 0;
+		}
+	}
+}
+
+@media all and (min-width: 800px) {
+	form > .image-upload-container {
+		//flex-direction: row;
+		//justify-content: space-between;
+
+		::ng-deep .object-details-content-container {
+			max-width: 1010px;
+			margin-left: 0;
+			margin-right: 0;
+		}
+
+		memo-multi-image-upload {
+			background: #ffffff;
+			margin: -1rem;
+
+			::ng-deep memo-multi-image-container {
+
+				.available-images-list {
+					background: #fafafa;
+				}
+
+				.current-image-container {
+					background: #fafafa;
+				}
+			}
+		}
+	}
+
+	.information-container {
+		display: flex;
+		justify-content: center;
+
+		memo-item-details-content {
+			width: 50%;
+
+			&:first-child {
+				margin-right: 10px;
+
+				::ng-deep .centered-container {
+					justify-content: flex-end;
+				}
+			}
+
+			&:last-child {
+				::ng-deep .centered-container {
+					justify-content: flex-start;
+				}
+			}
+
+			::ng-deep .object-details-content-container {
+				margin-left: 0;
+				margin-right: 0;
+			}
+
+		}
+
+	}
+}
+
+.no-padding /deep/ .object-details-content {
+	padding: 0;
+}
+
+.form-buttons {
+	padding: 1rem;
+	display: flex;
+	justify-content: flex-end;
+	border-top: 1px solid #ededed;
+
+	button:not(:first-child) {
+		margin-left: 10px;
+	}
+}

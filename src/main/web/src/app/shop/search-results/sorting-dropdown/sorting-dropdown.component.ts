@@ -1,7 +1,9 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {SortingOption} from "../../../shared/model/sorting-option";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
+import {ColumnSortingEvent} from "../../../shared/utility/expandable-table/column-sorting-event";
+import {first, map, tap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-sorting-dropdown",
@@ -9,9 +11,10 @@ import {QueryParameterService} from "../../../shared/services/query-parameter.se
 	styleUrls: ["./sorting-dropdown.component.scss"]
 })
 export class SortingDropdownComponent implements OnInit {
-	//TODO: update text if sort selection changes. or at least highlight which one is selected at the moment?
 	@Input() sortingOptions: SortingOption<any>[];
 	selectedOption: string = "";
+
+	@Output() onSort: EventEmitter<ColumnSortingEvent<any>> = new EventEmitter();
 
 	constructor(private router: Router,
 				private activatedRoute: ActivatedRoute,
@@ -36,8 +39,17 @@ export class SortingDropdownComponent implements OnInit {
 	}
 
 	updateQueryParams(queryParams: Params) {
-		this.activatedRoute.queryParamMap.first()
-			.map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams))
-			.subscribe(newQueryParams => this.router.navigate(["search"], {queryParams: newQueryParams}));
+		this.activatedRoute.queryParamMap
+			.pipe(
+				first(),
+				map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams)),
+				tap(() =>
+					this.onSort.emit({
+						key: queryParams["sortBy"],
+						descending: queryParams["descending"] === "true"
+					})
+				)
+			)
+			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
 	}
 }

@@ -1,16 +1,21 @@
 import {Component, OnInit} from "@angular/core";
 import {User} from "../../shared/model/user";
 import {ActivatedRoute} from "@angular/router";
-import {Observable} from "rxjs";
 import {profileCategories} from "./profile-info-category";
-import {EventService} from "../../shared/services/event.service";
-import {UserService} from "../../shared/services/user.service";
+import {UserService} from "../../shared/services/api/user.service";
 import {Event} from "../../shop/shared/model/event";
-import {LogInService} from "../../shared/services/login.service";
+import {LogInService} from "../../shared/services/api/login.service";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {AddressService} from "../../shared/services/address.service";
+import {AddressService} from "../../shared/services/api/address.service";
 import {EventRoute} from "../../shop/shared/model/route";
 import {Address} from "../../shared/model/address";
+import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
+import {defaultIfEmpty, first, map, mergeMap, tap} from "rxjs/operators";
+import {combineLatest} from "rxjs/observable/combineLatest";
+import {Observable} from "rxjs/Observable";
+import {MilesService} from "../../shared/services/api/miles.service";
+import {ClubRole, isAuthenticated} from "../../shared/model/club-role";
+import {Permission} from "../../shared/model/permission";
 
 
 @Component({
@@ -20,44 +25,70 @@ import {Address} from "../../shared/model/address";
 })
 
 export class ProfileComponent implements OnInit {
-	userId = this.route.params.map(params => +params["id"]);
-	userObservable: Observable<User> = this.userId.flatMap(id => this.userService.getById(id));
+	userId = this.route.params
+		.pipe(
+			first(),
+			map(params => +params["id"])
+		);
+	userObservable: Observable<User> = this.userId
+		.pipe(
+			mergeMap(id => this.userService.getById(id)),
+			tap(user => console.log(user)),
+			mergeMap(user => this.milesService.get(user.id)
+				.pipe(
+					map(entry => user.setProperties({miles: entry.miles}))
+				)
+			)
+		);
 	userEvents: Observable<Event[]> = this.userObservable
-		.flatMap(user => this.eventService.getEventsOfUser(user.id, {tours: true, partys: true}));
-	userDestinations: Observable<Address[]> = this.userEvents.flatMap(events => {
-		return Observable.combineLatest(...events
-			.map(event => event.route)
-			.filter(route => route.length > 1)
-			.map((route: EventRoute) => this.addressService.getById(route[route.length - 1])));
-	});
+		.pipe(
+			mergeMap(user => this.participantService.getParticipatedEventsOfUser(user.id))
+		);
+	userDestinations: Observable<Address[]> = this.userEvents
+		.pipe(
+			map(events => [...events
+				.map(event => event.route)
+				.filter(route => route.length > 1)
+				.map((route: EventRoute) => route[route.length - 1])]),
+			mergeMap((addressIds: number[]) => combineLatest(
+				...addressIds.map(id => this.addressService.getById(id))
+			))
+		);
 
 	centerOfUserDestinations: Observable<any> = this.userDestinations
-		.map(addresses => {
-			let longitude = 0;
-			let latitude = 0;
-			addresses.forEach(tourRoute => {
-				longitude += tourRoute.longitude;
-				latitude += tourRoute.latitude;
-			});
-			longitude /= addresses.length;
-			latitude /= addresses.length;
+		.pipe(
+			map(addresses => {
+					let longitude = 0;
+					let latitude = 0;
+					addresses.forEach(tourRoute => {
+						longitude += tourRoute.longitude;
+						latitude += tourRoute.latitude;
+					});
+					longitude /= addresses.length;
+					latitude /= addresses.length;
 
-			return {longitude, latitude};
-		})
-		.defaultIfEmpty({
-			longitude: 0,
-			latitude: 0
-		});
-
+					return {longitude, latitude};
+				}
+			),
+			defaultIfEmpty({
+				longitude: 0,
+				latitude: 0
+			})
+		);
+	canEditUser: Observable<boolean> = combineLatest(this.userId, this.loginService.currentUser$)
+		.pipe(
+			map(([profileId, currentUser]) => {
+				return currentUser && (profileId === currentUser.id || isAuthenticated(currentUser.clubRole, ClubRole.Admin)
+					|| currentUser.userPermissions().userManagement >= Permission.write);
+			})
+		);
 	profileCategories = profileCategories;
-
-	isOwnProfile: Observable<boolean> = this.userId.combineLatest(this.loginService.accountObservable,
-		(profileId, currentUserId) => profileId === currentUserId);
 
 	constructor(private route: ActivatedRoute,
 				private navigationService: NavigationService,
+				private milesService: MilesService,
 				private addressService: AddressService,
-				private eventService: EventService,
+				private participantService: OrderedItemService,
 				private loginService: LogInService,
 				private userService: UserService) {
 
@@ -67,8 +98,11 @@ export class ProfileComponent implements OnInit {
 	}
 
 	editProfile() {
-		this.route.params.map(params => +params["id"])
-			.first()
+		this.route.params
+			.pipe(
+				map(params => +params["id"]),
+				first()
+			)
 			.subscribe(
 				id => this.navigationService.navigateByUrl(`/members/${id}/edit`)
 			)

@@ -1,46 +1,79 @@
-import {Component, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, OnInit} from "@angular/core";
 import {Merchandise} from "../shop/shared/model/merchandise";
 import {Event} from "../shop/shared/model/event";
-import {Observable} from "rxjs";
-import {EventService} from "../shared/services/event.service";
+import {EventService} from "../shared/services/api/event.service";
 import {EventType} from "../shop/shared/model/event-type";
+import {ShopItemType} from "../shop/shared/model/shop-item-type";
+import {LogInService} from "../shared/services/api/login.service";
+import {map, mergeMap} from "rxjs/operators";
+import {Observable} from "rxjs/Observable";
+import {isAfter} from "date-fns";
+import {dateSortingFunction} from "../util/util";
 
 interface EventsPreview {
 	title: string,
 	route: string,
+	type: ShopItemType,
 	events: Observable<Event[]>
 }
 
 @Component({
 	selector: "memo-home",
 	templateUrl: "./home.component.html",
-	styleUrls: ["./home.component.scss"]
+	styleUrls: ["./home.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
-	events: EventsPreview[] = [];
+	events: EventsPreview[] = [
+		{
+			title: "Touren",
+			route: "tours",
+			type: ShopItemType.tour,
+			events: this.loginService.isLoggedInObservable()
+				.pipe(
+					mergeMap(() => this.eventService.search("", EventType.tours))
+				)
+				.pipe(
+					map(tours => this.filterEvents(tours))
+				)
+		},
+		{
+			title: "Veranstaltungen",
+			route: "partys",
+			type: ShopItemType.party,
+			events: this.loginService.isLoggedInObservable()
+				.pipe(
+					mergeMap(() => this.eventService.search("", EventType.partys))
+				)
+				.pipe(
+					map(partys => this.filterEvents(partys))
+				)
+		},
+		{
+			title: "Merchandise",
+			route: "merch",
+			type: ShopItemType.merch,
+			events: this.loginService.isLoggedInObservable()
+				.pipe(
+					mergeMap(() => this.eventService.search("", EventType.merch)),
+					map(merch => merch.slice(0, 7))
+				)
+		},
+	];
 
-	constructor(private eventService: EventService) {
+	userIsLoggedIn$ = this.loginService.isLoggedInObservable();
+
+	constructor(private eventService: EventService,
+				private loginService: LogInService) {
 	}
 
 	ngOnInit(): void {
-		//get up to 7 preview items per category
-		this.events = [
-			{
-				title: "Touren",
-				route: "tours",
-				events: this.eventService.search("", EventType.tours).map(tours => tours.slice(0, 7))
-			},
-			{
-				title: "Veranstaltungen",
-				route: "partys",
-				events: this.eventService.search("", EventType.partys).map(partys => partys.slice(0, 7))
-			},
-			{
-				title: "Merchandise",
-				route: "merch",
-				events: this.eventService.search("", EventType.merch).map(merch => merch.slice(0, 7))
-			},
-		];
 	}
 
+
+	filterEvents(events: Event[]): Event[] {
+		return events.filter(event => isAfter(event.date, new Date()))
+			.sort(dateSortingFunction<Event>(it => it.date, false))
+			.slice(0, 7);
+	}
 }

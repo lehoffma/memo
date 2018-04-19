@@ -1,30 +1,31 @@
-@import "../../../../../mixins";
+@import "mixins";
 @import "../modify-shop-item.component";
-
-.modify-shop-item-container {
-	> h2:first-child {
-		margin-bottom: 1rem;
-	}
-
-	form {
-		> h2:not(:first-child) {
-			margin-top: 1.5rem;
-		}
-
-		memo-tour-route-input {
-			display: block;
-			margin-bottom: 1.5rem;
-		}
-	}
-}
 
 .additional-tour-info-container {
 	display: flex;
 	justify-content: space-between;
+	flex-direction: column;
 
 	> div {
+		display: flex;
+		justify-content: space-between;
+
+		&.column {
+			flex-direction: column;
+		}
+	}
+
+	.time-selection {
+
+	}
+
+	> div:not(.column) > * {
 		width: 45%;
 	}
+}
+
+.no-padding /deep/ .object-details-content {
+	padding: 0;
 }
 
 .description-input {
@@ -32,3 +33,33 @@
 
 }
 
+memo-multi-image-upload {
+	background: #fafafa;
+}
+
+form > div:first-child {
+	display: flex;
+	flex-direction: column;
+}
+
+.form-buttons {
+	display: flex;
+	justify-content: center;
+}
+
+
+@media all and (min-width: 800px) {
+	:host {
+		margin-top: 1rem;
+		margin-bottom: 1rem;
+		padding-bottom: 1rem;
+	}
+	memo-multi-image-upload {
+		display: block;
+
+		/deep/ memo-multi-image-container,
+		/deep/ .upload-container {
+			width: 100% !important;
+		}
+	}
+}

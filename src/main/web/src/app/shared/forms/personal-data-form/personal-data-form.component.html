@@ -1,0 +1,98 @@
+<div [formGroup]="formGroup">
+	<div class="user-personal-data-input-container">
+		<div class="name-input">
+			<mat-form-field>
+				<input matInput
+					   formControlName="firstName"
+					   type="text"
+					   name="Vorname"
+					   placeholder="Vorname">
+				<mat-error *ngIf="formGroup.get('firstName').hasError('required')" align="end">
+					Dieses Feld darf nicht leer bleiben!
+				</mat-error>
+			</mat-form-field>
+			<mat-form-field>
+				<input matInput
+					   type="text"
+					   formControlName="surname"
+					   name="Nachname"
+					   placeholder="Nachname">
+				<mat-error *ngIf="formGroup.get('surname').hasError('required')" align="end">
+					Dieses Feld darf nicht leer bleiben!
+				</mat-error>
+			</mat-form-field>
+		</div>
+		<div class="date-and-gender-input">
+			<div>
+				<mat-form-field>
+					<input matInput [matDatepicker]="birthDayPicker"
+						   placeholder="Geburtstag"
+						   formControlName="birthday"
+						   name="Geburtstag">
+					<mat-datepicker-toggle matSuffix [for]="birthDayPicker"></mat-datepicker-toggle>
+					<mat-error
+						*ngIf="formGroup.get('birthday').hasError('required')">
+						Das Datum muss im Format DD.MM.YYYY vorliegen.
+					</mat-error>
+				</mat-form-field>
+				<mat-datepicker [touchUi]="true" #birthDayPicker></mat-datepicker>
+			</div>
+			<div>
+				<mat-form-field>
+					<mat-select [formControl]="formGroup.get('gender')"
+								placeholder="Geschlecht"
+								name="Geschlecht"
+								class="aligned-mat-select">
+						<mat-option *ngFor="let option of genderOptions" [value]="option">
+							{{option}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</div>
+		<div>
+			<mat-form-field>
+				<input matInput
+					   placeholder="Telefon"
+					   name="phone"
+					   type="tel"
+					   formControlName="phone"
+				>
+				<mat-error align="end" *ngIf="formGroup.get('phone').hasError('pattern')">
+					Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
+				</mat-error>
+				<mat-error align="end" *ngIf="formGroup.get('phone').hasError('required')">
+					Dieses Feld darf nicht leer bleiben!
+				</mat-error>
+			</mat-form-field>
+		</div>
+		<div>
+			<mat-form-field>
+				<input matInput
+					   name="mobile"
+					   placeholder="Mobiltelefon"
+					   type="tel"
+					   formControlName="mobile"
+				>
+				<mat-error align="end" *ngIf="formGroup.get('mobile').hasError('pattern')">
+					Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
+				</mat-error>
+				<mat-error align="end" *ngIf="formGroup.get('mobile').hasError('required')">
+					Dieses Feld darf nicht leer bleiben!
+				</mat-error>
+			</mat-form-field>
+		</div>
+	</div>
+
+	<div class="checkboxes-container">
+		<mat-checkbox [formControl]="formGroup.get('isStudent')" align="start">
+			Student
+		</mat-checkbox>
+		<mat-checkbox [formControl]="formGroup.get('hasSeasonTicket')" align="start">
+			Dauerkarte
+		</mat-checkbox>
+		<mat-checkbox [formControl]="formGroup.get('isWoelfeClubMember')" align="start">
+			Woelfeclub-Mitglied
+		</mat-checkbox>
+	</div>
+</div>

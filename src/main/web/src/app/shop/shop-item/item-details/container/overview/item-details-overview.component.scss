@@ -1,16 +1,123 @@
-@import "../../../../../../mixins";
+@import "mixins";
 @import "../../centered-container";
+@import "variables";
 
 .object-overview-container {
-	@include card-like();
+	background-color: $container-content--background-color;
+	color: $container-content--color;
 	padding: 1.5rem;
+	max-width: 500px !important;
+	border-top: 1px solid $container-divider--color;
+	margin: 0;
+
+	.object-info-title {
+		display: flex;
+		justify-content: space-between;
+		color: rgba(0, 0, 0, 0.84);
+		background-color: white;
+		margin-left: -1.5rem;
+		margin: -1.5rem;
+		margin-bottom: 1.5rem;
+		padding: 1rem 0.5rem 1rem 1rem;
+
+		> button,
+		> .object-title > span {
+			font-size: 1.3rem;
+		}
+
+		button {
+			margin-top: -0.5rem;
+		}
+
+		.responsible-person {
+			font-size: 0.85em;
+			color: rgba(0, 0, 0, 0.4);
+			display: flex;
+
+			> span {
+				margin-right: 5px;
+			}
+
+			memo-profile-link {
+				//margin-right: 7px;
+
+				/deep/ a {
+					//margin-right: -3px;
+				}
+
+				&:not(:last-child)::after {
+					content: ",";
+					color: #2196F3;
+					margin-left: -2px;
+				}
+			}
+		}
+	}
+
+	.item-details-row {
+		display: flex;
+		border-bottom: 1px solid #ededed;
+		background: white;
+		margin: -1.5rem;
+		margin-bottom: 1.5rem;
+		padding: 0.5rem 1rem;
+		font-size: 1.1rem;
+		min-height: 60px;
+
+		mat-icon,
+		memo-capacity-renderer /deep/ mat-icon {
+			color: rgba(0, 0, 0, 0.4);
+		}
+
+		&:not(.item-price-container),
+		memo-capacity-renderer {
+			display: flex;
+			align-items: center;
+			font-size: 1rem;
+
+			/deep/ > span {
+				margin-left: 10px;
+			}
+		}
+	}
+
+	.item-price-container {
+		border-top: 1px solid #ededed;
+
+		mat-icon {
+			margin-top: 10px;
+		}
+
+		memo-price-renderer {
+			padding-top: 2px;
+			margin-left: 10px;
+			width: 100%;
+
+			/deep/ .discount-overlay-trigger {
+				margin-left: calc(100% - 260px);
+				margin-top: -3px;
+			}
+
+			/deep/ .price-container {
+				> span {
+					height: 40px;
+					display: flex;
+					align-items: center;
+				}
+			}
+		}
+	}
 
 	.object-info-container {
 		display: flex;
 		justify-content: space-between;
-		padding-bottom: 15px;
-		margin-bottom: 15px;
-		border-bottom: 1px solid #9E9E9E;
+		margin: -1.5rem;
+		padding: 1.5rem;
+		padding-bottom: 1rem;
+		margin-bottom: 1rem;
+		background-color: $container-header--background-color;
+		color: $container-header--color;
+		border-bottom: $container-divider--height solid $container-divider--color;
 
 		.object-info {
 			display: flex;
@@ -27,10 +134,10 @@
 	}
 
 	.add-to-cart-container {
-		padding-top: 1rem;
+		padding-bottom: 1rem;
 		display: flex;
-		padding-left: 2rem;
-		padding-right: 2rem;
+		padding-left: 1rem;
+		padding-right: 1rem;
 		flex-direction: column;
 		justify-content: space-around;
 
@@ -40,7 +147,7 @@
 		}
 
 		form > * {
-			margin-bottom: 1.5rem;
+			//margin-bottom: 1.5rem;
 			width: 100%;
 		}
 	}
@@ -49,4 +156,9 @@
 :host /deep/ .sb-buttons.sb-style.sb-style-colors {
 	justify-content: center;
 	width: 100%;
+}
+
+share-buttons {
+	width: 100%;
+	justify-content: center;
 }

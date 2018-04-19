@@ -1,22 +1,28 @@
 @import "~@angular/material/theming";
-@import "../../../../theme";
+@import "theme";
 
 div {
 	display: flex;
 	flex-direction: column;
 }
 
+:host {
+	mat-form-field {
+		width: 100%;
+	}
+}
+
 .events-container {
-	md-input-container {
+	mat-form-field {
 		margin-top: 5px;
 	}
 
-	md-chip {
+	mat-chip {
 		display: flex !important;
 		justify-content: space-between;
 		align-items: center;
 		cursor: pointer;
-		background-color: mat-color($primary);
+		background-color: $primary-default;
 		color: white;
 		&:hover {
 			background-color: mat-color($primary, 800);
@@ -24,7 +30,7 @@ div {
 
 		&.chip-accent {
 			cursor: auto;
-			background-color: mat-color($accent);
+			background-color: $accent-default;
 		}
 
 		a {
@@ -45,7 +51,7 @@ div {
 .account-options-title {
 	font-weight: 200;
 	border-bottom: 1px solid #E0E0E0;
-	background-color: mat-color($primary);
+	background-color: $primary-default;
 	color: white;
 	padding: 24px 16px 10px 24px;
 	margin: -16px -16px 10px !important;

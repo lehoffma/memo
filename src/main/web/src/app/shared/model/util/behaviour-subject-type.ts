@@ -1,4 +1,6 @@
+
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
+
 export type BehaviorSubjectType<T> = {
 	[P in keyof T]: BehaviorSubject<T[P]>;
 	};
@@ -7,7 +9,8 @@ export type BehaviorSubjectType<T> = {
 export function asValues<T>(subject: BehaviorSubjectType<T>): T {
 	const values: any = {};
 
-	Object.keys(subject).forEach(key => values[key] = subject[key].getValue());
+	Object.keys(subject).forEach((key: keyof BehaviorSubjectType<T>) => values[key] = subject[key].getValue());
+
 
 	return values;
 }

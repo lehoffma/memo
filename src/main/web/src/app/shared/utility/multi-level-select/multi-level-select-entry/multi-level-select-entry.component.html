@@ -1,0 +1,38 @@
+<div mat-menu-item
+	 class="multi-level-select-entry-parent"
+	 (click)="parentOnClick(option, $event)">
+
+	{{option.name}}
+	<mat-icon *ngIf="option.children" [@expandedState]="option.expanded">
+		expand_more
+	</mat-icon>
+</div>
+
+<ng-template [ngIf]="option.expanded">
+	<ng-template ngFor let-child [ngForOf]="option.children">
+		<div *ngIf="isLeaf(child); else nestedLayer"
+			 class="multi-level-select-entry-child"
+			 title="{{child.selected ? 'Filter löschen' : 'Filter auswählen'}}"
+			 [ngClass]="{'selected': option.selectType === 'single' && child.selected}"
+			 (click)="childOnClick(child, $event); $event.stopPropagation(); $event.preventDefault()"
+			 mat-menu-item>
+
+			{{child.name}}
+			<mat-checkbox *ngIf="option.selectType === 'multiple'"
+						  class="multi-level-select-checkbox"
+						  (click)="childOnClick(child, $event); $event.stopPropagation(); $event.preventDefault()"
+						  [(ngModel)]="child.selected"
+						  name="multiSelectCheckbox"
+						  #multiSelectCheckbox="ngModel">
+
+			</mat-checkbox>
+		</div>
+
+		<ng-template #nestedLayer>
+			<memo-multi-level-select-entry [option]="child" [selectType]="child.selectType">
+
+			</memo-multi-level-select-entry>
+		</ng-template>
+	</ng-template>
+
+</ng-template>

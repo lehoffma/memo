@@ -2,6 +2,7 @@ import {Event} from "./event";
 import {ClubRole} from "../../../shared/model/club-role";
 import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
 import {EventRoute} from "./route";
+import {EventType, typeToInteger} from "./event-type";
 
 export class Party extends Event {
 
@@ -9,18 +10,17 @@ export class Party extends Event {
 				title: string,
 				date: Date,
 				description: string,
-				expectedRole: ClubRole,
+				expectedReadRole: ClubRole,
+				expectedCheckInRole: ClubRole,
+				expectedWriteRole: ClubRole,
 				route: EventRoute,
-				imagePath: string,
+				images: string[],
 				capacity: number,
-				priceMember: number,
+				price: number,
+				groupPicture: string,
 				public emptySeats: number) {
-		super(id, title, date, description, expectedRole, route, imagePath, capacity, priceMember);
-	}
-
-
-	static create() {
-		return new Party(-1, "", new Date(1999, 9, 19), "", ClubRole.None, [], "", -1, -1, -1);
+		super(id, title, date, description, [], [], expectedReadRole, expectedCheckInRole, expectedWriteRole,
+			route, images, groupPicture, capacity, price, typeToInteger(EventType.partys));
 	}
 
 	get overviewKeys(): EventOverviewKey[] {
@@ -39,11 +39,6 @@ export class Party extends Event {
 				key: "emptySeats",
 				label: "Freie Plätze"
 			},
-			//todo besseres label oder komplett weg?
-			// {
-			// 	key: "expectedRole",
-			// 	label: "Für"
-			// },
 		];
 	}
 
@@ -68,5 +63,10 @@ export class Party extends Event {
 				pipe: "price"
 			}
 		]
+	}
+
+	static create() {
+		return new Party(-1, "", new Date(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
+			["resources/images/Logo.png"], -1, -1, "", -1);
 	}
 }

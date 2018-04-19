@@ -3,14 +3,14 @@
 	<div class="object-details-content-container">
 		<div class="object-details-content-title">
 			<h3>{{title}}</h3>
-			<a *ngIf="route" title="Teilnehmer-Details"
+			<a *ngIf="route" title="Zeige mehr {{title}} Informationen"
 			   routerLink="{{route}}">
-				<md-icon>list</md-icon>
+				<mat-icon>list</mat-icon>
 			</a>
 		</div>
 
 		<div class="object-details-content">
-			<ng-content select="[content]"></ng-content>
+			<ng-content></ng-content>
 		</div>
 	</div>
 

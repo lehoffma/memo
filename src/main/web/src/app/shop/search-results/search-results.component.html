@@ -1,21 +1,28 @@
-
-<div class="sorting-results-modifier-container">
-	<memo-filtering-menu [filterOptions]="filterOptions"></memo-filtering-menu>
-	<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
+<div class="filter-sidebar">
+	<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>
 </div>
 
-<div *ngIf="(keywords | async).length >= 0" class="search-results-container">
-	<div class="search-results-header">
-		<span>
-		{{resultsTitle | async}}
-		</span>
-		<div class="search-results-actions">
-			<memo-filtering-menu [filterOptions]="filterOptions"></memo-filtering-menu>
-			<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
-		</div>
+
+<div class="results-container">
+	<div class="sorting-results-modifier-container">
+		<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>
+		<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
 	</div>
 
-	<memo-results [events]="results$ | async"></memo-results>
+	<div *ngIf="(keywords | async).length >= 0" class="search-results-container">
+		<div class="search-results-header">
+			<span>
+			{{resultsTitle | async}}
+			</span>
+			<div class="search-results-actions">
+				<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>
+				<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
+			</div>
+		</div>
+
+		<memo-results [events]="results$ | async"></memo-results>
+	</div>
+
 </div>
 
 

@@ -1,5 +1,27 @@
-<div class="tour-entry-container">
-	<memo-my-tours-entry *ngFor="let event of (tours | async)" [event]="event">
+<mat-tab-group [dynamicHeight]="false">
+	<mat-tab label="Teilgenommen">
+		<div class="tour-entry-container">
+			<memo-my-tours-entry *ngFor="let event of (participatedTours$ | async)" [event]="event">
 
-	</memo-my-tours-entry>
-</div>
+			</memo-my-tours-entry>
+			<div *ngIf="(participatedTours$ | async)?.length === 0"
+				 class="no-participated-tours">
+				Du hast bisher an keiner Veranstaltung teilgenommen.
+			</div>
+		</div>
+	</mat-tab>
+	<mat-tab label="Erstellt">
+		<div class="tour-entry-container">
+			<memo-my-tours-entry *ngFor="let event of (createdTours$ | async)" [event]="event">
+
+			</memo-my-tours-entry>
+			<div *ngIf="(createdTours$ | async)?.length === 0"
+				 class="no-created-tours">
+				Du hast bisher keine Veranstaltung erstellt
+				<!--todo: "Veranstaltung erstellen" button-->
+			</div>
+
+		</div>
+	</mat-tab>
+</mat-tab-group>
+

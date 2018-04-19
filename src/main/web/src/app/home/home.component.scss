@@ -1,14 +1,43 @@
+@import "~@angular/material/theming";
+@import "theme";
+@import "mixins";
+@import "variables";
+
+:host {
+	display: block;
+}
+
+.category-overview-container {
+	padding: 10px;
+	max-width: 800px;
+	margin: auto;
+}
+
+.overview-preview-container {
+	background: $container-content--background-color;
+
+	&:not(:first-child) {
+		margin-top: 1rem;
+	}
+}
 
 div.overview-preview-container > .overview-preview-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	background: $container-header--background-color;
+	border-bottom: $container-divider--height solid $container-divider--color;
+	color: $container-header--color;
 
 	padding: 1rem;
 	> a {
 		color: #2196F3;
 		text-decoration: none;
 		font-size: 1.1rem;
+
+		&:hover{
+			color: mat-color($accent, 300);
+		}
 	}
 
 	> h2 {
@@ -18,5 +47,88 @@ div.overview-preview-container > .overview-preview-header {
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+}
+
+.home-header {
+	background: $primary-default;
+	height: 30rem;
+	padding-bottom: 2rem;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	.svg-logo-container {
+		.svg-logo {
+			//@include transition(0.2s ease);
+			//@include animation(5s pulse infinite);
+			//transform-origin: 50% 50%;
+			//cursor: pointer;
+            //
+			//&:hover {
+			//	animation-play-state: paused;
+			//}
+		}
+	}
+
+	.login-button {
+		color: white;
+		border: 2px solid white;
+		transform: scale(0.8);
+	}
+
+	.header-logo {
+		width: 150px;
+		height: 150px;
+		//background: url("../../resources/images/Logo.svg") no-repeat;
+		background-size: contain;
+	}
+
+	h1 {
+		color: white;
+		padding-top: 20px;
+		text-align: center;
+		max-width: 80%;
+		font-size: 2.2rem;
+		font-weight: 100;
+
+		@media all and (min-width: 800px) {
+			font-size: 3rem;
+		}
+	}
+}
+
+@include keyframes(pulse) {
+	0% {
+		@include transform(scale(1));
+	}
+	20% {
+		@include transform(scale(1));
+	}
+	30% {
+		@include transform(scale(1.08));
+	}
+	40% {
+		@include transform(scale(1));
+	}
+	50% {
+		@include transform(scale(1));
+	}
+	60% {
+		@include transform(scale(1.05));
+	}
+	70% {
+		@include transform(scale(1));
+	}
+	80% {
+		@include transform(scale(1));
+	}
+	90% {
+		@include transform(scale(1.08));
+	}
+	100% {
+		@include transform(scale(1));
 	}
 }

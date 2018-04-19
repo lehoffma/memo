@@ -1,242 +1,63 @@
-<form (ngSubmit)="submit()" #userDataForm="ngForm" novalidate>
-	<div class="personal-data">
-		<!--Profilbild-->
-		<h3>Profilbild</h3>
-		<memo-profile-picture-form
-			[image]="loginService.isLoggedIn()
-			? userModel['imagePath']
-			: profilePicture"
-			(onChange)="profilePictureChanged($event)">
+<div class="modify-shop-item-container">
 
-		</memo-profile-picture-form>
+	<form (ngSubmit)="submit()" [formGroup]="userDataForm" novalidate>
+		<div class="personal-data">
+			<!--Profilbild-->
+			<memo-item-details-content [title]="'Profilbild'">
+				<memo-multi-image-upload
+					[formGroup]="userDataForm.get('images')"
+					[previousValue]="previousValue?.images"
+					[limit]="1"
+				>
 
-		<div class="form-divider"></div>
+				</memo-multi-image-upload>
+			</memo-item-details-content>
 
-		<!--Vorname/Nachname-->
-		<h3>Persönliche Daten</h3>
-		<div class="user-personal-data-input-container" *ngIf="userModel">
-			<div class="name-input">
-				<md-input-container>
-					<input mdInput name="firstNameInput"
-						   type="text" required
-						   placeholder="Vorname"
-						   #firstNameInput="ngModel"
-						   [(ngModel)]="userModel['firstName']">
-					<md-hint *ngIf="firstNameInput.touched && !firstNameInput.valid" class="error-message" align="end">
-						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
-				<md-input-container>
-					<input mdInput name="surnameInput"
-						   type="text" required
-						   placeholder="Nachname"
-						   #surnameInput="ngModel"
-						   [(ngModel)]="userModel['surname']">
-					<md-hint *ngIf="surnameInput.touched && !surnameInput.valid" class="error-message" align="end">
-						Dieses Feld darf nicht leer bleiben!
-					</md-hint>
-				</md-input-container>
-			</div>
-			<div class="date-and-gender-input">
-				<div>
-					<md-input-container>
-						<input mdInput [mdDatepicker]="birthDayPicker"
-							   placeholder="Geburtstag"
-							   [(ngModel)]="userModel['birthday']"
-							   #birthdayInput="ngModel"
-							   name="dateInput" required>
-						<button type="button" mdSuffix [mdDatepickerToggle]="birthDayPicker"></button>
-					</md-input-container>
-					<md-datepicker [touchUi]="true" #birthDayPicker></md-datepicker>
-				</div>
-				<md-select [(ngModel)]="userModel['gender']" placeholder="Geschlecht" #genderSelect="ngModel"
-						   name="genderSelect" class="aligned-md-select">
-					<md-option *ngFor="let option of genderOptions" [value]="option">
-						{{option}}
-					</md-option>
-				</md-select>
-			</div>
-			<div>
-				<md-input-container
-					[dividerColor]="(telephone.touched && telephone.invalid) ? 'warn' : 'primary'">
-					<input mdInput
-						   placeholder="Telefon"
-						   type="tel"
-						   pattern="^[0-9\-\+\s\(\)]*$"
-						   name="telephone"
-						   #telephone="ngModel"
-						   [(ngModel)]="userModel['telephone']"
-					>
-					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-					<md-hint align="end" class="error-message" *ngIf="telephone.touched && (telephone.invalid)">
-						Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
-					</md-hint>
-				</md-input-container>
-			</div>
-			<div>
-				<md-input-container
-					[dividerColor]="(mobile.touched && mobile.invalid) ? 'warn' : 'primary'">
-					<input mdInput
-						   placeholder="Mobiltelefon"
-						   type="tel"
-						   pattern="^[0-9\-\+\s\(\)]*$"
-						   name="mobile"
-						   #mobile="ngModel"
-						   [(ngModel)]="userModel['mobile']"
-					>
-					<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-					<md-hint align="end" class="error-message" *ngIf="mobile.touched && (mobile.invalid)">
-						Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
-					</md-hint>
-				</md-input-container>
-			</div>
+			<memo-item-details-content [title]="'Persönliche Daten'">
+				<memo-personal-data-form [formGroup]="userDataForm.get('personal-data')"></memo-personal-data-form>
+			</memo-item-details-content>
+		</div>
+
+		<div class="addresses">
+			<memo-item-details-content [title]="'Addressen'" class="no-padding">
+				<memo-address-form [formGroup]="userDataForm"></memo-address-form>
+			</memo-item-details-content>
+		</div>
+
+		<div class="account-information" *ngIf="withEmailAndPassword">
+			<memo-item-details-content [title]="'Account Informationen'">
+				<memo-email-input [form]="userDataForm.get('account-data')"></memo-email-input>
+				<memo-password-input [form]="userDataForm.get('account-data')" [required]="false">
+
+				</memo-password-input>
+			</memo-item-details-content>
+		</div>
+
+		<!--todo permissions component?-->
+
+		<div class="club-information" *ngIf="loginService.isLoggedInObservable() | async">
+
+			<memo-item-details-content [title]="'Vereinsinformationen'">
+				<memo-club-information-form
+					[formGroup]="userDataForm.get('club-information')"></memo-club-information-form>
+			</memo-item-details-content>
 		</div>
 
 
-		<!--isStudent-->
-		<div class="checkboxes-container">
-			<md-checkbox [(ngModel)]="userModel['isStudent']"
-						 [align]="'start'"
-						 name="isStudent"
-						 #isStudent="ngModel">
-				Student
-			</md-checkbox>
-			<md-checkbox [(ngModel)]="userModel['hasSeasonTicket']"
-						 [align]="'start'"
-						 name="hasSeasonTicket"
-						 #hasSeasonTicket="ngModel">
-				Dauerkarte
-			</md-checkbox>
-			<md-checkbox [(ngModel)]="userModel['isWoelfeClubMember']"
-						 [align]="'start'"
-						 name="isWoelfeClubMember"
-						 #isWoelfeClubMember="ngModel">
-				Woelfeclub-Mitglied
-			</md-checkbox>
+		<div class="form-buttons">
+			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+
+			<button mat-raised-button color="accent"
+					[disabled]="!userDataForm.valid || userDataForm.pending || modifyItemService.loading">
+				<span *ngIf="!modifyItemService.loading; else loadingSpinner">
+					Speichern
+				</span>
+				<ng-template #loadingSpinner>
+					<mat-icon class="loading-spinner">refresh</mat-icon>
+					<span>Speichert...</span>
+				</ng-template>
+			</button>
 		</div>
-	</div>
+	</form>
 
-	<div class="addresses">
-		<!--2. Addressen-->
-		<!--public readonly addresses: number[],-->
-
-		<!--<memo-addresses-input-form>-->
-		<!--ngFor für jede Adresse: ein Listeneintrag anzeigen -->
-		<!--dadrunter form für das hinzufügen einer neuen addresse mit speichern button-->
-		<!--die form ist fürs erste leer und wird mit daten geupdated wenn der nutzer auf eine der ngFor addressen klickt-->
-		<h3>Addressen</h3>
-		<memo-address-entry *ngFor="let address of (addressesSubject$ | async)"
-							[address]="address"
-							[editUrl]="editUrl$ | async"
-							(onDelete)="deleteAddress(address)"
-		>
-		</memo-address-entry>
-		<a md-button (click)="navigateToAddressModifications()" routerLink="{{editUrl$|async}}">
-			Neue Addresse hinzufügen
-		</a>
-
-	</div>
-
-	<div class="account-information" *ngIf="withEmailAndPassword">
-		<!--todo?-->
-		<!--3. Accountinformationen-->
-		<!--public readonly email: string,-->
-		<!--public readonly passwordHash: string,-->
-		<h3>Account Informationen</h3>
-
-		<md-input-container
-			[dividerColor]="(email.touched && email.invalid) ? 'warn' : 'primary'">
-			<input mdInput
-				   placeholder="Email"
-				   type="email"
-				   name="email"
-				   [ngClass]="{'has-error': email.touched && email.invalid}"
-				   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
-				   [(ngModel)]="userModel['email']"
-				   #email="ngModel"
-				   required>
-			<!--zeige Fehlermeldung wenn die eingegebene EmailAdresse falsch (d.h. was anderes abc@test.irgendwas) ist-->
-			<md-hint align="end" class="error-message" *ngIf="email.touched && (email.invalid)">
-				Email-Adresse muss in der Form <i>test@email.de</i> sein
-			</md-hint>
-		</md-input-container>
-
-
-		<md-input-container>
-			<input mdInput
-				   placeholder="Neues Passwort"
-				   type="password"
-				   name="password"
-				   [(ngModel)]="userModel['password']"
-				   #passwordInput="ngModel">
-			<md-hint align="end">
-				<ng2-password-strength-bar
-					[passwordToCheck]="userModel['password']"
-					[barLabel]="''">
-				</ng2-password-strength-bar>
-			</md-hint>
-		</md-input-container>
-		<md-input-container
-			[dividerColor]="(confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)) ? 'warn' : 'primary'">
-			<input mdInput
-				   placeholder="Passwort bestätigen"
-				   type="password"
-				   name="confirm-password-input"
-				   #confirmPasswordInput="ngModel"
-				   [(ngModel)]="confirmedPassword">
-			<!--Zeige Fehlermeldung falls Passwörter nicht übereinstimmen-->
-			<md-hint align="end" class="error-message"
-					 *ngIf="passwordInput.touched && confirmPasswordInput.touched &&  (userModel['password'] !== confirmedPassword)">
-				Passwörter stimmen nicht überein
-			</md-hint>
-		</md-input-container>
-
-	</div>
-
-	<!--todo permissions component-->
-	<!--Permissions-->
-	<!--todo permissions als flags? dann könnte man zwischen "kann editieren", "kann lesen",
-	"kann erstellen", "kann löschen" auswählen...-->
-	<!--Tours: <md-select>[Admin, Kann löschen</md-select>-->
-
-	<div class="club-information" *ngIf="loginService.isLoggedInObservable() | async">
-		<div class="form-divider"></div>
-		<h3>Vereinsinformationen</h3>
-		<div class="club-information-forms">
-			<md-select [(ngModel)]="userModel['clubRole']" placeholder="Vereinsrolle" #clubRoleSelect="ngModel"
-					   [disabled]="!(isAdmin | async)" class="aligned-md-select"
-					   mdTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
-					   [mdTooltipPosition]="'above'"
-					   name="clubRoleSelect">
-				<md-option *ngFor="let option of clubRoleOptions" [value]="option">
-					{{option}}
-				</md-option>
-			</md-select>
-			<div>
-				<md-input-container
-					mdTooltip="{{!(isAdmin | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
-					[mdTooltipPosition]="'above'">
-					<input mdInput [mdDatepicker]="joinDatePicker"
-						   placeholder="Mitglied seit"
-						   [disabled]="!(isAdmin | async)"
-						   [(ngModel)]="userModel['joinDate']"
-						   #joinDateInput="ngModel"
-						   name="joinDateInput" required>
-					<button type="button" [disabled]="!(isAdmin | async)" mdSuffix
-							[mdDatepickerToggle]="joinDatePicker"></button>
-				</md-input-container>
-				<md-datepicker [touchUi]="true" #joinDatePicker></md-datepicker>
-			</div>
-		</div>
-	</div>
-
-
-	<div class="form-actions">
-		<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
-		<button color="accent"
-				[disabled]="!userCanSaveChanges(userDataForm)"
-				md-raised-button>
-			Speichern
-		</button>
-	</div>
-</form>
+</div>

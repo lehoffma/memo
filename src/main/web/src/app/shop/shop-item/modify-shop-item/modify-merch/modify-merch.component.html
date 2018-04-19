@@ -1,79 +1,78 @@
 <div class="modify-shop-item-container">
-	<h2>Merch {{mode === ModifyType.ADD ? 'hinzufügen' : 'bearbeiten'}}</h2>
-	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
+	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
 
-		<h2>Bild</h2>
-		<memo-profile-picture-form
-			[image]="merchModel['imagePath'] ? merchModel['imagePath'] : defaultImageUrl"
-			(onChange)="profilePictureChanged($event)">
+		<div class="image-upload-container">
+			<memo-item-details-content [title]="'Bilder'">
+				<memo-multi-image-upload [previousValue]="previousValue?.images"
+										 [formGroup]="formGroup.get('images')"
+				>
 
-		</memo-profile-picture-form>
-
-		<h2>Merch-Informationen</h2>
-
-		<md-input-container>
-			<input mdInput name="titleInput"
-				   required
-				   placeholder="Titel"
-				   #titleInput="ngModel"
-				   [(ngModel)]="merchModel['title']">
-			<md-hint *ngIf="titleInput.touched && !titleInput.valid" class="error-message" align="end">
-				Dieses Feld darf nicht leer bleiben!
-			</md-hint>
-		</md-input-container>
-
-		<div class="merch-info-container">
-			<md-input-container>
-				<input mdInput name="priceInput"
-					   type="number" required
-					   pattern="^[\d]+((\.|\,)[\d]{1,2})?$"
-					   placeholder="Preis (max. 2 Nachkommastellen)"
-					   (input)="checkValidityOfPrice()"
-					   #priceInput="ngModel"
-					   [(ngModel)]="merchModel['price']">
-				<span mdSuffix>€</span>
-				<md-hint *ngIf="priceInput.touched && !priceInput.valid && priceInput.value === ''"
-						 class="error-message" align="end">
-					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-				<md-hint *ngIf="!priceIsValid"
-						 class="error-message" align="end">
-					Der Preis ist inkorrekt formatiert!
-				</md-hint>
-			</md-input-container>
-			<md-input-container>
-				<input mdInput name="materialInput"
-					   type="text" required
-					   placeholder="Material"
-					   #materialInput="ngModel"
-					   [(ngModel)]="merchModel['material']">
-				<md-hint *ngIf="materialInput.touched && !materialInput.valid" class="error-message" align="end">
-					Dieses Feld darf nicht leer bleiben!
-				</md-hint>
-			</md-input-container>
+				</memo-multi-image-upload>
+			</memo-item-details-content>
 		</div>
 
-		<md-input-container class="description-input">
-			<textarea autosize mdInput name="descriptionInput"
-					  class="not-resizable-textarea" required
-					  type="text"
-					  #descriptionInput="ngModel"
-					  placeholder="Beschreibung"
-					  [(ngModel)]="merchModel['description']">
-			</textarea>
-			<md-hint *ngIf="descriptionInput.touched && !descriptionInput.valid" class="error-message"
-					 align="end">
-				Dieses Feld darf nicht leer bleiben!
-			</md-hint>
-		</md-input-container>
 
-		<!--todo? date: Date,-->
-
-
-		<h2>Bestand</h2>
 		<div>
-			<memo-modify-merch-stock [(stock)]="merchModel['stock']">
-			</memo-modify-merch-stock>
+			<!--<memo-item-details-content [title]="'Bestand'">-->
+			<!--</memo-item-details-content>-->
+			<div class="modify-merch-stock-container">
+				<memo-modify-merch-stock
+					[previousValue]="_previousStock"
+					[formControl]="formGroup.get('event-data').get('stock')">
+				</memo-modify-merch-stock>
+			</div>
+
+			<memo-item-details-content [title]="'Merch-Informationen'" [formGroup]="formGroup.get('event-data')">
+
+				<mat-form-field>
+					<input matInput name="titleInput"
+						   required
+						   placeholder="Titel"
+						   formControlName="title"
+					>
+					<mat-error *ngIf="formGroup.get('event-data').get('title').hasError('required')" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</mat-error>
+				</mat-form-field>
+
+				<div class="merch-info-container">
+					<mat-form-field>
+						<input matInput name="priceInput"
+							   type="number" required
+							   placeholder="Preis (max. 2 Nachkommastellen)"
+							   formControlName="price"
+						>
+						<span matSuffix>€</span>
+						<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('required')" align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</mat-error>
+						<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('pattern')" align="end">
+							Der Preis darf nur aus Zahlen bestehen (max. 2 Nachkommastellen).
+						</mat-error>
+					</mat-form-field>
+					<mat-form-field>
+						<input matInput name="materialInput"
+							   type="text" required
+							   formControlName="material"
+							   placeholder="Material">
+						<mat-error *ngIf="formGroup.get('event-data').get('material').hasError('required')" align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</mat-error>
+					</mat-form-field>
+				</div>
+
+				<mat-form-field class="description-input">
+					<textarea autosize matInput name="descriptionInput"
+							  class="not-resizable-textarea" required
+							  type="text"
+							  formControlName="description"
+							  placeholder="Beschreibung">
+					</textarea>
+					<mat-error *ngIf="formGroup.get('event-data').get('description').hasError('required')" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</mat-error>
+				</mat-form-field>
+			</memo-item-details-content>
 		</div>
 
 		<!--<h2>Grössentabelle</h2>-->
@@ -83,16 +82,40 @@
 			<!--{{merchModel["_sizeTable"] | json}}-->
 		</div>
 
+		<memo-item-details-content [title]="'Berechtigungen'">
+			<memo-item-permissions-input
+				[formGroup]="formGroup.get('permissions')"
+				[isMerch]="true"
+				[previousValue]="{
+					'expectedReadRole': previousValue?.expectedReadRole || 'Gast',
+					'expectedWriteRole': previousValue?.expectedWriteRole || 'Gast',
+					'expectedCheckInRole': previousValue?.expectedCheckInRole || 'Gast'
+				}">
+
+			</memo-item-permissions-input>
+		</memo-item-details-content>
+
+		<memo-item-details-content [title]="'Verantwortliche User'" class="no-padding">
+			<memo-responsible-user-input [previousValue]="previousValue?.author"
+										 [formControl]="formGroup.get('responsible-users')">
+
+			</memo-responsible-user-input>
+		</memo-item-details-content>
 
 		<!--below all that-->
 		<div class="form-buttons">
 			<!--	cancel button-->
-			<button md-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
 			<!--	save button-->
-			<button md-raised-button color="accent"
-					[disabled]="!modifyShopItemForm.form.valid"
-					type="submit">
-				{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+			<button mat-raised-button color="accent"
+					[disabled]="!formGroup.valid || formGroup.pending || modifyItemService.loading">
+				<span *ngIf="!modifyItemService.loading; else loadingSpinner">
+					{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
+				</span>
+				<ng-template #loadingSpinner>
+					<mat-icon class="loading-spinner">refresh</mat-icon>
+					<span>Speichert...</span>
+				</ng-template>
 			</button>
 		</div>
 	</form>

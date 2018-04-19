@@ -1,0 +1,21 @@
+@import "variables";
+
+h2 {
+	font-weight: 200;
+	text-align: center;
+	padding: 1rem;
+	margin: 0;
+
+	box-shadow: none;
+	border-bottom: $container-divider--height solid $container-divider--color;
+	color: $container-header--color;
+	background-color: $container-header--background-color;
+
+	@media all and (min-width: 600px) {
+		max-width: none;
+	}
+}
+
+button.add-item-button {
+	width: 100%;
+}

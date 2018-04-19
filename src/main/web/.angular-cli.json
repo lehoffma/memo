@@ -9,7 +9,9 @@
 			"outDir": "../webapp",
 			"assets": [
 				"resources",
-				"manifest.json"
+				"manifest.json",
+				"sitemap.xml",
+				"robots.txt"
 			],
 			"index": "index.html",
 			"main": "main.ts",
@@ -18,23 +20,21 @@
 			"tsconfig": "tsconfig.app.json",
 			"testTsconfig": "tsconfig.spec.json",
 			"prefix": "memo",
-			"serviceWorker": true,
 			"styles": [
 				"styles.scss",
-				"theme.scss",
+				"styles/theme.scss",
+				"styles/mixins.scss",
+				"material-theme.scss",
 				"spinner.scss",
-				"mixins.scss",
-				"../node_modules/fullcalendar/dist/fullcalendar.min.css",
-				"../node_modules/font-awesome/css/font-awesome.min.css",
-				"../node_modules/primeng/resources/themes/omega/theme.css",
-				"../node_modules/primeng/resources/primeng.min.css"
+				"../node_modules/angular-calendar/css/angular-calendar.css"
 			],
+			"stylePreprocessorOptions": {
+				"includePaths": [
+					"styles"
+				]
+			},
 			"scripts": [
-				"../node_modules/iban/iban.js",
-				"../node_modules/jquery/dist/jquery.min.js",
-				"../node_modules/moment/min/moment.min.js",
-				"../node_modules/fullcalendar/dist/fullcalendar.min.js",
-				"../node_modules/fullcalendar/dist/locale/de.js"
+				"../node_modules/iban/iban.js"
 			],
 			"environmentSource": "environments/environment.ts",
 			"environments": {
