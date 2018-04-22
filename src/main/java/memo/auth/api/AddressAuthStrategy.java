@@ -37,7 +37,9 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
                         .and(userIsLoggedIn()),
                 //  address is part of user: is author or fulfills userManagement permission
                 (AuthenticationConditionFactory.userIsAuthor(Address::getUser)
-                        .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.create))),
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.create))
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getTour(), Permission.create))
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getParty(), Permission.create))),
 
                 //if user is logged out:
                 //  address is neither part of item nor of user
@@ -55,7 +57,9 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
                         .and(userIsLoggedIn()),
                 //  address is part of user: is author or fulfills userManagement permission
                 (AuthenticationConditionFactory.userIsAuthor(Address::getUser)
-                        .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.write))),
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.write))
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getTour(), Permission.write))
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getParty(), Permission.write))),
 
                 //if user is logged out:
                 //  address is neither part of item nor of user
@@ -73,7 +77,9 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
                         .and(userIsLoggedIn()),
                 //  address is part of user: is author or fulfills userManagement permission
                 (AuthenticationConditionFactory.userIsAuthor(Address::getUser)
-                        .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.delete))),
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.delete))
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getTour(), Permission.delete))
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getParty(), Permission.delete))),
 
                 //if user is logged out:
                 //  address is neither part of item nor of user
