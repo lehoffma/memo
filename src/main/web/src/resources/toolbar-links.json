@@ -68,7 +68,7 @@
 		]
 	},
 	{
-		"route": "dashboard",
+		"route": "",
 		"icon": "",
 		"name": "Vereinsverwaltung",
 		"loginNeeded": true,

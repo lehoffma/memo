@@ -53,7 +53,7 @@ import {Address} from "../../../../shared/model/address";
 					overflow-y: auto;
 				}
 
-				memo-item-details-content /deep/ .object-details-content {
+				memo-item-details-content:not(#participants-wrapper) /deep/ .object-details-content {
 					display: flex;
 				}
 

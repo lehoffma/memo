@@ -8,7 +8,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
 import {defaultIfEmpty, filter, first, map} from "rxjs/operators";
@@ -65,7 +65,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	navigateToRoute(selectedView: "calendar" | "list") {
 		this.router.navigate([], {
 			queryParams: {
-				view: selectedView,
+				view: selectedView.toString(),
 			},
 			relativeTo: this.activatedRoute,
 			replaceUrl: !this.activatedRoute.snapshot.queryParamMap.has("view")

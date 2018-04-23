@@ -9,6 +9,7 @@ import {Gender} from "../../model/gender";
 })
 export class PersonalDataFormComponent implements OnInit {
 	@Input() formGroup: FormGroup;
+	maxDate: Date = new Date();
 	genderOptions = [Gender.FEMALE, Gender.MALE, Gender.OTHER];
 
 	constructor() {

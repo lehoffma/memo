@@ -67,11 +67,12 @@ h3 {
 		}
 	}
 
-	.checkboxes-container {
+	/deep/ .checkboxes-container {
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		flex-wrap: wrap;
 
 		@media all and (max-width: 800px) {
 			flex-direction: column;

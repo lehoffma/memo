@@ -1,7 +1,14 @@
 
 .no-results {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	text-align: center;
-	margin-top: 20px;
+	margin: 2rem auto auto;
+
+	height: 100px;
+	font-size: 1.1rem;
+	color: grey;
 }
 
 @media all and (min-width: 650px) {

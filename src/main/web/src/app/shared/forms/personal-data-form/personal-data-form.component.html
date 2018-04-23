@@ -26,6 +26,7 @@
 			<div>
 				<mat-form-field>
 					<input matInput [matDatepicker]="birthDayPicker"
+						   [max]="maxDate"
 						   placeholder="Geburtstag"
 						   formControlName="birthday"
 						   name="Geburtstag">
@@ -33,6 +34,9 @@
 					<mat-error
 						*ngIf="formGroup.get('birthday').hasError('required')">
 						Das Datum muss im Format DD.MM.YYYY vorliegen.
+					</mat-error>
+					<mat-error *ngIf="formGroup.get('birthday').hasError('matDatepickerMax')">
+						Das Datum darf nicht in der Zukunft liegen
 					</mat-error>
 				</mat-form-field>
 				<mat-datepicker [touchUi]="true" #birthDayPicker></mat-datepicker>
