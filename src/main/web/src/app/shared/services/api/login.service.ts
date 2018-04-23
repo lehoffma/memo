@@ -72,6 +72,8 @@ export class LogInService {
 					})),
 				catchError((err, caught) => {
 					console.error(err);
+					this.authService.setAccessToken("");
+					this.authService.setRefreshToken("");
 					return of(null);
 				}),
 				share()
@@ -83,7 +85,7 @@ export class LogInService {
 				}
 				this.pushNewData(user);
 				this.initialized$.next(true);
-			})
+			});
 
 		return request;
 	}
