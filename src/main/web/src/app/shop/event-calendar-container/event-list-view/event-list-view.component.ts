@@ -18,19 +18,6 @@ import {
 	startOfWeek
 } from "date-fns";
 
-// import * as addDays from "date-fns/add_days";
-// import * as endOfMonth,
-// 	endOfWeek,
-// 	format,
-// 	getDayOfYear,
-// 	isAfter,
-// 	isBefore,
-// 	isEqual,
-// 	parse,
-// 	startOfDay,
-// 	startOfMonth,
-// 	startOfWeek
-
 @Component({
 	selector: "memo-event-list-view",
 	templateUrl: "./event-list-view.component.html",

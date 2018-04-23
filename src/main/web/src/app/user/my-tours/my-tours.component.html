@@ -5,11 +5,11 @@
 	<div class="my-tours-options-actions">
 		<mat-button-toggle-group #myToursViewGroup="matButtonToggleGroup"
 								 [(ngModel)]="selectedView" (ngModelChange)="navigateToRoute(selectedView)">
-			<mat-button-toggle value="participated">
-				<mat-icon>event</mat-icon>
+			<mat-button-toggle value="participated" title="Teilgenommen">
+				<mat-icon>person</mat-icon>
 			</mat-button-toggle>
-			<mat-button-toggle value="created">
-				<mat-icon>list</mat-icon>
+			<mat-button-toggle value="created" title="Erstellt">
+				<mat-icon>create</mat-icon>
 			</mat-button-toggle>
 		</mat-button-toggle-group>
 	</div>
@@ -20,6 +20,9 @@
 		<memo-my-tours-entry *ngFor="let event of (participatedTours$ | async)" [event]="event">
 
 		</memo-my-tours-entry>
+		<div class="loader-wrapper" *ngIf="!(participatedTours$ | async)">
+			<div class="loader"></div>
+		</div>
 		<div *ngIf="(participatedTours$ | async)?.length === 0"
 			 class="no-results">
 			Du hast bisher an keiner Veranstaltung teilgenommen.
@@ -30,6 +33,9 @@
 		<memo-my-tours-entry *ngFor="let event of (createdTours$ | async)" [event]="event">
 
 		</memo-my-tours-entry>
+		<div class="loader-wrapper" *ngIf="!(createdTours$ | async)">
+			<div class="loader"></div>
+		</div>
 		<div *ngIf="(createdTours$ | async)?.length === 0"
 			 class="no-results">
 			Du hast bisher keine Veranstaltung erstellt
