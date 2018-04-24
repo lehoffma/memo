@@ -49,9 +49,29 @@ memo-participant-list.participants-list /deep/ .expandable-table-component-conta
 	}
 }
 
+memo-multi-image-upload {
+	padding: 0;
+
+	/deep/ .actions-container {
+		padding: 1rem;
+	}
+}
+
 @media all and (min-width: 500px) {
 	.participants-list {
 		box-shadow: none;
+	}
+}
+
+@media all and (min-width: 600px) {
+	.secondary-event-information /deep/ .object-details-content-container {
+		@include mat-elevation(3);
+	}
+
+	memo-item-details-content:last-child {
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+		display: block;
 	}
 }
 
