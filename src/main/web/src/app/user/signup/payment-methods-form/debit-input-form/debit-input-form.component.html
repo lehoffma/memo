@@ -1,7 +1,6 @@
 <form (ngSubmit)="emitOnChange(debitInputForm)" #debitInputForm="ngForm" novalidate>
 	<h3>Kontoinformationen</h3>
-	<mat-form-field
-		[dividerColor]="(ibanInput.touched && (ibanInput.invalid || !isValidIBAN(model.iban))) ? 'warn'  : 'primary'">
+	<mat-form-field>
 		<input
 			placeholder="IBAN"
 			name="ibanInput"
@@ -15,8 +14,7 @@
 			{{model.iban.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist inkorrekt!"}}
 		</mat-error>
 	</mat-form-field>
-	<mat-form-field
-		[dividerColor]="(bicInput.touched && bicInput.invalid) ? 'warn'  : 'primary'">
+	<mat-form-field>
 		<input
 			placeholder="BIC"
 			name="bicInput"

@@ -23,7 +23,7 @@
 	<mat-form-field
 		*ngIf="inputState === searchInputState.ACTIVE"
 		[@searchInputState]="screenState$ | async"
-		class="search-input" [dividerColor]="'accent'">
+		class="search-input" [color]="'accent'">
 		<input matInput
 			   title="Sucheingabe"
 			   #searchInput

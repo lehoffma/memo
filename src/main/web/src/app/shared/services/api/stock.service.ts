@@ -11,6 +11,7 @@ import {empty} from "rxjs/observable/empty";
 import {isArrayType} from "../../../util/util";
 import {of} from "rxjs/observable/of";
 import {processSequentiallyAndWait} from "../../../util/observable-util";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 const stockMockData = [
 	{
@@ -177,7 +178,7 @@ export class StockService extends ServletService<MerchStock[]> {
 			.pipe(
 				map(response => response.stock),
 				share(),
-				catchError(error => empty<MerchStock[]>())
+				catchError(error => EMPTY)
 			);
 
 		return this._cache.getById(params, request);

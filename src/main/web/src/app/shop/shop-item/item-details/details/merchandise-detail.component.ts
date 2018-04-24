@@ -14,6 +14,7 @@ import {of} from "rxjs/observable/of";
 import {_throw} from "rxjs/observable/throw";
 import {empty} from "rxjs/observable/empty";
 import {Observable} from "rxjs/Observable";
+import {EMPTY} from "rxjs";
 
 @Component({
 	selector: "memo-merchandise-details",
@@ -44,7 +45,7 @@ export class MerchandiseDetailComponent implements OnInit, OnDestroy {
 				: of(event)),
 			catchError(error => {
 				this.router.navigateByUrl("page-not-found", {skipLocationChange: true, replaceUrl: true});
-				return empty<Merchandise>();
+				return EMPTY;
 			})
 		);
 

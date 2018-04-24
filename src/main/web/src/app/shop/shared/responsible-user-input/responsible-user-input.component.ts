@@ -1,12 +1,12 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {User} from "../../../shared/model/user";
 import {UserService} from "../../../shared/services/api/user.service";
-import {filter, first, map, startWith, take, tap} from "rxjs/operators";
+import {filter, first, map, startWith, take} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
-import {empty} from "rxjs/observable/empty";
 import {timer} from "rxjs/observable/timer";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 @Component({
 	selector: "memo-responsible-user-input",
@@ -38,13 +38,13 @@ export class ResponsibleUserInputComponent implements OnInit, OnDestroy, Control
 
 	}
 
-	users$: Observable<User[]> = empty();
+	users$: Observable<User[]> = EMPTY;
 
 	get previousValue() {
 		return this._previousValue;
 	}
 
-	availableUsers$ = empty();
+	availableUsers$: Observable<User[]> = EMPTY;
 	onChange;
 
 	subscriptions = [];

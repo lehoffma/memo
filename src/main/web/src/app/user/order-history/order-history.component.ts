@@ -11,6 +11,7 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {empty} from "rxjs/observable/empty";
 import {mergeMap, map, catchError, defaultIfEmpty} from "rxjs/operators";
 import {_throw} from "rxjs/observable/throw";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 @Component({
 	selector: "memo-order-history",
@@ -60,7 +61,7 @@ export class OrderHistoryComponent implements OnInit {
 			}),
 			catchError(error => {
 				console.error(error);
-				return empty<Order[]>();
+				return EMPTY;
 			}),
 			defaultIfEmpty([])
 		);

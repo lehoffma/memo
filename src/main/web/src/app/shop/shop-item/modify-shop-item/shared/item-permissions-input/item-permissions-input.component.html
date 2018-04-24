@@ -1,6 +1,6 @@
 <form [formGroup]="formGroup" novalidate>
 	<div *ngFor="let permission of permissions">
-		<mat-input-container>
+		<mat-form-field>
 			<mat-select
 				[formControl]="formGroup.get(permission.key)"
 				placeholder="{{permission.label}}"
@@ -9,6 +9,6 @@
 					{{option}}
 				</mat-option>
 			</mat-select>
-		</mat-input-container>
+		</mat-form-field>
 	</div>
 </form>

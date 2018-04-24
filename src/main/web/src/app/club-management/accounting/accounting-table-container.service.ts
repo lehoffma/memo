@@ -24,6 +24,7 @@ import {RowAction} from "../../shared/utility/expandable-table/expandable-table.
 import {RowActionType} from "../../shared/utility/expandable-table/row-action-type";
 import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
 import {MatDialog} from "@angular/material";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 
 @Injectable()
@@ -156,7 +157,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 				tap(() => this.loading = false),
 				catchError(error => {
 					console.error(error);
-					return empty<Entry[]>()
+					return EMPTY;
 				}),
 				defaultIfEmpty([])
 			);

@@ -20,6 +20,7 @@ import {of} from "rxjs/observable/of";
 import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
 import {processSequentially} from "../../util/observable-util";
 import {ImageToUpload} from "../../shared/utility/multi-image-upload/image-to-upload";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 @Injectable()
 export class SignUpService {
@@ -232,7 +233,7 @@ export class SignUpService {
 							{
 								duration: 10000,
 							});
-						return empty();
+						return EMPTY;
 					}),
 					first()
 				)

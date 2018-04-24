@@ -18,6 +18,7 @@ import {empty} from "rxjs/observable/empty";
 import {Subscription} from "rxjs/Subscription";
 import {distanceInWordsStrict} from "date-fns";
 import * as deLocale from "date-fns/locale/de";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 @Component({
 	selector: "memo-comment-block",
@@ -50,7 +51,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 	loggedInUser: User | null = null;
 	loggedInUser$: Observable<User> = this.loginService.currentUser$
 		.pipe(
-			mergeMap(user => user === null ? empty() : of(user))
+			mergeMap(user => user === null ? EMPTY : of(user))
 		);
 	showChildren = false;
 	showReplyBox = false;
@@ -188,7 +189,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 						return this.commentService.modify(newComment);
 					}
 					//otherwise, the user clicked close/cancel
-					return empty()
+					return EMPTY;
 				}),
 				first()
 			)
