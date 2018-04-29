@@ -33,13 +33,7 @@ public class StockServlet extends AbstractApiServlet<Stock> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response,
-                (paramMap, _response) -> StockRepository.getInstance().get(
-                        getParameter(paramMap, "eventId"),
-                        getParameter(paramMap, "type"),
-                        response
-                ),
-                "stock");
+        this.get(request, response, StockRepository.getInstance(), "stock");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -31,10 +31,7 @@ public class BankAccountServlet extends AbstractApiServlet<BankAcc> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response,
-                (parameterMap, _response) -> BankAccountRepository.getInstance().get(getParameter(parameterMap, "id")),
-                "bankAccounts"
-        );
+        this.get(request, response, BankAccountRepository.getInstance(), "bankAccounts");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {

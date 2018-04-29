@@ -29,10 +29,7 @@ public class AddressServlet extends AbstractApiServlet<Address> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response,
-                (parameterMap, _response) -> AddressRepository.getInstance().get(getParameter(parameterMap, "id")),
-                "addresses"
-        );
+        this.get(request, response, AddressRepository.getInstance(), "addresses");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {

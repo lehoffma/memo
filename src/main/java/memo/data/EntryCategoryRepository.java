@@ -1,20 +1,25 @@
 package memo.data;
 
+import memo.auth.api.ConfigurableAuthStrategy;
 import memo.model.EntryCategory;
 import memo.util.DatabaseManager;
+import memo.util.model.Filter;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class EntryCategoryRepository extends AbstractRepository<EntryCategory> {
+public class EntryCategoryRepository extends AbstractPagingAndSortingRepository<EntryCategory> {
 
     protected static EntryCategoryRepository instance;
 
     private EntryCategoryRepository() {
-        super(EntryCategory.class);
+        super(EntryCategory.class, new ConfigurableAuthStrategy<>(true));
     }
 
     public static EntryCategoryRepository getInstance() {
@@ -74,5 +79,21 @@ public class EntryCategoryRepository extends AbstractRepository<EntryCategory> {
         return DatabaseManager.createEntityManager()
                 .createQuery("SELECT category FROM EntryCategory category", EntryCategory.class)
                 .getResultList();
+    }
+
+    @Override
+    public List<Predicate> fromFilter(CriteriaBuilder builder, Root<EntryCategory> root, Filter.FilterRequest filterRequest) {
+        switch (filterRequest.getKey()) {
+            case "searchTerm":
+                return Arrays.asList(builder.and());
+            case "categoryId":
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
+                );
+            default:
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
+                );
+        }
     }
 }

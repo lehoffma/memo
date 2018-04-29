@@ -26,6 +26,7 @@ public class EventCapacityServlet extends AbstractApiServlet<EventCapacity> {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //todo
         this.get(request, response, (paramMap, resp) -> CapacityService
                 .get(Integer.valueOf(getParameter(paramMap, "id")))
                 .map(Arrays::asList)

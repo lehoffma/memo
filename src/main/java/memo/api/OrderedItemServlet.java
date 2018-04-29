@@ -35,14 +35,7 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response,
-                (paramMap, _response) -> ParticipantRepository.getInstance().get(
-                        getParameter(paramMap, "id"),
-                        getParameter(paramMap, "eventId"),
-                        _response
-                ),
-                "orderedItems"
-        );
+        this.get(request, response, ParticipantRepository.getInstance(), "orderedItems");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {

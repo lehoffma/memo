@@ -1,21 +1,27 @@
 package memo.data;
 
+import memo.auth.api.StockAuthStrategy;
 import memo.model.Stock;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
+import memo.util.model.Filter;
 import org.apache.log4j.Logger;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class StockRepository extends AbstractRepository<Stock> {
+public class StockRepository extends AbstractPagingAndSortingRepository<Stock> {
 
     private static final Logger logger = Logger.getLogger(StockRepository.class);
     private static StockRepository instance;
 
     private StockRepository() {
-        super(Stock.class);
+        super(Stock.class, new StockAuthStrategy());
     }
 
     public static StockRepository getInstance() {
@@ -52,5 +58,27 @@ public class StockRepository extends AbstractRepository<Stock> {
     public List<Stock> getAll() {
         return DatabaseManager.createEntityManager().createQuery("SELECT s FROM Stock s ", Stock.class)
                 .getResultList();
+    }
+
+    @Override
+    public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Stock> root, Filter.FilterRequest filterRequest) {
+        /*
+                        getParameter(paramMap, "eventId"),
+                        getParameter(paramMap, "type"),
+         */
+        switch (filterRequest.getKey()) {
+            case "id":
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
+                );
+            case "eventId":
+                return null;
+            case "type":
+                return null;
+            default:
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
+                );
+        }
     }
 }

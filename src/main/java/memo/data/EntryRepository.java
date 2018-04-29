@@ -1,22 +1,28 @@
 package memo.data;
 
 import memo.api.EventServlet;
+import memo.auth.api.EntryAuthStrategy;
 import memo.model.Entry;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
+import memo.util.model.Filter;
 import org.apache.log4j.Logger;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class EntryRepository extends AbstractRepository<Entry> {
+public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
 
     private static final Logger logger = Logger.getLogger(EntryRepository.class);
     private static EntryRepository instance;
 
     private EntryRepository() {
-        super(Entry.class);
+        super(Entry.class, new EntryAuthStrategy());
     }
 
     public static EntryRepository getInstance() {
@@ -59,5 +65,27 @@ public class EntryRepository extends AbstractRepository<Entry> {
     @Override
     public List<Entry> getAll() {
         return DatabaseManager.createEntityManager().createQuery("SELECT e FROM Entry e", Entry.class).getResultList();
+    }
+
+    @Override
+    public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Entry> root, Filter.FilterRequest filterRequest) {
+        switch (filterRequest.getKey()) {
+            case "id":
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
+                );
+            case "eventId":
+                return null;
+            case "eventType":
+                return null;
+            case "minDate":
+                return null;
+            case "maxDate":
+                return null;
+            default:
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
+                );
+        }
     }
 }

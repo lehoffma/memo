@@ -9,7 +9,7 @@ import memo.communication.CommunicationManager;
 import memo.communication.MessageType;
 import memo.data.EventRepository;
 import memo.model.*;
-import memo.util.EventType;
+import memo.util.model.EventType;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -23,8 +23,6 @@ import java.util.List;
 /**
  * Servlet implementation class EventServlet
  */
-// Tested
-
 @WebServlet(name = "EventServlet", value = "/api/event")
 public class EventServlet extends AbstractApiServlet<ShopItem> {
 
@@ -53,18 +51,7 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(
-                request, response,
-                (paramMap, _response) -> EventRepository.getInstance().get(
-                        getParameter(paramMap, "id"),
-                        getParameter(paramMap, "searchTerm"),
-                        getParameter(paramMap, "type"),
-                        getParameter(paramMap, "userId"),
-                        getParameter(paramMap, "authorId"),
-                        _response
-                ),
-                "shopItems"
-        );
+        this.get(request, response, EventRepository.getInstance(), "shopItems");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

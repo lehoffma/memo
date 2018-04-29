@@ -12,7 +12,6 @@ import memo.data.UserRepository;
 import memo.model.*;
 import memo.util.ApiUtils;
 import memo.util.Configuration;
-import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -72,15 +71,7 @@ public class UserServlet extends AbstractApiServlet<User> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response,
-                (paramMap, _response) -> UserRepository.getInstance().get(
-                        getParameter(paramMap, "id"),
-                        getParameter(paramMap, "email"),
-                        getParameter(paramMap, "searchTerm"),
-                        getParameter(paramMap, "participantId")
-                ),
-                "users"
-        );
+        this.get(request, response, UserRepository.getInstance(), "users");
     }
 
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -141,22 +132,25 @@ public class UserServlet extends AbstractApiServlet<User> {
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         this.put(request, response, new ApiServletPutOptions<>(
                         "user", User.class, User::getId, "id"
                 )
                         .setTransform(this::setDefaultValues)
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
-                                        user -> UserRepository.getInstance()
-                                                .get(String.valueOf(user.getId()), user.getEmail(), null, null)
-                                                .isEmpty(),
+//                                        user -> UserRepository.getInstance()
+//                                                .get(String.valueOf(user.getId()), user.getEmail(), null, null)
+//                                                .isEmpty(),
+                                        user -> !UserRepository.getInstance()
+                                                .getById(user.getId())
+                                                .isPresent(),
                                         "Not found",
                                         () -> response.setStatus(HttpServletResponse.SC_NOT_FOUND)
                                 ),
                                 new ModifyPrecondition<>(
-                                        user -> UserRepository.getInstance()
-                                                .get(String.valueOf(user.getId()), user.getEmail(), null, null)
-                                                .size() > 1,
+                                        user -> UserRepository.getInstance().get(user.getId().toString()).size() > 1 ||
+                                                !(UserRepository.getInstance().findByEmail(user.getEmail()).isEmpty()),
                                         "Ambiguous results",
                                         () -> response.setStatus(HttpServletResponse.SC_NOT_FOUND)
                                 )

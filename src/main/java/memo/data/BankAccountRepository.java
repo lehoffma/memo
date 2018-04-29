@@ -1,17 +1,22 @@
 package memo.data;
 
+import memo.auth.api.BankAccAuthStrategy;
 import memo.model.BankAcc;
 import memo.util.DatabaseManager;
+import memo.util.model.Filter;
 
-import java.util.Collections;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.Arrays;
 import java.util.List;
 
-public class BankAccountRepository extends AbstractRepository<BankAcc> {
+public class BankAccountRepository extends AbstractPagingAndSortingRepository<BankAcc> {
 
     protected static BankAccountRepository instance;
 
     private BankAccountRepository() {
-        super(BankAcc.class);
+        super(BankAcc.class, new BankAccAuthStrategy());
     }
 
     public static BankAccountRepository getInstance() {
@@ -22,5 +27,19 @@ public class BankAccountRepository extends AbstractRepository<BankAcc> {
     @Override
     public List<BankAcc> getAll() {
         return DatabaseManager.createEntityManager().createQuery("SELECT a FROM BankAcc a", BankAcc.class).getResultList();
+    }
+
+    @Override
+    public List<Predicate> fromFilter(CriteriaBuilder builder, Root<BankAcc> root, Filter.FilterRequest filterRequest) {
+        switch (filterRequest.getKey()) {
+            case "id":
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
+                );
+            default:
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
+                );
+        }
     }
 }

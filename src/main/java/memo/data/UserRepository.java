@@ -1,26 +1,30 @@
 package memo.data;
 
 import memo.auth.BCryptHelper;
-import memo.model.ClubRole;
-import memo.model.PermissionState;
-import memo.model.User;
+import memo.auth.api.UserAuthStrategy;
+import memo.model.*;
+import memo.model.Order;
 import memo.util.Configuration;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
+import memo.util.model.Filter;
 import org.apache.log4j.Logger;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class UserRepository extends AbstractRepository<User> {
-
+public class UserRepository extends AbstractPagingAndSortingRepository<User> {
     private static final Logger logger = Logger.getLogger(UserRepository.class);
     private static UserRepository instance;
 
     private UserRepository() {
-        super(User.class);
+        super(User.class, new UserAuthStrategy());
         this.getAdmin();
     }
 
@@ -117,5 +121,47 @@ public class UserRepository extends AbstractRepository<User> {
     @Override
     public List<User> getAll() {
         return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u", User.class).getResultList();
+    }
+
+
+    @Override
+    public List<Predicate> fromFilter(CriteriaBuilder builder,
+                                      Root<User> root,
+                                      Filter.FilterRequest filterRequest) {
+        switch (filterRequest.getKey()) {
+            case "id":
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
+                );
+            case "searchTerm":
+                //todo doesn't work
+                Expression<String> firstName = builder.upper(root.get("firstName"));
+                Expression<String> surname = builder.upper(root.get("surname"));
+                Predicate isLikeFirstName = builder.like(firstName, filterRequest.getValue());
+                Predicate isLikeSurname = builder.like(surname, filterRequest.getValue());
+                return Arrays.asList(
+                        builder.or(isLikeFirstName, isLikeSurname)
+                );
+            case "participantId":
+                /*
+                SELECT distinct u from Order o JOIN o.user u JOIN o.items i WHERE i.id = :orderedItemId
+                 */
+                EntityManager em = DatabaseManager.createEntityManager();
+                Metamodel metamodel = em.getMetamodel();
+                EntityType<Order> orderEntityType = metamodel.entity(Order.class);
+                EntityType<User> userEntityType = metamodel.entity(User.class);
+
+                SetJoin<User, memo.model.Order> orderJoin = root
+                        .join(userEntityType.getSet("orders", Order.class));
+                SetJoin<memo.model.Order, memo.model.OrderedItem> orderedItemJoin = orderJoin
+                        .join(orderEntityType.getSet("items", OrderedItem.class));
+                return Arrays.asList(
+                        builder.equal(orderedItemJoin.get("id"), filterRequest.getValue())
+                );
+            default:
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
+                );
+        }
     }
 }

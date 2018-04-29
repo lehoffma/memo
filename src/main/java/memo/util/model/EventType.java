@@ -1,4 +1,4 @@
-package memo.util;
+package memo.util.model;
 
 import java.util.Arrays;
 import java.util.Optional;

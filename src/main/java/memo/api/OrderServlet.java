@@ -12,7 +12,7 @@ import memo.data.OrderRepository;
 import memo.data.StockRepository;
 import memo.data.UserRepository;
 import memo.model.*;
-import memo.util.EventType;
+import memo.util.model.EventType;
 import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
@@ -103,15 +103,7 @@ public class OrderServlet extends AbstractApiServlet<Order> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response,
-                (paramMap, _response) -> OrderRepository.getInstance().get(
-                        getParameter(paramMap, "id"),
-                        getParameter(paramMap, "userId"),
-                        getParameter(paramMap, "orderedItemId"),
-                        _response
-                ),
-                "orders"
-        );
+        this.get(request, response, OrderRepository.getInstance(), "orders");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

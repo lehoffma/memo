@@ -4,7 +4,7 @@ import memo.auth.TokenService;
 import memo.communication.MessageType;
 import memo.data.DiscountService;
 import memo.model.*;
-import memo.util.EventType;
+import memo.util.model.EventType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

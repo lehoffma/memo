@@ -4,7 +4,7 @@ import memo.model.ClubRole;
 import memo.model.Discount;
 import memo.model.ShopItem;
 import memo.model.User;
-import memo.util.EventType;
+import memo.util.model.EventType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

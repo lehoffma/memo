@@ -23,14 +23,7 @@ public class CommentServlet extends AbstractApiServlet<Comment> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response,
-                (paramMap, _response) -> CommentRepository.getInstance().get(
-                        getParameter(paramMap, "id"),
-                        getParameter(paramMap, "eventId"),
-                        getParameter(paramMap, "authorId"),
-                        response
-                ),
-                "comments");
+        this.get(request, response, CommentRepository.getInstance(), "comments");
     }
 
     @Override

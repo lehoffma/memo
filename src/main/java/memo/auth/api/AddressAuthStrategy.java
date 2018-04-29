@@ -5,6 +5,10 @@ import memo.model.Permission;
 import memo.model.ShopItem;
 import memo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 
 import static memo.auth.api.AuthenticationConditionFactory.userHasCorrectPermission;
@@ -26,6 +30,17 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
                 AuthenticationConditionFactory.<Address>userIsLoggedOut()
                         .and((user1, address) -> address.getItem() == null && address.getUser() == null)
         ));
+    }
+
+    @Override
+    public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Address> root, User user) {
+        //user is author => select
+        Path<User> addressUser = root.get("user");
+        Path<Integer> addressUserId = addressUser.get("id");
+        Predicate isAuthor = builder.equal(addressUserId, user.getId());
+        //todo
+
+        return builder.and();
     }
 
     @Override

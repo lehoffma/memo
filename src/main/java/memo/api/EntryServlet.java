@@ -9,7 +9,6 @@ import memo.model.Entry;
 import memo.model.EntryCategory;
 import memo.model.Image;
 import memo.model.ShopItem;
-import memo.util.DatabaseManager;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -44,16 +43,7 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response,
-                (parameterMap, _response) -> EntryRepository.getInstance().get(
-                        getParameter(parameterMap, "id"),
-                        getParameter(parameterMap, "eventId"),
-                        getParameter(parameterMap, "eventType"),
-                        response),
-                "entries",
-                entry -> matchesDate(entry, request.getParameter("minDate"), true)
-                        && matchesDate(entry, request.getParameter("maxDate"), false)
-        );
+        this.get(request, response, EntryRepository.getInstance(), "entries");
     }
 
     @Override

@@ -1,23 +1,29 @@
 package memo.data;
 
+import memo.auth.api.ParticipantsAuthStrategy;
 import memo.model.OrderedItem;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
+import memo.util.model.Filter;
 import org.apache.log4j.Logger;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-public class ParticipantRepository extends AbstractRepository<OrderedItem> {
+public class ParticipantRepository extends AbstractPagingAndSortingRepository<OrderedItem> {
 
     private static final Logger logger = Logger.getLogger(ParticipantRepository.class);
     private static ParticipantRepository instance;
 
     private ParticipantRepository() {
-        super(OrderedItem.class);
+        super(OrderedItem.class, new ParticipantsAuthStrategy());
     }
 
     public static ParticipantRepository getInstance() {
@@ -73,5 +79,26 @@ public class ParticipantRepository extends AbstractRepository<OrderedItem> {
     public List<OrderedItem> getAll() {
         return DatabaseManager.createEntityManager().createQuery("SELECT o FROM OrderedItem o ", OrderedItem.class)
                 .getResultList();
+    }
+
+    @Override
+    public List<Predicate> fromFilter(CriteriaBuilder builder, Root<OrderedItem> root, Filter.FilterRequest filterRequest) {
+        /*
+
+                        getParameter(paramMap, "id"),
+                        getParameter(paramMap, "eventId"),
+         */
+        switch (filterRequest.getKey()) {
+            case "id":
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
+                );
+            case "eventId":
+                return null;
+            default:
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
+                );
+        }
     }
 }

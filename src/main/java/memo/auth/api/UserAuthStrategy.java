@@ -3,6 +3,9 @@ package memo.auth.api;
 import memo.model.Permission;
 import memo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -11,6 +14,13 @@ public class UserAuthStrategy implements AuthenticationStrategy<User> {
     public boolean isAllowedToRead(User user, User object) {
         //users are publicly available
         return true;
+    }
+
+    @Override
+    public Predicate isAllowedToRead(CriteriaBuilder builder, Root<User> root, User user) {
+        //source: https://stackoverflow.com/questions/14675229/jpa-criteria-api-how-to-express-literal-true-and-literal-false
+        //this predicate will always return true, i.e. users are publicly available
+        return builder.and();
     }
 
     @Override

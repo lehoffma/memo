@@ -1,15 +1,17 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import memo.api.util.ApiServletPostOptions;
-import memo.api.util.ApiServletPutOptions;
-import memo.api.util.DependencyUpdateService;
-import memo.api.util.ModifyPrecondition;
+import memo.api.util.*;
 import memo.auth.AuthenticationService;
 import memo.auth.api.AuthenticationStrategy;
+import memo.data.PagingAndSortingRepository;
 import memo.model.User;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
+import memo.util.model.Filter;
+import memo.util.model.Page;
+import memo.util.model.PageRequest;
+import memo.util.model.Sort;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServlet;
@@ -22,7 +24,6 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -114,21 +115,15 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return getParameter(paramMap, key, null);
     }
 
-    protected List<T> get(HttpServletRequest request,
-                          HttpServletResponse response,
+    protected List<T> get(HttpServletRequest request, HttpServletResponse response,
                           BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
-                          String serializedKey,
-                          Predicate<T> isFiltered
-    ) {
+                          String serializedKey) {
         Map<String, String[]> parameterMap = request.getParameterMap();
         ApiUtils.getInstance().setContentType(request, response);
 
         logger.debug("Method GET called with params " + paramMapToString(parameterMap));
         List<T> items = itemSupplier.apply(parameterMap, response);
 
-        items = items.stream()
-                .filter(isFiltered)
-                .collect(Collectors.toList());
         String id = getParameter(parameterMap, "id");
 
         if (stringIsNotEmpty(id) && items.isEmpty()) {
@@ -153,11 +148,42 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return items;
     }
 
-    protected List<T> get(HttpServletRequest request,
+    protected Page<T> get(HttpServletRequest request,
                           HttpServletResponse response,
-                          BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
-                          String serializedKey) {
-        return this.get(request, response, itemSupplier, serializedKey, t -> true);
+                          PagingAndSortingRepository<T> repository,
+                          String serializedKey
+    ) {
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        ApiUtils.getInstance().setContentType(request, response);
+
+        logger.debug("Method GET called with params " + paramMapToString(parameterMap));
+
+        PageRequest pageRequest = UrlParseHelper.readPageRequest(parameterMap);
+        Filter filter = UrlParseHelper.readFilter(parameterMap);
+        Sort sort = UrlParseHelper.readSort(parameterMap);
+        User requestingUser = AuthenticationService.parseNullableUserFromRequestHeader(request);
+
+        Page<T> resultPage = repository.get(requestingUser, pageRequest, sort, filter);
+
+        String id = getParameter(parameterMap, "id");
+
+        //todo how to differentiate between 404 and 503?
+        if (stringIsNotEmpty(id) && resultPage.isEmpty()) {
+            ApiUtils.getInstance().processNotFoundError(response);
+            return new Page<>();
+        }
+
+        //todo transform auth read strategies to Criteria API Predicate's
+
+        if (stringIsNotEmpty(id) && resultPage.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            logger.error("User is not logged in or is not allowed to see this item");
+            return new Page<>();
+        }
+
+        //todo serialize page
+        ApiUtils.getInstance().serializeObject(response, resultPage, null);
+        return resultPage;
     }
 
     protected <SerializedType> T post(HttpServletRequest request,

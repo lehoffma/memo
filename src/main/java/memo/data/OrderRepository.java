@@ -1,13 +1,16 @@
 package memo.data;
 
+import memo.auth.api.OrderAuthStrategy;
 import memo.model.Order;
-import memo.model.OrderedItem;
 import memo.model.PaymentMethod;
-import memo.model.ShopItem;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
+import memo.util.model.Filter;
 import org.apache.log4j.Logger;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
@@ -15,13 +18,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class OrderRepository extends AbstractRepository<Order> {
+public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
 
     private static final Logger logger = Logger.getLogger(OrderRepository.class);
     private static OrderRepository instance;
 
     private OrderRepository() {
-        super(Order.class);
+        super(Order.class, new OrderAuthStrategy());
     }
 
     public static OrderRepository getInstance() {
@@ -80,5 +83,28 @@ public class OrderRepository extends AbstractRepository<Order> {
     @Override
     public List<Order> getAll() {
         return DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o", Order.class).getResultList();
+    }
+
+    @Override
+    public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Order> root, Filter.FilterRequest filterRequest) {
+        /*
+                        getParameter(paramMap, "id"),
+                        getParameter(paramMap, "userId"),
+                        getParameter(paramMap, "orderedItemId"),
+         */
+        switch (filterRequest.getKey()) {
+            case "id":
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
+                );
+            case "userId":
+                return null;
+            case "orderedItemId":
+                return null;
+            default:
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
+                );
+        }
     }
 }

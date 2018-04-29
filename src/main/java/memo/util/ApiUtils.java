@@ -112,7 +112,6 @@ public class ApiUtils {
     }
 
 
-
     public void processInvalidError(HttpServletResponse response) {
         try {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -162,9 +161,14 @@ public class ApiUtils {
 
     public <T> void serializeObject(HttpServletResponse response, T obj, String objectName) {
         try {
-            ObjectNode objectNode = this.toObjectNode(obj, objectName);
-            logger.trace("Serialization of object " + objectName + ": " + obj.toString());
-            response.getWriter().append(objectNode.toString());
+            if (objectName != null) {
+                ObjectNode objectNode = this.toObjectNode(obj, objectName);
+                logger.trace("Serialization of object " + objectName + ": " + obj.toString());
+                response.getWriter().append(objectNode.toString());
+            } else {
+                JsonNode jsonNode = this.toJsonNode(obj);
+                response.getWriter().append(jsonNode.toString());
+            }
         } catch (Exception e) {
             logger.error("Unhandled Exception", e);
         }

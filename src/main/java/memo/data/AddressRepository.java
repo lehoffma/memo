@@ -1,21 +1,21 @@
 package memo.data;
 
+import memo.auth.api.AddressAuthStrategy;
 import memo.model.Address;
-import memo.model.ShopItem;
 import memo.util.DatabaseManager;
-import memo.util.MapBuilder;
+import memo.util.model.Filter;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
-public class AddressRepository extends AbstractRepository<Address> {
+public class AddressRepository extends AbstractPagingAndSortingRepository<Address> {
     protected static AddressRepository instance;
 
     private AddressRepository() {
-        super(Address.class);
+        super(Address.class, new AddressAuthStrategy());
     }
 
     public static AddressRepository getInstance() {
@@ -25,6 +25,22 @@ public class AddressRepository extends AbstractRepository<Address> {
 
     @Override
     public List<Address> getAll() {
-        return DatabaseManager.createEntityManager().createQuery("SELECT a FROM Address a", Address.class).getResultList();
+        return DatabaseManager.createEntityManager()
+                .createQuery("SELECT a FROM Address a", Address.class)
+                .getResultList();
+    }
+
+    @Override
+    public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Address> root, Filter.FilterRequest filterRequest) {
+        switch (filterRequest.getKey()) {
+            case "id":
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
+                );
+            default:
+                return Arrays.asList(
+                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
+                );
+        }
     }
 }

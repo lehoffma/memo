@@ -3,7 +3,7 @@ package memo.auth.api;
 import memo.model.Permission;
 import memo.model.ShopItem;
 import memo.model.User;
-import memo.util.EventType;
+import memo.util.model.EventType;
 
 import java.util.Optional;
 

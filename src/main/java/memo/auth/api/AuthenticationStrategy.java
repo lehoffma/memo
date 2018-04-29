@@ -2,6 +2,9 @@ package memo.auth.api;
 
 import memo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -17,6 +20,13 @@ public interface AuthenticationStrategy<T> {
     }
 
     boolean isAllowedToRead(User user, T object);
+
+    default Predicate isAllowedToRead(CriteriaBuilder builder,
+                                      Root<T> root,
+                                      User user) {
+        //todo remove demo
+        return builder.and();
+    }
 
     boolean isAllowedToCreate(User user, T object);
 

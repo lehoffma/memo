@@ -19,6 +19,7 @@ public class ParticipatedEventsServlet extends AbstractApiServlet<ShopItem> {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //todo write filter in eventRepository
         this.get(request, response,
                 (paramMap, _response) -> EventRepository.getInstance().findByParticipant(Integer.valueOf(
                         getParameter(paramMap, "userId")
