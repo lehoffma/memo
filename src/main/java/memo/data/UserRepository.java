@@ -1,9 +1,10 @@
 package memo.data;
 
 import memo.auth.BCryptHelper;
-import memo.auth.api.UserAuthStrategy;
+import memo.auth.api.strategy.UserAuthStrategy;
+import memo.data.util.PredicateFactory;
+import memo.data.util.PredicateSupplierMap;
 import memo.model.*;
-import memo.model.Order;
 import memo.util.Configuration;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
@@ -11,13 +12,18 @@ import memo.util.model.Filter;
 import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.ListJoin;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class UserRepository extends AbstractPagingAndSortingRepository<User> {
     private static final Logger logger = Logger.getLogger(UserRepository.class);
@@ -123,45 +129,39 @@ public class UserRepository extends AbstractPagingAndSortingRepository<User> {
         return DatabaseManager.createEntityManager().createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
+    public List<Predicate> getByParticipantId(CriteriaBuilder builder,
+                                              Root<User> root,
+                                              Filter.FilterRequest filterRequest) {
+        /*
+               SELECT distinct u from Order o JOIN o.user u JOIN o.items i WHERE i.id = :orderedItemId
+         */
+        EntityManager em = DatabaseManager.createEntityManager();
+        Metamodel metamodel = em.getMetamodel();
+        EntityType<Order> orderEntityType = metamodel.entity(Order.class);
+        EntityType<User> userEntityType = metamodel.entity(User.class);
+
+        ListJoin<User, Order> orderJoin = root
+                .join(userEntityType.getList("orders", Order.class));
+        ListJoin<Order, OrderedItem> orderedItemJoin = orderJoin
+                .join(orderEntityType.getList("items", OrderedItem.class));
+
+        List<Predicate> orderedItemIdPredicates = filterRequest.getValues().stream()
+                .map(value -> builder.equal(orderedItemJoin.get("id"), value))
+                .collect(Collectors.toList());
+
+        return Collections.singletonList(PredicateFactory.combineByOr(builder, orderedItemIdPredicates));
+    }
 
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder,
                                       Root<User> root,
                                       Filter.FilterRequest filterRequest) {
-        switch (filterRequest.getKey()) {
-            case "id":
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
-                );
-            case "searchTerm":
-                //todo doesn't work
-                Expression<String> firstName = builder.upper(root.get("firstName"));
-                Expression<String> surname = builder.upper(root.get("surname"));
-                Predicate isLikeFirstName = builder.like(firstName, filterRequest.getValue());
-                Predicate isLikeSurname = builder.like(surname, filterRequest.getValue());
-                return Arrays.asList(
-                        builder.or(isLikeFirstName, isLikeSurname)
-                );
-            case "participantId":
-                /*
-                SELECT distinct u from Order o JOIN o.user u JOIN o.items i WHERE i.id = :orderedItemId
-                 */
-                EntityManager em = DatabaseManager.createEntityManager();
-                Metamodel metamodel = em.getMetamodel();
-                EntityType<Order> orderEntityType = metamodel.entity(Order.class);
-                EntityType<User> userEntityType = metamodel.entity(User.class);
-
-                SetJoin<User, memo.model.Order> orderJoin = root
-                        .join(userEntityType.getSet("orders", Order.class));
-                SetJoin<memo.model.Order, memo.model.OrderedItem> orderedItemJoin = orderJoin
-                        .join(orderEntityType.getSet("items", OrderedItem.class));
-                return Arrays.asList(
-                        builder.equal(orderedItemJoin.get("id"), filterRequest.getValue())
-                );
-            default:
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
-                );
-        }
+        return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<User>()
+                .buildPut("searchTerm",
+                        (b, r, filter) -> PredicateFactory.search(b, r, filter, Arrays.asList(
+                                "firstName", "surname"
+                        )))
+                .buildPut("participantId", this::getByParticipantId)
+        );
     }
 }

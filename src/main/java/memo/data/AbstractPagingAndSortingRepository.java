@@ -1,6 +1,6 @@
 package memo.data;
 
-import memo.auth.api.AuthenticationStrategy;
+import memo.auth.api.strategy.AuthenticationStrategy;
 import memo.model.User;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;

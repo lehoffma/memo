@@ -1,18 +1,21 @@
-package memo.auth.api;
+package memo.auth.api.strategy;
 
+import memo.auth.api.AuthenticationConditionFactory;
+import memo.data.util.PredicateFactory;
 import memo.model.Address;
 import memo.model.Permission;
 import memo.model.ShopItem;
 import memo.model.User;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Arrays;
+import java.util.List;
 
 import static memo.auth.api.AuthenticationConditionFactory.userHasCorrectPermission;
 import static memo.auth.api.AuthenticationConditionFactory.userIsLoggedIn;
+import static memo.auth.api.AuthenticationPredicateFactory.*;
 
 public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
     @Override
@@ -23,7 +26,9 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
                 AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(Address::getItem, ShopItem::getExpectedReadRole),
                 //  address is part of user: is author or fulfills userManagement permission
                 (AuthenticationConditionFactory.userIsAuthor(Address::getUser)
-                        .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.read))),
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getUserManagement(), Permission.read))
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getTour(), Permission.read))
+                        .or(userHasCorrectPermission(it -> it.getPermissions().getParty(), Permission.read))),
 
                 //if user is logged out:
                 //  address is neither part of item nor of user
@@ -34,13 +39,32 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
 
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Address> root, User user) {
-        //user is author => select
-        Path<User> addressUser = root.get("user");
-        Path<Integer> addressUserId = addressUser.get("id");
-        Predicate isAuthor = builder.equal(addressUserId, user.getId());
-        //todo
+        //if user is logged in:
+        //address is part of item: fulfills read role of shopItem
+        Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root,
+                addressRoot -> addressRoot.get("item"), "expectedReadRole");
 
-        return builder.and();
+        //  address is part of user: is author or fulfills userManagement permission
+        List<Predicate> isAuthor = PredicateFactory
+                .getByIds(builder, root, addressRoot -> addressRoot.get("user").get("id"), user.getId());
+        Predicate isAnyAuthor = PredicateFactory.combineByOr(builder, isAuthor);
+        Predicate hasCorrectPermissions = userHasCorrectPermissions(builder, user, Permission.read,
+                "userManagement", "tour", "party");
+
+        Predicate isAuthorOrHasPermissions = PredicateFactory.combineByOr(builder, isAnyAuthor, hasCorrectPermissions);
+
+        //if user is logged out:
+        //  address is neither part of item nor of user
+
+        Predicate userIsLoggedOut = userIsLoggedOut(builder, user);
+        Predicate neitherPartOfItemNorOfUser = valuesAreNull(builder, root, "item", "user");
+        Predicate isNewlyCreatedObject = builder.and(userIsLoggedOut, neitherPartOfItemNorOfUser);
+
+        return builder.or(
+                userFulfillsMinimumRoleOfItem,
+                isAuthorOrHasPermissions,
+                isNewlyCreatedObject
+        );
     }
 
     @Override

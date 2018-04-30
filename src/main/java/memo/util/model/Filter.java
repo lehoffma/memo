@@ -9,7 +9,7 @@ public class Filter {
 
     public class FilterRequest {
         String key;
-        String value;
+        List<String> values;
 
         public String getKey() {
             return key;
@@ -21,12 +21,12 @@ public class Filter {
         }
 
 
-        public String getValue() {
-            return value;
+        public List<String> getValues() {
+            return values;
         }
 
-        public FilterRequest setValue(String value) {
-            this.value = value;
+        public FilterRequest setValues(List<String> value) {
+            this.values = value;
             return this;
         }
     }

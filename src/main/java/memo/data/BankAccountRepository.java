@@ -1,6 +1,7 @@
 package memo.data;
 
-import memo.auth.api.BankAccAuthStrategy;
+import memo.auth.api.strategy.BankAccAuthStrategy;
+import memo.data.util.PredicateFactory;
 import memo.model.BankAcc;
 import memo.util.DatabaseManager;
 import memo.util.model.Filter;
@@ -8,7 +9,6 @@ import memo.util.model.Filter;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.Arrays;
 import java.util.List;
 
 public class BankAccountRepository extends AbstractPagingAndSortingRepository<BankAcc> {
@@ -31,15 +31,6 @@ public class BankAccountRepository extends AbstractPagingAndSortingRepository<Ba
 
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<BankAcc> root, Filter.FilterRequest filterRequest) {
-        switch (filterRequest.getKey()) {
-            case "id":
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
-                );
-            default:
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
-                );
-        }
+        return PredicateFactory.fromFilter(builder, root, filterRequest);
     }
 }

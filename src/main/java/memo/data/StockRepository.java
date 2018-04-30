@@ -1,6 +1,8 @@
 package memo.data;
 
-import memo.auth.api.StockAuthStrategy;
+import memo.auth.api.strategy.StockAuthStrategy;
+import memo.data.util.PredicateFactory;
+import memo.data.util.PredicateSupplierMap;
 import memo.model.Stock;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
@@ -11,7 +13,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -62,23 +63,10 @@ public class StockRepository extends AbstractPagingAndSortingRepository<Stock> {
 
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Stock> root, Filter.FilterRequest filterRequest) {
-        /*
-                        getParameter(paramMap, "eventId"),
-                        getParameter(paramMap, "type"),
-         */
-        switch (filterRequest.getKey()) {
-            case "id":
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
-                );
-            case "eventId":
-                return null;
-            case "type":
-                return null;
-            default:
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
-                );
-        }
+        return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<Stock>()
+                //todo
+                .buildPut("eventId", null)
+                .buildPut("type", PredicateFactory.getSupplier(stockRoot -> stockRoot.get("item").get("type")))
+        );
     }
 }

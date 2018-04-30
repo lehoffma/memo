@@ -1,4 +1,4 @@
-package memo.auth.api;
+package memo.auth.api.strategy;
 
 import memo.model.ClubRole;
 import memo.model.Comment;

@@ -1,7 +1,9 @@
 package memo.data;
 
 import memo.api.EventServlet;
-import memo.auth.api.EntryAuthStrategy;
+import memo.auth.api.strategy.EntryAuthStrategy;
+import memo.data.util.PredicateFactory;
+import memo.data.util.PredicateSupplierMap;
 import memo.model.Entry;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
@@ -12,7 +14,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -69,23 +70,17 @@ public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
 
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Entry> root, Filter.FilterRequest filterRequest) {
-        switch (filterRequest.getKey()) {
-            case "id":
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
-                );
-            case "eventId":
-                return null;
-            case "eventType":
-                return null;
-            case "minDate":
-                return null;
-            case "maxDate":
-                return null;
-            default:
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
-                );
-        }
+        return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<Entry>()
+                //"SELECT e FROM Entry e WHERE e.item.id = :Id"
+                .buildPut("eventId", PredicateFactory.getIdSupplier(entryRoot -> entryRoot.get("item").get("id")))
+                //"SELECT e FROM Entry e WHERE e.item.type = :type"
+                .buildPut("eventType", PredicateFactory.getSupplier(entryRoot -> entryRoot.get("item").get("type")))
+                .buildPut("minDate", (b, r, request) -> PredicateFactory
+                        .minDate(b, r, request, entryRoot -> entryRoot.get("date"))
+                )
+                .buildPut("maxDate", (b, r, request) -> PredicateFactory
+                        .maxDate(b, r, request, entryRoot -> entryRoot.get("date"))
+                )
+        );
     }
 }

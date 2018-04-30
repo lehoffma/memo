@@ -1,5 +1,6 @@
-package memo.auth.api;
+package memo.auth.api.strategy;
 
+import memo.auth.api.AuthenticationConditionFactory;
 import memo.model.Permission;
 import memo.model.ShopItem;
 import memo.model.Stock;

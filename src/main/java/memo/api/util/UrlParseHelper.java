@@ -4,10 +4,7 @@ import memo.util.model.Filter;
 import memo.util.model.PageRequest;
 import memo.util.model.Sort;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UrlParseHelper {
@@ -15,7 +12,9 @@ public class UrlParseHelper {
         //example: 'sortBy=price&descending=true'
         List<String> sortBys = Arrays.stream(parameterMap.getOrDefault("sortBy", new String[]{}))
                 .collect(Collectors.toList());
-        Sort.Direction direction = Arrays.stream(parameterMap.getOrDefault("direction", new String[]{"none"}))
+        Sort.Direction direction = Arrays.stream(
+                parameterMap.getOrDefault("direction", new String[]{sortBys.size() > 0 ? "desc" : "none"})
+        )
                 .map(Sort.Direction::getByQueryValue)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -46,11 +45,15 @@ public class UrlParseHelper {
     }
 
     private static Filter.FilterRequest toFilterRequest(Map.Entry<String, String[]> entry) {
+        List<String> filterValues = Arrays.stream(entry.getValue())
+                .map(it -> it.split("\\|"))
+                .map(Arrays::asList)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
         return new Filter().new FilterRequest()
                 .setKey(entry.getKey())
-                .setValue(Arrays.stream(entry.getValue())
-                        .collect(Collectors.joining("|"))
-                );
+                .setValues(filterValues);
     }
 
 

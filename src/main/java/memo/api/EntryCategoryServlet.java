@@ -1,7 +1,7 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import memo.auth.api.ConfigurableAuthStrategy;
+import memo.auth.api.strategy.ConfigurableAuthStrategy;
 import memo.data.EntryCategoryRepository;
 import memo.model.EntryCategory;
 import org.apache.log4j.Logger;

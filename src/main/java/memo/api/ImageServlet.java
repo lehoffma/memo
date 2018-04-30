@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import memo.auth.AuthenticationService;
-import memo.auth.api.ImageAuthStrategy;
+import memo.auth.api.strategy.ImageAuthStrategy;
 import memo.data.ImageRepository;
 import memo.model.Entry;
 import memo.model.Image;

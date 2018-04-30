@@ -3,7 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.*;
 import memo.auth.AuthenticationService;
-import memo.auth.api.AuthenticationStrategy;
+import memo.auth.api.strategy.AuthenticationStrategy;
 import memo.data.PagingAndSortingRepository;
 import memo.model.User;
 import memo.util.ApiUtils;
@@ -181,7 +181,6 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return new Page<>();
         }
 
-        //todo serialize page
         ApiUtils.getInstance().serializeObject(response, resultPage, null);
         return resultPage;
     }

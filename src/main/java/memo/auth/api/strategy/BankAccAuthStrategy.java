@@ -1,9 +1,12 @@
-package memo.auth.api;
+package memo.auth.api.strategy;
 
 import memo.model.BankAcc;
 import memo.model.Permission;
 import memo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 
 import static memo.auth.api.AuthenticationConditionFactory.*;
@@ -23,6 +26,11 @@ public class BankAccAuthStrategy implements AuthenticationStrategy<BankAcc> {
                 //  only return true if account hasnt been assigned anything (i.e. user is in registration process)
                 userIsInRegistrationProcess(BankAcc::getUser)
         ));
+    }
+
+    @Override
+    public Predicate isAllowedToRead(CriteriaBuilder builder, Root<BankAcc> root, User user) {
+        return null;
     }
 
     @Override

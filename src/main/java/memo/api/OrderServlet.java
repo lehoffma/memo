@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.api.util.ModifyPrecondition;
-import memo.auth.api.OrderAuthStrategy;
+import memo.auth.api.strategy.OrderAuthStrategy;
 import memo.communication.CommunicationManager;
 import memo.communication.MessageType;
 import memo.data.CapacityService;

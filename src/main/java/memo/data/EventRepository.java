@@ -1,20 +1,25 @@
 package memo.data;
 
 import memo.api.EventServlet;
-import memo.auth.api.ShopItemAuthStrategy;
+import memo.auth.api.strategy.ShopItemAuthStrategy;
+import memo.data.util.PredicateFactory;
+import memo.data.util.PredicateSupplierMap;
 import memo.model.OrderedItem;
 import memo.model.ShopItem;
+import memo.model.User;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
 import org.apache.log4j.Logger;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -87,32 +92,58 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
         return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e", ShopItem.class).getResultList();
     }
 
+    private List<Predicate> getByParticipant(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
+        /*
+        "SELECT shopItem
+                FROM Order o join OrderedItem item join ShopItem shopItem
+                WHERE o.user.id =:userId AND item.item.id = shopItem.id"
+         */
+        EntityManager em = DatabaseManager.createEntityManager();
+        Metamodel metamodel = em.getMetamodel();
+        EntityType<ShopItem> shopItemEntityType = metamodel.entity(ShopItem.class);
+        EntityType<OrderedItem> orderedItemEntityType = metamodel.entity(OrderedItem.class);
+
+        ListJoin<ShopItem, OrderedItem> orderedItemJoin = root.join(shopItemEntityType.getList("orders", OrderedItem.class));
+        Join<OrderedItem, Order> orderJoin = orderedItemJoin.join(orderedItemEntityType.getSingularAttribute("order", Order.class));
+
+        Path<Object> orderUser = orderJoin.get("user");
+
+        List<Predicate> userIdMatchers = filterRequest.getValues().stream()
+                .map(value -> builder.equal(orderUser.get("id"), value))
+                .collect(Collectors.toList());
+
+        Predicate matchesAnyOfTheIds = PredicateFactory.combineByOr(builder, userIdMatchers);
+
+        return Collections.singletonList(matchesAnyOfTheIds);
+    }
+
+    private List<Predicate> getByAuthorId(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
+        /*
+        "SELECT distinct e FROM ShopItem e JOIN e.author a WHERE a.id = :author"
+         */
+
+        EntityManager em = DatabaseManager.createEntityManager();
+        Metamodel metamodel = em.getMetamodel();
+        EntityType<ShopItem> shopItemEntityType = metamodel.entity(ShopItem.class);
+        ListJoin<ShopItem, User> itemAuthorJoin = root.join(shopItemEntityType.getList("author", User.class));
+        Path<Object> idOfAuthor = itemAuthorJoin.get("id");
+
+        List<Predicate> idMatchers = filterRequest.getValues().stream()
+                .map(value -> builder.equal(idOfAuthor, value))
+                .collect(Collectors.toList());
+
+        Predicate anyIdMatches = PredicateFactory.combineByOr(builder, idMatchers);
+        return Collections.singletonList(anyIdMatches);
+    }
+
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
-        /*
-                        getParameter(paramMap, "id"),
-                        getParameter(paramMap, "searchTerm"),
-                        getParameter(paramMap, "type"),
-                        getParameter(paramMap, "userId"),
-                        getParameter(paramMap, "authorId"),
-         */
-        switch (filterRequest.getKey()) {
-            case "id":
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
-                );
-            case "searchTerm":
-                return null;
-            case "type":
-                return null;
-            case "userId":
-                return null;
-            case "authorId":
-                return null;
-            default:
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
-                );
-        }
+        return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<ShopItem>()
+                .buildPut("searchTerm", (b, r, request) -> PredicateFactory
+                        .search(b, r, request, Arrays.asList("title", "description"))
+                )
+                .buildPut("userId", this::getByParticipant)
+                .buildPut("authorId", this::getByAuthorId)
+        );
     }
 }

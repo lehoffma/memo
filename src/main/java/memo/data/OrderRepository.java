@@ -1,22 +1,31 @@
 package memo.data;
 
-import memo.auth.api.OrderAuthStrategy;
+import memo.auth.api.strategy.OrderAuthStrategy;
+import memo.data.util.PredicateFactory;
+import memo.data.util.PredicateSupplierMap;
 import memo.model.Order;
+import memo.model.OrderedItem;
 import memo.model.PaymentMethod;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
 import org.apache.log4j.Logger;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
 
@@ -85,26 +94,32 @@ public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
         return DatabaseManager.createEntityManager().createQuery("SELECT o FROM Order o", Order.class).getResultList();
     }
 
+    private List<Predicate> getByOrderedItemId(CriteriaBuilder builder, Root<Order> root, Filter.FilterRequest filterRequest) {
+        EntityManager em = DatabaseManager.createEntityManager();
+        Metamodel metamodel = em.getMetamodel();
+        EntityType<Order> orderEntityType = metamodel.entity(Order.class);
+        EntityType<OrderedItem> orderedItemEntityType = metamodel.entity(OrderedItem.class);
+        ListJoin<Order, OrderedItem> itemsJoin = root.join(orderEntityType.getList("items", OrderedItem.class));
+
+        List<Predicate> idMatchers = filterRequest.getValues().stream()
+                .map(value -> builder.equal(
+                        itemsJoin.get(orderedItemEntityType.getSingularAttribute("id")),
+                        value
+                ))
+                .collect(Collectors.toList());
+
+        Predicate anyIdMatches = PredicateFactory.combineByOr(builder, idMatchers);
+
+        return Collections.singletonList(anyIdMatches);
+    }
+
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Order> root, Filter.FilterRequest filterRequest) {
-        /*
-                        getParameter(paramMap, "id"),
-                        getParameter(paramMap, "userId"),
-                        getParameter(paramMap, "orderedItemId"),
-         */
-        switch (filterRequest.getKey()) {
-            case "id":
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
-                );
-            case "userId":
-                return null;
-            case "orderedItemId":
-                return null;
-            default:
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
-                );
-        }
+        return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<Order>()
+                .buildPut("userId", PredicateFactory.getIdSupplier(
+                        orderRoot -> orderRoot.get("user").get("id"))
+                )
+                .buildPut("orderedItemId", this::getByOrderedItemId)
+        );
     }
 }

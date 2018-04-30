@@ -4,7 +4,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
-import memo.auth.api.ShopItemAuthStrategy;
+import memo.auth.api.strategy.ShopItemAuthStrategy;
 import memo.communication.CommunicationManager;
 import memo.communication.MessageType;
 import memo.data.EventRepository;

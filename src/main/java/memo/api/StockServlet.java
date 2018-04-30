@@ -3,7 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
-import memo.auth.api.StockAuthStrategy;
+import memo.auth.api.strategy.StockAuthStrategy;
 import memo.data.StockRepository;
 import memo.model.Color;
 import memo.model.ShopItem;

@@ -1,6 +1,8 @@
 package memo.data;
 
-import memo.auth.api.ParticipantsAuthStrategy;
+import memo.auth.api.strategy.ParticipantsAuthStrategy;
+import memo.data.util.PredicateFactory;
+import memo.data.util.PredicateSupplierMap;
 import memo.model.OrderedItem;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
@@ -13,7 +15,6 @@ import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -83,22 +84,8 @@ public class ParticipantRepository extends AbstractPagingAndSortingRepository<Or
 
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<OrderedItem> root, Filter.FilterRequest filterRequest) {
-        /*
-
-                        getParameter(paramMap, "id"),
-                        getParameter(paramMap, "eventId"),
-         */
-        switch (filterRequest.getKey()) {
-            case "id":
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
-                );
-            case "eventId":
-                return null;
-            default:
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
-                );
-        }
+        return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<OrderedItem>()
+                .buildPut("eventId", PredicateFactory.getIdSupplier(orderedItemRoot -> orderedItemRoot.get("item").get("id")))
+        );
     }
 }

@@ -5,7 +5,7 @@ import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.api.util.ModifyPrecondition;
 import memo.auth.BCryptHelper;
-import memo.auth.api.UserAuthStrategy;
+import memo.auth.api.strategy.UserAuthStrategy;
 import memo.communication.CommunicationManager;
 import memo.communication.MessageType;
 import memo.data.UserRepository;

@@ -1,5 +1,6 @@
-package memo.auth.api;
+package memo.auth.api.strategy;
 
+import memo.auth.api.DatabaseAction;
 import memo.model.User;
 
 import java.util.HashMap;

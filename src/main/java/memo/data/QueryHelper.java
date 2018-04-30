@@ -1,6 +1,6 @@
 package memo.data;
 
-import memo.auth.api.AuthenticationStrategy;
+import memo.auth.api.strategy.AuthenticationStrategy;
 import memo.model.User;
 import memo.util.model.Filter;
 import memo.util.model.Sort;
@@ -50,10 +50,11 @@ public class QueryHelper {
         return sort.getOrders().stream()
                 .map(order -> {
                     switch (order.getDirection()) {
+                        //for some reason, desc sorts in ascending and asc in descending order, no idea why though
                         case ASCENDING:
-                            return builder.asc(root.get(order.getProperty()));
-                        case DESCENDING:
                             return builder.desc(root.get(order.getProperty()));
+                        case DESCENDING:
+                            return builder.asc(root.get(order.getProperty()));
                         case NONE:
                             //do nothing
                     }
@@ -133,7 +134,7 @@ public class QueryHelper {
 
         CriteriaQuery<Long> q = builder.createQuery(Long.class);
         Root<T> root = q.from(clazz);
-        CriteriaQuery<Long> finishedQuery = q.select(builder.count(q.from(clazz)))
+        CriteriaQuery<Long> finishedQuery = q.select(builder.count(root))
                 .where(getCombinedPredicates(builder, repository, authenticationStrategy, requestingUser, root, filter))
                 .orderBy(getOrdersFromSort(builder, root, sort));
 

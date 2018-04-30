@@ -3,7 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
-import memo.auth.api.EntryAuthStrategy;
+import memo.auth.api.strategy.EntryAuthStrategy;
 import memo.data.EntryRepository;
 import memo.model.Entry;
 import memo.model.EntryCategory;

@@ -3,7 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
-import memo.auth.api.BankAccAuthStrategy;
+import memo.auth.api.strategy.BankAccAuthStrategy;
 import memo.data.BankAccountRepository;
 import memo.model.BankAcc;
 import memo.model.Order;

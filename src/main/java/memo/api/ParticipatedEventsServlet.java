@@ -1,7 +1,7 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import memo.auth.api.ParticipatedEventsAuthStrategy;
+import memo.auth.api.strategy.ParticipatedEventsAuthStrategy;
 import memo.data.EventRepository;
 import memo.model.ShopItem;
 

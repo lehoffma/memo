@@ -3,7 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
-import memo.auth.api.CommentAuthStrategy;
+import memo.auth.api.strategy.CommentAuthStrategy;
 import memo.data.CommentRepository;
 import memo.model.Comment;
 import memo.model.ShopItem;

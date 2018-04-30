@@ -1,6 +1,8 @@
 package memo.data;
 
-import memo.auth.api.CommentAuthStrategy;
+import memo.auth.api.strategy.CommentAuthStrategy;
+import memo.data.util.PredicateFactory;
+import memo.data.util.PredicateSupplierMap;
 import memo.model.Comment;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
@@ -12,9 +14,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static memo.data.util.PredicateFactory.combineByOr;
 
 public class CommentRepository extends AbstractPagingAndSortingRepository<Comment> {
 
@@ -79,25 +84,25 @@ public class CommentRepository extends AbstractPagingAndSortingRepository<Commen
         return DatabaseManager.createEntityManager().createQuery("SELECT c FROM Comment c", Comment.class).getResultList();
     }
 
+    private List<Predicate> getParentCommentOfEvent(CriteriaBuilder builder, Root<Comment> root, Filter.FilterRequest filterRequest) {
+        //query = "SELECT c FROM Comment c WHERE c.item.id = :eventID AND c.parent = NULL "
+        Predicate matchesAnyEventId = combineByOr(builder, filterRequest.getValues().stream()
+                .map(value -> builder.equal(root.get("item").get("id"), value))
+                .collect(Collectors.toList())
+        );
+        Predicate hasNoParent = builder.isNull(root.get("parent"));
+
+        return Collections.singletonList(builder.and(matchesAnyEventId, hasNoParent));
+    }
+
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Comment> root, Filter.FilterRequest filterRequest) {
-
-        switch (filterRequest.getKey()) {
-            case "id":
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
-                );
-            case "eventId":
-                //todo
-                return null;
-            case "authorId":
-                //todo
-                return null;
-            default:
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
-                );
-        }
+        return PredicateFactory.fromFilter(builder, root, filterRequest,
+                new PredicateSupplierMap<Comment>()
+                        .buildPut("eventId", this::getParentCommentOfEvent)
+                        .buildPut("authorId", PredicateFactory
+                                .getIdSupplier(commentRoot -> commentRoot.get("author").get("id")))
+        );
     }
 
 

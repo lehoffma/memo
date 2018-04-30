@@ -1,5 +1,6 @@
-package memo.auth.api;
+package memo.auth.api.strategy;
 
+import memo.auth.api.AuthenticationConditionFactory;
 import memo.data.EventRepository;
 import memo.model.ClubRole;
 import memo.model.ShopItem;

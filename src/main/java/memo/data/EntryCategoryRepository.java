@@ -1,6 +1,8 @@
 package memo.data;
 
-import memo.auth.api.ConfigurableAuthStrategy;
+import memo.auth.api.strategy.ConfigurableAuthStrategy;
+import memo.data.util.PredicateFactory;
+import memo.data.util.PredicateSupplierMap;
 import memo.model.EntryCategory;
 import memo.util.DatabaseManager;
 import memo.util.model.Filter;
@@ -83,17 +85,10 @@ public class EntryCategoryRepository extends AbstractPagingAndSortingRepository<
 
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<EntryCategory> root, Filter.FilterRequest filterRequest) {
-        switch (filterRequest.getKey()) {
-            case "searchTerm":
-                return Arrays.asList(builder.and());
-            case "categoryId":
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), Integer.valueOf(filterRequest.getValue()))
-                );
-            default:
-                return Arrays.asList(
-                        builder.equal(root.get(filterRequest.getKey()), filterRequest.getValue())
-                );
-        }
+        return PredicateFactory.fromFilter(builder, root, filterRequest,
+                new PredicateSupplierMap<EntryCategory>()
+                        .buildPut("searchTerm", PredicateFactory::isTrueSupplier)
+                        .buildPut("categoryId", PredicateFactory.getIdSupplier("id"))
+        );
     }
 }
