@@ -21,6 +21,7 @@ import {processInParallelAndWait} from "../../../util/observable-util";
 import {OrderStatus} from "../../model/order-status";
 import {CapacityService} from "./capacity.service";
 import {StockService} from "./stock.service";
+import {DiscountService} from "../../../shop/shared/services/discount.service";
 
 interface ParticipantApiResponse {
 	orderedItems: Participant[]
@@ -32,6 +33,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 
 	constructor(private http: HttpClient,
 				private capacityService: CapacityService,
+				private discountService: DiscountService,
 				private stockService: StockService,
 				private orderService: OrderService,
 				private userService: UserService) {
@@ -54,7 +56,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	}
 
 	add(orderedItem: OrderedItem): Observable<OrderedItem> {
-		const modifiedItem = {...orderedItem};
+		const modifiedItem: OrderedItem = {...orderedItem};
 		if (modifiedItem.item && EventUtilityService.isEvent(modifiedItem.item)) {
 			modifiedItem.item = <any>modifiedItem.item.id;
 		}
@@ -73,25 +75,33 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 
 	addParticipant(participant: ParticipantUser, eventType: EventType, eventId: number): Observable<Participant> {
 		let {user, ...newParticipant} = participant;
-		if (newParticipant["item"] && newParticipant["item"]["id"] !== undefined) {
-			(<any>newParticipant).item = participant.item.id;
-		}
-		let order = Order.create().setProperties({
-			timeStamp: new Date(),
-			items: [],
-			user: user.id,
-			method: PaymentMethod.CASH,
-			text: ""
-		});
-		//todo add name/phone number to text or order
 
-		return this.orderService.add(order)
+		return this.discountService.getDiscountedPriceOfEvent(newParticipant.item.id, user.id)
 			.pipe(
-				mergeMap(order => {
-					newParticipant["order"] = order.id;
-					return this.add(newParticipant);
-				}),
-			);
+				mergeMap(discountedPrice => {
+					if (newParticipant["item"] && newParticipant["item"]["id"] !== undefined) {
+						(<any>newParticipant).item = participant.item.id;
+					}
+					newParticipant.price = discountedPrice;
+					let order = Order.create().setProperties({
+						timeStamp: new Date(),
+						items: [newParticipant],
+						user: user.id,
+						method: PaymentMethod.CASH,
+						text: "",
+					});
+					//todo add name/phone number to text or order
+
+
+					return this.orderService.add(order)
+						.pipe(
+							mergeMap(order => {
+								newParticipant["order"] = order.id;
+								return this.add(newParticipant);
+							}),
+						);
+				})
+			)
 	}
 
 	modify(orderedItem: OrderedItem): Observable<OrderedItem> {

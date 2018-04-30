@@ -84,6 +84,8 @@ memo-multi-image-upload {
 	.secondary-event-information {
 		display: flex;
 		justify-content: center;
+		flex-direction: column;
+		align-items: center;
 
 		memo-item-details-content {
 			width: 500px;
