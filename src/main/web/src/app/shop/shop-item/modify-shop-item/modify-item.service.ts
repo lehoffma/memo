@@ -26,6 +26,7 @@ import {ModifiedImages} from "./modified-images";
 import {processSequentially} from "../../../util/observable-util";
 import {isEdited} from "../../../util/util";
 import {TransactionBuilder} from "../../../util/transaction-builder";
+import {MatSnackBar} from "@angular/material";
 
 @Injectable()
 export class ModifyItemService {
@@ -53,6 +54,7 @@ export class ModifyItemService {
 				public userService: UserService,
 				public location: Location,
 				public router: Router,
+				public matSnackBar: MatSnackBar,
 				public navigationService: NavigationService,
 				public entryService: EntryService,
 				public addressService: AddressService,
@@ -130,11 +132,11 @@ export class ModifyItemService {
 			let objectToModifyObservable: Observable<ShopItem> = EventUtilityService.shopItemSwitch<any>(
 				this.itemType,
 				{
-					merch: () => this.eventService.getById(this.idOfObjectToModify),
-					tours: () => this.eventService.getById(this.idOfObjectToModify),
-					partys: () => this.eventService.getById(this.idOfObjectToModify),
-					members: () => this.userService.getById(this.idOfObjectToModify),
-					entries: () => this.entryService.getById(this.idOfObjectToModify),
+					merch: () => <Observable<ShopItem>>this.eventService.getById(this.idOfObjectToModify),
+					tours: () => <Observable<ShopItem>>this.eventService.getById(this.idOfObjectToModify),
+					partys: () => <Observable<ShopItem>>this.eventService.getById(this.idOfObjectToModify),
+					members: () => <Observable<ShopItem>>this.userService.getById(this.idOfObjectToModify),
+					entries: () => <Observable<ShopItem>>this.entryService.getById(this.idOfObjectToModify),
 				});
 
 			//initialize model with object
@@ -361,11 +363,11 @@ export class ModifyItemService {
 		const service: ServletServiceInterface<ShopItem | Event> = EventUtilityService.shopItemSwitch<ServletServiceInterface<ShopItem | Event>>(
 			this.itemType,
 			{
-				merch: () => this.eventService,
-				tours: () => this.eventService,
-				partys: () => this.eventService,
-				members: () => this.userService,
-				entries: () => this.entryService
+				merch: () => <ServletServiceInterface<ShopItem | Event>>this.eventService,
+				tours: () => <ServletServiceInterface<ShopItem | Event>>this.eventService,
+				partys: () => <ServletServiceInterface<ShopItem | Event>>this.eventService,
+				members: () => <ServletServiceInterface<ShopItem | Event>>this.userService,
+				entries: () => <ServletServiceInterface<ShopItem | Event>>this.entryService
 			}
 		);
 
@@ -420,6 +422,24 @@ export class ModifyItemService {
 				},
 				error => {
 					//todo global error handler that shows toast or some kind of notification
+					if (error.status === 403) {
+						this.matSnackBar.open("Du besitzt nicht die nötigen Rechte für diese Aktion.", "Schließen",
+							{
+								duration: 5000
+							});
+					}
+					else if (error.status === 500) {
+						this.matSnackBar.open("Beim Verarbeiten dieser Aktion ist leider ein Fehler aufgetreten.", "Schließen",
+							{
+								duration: 5000
+							});
+					}
+					else if (error.status === 503 || error.status === 504) {
+						this.matSnackBar.open("Der Server antwortet nicht.", "Schließen",
+							{
+								duration: 5000
+							});
+					}
 					console.log("adding or editing object went wrong");
 					console.error(error);
 					console.log(newObject);

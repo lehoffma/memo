@@ -17,7 +17,7 @@ export class IsNotLoggedInGuard implements CanActivate {
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
 		return this.authService.getRefreshedAccessToken()
 			.pipe(
-				map(token => token.auth_token === null),
+				map(token => !this.authService.isAuthenticated()),
 				tap(isNotLoggedIn => {
 					if(!isNotLoggedIn){
 						this.router.navigateByUrl("/");

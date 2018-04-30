@@ -27,6 +27,16 @@
 
 	memo-user-data-form {
 		margin-top: -1rem;
+
+		/deep/ .modify-shop-item-container {
+			width: 100%;
+			max-width: none;
+		}
+
+		/deep/ .current-image-container {
+			margin: auto;
+		}
+
 		/deep/ .form-actions {
 			justify-content: space-between;
 			background: white;

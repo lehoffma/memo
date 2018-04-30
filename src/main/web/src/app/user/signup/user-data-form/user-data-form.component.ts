@@ -140,7 +140,7 @@ export class UserDataFormComponent implements OnInit {
 			}],
 			"club-information": this.formBuilder.group({
 				"clubRole": [ClubRole.Gast, {validators: []}],
-				"joinDate": [new Date(), {validators: []}],
+				"joinDate": [new Date(), {validators: [Validators.required]}],
 			})
 		});
 

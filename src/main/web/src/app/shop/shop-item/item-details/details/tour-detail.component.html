@@ -10,7 +10,7 @@
 		<span class="description secondary-text" content>{{tour?.description}}</span>
 	</memo-item-details-content>
 
-	<memo-item-details-content [title]="'Wer fährt mit?'" [route]="participantsLink$ | async">
+	<memo-item-details-content [title]="'Wer fährt mit?'" [route]="participantsLink$ | async" id="participants-wrapper">
 		<memo-participants [participants]="participants$ | async" content></memo-participants>
 	</memo-item-details-content>
 

@@ -5,7 +5,7 @@
 
     <groupId>org.meilenwoelfe.shop</groupId>
     <artifactId>memo</artifactId>
-    <version>0.2</version>
+    <version>1.0.0-alpha-0</version>
     <packaging>war</packaging>
 
     <name>Meilenshop</name>

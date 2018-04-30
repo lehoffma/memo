@@ -22,7 +22,7 @@
 			<mat-datepicker-toggle [disabled]="!(isAdmin$ | async)" matSuffix
 								   [for]="joinDatePicker"></mat-datepicker-toggle>
 			<mat-error *ngIf="formGroup.get('joinDate').hasError('required')">
-				Dieses Feld darf nicht leer bleiben!
+				Das Datum muss im Format DD.MM.YYYY vorliegen.
 			</mat-error>
 		</mat-form-field>
 		<mat-datepicker [touchUi]="true" #joinDatePicker></mat-datepicker>

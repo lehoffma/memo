@@ -25,12 +25,11 @@ import {Permission} from "../../shared/model/permission";
 })
 
 export class ProfileComponent implements OnInit {
-	userId = this.route.params
+	userId$ = this.route.params
 		.pipe(
-			first(),
 			map(params => +params["id"])
 		);
-	userObservable: Observable<User> = this.userId
+	userObservable: Observable<User> = this.userId$
 		.pipe(
 			mergeMap(id => this.userService.getById(id)),
 			tap(user => console.log(user)),
@@ -75,7 +74,7 @@ export class ProfileComponent implements OnInit {
 				latitude: 0
 			})
 		);
-	canEditUser: Observable<boolean> = combineLatest(this.userId, this.loginService.currentUser$)
+	canEditUser: Observable<boolean> = combineLatest(this.userId$, this.loginService.currentUser$)
 		.pipe(
 			map(([profileId, currentUser]) => {
 				return currentUser && (profileId === currentUser.id || isAuthenticated(currentUser.clubRole, ClubRole.Admin)

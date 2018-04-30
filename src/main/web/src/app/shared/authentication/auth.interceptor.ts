@@ -26,8 +26,12 @@ export class AuthInterceptor implements HttpInterceptor {
 						return authService.refreshAccessToken()
 							.pipe(
 								mergeMap(response => {
+									let token = null;
+									if(response && response.auth_token){
+										token = response.auth_token;
+									}
 									const repeatedAuthReq = req.clone({
-										setHeaders: {Authorization: "Bearer " + response.auth_token}
+										setHeaders: {Authorization: "Bearer " + token}
 									});
 									return next.handle(repeatedAuthReq);
 								})

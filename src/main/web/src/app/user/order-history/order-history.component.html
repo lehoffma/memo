@@ -5,6 +5,6 @@
 <memo-order-renderer *ngFor="let order of orders$|async" [orderEntry]="order">
 </memo-order-renderer>
 
-<div *ngIf="(orders$|async)?.length === 0">
+<div *ngIf="(orders$|async)?.length === 0" class="no-results">
 	Du hast bisher keine Bestellungen getätigt.
 </div>

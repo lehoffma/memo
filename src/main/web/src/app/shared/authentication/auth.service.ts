@@ -5,7 +5,6 @@ import {catchError, mergeMap, tap} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
 import {_throw} from "rxjs/observable/throw";
 import {of} from "rxjs/observable/of"
-import {empty} from "rxjs/observable/empty";
 
 @Injectable()
 export class AuthService {
@@ -111,6 +110,7 @@ export class AuthService {
 	 */
 	refreshAccessToken(): Observable<{ auth_token: string }> {
 		if (!this.getRefreshToken()) {
+			this.setAccessToken("");
 			return of({auth_token: null});
 		}
 
@@ -120,8 +120,9 @@ export class AuthService {
 			.pipe(
 				tap(response => this.setAccessToken(response.auth_token)),
 				catchError(error => {
+					console.warn(error);
 					this.setAccessToken("");
-					return empty<{ auth_token: string }>();
+					return _throw(error);
 				})
 			);
 	}
@@ -132,6 +133,8 @@ export class AuthService {
 	 */
 	refreshRefreshToken(): Observable<{ refresh_token: string }> {
 		if (!this.getRefreshToken()) {
+			this.setAccessToken("");
+			this.setRefreshToken("");
 			return of({refresh_token: null});
 		}
 
@@ -142,8 +145,9 @@ export class AuthService {
 				tap(response => this.setRefreshToken(response.refresh_token)),
 				catchError(error => {
 					console.error(error);
+					this.setAccessToken("");
+					this.setRefreshToken("");
 					return of({refresh_token: null})
-					// this.setRefreshToken("");
 					// return empty<{ refresh_token: string }>();
 				})
 			);

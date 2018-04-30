@@ -17,6 +17,7 @@ import {Dimension, WindowService} from "../../../../../shared/services/window.se
 import {Observable} from "rxjs/Observable";
 import {ModifyParticipantComponent} from "./modify-participant/modify-participant.component";
 import {EventService} from "../../../../../shared/services/api/event.service";
+import {UserService} from "../../../../../shared/services/api/user.service";
 
 
 const participantListColumns = {
@@ -52,8 +53,10 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 		);
 
 	loading = false;
+
 	constructor(private loginService: LogInService,
 				private activatedRoute: ActivatedRoute,
+				private userService: UserService,
 				private participantService: OrderedItemService,
 				private windowService: WindowService,
 				private eventService: EventService,
@@ -152,15 +155,20 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 				mergeMap(({result, info}) => {
 					this.loading = true;
 					return this.participantService
-						.addParticipant(result.participant, info.eventInfo.eventType, info.eventInfo.eventId)
-						.pipe(
-							tap(() =>
-								this.dataSubject$.next([
-									...this.dataSubject$.getValue(),
-									result.participant
-								])
-							)
-						);
+						.addParticipant(result.participant, info.eventInfo.eventType, info.eventInfo.eventId);
+				}),
+				mergeMap(participant => this.userService.getByParticipantId(participant.id)
+					.pipe(
+						map(user => ({
+							...participant,
+							user,
+						}))
+					)),
+				tap(participantUser => {
+					this.dataSubject$.next([
+						...this.dataSubject$.getValue(),
+						participantUser
+					])
 				})
 			)
 			.subscribe(it => {
@@ -183,18 +191,23 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 					this.loading = true;
 					return this.participantService
 						.modifyParticipant(result.participant)
-						.pipe(
-							tap(() => {
-								const indexOfParticipant = this.dataSubject$.value.findIndex(
-									participant => participant.id === result.participant.id
-								);
-								this.dataSubject$.next([
-									...this.dataSubject$.value.slice(0, indexOfParticipant),
-									result.participant,
-									...this.dataSubject$.value.slice(indexOfParticipant + 1)
-								]);
-							})
-						)
+				}),
+				mergeMap(participant => this.userService.getByParticipantId(participant.id)
+					.pipe(
+						map(user => ({
+							...participant,
+							user,
+						}))
+					)),
+				tap(participantUser => {
+					const indexOfParticipant = this.dataSubject$.value.findIndex(
+						participant => participant.id === participantUser.id
+					);
+					this.dataSubject$.next([
+						...this.dataSubject$.value.slice(0, indexOfParticipant),
+						participantUser,
+						...this.dataSubject$.value.slice(indexOfParticipant + 1)
+					]);
 				})
 			)
 			.subscribe(it => {
