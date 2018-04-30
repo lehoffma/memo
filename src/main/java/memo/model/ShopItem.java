@@ -35,6 +35,11 @@ import java.util.Objects;
                 name = "ShopItem.findByAuthor",
                 query = "SELECT distinct e FROM ShopItem e " +
                         " JOIN e.author a WHERE a.id = :author"
+        ),
+        @NamedQuery(
+                name = "ShopItem.findByParticipant",
+                query = "SELECT item from ShopItem item join item.orders orderedItem join orderedItem.order order2\n" +
+                        "    WHERE order2.user.id =:userId"
         )
 })
 public class ShopItem implements Serializable {
@@ -71,12 +76,12 @@ public class ShopItem implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private ClubRole expectedWriteRole = ClubRole.Vorstand;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade= {CascadeType.REMOVE}, mappedBy = "item")
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE}, mappedBy = "item")
     @JsonSerialize(using = ImagePathListSerializer.class)
     @JsonDeserialize(using = ImagePathListDeserializer.class)
     private List<Image> images;
 
-    @OneToOne(cascade= {CascadeType.REMOVE})
+    @OneToOne(cascade = {CascadeType.REMOVE})
     @JsonSerialize(using = ImagePathSerializer.class)
     @JsonDeserialize(using = ImagePathDeserializer.class)
     private Image groupPicture;
@@ -87,7 +92,7 @@ public class ShopItem implements Serializable {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade= {CascadeType.REMOVE}, mappedBy = "item")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE}, mappedBy = "item")
     @JsonSerialize(using = AddressIdListSerializer.class)
     @JsonDeserialize(using = AddressIdListDeserializer.class)
     private List<Address> route = new ArrayList<>();
@@ -117,7 +122,7 @@ public class ShopItem implements Serializable {
     @JsonIgnore
     private List<Entry> entries = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade= {CascadeType.REMOVE}, mappedBy = "item")
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE}, mappedBy = "item")
     private List<OrderedItem> orders = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "item")
