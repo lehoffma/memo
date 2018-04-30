@@ -14,6 +14,8 @@ import java.io.IOException;
         value = {
                 "/login",
                 "/signup/*",
+                "/forgot-password",
+                "/password-reset",
                 "/my-events",
                 "/order-history",
                 "/not-allowed",
@@ -52,8 +54,7 @@ import java.io.IOException;
 
 
                 "/impressum",
-                "/settings",
-
+                "/settings"
         }
 )
 public class WebRoutesServlet extends HttpServlet {
