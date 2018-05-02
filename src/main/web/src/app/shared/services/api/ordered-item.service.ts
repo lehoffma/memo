@@ -83,23 +83,24 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 						(<any>newParticipant).item = participant.item.id;
 					}
 					newParticipant.price = discountedPrice;
-					let order = Order.create().setProperties({
-						timeStamp: new Date(),
-						items: [newParticipant],
-						user: user.id,
-						method: PaymentMethod.CASH,
-						text: "",
-					});
 					//todo add name/phone number to text or order
 
 
-					return this.orderService.add(order)
+					return this.add(newParticipant)
 						.pipe(
-							mergeMap(order => {
-								newParticipant["order"] = order.id;
-								return this.add(newParticipant);
-							}),
-						);
+							mergeMap(item => {
+								let order = Order.create().setProperties({
+									timeStamp: new Date(),
+									items: [item.id],
+									user: user.id,
+									method: PaymentMethod.CASH,
+									text: "",
+								});
+								return this.orderService.add(order).pipe(
+									map(order => item)
+								)
+							})
+						)
 				})
 			)
 	}
@@ -134,16 +135,25 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	}
 
 	remove(id: number): Observable<Object> {
-		return this.performRequest(
-			this.http.delete(this.baseUrl, {
-				params: new HttpParams().set("id", "" + id)
+		return this.getById(id).pipe(
+			mergeMap(orderedItem => {
+				return this.performRequest(
+					this.http.delete(this.baseUrl, {
+						params: new HttpParams().set("id", "" + id)
+					})
+				)
+					.pipe(
+						//convert the observable to a hot observable, i.e. immediately perform the http request
+						//instead of waiting for someone to subscribe
+						share(),
+						tap(() => {
+							this.updateCapacities(orderedItem);
+							this.invalidateValue(id, true);
+						})
+					);
 			})
 		)
-			.pipe(
-				//convert the observable to a hot observable, i.e. immediately perform the http request
-				//instead of waiting for someone to subscribe
-				share()
-			);
+
 	}
 
 

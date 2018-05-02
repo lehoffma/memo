@@ -1,5 +1,6 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.serialization.*;
@@ -58,8 +59,14 @@ public class Entry implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    //todo remove from db later
+    @Column(nullable = false, precision = 12, scale = 2)
+    @JsonProperty("deprecatedValue")
     private BigDecimal value;
+
+    @Column(nullable = false, precision = 12, scale = 2)
+    @JsonProperty("value")
+    private BigDecimal actualValue = new BigDecimal(0);
 
     @Column(name = "IS_INCOME")
     private Boolean isIncome = false;
@@ -108,6 +115,15 @@ public class Entry implements Serializable {
 
     public void setValue(BigDecimal amount) {
         this.value = amount;
+    }
+
+    public BigDecimal getActualValue() {
+        return actualValue;
+    }
+
+    public Entry setActualValue(BigDecimal actualValue) {
+        this.actualValue = actualValue;
+        return this;
     }
 
     public Boolean getIsIncome() {

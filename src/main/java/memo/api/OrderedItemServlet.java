@@ -3,6 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
+import memo.api.util.ModifyPrecondition;
 import memo.auth.api.ParticipantsAuthStrategy;
 import memo.data.ParticipantRepository;
 import memo.model.Color;
@@ -16,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 
 @WebServlet(name = "OrderedItemServlet", value = "/api/orderedItem")
 public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
@@ -49,6 +51,13 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
         this.post(request, response, new ApiServletPostOptions<>(
                         "orderedItem", new OrderedItem(), OrderedItem.class, OrderedItem::getId
                 )
+                        .setPreconditions(Collections.singletonList(
+                                new ModifyPrecondition<>(
+                                        item -> OrderServlet.checkOrder(Collections.singletonList(item)),
+                                        "Item is already sold out",
+                                        () -> response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED)
+                                )
+                        ))
         );
     }
 
