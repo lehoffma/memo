@@ -17,10 +17,11 @@ export class ErrorInterceptor implements HttpInterceptor {
 			.pipe(
 				catchError(error => {
 					if (error instanceof HttpErrorResponse) {
-						this.matSnackBar.open("Die Aktion konnte nicht ausgeführt werden. Grund: " + error.status + " " + error.statusText,
-							"Schließen", {
-								duration: 500000
-							});
+						//todo
+						// this.matSnackBar.open("Die Aktion konnte nicht ausgeführt werden. Grund: " + error.status + " " + error.statusText,
+						// 	"Schließen", {
+						// 		duration: 500000
+						// 	});
 					}
 					return _throw(error);
 				})

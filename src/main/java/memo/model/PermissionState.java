@@ -1,5 +1,7 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -55,8 +57,99 @@ public class PermissionState implements Serializable {
     //  constructor
     //**************************************************************
 
+    public PermissionState(User user) {
+        this(user.getClubRole());
+        this.user = user;
+    }
+
     public PermissionState(ClubRole role) {
-        switch (role) {
+        this.updateFromClubRole(role);
+    }
+
+    public PermissionState() {
+    }
+
+    //**************************************************************
+    //  getters and setters
+    //**************************************************************
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Permission getFunds() {
+        return funds;
+    }
+
+    public void setFunds(Permission funds) {
+        this.funds = funds;
+    }
+
+    public Permission getParty() {
+        return party;
+    }
+
+    public void setParty(Permission party) {
+        this.party = party;
+    }
+
+    public Permission getUserManagement() {
+        return userManagement;
+    }
+
+    public void setUserManagement(Permission userManagement) {
+        this.userManagement = userManagement;
+    }
+
+    public Permission getMerch() {
+        return merch;
+    }
+
+    public void setMerch(Permission merch) {
+        this.merch = merch;
+    }
+
+    public Permission getTour() {
+        return tour;
+    }
+
+    public void setTour(Permission tour) {
+        this.tour = tour;
+    }
+
+    public Permission getStock() {
+        return stock;
+    }
+
+    public void setStock(Permission stock) {
+        this.stock = stock;
+    }
+
+    public Permission getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Permission account) {
+        this.settings = account;
+    }
+
+    @JsonIgnore
+    public User getUser() {
+        return user;
+    }
+
+    public PermissionState setUser(User user) {
+        this.user = user;
+        return this;
+    }
+
+
+    public PermissionState updateFromClubRole(ClubRole clubRole) {
+        switch (clubRole) {
             case Gast:
 
                 this.funds = Permission.none;
@@ -141,78 +234,7 @@ public class PermissionState implements Serializable {
 
                 break;
         }
-    }
-
-    public PermissionState() {
-        this(ClubRole.Gast);
-    }
-
-    //**************************************************************
-    //  getters and setters
-    //**************************************************************
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Permission getFunds() {
-        return funds;
-    }
-
-    public void setFunds(Permission funds) {
-        this.funds = funds;
-    }
-
-    public Permission getParty() {
-        return party;
-    }
-
-    public void setParty(Permission party) {
-        this.party = party;
-    }
-
-    public Permission getUserManagement() {
-        return userManagement;
-    }
-
-    public void setUserManagement(Permission userManagement) {
-        this.userManagement = userManagement;
-    }
-
-    public Permission getMerch() {
-        return merch;
-    }
-
-    public void setMerch(Permission merch) {
-        this.merch = merch;
-    }
-
-    public Permission getTour() {
-        return tour;
-    }
-
-    public void setTour(Permission tour) {
-        this.tour = tour;
-    }
-
-    public Permission getStock() {
-        return stock;
-    }
-
-    public void setStock(Permission stock) {
-        this.stock = stock;
-    }
-
-    public Permission getSettings() {
-        return settings;
-    }
-
-    public void setSettings(Permission account) {
-        this.settings = account;
+        return this;
     }
 
     //**************************************************************
