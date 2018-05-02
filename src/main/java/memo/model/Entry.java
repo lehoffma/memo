@@ -60,9 +60,9 @@ public class Entry implements Serializable {
     private String name;
 
     //todo remove from db later
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(precision = 12, scale = 2)
     @JsonProperty("deprecatedValue")
-    private BigDecimal value;
+    private BigDecimal value = new BigDecimal(0);
 
     @Column(nullable = false, precision = 12, scale = 2)
     @JsonProperty("value")
