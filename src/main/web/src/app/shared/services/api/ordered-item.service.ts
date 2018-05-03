@@ -21,6 +21,7 @@ import {processInParallelAndWait} from "../../../util/observable-util";
 import {OrderStatus} from "../../model/order-status";
 import {CapacityService} from "./capacity.service";
 import {StockService} from "./stock.service";
+import {DiscountService} from "../../../shop/shared/services/discount.service";
 
 interface ParticipantApiResponse {
 	orderedItems: Participant[]
@@ -32,6 +33,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 
 	constructor(private http: HttpClient,
 				private capacityService: CapacityService,
+				private discountService: DiscountService,
 				private stockService: StockService,
 				private orderService: OrderService,
 				private userService: UserService) {
@@ -54,7 +56,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	}
 
 	add(orderedItem: OrderedItem): Observable<OrderedItem> {
-		const modifiedItem = {...orderedItem};
+		const modifiedItem: OrderedItem = {...orderedItem};
 		if (modifiedItem.item && EventUtilityService.isEvent(modifiedItem.item)) {
 			modifiedItem.item = <any>modifiedItem.item.id;
 		}
@@ -73,25 +75,34 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 
 	addParticipant(participant: ParticipantUser, eventType: EventType, eventId: number): Observable<Participant> {
 		let {user, ...newParticipant} = participant;
-		if (newParticipant["item"] && newParticipant["item"]["id"] !== undefined) {
-			(<any>newParticipant).item = participant.item.id;
-		}
-		let order = Order.create().setProperties({
-			timeStamp: new Date(),
-			items: [],
-			user: user.id,
-			method: PaymentMethod.CASH,
-			text: ""
-		});
-		//todo add name/phone number to text or order
 
-		return this.orderService.add(order)
+		return this.discountService.getDiscountedPriceOfEvent(newParticipant.item.id, user.id)
 			.pipe(
-				mergeMap(order => {
-					newParticipant["order"] = order.id;
-					return this.add(newParticipant);
-				}),
-			);
+				mergeMap(discountedPrice => {
+					if (newParticipant["item"] && newParticipant["item"]["id"] !== undefined) {
+						(<any>newParticipant).item = participant.item.id;
+					}
+					newParticipant.price = discountedPrice;
+					//todo add name/phone number to text or order
+
+
+					return this.add(newParticipant)
+						.pipe(
+							mergeMap(item => {
+								let order = Order.create().setProperties({
+									timeStamp: new Date(),
+									items: [item.id],
+									user: user.id,
+									method: PaymentMethod.CASH,
+									text: "",
+								});
+								return this.orderService.add(order).pipe(
+									map(order => item)
+								)
+							})
+						)
+				})
+			)
 	}
 
 	modify(orderedItem: OrderedItem): Observable<OrderedItem> {
@@ -124,16 +135,25 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	}
 
 	remove(id: number): Observable<Object> {
-		return this.performRequest(
-			this.http.delete(this.baseUrl, {
-				params: new HttpParams().set("id", "" + id)
+		return this.getById(id).pipe(
+			mergeMap(orderedItem => {
+				return this.performRequest(
+					this.http.delete(this.baseUrl, {
+						params: new HttpParams().set("id", "" + id)
+					})
+				)
+					.pipe(
+						//convert the observable to a hot observable, i.e. immediately perform the http request
+						//instead of waiting for someone to subscribe
+						share(),
+						tap(() => {
+							this.updateCapacities(orderedItem);
+							this.invalidateValue(id, true);
+						})
+					);
 			})
 		)
-			.pipe(
-				//convert the observable to a hot observable, i.e. immediately perform the http request
-				//instead of waiting for someone to subscribe
-				share()
-			);
+
 	}
 
 

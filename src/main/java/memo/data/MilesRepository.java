@@ -28,6 +28,8 @@ public class MilesRepository {
                 .collect(Collectors.toList());
         return participatedEvents.stream()
                 .mapToInt(ShopItem::getMiles)
+                //x2 for the way back
+                .map(it -> it * 2)
                 .sum();
     }
 

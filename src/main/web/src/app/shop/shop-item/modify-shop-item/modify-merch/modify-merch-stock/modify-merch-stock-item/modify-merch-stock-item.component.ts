@@ -15,7 +15,7 @@ export class ModifyMerchStockItemComponent implements OnInit, OnDestroy {
 	public addSizeFormGroup: FormGroup;
 
 	public availableSizes = [];
-	public readonly availableAmounts = Array.from(Array(100).keys()).map(it => it + 1);
+	public readonly availableAmounts = Array.from(Array(101).keys()).map(it => it);
 
 	public textColor: string = "white";
 
@@ -35,6 +35,7 @@ export class ModifyMerchStockItemComponent implements OnInit, OnDestroy {
 			}),
 			"sizes": this.formBuilder.group({})
 		});
+
 
 		this.addSizeFormGroup = this.formBuilder.group({
 			"size": ["", {
@@ -56,10 +57,10 @@ export class ModifyMerchStockItemComponent implements OnInit, OnDestroy {
 		this.formGroup.get("sizes").setValidators([minChildrenValidator(1)]);
 		if (this.isEditing) {
 			this.availableSizes = [this.data.size];
-			this.formGroup.get("sizes").patchValue({
-				[this.data.size]: this.data.amount
-			});
-			this.formGroup.get("color").patchValue({
+			(this.formGroup.get("sizes") as FormGroup)
+				.addControl(this.data.size, this.formBuilder.control(this.data.amount));
+
+			this.formGroup.get("color").setValue({
 				hex: this.data.color.hex,
 				name: this.data.color.name
 			});

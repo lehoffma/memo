@@ -38,14 +38,16 @@ public class OrderServlet extends AbstractApiServlet<Order> {
         this.oneToMany(object, OrderedItem.class, Order::getItems, orderedItem -> orderedItem::setOrder);
     }
 
+    public static boolean checkOrder(Order order) {
+        return checkOrder(new ArrayList<>(order.getItems()));
+    }
+
     /**
      * Checks if the items ordered by the user are out of stock
      *
-     * @param order
      * @return
      */
-    private boolean checkOrder(Order order) {
-        List<OrderedItem> orderedItems = new ArrayList<>(order.getItems());
+    public static boolean checkOrder(List<OrderedItem> orderedItems) {
 
         List<OrderedItem> partysAndEvents = orderedItems.stream()
                 .filter(item -> item.getItem().getType() != EventType.merch.getValue())
@@ -117,11 +119,11 @@ public class OrderServlet extends AbstractApiServlet<Order> {
                             return it;
                         })
                         .setPreconditions(Arrays.asList(
-                                new ModifyPrecondition<>(
-                                        this::checkOrder,
-                                        "This Item is already sold out.",
-                                        () -> response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED)
-                                )
+//                                new ModifyPrecondition<>(
+//                                        OrderServlet::checkOrder,
+//                                        "This Item is already sold out.",
+//                                        () -> response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED)
+//                                )
                         ))
         );
 

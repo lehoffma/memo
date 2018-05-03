@@ -71,12 +71,15 @@ export abstract class CachedService<T> {
 	/**
 	 *
 	 * @param {number} id
+	 * @param removed
 	 */
-	invalidateValue(id: number) {
+	invalidateValue(id: number, removed: boolean = false) {
 		console.log("invalidate " + id);
 		this._cache.invalidateById(id);
-		this.getById(id)
-			.subscribe(value => this.valueChanged(id, value));
+		if(!removed){
+			this.getById(id)
+				.subscribe(value => this.valueChanged(id, value));
+		}
 	}
 
 	abstract getById(id: number, ...args: any[]): Observable<T>;

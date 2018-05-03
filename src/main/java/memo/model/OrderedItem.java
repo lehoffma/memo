@@ -17,7 +17,7 @@ import java.util.Objects;
         @NamedQuery(
                 name = "OrderedItem.findByUser",
                 query = "SELECT item from Order o join OrderedItem item \n" +
-                        "    WHERE o.user.id =:userId"
+                        "    WHERE o.user.id = :userId"
         ),
         @NamedQuery(
                 name = "OrderedItem.findByEvent",

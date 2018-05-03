@@ -31,6 +31,11 @@ import {Address} from "../../../../shared/model/address";
 				white-space: pre-wrap;
 			}
 
+			/*todo remove*/
+			:host /deep/ .item-details-parent-container {
+				margin-bottom: 8rem !important;
+			}
+
 			memo-route-list {
 				display: block;
 				border-bottom: 1px solid #ededed;

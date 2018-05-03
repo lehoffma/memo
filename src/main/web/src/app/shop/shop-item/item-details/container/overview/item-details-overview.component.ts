@@ -146,10 +146,6 @@ export class ItemDetailsOverviewComponent implements OnInit, OnDestroy {
 				private responsibilityService: ResponsibilityService,
 				private matDialog: MatDialog) {
 		this.updateMaxAmount();
-
-		this.stock$.subscribe(it => console.log(it));
-		this._color$.subscribe(it => console.log(it));
-		this._size$.subscribe(it => console.log(it));
 	}
 
 	get event() {
@@ -346,6 +342,12 @@ export class ItemDetailsOverviewComponent implements OnInit, OnDestroy {
 				}
 			});
 
+	}
+
+	isSoldOut(event, options: number[]): boolean {
+		return ((this.isMerch(event) && !!this.size && !!this.color)
+			|| !this.isMerch(event))
+			&& options && options.length <= 1;
 	}
 
 	isMerch(event): event is Merchandise {

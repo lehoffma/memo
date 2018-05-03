@@ -54,12 +54,11 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
     }
 
     public List<ShopItem> findByParticipant(Integer userId) {
-        List<OrderedItem> orderedItems = DatabaseManager.createEntityManager()
-                .createNamedQuery("OrderedItem.findByUser", OrderedItem.class)
+        List<ShopItem> orderedItems = DatabaseManager.createEntityManager()
+                .createNamedQuery("ShopItem.findByParticipant", ShopItem.class)
                 .setParameter("userId", userId)
                 .getResultList();
         return new ArrayList<>(orderedItems).stream()
-                .map(OrderedItem::getItem)
                 .distinct()
                 .collect(Collectors.toList());
     }

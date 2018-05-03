@@ -34,6 +34,7 @@ import {ShareButtonsModule} from "@ngx-share/buttons";
 import {CalendarModule} from "angular-calendar";
 import {DateFnsAdapter} from "./util/date-fns-adapter";
 import {UnauthorizedHttpClient} from "./shared/authentication/unauthorized-http-client.service";
+import {ErrorInterceptor} from "./shared/utility/error-handling/error.interceptor";
 
 registerLocaleData(localeDe);
 
@@ -90,7 +91,8 @@ registerLocaleData(localeDe);
 		{provide: LOCALE_ID, useValue: "de-DE"},
 		{provide: DateAdapter, useClass: DateFnsAdapter},
 		{provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS},
-		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+		{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
 	]
 })
 export class AppModule {

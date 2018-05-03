@@ -50,7 +50,7 @@ public class ApiUtils {
     }
 
     public static boolean stringIsNotEmpty(String s) {
-        return (s != null && !s.isEmpty());
+        return (s != null && !s.equals("null") && !s.isEmpty());
     }
 
 

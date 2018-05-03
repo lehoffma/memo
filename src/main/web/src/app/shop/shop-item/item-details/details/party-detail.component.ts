@@ -7,14 +7,13 @@ import {EventType} from "../../../shared/model/event-type";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {Permission} from "../../../../shared/model/permission";
-import {rolePermissions} from "../../../../shared/model/club-role";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import {Comment} from "../../../shared/model/comment";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {of} from "rxjs/observable/of";
 import {_throw} from "rxjs/observable/throw";
-import {catchError, filter, first, map, mergeMap, tap} from "rxjs/operators";
+import {catchError, filter, first, map, mergeMap} from "rxjs/operators";
 import {empty} from "rxjs/observable/empty";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {AddressService} from "../../../../shared/services/api/address.service";
@@ -34,6 +33,11 @@ import {ParticipantUser} from "../../../shared/model/participant";
 
 			memo-comments-section {
 				width: 100%;
+			}
+
+			/*todo remove*/
+			:host /deep/ .item-details-parent-container {
+				margin-bottom: 8rem !important;
 			}
 
 			memo-route-list {

@@ -17,6 +17,7 @@ import {isAfter, isBefore, isEqual, startOfDay} from "date-fns";
 @Injectable()
 export class SearchFilterService {
 
+
 	readonly eventFilterFunctions: {
 		[key: string]: (obj: ShopItem | Event, filterValue: any) => boolean | Observable<boolean>
 	} = {
@@ -58,7 +59,7 @@ export class SearchFilterService {
 						return isEqual(item.date, new Date()) || isAfter(item.date, new Date());
 				}
 			}
-			return false;
+			return true;
 		},
 		"color": (item, filterValue: string) => {
 			if (EventUtilityService.isMerchandise(item)) {

@@ -5,7 +5,8 @@ import {OVERLAY_DATA, OVERLAY_REF} from "../../../services/overlay.service";
 import {OrderedItemService} from "../../../services/api/ordered-item.service";
 import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
-import {map} from "rxjs/operators";
+import {map, share} from "rxjs/operators";
+import {MilesService} from "../../../services/api/miles.service";
 
 @Component({
 	selector: "memo-profile-preview",
@@ -19,14 +20,23 @@ export class ProfilePreviewComponent implements OnInit {
 
 	mouseIsOver = new EventEmitter<boolean>();
 
+	miles$: Observable<number>;
+
 	constructor(@Inject(OVERLAY_REF) public dialogRef: OverlayRef,
 				@Inject(OVERLAY_DATA) public data: any,
-				private participantsService: OrderedItemService) {
+				private participantsService: OrderedItemService,
+				private milesService: MilesService) {
 		this.user = this.data.user;
 		this.amountOfTours$ = this.participantsService.getParticipatedEventsOfUser(this.user.id)
 			.pipe(
 				map(events => events.length)
 			);
+
+		this.miles$ = this.milesService.get(this.user.id)
+			.pipe(share(),map(entry => entry.miles));
+
+		this.miles$
+			.subscribe(it => console.log(it));
 
 		if (this.user.mobile) {
 			this.formattedPhoneNumber = this.getFormattedPhoneNumber(this.user.mobile);

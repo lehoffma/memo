@@ -56,8 +56,11 @@ public class UserServlet extends AbstractApiServlet<User> {
      */
     private User setDefaultPermissions(User user) {
         if (user.getPermissions() == null) {
-            user.setPermissions(new PermissionState(user.getClubRole()));
+            user.setPermissions(new PermissionState(user));
+        } else {
+            user.getPermissions().updateFromClubRole(user.getClubRole());
         }
+
         return user;
     }
 
