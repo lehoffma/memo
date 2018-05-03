@@ -60,7 +60,12 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 	}
 
 	saveChanges() {
-		this.stockService.pushChanges(this.merch, [...this.previousStock], [...this.stock])
+		let newStock: MerchStockList = this.formControl.value;
+		newStock = newStock.map(it => {
+			it.item = this.merch;
+			return it;
+		});
+		this.stockService.pushChanges(this.merch, [...this.previousStock], [...newStock])
 			.subscribe(result => {
 				this.goBack();
 			}, error => {

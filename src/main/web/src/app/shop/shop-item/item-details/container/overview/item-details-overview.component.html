@@ -129,14 +129,21 @@
 				</ng-template>
 
 				<mat-form-field>
-					<mat-select placeholder="Anzahl" name="amount"
+					<mat-select placeholder="Anzahl" name="amount" *ngFor="let options of [(amountOptions$ | async)]"
 								[(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
 								[disabled]="(!isMerch(event) && (isPastEvent$ | async))
-								|| !((permissions$ | async)?.checkIn)"
+								|| !((permissions$ | async)?.checkIn) || (isSoldOut(event, options))"
 								[required]="true">
-						<mat-option *ngFor="let number of (amountOptions$ | async)" [value]="number">
-							{{number}}
+						<mat-option *ngIf="isSoldOut(event, options); else amountDropdown"
+									[value]="0"
+									[disabled]="true">
+							-- Ausverkauft --
 						</mat-option>
+						<ng-template #amountDropdown>
+							<mat-option *ngFor="let number of options" [value]="number">
+								{{number}}
+							</mat-option>
+						</ng-template>
 					</mat-select>
 				</mat-form-field>
 

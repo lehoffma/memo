@@ -6,8 +6,10 @@ import memo.util.MapBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class StockRepository extends AbstractRepository<Stock> {
 
@@ -34,10 +36,26 @@ public class StockRepository extends AbstractRepository<Stock> {
     public List<Stock> findByShopItem(String eventId) throws NumberFormatException {
         Integer id = Integer.parseInt(eventId);
 
-        return DatabaseManager.createEntityManager()
+        List<Stock> stockItems = DatabaseManager.createEntityManager()
                 .createNamedQuery("Stock.findByShopItem", Stock.class)
                 .setParameter("id", id)
                 .getResultList();
+
+        //to avoid .stream() returning nothing because of the indirect list implementation of jpa
+        stockItems = new ArrayList<>(stockItems);
+
+        return stockItems.stream()
+                .peek(item -> {
+                    Long howManyItemsWereBought = DatabaseManager.createEntityManager()
+                            .createNamedQuery("Stock.boughtAmount", Long.class)
+                            .setParameter("id", item.getId())
+                            .getSingleResult();
+
+                    Integer newAmount = item.getAmount() - howManyItemsWereBought.intValue();
+
+                    item.setAmount(newAmount);
+                })
+                .collect(Collectors.toList());
     }
 
 

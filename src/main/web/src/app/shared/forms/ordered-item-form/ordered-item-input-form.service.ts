@@ -50,7 +50,8 @@ export class OrderedItemInputFormService implements OnDestroy {
 					return of([]);
 				}
 				return this.stockService.getByEventId(this.addOrderedItemForm.get("item").value.id);
-			})
+			}),
+			map(stockList => stockList.filter(it => it.amount > 0))
 		);
 	_size$: BehaviorSubject<string> = new BehaviorSubject(undefined);
 	_color$: BehaviorSubject<MerchColor> = new BehaviorSubject(undefined);
@@ -133,7 +134,7 @@ export class OrderedItemInputFormService implements OnDestroy {
 						.map(stockItem => getSelectionValue(stockItem))
 						//remove duplicates
 						.filter((_value, index, array) => array
-							.findIndex(it => selectionValueId(_value) === selectionValueId(it)) === index);
+							.findIndex(it => selectionValueId(_value) === selectionValueId(it)) === index)
 				})
 			);
 	}

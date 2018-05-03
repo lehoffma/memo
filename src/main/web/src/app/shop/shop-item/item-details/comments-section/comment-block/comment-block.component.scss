@@ -52,13 +52,12 @@
 
 				.comment-author-name /deep/ a,
 				.comment-author-name {
-					font-weight: bold;
 					font-size: 0.8rem;
 					text-decoration: none;
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					color: black;
+					color: $primary-default;
 
 					&:hover {
 						text-decoration: underline;

@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {MerchStock} from "../../../../shared/model/merch-stock";
 import {ModifyMerchStockService} from "./modify-merch-stock.service";
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {filter, map, take} from "rxjs/operators";
+import {filter, map, take, tap} from "rxjs/operators";
 import {timer} from "rxjs/observable/timer";
 
 @Component({
@@ -43,6 +43,7 @@ export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValu
 
 	ngOnInit() {
 		this.subscription = this.modifyMerchStockService.dataSubject$
+			.pipe(tap(it => console.log(it)))
 			.subscribe(value => this.onChange(value));
 	}
 
@@ -81,7 +82,6 @@ export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValu
 	}
 
 	writeValue(obj: MerchStock[]): void {
-		console.log(obj);
 		this.formControl.setValue(obj);
 	}
 

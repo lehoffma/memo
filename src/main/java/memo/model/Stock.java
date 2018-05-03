@@ -21,17 +21,20 @@ import java.util.Objects;
                         " WHERE s.item.type = :typ"
         ),
         @NamedQuery(
+                name = "Stock.boughtAmount",
+                query = " SELECT count(distinct orderedItem) " +
+                        "  FROM Stock stock, OrderedItem orderedItem \n" +
+                        "   WHERE stock.item.id = orderedItem.item.id \n" +
+                        "   AND stock.color.name = orderedItem.color.name\n" +
+                        "   AND stock.size = orderedItem.size \n" +
+                        "   AND stock.id = :id"
+        ),
+        @NamedQuery(
                 name = "Stock.findByShopItem",
-                query = "SELECT s FROM Stock s " +
-                        "       WHERE s.item.id = :id " +
-                        "       AND s.id NOT IN " +
-                        "           (SELECT stock.id " +
-                        "               FROM Stock stock, OrderedItem orderedItem " +
-                        "               WHERE stock.item.id = orderedItem.item.id " +
-                        "                   AND stock.color.name = orderedItem.color.name" +
-                        "                   AND stock.size = orderedItem.size" +
-                        "           )"
-        )
+                query = "SELECT s \n" +
+                        " FROM Stock s " +
+                        "       WHERE s.item.id = :id "
+        ),
 })
 
 public class Stock implements Serializable {
