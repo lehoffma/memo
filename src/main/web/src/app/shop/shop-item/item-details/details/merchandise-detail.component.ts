@@ -24,6 +24,11 @@ import {Observable} from "rxjs/Observable";
 
 		}
 
+		/*todo remove*/
+		:host /deep/ .item-details-parent-container {
+			margin-bottom: 8rem !important;
+		}
+		
 		memo-comments-section {
 			width: 100%;
 		}

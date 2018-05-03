@@ -1,10 +1,11 @@
 <div *ngFor="let user of users$ | async; let i = index"
 	 class="user-list-row"
 >
-	<a class="user-info" routerLink="/members/{{user.id}}"
-	   memoUserPreview [user]="user" [hoverDelay]="500">
+	<a class="user-info" routerLink="/members/{{user.id}}">
 		<img src="{{user.images.length > 0 ? user.images[0]: 'resources/images/Logo.png'}}"/>
-		<span class="user-name">{{user.firstName}} {{user.surname}}</span>
+		<span class="user-name" memoUserPreview [user]="user" [hoverDelay]="500">
+			{{user.firstName}} {{user.surname}}
+		</span>
 	</a>
 	<div class="user-list-row-actions">
 		<button mat-icon-button

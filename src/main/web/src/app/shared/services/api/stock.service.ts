@@ -327,14 +327,14 @@ export class StockService extends ServletService<MerchStock[]> {
 			}
 
 			return combineLatest(
-				...stock.map(it => this.addOrModify(this.http.post.bind(this.http), it, eventId))
+				...stock.map(it => this.addOrModify(this.http.put.bind(this.http), it, eventId))
 			)
 				.pipe(
 					map(listList => [].concat(...listList))
 				)
 		}
 		else {
-			return this.addOrModify(this.http.post.bind(this.http), stock, eventId);
+			return this.addOrModify(this.http.put.bind(this.http), stock, eventId);
 		}
 	}
 

@@ -38,7 +38,10 @@
 				Meilen
 			</div>
 			<div class="row-value">
-				{{user.miles}}
+				<span *ngIf="(miles$ | async) == null">
+					Loading...
+				</span>
+				<span *ngIf="(miles$ | async) >= 0">{{miles$ | async}}</span>
 			</div>
 		</div>
 	</div>
