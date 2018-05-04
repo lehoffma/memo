@@ -4,12 +4,12 @@ import memo.auth.api.strategy.OrderAuthStrategy;
 import memo.data.util.PredicateFactory;
 import memo.data.util.PredicateSupplierMap;
 import memo.model.Order;
+import memo.model.OrderStatus;
 import memo.model.OrderedItem;
 import memo.model.PaymentMethod;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
-import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
 
-    private static final Logger logger = Logger.getLogger(OrderRepository.class);
     private static OrderRepository instance;
 
     private OrderRepository() {
@@ -116,8 +115,27 @@ public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Order> root, Filter.FilterRequest filterRequest) {
         return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<Order>()
-                .buildPut("userId", PredicateFactory.getIdSupplier(
-                        orderRoot -> orderRoot.get("user").get("id"))
+                .buildPut("userId", PredicateFactory
+                        .getIdSupplier("user", "id")
+                )
+                .buildPut("eventId", (b, r, request) -> Collections.singletonList(
+                        PredicateFactory.anyIsMember(b, r,
+                                orderPath -> PredicateFactory.get(orderPath, "items", "item", "id"),
+                                request.getValues()
+                        )
+                ))
+                .buildPut("status", (b, r, request) -> Collections.singletonList(
+                        PredicateFactory.anyIsMember(b, r,
+                                orderPath -> PredicateFactory.get(orderPath, "items", "status"),
+                                request.getValues(),
+                                s -> OrderStatus.fromOrdinal(Integer.valueOf(s))
+                        ))
+                )
+                .buildPut("method", PredicateFactory.
+                        getSupplier(
+                                orderPath -> PredicateFactory.get(orderPath, "method"),
+                                PaymentMethod::fromTextValue
+                        )
                 )
                 .buildPut("orderedItemId", this::getByOrderedItemId)
         );

@@ -2,7 +2,6 @@ package memo.data;
 
 import memo.model.Image;
 import memo.util.DatabaseManager;
-import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +9,6 @@ import java.util.Optional;
 
 public class ImageRepository extends AbstractRepository<Image> {
 
-
-    private static final Logger logger = Logger.getLogger(ImageRepository.class);
     private static ImageRepository instance;
 
     private ImageRepository() {

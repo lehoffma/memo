@@ -1,11 +1,15 @@
 package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
+import memo.auth.api.AuthenticationPredicateFactory;
 import memo.model.Permission;
 import memo.model.ShopItem;
 import memo.model.Stock;
 import memo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 
 public class StockAuthStrategy implements AuthenticationStrategy<Stock> {
@@ -16,6 +20,12 @@ public class StockAuthStrategy implements AuthenticationStrategy<Stock> {
                         Stock::getItem, ShopItem::getExpectedReadRole
                 )
         ));
+    }
+
+    @Override
+    public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Stock> root, User user) {
+        return AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem(builder, user, root,
+                stockRoot -> stockRoot.get("item"), "expectedReadRole");
     }
 
     @Override

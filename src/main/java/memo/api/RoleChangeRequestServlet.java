@@ -8,7 +8,8 @@ import memo.model.ClubRole;
 import memo.model.User;
 import memo.util.ApiUtils;
 import memo.util.MapBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 @WebServlet(name = "RoleChangeRequestServlet", value = "/api/requestRoleChange")
 public class RoleChangeRequestServlet extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(RoleChangeRequestServlet.class);
+    private static final Logger logger = LogManager.getLogger(RoleChangeRequestServlet.class);
 
     private static Optional<ClubRole> fromClubRoleValue(String value) {
         return Arrays.stream(ClubRole.values())

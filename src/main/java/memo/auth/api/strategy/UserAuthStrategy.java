@@ -17,9 +17,9 @@ public class UserAuthStrategy implements AuthenticationStrategy<User> {
         return true;
     }
 
+
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<User> root, User user) {
-        //source: https://stackoverflow.com/questions/14675229/jpa-criteria-api-how-to-express-literal-true-and-literal-false
         //this predicate will always return true, i.e. users are publicly available
         return builder.and();
     }

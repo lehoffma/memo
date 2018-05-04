@@ -10,7 +10,7 @@ import memo.model.Color;
 import memo.model.Order;
 import memo.model.OrderedItem;
 import memo.model.ShopItem;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +23,7 @@ import java.util.Collections;
 public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     public OrderedItemServlet() {
         super(new ParticipantsAuthStrategy());
-        logger = Logger.getLogger(OrderedItemServlet.class);
+        logger = LogManager.getLogger(OrderedItemServlet.class);
     }
 
     @Override

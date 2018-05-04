@@ -7,7 +7,7 @@ import memo.auth.api.strategy.CommentAuthStrategy;
 import memo.data.CommentRepository;
 import memo.model.Comment;
 import memo.model.ShopItem;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ public class CommentServlet extends AbstractApiServlet<Comment> {
 
     public CommentServlet() {
         super(new CommentAuthStrategy());
-        logger = Logger.getLogger(CommentServlet.class);
+        logger = LogManager.getLogger(CommentServlet.class);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {

@@ -7,7 +7,8 @@ import memo.model.OrderedItem;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -20,7 +21,7 @@ import java.util.function.Function;
 
 public class ParticipantRepository extends AbstractPagingAndSortingRepository<OrderedItem> {
 
-    private static final Logger logger = Logger.getLogger(ParticipantRepository.class);
+    private static final Logger logger = LogManager.getLogger(ParticipantRepository.class);
     private static ParticipantRepository instance;
 
     private ParticipantRepository() {
@@ -85,7 +86,9 @@ public class ParticipantRepository extends AbstractPagingAndSortingRepository<Or
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<OrderedItem> root, Filter.FilterRequest filterRequest) {
         return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<OrderedItem>()
-                .buildPut("eventId", PredicateFactory.getIdSupplier(orderedItemRoot -> orderedItemRoot.get("item").get("id")))
+                .buildPut("eventId", PredicateFactory
+                        .getIdSupplier("item", "id")
+                )
         );
     }
 }

@@ -4,7 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import memo.util.ApiUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +19,7 @@ import java.security.Key;
 @WebServlet(name = "AccessTokenServlet", value = "/api/refreshAccessToken")
 public class AccessTokenServlet extends HttpServlet {
 
-    final static Logger logger = Logger.getLogger(AccessTokenServlet.class);
+    final static Logger logger = LogManager.getLogger(AccessTokenServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

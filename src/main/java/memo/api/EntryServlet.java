@@ -9,7 +9,8 @@ import memo.model.Entry;
 import memo.model.EntryCategory;
 import memo.model.Image;
 import memo.model.ShopItem;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +24,7 @@ import java.time.temporal.TemporalAccessor;
 @WebServlet(name = "EntryServlet", value = "/api/entry")
 public class EntryServlet extends AbstractApiServlet<Entry> {
 
-    final static Logger logger = Logger.getLogger(EntryServlet.class);
+    final static Logger logger = LogManager.getLogger(EntryServlet.class);
 
     public EntryServlet() {
         super(new EntryAuthStrategy());

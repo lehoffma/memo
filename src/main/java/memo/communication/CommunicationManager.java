@@ -4,7 +4,8 @@ import memo.communication.mail.MailTransmitter;
 import memo.model.ShopItem;
 import memo.model.User;
 import memo.util.MapBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ interface SendMessage<T> {
 }
 
 public class CommunicationManager {
-    protected Logger logger = Logger.getLogger(CommunicationManager.class);
+    protected Logger logger = LogManager.getLogger(CommunicationManager.class);
 
     private static CommunicationManager instance;
 

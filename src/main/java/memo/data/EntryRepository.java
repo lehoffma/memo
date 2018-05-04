@@ -8,7 +8,8 @@ import memo.model.Entry;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 
 public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
 
-    private static final Logger logger = Logger.getLogger(EntryRepository.class);
+    private static final Logger logger = LogManager.getLogger(EntryRepository.class);
     private static EntryRepository instance;
 
     private EntryRepository() {
@@ -72,15 +73,13 @@ public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Entry> root, Filter.FilterRequest filterRequest) {
         return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<Entry>()
                 //"SELECT e FROM Entry e WHERE e.item.id = :Id"
-                .buildPut("eventId", PredicateFactory.getIdSupplier(entryRoot -> entryRoot.get("item").get("id")))
+                .buildPut("eventId", PredicateFactory
+                        .getIdSupplier("item", "id"))
                 //"SELECT e FROM Entry e WHERE e.item.type = :type"
-                .buildPut("eventType", PredicateFactory.getSupplier(entryRoot -> entryRoot.get("item").get("type")))
-                .buildPut("minDate", (b, r, request) -> PredicateFactory
-                        .minDate(b, r, request, entryRoot -> entryRoot.get("date"))
-                )
-                .buildPut("maxDate", (b, r, request) -> PredicateFactory
-                        .maxDate(b, r, request, entryRoot -> entryRoot.get("date"))
-                )
+                .buildPut("eventType", PredicateFactory
+                        .getSupplier("item", "type"))
+                .buildPut("entryType", PredicateFactory
+                        .getSupplier("category", "name"))
         );
     }
 }

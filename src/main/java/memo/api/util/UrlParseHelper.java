@@ -28,20 +28,22 @@ public class UrlParseHelper {
         return Sort.by(direction, sortBys);
     }
 
-
-    public static Filter readFilter(Map<String, String[]> parameterMap) {
-        return Filter.by(
-                parameterMap.entrySet().stream()
-                        .filter(UrlParseHelper::isNotSortingParameter)
-                        .map(UrlParseHelper::toFilterRequest)
-                        .collect(Collectors.toList())
-        );
-    }
-
     private static boolean isNotSortingParameter(Map.Entry<String, String[]> entry) {
         String key = entry.getKey();
         return !key.equalsIgnoreCase("sortBy") && !key.equalsIgnoreCase("direction")
                 && !key.equalsIgnoreCase("page") && !key.equalsIgnoreCase("pageSize");
+    }
+
+
+    public static Filter readFilter(Map<String, String[]> parameterMap) {
+        return Filter.by(
+                parameterMap.entrySet().stream()
+                        //ignore sortBy, direction, page and pageSize parameters
+                        .filter(UrlParseHelper::isNotSortingParameter)
+                        //extract the filter request objects from the url
+                        .map(UrlParseHelper::toFilterRequest)
+                        .collect(Collectors.toList())
+        );
     }
 
     private static Filter.FilterRequest toFilterRequest(Map.Entry<String, String[]> entry) {

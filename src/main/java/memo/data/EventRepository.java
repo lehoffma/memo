@@ -4,16 +4,14 @@ import memo.api.EventServlet;
 import memo.auth.api.strategy.ShopItemAuthStrategy;
 import memo.data.util.PredicateFactory;
 import memo.data.util.PredicateSupplierMap;
-import memo.model.OrderedItem;
-import memo.model.ShopItem;
-import memo.model.User;
+import memo.model.*;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
-import org.apache.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import javax.persistence.criteria.Order;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 
 public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem> {
 
-    private static final Logger logger = Logger.getLogger(EventRepository.class);
     private static EventRepository instance;
 
     private EventRepository() {
@@ -91,8 +88,14 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
         return DatabaseManager.createEntityManager().createQuery("SELECT e FROM ShopItem e", ShopItem.class).getResultList();
     }
 
-    private List<Predicate> getByParticipant(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
-        /*
+    /**
+     * @param builder
+     * @param root
+     * @param userIds
+     * @return
+     */
+    public List<Predicate> getByParticipant(CriteriaBuilder builder, Root<ShopItem> root, List<String> userIds) {
+         /*
         "SELECT shopItem
                 FROM Order o join OrderedItem item join ShopItem shopItem
                 WHERE o.user.id =:userId AND item.item.id = shopItem.id"
@@ -107,7 +110,7 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
 
         Path<Object> orderUser = orderJoin.get("user");
 
-        List<Predicate> userIdMatchers = filterRequest.getValues().stream()
+        List<Predicate> userIdMatchers = userIds.stream()
                 .map(value -> builder.equal(orderUser.get("id"), value))
                 .collect(Collectors.toList());
 
@@ -116,6 +119,22 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
         return Collections.singletonList(matchesAnyOfTheIds);
     }
 
+    /**
+     * @param builder
+     * @param root
+     * @param filterRequest
+     * @return
+     */
+    private List<Predicate> getByParticipant(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
+        return this.getByParticipant(builder, root, filterRequest.getValues());
+    }
+
+    /**
+     * @param builder
+     * @param root
+     * @param filterRequest
+     * @return
+     */
     private List<Predicate> getByAuthorId(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
         /*
         "SELECT distinct e FROM ShopItem e JOIN e.author a WHERE a.id = :author"
@@ -135,6 +154,46 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
         return Collections.singletonList(anyIdMatches);
     }
 
+    private List<Predicate> getByColor(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
+        EntityManager em = DatabaseManager.createEntityManager();
+        Metamodel metamodel = em.getMetamodel();
+        EntityType<ShopItem> shopItemEntityType = metamodel.entity(ShopItem.class);
+        EntityType<Stock> stockEntityType = metamodel.entity(Stock.class);
+
+        ListJoin<ShopItem, Stock> stockListJoin = root.join(shopItemEntityType.getList("stock", Stock.class));
+        Join<Stock, Color> colorJoin = stockListJoin.join(stockEntityType.getSingularAttribute("color", Color.class));
+
+        List<Predicate> sizeMatchers = filterRequest.getValues().stream()
+                .map(value -> builder.equal(colorJoin.get("name"), value))
+                .collect(Collectors.toList());
+
+        return Collections.singletonList(
+                PredicateFactory.combineByOr(
+                        builder,
+                        sizeMatchers
+                )
+        );
+    }
+
+
+    private List<Predicate> getBySize(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
+        EntityManager em = DatabaseManager.createEntityManager();
+        Metamodel metamodel = em.getMetamodel();
+        EntityType<ShopItem> shopItemEntityType = metamodel.entity(ShopItem.class);
+        ListJoin<ShopItem, Stock> stockListJoin = root.join(shopItemEntityType.getList("stock", Stock.class));
+
+        List<Predicate> sizeMatchers = filterRequest.getValues().stream()
+                .map(value -> builder.equal(stockListJoin.get("size"), value))
+                .collect(Collectors.toList());
+
+        return Collections.singletonList(
+                PredicateFactory.combineByOr(
+                        builder,
+                        sizeMatchers
+                )
+        );
+    }
+
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
         return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<ShopItem>()
@@ -143,6 +202,8 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
                 )
                 .buildPut("userId", this::getByParticipant)
                 .buildPut("authorId", this::getByAuthorId)
+                .buildPut("size", this::getBySize)
+                .buildPut("color", this::getByColor)
         );
     }
 }

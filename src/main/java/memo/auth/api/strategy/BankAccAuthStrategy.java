@@ -1,5 +1,7 @@
 package memo.auth.api.strategy;
 
+import memo.auth.api.AuthenticationPredicateFactory;
+import memo.data.util.PredicateFactory;
 import memo.model.BankAcc;
 import memo.model.Permission;
 import memo.model.User;
@@ -10,6 +12,7 @@ import javax.persistence.criteria.Root;
 import java.util.Arrays;
 
 import static memo.auth.api.AuthenticationConditionFactory.*;
+import static memo.auth.api.AuthenticationPredicateFactory.userHasCorrectPermissions;
 
 public class BankAccAuthStrategy implements AuthenticationStrategy<BankAcc> {
 
@@ -30,7 +33,23 @@ public class BankAccAuthStrategy implements AuthenticationStrategy<BankAcc> {
 
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<BankAcc> root, User user) {
-        return null;
+        Predicate userHasCorrectPermissions = userHasCorrectPermissions(builder, user, Permission.read,
+                "userManagement");
+
+        Predicate userIsAuthor = AuthenticationPredicateFactory.userIsAuthor(builder, root, user,
+                bankAccRoot -> PredicateFactory.get(bankAccRoot, "user", "id"));
+
+        Predicate userIsInRegistrationProcess = AuthenticationPredicateFactory
+                .userIsInRegistrationProcess(builder, root, bankAccRoot -> bankAccRoot.get("user"));
+
+        return builder.or(
+                //  user fulfills the minimum permissions
+                userHasCorrectPermissions,
+                //  user is author of bankAcc object
+                userIsAuthor,
+                //  the account hasn't been assigned anything (i.e. user is in registration process)
+                userIsInRegistrationProcess
+        );
     }
 
     @Override

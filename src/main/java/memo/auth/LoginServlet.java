@@ -9,7 +9,8 @@ import memo.model.User;
 import memo.util.ApiUtils;
 import memo.util.Configuration;
 import memo.util.MapBuilder;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +27,7 @@ public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
 
-    final static Logger logger = Logger.getLogger(LoginServlet.class);
+    final static Logger logger = LogManager.getLogger(LoginServlet.class);
 
 
     private final LoginInformation adminLoginInfo;

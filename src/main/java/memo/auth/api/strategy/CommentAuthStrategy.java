@@ -1,10 +1,14 @@
 package memo.auth.api.strategy;
 
+import memo.auth.api.AuthenticationPredicateFactory;
 import memo.model.ClubRole;
 import memo.model.Comment;
 import memo.model.ShopItem;
 import memo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 
 import static memo.auth.api.AuthenticationConditionFactory.*;
@@ -16,6 +20,13 @@ public class CommentAuthStrategy implements AuthenticationStrategy<Comment> {
                 //user has to be able to view the associated shopItem
                 userFulfillsMinimumRoleOfItem(Comment::getItem, ShopItem::getExpectedReadRole)
         ));
+    }
+
+    @Override
+    public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Comment> root, User user) {
+        return AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem(builder, user, root,
+                commentRoot -> commentRoot.get("item"),
+                "expectedReadRole");
     }
 
     @Override

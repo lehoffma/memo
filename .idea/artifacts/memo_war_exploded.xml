@@ -7,9 +7,11 @@
           <element id="module-output" name="memo" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="Maven: org.eclipse.persistence:eclipselink:2.5.0" />
+          <element id="library" level="project" name="Maven: org.eclipse.persistence:eclipselink:2.6.0" />
           <element id="library" level="project" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" />
           <element id="library" level="project" name="Maven: org.eclipse.persistence:commonj.sdo:2.1.1" />
+          <element id="library" level="project" name="Maven: javax.validation:validation-api:1.1.0.Final" />
+          <element id="library" level="project" name="Maven: org.glassfish:javax.json:1.0.4" />
           <element id="library" level="project" name="Maven: javax.servlet:javax.servlet-api:3.1.0" />
           <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.39" />
           <element id="library" level="project" name="Maven: junit:junit:4.12" />
@@ -20,10 +22,11 @@
           <element id="library" level="project" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.4" />
           <element id="library" level="project" name="Maven: io.jsonwebtoken:jjwt:0.9.0" />
           <element id="library" level="project" name="Maven: org.mindrot:jbcrypt:0.4" />
-          <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.6" />
-          <element id="library" level="project" name="Maven: commons-io:commons-io:2.5" />
-          <element id="library" level="project" name="Maven: log4j:log4j:1.2.17" />
-          <element id="library" level="project" name="Maven: javax.mail:mail:1.4" />
+          <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.7" />
+          <element id="library" level="project" name="Maven: commons-io:commons-io:2.6" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.11.0" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.11.0" />
+          <element id="library" level="project" name="Maven: javax.mail:javax.mail-api:1.6.1" />
           <element id="library" level="project" name="Maven: javax.activation:activation:1.1" />
         </element>
       </element>

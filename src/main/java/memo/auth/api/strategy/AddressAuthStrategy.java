@@ -1,6 +1,7 @@
 package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
+import memo.auth.api.AuthenticationPredicateFactory;
 import memo.data.util.PredicateFactory;
 import memo.model.Address;
 import memo.model.Permission;
@@ -11,7 +12,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Arrays;
-import java.util.List;
 
 import static memo.auth.api.AuthenticationConditionFactory.userHasCorrectPermission;
 import static memo.auth.api.AuthenticationConditionFactory.userIsLoggedIn;
@@ -45,13 +45,12 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
                 addressRoot -> addressRoot.get("item"), "expectedReadRole");
 
         //  address is part of user: is author or fulfills userManagement permission
-        List<Predicate> isAuthor = PredicateFactory
-                .getByIds(builder, root, addressRoot -> addressRoot.get("user").get("id"), user.getId());
-        Predicate isAnyAuthor = PredicateFactory.combineByOr(builder, isAuthor);
+        Predicate isAnyAuthor = AuthenticationPredicateFactory.userIsAuthor(builder, root, user,
+                addressRoot -> PredicateFactory.get(addressRoot, "user", "id"));
         Predicate hasCorrectPermissions = userHasCorrectPermissions(builder, user, Permission.read,
                 "userManagement", "tour", "party");
 
-        Predicate isAuthorOrHasPermissions = PredicateFactory.combineByOr(builder, isAnyAuthor, hasCorrectPermissions);
+        Predicate isAuthorOrHasPermissions = builder.or(isAnyAuthor, hasCorrectPermissions);
 
         //if user is logged out:
         //  address is neither part of item nor of user

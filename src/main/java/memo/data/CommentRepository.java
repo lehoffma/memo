@@ -8,7 +8,8 @@ import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -17,13 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static memo.data.util.PredicateFactory.combineByOr;
 
 public class CommentRepository extends AbstractPagingAndSortingRepository<Comment> {
 
-    private static final Logger logger = Logger.getLogger(CommentRepository.class);
+    private static final Logger logger = LogManager.getLogger(CommentRepository.class);
     private static CommentRepository instance;
 
     private CommentRepository() {
@@ -86,11 +84,14 @@ public class CommentRepository extends AbstractPagingAndSortingRepository<Commen
 
     private List<Predicate> getParentCommentOfEvent(CriteriaBuilder builder, Root<Comment> root, Filter.FilterRequest filterRequest) {
         //query = "SELECT c FROM Comment c WHERE c.item.id = :eventID AND c.parent = NULL "
-        Predicate matchesAnyEventId = combineByOr(builder, filterRequest.getValues().stream()
-                .map(value -> builder.equal(root.get("item").get("id"), value))
-                .collect(Collectors.toList())
+        Predicate matchesAnyEventId = PredicateFactory.isEqualToSome(
+                builder, root, filterRequest,
+                Function.identity(),
+                "item", "id"
         );
-        Predicate hasNoParent = builder.isNull(root.get("parent"));
+        Predicate hasNoParent = PredicateFactory.get(root, "parent")
+                .map(builder::isNull)
+                .orElse(PredicateFactory.isFalse(builder));
 
         return Collections.singletonList(builder.and(matchesAnyEventId, hasNoParent));
     }
@@ -101,7 +102,7 @@ public class CommentRepository extends AbstractPagingAndSortingRepository<Commen
                 new PredicateSupplierMap<Comment>()
                         .buildPut("eventId", this::getParentCommentOfEvent)
                         .buildPut("authorId", PredicateFactory
-                                .getIdSupplier(commentRoot -> commentRoot.get("author").get("id")))
+                                .getIdSupplier(commentRoot -> PredicateFactory.get(commentRoot, "author", "id")))
         );
     }
 

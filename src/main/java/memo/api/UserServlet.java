@@ -12,7 +12,7 @@ import memo.data.UserRepository;
 import memo.model.*;
 import memo.util.ApiUtils;
 import memo.util.Configuration;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,7 +32,7 @@ public class UserServlet extends AbstractApiServlet<User> {
 
     public UserServlet() {
         super(new UserAuthStrategy());
-        logger = Logger.getLogger(UserServlet.class);
+        logger = LogManager.getLogger(UserServlet.class);
     }
 
     /**

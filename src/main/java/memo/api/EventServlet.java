@@ -10,7 +10,7 @@ import memo.communication.MessageType;
 import memo.data.EventRepository;
 import memo.model.*;
 import memo.util.model.EventType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,7 +28,7 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
 
     public EventServlet() {
         super(new ShopItemAuthStrategy());
-        logger = Logger.getLogger(EventServlet.class);
+        logger = LogManager.getLogger(EventServlet.class);
     }
 
     public static Integer getType(String sType) {

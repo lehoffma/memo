@@ -5,9 +5,9 @@ import memo.communication.MessageType;
 import memo.model.ShopItem;
 import memo.model.User;
 import memo.util.Configuration;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
@@ -20,7 +20,7 @@ import java.util.Properties;
 
 
 public class MailTransmitter implements MessageTransmitter {
-    protected Logger logger = Logger.getLogger(MailTransmitter.class);
+    protected Logger logger = LogManager.getLogger(MailTransmitter.class);
 
     public MailTransmitter() {
         this.host = Configuration.get("EMAIL_HOST");
@@ -42,7 +42,7 @@ public class MailTransmitter implements MessageTransmitter {
      * @param subject
      * @param text
      */
-    private void logEmail(Priority priority, String to, String subject, String text) {
+    private void logEmail(Level priority, String to, String subject, String text) {
         logger.log(priority, "recipient: " + to);
         logger.log(priority, "subject: " + subject);
         logger.log(priority, "email text: " + text);

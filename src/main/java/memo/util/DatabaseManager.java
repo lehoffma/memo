@@ -1,6 +1,7 @@
 package memo.util;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class DatabaseManager {
 
-    private static final Logger logger = Logger.getLogger(DatabaseManager.class);
+    private static final Logger logger = LogManager.getLogger(DatabaseManager.class);
 
     private static ThreadLocal<DatabaseManager> threadedDatabaseManager;
 

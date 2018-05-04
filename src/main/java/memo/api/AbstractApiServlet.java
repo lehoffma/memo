@@ -12,7 +12,8 @@ import memo.util.model.Filter;
 import memo.util.model.Page;
 import memo.util.model.PageRequest;
 import memo.util.model.Sort;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ import static memo.util.ApiUtils.stringIsNotEmpty;
 
 public abstract class AbstractApiServlet<T> extends HttpServlet {
     protected AuthenticationStrategy<T> authenticationStrategy;
-    protected Logger logger = Logger.getLogger(AbstractApiServlet.class);
+    protected Logger logger = LogManager.getLogger(AbstractApiServlet.class);
     private DependencyUpdateService dependencyUpdateService;
 
     public AbstractApiServlet(AuthenticationStrategy<T> authenticationStrategy) {

@@ -1,8 +1,13 @@
 package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
+import memo.auth.api.AuthenticationPredicateFactory;
+import memo.data.util.PredicateFactory;
 import memo.model.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.function.BiPredicate;
 
@@ -15,6 +20,20 @@ public class OrderAuthStrategy implements AuthenticationStrategy<Order> {
 
                 AuthenticationConditionFactory.userFulfillsMinimumRole(() -> ClubRole.Vorstand)
         ));
+    }
+
+    @Override
+    public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Order> root, User user) {
+        Predicate userIsAuthor = AuthenticationPredicateFactory.userIsAuthor(builder, root, user,
+                orderRoot -> PredicateFactory.get(orderRoot, "user"));
+
+        Predicate fulfillsMinimumRole = AuthenticationPredicateFactory
+                .userFulfillsMinimumRole(builder, user, ClubRole.Vorstand);
+
+        return builder.or(
+                userIsAuthor,
+                fulfillsMinimumRole
+        );
     }
 
     @Override

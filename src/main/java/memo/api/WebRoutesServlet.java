@@ -1,6 +1,7 @@
 package memo.api;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -28,6 +29,7 @@ import java.io.IOException;
                 "/merch/*",
                 "/members/*",
                 "/entries/*",
+                "/orders/*",
 
                 "/search",
                 "/shop",
@@ -58,7 +60,7 @@ import java.io.IOException;
         }
 )
 public class WebRoutesServlet extends HttpServlet {
-    private final static Logger logger = Logger.getLogger(WebRoutesServlet.class);
+    private final static Logger logger = LogManager.getLogger(WebRoutesServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

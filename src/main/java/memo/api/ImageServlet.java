@@ -12,7 +12,8 @@ import memo.model.ShopItem;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -34,9 +35,10 @@ import java.util.stream.Collectors;
 //max file size is 15 MB
 @MultipartConfig(maxFileSize = 1024 * 1024 * 15)
 public class ImageServlet extends AbstractApiServlet<Image> {
+
     public ImageServlet() {
         super(new ImageAuthStrategy());
-        logger = Logger.getLogger(ImageServlet.class);
+        logger = LogManager.getLogger(ImageServlet.class);
     }
 
 

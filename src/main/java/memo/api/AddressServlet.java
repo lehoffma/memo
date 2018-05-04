@@ -8,7 +8,7 @@ import memo.data.AddressRepository;
 import memo.model.Address;
 import memo.model.ShopItem;
 import memo.model.User;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ public class AddressServlet extends AbstractApiServlet<Address> {
 
     public AddressServlet() {
         super(new AddressAuthStrategy());
-        logger = Logger.getLogger(AddressServlet.class);
+        logger = LogManager.getLogger(AddressServlet.class);
     }
 
     @Override

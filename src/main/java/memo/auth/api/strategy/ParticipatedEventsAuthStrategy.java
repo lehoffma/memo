@@ -2,12 +2,20 @@ package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
 import memo.data.EventRepository;
+import memo.data.util.PredicateFactory;
 import memo.model.ClubRole;
 import memo.model.ShopItem;
 import memo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Function;
+
+import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRole;
+import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem;
 
 public class ParticipatedEventsAuthStrategy implements AuthenticationStrategy<ShopItem> {
     @Override
@@ -25,6 +33,32 @@ public class ParticipatedEventsAuthStrategy implements AuthenticationStrategy<Sh
                                 Function.identity(), ShopItem::getExpectedReadRole
                         ))
         ));
+    }
+
+    @Override
+    public Predicate isAllowedToRead(CriteriaBuilder builder, Root<ShopItem> root, User user) {
+        Predicate userIsLookingAtTheirOwnEvents =
+                PredicateFactory.combineByOr(
+                        builder,
+                        EventRepository.getInstance().getByParticipant(builder, root,
+                                Collections.singletonList(user.getId().toString())
+                        )
+                );
+
+        Predicate isAtLeastMember = userFulfillsMinimumRole(builder, user, ClubRole.Mitglied);
+        Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root, shopItemRoot -> shopItemRoot,
+                "expectedReadRole");
+
+        Predicate userIsAuthorized = builder.and(
+                isAtLeastMember,
+                userFulfillsMinimumRoleOfItem
+        );
+
+
+        return builder.or(
+                userIsLookingAtTheirOwnEvents,
+                userIsAuthorized
+        );
     }
 
     @Override

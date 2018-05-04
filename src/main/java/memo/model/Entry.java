@@ -127,7 +127,7 @@ public class Entry implements Serializable {
     }
 
     public Boolean getIsIncome() {
-        return this.isIncome;
+        return this.getIncome();
     }
 
     public void setIsIncome(Boolean isIncome) {
@@ -135,7 +135,7 @@ public class Entry implements Serializable {
     }
 
     public Boolean getIncome() {
-        return isIncome;
+        return this.actualValue.signum() >= 0;
     }
 
     public void setIncome(Boolean income) {

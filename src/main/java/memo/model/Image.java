@@ -2,8 +2,9 @@ package memo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.persistence.*;
 import javax.servlet.http.Part;
@@ -31,7 +32,7 @@ import java.util.regex.Pattern;
         )
 })
 public class Image implements Serializable {
-    private static final Logger logger = Logger.getLogger(Image.class);
+    private static final Logger logger = LogManager.getLogger(Image.class);
 
     //**************************************************************
     //  static members

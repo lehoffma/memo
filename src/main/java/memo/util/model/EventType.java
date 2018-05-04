@@ -4,17 +4,19 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum EventType {
-    tours(1, "tours"),
-    partys(2, "partys"),
-    merch(3, "merch");
+    tours(1, "tours", "tour"),
+    partys(2, "partys", "party"),
+    merch(3, "merch", "merch");
 
 
     private int value;
     private String stringRepresentation;
+    private String permissionKey;
 
-    EventType(int value, String stringRepresentation) {
+    EventType(int value, String stringRepresentation, String permissionKey) {
         this.value = value;
         this.stringRepresentation = stringRepresentation;
+        this.permissionKey = permissionKey;
     }
 
     public int getValue() {
@@ -23,6 +25,10 @@ public enum EventType {
 
     public String getStringRepresentation() {
         return stringRepresentation;
+    }
+
+    public String getPermissionKey() {
+        return permissionKey;
     }
 
     public static Optional<EventType> findByValue(int value) {

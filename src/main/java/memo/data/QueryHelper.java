@@ -1,6 +1,7 @@
 package memo.data;
 
 import memo.auth.api.strategy.AuthenticationStrategy;
+import memo.data.util.PredicateFactory;
 import memo.model.User;
 import memo.util.model.Filter;
 import memo.util.model.Sort;
@@ -11,7 +12,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -48,19 +49,22 @@ public class QueryHelper {
                                                     Root<T> root,
                                                     Sort sort) {
         return sort.getOrders().stream()
-                .map(order -> {
-                    switch (order.getDirection()) {
-                        //for some reason, desc sorts in ascending and asc in descending order, no idea why though
-                        case ASCENDING:
-                            return builder.desc(root.get(order.getProperty()));
-                        case DESCENDING:
-                            return builder.asc(root.get(order.getProperty()));
-                        case NONE:
-                            //do nothing
-                    }
-                    return null;
-                })
-                .filter(Objects::nonNull)
+                .map(order -> PredicateFactory.get(root, order.getProperty())
+                        .map(property -> {
+                            switch (order.getDirection()) {
+                                //for some reason, desc sorts in ascending and asc in descending order, no idea why though
+                                case ASCENDING:
+                                    return builder.desc(property);
+                                case DESCENDING:
+                                    return builder.asc(property);
+                                case NONE:
+                                    //do nothing
+                            }
+                            return null;
+                        })
+                )
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(Collectors.toList());
     }
 
@@ -108,6 +112,7 @@ public class QueryHelper {
         CriteriaQuery<T> q = builder.createQuery(clazz);
         Root<T> root = q.from(clazz);
         CriteriaQuery<T> finishedQuery = q.select(root)
+                .distinct(true)
                 .where(getCombinedPredicates(builder, repository, authenticationStrategy, requestingUser, root, filter))
                 .orderBy(getOrdersFromSort(builder, root, sort));
 
@@ -134,7 +139,9 @@ public class QueryHelper {
 
         CriteriaQuery<Long> q = builder.createQuery(Long.class);
         Root<T> root = q.from(clazz);
-        CriteriaQuery<Long> finishedQuery = q.select(builder.count(root))
+        //todo select count(*) from (select distinct * from ....)
+
+        CriteriaQuery<Long> finishedQuery = q.select(builder.countDistinct(root))
                 .where(getCombinedPredicates(builder, repository, authenticationStrategy, requestingUser, root, filter))
                 .orderBy(getOrdersFromSort(builder, root, sort));
 

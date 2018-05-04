@@ -7,7 +7,6 @@ import memo.model.Stock;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
-import org.apache.log4j.Logger;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 
 public class StockRepository extends AbstractPagingAndSortingRepository<Stock> {
 
-    private static final Logger logger = Logger.getLogger(StockRepository.class);
     private static StockRepository instance;
 
     private StockRepository() {
@@ -84,7 +82,7 @@ public class StockRepository extends AbstractPagingAndSortingRepository<Stock> {
         return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<Stock>()
                 //todo
                 .buildPut("eventId", null)
-                .buildPut("type", PredicateFactory.getSupplier(stockRoot -> stockRoot.get("item").get("type")))
+                .buildPut("type", PredicateFactory.getSupplier("item", "type"))
         );
     }
 }

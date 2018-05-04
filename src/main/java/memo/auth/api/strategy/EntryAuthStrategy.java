@@ -6,7 +6,12 @@ import memo.model.Permission;
 import memo.model.ShopItem;
 import memo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
+
+import static memo.auth.api.AuthenticationPredicateFactory.*;
 
 public class EntryAuthStrategy implements AuthenticationStrategy<Entry> {
     @Override
@@ -22,6 +27,23 @@ public class EntryAuthStrategy implements AuthenticationStrategy<Entry> {
                                 Entry::getItem, ShopItem::getExpectedReadRole
                         ))
         ));
+    }
+
+    @Override
+    public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Entry> root, User user) {
+        Predicate userIsLoggedIn = userIsLoggedIn(builder, user);
+
+        Predicate userHasCorrectPermissions = userHasCorrectPermissions(builder, user, Permission.read,
+                "funds");
+
+        Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root,
+                entryRoot -> entryRoot.get("item"), "expectedReadRole");
+
+        return builder.and(
+                userIsLoggedIn,
+                userHasCorrectPermissions,
+                userFulfillsMinimumRoleOfItem
+        );
     }
 
     @Override

@@ -3,7 +3,6 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
-import memo.api.util.ModifyPrecondition;
 import memo.auth.api.strategy.OrderAuthStrategy;
 import memo.communication.CommunicationManager;
 import memo.communication.MessageType;
@@ -12,9 +11,9 @@ import memo.data.OrderRepository;
 import memo.data.StockRepository;
 import memo.data.UserRepository;
 import memo.model.*;
-import memo.util.model.EventType;
 import memo.util.MapBuilder;
-import org.apache.log4j.Logger;
+import memo.util.model.EventType;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 public class OrderServlet extends AbstractApiServlet<Order> {
     public OrderServlet() {
         super(new OrderAuthStrategy());
-        logger = Logger.getLogger(OrderServlet.class);
+        logger = LogManager.getLogger(OrderServlet.class);
     }
 
     @Override

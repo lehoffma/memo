@@ -8,7 +8,7 @@ import memo.data.BankAccountRepository;
 import memo.model.BankAcc;
 import memo.model.Order;
 import memo.model.User;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ public class BankAccountServlet extends AbstractApiServlet<BankAcc> {
 
     public BankAccountServlet() {
         super(new BankAccAuthStrategy());
-        logger = Logger.getLogger(BankAccountServlet.class);
+        logger = LogManager.getLogger(BankAccountServlet.class);
     }
 
 

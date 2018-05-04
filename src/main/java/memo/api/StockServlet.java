@@ -9,7 +9,7 @@ import memo.model.Color;
 import memo.model.ShopItem;
 import memo.model.SizeTable;
 import memo.model.Stock;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +22,7 @@ public class StockServlet extends AbstractApiServlet<Stock> {
 
     public StockServlet() {
         super(new StockAuthStrategy());
-        logger = Logger.getLogger(StockServlet.class);
+        logger = LogManager.getLogger(StockServlet.class);
     }
 
     @Override

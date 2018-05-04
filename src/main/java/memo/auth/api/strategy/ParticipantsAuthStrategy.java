@@ -1,11 +1,15 @@
 package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
+import memo.auth.api.AuthenticationPredicateFactory;
 import memo.model.ClubRole;
 import memo.model.OrderedItem;
 import memo.model.ShopItem;
 import memo.model.User;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Arrays;
 
 public class ParticipantsAuthStrategy implements AuthenticationStrategy<OrderedItem> {
@@ -16,6 +20,12 @@ public class ParticipantsAuthStrategy implements AuthenticationStrategy<OrderedI
                 //or the item's expected read role is "Gast", i.e. everyone is allowed to see it
                 AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(OrderedItem::getItem, ShopItem::getExpectedReadRole)
         ));
+    }
+
+    @Override
+    public Predicate isAllowedToRead(CriteriaBuilder builder, Root<OrderedItem> root, User user) {
+        return AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem(builder, user, root,
+                orderedItemRoot -> orderedItemRoot.get("item"), "expectedReadRole");
     }
 
     @Override
