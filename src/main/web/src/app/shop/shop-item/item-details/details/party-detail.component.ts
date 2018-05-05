@@ -20,6 +20,7 @@ import {AddressService} from "../../../../shared/services/api/address.service";
 import {Observable} from "rxjs/Observable";
 import {Address} from "app/shared/model/address";
 import {ParticipantUser} from "../../../shared/model/participant";
+import {EMPTY} from "rxjs";
 
 
 @Component({
@@ -81,7 +82,7 @@ export class PartyDetailComponent implements OnInit, OnDestroy {
 				: of(event)),
 			catchError(error => {
 				this.router.navigateByUrl("page-not-found", {skipLocationChange: true, replaceUrl: true});
-				return empty<Party>();
+				return EMPTY;
 			})
 		);
 

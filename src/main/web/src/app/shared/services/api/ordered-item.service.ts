@@ -21,6 +21,7 @@ import {processInParallelAndWait} from "../../../util/observable-util";
 import {OrderStatus} from "../../model/order-status";
 import {CapacityService} from "./capacity.service";
 import {StockService} from "./stock.service";
+import {EMPTY} from "rxjs/internal/observable/empty";
 import {DiscountService} from "../../../shop/shared/services/discount.service";
 
 interface ParticipantApiResponse {
@@ -52,7 +53,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	}
 
 	search(searchTerm: string, ...args: any[]): Observable<Participant[]> {
-		return empty();
+		return EMPTY;
 	}
 
 	add(orderedItem: OrderedItem): Observable<OrderedItem> {

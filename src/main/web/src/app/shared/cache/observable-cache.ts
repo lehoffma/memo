@@ -1,7 +1,7 @@
 import {Observable} from "rxjs/Observable";
 import {Cache} from "./cache";
 import {of} from "rxjs/observable/of";
-import {empty} from "rxjs/observable/empty";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 
 export class ObservableCache<ValueType> {
@@ -28,7 +28,7 @@ export class ObservableCache<ValueType> {
 				this.withFallback(key, fallback);
 			}
 			else {
-				return empty();
+				return EMPTY;
 			}
 		}
 

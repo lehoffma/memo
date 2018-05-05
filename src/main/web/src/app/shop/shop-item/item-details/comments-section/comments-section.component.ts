@@ -6,6 +6,7 @@ import {CommentService} from "../../../../shared/services/api/comment.service";
 import {empty} from "rxjs/observable/empty";
 import {of} from "rxjs/observable/of";
 import {catchError, first, mergeMap, tap} from "rxjs/operators";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 @Component({
 	selector: "memo-comments-section",
@@ -28,7 +29,7 @@ export class CommentsSectionComponent implements OnInit {
 	readonly DEFAULT_AMOUNT_OF_COMMENTS_SHOWN = 3;
 	loggedInUser$ = this.loginService.currentUser$
 		.pipe(
-			mergeMap(user => user === null ? empty() : of(user))
+			mergeMap(user => user === null ? EMPTY : of(user))
 		);
 	expandState = false;
 	dummyComment = Comment.create();
@@ -81,7 +82,7 @@ export class CommentsSectionComponent implements OnInit {
 					catchError(error => {
 						console.error("adding the comment went wrong");
 						console.error(error);
-						return empty()
+						return EMPTY;
 					})
 				)
 				.subscribe()

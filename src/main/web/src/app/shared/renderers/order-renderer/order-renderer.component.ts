@@ -17,6 +17,7 @@ import {UserBankAccountService} from "../../services/api/user-bank-account.servi
 import {BankAccount} from "../../model/bank-account";
 import {Observable} from "rxjs/Observable";
 import {empty} from "rxjs/observable/empty";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 interface OrderedEventItem extends OrderedItem {
 	cssStatus: string;
@@ -37,7 +38,7 @@ export class OrderRendererComponent implements OnInit, OnChanges{
 	orderedEventItems: OrderedEventItem[] = [];
 	total: number = 0;
 
-	bankAccount$: Observable<BankAccount> = empty();
+	bankAccount$: Observable<BankAccount> = EMPTY;
 
 	//todo show isDriver/needsTicket stuff
 	@Output() onRemove: EventEmitter<Order> = new EventEmitter<Order>();
@@ -78,7 +79,7 @@ export class OrderRendererComponent implements OnInit, OnChanges{
 				return events;
 			}, []);
 
-		this.bankAccount$ = +(this.orderEntry.bankAccount) > 0 ? this.bankAccountService.getById(this.orderEntry.bankAccount) : empty();
+		this.bankAccount$ = +(this.orderEntry.bankAccount) > 0 ? this.bankAccountService.getById(this.orderEntry.bankAccount) : EMPTY;
 		this.orderedEventItems = events;
 		this.total = events
 			.reduce((acc, event) => acc + event.price * event.amount, 0);

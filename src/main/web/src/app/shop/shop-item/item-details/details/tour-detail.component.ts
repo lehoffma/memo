@@ -16,10 +16,10 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {catchError, filter, first, map, mergeMap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {_throw} from "rxjs/observable/throw";
-import {empty} from "rxjs/observable/empty";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
 import {Address} from "../../../../shared/model/address";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 
 @Component({
@@ -81,7 +81,7 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 				: of(event)),
 			catchError(error => {
 				this.router.navigateByUrl("page-not-found", {skipLocationChange: true, replaceUrl: true});
-				return empty<Tour>();
+				return EMPTY;
 			})
 		);
 

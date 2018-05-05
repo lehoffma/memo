@@ -12,6 +12,7 @@ import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {Merchandise} from "../../shop/shared/model/merchandise";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs/Subscription";
+import {EMPTY} from "rxjs/internal/observable/empty";
 
 @Component({
 	selector: "memo-my-tours",
@@ -22,7 +23,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 	public createdTours$: Observable<(Tour | Party)[]> = this.loginService.accountObservable
 		.pipe(
 			mergeMap(accountId => accountId === null
-				? empty()
+				? EMPTY
 				: this.eventService.getHostedEventsOfUser(accountId)),
 			map((events: (Tour | Party | Merchandise)[]) =>
 				events.filter(event => !EventUtilityService.isMerchandise(event))),
@@ -35,7 +36,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 	public participatedTours$: Observable<(Tour | Party)[]> = this.loginService.accountObservable
 		.pipe(
 			mergeMap(accountId => accountId === null
-				? empty<(Tour | Party)[]>()
+				? EMPTY
 				: this.participantService.getParticipatedEventsOfUser(accountId)),
 			map((events: (Tour | Party)[]) => {
 				events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
@@ -43,7 +44,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 			}),
 			catchError(error => {
 				console.error(error);
-				return empty<(Tour | Party)[]>();
+				return EMPTY;
 			})
 		);
 
