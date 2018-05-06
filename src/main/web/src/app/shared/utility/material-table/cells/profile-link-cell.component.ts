@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
-import {UserService} from "../../../../shared/services/api/user.service";
+import {ExpandableTableCellComponent} from "../../expandable-table/expandable-table-cell.component";
+import {UserService} from "../../../services/api/user.service";
 import {EMPTY} from "rxjs/internal/observable/empty";
-import {User} from "../../../../shared/model/user";
+import {User} from "../../../model/user";
 import {Observable} from "rxjs/Observable";
 
 @Component({

@@ -1,0 +1,30 @@
+
+<div class="expandable-table-header expandable-table-row"
+	 [ngClass]="{'items-selected-header': !selection.isEmpty()}">
+	<div *ngIf="selection.isEmpty(); then header; else actionHeader"></div>
+	<ng-template #header>
+		<div class="expandable-table-header-title">
+			{{title}}
+		</div>
+
+		<div class="expandable-table-header-actions">
+			<button mat-button type="button" color="accent"
+					[disabled]="!permissions?.Hinzufuegen"
+					(click)="actionCallback(rowAction.ADD, [])">
+				HINZUFÜGEN
+			</button>
+		</div>
+	</ng-template>
+	<ng-template #actionHeader>
+		<div class="expandable-table-header-action-title">
+			{{selection.selected.length}} {{selection.selected.length > 1 ? 'Einträge' : 'Eintrag'}} ausgewählt.
+		</div>
+		<div class="expandable-table-header-actions">
+			<button mat-icon-button
+					[disabled]="!permissions?.Loeschen"
+					type="button" (click)="deleteSelected()">
+				<mat-icon>delete</mat-icon>
+			</button>
+		</div>
+	</ng-template>
+</div>

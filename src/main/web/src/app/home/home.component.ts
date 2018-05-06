@@ -2,13 +2,16 @@ import {ChangeDetectionStrategy, Component, OnInit} from "@angular/core";
 import {Merchandise} from "../shop/shared/model/merchandise";
 import {Event} from "../shop/shared/model/event";
 import {EventService} from "../shared/services/api/event.service";
-import {EventType} from "../shop/shared/model/event-type";
+import {EventType, typeToInteger} from "../shop/shared/model/event-type";
 import {ShopItemType} from "../shop/shared/model/shop-item-type";
 import {LogInService} from "../shared/services/api/login.service";
 import {map, mergeMap} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {isAfter} from "date-fns";
 import {dateSortingFunction} from "../util/util";
+import {PageRequest} from "../shared/model/api/page-request";
+import {Sort, SortDirectionEnum} from "../shared/model/api/sort";
+import {Filter} from "../shared/model/api/filter";
 
 interface EventsPreview {
 	title: string,
@@ -24,6 +27,8 @@ interface EventsPreview {
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
+	now = new Date();
+
 	events: EventsPreview[] = [
 		{
 			title: "Touren",
@@ -31,10 +36,15 @@ export class HomeComponent implements OnInit {
 			type: ShopItemType.tour,
 			events: this.loginService.isLoggedInObservable()
 				.pipe(
-					mergeMap(() => this.eventService.search("", EventType.tours))
-				)
-				.pipe(
-					map(tours => this.filterEvents(tours))
+					mergeMap(() => this.eventService.get(
+						Filter.by({
+							"type": typeToInteger(EventType.tours) + "",
+							"minDate": this.now.toISOString()
+						}),
+						PageRequest.first(7),
+						Sort.by(SortDirectionEnum.ASCENDING, "date"))
+					),
+					map(it => it.content)
 				)
 		},
 		{
@@ -43,10 +53,15 @@ export class HomeComponent implements OnInit {
 			type: ShopItemType.party,
 			events: this.loginService.isLoggedInObservable()
 				.pipe(
-					mergeMap(() => this.eventService.search("", EventType.partys))
-				)
-				.pipe(
-					map(partys => this.filterEvents(partys))
+					mergeMap(() => this.eventService.get(
+						Filter.by({
+							"type": typeToInteger(EventType.partys)+ "",
+							"minDate": this.now.toISOString()
+						}),
+						PageRequest.first(7),
+						Sort.by(SortDirectionEnum.ASCENDING, "date"))
+					),
+					map(it => it.content)
 				)
 		},
 		{
@@ -55,11 +70,18 @@ export class HomeComponent implements OnInit {
 			type: ShopItemType.merch,
 			events: this.loginService.isLoggedInObservable()
 				.pipe(
-					mergeMap(() => this.eventService.search("", EventType.merch)),
-					map(merch => merch.slice(0, 7))
+					mergeMap(() => this.eventService.get(
+						Filter.by({
+							"type": typeToInteger(EventType.merch) + ""
+						}),
+						PageRequest.first(7),
+						Sort.by(SortDirectionEnum.ASCENDING, "date"))
+					),
+					map(it => it.content)
 				)
 		},
 	];
+
 
 	userIsLoggedIn$ = this.loginService.isLoggedInObservable();
 

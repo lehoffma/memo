@@ -1,11 +1,11 @@
 import {ExpandableTableColumn} from "../../../shared/utility/expandable-table/expandable-table-column";
 import {User} from "../../../shared/model/user";
-import {ClubRoleTableCellComponent} from "./member-list-table-cells/clubrole-table-cell.component";
-import {DateTableCellComponent} from "./member-list-table-cells/date-table-cell.component";
-import {BooleanCheckMarkCellComponent} from "./member-list-table-cells/boolean-checkmark-cell.component";
-import {GenderCellComponent} from "./member-list-table-cells/gender-cell.component";
-import {AddressTableCellComponent} from "./member-list-table-cells/address-table-cell.component";
-import {PictureTableCellComponent} from "./member-list-table-cells/picture-table-cell.component";
+import {ClubRoleTableCellComponent} from "../../../shared/utility/material-table/cells/clubrole-table-cell.component";
+import {DateTableCellComponent} from "../../../shared/utility/material-table/cells/date-table-cell.component";
+import {BooleanCheckMarkCellComponent} from "../../../shared/utility/material-table/cells/boolean-checkmark-cell.component";
+import {GenderCellComponent} from "../../../shared/utility/material-table/cells/gender-cell.component";
+import {AddressTableCellComponent} from "../../../shared/utility/material-table/cells/address-table-cell.component";
+import {PictureTableCellComponent} from "../../../shared/utility/material-table/cells/picture-table-cell.component";
 
 export const memberListColumns = {
 	"images": new ExpandableTableColumn<User>("Foto", "images", PictureTableCellComponent),

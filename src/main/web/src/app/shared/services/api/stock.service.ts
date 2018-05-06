@@ -5,140 +5,13 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {MerchColor} from "../../../shop/shared/model/merch-color";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {Observable} from "rxjs/Observable";
-import {catchError, map, mergeMap, share, tap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {empty} from "rxjs/observable/empty";
-import {isArrayType} from "../../../util/util";
+import {mergeMap, share, tap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {processSequentiallyAndWait} from "../../../util/observable-util";
-import {EMPTY} from "rxjs/internal/observable/empty";
-
-const stockMockData = [
-	{
-		"size": "XS",
-		"color": {
-			"name": "Weiss",
-			"hex": "#ffffff"
-		},
-		"amount": 2
-	},
-	{
-		"size": "S",
-		"color": {
-			"name": "Weiss",
-			"hex": "#ffffff"
-		},
-		"amount": 1
-	},
-	{
-		"size": "M",
-		"color": {
-			"name": "Weiss",
-			"hex": "#ffffff"
-		},
-		"amount": 5
-	},
-	{
-		"size": "L",
-		"color": {
-			"name": "Weiss",
-			"hex": "#ffffff"
-		},
-		"amount": 2
-	},
-	{
-		"size": "XL",
-		"color": {
-			"name": "Weiss",
-			"hex": "#ffffff"
-		},
-		"amount": 4
-	},
-	{
-		"size": "XS",
-		"color": {
-			"name": "Grün",
-			"hex": "#00ff00"
-		},
-		"amount": 2
-	},
-	{
-		"size": "S",
-		"color": {
-			"name": "Grün",
-			"hex": "#00ff00"
-		},
-		"amount": 1
-	},
-	{
-		"size": "M",
-		"color": {
-			"name": "Grün",
-			"hex": "#00ff00"
-		},
-		"amount": 5
-	},
-	{
-		"size": "L",
-		"color": {
-			"name": "Grün",
-			"hex": "#00ff00"
-		},
-		"amount": 2
-	},
-	{
-		"size": "XL",
-		"color": {
-			"name": "Grün",
-			"hex": "#00ff00"
-		},
-		"amount": 4
-	},
-	{
-		"size": "XS",
-		"color": {
-			"name": "Blau",
-			"hex": "#0000ff"
-		},
-		"amount": 2
-	},
-	{
-		"size": "S",
-		"color": {
-			"name": "Blau",
-			"hex": "#0000ff"
-		},
-		"amount": 1
-	},
-	{
-		"size": "M",
-		"color": {
-			"name": "Blau",
-			"hex": "#0000ff"
-		},
-		"amount": 5
-	},
-	{
-		"size": "L",
-		"color": {
-			"name": "Blau",
-			"hex": "#0000ff"
-		},
-		"amount": 2
-	},
-	{
-		"size": "XL",
-		"color": {
-			"name": "Blau",
-			"hex": "#0000ff"
-		},
-		"amount": 4
-	}
-];
-
-interface StockApiResponse {
-	stock: MerchStock[];
-}
+import {Page} from "../../model/api/page";
+import {PageRequest} from "../../model/api/page-request";
+import {Sort} from "../../model/api/sort";
+import {Filter} from "../../model/api/filter";
 
 export interface StockMap {
 	[size: string]: {
@@ -147,9 +20,7 @@ export interface StockMap {
 }
 
 @Injectable()
-export class StockService extends ServletService<MerchStock[]> {
-	baseUrl = "/api/stock";
-
+export class StockService extends ServletService<MerchStock> {
 	readonly possibleSizes = [
 		"XXS",
 		"XS",
@@ -163,38 +34,23 @@ export class StockService extends ServletService<MerchStock[]> {
 		"5XL"
 	];
 
-	/**
-	 *
-	 * @param id
-	 * @param eventId
-	 */
-	getById(id: number, eventId: number): Observable<MerchStock[]> {
-		let params = new HttpParams().set("id", "" + id);
-
-		if (eventId) {
-			params = params.set("eventId", "" + eventId);
-		}
-		const request = this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(response => response.stock),
-				share(),
-				catchError(error => EMPTY)
-			);
-
-		return this._cache.getById(params, request);
-	}
-
 	constructor(protected http: HttpClient) {
-		super();
+		super(http, "/api/stock");
 	}
 
 	/**
 	 *
 	 * @param eventId
+	 * @param pageRequest
+	 * @param sort
 	 * @returns {Observable<MerchStockList>}
 	 */
-	getByEventId(eventId: number): Observable<MerchStock[]> {
-		return this.getById(null, eventId);
+	getByEventId(eventId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<MerchStock>> {
+		return this.get(
+			Filter.by({"eventId": "" + eventId}),
+			pageRequest,
+			sort
+		)
 	}
 
 
@@ -257,27 +113,12 @@ export class StockService extends ServletService<MerchStock[]> {
 
 	/**
 	 *
-	 * @param searchTerm
-	 */
-	search(searchTerm: string): Observable<MerchStockList[]> {
-		const params = new HttpParams().set("searchTerm", searchTerm);
-		const request = this.performRequest(this.http.get<StockApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(response => [response.stock]),
-				share()
-			);
-
-		return this._cache.search(params, request);
-	}
-
-	/**
-	 *
 	 * @param requestMethod
 	 * @param stock
 	 * @param eventId
 	 */
 	addOrModify(requestMethod: AddOrModifyRequest,
-				stock: MerchStock, eventId: number): Observable<MerchStockList> {
+				stock: MerchStock, eventId: number): Observable<MerchStock> {
 		const modifiedStock = {
 			...stock,
 			item: stock.item.id
@@ -297,23 +138,9 @@ export class StockService extends ServletService<MerchStock[]> {
 	 * @param stock
 	 * @param eventId
 	 */
-	add(stock: MerchStock | MerchStock[], eventId: number): Observable<MerchStockList> {
-		if (isArrayType(stock)) {
-			if (stock.length === 0) {
-				return of([]);
-			}
-			stock.forEach(it => it.id = -1);
-			return combineLatest(
-				...stock.map(it => this.addOrModify(this.http.post.bind(this.http), it, eventId))
-			)
-				.pipe(
-					map(listList => [].concat(...listList))
-				)
-		}
-		else {
-			stock.id = -1;
-			return this.addOrModify(this.http.post.bind(this.http), stock, eventId);
-		}
+	add(stock: MerchStock, eventId: number): Observable<MerchStock> {
+		stock.id = -1;	//todo is this really needed?
+		return this.addOrModify(this.http.post.bind(this.http), stock, eventId);
 	}
 
 	/**
@@ -321,22 +148,8 @@ export class StockService extends ServletService<MerchStock[]> {
 	 * @param stock
 	 * @param eventId
 	 */
-	modify(stock: MerchStock | MerchStockList, eventId: number): Observable<MerchStockList> {
-		if (isArrayType(stock)) {
-			if (stock.length === 0) {
-				return of([]);
-			}
-
-			return combineLatest(
-				...stock.map(it => this.addOrModify(this.http.put.bind(this.http), it, eventId))
-			)
-				.pipe(
-					map(listList => [].concat(...listList))
-				)
-		}
-		else {
-			return this.addOrModify(this.http.put.bind(this.http), stock, eventId);
-		}
+	modify(stock: MerchStock, eventId: number): Observable<MerchStock> {
+		return this.addOrModify(this.http.put.bind(this.http), stock, eventId);
 	}
 
 	/**

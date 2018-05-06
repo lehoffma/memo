@@ -5,7 +5,6 @@ import {EventService} from "../../shared/services/api/event.service";
 import {Party} from "../../shop/shared/model/party";
 import {dateSortingFunction} from "../../util/util";
 import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
-import {empty} from "rxjs/observable/empty";
 import {Observable} from "rxjs/Observable";
 import {catchError, filter, map, mergeMap} from "rxjs/operators";
 import {EventUtilityService} from "../../shared/services/event-utility.service";
@@ -13,6 +12,11 @@ import {Merchandise} from "../../shop/shared/model/merchandise";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs/Subscription";
 import {EMPTY} from "rxjs/internal/observable/empty";
+import {Filter} from "../../shared/model/api/filter";
+import {EventType, typeToInteger} from "../../shop/shared/model/event-type";
+import {PageRequest} from "../../shared/model/api/page-request";
+import {Sort, SortDirectionEnum} from "../../shared/model/api/sort";
+import {Event} from "../../shop/shared/model/event";
 
 @Component({
 	selector: "memo-my-tours",
@@ -20,28 +24,35 @@ import {EMPTY} from "rxjs/internal/observable/empty";
 	styleUrls: ["./my-tours.component.scss"]
 })
 export class MyToursComponent implements OnInit, OnDestroy {
-	public createdTours$: Observable<(Tour | Party)[]> = this.loginService.accountObservable
+	public createdTours$: Observable<Event[]> = this.loginService.accountObservable
 		.pipe(
 			mergeMap(accountId => accountId === null
 				? EMPTY
-				: this.eventService.getHostedEventsOfUser(accountId)),
-			map((events: (Tour | Party | Merchandise)[]) =>
-				events.filter(event => !EventUtilityService.isMerchandise(event))),
-			map((events: (Tour | Party)[]) => {
-				events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
-				return events;
-			})
+				: this.eventService.get(
+					Filter.by({
+						"authorId": "" + accountId,
+						"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)
+					}),
+					PageRequest.first(),
+					Sort.by(SortDirectionEnum.ASCENDING, "date")
+				)),
+			map(it => it.content)
 		);
 
-	public participatedTours$: Observable<(Tour | Party)[]> = this.loginService.accountObservable
+	public participatedTours$: Observable<Event[]> = this.loginService.accountObservable
 		.pipe(
 			mergeMap(accountId => accountId === null
 				? EMPTY
-				: this.participantService.getParticipatedEventsOfUser(accountId)),
-			map((events: (Tour | Party)[]) => {
-				events.sort(dateSortingFunction<(Tour | Party)>(obj => obj.date, false));
-				return events;
-			}),
+				//todo
+				: this.eventService.get(
+					Filter.by({
+						"authorId": "" + accountId,
+						"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)
+					}),
+					PageRequest.first(),
+					Sort.by(SortDirectionEnum.ASCENDING, "date")
+				)),
+			map(it => it.content),
 			catchError(error => {
 				console.error(error);
 				return EMPTY;

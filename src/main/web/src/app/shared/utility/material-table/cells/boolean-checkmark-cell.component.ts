@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../../expandable-table/expandable-table-cell.component";
 
 @Component({
-	selector: "td [booleanCheckMarkCell]",
+	selector: "td [booleanCheckMarkCell],memo-boolean-checkmark-cell",
 	template: `
 		<span class="data-as-icon"><mat-icon [ngClass]="{'true': data}">{{data ? 'check' : 'clear'}}</mat-icon></span>
 	`,

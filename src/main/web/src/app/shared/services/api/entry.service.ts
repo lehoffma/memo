@@ -4,10 +4,13 @@ import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/share
 import {EntryCategoryService} from "./entry-category.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
-import {defaultIfEmpty, map, mergeMap, tap} from "rxjs/operators";
+import {map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {EventService} from "./event.service";
+import {PageRequest} from "../../model/api/page-request";
+import {Sort} from "../../model/api/sort";
+import {Filter} from "../../model/api/filter";
+import {Page} from "../../model/api/page";
 
 interface EntryApiResponse {
 	entries: Entry[];
@@ -16,108 +19,41 @@ interface EntryApiResponse {
 @Injectable()
 export class EntryService extends ServletService<Entry> {
 	redirectUrl: string;
-	baseUrl = "/api/entry";
 
-	constructor(private http: HttpClient,
+	constructor(protected http: HttpClient,
 				private eventService: EventService,
 				private entryCategoryService: EntryCategoryService) {
-		super();
+		super(http, "/api/entry");
 	}
 
-	/**
-	 * ....
-	 * @param json
-	 * @returns {Observable<Entry>}
-	 */
-	private getEntryFromJSON(json: any): Observable<Entry> {
-		//todo...
-		if (json["category"] !== undefined && json["item"] !== undefined) {
-			return combineLatest(
-				this.entryCategoryService.getById(json["category"]),
-				this.eventService.getById(json["item"])
-			)
-				.pipe(
-					map(([category, item]) => Entry.create().setProperties(json).setProperties({category, item}))
-				)
-		}
-		return of(Entry.create().setProperties(json));
-	}
 
-	/**
-	 * ....
-	 * @param {any[]} jsonArray
-	 * @returns {Observable<Entry[]>}
-	 */
-	private getEntriesFromJSON(jsonArray: any[]): Observable<Entry[]> {
-		return combineLatest(...jsonArray.map(json => this.getEntryFromJSON(json)))
-			.pipe(defaultIfEmpty([]));
-	}
-
-	/**
-	 *
-	 * @param entryId
-	 */
-	getById(entryId: number): Observable<Entry> {
-		const params = new HttpParams().set("id", "" + entryId);
-		const request = this.performRequest(this.http.get<EntryApiResponse>(this.baseUrl, {params}))
+	jsonToObservable(json: any): Observable<Entry> {
+		return combineLatest(
+			this.entryCategoryService.getById(json["category"]),
+			this.eventService.getById(json["item"])
+		)
 			.pipe(
-				mergeMap(json => this.getEntryFromJSON(json.entries[0]))
-			);
-
-		return this._cache.getById(params, request);
+				map(([category, item]) => Entry.create().setProperties(json).setProperties({category, item}))
+			)
 	}
 
 	/**
 	 *
 	 * @param eventId
+	 * @param pageRequest
+	 * @param sort
 	 */
-	getEntriesOfEvent(eventId: number): Observable<Entry[]> {
-		const params = new HttpParams().set("eventId", "" + eventId);
-		const request = this.performRequest(this.http.get<EntryApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				mergeMap(json => this.getEntriesFromJSON(json.entries))
-			);
-
-		return this._cache.search(params, request);
+	getEntriesOfEvent(eventId: number,
+					  pageRequest: PageRequest,
+					  sort: Sort): Observable<Page<Entry>> {
+		return this.get(
+			Filter.by({"eventId": "" + eventId}),
+			pageRequest,
+			sort
+		);
 	}
 
-	/**
-	 *
-	 * @param searchTerm
-	 * @param dateRange
-	 */
-	search(searchTerm: string, dateRange?: { minDate: Date, maxDate: Date }): Observable<Entry[]> {
-		let params = new HttpParams().set("searchTerm", searchTerm);
-		if (dateRange && dateRange.minDate && dateRange.maxDate) {
-			params = params.set("minDate", dateRange.minDate.toISOString())
-				.set("maxDate", dateRange.maxDate.toISOString());
-		}
-		const request = this.performRequest(this.http.get<EntryApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				mergeMap(json => this.getEntriesFromJSON(json.entries))
-			);
-
-		return this._cache.search(params, request);
-	}
-
-	/**
-	 *
-	 * @param entry
-	 * @param options
-	 */
-	add(entry: Entry, options?: any): Observable<Entry> {
-		return this.addOrModify(this.http.post.bind(this.http), entry, options);
-	}
-
-	/**
-	 *
-	 * @param entry
-	 * @param options
-	 * @returns {Observable<Entry>}
-	 */
-	modify(entry: Entry, options?: any): Observable<Entry> {
-		return this.addOrModify(this.http.put.bind(this.http), entry, options);
-	}
+	//todo get by filter options
 
 	/**
 	 *
@@ -141,8 +77,8 @@ export class EntryService extends ServletService<Entry> {
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	private addOrModify(requestMethod: AddOrModifyRequest,
-						entry: Entry, options?: any): Observable<Entry> {
+	addOrModify(requestMethod: AddOrModifyRequest,
+				entry: Entry, options?: any): Observable<Entry> {
 		let body = {};
 
 		if (options) {

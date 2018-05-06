@@ -1,4 +1,4 @@
-import {Injectable, OnDestroy} from '@angular/core';
+import {Injectable, OnDestroy} from "@angular/core";
 import {WebsocketService} from "../websocket.service";
 import {LogInService} from "./login.service";
 import {Subject} from "rxjs/Subject";
@@ -15,6 +15,7 @@ export class NotificationService implements OnDestroy {
 
 	constructor(private websocketService: WebsocketService,
 				private loginService: LogInService) {
+		//todo use rxjs/websocket
 		this.notificationSubscription = this.loginService.currentUser$
 			.pipe(
 				filter(user => user !== null),

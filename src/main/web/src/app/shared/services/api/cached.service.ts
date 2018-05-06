@@ -2,11 +2,11 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {catchError, first, retry, share} from "rxjs/operators";
 import {_throw} from "rxjs/observable/throw";
-import {ApiCache} from "../../cache/api-cache";
+import {ApiCache, PagedApiCache} from "../../cache/api-cache";
 
 
 export abstract class CachedService<T> {
-	protected _cache: ApiCache<T> = new ApiCache<T>();
+	protected _cache: PagedApiCache<T> = new PagedApiCache<T>();
 
 	public changed$: { [id: number]: BehaviorSubject<T> } = {};
 

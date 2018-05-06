@@ -11,6 +11,9 @@ import {combineLatest} from "rxjs/observable/combineLatest";
 import {MilesListEntry, MilesService} from "../../shared/services/api/miles.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {seasonOptions} from "../../shared/model/season-options";
+import {PageRequest} from "../../shared/model/api/page-request";
+import {Filter} from "../../shared/model/api/filter";
+import {Sort} from "../../shared/model/api/sort";
 
 export interface LoggedInUserPosition extends LeaderboardRow {
 	index: number;
@@ -28,7 +31,8 @@ export class MilesLeaderboardComponent implements OnInit {
 
 	showAll$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-	users$ = this.userService.search("");
+	users$ = this.userService.get(Filter.none(), PageRequest.first(), Sort.none())
+		.pipe(map(it => it.content));
 
 
 	leaderBoard$: Observable<LeaderboardRow[]> = this.users$

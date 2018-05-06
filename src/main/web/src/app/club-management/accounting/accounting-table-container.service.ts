@@ -10,7 +10,7 @@ import {isNullOrUndefined} from "util";
 import {EventService} from "../../shared/services/api/event.service";
 import {Dimension, WindowService} from "../../shared/services/window.service";
 import {ExpandableTableColumn} from "../../shared/utility/expandable-table/expandable-table-column";
-import {DateTableCellComponent} from "../administration/member-list/member-list-table-cells/date-table-cell.component";
+import {DateTableCellComponent} from "../../shared/utility/material-table/cells/date-table-cell.component";
 import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
 import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {NavigationService} from "../../shared/services/navigation.service";
@@ -25,6 +25,10 @@ import {RowActionType} from "../../shared/utility/expandable-table/row-action-ty
 import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
 import {MatDialog} from "@angular/material";
 import {EMPTY} from "rxjs/internal/observable/empty";
+import {PageRequest} from "../../shared/model/api/page-request";
+import {Sort} from "../../shared/model/api/sort";
+import {PageResponse} from "../../shared/model/api/page";
+import {Filter} from "../../shared/model/api/filter";
 
 
 @Injectable()
@@ -140,19 +144,23 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 						let eventIds: string[] = queryParamMap.getAll("eventIds");
 
 						return combineLatest(
-							...eventIds.map(id => this.entryService.getEntriesOfEvent(+id)
-								.pipe(defaultIfEmpty([]))
+							...eventIds.map(id => this.entryService.getEntriesOfEvent(+id, PageRequest.first(), Sort.none())
+								.pipe(defaultIfEmpty(PageResponse.empty()))
 							)
 						)
 							.pipe(
 								map(eventEntries =>
-									eventEntries.reduce((acc, current) => [...acc, ...current], []))
+									eventEntries.reduce((acc, current) => [...acc, ...current.content], []))
 							);
 					}
 
 					//otherwise, we're looking at the general club accounting table
-					return this.entryService.search("", dateRange)
-						.pipe(defaultIfEmpty([]));
+					return this.entryService.get(
+						Filter.by({"minDate": dateRange.minDate.toISOString(), "maxDate": dateRange.maxDate.toISOString()}),
+						PageRequest.first(),
+						Sort.none()
+					)
+						.pipe(defaultIfEmpty(PageResponse.empty()));
 				}),
 				tap(() => this.loading = false),
 				catchError(error => {

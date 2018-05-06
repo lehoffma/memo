@@ -14,6 +14,8 @@ import {filter, first, map, share, startWith, tap} from "rxjs/operators";
 import {EntryCategory} from "../../../shared/model/entry-category";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {isAfter, isBefore, isValid, parse} from "date-fns"
+import {PageRequest} from "../../../shared/model/api/page-request";
+import {Sort} from "../../../shared/model/api/sort";
 
 
 @Component({
@@ -165,14 +167,15 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	 */
 	async getAvailableEvents() {
 		await combineLatest(
-			this.eventService.search("", EventType.tours),
-			this.eventService.search("", EventType.partys),
-			this.eventService.search("", EventType.merch)
+			this.eventService.getByEventType(EventType.tours, PageRequest.first(), Sort.none()),
+			this.eventService.getByEventType(EventType.partys, PageRequest.first(), Sort.none()),
+			this.eventService.getByEventType(EventType.merch, PageRequest.first(), Sort.none()),
 		)
 			.pipe(
 				first(),
 				tap(([tours, partys, merch]) => {
-					this.availableEvents = [...tours, ...partys, ...merch]
+					//todo filter
+					this.availableEvents = [...tours.content, ...partys.content, ...merch.content]
 						.filter(event => {
 							let from = !this.dateOptions.from ? parse("1970-01-01") : this.dateOptions.from;
 							let to = !this.dateOptions.to ? parse("2100-01-01") : this.dateOptions.to;

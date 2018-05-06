@@ -1,26 +1,23 @@
 import {Injectable} from "@angular/core";
 import {EventType} from "../../../shop/shared/model/event-type";
 import {Event} from "../../../shop/shared/model/event";
-import {EventFactoryService} from "../event-factory.service";
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap, share, tap} from "rxjs/operators";
+import {mergeMap, tap} from "rxjs/operators";
 import {User} from "../../model/user";
-
-interface EventApiResponse {
-	shopItems: (Party | Merchandise | Tour)[];
-}
+import {Filter} from "../../model/api/filter";
+import {PageRequest} from "../../model/api/page-request";
+import {Sort} from "../../model/api/sort";
+import {Page} from "../../model/api/page";
 
 @Injectable()
 export class EventService extends ServletService<Event> {
-	private readonly baseUrl = `/api/event`;
-
-	constructor(private http: HttpClient) {
-		super();
+	constructor(protected http: HttpClient) {
+		super(http, `/api/event`);
 	}
 
 	/**
@@ -41,74 +38,54 @@ export class EventService extends ServletService<Event> {
 	}
 
 
-	/**
-	 * Requested das Event (mit einem bestimmten Event-Typen) vom Server, welches die gegebene ID besitzt
-	 * @param eventId
-	 * @param refresh
-	 * @returns {Observable<T>}
-	 */
-	getById(eventId: number, refresh?: boolean): Observable<Event> {
-		const params = new HttpParams().set("id", "" + eventId);
-		const request = this.http.get<EventApiResponse>(this.baseUrl, {params})
-			.pipe(
-				map((json: any) => this.getFactoryFromType((<any>json.shopItems[0]["type"]))().setProperties(json.shopItems[0])),
-				share()
-			);
-
-		return this._cache.getById(params, request);
+	jsonToObject(json: any): Event {
+		return this.getFactoryFromType((json["type"]))().setProperties(json);
 	}
 
 	/**
 	 *
 	 * @param userId
+	 * @param pageRequest
+	 * @param sort
 	 */
-	getHostedEventsOfUser(userId: number): Observable<Event[]> {
-		const params = new HttpParams().set("authorId", "" + userId);
-		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(json => json.shopItems.map((event: any) =>
-					Event.create().setProperties({...event}))),
-				share()
-			);
-
-		return this._cache.search(params, request);
+	getHostedEventsOfUser(userId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<Event>> {
+		return this.get(
+			Filter.by({"authorId": "" + userId}),
+			pageRequest,
+			sort
+		);
 	}
 
 	/**
 	 *
 	 * @param {EventType} eventType
+	 * @param pageRequest
+	 * @param sort
+	 * @param pageRequest
+	 * @param sort
 	 * @returns {Observable<Event[]>}
 	 */
-	getByEventType(eventType: EventType): Observable<Event[]> {
-		const params = new HttpParams().set("type", "" + eventType);
-		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(json => json.shopItems.map((event: any) =>
-					EventFactoryService.build(eventType).setProperties({...event})))
-			);
-
-		return this._cache.search(params, request);
+	getByEventType(eventType: EventType, pageRequest: PageRequest, sort: Sort): Observable<Page<Event>> {
+		return this.get(
+			Filter.by({"type": "" + eventType}),
+			pageRequest,
+			sort
+		);
 	}
 
 	/**
 	 * Requested alle Events (mit dem gegebenen event typen), die auf den search term matchen
 	 * @param searchTerm
-	 * @param eventType
+	 * @param pageRequest
+	 * @param sort
 	 * @returns {Observable<T>}
 	 */
-	search(searchTerm: string, eventType: EventType): Observable<Event[]> {
-		if (!searchTerm) {
-			return this.getByEventType(eventType);
-		}
-
-		const params = new HttpParams().set("searchTerm", searchTerm).set("type", "" + eventType);
-		const request = this.performRequest(this.http.get<EventApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(json => json.shopItems.map((event: any) =>
-					EventFactoryService.build(eventType).setProperties({...event})))
-			);
-
-		return this._cache.search(params, request);
+	search(searchTerm: string, pageRequest: PageRequest, sort: Sort): Observable<Page<Event>> {
+		return this.get(
+			Filter.by({"searchTerm": searchTerm}),
+			pageRequest,
+			sort
+		);
 	}
 
 
@@ -150,28 +127,6 @@ export class EventService extends ServletService<Event> {
 			);
 	}
 
-	/**
-	 * Sendet ein Event Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
-	 * gibt dann das erstellte Objekt wieder an den Client zurück
-	 * @param event
-	 * @param options
-	 * @returns {Observable<T>}
-	 */
-	add(event: Event, options?: any): Observable<Event> {
-		return this.addOrModify(this.http.post.bind(this.http), event, options);
-	}
-
-	/**
-	 * Sendet ein Event Objekt an den Server, welcher dieses mit den übergebeben Daten updaten soll. Der Server
-	 * gibt dann das geupdatete Objekt wieder an den Client zurück
-	 * @param event
-	 * @param options
-	 * @returns {Observable<T>}
-	 */
-	modify(event: Event, options?: any): Observable<Event> {
-		return this.addOrModify(this.http.put.bind(this.http), event, options);
-	}
-
 
 	/**
 	 * Löscht das Event mit der gegebenen ID aus der Datenbank
@@ -187,12 +142,4 @@ export class EventService extends ServletService<Event> {
 			);
 	}
 
-	/**
-	 * Invalidates all caches.
-	 * This function is used for logout events, since the canRead property has to be evaluated again, which only
-	 * happens when the corresponding request isn't cached anymore and the service has to request new data.
-	 */
-	clearCaches() {
-		this._cache.invalidateAll();
-	}
 }

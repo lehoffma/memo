@@ -1,14 +1,26 @@
 
-<memo-expandable-table
-	[data]="(memberListService.data$ | async)"
+<!--<memo-expandable-table-->
+	<!--[data]="(memberListService.data$ | async)"-->
+	<!--[rowActions]="rowActions"-->
+	<!--(onSort)="memberListService.onSort($event)"-->
+	<!--(onAction)="memberListService.handleTableAction($event)"-->
+	<!--[title]="'Mitgliederliste'"-->
+	<!--[expandedRowComponent]="memberListService.rowComponent"-->
+	<!--[columnKeys]="memberListService.primaryColumnKeys$ | async"-->
+	<!--[expandedRowKeys]="memberListService.expandedRowKeys$ | async"-->
+	<!--[permissions]="memberListService.permissions$ | async"-->
+<!--&gt;-->
+
+<!--</memo-expandable-table>-->
+
+<memo-expandable-material-table
+	[dataService]="userService"
+	[filter$]="filter$"
 	[rowActions]="rowActions"
-	(onSort)="memberListService.onSort($event)"
-	(onAction)="memberListService.handleTableAction($event)"
-	[title]="'Mitgliederliste'"
-	[expandedRowComponent]="memberListService.rowComponent"
-	[columnKeys]="memberListService.primaryColumnKeys$ | async"
-	[expandedRowKeys]="memberListService.expandedRowKeys$ | async"
 	[permissions]="memberListService.permissions$ | async"
+	[columns]="columns"
+	[title]="'Mitgliederliste'"
+	[displayedColumns]="displayedColumns"
 >
 
-</memo-expandable-table>
+</memo-expandable-material-table>

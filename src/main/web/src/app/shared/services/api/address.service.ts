@@ -3,73 +3,25 @@ import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Address} from "../../model/address";
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap, tap} from "rxjs/operators";
+import {mergeMap, tap} from "rxjs/operators";
 import {processInParallelAndWait, updateListOfItem} from "../../../util/observable-util";
 import {User} from "../../model/user";
 import {UserService} from "./user.service";
 
-interface AddressApiResponse {
-	addresses: Partial<Address>[]
-}
 
 @Injectable()
 export class AddressService extends ServletService<Address> {
-	baseUrl = "/api/address";
 	addressModificationDone: EventEmitter<Address> = new EventEmitter();
 	redirectUrl: string;
 
-	constructor(private http: HttpClient,
+	constructor(protected http: HttpClient,
 				private userService: UserService) {
-		super();
+		super(http, "/api/address");
 	}
 
 
-	/**
-	 * Requested die Addresse vom Server, welche die gegebene ID besitzt
-	 * @param id
-	 * @returns {any}
-	 */
-	getById(id: number): Observable<Address> {
-		const params = new HttpParams().set("id", "" + id);
-		const request = this.performRequest(this.http.get<AddressApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(json => Address.create().setProperties(json.addresses[0]))
-			);
-
-		return this._cache.getById(params, request)
-	}
-
-	/**
-	 * Requested alle Addressen die auf den search term matchen
-	 * @param searchTerm
-	 * @param options
-	 * @returns {Observable<T>}
-	 */
-	search(searchTerm: string, options?: any): Observable<Address[]> {
-		const params = new HttpParams().set("searchTerm", "" + searchTerm);
-		const request = this.performRequest(this.http.get<AddressApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map((json) => json.addresses.map(json => Address.create().setProperties(json)))
-			);
-
-		return this._cache.search(params, request);
-	}
-
-	/**
-	 * @param address
-	 * @returns {Observable<T>}
-	 */
-	add(address: Address): Observable<Address> {
-		return this.addOrModify(this.http.post.bind(this.http), address);
-	}
-
-	/**
-	 *
-	 * @param address
-	 * @returns {Observable<Address>}
-	 */
-	modify(address: Address): Observable<Address> {
-		return this.addOrModify(this.http.put.bind(this.http), address);
+	jsonToObject(json: any): Address {
+		return Address.create().setProperties(json);
 	}
 
 	/**
@@ -93,10 +45,10 @@ export class AddressService extends ServletService<Address> {
 	 * @param options
 	 * @returns {Observable<T>}
 	 */
-	private addOrModify(requestMethod: AddOrModifyRequest,
-						address: Address): Observable<Address> {
+	addOrModify(requestMethod: AddOrModifyRequest,
+				address: Address): Observable<Address> {
 
-		return this.performRequest(requestMethod<AddOrModifyResponse>("/api/address", {address}, {
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {address}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		}))
 			.pipe(

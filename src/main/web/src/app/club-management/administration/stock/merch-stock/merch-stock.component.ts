@@ -20,6 +20,8 @@ import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Subscription} from "rxjs/Subscription";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
 import {of} from "rxjs/observable/of";
+import {PageRequest} from "../../../../shared/model/api/page-request";
+import {Sort} from "../../../../shared/model/api/sort";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -122,9 +124,9 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 			this.subscription.unsubscribe();
 		}
 
-		this.subscription = this.eventService.search("", EventType.merch)
+		this.subscription = this.eventService.getByEventType(EventType.merch, PageRequest.first(), Sort.none())
 			.subscribe(it => {
-				this._merchList$.next([...it]);
+				this._merchList$.next([...it.content]);
 			});
 	}
 
@@ -142,11 +144,11 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 					}
 
 					return forkJoin(
-						...merch.map(merchItem => this.stockService.getByEventId(merchItem.id)
+						...merch.map(merchItem => this.stockService.getByEventId(merchItem.id, PageRequest.first(), Sort.none())
 							.pipe(
 								map(stockList => ({
-									stockMap: this.stockService.toStockMap(stockList),
-									options: this.stockService.getStockOptions([stockList]),
+									stockMap: this.stockService.toStockMap(stockList.content),
+									options: this.stockService.getStockOptions([stockList.content]),
 									item: merchItem
 								}))
 							)

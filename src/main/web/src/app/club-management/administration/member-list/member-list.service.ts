@@ -9,7 +9,11 @@ import {UserService} from "../../../shared/services/api/user.service";
 import {Dimension, WindowService} from "../../../shared/services/window.service";
 import {memberListColumns} from "./member-list-columns";
 import {ExpandableTableColumn} from "../../../shared/utility/expandable-table/expandable-table-column";
-import {defaultIfEmpty} from "rxjs/operators";
+import {defaultIfEmpty, map} from "rxjs/operators";
+import {PageResponse} from "../../../shared/model/api/page";
+import {PageRequest} from "../../../shared/model/api/page-request";
+import {Filter} from "../../../shared/model/api/filter";
+import {Sort} from "../../../shared/model/api/sort";
 
 @Injectable()
 export class MemberListService extends ExpandableTableContainerService<User> {
@@ -32,7 +36,9 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 				),
 			[]);
 
-		this.init(this.userService.search(""));
+		this.init(this.userService.get(Filter.none(), PageRequest.first(), Sort.none())
+			.pipe(map(it => it.content))
+		);
 
 		this.windowService.dimension$
 			.subscribe(dimensions => this.onResize(dimensions));

@@ -3,37 +3,21 @@ import {User} from "../../model/user";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
-import {catchError, map, mergeMap, share, tap} from "rxjs/operators";
+import {catchError, map, mergeMap, tap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 
-interface UserApiResponse {
-	users: User[];
-}
 
 @Injectable()
 export class UserService extends ServletService<User> {
-	baseUrl = "/api/user";
-
-	constructor(private http: HttpClient) {
-		super();
+	constructor(protected http: HttpClient) {
+		super(http, "/api/user");
 	}
 
-	/**
-	 * Requested den User vom Server, welcher die gegebene ID besitzt
-	 * @param userId
-	 * @param options
-	 * @returns {Observable<T>}
-	 */
-	getById(userId: number, options?: any): Observable<User> {
-		const params = new HttpParams().set("id", "" + userId);
-		const request = this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(json => User.create().setProperties(json.users[0])),
-				share()
-			);
 
-		return this._cache.getById(params, request);
+	jsonToObject(json: any): User {
+		return User.create().setProperties(json);
 	}
+
 
 	/**
 	 *
@@ -42,29 +26,9 @@ export class UserService extends ServletService<User> {
 	 */
 	getByParticipantId(participantId: number): Observable<User> {
 		const params = new HttpParams().set("participantId", "" + participantId);
-		const request = this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(json => User.create().setProperties(json.users[0])),
-				share()
-			);
+		const request = this.getIdRequest(params);
 
 		return this._cache.getById(params, request);
-	}
-
-	/**
-	 * Requested alle Users die auf den search term matchen
-	 * @param searchTerm
-	 * @param options
-	 * @returns {Observable<T>}
-	 */
-	search(searchTerm: string, options?: any): Observable<User[]> {
-		const params = new HttpParams().set("searchTerm", searchTerm);
-		const request = this.performRequest(this.http.get<UserApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(json => json.users.map(jsonUser => User.create().setProperties(jsonUser)))
-			);
-
-		return this._cache.search(params, request);
 	}
 
 	/**
@@ -82,25 +46,6 @@ export class UserService extends ServletService<User> {
 				map(value => false),
 				catchError(error => of(true))
 			)
-	}
-
-	/**
-	 * Sendet ein User Objekt an den Server, welcher dieses zur Datenbank hinzufügen soll. Der Server
-	 * gibt dann das erstellte Objekt wieder an den Client zurück
-	 * @param user
-	 * @returns {Observable<T>}
-	 */
-	add(user: User): Observable<User> {
-		return this.addOrModify(this.http.post.bind(this.http), user);
-	}
-
-	/**
-	 *
-	 * @param user
-	 * @returns {Observable<User>}
-	 */
-	modify(user: User): Observable<User> {
-		return this.addOrModify(this.http.put.bind(this.http), user);
 	}
 
 	/**
@@ -123,8 +68,8 @@ export class UserService extends ServletService<User> {
 	 * @param user
 	 * @returns {Observable<T>}
 	 */
-	private addOrModify(requestMethod: AddOrModifyRequest,
-						user: User): Observable<User> {
+	addOrModify(requestMethod: AddOrModifyRequest,
+				user: User): Observable<User> {
 
 
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {user}, {

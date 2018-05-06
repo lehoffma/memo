@@ -1,91 +1,61 @@
 import {Injectable} from "@angular/core";
-import {AddOrModifyResponse, ServletService} from "./servlet.service";
+import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Order} from "../../model/order";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap, tap} from "rxjs/operators";
+import {mergeMap, tap} from "rxjs/operators";
 import {CapacityService} from "./capacity.service";
 import {StockService} from "./stock.service";
 import {Event} from "../../../shop/shared/model/event";
 import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
-
-interface OrderApiResponse {
-	orders: Order[];
-}
+import {Filter} from "../../model/api/filter";
+import {PageRequest} from "../../model/api/page-request";
+import {Sort} from "../../model/api/sort";
+import {Page} from "../../model/api/page";
 
 @Injectable()
 export class OrderService extends ServletService<Order> {
-	private baseUrl = "/api/order";
 	completedOrder: number = null;
 
-	constructor(public http: HttpClient,
+	constructor(protected http: HttpClient,
 				private stockService: StockService,
 				private capacityService: CapacityService) {
-		super();
+		super(http, "/api/order");
+	}
+
+
+	jsonToObject(json: any): Order {
+		return Order.create().setProperties(json);
 	}
 
 	/**
 	 *
 	 * @param {number} id
+	 * @param pageRequest
+	 * @param sort
 	 * @returns {Observable<Order>}
 	 */
-	getById(id: number): Observable<Order> {
-		const params = new HttpParams().set("id", "" + id);
-		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(response => response.orders[0]),
-				map(order => Order.create().setProperties(order))
-			);
-
-		return this._cache.getById(params, request);
-	}
-
-	/**
-	 *
-	 * @param {number} id
-	 * @returns {Observable<Order>}
-	 */
-	getByOrderedItemId(id: number): Observable<Order> {
-		const params = new HttpParams().set("orderedItemId", "" + id);
-		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(response => response.orders[0]),
-				map(order => Order.create().setProperties(order))
-			);
-
-		return this._cache.getById(params, request);
-	}
-
-	/**
-	 *
-	 * @param {string} searchTerm
-	 * @returns {Observable<Order[]>}
-	 */
-	search(searchTerm: string): Observable<Order[]> {
-		const params = new HttpParams().set("searchTerm", searchTerm);
-		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(response => response.orders),
-				map(orders => orders.map(order => Order.create().setProperties(order)))
-			);
-
-		return this._cache.search(params, request);
+	getByOrderedItemId(id: number, pageRequest: PageRequest, sort: Sort): Observable<Page<Order>> {
+		return this.get(
+			Filter.by({"orderedItemId": "" + id}),
+			pageRequest,
+			sort
+		);
 	}
 
 	/**
 	 *
 	 * @param {number} userId
+	 * @param pageRequest
+	 * @param sort
 	 * @returns {Observable<Order[]>}
 	 */
-	getByUserId(userId: number): Observable<Order[]> {
-		const params = new HttpParams().set("userId", "" + userId);
-		const request = this.performRequest(this.http.get<OrderApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(response => response.orders),
-				map(orders => orders.map(order => Order.create().setProperties(order)))
-			);
-
-		return this._cache.search(params, request);
+	getByUserId(userId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<Order>> {
+		return this.get(
+			Filter.by({"userId": "" + userId}),
+			pageRequest,
+			sort
+		);
 	}
 
 
@@ -155,5 +125,9 @@ export class OrderService extends ServletService<Order> {
 			.filter(item => item.type === typeToInteger(EventType.merch))
 			.map(item => item.id)
 			.forEach(id => this.stockService.invalidateValue(id));
+	}
+
+	addOrModify(requestMethod: AddOrModifyRequest, entry: Order, options?: any): Observable<Order> {
+		return undefined;
 	}
 }

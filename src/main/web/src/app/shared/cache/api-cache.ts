@@ -1,6 +1,7 @@
 import {Cache} from "./cache";
 import {HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
+import {Page} from "../model/api/page";
 
 interface ApiInnerCache<T> {
 	getById: {
@@ -14,7 +15,7 @@ interface ApiInnerCache<T> {
 	}
 }
 
-export class ApiCache<T> {
+export class BaseApiCache<T, U> {
 	private cache: ApiInnerCache<T> = {
 		getById: {},
 		search: {},
@@ -38,9 +39,9 @@ export class ApiCache<T> {
 	 * @param {Observable<T>} fallback
 	 * @returns {Observable<T[]>}
 	 */
-	search(params: HttpParams, fallback: Observable<T[]>): Observable<T[]> {
+	search(params: HttpParams, fallback: Observable<U>): Observable<U> {
 		const key = this.getKeyFromParams(params);
-		return (<Observable<T[]>>this.getFromCache("search", key, fallback));
+		return (<Observable<U>>this.getFromCache("search", key, fallback));
 	}
 
 	/**
@@ -49,9 +50,9 @@ export class ApiCache<T> {
 	 * @param {Observable<any>} fallback
 	 * @returns {Observable<any>}
 	 */
-	other<U>(params: HttpParams, fallback: Observable<U>): Observable<U> {
+	other<V>(params: HttpParams, fallback: Observable<V>): Observable<V> {
 		const key = this.getKeyFromParams(params);
-		return (<Observable<U>>this.getFromCache("other", key, fallback));
+		return (<Observable<V>>this.getFromCache("other", key, fallback));
 	}
 
 	/**
@@ -161,3 +162,13 @@ export class ApiCache<T> {
 		return "none";
 	}
 }
+
+
+export class ApiCache<T> extends BaseApiCache<T, T> {
+
+}
+
+export class PagedApiCache<T> extends BaseApiCache<T, Page<T>> {
+
+}
+

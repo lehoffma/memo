@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../../expandable-table/expandable-table-cell.component";
 import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
-	selector: 'td [memoEmailTableCellComponent]',
+	selector: 'td [memoEmailTableCellComponent], memo-email-table-cell',
 	template: `
 		<span class="action-text">{{data}}</span>
 		<a [href]="sanitizedEmail" mat-button color="accent">

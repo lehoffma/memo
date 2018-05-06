@@ -3,7 +3,7 @@ import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 import {Participant, ParticipantUser} from "../../../shop/shared/model/participant";
 import {UserService} from "./user.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {AddOrModifyResponse, ServletService} from "./servlet.service";
+import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
@@ -12,7 +12,6 @@ import {of} from "rxjs/observable/of";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, share, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {empty} from "rxjs/observable/empty";
 import {OrderService} from "./order.service";
 import {Order} from "../../model/order";
 import {PaymentMethod} from "../../../shop/checkout/payment/payment-method";
@@ -21,8 +20,11 @@ import {processInParallelAndWait} from "../../../util/observable-util";
 import {OrderStatus} from "../../model/order-status";
 import {CapacityService} from "./capacity.service";
 import {StockService} from "./stock.service";
-import {EMPTY} from "rxjs/internal/observable/empty";
 import {DiscountService} from "../../../shop/shared/services/discount.service";
+import {Filter} from "../../model/api/filter";
+import {PageRequest} from "../../model/api/page-request";
+import {Sort} from "../../model/api/sort";
+import {Page, PageResponse} from "../../model/api/page";
 
 interface ParticipantApiResponse {
 	orderedItems: Participant[]
@@ -30,30 +32,14 @@ interface ParticipantApiResponse {
 
 @Injectable()
 export class OrderedItemService extends ServletService<OrderedItem> {
-	baseUrl = "/api/orderedItem";
-
-	constructor(private http: HttpClient,
+	constructor(protected http: HttpClient,
 				private capacityService: CapacityService,
 				private discountService: DiscountService,
 				private stockService: StockService,
 				private orderService: OrderService,
 				private userService: UserService) {
-		super();
+		super(http, "/api/orderedItem");
 
-	}
-
-	getById(id: number, ...args: any[]): Observable<Participant> {
-		const params = new HttpParams().set("id", "" + id);
-		const request = this.http.get<ParticipantApiResponse>(this.baseUrl, {params})
-			.pipe(
-				map(it => it.orderedItems[0])
-			);
-
-		return this._cache.getById(params, request);
-	}
-
-	search(searchTerm: string, ...args: any[]): Observable<Participant[]> {
-		return EMPTY;
 	}
 
 	add(orderedItem: OrderedItem): Observable<OrderedItem> {
@@ -73,6 +59,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 				tap(it => this.updateCapacities(it))
 			)
 	}
+
 
 	addParticipant(participant: ParticipantUser, eventType: EventType, eventId: number): Observable<Participant> {
 		let {user, ...newParticipant} = participant;
@@ -196,49 +183,44 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	 *
 	 * @param eventId
 	 * @param eventType
+	 * @param pageRequest
+	 * @param sort
 	 * @returns {any}
 	 */
-	getParticipantIdsByEvent(eventId: number, eventType?: EventType): Observable<Participant[]> {
-		if (eventType === EventType.merch) {
-			return of([]);
-		}
-
-		const params = new HttpParams().set("eventId", "" + eventId)
-			.set("type", "" + typeToInteger(eventType));
-
-		const request = this.performRequest(
-			this.http.get<ParticipantApiResponse>(this.baseUrl, {params})
-		).pipe(
-			map(response => response.orderedItems),
-			//convert the observable to a hot observable, i.e. immediately perform the http request
-			//instead of waiting for someone to subscribe
-			share()
+	getParticipantIdsByEvent(eventId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<Participant>> {
+		return this.get(
+			Filter.by({"eventId": "" + eventId}),
+			pageRequest,
+			sort
 		);
-
-		return this._cache.search(params, request);
 	}
 
 	/**
 	 *
 	 * @param eventId
-	 * @param eventType
+	 * @param pageRequest
+	 * @param sort
+	 * @param sort
 	 */
-	getParticipantUsersByEvent(eventId: number, eventType?: EventType): Observable<ParticipantUser[]> {
-		return this.getParticipantIdsByEvent(eventId, eventType)
+	getParticipantUsersByEvent(eventId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<ParticipantUser>> {
+		return this.getParticipantIdsByEvent(eventId, pageRequest, sort)
 			.pipe(
 				mergeMap(participants => {
-					if (!participants || participants.length === 0) {
-						return of([]);
-					}
-
-					return combineLatest(
-						...participants.map(participant => this.userService.getByParticipantId(participant.id)
-							.pipe(
-								map(user => ({
-									...participant,
-									user,
-								}))
-							)))
+					return of(PageResponse.empty());
+					// if (!participants || participants.empty) {
+					// 	return of(PageResponse.empty());
+					// }
+					//
+					// //todo
+					//
+					// return combineLatest(
+					// 	...participants.map(participant => this.userService.getByParticipantId(participant.id)
+					// 		.pipe(
+					// 			map(user => ({
+					// 				...participant,
+					// 				user,
+					// 			}))
+					// 		)))
 				})
 			)
 	}
@@ -284,5 +266,9 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 
 	invalidateCache() {
 		this._cache.invalidateAll();
+	}
+
+	addOrModify(requestMethod: AddOrModifyRequest, entry: OrderedItem, options?: any): Observable<OrderedItem> {
+		return undefined;
 	}
 }

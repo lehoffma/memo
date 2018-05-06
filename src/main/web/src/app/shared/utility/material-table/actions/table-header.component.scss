@@ -1,0 +1,37 @@
+@import "mixins";
+@import "theme";
+@import "~@angular/material/theming";
+
+.expandable-table-row {
+	height: 56px;
+	background-color: white;
+}
+
+.expandable-table-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-left: 15px;
+	margin-right: 0;
+	@include transition(background-color 200ms ease-in);
+
+	.expandable-table-header-title {
+		width: 70%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		font-size: 1.2rem;
+
+	}
+
+	.expandable-table-actions {
+		mat-icon {
+			color: rgba(0, 0, 0, 0.54);
+		}
+	}
+
+	&.items-selected-header {
+		background-color: mat-color($accent, 50)
+	}
+
+}

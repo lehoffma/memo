@@ -1,0 +1,28 @@
+
+<ng-container [ngSwitch]="column.type || ''">
+	<ng-container *ngSwitchCase="'date'">
+		{{column.cell(element) | dateFormat}}
+	</ng-container>
+
+	<memo-picture-table-cell [data]="column.cell(element)"
+							 [images]="element.images || [column.cell(element)]"
+							 *ngSwitchCase="'image'">
+	</memo-picture-table-cell>
+
+	<memo-gender-table-cell [data]="column.cell(element)"
+							*ngSwitchCase="'gender'">
+
+	</memo-gender-table-cell>
+
+	<memo-clubrole-table-cell [data]="column.cell(element)"
+							  *ngSwitchCase="'clubRole'"></memo-clubrole-table-cell>
+
+	<memo-boolean-checkmark-cell [data]="!!column.cell(element)" *ngSwitchCase="'boolean'">
+	</memo-boolean-checkmark-cell>
+
+
+	<!--default: just show the text-->
+	<ng-container *ngSwitchDefault>
+		{{column.cell(element)}}
+	</ng-container>
+</ng-container>

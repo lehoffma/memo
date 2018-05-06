@@ -1,0 +1,34 @@
+
+<button mat-icon-button type="button"
+		[disabled]="!permissions?.Bearbeiten && !permissions?.Loeschen && !(rowActions.length > 2)"
+		(click)="$event.stopPropagation()"
+		[matMenuTriggerFor]="menu">
+	<mat-icon>more_vert</mat-icon>
+
+</button>
+<mat-menu #menu="matMenu">
+	<div *ngFor="let action of rowActions">
+		<a *ngIf="action?.link !== undefined"
+		   href="{{action?.link(element)}}"
+		   mat-menu-item
+		   [disabled]="actionIsDisabled(element, action)">
+			<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+			<span>{{action?.name}}</span>
+		</a>
+		<a *ngIf="action?.route !== undefined"
+		   routerLink="{{action?.route(element)}}"
+		   mat-menu-item
+		   [disabled]="actionIsDisabled(element, action)">
+			<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+			<span>{{action?.name}}</span>
+		</a>
+		<button *ngIf="!action?.link && !action?.route" mat-menu-item
+				type="button"
+				[disabled]="actionIsDisabled(element, action)"
+				(click)="actionCallback(action?.name, [element])">
+			<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+			<span>{{action?.name}}</span>
+
+		</button>
+	</div>
+</mat-menu>

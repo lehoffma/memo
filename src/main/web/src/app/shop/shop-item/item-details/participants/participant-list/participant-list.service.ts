@@ -11,7 +11,7 @@ import {EventType} from "../../../../shared/model/event-type";
 import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 import {ExpandableTableColumn} from "../../../../../shared/utility/expandable-table/expandable-table-column";
 import {OrderStatusTableCellComponent} from "../order-status-table-cell.component";
-import {BooleanCheckMarkCellComponent} from "../../../../../club-management/administration/member-list/member-list-table-cells/boolean-checkmark-cell.component";
+import {BooleanCheckMarkCellComponent} from "../../../../../shared/utility/material-table/cells/boolean-checkmark-cell.component";
 import {FullNameTableCellComponent} from "./full-name-table-cell.component";
 import {Dimension, WindowService} from "../../../../../shared/services/window.service";
 import {Observable} from "rxjs/Observable";

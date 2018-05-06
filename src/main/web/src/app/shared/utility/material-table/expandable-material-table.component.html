@@ -1,0 +1,80 @@
+<div class="loading-shade" *ngIf="dataSource.isLoading$ | async">
+	<div class="loader"></div>
+</div>
+
+<memo-actions-header-cell [selection]="selection"
+						  [title]="title"
+						  [permissions]="permissions"
+						  (onAction)="onAction.emit($event)">
+
+</memo-actions-header-cell>
+<mat-table #table [dataSource]="dataSource" matSort (matSortChange)="dataSource.sort = $event">
+	<ng-container matColumnDef="{{column.columnDef}}" *ngFor="let column of columns">
+		<mat-header-cell *matHeaderCellDef mat-sort-header> {{column.header}}</mat-header-cell>
+		<mat-cell *matCellDef="let element">
+			<memo-table-cell-factory [column]="column" [element]="element">
+
+			</memo-table-cell-factory>
+		</mat-cell>
+	</ng-container>
+
+	<ng-container matColumnDef="select">
+		<mat-header-cell *matHeaderCellDef class="select-cell">
+			<mat-checkbox (change)="$event ? masterToggle() : null"
+						  [checked]="selection.hasValue() && isAllSelected()"
+						  [indeterminate]="selection.hasValue() && !isAllSelected()">
+			</mat-checkbox>
+		</mat-header-cell>
+		<mat-cell *matCellDef="let row" class="select-cell">
+			<mat-checkbox (click)="$event.stopPropagation()"
+						  (change)="$event ? selection.toggle(row) : null"
+						  [checked]="selection.isSelected(row)">
+			</mat-checkbox>
+		</mat-cell>
+	</ng-container>
+
+	<ng-container matColumnDef="actions">
+		<mat-header-cell *matHeaderCellDef class="action-cell">
+		</mat-header-cell>
+		<mat-cell *matCellDef="let element" class="action-cell">
+			<memo-actions-cell [rowActions]="rowActions"
+							   [element]="element"
+							   [selection]="selection"
+							   [permissions]="permissions"
+							   (onAction)="onAction.emit($event)">
+
+			</memo-actions-cell>
+		</mat-cell>
+	</ng-container>
+
+
+	<ng-container matColumnDef="expandedDetail">
+		<mat-cell *matCellDef="let detail" class="expanded-container">
+			<div *ngFor="let row of expandedRows" class="detail-row">
+				<span class="label">
+					{{row.header}}
+				</span>
+				<memo-table-cell-factory [column]="row" [element]="detail.element">
+
+				</memo-table-cell-factory>
+			</div>
+		</mat-cell>
+	</ng-container>
+
+
+	<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+	<mat-row *matRowDef="let row; columns: displayedColumns;"
+			 matRipple
+			 class="element-row"
+			 [class.expanded]="expansionSelection.isSelected(row)"
+			 (click)="expansionSelection.toggle(row)"></mat-row>
+	<mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
+			 [@detailExpand]="expansionSelection.isSelected(row.element) ? 'expanded' : 'collapsed'"
+			 style="overflow: hidden">
+	</mat-row>
+</mat-table>
+<mat-paginator #paginator
+			   [pageSize]="10"
+			   [length]="dataSource.dataLength"
+			   [pageSizeOptions]="[5, 10, 20, 50]"
+			   [showFirstLastButtons]="true"></mat-paginator>

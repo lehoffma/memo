@@ -8,10 +8,11 @@ import {SortingOption} from "../../shared/model/sorting-option";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {empty} from "rxjs/observable/empty";
-import {mergeMap, map, catchError, defaultIfEmpty} from "rxjs/operators";
+import {catchError, defaultIfEmpty, map, mergeMap} from "rxjs/operators";
 import {_throw} from "rxjs/observable/throw";
 import {EMPTY} from "rxjs/internal/observable/empty";
+import {PageRequest} from "../../shared/model/api/page-request";
+import {Sort, SortDirectionEnum} from "../../shared/model/api/sort";
 
 @Component({
 	selector: "memo-order-history",
@@ -42,23 +43,27 @@ export class OrderHistoryComponent implements OnInit {
 	});
 
 	orders$: Observable<Order[]> = combineLatest(
-		this.sortBy$,
-		this.loginService
-			.accountObservable
-			.pipe(
-				mergeMap(userId => userId === null
+		this.sortBy$.pipe(
+			mergeMap((sortBy: ColumnSortingEvent<any>) => this.loginService
+				.accountObservable.pipe(
+					mergeMap(userId => userId === null
 						? _throw(new Error("User is not logged in"))
-						: this.orderService.getByUserId(userId)
-				)
-			)
+						: this.orderService.getByUserId(
+							userId,
+							PageRequest.first(),
+							Sort.by(
+								//todo
+								sortBy.descending ?
+									SortDirectionEnum.DESCENDING :
+									SortDirectionEnum.ASCENDING,
+								sortBy.key
+							)
+						)
+					)
+				))
+		)
 	)
 		.pipe(
-			map(([sortBy, orders]) => {
-				if (sortBy.key === "timeStamp") {
-					return [...orders.sort(dateSortingFunction<Order>(obj => obj.timeStamp, sortBy.descending))];
-				}
-				return [...orders.sort(attributeSortingFunction<Order>(sortBy.key, sortBy.descending))];
-			}),
 			catchError(error => {
 				console.error(error);
 				return EMPTY;

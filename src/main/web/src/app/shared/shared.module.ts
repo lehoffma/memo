@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {ExpandableTableModule} from "./utility/expandable-table/expandable-table.module";
-import {DateFormatPipe} from "./pipes/date-format.pipe";
 import {MultiLevelSelectModule} from "./utility/multi-level-select/multi-level-select.module";
 import {EventCalendarComponent} from "./utility/event-calendar/event-calendar.component";
 import {CommonModule} from "@angular/common";
@@ -41,6 +40,8 @@ import {OrderRendererComponent} from "./renderers/order-renderer/order-renderer.
 import {MultiImageUploadComponent} from "./utility/multi-image-upload/multi-image-upload.component";
 import {MultiImageContainerComponent} from "./utility/multi-image-container/multi-image-container.component";
 import {ErrorPageComponent} from "./utility/error-page/error-page.component";
+import {ExpandableMaterialTableModule} from "./utility/material-table/expandable-material-table.module";
+import {SharedPipesModule} from "./pipes/shared-pipes.module";
 
 const forms = [
 	DisableIfDirective,
@@ -70,13 +71,15 @@ const forms = [
 		ReactiveFormsModule,
 		ShareButtonsModule,
 		PasswordStrengthBarModule,
+		//todo remove
 		ExpandableTableModule,
+		ExpandableMaterialTableModule,
 		MemoMaterialModule,
 		MultiLevelSelectModule,
-		CalendarModule
+		CalendarModule,
+		SharedPipesModule
 	],
 	declarations: [
-		DateFormatPipe,
 		EventCalendarComponent,
 
 		ConfirmationDialogComponent,
@@ -101,19 +104,18 @@ const forms = [
 		...forms,
 
 		EventAutocompleteComponent,
-
 	],
 	exports: [
 		ExpandableTableModule,
 		MultiLevelSelectModule,
+		ExpandableMaterialTableModule,
+		SharedPipesModule,
 
 		EventCalendarComponent,
 
 		BadgeComponent,
 		PageNotFoundComponent,
 		ErrorPageComponent,
-
-		DateFormatPipe,
 
 		AutoSizeTextAreaDirective,
 

@@ -1,5 +1,5 @@
 export enum Gender {
-	FEMALE = <any> "Weiblich",
-	MALE = <any> "Männlich",
-	OTHER = <any> "Keine Angabe"
+	FEMALE = "Weiblich",
+	MALE = "Männlich",
+	OTHER = "Keine Angabe"
 }

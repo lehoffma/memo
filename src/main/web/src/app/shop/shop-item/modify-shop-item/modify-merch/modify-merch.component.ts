@@ -8,6 +8,9 @@ import {Merchandise} from "../../../shared/model/merchandise";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {MerchStock} from "../../../shared/model/merch-stock";
 import {ModifyItemService} from "../modify-item.service";
+import {PageRequest} from "../../../../shared/model/api/page-request";
+import {Sort} from "../../../../shared/model/api/sort";
+import {map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-modify-merch",
@@ -35,7 +38,8 @@ export class ModifyMerchComponent implements OnInit {
 		this.formGroup.get("permissions").get("expectedReadRole").patchValue(previousValue.expectedReadRole);
 		this.formGroup.get("permissions").get("expectedWriteRole").patchValue(previousValue.expectedWriteRole);
 		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);
-		this.stockService.getByEventId(previousValue.id)
+		this.stockService.getByEventId(previousValue.id, PageRequest.first(), Sort.none())
+			.pipe(map(it => it.content))
 			.subscribe(stock => this._previousStock = stock);
 	}
 

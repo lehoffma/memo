@@ -3,7 +3,11 @@ import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Comment} from "../../../shop/shared/model/comment";
 import {Observable} from "rxjs/Observable";
-import {map, mergeMap, tap} from "rxjs/operators";
+import {mergeMap, tap} from "rxjs/operators";
+import {Filter} from "../../model/api/filter";
+import {PageRequest} from "../../model/api/page-request";
+import {Sort} from "../../model/api/sort";
+import {Page} from "../../model/api/page";
 
 interface CommentApiResponse {
 	comments: Comment[];
@@ -11,56 +15,27 @@ interface CommentApiResponse {
 
 @Injectable()
 export class CommentService extends ServletService<Comment> {
-	baseUrl = "/api/comment";
-
-	constructor(private http: HttpClient) {
-		super();
+	constructor(protected http: HttpClient) {
+		super(http, "/api/comment");
 	}
 
-	/**
-	 *
-	 * @param id
-	 */
-	getById(id: number): Observable<Comment> {
-		const params = new HttpParams().set("id", "" + id);
-		const request = this.performRequest(this.http.get<CommentApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(response => response.comments),
-				map(json => Comment.create().setProperties(json[0]))
-			);
 
-		return this._cache.getById(params, request);
+	jsonToObject(json: any): Comment {
+		return Comment.create().setProperties(json);
 	}
 
 	/**
 	 *
 	 * @param eventId
+	 * @param pageRequest
 	 * @returns {Observable<Comment[]>}
 	 */
-	getByEventId(eventId: number): Observable<Comment[]> {
-		const params = new HttpParams().set("eventId", "" + eventId);
-		const request = this.performRequest(this.http.get<CommentApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(response => response.comments),
-				map(commentJson => commentJson.map(json => Comment.create().setProperties(json)))
-			);
-
-		return this._cache.search(params, request);
-	}
-
-	/**
-	 *
-	 * @param searchTerm
-	 */
-	search(searchTerm: string): Observable<Comment[]> {
-		const params = new HttpParams().set("searchTerm", "" + searchTerm);
-		const request = this.performRequest(this.http.get<CommentApiResponse>(this.baseUrl, {params}))
-			.pipe(
-				map(response => response.comments),
-				map(comments => comments.map(json => Comment.create().setProperties(json)))
-			);
-
-		return this._cache.search(params, request);
+	getByEventId(eventId: number, pageRequest: PageRequest): Observable<Page<Comment>> {
+		return this.get(
+			Filter.by({"eventId": "" + eventId}),
+			pageRequest,
+			Sort.none()
+		)
 	}
 
 	/**
@@ -80,23 +55,6 @@ export class CommentService extends ServletService<Comment> {
 			);
 	}
 
-	/**
-	 *
-	 * @param comment
-	 * @param parentId
-	 */
-	add(comment: Comment): Observable<Comment> {
-		return this.addOrModify(this.http.post.bind(this.http), comment);
-	}
-
-	/**
-	 *
-	 * @param comment
-	 * @param parentId
-	 */
-	modify(comment: Comment): Observable<Comment> {
-		return this.addOrModify(this.http.put.bind(this.http), comment);
-	}
 
 	/**
 	 *

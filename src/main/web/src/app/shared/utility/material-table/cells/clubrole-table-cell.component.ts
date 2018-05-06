@@ -1,9 +1,9 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
-import {ClubRole} from "../../../../shared/model/club-role";
+import {ExpandableTableCellComponent} from "../../expandable-table/expandable-table-cell.component";
+import {ClubRole} from "../../../model/club-role";
 
 @Component({
-	selector: "td [clubRoleTableCell]",
+	selector: "td [clubRoleTableCell],memo-clubrole-table-cell",
 	template: `
 		<span class="data-as-icon" title="{{data}}"><mat-icon>{{icon}}</mat-icon></span>
 		<span class="data-as-text {{data}}">{{data}}</span>

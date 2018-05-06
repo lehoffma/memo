@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
-import {Gender} from "../../../../shared/model/gender";
+import {ExpandableTableCellComponent} from "../../expandable-table/expandable-table-cell.component";
+import {Gender} from "../../../model/gender";
 
 @Component({
-	selector: "td [genderTableCell]",
+	selector: "td [genderTableCell], memo-gender-table-cell",
 	template: `
 		<span class="gender-container" [ngClass]="{'female': data === genderEnum.FEMALE}">{{germanData}}</span>
 	`,

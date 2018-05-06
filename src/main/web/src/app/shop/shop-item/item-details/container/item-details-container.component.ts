@@ -82,7 +82,7 @@ export class ItemDetailsContainerComponent implements OnInit {
 
 	@Input() overviewKeys: Observable<EventOverviewKey[]> = of([]);
 
-	constructor(private mdDialog: MatDialog,
+	constructor(private matDialog: MatDialog,
 				private orderService: OrderService,
 				private responsibilityService: ResponsibilityService,
 				private concludeEventService: ConcludeEventService,
@@ -95,7 +95,7 @@ export class ItemDetailsContainerComponent implements OnInit {
 	showDetailedImage(selectedImage: string) {
 		this.images$.pipe(take(1))
 			.subscribe(images => {
-				this.mdDialog.open(ItemImagePopupComponent, {
+				this.matDialog.open(ItemImagePopupComponent, {
 					data: {
 						images: images,
 						imagePath: selectedImage
