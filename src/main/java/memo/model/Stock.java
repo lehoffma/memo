@@ -1,7 +1,10 @@
 package memo.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.serialization.ShopItemIdDeserializer;
+import memo.serialization.StockAmountDeserializer;
+import memo.serialization.StockAmountSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -60,6 +63,8 @@ public class Stock implements Serializable {
 
     private String size = "oneSize";
 
+    @JsonDeserialize(using = StockAmountDeserializer.class)
+    @JsonSerialize(using = StockAmountSerializer.class)
     private Integer amount = 0;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)

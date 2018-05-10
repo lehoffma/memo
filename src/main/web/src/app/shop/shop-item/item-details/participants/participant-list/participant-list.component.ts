@@ -1,11 +1,17 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output} from "@angular/core";
+import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ParticipantUser} from "../../../../shared/model/participant";
-import {RowActionType} from "../../../../../shared/utility/expandable-table/row-action-type";
-import {map} from "rxjs/operators";
+import {RowActionType} from "../../../../../shared/utility/material-table/util/row-action-type";
 import {Subscription} from "rxjs/Subscription";
 import {MemberListRowAction} from "../../../../../club-management/administration/member-list/member-list-row-actions";
 import {ParticipantListService} from "./participant-list.service";
-import {RowAction} from "../../../../../shared/utility/expandable-table/expandable-table.component";
+import {RowAction} from "../../../../../shared/utility/material-table/util/row-action";
+import {ParticipantDataSource} from "./participant-data-source";
+import {UserService} from "../../../../../shared/services/api/user.service";
+import {TableColumn} from "../../../../../shared/utility/material-table/expandable-material-table.component";
+import {startWith} from "rxjs/operators";
+import {ResponsiveColumnsHelper} from "../../../../../shared/utility/material-table/responsive-columns.helper";
+import {BreakpointObserver} from "@angular/cdk/layout";
+import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 
 
 @Component({
@@ -49,21 +55,34 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 		}
 	];
 
-
-	isExpandable$ = this.participantListService.expandedRowKeys$
-		.pipe(map(keys => keys.length > 0));
+	columns: TableColumn<ParticipantUser>[] = [
+		{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
+		{columnDef: "status", header: "Status", cell: element => element.status},
+		{columnDef: "isDriver", header: "Ist Fahrer", cell: element => element.isDriver, type: "boolean"},
+		{columnDef: "needsTicket", header: "Braucht Ticket", cell: element => element.needsTicket, type: "boolean"}
+	];
+	displayedColumns$ = this.getDisplayedColumns();
 
 	subscriptions: Subscription[] = [];
 
-	@Output() participantsChanged: EventEmitter<ParticipantUser[]> = new EventEmitter<ParticipantUser[]>();
+	dataSource = new ParticipantDataSource(this.orderedItemService, this.userService);
 
-	constructor(public participantListService: ParticipantListService) {
-		this.subscriptions.push(
-			this.participantListService.participantsChanged.subscribe(value => this.participantsChanged.emit(value))
-		);
+	constructor(public participantListService: ParticipantListService,
+				public orderedItemService: OrderedItemService,
+				public breakpointObserver: BreakpointObserver,
+				public userService: UserService) {
+		this.participantListService.dataSource = this.dataSource;
 	}
 
 	ngOnInit() {
+	}
+
+	getDisplayedColumns() {
+		const columnHelper = new ResponsiveColumnsHelper(this.columns, this.breakpointObserver);
+		columnHelper.addPixelBreakpoint(500, "isDriver");
+		columnHelper.addPixelBreakpoint(700, "needsTicket");
+		return columnHelper.build()
+			.pipe(startWith([]));
 	}
 
 	ngOnDestroy(): void {

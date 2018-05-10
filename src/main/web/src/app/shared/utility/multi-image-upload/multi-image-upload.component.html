@@ -18,18 +18,31 @@
 <!--todo drag-n-dropable list/table of currently uploaded images with a big "upload" or "browse" button at the bottom-->
 
 <div class="upload-container" *ngIf="limit > 1">
-	<memo-expandable-table [title]="'Hochgeladene Bilder' + (isFinite(limit) ? (' (max. ' + limit + ')') : '')"
-						   [data]="multiImageUploadService.data$ | async"
-						   [rowActions]="rowActions"
-						   [expandable]="false"
-						   [columnKeys]="columnKeys"
-						   [pagination]="false"
-						   (onSort)="multiImageUploadService.onSort($event)"
-						   (onAction)="multiImageUploadService.handleTableAction($event)"
+	<!--<memo-expandable-table [title]="'Hochgeladene Bilder' + (isFinite(limit) ? (' (max. ' + limit + ')') : '')"-->
+						   <!--[data]="multiImageUploadService.data$ | async"-->
+						   <!--[rowActions]="rowActions"-->
+						   <!--[expandable]="false"-->
+						   <!--[columnKeys]="columnKeys"-->
+						   <!--[pagination]="false"-->
+						   <!--(onSort)="multiImageUploadService.onSort($event)"-->
+						   <!--(onAction)="multiImageUploadService.handleTableAction($event)"-->
 
-	>
+	<!--&gt;-->
 
-	</memo-expandable-table>
+	<!--</memo-expandable-table>-->
+
+	<memo-expandable-material-table
+		[dataService]="inMemoryDataService"
+		[title]="'Hochgeladene Bilder' + (isFinite(limit) ? (' (max. ' + limit + ')') : '')"
+		[rowActions]="rowActions"
+		[columns]="columns"
+		[displayedColumns]="displayedColumns"
+		[withSelection]="true"
+
+		(onAction)="handleTableAction($event)">
+
+	</memo-expandable-material-table>
+
 </div>
 
 

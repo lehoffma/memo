@@ -9,7 +9,7 @@ import {EntryCategoryService} from "../../../../shared/services/api/entry-catego
 import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/modify-item-event";
 import {EntryCategory} from "../../../../shared/model/entry-category";
 import {Observable} from "rxjs/Observable";
-import {filter, mergeMap, take} from "rxjs/operators";
+import {filter, map, mergeMap, take} from "rxjs/operators";
 import {Entry} from "../../../../shared/model/entry";
 import {ModifyItemService} from "../modify-item.service";
 
@@ -70,7 +70,9 @@ export class ModifyEntryComponent implements OnInit {
 
 
 	ModifyType = ModifyType;
-	entryCategories$ = this.entryCategoryService.getCategories();
+	entryCategories$ = this.entryCategoryService.getCategories().pipe(
+		map(it => it.content)
+	);
 
 
 	constructor(private location: Location,
@@ -98,7 +100,6 @@ export class ModifyEntryComponent implements OnInit {
 	compareCategories(value1: EntryCategory, value2: EntryCategory) {
 		return value1 && value2 && value1.id === value2.id;
 	}
-
 
 
 	cancel() {

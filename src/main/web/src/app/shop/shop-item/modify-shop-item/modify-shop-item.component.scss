@@ -77,7 +77,7 @@
 		}
 	}
 
-	/deep/ mat-form-field {
+	/deep/ mat-form-field:not(.mat-paginator-page-size-select) {
 		width: 100%;
 	}
 

@@ -3,7 +3,6 @@ import {Tour} from "../../../shared/model/tour";
 import {ActivatedRoute, Router} from "@angular/router";
 import {EventOverviewKey} from "../container/overview/event-overview-key";
 import {EventService} from "../../../../shared/services/api/event.service";
-import {EventType} from "../../../shared/model/event-type";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
@@ -13,13 +12,17 @@ import {Comment} from "../../../shared/model/comment";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {ParticipantUser} from "../../../shared/model/participant";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {catchError, filter, first, map, mergeMap} from "rxjs/operators";
+import {catchError, filter, map, mergeMap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {_throw} from "rxjs/observable/throw";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {Observable} from "rxjs/Observable";
 import {Address} from "../../../../shared/model/address";
 import {EMPTY} from "rxjs/internal/observable/empty";
+import {PageRequest} from "../../../../shared/model/api/page-request";
+import {Sort} from "../../../../shared/model/api/sort";
+import {PagedDataSource} from "../../../../shared/utility/material-table/paged-data-source";
+import {Filter} from "../../../../shared/model/api/filter";
 
 
 @Component({
@@ -101,7 +104,8 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 	participants$ = this._tour$
 		.pipe(
 			filter(party => party.id !== -1),
-			mergeMap((tour: Tour) => this.participantService.getParticipantUsersByEvent(tour.id, EventType.tours)),
+			mergeMap((tour: Tour) => this.participantService.getParticipantUsersByEvent(tour.id, PageRequest.first(), Sort.none())),
+			map(it => it.content),
 			//remove duplicate entries
 			map((participants: ParticipantUser[]) => participants.reduce((acc: ParticipantUser[], user) => {
 				const index = acc.find(it => it.user.id === user.user.id);
@@ -122,13 +126,17 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 			})
 		);
 
-	comments$ = this._tour$
-		.pipe(
-			filter(tour => tour.id >= 0),
-			mergeMap(tour => this.commentService.getByEventId(tour.id))
-		);
+	//todo introduce paging to comments
+	page$ = new BehaviorSubject(PageRequest.first());
+	commentDataSource: PagedDataSource = new PagedDataSource(this.commentService);
+	filter$ = this._tour$.pipe(
+		filter(tour => tour.id >= 0),
+		map(tour => Filter.by({"eventId": "" + tour.id}))
+	);
 
-	commentsSubject$ = new BehaviorSubject<Comment[]>([]);
+	comments$ = this.commentDataSource.connect().pipe(
+		map((it: Comment[]) => it.filter(comment => Comment.isComment(comment)))
+	);
 
 	subscriptions = [];
 
@@ -139,9 +147,10 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 				private commentService: CommentService,
 				private addressService: AddressService,
 				private eventService: EventService) {
-		this.subscriptions.push(
-			this.comments$.subscribe(this.commentsSubject$)
-		);
+		this.commentDataSource.isExpandable = false;
+		this.commentDataSource.filter$ = this.filter$;
+		this.commentDataSource.setPage(this.page$);
+
 		this.subscriptions.push(
 			this.activatedRoute.params
 				.pipe(
@@ -156,6 +165,7 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy(): void {
 		this.subscriptions.forEach(it => it.unsubscribe());
+		this.commentDataSource.disconnect(null);
 	}
 
 	/**
@@ -165,12 +175,8 @@ export class TourDetailComponent implements OnInit, OnDestroy {
 	 */
 	deleteComment({comment, parentId}: { comment: Comment, parentId: number }) {
 		this.commentService.remove(comment.id, parentId)
-			.pipe(
-				mergeMap(() => this._tour$),
-				filter(tour => tour.id >= 0),
-				mergeMap(tour => this.commentService.getByEventId(tour.id)),
-				first()
-			)
-			.subscribe(this.commentsSubject$);
+			.subscribe(() => {
+				this.commentDataSource.reload();
+			});
 	}
 }

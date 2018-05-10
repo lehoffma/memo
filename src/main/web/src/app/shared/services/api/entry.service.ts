@@ -11,6 +11,7 @@ import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Filter} from "../../model/api/filter";
 import {Page} from "../../model/api/page";
+import {ParamMap} from "@angular/router";
 
 interface EntryApiResponse {
 	entries: Entry[];
@@ -54,6 +55,11 @@ export class EntryService extends ServletService<Entry> {
 	}
 
 	//todo get by filter options
+
+	paramMapToFilter(queryParamMap: ParamMap): Filter {
+		const allowedParameters = ["minDate", "maxDate", "eventId", "entryType"];
+		return this.toFilter(queryParamMap, allowedParameters);
+	}
 
 	/**
 	 *

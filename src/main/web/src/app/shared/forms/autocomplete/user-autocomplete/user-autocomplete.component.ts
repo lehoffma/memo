@@ -3,9 +3,14 @@ import {User} from "../../../model/user";
 import {FormControl, Validators} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
 import {EventUtilityService} from "../../../services/event-utility.service";
-import {filter, map, mergeMap, startWith} from "rxjs/operators";
+import {debounceTime, map, mergeMap, startWith} from "rxjs/operators";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {MatInput} from "@angular/material";
+import {Filter} from "../../../model/api/filter";
+import {UserService} from "../../../services/api/user.service";
+import {combineLatest} from "rxjs";
+import {PageRequest} from "../../../model/api/page-request";
+import {Sort} from "../../../model/api/sort";
 
 @Component({
 	selector: "memo-user-autocomplete",
@@ -13,14 +18,22 @@ import {MatInput} from "@angular/material";
 	styleUrls: ["./user-autocomplete.component.scss"]
 })
 export class UserAutocompleteComponent implements OnInit, OnDestroy {
-	_userList$ = new BehaviorSubject<User[]>([]);
-	userList$ = this._userList$
-		.pipe(
-			filter(userList => userList !== undefined && userList !== null)
-		);
+	autocompleteFormControl = new FormControl();
+	filteredOptions: Observable<User[]>;
 
-	@Input() set userList(userList: User[]) {
-		this._userList$.next(userList);
+	_additionalFilter$ = new BehaviorSubject<Filter>(Filter.none());
+
+	userList$ = this.userService.get(Filter.none(), PageRequest.first(), Sort.none())
+		.pipe(map(it => it.content));
+
+	@Input() set filter(filter: Filter) {
+		this._additionalFilter$.next(filter);
+	}
+
+	blackListedUsers$ = new BehaviorSubject<User[]>([]);
+
+	@Input() set blackListedUsers(userList: User[]) {
+		this.blackListedUsers$.next(userList);
 	}
 
 	@Input() set required(required: boolean) {
@@ -55,13 +68,11 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 
 
 	@ViewChild("userInput") userInput: MatInput;
-	autocompleteFormControl = new FormControl();
-	filteredOptions: Observable<User[]>;
 
 
 	subscriptions = [];
 
-	constructor() {
+	constructor(private userService: UserService) {
 	}
 
 	ngOnInit() {
@@ -83,38 +94,36 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 		);
 
 
-		this.filteredOptions = this.userList$
-		//dont filter out the user that is being edited so we can still select him while editing
-			.pipe(
-				map(userList => userList.filter(it => this.user === null || this.user.id !== it.id)),
-				mergeMap(users => this.autocompleteFormControl.valueChanges
-					.pipe(
-						startWith(null),
-						map(user => user && typeof user === "object" ? user.name : user),
-						map(name => name ? this.filter(users, name) : users.slice()))
-				)
-			);
+		this.filteredOptions = combineLatest(
+			this.autocompleteFormControl.valueChanges
+				.pipe(
+					startWith(null),
+					map(user => user && typeof user === "object" ? user.name : user),
+					debounceTime(300),
+				),
+			this._additionalFilter$
+		).pipe(
+			mergeMap(([input, additionalFilter]: [string, Filter]) =>
+				this.userService.get(
+					Filter.combine(
+						Filter.by({"searchTerm": input}),
+						additionalFilter
+					),
+					PageRequest.first(),
+					Sort.by("desc", "firstName", "surname")
+				)),
+			map(it => it.content),
+			map(users => {
+				const blackListedUsers = this.blackListedUsers$.getValue();
+				return users.filter(matchedUser => !blackListedUsers.find(user => matchedUser.id === user.id))
+			})
+		);
 	}
 
 
 	ngOnDestroy(): void {
 		this.subscriptions.forEach(it => it.unsubscribe());
 	}
-
-
-	/**
-	 * Filters the options array by checking the users first and last name
-	 * @param options
-	 * @param name
-	 * @returns {any[]}
-	 */
-	filter(options: User[], name: string): User[] {
-		return options.filter(option => {
-			const regex = new RegExp(`^${name}`, "gi");
-			return regex.test(option.firstName + " " + option.surname) || regex.test(option.surname);
-		});
-	}
-
 
 	/**
 	 * Defines how the user will be presented in the autocomplete box

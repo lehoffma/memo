@@ -1,5 +1,6 @@
-import {SortingOption} from "../../shared/model/sorting-option";
+import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
 import {Event} from "../shared/model/event";
+import {Direction, Sort} from "../../shared/model/api/sort";
 
 /**
  * Alphabetisch A-Z
@@ -13,60 +14,36 @@ import {Event} from "../shared/model/event";
  * @type {[{name}]}
  */
 export const eventSortingOptions: SortingOption<Event>[] = [
-	{
-		name: "Alphabetisch A-Z",
-		queryParameters: {
-			sortBy: "title",
-			descending: "false"
-		},
-	},
-	{
-		name: "Alphabetisch Z-A",
-		queryParameters: {
-			sortBy: "title",
-			descending: "true"
-		}
-	},
-	{
-		name: "Preis aufsteigend",
-		queryParameters: {
-			sortBy: "price",
-			descending: "false"
-		}
-	},
-	{
-		name: "Preis absteigend",
-		queryParameters: {
-			sortBy: "price",
-			descending: "true"
-		}
-	},
-	{
-		name: "Meilen aufsteigend",
-		queryParameters: {
-			sortBy: "miles",
-			descending: "false"
-		}
-	},
-	{
-		name: "Meilen absteigend",
-		queryParameters: {
-			sortBy: "miles",
-			descending: "true"
-		}
-	},
-	{
-		name: "Datum neueste - älteste",
-		queryParameters: {
-			sortBy: "date",
-			descending: "false"
-		}
-	},
-	{
-		name: "Datum älteste - neueste",
-		queryParameters: {
-			sortBy: "date",
-			descending: "true"
-		}
-	}
+	SortingOptionHelper.build(
+		"Alphabetisch A-Z",
+		Sort.by(Direction.ASCENDING, "title")
+	),
+	SortingOptionHelper.build(
+		"Alphabetisch Z-A",
+		Sort.by(Direction.DESCENDING, "title")
+	),
+	SortingOptionHelper.build(
+		"Preis aufsteigend",
+		Sort.by(Direction.ASCENDING, "price")
+	),
+	SortingOptionHelper.build(
+		"Preis absteigend",
+		Sort.by(Direction.DESCENDING, "price")
+	),
+	SortingOptionHelper.build(
+		"Meilen aufsteigend",
+		Sort.by(Direction.ASCENDING, "miles")
+	),
+	SortingOptionHelper.build(
+		"Meilen absteigend",
+		Sort.by(Direction.DESCENDING, "miles")
+	),
+	SortingOptionHelper.build(
+		"Datum neueste - älteste",
+		Sort.by(Direction.ASCENDING, "date")
+	),
+	SortingOptionHelper.build(
+		"Datum älteste - neueste",
+		Sort.by(Direction.DESCENDING, "date")
+	)
 ];

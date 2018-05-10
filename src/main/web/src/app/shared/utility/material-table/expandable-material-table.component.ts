@@ -1,19 +1,21 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {PagedDataSource} from "./paged-data-source";
 import {ServletService} from "../../services/api/servlet.service";
-import {Observable, of} from "rxjs";
+import {Observable, of, Subscription} from "rxjs";
 import {Filter} from "../../model/api/filter";
 import {MatPaginator} from "@angular/material";
 import {SelectionModel} from "@angular/cdk/collections";
-import {ActionPermissions, RowAction} from "../expandable-table/expandable-table.component";
-import {RowActionType} from "../expandable-table/row-action-type";
-import {TableActionEvent} from "../expandable-table/table-action-event";
+import {RowAction} from "./util/row-action";
+import {RowActionType} from "./util/row-action-type";
+import {TableActionEvent} from "./util/table-action-event";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {filter} from "rxjs/operators";
+import {ActionPermissions} from "./util/action-permissions";
 
 export interface TableColumn<T> {
 	columnDef: string,
 	header: string,
-	cell: (element: T) => string;
+	cell: (element: T) => any;
 	type?: string;
 }
 
@@ -29,24 +31,23 @@ export interface TableColumn<T> {
 		]),
 	],
 })
-export class ExpandableMaterialTableComponent<T> implements OnInit {
+export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
+
+	@Input() dataSource: PagedDataSource = new PagedDataSource();
 
 	_dataService: ServletService<T>;
 	@Input() set dataService(dataService: ServletService<T>) {
 		this._dataService = dataService;
-		this.dataSource = new PagedDataSource(this._dataService);
+		this.dataSource.dataService = this._dataService;
 		this.dataSource.filter$ = this._filter$;
 	}
 
 	_filter$: Observable<Filter> = of(Filter.none());
 	@Input() set filter$(filter$: Observable<Filter>) {
 		this._filter$ = filter$;
-		if (this.dataSource) {
-			this.dataSource.filter$ = this._filter$;
-		}
+		this.dataSource.filter$ = this._filter$;
 	}
 
-	dataSource: PagedDataSource;
 
 	_columns: TableColumn<T>[] = [];
 	@Input() set columns(columns: TableColumn<T>[]) {
@@ -89,16 +90,24 @@ export class ExpandableMaterialTableComponent<T> implements OnInit {
 
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 
-
 	public selection: SelectionModel<T>;
 	public expansionSelection: SelectionModel<any>;
+
+	subscriptions: Subscription[];
 
 	constructor() {
 		this.selection = new SelectionModel<T>(true, []);
 		this.expansionSelection = new SelectionModel<any>(true, [], true);
 
-		this.expansionSelection.onChange
-			.subscribe(it => console.log(it));
+		this.subscriptions = [
+			this.onAction
+				.pipe(
+					filter((it: TableActionEvent<T>) => it.action === RowActionType.DELETE)
+				)
+				.subscribe(it => {
+					this.dataSource.reload();
+				})
+		];
 	}
 
 	isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty("detailRow");
@@ -110,10 +119,6 @@ export class ExpandableMaterialTableComponent<T> implements OnInit {
 		}
 		base.push("actions");
 		return base;
-	}
-
-	public get expandedColumns() {
-
 	}
 
 
@@ -138,5 +143,11 @@ export class ExpandableMaterialTableComponent<T> implements OnInit {
 		this.isAllSelected() ?
 			this.selection.clear() :
 			this.dataSource.data.forEach(row => this.selection.select(row));
+	}
+
+	ngOnDestroy(): void {
+		if (this.subscriptions) {
+			this.subscriptions.forEach(it => it.unsubscribe());
+		}
 	}
 }

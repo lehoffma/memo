@@ -16,6 +16,8 @@ import {Observable} from "rxjs/Observable";
 import {MilesService} from "../../shared/services/api/miles.service";
 import {ClubRole, isAuthenticated} from "../../shared/model/club-role";
 import {Permission} from "../../shared/model/permission";
+import {PageRequest} from "../../shared/model/api/page-request";
+import {Sort, Direction} from "../../shared/model/api/sort";
 
 
 @Component({
@@ -41,8 +43,13 @@ export class ProfileComponent implements OnInit {
 		);
 	userEvents: Observable<Event[]> = this.userObservable
 		.pipe(
-			mergeMap(user => this.participantService.getParticipatedEventsOfUser(user.id))
+			mergeMap(user => this.participantService.getParticipatedEventsOfUser(
+				user.id,
+				PageRequest.first(),
+				Sort.by(Direction.DESCENDING, "date"))),
+			map(it => it.content)
 		);
+	//todo pagination: as filter
 	userDestinations: Observable<Address[]> = this.userEvents
 		.pipe(
 			map(events => [...events

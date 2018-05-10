@@ -1,11 +1,9 @@
 import {ClubRole, idToClubRoleEnum} from "../club-role";
 import {adminPermissions, jsonToPermissions, UserPermissions} from "../permission";
 import {isArray} from "util";
-import {Gender} from "../gender";
 import {isNumber} from "../../../util/util";
 import {toPaymentMethod} from "../../../shop/checkout/payment/payment-method";
 import {parse} from "date-fns";
-import {p} from "@angular/core/src/render3";
 
 
 interface DateTimeObject {
@@ -34,7 +32,7 @@ function getIsoDateFromDateTimeObject(dateTime: DateTimeObject): string {
 
 }
 
-export abstract class BaseObject<T extends BaseObject<T>> {
+export abstract class BaseObject<T> {
 
 	protected constructor(public readonly id: number) {
 
@@ -45,9 +43,9 @@ export abstract class BaseObject<T extends BaseObject<T>> {
 	 * @param properties
 	 * @returns {PaymentInfo} this
 	 */
-	setProperties<U = T>(properties: Partial<U>) {
+	setProperties(properties: Partial<T>): T{
 		Object.keys(properties)
-			.forEach((key: keyof (U | this)) => {
+			.forEach((key: string) => {
 				let value: (string | number | number[] | Date | UserPermissions | any) = (<any>properties)[key];
 				if (isArray(value)) {
 

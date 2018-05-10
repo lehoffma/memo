@@ -1,38 +1,26 @@
 import {Injectable} from "@angular/core";
-import {ExpandableTableContainerService} from "../../shared/utility/expandable-table/expandable-table-container.service";
+import {ExpandableTableContainerService} from "../../shared/utility/material-table/util/expandable-table-container.service";
 import {Entry} from "../../shared/model/entry";
-import {ColumnSortingEvent} from "../../shared/utility/expandable-table/column-sorting-event";
 import {LogInService} from "../../shared/services/api/login.service";
 import {ParamMap, Router} from "@angular/router";
 import {EntryService} from "../../shared/services/api/entry.service";
-import {attributeSortingFunction, dateSortingFunction, SortingFunction, sortingFunction} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {EventService} from "../../shared/services/api/event.service";
-import {Dimension, WindowService} from "../../shared/services/window.service";
-import {ExpandableTableColumn} from "../../shared/utility/expandable-table/expandable-table-column";
-import {DateTableCellComponent} from "../../shared/utility/material-table/cells/date-table-cell.component";
-import {EntryCategoryCellComponent} from "./accounting-table-cells/entry-category-cell.component";
-import {CostValueTableCellComponent} from "./accounting-table-cells/cost-value-table-cell.component";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Observable} from "rxjs/Observable";
-import {catchError, defaultIfEmpty, first, map, mergeMap, tap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {empty} from "rxjs/observable/empty";
+import {first, map, mergeMap} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
-import {parse} from "date-fns";
-import {RowAction} from "../../shared/utility/expandable-table/expandable-table.component";
-import {RowActionType} from "../../shared/utility/expandable-table/row-action-type";
+import {RowAction} from "../../shared/utility/material-table/util/row-action";
+import {RowActionType} from "../../shared/utility/material-table/util/row-action-type";
 import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
 import {MatDialog} from "@angular/material";
-import {EMPTY} from "rxjs/internal/observable/empty";
-import {PageRequest} from "../../shared/model/api/page-request";
-import {Sort} from "../../shared/model/api/sort";
-import {PageResponse} from "../../shared/model/api/page";
-import {Filter} from "../../shared/model/api/filter";
+import {PagedDataSource} from "../../shared/utility/material-table/paged-data-source";
 
 
 @Injectable()
 export class AccountingTableContainerService extends ExpandableTableContainerService<Entry> {
+
+	dataSource: PagedDataSource<Entry>;
 
 	rowActions: RowAction<Entry>[] = [
 		{
@@ -50,13 +38,6 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 		},
 	];
 
-	columns = {
-		date: new ExpandableTableColumn<Entry>("Datum", "date", DateTableCellComponent),
-		category: new ExpandableTableColumn<Entry>("Kostenart", "category", EntryCategoryCellComponent),
-		name: new ExpandableTableColumn<Entry>("Name", "name"),
-		value: new ExpandableTableColumn<Entry>("Kosten", "value", CostValueTableCellComponent)
-	};
-
 	subscriptions = [];
 
 	loading = false;
@@ -65,16 +46,9 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 				protected router: Router,
 				protected navigationService: NavigationService,
 				protected eventService: EventService,
-				protected windowService: WindowService,
 				protected matDialog: MatDialog,
 				protected entryService: EntryService) {
-		super({
-				key: "id",
-				descending: false
-			},
-			loginService.getActionPermissions("funds"),
-			[navigationService.queryParamMap$],
-		);
+		super(loginService.getActionPermissions("funds"));
 
 		this.actionHandlers["Bilder"] = entries => {
 			const images = entries[0].images;
@@ -86,10 +60,6 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 				}
 			})
 		};
-		this.init(this.getDataSource$());
-
-		this.subscriptions.push(this.windowService.dimension$
-			.subscribe(dimensions => this.onResize(dimensions)));
 	}
 
 	ngOnDestroy() {
@@ -97,80 +67,6 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
-	/**
-	 * Updates the columns and way the options are presented depending on the given width/height object
-	 * @param {Dimension} dimension the current window dimensions
-	 */
-	onResize(dimension: Dimension) {
-		let mobile = dimension.width < 850;
-		if (mobile) {
-			this.primaryColumnKeys$.next([
-				this.columns.name, this.columns.value
-			]);
-			this.expandedRowKeys$.next([this.columns.category, this.columns.date])
-		}
-		else {
-			this.primaryColumnKeys$.next([
-				this.columns.date, this.columns.category, this.columns.name, this.columns.value
-			]);
-		}
-	}
-
-	/**
-	 * Extracts the dateRange from the queryParameters so it can be used in the API call
-	 * @returns {{minDate: Date; maxDate: Date}}
-	 */
-	private extractDateRangeFromQueryParams(queryParamMap: ParamMap): { minDate: Date, maxDate: Date } {
-		const from = queryParamMap.has("from") ? parse(queryParamMap.get("from")) : parse("1970-01-01");
-		const to = queryParamMap.has("to") ? parse(queryParamMap.get("to")) : parse("2100-01-01");
-
-		//default: this month
-		return {
-			minDate: from,
-			maxDate: to
-		};
-	}
-
-
-	getDataSource$(): Observable<Entry[]> {
-		return this.navigationService.queryParamMap$
-			.pipe(
-				mergeMap(queryParamMap => {
-					this.loading = true;
-					const dateRange = this.extractDateRangeFromQueryParams(queryParamMap);
-
-					//we're looking at an event's accounting table
-					if (queryParamMap.has("eventIds")) {
-						let eventIds: string[] = queryParamMap.getAll("eventIds");
-
-						return combineLatest(
-							...eventIds.map(id => this.entryService.getEntriesOfEvent(+id, PageRequest.first(), Sort.none())
-								.pipe(defaultIfEmpty(PageResponse.empty()))
-							)
-						)
-							.pipe(
-								map(eventEntries =>
-									eventEntries.reduce((acc, current) => [...acc, ...current.content], []))
-							);
-					}
-
-					//otherwise, we're looking at the general club accounting table
-					return this.entryService.get(
-						Filter.by({"minDate": dateRange.minDate.toISOString(), "maxDate": dateRange.maxDate.toISOString()}),
-						PageRequest.first(),
-						Sort.none()
-					)
-						.pipe(defaultIfEmpty(PageResponse.empty()));
-				}),
-				tap(() => this.loading = false),
-				catchError(error => {
-					console.error(error);
-					return EMPTY;
-				}),
-				defaultIfEmpty([])
-			);
-
-	}
 
 	/**
 	 * Extracts the first eventId from the given query parameters map and returns a new queryParam Object
@@ -236,33 +132,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	 */
 	remove(entries: Entry[]) {
 		entries.forEach(merchObject => this.entryService.remove(merchObject.id)
-			.pipe(
-				map(() => this.dataSubject$.value
-					.filter(entry => !entries.some(deletedEntry => deletedEntry.id === entry.id)))
-			)
-			.subscribe(this.dataSubject$));
+			.subscribe(() => this.dataSource.reload()));
 	}
 
-	satisfiesFilter(entry: Entry, queryParamMap: ParamMap): boolean {
-		let entryRemains = true;
-		if (queryParamMap.has("eventIds")) {
-			entryRemains = entryRemains && queryParamMap.getAll("eventIds").some(id => entry.item.id === +id);
-		}
-		if (queryParamMap.has("costTypes")) {
-			entryRemains = entryRemains && queryParamMap.getAll("costTypes")
-				.some(type => type.toLowerCase() === entry.category.name.toLowerCase());
-		}
-
-		return entryRemains;
-	}
-
-	comparator(sortBy: ColumnSortingEvent<Entry>, ...options): SortingFunction<Entry> {
-		if (sortBy.key === "category") {
-			return sortingFunction<Entry>(entry => entry.category.name, sortBy.descending);
-		}
-		if (sortBy.key === "date") {
-			return dateSortingFunction<Entry>(entry => entry.date, sortBy.descending);
-		}
-		return attributeSortingFunction(sortBy.key, sortBy.descending);
-	}
 }

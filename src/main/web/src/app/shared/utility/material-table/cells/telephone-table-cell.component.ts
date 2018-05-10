@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ExpandableTableCellComponent} from "../../expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
 
 @Component({
 	selector: 'td [memoTelephoneTableCellComponent]',

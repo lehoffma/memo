@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
 import {ClubRole} from "../../../model/club-role";
 
 @Component({

@@ -16,6 +16,8 @@ import {Order} from "../../../../shared/model/order";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {OrderedItem} from "../../../../shared/model/ordered-item";
 import {OrderStatus} from "../../../../shared/model/order-status";
+import {PageRequest} from "../../../../shared/model/api/page-request";
+import {Sort} from "../../../../shared/model/api/sort";
 
 
 @Component({
@@ -49,6 +51,7 @@ export class ItemDetailsContainerComponent implements OnInit {
 			})
 		);
 
+	//todo as api response
 	orderedItemDetails$: Observable<Order> = combineLatest(
 		this.loginService.currentUser$,
 		this.event$
@@ -56,8 +59,9 @@ export class ItemDetailsContainerComponent implements OnInit {
 		.pipe(
 			filter(([user, event]) => user !== null && event !== null),
 			//check if there is an order for this item
-			mergeMap(([user, event]) => this.orderService.getByUserId(user.id)
+			mergeMap(([user, event]) => this.orderService.getByUserId(user.id, PageRequest.first(), Sort.none())
 				.pipe(
+					map(it => it.content),
 					map(orders =>
 						orders.find(order => order.items.some(
 							(item: OrderedItem) => item.item.id === event.id

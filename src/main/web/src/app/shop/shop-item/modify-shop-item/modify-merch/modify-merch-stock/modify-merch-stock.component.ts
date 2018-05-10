@@ -2,14 +2,16 @@ import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {MerchStock} from "../../../../shared/model/merch-stock";
 import {ModifyMerchStockService} from "./modify-merch-stock.service";
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {filter, map, take, tap} from "rxjs/operators";
+import {filter, map, take} from "rxjs/operators";
 import {timer} from "rxjs/observable/timer";
+import {InMemoryDataService} from "../../../../../shared/utility/material-table/in-memory-data.service";
+import {TableColumn} from "../../../../../shared/utility/material-table/expandable-material-table.component";
 
 @Component({
 	selector: "memo-modify-merch-stock",
 	templateUrl: "./modify-merch-stock.component.html",
 	styleUrls: ["./modify-merch-stock.component.scss"],
-	providers: [ModifyMerchStockService, {
+	providers: [ModifyMerchStockService, InMemoryDataService, {
 		provide: NG_VALUE_ACCESSOR,
 		useExisting: ModifyMerchStockComponent,
 		multi: true
@@ -24,7 +26,7 @@ export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValu
 			return;
 		}
 		this._previousValue = previousValue;
-		this.modifyMerchStockService.setValue(previousValue);
+		this.dataService.init(previousValue);
 	}
 
 	get previousValue() {
@@ -37,14 +39,26 @@ export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValu
 
 	subscription;
 
-	constructor(public modifyMerchStockService: ModifyMerchStockService) {
+	/*
+			new ExpandableTableColumn<MerchStock>("Größe", "size"),
+			new ExpandableTableColumn<MerchStock>("Farbe", "color", MerchColorCellComponent),
+			new ExpandableTableColumn<MerchStock>("Anzahl", "amount")
+	 */
+	columns: TableColumn<MerchStock>[] = [
+		{columnDef: "size", header: "Größe", cell: element => element.size},
+		{columnDef: "color", header: "Farbe", cell: element => element.color, type: "color"},
+		{columnDef: "amount", header: "Anzahl", cell: element => element.amount}
+	];
+	displayedColumns = this.columns.map(it => it.columnDef);
+
+	constructor(public modifyMerchStockService: ModifyMerchStockService,
+				public dataService: InMemoryDataService<MerchStock>) {
 	}
 
 
 	ngOnInit() {
-		this.subscription = this.modifyMerchStockService.dataSubject$
-			.pipe(tap(it => console.log(it)))
-			.subscribe(value => this.onChange(value));
+		this.modifyMerchStockService.dataSource = this.dataService;
+		this.subscription = this.dataService.data$.subscribe(value => this.onChange(value));
 	}
 
 	ngOnDestroy(): void {

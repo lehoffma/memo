@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {ExpandableTableCellComponent} from "../../../shared/utility/expandable-table/expandable-table-cell.component";
-import {EntryCategory} from "../../../shared/model/entry-category";
+import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
+import {EntryCategory} from "../../../model/entry-category";
 
 @Component({
 	selector: 'td [entryCategoryCellComponent]',

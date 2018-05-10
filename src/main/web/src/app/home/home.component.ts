@@ -8,9 +8,9 @@ import {LogInService} from "../shared/services/api/login.service";
 import {map, mergeMap} from "rxjs/operators";
 import {Observable} from "rxjs/Observable";
 import {isAfter} from "date-fns";
-import {dateSortingFunction} from "../util/util";
+import {dateSortingFunction, NOW} from "../util/util";
 import {PageRequest} from "../shared/model/api/page-request";
-import {Sort, SortDirectionEnum} from "../shared/model/api/sort";
+import {Sort, Direction} from "../shared/model/api/sort";
 import {Filter} from "../shared/model/api/filter";
 
 interface EventsPreview {
@@ -27,8 +27,6 @@ interface EventsPreview {
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
-	now = new Date();
-
 	events: EventsPreview[] = [
 		{
 			title: "Touren",
@@ -39,10 +37,10 @@ export class HomeComponent implements OnInit {
 					mergeMap(() => this.eventService.get(
 						Filter.by({
 							"type": typeToInteger(EventType.tours) + "",
-							"minDate": this.now.toISOString()
+							"minDate": NOW.toISOString()
 						}),
 						PageRequest.first(7),
-						Sort.by(SortDirectionEnum.ASCENDING, "date"))
+						Sort.by(Direction.ASCENDING, "date"))
 					),
 					map(it => it.content)
 				)
@@ -56,10 +54,10 @@ export class HomeComponent implements OnInit {
 					mergeMap(() => this.eventService.get(
 						Filter.by({
 							"type": typeToInteger(EventType.partys)+ "",
-							"minDate": this.now.toISOString()
+							"minDate": NOW.toISOString()
 						}),
 						PageRequest.first(7),
-						Sort.by(SortDirectionEnum.ASCENDING, "date"))
+						Sort.by(Direction.ASCENDING, "date"))
 					),
 					map(it => it.content)
 				)
@@ -75,7 +73,7 @@ export class HomeComponent implements OnInit {
 							"type": typeToInteger(EventType.merch) + ""
 						}),
 						PageRequest.first(7),
-						Sort.by(SortDirectionEnum.ASCENDING, "date"))
+						Sort.by(Direction.ASCENDING, "date"))
 					),
 					map(it => it.content)
 				)

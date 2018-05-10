@@ -15,7 +15,7 @@
 	</memo-item-details-content>
 
 	<memo-item-details-content [title]="'Kommentare'">
-		<memo-comments-section [comments]="commentsSubject$ | async"
+		<memo-comments-section [comments]="comments$ | async"
 							   [eventId]="tour.id"
 							   (onDeleteComment)="deleteComment($event)"
 							   content></memo-comments-section>

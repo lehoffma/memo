@@ -16,8 +16,8 @@
 			</mat-checkbox>
 		</div>
 		<ng-template #radioGroup>
-			<mat-radio-group [(ngModel)]="selectedOption[option.queryKey]"
-							(ngModelChange)="updateFromRadioSelection(option.queryKey)">
+			<mat-radio-group [(ngModel)]="selectedOption[option.name]"
+							(ngModelChange)="updateFromRadioSelection(option.name)">
 				<mat-radio-button *ngFor="let child of option.children" [value]="child">
 					{{child.name}}
 				</mat-radio-button>

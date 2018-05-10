@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {SelectionModel} from "@angular/cdk/collections";
-import {TableActionEvent} from "../../expandable-table/table-action-event";
-import {RowActionType} from "../../expandable-table/row-action-type";
+import {TableActionEvent} from "../util/table-action-event";
+import {RowActionType} from "../util/row-action-type";
 import {ConfirmationDialogService} from "../../../services/confirmation-dialog.service";
-import {ActionPermissions} from "../../expandable-table/expandable-table.component";
+import {ActionPermissions} from "../util/action-permissions";
 
 @Component({
 	selector: "memo-actions-header-cell",

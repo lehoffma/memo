@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {EventType} from "../../../shop/shared/model/event-type";
+import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 import {Event} from "../../../shop/shared/model/event";
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
@@ -67,7 +67,7 @@ export class EventService extends ServletService<Event> {
 	 */
 	getByEventType(eventType: EventType, pageRequest: PageRequest, sort: Sort): Observable<Page<Event>> {
 		return this.get(
-			Filter.by({"type": "" + eventType}),
+			Filter.by({"type": "" + typeToInteger(eventType)}),
 			pageRequest,
 			sort
 		);

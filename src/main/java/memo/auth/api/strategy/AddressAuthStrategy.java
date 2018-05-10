@@ -41,8 +41,9 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Address> root, User user) {
         //if user is logged in:
         //address is part of item: fulfills read role of shopItem
-        Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root,
-                addressRoot -> addressRoot.get("item"), "expectedReadRole");
+//        todo always returns false for newly created addresses, no idea why though
+//        Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root,
+//                addressRoot -> addressRoot.get("item"), "expectedReadRole");
 
         //  address is part of user: is author or fulfills userManagement permission
         Predicate isAnyAuthor = AuthenticationPredicateFactory.userIsAuthor(builder, root, user,
@@ -55,12 +56,11 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
         //if user is logged out:
         //  address is neither part of item nor of user
 
-        Predicate userIsLoggedOut = userIsLoggedOut(builder, user);
         Predicate neitherPartOfItemNorOfUser = valuesAreNull(builder, root, "item", "user");
-        Predicate isNewlyCreatedObject = builder.and(userIsLoggedOut, neitherPartOfItemNorOfUser);
+        Predicate isNewlyCreatedObject = builder.and(neitherPartOfItemNorOfUser);
 
         return builder.or(
-                userFulfillsMinimumRoleOfItem,
+//                userFulfillsMinimumRoleOfItem,
                 isAuthorOrHasPermissions,
                 isNewlyCreatedObject
         );

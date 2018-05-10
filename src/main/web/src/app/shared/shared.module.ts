@@ -1,5 +1,4 @@
 import {NgModule} from "@angular/core";
-import {ExpandableTableModule} from "./utility/expandable-table/expandable-table.module";
 import {MultiLevelSelectModule} from "./utility/multi-level-select/multi-level-select.module";
 import {EventCalendarComponent} from "./utility/event-calendar/event-calendar.component";
 import {CommonModule} from "@angular/common";
@@ -71,8 +70,6 @@ const forms = [
 		ReactiveFormsModule,
 		ShareButtonsModule,
 		PasswordStrengthBarModule,
-		//todo remove
-		ExpandableTableModule,
 		ExpandableMaterialTableModule,
 		MemoMaterialModule,
 		MultiLevelSelectModule,
@@ -106,7 +103,6 @@ const forms = [
 		EventAutocompleteComponent,
 	],
 	exports: [
-		ExpandableTableModule,
 		MultiLevelSelectModule,
 		ExpandableMaterialTableModule,
 		SharedPipesModule,

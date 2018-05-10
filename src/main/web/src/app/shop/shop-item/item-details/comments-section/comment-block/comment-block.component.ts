@@ -14,7 +14,6 @@ import {Observable} from "rxjs/Observable";
 import {filter, first, mergeMap, scan, tap} from "rxjs/operators";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {of} from "rxjs/observable/of";
-import {empty} from "rxjs/observable/empty";
 import {Subscription} from "rxjs/Subscription";
 import {distanceInWordsStrict} from "date-fns";
 import * as deLocale from "date-fns/locale/de";
@@ -29,7 +28,8 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 	_comment$ = new BehaviorSubject<Comment>(null);
 	comment$ = this._comment$.asObservable()
 		.pipe(
-			filter(comment => comment !== null)
+			filter(comment => comment !== null && comment !== undefined),
+			tap(it => console.log(it))
 		);
 	author$: Observable<User> = this.comment$
 		.pipe(

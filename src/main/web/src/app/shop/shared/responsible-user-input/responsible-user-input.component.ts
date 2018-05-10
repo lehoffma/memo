@@ -55,16 +55,7 @@ export class ResponsibleUserInputComponent implements OnInit, OnDestroy, Control
 	ngOnInit() {
 		this.users$ = this.formControl.valueChanges;
 
-		this.availableUsers$ = combineLatest(
-			this.formControl.valueChanges.pipe(startWith([])),
-			this.userService.search("")
-		)
-			.pipe(
-				//filter out already listed users
-				map(([responsibleUsers, users]) => users.filter(user =>
-					!responsibleUsers.find(responsible => user.id === responsible.id)
-				))
-			);
+		this.availableUsers$ = this.formControl.valueChanges.pipe(startWith([]));
 		this.formControl.setValue([], {emitEvent: true});
 	}
 

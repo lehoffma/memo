@@ -1,9 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {SortingOption} from "../../../shared/model/sorting-option";
+import {SortingOption, SortingOptionHelper} from "../../../shared/model/sorting-option";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {QueryParameterService} from "../../../shared/services/query-parameter.service";
 import {ColumnSortingEvent} from "../../../shared/utility/expandable-table/column-sorting-event";
 import {first, map, tap} from "rxjs/operators";
+import {Sort} from "../../../shared/model/api/sort";
 
 @Component({
 	selector: "memo-sorting-dropdown",
@@ -11,6 +12,12 @@ import {first, map, tap} from "rxjs/operators";
 	styleUrls: ["./sorting-dropdown.component.scss"]
 })
 export class SortingDropdownComponent implements OnInit {
+
+	noneSortingOption: SortingOption<any> = SortingOptionHelper.build(
+		"Unsortiert",
+		Sort.none()
+	);
+
 	@Input() sortingOptions: SortingOption<any>[];
 	selectedOption: string = "";
 
@@ -21,11 +28,15 @@ export class SortingDropdownComponent implements OnInit {
 				private queryParameterService: QueryParameterService) {
 	}
 
+	get combinedOptions() {
+		return [this.noneSortingOption, ...this.sortingOptions];
+	}
+
 	ngOnInit() {
 		this.activatedRoute.queryParamMap
 			.subscribe(queryParamMap => {
 				this.selectedOption = "";
-				this.sortingOptions.some(option => {
+				const somethingMatched = this.sortingOptions.some(option => {
 					const optionKeys = Object.keys(option.queryParameters);
 
 					if (optionKeys.every(key => queryParamMap.has(key))
@@ -35,6 +46,9 @@ export class SortingDropdownComponent implements OnInit {
 
 					return this.selectedOption !== "";
 				});
+				if (!somethingMatched) {
+					this.selectedOption = "Unsortiert";
+				}
 			})
 	}
 

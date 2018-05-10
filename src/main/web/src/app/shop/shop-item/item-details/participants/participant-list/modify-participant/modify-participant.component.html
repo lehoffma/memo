@@ -3,30 +3,9 @@
 		<h1 matDialogTitle>{{isEditing ? 'Teilnehmer modifizieren' : 'Füge einen Teilnehmer hinzu'}}</h1>
 		<div mat-dialog-content class="dialog-content-container">
 			<div>
-				<memo-user-autocomplete [userList]="userService.search('') | async"
-										[required]="true" [resetOnSelect]="false"
+				<memo-user-autocomplete [required]="true" [resetOnSelect]="false"
 										[user]="participant.user"
 										(userChanged)="participant.user = $event"></memo-user-autocomplete>
-				<!--<mat-form-field-->
-					<!--[dividerColor]="(autocompleteFormControl.dirty && participant.user === null ||-->
-					<!--participant.user?.id === -1) ? 'warn' : 'primary'">-->
-					<!--<input type="text"-->
-						   <!--matInput-->
-						   <!--tabindex="-1"-->
-						   <!--placeholder="Nutzer"-->
-						   <!--name="userInput"-->
-						   <!--[formControl]="autocompleteFormControl"-->
-						   <!--[matAutocomplete]="auto">-->
-					<!--<mat-error *ngIf="autocompleteFormControl.dirty && participant.user === null ||-->
-					<!--participant.user?.id === -1">-->
-						<!--Bitte wähle einen Nutzer aus der Liste!-->
-					<!--</mat-error>-->
-				<!--</mat-form-field>-->
-				<!--<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">-->
-					<!--<mat-option *ngFor="let option of filteredOptions | async" [value]="option">-->
-						<!--{{ option.firstName + " " + option.surname }}-->
-					<!--</mat-option>-->
-				<!--</mat-autocomplete>-->
 			</div>
 
 			<mat-form-field>

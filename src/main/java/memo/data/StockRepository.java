@@ -77,11 +77,12 @@ public class StockRepository extends AbstractPagingAndSortingRepository<Stock> {
                 .getResultList();
     }
 
+
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<Stock> root, Filter.FilterRequest filterRequest) {
         return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<Stock>()
                 //todo
-                .buildPut("eventId", null)
+                .buildPut("eventId", PredicateFactory.getSupplier("item", "id"))
                 .buildPut("type", PredicateFactory.getSupplier("item", "type"))
         );
     }

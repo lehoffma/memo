@@ -46,26 +46,6 @@ memo-multi-image-container {
 	width: 100%;
 }
 
-@media all and (max-width: 600px) {
-	memo-expandable-table {
-		::ng-deep .expandable-table-component-container {
-			.expandable-table-header {
-				margin-left: -16px;
-				margin-right: -16px;
-
-				.expandable-table-header-title {
-					font-size: 1rem;
-				}
-			}
-			.expandable-table-footer {
-				padding-left: 0;
-				padding-right: 0;
-				font-size: 0.7rem;
-			}
-		}
-	}
-}
-
 @media all and (min-width: 800px) {
 	:host {
 		display: flex;

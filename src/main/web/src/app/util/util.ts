@@ -4,6 +4,7 @@ import {isAfter, isBefore} from "date-fns";
 
 export type SortingFunction<T> = (a: T, b: T) => number;
 
+export const NOW:Date = new Date();
 
 export function attributeSortingFunction<ObjectType>(attribute: string, descending: boolean): SortingFunction<ObjectType> {
 	return sortingFunction(obj => obj[attribute], descending);
@@ -131,8 +132,8 @@ export function isEdited<T>(previous: T, updated: T, except?: string[]): boolean
 }
 
 
-export function arrayIsEqual<T>(left: T[], right:T[]): boolean{
-	if(left.length !== right.length){
+export function arrayIsEqual<T>(left: T[], right: T[]): boolean {
+	if (left.length !== right.length) {
 		return false;
 	}
 	return left.every(leftObject => right.some(rightObject => isEdited(leftObject, rightObject)))

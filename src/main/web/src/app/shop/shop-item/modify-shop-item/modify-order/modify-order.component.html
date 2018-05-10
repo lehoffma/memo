@@ -5,7 +5,7 @@
 	<form [formGroup]="modifyOrderService.formGroup" (ngSubmit)="modifyOrderService.submit()"
 		  *ngIf="modifyOrderService">
 		<memo-user-autocomplete
-			[resetOnSelect]="false" [required]="true" [userList]="userService.search('') | async"
+			[resetOnSelect]="false" [required]="true"
 			[user]="modifyOrderService.formGroup.get('user').value"
 			(userChanged)="modifyOrderService.updateUser($event)"
 		>

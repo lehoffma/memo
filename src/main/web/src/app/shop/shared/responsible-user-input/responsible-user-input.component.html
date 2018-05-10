@@ -19,7 +19,7 @@
 </div>
 
 <div class="user-list-row">
-	<memo-user-autocomplete [userList]="availableUsers$ | async"
+	<memo-user-autocomplete [blackListedUsers]="availableUsers$ | async"
 							(userChanged)="addUser($event)">
 	</memo-user-autocomplete>
 </div>

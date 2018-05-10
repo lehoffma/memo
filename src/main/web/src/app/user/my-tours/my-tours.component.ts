@@ -15,7 +15,7 @@ import {EMPTY} from "rxjs/internal/observable/empty";
 import {Filter} from "../../shared/model/api/filter";
 import {EventType, typeToInteger} from "../../shop/shared/model/event-type";
 import {PageRequest} from "../../shared/model/api/page-request";
-import {Sort, SortDirectionEnum} from "../../shared/model/api/sort";
+import {Sort, Direction} from "../../shared/model/api/sort";
 import {Event} from "../../shop/shared/model/event";
 
 @Component({
@@ -34,7 +34,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 						"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)
 					}),
 					PageRequest.first(),
-					Sort.by(SortDirectionEnum.ASCENDING, "date")
+					Sort.by(Direction.ASCENDING, "date")
 				)),
 			map(it => it.content)
 		);
@@ -50,7 +50,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 						"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)
 					}),
 					PageRequest.first(),
-					Sort.by(SortDirectionEnum.ASCENDING, "date")
+					Sort.by(Direction.ASCENDING, "date")
 				)),
 			map(it => it.content),
 			catchError(error => {

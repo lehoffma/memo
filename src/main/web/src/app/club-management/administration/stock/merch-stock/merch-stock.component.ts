@@ -162,6 +162,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 	 * @returns {Observable<*[]>}
 	 */
 	getMerch$() {
+		//todo pagination rewrite
 		return this.stockEntryList$
 			.pipe(
 				mergeMap((dataList: StockEntry[]) => this.activatedRoute.queryParamMap

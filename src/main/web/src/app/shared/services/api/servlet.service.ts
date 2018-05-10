@@ -7,9 +7,11 @@ import {defaultIfEmpty, map, mergeMap} from "rxjs/operators";
 import {throwError} from "rxjs/internal/observable/throwError";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
-import {Sort, SortDirectionEnum} from "../../model/api/sort";
+import {Sort, Direction} from "../../model/api/sort";
 import {Entry} from "../../model/entry";
 import {Page} from "../../model/api/page";
+import {TableDataService} from "../../utility/material-table/table-data-service";
+import {ParamMap} from "@angular/router";
 
 export type AddOrModifyRequest = <T>(url: string, body: any | null, options?: {
 	headers?: HttpHeaders;
@@ -26,7 +28,7 @@ export interface AddOrModifyResponse {
 }
 
 @Injectable()
-export abstract class ServletService<T> extends CachedService<T> implements ServletServiceInterface<T> {
+export abstract class ServletService<T> extends CachedService<T> implements ServletServiceInterface<T>, TableDataService<T> {
 
 	protected constructor(protected http: HttpClient,
 						  protected baseUrl: string) {
@@ -49,6 +51,22 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 					return this.jsonToObservable(json.content[0])
 				})
 			);
+	}
+
+	/**
+	 *
+	 * @param {ParamMap} queryParamMap
+	 * @param {string[]} allowedParameters
+	 * @returns {Filter}
+	 */
+	toFilter(queryParamMap: ParamMap, allowedParameters: string[]) {
+		return allowedParameters.reduce((filter, parameter) => {
+			if (queryParamMap.has(parameter)) {
+				const value = queryParamMap.getAll(parameter).join("|");
+				return Filter.add(filter, parameter, value);
+			}
+			return filter;
+		}, Filter.none());
 	}
 
 	/**
@@ -81,7 +99,7 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 	 * @returns {T}
 	 */
 	jsonToObject(json: any): T {
-		return JSON.parse(json);
+		return json;
 	}
 
 	/**
@@ -118,7 +136,7 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 			.set("page", "" + pageRequest.page)
 			.set("pageSize", "" + pageRequest.pageSize);
 
-		if (sort.direction !== SortDirectionEnum.NONE) {
+		if (sort.direction !== Direction.NONE) {
 			params = params
 				.set("direction", sort.direction);
 		}

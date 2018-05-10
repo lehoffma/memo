@@ -1,14 +1,15 @@
-import {Component, OnInit} from "@angular/core";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {User} from "../../../shared/model/user";
-import {RowActionType} from "../../../shared/utility/expandable-table/row-action-type";
+import {RowActionType} from "../../../shared/utility/material-table/util/row-action-type";
 import {MemberListRowAction} from "./member-list-row-actions";
 import {MemberListService} from "./member-list.service";
 import {UserService} from "../../../shared/services/api/user.service";
 import {Filter} from "../../../shared/model/api/filter";
 import {Observable, of} from "rxjs";
-import {TableColumn} from "../../../shared/utility/material-table/expandable-material-table.component";
-import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {ExpandableMaterialTableComponent, TableColumn} from "../../../shared/utility/material-table/expandable-material-table.component";
+import {BreakpointObserver} from "@angular/cdk/layout";
 import {ResponsiveColumnsHelper} from "../../../shared/utility/material-table/responsive-columns.helper";
+import {startWith} from "rxjs/operators";
 
 @Component({
 	selector: "memo-member-list",
@@ -16,7 +17,7 @@ import {ResponsiveColumnsHelper} from "../../../shared/utility/material-table/re
 	styleUrls: ["./member-list.component.scss"],
 	providers: [MemberListService]
 })
-export class MemberListComponent implements OnInit {
+export class MemberListComponent implements OnInit, AfterViewInit{
 	rowActions: {
 		icon?: string;
 		name: string | RowActionType;
@@ -34,7 +35,7 @@ export class MemberListComponent implements OnInit {
 		{
 			icon: "phone",
 			name: MemberListRowAction.phone,
-			link: user => "tel:" + user.telephone
+			link: user => "tel:" + user.telephone,
 		},
 		{
 			icon: "smartphone",
@@ -66,22 +67,34 @@ export class MemberListComponent implements OnInit {
 		{columnDef: "clubRole", header: "Rolle", cell: element => element.clubRole, type: "clubRole"},
 		{columnDef: "gender", header: "Geschlecht", cell: element => element.gender, type: "gender"},
 		{columnDef: "birthday", header: "Geburtstag", cell: element => element.birthday.toISOString(), type: "date"},
+		{columnDef: "joinDate", header: "Beitrittsdatum", cell: element => element.joinDate.toISOString(), type: "date"},
 		{columnDef: "isWoelfeClubMember", header: "Wölfeclub", cell: element => element.isWoelfeClubMember + "", type: "boolean"},
 		{columnDef: "hasSeasonTicket", header: "Dauerkarte", cell: element => element.hasSeasonTicket + "", type: "boolean"},
 	];
-	displayedColumns = this.columns
-		.slice(1, 3)
-		.map(it => it.columnDef);
+	displayedColumns$ = this.getDisplayedColumns();
 
+	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent;
 
 	constructor(public memberListService: MemberListService,
 				private breakpointObserver: BreakpointObserver,
 				public userService: UserService) {
-		//todo
-		// const columnHelper = new ResponsiveColumnsHelper(this.columns, this.breakpointObserver);
-		// columnHelper.add(Breakpoints.Small, )
 	}
 
 	ngOnInit() {
+	}
+
+	getDisplayedColumns() {
+		const columnHelper = new ResponsiveColumnsHelper(this.columns, this.breakpointObserver);
+		columnHelper.addPixelBreakpoint(1200, "image");
+		columnHelper.addPixelBreakpoint(400, "clubRole");
+		columnHelper.addPixelBreakpoint(500, "joinDate");
+		columnHelper.addPixelBreakpoint(700, "birthday", "hasSeasonTicket", "isWoelfeClubMember");
+		columnHelper.addPixelBreakpoint(800, "gender");
+		return columnHelper.build()
+			.pipe(startWith([]));
+	}
+
+	ngAfterViewInit(): void {
+		this.memberListService.dataSource = this.table.dataSource;
 	}
 }

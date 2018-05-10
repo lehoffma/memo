@@ -1,8 +1,6 @@
 import {Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {ExpandableTableColumn} from "../expandable-table/expandable-table-column";
-import {RowActionType} from "../expandable-table/row-action-type";
-import {MultiImageUploadService} from "./multi-image-upload.service";
+import {RowActionType} from "../material-table/util/row-action-type";
 import {filter, map, take} from "rxjs/operators";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Subscription} from "rxjs/Subscription";
@@ -10,13 +8,16 @@ import {ImageToUpload, isImageToUpload} from "./image-to-upload";
 import {Observable} from "rxjs/Observable";
 import {ConfirmationDialogService} from "../../services/confirmation-dialog.service";
 import {ModifiedImages} from "../../../shop/shop-item/modify-shop-item/modified-images";
+import {InMemoryDataService} from "../material-table/in-memory-data.service";
+import {TableActionEvent} from "../material-table/util/table-action-event";
+import {TableColumn} from "../material-table/expandable-material-table.component";
 
 @Component({
 	selector: "memo-multi-image-upload",
 	templateUrl: "./multi-image-upload.component.html",
 	styleUrls: ["./multi-image-upload.component.scss"],
 	providers: [
-		MultiImageUploadService
+		InMemoryDataService
 	]
 })
 export class MultiImageUploadComponent implements OnInit, OnDestroy {
@@ -66,9 +67,6 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	@HostBinding("class.single-picture") singlePicture: boolean = false;
 
 
-	columnKeys: ExpandableTableColumn<ImageToUpload>[] = [
-		new ExpandableTableColumn<ImageToUpload>("Name", "name")
-	];
 	rowActions: {
 		icon?: string;
 		name: string | RowActionType;
@@ -86,22 +84,20 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	imageSubscription: Subscription;
 	subscriptions = [];
 
-	constructor(public multiImageUploadService: MultiImageUploadService,
-				private confirmationDialogService: ConfirmationDialogService,
+	columns: TableColumn<ImageToUpload>[] = [
+		{columnDef: "name", header: "Name", cell: element => element.name}
+	];
+	displayedColumns = this.columns.map(column => column.columnDef);
+
+
+	constructor(private confirmationDialogService: ConfirmationDialogService,
+				public inMemoryDataService: InMemoryDataService,
 				private formBuilder: FormBuilder) {
 	}
 
 	ngOnInit() {
 		this.singlePicture = this.limit === 1;
-		this.subscriptions.push(
-			this.multiImageUploadService.onAdd.subscribe(
-				() => this.fileUpload.nativeElement.click()
-			),
-			this.multiImageUploadService.onDelete.subscribe(
-				entries => this.deleteEntries(entries)
-			)
-		);
-		this.multiImageUploadService.init(this.images$);
+		this.inMemoryDataService.init$(this.images$);
 	}
 
 	ngOnDestroy(): void {
@@ -111,6 +107,22 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 		}
 	}
 
+
+	/**
+	 * Callback for every table's action
+	 * @param {TableActionEvent<Entry>} event
+	 * @returns {any}
+	 */
+	handleTableAction(event: TableActionEvent<ImageToUpload>) {
+		switch (event.action) {
+			case RowActionType.ADD:
+				return this.fileUpload.nativeElement.click();
+			case RowActionType.EDIT:
+				return;
+			case RowActionType.DELETE:
+				return this.deleteEntries(event.entries);
+		}
+	}
 
 	getValueFromForm(value: ModifiedImages): ImageToUpload[] {
 		return [...value.imagePaths.map(path => ({id: path, name: path, data: path})),
@@ -213,7 +225,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 			})
 	}
 
-	deleteWithConfirmation(entries: ImageToUpload[]){
+	deleteWithConfirmation(entries: ImageToUpload[]) {
 		const message = `Möchtest du diese${entries.length === 1 ? "s Bild" : " Bilder"} wirklich löschen?`;
 		this.confirmationDialogService.open(message, () => this.deleteEntries(entries));
 	}

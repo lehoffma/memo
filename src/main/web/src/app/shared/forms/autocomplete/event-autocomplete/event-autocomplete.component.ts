@@ -4,10 +4,12 @@ import {Observable} from "rxjs/Observable";
 import {Event} from "../../../../shop/shared/model/event";
 import {isEventValidator} from "../../../validators/is-event.validator";
 import {EventUtilityService} from "../../../services/event-utility.service";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {map, mergeMap, startWith} from "rxjs/operators";
+import {debounceTime, map, mergeMap, startWith} from "rxjs/operators";
 import {EventType} from "../../../../shop/shared/model/event-type";
 import {EventService} from "../../../services/api/event.service";
+import {PageRequest} from "../../../model/api/page-request";
+import {Sort} from "../../../model/api/sort";
+import {Filter} from "../../../model/api/filter";
 
 @Component({
 	selector: "memo-event-autocomplete",
@@ -35,18 +37,15 @@ export class EventAutocompleteComponent implements OnInit, ControlValueAccessor 
 			.pipe(
 				startWith(""),
 				map(event => event && EventUtilityService.isEvent(event) ? event.title : event),
-				mergeMap(title =>
-					combineLatest(
-						...this.types.map(type => this.eventService.search("", type)),
+				debounceTime(300),
+				mergeMap(title => this.eventService
+					.get(
+						Filter.by({"searchTerm": title}),
+						PageRequest.first(100),
+						Sort.none()
+					).pipe(
+						map(it => it.content)
 					)
-						.pipe(
-							map(([tours, partys, merch]) => {
-								let availableEvents = [...tours, ...partys, ...merch];
-								return title
-									? this.filter(availableEvents, title)
-									: availableEvents.slice()
-							})
-						)
 				)
 			);
 		this.formControl.setValidators([Validators.required, isEventValidator()]);

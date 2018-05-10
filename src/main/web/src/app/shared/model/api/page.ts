@@ -1,5 +1,6 @@
-import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
+import {combineLatest, Observable, of} from "rxjs";
+import {map, mergeMap} from "rxjs/operators";
+import {PageRequest} from "./page-request";
 
 export interface Page<T> {
 	content: T[];
@@ -10,8 +11,8 @@ export interface Page<T> {
 	page: number;
 	pageSize: number;
 	totalElements: number;
-	next?: () => Observable<Page<T>>;
-	prev?: () => Observable<Page<T>>;
+	next?: () => null | Observable<Page<T>>;
+	prev?: () => null | Observable<Page<T>>;
 }
 
 export class PageResponse {
@@ -25,6 +26,20 @@ export class PageResponse {
 			page: 0,
 			pageSize: 20,
 			totalElements: 0
+		}
+	}
+
+	static from<T>(content: T[], fullDataLength: number, pageRequest: PageRequest): Page<T> {
+		return {
+			content,
+			elements: content.length,
+			empty: content.length === 0,
+			first: pageRequest.page === 0,
+			last: content.length < pageRequest.pageSize
+			|| (((pageRequest.page + 1) * pageRequest.pageSize) === fullDataLength),
+			page: pageRequest.page,
+			pageSize: pageRequest.pageSize,
+			totalElements: fullDataLength
 		}
 	}
 
@@ -51,5 +66,38 @@ export class PageResponse {
 					)
 			}
 		};
+	}
+
+	static mapToObservable<T, U>(page: Page<T>, mappingFunction: (value: T) => Observable<U>): Observable<Page<U>> {
+		if (page.empty || page.content.length === 0) {
+			return of(page);
+		}
+
+		return combineLatest(
+			...page.content.map(content => mappingFunction(content))
+		).pipe(
+			map(mappedContent => ({
+				...page,
+				content: mappedContent,
+				prev: () => {
+					if (!page.prev) {
+						return null;
+					}
+					return page.prev()
+						.pipe(
+							mergeMap(prevPage => PageResponse.mapToObservable(prevPage, mappingFunction))
+						)
+				},
+				next: () => {
+					if (!page.next) {
+						return null;
+					}
+					return page.next()
+						.pipe(
+							mergeMap(nextPage => PageResponse.mapToObservable(nextPage, mappingFunction))
+						)
+				}
+			}))
+		)
 	}
 }

@@ -71,8 +71,7 @@ export class ConcludeEventService {
 	 * @param groupPicture
 	 * @param {User[]} reportResponsibleUsers
 	 */
-	public concludeEvent(eventId: number, finalParticipants: Participant[],
-						 groupPicture: ImageToUpload, reportResponsibleUsers: User[]): Observable<Event> {
+	public concludeEvent(eventId: number, groupPicture: ImageToUpload, reportResponsibleUsers: User[]): Observable<Event> {
 		return this.eventService.getById(eventId)
 			.pipe(
 				mergeMap(event => this.replaceGroupImage(event, groupPicture)),

@@ -22,7 +22,7 @@ export class FilterOptionBuilder {
 		return this;
 	}
 
-	withOption(type: FilterOptionType): this {
+	withOption(type: FilterOptionType): FilterOptionBuilder {
 		if (!this.options.find(it => it.type === type)) {
 			this.options.push({
 				option: this.filterOptionFactory.get(type),
@@ -33,7 +33,7 @@ export class FilterOptionBuilder {
 	}
 
 	withOptions(...types: FilterOptionType[]): this {
-		return <this>types.reduce((acc, type: FilterOptionType) => this.withOption(type), this);
+		return types.reduce((acc: FilterOptionBuilder, type: FilterOptionType) => this.withOption(type), this);
 	}
 
 	build(results: any[]): Observable<MultiLevelSelectParent[]> {

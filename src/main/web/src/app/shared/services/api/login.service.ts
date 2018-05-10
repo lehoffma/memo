@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {UserService} from "./user.service";
 import {User} from "../../model/user";
 import {MatSnackBar} from "@angular/material";
-import {ActionPermissions} from "../../utility/expandable-table/expandable-table.component";
+import {ActionPermissions} from "../../utility/material-table/util/action-permissions";
 import {Permission, UserPermissions} from "../../model/permission";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AuthService} from "../../authentication/auth.service";

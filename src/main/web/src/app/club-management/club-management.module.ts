@@ -1,8 +1,6 @@
 import {NgModule} from "@angular/core";
 import {ClubManagementRoutingModule, routedComponents} from "./club-management.routing";
 import {AccountingOptionsComponent} from "./accounting/accounting-options/accounting-options.component";
-import {EntryCategoryCellComponent} from "./accounting/accounting-table-cells/entry-category-cell.component";
-import {CostValueTableCellComponent} from "./accounting/accounting-table-cells/cost-value-table-cell.component";
 import {CommonModule} from "@angular/common";
 import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
@@ -19,9 +17,6 @@ import {UserModule} from "../user/user.module";
 import {ShopItemDetailsModule} from "../shop/shop-item/item-details/shop-item-details.module";
 
 const tableCellComponents = [
-	//accounting table cells
-	EntryCategoryCellComponent,
-	CostValueTableCellComponent,
 
 	//merch table cell
 	MerchStockTableCellComponent,

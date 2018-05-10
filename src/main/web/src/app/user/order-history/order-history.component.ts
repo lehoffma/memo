@@ -3,16 +3,15 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {OrderService} from "../../shared/services/api/order.service";
 import {Order} from "../../shared/model/order";
 import {ColumnSortingEvent} from "../../shared/utility/expandable-table/column-sorting-event";
-import {attributeSortingFunction, dateSortingFunction} from "../../util/util";
 import {SortingOption} from "../../shared/model/sorting-option";
 import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
-import {catchError, defaultIfEmpty, map, mergeMap} from "rxjs/operators";
+import {catchError, defaultIfEmpty, mergeMap} from "rxjs/operators";
 import {_throw} from "rxjs/observable/throw";
 import {EMPTY} from "rxjs/internal/observable/empty";
 import {PageRequest} from "../../shared/model/api/page-request";
-import {Sort, SortDirectionEnum} from "../../shared/model/api/sort";
+import {Sort, Direction} from "../../shared/model/api/sort";
 
 @Component({
 	selector: "memo-order-history",
@@ -54,8 +53,8 @@ export class OrderHistoryComponent implements OnInit {
 							Sort.by(
 								//todo
 								sortBy.descending ?
-									SortDirectionEnum.DESCENDING :
-									SortDirectionEnum.ASCENDING,
+									Direction.DESCENDING :
+									Direction.ASCENDING,
 								sortBy.key
 							)
 						)

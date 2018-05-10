@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ExpandableTableCellComponent} from "../../../../shared/utility/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../../../../shared/utility/material-table/util/expandable-table-cell.component";
 
 @Component({
 	selector: 'td [merch-stock-table-cell-component]',

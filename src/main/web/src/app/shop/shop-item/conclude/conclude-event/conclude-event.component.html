@@ -1,6 +1,5 @@
 <form [formGroup]="formGroup" (ngSubmit)="submit()">
-	<memo-participant-list class="participants-list mat-elevation-z3"
-						   (participantsChanged)="updateParticipants($event)"></memo-participant-list>
+	<memo-participant-list class="participants-list mat-elevation-z3"></memo-participant-list>
 
 	<div class="secondary-event-information">
 		<memo-item-details-content [title]="'Gruppenbild'">

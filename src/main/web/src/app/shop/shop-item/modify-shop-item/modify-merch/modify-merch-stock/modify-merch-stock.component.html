@@ -1,12 +1,10 @@
-<memo-expandable-table
-	[data]="modifyMerchStockService.data$ | async"
-	[title]="'Bestand' + (merchTitle ? ' von ' + merchTitle : '')"
-	[expandable]="false"
-	[columnKeys]="modifyMerchStockService.primaryColumnKeys$ | async"
-	[permissions]="modifyMerchStockService.permissions$ | async"
-	[pagination]="false"
-	(onSort)="modifyMerchStockService.onSort($event)"
-	(onAction)="modifyMerchStockService.handleTableAction($event)"
->
 
-</memo-expandable-table>
+<memo-expandable-material-table
+	[columns]="columns"
+	[displayedColumns]="displayedColumns"
+	(onAction)="modifyMerchStockService.handleTableAction($event)"
+	[permissions]="modifyMerchStockService.permissions$ | async"
+	[title]="'Bestand' + (merchTitle ? ' von ' + merchTitle : '')"
+	[dataService]="dataService">
+
+</memo-expandable-material-table>

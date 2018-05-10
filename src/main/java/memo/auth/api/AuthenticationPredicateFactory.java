@@ -81,10 +81,9 @@ public class AuthenticationPredicateFactory {
         Predicate isRequestingUser = isRequestingUser(builder, user);
 
         return PredicateFactory.<User, ClubRole>get(builder, User.class, "clubRole")
-                .map(userClubRole -> builder.greaterThanOrEqualTo(userClubRole, minimumRole))
-                .map(fulfillsMinimumRole -> builder.and(
+                .map(userClubRole -> builder.and(
                         isRequestingUser,
-                        fulfillsMinimumRole
+                        builder.greaterThanOrEqualTo(userClubRole, minimumRole)
                 ))
                 .orElse(PredicateFactory.isFalse(builder));
     }
@@ -92,13 +91,14 @@ public class AuthenticationPredicateFactory {
     public static <T> Predicate valuesAreNull(CriteriaBuilder builder, Root<T> root,
                                               String... keys
     ) {
-        List<Predicate> keyIsNullPredicates = Arrays.stream(keys)
-                .map(root::get)
-                .map(builder::isNull)
-                .collect(Collectors.toList());
-
-        return keyIsNullPredicates.stream()
-                .reduce(PredicateFactory.isTrue(builder), builder::and);
+        return builder.and(
+                Arrays.stream(keys)
+                        .map(key -> get(root, key)
+                                .map(builder::isNull)
+                                .orElse(PredicateFactory.isFalse(builder))
+                        )
+                        .toArray(Predicate[]::new)
+        );
     }
 
 

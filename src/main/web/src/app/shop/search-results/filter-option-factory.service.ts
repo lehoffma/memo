@@ -5,7 +5,7 @@ import {Event} from "../shared/model/event";
 import {MerchStockList} from "../shared/model/merch-stock";
 import {Merchandise} from "../shared/model/merchandise";
 import {EventUtilityService} from "../../shared/services/event-utility.service";
-import {attributeSortingFunction, sortingFunction} from "../../util/util";
+import {attributeSortingFunction, NOW, sortingFunction} from "../../util/util";
 import {MerchColor} from "../shared/model/merch-color";
 import {StockService} from "../../shared/services/api/stock.service";
 import {of} from "rxjs/observable/of";
@@ -13,92 +13,132 @@ import {Observable} from "rxjs/Observable";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {defaultIfEmpty, map} from "rxjs/operators";
 import {_throw} from "rxjs/observable/throw";
+import {PageRequest} from "../../shared/model/api/page-request";
+import {Sort} from "../../shared/model/api/sort";
+import {MultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-leaf";
+import {EventType, typeToInteger} from "../shared/model/event-type";
 
 @Injectable()
 export class FilterOptionFactoryService {
 
+	static byKey(name: string, key: string, ...values: string[]): MultiLevelSelectLeaf {
+		return {
+			query: [
+				{
+					key: key,
+					values: values
+				}
+			],
+			name,
+			selected: false
+		}
+	}
+
+	static min(name: string, key: string, value: any): MultiLevelSelectLeaf {
+		const titleCaseKey = key.charAt(0).toUpperCase() + key.slice(1);
+		return {
+			query: [
+				{
+					key: "min" + titleCaseKey,
+					values: [value.toString()]
+				}
+			],
+			name,
+			selected: false
+		}
+	}
+
+	static max(name: string, key: string, value: any): MultiLevelSelectLeaf {
+		const titleCaseKey = key.charAt(0).toUpperCase() + key.slice(1);
+		return {
+			query: [
+				{
+					key: "max" + titleCaseKey,
+					values: [value.toString()]
+				}
+			],
+			name,
+			selected: false
+		}
+	}
+
+	static combine(...leafs: MultiLevelSelectLeaf[]): MultiLevelSelectLeaf[] {
+		return leafs.reduce((combinedList: MultiLevelSelectLeaf[], leaf: MultiLevelSelectLeaf) => {
+			const index = combinedList.findIndex(it => it.name === leaf.name);
+			if (index === -1) {
+				combinedList.push(leaf);
+			}
+			else {
+				for (let query of leaf.query) {
+					const queryIndex = combinedList[index].query.findIndex(it => it.key === query.key);
+					if (queryIndex === -1) {
+						combinedList[index].query.push(query);
+					}
+					else {
+						combinedList[index].query[queryIndex].values = Array.from(
+							new Set([
+								...combinedList[index].query[queryIndex],
+								...query
+							]).values()
+						);
+					}
+				}
+			}
+
+			return combinedList;
+		}, [])
+	}
+
 	constructor(private stockService: StockService) {
 	}
 
-	readonly getCategory = () => of([{
+	//todo
+	readonly getCategory: () => Observable<MultiLevelSelectParent[]> = () => of([{
 		name: "Kategorie",
-		queryKey: "category",
 		selectType: (<"multiple" | "single">"multiple"),
 		expanded: false,
 		children: [
-			{
-				name: "Fahrten",
-				queryValue: "tours",
-				selected: false
-			},
-			{
-				name: "Veranstaltungen",
-				queryValue: "partys",
-				selected: false
-			},
-			{
-				name: "Merchandise",
-				queryValue: "merch",
-				selected: false
-			}
+			FilterOptionFactoryService.byKey("Fahrten", "type", "" + typeToInteger(EventType.tours)),
+			FilterOptionFactoryService.byKey("Veranstaltungen", "type", "" + typeToInteger(EventType.partys)),
+			FilterOptionFactoryService.byKey("Merchandise", "type", "" + typeToInteger(EventType.merch)),
 		]
 	}]);
 
-	readonly getPrice = () => of([{
+	readonly getPrice: () => Observable<MultiLevelSelectParent[]> = () => of([{
 		name: "Preis",
-		queryKey: "price",
 		expanded: false,
 		selectType: (<"multiple" | "single">"single"),
 		children: [
 			{
+				query: [],
 				name: "Alle",
-				queryValue: "",
 				selected: true
 			},
-			{
-				name: "Unter 10 Euro",
-				queryValue: "below10",
-				selected: false
-			},
-			{
-				name: "10 bis 50 Euro",
-				queryValue: "between10and50",
-				selected: false
-			},
-			{
-				name: "50 bis 100 Euro",
-				queryValue: "between50and100",
-				selected: false
-			},
-			{
-				name: "Über 100 Euro",
-				queryValue: "moreThan100",
-				selected: false
-			}
+			FilterOptionFactoryService.max("Unter 10 Euro", "price", 10),
+			...FilterOptionFactoryService.combine(
+				FilterOptionFactoryService.min("10 bis 50 Euro", "price", 10.01),
+				FilterOptionFactoryService.max("10 bis 50 Euro", "price", 50)
+			),
+			...FilterOptionFactoryService.combine(
+				FilterOptionFactoryService.min("50 bis 100 Euro", "price", 50.01),
+				FilterOptionFactoryService.max("50 bis 100 Euro", "price", 100)
+			),
+			FilterOptionFactoryService.min("Über 100 Euro", "price", 100.01)
 		]
 	}]);
 
-	readonly getDate = () => of([{
+	readonly getDate: () => Observable<MultiLevelSelectParent[]> = () => of([{
 		name: "Datum",
 		selectType: (<"multiple" | "single">"single"),
 		expanded: false,
-		queryKey: "date",
 		children: [
 			{
+				query: [],
 				name: "Alle",
-				queryValue: "",
 				selected: true
 			},
-			{
-				name: "Vergangene Events",
-				queryValue: "past",
-				selected: false
-			},
-			{
-				name: "Zukünftige Events",
-				queryValue: "upcoming",
-				selected: false
-			}
+			FilterOptionFactoryService.byKey("Vergangene Events", "date", "past"),
+			FilterOptionFactoryService.byKey("Zukünftige Events", "date", "upcoming")
 		]
 	}]);
 
@@ -106,7 +146,9 @@ export class FilterOptionFactoryService {
 		return combineLatest(...results
 			.filter(event => EventUtilityService.isMerchandise(event))
 			.map(event => (<Merchandise>event))
-			.map(merch => this.stockService.getByEventId(merch.id))
+			.map(merch => this.stockService.getByEventId(merch.id, PageRequest.first(100), Sort.none())
+				.pipe(map(it => it.content))
+			)
 		)
 			.pipe(
 				map((nestedStockList: MerchStockList[]) => nestedStockList
@@ -116,15 +158,10 @@ export class FilterOptionFactoryService {
 						[])
 					//remove duplicates
 					.filter((size, index, array) => array.indexOf(size) === index)
-					.map((size: string) => ({
-						name: size,
-						queryValue: size,
-						selected: false
-					}))),
+					.map((size: string) => FilterOptionFactoryService.byKey(size, "size", size))),
 				defaultIfEmpty([]),
 				map(sizes => [{
 					name: "Größe",
-					queryKey: "size",
 					selectType: (<"multiple" | "single">"multiple"),
 					expanded: false,
 					children: sizes
@@ -134,22 +171,20 @@ export class FilterOptionFactoryService {
 
 
 	private getMaterialFilterOptions(results: Event[]): Observable<MultiLevelSelectParent[]> {
-		return of(results
-			.filter(event => EventUtilityService.isMerchandise(event))
-			.map(event => (<Merchandise>event))
-			.map(merch => merch.material)
-			.filter((material, index, array) => array.indexOf(material) === index)
-			.sort(sortingFunction(obj => obj, false))
-			.map(material => ({
-				name: material,
-				queryValue: material,
-				selected: false
-			})))
+		//todo move to the server so we get _all_ options and not just the ones on the current page
+		return of(
+			results
+				.filter(event => EventUtilityService.isMerchandise(event))
+				.map(event => (<Merchandise>event))
+				.map(merch => merch.material)
+				.filter((material, index, array) => array.indexOf(material) === index)
+				.sort(sortingFunction(obj => obj, false))
+				.map(material => (FilterOptionFactoryService.byKey(material, "material", material)))
+		)
 			.pipe(
 				map(materials => [{
 					name: "Material",
-					queryKey: "material",
-					selectType: (<"multiple" | "single">"multiple"),
+					selectType: "multiple",
 					expanded: false,
 					children: materials
 				}])
@@ -160,7 +195,9 @@ export class FilterOptionFactoryService {
 		return combineLatest(...results
 			.filter(event => EventUtilityService.isMerchandise(event))
 			.map(event => (<Merchandise>event))
-			.map(merch => this.stockService.getByEventId(merch.id))
+			.map(merch => this.stockService.getByEventId(merch.id, PageRequest.first(100), Sort.none())
+				.pipe(map(it => it.content))
+			)
 		)
 			.pipe(
 				map((nestedStockList: MerchStockList[]) => nestedStockList
@@ -171,14 +208,10 @@ export class FilterOptionFactoryService {
 					//remove duplicates
 					.filter((color, index, array) => array.findIndex(_color => _color.name === color.name) === index)
 					.sort(attributeSortingFunction("name", false))
-					.map((color: MerchColor) => ({
-						name: color.name,
-						queryValue: color.name,
-						selected: false
-					}))),
+					.map((color: MerchColor) => FilterOptionFactoryService.byKey(color.name, "color", color.name))),
 				defaultIfEmpty([]),
 				map(colors => [{
-					name: "Farben", queryKey: "color",
+					name: "Farben",
 					selectType: (<"multiple" | "single">"multiple"),
 					expanded: false, children: colors
 				}])

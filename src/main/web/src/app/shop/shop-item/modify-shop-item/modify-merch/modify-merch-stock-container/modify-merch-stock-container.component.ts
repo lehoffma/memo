@@ -7,6 +7,8 @@ import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
 import {filter, first, map, mergeMap} from "rxjs/operators";
 import {FormBuilder, FormControl} from "@angular/forms";
+import {PageRequest} from "../../../../../shared/model/api/page-request";
+import {Sort} from "../../../../../shared/model/api/sort";
 
 @Component({
 	selector: "memo-modify-merch-stock-container",
@@ -47,8 +49,9 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 	 * @param merch
 	 */
 	extractStock(merch: Merchandise) {
-		this.stockService.getByEventId(merch.id)
-			.pipe(first())
+		//todo?
+		this.stockService.getByEventId(merch.id, PageRequest.first(1000), Sort.none())
+			.pipe(first(), map(it => it.content))
 			.subscribe(stockList => {
 				this.stock = [...stockList];
 				this.previousStock = [...stockList];

@@ -7,6 +7,8 @@ import {Observable} from "rxjs/Observable";
 import {of} from "rxjs/observable/of";
 import {map, share} from "rxjs/operators";
 import {MilesService} from "../../../services/api/miles.service";
+import {PageRequest} from "../../../model/api/page-request";
+import {Sort} from "../../../model/api/sort";
 
 @Component({
 	selector: "memo-profile-preview",
@@ -27,13 +29,13 @@ export class ProfilePreviewComponent implements OnInit {
 				private participantsService: OrderedItemService,
 				private milesService: MilesService) {
 		this.user = this.data.user;
-		this.amountOfTours$ = this.participantsService.getParticipatedEventsOfUser(this.user.id)
+		this.amountOfTours$ = this.participantsService.getParticipatedEventsOfUser(this.user.id, PageRequest.first(), Sort.none())
 			.pipe(
-				map(events => events.length)
+				map(events => events.totalElements)
 			);
 
 		this.miles$ = this.milesService.get(this.user.id)
-			.pipe(share(),map(entry => entry.miles));
+			.pipe(share(), map(entry => entry.miles));
 
 		this.miles$
 			.subscribe(it => console.log(it));

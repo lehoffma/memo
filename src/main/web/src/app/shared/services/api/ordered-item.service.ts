@@ -6,12 +6,10 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
-import {Merchandise} from "../../../shop/shared/model/merchandise";
 import {EventUtilityService} from "../event-utility.service";
 import {of} from "rxjs/observable/of";
 import {Observable} from "rxjs/Observable";
 import {map, mergeMap, share, tap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {OrderService} from "./order.service";
 import {Order} from "../../model/order";
 import {PaymentMethod} from "../../../shop/checkout/payment/payment-method";
@@ -25,6 +23,7 @@ import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Page, PageResponse} from "../../model/api/page";
+import {EventService} from "./event.service";
 
 interface ParticipantApiResponse {
 	orderedItems: Participant[]
@@ -35,6 +34,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	constructor(protected http: HttpClient,
 				private capacityService: CapacityService,
 				private discountService: DiscountService,
+				private eventService: EventService,
 				private stockService: StockService,
 				private orderService: OrderService,
 				private userService: UserService) {
@@ -195,6 +195,26 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 		);
 	}
 
+	public getParticipantUsers(filter: Filter, pageRequest: PageRequest, sort: Sort): Observable<Page<ParticipantUser>> {
+		return this.get(filter, pageRequest, sort)
+			.pipe(
+				mergeMap((participants: Page<OrderedItem>) => {
+					if (!participants || participants.empty) {
+						return of(PageResponse.empty());
+					}
+
+					return PageResponse.mapToObservable(participants,
+						value => this.userService.getByParticipantId(value.id).pipe(
+							map(user => ({
+								...value,
+								user
+							}))
+						)
+					)
+				}),
+			)
+	}
+
 	/**
 	 *
 	 * @param eventId
@@ -203,50 +223,25 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	 * @param sort
 	 */
 	getParticipantUsersByEvent(eventId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<ParticipantUser>> {
-		return this.getParticipantIdsByEvent(eventId, pageRequest, sort)
-			.pipe(
-				mergeMap(participants => {
-					return of(PageResponse.empty());
-					// if (!participants || participants.empty) {
-					// 	return of(PageResponse.empty());
-					// }
-					//
-					// //todo
-					//
-					// return combineLatest(
-					// 	...participants.map(participant => this.userService.getByParticipantId(participant.id)
-					// 		.pipe(
-					// 			map(user => ({
-					// 				...participant,
-					// 				user,
-					// 			}))
-					// 		)))
-				})
-			)
+		return this.getParticipantUsers(Filter.by({"eventId": "" + eventId}), pageRequest, sort);
 	}
 
 
 	/**
 	 *
 	 * @param userId
+	 * @param pageRequest
+	 * @param sort
 	 */
-	getParticipatedEventsOfUser(userId: number): Observable<(Tour | Party)[]> {
-		const params = new HttpParams().set("userId", "" + userId);
-		const request = this.performRequest(
-			this.http.get<{ shopItems: (Party | Merchandise | Tour)[] }>("/api/participatedEvents", {params})
-		).pipe(
-			map(json => json.shopItems
-				.filter(event => !EventUtilityService.isMerchandise(event))
-				.map(event => EventUtilityService.handleShopItemOptional(event,
-					{
-						tours: it => Tour.create().setProperties({...it}),
-						partys: it => Party.create().setProperties({...it})
-					})
-				)),
-			share()
+	getParticipatedEventsOfUser(userId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<(Tour | Party)>> {
+		return this.eventService.get(
+			Filter.by({
+				"userId": "" + userId,
+				"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)
+			}),
+			pageRequest,
+			sort
 		);
-
-		return this._cache.other<(Tour | Party)[]>(params, request);
 	}
 
 	/**

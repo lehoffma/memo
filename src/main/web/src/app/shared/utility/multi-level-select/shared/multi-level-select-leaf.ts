@@ -1,6 +1,9 @@
 import {SelectNode} from "./select-node";
 
 export interface MultiLevelSelectLeaf extends SelectNode {
-	queryValue: string;
+	query: {
+		key: string;
+		values?: string[];
+	}[]
 	selected: boolean;
 }

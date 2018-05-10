@@ -1,21 +1,21 @@
 import {SortDirection} from "@angular/material";
 
-export enum SortDirectionEnum {
+export enum Direction {
 	ASCENDING = "asc",
 	DESCENDING = "desc",
 	NONE = ""
 }
 
 export class Sort {
-	direction: SortDirectionEnum;
+	direction: Direction;
 	sortBys: string[];
 
-	constructor(direction: SortDirectionEnum, by: string[]) {
+	constructor(direction: Direction, by: string[]) {
 		this.direction = direction;
 		this.sortBys = by;
 	}
 
-	static by(direction: SortDirectionEnum, ...properties: string[]) {
+	static by(direction: Direction, ...properties: string[]) {
 		return new Sort(direction, properties);
 	}
 
@@ -23,10 +23,10 @@ export class Sort {
 	static by(direction: SortDirection, ...properties: string[]) {
 		let sortDirection =
 			direction === "asc"
-				? SortDirectionEnum.ASCENDING
+				? Direction.ASCENDING
 				: direction === "desc"
-				? SortDirectionEnum.DESCENDING
-				: SortDirectionEnum.NONE;
+				? Direction.DESCENDING
+				: Direction.NONE;
 
 		return new Sort(sortDirection, properties);
 	}
@@ -41,6 +41,6 @@ export class Sort {
 
 
 	static none() {
-		return new Sort(SortDirectionEnum.NONE, []);
+		return new Sort(Direction.NONE, []);
 	}
 }

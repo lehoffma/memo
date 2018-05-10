@@ -24,7 +24,7 @@ import {first, map} from "rxjs/operators";
 		])
 	]
 })
-export class FilteringMenuComponent implements OnInit, OnChanges{
+export class FilteringMenuComponent implements OnInit, OnChanges {
 
 	@Input() filterOptions: MultiLevelSelectParent[];
 
@@ -44,11 +44,11 @@ export class FilteringMenuComponent implements OnInit, OnChanges{
 	 * @param {SimpleChanges} changes
 	 */
 	ngOnChanges(changes: SimpleChanges): void {
-		if(changes["filterOptions"] && this.filterOptions){
+		if (changes["filterOptions"] && this.filterOptions) {
 			this.filterOptions
 				.filter(option => option.selectType === "single")
 				.forEach(option => {
-					this.selectedOption[option.queryKey] = option.children.find(child => child["selected"]);
+					this.selectedOption[option.name] = option.children.find(child => child["selected"]);
 
 				})
 		}
@@ -58,8 +58,8 @@ export class FilteringMenuComponent implements OnInit, OnChanges{
 	 *
 	 * @param {string} queryKey
 	 */
-	updateFromRadioSelection(queryKey:string){
-		const parent = this.filterOptions.find(option => option.queryKey === queryKey);
+	updateFromRadioSelection(queryKey: string) {
+		const parent = this.filterOptions.find(option => option.name === queryKey);
 		const childIndex = parent.children.findIndex(child => this.selectedOption[queryKey].name === child.name);
 
 		parent.children.forEach(child => isMultiLevelSelectLeaf(child) ? child.selected = false : null);
@@ -72,18 +72,35 @@ export class FilteringMenuComponent implements OnInit, OnChanges{
 	 * @param {MultiLevelSelectParent} option
 	 */
 	updateQueryParams(option: MultiLevelSelectParent) {
-		let queryParams: Params = {};
-		queryParams[option.queryKey] = option.children
+		const children = option.children
 			.filter(child => {
 				if (isMultiLevelSelectLeaf(child)) {
 					return child.selected
 				}
 				return false;
 			})
-			.map(child => (<MultiLevelSelectLeaf>child))
-			.map(child => child.queryValue)
-			.join("|");
+			.map(child => (<MultiLevelSelectLeaf>child));
 
+		let queryParams: Params = children
+			.reduce((params: Params, child) => {
+				return child.query.reduce((acc, query) => {
+					let previousValue = (acc[query.key] && acc[query.key].split("|")) || [];
+					acc[query.key] = [...previousValue, ...query.values].join("|");
+					return acc;
+				}, params);
+			}, {});
+
+		option.children
+			.map(child => (<MultiLevelSelectLeaf>child))
+			.forEach(child => {
+				child.query.forEach(query => {
+					if (!queryParams[query.key]) {
+						queryParams[query.key] = "";
+					}
+				})
+			});
+
+		console.log(queryParams);
 
 		this.activatedRoute.queryParamMap
 			.pipe(

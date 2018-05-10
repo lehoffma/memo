@@ -11,7 +11,6 @@ import memo.util.model.Filter;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
-import javax.persistence.criteria.Order;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.HttpServletResponse;
@@ -106,7 +105,7 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
         EntityType<OrderedItem> orderedItemEntityType = metamodel.entity(OrderedItem.class);
 
         ListJoin<ShopItem, OrderedItem> orderedItemJoin = root.join(shopItemEntityType.getList("orders", OrderedItem.class));
-        Join<OrderedItem, Order> orderJoin = orderedItemJoin.join(orderedItemEntityType.getSingularAttribute("order", Order.class));
+        Join<OrderedItem, memo.model.Order> orderJoin = orderedItemJoin.join(orderedItemEntityType.getSingularAttribute("order", memo.model.Order.class));
 
         Path<Object> orderUser = orderJoin.get("user");
 

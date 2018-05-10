@@ -6,18 +6,20 @@ import {Event} from "../shared/model/event";
 import {StockService} from "../../shared/services/api/stock.service";
 import {isObservable} from "../../util/util";
 import {isNullOrUndefined} from "util";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, ParamMap} from "@angular/router";
 import {isMultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-option";
 import {Observable} from "rxjs/Observable";
 import {defaultIfEmpty, first, map} from "rxjs/operators";
 import {of} from "rxjs/observable/of";
 import {combineLatest} from "rxjs/observable/combineLatest";
 import {isAfter, isBefore, isEqual, startOfDay} from "date-fns";
+import {MultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-leaf";
 
 @Injectable()
 export class SearchFilterService {
 
 
+	//todo pagination remove
 	readonly eventFilterFunctions: {
 		[key: string]: (obj: ShopItem | Event, filterValue: any) => boolean | Observable<boolean>
 	} = {
@@ -128,23 +130,53 @@ export class SearchFilterService {
 	 * jeweiligen werten
 	 */
 	initFilterMenu(activatedRoute: ActivatedRoute, filterOptions: MultiLevelSelectParent[]): Observable<MultiLevelSelectParent[]> {
-		//checks if the route includes query parameters and initializes the filtermenus checkboxes
+		//checks if the route includes query parameters and initializes the filter-menu's checkboxes
 		return activatedRoute.queryParamMap
 			.pipe(
 				first(),
-				map(queryParamMap => {
-					return [...filterOptions].map(filterOptionParent => {
-						let key = filterOptionParent.queryKey;
-						//if the key associated with the filter selection box is part of the query parameters,
-						//update the filterOption's selected values.
-						if (queryParamMap.has(key)) {
-							let values: string[] = queryParamMap.get(key).split("|"); //something like 'tours|partys|merch'
-							filterOptionParent.children.forEach(child => {
-								if (isMultiLevelSelectLeaf(child)) {
-									child.selected = values.includes(child.queryValue);
+				map((queryParamMap: ParamMap) => {
+					return [...filterOptions].map((filterOptionParent: MultiLevelSelectParent) => {
+						filterOptionParent.children
+							.filter(child => isMultiLevelSelectLeaf(child))
+							.map(it => <MultiLevelSelectLeaf>it)
+							.forEach(child => child.selected = false);
+
+						const matchingOptions = filterOptionParent.children
+							.filter(child => isMultiLevelSelectLeaf(child))
+							.map(it => <MultiLevelSelectLeaf>it)
+							.filter((child: MultiLevelSelectLeaf) =>
+								child.query.every(query => queryParamMap.has(query.key))
+							)
+							.filter((child: MultiLevelSelectLeaf) => {
+								if (!child.query || child.query.length === 0) {
+									return false;
 								}
+								return child.query.every(query => {
+									//combine something like 'key=tours|partys&key=partys' to one array
+									let paramValues: string[] = queryParamMap.getAll(query.key)
+										.join("|")
+										.split("|");
+									const queryValues = query.values;
+									if (queryValues) {
+										return queryValues.every(value => paramValues.includes(value))
+									}
+									return false;
+								})
 							});
+
+						matchingOptions
+							.forEach((child: MultiLevelSelectLeaf) => {
+								child.selected = true;
+							});
+
+						if (matchingOptions.length === 0 && filterOptionParent.selectType === "single") {
+							filterOptionParent.children
+								.filter(it => it.name === "Alle")
+								.filter(child => isMultiLevelSelectLeaf(child))
+								.map(it => <MultiLevelSelectLeaf>it)
+								.forEach(child => child.selected = true);
 						}
+
 						return filterOptionParent;
 					});
 				})
@@ -165,16 +197,16 @@ export class SearchFilterService {
 		}
 		//remove values that are not part of the array anymore
 		for (let i = acc.length - 1; i >= 0; i--) {
-			if (options.findIndex(option => option.queryKey === acc[i].queryKey) === -1) {
+			if (options.findIndex(option => option.name === acc[i].name) === -1) {
 				acc.splice(i, 1);
 			}
 		}
 
 		//modify children values
 		options
-			.filter(option => !!acc.find(prevOption => prevOption.queryKey === option.queryKey))
+			.filter(option => !!acc.find(prevOption => prevOption.name === option.name))
 			.forEach(option => {
-				const index = acc.findIndex(prevOption => prevOption.queryKey === option.queryKey);
+				const index = acc.findIndex(prevOption => prevOption.name === option.name);
 
 				//add children if array is null/undefined
 				if (isNullOrUndefined(acc[index].children) && option.children) {
@@ -199,7 +231,7 @@ export class SearchFilterService {
 		//add options that aren't yet part of the array to the array
 		acc.push(
 			...options.filter(option =>
-				!acc.find(prevOption => prevOption.queryKey === option.queryKey)
+				!acc.find(prevOption => prevOption.name === option.name)
 			)
 		);
 

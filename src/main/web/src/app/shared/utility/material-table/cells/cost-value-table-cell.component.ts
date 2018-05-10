@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../shared/utility/expandable-table/expandable-table-cell.component";
+import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
 
 @Component({
-	selector: "td [costValueTableCell]",
+	selector: "td [costValueTableCell], memo-cost-value-table-cell",
 	template: `
 		<span [ngClass]="{'positive': data >= 0}">
 			{{data | currency:'EUR':'symbol'}}
@@ -14,6 +14,7 @@ import {ExpandableTableCellComponent} from "../../../shared/utility/expandable-t
 
 export class CostValueTableCellComponent implements OnInit, ExpandableTableCellComponent {
 	@Input() data: number;
+
 
 	constructor() {
 	}

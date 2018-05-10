@@ -23,7 +23,6 @@ import {ImageToUpload} from "../../../../shared/utility/multi-image-upload/image
 export class ConcludeEventComponent implements OnInit, OnDestroy {
 	loading = false;
 	formGroup: FormGroup = this.formBuilder.group({
-		"participants": [[]],
 		"images": this.formBuilder.group({
 			"imagePaths": [],
 			"imagesToUpload": [[]]
@@ -91,9 +90,6 @@ export class ConcludeEventComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.subscription = this.previousValue$.subscribe(value => {
-			this.updateParticipants(value.participants);
-		})
 	}
 
 	ngOnDestroy(): void {
@@ -102,13 +98,6 @@ export class ConcludeEventComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	/**
-	 *
-	 * @param {ParticipantUser[]} participants
-	 */
-	updateParticipants(participants: ParticipantUser[]) {
-		this.formGroup.get("participants").setValue(participants);
-	}
 
 
 	/**
@@ -119,16 +108,11 @@ export class ConcludeEventComponent implements OnInit, OnDestroy {
 		this.event$
 			.pipe(
 				mergeMap(event => {
-					const participants: Participant[] = this.formGroup.get("participants").value
-						.map(participantUser => {
-							const {user, ...participant} = participantUser;
-							return participant;
-						});
 					//don't perform the PUT request for the group picture if it hasn't been changed
 					const image: ImageToUpload = this.formGroup.get("images").get("imagesToUpload").value[0];
 					const responsible = [...this.formGroup.get("responsibleUsers").value];
 
-					return this.concludeEventService.concludeEvent(event.id, participants, image, responsible);
+					return this.concludeEventService.concludeEvent(event.id, image, responsible);
 				})
 			)
 			.subscribe(event => {

@@ -1,21 +1,14 @@
-<div class="participant-table-container" [class.loading]="participantListService.loading">
-	<memo-expandable-table
-		[data]="(participantListService.data$ | async)"
+<div class="participant-table-container">
+	<memo-expandable-material-table
+		[dataSource]="dataSource"
+		[dataService]="orderedItemService"
 		[rowActions]="rowActions"
-		[expandable]="isExpandable$ | async"
 		[title]="'Teilnehmer von ' + (participantListService.eventTitle | async)"
-		[columnKeys]="participantListService.primaryColumnKeys$ | async"
-		[expandedRowComponent]="participantListService.rowComponent"
-		[expandedRowKeys]="participantListService.expandedRowKeys$ | async"
+		[columns]="columns"
+		[displayedColumns]="displayedColumns$ | async"
 		[permissions]="participantListService.permissions$ | async"
-		(onSort)="participantListService.onSort($event)"
 		(onAction)="participantListService.handleTableAction($event)"
 	>
 
-	</memo-expandable-table>
+	</memo-expandable-material-table>
 </div>
-<ng-container *ngIf="participantListService.loading">
-	<div class="loader-wrapper">
-		<div class="loader"></div>
-	</div>
-</ng-container>

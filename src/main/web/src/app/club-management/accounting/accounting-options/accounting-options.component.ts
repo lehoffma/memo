@@ -35,7 +35,7 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	costTypes = {};
 
 	costCategories$ = this.entryCategoryService.getCategories()
-		.pipe(share());
+		.pipe(share(), map(it => it.content));
 
 	events: Event[] = [];
 
@@ -213,14 +213,14 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 			.subscribe(async ([paramMap, queryParamMap]) => {
 				this.isLoading = true;
 				this.changeDetectorRef.detectChanges();
-				this.dateOptions.from = queryParamMap.has("from") ? parse(queryParamMap.get("from")) : undefined;
-				this.dateOptions.to = queryParamMap.has("to") ? parse(queryParamMap.get("to")) : undefined;
+				this.dateOptions.from = queryParamMap.has("minDate") ? parse(queryParamMap.get("minDate")) : undefined;
+				this.dateOptions.to = queryParamMap.has("maxDate") ? parse(queryParamMap.get("maxDate")) : undefined;
 				await this.getAvailableEvents();
-				if (queryParamMap.has("eventTypes")) {
-					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.getAll("eventTypes"));
+				if (queryParamMap.has("eventType")) {
+					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.getAll("eventType"));
 				}
-				if (queryParamMap.has("costTypes")) {
-					this.readBinaryValuesFromQueryParams(this.costTypes, queryParamMap.getAll("costTypes"));
+				if (queryParamMap.has("entryType")) {
+					this.readBinaryValuesFromQueryParams(this.costTypes, queryParamMap.getAll("entryType"));
 				}
 				//in case the route is something like /tours/:eventId/costs, extract the event id
 				if (paramMap.has("eventId")) {
@@ -228,8 +228,8 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 						? [this.availableEvents.find(event => event.id === +paramMap.get("eventId"))]
 						: [];
 				}
-				if (queryParamMap.has("eventIds")) {
-					this.events = queryParamMap.getAll("eventIds")
+				if (queryParamMap.has("eventId")) {
+					this.events = queryParamMap.getAll("eventId")
 						.map(eventId => this.availableEvents.find(event => event.id === +eventId))
 						.filter(event => event !== null)
 				}
@@ -244,15 +244,15 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	updateQueryParams() {
 		const params: Params = {};
 
-		params["eventTypes"] = Object.keys(this.eventTypes)
+		params["eventType"] = Object.keys(this.eventTypes)
 			.filter(key => this.eventTypes[key]);
-		params["costTypes"] = Object.keys(this.costTypes)
+		params["entryType"] = Object.keys(this.costTypes)
 			.filter(key => this.costTypes[key]);
 
-		params["eventIds"] = this.events.map(event => event.id);
+		params["eventId"] = this.events.map(event => event.id);
 
-		params["from"] = (!this.dateOptions.from || !isValid(this.dateOptions.from)) ? "" : this.dateOptions.from.toISOString();
-		params["to"] = (!this.dateOptions.to || !isValid(this.dateOptions.to)) ? "" : this.dateOptions.to.toISOString();
+		params["minDate"] = (!this.dateOptions.from || !isValid(this.dateOptions.from)) ? "" : this.dateOptions.from.toISOString();
+		params["maxDate"] = (!this.dateOptions.to || !isValid(this.dateOptions.to)) ? "" : this.dateOptions.to.toISOString();
 
 		this.activatedRoute.queryParamMap
 			.pipe(

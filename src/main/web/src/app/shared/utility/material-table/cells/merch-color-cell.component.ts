@@ -1,9 +1,9 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
-import {ExpandableTableCellComponent} from "../../../../../shared/utility/expandable-table/expandable-table-cell.component";
-import {MerchColor} from "../../../../shared/model/merch-color";
+import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
+import {MerchColor} from "../../../../shop/shared/model/merch-color";
 
 @Component({
-	selector: "td [memoMerchColorCell]",
+	selector: "td [memoMerchColorCell], memo-merch-color-cell",
 	template: `
 		<span class="mat-elevation-z2"
 			  [style.background-color]="data.hex"

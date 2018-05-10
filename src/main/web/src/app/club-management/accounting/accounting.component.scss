@@ -98,34 +98,23 @@ $options-breakpoint: 850px;
 	}
 }
 
-memo-expandable-table {
-	/deep/ .expandable-table-component-container {
-
-		th.sortable-column,
-		th.expandable-table-selectall-checkbox,
-		.expandable-table-body-main-row /deep/ td:not(.expandable-table-actions):not(.expand-icon) {
-			padding-left: 10px;
-		}
-
-		@media all and (min-width: 400px) {
-			th.sortable-column,
-			th.expandable-table-selectall-checkbox,
-			.expandable-table-body-main-row /deep/ td:not(.expandable-table-actions):not(.expand-icon) {
-				padding-left: 30px !important;
-			}
-		}
-
-		@media all and (min-width: $options-breakpoint) {
-			margin: 2rem;
-			min-width: 500px;
-			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-		}
-	}
-
+/deep/ .loading-shade {
+	top: 36px !important;
+	bottom: 74px !important;
 }
 
 @media all and (min-width: $options-breakpoint) {
+	memo-expandable-material-table {
+		display: block;
+		margin: 1rem;
+		@include mat-elevation(3);
+	}
 	.loader {
 		left: 65%;
+	}
+
+	/deep/ .loading-shade {
+		top: 0 !important;
+		left: 30% !important;
 	}
 }

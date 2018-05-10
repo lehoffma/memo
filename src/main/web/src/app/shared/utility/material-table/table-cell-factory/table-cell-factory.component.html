@@ -20,6 +20,13 @@
 	<memo-boolean-checkmark-cell [data]="!!column.cell(element)" *ngSwitchCase="'boolean'">
 	</memo-boolean-checkmark-cell>
 
+	<memo-cost-value-table-cell [data]="column.cell(element)" *ngSwitchCase="'costValue'">
+	</memo-cost-value-table-cell>
+
+	<memo-merch-color-cell [data]="column.cell(element)" *ngSwitchCase="'color'">
+
+	</memo-merch-color-cell>
+
 
 	<!--default: just show the text-->
 	<ng-container *ngSwitchDefault>

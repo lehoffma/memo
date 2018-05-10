@@ -18,6 +18,11 @@ export class EntryCategoryService extends ServletService<EntryCategory> {
 		super(http, "/api/entryCategory");
 	}
 
+
+	jsonToObject(json: any): EntryCategory {
+		return EntryCategory.create().setProperties(json);
+	}
+
 	/**
 	 *
 	 * @returns {Observable<EntryCategory[]>}
