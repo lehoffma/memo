@@ -1,5 +1,5 @@
 import {Component, OnInit} from "@angular/core";
-import {User} from "../../shared/model/user";
+import {User, userPermissions} from "../../shared/model/user";
 import {ActivatedRoute} from "@angular/router";
 import {profileCategories} from "./profile-info-category";
 import {UserService} from "../../shared/services/api/user.service";
@@ -11,13 +11,13 @@ import {EventRoute} from "../../shop/shared/model/route";
 import {Address} from "../../shared/model/address";
 import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
 import {defaultIfEmpty, first, map, mergeMap, tap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {Observable} from "rxjs/Observable";
+import {combineLatest, Observable} from "rxjs";
 import {MilesService} from "../../shared/services/api/miles.service";
 import {ClubRole, isAuthenticated} from "../../shared/model/club-role";
 import {Permission} from "../../shared/model/permission";
 import {PageRequest} from "../../shared/model/api/page-request";
-import {Sort, Direction} from "../../shared/model/api/sort";
+import {Direction, Sort} from "../../shared/model/api/sort";
+import {setProperties} from "../../shared/model/util/base-object";
 
 
 @Component({
@@ -37,7 +37,7 @@ export class ProfileComponent implements OnInit {
 			tap(user => console.log(user)),
 			mergeMap(user => this.milesService.get(user.id)
 				.pipe(
-					map(entry => user.setProperties({miles: entry.miles}))
+					map(entry => setProperties(user, {miles: entry.miles}))
 				)
 			)
 		);
@@ -85,7 +85,7 @@ export class ProfileComponent implements OnInit {
 		.pipe(
 			map(([profileId, currentUser]) => {
 				return currentUser && (profileId === currentUser.id || isAuthenticated(currentUser.clubRole, ClubRole.Admin)
-					|| currentUser.userPermissions().userManagement >= Permission.write);
+					|| userPermissions(currentUser).userManagement >= Permission.write);
 			})
 		);
 	profileCategories = profileCategories;

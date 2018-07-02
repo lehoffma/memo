@@ -1,5 +1,3 @@
-
-
-export interface UserNotification{
+export interface UserNotification {
 	//todo
 }

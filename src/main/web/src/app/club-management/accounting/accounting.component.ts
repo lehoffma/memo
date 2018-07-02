@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {Dimension, WindowService} from "../../shared/services/window.service";
 import {AccountingTableContainerService} from "./accounting-table-container.service";
-import {map, startWith} from "rxjs/operators";
+import {map, mergeMap, startWith} from "rxjs/operators";
 import {ExpandableMaterialTableComponent, TableColumn} from "../../shared/utility/material-table/expandable-material-table.component";
 import {Entry} from "../../shared/model/entry";
 import {ResponsiveColumnsHelper} from "../../shared/utility/material-table/responsive-columns.helper";
@@ -9,6 +9,7 @@ import {BreakpointObserver} from "@angular/cdk/layout";
 import {EntryService} from "../../shared/services/api/entry.service";
 import {of} from "rxjs";
 import {NavigationService} from "../../shared/services/navigation.service";
+import {Sort} from "../../shared/model/api/sort";
 
 @Component({
 	selector: "memo-accounting",
@@ -17,12 +18,6 @@ import {NavigationService} from "../../shared/services/navigation.service";
 	providers: [AccountingTableContainerService]
 })
 export class AccountingComponent implements OnInit, OnDestroy, AfterViewInit {
-	//todo meh
-	// total$ = this.accountingTableContainerService.data$
-	// 	.pipe(
-	// 		map(entries => entries.reduce((acc, entry) => acc + entry.value, 0))
-	// 	);
-	total$ = of(0);
 
 	showOptions = true;
 	mobile = false;
@@ -47,7 +42,12 @@ export class AccountingComponent implements OnInit, OnDestroy, AfterViewInit {
 	filter$ = this.navigationService.queryParamMap$.pipe(
 		map(queryParamMap => this.entryService.paramMapToFilter(queryParamMap))
 	);
-	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent;
+	total$ = this.filter$.pipe(
+		mergeMap(filter => this.entryService.getAll(filter, Sort.none())),
+		map(entries => entries.reduce((acc, entry) => acc + entry.value, 0))
+	);
+
+	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent<Entry>;
 
 	constructor(private windowService: WindowService,
 				private navigationService: NavigationService,

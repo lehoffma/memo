@@ -23,7 +23,8 @@
 			</mat-menu>
 		</div>
 		<div class="profile-header">
-			<img class="profile-picture" src="{{user.images.length > 0 ? user.images[0] : 'resources/images/Logo.png'}}">
+			<img class="profile-picture"
+				 src="{{(user.images.length > 0 ? user.images[0] : 'resources/images/Logo.png') | imageSize:'medium' | async}}">
 		</div>
 		<div class="profile-title-container">
 			<h1 class="profile-name">{{user.firstName}} {{user.surname}}</h1>

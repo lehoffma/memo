@@ -1,14 +1,14 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Event} from "../../../shared/model/event";
+import {Event, getDetailsTableKeys} from "../../../shared/model/event";
 import {ShopItem} from "../../../../shared/model/shop-item";
 import {TypeOfProperty} from "../../../../shared/model/util/type-of-property";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {MerchStockList} from "../../../shared/model/merch-stock";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs";
 import {filter, map, mergeMap, share} from "rxjs/operators";
+import {Sort} from "../../../../shared/model/api/sort";
 
 @Component({
 	selector: "memo-item-table",
@@ -17,19 +17,10 @@ import {filter, map, mergeMap, share} from "rxjs/operators";
 })
 export class ItemTableComponent implements OnInit {
 
-	private _event$ = new BehaviorSubject<Event>(Event.create());
-
-	get event() {
-		return this._event$.getValue();
-	}
-
-	@Input()
-	set event(event: Event) {
-		if (this._event$.getValue().id !== event.id) {
-			this._event$.next(event);
-		}
-	}
-
+	values: {
+		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
+	} = {};
+	private _event$ = new BehaviorSubject<Event>(null);
 	stock$: Observable<MerchStockList> = this._event$
 		.pipe(
 			filter(event => EventUtilityService.isMerchandise(event)),
@@ -37,19 +28,25 @@ export class ItemTableComponent implements OnInit {
 			mergeMap(event => this.stockService.getByEventId(event.id)),
 			share()
 		);
-
-	values: {
-		[key in keyof ShopItem]?: Observable<TypeOfProperty<ShopItem>>
-		} = {};
+	tableCategories$ = this._event$.asObservable()
+		.pipe(
+			map(event => event.id === -1 ? [] : getDetailsTableKeys(event))
+		);
 
 	constructor(private stockService: StockService,
 				private participantService: OrderedItemService) {
 	}
 
-	tableCategories$ = this._event$.asObservable()
-		.pipe(
-			map(event => event.id === -1 ? [] : event.detailsTableKeys)
-		);
+	get event() {
+		return this._event$.getValue();
+	}
+
+	@Input()
+	set event(event: Event) {
+		if (!this._event$.getValue() || this._event$.getValue().id !== event.id) {
+			this._event$.next(event);
+		}
+	}
 
 	ngOnInit() {
 	}
@@ -74,10 +71,10 @@ export class ItemTableComponent implements OnInit {
 					.pipe(
 						mergeMap(event =>
 							this.participantService
-								.getParticipantIdsByEvent(event.id, EventUtilityService.getEventType(event))
+								.getParticipantIdsByEvent(event.id, Sort.none())
 								.pipe(
 									map(participants => event.capacity - participants.length))
-								)
+						)
 					);
 			}
 			else {

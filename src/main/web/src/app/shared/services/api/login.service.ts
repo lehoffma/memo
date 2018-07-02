@@ -1,16 +1,13 @@
 import {Injectable} from "@angular/core";
 import {UserService} from "./user.service";
-import {User} from "../../model/user";
+import {User, userPermissions} from "../../model/user";
 import {MatSnackBar} from "@angular/material";
 import {ActionPermissions} from "../../utility/material-table/util/action-permissions";
 import {Permission, UserPermissions} from "../../model/permission";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AuthService} from "../../authentication/auth.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {catchError, filter, map, mergeMap, retry, share} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {EventService} from "./event.service";
 
 interface LoginApiResponse {
@@ -23,7 +20,6 @@ interface LoginApiResponse {
 export class LogInService {
 	public redirectUrl = "/";
 	public initialized$ = new BehaviorSubject(false);
-
 	private accountSubject: BehaviorSubject<number> = new BehaviorSubject(null);
 	public accountObservable: Observable<number> =
 		combineLatest(this.accountSubject, this.initialized$)
@@ -31,13 +27,10 @@ export class LogInService {
 				filter(([id, initialized]) => initialized),
 				map(([id, _]) => id)
 			);
-
 	public currentUser$: Observable<User> = this.accountObservable
 		.pipe(
 			mergeMap(id => id !== null ? this.userService.valueChanges(id) : of(null))
 		);
-
-
 	private readonly loginUrl = "/api/login";
 	private readonly logoutUrl = "/api/logout";
 
@@ -171,7 +164,8 @@ export class LogInService {
 	getActionPermissions(...permissionsKeys: (keyof UserPermissions)[]): Observable<ActionPermissions> {
 		return this.currentUser$
 			.pipe(
-				map(user => user === null
+				map(user => user === null ? null : userPermissions(user)),
+				map(userPermissions => userPermissions === null
 					? {
 						"Hinzufuegen": false,
 						"Bearbeiten": false,
@@ -179,11 +173,11 @@ export class LogInService {
 					}
 					: {
 						"Hinzufuegen": permissionsKeys.some(permissionsKey =>
-							user.userPermissions()[permissionsKey] >= Permission.create),
+							userPermissions[permissionsKey] >= Permission.create),
 						"Bearbeiten": permissionsKeys.some(permissionsKey =>
-							user.userPermissions()[permissionsKey] >= Permission.write),
+							userPermissions[permissionsKey] >= Permission.write),
 						"Loeschen": permissionsKeys.some(permissionsKey =>
-							user.userPermissions()[permissionsKey] >= Permission.delete)
+							userPermissions[permissionsKey] >= Permission.delete)
 					})
 			);
 	}

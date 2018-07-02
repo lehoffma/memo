@@ -7,7 +7,7 @@
 
 
 	<memo-item-details-content [title]="'Bezahlung'" class="no-padding">
-		<memo-payment [formGroup]="formGroup.get('payment')"></memo-payment>
+		<memo-payment [formGroup]="formGroup.get('method')"></memo-payment>
 	</memo-item-details-content>
 	<div class="checkout-total">
 		<span>{{total$ | async | currency:'EUR':'symbol'}}</span>

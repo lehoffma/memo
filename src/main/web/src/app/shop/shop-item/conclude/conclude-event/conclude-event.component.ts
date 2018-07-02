@@ -1,19 +1,19 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {map, mergeMap} from "rxjs/operators";
-import {Observable} from "rxjs/Observable";
+import {combineLatest, Observable, of} from "rxjs";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {EventType} from "../../../shared/model/event-type";
-import {Participant, ParticipantUser} from "../../../shared/model/participant";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {ParticipantUser} from "../../../shared/model/participant";
 import {ConcludeEventService} from "../../../shared/services/conclude-event.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {EventService} from "../../../../shared/services/api/event.service";
-import {of} from "rxjs/observable/of";
 import {UserService} from "../../../../shared/services/api/user.service";
 import {Event} from "../../../shared/model/event";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {ImageToUpload} from "../../../../shared/utility/multi-image-upload/image-to-upload";
+import {PageRequest} from "../../../../shared/model/api/page-request";
+import {Direction, Sort} from "../../../../shared/model/api/sort";
 
 @Component({
 	selector: "memo-conclude-event",
@@ -55,7 +55,13 @@ export class ConcludeEventComponent implements OnInit, OnDestroy {
 		mergeMap((event: Event) => {
 			let images$ = of(event.groupPicture ? [event.groupPicture] : []);
 			let users$ = of([]);
-			let participants$ = this.participantsService.getParticipantUsersByEvent(event.id);
+			let participants$ = this.participantsService.getParticipantUsersByEvent(
+				event.id,
+				PageRequest.first(10000),
+				Sort.by(Direction.ASCENDING, "id")
+			).pipe(
+				map(it => it.content)
+			);
 
 			if (event.reportWriters.length > 0) {
 				users$ = combineLatest(
@@ -97,7 +103,6 @@ export class ConcludeEventComponent implements OnInit, OnDestroy {
 			this.subscription.unsubscribe();
 		}
 	}
-
 
 
 	/**

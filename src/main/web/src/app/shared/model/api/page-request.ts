@@ -12,7 +12,7 @@ export class PageRequest {
 	}
 
 	static first(pageSize: number = DEFAULT_PAGE_SIZE) {
-		return new PageRequest(0, DEFAULT_PAGE_SIZE);
+		return new PageRequest(0, pageSize);
 	}
 
 	static at(page: number, pageSize: number = DEFAULT_PAGE_SIZE) {

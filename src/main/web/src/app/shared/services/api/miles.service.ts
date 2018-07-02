@@ -1,9 +1,8 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable, throwError} from "rxjs";
 import {ApiCache} from "../../cache/api-cache";
 import {map} from "rxjs/operators";
-import {_throw} from "rxjs/observable/throw";
 import {setDate, setMonth, setYear} from "date-fns";
 
 export interface MilesListEntry {
@@ -43,7 +42,7 @@ export class MilesService {
 			dates = this.getDatesFromSeasonString(season);
 		}
 		catch (e) {
-			return _throw(e);
+			return throwError(e);
 		}
 
 		const params = new HttpParams().set("userId", "" + userId)
@@ -78,7 +77,7 @@ export class MilesService {
 			dates = this.getDatesFromSeasonString(season);
 		}
 		catch (e) {
-			return _throw(e);
+			return throwError(e);
 		}
 
 		const params = new HttpParams()

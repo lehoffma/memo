@@ -1,17 +1,17 @@
 import {Injectable} from "@angular/core";
-import {Entry} from "../../model/entry";
+import {createEntry, Entry} from "../../model/entry";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/api/servlet.service";
 import {EntryCategoryService} from "./entry-category.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {combineLatest, Observable} from "rxjs";
 import {map, mergeMap, tap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {EventService} from "./event.service";
 import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Filter} from "../../model/api/filter";
 import {Page} from "../../model/api/page";
 import {ParamMap} from "@angular/router";
+import {setProperties} from "../../model/util/base-object";
 
 interface EntryApiResponse {
 	entries: Entry[];
@@ -34,7 +34,7 @@ export class EntryService extends ServletService<Entry> {
 			this.eventService.getById(json["item"])
 		)
 			.pipe(
-				map(([category, item]) => Entry.create().setProperties(json).setProperties({category, item}))
+				map(([category, item]) => setProperties(setProperties(createEntry(), json), {category, item}))
 			)
 	}
 

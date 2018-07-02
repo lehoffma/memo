@@ -1,20 +1,17 @@
-<div class="background">
+<mat-sidenav-container cdkScrollable>
+	<mat-sidenav #sidenav>
+		<memo-sidenav (sideBarClosed)="sidenav.close()"></memo-sidenav>
+	</mat-sidenav>
 
-	<mat-sidenav-container cdkScrollable>
-		<mat-sidenav #sidenav>
-			<memo-sidenav (sideBarClosed)="sidenav.close()"></memo-sidenav>
-		</mat-sidenav>
-
-		<!--main content-->
-		<div>
-			<!--output: sidebar button wurde angeklickt -> callback in AppComponent -->
-			<memo-toolbar (sideBarOpened)="sidenav.open()"></memo-toolbar>
-			<div class="router-outlet-container">
-				<router-outlet></router-outlet>
-			</div>
+	<!--main content-->
+	<div>
+		<!--output: sidebar button wurde angeklickt -> callback in AppComponent -->
+		<memo-toolbar (sideBarOpened)="sidenav.open()"></memo-toolbar>
+		<div class="router-outlet-container">
+			<router-outlet></router-outlet>
 		</div>
+		<memo-footer></memo-footer>
+	</div>
 
-	</mat-sidenav-container>
-</div>
-
+</mat-sidenav-container>
 

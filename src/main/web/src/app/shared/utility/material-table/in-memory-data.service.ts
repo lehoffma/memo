@@ -2,7 +2,7 @@ import {Injectable, OnDestroy} from "@angular/core";
 import {TableDataService} from "./table-data-service";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
-import {Sort, Direction} from "../../model/api/sort";
+import {Direction, Sort} from "../../model/api/sort";
 import {BehaviorSubject, Observable} from "rxjs";
 import {Page, PageResponse} from "../../model/api/page";
 import {attributeSortingFunction, combinedSortFunction} from "../../../util/util";
@@ -11,10 +11,9 @@ import {map} from "rxjs/operators";
 @Injectable()
 export class InMemoryDataService<T> implements TableDataService<T>, OnDestroy {
 
-	private data: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
-	public data$: Observable<T[]> = this.data.asObservable();
-
 	subscriptions = [];
+	private data: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([] as T[]);
+	public data$: Observable<T[]> = this.data.asObservable();
 
 	constructor() {
 	}
@@ -39,7 +38,7 @@ export class InMemoryDataService<T> implements TableDataService<T>, OnDestroy {
 		values.forEach(value => this.insert(value));
 	}
 
-	indexOfValues(valuesToFind: any[], ...getValues: (<U>(value: T) => U)[]): number {
+	indexOfValues<U>(valuesToFind: any[], ...getValues: ((value: T) => U)[]): number {
 		const data = this.data.getValue();
 		const extractList = getValues ? getValues : [t => t];
 
@@ -50,7 +49,7 @@ export class InMemoryDataService<T> implements TableDataService<T>, OnDestroy {
 		);
 	}
 
-	indexOf(value: T, ...getValues: (<U>(value: T) => U)[]): number {
+	indexOf<U>(value: Partial<T>, ...getValues: ((value: Partial<T>) => U)[]): number {
 		const extractList = getValues ? getValues : [t => t];
 		return this.indexOfValues(extractList.map(getValue => getValue(value)), ...extractList);
 	}
@@ -61,11 +60,11 @@ export class InMemoryDataService<T> implements TableDataService<T>, OnDestroy {
 		this.data.next(data);
 	}
 
-	at(index: number){
+	at(index: number) {
 		return this.data.getValue()[index];
 	}
 
-	modifyPartially(value: Partial<T>, getIndex: (value: T) => number = it => this.indexOf(it)) {
+	modifyPartially(value: Partial<T>, getIndex: (value: Partial<T>) => number = it => this.indexOf(it)) {
 		const index = getIndex(value);
 
 		if (index === -1) {
@@ -75,7 +74,8 @@ export class InMemoryDataService<T> implements TableDataService<T>, OnDestroy {
 
 		const data = this.data.getValue();
 		const previousValue = data[index];
-		data.splice(index, 1, {...previousValue, ...value});
+
+		data.splice(index, 1, Object.assign({}, previousValue, value));
 		this.data.next(data);
 	}
 

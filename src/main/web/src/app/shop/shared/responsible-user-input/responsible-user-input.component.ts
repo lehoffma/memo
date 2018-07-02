@@ -2,11 +2,9 @@ import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {User} from "../../../shared/model/user";
 import {UserService} from "../../../shared/services/api/user.service";
 import {filter, first, map, startWith, take} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {combineLatest, Observable, timer} from "rxjs";
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {Observable} from "rxjs/Observable";
-import {timer} from "rxjs/observable/timer";
-import {EMPTY} from "rxjs/internal/observable/empty";
+import {EMPTY} from "rxjs";
 
 @Component({
 	selector: "memo-responsible-user-input",
@@ -20,8 +18,20 @@ import {EMPTY} from "rxjs/internal/observable/empty";
 })
 export class ResponsibleUserInputComponent implements OnInit, OnDestroy, ControlValueAccessor {
 	@Input() formControl: FormControl;
+	users$: Observable<User[]> = EMPTY;
+	availableUsers$: Observable<User[]> = EMPTY;
+	onChange;
+	subscriptions = [];
+
+	constructor(private userService: UserService) {
+	}
 
 	_previousValue: number[];
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
 	@Input() set previousValue(previousValue: number[]) {
 		this._previousValue = previousValue;
 
@@ -36,20 +46,6 @@ export class ResponsibleUserInputComponent implements OnInit, OnDestroy, Control
 			.pipe(first())
 			.subscribe(users => this.setValue(users));
 
-	}
-
-	users$: Observable<User[]> = EMPTY;
-
-	get previousValue() {
-		return this._previousValue;
-	}
-
-	availableUsers$: Observable<User[]> = EMPTY;
-	onChange;
-
-	subscriptions = [];
-
-	constructor(private userService: UserService) {
 	}
 
 	ngOnInit() {

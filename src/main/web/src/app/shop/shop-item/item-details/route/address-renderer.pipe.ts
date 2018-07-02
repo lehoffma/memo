@@ -1,5 +1,6 @@
 import {Pipe, PipeTransform} from "@angular/core";
 import {Address} from "../../../../shared/model/address";
+import {addressToString} from "../../../../shared/model/util/to-string-util";
 
 @Pipe({
 	name: "address"
@@ -10,7 +11,7 @@ export class AddressRendererPipe implements PipeTransform {
 
 		switch (format) {
 			case "long":
-				addressAsText = address.toString();
+				addressAsText = addressToString(address);
 				break;
 			case "short":
 				addressAsText = `${address.city}, ${address.country}`;

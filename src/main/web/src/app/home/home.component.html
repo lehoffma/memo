@@ -1,23 +1,33 @@
 <div class="home-header">
 	<img src="../../resources/images/Logo.png" class="header-logo"/>
 
-	<h1>Meilenwölfe Shop</h1>
+	<h1>Willkommen im Meilenwölfe Shop!</h1>
 	<div [style.visibility]="(userIsLoggedIn$ | async) ? 'hidden' : 'visible'">
 		<a mat-raised-button routerLink="/login" class="login-button" color="primary">Login</a>
 		<a mat-raised-button routerLink="/signup" color="accent">Registrieren</a>
 	</div>
 </div>
 
-<div class="category-overview-container">
+<div class="category-overview-container desktop">
 	<div class="overview-preview-container mat-elevation-z1" *ngFor="let eventPreview of events">
 		<div class="overview-preview-header">
 			<h2>{{eventPreview.title}}</h2>
 			<a routerLink="{{eventPreview.route}}">MEHR</a>
 		</div>
 
-		<memo-category-preview [events$]="eventPreview.events"
-							   [itemType]="eventPreview.type"
-							   [route]="eventPreview.route"></memo-category-preview>
-	</div>
+		<memo-results [events]="eventPreview.events | async">
 
+		</memo-results>
+	</div>
+</div>
+
+<div class="mobile">
+	<div class="overview-preview-header">
+		<h2>Neueste</h2>
+		<a routerLink="/search">MEHR</a>
+	</div>
+	<memo-results [events]="combinedEvents | async">
+	</memo-results>
+
+	<a routerLink="/search" class="show-more-link">Zeige mehr</a>
 </div>

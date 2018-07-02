@@ -6,18 +6,11 @@
 	display: flex;
 	justify-content: center;
 	width: 100%;
-	max-width: 500px;
 	background-color: $container-content--background-color;
 	color: $container-content--color;
 	flex-direction: column;
 	padding: 1rem;
 	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
-	margin-top: 20px;
-
-	&:last-child {
-		margin-bottom: 20px;
-
-	}
 }
 
 .method {
@@ -194,7 +187,7 @@
 	padding: 1rem;
 	font-weight: 200;
 
-	button{
+	button {
 		margin-right: -5px;
 		margin-top: -2px;
 	}

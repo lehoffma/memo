@@ -1,13 +1,11 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {Subscription} from "rxjs/Subscription";
+import {BehaviorSubject, combineLatest, Subscription} from "rxjs";
 import {map, mergeMap} from "rxjs/operators";
 import {ActivatedRoute} from "@angular/router";
 import {OrderService} from "../../../../shared/services/api/order.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {Order} from "../../../../shared/model/order";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {OrderStatus} from "../../../../shared/model/order-status";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 

@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
 import {EntryCategory} from "../../../model/entry-category";
 
 @Component({
-	selector: 'td [entryCategoryCellComponent]',
+	selector: "td [entryCategoryCellComponent]",
 	template: `
 		{{data?.name}}
 	`

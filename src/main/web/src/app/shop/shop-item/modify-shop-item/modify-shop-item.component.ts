@@ -5,7 +5,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
 import {ModifyItemService} from "./modify-item.service";
 import {ModifyItemEvent} from "./modify-item-event";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {combineLatest} from "rxjs";
 import {first} from "rxjs/operators";
 
 @Component({

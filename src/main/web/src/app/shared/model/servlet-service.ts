@@ -1,5 +1,4 @@
-
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {Page} from "./api/page";
 import {Sort} from "./api/sort";
 import {PageRequest} from "./api/page-request";

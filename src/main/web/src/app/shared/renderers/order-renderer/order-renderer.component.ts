@@ -1,23 +1,12 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	EventEmitter,
-	Input,
-	OnChanges,
-	OnInit,
-	Output,
-	SimpleChange,
-	SimpleChanges
-} from "@angular/core";
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
 import {Order} from "../../model/order";
 import {OrderedItem} from "../../model/ordered-item";
 import {EventUtilityService} from "../../services/event-utility.service";
 import {orderStatusToString} from "../../model/order-status";
 import {UserBankAccountService} from "../../services/api/user-bank-account.service";
 import {BankAccount} from "../../model/bank-account";
-import {Observable} from "rxjs/Observable";
-import {empty} from "rxjs/observable/empty";
-import {EMPTY} from "rxjs/internal/observable/empty";
+import {Observable} from "rxjs";
+import {EMPTY} from "rxjs";
 
 interface OrderedEventItem extends OrderedItem {
 	cssStatus: string;
@@ -31,7 +20,7 @@ interface OrderedEventItem extends OrderedItem {
 	styleUrls: ["./order-renderer.component.scss"],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrderRendererComponent implements OnInit, OnChanges{
+export class OrderRendererComponent implements OnInit, OnChanges {
 	@Input() orderEntry: Order;
 	@Input() withActions = false;
 	@Input() withRemove = true;
@@ -50,13 +39,13 @@ export class OrderRendererComponent implements OnInit, OnChanges{
 		this.init();
 	}
 
-	ngOnChanges(changes: SimpleChanges){
-		if(changes["orderEntry"]){
+	ngOnChanges(changes: SimpleChanges) {
+		if (changes["orderEntry"]) {
 			this.init();
 		}
 	}
 
-	init(){
+	init() {
 		const events = this.orderEntry.items
 			.reduce((events, item) => {
 				const eventId = item.item.id;

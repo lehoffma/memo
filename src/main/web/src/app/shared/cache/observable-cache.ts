@@ -1,7 +1,6 @@
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from "rxjs";
 import {Cache} from "./cache";
-import {of} from "rxjs/observable/of";
-import {EMPTY} from "rxjs/internal/observable/empty";
+import {EMPTY} from "rxjs";
 
 
 export class ObservableCache<ValueType> {

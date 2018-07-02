@@ -1,6 +1,7 @@
 @import "theme";
 
-.comment-block-container {
+:host {
+	display: block;
 	margin: 12px 0;
 }
 
@@ -16,17 +17,26 @@
 	}
 
 	.comment-image-container {
+		display:none;
 
-		@media all and (max-width: 800px) {
+		@media all and (min-width: 650px) {
+			display: block;
 			margin-left: 5px;
+			margin-right: 10px;
+			margin-top: 2px;
 		}
 
 		.comment-image {
 			border-radius: 50%;
 			border: 1px solid #c1c1c1;
-			width: 40px;
-			height: 40px;
+			width: 30px;
+			height: 30px;
 			object-fit: cover;
+
+			&.top-level{
+				width: 40px;
+				height: 40px;
+			}
 
 			&.dummy {
 				filter: grayscale(100%);
@@ -36,44 +46,46 @@
 	}
 	.comment-container {
 		width: 100%;
-		margin-left: 10px;
 
 		.comment-header {
 			display: flex;
-			justify-content: space-between;
 			align-items: center;
+			margin-right: 5px;
+			width: calc(100% - 30px);
 
-			> .comment-header-info {
-				display: flex;
-				align-items: center;
-				margin-right: 5px;
-				width: 100%;
-				//justify-content: space-between;
+			.comment-author-name /deep/ a,
+			.comment-author-name {
+				font-size: 0.8rem;
+				text-decoration: none;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				color: $primary-default;
 
-				.comment-author-name /deep/ a,
-				.comment-author-name {
-					font-size: 0.8rem;
-					text-decoration: none;
-					white-space: nowrap;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					color: $primary-default;
-
-					&:hover {
-						text-decoration: underline;
-					}
-				}
-
-				.comment-timestamp {
-					margin-left: 10px;
-					font-size: 0.7rem;
+				&:hover {
+					text-decoration: underline;
 				}
 			}
+
+			.role-icon{
+				color: mat-color($primary);
+				height: 17px;
+				width: 16px;
+				margin-left: 2px;
+				font-size: 16px;
+			}
+
+			.comment-timestamp {
+				margin-left: 10px;
+				font-size: 0.7rem;
+			}
+
 		}
 
 		.comment-body {
 			font-size: 0.85rem;
 			margin: 5px 0 8px;
+			white-space: pre-line;
 		}
 
 		.comment-footer {
@@ -87,6 +99,8 @@
 
 				&:first-child {
 					margin-left: 0;
+					font-weight: 700;
+					font-size: 12px;
 				}
 
 				&:hover {
@@ -106,27 +120,26 @@
 }
 
 .show-children-button-container {
-	margin: 6px 0 0;
-	color: black;
-	font-size: .9rem;
-	font-weight: bold;
+	color: mat-color($accent, 700);
+	padding-left: 10px;
+	font-size: 12px;
+	font-weight: 700;
 
-	> span > span:hover {
+	 > span:hover {
 		text-decoration: underline;
 		cursor: pointer;
 	}
 }
 
+
+.reply-form-container {
+	padding: 10px;
+}
+
 .child-comments-container {
-	margin-left: 50px;
 
-	@media all and (max-width: 800px) {
-		border-left: 5px solid $primary-default;
-		margin: 0 0 10px;
+	.children{
+		padding-left: 50px;
 	}
 
-	&.reply-form-container {
-		margin-top: 12px;
-		margin-bottom: 12px;
-	}
 }

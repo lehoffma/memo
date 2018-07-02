@@ -34,6 +34,7 @@ const DEFAULT_AMOUNT_SHOWN = 3;
 export class ParticipatedToursPreviewComponent implements OnInit {
 	@Input() userEvents: Event[] = [];
 	expandedStatus = false;
+	_links: { [id: number]: string } = {};
 
 	constructor(private navigationService: NavigationService) {
 	}
@@ -51,8 +52,6 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 	distanceInWords(date: Date) {
 		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
 	}
-
-	_links: { [id: number]: string} = {};
 
 	getLink(event: Event): string {
 		if (!event) {

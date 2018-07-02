@@ -1,14 +1,12 @@
 import {UserPermissions} from "./permission";
 
-export class Link {
-	constructor(public route: string,
-				public icon: string,
-				public name: string,
-				public link?: string,
-				public loginNeeded?: boolean,
-				public minimumPermission?: UserPermissions,
-				public drawLineAbove?: boolean,
-				public children?: Link[]) {
-
-	}
+export interface Link {
+	route: string;
+	icon: string;
+	name: string;
+	link?: string;
+	loginNeeded?: boolean;
+	minimumPermission?: UserPermissions;
+	drawLineAbove?: boolean;
+	children?: Link[];
 }

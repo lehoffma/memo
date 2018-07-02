@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {PaymentInfo} from "./debit-input-form/payment-info";
 import {SignUpSubmitEvent} from "../signup-submit-event";
-import {SignUpSection} from "../signup-section";
 import {User} from "../../../shared/model/user";
 
 @Component({

@@ -1,21 +1,15 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {LogInService} from "../../shared/services/api/login.service";
-import {Tour} from "../../shop/shared/model/tour";
 import {EventService} from "../../shared/services/api/event.service";
-import {Party} from "../../shop/shared/model/party";
-import {dateSortingFunction} from "../../util/util";
 import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
-import {Observable} from "rxjs/Observable";
+import {Observable, Subscription} from "rxjs";
 import {catchError, filter, map, mergeMap} from "rxjs/operators";
-import {EventUtilityService} from "../../shared/services/event-utility.service";
-import {Merchandise} from "../../shop/shared/model/merchandise";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Subscription} from "rxjs/Subscription";
-import {EMPTY} from "rxjs/internal/observable/empty";
+import {EMPTY} from "rxjs";
 import {Filter} from "../../shared/model/api/filter";
 import {EventType, typeToInteger} from "../../shop/shared/model/event-type";
 import {PageRequest} from "../../shared/model/api/page-request";
-import {Sort, Direction} from "../../shared/model/api/sort";
+import {Direction, Sort} from "../../shared/model/api/sort";
 import {Event} from "../../shop/shared/model/event";
 
 @Component({

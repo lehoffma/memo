@@ -1,12 +1,13 @@
 import {Injectable} from "@angular/core";
 import {AddOrModifyRequest, ServletService} from "./servlet.service";
-import {EntryCategory} from "../../model/entry-category";
+import {createEntryCategory, EntryCategory} from "../../model/entry-category";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Page} from "../../model/api/page";
+import {setProperties} from "../../model/util/base-object";
 
 interface EntryCategoryApiResponse {
 	categories: EntryCategory[]
@@ -20,7 +21,7 @@ export class EntryCategoryService extends ServletService<EntryCategory> {
 
 
 	jsonToObject(json: any): EntryCategory {
-		return EntryCategory.create().setProperties(json);
+		return setProperties(createEntryCategory(), json);
 	}
 
 	/**

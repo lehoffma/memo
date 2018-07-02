@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from "@angular/core";
 import {GoogleMapsAPIWrapper, MapsAPILoader} from "@agm/core";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {MapsGeocodingResult} from "../maps-geocoding-result";
 
 declare var google;

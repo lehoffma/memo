@@ -30,7 +30,7 @@ export class EventUtilityService {
 			});
 	}
 
-	static getEventTypeAsString(event: Event): string{
+	static getEventTypeAsString(event: Event): string {
 		return EventUtilityService.handleShopItem(event,
 			merch => "Merch",
 			tour => "Tour",

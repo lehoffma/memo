@@ -2,7 +2,7 @@ import {ClubRole, isAuthenticated} from "../shared/model/club-role";
 import {Permission} from "../shared/model/permission";
 import {Event} from "../shop/shared/model/event";
 import {EventUtilityService} from "../shared/services/event-utility.service";
-import {User} from "../shared/model/user";
+import {User, userPermissions} from "../shared/model/user";
 import {isBefore} from "date-fns";
 
 
@@ -14,7 +14,7 @@ export function canCheckIn(user: User, event: Event) {
 
 export function canEdit(user: User, event: Event) {
 	if (user !== null && event !== null) {
-		const permissions = user.userPermissions();
+		const permissions = userPermissions(user);
 		const permissionKey = EventUtilityService.handleShopItem(event,
 			() => "merch", () => "tour", () => "party"
 		);
@@ -35,7 +35,7 @@ export function canConclude(user: User, event: Event) {
 
 export function canReadEntries(user: User, event: Event) {
 	if (user !== null && event !== null) {
-		let permissions = user.userPermissions();
+		let permissions = userPermissions(user);
 		return permissions.funds >= Permission.read;
 	}
 	return false;
@@ -43,7 +43,7 @@ export function canReadEntries(user: User, event: Event) {
 
 export function canDeleteEntries(user: User, event: Event) {
 	if (user !== null && event !== null) {
-		const permissions = user.userPermissions();
+		const permissions = userPermissions(user);
 		const permissionKey = EventUtilityService.handleShopItem(event,
 			() => "merch", () => "tour", () => "party"
 		);

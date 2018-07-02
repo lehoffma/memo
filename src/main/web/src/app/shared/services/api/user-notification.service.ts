@@ -1,9 +1,8 @@
 import {Injectable, OnDestroy} from "@angular/core";
 import {WebsocketService} from "../websocket.service";
 import {LogInService} from "./login.service";
-import {Subject} from "rxjs/Subject";
+import {Subject, Subscription} from "rxjs";
 import {UserNotification} from "../../model/user-notification";
-import {Subscription} from "rxjs/Subscription";
 import {filter, map, mergeMap} from "rxjs/operators";
 
 @Injectable()

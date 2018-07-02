@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ShoppingCartOption} from "../../../../../shared/model/shopping-cart-item";
 
 @Component({
-	selector: 'memo-cart-tour-participant',
-	templateUrl: './cart-tour-participant.component.html',
-	styleUrls: ['./cart-tour-participant.component.scss']
+	selector: "memo-cart-tour-participant",
+	templateUrl: "./cart-tour-participant.component.html",
+	styleUrls: ["./cart-tour-participant.component.scss"]
 })
 export class CartTourParticipantComponent implements OnInit {
 	@Input() index: number;

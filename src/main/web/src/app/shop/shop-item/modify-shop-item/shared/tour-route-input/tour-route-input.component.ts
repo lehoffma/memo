@@ -13,17 +13,15 @@ import {
 	ViewChildren
 } from "@angular/core";
 import {MapsAPILoader} from "@agm/core";
-import {Address} from "../../../../../shared/model/address";
+import {Address, createAddress} from "../../../../../shared/model/address";
 import {debounceTime, defaultIfEmpty, filter, map, mergeMap, startWith, take} from "rxjs/operators";
 import {RoutingService} from "../../../../shared/services/routing.service";
 import {ControlValueAccessor, FormArray, FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators} from "@angular/forms";
 import {AddressService} from "../../../../../shared/services/api/address.service";
-import {Observable} from "rxjs/Observable";
+import {combineLatest, Observable, Subscription, timer} from "rxjs";
 import {GMapsService} from "../../../../shared/services/gmaps.service";
-import {Subscription} from "rxjs/Subscription";
 import {MapsGeocodingResult} from "../../../../shared/maps-geocoding-result";
-import {timer} from "rxjs/observable/timer";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {addressToString} from "../../../../../shared/model/util/to-string-util";
 
 
 declare var google;
@@ -45,13 +43,36 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, AfterViewInit
 
 	inputControls: FormArray;
 	loading: { [index: number]: boolean } = {};
+	@Output() distanceChange = new EventEmitter<number>();
+	@ViewChildren("routeInput") inputs: QueryList<ElementRef>;
+	_onChange = null;
+	centerOfTour$;
+	initializedRoute$;
+	directionsDisplay;
+	showDirective = false;
+	subscriptions = [];
+	inputCallbackSubscriptions: { [index: number]: Subscription } = {};
+
+	constructor(private mapsAPILoader: MapsAPILoader,
+				private gMapsService: GMapsService,
+				private formBuilder: FormBuilder,
+				private cdRef: ChangeDetectorRef,
+				private routingService: RoutingService,
+				private addressService: AddressService,
+				private ngZone: NgZone) {
+	}
 
 	_previousValue = [];
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
 	@Input() set previousValue(previousValue: number[]) {
 		this._previousValue = previousValue;
 
 		if (!previousValue || previousValue.length === 0) {
-			this.onChange(this.isTour ? [Address.create(), Address.create()] : [Address.create()]);
+			this.onChange(this.isTour ? [createAddress(), createAddress()] : [createAddress()]);
 			return;
 		}
 
@@ -72,23 +93,11 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, AfterViewInit
 				this.clearInputs();
 				addresses.forEach((address, index) => {
 					this.addInput();
-					this.inputControls.at(index).setValue(address.toString());
+					this.inputControls.at(index).setValue(addressToString(address));
 				})
 			})
 	}
 
-	get previousValue() {
-		return this._previousValue;
-	}
-
-	@Output() distanceChange = new EventEmitter<number>();
-	@ViewChildren("routeInput") inputs: QueryList<ElementRef>;
-
-	_onChange = null;
-	centerOfTour$;
-	initializedRoute$;
-	directionsDisplay;
-	showDirective = false;
 	private _totalDistance = 0;
 
 	get totalDistance() {
@@ -98,19 +107,6 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, AfterViewInit
 	set totalDistance(distance: number) {
 		this._totalDistance = distance;
 		this.distanceChange.emit(distance);
-	}
-
-
-	subscriptions = [];
-	inputCallbackSubscriptions: { [index: number]: Subscription } = {};
-
-	constructor(private mapsAPILoader: MapsAPILoader,
-				private gMapsService: GMapsService,
-				private formBuilder: FormBuilder,
-				private cdRef: ChangeDetectorRef,
-				private routingService: RoutingService,
-				private addressService: AddressService,
-				private ngZone: NgZone) {
 	}
 
 	onChange(values: Address[]) {
@@ -216,7 +212,7 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, AfterViewInit
 	addNewStop() {
 		const currentValue = this.formControl.value;
 		const index = currentValue.length - 1;
-		currentValue.splice(index, 0, Address.create());
+		currentValue.splice(index, 0, createAddress());
 		this.onChange(currentValue);
 		this.addInput(index);
 	}

@@ -15,12 +15,11 @@ export class OrderOptionsComponent implements OnInit {
 	isLoading = false;
 	statusCategories = OrderStatusList;
 	paymentMethods = paymentMethodList();
+	statusToString = orderStatusToString;
 
 	constructor(public orderOptionsService: OrderOptionsService) {
 	}
 
 	ngOnInit() {
 	}
-
-	statusToString = orderStatusToString;
 }

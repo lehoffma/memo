@@ -1,12 +1,12 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Comment} from "../../../shared/model/comment";
+import {Comment, createComment} from "../../../shared/model/comment";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {CommentService} from "../../../../shared/services/api/comment.service";
-import {empty} from "rxjs/observable/empty";
-import {of} from "rxjs/observable/of";
+import {of} from "rxjs";
 import {catchError, first, mergeMap, tap} from "rxjs/operators";
-import {EMPTY} from "rxjs/internal/observable/empty";
+import {EMPTY} from "rxjs";
+import {setProperties} from "../../../../shared/model/util/base-object";
 
 @Component({
 	selector: "memo-comments-section",
@@ -25,6 +25,8 @@ import {EMPTY} from "rxjs/internal/observable/empty";
 export class CommentsSectionComponent implements OnInit {
 	@Input() comments: Comment[];
 	@Input() eventId: number;
+	@Input() canLoadMore: boolean;
+	@Output() loadMore: EventEmitter<boolean> = new EventEmitter<boolean>();
 	@Output() onDeleteComment = new EventEmitter<{ comment: Comment, parentId: number }>();
 	readonly DEFAULT_AMOUNT_OF_COMMENTS_SHOWN = 3;
 	loggedInUser$ = this.loginService.currentUser$
@@ -32,18 +34,12 @@ export class CommentsSectionComponent implements OnInit {
 			mergeMap(user => user === null ? EMPTY : of(user))
 		);
 	expandState = false;
-	dummyComment = Comment.create();
+	dummyComment = createComment();
 	loadingAddedComment = false;
 
 	constructor(private loginService: LogInService,
 				private changeDetectorRef: ChangeDetectorRef,
 				private commentService: CommentService) {
-	}
-
-	get amountOfCommentsShown() {
-		return this.expandState
-			? this.comments.length
-			: this.DEFAULT_AMOUNT_OF_COMMENTS_SHOWN;
 	}
 
 	ngOnInit() {
@@ -61,8 +57,14 @@ export class CommentsSectionComponent implements OnInit {
 				.pipe(
 					first(),
 					mergeMap(user => {
-						let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText, null);
-						this.dummyComment = this.dummyComment.setProperties({
+						let comment = setProperties(createComment(), {
+							item: this.eventId,
+							id: -1,
+							timeStamp: new Date(),
+							author: user.id,
+							content: commentText,
+						});
+						this.dummyComment = setProperties(this.dummyComment, {
 							content: "",
 							author: user.id,
 							timeStamp: comment.timeStamp,

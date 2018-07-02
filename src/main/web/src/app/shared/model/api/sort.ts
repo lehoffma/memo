@@ -15,16 +15,13 @@ export class Sort {
 		this.sortBys = by;
 	}
 
-	static by(direction: Direction, ...properties: string[]) {
-		return new Sort(direction, properties);
-	}
+	static by(direction: SortDirection | Direction | string, ...properties: string[]) {
+		let sortDirection;
+		let stringDirection = direction.toString();
 
-
-	static by(direction: SortDirection, ...properties: string[]) {
-		let sortDirection =
-			direction === "asc"
-				? Direction.ASCENDING
-				: direction === "desc"
+		sortDirection = stringDirection === "asc"
+			? Direction.ASCENDING
+			: stringDirection === "desc"
 				? Direction.DESCENDING
 				: Direction.NONE;
 

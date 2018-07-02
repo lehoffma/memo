@@ -5,12 +5,22 @@ h3 {
 	margin: 1rem 0 0;
 }
 
-
 .event-list-view-container {
 	padding: 1rem;
 	background-color: $container-content--background-color;
 	margin-bottom: 1rem;
 	color: grey;
+
+	@media all and (min-width: 650px) {
+
+		memo-results-entry {
+			margin: 0.2rem;
+
+			/deep/ img {
+				height: 150px !important;
+			}
+		}
+	}
 }
 
 .event-list-view-title {

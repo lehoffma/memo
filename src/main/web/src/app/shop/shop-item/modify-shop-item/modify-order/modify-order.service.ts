@@ -1,19 +1,20 @@
 import {Injectable} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {OrderedItem} from "../../../../shared/model/ordered-item";
-import {Order} from "../../../../shared/model/order";
+import {createOrder, Order} from "../../../../shared/model/order";
 import {UserService} from "../../../../shared/services/api/user.service";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {combineLatest, Observable, of} from "rxjs";
 import {format, setHours, setMinutes} from "date-fns";
 import {OrderService} from "../../../../shared/services/api/order.service";
 import {Params, Router} from "@angular/router";
 import {User} from "../../../../shared/model/user";
-import {Observable} from "rxjs/Observable";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {processSequentially} from "../../../../util/observable-util";
 import {map, mergeMap} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
 import {isEdited} from "../../../../util/util";
+import {PaymentMethod} from "../../../checkout/payment/payment-method";
+import {BankAccount} from "../../../../shared/model/bank-account";
+import {setProperties} from "../../../../shared/model/util/base-object";
 
 @Injectable()
 export class ModifyOrderService {
@@ -66,17 +67,17 @@ export class ModifyOrderService {
 		)
 			.subscribe(([user]) => {
 				this.formGroup.patchValue({
-					user,
-					date: order.timeStamp,
-					time: format(order.timeStamp, "HH:mm"),
-					method: order.method,
-					items: [...order.items],
-					bankAccount: order.bankAccount
-				})
+					"user": user,
+					"date": order.timeStamp,
+					"time": format(order.timeStamp, "HH:mm"),
+					"method": order.method,
+					"items": [...order.items],
+					"bankAccount": order.bankAccount
+				} as any)
 			});
-		this._previousValue = Order.create().setProperties(
+		this._previousValue = setProperties(createOrder(), (
 			{...order}
-		);
+		));
 	}
 
 	/**
@@ -177,15 +178,36 @@ export class ModifyOrderService {
 	 * @returns {Observable<Order>}
 	 */
 	getRequest(): Observable<Order> {
-		const value = {...this.formGroup.value};
-		let order: Order = Order.create().setProperties({
+		/*
+
+		"user": [undefined, {
+			validators: [Validators.required]
+		}],
+		"date": [undefined, {
+			validators: [Validators.required]
+		}],
+		"time": [undefined, {
+			validators: [Validators.required, Validators.pattern(/([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/i)]
+		}],
+		"method": [undefined, {
+			validators: [Validators.required]
+		}],
+		"items": [[], {
+			validators: [Validators.required]
+		}],
+		"bankAccount": [undefined, {
+			validators: []
+		}]
+		 */
+		const value = {...this.formGroup.value} as { user: User, date: Date, time: string, method: PaymentMethod, items: OrderedItem[], bankAccount: BankAccount }
+		let order: Order = setProperties(createOrder(), {
 			timeStamp: this.getDate(value.date, value.time),
 			method: value.method,
 			user: value.user.id,
 		});
 
 		if (value.bankAccount) {
-			order = order.setProperties({
+			order = setProperties(order, {
 				bankAccount: value.bankAccount.id
 			})
 		}
@@ -196,21 +218,21 @@ export class ModifyOrderService {
 					...it,
 					item: it.item.id
 				}
-			})
+			}) as any[]
 		)
 			.pipe(
 				mergeMap(newIds => {
-					order = order.setProperties({
+					order = setProperties(order, {
 						items: newIds
 					});
 
 					if (this._previousValue !== null) {
-						return this.orderService.modify(this._previousValue.setProperties({
+						return this.orderService.modify(setProperties(this._previousValue, {
 							...order,
 							id: this._previousValue.id
 						}));
 					}
-					return this.orderService.add(Order.create().setProperties({
+					return this.orderService.add(setProperties(createOrder(), {
 						...order
 					}));
 				})

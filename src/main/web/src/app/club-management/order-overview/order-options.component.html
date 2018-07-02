@@ -1,6 +1,5 @@
 <div *ngIf="!hidden && orderOptionsService.formGroup" [formGroup]="orderOptionsService.formGroup">
 	<div *ngIf="!hidden">
-		<h2 class="options-title mat-headline">{{'Optionen'|uppercase}}</h2>
 		<h3>Datum</h3>
 		<mat-form-field>
 			<input matInput [matDatepicker]="startingDatePicker"
@@ -35,7 +34,7 @@
 	<div *ngIf="!hidden">
 		<h3>Bezahlarten</h3>
 		<mat-checkbox *ngFor="let method of paymentMethods"
-					  [formControl]="orderOptionsService.formGroup.get('payment').get(method)">
+					  [formControl]="orderOptionsService.formGroup.get('method').get(method)">
 			{{method}}
 		</mat-checkbox>
 	</div>

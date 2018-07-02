@@ -5,14 +5,15 @@ import {EventService} from "../services/api/event.service";
 import {EntryService} from "../services/api/entry.service";
 import {UserService} from "../services/api/user.service";
 import {Permission} from "../model/permission";
-import {isAuthenticated, rolePermissions} from "../model/club-role";
-import {Observable} from "rxjs/Observable";
+import {isAuthenticated} from "../model/club-role";
+import {Observable, of} from "rxjs";
 import {map, mergeMap, tap} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
 import {ShopItem} from "../model/shop-item";
 import {Event} from "../../shop/shared/model/event";
-import {User} from "../model/user";
+import {User, userPermissions} from "../model/user";
 import {ShopItemGuardHelper} from "./shop-item-guard.helper";
+import {isUser} from "../model/util/model-type-util";
+import {EventUtilityService} from "../services/event-utility.service";
 
 @Injectable()
 export class CanModifyItemGuard implements CanActivate {
@@ -49,7 +50,7 @@ export class CanModifyItemGuard implements CanActivate {
 
 					let id = route.paramMap.has("id") ? +route.paramMap.get("id") : -1;
 					const {permissionKey, shopItem} = this.getShopItemFromRoute(route, id);
-					let permissions = user.userPermissions();
+					let permissions = userPermissions(user);
 
 					return shopItem
 						.pipe(
@@ -57,12 +58,12 @@ export class CanModifyItemGuard implements CanActivate {
 								if (item === null) {
 									return permissions[permissionKey] >= Permission.create;
 								}
-								if (Event.isEvent(item)) {
+								if (EventUtilityService.isEvent(item)) {
 									return isAuthenticated(user.clubRole, item.expectedWriteRole) ||
 										permissions[permissionKey] >= Permission.write;
 								}
 								//the user is always allowed to modify his own profile
-								if (User.isUser(item) && item.id === user.id) {
+								if (isUser(item) && item.id === user.id) {
 									return true;
 								}
 

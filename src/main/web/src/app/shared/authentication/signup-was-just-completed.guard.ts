@@ -13,7 +13,7 @@ export class SignupWasJustCompletedGuard implements CanActivate {
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 		const wasJustCompleted = this.signUpService.signUpWasJustCompleted;
 
-		if(!wasJustCompleted){
+		if (!wasJustCompleted) {
 			this.router.navigateByUrl("/");
 
 		}

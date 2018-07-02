@@ -10,15 +10,14 @@ import {Address} from "../../model/address";
 export class AddressFormComponent implements OnInit {
 	@Input() formGroup: FormGroup;
 	@Input() selection = false;
+	showInlineAddressForm = -1;
+	showNewAddressForm = false;
 
 	constructor() {
 	}
 
 	ngOnInit() {
 	}
-
-	showInlineAddressForm = -1;
-	showNewAddressForm = false;
 
 	updateAddress(newValue: Address, index: number = this.formGroup.get("addresses").value.length) {
 		const currentValue: Address[] = this.formGroup.get("addresses").value;
@@ -30,7 +29,7 @@ export class AddressFormComponent implements OnInit {
 		this.formGroup.get("addresses").patchValue(newAddresses)
 	}
 
-	deleteAddress(index: number){
+	deleteAddress(index: number) {
 		const currentValue: Address[] = this.formGroup.get("addresses").value;
 		currentValue.splice(index, 1);
 		this.formGroup.get("addresses").patchValue(currentValue)

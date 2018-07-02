@@ -53,7 +53,9 @@ public class ImageServlet extends AbstractApiServlet<Image> {
         ServletContext context = request.getServletContext();
 
         String fileName = request.getParameter("fileName");
-        logger.trace("Attempting to send image at url '" + Image.filePath + fileName + "'.");
+        String size = Optional.ofNullable(request.getParameter("size"))
+                .orElse("original");
+        logger.trace("Attempting to send image at url '" + Image.filePath + fileName + "', size '" + size + "'.");
 
         Optional<Image> optionalImage = ImageRepository.getInstance().findByFilePath(fileName);
 
@@ -70,7 +72,13 @@ public class ImageServlet extends AbstractApiServlet<Image> {
             }
 
             response.setContentType(mime);
-            File file = new File(fullPath);
+            File file = image.getFile(size);
+            if(file == null){
+                logger.error("File at '" + image.getImagePath(size) + "' does not exist.");
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
             response.setContentLength((int) file.length());
 
             try (FileInputStream in = new FileInputStream(file);

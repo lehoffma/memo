@@ -23,7 +23,7 @@ mat-radio-button /deep/ .mat-radio-label-content {
 	width: 100%;
 }
 
-mat-radio-button /deep/ .mat-radio-label{
+mat-radio-button /deep/ .mat-radio-label {
 	padding: 1rem;
 }
 
@@ -32,7 +32,7 @@ mat-radio-button /deep/ .mat-radio-label{
 	margin-top: 0;
 	margin-bottom: 0;
 
-	&:not(.selection-container){
+	&:not(.selection-container) {
 		padding: 1rem;
 	}
 	background: white;

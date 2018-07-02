@@ -5,19 +5,19 @@
 </memo-multi-level-select>
 
 <div class="filter-sidebar">
-	<div *ngFor="let option of filterOptions" [@slideUp]="1">
+	<div *ngFor="let option of filterOptions" [@slideUp]="1" class="filter-category-container">
 		<h3 class="filter-title">{{option.name}}</h3>
 
 		<div class="option-children" *ngIf="option.selectType === 'multiple'; else radioGroup">
 			<mat-checkbox *ngFor="let child of option.children"
-						 [(ngModel)]="child.selected"
-						 (ngModelChange)="updateQueryParams(option)">
+						  [(ngModel)]="child.selected"
+						  (ngModelChange)="updateQueryParams(option)">
 				{{child.name}}
 			</mat-checkbox>
 		</div>
 		<ng-template #radioGroup>
 			<mat-radio-group [(ngModel)]="selectedOption[option.name]"
-							(ngModelChange)="updateFromRadioSelection(option.name)">
+							 (ngModelChange)="updateFromRadioSelection(option.name)">
 				<mat-radio-button *ngFor="let child of option.children" [value]="child">
 					{{child.name}}
 				</mat-radio-button>

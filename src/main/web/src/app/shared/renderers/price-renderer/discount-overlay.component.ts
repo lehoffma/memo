@@ -1,11 +1,11 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {Discount} from "./discount";
 
 @Component({
-	selector: 'memo-discount-overlay',
-	templateUrl: './discount-overlay.component.html',
-	styleUrls: ['./discount-overlay.component.scss']
+	selector: "memo-discount-overlay",
+	templateUrl: "./discount-overlay.component.html",
+	styleUrls: ["./discount-overlay.component.scss"]
 })
 export class DiscountOverlayComponent implements OnInit {
 

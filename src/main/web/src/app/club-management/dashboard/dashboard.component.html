@@ -1,14 +1,12 @@
 
-<div class="background">
-
+<div class="user-development dashboard__column--full dashboard__row--half">
 </div>
 
-<memo-event-calendar [events]="events$ | async"
+<div class="newest-users dashboard__column--half dashboard__row--half"></div>
+<div class="latest-orders dashboard__column--half dashboard__row--half"></div>
+<div class="next-events dashboard__column--half dashboard__row--half"></div>
 
->
+<memo-event-calendar [events]="events$ | async" class="dashboard__column--three dashboard__row">
 </memo-event-calendar>
 
-<div>
-
-
-</div>
+<memo-merch-stock-feed class="dashboard__column--half dashboard__row"></memo-merch-stock-feed>

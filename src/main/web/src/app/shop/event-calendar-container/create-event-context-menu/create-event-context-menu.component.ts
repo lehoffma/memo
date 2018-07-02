@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 
 @Component({
 	selector: "memo-create-event-context-menu",

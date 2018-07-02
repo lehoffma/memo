@@ -1,0 +1,27 @@
+:host{
+	margin: auto;
+	max-width: 900px;
+	height: calc(100vh - 64px);
+	display: block;
+
+	memo-item-details-content{
+		display: block;
+	}
+
+	/deep/ agm-map{
+		height: calc(100vh - 64px - 2rem - 21px);
+	}
+
+	/deep/ .object-details-content-container{
+		max-width: none !important;
+
+		.object-details-content-title{
+			justify-content: center;
+		}
+
+		.object-details-content{
+			padding: 0;
+		}
+	}
+
+}

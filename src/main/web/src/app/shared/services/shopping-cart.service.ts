@@ -5,13 +5,9 @@ import {ShoppingCartItem, ShoppingCartOption} from "../model/shopping-cart-item"
 import {MerchColor} from "../../shop/shared/model/merch-color";
 import {EventService} from "./api/event.service";
 import {map, mergeMap} from "rxjs/operators";
-import {Event} from "../../shop/shared/model/event";
-import {Observable} from "rxjs/Observable";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {LogInService} from "./api/login.service";
 import {DiscountService} from "app/shop/shared/services/discount.service";
-import {of} from "rxjs/observable/of";
-import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -52,14 +48,14 @@ export class ShoppingCartService implements OnInit {
 					}
 
 					return (combineLatest(
-							...allItems
-								.map(cartItem => this.loginService.currentUser$
-									.pipe(
-										mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
-											cartItem.item.id, cartItem.item.price, user !== null ? user.id : null
-										)),
-										map(discountedPrice => discountedPrice * cartItem.amount)
-									)
+						...allItems
+							.map(cartItem => this.loginService.currentUser$
+								.pipe(
+									mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
+										cartItem.item.id, cartItem.item.price, user !== null ? user.id : null
+									)),
+									map(discountedPrice => discountedPrice * cartItem.amount)
+								)
 							)))
 				}),
 				map(prices => prices.reduce((acc, current) => acc + current, 0))
@@ -143,20 +139,6 @@ export class ShoppingCartService implements OnInit {
 	}
 
 	/**
-	 *
-	 * @param {ShoppingCartItem[]} items
-	 * @param {number} id
-	 * @param item
-	 * @param options
-	 * @returns {ShoppingCartItem | undefined}
-	 */
-	private findItem(items: ShoppingCartItem[], id: number, options?: ShoppingCartOption[]) {
-		return items.find((shoppingCartItem: ShoppingCartItem) =>
-			this.itemsAreEqual(shoppingCartItem, {id, item: Event.create(), options, amount: 0})
-		)
-	}
-
-	/**
 	 * Holt das Item mit den übergebenen werten aus dem shopping cart
 	 * Gibt null zurück, wenn das Objekt nicht im Warenkorb vorhanden ist
 	 * @param type
@@ -186,6 +168,20 @@ export class ShoppingCartService implements OnInit {
 
 	/**
 	 *
+	 * @param {ShoppingCartItem[]} items
+	 * @param {number} id
+	 * @param item
+	 * @param options
+	 * @returns {ShoppingCartItem | undefined}
+	 */
+	private findItem(items: ShoppingCartItem[], id: number, options?: ShoppingCartOption[]) {
+		return items.find((shoppingCartItem: ShoppingCartItem) =>
+			this.itemsAreEqual(shoppingCartItem, {id, item: null, options, amount: 0})
+		)
+	}
+
+	/**
+	 *
 	 * @param type die Art des Events (entweder 'merch', 'tours' oder 'partys')
 	 * @param id die ID des Items, welches entfernt werden soll
 	 * @param content das content-objekt, aus dem das Item entfernt werden soll
@@ -196,7 +192,7 @@ export class ShoppingCartService implements OnInit {
 				   id: number, options?: ShoppingCartOption[]) {
 		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, {
 			id,
-			item: Event.create(),
+			item: null,
 			options,
 			amount: 0
 		}));

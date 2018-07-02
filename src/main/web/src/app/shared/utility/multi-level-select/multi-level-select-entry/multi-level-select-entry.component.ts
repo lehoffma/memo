@@ -1,9 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {
-	isMultiLevelSelectLeaf,
-	isMultiLevelSelectParent,
-	MultiLevelSelectOption
-} from "../shared/multi-level-select-option";
+import {isMultiLevelSelectLeaf, isMultiLevelSelectParent, MultiLevelSelectOption} from "../shared/multi-level-select-option";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {MultiLevelSelectParent} from "../shared/multi-level-select-parent";
 import {MultiLevelSelectLeaf} from "../shared/multi-level-select-leaf";

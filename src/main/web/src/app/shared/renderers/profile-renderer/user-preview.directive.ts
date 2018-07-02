@@ -1,11 +1,9 @@
 import {Directive, ElementRef, HostListener, Input, OnDestroy} from "@angular/core";
 import {OverlayService} from "../../services/overlay.service";
 import {debounceTime, map, take} from "rxjs/operators";
-import {timer} from "rxjs/observable/timer";
+import {Subject, Subscription, timer} from "rxjs";
 import {OverlayRef} from "@angular/cdk/overlay";
-import {Subject} from "rxjs/Subject";
 import {ProfilePreviewComponent} from "./profile-preview/profile-preview.component";
-import {Subscription} from "rxjs/Subscription";
 import {User} from "../../model/user";
 
 @Directive({
@@ -69,7 +67,7 @@ export class UserPreviewDirective implements OnDestroy {
 			timer(this.hoverDelay)
 				.pipe(take(1))
 				.subscribe(() => {
-					if(this.clicked){
+					if (this.clicked) {
 						return;
 					}
 
@@ -99,7 +97,7 @@ export class UserPreviewDirective implements OnDestroy {
 	}
 
 	@HostListener("click")
-	onClick(){
+	onClick() {
 		this.clicked = true;
 		this.closePreview();
 	}

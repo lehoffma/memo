@@ -1,20 +1,27 @@
-import {Observable} from "rxjs/Observable";
+import {combineLatest, forkJoin, Observable, of} from "rxjs";
 import {filter, map, mergeMap, share, take} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
-import {forkJoin} from "rxjs/observable/forkJoin";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {isEdited} from "./util";
+import {BaseObject, setProperties} from "../shared/model/util/base-object";
 
 
 export function processSequentially<T>(observables: Observable<T>[]): Observable<T[]> {
-	return observables.reduce((requests: Observable<T[]>, request: Observable<T>) => {
-		return requests
-			.pipe(
-				mergeMap(values => request
-					.pipe(map(it => [...values, it]))
-				)
-			);
-	}, of([]));
+	const addToList = (values: T[], request: Observable<T>): Observable<T[]> => {
+		return request.pipe(
+			map(value => [...values, value])
+		)
+	};
+
+	const mergeObservables = (combined: Observable<T[]>, request: Observable<T>): Observable<T[]> => {
+		return combined.pipe(
+			mergeMap(values => addToList(values, request))
+		)
+	};
+
+	let combined: Observable<T[]> = of([]);
+	for (let observable of observables) {
+		combined = mergeObservables(combined, observable);
+	}
+	return combined;
 }
 
 export function processSequentiallyAndWait<T>(observables: Observable<T>[]): Observable<T[]> {
@@ -32,14 +39,14 @@ export function processInParallelAndWait<T>(observables: Observable<T>[]): Obser
 }
 
 
-export function updateList<T extends { id: number }, U extends { setProperties: any }>(previousValue: T[],
-																					   currentValue: T[],
-																					   object: U,
-																					   key: keyof U,
-																					   mapBeforeRequest: (value: T) => any,
-																					   add: (value: T) => Observable<T>,
-																					   modify: (value: T) => Observable<T>,
-																					   remove: (value: number) => Observable<any>,
+export function updateList<T extends BaseObject, U>(previousValue: T[],
+													currentValue: T[],
+													object: U,
+													key: keyof U,
+													mapBeforeRequest: (value: T) => any,
+													add: (value: T) => Observable<T>,
+													modify: (value: T) => Observable<T>,
+													remove: (value: number) => Observable<any>,
 ): Observable<number[]> {
 	let added: T[] = [];
 	let removed: T[] = [];
@@ -117,6 +124,7 @@ export function updateList<T extends { id: number }, U extends { setProperties: 
 
 				const newIds: number[] = newValues.map(it => it.id);
 				if (object) {
+					// noinspection TypeScriptValidateTypes
 					newIds.push(...(<any>object[key])
 						.filter(id => !removed.find((it: T) => it.id === id))
 					);
@@ -128,29 +136,29 @@ export function updateList<T extends { id: number }, U extends { setProperties: 
 }
 
 
-export function updateListOfItem<T extends { id: number }, U extends { setProperties: any }>(previousValue: T[],
-																							 currentValue: T[],
-																							 object: U,
-																							 key: keyof U,
-																							 mapBeforeRequest: (value: T) => any,
-																							 defaultValue: (object: U) => Observable<T[]>,
-																							 add: (value: T) => Observable<T>,
-																							 modify: (value: T) => Observable<T>,
-																							 remove: (value: number) => Observable<any>,
-																							 modifyObject: (object: U) => Observable<U>,
-																							 getById: (id: number) => Observable<T>
+export function updateListOfItem<T extends { id: number }, U>(previousValue: T[],
+															  currentValue: T[],
+															  object: U,
+															  key: keyof U,
+															  mapBeforeRequest: (value: T) => any,
+															  defaultValue: (object: U) => Observable<T[]>,
+															  add: (value: T) => Observable<T>,
+															  modify: (value: T) => Observable<T>,
+															  remove: (value: number) => Observable<any>,
+															  modifyObject: (object: U) => Observable<U>,
+															  getById: (id: number) => Observable<any>
 ) {
 	return updateList(
 		previousValue, currentValue, object, key, mapBeforeRequest, add, modify, remove
 	)
 		.pipe(
-			mergeMap(newIds => {
+			mergeMap((newIds: number[]) => {
 				//there was nothing to update => return default
 				if (newIds === null) {
 					return defaultValue(object);
 				}
 
-				return modifyObject(object.setProperties({
+				return modifyObject(setProperties(object, {
 					[key]: newIds
 				}))
 					.pipe(mergeMap(() => {

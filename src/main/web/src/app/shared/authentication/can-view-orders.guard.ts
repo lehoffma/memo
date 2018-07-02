@@ -3,8 +3,8 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "
 import {LogInService} from "../services/api/login.service";
 import {UserService} from "../services/api/user.service";
 import {ClubRole, isAuthenticated} from "../model/club-role";
-import {of} from "rxjs/observable/of";
-import {User} from "../model/user";
+import {of} from "rxjs";
+import {User, userPermissions} from "../model/user";
 import {map, mergeMap} from "rxjs/operators";
 import {Permission} from "../model/permission";
 
@@ -26,9 +26,9 @@ export class CanViewOrdersGuard implements CanActivate {
 						this.router.navigate(["login"]);
 						return false;
 					}
-					const userPermissions = user.userPermissions();
+					const permissions = userPermissions(user);
 
-					if (userPermissions.stock > Permission.read) {
+					if (permissions.stock > Permission.read) {
 						return true;
 					}
 					if (isAuthenticated(user.clubRole, ClubRole.Kassenwart)) {

@@ -30,7 +30,7 @@ export class BankAccountFormComponent implements OnInit {
 		this.formGroup.get("bankAccounts").patchValue(newAccounts)
 	}
 
-	deleteAccount(index: number){
+	deleteAccount(index: number) {
 		const currentValue: BankAccount[] = this.formGroup.get("bankAccounts").value;
 		currentValue.splice(index, 1);
 		this.formGroup.get("bankAccounts").patchValue(currentValue)

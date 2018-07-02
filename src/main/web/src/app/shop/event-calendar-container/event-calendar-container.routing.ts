@@ -1,10 +1,10 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {NgModule} from "@angular/core";
+import {RouterModule, Routes} from "@angular/router";
 
-import {EventCalendarContainerComponent} from './event-calendar-container.component';
+import {EventCalendarContainerComponent} from "./event-calendar-container.component";
 
 const routes: Routes = [
-	{path: "calendar", component: EventCalendarContainerComponent, },
+	{path: "calendar", component: EventCalendarContainerComponent,},
 ];
 
 @NgModule({

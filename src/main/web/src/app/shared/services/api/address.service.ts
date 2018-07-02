@@ -1,12 +1,13 @@
 import {EventEmitter, Injectable} from "@angular/core";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {Address} from "../../model/address";
-import {Observable} from "rxjs/Observable";
+import {Address, createAddress} from "../../model/address";
+import {Observable} from "rxjs";
 import {mergeMap, tap} from "rxjs/operators";
 import {processInParallelAndWait, updateListOfItem} from "../../../util/observable-util";
 import {User} from "../../model/user";
 import {UserService} from "./user.service";
+import {setProperties} from "../../model/util/base-object";
 
 
 @Injectable()
@@ -21,7 +22,7 @@ export class AddressService extends ServletService<Address> {
 
 
 	jsonToObject(json: any): Address {
-		return Address.create().setProperties(json);
+		return setProperties(createAddress(), json);
 	}
 
 	/**
@@ -66,7 +67,7 @@ export class AddressService extends ServletService<Address> {
 	 * @param user
 	 */
 	public updateAddressesOfUser(previousValue: Address[], addresses: Address[], user: User): Observable<Address[]> {
-		const updateUserId = (address: Address, user: number): Address => address.setProperties({user});
+		const updateUserId = (address: Address, user: number): Address => setProperties(address, {user});
 
 		return updateListOfItem<Address, User>(
 			previousValue,

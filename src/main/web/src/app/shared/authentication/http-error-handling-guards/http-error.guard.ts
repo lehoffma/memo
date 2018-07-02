@@ -1,7 +1,6 @@
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from "rxjs";
 import {catchError, map} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
 import {HttpErrorResponse} from "@angular/common/http";
 
 export abstract class HttpErrorGuard<T> implements CanActivate {

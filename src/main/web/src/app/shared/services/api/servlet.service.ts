@@ -1,13 +1,12 @@
 import {Injectable} from "@angular/core";
 import {ServletServiceInterface} from "../../model/servlet-service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {combineLatest, Observable, of} from "rxjs";
+import {combineLatest, Observable, of, throwError} from "rxjs";
 import {CachedService} from "./cached.service";
 import {defaultIfEmpty, map, mergeMap} from "rxjs/operators";
-import {throwError} from "rxjs/internal/observable/throwError";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
-import {Sort, Direction} from "../../model/api/sort";
+import {Direction, Sort} from "../../model/api/sort";
 import {Entry} from "../../model/entry";
 import {Page} from "../../model/api/page";
 import {TableDataService} from "../../utility/material-table/table-data-service";
@@ -186,6 +185,19 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 			);
 
 		return this._cache.search(params, request);
+	}
+
+
+	/**
+	 *
+	 * @param {Filter} filter
+	 * @param {Sort} sort
+	 * @returns {Observable<T[]>}
+	 */
+	getAll(filter: Filter, sort: Sort): Observable<T[]> {
+		return this.get(filter, PageRequest.first(10000), sort).pipe(
+			map(it => it.content)
+		)
 	}
 
 	/**

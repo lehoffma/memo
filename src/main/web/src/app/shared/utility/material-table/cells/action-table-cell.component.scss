@@ -1,29 +1,27 @@
 
-:host{
+:host {
 	width: 100%;
 	max-width: 400px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 
-
-	a div{
+	a div {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 
-		span{
-			margin-left:10px;
+		span {
+			margin-left: 10px;
 		}
 	}
 
-
-	.icon-text{
+	.icon-text {
 		display: none;
 	}
 
-	@media all and (min-width: 500px){
-		.icon-text{
+	@media all and (min-width: 500px) {
+		.icon-text {
 			display: block;
 		}
 	}

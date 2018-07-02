@@ -1,4 +1,3 @@
-
 <ng-container [ngSwitch]="column.type || ''">
 	<ng-container *ngSwitchCase="'date'">
 		{{column.cell(element) | dateFormat}}

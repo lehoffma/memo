@@ -12,8 +12,32 @@ import {DiscountService} from "../../../shop/shared/services/discount.service";
 export class PriceRendererComponent implements OnInit {
 
 	_basePrice = 0;
-	_price = 0;
 	percentageSaved = 0; //between 0 and 1
+	nonEligibleDiscounts: Discount[] = [];
+	/**
+	 * (Optional) Controls whether the help icon and tooltip should be shown next to the visual representation
+	 * of the money saved. The tooltip contains information about how the discount is calculated or how the visitor
+	 * could get the discount (i.e. by becoming a user), if he isn't eligible yet.
+	 * This will only be shown if discountedPrice is set.
+	 * @type {boolean}
+	 */
+	@Input() showExplanation: boolean = true;
+	/**
+	 * (Optional) Controls whether there should be a list of links nudging the user towards additional discounts.
+	 * @type {boolean}
+	 */
+	@Input() showDiscountPossibilities: boolean = true;
+
+	constructor(private matDialog: MatDialog,
+				private discountService: DiscountService) {
+	}
+
+	_price = 0;
+
+	get price() {
+		return this._price;
+	}
+
 	/**
 	 * (Required) The normal price, without any discounts.
 	 * @type {number}
@@ -24,13 +48,11 @@ export class PriceRendererComponent implements OnInit {
 		this.percentageSaved = this.calculatePercentage(this._basePrice, this._price);
 	}
 
-	get price() {
-		return this._price;
-	}
-
-
 	_discounts: Discount[] = [];
-	nonEligibleDiscounts: Discount[] = [];
+
+	get discounts(): Discount[] {
+		return this._discounts;
+	}
 
 	/**
 	 * The discounts applied to the base price. Contains the amount that will be subtracted, a short explanation,
@@ -64,30 +86,6 @@ export class PriceRendererComponent implements OnInit {
 		this.price = this.price;
 		this.nonEligibleDiscounts = discountsCopy
 			.filter(discount => !discount.eligible);
-	}
-
-	get discounts(): Discount[] {
-		return this._discounts;
-	}
-
-	/**
-	 * (Optional) Controls whether the help icon and tooltip should be shown next to the visual representation
-	 * of the money saved. The tooltip contains information about how the discount is calculated or how the visitor
-	 * could get the discount (i.e. by becoming a user), if he isn't eligible yet.
-	 * This will only be shown if discountedPrice is set.
-	 * @type {boolean}
-	 */
-	@Input() showExplanation: boolean = true;
-
-	/**
-	 * (Optional) Controls whether there should be a list of links nudging the user towards additional discounts.
-	 * @type {boolean}
-	 */
-	@Input() showDiscountPossibilities: boolean = true;
-
-
-	constructor(private matDialog: MatDialog,
-				private discountService: DiscountService) {
 	}
 
 	ngOnInit() {

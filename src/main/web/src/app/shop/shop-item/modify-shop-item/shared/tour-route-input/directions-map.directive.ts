@@ -1,7 +1,7 @@
 import {GoogleMapsAPIWrapper} from "@agm/core";
 import {Directive, EventEmitter, Input, Output} from "@angular/core";
 import {Address} from "../../../../../shared/model/address";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject} from "rxjs";
 import {filter} from "rxjs/operators";
 
 declare var google;
@@ -12,16 +12,15 @@ declare var google;
 export class DirectionsMapDirective {
 	_route$: BehaviorSubject<Address[]> = new BehaviorSubject([]);
 	totalDistance: BehaviorSubject<number> = new BehaviorSubject(0);
-
-	@Input()
-	set route(route: Address[]) {
-		this._route$.next(route);
-	}
-
 	@Input() directionsDisplay;
 	@Output() totalDistanceChange: EventEmitter<number> = new EventEmitter();
 
 	constructor(private googleMapsApi: GoogleMapsAPIWrapper) {
+	}
+
+	@Input()
+	set route(route: Address[]) {
+		this._route$.next(route);
 	}
 
 	getTotalDistance(response: any): number {

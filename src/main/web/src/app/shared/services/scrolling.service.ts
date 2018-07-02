@@ -1,17 +1,12 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {CdkScrollable, ScrollDispatcher} from "@angular/cdk/scrolling";
-import {Subject} from "rxjs/Subject";
-import {Subscription} from "rxjs/Subscription";
-import {Observable} from "rxjs/Observable";
+import {Observable, Subject, Subscription} from "rxjs";
 import {tap} from "rxjs/operators";
 
 @Injectable()
 export class ScrollingService {
 	private _scroll: Subject<CdkScrollable> = new Subject<CdkScrollable>();
 	scroll: Observable<CdkScrollable> = this._scroll.asObservable();
-
-
-	private _scrollTop = 0;
 	private _subscription: Subscription;
 
 	constructor(private scrollDispatcher: ScrollDispatcher) {
@@ -29,7 +24,13 @@ export class ScrollingService {
 			.subscribe(this._scroll);
 	}
 
+	private _scrollTop = 0;
+
 	get scrollTop() {
 		return this._scrollTop;
+	}
+
+	scrollToTop(){
+		document.querySelector('.mat-sidenav-content').scrollTop = 0;
 	}
 }

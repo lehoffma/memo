@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Address} from "../../../../shared/model/address";
 import {RoutingService} from "../../../shared/services/routing.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Subject} from "rxjs/Subject";
+import {BehaviorSubject, Subject} from "rxjs";
 import {map} from "rxjs/operators";
 
 enum AddressDisplayFormat {
@@ -27,17 +26,16 @@ export class RouteListComponent implements OnInit {
 
 	routeFormats: AddressDisplayFormat[] = [];
 
-	@Input() set route(route: Address[]) {
-		this._route$.next(route);
-		this.routeFormats = route.map(it => AddressDisplayFormat.Short);
-	}
-
 	/**
 	 */
 
 	constructor(private routingService: RoutingService) {
 	}
 
+	@Input() set route(route: Address[]) {
+		this._route$.next(route);
+		this.routeFormats = route.map(it => AddressDisplayFormat.Short);
+	}
 
 	ngOnInit() {
 	}

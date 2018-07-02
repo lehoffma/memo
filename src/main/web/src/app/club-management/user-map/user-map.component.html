@@ -1,0 +1,12 @@
+
+<agm-map *ngIf="(userAddresses$ | async) as userAddresses"
+		 [longitude]="userAddresses[0].address.longitude"
+		 [latitude]="userAddresses[0].address.latitude">
+	<agm-marker *ngFor="let userAddress of userAddresses"
+				[title]="userAddress.firstName + ' ' + userAddress.surname"
+				[latitude]="userAddress.address.latitude"
+				[longitude]="userAddress.address.longitude">
+		<agm-info-window>{{userAddress.firstName + ' ' + userAddress.surname}}</agm-info-window>
+	</agm-marker>
+
+</agm-map>

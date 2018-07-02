@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {User} from "../../shared/model/user";
+import {createUser, User} from "../../shared/model/user";
 import {PaymentInfo} from "./payment-methods-form/debit-input-form/payment-info";
 import {SignUpSection} from "./signup-section";
 import {SignUpSubmitEvent} from "./signup-submit-event";
@@ -10,21 +10,19 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {Address} from "../../shared/model/address";
 import {AddressService} from "../../shared/services/api/address.service";
 import {UserBankAccountService} from "../../shared/services/api/user-bank-account.service";
-import {BankAccount} from "../../shared/model/bank-account";
+import {createBankAccount} from "../../shared/model/bank-account";
 import {ImageUploadService} from "../../shared/services/api/image-upload.service";
 import {catchError, first, map, mergeMap, tap} from "rxjs/operators";
-import {_throw} from "rxjs/observable/throw";
-import {empty} from "rxjs/observable/empty";
-import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
+import {Observable, of, throwError} from "rxjs";
 import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
 import {processSequentially} from "../../util/observable-util";
 import {ImageToUpload} from "../../shared/utility/multi-image-upload/image-to-upload";
-import {EMPTY} from "rxjs/internal/observable/empty";
+import {EMPTY} from "rxjs";
+import {setProperties} from "../../shared/model/util/base-object";
 
 @Injectable()
 export class SignUpService {
-	newUser: User = User.create();
+	newUser: User = createUser();
 	newUserProfilePicture: ImageToUpload[];
 	newUserDebitInfo: PaymentInfo;
 	newUserAddresses: Address[] = [];
@@ -44,7 +42,7 @@ export class SignUpService {
 	}
 
 	reset() {
-		this.newUser = User.create();
+		this.newUser = createUser();
 		this.newUserProfilePicture = null;
 		this.newUserDebitInfo = null;
 		this.newUserAddresses = [];
@@ -98,14 +96,14 @@ export class SignUpService {
 			return of(user);
 		}
 
-		return this.bankAccountService.add(BankAccount.create()
-			.setProperties({
+		return this.bankAccountService.add(setProperties(createBankAccount(),
+			{
 				bic: this.newUserDebitInfo.bic,
 				iban: this.newUserDebitInfo.iban,
 				name: user.firstName + " " + user.surname
 			}))
 			.pipe(
-				map(bankAccount => user.setProperties({bankAccounts: [bankAccount.id]}))
+				map(bankAccount => setProperties(user, {bankAccounts: [bankAccount.id]}))
 			);
 	}
 
@@ -126,7 +124,7 @@ export class SignUpService {
 		)
 			.pipe(
 				map(addresses => addresses.map(it => it.id)),
-				map(addressIds => user.setProperties({addresses: addressIds}))
+				map(addressIds => setProperties(user, {addresses: addressIds}))
 			);
 	}
 
@@ -151,7 +149,7 @@ export class SignUpService {
 		return this.imageUploadService.uploadImages(formData)
 			.pipe(
 				map(response => response.images),
-				map(images => user.setProperties({images}))
+				map(images => setProperties(user, {images}))
 			);
 	}
 
@@ -182,11 +180,11 @@ export class SignUpService {
 
 		switch (section) {
 			case SignUpSection.AccountData:
-				this.newUser.setProperties({email, password});
+				this.newUser = setProperties(this.newUser, {email, password});
 				break;
 			case SignUpSection.PersonalData:
 				const images: ModifiedImages = event.images;
-				this.newUser.setProperties({
+				this.newUser = setProperties(this.newUser, {
 					firstName, surname, birthday, telephone, mobile, isStudent, addresses,
 					hasSeasonTicket, isWoelfeClubMember, gender, hasDebitAuth
 				});
@@ -223,7 +221,7 @@ export class SignUpService {
 							this.submittingFinalUser = false;
 						}
 						else {
-							_throw(new Error());
+							throwError(new Error());
 						}
 					}),
 					catchError(error => {

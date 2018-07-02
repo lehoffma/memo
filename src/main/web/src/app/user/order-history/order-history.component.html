@@ -1,10 +1,24 @@
-<memo-sorting-dropdown *ngIf="(orders$|async)?.length > 0"
-					   [sortingOptions]="sortingOptions" (onSort)="sortBy$.next($event)">
+<ng-container>
+	<div class="content-container">
+		<memo-sorting-dropdown *ngIf="(orders$|async)?.length > 0"
+							   [sortingOptions]="sortingOptions">
 
-</memo-sorting-dropdown>
-<memo-order-renderer *ngFor="let order of orders$|async" [orderEntry]="order">
-</memo-order-renderer>
+		</memo-sorting-dropdown>
+		<div class="content">
+			<memo-order-renderer *ngFor="let order of (orders$|async)" [orderEntry]="order">
+			</memo-order-renderer>
+		</div>
+		<mat-paginator #paginator class="mat-elevation-z3"
+					   [pageSize]="10"
+					   [length]="dataSource.dataLength"
+					   [pageSizeOptions]="[5, 10, 20, 50]"
+					   (page)="scrollToTop()"
+					   [showFirstLastButtons]="true"></mat-paginator>
 
-<div *ngIf="(orders$|async)?.length === 0" class="no-results">
-	Du hast bisher keine Bestellungen getätigt.
-</div>
+	</div>
+	<div *ngIf="(orders$|async)?.length === 0" class="no-results">
+		Du hast bisher keine Bestellungen getätigt.
+	</div>
+
+</ng-container>
+<!--todo generic loading component, that also shows errors properly-->

@@ -1,9 +1,8 @@
 import {Injectable, Injector} from "@angular/core";
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
 import {AuthService} from "./auth.service";
-import {Observable} from "rxjs/Observable";
+import {Observable, throwError} from "rxjs";
 import {catchError, mergeMap} from "rxjs/operators";
-import {_throw} from "rxjs/observable/throw";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -27,7 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
 							.pipe(
 								mergeMap(response => {
 									let token = null;
-									if(response && response.auth_token){
+									if (response && response.auth_token) {
 										token = response.auth_token;
 									}
 									const repeatedAuthReq = req.clone({
@@ -37,7 +36,7 @@ export class AuthInterceptor implements HttpInterceptor {
 								})
 							)
 					} else {
-						return _throw(error);
+						return throwError(error);
 					}
 				})
 			);

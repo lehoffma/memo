@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Address} from "../../../shared/model/address";
 import {AddressComponentType} from "../maps-address-component-type";
 import {AddressComponent} from "../maps-address-component";
+import {setProperties} from "../../../shared/model/util/base-object";
 
 @Injectable()
 export class RoutingService {
@@ -50,7 +51,7 @@ export class RoutingService {
 		const addressComponents: AddressComponent[] = place.address_components;
 
 		console.log(addressComponents);
-		address.setProperties({
+		let copy = setProperties(address, {
 			street: this.findNameOfAddressComponent(addressComponents, AddressComponentType.street),
 			streetNr: this.findNameOfAddressComponent(addressComponents, AddressComponentType.streetNr),
 			city: this.findNameOfAddressComponent(addressComponents, AddressComponentType.city),
@@ -58,7 +59,7 @@ export class RoutingService {
 			zip: this.findNameOfAddressComponent(addressComponents, AddressComponentType.zip)
 		});
 
-		return address.setProperties({
+		return setProperties(copy, {
 			latitude: place.geometry.location.lat(),
 			longitude: place.geometry.location.lng()
 		});

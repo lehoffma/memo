@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ParticipantUser} from "../../../../shared/model/participant";
 import {RowActionType} from "../../../../../shared/utility/material-table/util/row-action-type";
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from "rxjs";
 import {MemberListRowAction} from "../../../../../club-management/administration/member-list/member-list-row-actions";
 import {ParticipantListService} from "./participant-list.service";
 import {RowAction} from "../../../../../shared/utility/material-table/util/row-action";
-import {ParticipantDataSource} from "./participant-data-source";
+import {ParticipantDataSource, ParticipantUserService} from "./participant-data-source";
 import {UserService} from "../../../../../shared/services/api/user.service";
 import {TableColumn} from "../../../../../shared/utility/material-table/expandable-material-table.component";
 import {startWith} from "rxjs/operators";
@@ -65,10 +65,11 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 
 	subscriptions: Subscription[] = [];
 
-	dataSource = new ParticipantDataSource(this.orderedItemService, this.userService);
+	dataSource = new ParticipantDataSource(this.participantUserService, this.userService);
 
 	constructor(public participantListService: ParticipantListService,
 				public orderedItemService: OrderedItemService,
+				public participantUserService:ParticipantUserService,
 				public breakpointObserver: BreakpointObserver,
 				public userService: UserService) {
 		this.participantListService.dataSource = this.dataSource;

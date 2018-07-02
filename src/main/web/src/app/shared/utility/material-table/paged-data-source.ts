@@ -1,7 +1,7 @@
 import {DataSource} from "@angular/cdk/table";
 import {CollectionViewer} from "@angular/cdk/collections";
 import {BehaviorSubject, combineLatest, Observable, Subscription} from "rxjs";
-import {Page} from "../../model/api/page";
+import {Page, PageResponse} from "../../model/api/page";
 import {filter, map, mergeMap, tap} from "rxjs/operators";
 import {MatPaginator, PageEvent} from "@angular/material";
 import {Filter} from "../../model/api/filter";
@@ -10,9 +10,11 @@ import {Sort} from "../../model/api/sort";
 import {SortDirection} from "@angular/material/sort/typings/sort-direction";
 import {TableDataService} from "./table-data-service";
 
-export class PagedDataSource<T, DataServiceType = T> extends DataSource<T> {
-	private dataService$: BehaviorSubject<TableDataService<DataServiceType>> = new BehaviorSubject<TableDataService<DataServiceType>>(null);
-	private _paginator: MatPaginator;
+export class PagedDataSource<T> extends DataSource<T> {
+	public currentPage$: BehaviorSubject<Page<T>> = new BehaviorSubject<Page<T>>(PageResponse.empty());
+	public data: T[] = [];
+	public dataLength: number = 0;
+	private dataService$: BehaviorSubject<TableDataService<T>> = new BehaviorSubject<TableDataService<T>>(null);
 	private _pageEvents$: BehaviorSubject<PageEvent> = new BehaviorSubject<PageEvent>({
 		pageIndex: 0,
 		pageSize: 20,
@@ -23,18 +25,26 @@ export class PagedDataSource<T, DataServiceType = T> extends DataSource<T> {
 		active: null,
 		direction: (<SortDirection>"")
 	});
-
-	public _filter$: BehaviorSubject<Filter> = new BehaviorSubject<Filter>(Filter.none());
-
 	private _isLoading$: BehaviorSubject<boolean> = new BehaviorSubject(true);
 	public isLoading$: Observable<boolean> = this._isLoading$.asObservable();
-
 	private _pageEventSubscription: Subscription;
 	private _filterSubscription: Subscription;
-
+	private _sortSubscription: Subscription;
 	private _reloadEmitter: BehaviorSubject<any> = new BehaviorSubject(true);
-
 	private _isExpandable$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
+	constructor(dataService?: TableDataService<T>, page$?: Observable<PageRequest>) {
+		super();
+		console.log("huh");
+		if (dataService) {
+			this.dataService$.next(dataService);
+		}
+		if (page$) {
+			this.setPage(page$);
+		}
+	}
+
+	private _paginator: MatPaginator;
 
 	/**
 	 *
@@ -51,24 +61,18 @@ export class PagedDataSource<T, DataServiceType = T> extends DataSource<T> {
 			.subscribe(event => this._pageEvents$.next(event));
 	}
 
+	public _filter$: BehaviorSubject<Filter> = new BehaviorSubject<Filter>(Filter.none());
+
 	/**
 	 *
-	 * @param {Observable<PageRequest>} page$
+	 * @param {Observable<Filter>} filter$
 	 */
-	public setPage(page$: Observable<PageRequest>) {
-		if (this._pageEventSubscription) {
-			this._pageEventSubscription.unsubscribe();
+	public set filter$(filter$: Observable<Filter>) {
+		if (this._filterSubscription) {
+			this._filterSubscription.unsubscribe();
 		}
 
-		this._pageEventSubscription = page$.pipe(
-			map(page => ({
-				previousPageIndex: page.page - 1,
-				pageSize: page.pageSize,
-				length: page.pageSize,
-				pageIndex: page.page
-			}))
-		)
-			.subscribe(event => this._pageEvents$.next(event));
+		this._filterSubscription = filter$.subscribe(filter => this._filter$.next(filter));
 	}
 
 	public set isExpandable(value: boolean) {
@@ -83,56 +87,49 @@ export class PagedDataSource<T, DataServiceType = T> extends DataSource<T> {
 		this._sortEvents$.next(sort);
 	}
 
+	/**
+	 *
+	 * @param sort$
+	 */
+	public set sort$(sort$: Observable<Sort>) {
+		if (this._sortSubscription) {
+			this._sortSubscription.unsubscribe();
+		}
+
+		this._sortSubscription = sort$.subscribe(sort => this.setSort(sort));
+	}
+
+	public set dataService(dataService: TableDataService<T>) {
+		this.dataService$.next(dataService);
+	}
+
+	/**
+	 *
+	 * @param {Observable<PageRequest>} page$
+	 */
+	public setPage(page$: Observable<PageRequest>) {
+		if (this._pageEventSubscription) {
+			this._pageEventSubscription.unsubscribe();
+		}
+
+		console.log("huh");
+		this._pageEventSubscription = page$.pipe(
+			map(page => ({
+				previousPageIndex: page.page - 1,
+				pageSize: page.pageSize,
+				length: page.pageSize,
+				pageIndex: page.page
+			})),
+			tap(it => console.log(it)),
+		)
+			.subscribe(event => this._pageEvents$.next(event));
+	}
+
 	public setSort(sort: Sort) {
 		this._sortEvents$.next({
 			active: sort.sortBys[0],
 			direction: sort.direction
 		})
-	}
-
-	/**
-	 *
-	 * @param {Observable<Filter>} filter$
-	 */
-	public set filter$(filter$: Observable<Filter>) {
-		if (this._filterSubscription) {
-			this._filterSubscription.unsubscribe();
-		}
-
-		this._filterSubscription = filter$.subscribe(filter => this._filter$.next(filter));
-	}
-
-	public data: T[] = [];
-	public dataLength: number = 0;
-
-
-	constructor(dataService?: TableDataService<DataServiceType>) {
-		super();
-		if (dataService) {
-			this.dataService$.next(dataService);
-		}
-	}
-
-	public set dataService(dataService: TableDataService<DataServiceType>) {
-		this.dataService$.next(dataService);
-	}
-
-	/**
-	 * Default implementation
-	 * @param {PageRequest} pageEvent
-	 * @param {Sort} sortEvent
-	 * @param {Filter} filter
-	 * @param {TableDataService} dataService
-	 * @param {any} reload
-	 * @returns {Observable<Page<T>>}
-	 */
-	protected getPagedData([pageEvent, sortEvent, filter, dataService, reload]:
-							   [PageRequest, Sort, Filter, TableDataService<DataServiceType>, any]): Observable<Page<T>> {
-		return dataService.get(
-			filter,
-			pageEvent,
-			sortEvent
-		)
 	}
 
 	/**
@@ -153,13 +150,14 @@ export class PagedDataSource<T, DataServiceType = T> extends DataSource<T> {
 		)
 			.pipe(
 				filter(([pageEvent, sortEvent, filter, dataService, reload]:
-							[PageRequest, Sort, Filter, TableDataService, any]) => dataService !== null),
+							[PageRequest, Sort, Filter, TableDataService<T>, any]) => dataService !== null),
 				tap(() => this._isLoading$.next(true)),
 				mergeMap(([pageEvent, sortEvent, filter, dataService, reload]:
-							  [PageRequest, Sort, Filter, TableDataService, any]) => {
+							  [PageRequest, Sort, Filter, TableDataService<T>, any]) => {
 					return this.getPagedData([pageEvent, sortEvent, filter, dataService, reload]);
 				}),
 				tap(it => {
+					this.currentPage$.next(it);
 					this.dataLength = it.totalElements;
 					this.data = it.content;
 					this._isLoading$.next(false);
@@ -180,7 +178,6 @@ export class PagedDataSource<T, DataServiceType = T> extends DataSource<T> {
 					)
 
 				}),
-				tap(it => console.log(it)),
 			)
 	}
 
@@ -197,8 +194,25 @@ export class PagedDataSource<T, DataServiceType = T> extends DataSource<T> {
 		}
 	}
 
-
 	reload() {
 		this._reloadEmitter.next(true);
+	}
+
+	/**
+	 * Default implementation
+	 * @param {PageRequest} pageEvent
+	 * @param {Sort} sortEvent
+	 * @param {Filter} filter
+	 * @param {TableDataService} dataService
+	 * @param {any} reload
+	 * @returns {Observable<Page<T>>}
+	 */
+	protected getPagedData([pageEvent, sortEvent, filter, dataService, reload]:
+							   [PageRequest, Sort, Filter, TableDataService<T>, any]): Observable<Page<T>> {
+		return dataService.get(
+			filter,
+			pageEvent,
+			sortEvent
+		)
 	}
 }

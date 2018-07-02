@@ -1,7 +1,6 @@
 import {NgModule} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {routedComponents, ShopItemDetailsRoutingModule} from "../shop-item-details.routing";
-import {SizeTableComponent} from "./size-table/size-table.component";
 import {RouteMapComponent} from "./route/route-map.component";
 import {FullNameTableCellComponent} from "./participants/participant-list/full-name-table-cell.component";
 import {ParticipantsComponent} from "./participants/participants.component";
@@ -10,7 +9,7 @@ import {ItemTableComponent} from "./details-table/item-table.component";
 import {ClothesSizePipe} from "./details/clothes-size.pipe";
 import {ItemDetailsContentComponent} from "./content/item-details-content.component";
 import {ItemDetailsContainerComponent} from "./container/item-details-container.component";
-import {ItemDetailsOverviewComponent} from "./container/overview/item-details-overview.component";
+import {ItemInfoComponent} from "./info/item-info.component";
 import {ItemImagePopupComponent} from "./container/image-popup/item-image-popup.component";
 import {CommentsSectionModule} from "./comments-section/comments-section.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -22,6 +21,9 @@ import {RouteListComponent} from "./route/route-list.component";
 import {AddressRendererPipe} from "./route/address-renderer.pipe";
 import {SharedShopModule} from "../../shared/shop-shared.module";
 import {ShareButtonsModule} from "@ngx-share/buttons";
+import {ItemInfoHeaderComponent} from "./item-info-header/item-info-header.component";
+import {AddToCartFormComponent} from "./add-to-cart-form/add-to-cart-form.component";
+import {DetailPageComponent} from "./details/detail-page.component";
 
 @NgModule({
 	imports: [
@@ -38,7 +40,7 @@ import {ShareButtonsModule} from "@ngx-share/buttons";
 	],
 	declarations: [
 		routedComponents,
-		SizeTableComponent,
+		DetailPageComponent,
 		RouteMapComponent,
 
 		FullNameTableCellComponent,
@@ -52,10 +54,12 @@ import {ShareButtonsModule} from "@ngx-share/buttons";
 
 		ItemDetailsContentComponent,
 		ItemDetailsContainerComponent,
-		ItemDetailsOverviewComponent,
+		ItemInfoComponent,
 		ItemImagePopupComponent,
 		OrderStatusTableCellComponent,
 		RouteListComponent,
+		ItemInfoHeaderComponent,
+		AddToCartFormComponent,
 	],
 	entryComponents: [
 		FullNameTableCellComponent,

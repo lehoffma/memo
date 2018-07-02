@@ -1,9 +1,9 @@
 import {Injectable} from "@angular/core";
 import {EventType} from "../../shop/shared/model/event-type";
 import {Event} from "../../shop/shared/model/event";
-import {Merchandise} from "../../shop/shared/model/merchandise";
-import {Party} from "../../shop/shared/model/party";
-import {Tour} from "../../shop/shared/model/tour";
+import {createMerch} from "../../shop/shared/model/merchandise";
+import {createParty} from "../../shop/shared/model/party";
+import {createTour} from "../../shop/shared/model/tour";
 
 @Injectable()
 export class EventFactoryService {
@@ -14,13 +14,13 @@ export class EventFactoryService {
 	static build(eventType: EventType): Event {
 		switch (eventType) {
 			case EventType.merch:
-				return Merchandise.create();
+				return createMerch();
 			case EventType.tours:
-				return Tour.create();
+				return createTour();
 			case EventType.partys:
-				return Party.create();
+				return createParty();
 
 		}
-		return Event.create();
+		return null;
 	}
 }

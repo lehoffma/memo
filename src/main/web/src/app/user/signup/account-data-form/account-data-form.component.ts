@@ -1,6 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
 import {SignUpSubmitEvent} from "../signup-submit-event";
-import {SignUpSection} from "../signup-section";
 import {UserService} from "../../../shared/services/api/user.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {confirmPasswordValidator} from "../../../shared/validators/confirm-password.validator";

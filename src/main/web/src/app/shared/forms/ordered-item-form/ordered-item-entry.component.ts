@@ -23,6 +23,7 @@ export class OrderedItemEntryComponent implements OnInit {
 		}
 	} = {};
 	eventType = EventType;
+	orderToString = orderStatusToString;
 
 	constructor(private confirmationDialogService: ConfirmationDialogService) {
 	}
@@ -45,8 +46,6 @@ export class OrderedItemEntryComponent implements OnInit {
 
 		return this._cache[item.id];
 	}
-
-	orderToString = orderStatusToString;
 
 	remove() {
 		this.confirmationDialogService.openDialog("Möchtest du dieses Item wirklich löschen?")

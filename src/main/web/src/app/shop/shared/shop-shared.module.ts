@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule} from "@angular/core";
 import {ResponsibleUserInputComponent} from "./responsible-user-input/responsible-user-input.component";
 import {CommonModule} from "@angular/common";
 import {MemoMaterialModule} from "../../../material.module";

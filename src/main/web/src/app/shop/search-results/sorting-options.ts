@@ -40,10 +40,10 @@ export const eventSortingOptions: SortingOption<Event>[] = [
 	),
 	SortingOptionHelper.build(
 		"Datum neueste - älteste",
-		Sort.by(Direction.ASCENDING, "date")
+		Sort.by(Direction.DESCENDING, "date")
 	),
 	SortingOptionHelper.build(
 		"Datum älteste - neueste",
-		Sort.by(Direction.DESCENDING, "date")
+		Sort.by(Direction.ASCENDING, "date")
 	)
 ];

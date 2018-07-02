@@ -1,8 +1,10 @@
 import {Component, EventEmitter, Input, NgZone, OnInit, Output} from "@angular/core";
-import {Address} from "../../model/address";
+import {Address, createAddress} from "../../model/address";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {GMapsService} from "../../../shop/shared/services/gmaps.service";
 import {first} from "rxjs/operators";
+import {addressToString} from "../../model/util/to-string-util";
+import {setProperties} from "../../model/util/base-object";
 
 @Component({
 	selector: "memo-address-input-form",
@@ -15,19 +17,6 @@ export class AddressInputFormComponent implements OnInit {
 
 	id: number = -1;
 	loading = false;
-
-	@Input() set address(address: Address) {
-		this.formGroup.patchValue(({
-			name: address.name,
-			street: address.street,
-			streetNr: address.streetNr,
-			zip: address.zip,
-			city: address.city,
-			country: address.country
-		}));
-		this.id = address.id;
-	}
-
 	formGroup: FormGroup;
 
 	constructor(private formBuilder: FormBuilder,
@@ -57,11 +46,23 @@ export class AddressInputFormComponent implements OnInit {
 		});
 	}
 
+	@Input() set address(address: Address) {
+		this.formGroup.patchValue(({
+			name: address.name,
+			street: address.street,
+			streetNr: address.streetNr,
+			zip: address.zip,
+			city: address.city,
+			country: address.country
+		}));
+		this.id = address.id;
+	}
+
 	ngOnInit() {
 	}
 
 	submit() {
-		const address = Address.create().setProperties({
+		const address = setProperties(createAddress(), {
 			id: this.id,
 			name: this.formGroup.value.name,
 			street: this.formGroup.value.street,
@@ -72,7 +73,7 @@ export class AddressInputFormComponent implements OnInit {
 		});
 
 		this.loading = true;
-		this.gmapService.getGeocodedAddress(address.toString())
+		this.gmapService.getGeocodedAddress(addressToString(address))
 			.pipe(first())
 			.subscribe(results => {
 				this.zone.run(() => {
@@ -81,7 +82,7 @@ export class AddressInputFormComponent implements OnInit {
 					if (results && results.length > 0) {
 						const longitude = results[0].geometry.location.lng();
 						const latitude = results[0].geometry.location.lat();
-						addressToSubmit = addressToSubmit.setProperties({
+						addressToSubmit = setProperties(addressToSubmit, {
 							latitude,
 							longitude
 						})

@@ -1,8 +1,8 @@
 import {Injectable} from "@angular/core";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Order} from "../../model/order";
+import {createOrder, Order} from "../../model/order";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {mergeMap, tap} from "rxjs/operators";
 import {CapacityService} from "./capacity.service";
 import {StockService} from "./stock.service";
@@ -12,6 +12,7 @@ import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Page} from "../../model/api/page";
+import {setProperties} from "../../model/util/base-object";
 
 @Injectable()
 export class OrderService extends ServletService<Order> {
@@ -25,7 +26,7 @@ export class OrderService extends ServletService<Order> {
 
 
 	jsonToObject(json: any): Order {
-		return Order.create().setProperties(json);
+		return setProperties(createOrder(), json);
 	}
 
 	/**

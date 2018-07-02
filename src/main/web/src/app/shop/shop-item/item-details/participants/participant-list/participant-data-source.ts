@@ -5,20 +5,45 @@ import {Sort} from "../../../../../shared/model/api/sort";
 import {Observable} from "rxjs";
 import {Filter} from "../../../../../shared/model/api/filter";
 import {ParticipantUser} from "../../../../shared/model/participant";
-import {OrderedItem} from "../../../../../shared/model/ordered-item";
 import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 import {UserService} from "../../../../../shared/services/api/user.service";
 
-export class ParticipantDataSource extends PagedDataSource<ParticipantUser, OrderedItem> {
 
-	constructor(dataService: OrderedItemService,
-				protected userService: UserService) {
-		super(dataService);
+import {Injectable} from "@angular/core";
+import {AddOrModifyRequest, ServletService} from "../../../../../shared/services/api/servlet.service";
+import {HttpClient} from "@angular/common/http";
+
+@Injectable()
+export class ParticipantUserService extends ServletService<ParticipantUser> {
+
+	constructor(
+		protected http: HttpClient,
+		private orderedItemService: OrderedItemService
+	) {
+		super(http, "/api/orderedItem");
 	}
 
-	protected getPagedData([pageEvent, sortEvent, filter, dataService, reload]:
-							   [PageRequest, Sort, Filter, OrderedItemService, any]): Observable<Page<ParticipantUser>> {
-		return (<OrderedItemService>dataService).getParticipantUsers(filter, pageEvent, sortEvent);
+
+	get(filter: Filter, pageRequest: PageRequest, sort: Sort): Observable<Page<ParticipantUser>> {
+		return this.orderedItemService.getParticipantUsers(filter, pageRequest, sort);
+	}
+
+	addOrModify(requestMethod: AddOrModifyRequest, entry: ParticipantUser, options?: any): Observable<ParticipantUser> {
+		return undefined;
+	}
+
+	remove(id: number, ...args: any[]): Observable<Object>;
+	remove(id: number, options?: any): Observable<Object>;
+	remove(id: number, ...args: (any)[]): Observable<Object> {
+		return undefined;
+	}
+}
+
+export class ParticipantDataSource extends PagedDataSource<ParticipantUser> {
+
+	constructor(dataService: ParticipantUserService,
+				protected userService: UserService) {
+		super(dataService);
 	}
 }
 

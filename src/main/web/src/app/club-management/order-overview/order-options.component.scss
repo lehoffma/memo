@@ -7,8 +7,23 @@ div {
 }
 
 :host {
+	> div > div {
+		background: white;
+		padding: 1rem;
+		width: 300px;
+
+		h3 {
+			font-weight: 500;
+			font-size: 1rem;
+			border-bottom: 1px solid #cdcdcd;
+			padding-bottom: 0.5rem;
+			margin: 0 0 1rem;
+			text-transform: uppercase;
+		}
+	}
+
 	mat-form-field {
-		width: 100%;
+		width: 200px;
 	}
 }
 

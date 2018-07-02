@@ -108,12 +108,12 @@
 .price {
 
 	memo-price-renderer {
-		/deep/ .price-container{
+		/deep/ .price-container {
 			flex-direction: column-reverse;
 			align-items: flex-end;
 		}
 
-		&.hasDiscounts{
+		&.hasDiscounts {
 			/deep/ .price-container {
 				margin-top: -20px;
 			}

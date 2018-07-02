@@ -4,12 +4,9 @@ import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {MerchColor} from "../../../shop/shared/model/merch-color";
 import {Merchandise} from "../../../shop/shared/model/merchandise";
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from "rxjs";
 import {mergeMap, share, tap} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
 import {processSequentiallyAndWait} from "../../../util/observable-util";
-import {Page} from "../../model/api/page";
-import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Filter} from "../../model/api/filter";
 
@@ -45,10 +42,9 @@ export class StockService extends ServletService<MerchStock> {
 	 * @param sort
 	 * @returns {Observable<MerchStockList>}
 	 */
-	getByEventId(eventId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<MerchStock>> {
-		return this.get(
+	getByEventId(eventId: number, sort: Sort = Sort.none()): Observable<MerchStock[]> {
+		return this.getAll(
 			Filter.by({"eventId": "" + eventId}),
-			pageRequest,
 			sort
 		)
 	}

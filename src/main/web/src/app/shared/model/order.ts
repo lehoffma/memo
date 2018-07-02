@@ -2,23 +2,23 @@ import {BaseObject} from "./util/base-object";
 import {PaymentMethod} from "../../shop/checkout/payment/payment-method";
 import {OrderedItem} from "./ordered-item";
 
-export class Order extends BaseObject<Order> {
-	constructor(public readonly id: number,
-				public readonly user: number,
-				public readonly timeStamp: Date,
-				public method: PaymentMethod,
-				public readonly items: OrderedItem[],
-				public text: string,
-				public bankAccount?: number) {
-		super(id);
-	}
+export interface Order extends BaseObject {
+	readonly user: number;
+	readonly timeStamp: Date;
+	method: PaymentMethod;
+	readonly items: OrderedItem[];
+	text: string;
+	bankAccount?: number;
+}
 
 
-	static create(): Order {
-		return new Order(-1, -1, new Date(), PaymentMethod.CASH, [], "");
-	}
-
-	static isOrder(object: any): object is Order {
-		return object && (<Order>object).method !== undefined && (<Order>object).method !== null;
+export function createOrder(): Order {
+	return {
+		id: -1,
+		user: -1,
+		timeStamp: new Date(),
+		method: PaymentMethod.CASH,
+		items: [],
+		text: ""
 	}
 }

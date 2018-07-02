@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {ControlValueAccessor, FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators} from "@angular/forms";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {Event} from "../../../../shop/shared/model/event";
 import {isEventValidator} from "../../../validators/is-event.validator";
 import {EventUtilityService} from "../../../services/event-utility.service";

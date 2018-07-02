@@ -1,6 +1,5 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {Observable} from "rxjs/Observable";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, Observable} from "rxjs";
 import {scan} from "rxjs/operators";
 
 
@@ -39,7 +38,11 @@ export class MultiImageContainerComponent implements OnInit {
 				return acc;
 			}, [])
 		);
+	_currentImage$: BehaviorSubject<string> = new BehaviorSubject("");
+	@Output() onClick = new EventEmitter<any>();
 
+	constructor() {
+	}
 
 	get images() {
 		return this._images$.getValue();
@@ -58,19 +61,12 @@ export class MultiImageContainerComponent implements OnInit {
 		}
 	}
 
-	_currentImage$: BehaviorSubject<string> = new BehaviorSubject("");
-
 	get currentImage() {
 		return this._currentImage$.getValue();
 	}
 
 	set currentImage(image: string) {
 		this._currentImage$.next(image);
-	}
-
-	@Output() onClick = new EventEmitter<any>();
-
-	constructor() {
 	}
 
 	ngOnInit() {

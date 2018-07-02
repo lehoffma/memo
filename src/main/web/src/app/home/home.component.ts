@@ -6,12 +6,12 @@ import {EventType, typeToInteger} from "../shop/shared/model/event-type";
 import {ShopItemType} from "../shop/shared/model/shop-item-type";
 import {LogInService} from "../shared/services/api/login.service";
 import {map, mergeMap} from "rxjs/operators";
-import {Observable} from "rxjs/Observable";
-import {isAfter} from "date-fns";
-import {dateSortingFunction, NOW} from "../util/util";
+import {combineLatest, Observable} from "rxjs";
+import {NOW} from "../util/util";
 import {PageRequest} from "../shared/model/api/page-request";
-import {Sort, Direction} from "../shared/model/api/sort";
+import {Direction, Sort} from "../shared/model/api/sort";
 import {Filter} from "../shared/model/api/filter";
+import {flatten} from "@angular/compiler";
 
 interface EventsPreview {
 	title: string,
@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit {
 				.pipe(
 					mergeMap(() => this.eventService.get(
 						Filter.by({
-							"type": typeToInteger(EventType.partys)+ "",
+							"type": typeToInteger(EventType.partys) + "",
 							"minDate": NOW.toISOString()
 						}),
 						PageRequest.first(7),
@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit {
 		},
 	];
 
-
+	combinedEvents: Observable<Event[]>;
 	userIsLoggedIn$ = this.loginService.isLoggedInObservable();
 
 	constructor(private eventService: EventService,
@@ -88,12 +88,10 @@ export class HomeComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-	}
-
-
-	filterEvents(events: Event[]): Event[] {
-		return events.filter(event => isAfter(event.date, new Date()))
-			.sort(dateSortingFunction<Event>(it => it.date, false))
-			.slice(0, 7);
+		this.combinedEvents = combineLatest(
+			...this.events.map(it => it.events)
+		).pipe(
+			map((events: Event[][]) => flatten(events))
+		)
 	}
 }

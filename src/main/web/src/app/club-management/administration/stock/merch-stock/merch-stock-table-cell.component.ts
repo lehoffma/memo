@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from "@angular/core";
 import {ExpandableTableCellComponent} from "../../../../shared/utility/material-table/util/expandable-table-cell.component";
 
 @Component({
-	selector: 'td [merch-stock-table-cell-component]',
+	selector: "td [merch-stock-table-cell-component]",
 	template: `		
 		<span [ngClass]="{'is-zero': data === 0}">
 			{{data}}

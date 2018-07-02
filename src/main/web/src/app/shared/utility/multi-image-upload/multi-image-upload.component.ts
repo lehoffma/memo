@@ -1,11 +1,9 @@
 import {Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, Observable, Subscription} from "rxjs";
 import {RowActionType} from "../material-table/util/row-action-type";
 import {filter, map, take} from "rxjs/operators";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Subscription} from "rxjs/Subscription";
 import {ImageToUpload, isImageToUpload} from "./image-to-upload";
-import {Observable} from "rxjs/Observable";
 import {ConfirmationDialogService} from "../../services/confirmation-dialog.service";
 import {ModifiedImages} from "../../../shop/shop-item/modify-shop-item/modified-images";
 import {InMemoryDataService} from "../material-table/in-memory-data.service";
@@ -23,20 +21,57 @@ import {TableColumn} from "../material-table/expandable-material-table.component
 export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	//todo maximum size stuff
 
-	_previousValue: string[] = [];
-	@Input() set previousValue(previousValue: string[]) {
-		this._previousValue = previousValue;
-		this.formGroup.get("imagePaths").setValue(previousValue);
+	//contains: imagePaths (string[]) + imagesToUpload (ImageToUpload[])
+	images$ = new BehaviorSubject<ImageToUpload[]>([]);
+	imagePaths$ = this.images$.pipe(
+		map(images => images.map(it => it.data))
+	);
+	@Input() limit: number = Infinity;
+	@HostBinding("class.single-picture") singlePicture: boolean = false;
+	rowActions: {
+		icon?: string;
+		name: string | RowActionType;
+		link?: (object: ImageToUpload) => string;
+		route?: (object: ImageToUpload) => string;
+	}[] = [
+		{
+			icon: "delete",
+			name: RowActionType.DELETE
+		},
+	];
+	@ViewChild("fileUpload") fileUpload: ElementRef;
+	currentFiles: File[] = [];
+	imageSubscription: Subscription;
+	subscriptions = [];
+	columns: TableColumn<ImageToUpload>[] = [
+		{columnDef: "name", header: "Name", cell: element => element.name}
+	];
+	displayedColumns = this.columns.map(column => column.columnDef);
+
+	constructor(private confirmationDialogService: ConfirmationDialogService,
+				public inMemoryDataService: InMemoryDataService<ImageToUpload>,
+				private formBuilder: FormBuilder) {
 	}
+
+	_previousValue: string[] = [];
 
 	get previousValue() {
 		return this._previousValue;
+	}
+
+	@Input() set previousValue(previousValue: string[]) {
+		this._previousValue = previousValue;
+		this.formGroup.get("imagePaths").setValue(previousValue);
 	}
 
 	_formGroup: FormGroup = this.formBuilder.group({
 		"imagePaths": this.formBuilder.control([]),
 		"imagesToUpload": this.formBuilder.control([])
 	});
+
+	get formGroup() {
+		return this._formGroup;
+	}
 
 	@Input() set formGroup(formGroup: FormGroup) {
 		this._formGroup = formGroup;
@@ -51,48 +86,6 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 		this.imageSubscription = this.formGroup.valueChanges
 			.pipe(map(this.getValueFromForm))
 			.subscribe(value => this.images$.next(value));
-	}
-
-	get formGroup() {
-		return this._formGroup;
-	}
-
-	//contains: imagePaths (string[]) + imagesToUpload (ImageToUpload[])
-	images$ = new BehaviorSubject<ImageToUpload[]>([]);
-	imagePaths$ = this.images$.pipe(
-		map(images => images.map(it => it.data))
-	);
-
-	@Input() limit: number = Infinity;
-	@HostBinding("class.single-picture") singlePicture: boolean = false;
-
-
-	rowActions: {
-		icon?: string;
-		name: string | RowActionType;
-		link?: (object: ImageToUpload) => string;
-		route?: (object: ImageToUpload) => string;
-	}[] = [
-		{
-			icon: "delete",
-			name: RowActionType.DELETE
-		},
-	];
-	@ViewChild("fileUpload") fileUpload: ElementRef;
-
-	currentFiles: File[] = [];
-	imageSubscription: Subscription;
-	subscriptions = [];
-
-	columns: TableColumn<ImageToUpload>[] = [
-		{columnDef: "name", header: "Name", cell: element => element.name}
-	];
-	displayedColumns = this.columns.map(column => column.columnDef);
-
-
-	constructor(private confirmationDialogService: ConfirmationDialogService,
-				public inMemoryDataService: InMemoryDataService,
-				private formBuilder: FormBuilder) {
 	}
 
 	ngOnInit() {

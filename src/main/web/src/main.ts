@@ -9,6 +9,6 @@ if (environment.production) {
 	enableProdMode();
 }
 
-insertGoogleAnalyticsHeadScripts()
+insertGoogleAnalyticsHeadScripts();
 
 platformBrowserDynamic().bootstrapModule(AppModule);

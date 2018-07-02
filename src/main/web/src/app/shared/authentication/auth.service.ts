@@ -1,10 +1,8 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable, of, throwError} from "rxjs";
 import {catchError, mergeMap, tap} from "rxjs/operators";
 import {JwtHelperService} from "@auth0/angular-jwt";
-import {_throw} from "rxjs/observable/throw";
-import {of} from "rxjs/observable/of"
 
 @Injectable()
 export class AuthService {
@@ -12,14 +10,14 @@ export class AuthService {
 	private readonly REFRESH_TOKEN_KEY = "refresh_token";
 	private readonly REMEMBER_ME_KEY = "remember_me";
 	private readonly REFRESH_DELAY = 60 * 60 * 1000;	//every hour
-
-	public _saveLogin = null;
 	private _accessToken = null;
 	private _refreshToken = null;
 	private jwtHelperService: JwtHelperService = new JwtHelperService({});
 
 	constructor(private http: HttpClient,) {
 	}
+
+	public _saveLogin = null;
 
 	get saveLogin() {
 		if (this._saveLogin !== null) {
@@ -122,7 +120,7 @@ export class AuthService {
 				catchError(error => {
 					console.warn(error);
 					this.setAccessToken("");
-					return _throw(error);
+					return throwError(error);
 				})
 			);
 	}

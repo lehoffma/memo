@@ -1,6 +1,11 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {Dimension, WindowService} from "../../shared/services/window.service";
 import {OrderOverviewService} from "./order-overview.service";
+import {MatPaginator} from "@angular/material";
+import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
+import {Direction, Sort} from "../../shared/model/api/sort";
+import {Event} from "../../shop/shared/model/event";
+import {Order} from "../../shared/model/order";
 
 @Component({
 	selector: "memo-order-overview",
@@ -13,7 +18,10 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 	mobile = false;
 
 	subscriptions = [];
+	sortingOptions: SortingOption<any>[] = orderSortingOptions;
 
+
+	@ViewChild(MatPaginator) paginator: MatPaginator;
 	constructor(private windowService: WindowService,
 				public orderOverviewService: OrderOverviewService) {
 		this.subscriptions.push(this.windowService.dimension$
@@ -21,6 +29,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
+		this.orderOverviewService.dataSource.paginator = this.paginator;
 	}
 
 	ngOnDestroy(): void {
@@ -39,3 +48,17 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 
 
 }
+
+
+
+
+export const orderSortingOptions: SortingOption<Order>[] = [
+	SortingOptionHelper.build(
+		"Datum neueste - älteste",
+		Sort.by(Direction.DESCENDING, "timeStamp")
+	),
+	SortingOptionHelper.build(
+		"Datum älteste - neueste",
+		Sort.by(Direction.ASCENDING, "timeStamp")
+	)
+];

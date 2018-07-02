@@ -1,18 +1,14 @@
 import {BaseObject} from "./util/base-object";
 
-export class EntryCategory extends BaseObject<EntryCategory> {
-	constructor(public readonly id: number,
-				public readonly name: string,
-				public readonly category: number
-	) {
-		super(id);
-	}
+export interface EntryCategory extends BaseObject {
+	readonly name: string;
+	readonly category: number;
+}
 
-	static create() {
-		return new EntryCategory(-1, "", 1);
-	}
-
-	static isEntryCategory(object: any): object is EntryCategory {
-		return object && object["id"] !== undefined && object["name"] !== undefined;
+export function createEntryCategory() {
+	return {
+		id: -1,
+		name: "",
+		category: -1
 	}
 }

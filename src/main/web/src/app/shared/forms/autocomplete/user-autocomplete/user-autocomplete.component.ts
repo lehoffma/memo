@@ -1,16 +1,14 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {User} from "../../../model/user";
 import {FormControl, Validators} from "@angular/forms";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, combineLatest, Observable} from "rxjs";
 import {EventUtilityService} from "../../../services/event-utility.service";
 import {debounceTime, map, mergeMap, startWith} from "rxjs/operators";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {MatInput} from "@angular/material";
 import {Filter} from "../../../model/api/filter";
 import {UserService} from "../../../services/api/user.service";
-import {combineLatest} from "rxjs";
 import {PageRequest} from "../../../model/api/page-request";
-import {Sort} from "../../../model/api/sort";
+import {Direction, Sort} from "../../../model/api/sort";
 
 @Component({
 	selector: "memo-user-autocomplete",
@@ -25,12 +23,18 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 
 	userList$ = this.userService.get(Filter.none(), PageRequest.first(), Sort.none())
 		.pipe(map(it => it.content));
+	blackListedUsers$ = new BehaviorSubject<User[]>([]);
+	@Input() resetOnSelect = true;
+	@Output() userChanged = new EventEmitter<User>();
+	@ViewChild("userInput") userInput: MatInput;
+	subscriptions = [];
+
+	constructor(private userService: UserService) {
+	}
 
 	@Input() set filter(filter: Filter) {
 		this._additionalFilter$.next(filter);
 	}
-
-	blackListedUsers$ = new BehaviorSubject<User[]>([]);
 
 	@Input() set blackListedUsers(userList: User[]) {
 		this.blackListedUsers$.next(userList);
@@ -44,10 +48,6 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 			this.autocompleteFormControl.clearValidators();
 		}
 	}
-
-	@Input() resetOnSelect = true;
-
-	@Output() userChanged = new EventEmitter<User>();
 
 	_user: User = null;
 
@@ -64,15 +64,6 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 				this.autocompleteFormControl.reset();
 			}
 		}
-	}
-
-
-	@ViewChild("userInput") userInput: MatInput;
-
-
-	subscriptions = [];
-
-	constructor(private userService: UserService) {
 	}
 
 	ngOnInit() {
@@ -110,7 +101,7 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 						additionalFilter
 					),
 					PageRequest.first(),
-					Sort.by("desc", "firstName", "surname")
+					Sort.by(Direction.DESCENDING, "firstName", "surname")
 				)),
 			map(it => it.content),
 			map(users => {

@@ -37,8 +37,8 @@ form:not(.expanded-mobile) {
 	> button {
 		margin: auto;
 	}
-	::ng-deep .mat-input-wrapper{
-		padding-bottom: calc(64px / 2  - 16px) !important;
+	::ng-deep .mat-input-wrapper {
+		padding-bottom: calc(64px / 2 - 16px) !important;
 	}
 
 	::ng-deep .mat-input-underline {

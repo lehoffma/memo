@@ -5,8 +5,9 @@ import {ModifyItemEvent} from "../modify-item-event";
 import {format, setHours, setMinutes} from "date-fns";
 import {Permission} from "../../../../shared/model/permission";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Tour} from "../../../shared/model/tour";
+import {createTour, Tour} from "../../../shared/model/tour";
 import {ModifyItemService} from "../modify-item.service";
+import {setProperties} from "../../../../shared/model/util/base-object";
 
 @Component({
 	selector: "memo-modify-tour",
@@ -15,36 +16,8 @@ import {ModifyItemService} from "../modify-item.service";
 })
 export class ModifyTourComponent implements OnInit {
 	formGroup: FormGroup;
-
-	_previousValue: Tour;
-	@Input() set previousValue(previousValue: Tour) {
-		this._previousValue = previousValue;
-
-		if (!previousValue) {
-			return;
-		}
-
-		this.formGroup.get("event-data").get("title").patchValue(previousValue.title);
-		this.formGroup.get("event-data").get("description").patchValue(previousValue.description);
-		this.formGroup.get("event-data").get("date").patchValue(previousValue.date);
-		this.formGroup.get("event-data").get("time").patchValue(format(previousValue.date, "HH:ss"));
-		this.formGroup.get("event-data").get("capacity").patchValue(previousValue.capacity);
-		this.formGroup.get("event-data").get("price").patchValue(previousValue.price);
-		this.formGroup.get("event-data").get("vehicle").patchValue(previousValue.vehicle);
-		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
-		this.formGroup.get("permissions").get("expectedReadRole").patchValue(previousValue.expectedReadRole);
-		this.formGroup.get("permissions").get("expectedWriteRole").patchValue(previousValue.expectedWriteRole);
-		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);
-		this.formGroup.get("addresses").patchValue(previousValue.route)
-	}
-
-	get previousValue() {
-		return this._previousValue;
-	}
-
 	@Input() mode: ModifyType;
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
-
 	ModifyType = ModifyType;
 
 	constructor(private location: Location,
@@ -95,6 +68,33 @@ export class ModifyTourComponent implements OnInit {
 		})
 	}
 
+	_previousValue: Tour;
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
+	@Input() set previousValue(previousValue: Tour) {
+		this._previousValue = previousValue;
+
+		if (!previousValue) {
+			return;
+		}
+
+		this.formGroup.get("event-data").get("title").patchValue(previousValue.title);
+		this.formGroup.get("event-data").get("description").patchValue(previousValue.description);
+		this.formGroup.get("event-data").get("date").patchValue(previousValue.date);
+		this.formGroup.get("event-data").get("time").patchValue(format(previousValue.date, "HH:ss"));
+		this.formGroup.get("event-data").get("capacity").patchValue(previousValue.capacity);
+		this.formGroup.get("event-data").get("price").patchValue(previousValue.price);
+		this.formGroup.get("event-data").get("vehicle").patchValue(previousValue.vehicle);
+		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
+		this.formGroup.get("permissions").get("expectedReadRole").patchValue(previousValue.expectedReadRole);
+		this.formGroup.get("permissions").get("expectedWriteRole").patchValue(previousValue.expectedWriteRole);
+		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);
+		this.formGroup.get("addresses").patchValue(previousValue.route)
+	}
+
 	ngOnInit() {
 	}
 
@@ -133,7 +133,7 @@ export class ModifyTourComponent implements OnInit {
 				this.formGroup.get("event-data").get("time").value
 			)
 		);
-		const tour = Tour.create().setProperties<Tour>({
+		const tour = setProperties(createTour(), {
 			title: this.formGroup.get("event-data").get("title").value,
 			description: this.formGroup.get("event-data").get("description").value,
 			date: this.formGroup.get("event-data").get("date").value,
@@ -146,7 +146,7 @@ export class ModifyTourComponent implements OnInit {
 			expectedCheckInRole: this.formGroup.get("permissions").get("expectedCheckInRole").value,
 			route: this.formGroup.get("addresses").value,
 			author: this.formGroup.get("responsible-users").value.map(it => it.id)
-		});
+		} as any);
 		this.onSubmit.emit({
 			item: tour,
 			images: this.formGroup.get("images").value,

@@ -35,8 +35,10 @@ import {FilterOptionFactoryService} from "./filter-option-factory.service";
 	exports: [
 		SortingDropdownComponent,
 		FilteringMenuComponent,
+		ResultsComponent,
 		ResultsEntryComponent,
 	]
 })
 export class SearchModule {
 }
+

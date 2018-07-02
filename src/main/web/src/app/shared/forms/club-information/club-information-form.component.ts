@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {ClubRole} from "../../model/club-role";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {UserService} from "../../services/api/user.service";
 import {LogInService} from "../../services/api/login.service";
 import {map} from "rxjs/operators";
@@ -11,7 +11,7 @@ import {map} from "rxjs/operators";
 	templateUrl: "./club-information-form.component.html",
 	styleUrls: ["./club-information-form.component.scss"]
 })
-export class ClubInformationFormComponent implements OnInit, OnDestroy{
+export class ClubInformationFormComponent implements OnInit, OnDestroy {
 	@Input() formGroup: FormGroup;
 
 	isAdmin$: Observable<boolean> = this.loginService.currentUser$
@@ -19,6 +19,7 @@ export class ClubInformationFormComponent implements OnInit, OnDestroy{
 	clubRoleOptions = [ClubRole.Organisator, ClubRole.Admin, ClubRole.Vorstand, ClubRole.Kassenwart, ClubRole.Mitglied, ClubRole.Gast];
 
 	subscription;
+
 	constructor(private userService: UserService,
 				private loginService: LogInService) {
 	}
@@ -26,12 +27,12 @@ export class ClubInformationFormComponent implements OnInit, OnDestroy{
 	ngOnInit() {
 		this.subscription = this.isAdmin$.subscribe(isAdmin => {
 			if (isAdmin) {
-				this.formGroup.get('clubRole').enable();
-				this.formGroup.get('joinDate').enable();
+				this.formGroup.get("clubRole").enable();
+				this.formGroup.get("joinDate").enable();
 			}
 			else {
-				this.formGroup.get('clubRole').disable();
-				this.formGroup.get('joinDate').disable();
+				this.formGroup.get("clubRole").disable();
+				this.formGroup.get("joinDate").disable();
 			}
 		})
 	}

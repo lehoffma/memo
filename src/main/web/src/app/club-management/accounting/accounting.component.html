@@ -8,52 +8,56 @@
 </div>
 
 
-<div class="accounting-table-container"
-	 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 110px)' : 'calc(100% - 74px)')">
+<div class="content-wrapper">
+	<div class="accounting-table-container"
+		 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 110px)' : 'calc(100% - 74px)')">
 
-	<!--<memo-expandable-table-->
-	<!--*ngIf="!accountingTableContainerService.loading && (accountingTableContainerService.data$ | async); else loadingContainer"-->
-	<!--[data]="accountingTableContainerService.data$ | async"-->
-	<!--[expandedRowKeys]="accountingTableContainerService.expandedRowKeys$ | async"-->
-	<!--[rowActions]="accountingTableContainerService.rowActions"-->
-	<!--[expandable]="mobile"-->
-	<!--[expandedRowComponent]="accountingTableContainerService.rowComponent"-->
-	<!--[columnKeys]="accountingTableContainerService.primaryColumnKeys$ | async"-->
-	<!--[title]="'Kostenübersicht'"-->
-	<!--[permissions]="accountingTableContainerService.permissions$ | async"-->
-	<!--(onSort)="accountingTableContainerService.onSort($event)"-->
-	<!--(onAction)="accountingTableContainerService.handleTableAction($event)"-->
-	<!--&gt;-->
+		<!--<memo-expandable-table-->
+		<!--*ngIf="!accountingTableContainerService.loading && (accountingTableContainerService.data$ | async); else loadingContainer"-->
+		<!--[data]="accountingTableContainerService.data$ | async"-->
+		<!--[expandedRowKeys]="accountingTableContainerService.expandedRowKeys$ | async"-->
+		<!--[rowActions]="accountingTableContainerService.rowActions"-->
+		<!--[expandable]="mobile"-->
+		<!--[expandedRowComponent]="accountingTableContainerService.rowComponent"-->
+		<!--[columnKeys]="accountingTableContainerService.primaryColumnKeys$ | async"-->
+		<!--[title]="'Kostenübersicht'"-->
+		<!--[permissions]="accountingTableContainerService.permissions$ | async"-->
+		<!--(onSort)="accountingTableContainerService.onSort($event)"-->
+		<!--(onAction)="accountingTableContainerService.handleTableAction($event)"-->
+		<!--&gt;-->
 
-	<!--</memo-expandable-table>-->
+		<!--</memo-expandable-table>-->
 
-	<memo-expandable-material-table
-		(onAction)="accountingTableContainerService.handleTableAction($event)"
-		[title]="'Kostenübersicht'"
-		[columns]="columns"
-		[displayedColumns]="displayedColumns$ | async"
-		[withSelection]="true"
-		[dataService]="entryService"
-		[filter$]="filter$"
-		[permissions]="accountingTableContainerService.permissions$ | async"
-		[rowActions]="accountingTableContainerService.rowActions">
+		<memo-expandable-material-table
+			(onAction)="accountingTableContainerService.handleTableAction($event)"
+			[title]="'Kostenübersicht'"
+			[columns]="columns"
+			[displayedColumns]="displayedColumns$ | async"
+			[withSelection]="true"
+			[dataService]="entryService"
+			[filter$]="filter$"
+			[permissions]="accountingTableContainerService.permissions$ | async"
+			[rowActions]="accountingTableContainerService.rowActions">
 
-	</memo-expandable-material-table>
+		</memo-expandable-material-table>
 
-	<ng-template #loadingContainer>
-		<div class="loader-wrapper">
-			<div class="loader"></div>
-		</div>
-	</ng-template>
+		<ng-template #loadingContainer>
+			<div class="loader-wrapper">
+				<div class="loader"></div>
+			</div>
+		</ng-template>
 
-</div>
+	</div>
 
 
-<div class="total-amount"
-	 [ngClass]="{
+	<div class="total-amount"
+		 [ngClass]="{
 			positive: (total$ | async) >= 0,
 			negative: (total$ | async) < 0
 		}">
-	<span>Gesamt</span>
-	<span>{{(total$ | async) | currency:'EUR':'symbol'}}</span>
+		<span>Gesamt</span>
+		<span>{{(total$ | async) | currency:'EUR':'symbol'}}</span>
+	</div>
+
 </div>
+

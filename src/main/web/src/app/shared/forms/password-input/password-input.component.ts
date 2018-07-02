@@ -17,14 +17,13 @@ export class PasswordInputComponent implements OnInit, ControlValueAccessor {
 	@Input() required: boolean = true;
 	@Input() repeatPassword: boolean = true;
 	@Input() showStrengthBar: boolean = true;
+	_onChange;
 
 	constructor() {
 	}
 
 	ngOnInit() {
 	}
-
-	_onChange;
 
 	registerOnChange(fn: any): void {
 		this._onChange = fn;

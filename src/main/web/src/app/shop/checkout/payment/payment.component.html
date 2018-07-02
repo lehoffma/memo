@@ -9,7 +9,7 @@
 	<memo-bank-account-form *ngSwitchCase="paymentMethodEnum.DEBIT" [formGroup]="formGroup" [selection]="true">
 
 	</memo-bank-account-form>
-	<div *ngSwitchCase="paymentMethodEnum.TRANSFER"  class="payment-selection-body">
+	<div *ngSwitchCase="paymentMethodEnum.TRANSFER" class="payment-selection-body">
 		<p>Die Überweisungsdaten werden dir per Email zugeschickt.</p>
 	</div>
 	<div *ngSwitchDefault class="payment-selection-body">

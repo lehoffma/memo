@@ -7,11 +7,12 @@ import {UserService} from "../../../shared/services/api/user.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {emailAlreadyTakenValidator} from "../../../shared/validators/email-already-taken.validator";
 import {confirmPasswordValidator} from "../../../shared/validators/confirm-password.validator";
-import {User} from "../../../shared/model/user";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {createUser, User} from "../../../shared/model/user";
+import {combineLatest} from "rxjs";
 import {first} from "rxjs/operators";
 import {ModifyItemEvent} from "../../../shop/shop-item/modify-shop-item/modify-item-event";
 import {ModifyItemService} from "../../../shop/shop-item/modify-shop-item/modify-item.service";
+import {setProperties} from "../../../shared/model/util/base-object";
 
 @Component({
 	selector: "memo-user-data-form",
@@ -22,82 +23,6 @@ export class UserDataFormComponent implements OnInit {
 	userDataForm: FormGroup;
 
 	@Output() onSubmit = new EventEmitter<ModifyItemEvent>();
-
-	_checkEmail = false;
-	@Input() set checkEmail(checkEmail: boolean) {
-		this._checkEmail = checkEmail;
-		if (this.userDataForm.get("account-data")) {
-			if (checkEmail) {
-				this.userDataForm.get("account-data").setAsyncValidators(emailAlreadyTakenValidator(this));
-			}
-			else {
-				this.userDataForm.get("account-data").clearAsyncValidators();
-			}
-		}
-	}
-
-	get checkEmail() {
-		return this._checkEmail;
-	}
-
-	_withEmailAndPassword = false;
-	@Input() set withEmailAndPassword(value: boolean) {
-		this._withEmailAndPassword = value;
-		if (value) {
-			this.userDataForm.addControl("account-data", this.getAccountDataFormGroup());
-		}
-		else {
-			this.userDataForm.removeControl("account-data")
-		}
-	}
-
-	get withEmailAndPassword() {
-		return this._withEmailAndPassword;
-	}
-
-	_previousValue: User;
-	@Input() set previousValue(previousValue: User) {
-		this._previousValue = previousValue;
-
-		if (!previousValue) {
-			return;
-		}
-
-		this.userDataForm.get("account-data").patchValue({
-			"email": previousValue.email
-		});
-		this.userDataForm.get("personal-data").patchValue({
-			"firstName": previousValue.firstName,
-			"surname": previousValue.surname,
-			"birthday": previousValue.birthday,
-			"gender": previousValue.gender,
-			"phone": previousValue.telephone,
-			"mobile": previousValue.mobile,
-			"isStudent": previousValue.isStudent,
-			"hasSeasonTicket": previousValue.hasSeasonTicket,
-			"isWoelfeClubMember": previousValue.isWoelfeClubMember
-		});
-		this.userDataForm.get("club-information").patchValue({
-			"clubRole": previousValue.clubRole,
-			"joinDate": previousValue.joinDate
-		});
-		this.userDataForm.get("images").get("imagePaths").patchValue(previousValue.images);
-
-		if (previousValue.addresses.length === 0) {
-			return;
-		}
-
-		combineLatest(...previousValue.addresses.map(id => this.addressService.getById(id)))
-			.pipe(first())
-			.subscribe(addresses => {
-				this.userDataForm.get("addresses").patchValue(addresses);
-			});
-	}
-
-	get previousValue() {
-		return this._previousValue;
-	}
-
 	@Output() onCancel = new EventEmitter();
 
 	constructor(public loginService: LogInService,
@@ -149,45 +74,99 @@ export class UserDataFormComponent implements OnInit {
 		}
 	}
 
-	private getAccountDataFormGroup() {
-		const group = this.formBuilder.group({
-			"email": ["", {
-				validators: [Validators.required, Validators.email]
-			}],
-			"password": ["", {
-				validators: []
-			}],
-			"confirmedPassword": ["", {
-				validators: []
-			}]
-		}, {
-			validator: confirmPasswordValidator()
-		});
+	_checkEmail = false;
 
+	get checkEmail() {
+		return this._checkEmail;
+	}
 
-		if (this.checkEmail) {
-			group.get("email").setAsyncValidators(emailAlreadyTakenValidator(this));
+	@Input() set checkEmail(checkEmail: boolean) {
+		this._checkEmail = checkEmail;
+		if (this.userDataForm.get("account-data")) {
+			if (checkEmail) {
+				this.userDataForm.get("account-data").setAsyncValidators(emailAlreadyTakenValidator(this));
+			}
+			else {
+				this.userDataForm.get("account-data").clearAsyncValidators();
+			}
+		}
+	}
+
+	_withEmailAndPassword = false;
+
+	get withEmailAndPassword() {
+		return this._withEmailAndPassword;
+	}
+
+	@Input() set withEmailAndPassword(value: boolean) {
+		this._withEmailAndPassword = value;
+		if (value) {
+			this.userDataForm.addControl("account-data", this.getAccountDataFormGroup());
+		}
+		else {
+			this.userDataForm.removeControl("account-data")
+		}
+	}
+
+	_previousValue: User;
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
+	@Input() set previousValue(previousValue: User) {
+		this._previousValue = previousValue;
+
+		if (!previousValue) {
+			return;
 		}
 
-		return group;
+		this.userDataForm.get("account-data").patchValue({
+			"email": previousValue.email
+		});
+		this.userDataForm.get("personal-data").patchValue({
+			"firstName": previousValue.firstName,
+			"surname": previousValue.surname,
+			"birthday": previousValue.birthday,
+			"gender": previousValue.gender,
+			"phone": previousValue.telephone,
+			"mobile": previousValue.mobile,
+			"isStudent": previousValue.isStudent,
+			"hasSeasonTicket": previousValue.hasSeasonTicket,
+			"isWoelfeClubMember": previousValue.isWoelfeClubMember
+		});
+		this.userDataForm.get("club-information").patchValue({
+			"clubRole": previousValue.clubRole,
+			"joinDate": previousValue.joinDate
+		});
+		this.userDataForm.get("images").get("imagePaths").patchValue(previousValue.images);
+
+		if (previousValue.addresses.length === 0) {
+			return;
+		}
+
+		combineLatest(...previousValue.addresses.map(id => this.addressService.getById(id)))
+			.pipe(first())
+			.subscribe(addresses => {
+				this.userDataForm.get("addresses").patchValue(addresses);
+			});
 	}
 
 	ngOnInit() {
 	}
 
-
 	/**
 	 *
 	 */
 	submit() {
-		const previousValue = !this.previousValue ? User.create() : this.previousValue;
+		const previousValue = !this.previousValue ? createUser() : this.previousValue;
 		const personalData = this.userDataForm.get("personal-data").value;
 		const accountData = (this.userDataForm.get("account-data") && this.userDataForm.get("account-data").value)
 			|| {email: "", password: ""};
 		const password = accountData.password || previousValue.password || "";
 		const clubInformation = this.userDataForm.get("club-information").value;
 
-		const user = User.create().setProperties({
+		const user = setProperties(createUser(), {
 			id: previousValue.id,
 			email: accountData.email,
 			password,
@@ -215,5 +194,28 @@ export class UserDataFormComponent implements OnInit {
 
 	cancel() {
 		this.onCancel.emit(true);
+	}
+
+	private getAccountDataFormGroup() {
+		const group = this.formBuilder.group({
+			"email": ["", {
+				validators: [Validators.required, Validators.email]
+			}],
+			"password": ["", {
+				validators: []
+			}],
+			"confirmedPassword": ["", {
+				validators: []
+			}]
+		}, {
+			validator: confirmPasswordValidator()
+		});
+
+
+		if (this.checkEmail) {
+			group.get("email").setAsyncValidators(emailAlreadyTakenValidator(this));
+		}
+
+		return group;
 	}
 }

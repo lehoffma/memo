@@ -1,13 +1,14 @@
 import {Injectable} from "@angular/core";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Comment} from "../../../shop/shared/model/comment";
-import {Observable} from "rxjs/Observable";
+import {Comment, createComment} from "../../../shop/shared/model/comment";
+import {Observable} from "rxjs";
 import {mergeMap, tap} from "rxjs/operators";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Page} from "../../model/api/page";
+import {setProperties} from "../../model/util/base-object";
 
 interface CommentApiResponse {
 	comments: Comment[];
@@ -21,7 +22,7 @@ export class CommentService extends ServletService<Comment> {
 
 
 	jsonToObject(json: any): Comment {
-		return Comment.create().setProperties(json);
+		return setProperties(createComment(), json);
 	}
 
 	/**

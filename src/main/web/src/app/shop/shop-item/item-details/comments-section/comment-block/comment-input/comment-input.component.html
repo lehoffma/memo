@@ -1,5 +1,5 @@
 <div class="author-image-container">
-	<img src="{{!!author?.images[0] ? author.images[0] : 'resources/images/Logo.png'}}"/>
+	<img src="{{(!!author?.images[0] ? author.images[0] : 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"/>
 </div>
 
 <form #commentInputForm="ngForm" (ngSubmit)="submit(); commentInputForm.reset()">

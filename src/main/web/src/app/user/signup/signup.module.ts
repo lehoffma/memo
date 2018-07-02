@@ -7,12 +7,11 @@ import {PaymentMethodsFormComponent} from "./payment-methods-form/payment-method
 import {UserDataFormComponent} from "./user-data-form/user-data-form.component";
 import {SignUpService} from "./signup.service";
 import {MemoMaterialModule} from "../../../material.module";
-import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {DebitInputFormComponent} from "./payment-methods-form/debit-input-form/debit-input-form.component";
 import {RouterModule} from "@angular/router";
 import {SharedModule} from "../../shared/shared.module";
 import {ShopItemDetailsModule} from "../../shop/shop-item/item-details/shop-item-details.module";
-import { SignupCompletedComponent } from './signup-completed.component';
+import {SignupCompletedComponent} from "./signup-completed.component";
 
 @NgModule({
 	imports: [
@@ -20,7 +19,6 @@ import { SignupCompletedComponent } from './signup-completed.component';
 		RouterModule,
 		FormsModule,
 		ReactiveFormsModule,
-		PasswordStrengthBarModule,
 		SharedModule,
 		MemoMaterialModule,
 		ShopItemDetailsModule,

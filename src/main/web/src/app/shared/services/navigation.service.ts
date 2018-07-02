@@ -8,15 +8,17 @@ import {EventType} from "../../shop/shared/model/event-type";
 import {Event} from "../../shop/shared/model/event";
 import {HttpClient} from "@angular/common/http";
 import {LogInService} from "./api/login.service";
-import {Observable} from "rxjs/Observable";
-import {filter, map, mergeMap} from "rxjs/operators";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, Observable} from "rxjs";
+import {filter, map, mergeMap, tap} from "rxjs/operators";
 import {UserPermissions, visitorPermissions} from "../model/permission";
-import {User} from "../model/user";
+import {User, userPermissions} from "../model/user";
 import {isNullOrUndefined} from "util";
 
 @Injectable()
 export class NavigationService implements OnDestroy {
+	public accountLinks: Observable<Link[]>;
+	queryParamMap$: BehaviorSubject<ParamMap> = new BehaviorSubject(null);
+	subscriptions = [];
 	private _toolbarLinks$: BehaviorSubject<Link[]> = new BehaviorSubject<Link[]>([]);
 	public toolbarLinks$: Observable<Link[]> = this._toolbarLinks$
 		.pipe(
@@ -24,7 +26,8 @@ export class NavigationService implements OnDestroy {
 				.pipe(
 					map(user => this.filterLinks(user, links))
 				)
-			)
+			),
+			tap(console.log),
 		);
 	private _sidenavLinks$: BehaviorSubject<Link[]> = new BehaviorSubject<Link[]>([]);
 	public sidenavLinks$: Observable<Link[]> = this._sidenavLinks$
@@ -35,11 +38,6 @@ export class NavigationService implements OnDestroy {
 				)
 			)
 		);
-	public accountLinks: Observable<Link[]>;
-
-	queryParamMap$: BehaviorSubject<ParamMap> = new BehaviorSubject(null);
-
-	subscriptions = [];
 
 	constructor(private http: HttpClient,
 				private loginService: LogInService,
@@ -139,7 +137,7 @@ export class NavigationService implements OnDestroy {
 		const linksCopy: Link[] = [...links];
 		const permissions = !user || user.id === -1
 			? visitorPermissions
-			: user.userPermissions();
+			: userPermissions(user);
 
 		const setId = (link: Link): Link => {
 			let newLink = {...link};

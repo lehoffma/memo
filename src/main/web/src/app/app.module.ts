@@ -35,6 +35,8 @@ import {CalendarModule} from "angular-calendar";
 import {DateFnsAdapter} from "./util/date-fns-adapter";
 import {UnauthorizedHttpClient} from "./shared/authentication/unauthorized-http-client.service";
 import {ErrorInterceptor} from "./shared/utility/error-handling/error.interceptor";
+import {MatPasswordStrengthModule} from "@angular-material-extensions/password-strength";
+import { FooterComponent } from './home/footer/footer.component';
 
 registerLocaleData(localeDe);
 
@@ -55,6 +57,7 @@ registerLocaleData(localeDe);
 		}),
 		ShareButtonsModule.forRoot(),
 		CalendarModule.forRoot(),
+		MatPasswordStrengthModule.forRoot(),
 
 		//memo modules
 		SharedModule,
@@ -82,6 +85,7 @@ registerLocaleData(localeDe);
 		ToolbarComponent,
 		ToolbarElementComponent,
 		ToolbarProfileLinkComponent,
+		FooterComponent,
 	],
 	bootstrap: [
 		AppComponent

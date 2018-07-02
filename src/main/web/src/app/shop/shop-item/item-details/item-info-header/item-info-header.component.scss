@@ -1,0 +1,35 @@
+
+:host {
+	display: flex;
+	justify-content: space-between;
+	color: rgba(0, 0, 0, 0.84);
+	background-color: white;
+	padding: 1rem;
+
+	> button,
+	> .object-title > span {
+		font-size: 1.3rem;
+	}
+
+	button {
+		margin-top: -0.5rem;
+	}
+
+	.responsible-person {
+		font-size: 0.85em;
+		color: rgba(0, 0, 0, 0.4);
+		display: flex;
+
+		> span {
+			margin-right: 5px;
+		}
+
+		memo-profile-link {
+			&:not(:last-child)::after {
+				content: ",";
+				color: #2196F3;
+				margin-left: -2px;
+			}
+		}
+	}
+}

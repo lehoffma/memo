@@ -1,0 +1,19 @@
+
+:host {
+	padding-bottom: 1rem;
+	display: flex;
+	padding-left: 1rem;
+	padding-right: 1rem;
+	flex-direction: column;
+	justify-content: space-around;
+	background: white;
+	@media all and (min-width: 600px) {
+		padding-left: 3rem;
+		padding-right: 3rem;
+	}
+
+	form > * {
+		//margin-bottom: 1.5rem;
+		width: 100%;
+	}
+}

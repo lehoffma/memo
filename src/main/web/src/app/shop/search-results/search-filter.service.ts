@@ -8,10 +8,8 @@ import {isObservable} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {isMultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-option";
-import {Observable} from "rxjs/Observable";
+import {combineLatest, Observable, of} from "rxjs";
 import {defaultIfEmpty, first, map} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {isAfter, isBefore, isEqual, startOfDay} from "date-fns";
 import {MultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-leaf";
 

@@ -1,0 +1,44 @@
+<div class="item-price-container item-details-row">
+	<mat-icon>
+		attach_money
+	</mat-icon>
+	<memo-price-renderer [price]="event.price"
+						 [discounts]="discounts$ | async"
+						 [showDiscountPossibilities]="true"
+						 [showExplanation]="true">
+
+	</memo-price-renderer>
+</div>
+
+<div class="item-date-container item-details-row" *ngIf="!isMerch(event)">
+	<mat-icon>access_time</mat-icon>
+	<span>{{event.date | dateFormat:'DD. MMMM YYYY'}}, {{event.date | dateFormat:'HH:mm'}} Uhr</span>
+</div>
+
+<div class="available-tickets-container item-details-row" *ngIf="!isMerch(event)">
+	<memo-capacity-renderer [available]="getValue('capacity') | async"
+							[icon]="'local_play'"
+							[maxAmount]="event.capacity"
+							[textOptions]="{
+										singular: 'Platz',
+										plural: 'Plätzen'
+									}"
+							[coloring]="{
+										red: 0,
+										yellow: 0.01,
+										green: 0.9
+									}"
+
+	>
+	</memo-capacity-renderer>
+</div>
+
+<div class="item-details-row material-container" *ngIf="isMerch(event)">
+	<mat-icon>content_cut</mat-icon>
+	<span>{{event.material}}</span>
+</div>
+
+<div class="miles-vehicle-container item-vehicle item-details-row" *ngIf="isTour(event)">
+	<mat-icon>directions_bus</mat-icon>
+	<span>{{event.vehicle}}</span>
+</div>

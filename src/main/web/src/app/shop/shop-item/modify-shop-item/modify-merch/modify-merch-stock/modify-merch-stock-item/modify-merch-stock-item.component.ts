@@ -84,6 +84,22 @@ export class ModifyMerchStockItemComponent implements OnInit, OnDestroy {
 		this.availableSizes.splice(index, 1);
 	}
 
+	updateTextColor(hex: string) {
+		const rgb = this.hexToRgb(hex);
+		this.textColor = this.colorIsLight(rgb.r, rgb.g, rgb.b) ? "black" : "white";
+	}
+
+	emitDoneEvent() {
+		let modifyType: ModifyType = this.isEditing ? ModifyType.EDIT : ModifyType.ADD;
+		let modifiedStock: number = this.isEditing ? this.data.modifiedStock : null;
+		this.dialogRef.close({
+			event: this.data.event,
+			color: this.formGroup.get("color").value,
+			sizes: this.formGroup.get("sizes").value,
+			modifyType,
+			modifiedStock
+		});
+	}
 
 	private hexToRgb(hex: string): { r: number, g: number, b: number } {
 		// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
@@ -105,23 +121,6 @@ export class ModifyMerchStockItemComponent implements OnInit, OnDestroy {
 		// human eye favors green color...
 		const a = 1 - (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
 		return (a < 0.5);
-	}
-
-	updateTextColor(hex: string) {
-		const rgb = this.hexToRgb(hex);
-		this.textColor = this.colorIsLight(rgb.r, rgb.g, rgb.b) ? "black" : "white";
-	}
-
-	emitDoneEvent() {
-		let modifyType: ModifyType = this.isEditing ? ModifyType.EDIT : ModifyType.ADD;
-		let modifiedStock: number = this.isEditing ? this.data.modifiedStock : null;
-		this.dialogRef.close({
-			event: this.data.event,
-			color: this.formGroup.get("color").value,
-			sizes: this.formGroup.get("sizes").value,
-			modifyType,
-			modifiedStock
-		});
 	}
 
 }

@@ -1,6 +1,4 @@
-
-
-export interface CapacityRendererText{
+export interface CapacityRendererText {
 	singular: string;
 	plural: string;
 }

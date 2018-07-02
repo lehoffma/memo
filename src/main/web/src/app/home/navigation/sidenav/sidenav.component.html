@@ -2,8 +2,9 @@
 <div *ngIf="user | async as account;">
 	<div class="account-header">
 		<div *ngIf="account.id !== -1; else loggedOutHeader;">
-			<img src="{{account.images.length > 0 ? account.images[0] : 'resources/images/Logo.png'}}"
-				 class="profile-picture">
+			<img
+				src="{{(account.images.length > 0 ? account.images[0] : 'resources/images/Logo.png') | imageSize:'small' | async}}"
+				class="profile-picture">
 			<div>
 				<span class="profile-name">{{account.firstName}}</span>
 				<div class="profile-email-container">

@@ -25,11 +25,9 @@ import {first, map} from "rxjs/operators";
 	]
 })
 export class FilteringMenuComponent implements OnInit, OnChanges {
-
 	@Input() filterOptions: MultiLevelSelectParent[];
 
 	selectedOption = {};
-
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private router: Router,

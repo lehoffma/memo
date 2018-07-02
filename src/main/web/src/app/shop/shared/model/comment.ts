@@ -1,21 +1,22 @@
 import {BaseObject} from "../../../shared/model/util/base-object";
 
-export class Comment extends BaseObject<Comment> {
-	constructor(public readonly item: number,
-				public readonly id: number,
-				public readonly timeStamp: Date,
-				public readonly author: number,
-				public content: string,
-				public parent: number,
-				public readonly children: number[] = []) {
-		super(id);
-	}
+export interface Comment extends BaseObject {
+	readonly item: number;
+	readonly timeStamp: Date;
+	readonly author: number;
+	content: string;
+	parent: number;
+	readonly children: number[];
+}
 
-	static create() {
-		return new Comment(-1, null, new Date(), -1, "", -1, []);
-	}
-
-	static isComment(value: any): value is Comment {
-		return value && (<Comment>value).timeStamp !== undefined;
+export function createComment(): Comment {
+	return {
+		id: -1,
+		item: -1,
+		author: -1,
+		timeStamp: new Date(),
+		content: "",
+		parent: -1,
+		children: []
 	}
 }

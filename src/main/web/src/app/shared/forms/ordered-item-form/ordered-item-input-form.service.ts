@@ -4,12 +4,10 @@ import {OrderedItem} from "../../model/ordered-item";
 import {map, mergeMap} from "rxjs/operators";
 import {EventUtilityService} from "../../services/event-utility.service";
 import {EventType} from "../../../shop/shared/model/event-type";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable, of} from "rxjs";
 import {MerchColor} from "../../../shop/shared/model/merch-color";
 import {MerchStock, MerchStockList} from "../../../shop/shared/model/merch-stock";
 import {StockService} from "../../services/api/stock.service";
-import {of} from "rxjs/observable/of";
 
 @Injectable()
 export class OrderedItemInputFormService implements OnDestroy {
@@ -108,6 +106,28 @@ export class OrderedItemInputFormService implements OnDestroy {
 		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
+	/**
+	 *
+	 * @param {Merchandise} merch
+	 * @param {string} size
+	 * @returns {Observable<MerchColor[]>}
+	 */
+	getColorSelection(size: string): Observable<MerchColor[]> {
+		return this.getSelection$(size,
+			it => it, it => it.size, it => it.color, it => it.name
+		);
+	}
+
+	/**
+	 *
+	 * @param {string} color
+	 * @returns {Observable<MerchColor[]>}
+	 */
+	getSizeSelection(color: MerchColor): Observable<string[]> {
+		return this.getSelection$(color,
+			it => it.name, it => it.color.name, it => it.size, it => it
+		);
+	}
 
 	/**
 	 *
@@ -137,29 +157,5 @@ export class OrderedItemInputFormService implements OnDestroy {
 							.findIndex(it => selectionValueId(_value) === selectionValueId(it)) === index)
 				})
 			);
-	}
-
-	/**
-	 *
-	 * @param {Merchandise} merch
-	 * @param {string} size
-	 * @returns {Observable<MerchColor[]>}
-	 */
-	getColorSelection(size: string): Observable<MerchColor[]> {
-		return this.getSelection$(size,
-			it => it, it => it.size, it => it.color, it => it.name
-		);
-	}
-
-
-	/**
-	 *
-	 * @param {string} color
-	 * @returns {Observable<MerchColor[]>}
-	 */
-	getSizeSelection(color: MerchColor): Observable<string[]> {
-		return this.getSelection$(color,
-			it => it.name, it => it.color.name, it => it.size, it => it
-		);
 	}
 }

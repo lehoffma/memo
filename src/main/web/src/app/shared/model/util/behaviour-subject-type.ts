@@ -1,9 +1,8 @@
-
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject} from "rxjs";
 
 export type BehaviorSubjectType<T> = {
 	[P in keyof T]: BehaviorSubject<T[P]>;
-	};
+};
 
 
 export function asValues<T>(subject: BehaviorSubjectType<T>): T {

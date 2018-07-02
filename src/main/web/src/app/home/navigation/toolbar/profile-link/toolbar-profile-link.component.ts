@@ -3,9 +3,8 @@ import {Link} from "../../../../shared/model/link";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {User} from "../../../../shared/model/user";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {combineLatest, Observable} from "rxjs";
 import {map} from "rxjs/operators";
-import {Observable} from "rxjs/Observable";
 
 @Component({
 	selector: "memo-toolbar-profile-link",

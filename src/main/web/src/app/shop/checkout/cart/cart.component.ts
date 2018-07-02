@@ -4,8 +4,7 @@ import {EventService} from "../../../shared/services/api/event.service";
 import {ShoppingCartContent} from "../../../shared/model/shopping-cart-content";
 import {ShoppingCartItem} from "app/shared/model/shopping-cart-item";
 import {defaultIfEmpty, map, mergeMap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {Observable} from "rxjs/Observable";
+import {combineLatest, Observable} from "rxjs";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {DiscountService} from "../../shared/services/discount.service";
 

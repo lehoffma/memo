@@ -6,9 +6,8 @@ $options-breakpoint: 850px;
 
 :host {
 	display: flex;
-	position: absolute;
-	height: calc(100% - 64px);
 	width: 100%;
+	min-height: calc(100vh - 64px);
 
 	@media all and (max-width: $options-breakpoint) {
 		flex-direction: column;
@@ -25,8 +24,9 @@ $options-breakpoint: 850px;
 	}
 
 	.accounting-options {
-		height: 100%;
 		width: 30%;
+		min-width: 30%;
+		max-width: 300px;
 		padding: 1rem;
 		overflow-y: auto;
 		background-color: white;
@@ -34,6 +34,7 @@ $options-breakpoint: 850px;
 
 		@media all and (max-width: $options-breakpoint) {
 			height: auto;
+			max-width: none;
 			&:not(.showOptions) {
 				padding: 0;
 			}
@@ -50,15 +51,9 @@ $options-breakpoint: 850px;
 			}
 			width: 100%;
 		}
-
-		memo-accounting-options {
-
-		}
 	}
 
 	.accounting-table-container {
-		width: 70%;
-		height: calc(100% - 74px);
 		overflow-y: auto;
 
 		@media all and (max-width: $options-breakpoint) {
@@ -74,10 +69,6 @@ $options-breakpoint: 850px;
 		color: white;
 		@include transition(background-color 0.3s ease-in);
 		padding: 1.5rem;
-		position: absolute;
-		bottom: 0;
-		width: 70%;
-		left: 30%;
 		font-size: 1.3rem;
 		font-weight: 200;
 
@@ -95,6 +86,17 @@ $options-breakpoint: 850px;
 		&:not(.positive):not(.negative) {
 			background-color: $accent-default;
 		}
+	}
+}
+
+.content-wrapper {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	flex: 1;
+
+	.accounting-table-container{
+		flex: 1;
 	}
 }
 

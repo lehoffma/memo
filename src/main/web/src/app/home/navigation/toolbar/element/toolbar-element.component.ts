@@ -1,4 +1,4 @@
-import {Component, Input} from "@angular/core";
+	import {Component, Input} from "@angular/core";
 import {Link} from "../../../../shared/model/link";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 

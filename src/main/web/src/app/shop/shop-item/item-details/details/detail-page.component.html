@@ -1,0 +1,69 @@
+<div class="detail-page-navigation">
+	<ul *ngIf="(currentSection$ | async) as currentSection">
+		<ng-container *ngFor="let section of sections">
+			<li *ngIf="!section.predicate || section.predicate()" (click)="scrollTo(section)"
+				[class.active]="currentSection === section.id">
+				<a>{{section.label}}</a>
+			</li>
+		</ng-container>
+	</ul>
+</div>
+
+<div class="info" *ngIf="(event$ | async) as item; else loading" memoScrollSpy
+	 (currentSectionChange)="onSectionChange($event)"
+	 [spyOn]="elements$ | async">
+	<div class="desktop-elevation">
+		<memo-item-info-header id="info" memoSpiedOnElement="info"
+							   [event]="event"
+							   [permissions]="permissions$ | async"></memo-item-info-header>
+
+		<div class="desktop-row info-container-row">
+			<memo-multi-image-container
+				[images]="(images$ | async)"
+				(onClick)="showDetailedImage($event)">
+
+			</memo-multi-image-container>
+
+			<div class="desktop-column">
+				<memo-item-info [event]="item" [permissions]="permissions$ | async"></memo-item-info>
+				<memo-add-to-cart-form [event]="event" [permissions]="permissions$ | async"></memo-add-to-cart-form>
+			</div>
+		</div>
+	</div>
+
+	<ng-container *ngIf="!isMerch(item)">
+		<memo-item-details-content [title]="'Route'" memoSpiedOnElement="eventMap" id="eventMap"
+								   class="desktop-elevation">
+			<memo-route-list *ngIf="(route$ | async) as route" [route]="route"></memo-route-list>
+			<memo-route-map *ngIf="(route$ | async) as route" [tourRoute]="route" content></memo-route-map>
+		</memo-item-details-content>
+	</ng-container>
+
+	<memo-item-details-content id="description" #description [title]="'Beschreibung'" class="desktop-elevation"
+							   memoSpiedOnElement="description">
+		<span class="description secondary-text" content>{{item?.description}}</span>
+	</memo-item-details-content>
+
+	<ng-container *ngIf="!isMerch(item)">
+		<memo-item-details-content [title]="'Wer fährt mit?'" memoSpiedOnElement="eventParticipants"
+								   id="eventParticipants" #participants
+								   class="desktop-elevation"
+								   [route]="participantsLink$ | async">
+			<memo-participants [participants]="participants$ | async" content></memo-participants>
+		</memo-item-details-content>
+	</ng-container>
+
+	<memo-item-details-content [title]="'Kommentare'" #comments id="comments" class="desktop-elevation"
+							   memoSpiedOnElement="comments">
+		<memo-comments-section [comments]="comments$ | async"
+							   [canLoadMore]="canLoadMore$ | async"
+							   (loadMore)="loadMoreComments()"
+							   [eventId]="item.id"
+							   (onDeleteComment)="deleteComment($event)"
+							   content></memo-comments-section>
+	</memo-item-details-content>
+</div>
+
+<ng-template #loading>
+	loading...
+</ng-template>

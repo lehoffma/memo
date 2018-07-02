@@ -1,7 +1,8 @@
 <form #editCommentDialogForm="ngForm" (ngSubmit)="saveComment()">
 	<div class="input-container">
 		<h2 matDialogTitle>Ändere deinen Kommentar</h2>
-		<textarea autosize matInput #commentInput="ngModel" name="commentInput" [(ngModel)]="comment.content"></textarea>
+		<textarea autosize matInput #commentInput="ngModel" name="commentInput"
+				  [(ngModel)]="comment.content"></textarea>
 	</div>
 
 	<div>

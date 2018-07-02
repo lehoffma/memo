@@ -1,14 +1,11 @@
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable, throwError} from "rxjs";
 import {catchError, first, retry, share} from "rxjs/operators";
-import {_throw} from "rxjs/observable/throw";
-import {ApiCache, PagedApiCache} from "../../cache/api-cache";
+import {PagedApiCache} from "../../cache/api-cache";
 
 
 export abstract class CachedService<T> {
-	protected _cache: PagedApiCache<T> = new PagedApiCache<T>();
-
 	public changed$: { [id: number]: BehaviorSubject<T> } = {};
+	protected _cache: PagedApiCache<T> = new PagedApiCache<T>();
 
 	protected constructor() {
 	}
@@ -20,7 +17,7 @@ export abstract class CachedService<T> {
 	 */
 	handleError(error: Error): Observable<any> {
 		console.error(error);
-		return _throw(error);
+		return throwError(error);
 	}
 
 	/**
@@ -76,7 +73,7 @@ export abstract class CachedService<T> {
 	invalidateValue(id: number, removed: boolean = false) {
 		console.log("invalidate " + id);
 		this._cache.invalidateById(id);
-		if(!removed){
+		if (!removed) {
 			this.getById(id)
 				.subscribe(value => this.valueChanged(id, value));
 		}

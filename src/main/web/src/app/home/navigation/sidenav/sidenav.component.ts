@@ -1,11 +1,10 @@
 import {Component, EventEmitter, OnInit, Output} from "@angular/core";
-import {User} from "../../../shared/model/user";
+import {createUser, User} from "../../../shared/model/user";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {Location} from "@angular/common";
-import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
-import {mergeMap, tap} from "rxjs/operators";
+import {Observable, of} from "rxjs";
+import {mergeMap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-sidenav",
@@ -18,7 +17,7 @@ export class SideNavComponent implements OnInit {
 	public user: Observable<User> = this.logInService.currentUser$
 		.pipe(
 			mergeMap(user => user === null
-				? of(User.create())
+				? of(createUser())
 				: of(user))
 		);
 

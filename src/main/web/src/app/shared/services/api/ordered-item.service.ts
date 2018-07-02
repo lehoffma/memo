@@ -7,11 +7,10 @@ import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet
 import {Tour} from "../../../shop/shared/model/tour";
 import {Party} from "../../../shop/shared/model/party";
 import {EventUtilityService} from "../event-utility.service";
-import {of} from "rxjs/observable/of";
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from "rxjs";
 import {map, mergeMap, share, tap} from "rxjs/operators";
 import {OrderService} from "./order.service";
-import {Order} from "../../model/order";
+import {createOrder, Order} from "../../model/order";
 import {PaymentMethod} from "../../../shop/checkout/payment/payment-method";
 import {OrderedItem} from "../../model/ordered-item";
 import {processInParallelAndWait} from "../../../util/observable-util";
@@ -24,6 +23,8 @@ import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Page, PageResponse} from "../../model/api/page";
 import {EventService} from "./event.service";
+import {setProperties} from "../../model/util/base-object";
+import {Event} from "../../../shop/shared/model/event";
 
 interface ParticipantApiResponse {
 	orderedItems: Participant[]
@@ -77,7 +78,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 					return this.add(newParticipant)
 						.pipe(
 							mergeMap(item => {
-								let order = Order.create().setProperties({
+								let order = setProperties(createOrder(), {
 									timeStamp: new Date(),
 									items: [item.id],
 									user: user.id,
@@ -94,7 +95,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	}
 
 	modify(orderedItem: OrderedItem): Observable<OrderedItem> {
-		const modifiedItem = {...orderedItem};
+		const modifiedItem: OrderedItem = {...orderedItem};
 		if (modifiedItem.item && EventUtilityService.isEvent(modifiedItem.item)) {
 			modifiedItem.item = <any>modifiedItem.item.id;
 		}
@@ -187,10 +188,9 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	 * @param sort
 	 * @returns {any}
 	 */
-	getParticipantIdsByEvent(eventId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<Participant>> {
-		return this.get(
+	getParticipantIdsByEvent(eventId: number, sort: Sort): Observable<Participant[]> {
+		return this.getAll(
 			Filter.by({"eventId": "" + eventId}),
-			pageRequest,
 			sort
 		);
 	}
@@ -233,7 +233,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	 * @param pageRequest
 	 * @param sort
 	 */
-	getParticipatedEventsOfUser(userId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<(Tour | Party)>> {
+	getParticipatedEventsOfUser(userId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<Event>> {
 		return this.eventService.get(
 			Filter.by({
 				"userId": "" + userId,

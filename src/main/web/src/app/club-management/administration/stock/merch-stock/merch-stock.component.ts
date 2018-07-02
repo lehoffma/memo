@@ -11,17 +11,13 @@ import {ActivatedRoute} from "@angular/router";
 import {sortingFunction} from "../../../../util/util";
 import {FilterOptionBuilder} from "../../../../shop/search-results/filter-option-builder.service";
 import {FilterOptionType} from "../../../../shop/search-results/filter-option-type";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, combineLatest, forkJoin, Observable, of, Subscription} from "rxjs";
 import {debounceTime, filter, map, mergeMap, scan} from "rxjs/operators";
-import {forkJoin} from "rxjs/observable/forkJoin";
 import {Event} from "../../../../shop/shared/model/event";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Subscription} from "rxjs/Subscription";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
-import {of} from "rxjs/observable/of";
 import {PageRequest} from "../../../../shared/model/api/page-request";
 import {Sort} from "../../../../shared/model/api/sort";
+import {Filter} from "../../../../shared/model/api/filter";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -29,6 +25,7 @@ import {Sort} from "../../../../shared/model/api/sort";
 	styleUrls: ["./merch-stock.component.scss"]
 })
 export class MerchStockComponent implements OnInit, OnDestroy {
+	//todo rewrite with filters
 	_merchList$: BehaviorSubject<Event[]> = new BehaviorSubject<Event[]>(null);
 	stockEntryList$: Observable<StockEntry[]> = this.getStockEntryList$();
 
@@ -39,24 +36,6 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 		.pipe(
 			map(permission => permission.Hinzufuegen)
 		);
-
-	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
-	filterOptions$ = this._filterOptions$
-		.asObservable()
-		.pipe(
-			debounceTime(200),
-			scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService)),
-			map(options => options.filter(option => option.children && option.children.length > 0))
-		);
-
-	get filterOptions() {
-		return this._filterOptions$.getValue();
-	}
-
-	set filterOptions(options) {
-		this._filterOptions$.next(options);
-	}
-
 	sortingOptions: SortingOption<StockEntry>[] = [
 		{
 			name: "Alphabetisch A-Z",
@@ -73,10 +52,17 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 			}
 		},
 	];
-
 	filterSubscription: Subscription;
 	subscription: Subscription;
 	merchListSubscription: Subscription;
+	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
+	filterOptions$ = this._filterOptions$
+		.asObservable()
+		.pipe(
+			debounceTime(200),
+			scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService)),
+			map(options => options.filter(option => option.children && option.children.length > 0))
+		);
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
@@ -89,6 +75,14 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 		this.merchListSubscription = this.merch$.subscribe(it => this.merchList = it);
 	}
 
+	get filterOptions() {
+		return this._filterOptions$.getValue();
+	}
+
+	set filterOptions(options) {
+		this._filterOptions$.next(options);
+	}
+
 	ngOnInit() {
 		this.filterSubscription = this.merch$
 			.pipe(
@@ -99,7 +93,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 						FilterOptionType.MATERIAL,
 						FilterOptionType.SIZE
 					)
-					.build(dataList.map(it => it.item))),
+					.build(Filter.none())),
 				mergeMap(filterOptions => this.searchFilterService.initFilterMenu(this.activatedRoute, filterOptions))
 			)
 			.subscribe(this._filterOptions$);
@@ -144,11 +138,11 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 					}
 
 					return forkJoin(
-						...merch.map(merchItem => this.stockService.getByEventId(merchItem.id, PageRequest.first(), Sort.none())
+						...merch.map(merchItem => this.stockService.getByEventId(merchItem.id, Sort.none())
 							.pipe(
 								map(stockList => ({
-									stockMap: this.stockService.toStockMap(stockList.content),
-									options: this.stockService.getStockOptions([stockList.content]),
+									stockMap: this.stockService.toStockMap(stockList),
+									options: this.stockService.getStockOptions([stockList]),
 									item: merchItem
 								}))
 							)

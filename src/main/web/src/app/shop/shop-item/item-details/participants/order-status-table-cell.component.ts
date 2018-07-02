@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from "@angular/core";
 import {ExpandableTableCellComponent} from "../../../../shared/utility/material-table/util/expandable-table-cell.component";
 import {OrderStatus, orderStatusToString} from "../../../../shared/model/order-status";
 
@@ -9,23 +9,23 @@ import {OrderStatus, orderStatusToString} from "../../../../shared/model/order-s
 		{{status}}
 	`,
 	styles: [
-			`
+		`
 
 		`
 	]
 })
 export class OrderStatusTableCellComponent implements OnInit, ExpandableTableCellComponent {
+	status: string = "";
+
+	constructor() {
+	}
+
 	get data() {
 		return null;
 	}
 
 	@Input() set data(data: OrderStatus) {
 		this.status = orderStatusToString(data);
-	}
-
-	status: string = "";
-
-	constructor() {
 	}
 
 	ngOnInit() {

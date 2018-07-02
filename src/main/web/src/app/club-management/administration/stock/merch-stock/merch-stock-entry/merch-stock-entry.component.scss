@@ -2,8 +2,7 @@
 @import "variables";
 @import "~@angular/material/theming";
 
-
-:host{
+:host {
 	display: flex;
 	flex-direction: column;
 	@include mat-elevation(3);
@@ -11,8 +10,7 @@
 	background-color: $container-content--background-color;
 	color: $container-content--color;
 
-
-	.stock-entry-header{
+	.stock-entry-header {
 		display: flex;
 		background-color: $container-header--background-color;
 		color: $container-header--color;
@@ -20,29 +18,29 @@
 		padding: 10px;
 		border-bottom: $container-divider--height solid $container-divider--color;
 
-		a{
-			color: rgba(0,0,0, 0.65);
+		a {
+			color: rgba(0, 0, 0, 0.65);
 			text-decoration: none;
 
-			&:hover{
+			&:hover {
 				color: black;
 			}
-			h3{
+			h3 {
 				margin: 0;
 			}
 		}
 
-		> div{
+		> div {
 			display: flex;
 			max-width: 85%;
 
-			> div{
+			> div {
 				margin-left: 10px;
 				display: flex;
 				flex-direction: column;
 				width: calc(100% - 50px);
 
-				span{
+				span {
 					font-size: 0.9rem;
 
 					text-overflow: ellipsis;
@@ -54,25 +52,24 @@
 			}
 		}
 
-		img{
+		img {
 			width: 50px;
 			height: 50px;
 			object-fit: cover;
 		}
 
-		button{
+		button {
 			margin-right: -10px;
 			margin-top: -10px;
 		}
 	}
 
-	table{
+	table {
 		overflow-x: auto;
 		width: 95%;
 		border-collapse: collapse;
 		font-size: 0.8rem;
 		margin: 2.5%;
-
 
 		thead {
 			color: rgba(0, 0, 0, 0.54);
@@ -103,27 +100,25 @@
 				}
 			}
 
-
 		}
 
 		thead tr,
-		tr:not(:last-child){
+		tr:not(:last-child) {
 			border-bottom: 2px solid #ededed;
 		}
 
 		tr th:last-child,
-		tr td:last-child{
+		tr td:last-child {
 			border-left: 2px solid #ededed;
 			padding-right: 20px;
 		}
 
-		.total-header{
+		.total-header {
 			padding-left: 10px;
 			padding-right: 10px;
 		}
 
-
-		.empty-column{
+		.empty-column {
 			width: 20px;
 		}
 
@@ -140,33 +135,32 @@
 
 		}
 
-		tr{
+		tr {
 			height: 56px;
 		}
 
-		th{
+		th {
 			color: rgba(0, 0, 0, 0.54);
 			font-size: 0.75rem;
 
-			&.total-sum{
+			&.total-sum {
 				font-size: 1rem;
 			}
 		}
 
-		th, td{
+		th, td {
 			text-align: end;
 		}
 	}
 
-	.stock-amount-cell.is-zero{
+	.stock-amount-cell.is-zero {
 		color: grey;
 	}
-	.stock-amount-cell:not(.is-zero){
+	.stock-amount-cell:not(.is-zero) {
 		font-weight: bold;
 	}
 
-
-	.color-container{
+	.color-container {
 		align-items: center;
 		height: 56px;
 		display: inline-flex;
@@ -178,26 +172,26 @@
 			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
 		}
 
-		span{
+		span {
 			margin-left: 10px;
 		}
 	}
 }
 
-@media all and (min-width: 1200px){
-	:host{
-		table{
+@media all and (min-width: 1200px) {
+	:host {
+		table {
 			font-size: 1.1rem;
 
-			thead{
+			thead {
 				font-size: 0.95rem;
 			}
 
-			th{
+			th {
 				color: rgba(0, 0, 0, 0.54);
 				font-size: 0.95rem;
 
-				&.total-sum{
+				&.total-sum {
 					font-size: 1.2rem;
 				}
 			}

@@ -1,13 +1,12 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
 import {MatDialog} from "@angular/material";
-import {User} from "../../../model/user";
 import {ItemImagePopupComponent} from "../../../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
 
 @Component({
-	selector: 'td [memoPictureTableCellComponent], memo-picture-table-cell',
+	selector: "td [memoPictureTableCellComponent], memo-picture-table-cell",
 	template: `
-		<img src="{{data}}" (click)="openPreview(); $event.stopPropagation()"/>
+		<img src="{{(data) | imageSize:'thumbnail' | async}}" (click)="openPreview(); $event.stopPropagation()"/>
 	`,
 	styleUrls: ["./picture-table-cell.component.scss"]
 })
@@ -23,7 +22,7 @@ export class PictureTableCellComponent implements OnInit, ExpandableTableCellCom
 	ngOnInit() {
 	}
 
-	openPreview(){
+	openPreview() {
 		this.matDialog.open(ItemImagePopupComponent, {
 			data: {
 				images: this.images,

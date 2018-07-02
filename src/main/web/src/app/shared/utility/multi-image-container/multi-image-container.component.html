@@ -5,7 +5,7 @@
 			 [class.selected]="currentImage === image"
 			 (click)="currentImage = image"
 			 (mouseover)="currentImage = image"
-			 src="{{image}}"/>
+			 src="{{(image) | imageSize:'small' | async}}"/>
 	</div>
 </div>
 
@@ -15,7 +15,7 @@
 	<!--todo on hover: show rect as larger version or something-->
 	<img *ngIf="currentImage !== ''; else placeholder"
 		 (click)="onClick.emit(currentImage)"
-		 class="current-image" src="{{(_currentImage$ | async)}}"/>
+		 class="current-image" src="{{((_currentImage$ | async)) | imageSize:'large' | async}}"/>
 	<ng-template #placeholder>
 		<div class="current-image placeholder" (click)="onClick.emit({})">
 

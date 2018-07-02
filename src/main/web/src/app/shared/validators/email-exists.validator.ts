@@ -1,6 +1,6 @@
 import {AbstractControl, AsyncValidatorFn} from "@angular/forms";
 import {map, mergeMap} from "rxjs/operators";
-import {timer} from "rxjs/observable/timer";
+import {timer} from "rxjs";
 
 
 export function emailExistsValidator(that: any): AsyncValidatorFn {

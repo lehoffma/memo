@@ -1,7 +1,7 @@
 <div class="participant-table-container">
 	<memo-expandable-material-table
 		[dataSource]="dataSource"
-		[dataService]="orderedItemService"
+		[dataService]="participantUserService"
 		[rowActions]="rowActions"
 		[title]="'Teilnehmer von ' + (participantListService.eventTitle | async)"
 		[columns]="columns"

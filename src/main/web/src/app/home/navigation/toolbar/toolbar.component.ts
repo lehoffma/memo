@@ -3,8 +3,7 @@ import {ShoppingCartService} from "../../../shared/services/shopping-cart.servic
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {Link} from "../../../shared/model/link";
 import {WindowService} from "../../../shared/services/window.service";
-import {Observable} from "rxjs/Observable";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, Observable} from "rxjs";
 import {filter, first, map} from "rxjs/operators";
 
 @Component({

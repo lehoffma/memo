@@ -7,8 +7,7 @@ import {ParamMap, Params, Router} from "@angular/router";
 import {isValid, parse} from "date-fns";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {QueryParameterService} from "../../shared/services/query-parameter.service";
-import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
+import {Observable, of} from "rxjs";
 
 interface OrderOptionsFormValue {
 	from: Date;
@@ -16,7 +15,7 @@ interface OrderOptionsFormValue {
 	eventIds: number[];
 	userIds: number[];
 	status: { [status: string]: boolean };
-	payment: { [method: string]: boolean };
+	method: { [method: string]: boolean };
 }
 
 @Injectable()
@@ -47,7 +46,7 @@ export class OrderOptionsService implements OnDestroy {
 				[OrderStatus.SENT]: true,
 				[OrderStatus.UNDER_APPROVAL]: true
 			}),
-			"payment": this.formBuilder.group({
+			"method": this.formBuilder.group({
 				[PaymentMethod.CASH]: true,
 				[PaymentMethod.DEBIT]: true,
 				[PaymentMethod.TRANSFER]: true
@@ -102,12 +101,12 @@ export class OrderOptionsService implements OnDestroy {
 	initFromParamMap(queryParamMap: ParamMap) {
 		const value: OrderOptionsFormValue = this.formGroup.value;
 
-		if (queryParamMap.has("from")) {
-			const from = parse(queryParamMap.get("from"));
+		if (queryParamMap.has("minTimeStamp")) {
+			const from = parse(queryParamMap.get("minTimeStamp"));
 			value.from = from && isValid(from) ? from : null;
 		}
-		if (queryParamMap.has("to")) {
-			const to = parse(queryParamMap.get("to"));
+		if (queryParamMap.has("maxTimeStamp")) {
+			const to = parse(queryParamMap.get("maxTimeStamp"));
 			value.to = to && isValid(to) ? to : null;
 		}
 		if (queryParamMap.has("eventIds")) {
@@ -117,7 +116,7 @@ export class OrderOptionsService implements OnDestroy {
 			value.userIds = queryParamMap.getAll("userIds").map(it => +it);
 		}
 		this.readBinaryValuesFromQueryParams(value.status, queryParamMap.getAll("status"));
-		this.readBinaryValuesFromQueryParams(value.payment, queryParamMap.getAll("payment"));
+		this.readBinaryValuesFromQueryParams(value.method, queryParamMap.getAll("method"));
 
 		this.formGroup.patchValue(value);
 	}
@@ -131,14 +130,14 @@ export class OrderOptionsService implements OnDestroy {
 
 		params["status"] = Object.keys(formValue.status)
 			.filter(key => formValue.status[key]);
-		params["payment"] = Object.keys(formValue.payment)
-			.filter(key => formValue.payment[key]);
+		params["method"] = Object.keys(formValue.method)
+			.filter(key => formValue.method[key]);
 
 		params["eventIds"] = formValue.eventIds;
 		params["userIds"] = formValue.userIds;
 
-		params["from"] = (!formValue.from || !isValid(formValue.from)) ? "" : formValue.from.toISOString();
-		params["to"] = (!formValue.to || !isValid(formValue.to)) ? "" : formValue.to.toISOString();
+		params["minTimeStamp"] = (!formValue.from || !isValid(formValue.from)) ? "" : formValue.from.toISOString();
+		params["maxTimeStamp"] = (!formValue.to || !isValid(formValue.to)) ? "" : formValue.to.toISOString();
 
 		const update$ = this.navigationService.queryParamMap$
 			.pipe(

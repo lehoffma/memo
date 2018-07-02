@@ -1,12 +1,12 @@
 import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 import {LogInService} from "../services/api/login.service";
-import {ClubRole, isAuthenticated, rolePermissions} from "../model/club-role";
+import {ClubRole, isAuthenticated} from "../model/club-role";
 import {Permission} from "../model/permission";
 import {UserService} from "../services/api/user.service";
-import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
-import {combineLatest, map, mergeMap} from "rxjs/operators";
+import {Observable, of} from "rxjs";
+import {map, mergeMap} from "rxjs/operators";
+import {userPermissions} from "../model/user";
 
 @Injectable()
 export class IsTreasurerGuard implements CanActivate {
@@ -26,9 +26,9 @@ export class IsTreasurerGuard implements CanActivate {
 						this.router.navigate(["login"]);
 						return false;
 					}
-					let userPermissions = user.userPermissions();
+					let permissions = userPermissions(user);
 
-					if (userPermissions.funds >= Permission.read) {
+					if (permissions.funds >= Permission.read) {
 						return true;
 					}
 					if (isAuthenticated(user.clubRole, ClubRole.Kassenwart)) {

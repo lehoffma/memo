@@ -2,7 +2,7 @@ import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "
 import {ShopItem} from "../../model/shop-item";
 import {ShopItemGuardHelper} from "../shop-item-guard.helper";
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {ObjectIsVisibleToUserGuard} from "./object-is-visible-to-user.guard";
 
 @Injectable()

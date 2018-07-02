@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {OrderService} from "../../../shared/services/api/order.service";
 import {Order} from "../../../shared/model/order";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 
 @Component({
 	selector: "memo-order-complete",
@@ -11,6 +11,7 @@ import {Observable} from "rxjs/Observable";
 export class OrderCompleteComponent implements OnInit, OnDestroy {
 
 	order$: Observable<Order>;
+
 	constructor(private orderService: OrderService) {
 		this.order$ = this.orderService.getById(this.orderService.completedOrder);
 	}

@@ -1,8 +1,13 @@
 import {Component, Inject, OnDestroy, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {EventType} from "../../shared/model/event-type";
+import {integerToType} from "../../shared/model/event-type";
 import {EventService} from "../../../shared/services/api/event.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
+import {Event} from "../../shared/model/event";
+import {AddressService} from "../../../shared/services/api/address.service";
+import {filter, mergeMap} from "rxjs/operators";
+import {ParticipantUser} from "../../shared/model/participant";
+import {ConfirmationDialogService} from "../../../shared/services/confirmation-dialog.service";
 
 @Component({
 	selector: "memo-event-context-menu",
@@ -12,25 +17,25 @@ import {Observable} from "rxjs/Observable";
 export class EventContextMenuComponent implements OnInit, OnDestroy {
 
 	subscription;
+	userEquality = (a: ParticipantUser, b: ParticipantUser) => a.user.id === b.user.id;
+
+	IntegerToType = integerToType;
+
 	constructor(private dialogRef: MatDialogRef<EventContextMenuComponent>,
+				private addressService: AddressService,
+				private confirmationDialogService: ConfirmationDialogService,
 				private eventService: EventService,
 				@Inject(MAT_DIALOG_DATA) public data: {
 					id: number,
-					title: Observable<string>,
-					eventType: Observable<EventType>,
-					view: Observable<boolean>,
-					edit: Observable<boolean>,
-					remove: Observable<boolean>
+					event: Observable<any>
 				}) {
 
 	}
 
 	ngOnInit() {
-		this.subscription = this.data.view.subscribe(console.log);
 	}
 
 	ngOnDestroy(): void {
-		this.subscription.unsubscribe();
 	}
 
 	close() {
@@ -38,7 +43,10 @@ export class EventContextMenuComponent implements OnInit, OnDestroy {
 	}
 
 	deleteEvent() {
-		this.eventService.remove(this.data.id)
+		this.confirmationDialogService.openDialog("Möchtest du dieses Event wirklich löschen?").pipe(
+			filter(ok => ok),
+			mergeMap(ok => this.eventService.remove(this.data.id))
+		)
 			.subscribe(result => this.dialogRef.close("deleted"));
 	}
 }

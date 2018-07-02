@@ -3,4 +3,4 @@ import {EventData} from "./event-data";
 
 export type ShoppingCartContent = {
 	[P in keyof EventData]: ShoppingCartItem[];
-	};
+};

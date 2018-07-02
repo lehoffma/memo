@@ -3,7 +3,6 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {Router} from "@angular/router";
 import {AuthService} from "../../shared/authentication/auth.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {confirmPasswordValidator} from "../../shared/validators/confirm-password.validator";
 
 @Component({
 	selector: "memo-login",

@@ -6,7 +6,6 @@ import {EventUtilityService} from "../../../shared/services/event-utility.servic
 import {EventService} from "../../../shared/services/api/event.service";
 import {UserService} from "../../../shared/services/api/user.service";
 import {EntryService} from "../../../shared/services/api/entry.service";
-import {Tour} from "../../shared/model/tour";
 import {AddressService} from "../../../shared/services/api/address.service";
 import {Merchandise} from "../../shared/model/merchandise";
 import {StockService} from "../../../shared/services/api/stock.service";
@@ -19,14 +18,14 @@ import {ImageUploadService} from "../../../shared/services/api/image-upload.serv
 import {ModifyItemEvent} from "./modify-item-event";
 import {MerchStockList} from "../../shared/model/merch-stock";
 import {first, map, mergeMap, share, take, tap} from "rxjs/operators";
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from "rxjs";
 import {Event} from "../../shared/model/event";
-import {of} from "rxjs/observable/of";
 import {ModifiedImages} from "./modified-images";
 import {processSequentially} from "../../../util/observable-util";
 import {isEdited} from "../../../util/util";
 import {TransactionBuilder} from "../../../util/transaction-builder";
 import {MatSnackBar} from "@angular/material";
+import {setProperties} from "../../../shared/model/util/base-object";
 
 @Injectable()
 export class ModifyItemService {
@@ -234,10 +233,10 @@ export class ModifyItemService {
 
 		const id = newObject.id === -1 ? null : newObject.id;
 		if (EventUtilityService.isUser(newObject)) {
-			addresses = addresses.map(it => it.setProperties({user: id}));
+			addresses = addresses.map(it => setProperties(it, {user: id}));
 		}
 		else {
-			addresses = addresses.map(it => it.setProperties({item: id}));
+			addresses = addresses.map(it => setProperties(it, {item: id}));
 		}
 
 		//delete old addresses if length < previousLength
@@ -266,7 +265,7 @@ export class ModifyItemService {
 	 */
 	setDefaultValues(newObject: ShopItem) {
 		if (EventUtilityService.isTour(newObject)) {
-			newObject.setProperties((<Partial<Tour>>{emptySeats: newObject.capacity}));
+			newObject = setProperties(newObject, {emptySeats: newObject.capacity});
 		}
 		return newObject;
 	}
@@ -314,12 +313,12 @@ export class ModifyItemService {
 			return this.imageUploadService.uploadImages(formData)
 				.pipe(
 					map(response => response.images),
-					map(images => (<any>newObject).setProperties({images: [...imagePaths, ...images]}))
+					map(images => setProperties(newObject, {images: [...imagePaths, ...images]}))
 				)
 
 		}
 
-		return of((<any>newObject).setProperties({images: [...imagePaths]}));
+		return of(setProperties(newObject, {images: [...imagePaths]}));
 	}
 
 	/**
@@ -373,10 +372,10 @@ export class ModifyItemService {
 
 		let newObject: ShopItem = modifyItemEvent.item;
 		if (this.idOfObjectToModify && this.idOfObjectToModify >= 0) {
-			(<any>newObject).setProperties({id: this.idOfObjectToModify});
+			newObject = setProperties(newObject, {id: this.idOfObjectToModify});
 		}
 		if (this.previousValue && EventUtilityService.isEvent(this.previousValue)) {
-			(<any>newObject).setProperties({
+			newObject = setProperties(newObject, {
 				groupPicture: this.previousValue.groupPicture,
 				reportWriters: this.previousValue.reportWriters
 			})

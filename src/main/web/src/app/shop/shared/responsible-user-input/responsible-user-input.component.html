@@ -2,7 +2,8 @@
 	 class="user-list-row"
 >
 	<a class="user-info" routerLink="/members/{{user.id}}">
-		<img src="{{user.images.length > 0 ? user.images[0]: 'resources/images/Logo.png'}}"/>
+		<img
+			src="{{(user.images.length > 0 ? user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"/>
 		<span class="user-name" memoUserPreview [user]="user" [hoverDelay]="500">
 			{{user.firstName}} {{user.surname}}
 		</span>

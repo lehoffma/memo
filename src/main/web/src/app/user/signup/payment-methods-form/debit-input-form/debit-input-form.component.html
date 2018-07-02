@@ -10,7 +10,7 @@
 			matInput required>
 		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
 		<mat-error align="end"
-				 *ngIf="ibanInput.touched && (ibanInput.invalid || !isValidIBAN(model.iban))">
+				   *ngIf="ibanInput.touched && (ibanInput.invalid || !isValidIBAN(model.iban))">
 			{{model.iban.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene IBAN ist inkorrekt!"}}
 		</mat-error>
 	</mat-form-field>
@@ -25,7 +25,7 @@
 			matInput required>
 		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
 		<mat-error align="end"
-				 *ngIf="bicInput.touched && bicInput.invalid">
+				   *ngIf="bicInput.touched && bicInput.invalid">
 			{{model.bic.length === 0 ? "Dies ist ein Pflichtfeld!" : "Die eingegebene BIC ist inkorrekt!"}}
 		</mat-error>
 	</mat-form-field>

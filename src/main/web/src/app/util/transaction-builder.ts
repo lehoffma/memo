@@ -1,7 +1,5 @@
-import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
+import {Observable, of, throwError} from "rxjs";
 import {catchError, mergeMap, share} from "rxjs/operators";
-import {_throw} from "rxjs/observable/throw";
 
 export interface Unit<T> {
 	request: (input: T) => Observable<T>,
@@ -55,7 +53,7 @@ export class TransactionBuilder<T> {
 					//rethrow after cleaning up so the user can handle the error himself
 						.pipe(
 							share(),
-							mergeMap(() => _throw(error))
+							mergeMap(() => throwError(error))
 						)
 				})
 			)

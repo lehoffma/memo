@@ -7,5 +7,6 @@ import {Tour} from "../../shop/shared/model/tour";
 import {Merchandise} from "../../shop/shared/model/merchandise";
 import {Entry} from "./entry";
 import {User} from "./user";
+import {Event} from "../../shop/shared/model/event";
 
-export type ShopItem = User | Entry | Merchandise | Tour | Party;
+export type ShopItem = User | Entry | Merchandise | Tour | Party | Event;

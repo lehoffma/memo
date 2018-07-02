@@ -2,39 +2,17 @@ import {BaseObject} from "./util/base-object";
 import {EntryCategory} from "./entry-category";
 import {Event} from "../../shop/shared/model/event";
 
-export class Entry extends BaseObject<Entry> {
+export interface Entry extends BaseObject {
+	readonly name: string;
+	readonly value: number;
+	readonly item: Event;
+	readonly date: Date;
+	readonly comment: string;
+	readonly images: string[];
+	readonly category: EntryCategory;
+}
 
-	constructor(public readonly id: number,
-				public readonly name: string,
-				public readonly value: number,
-				public readonly item: Event,
-				public readonly date: Date,
-				public readonly comment: string,
-				public readonly images: string[],
-				public readonly category: EntryCategory) {
-		super(id);
-	}
 
-	static create() {
-		return new Entry(-1, "", 0, null, new Date(), "", [], null);
-	}
-
-	static isEntry(entry: any): entry is Entry {
-		return entry && (<Entry>entry).name !== undefined && (<Entry>entry).value !== undefined;
-	}
-
-	/**
-	 * Checks if the given query parameter value (e.g. "tours|food") matches the cost type of this entry
-	 * @param {string} queryParameterValue
-	 * @returns {boolean}
-	 */
-	categoryMatchesQueryParameter(queryParameterValue: string) {
-		if (queryParameterValue === "none") {
-			return false;
-		}
-		return queryParameterValue.split("|")
-			.some(type => type.toLowerCase() === this.category.name.toLowerCase());
-	}
-
-	// eventTypeMatchesQueryParameter()
+export function createEntry(): Entry {
+	return {id: -1, name: "", value: 0, item: null, date: new Date(), comment: "", images: [], category: null}
 }

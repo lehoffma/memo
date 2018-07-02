@@ -10,16 +10,16 @@ import {OrderStatus, OrderStatusList, orderStatusToString} from "../../model/ord
 	providers: [OrderedItemInputFormService]
 })
 export class OrderedItemInputFormComponent implements OnInit {
-	@Input() set orderedItem(orderedItem: OrderedItem) {
-		this.inputFormService.setOrderedItem(orderedItem);
-	}
-
 	@Output() onCancel: EventEmitter<any> = new EventEmitter<any>();
 	@Output() onSubmit: EventEmitter<OrderedItem> = new EventEmitter<OrderedItem>();
-
 	statusOptions: OrderStatus[] = OrderStatusList;
+	orderToString = orderStatusToString;
 
 	constructor(public inputFormService: OrderedItemInputFormService) {
+	}
+
+	@Input() set orderedItem(orderedItem: OrderedItem) {
+		this.inputFormService.setOrderedItem(orderedItem);
 	}
 
 	ngOnInit() {
@@ -32,6 +32,4 @@ export class OrderedItemInputFormComponent implements OnInit {
 	submit() {
 		this.onSubmit.emit(this.inputFormService.addOrderedItemForm.value);
 	}
-
-	orderToString = orderStatusToString;
 }

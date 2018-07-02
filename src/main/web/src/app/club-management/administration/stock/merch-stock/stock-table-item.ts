@@ -1,4 +1,5 @@
-export interface StockTableItem{
+export interface StockTableItem {
 	id: number;
+
 	[size: string]: number[] | number | string;
 }

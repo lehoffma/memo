@@ -15,6 +15,9 @@ import {ModifyShopItemModule} from "../shop/shop-item/modify-shop-item/modify-sh
 import {OrderOptionsComponent} from "./order-overview/order-options.component";
 import {UserModule} from "../user/user.module";
 import {ShopItemDetailsModule} from "../shop/shop-item/item-details/shop-item-details.module";
+import { UserMapComponent } from './user-map/user-map.component';
+import {AgmCoreModule} from "@agm/core";
+import { UserMapContainerComponent } from './user-map/user-map-container.component';
 
 const tableCellComponents = [
 
@@ -31,6 +34,7 @@ const tableCellComponents = [
 		CommonModule,
 		MemoMaterialModule,
 		SharedModule,
+		AgmCoreModule,
 		SearchModule,
 		UserModule,
 		ShopItemDetailsModule,
@@ -45,6 +49,8 @@ const tableCellComponents = [
 		MerchStockEntryComponent,
 		MilesLeaderboardEntryComponent,
 		OrderOptionsComponent,
+		UserMapComponent,
+		UserMapContainerComponent,
 	],
 	providers: [
 		SearchFilterService

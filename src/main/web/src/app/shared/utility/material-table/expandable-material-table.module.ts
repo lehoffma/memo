@@ -11,13 +11,12 @@ import {BooleanCheckMarkCellComponent} from "./cells/boolean-checkmark-cell.comp
 import {TelephoneTableCellComponent} from "./cells/telephone-table-cell.component";
 import {MemoMaterialModule} from "../../../../material.module";
 import {CommonModule} from "@angular/common";
-import {ExpandableTableCellComponent} from "./util/expandable-table-cell.component";
 import {ExpandableMaterialTableComponent} from "./expandable-material-table.component";
 import {SharedPipesModule} from "../../pipes/shared-pipes.module";
 import {RouterModule} from "@angular/router";
-import { TableHeaderComponent } from './actions/table-header.component';
-import { ActionsCellComponent } from './actions/actions-cell.component';
-import { TableCellFactoryComponent } from './table-cell-factory/table-cell-factory.component';
+import {TableHeaderComponent} from "./actions/table-header.component";
+import {ActionsCellComponent} from "./actions/actions-cell.component";
+import {TableCellFactoryComponent} from "./table-cell-factory/table-cell-factory.component";
 import {CostValueTableCellComponent} from "./cells/cost-value-table-cell.component";
 import {EntryCategoryCellComponent} from "./cells/entry-category-cell.component";
 import {MerchColorCellComponent} from "./cells/merch-color-cell.component";

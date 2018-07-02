@@ -23,7 +23,7 @@
 		background-color: $primary-default;
 	}
 
-	/deep/ .cal-month-view .cal-day-cell.cal-today .cal-day-number{
+	/deep/ .cal-month-view .cal-day-cell.cal-today .cal-day-number {
 		font-size: 1.2em;
 	}
 
@@ -39,12 +39,12 @@
 		display: none;
 	}
 
-	.calendar-event-indicator{
+	.calendar-event-indicator {
 		font-weight: 100;
 	}
 
-	@media all and (min-width: 500px){
-		.cal-month-view .cal-day-cell.cal-today .cal-day-number{
+	@media all and (min-width: 500px) {
+		.cal-month-view .cal-day-cell.cal-today .cal-day-number {
 			font-size: 1.9em;
 		}
 	}

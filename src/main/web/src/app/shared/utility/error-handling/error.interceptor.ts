@@ -1,9 +1,8 @@
 import {Injectable} from "@angular/core";
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable, throwError} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {MatSnackBar} from "@angular/material";
-import {_throw} from "rxjs/observable/throw";
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -23,7 +22,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 						// 		duration: 500000
 						// 	});
 					}
-					return _throw(error);
+					return throwError(error);
 				})
 			);
 	}

@@ -4,10 +4,8 @@ import {UserService} from "../../shared/services/api/user.service";
 import {attributeSortingFunction, combinedSortFunction} from "../../util/util";
 import {LogInService} from "../../shared/services/api/login.service";
 import {LeaderboardRow} from "./leaderboard-row";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, combineLatest, Observable} from "rxjs";
 import {map, mergeMap, tap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {MilesListEntry, MilesService} from "../../shared/services/api/miles.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {seasonOptions} from "../../shared/model/season-options";
@@ -33,7 +31,7 @@ export class MilesLeaderboardComponent implements OnInit {
 
 	users$ = this.userService.get(Filter.none(), PageRequest.first(), Sort.none())
 		.pipe(map(it => it.content));
-
+	loggedInUserId$ = this.loginService.accountObservable;
 
 	leaderBoard$: Observable<LeaderboardRow[]> = this.users$
 		.pipe(
@@ -57,10 +55,6 @@ export class MilesLeaderboardComponent implements OnInit {
 			}, [])),
 			tap(() => this.loading = false)
 		);
-
-	loggedInUserId$ = this.loginService.accountObservable;
-
-
 	loggedInUserPosition$: Observable<LoggedInUserPosition> = combineLatest(
 		this.loggedInUserId$,
 		this.leaderBoard$
@@ -79,8 +73,6 @@ export class MilesLeaderboardComponent implements OnInit {
 				}
 			})
 		);
-
-
 	rowsAmount$ = combineLatest(
 		this.leaderBoard$,
 		this.showAll$
@@ -90,22 +82,11 @@ export class MilesLeaderboardComponent implements OnInit {
 				? leaderboard.length
 				: Math.min(this.amountOfRowsShown, leaderboard.length))
 		);
-
 	selectedSeason$ = new BehaviorSubject<string>("Gesamt");
-
-	get selectedSeason() {
-		return this.selectedSeason$.getValue();
-	}
-
-	set selectedSeason(selectedSeason: string) {
-		this.selectedSeason$.next(selectedSeason);
-	}
-
-
 	seasonOptions = seasonOptions;
 	subscriptions = [];
-
 	loading = true;
+
 	constructor(private userService: UserService,
 				private milesService: MilesService,
 				private activatedRoute: ActivatedRoute,
@@ -133,6 +114,14 @@ export class MilesLeaderboardComponent implements OnInit {
 				this.router.navigate([], {queryParams: {t: season}})
 			})
 		);
+	}
+
+	get selectedSeason() {
+		return this.selectedSeason$.getValue();
+	}
+
+	set selectedSeason(selectedSeason: string) {
+		this.selectedSeason$.next(selectedSeason);
 	}
 
 	ngOnInit() {

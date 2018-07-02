@@ -1,20 +1,19 @@
 import {Injectable} from "@angular/core";
-import {Subject} from "rxjs/Subject";
-import {Observable} from "rxjs/Observable";
-import {Observer} from "rxjs/Observer";
+import {Observable, Observer, Subject} from "rxjs";
 
 @Injectable()
 export class WebsocketService {
-	constructor() { }
-
 	private subject: Subject<MessageEvent>;
+
+	constructor() {
+	}
 
 	/**
 	 * Connect to the given url if the connection hasn't been opened yet. Returns the current connection if already opened
 	 * @param url
 	 * @returns {Subject<MessageEvent>}
 	 */
-	public connect(url:string): Subject<MessageEvent> {
+	public connect(url: string): Subject<MessageEvent> {
 		if (!this.subject) {
 			this.subject = this.create(url);
 			console.log("Successfully connected: " + url);
@@ -25,7 +24,7 @@ export class WebsocketService {
 	/**
 	 * Closes the currently active connection
 	 */
-	public disconnect(){
+	public disconnect() {
 		this.subject.unsubscribe();
 	}
 
@@ -34,7 +33,7 @@ export class WebsocketService {
 	 * @param url
 	 * @returns {Subject<MessageEvent>}
 	 */
-	private create(url:string): Subject<MessageEvent> {
+	private create(url: string): Subject<MessageEvent> {
 		const socket = new WebSocket(url);
 
 		const observable = Observable.create(

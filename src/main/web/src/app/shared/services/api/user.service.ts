@@ -1,10 +1,10 @@
 import {Injectable} from "@angular/core";
-import {User} from "../../model/user";
+import {createUser, User} from "../../model/user";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from "rxjs";
 import {catchError, map, mergeMap, tap} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
+import {setProperties} from "../../model/util/base-object";
 
 
 @Injectable()
@@ -15,7 +15,7 @@ export class UserService extends ServletService<User> {
 
 
 	jsonToObject(json: any): User {
-		return User.create().setProperties(json);
+		return setProperties(createUser(), json);
 	}
 
 

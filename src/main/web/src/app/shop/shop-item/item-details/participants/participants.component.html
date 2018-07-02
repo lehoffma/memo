@@ -3,7 +3,7 @@
 		<mat-list-item
 			(click)="showDetailsOfUser(participant.user)">
 			<img mat-list-avatar
-				 src="{{participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png'}}"
+				 src="{{(participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"
 				 alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
 			<h3 matLine> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
 			<p matLine>

@@ -1,88 +1,30 @@
-import {Event} from "./event";
+import {Party} from "./party";
 import {ClubRole} from "../../../shared/model/club-role";
-import {EventOverviewKey} from "../../shop-item/item-details/container/overview/event-overview-key";
-import {EventRoute} from "./route";
 import {EventType, typeToInteger} from "./event-type";
 
-export class Tour extends Event {
+export interface Tour extends Party {
+	vehicle: string;
+	miles: number;
+}
 
-	constructor(id: number,
-				title: string,
-				date: Date,
-				description: string,
-				expectedReadRole: ClubRole,
-				expectedCheckInRole: ClubRole,
-				expectedWriteRole: ClubRole,
-				route: EventRoute,
-				images: string[],
-				capacity: number,
-				price: number,
-				groupPicture: string,
-				public vehicle: string,
-				public miles: number,
-				public emptySeats: number) {
-
-		super(id, title, date, description, [], [], expectedReadRole, expectedCheckInRole, expectedWriteRole,
-			route, images, groupPicture, capacity, price, typeToInteger(EventType.tours));
-	}
-
-	get overviewKeys(): EventOverviewKey[] {
-		return [
-			{
-				key: "price",
-				label: "Preis",
-				pipe: "price"
-			},
-			{
-				key: "date",
-				label: "Datum",
-				pipe: "date"
-			},
-			{
-				key: "emptySeats",
-				label: "Freie Plätze"
-			},
-			{
-				key: "miles",
-				label: "Meilen"
-			}
-		];
-	}
-
-	get detailsTableKeys(): EventOverviewKey[] {
-		return [
-			{
-				key: "date",
-				label: "Datum",
-				pipe: "date"
-			},
-			{
-				key: "capacity",
-				label: "Maximale Teilnehmeranzahl"
-			},
-			{
-				key: "emptySeats",
-				label: "Freie Plätze"
-			},
-			{
-				key: "miles",
-				label: "Meilen"
-			},
-			{
-				key: "price",
-				label: "Preis",
-				pipe: "price"
-			},
-			{
-				key: "vehicle",
-				label: "Fahrzeug"
-			},
-
-		]
-	}
-
-	static create(): Tour {
-		return new Tour(-1, "", new Date(), "", ClubRole.Gast, ClubRole.Gast, ClubRole.Gast, [],
-			["resources/images/Logo.png"], -1, -1, "", "", -1, -1);
+export function createTour(): Tour {
+	return {
+		id: -1,
+		title: "",
+		date: new Date(),
+		description: "",
+		expectedReadRole: ClubRole.Gast,
+		expectedCheckInRole: ClubRole.Gast,
+		expectedWriteRole: ClubRole.Gast,
+		author: [],
+		route: [],
+		images: ["resources/images/Logo.png"],
+		capacity: -1,
+		groupPicture: "",
+		price: 0,
+		emptySeats: -1,
+		type: typeToInteger(EventType.tours),
+		vehicle: "",
+		miles: -1
 	}
 }

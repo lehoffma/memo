@@ -7,9 +7,8 @@ import {EntryService} from "../../shared/services/api/entry.service";
 import {isNullOrUndefined} from "util";
 import {EventService} from "../../shared/services/api/event.service";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {Observable} from "rxjs/Observable";
+import {Observable, of} from "rxjs";
 import {first, map, mergeMap} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
 import {RowAction} from "../../shared/utility/material-table/util/row-action";
 import {RowActionType} from "../../shared/utility/material-table/util/row-action-type";
 import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
@@ -77,7 +76,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	 */
 	getQueryParamsForEntryModification(queryParamMap: ParamMap) {
 		//extract eventIds from the query parameters, if they are any
-		const eventIds = queryParamMap.has("eventIds") ? queryParamMap.get("eventIds").split(",") : [];
+		const eventIds = queryParamMap.has("eventId") ? queryParamMap.get("eventId").split(",") : [];
 		const queryParams = {};
 		if (eventIds.length === 1) {
 			queryParams["eventId"] = eventIds[0];

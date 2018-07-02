@@ -1,0 +1,127 @@
+@import "theme";
+@import "~@angular/material/theming";
+
+.detail-page-navigation {
+	display: none;
+}
+
+memo-add-to-cart-form {
+	margin-top: -2rem;
+}
+
+:host /deep/ .centered-container > div {
+	max-width: none !important;
+
+	.object-details-content {
+		background-color: white;
+	}
+}
+
+#comments{
+	/deep/ .object-details-content{
+		padding: 0;
+	}
+}
+
+@media all and (min-width: 750px) {
+	:host {
+		display: flex;
+		align-items: flex-start;
+		padding-bottom: 1rem;
+		padding-right: 1rem;
+		max-width: 1300px;
+		margin: auto;
+	}
+
+	:host /deep/ memo-multi-image-container {
+		justify-content: center;
+		border-top: 1px solid #ededed;
+		border-right: 1px solid #ededed;
+	}
+
+	.detail-page-navigation {
+		display: flex;
+		justify-content: flex-end;
+		position: sticky;
+		top: 35px;
+		width: 20%;
+		padding: 1rem 2rem 1rem 1rem;
+
+		ul {
+			text-align: end;
+			list-style-type: initial;
+
+			a {
+				text-decoration: none;
+				color: rgba(0, 0, 0, 0.54);
+				width: 100%;
+				flex-grow: 1;
+				padding: 0.5rem 1rem 0.5rem 0.5rem;
+			}
+
+			li {
+				display: flex;
+				cursor: pointer;
+				border-right: 2px solid transparent;
+
+				&:hover {
+					background: #e0e0e0;
+				}
+
+				&.active {
+					border-color: mat-color($accent);
+
+					a {
+						color: #3F51B5;
+						font-weight: bold;
+					}
+				}
+			}
+		}
+	}
+
+	.info {
+		width: 100%;
+		padding-top: 1rem;
+	}
+
+	.info-container-row > * {
+		width: 50%;
+	}
+
+	#eventMap /deep/ .object-details-content {
+		display: flex;
+		padding: 0;
+
+		memo-route-list{
+			padding-left: 1rem;
+		}
+
+		memo-route-list,
+		memo-route-map {
+			width: 50%;
+		}
+	}
+
+	.desktop-column,
+	.desktop-row {
+		display: flex;
+	}
+
+	.desktop-column {
+		flex-direction: column;
+	}
+
+	.desktop-elevation {
+		@include mat-elevation(3);
+		background: white;
+		display: block;
+		margin-top: 1rem;
+	}
+
+	#description {
+		min-height: 150px;
+	}
+
+}
+

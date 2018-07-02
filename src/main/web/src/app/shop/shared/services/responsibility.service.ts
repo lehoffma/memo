@@ -1,10 +1,9 @@
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
+import {combineLatest, Observable} from "rxjs";
 import {UserService} from "../../../shared/services/api/user.service";
 import {EventService} from "../../../shared/services/api/event.service";
 import {User} from "../../../shared/model/user";
 import {map, mergeMap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
 
 @Injectable()
 export class ResponsibilityService {

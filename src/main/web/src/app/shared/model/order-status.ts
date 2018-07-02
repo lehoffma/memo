@@ -29,6 +29,29 @@ export const OrderStatusPairList: { status: OrderStatus, text: string }[] = Orde
 		text: orderStatusToString(status)
 	}));
 
+export function statusToInt(status: OrderStatus): number {
+
+	switch (status) {
+		case OrderStatus.RESERVED:
+			return 0;
+		case OrderStatus.ORDERED:
+			return 1;
+		case OrderStatus.PAID:
+			return 2;
+		case OrderStatus.SENT:
+			return 3;
+		case OrderStatus.COMPLETED:
+			return 4;
+		case OrderStatus.CANCELLED:
+			return 5;
+		case OrderStatus.REFUSED:
+			return 6;
+		case OrderStatus.UNDER_APPROVAL:
+			return 7;
+	}
+
+}
+
 export function orderStatusToString(status: OrderStatus): string {
 	switch (status) {
 		case OrderStatus.RESERVED:

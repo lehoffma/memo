@@ -3,7 +3,7 @@ import {MerchStock} from "../../../../shared/model/merch-stock";
 import {ModifyMerchStockService} from "./modify-merch-stock.service";
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
 import {filter, map, take} from "rxjs/operators";
-import {timer} from "rxjs/observable/timer";
+import {timer} from "rxjs";
 import {InMemoryDataService} from "../../../../../shared/utility/material-table/in-memory-data.service";
 import {TableColumn} from "../../../../../shared/utility/material-table/expandable-material-table.component";
 
@@ -19,26 +19,9 @@ import {TableColumn} from "../../../../../shared/utility/material-table/expandab
 })
 export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValueAccessor {
 	@Input() formControl: FormControl;
-
-	_previousValue: MerchStock[];
-	@Input() set previousValue(previousValue: MerchStock[]) {
-		if (previousValue === undefined) {
-			return;
-		}
-		this._previousValue = previousValue;
-		this.dataService.init(previousValue);
-	}
-
-	get previousValue() {
-		return this._previousValue;
-	}
-
 	@Input() merchTitle: string;
-
 	_onChange;
-
 	subscription;
-
 	/*
 			new ExpandableTableColumn<MerchStock>("Größe", "size"),
 			new ExpandableTableColumn<MerchStock>("Farbe", "color", MerchColorCellComponent),
@@ -55,6 +38,19 @@ export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValu
 				public dataService: InMemoryDataService<MerchStock>) {
 	}
 
+	_previousValue: MerchStock[];
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
+	@Input() set previousValue(previousValue: MerchStock[]) {
+		if (previousValue === undefined) {
+			return;
+		}
+		this._previousValue = previousValue;
+		this.dataService.init(previousValue);
+	}
 
 	ngOnInit() {
 		this.modifyMerchStockService.dataSource = this.dataService;

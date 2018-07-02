@@ -32,6 +32,10 @@ export class EventListViewComponent implements OnInit {
 	};
 
 	groupedListKeys = Object.keys(this.groupedEventList);
+	@Output() onAddEvent = new EventEmitter<Date>();
+
+	constructor() {
+	}
 
 	@Input()
 	set events(events: (Party | Tour)[]) {
@@ -39,12 +43,6 @@ export class EventListViewComponent implements OnInit {
 			this.groupedEventList = this.groupEvents(events);
 			this.groupedListKeys = Object.keys(this.groupedEventList);
 		}
-	}
-
-
-	@Output() onAddEvent = new EventEmitter<Date>();
-
-	constructor() {
 	}
 
 	ngOnInit() {

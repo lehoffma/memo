@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 import {ShopItem} from "../../model/shop-item";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {ObjectExistsGuard} from "./object-exists.guard";
 import {ShopItemGuardHelper} from "../shop-item-guard.helper";
 

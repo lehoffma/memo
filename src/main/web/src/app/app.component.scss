@@ -1,5 +1,5 @@
 
-.background {
+:host {
 	min-height: 100%;
 	height: 100%;
 }
@@ -10,7 +10,13 @@ mat-sidenav-container {
 
 	/deep/ .mat-drawer-content > div {
 		min-height: 100%;
+		display: flex;
+		flex-direction: column;
 	}
+}
+
+.router-outlet-container{
+	flex: 1;
 }
 
 mat-sidenav {

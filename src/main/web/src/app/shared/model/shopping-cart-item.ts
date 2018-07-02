@@ -2,14 +2,14 @@ import {MerchColor} from "../../shop/shared/model/merch-color";
 import {Event} from "../../shop/shared/model/event";
 
 
-export interface ShoppingCartOption{
+export interface ShoppingCartOption {
 	size?: string,
 	color?: MerchColor,
 	isDriver?: boolean;
 	needsTicket?: boolean;
 }
 
-export interface ShoppingCartItem{
+export interface ShoppingCartItem {
 	id: number;
 	item: Event,
 	amount: number;

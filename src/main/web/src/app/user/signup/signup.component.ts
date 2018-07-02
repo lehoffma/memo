@@ -4,7 +4,7 @@ import {SignUpSubmitEvent} from "./signup-submit-event";
 import {SignUpSection, toTitle} from "./signup-section";
 import {SignUpService} from "./signup.service";
 import {filter, map} from "rxjs/operators";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {ModifyItemEvent} from "../../shop/shop-item/modify-shop-item/modify-item-event";
 import {User} from "../../shared/model/user";
 

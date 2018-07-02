@@ -1,8 +1,6 @@
-
-
-export enum MemberListRowAction{
+export enum MemberListRowAction {
 	phone = "Festnetz",
-	call= "Handy",
-	email= "Email schreiben",
-	showProfile= "Profil anzeigen"
+	call = "Handy",
+	email = "Email schreiben",
+	showProfile = "Profil anzeigen"
 }

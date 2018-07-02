@@ -11,29 +11,46 @@
 <div class="overview-data-container"
 	 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 36px)' : 'calc(100%)')">
 
-	<memo-order-renderer *ngFor="let order of (orderOverviewService.orders$|async)"
-						 [withActions]="true"
-						 (onRemove)="orderOverviewService.removeOrder($event)"
-						 [orderEntry]="order">
-	</memo-order-renderer>
+	<div class="option-toolbar">
+		<div class="add-button">
+			<a mat-stroked-button *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !(showOptions && mobile)"
+			   [matTooltip]="'Bestellung hinzufügen'"
+			   [matTooltipPosition]="'below'"
+			   routerLink="/create/orders"
+			   class="add-order-button">
+				Hinzufügen
+			</a>
 
-	<div *ngIf="!orderOverviewService.loading && (orderOverviewService.orders$|async)?.length === 0" class="no-results">
-		Keine Ergebnisse.
+		</div>
+		<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
 	</div>
 
-	<div *ngIf="orderOverviewService.loading">
+	<div class="content-wrapper">
+		<div class="content">
+			<div *ngIf="!(orderOverviewService.loading$ | async) && (orderOverviewService.orders$|async)?.length === 0" class="no-results">
+				Keine Ergebnisse.
+			</div>
+
+			<memo-order-renderer *ngFor="let order of (orderOverviewService.orders$|async)"
+								 [withActions]="true"
+								 (onRemove)="orderOverviewService.removeOrder($event)"
+								 [orderEntry]="order">
+			</memo-order-renderer>
+		</div>
+
+		<mat-paginator #paginator
+					   [pageSize]="10"
+					   [length]="orderOverviewService.dataSource.dataLength"
+					   [pageSizeOptions]="[5, 10, 20, 50]"
+					   [showFirstLastButtons]="true"></mat-paginator>
+	</div>
+
+
+	<div *ngIf="orderOverviewService.loading$ | async">
 		<div class="loader-wrapper">
 			<div class="loader"></div>
 		</div>
 	</div>
 
+
 </div>
-
-
-<a mat-fab color="accent" *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !(showOptions && mobile)"
-   [matTooltip]="'Bestellung hinzufügen'"
-   [matTooltipPosition]="'above'"
-   routerLink="/create/orders"
-   class="add-order-button">
-	<mat-icon>add</mat-icon>
-</a>

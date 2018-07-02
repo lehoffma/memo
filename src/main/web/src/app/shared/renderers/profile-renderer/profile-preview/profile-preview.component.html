@@ -4,7 +4,8 @@
 
 	<div class="preview-header">
 		<div class="preview-image">
-			<img src="{{user.images.length > 0 ? user.images[0]: 'resources/images/Logo.png'}}"/>
+			<img
+				src="{{(user.images.length > 0 ? user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"/>
 		</div>
 		<div class="preview-name-container">
 			<a class="preview-username" routerLink="members/{{user.id}}">

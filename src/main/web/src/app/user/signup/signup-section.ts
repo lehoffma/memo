@@ -4,8 +4,8 @@ export enum SignUpSection {
 	PaymentMethods = <any> "payment-methods"
 }
 
-export function toTitle(section: SignUpSection){
-	switch(section){
+export function toTitle(section: SignUpSection) {
+	switch (section) {
 		case SignUpSection.AccountData:
 			return "Account Daten";
 		case SignUpSection.PaymentMethods:

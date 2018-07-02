@@ -21,6 +21,7 @@
 }
 
 .search-results-header {
+	display: none;
 	color: grey;
 	margin: 0.5rem;
 	font-size: 0.8rem;
@@ -39,37 +40,44 @@
 	}
 }
 
-@mixin search-results-header-width($amountOfCards){
-	@media all and (min-width: 400px + $amountOfCards * (300px + 16px)){
+@mixin search-results-header-width($amountOfCards) {
+	@media all and (min-width: 400px + $amountOfCards * (300px + 16px)) {
 		width: 316px * $amountOfCards - 16px;
 	}
 }
 
+.results-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	min-height: calc(100vh - 64px);
+}
+
+
+/deep/ .loader-wrapper{
+	transform: translateY(120px);
+}
 
 @media all and (min-width: 650px) {
 	:host {
 		display: flex;
+		background: white;
 		.filter-sidebar {
 			display: block;
 			width: 350px;
-			z-index: 2;
-			position: fixed;
-			left: 30px;
-			top: 70px;
-			height: calc(100% - 90px);
-			overflow-y: hidden;
-
-			&:hover, &:active, &:focus{
-				overflow-y: auto;
-			}
+			padding: 0.85rem;
+			border-right: 1px solid #cdcdcd;
 		}
 		.results-container {
-			width: calc(100% - 400px);
-			position: absolute;
-			left: 400px;
-			max-width: 1580px;
-			margin-bottom: 30px;
+			width: 100%;
+			background: #ededed;
 		}
+	}
+
+	memo-results {
+		padding: 1rem;
+		background: #ededed;
+		min-height: calc(100vh - 64px - 113px);
 	}
 
 	.sorting-results-modifier-container {
@@ -79,13 +87,10 @@
 	.search-results-header {
 		display: flex;
 		justify-content: space-between;
-		//width: 620px;
-
-		@include search-results-header-width(1);
-		@include search-results-header-width(2);
-		@include search-results-header-width(3);
-		@include search-results-header-width(4);
-		@include search-results-header-width(5);
+		padding: 1rem;
+		margin: 0;
+		border-bottom: 1px solid #cdcdcdcd;
+		background: white;
 		align-items: center;
 
 		memo-filtering-menu,
@@ -101,22 +106,10 @@
 		display: flex;
 		flex-direction: column;
 	}
+
+	.add-button {
+		margin-top: -1rem;
+		margin-bottom: -1rem;
+	}
 }
 
-//@media all and (min-width: 1030px) {
-//	.search-results-header {
-//		width: 310px * 3;
-//	}
-//}
-//
-//@media all and (min-width: 1670px) {
-//	.search-results-header {
-//		width: 310px * 4;
-//	}
-//}
-//
-//@media all and (min-width: 1980px) {
-//	.search-results-header {
-//		width: 310px * 5;
-//	}
-//}

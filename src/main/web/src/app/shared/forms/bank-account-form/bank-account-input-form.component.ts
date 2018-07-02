@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {BankAccount} from "../../model/bank-account";
+import {BankAccount, createBankAccount} from "../../model/bank-account";
 import {ibanValidator} from "../../validators/iban.validator";
+import {setProperties} from "../../model/util/base-object";
 
 @Component({
 	selector: "memo-bank-account-input-form",
@@ -17,15 +18,6 @@ export class BankAccountInputFormComponent implements OnInit {
 
 	id: number = -1;
 	loading = false;
-
-	@Input() set account(account: BankAccount) {
-		this.formGroup.patchValue(({
-			name: account.name,
-			iban: account.iban,
-			bic: account.bic
-		}));
-		this.id = account.id;
-	}
 
 	constructor(private formBuilder: FormBuilder) {
 
@@ -43,12 +35,21 @@ export class BankAccountInputFormComponent implements OnInit {
 		this.formGroup.get("iban").setValidators([Validators.required, ibanValidator()])
 	}
 
+	@Input() set account(account: BankAccount) {
+		this.formGroup.patchValue(({
+			name: account.name,
+			iban: account.iban,
+			bic: account.bic
+		}));
+		this.id = account.id;
+	}
+
 	ngOnInit() {
 	}
 
 
 	submit() {
-		const account = BankAccount.create().setProperties({
+		const account = setProperties(createBankAccount(), {
 			id: this.id,
 			iban: this.formGroup.value.iban,
 			bic: this.formGroup.value.bic,

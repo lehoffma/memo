@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
-import {Comment} from "../../../../shared/model/comment";
+import {Comment, createComment} from "../../../../shared/model/comment";
 import {CommentService} from "../../../../../shared/services/api/comment.service";
 import {User} from "../../../../../shared/model/user";
 import {UserService} from "../../../../../shared/services/api/user.service";
@@ -9,15 +9,12 @@ import {MatDialog} from "@angular/material";
 import {EditCommentDialogComponent} from "../edit-comment-dialog/edit-comment-dialog.component";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
 import {WindowService} from "../../../../../shared/services/window.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, combineLatest, Observable, of, Subscription} from "rxjs";
 import {filter, first, mergeMap, scan, tap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {of} from "rxjs/observable/of";
-import {Subscription} from "rxjs/Subscription";
 import {distanceInWordsStrict} from "date-fns";
 import * as deLocale from "date-fns/locale/de";
-import {EMPTY} from "rxjs/internal/observable/empty";
+import {EMPTY} from "rxjs";
+import {setProperties} from "../../../../../shared/model/util/base-object";
 
 @Component({
 	selector: "memo-comment-block",
@@ -29,7 +26,6 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 	comment$ = this._comment$.asObservable()
 		.pipe(
 			filter(comment => comment !== null && comment !== undefined),
-			tap(it => console.log(it))
 		);
 	author$: Observable<User> = this.comment$
 		.pipe(
@@ -55,7 +51,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 		);
 	showChildren = false;
 	showReplyBox = false;
-	dummyComment: Comment = Comment.create();
+	dummyComment: Comment = createComment();
 	loadingChildren: boolean = false;
 
 	private subscription: Subscription;
@@ -122,13 +118,21 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 	 */
 	addComment(commentText: string, parentCommentId: number) {
 		let currentComment: Comment = this._comment$.value;
-		if (parentCommentId === currentComment.id) {
+		//limit to 2 levels (q&a)
+		if(currentComment.parent === null){
 			this.loginService.currentUser$
 				.pipe(
 					first(),
 					mergeMap(user => {
-						let comment = new Comment(this.eventId, -1, new Date(), user.id, commentText, currentComment.id);
-						this.dummyComment = this.dummyComment.setProperties({
+						let comment = setProperties(createComment(), {
+							item: this.eventId,
+							id: -1,
+							timeStamp: new Date(),
+							author: user.id,
+							content: commentText,
+							parent: currentComment.id
+						});
+						this.dummyComment = setProperties(this.dummyComment, {
 							content: "",
 							author: user.id,
 							timeStamp: comment.timeStamp,
@@ -249,7 +253,8 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 	trackCommentBy(index: number, comment: Comment) {
 		return comment.id;
 	}
-	distanceInWords(date: Date){
+
+	distanceInWords(date: Date) {
 		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
 	}
 }

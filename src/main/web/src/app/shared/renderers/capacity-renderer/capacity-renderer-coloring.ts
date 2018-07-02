@@ -1,6 +1,4 @@
-
-
-export interface CapacityRendererColoring{
+export interface CapacityRendererColoring {
 	red: number;
 	yellow: number;
 	green: number;

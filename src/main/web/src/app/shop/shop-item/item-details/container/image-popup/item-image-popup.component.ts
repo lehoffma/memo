@@ -14,6 +14,14 @@ export enum KEY_CODE {
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemImagePopupComponent implements OnInit {
+	selected = -1;
+	hideButtons = false;
+
+	constructor(@Inject(MAT_DIALOG_DATA) public data: { imagePath: string, images: string[] }) {
+		this.selected = this.data.images.indexOf(this.data.imagePath);
+		this.hideButtons = this.data.images.length === 1;
+	}
+
 	@HostListener("keydown", ["$event"]) onKeyDown(event: KeyboardEvent) {
 		if (event.key === "ArrowLeft") {
 			this.prev();
@@ -21,14 +29,6 @@ export class ItemImagePopupComponent implements OnInit {
 		if (event.key === "ArrowRight") {
 			this.next()
 		}
-	}
-
-	selected = -1;
-	hideButtons = false;
-
-	constructor(@Inject(MAT_DIALOG_DATA) public data: { imagePath: string, images: string[] }) {
-		this.selected = this.data.images.indexOf(this.data.imagePath);
-		this.hideButtons = this.data.images.length === 1;
 	}
 
 	ngOnInit() {

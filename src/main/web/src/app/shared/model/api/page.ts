@@ -70,7 +70,7 @@ export class PageResponse {
 
 	static mapToObservable<T, U>(page: Page<T>, mappingFunction: (value: T) => Observable<U>): Observable<Page<U>> {
 		if (page.empty || page.content.length === 0) {
-			return of(page);
+			return of(PageResponse.empty() as Page<U>)
 		}
 
 		return combineLatest(

@@ -1,18 +1,19 @@
 import {Injectable} from "@angular/core";
 import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 import {Event} from "../../../shop/shared/model/event";
-import {Tour} from "../../../shop/shared/model/tour";
-import {Party} from "../../../shop/shared/model/party";
+import {createTour, Tour} from "../../../shop/shared/model/tour";
+import {createParty, Party} from "../../../shop/shared/model/party";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Merchandise} from "../../../shop/shared/model/merchandise";
+import {createMerch, Merchandise} from "../../../shop/shared/model/merchandise";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {mergeMap, tap} from "rxjs/operators";
-import {User} from "../../model/user";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Page} from "../../model/api/page";
+import {isUser} from "../../model/util/model-type-util";
+import {setProperties} from "../../model/util/base-object";
 
 @Injectable()
 export class EventService extends ServletService<Event> {
@@ -20,26 +21,8 @@ export class EventService extends ServletService<Event> {
 		super(http, `/api/event`);
 	}
 
-	/**
-	 * Helper method to convert the type value to the appropriate factory function
-	 * @param {any | any | any} type
-	 * @returns {(() => Party) | (() => Tour) | (() => Merchandise) | (() => Event)}
-	 */
-	private getFactoryFromType(type: 1 | 2 | 3): (() => Party) | (() => Tour) | (() => Merchandise) | (() => Event) {
-		switch (type) {
-			case 1:
-				return Tour.create;
-			case 2:
-				return Party.create;
-			case 3:
-				return Merchandise.create;
-		}
-		return Event.create;
-	}
-
-
 	jsonToObject(json: any): Event {
-		return this.getFactoryFromType((json["type"]))().setProperties(json);
+		return setProperties(this.getFactoryFromType((json["type"]))(), json);
 	}
 
 	/**
@@ -88,7 +71,6 @@ export class EventService extends ServletService<Event> {
 		);
 	}
 
-
 	/**
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
@@ -116,7 +98,7 @@ export class EventService extends ServletService<Event> {
 			}
 		});
 
-		if (modifiedEvent.author.length > 0 && User.isUser(modifiedEvent.author[0])) {
+		if (modifiedEvent.author.length > 0 && isUser(modifiedEvent.author[0])) {
 			modifiedEvent.author = modifiedEvent.author.map(it => it["id"]);
 		}
 
@@ -126,7 +108,6 @@ export class EventService extends ServletService<Event> {
 				mergeMap(response => this.getById(response.id))
 			);
 	}
-
 
 	/**
 	 * Löscht das Event mit der gegebenen ID aus der Datenbank
@@ -140,6 +121,23 @@ export class EventService extends ServletService<Event> {
 			.pipe(
 				tap(() => this._cache.invalidateById(eventId)),
 			);
+	}
+
+	/**
+	 * Helper method to convert the type value to the appropriate factory function
+	 * @param {any | any | any} type
+	 * @returns {(() => Party) | (() => Tour) | (() => Merchandise) | (() => Event)}
+	 */
+	private getFactoryFromType(type: 1 | 2 | 3): (() => Party) | (() => Tour) | (() => Merchandise) | (() => Event) {
+		switch (type) {
+			case 1:
+				return createTour;
+			case 2:
+				return createParty;
+			case 3:
+				return createMerch;
+		}
+		return null;
 	}
 
 }

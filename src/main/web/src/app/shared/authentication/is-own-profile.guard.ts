@@ -4,8 +4,7 @@ import {LogInService} from "../services/api/login.service";
 import {UserService} from "../services/api/user.service";
 import {ClubRole, isAuthenticated} from "../model/club-role";
 import {NavigationService} from "../services/navigation.service";
-import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
+import {Observable, of} from "rxjs";
 import {map, mergeMap} from "rxjs/operators";
 
 @Injectable()
@@ -35,7 +34,7 @@ export class IsOwnProfileGuard implements CanActivate {
 						this.navigationService.navigateByUrl("login");
 					}
 
-					if(!isAllowed){
+					if (!isAllowed) {
 						this.navigationService.navigateByUrl("not-allowed")
 					}
 					return isAllowed;

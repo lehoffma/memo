@@ -4,7 +4,7 @@
 	</div>
 	<div class="calendar-options-actions">
 		<mat-button-toggle-group #calendarViewGroup="matButtonToggleGroup"
-								[(ngModel)]="selectedView" (ngModelChange)="navigateToRoute(selectedView)">
+								 [(ngModel)]="selectedView" (ngModelChange)="navigateToRoute(selectedView)">
 			<mat-button-toggle value="calendar">
 				<mat-icon>event</mat-icon>
 			</mat-button-toggle>
@@ -24,6 +24,7 @@
 							 [events]="events"
 							 (onDayClick)="onDayClick($event)"
 							 (onEventClick)="onEventClick($event)"
+							 (onMonthChange)="updateMonth($event)"
 
 		>
 		</memo-event-calendar>

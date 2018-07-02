@@ -30,4 +30,5 @@ import {SharedModule} from "../../../../shared/shared.module";
 		CommentsSectionComponent
 	]
 })
-export class CommentsSectionModule{}
+export class CommentsSectionModule {
+}

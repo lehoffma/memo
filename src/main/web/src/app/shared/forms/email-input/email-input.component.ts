@@ -14,14 +14,13 @@ import {AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular
 })
 export class EmailInputComponent implements OnInit, ControlValueAccessor {
 	@Input() form: AbstractControl;
+	_onChange;
 
 	constructor() {
 	}
 
 	ngOnInit() {
 	}
-
-	_onChange;
 
 	registerOnChange(fn: any): void {
 		this._onChange = fn;

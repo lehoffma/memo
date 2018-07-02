@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {EventService} from "../../shared/services/api/event.service";
-import {EventType} from "../shared/model/event-type";
+import {EventType, integerToType, typeToInteger} from "../shared/model/event-type";
 import {MatDialog, MatSnackBar} from "@angular/material";
 import {EventContextMenuComponent} from "./event-context-menu/event-context-menu.component";
 import {CreateEventContextMenuComponent} from "./create-event-context-menu/create-event-context-menu.component";
@@ -8,20 +8,30 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
-import {ActivatedRoute, Params, Router} from "@angular/router";
-import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
-import {defaultIfEmpty, filter, first, map} from "rxjs/operators";
-import {forkJoin} from "rxjs/observable/forkJoin";
+import {ActivatedRoute, Router} from "@angular/router";
+import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
+import {defaultIfEmpty, filter, map, mergeMap, startWith, tap} from "rxjs/operators";
 import {Event} from "../shared/model/event";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {Filter} from "../../shared/model/api/filter";
+import {getMonth} from "date-fns";
+import {Sort} from "../../shared/model/api/sort";
+import {userPermissions} from "../../shared/model/user";
+import {AddressService} from "../../shared/services/api/address.service";
+import {addressToString} from "../../shared/model/util/to-string-util";
+import {ParticipantUserService} from "../shop-item/item-details/participants/participant-list/participant-data-source";
+import {ParticipantListService} from "../shop-item/item-details/participants/participant-list/participant-list.service";
+import {PageRequest} from "../../shared/model/api/page-request";
+import {Tour} from "../shared/model/tour";
+import {Party} from "../shared/model/party";
 
 @Component({
 	selector: "memo-event-calendar-container",
 	templateUrl: "./event-calendar-container.component.html",
-	styleUrls: ["./event-calendar-container.component.scss"]
+	styleUrls: ["./event-calendar-container.component.scss"],
+	providers: [ParticipantUserService]
 })
 export class EventCalendarContainerComponent implements OnInit, OnDestroy {
+	currentlySelectedMonth$ = new BehaviorSubject(getMonth(new Date()));
 	events$: Observable<Event[]> = this.getUpdatedEvents();
 
 	subscriptions = [];
@@ -29,6 +39,8 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	selectedView: "calendar" | "list" = "calendar";
 
 	constructor(private eventService: EventService,
+				private addressService: AddressService,
+				private participantService: ParticipantUserService,
 				private loginService: LogInService,
 				private activatedRoute: ActivatedRoute,
 				private router: Router,
@@ -72,39 +84,35 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	updateMonth(date: Date) {
+		this.currentlySelectedMonth$.next(getMonth(date));
+	}
+
 	getUpdatedEvents(): Observable<Event[]> {
-		return forkJoin(
-			this.eventService.search("", EventType.tours).pipe(first()),
-			this.eventService.search("", EventType.partys).pipe(first())
-		)
-			.pipe(
-				map(([tours, partys]) => [...tours, ...partys])
-			)
+		const noMerchFilter = Filter
+			.by({"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)});
+
+		return this.eventService.getAll(
+			noMerchFilter,
+			Sort.none()
+		);
 	}
 
 	/**
 	 *
-	 * @param eventId
+	 * @param event
 	 */
-	onEventClick(eventId: number) {
-		const observable = combineLatest(
-			this.loginService.currentUser$
-				.pipe(
-					filter(user => user !== null),
-					map(user => user.userPermissions()),
-					filter(permissions => !isNullOrUndefined(permissions)),
-					defaultIfEmpty(visitorPermissions)
-				),
-			this.eventService.getById(eventId)
-				.pipe(
-					map(event => EventUtilityService.getEventType(event)),
-					filter(eventType => !isNullOrUndefined(eventType))
-				)
-		);
+	onEventClick(event: (Tour | Party)) {
 
-		const permission$ = observable
+		const permission$ = this.loginService.currentUser$
 			.pipe(
-				map(([permissions, eventType]) => {
+				tap(it => console.log(it)),
+				filter(user => user !== null),
+				map(user => userPermissions(user)),
+				filter(permissions => !isNullOrUndefined(permissions)),
+				defaultIfEmpty(visitorPermissions),
+				map((permissions) => {
+					const eventType = integerToType(event.type);
 					if (eventType === EventType.partys) {
 						return permissions.party;
 					}
@@ -117,19 +125,35 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 
 		const dialogRef = this.mdDialog.open(EventContextMenuComponent, {
 			data: {
-				id: eventId,
-				title: this.eventService.getById(eventId)
-					.pipe(
-						map(event => event.title)
+				id: event.id,
+				event: of(event).pipe(
+					mergeMap(event => this.addressService.getById(event.route[event.route.length - 1])
+						.pipe(
+							map(address => ({
+								...event,
+								destination: `${address.city}, ${address.country}`
+							}))
+						)
 					),
-				eventType: observable
-					.pipe(map(([permissions, eventType]) => eventType)),
-				view: permission$
-					.pipe(map(permission => permission >= Permission.read)),
-				edit: permission$
-					.pipe(map(permission => permission >= Permission.write)),
-				remove: permission$
-					.pipe(map(permission => permission >= Permission.delete))
+					mergeMap(event => this.participantService.get(
+						Filter.by({"eventId": "" + event.id}), PageRequest.first(5), Sort.none()).pipe(
+							map(participantPage => ({
+								...event,
+								participantPage
+							}))
+						)
+					),
+					mergeMap(event => permission$.pipe(
+						map(permission => ({
+							...event,
+							permission: {
+								view: permission >= Permission.read,
+								edit: permission >= Permission.write,
+								remove: permission >= Permission.delete
+							}
+						}))
+					))
+				)
 			}
 		});
 
@@ -154,7 +178,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 		const permissions$ = this.loginService.currentUser$
 			.pipe(
 				filter(user => user !== null),
-				map(user => user.userPermissions()),
+				map(user => userPermissions(user)),
 				filter(permissions => !isNullOrUndefined(permissions)),
 				defaultIfEmpty(visitorPermissions)
 			);

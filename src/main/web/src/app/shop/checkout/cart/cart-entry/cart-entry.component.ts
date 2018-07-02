@@ -3,16 +3,12 @@ import {ShoppingCartService} from "../../../../shared/services/shopping-cart.ser
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {Event} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/api/stock.service";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, combineLatest, Observable, of, Subscription} from "rxjs";
 import {filter, map, mergeMap} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
-import {Subscription} from "rxjs/Subscription";
 import {ShoppingCartItem, ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
 import {Discount} from "../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../shared/services/discount.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {CapacityService} from "../../../../shared/services/api/capacity.service";
 
 
@@ -24,17 +20,7 @@ import {CapacityService} from "../../../../shared/services/api/capacity.service"
 export class CartEntryComponent implements OnInit, OnDestroy {
 
 	_cartItem$ = new BehaviorSubject(null);
-
-	@Input() set cartItem(cartItem: ShoppingCartItem) {
-		this._cartItem$.next(cartItem);
-	}
-
-	get cartItem() {
-		return this._cartItem$.getValue();
-	}
-
 	amountOptions = [];
-
 	subscription: Subscription;
 	discounts$: Observable<Discount[]> = of([]);
 	discountValue$: Observable<number> = of(0);
@@ -44,6 +30,14 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 				private capacityService: CapacityService,
 				private loginService: LogInService,
 				private stockService: StockService) {
+	}
+
+	get cartItem() {
+		return this._cartItem$.getValue();
+	}
+
+	@Input() set cartItem(cartItem: ShoppingCartItem) {
+		this._cartItem$.next(cartItem);
 	}
 
 	get linkToItem() {

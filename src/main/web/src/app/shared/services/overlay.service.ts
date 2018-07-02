@@ -1,7 +1,12 @@
-import {ComponentRef, ElementRef, Inject, Injectable, InjectionToken, Injector} from '@angular/core';
+import {ComponentRef, ElementRef, Inject, Injectable, InjectionToken, Injector} from "@angular/core";
 import {
-	HorizontalConnectionPos, OriginConnectionPosition, Overlay, OverlayConfig, OverlayConnectionPosition,
-	OverlayRef, VerticalConnectionPos
+	HorizontalConnectionPos,
+	OriginConnectionPosition,
+	Overlay,
+	OverlayConfig,
+	OverlayConnectionPosition,
+	OverlayRef,
+	VerticalConnectionPos
 } from "@angular/cdk/overlay";
 import {ComponentPortal, ComponentType, PortalInjector} from "@angular/cdk/portal";
 import {isNumber} from "../../util/util";
@@ -21,16 +26,6 @@ export type OverlayPosition = {
 
 @Injectable()
 export class OverlayService {
-	get DEFAULT_CONFIG(): OverlayConfig {
-		return {
-			hasBackdrop: false,
-			scrollStrategy: this.overlay.scrollStrategies.reposition({
-				autoClose: true
-			}),
-			width: 250
-		}
-	};
-
 	readonly DEFAULT_POSITION: OverlayPosition = {
 		//start --  center -- end
 		//  X   -- [  X  ] --  X
@@ -57,6 +52,38 @@ export class OverlayService {
 				@Inject(DOCUMENT) private document: Document,
 				private scrollingService: ScrollingService,
 				private injector: Injector) {
+	}
+
+	get DEFAULT_CONFIG(): OverlayConfig {
+		return {
+			hasBackdrop: false,
+			scrollStrategy: this.overlay.scrollStrategies.reposition({
+				autoClose: true
+			}),
+			width: 250
+		}
+	};
+
+	/**
+	 *
+	 * @param {ElementRef} attachedTo
+	 * @param {ComponentType<T>} component
+	 * @param data
+	 * @param {OverlayConfig} config
+	 * @returns {OverlayRef}
+	 */
+	open<T>(attachedTo: ElementRef, component: ComponentType<T>, data?: any, config?: OverlayConfig): {
+		component: T,
+		overlay: OverlayRef
+	} {
+		const overlayRef: OverlayRef = this.overlay.create(this.getOverlayConfig(attachedTo, config));
+
+		const attachedComponent = this.attachDialogContainer(overlayRef, component, data);
+
+		return {
+			component: attachedComponent,
+			overlay: overlayRef
+		};
 	}
 
 	/**
@@ -146,28 +173,6 @@ export class OverlayService {
 			positionStrategy: this.overlay.position()
 				.connectedTo(attachedTo, originPos, overlayPos),
 			...config,
-		};
-	}
-
-	/**
-	 *
-	 * @param {ElementRef} attachedTo
-	 * @param {ComponentType<T>} component
-	 * @param data
-	 * @param {OverlayConfig} config
-	 * @returns {OverlayRef}
-	 */
-	open<T>(attachedTo: ElementRef, component: ComponentType<T>, data?: any, config?: OverlayConfig): {
-		component: T,
-		overlay: OverlayRef
-	} {
-		const overlayRef: OverlayRef = this.overlay.create(this.getOverlayConfig(attachedTo, config));
-
-		const attachedComponent = this.attachDialogContainer(overlayRef, component, data);
-
-		return {
-			component: attachedComponent,
-			overlay: overlayRef
 		};
 	}
 }

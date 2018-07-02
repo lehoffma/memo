@@ -1,5 +1,5 @@
 import {BehaviorSubjectType} from "./behaviour-subject-type";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 
 export type ObservableType<T> = {
 	[P in keyof T]: Observable<T[P]>;

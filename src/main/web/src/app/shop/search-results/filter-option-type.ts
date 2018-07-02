@@ -1,5 +1,4 @@
-
-export enum FilterOptionType{
+export enum FilterOptionType {
 	EVENT_CATEGORY,
 	PRICE,
 	DATE,

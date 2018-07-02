@@ -1,30 +1,45 @@
 memo-multi-level-select {
 	cursor: pointer;
 }
-.filter-sidebar{
- 	display: none;
+
+.filter-sidebar {
+	display: none;
 }
 
-@media all and (min-width: 650px){
-	memo-multi-level-select{
+@media all and (min-width: 650px) {
+	memo-multi-level-select {
 		display: none;
 	}
-	.filter-sidebar{
+	.filter-sidebar {
 		display: block;
-		margin-left: 20px;
+		width: 300px;
 	}
 
-	.filter-title{
+	.filter-title {
 		text-transform: uppercase;
 	}
 
-	.option-children{
+	.option-children {
 		display: flex;
 		flex-direction: column;
 	}
 
-	mat-radio-group{
+	mat-radio-group {
 		display: flex;
 		flex-direction: column;
+	}
+}
+
+.filter-category-container {
+	background: white;
+	padding: 1rem;
+	width: 300px;
+
+	h3 {
+		font-weight: 500;
+		font-size: 1rem;
+		border-bottom: 1px solid #cdcdcd;
+		padding-bottom: 0.5rem;
+		margin: 0 0 1rem;
 	}
 }

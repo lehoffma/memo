@@ -3,7 +3,7 @@ import {Event} from "../../../shop/shared/model/event";
 import {Address} from "../../../shared/model/address";
 import {EventType} from "../../../shop/shared/model/event-type";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {isBefore} from "date-fns";
 import {AddressService} from "../../../shared/services/api/address.service";
 
@@ -33,7 +33,7 @@ export class MyToursEntryComponent implements OnInit, OnChanges {
 			this.isTour = this.event.route.length > 1;
 			this.eventIsInThePast = isBefore(this.event.date, new Date());
 			this.eventType = EventUtilityService.getEventType(this.event);
-			if(this.event.route.length > 0){
+			if (this.event.route.length > 0) {
 				this.from$ = this.addressService.getById(this.event.route[0]);
 				if (this.event.route.length > 1) {
 					this.to$ = this.addressService.getById(this.event.route[this.event.route.length - 1]);

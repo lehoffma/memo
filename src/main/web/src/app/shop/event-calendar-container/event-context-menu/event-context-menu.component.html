@@ -1,28 +1,118 @@
-<h2 matDialogTitle>{{data?.title | async}}</h2>
+<mat-card>
+	<ng-container *ngIf="(data.event | async) as event; else loading">
+		<img mat-card-image src="{{event?.images[0] | imageSize:'large' | async}}"
+			 alt="Photo of {{event?.title}}"/>
+		<!--<button mat-mini-fab color="accent" [matMenuTriggerFor]="menu" class="action-menu">-->
+		<!--<mat-icon>edit</mat-icon>-->
+		<!--</button>-->
 
-<mat-dialog-content>
-	<a mat-button routerLink="{{data?.eventType | async}}/{{data?.id}}"
-	   (click)="close()"
-	   [disabled]="!(data?.view | async)"
-	   [class.disabled]="!(data?.view | async)">
-		<mat-icon>view_list</mat-icon>
-		Details ansehen
-	</a>
-	<a mat-button routerLink="{{data?.eventType | async}}/{{data?.id}}/edit"
-	   (click)="close()"
-	   [disabled]="!(data?.edit | async)"
-	   [class.disabled]="!(data?.edit | async)">
-		<mat-icon>edit</mat-icon>
-		Bearbeiten
-	</a>
-	<button mat-raised-button color="warn"
-			[disabled]="!(data?.remove | async)"
-			(click)="deleteEvent()">
-		<mat-icon>delete</mat-icon>
-		Löschen
-	</button>
 
-</mat-dialog-content>
-<mat-dialog-actions>
-	<button mat-button matDialogClose>Schließen</button>
-</mat-dialog-actions>
+		<mat-menu #menu="matMenu">
+
+			<a mat-menu-item routerLink="{{IntegerToType(event.type)}}/{{event?.id}}/edit"
+			   (click)="close()"
+			   [disabled]="!(event.permission.edit)"
+			   [class.disabled]="!(event.permission.edit)">
+				<mat-icon>edit</mat-icon>
+				<span class="desktop">Bearbeiten</span>
+
+			</a>
+			<button mat-menu-item
+					[disabled]="!(event.permission.remove)"
+					(click)="deleteEvent()">
+				<mat-icon>delete</mat-icon>
+				<span class="desktop">Löschen</span>
+
+			</button>
+		</mat-menu>
+
+		<mat-card-content>
+			<mat-card-title>{{event?.title}}</mat-card-title>
+			<div class="details">
+				<div class="details__item">
+					<mat-icon class="details__item--icon">event</mat-icon>
+					<span class="details__item--label">{{event.date | dateFormat}}</span>
+				</div>
+				<div class="details__item">
+					<mat-icon class="details__item--icon">place</mat-icon>
+					<span class="details__item--label">{{event.destination}}</span>
+				</div>
+				<div class="details__item">
+					<mat-icon class="details__item--icon">people</mat-icon>
+					<div class="details__item--label participants" *ngIf="event.participantPage.totalElements > 0">
+						<span
+							*ngFor="let participant of (event.participantPage.content | removeDuplicates:userEquality)">
+							<img src="{{participant.user.images[0] | imageSize:'thumbnail' | async}}">
+						</span>
+					</div>
+					<div class="details__item--label secondary-text"
+						 [class.no-elements]="event.participantPage.totalElements === 0">
+						{{event.participantPage.totalElements}} Teilnehmer
+					</div>
+
+				</div>
+
+			</div>
+		</mat-card-content>
+
+		<mat-card-actions>
+			<a mat-button routerLink="{{IntegerToType(event.type)}}/{{data?.id}}"
+			   [disabled]="!event.permission.view"
+			   [class.disabled]="!event.permission.view"
+			   (click)="close()">
+				<span>Ansehen</span>
+			</a>
+
+			<div>
+				<a mat-icon-button routerLink="{{IntegerToType(event.type)}}/{{data?.id}}/edit"
+				   (click)="close()"
+				   [disabled]="!event.permission.edit"
+				   [class.disabled]="!event.permission.edit">
+					<mat-icon>edit</mat-icon>
+				</a>
+				<button mat-icon-button
+						[disabled]="!event.permission.remove"
+						(click)="deleteEvent()">
+					<mat-icon>delete</mat-icon>
+				</button>
+			</div>
+		</mat-card-actions>
+
+
+	</ng-container>
+	<ng-template #loading>
+		<div class="loading-container">
+			<mat-spinner [diameter]="40"></mat-spinner>
+		</div>
+	</ng-template>
+</mat-card>
+
+
+<!--<h2 matDialogTitle>{{data?.title | async}}</h2>-->
+
+<!--<mat-dialog-content>-->
+<!--<a mat-button routerLink="{{data?.eventType | async}}/{{data?.id}}"-->
+<!--(click)="close()"-->
+<!--[disabled]="!(data?.view | async)"-->
+<!--[class.disabled]="!(data?.view | async)">-->
+<!--<mat-icon>view_list</mat-icon>-->
+<!--Details ansehen-->
+<!--</a>-->
+<!--<a mat-button routerLink="{{data?.eventType | async}}/{{data?.id}}/edit"-->
+<!--(click)="close()"-->
+<!--[disabled]="!(data?.edit | async)"-->
+<!--[class.disabled]="!(data?.edit | async)">-->
+<!--<mat-icon>edit</mat-icon>-->
+<!--Bearbeiten-->
+<!--</a>-->
+<!--<button mat-raised-button color="warn"-->
+<!--[disabled]="!(data?.remove | async)"-->
+<!--(click)="deleteEvent()">-->
+<!--<mat-icon>delete</mat-icon>-->
+<!--Löschen-->
+<!--</button>-->
+
+<!--</mat-dialog-content>-->
+<!--<mat-dialog-actions>-->
+<!--<button mat-button matDialogClose>Schließen</button>-->
+<!--</mat-dialog-actions>-->

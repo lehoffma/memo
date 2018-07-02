@@ -9,15 +9,14 @@ import {isMultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/sh
 import {SearchFilterService} from "./search-filter.service";
 import {FilterOptionBuilder} from "./filter-option-builder.service";
 import {FilterOptionType} from "./filter-option-type";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
+import {BehaviorSubject, combineLatest, Observable, Subscription} from "rxjs";
 import {debounceTime, map, mergeMap, scan, tap} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {Observable} from "rxjs/Observable";
-import {Subscription} from "rxjs/Subscription";
 import {Filter} from "../../shared/model/api/filter";
 import {Sort} from "../../shared/model/api/sort";
 import {PageRequest} from "../../shared/model/api/page-request";
 import {NOW} from "../../util/util";
+import {PageResponse} from "../../shared/model/api/page";
+import {PageEvent} from "@angular/material";
 
 type SortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -45,7 +44,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 				let paramObject = {};
 				paramMap.keys
 					.forEach(key => {
-						let value = paramMap.get(key);
+						let value = paramMap.getAll(key).join("|");
 						if (key.toLowerCase() === "date") {
 							if (value === "past") {
 								key = "maxDate";
@@ -61,8 +60,12 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 			})
 		);
 
+	page$ = new BehaviorSubject(PageRequest.first());
+	currentPage$ = new BehaviorSubject(PageResponse.empty());
+
 	resultsTitle: BehaviorSubject<string> = new BehaviorSubject("");
 	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
+	subscription: Subscription;
 	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
 	filterOptions$ = this._filterOptions$
 		.asObservable()
@@ -72,20 +75,18 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 			map(options => options.filter(option => option.children && option.children.length > 0))
 		);
 
+	constructor(private activatedRoute: ActivatedRoute,
+				private searchFilterService: SearchFilterService,
+				private filterOptionBuilder: FilterOptionBuilder,
+				private eventService: EventService) {
+	}
+
 	get filterOptions() {
 		return this._filterOptions$.getValue();
 	}
 
 	set filterOptions(options) {
 		this._filterOptions$.next(options);
-	}
-
-	subscription: Subscription;
-
-	constructor(private activatedRoute: ActivatedRoute,
-				private searchFilterService: SearchFilterService,
-				private filterOptionBuilder: FilterOptionBuilder,
-				private eventService: EventService) {
 	}
 
 	_results$: Observable<Event[]>;
@@ -100,8 +101,9 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		//todo pagination!
-		this.fetchResults(PageRequest.first());
+		this.fetchResults();
 	}
+
 
 	ngOnDestroy() {
 		if (this.subscription) {
@@ -113,23 +115,12 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	 * Holt die Suchergebnisse aus den jeweiligen Services und sortiert und filtert sie anhand der
 	 * sortedBy und filteredBy werte.
 	 */
-	fetchResults(pageRequest: PageRequest) {
-		/*
-
-		 */
-
-		this.results$ = combineLatest(this.sortedBy, this.filteredBy)
+	fetchResults() {
+		this.results$ = combineLatest(this.sortedBy, this.page$, this.filteredBy)
 			.pipe(
 				//reset results so the result screen can show a loading screen while the http call is performed
 				// tap(() => this.results$ = empty()),
-				mergeMap(([sortedBy, filteredBy]) => this.eventService.get(
-					filteredBy,
-					pageRequest,
-					sortedBy,
-				)),
-				map(it => it.content),
-
-				tap(events =>
+				tap(([sortedBy, pageRequest, filteredBy]) =>
 					this.subscription = this.filterOptionBuilder
 						.empty()
 						.withOptions(
@@ -140,25 +131,34 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 							FilterOptionType.MATERIAL,
 							FilterOptionType.SIZE
 						)
-						.build(events)
+						.build(filteredBy)
 						.pipe(
 							mergeMap(options => this.searchFilterService.initFilterMenu(this.activatedRoute, options)),
-							tap(filterOptions => {
-								this.filterOptions = filterOptions;
-								let categoryFilterOption = this.filterOptions.find(option => option.name === "Kategorie");
-								let selectedCategories: string[] = categoryFilterOption.children
-									.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
-									.map(child => child.name);
-
-								//todo ausgewählte filter optionen in den title reintun
-								this.resultsTitle.next(events.length + " " + selectedCategories.join(", ") +
-									" Ergebnisse");
-							})
+							tap(filterOptions => this.filterOptions = filterOptions)
 						)
 						.subscribe()
-				)
-			);
+				),
+				mergeMap(([sortedBy, pageRequest, filteredBy]) => this.eventService.get(
+					filteredBy,
+					pageRequest,
+					sortedBy,
+				)),
+				tap(it => this.currentPage$.next(it)),
+				map(it => it.content),
+				tap(events =>{
+					let categoryFilterOption = this.filterOptions.find(option => option.name === "Kategorie");
+					let selectedCategories: string[] = categoryFilterOption.children
+						.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
+						.map(child => child.name);
 
+					//todo ausgewählte filter optionen in den title reintun
+					this.resultsTitle.next(events.length + " " + selectedCategories.join(", ") +
+						" Ergebnisse");
+				})
+			);
 	}
 
+	updatePage(pageEvent: PageEvent) {
+		this.page$.next(PageRequest.fromMaterialPageEvent(pageEvent));
+	}
 }

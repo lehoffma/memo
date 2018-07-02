@@ -15,14 +15,11 @@ import {MatSnackBar} from "@angular/material";
 	providers: [PasswordRecoveryService]
 })
 export class PasswordRecoveryLandingPageComponent implements OnInit, OnDestroy {
-	private jwtHelperService = new JwtHelperService();
-
 	public formGroup: FormGroup;
-
 	loading = false;
 	error = "";
-
 	subscription;
+	private jwtHelperService = new JwtHelperService();
 
 	constructor(private formBuilder: FormBuilder,
 				private activatedRoute: ActivatedRoute,

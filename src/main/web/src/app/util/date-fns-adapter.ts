@@ -91,38 +91,6 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 		return null;
 	}
 
-	private _getFormatString(displayFormat: DisplayFormat): string {
-		let formatString = "";
-		if (displayFormat.day) {
-			if (displayFormat.day === "numeric") {
-				formatString += "DD.";
-			}
-		}
-		if (displayFormat.month) {
-			if (displayFormat.month === "numeric") {
-				formatString += "MM.";
-			}
-			if (displayFormat.month === "short") {
-				if (formatString.length > 0) {
-					formatString += " ";
-				}
-				formatString += "MMM ";
-			}
-			if (displayFormat.month === "long") {
-				if (formatString.length > 0) {
-					formatString += " ";
-				}
-				formatString += "MMMM ";
-			}
-		}
-		if (displayFormat.year) {
-			if (displayFormat.year === "numeric") {
-				formatString += "YYYY";
-			}
-		}
-		return formatString;
-	}
-
 	format(date: Date, displayFormat: any): string {
 		let formatString = "";
 		if (isString(displayFormat)) {
@@ -219,6 +187,38 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 
 	today(): Date {
 		return new Date();
+	}
+
+	private _getFormatString(displayFormat: DisplayFormat): string {
+		let formatString = "";
+		if (displayFormat.day) {
+			if (displayFormat.day === "numeric") {
+				formatString += "DD.";
+			}
+		}
+		if (displayFormat.month) {
+			if (displayFormat.month === "numeric") {
+				formatString += "MM.";
+			}
+			if (displayFormat.month === "short") {
+				if (formatString.length > 0) {
+					formatString += " ";
+				}
+				formatString += "MMM ";
+			}
+			if (displayFormat.month === "long") {
+				if (formatString.length > 0) {
+					formatString += " ";
+				}
+				formatString += "MMMM ";
+			}
+		}
+		if (displayFormat.year) {
+			if (displayFormat.year === "numeric") {
+				formatString += "YYYY";
+			}
+		}
+		return formatString;
 	}
 
 }

@@ -1,0 +1,49 @@
+<div class="object-title">
+		<span>
+		{{event.title}}
+		</span>
+	<div class="responsible-person" *ngIf="responsible$ | async; let responsible">
+		<span>Verantwortlich: </span>
+		<div>
+			<memo-profile-link *ngFor="let user of responsible" [user]="user"></memo-profile-link>
+		</div>
+	</div>
+</div>
+
+<mat-menu #menu="matMenu">
+	<button mat-menu-item
+			(click)="openShareDialog()">
+		<mat-icon>share</mat-icon>
+		<span>Teilen</span>
+	</button>
+	<a mat-menu-item
+	   *ngIf="permissions?.conclude"
+	   routerLink="./conclude">
+		<mat-icon>assignment</mat-icon>
+		Abschluss
+	</a>
+	<a mat-menu-item
+	   *ngIf="permissions?.entries"
+	   routerLink="/management/costs"
+	   [queryParams]="{eventId: event.id}">
+		<mat-icon>payment</mat-icon>
+		Kosten
+	</a>
+	<a mat-menu-item
+	   *ngIf="permissions?.edit"
+	   routerLink="./edit">
+		<mat-icon>edit</mat-icon>
+		<span>Bearbeiten</span>
+	</a>
+	<button mat-menu-item
+			*ngIf="permissions?.delete"
+			(click)="deleteItem()">
+		<mat-icon>delete</mat-icon>
+		Löschen
+	</button>
+</mat-menu>
+<button mat-icon-button [matMenuTriggerFor]="menu">
+	<mat-icon>
+		more_vert
+	</mat-icon>
+</button>

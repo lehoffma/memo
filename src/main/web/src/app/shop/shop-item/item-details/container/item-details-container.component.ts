@@ -2,18 +2,14 @@ import {Component, Input, OnInit} from "@angular/core";
 import {MatDialog} from "@angular/material";
 import {ItemImagePopupComponent} from "./image-popup/item-image-popup.component";
 import {Event} from "../../../shared/model/event";
-import {EventOverviewKey} from "./overview/event-overview-key";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {of} from "rxjs/observable/of";
+import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {filter, map, mergeMap, take} from "rxjs/operators";
 import {ResponsibilityService} from "../../../shared/services/responsibility.service";
 import {ConcludeEventService} from "../../../shared/services/conclude-event.service";
 import {User} from "../../../../shared/model/user";
-import {Observable} from "rxjs/Observable";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
 import {OrderService} from "../../../../shared/services/api/order.service";
 import {Order} from "../../../../shared/model/order";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {OrderedItem} from "../../../../shared/model/ordered-item";
 import {OrderStatus} from "../../../../shared/model/order-status";
 import {PageRequest} from "../../../../shared/model/api/page-request";
@@ -27,15 +23,6 @@ import {Sort} from "../../../../shared/model/api/sort";
 })
 export class ItemDetailsContainerComponent implements OnInit {
 	event$: BehaviorSubject<Event> = new BehaviorSubject<Event>(null);
-
-	@Input() set event(event: Event) {
-		this.event$.next(event);
-	}
-
-	get event() {
-		return this.event$.getValue();
-	}
-
 	images$: Observable<string[]> = this.event$
 		.pipe(
 			map(event => {
@@ -50,7 +37,6 @@ export class ItemDetailsContainerComponent implements OnInit {
 				}
 			})
 		);
-
 	//todo as api response
 	orderedItemDetails$: Observable<Order> = combineLatest(
 		this.loginService.currentUser$,
@@ -78,19 +64,24 @@ export class ItemDetailsContainerComponent implements OnInit {
 		.pipe(
 			map(order => "/orders/" + order.id)
 		);
-
 	showConcludeEventHeader$: Observable<boolean> = this.loginService.currentUser$
 		.pipe(
 			mergeMap(user => this.checkResponsibility(user))
 		);
-
-	@Input() overviewKeys: Observable<EventOverviewKey[]> = of([]);
 
 	constructor(private matDialog: MatDialog,
 				private orderService: OrderService,
 				private responsibilityService: ResponsibilityService,
 				private concludeEventService: ConcludeEventService,
 				private loginService: LogInService) {
+	}
+
+	get event() {
+		return this.event$.getValue();
+	}
+
+	@Input() set event(event: Event) {
+		this.event$.next(event);
 	}
 
 	ngOnInit() {

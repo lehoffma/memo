@@ -1,4 +1,3 @@
-
 //todo remove
 export interface ColumnSortingEvent<T> {
 	key: keyof T;

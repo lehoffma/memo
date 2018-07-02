@@ -18,7 +18,7 @@ export class ResponsiveColumnsHelper<T> {
 		this.observedBreakpoints.add(breakpoint);
 	}
 
-	addPixelBreakpoint(pixel: number, ...columnDefs: string[]){
+	addPixelBreakpoint(pixel: number, ...columnDefs: string[]) {
 		// '(min-width: 500px)'
 		const breakpoint = "(min-width: " + pixel + "px)";
 		this.add(breakpoint, ...columnDefs);

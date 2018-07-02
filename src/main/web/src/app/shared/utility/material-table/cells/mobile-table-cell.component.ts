@@ -1,8 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from "@angular/core";
 import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
 
 @Component({
-	selector: 'td [memoMobileTableCellComponent]',
+	selector: "td [memoMobileTableCellComponent]",
 	template: `
 		<span class="action-text">{{data}}</span>
 		<a href="tel:{{data}}" mat-button color="accent">

@@ -7,25 +7,24 @@ import {Address} from "../../shared/model/address";
 import {ShoppingCartService} from "../../shared/services/shopping-cart.service";
 import {MatSnackBar} from "@angular/material";
 import {OrderService} from "../../shared/services/api/order.service";
-import {Order} from "../../shared/model/order";
+import {createOrder, Order} from "../../shared/model/order";
 import {ShoppingCartContent} from "../../shared/model/shopping-cart-content";
 import {UserBankAccountService} from "../../shared/services/api/user-bank-account.service";
 import {BankAccount} from "../../shared/model/bank-account";
 import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
-import {Observable} from "rxjs/Observable";
-import {combineLatest} from "rxjs/observable/combineLatest";
+import {combineLatest, Observable, of} from "rxjs";
 import {distinctUntilChanged, filter, first, map, mergeMap} from "rxjs/operators";
 import {OrderedItem} from "../../shared/model/ordered-item";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../shared/services/api/user.service";
-import {of} from "rxjs/observable/of";
 import {debitRequiresAccountValidator} from "../../shared/validators/debit-requires-account.validator";
 import {ShoppingCartItem} from "../../shared/model/shopping-cart-item";
 import {flatMap} from "../../util/util";
 import {DiscountService} from "app/shop/shared/services/discount.service";
 import {processInParallelAndWait} from "../../util/observable-util";
 import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
+import {setProperties} from "../../shared/model/util/base-object";
 
 @Component({
 	selector: "memo-checkout",
@@ -78,7 +77,7 @@ export class CheckoutComponent implements OnInit {
 			})
 		});
 
-		this.formGroup.get("payment").setValidators([debitRequiresAccountValidator()]);
+		this.formGroup.get("method").setValidators([debitRequiresAccountValidator()]);
 
 		this.user$
 			.pipe(
@@ -107,7 +106,7 @@ export class CheckoutComponent implements OnInit {
 					.subscribe(accounts => {
 						console.log(accounts);
 						this.previousAccounts = [...accounts];
-						this.formGroup.get("payment").get("bankAccounts").setValue(accounts);
+						this.formGroup.get("method").get("bankAccounts").setValue(accounts);
 					});
 
 				if (this.subscriptions) {
@@ -123,7 +122,7 @@ export class CheckoutComponent implements OnInit {
 						.subscribe(addresses => {
 							this.previousAddresses = [...addresses];
 						}),
-					this.formGroup.get("payment").get("bankAccounts").valueChanges
+					this.formGroup.get("method").get("bankAccounts").valueChanges
 						.pipe(
 							mergeMap(newAccounts => this.updateAccounts(this.previousAccounts, newAccounts))
 						)
@@ -158,6 +157,65 @@ export class CheckoutComponent implements OnInit {
 	 */
 	updateAccounts(previousValue: BankAccount[], accounts: BankAccount[]) {
 		return this.bankAccountService.updateAccountsOfUser(previousValue, accounts, this.user);
+	}
+
+	handleOrderedItems(orderedItems: OrderedItem[]) {
+		if (orderedItems.length === 0) {
+			return of([]);
+		}
+		return combineLatest(
+			...orderedItems.map(item => this.orderedItemService.add(item))
+		);
+	}
+
+	/**
+	 *
+	 * @param event
+	 * @returns {Promise<void>}
+	 */
+	submit() {
+		const bankAccount = this.formGroup.get("method").get("selectedAccount").value;
+
+
+		this.loading = true;
+		this.logInService.accountObservable
+			.pipe(
+				first(),
+				mergeMap(userId => this.cartService.content
+					.pipe(
+						first(),
+						//combine cart content into one array
+						mergeMap(content => this.combineCartContent(content)),
+						//map events to orderedItem interface to make it usable on the backend
+						mergeMap(events => this.mapToOrderedItems(events, userId)),
+						mergeMap(items => this.handleOrderedItems(items)),
+						map(orderedItems => setProperties(createOrder(), {
+							user: userId,
+							timeStamp: new Date(),
+							method: this.formGroup.get("method").get("method").value,
+							items: orderedItems.map(it => it.id)
+						})),
+						map((order: Order) => bankAccount ? setProperties(order, {bankAccount: bankAccount.id}) : order),
+						mergeMap(order => this.orderService.add(order))
+					)
+				)
+			)
+			.subscribe(
+				order => {
+					this.orderService.completedOrder = order.id;
+					this.loading = false;
+					this.orderedItemService.invalidateCache();
+					this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
+					this.cartService.reset();
+					this.router.navigateByUrl("/order-complete");
+				},
+				error => {
+					console.error(error);
+					this.snackBar.open(error.message, "Schließen");
+				},
+				() => {
+				}
+			);
 	}
 
 	/**
@@ -212,65 +270,5 @@ export class CheckoutComponent implements OnInit {
 					map(discountedPrice => ({...it, price: discountedPrice}))
 				))
 		)
-	}
-
-	handleOrderedItems(orderedItems: OrderedItem[]) {
-		if (orderedItems.length === 0) {
-			return of([]);
-		}
-		return combineLatest(
-			...orderedItems.map(item => this.orderedItemService.add(item))
-		);
-	}
-
-	/**
-	 *
-	 * @param event
-	 * @returns {Promise<void>}
-	 */
-	submit() {
-		const bankAccount = this.formGroup.get("payment").get("selectedAccount").value;
-
-
-		this.loading = true;
-		this.logInService.accountObservable
-			.pipe(
-				first(),
-				mergeMap(userId => this.cartService.content
-					.pipe(
-						first(),
-						//combine cart content into one array
-						mergeMap(content => this.combineCartContent(content)),
-						//map events to orderedItem interface to make it usable on the backend
-						mergeMap(events => this.mapToOrderedItems(events, userId)),
-						mergeMap(items => this.handleOrderedItems(items)),
-						map(orderedItems => Order.create()
-							.setProperties({
-								user: userId,
-								timeStamp: new Date(),
-								method: this.formGroup.get("payment").get("method").value,
-								items: orderedItems.map(it => it.id)
-							})),
-						map(order => bankAccount ? order.setProperties({bankAccount: bankAccount.id}) : order),
-						mergeMap(order => this.orderService.add(order))
-					)
-				)
-			)
-			.subscribe(
-				order => {
-					this.orderService.completedOrder = order.id;
-					this.loading = false;
-					this.orderedItemService.invalidateCache();
-					this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
-					this.cartService.reset();
-					this.router.navigateByUrl("/order-complete");
-				},
-				error => {
-					console.error(error);
-					this.snackBar.open(error.message, "Schließen");
-				},
-				() => {
-				}
-			);
 	}
 }

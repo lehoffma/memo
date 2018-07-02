@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {ClubRole, clubRoles} from "../../../../../shared/model/club-role";
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from "rxjs";
 
 export interface PermissionInput {
 	key: string;
@@ -17,6 +17,11 @@ export class ItemPermissionsInputComponent implements OnInit {
 	@Input() formGroup: FormGroup;
 	@Input() isMerch = false;
 	clubRoleOptions = clubRoles();
+	permissions: PermissionInput[] = [];
+	subscriptions: Subscription[] = [];
+
+	constructor() {
+	}
 
 	@Input() set previousValue(previousValue: { [p: string]: ClubRole }) {
 		Object.keys(previousValue)
@@ -26,13 +31,6 @@ export class ItemPermissionsInputComponent implements OnInit {
 					this.formGroup.get(key).patchValue(previousValue[key]);
 				}
 			})
-	}
-
-	permissions: PermissionInput[] = [];
-
-	subscriptions: Subscription[] = [];
-
-	constructor() {
 	}
 
 	ngOnInit() {

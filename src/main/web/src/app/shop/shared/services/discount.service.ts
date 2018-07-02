@@ -3,8 +3,7 @@ import {ApiCache} from "../../../shared/cache/api-cache";
 import {Permission} from "../../../shared/model/permission";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {catchError, map, mergeMap, retry} from "rxjs/operators";
-import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
+import {Observable, of} from "rxjs";
 import {Discount} from "../../../shared/renderers/price-renderer/discount";
 import {EventService} from "../../../shared/services/api/event.service";
 
@@ -16,32 +15,6 @@ export class DiscountService {
 	constructor(private http: HttpClient,
 				private eventService: EventService) {
 	}
-
-	/**
-	 *
-	 * @param error
-	 * @returns {any}
-	 */
-	private handleError(error: Error): Observable<any> {
-		console.error(error);
-		return of(error);
-	}
-
-	/**
-	 *
-	 * @param requestObservable
-	 * @returns {Observable<T>}
-	 */
-	private request<U>(requestObservable: Observable<U>): Observable<U> {
-		return requestObservable
-			.pipe(
-				//retry 2 times before throwing an error
-				retry(2),
-				//log any errors
-				catchError(error => this.handleError(error))
-			)
-	}
-
 
 	/**
 	 *
@@ -91,7 +64,6 @@ export class DiscountService {
 			);
 	}
 
-
 	/**
 	 *
 	 * @param {number} eventId
@@ -133,5 +105,30 @@ export class DiscountService {
 	 */
 	getDiscountedPrice(basePrice: number, discounts: Discount[]): number {
 		return Math.max(basePrice - this.getTotalDiscount(discounts), 0);
+	}
+
+	/**
+	 *
+	 * @param error
+	 * @returns {any}
+	 */
+	private handleError(error: Error): Observable<any> {
+		console.error(error);
+		return of(error);
+	}
+
+	/**
+	 *
+	 * @param requestObservable
+	 * @returns {Observable<T>}
+	 */
+	private request<U>(requestObservable: Observable<U>): Observable<U> {
+		return requestObservable
+			.pipe(
+				//retry 2 times before throwing an error
+				retry(2),
+				//log any errors
+				catchError(error => this.handleError(error))
+			)
 	}
 }

@@ -1,28 +1,20 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from "@angular/core";
 import {StockService} from "../../../../../shared/services/api/stock.service";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {StockEntry} from "../merch-stock-entry/stock-entry";
 import {Merchandise} from "../../../../../shop/shared/model/merchandise";
 import {MerchColor} from "../../../../../shop/shared/model/merch-color";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
+import {BehaviorSubject, Observable} from "rxjs";
 import {filter, map} from "rxjs/operators";
 
 @Component({
-	selector: 'memo-merch-stock-feed',
-	templateUrl: './merch-stock-feed.component.html',
-	styleUrls: ['./merch-stock-feed.component.scss']
+	selector: "memo-merch-stock-feed",
+	templateUrl: "./merch-stock-feed.component.html",
+	styleUrls: ["./merch-stock-feed.component.scss"]
 })
 export class MerchStockFeedComponent implements OnInit {
 	stockEntries$ = new BehaviorSubject([]);
-
-	@Input() set stockEntryList(entries: StockEntry[]){
-		this.stockEntries$.next(entries);
-	}
-
-
-
-	merch$:Observable<{
+	merch$: Observable<{
 		item: Merchandise,
 		emptyOptions: {
 			[size: string]: MerchColor
@@ -56,15 +48,19 @@ export class MerchStockFeedComponent implements OnInit {
 				private stockService: StockService) {
 	}
 
+	@Input() set stockEntryList(entries: StockEntry[]) {
+		this.stockEntries$.next(entries);
+	}
+
 	ngOnInit() {
 	}
 
 
-	keysOfObject(object:any){
+	keysOfObject(object: any) {
 		return Object.keys(object);
 	}
 
-	deleteMerch(id:number){
-		console.warn("deleting merch not implemented yet. " , id);
+	deleteMerch(id: number) {
+		console.warn("deleting merch not implemented yet. ", id);
 	}
 }

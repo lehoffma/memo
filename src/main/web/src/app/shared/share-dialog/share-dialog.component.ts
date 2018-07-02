@@ -1,11 +1,10 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
-import {ActivatedRoute} from "@angular/router";
 
 @Component({
-	selector: 'memo-share-dialog',
-	templateUrl: './share-dialog.component.html',
-	styleUrls: ['./share-dialog.component.scss']
+	selector: "memo-share-dialog",
+	templateUrl: "./share-dialog.component.html",
+	styleUrls: ["./share-dialog.component.scss"]
 })
 export class ShareDialogComponent implements OnInit {
 	public title: string = "";
@@ -13,7 +12,7 @@ export class ShareDialogComponent implements OnInit {
 	public description: string = "";
 	public additionalTags: string[] = [];
 	public url = "";
-	public tags = ["Meilenwölfe", 'MeilenwoelfeShop'];
+	public tags = ["Meilenwölfe", "MeilenwoelfeShop"];
 
 	constructor(private dialogRef: MatDialogRef<ShareDialogComponent>,
 				@Inject(MAT_DIALOG_DATA) public data: any) {

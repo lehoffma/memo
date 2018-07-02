@@ -26,7 +26,6 @@ import {PasswordInputComponent} from "./forms/password-input/password-input.comp
 import {PersonalDataFormComponent} from "./forms/personal-data-form/personal-data-form.component";
 import {AddressFormComponent} from "./forms/address-form/address-form.component";
 import {AddressInputFormComponent} from "./forms/address-form/address-input-form.component";
-import {PasswordStrengthBarModule} from "ng2-password-strength-bar";
 import {AddressEntryComponent} from "./forms/address-form/address-entry.component";
 import {BankAccountFormComponent} from "./forms/bank-account-form/bank-account-form.component";
 import {BankAccountEntryComponent} from "./forms/bank-account-form/bank-account-entry.component";
@@ -41,6 +40,9 @@ import {MultiImageContainerComponent} from "./utility/multi-image-container/mult
 import {ErrorPageComponent} from "./utility/error-page/error-page.component";
 import {ExpandableMaterialTableModule} from "./utility/material-table/expandable-material-table.module";
 import {SharedPipesModule} from "./pipes/shared-pipes.module";
+import {ScrollSpyDirective} from "./utility/scroll-spy.directive";
+import {SpiedOnElementDirective} from "./utility/spied-on-element.directive";
+import {MatPasswordStrengthModule} from "@angular-material-extensions/password-strength";
 
 const forms = [
 	DisableIfDirective,
@@ -69,7 +71,7 @@ const forms = [
 		FormsModule,
 		ReactiveFormsModule,
 		ShareButtonsModule,
-		PasswordStrengthBarModule,
+		MatPasswordStrengthModule,
 		ExpandableMaterialTableModule,
 		MemoMaterialModule,
 		MultiLevelSelectModule,
@@ -101,6 +103,10 @@ const forms = [
 		...forms,
 
 		EventAutocompleteComponent,
+
+		ScrollSpyDirective,
+
+		SpiedOnElementDirective,
 	],
 	exports: [
 		MultiLevelSelectModule,
@@ -131,6 +137,8 @@ const forms = [
 
 		UserPreviewDirective,
 		OrderRendererComponent,
+		ScrollSpyDirective,
+		SpiedOnElementDirective,
 
 		...forms
 	],

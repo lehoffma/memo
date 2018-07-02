@@ -1,8 +1,5 @@
-import {Subject} from "rxjs/Subject";
-import {Observable} from "rxjs/Observable";
-import {of} from "rxjs/observable/of";
+import {Observable, of, Subject, throwError} from "rxjs";
 import {catchError, take, tap} from "rxjs/operators";
-import {_throw} from "rxjs/observable/throw";
 
 interface CacheContent<T> {
 	expiry: number;
@@ -59,7 +56,7 @@ export class Cache<T> {
 					take(1),
 					catchError(error => {
 						console.error(error);
-						return _throw(error);
+						return throwError(error);
 					})
 				)
 				//push result of http request into inFlightRequest
@@ -67,17 +64,6 @@ export class Cache<T> {
 		}
 
 		return this.inFlightRequest;
-	}
-
-	/**
-	 *
-	 * @param {T} value
-	 */
-	private setValue(value: T) {
-		this.cache = {
-			expiry: Date.now() + this.expiry,
-			value
-		}
 	}
 
 	/**
@@ -91,6 +77,17 @@ export class Cache<T> {
 			observers.forEach(observer => observer.complete());
 		}
 		this.inFlightRequest = undefined;
+	}
+
+	/**
+	 *
+	 * @param {T} value
+	 */
+	private setValue(value: T) {
+		this.cache = {
+			expiry: Date.now() + this.expiry,
+			value
+		}
 	}
 
 	/**

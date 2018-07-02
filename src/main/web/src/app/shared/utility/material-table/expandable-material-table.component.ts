@@ -33,40 +33,8 @@ export interface TableColumn<T> {
 })
 export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 
-	@Input() dataSource: PagedDataSource = new PagedDataSource();
-
-	_dataService: ServletService<T>;
-	@Input() set dataService(dataService: ServletService<T>) {
-		this._dataService = dataService;
-		this.dataSource.dataService = this._dataService;
-		this.dataSource.filter$ = this._filter$;
-	}
-
-	_filter$: Observable<Filter> = of(Filter.none());
-	@Input() set filter$(filter$: Observable<Filter>) {
-		this._filter$ = filter$;
-		this.dataSource.filter$ = this._filter$;
-	}
-
-
-	_columns: TableColumn<T>[] = [];
-	@Input() set columns(columns: TableColumn<T>[]) {
-		this._columns = columns;
-		this.updateExpandedRows(this.columns, this._displayedColumns);
-	}
-
-	get columns() {
-		return this._columns;
-	}
-
-	_displayedColumns = [];
+	@Input() dataSource: PagedDataSource<T> = new PagedDataSource<T>();
 	expandedRows: TableColumn<T>[] = [];
-
-	@Input() set displayedColumns(displayedColumns: string[]) {
-		this._displayedColumns = [...displayedColumns];
-		this.updateExpandedRows(this.columns, this._displayedColumns);
-	}
-
 	@Input() withSelection = true;
 	@Input() title: string;
 	@Input() rowActions: RowAction<T>[] = [
@@ -84,16 +52,12 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 		Bearbeiten: true,
 		Loeschen: true
 	};
-
 	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
-
-
 	@ViewChild(MatPaginator) paginator: MatPaginator;
-
 	public selection: SelectionModel<T>;
 	public expansionSelection: SelectionModel<any>;
-
 	subscriptions: Subscription[];
+	isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty("detailRow");
 
 	constructor() {
 		this.selection = new SelectionModel<T>(true, []);
@@ -110,9 +74,35 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 		];
 	}
 
-	isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty("detailRow");
+	_dataService: ServletService<T>;
 
-	public get displayedColumns() {
+	@Input() set dataService(dataService: ServletService<T>) {
+		this._dataService = dataService;
+		this.dataSource.dataService = this._dataService;
+		this.dataSource.filter$ = this._filter$;
+	}
+
+	_filter$: Observable<Filter> = of(Filter.none());
+
+	@Input() set filter$(filter$: Observable<Filter>) {
+		this._filter$ = filter$;
+		this.dataSource.filter$ = this._filter$;
+	}
+
+	_columns: TableColumn<T>[] = [];
+
+	get columns() {
+		return this._columns;
+	}
+
+	@Input() set columns(columns: TableColumn<T>[]) {
+		this._columns = columns;
+		this.updateExpandedRows(this.columns, this._displayedColumns);
+	}
+
+	_displayedColumns = [];
+
+	get displayedColumns() {
 		let base = [...this._displayedColumns];
 		if (this.withSelection) {
 			base.push("select");
@@ -121,6 +111,10 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 		return base;
 	}
 
+	@Input() set displayedColumns(displayedColumns: string[]) {
+		this._displayedColumns = [...displayedColumns];
+		this.updateExpandedRows(this.columns, this._displayedColumns);
+	}
 
 	ngOnInit() {
 		this.dataSource.paginator = this.paginator;

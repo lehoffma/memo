@@ -4,10 +4,11 @@ import {Location} from "@angular/common";
 import {ModifyItemEvent} from "../modify-item-event";
 import {format, setHours, setMinutes} from "date-fns";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Party} from "../../../shared/model/party";
+import {createParty, Party} from "../../../shared/model/party";
 import {Permission} from "../../../../shared/model/permission";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {ModifyItemService} from "../modify-item.service";
+import {setProperties} from "../../../../shared/model/util/base-object";
 
 @Component({
 	selector: "memo-modify-party",
@@ -16,35 +17,8 @@ import {ModifyItemService} from "../modify-item.service";
 })
 export class ModifyPartyComponent implements OnInit {
 	formGroup: FormGroup;
-
-	_previousValue: Party;
-	@Input() set previousValue(previousValue: Party) {
-		this._previousValue = previousValue;
-
-		if (!previousValue) {
-			return;
-		}
-
-		this.formGroup.get("event-data").get("title").patchValue(previousValue.title);
-		this.formGroup.get("event-data").get("description").patchValue(previousValue.description);
-		this.formGroup.get("event-data").get("date").patchValue(previousValue.date);
-		this.formGroup.get("event-data").get("time").patchValue(format(previousValue.date, "HH:ss"));
-		this.formGroup.get("event-data").get("capacity").patchValue(previousValue.capacity);
-		this.formGroup.get("event-data").get("price").patchValue(previousValue.price);
-		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
-		this.formGroup.get("permissions").get("expectedReadRole").patchValue(previousValue.expectedReadRole);
-		this.formGroup.get("permissions").get("expectedWriteRole").patchValue(previousValue.expectedWriteRole);
-		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);
-		this.formGroup.get("addresses").patchValue(previousValue.route)
-	}
-
-	get previousValue() {
-		return this._previousValue;
-	}
-
 	@Input() mode: ModifyType;
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
-
 	ModifyType = ModifyType;
 
 	constructor(private location: Location,
@@ -92,6 +66,32 @@ export class ModifyPartyComponent implements OnInit {
 		})
 	}
 
+	_previousValue: Party;
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
+	@Input() set previousValue(previousValue: Party) {
+		this._previousValue = previousValue;
+
+		if (!previousValue) {
+			return;
+		}
+
+		this.formGroup.get("event-data").get("title").patchValue(previousValue.title);
+		this.formGroup.get("event-data").get("description").patchValue(previousValue.description);
+		this.formGroup.get("event-data").get("date").patchValue(previousValue.date);
+		this.formGroup.get("event-data").get("time").patchValue(format(previousValue.date, "HH:ss"));
+		this.formGroup.get("event-data").get("capacity").patchValue(previousValue.capacity);
+		this.formGroup.get("event-data").get("price").patchValue(previousValue.price);
+		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
+		this.formGroup.get("permissions").get("expectedReadRole").patchValue(previousValue.expectedReadRole);
+		this.formGroup.get("permissions").get("expectedWriteRole").patchValue(previousValue.expectedWriteRole);
+		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);
+		this.formGroup.get("addresses").patchValue(previousValue.route)
+	}
+
 	ngOnInit() {
 	}
 
@@ -130,7 +130,7 @@ export class ModifyPartyComponent implements OnInit {
 				this.formGroup.get("event-data").get("time").value
 			)
 		);
-		const party = Party.create().setProperties({
+		const party = setProperties(createParty(), {
 			title: this.formGroup.get("event-data").get("title").value,
 			description: this.formGroup.get("event-data").get("description").value,
 			date: this.formGroup.get("event-data").get("date").value,

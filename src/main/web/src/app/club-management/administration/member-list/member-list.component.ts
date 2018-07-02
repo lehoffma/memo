@@ -17,7 +17,7 @@ import {startWith} from "rxjs/operators";
 	styleUrls: ["./member-list.component.scss"],
 	providers: [MemberListService]
 })
-export class MemberListComponent implements OnInit, AfterViewInit{
+export class MemberListComponent implements OnInit, AfterViewInit {
 	rowActions: {
 		icon?: string;
 		name: string | RowActionType;
@@ -73,7 +73,7 @@ export class MemberListComponent implements OnInit, AfterViewInit{
 	];
 	displayedColumns$ = this.getDisplayedColumns();
 
-	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent;
+	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent<User>;
 
 	constructor(public memberListService: MemberListService,
 				private breakpointObserver: BreakpointObserver,

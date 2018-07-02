@@ -19,4 +19,5 @@ import {FormsModule} from "@angular/forms";
 		MultiLevelSelectComponent
 	]
 })
-export class MultiLevelSelectModule{}
+export class MultiLevelSelectModule {
+}

@@ -1,21 +1,25 @@
 package memo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import memo.util.MapBuilder;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.imgscalr.Scalr;
 
+import javax.imageio.ImageIO;
 import javax.persistence.*;
 import javax.servlet.http.Part;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Entity implementation class for Entity: Images
@@ -39,6 +43,23 @@ public class Image implements Serializable {
     //**************************************************************
 
     private static final long serialVersionUID = 1L;
+
+    private static class SizeOption {
+        public int width;
+        public int height;
+
+        public SizeOption(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+    }
+
+    public static final Map<String, SizeOption> sizes = MapBuilder.<String, SizeOption>create()
+            .buildPut("large", new SizeOption(500, 500))
+            .buildPut("medium", new SizeOption(250, 250))
+            .buildPut("small", new SizeOption(150, 150))
+            .buildPut("thumbnail", new SizeOption(50, 50))
+            .buildPut("original", null);
 
     public static final String filePath = System.getProperty("user.home") +
             System.getProperty("file.separator") + "MemoShop" + System.getProperty("file.separator") +
@@ -163,16 +184,90 @@ public class Image implements Serializable {
         //repeat until we get an unused file name
         do {
             String filename = RandomStringUtils.randomAlphanumeric(10);
+            //todo test
+            extension = "png";
             file = new File(filePath + filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
             this.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
         } while (file.exists());
 
         try (InputStream stream = part.getInputStream()) {
             writeToFile(stream, file);
+            this.writeResizedImages();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return this;
+    }
+
+    public Optional<String> getImagePath(String size) {
+        String path = this.getFullPath();
+        if (size == null || size.equals("original")) {
+            return Optional.of(path);
+        }
+
+        if (Image.sizes.entrySet().stream().noneMatch(entry -> entry.getKey().equalsIgnoreCase(size))) {
+            return Optional.empty();
+        }
+
+        Pattern extensionPattern = Pattern.compile(".*(?<Extension>\\.\\w+)$");
+        Matcher matcher = extensionPattern.matcher(path);
+
+        if (matcher.find() && matcher.matches()) {
+            String extension = matcher.group("Extension");
+            return Optional.of(path.replace(extension, "_" + size + extension));
+        }
+        return Optional.empty();
+    }
+
+    public File getFile(String size) {
+        return this.getImagePath(size)
+                .map(File::new)
+                .map(file -> {
+                    if (file.exists()) {
+                        return file;
+                    } else {
+                        this.writeResizedImages(size);
+                        return this.getFile(size);
+                    }
+                })
+                .orElse(null);
+    }
+
+    public void writeResizedImage(BufferedImage image, String size) {
+        this.writeResizedImage(image, size, Image.sizes.get(size));
+    }
+
+    public void writeResizedImage(BufferedImage image, String size, SizeOption resizeOption) {
+        if (resizeOption == null) {
+            return;
+        }
+
+        BufferedImage resizedImage = Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.AUTOMATIC, resizeOption.width, resizeOption.height);
+        Optional<String> imagePath = this.getImagePath(size);
+
+        imagePath.ifPresent(path -> {
+            File file = new File(path);
+            try {
+                ImageIO.write(resizedImage, "png", file);
+            } catch (IOException e) {
+                logger.error("Could not write resized image to file " + file.getAbsolutePath(), e);
+            }
+        });
+    }
+
+
+    public void writeResizedImages(String... sizes) {
+        List<String> sizeList = Arrays.stream(sizes).collect(Collectors.toList());
+        if (sizes.length == 0) {
+            sizeList = new ArrayList<>(Image.sizes.keySet());
+        }
+        File file = new File(this.getFullPath());
+        try {
+            BufferedImage image = ImageIO.read(file);
+            sizeList.forEach((key) -> this.writeResizedImage(image, key));
+        } catch (IOException e) {
+            logger.error("Could not read image at " + this.getFullPath(), e);
+        }
     }
 
     // save uploaded file to new location
@@ -209,6 +304,12 @@ public class Image implements Serializable {
     void onPostRemove() {
         try {
             Files.delete(Paths.get(this.getFullPath()));
+            for (String key : Image.sizes.keySet()) {
+                Optional<String> imagePath = this.getImagePath(key);
+                if (imagePath.isPresent()) {
+                    Files.delete(Paths.get(imagePath.get()));
+                }
+            }
         } catch (IOException e) {
             logger.error("Deleting the image at " + this.getFullPath() + " went wrong", e);
         }

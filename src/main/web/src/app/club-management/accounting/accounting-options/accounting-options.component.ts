@@ -7,12 +7,9 @@ import {EventType} from "../../../shop/shared/model/event-type";
 import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
-import {BehaviorSubject} from "rxjs/BehaviorSubject";
-import {Observable} from "rxjs/Observable";
-import {Subscription} from "rxjs/Subscription";
+import {BehaviorSubject, combineLatest, Observable, Subscription} from "rxjs";
 import {filter, first, map, share, startWith, tap} from "rxjs/operators";
 import {EntryCategory} from "../../../shared/model/entry-category";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {isAfter, isBefore, isValid, parse} from "date-fns"
 import {PageRequest} from "../../../shared/model/api/page-request";
 import {Sort} from "../../../shared/model/api/sort";

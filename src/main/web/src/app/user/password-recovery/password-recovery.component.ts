@@ -4,7 +4,7 @@ import {PasswordRecoveryService} from "./password-recovery.service";
 import {UserService} from "../../shared/services/api/user.service";
 import {emailExistsValidator} from "../../shared/validators/email-exists.validator";
 import {catchError} from "rxjs/operators";
-import {of} from "rxjs/observable/of";
+import {of} from "rxjs";
 
 @Component({
 	selector: "memo-password-recovery",

@@ -4,9 +4,8 @@ import {UserService} from "../services/api/user.service";
 import {EntryService} from "../services/api/entry.service";
 import {EventService} from "../services/api/event.service";
 import {ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
-import {_throw} from "rxjs/observable/throw";
+import {Observable, throwError} from "rxjs";
 import {ShopItem} from "../model/shop-item";
-import {Observable} from "rxjs/Observable";
 import {OrderService} from "../services/api/order.service";
 
 @Injectable()
@@ -70,7 +69,7 @@ export class ShopItemGuardHelper {
 	public getRequest(route: ActivatedRouteSnapshot, state: RouterStateSnapshot, statusCode: number): Observable<ShopItem> {
 		let id = route.paramMap.has("id") ? +route.paramMap.get("id") : -1;
 		if (id === -1) {
-			return _throw({status: statusCode});
+			return throwError({status: statusCode});
 		}
 		return this.getServletServiceFromType(this.getItemTypeFromRoute(route)).getById(id);
 	}

@@ -8,19 +8,19 @@ import {filter, first, map, mergeMap} from "rxjs/operators";
 import {EventType} from "../../../../shared/model/event-type";
 import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 import {WindowService} from "../../../../../shared/services/window.service";
-import {Observable} from "rxjs/Observable";
+import {combineLatest, Observable} from "rxjs";
 import {ModifyParticipantComponent} from "./modify-participant/modify-participant.component";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {UserService} from "../../../../../shared/services/api/user.service";
-import {combineLatest} from "rxjs/observable/combineLatest";
 import {CapacityService} from "../../../../../shared/services/api/capacity.service";
 import {ActionPermissions} from "../../../../../shared/utility/material-table/util/action-permissions";
 import {PagedDataSource} from "../../../../../shared/utility/material-table/paged-data-source";
+import {ParticipantDataSource} from "./participant-data-source";
 
 
 @Injectable()
 export class ParticipantListService extends ExpandableTableContainerService<ParticipantUser> {
-	dataSource: PagedDataSource<ParticipantUser>;
+	dataSource: ParticipantDataSource;
 
 	eventInfo$: Observable<{
 		eventType: EventType,
@@ -70,7 +70,7 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 					)
 			).pipe(
 				map(([actionPermissions, canAdd]: [ActionPermissions, boolean]) => {
-					let permissions: ActionPermissions = {...actionPermissions};
+					let permissions: ActionPermissions = {...actionPermissions} as ActionPermissions;
 
 					permissions.Hinzufuegen = permissions.Hinzufuegen && canAdd;
 

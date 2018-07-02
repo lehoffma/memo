@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
+import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 
 export interface ImageUploadApiResponse {
 	images: string[];
@@ -39,7 +39,7 @@ export class ImageUploadService {
 		return this.http.post<ImageUploadApiResponse>(this.baseUrl, formData)
 	}
 
-	deleteImage(apiPath: string): Observable<Object>{
+	deleteImage(apiPath: string): Observable<Object> {
 		return this.http.delete(this.baseUrl, {
 			params: new HttpParams().set("fileName", apiPath)
 		});

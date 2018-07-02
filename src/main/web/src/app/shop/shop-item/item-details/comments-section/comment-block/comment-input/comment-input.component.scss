@@ -5,17 +5,19 @@
 	align-items: flex-start;
 
 	.author-image-container {
-		margin-right: 10px;
-		@media all and (max-width: 800px) {
-			margin-left: 5px;
-		}
-		img {
-			width: 30px;
-			height: 30px;
-			object-fit: cover;
-			border-radius: 50%;
-			border: 1px solid #c1c1c1;
+		display: none;
 
+		@media all and (min-width: 800px) {
+			display: block;
+
+			img {
+				width: 30px;
+				height: 30px;
+				object-fit: cover;
+				border-radius: 50%;
+				border: 1px solid #c1c1c1;
+
+			}
 		}
 	}
 
@@ -29,7 +31,6 @@
 			resize: none;
 			min-height: 2rem;
 			padding: 0.4rem;
-			background: #fafafa;
 
 			border: 0;
 			border-bottom: 1px solid #BDBDBD;

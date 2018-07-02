@@ -8,10 +8,10 @@ import {Permission, UserPermissions} from "../../shared/model/permission";
 import {Discount} from "../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../shop/shared/services/discount.service";
 import {map} from "rxjs/operators";
-import {combineLatest} from "rxjs/observable/combineLatest";
-import {Observable} from "rxjs/Observable";
+import {combineLatest, Observable} from "rxjs";
 import {distanceInWordsStrict} from "date-fns";
 import * as deLocale from "date-fns/locale/de";
+import {userPermissions} from "../../shared/model/user";
 
 @Component({
 	selector: "memo-category-preview",
@@ -38,7 +38,7 @@ export class CategoryPreviewComponent implements OnInit, OnDestroy {
 				if (user === null) {
 					return false;
 				}
-				const permissions = user.userPermissions();
+				const permissions = userPermissions(user)
 				const permissionKey: keyof UserPermissions = EventUtilityService
 					.shopItemSwitch<keyof UserPermissions>(this.itemType, {
 						tours: () => "tour",

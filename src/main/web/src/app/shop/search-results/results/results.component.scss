@@ -13,7 +13,9 @@
 
 @media all and (min-width: 650px) {
 	.results-container {
-		display: flex;
-		flex-wrap: wrap;
+		display: grid;
+		grid-column-gap: 0.5rem;
+		grid-row-gap: 1rem;
+		grid-template-columns: repeat(auto-fill, minmax(210px, 1fr))
 	}
 }

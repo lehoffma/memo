@@ -8,10 +8,11 @@ import {ActivatedRoute} from "@angular/router";
 import {EntryCategoryService} from "../../../../shared/services/api/entry-category.service";
 import {ModifyItemEvent} from "app/shop/shop-item/modify-shop-item/modify-item-event";
 import {EntryCategory} from "../../../../shared/model/entry-category";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {filter, map, mergeMap, take} from "rxjs/operators";
-import {Entry} from "../../../../shared/model/entry";
+import {createEntry, Entry} from "../../../../shared/model/entry";
 import {ModifyItemService} from "../modify-item.service";
+import {setProperties} from "../../../../shared/model/util/base-object";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -43,37 +44,12 @@ export class ModifyEntryComponent implements OnInit {
 			validators: [Validators.required]
 		}]
 	});
-
-	_previousValue: Entry;
-	@Input() set previousValue(previousValue: Entry) {
-		this._previousValue = previousValue;
-
-		if (!previousValue) {
-			return;
-		}
-
-		this.formGroup.get("name").patchValue(previousValue.name);
-		this.formGroup.get("value").patchValue(previousValue.value);
-		this.formGroup.get("item").patchValue(previousValue.item);
-		this.formGroup.get("date").patchValue(previousValue.date);
-		this.formGroup.get("comment").patchValue(previousValue.comment);
-		this.formGroup.get("category").patchValue(previousValue.category);
-		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
-	}
-
-	get previousValue() {
-		return this._previousValue;
-	}
-
 	@Input() mode: ModifyType;
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
-
-
 	ModifyType = ModifyType;
 	entryCategories$ = this.entryCategoryService.getCategories().pipe(
 		map(it => it.content)
 	);
-
 
 	constructor(private location: Location,
 				private formBuilder: FormBuilder,
@@ -93,6 +69,28 @@ export class ModifyEntryComponent implements OnInit {
 
 	}
 
+	_previousValue: Entry;
+
+	get previousValue() {
+		return this._previousValue;
+	}
+
+	@Input() set previousValue(previousValue: Entry) {
+		this._previousValue = previousValue;
+
+		if (!previousValue) {
+			return;
+		}
+
+		this.formGroup.get("name").patchValue(previousValue.name);
+		this.formGroup.get("value").patchValue(previousValue.value);
+		this.formGroup.get("item").patchValue(previousValue.item);
+		this.formGroup.get("date").patchValue(previousValue.date);
+		this.formGroup.get("comment").patchValue(previousValue.comment);
+		this.formGroup.get("category").patchValue(previousValue.category);
+		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
+	}
+
 	ngOnInit() {
 	}
 
@@ -107,7 +105,7 @@ export class ModifyEntryComponent implements OnInit {
 	}
 
 	submitModifiedObject() {
-		const entry = Entry.create().setProperties({
+		const entry = setProperties(createEntry(), {
 			id: this.previousValue ? this.previousValue.id : -1,
 			name: this.formGroup.get("name").value,
 			value: this.formGroup.get("value").value,

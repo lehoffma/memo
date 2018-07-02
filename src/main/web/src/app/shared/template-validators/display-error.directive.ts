@@ -12,7 +12,6 @@ export class DisplayErrorDirective implements Validator {
 	}
 
 
-
 	validate(control: AbstractControl): ValidationErrors | null {
 		console.log(control);
 		console.log(this.displayError);

@@ -4,7 +4,7 @@ import {Response} from "@angular/http";
 import {BankAccount} from "../../model/bank-account";
 import {UserService} from "./user.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs";
 import {mergeMap, tap} from "rxjs/operators";
 import {User} from "../../model/user";
 import {Address} from "../../model/address";
