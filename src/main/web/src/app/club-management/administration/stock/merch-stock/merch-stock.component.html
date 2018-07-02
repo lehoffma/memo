@@ -10,35 +10,50 @@
 		<memo-filtering-menu class="mobile" [filterOptions]="filterOptions$ | async">
 
 		</memo-filtering-menu>
+
+		<div class="add-button">
+			<a mat-stroked-button *ngIf="userCanAddMerch$ | async"
+			   [matTooltip]="'Artikel hinzufügen'"
+			   [matTooltipPosition]="'above'"
+			   routerLink="/create/merch"
+			   class="toolbar-add-button">
+				Hinzufügen
+			</a>
+
+		</div>
+
 		<memo-sorting-dropdown [sortingOptions]="sortingOptions">
 
 		</memo-sorting-dropdown>
 	</div>
-	<memo-merch-stock-entry *ngFor="let stockEntry of merchList"
-							[stockEntry]="stockEntry"
-							(onDelete)="deleteMerch($event)"
+	<div class="content-wrapper">
+		<a mat-stroked-button *ngIf="userCanAddMerch$ | async"
+		   [matTooltip]="'Artikel hinzufügen'"
+		   [matTooltipPosition]="'above'"
+		   routerLink="/create/merch"
+		   class="add-merch-button">
+			Hinzufügen
+		</a>
 
-	>
+		<memo-merch-stock-entry *ngFor="let stockEntry of merchList"
+								[stockEntry]="stockEntry"
+								(onDelete)="deleteMerch($event)"
 
-	</memo-merch-stock-entry>
+		>
 
-	<div *ngIf="(merch$|async) === null" class="loading-container">
-		<div class="loader"></div>
+		</memo-merch-stock-entry>
+
+		<div *ngIf="(merch$|async) === null" class="loading-container">
+			<div class="loader"></div>
+		</div>
+
+		<div class="no-results" *ngIf="(merch$|async)?.length === 0">
+			Keine Merchandiseartikel vorhanden.
+		</div>
 	</div>
 
-	<div class="no-results" *ngIf="(merch$|async)?.length === 0">
-		Keine Merchandiseartikel vorhanden.
-	</div>
 </div>
 
-
-<a mat-fab color="accent" *ngIf="userCanAddMerch$ | async"
-   [matTooltip]="'Artikel hinzufügen'"
-   [matTooltipPosition]="'above'"
-   routerLink="/create/merch"
-   class="add-merch-button">
-	<mat-icon>add</mat-icon>
-</a>
 
 <memo-merch-stock-feed [stockEntryList]="stockEntryList$ | async">
 

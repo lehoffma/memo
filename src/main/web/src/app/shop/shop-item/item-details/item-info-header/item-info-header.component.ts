@@ -3,7 +3,7 @@ import {ShareDialogComponent} from "../../../../shared/share-dialog/share-dialog
 import {MatDialog, MatSnackBar} from "@angular/material";
 import {Event} from "../../../shared/model/event";
 import {NavigationService} from "../../../../shared/services/navigation.service";
-import {mergeMap} from "rxjs/operators";
+import {map, mergeMap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";
 import {User} from "../../../../shared/model/user";
 import {DiscountService} from "../../../shared/services/discount.service";
@@ -12,6 +12,7 @@ import {ResponsibilityService} from "../../../shared/services/responsibility.ser
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {Router} from "@angular/router";
+import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 
 @Component({
 	selector: "memo-item-info-header",
@@ -28,6 +29,9 @@ export class ItemInfoHeaderComponent implements OnInit {
 		delete: boolean;
 	};
 	private _event$: BehaviorSubject<Event> = new BehaviorSubject<Event>(null);
+	public isMerch$ = this._event$.pipe(
+		map(it => EventUtilityService.isMerchandise(it))
+	);
 	responsible$: Observable<User[]> = this._event$
 		.pipe(mergeMap(event => this.responsibilityService.getResponsible(event.id)));
 

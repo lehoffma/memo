@@ -129,6 +129,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 	 * @returns {Observable<any[]>}
 	 */
 	getStockEntryList$() {
+		//todo pagination
 		return this._merchList$
 			.pipe(
 				filter(it => it !== null),

@@ -3,7 +3,8 @@
 		<a *ngFor="let recentEvent of (userEvents | slice:0:amountOfEventsShown); let lastTour = last"
 		   routerLink="{{getLink(recentEvent)}}">
 			<mat-list-item>
-				<img mat-list-avatar src="{{(recentEvent?.images[0]) | imageSize:'thumbnail' | async}}"
+				<img mat-list-avatar
+					 src="{{(recentEvent?.images.length > 0 ? recentEvent?.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"
 					 alt="picture of the {{recentEvent.title}} event">
 				<h3 matLine> {{recentEvent.title}} </h3>
 				<p matLine>

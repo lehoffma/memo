@@ -4,8 +4,6 @@
 
 :host {
 	display: block;
-	@include mat-elevation(3);
-	@include mat-elevation-transition;
 	background-color: $container-content--background-color;
 	color: $container-content--color;
 
@@ -16,6 +14,7 @@
 		margin: 0;
 		text-align: center;
 		padding: 1rem;
+		font-weight: 400;
 	}
 
 	> div {

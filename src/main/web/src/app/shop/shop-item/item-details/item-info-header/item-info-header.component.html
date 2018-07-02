@@ -23,6 +23,12 @@
 		Abschluss
 	</a>
 	<a mat-menu-item
+	   *ngIf="(isMerch$ | async) && permissions?.edit"
+	   routerLink="./stock/edit">
+		<mat-icon>book</mat-icon>
+		Bestand
+	</a>
+	<a mat-menu-item
 	   *ngIf="permissions?.entries"
 	   routerLink="/management/costs"
 	   [queryParams]="{eventId: event.id}">

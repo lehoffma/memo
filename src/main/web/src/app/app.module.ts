@@ -37,6 +37,8 @@ import {UnauthorizedHttpClient} from "./shared/authentication/unauthorized-http-
 import {ErrorInterceptor} from "./shared/utility/error-handling/error.interceptor";
 import {MatPasswordStrengthModule} from "@angular-material-extensions/password-strength";
 import { FooterComponent } from './home/footer/footer.component';
+import {NgProgressHttpModule} from "@ngx-progressbar/http";
+import {NgProgressModule} from "@ngx-progressbar/core";
 
 registerLocaleData(localeDe);
 
@@ -58,6 +60,8 @@ registerLocaleData(localeDe);
 		ShareButtonsModule.forRoot(),
 		CalendarModule.forRoot(),
 		MatPasswordStrengthModule.forRoot(),
+		NgProgressModule.forRoot(),
+		NgProgressHttpModule,
 
 		//memo modules
 		SharedModule,

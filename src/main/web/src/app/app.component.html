@@ -5,6 +5,7 @@
 
 	<!--main content-->
 	<div>
+		<ng-progress [spinner]="false" [color]="'#3F51B5'"></ng-progress>
 		<!--output: sidebar button wurde angeklickt -> callback in AppComponent -->
 		<memo-toolbar (sideBarOpened)="sidenav.open()"></memo-toolbar>
 		<div class="router-outlet-container">
