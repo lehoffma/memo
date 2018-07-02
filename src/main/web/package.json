@@ -12,7 +12,7 @@
     "build-optimized-with-stats": "ng build --prod --build-optimizer --stats-json",
     "bundle-report": "webpack-bundle-analyzer ../webapp/stats.json",
     "test": "ng test",
-    "test-once": "ng test --single-run=true --browsers Chrome",
+    "test-once": "ng test --watch=false --browsers Chrome",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -70,6 +70,6 @@
     "ts-node": "^5.0.0",
     "tslint": "^5.9.1",
     "typescript": "~2.7.2",
-    "webpack-bundle-analyzer": "^2.11.1"
+    "webpack-bundle-analyzer": "^2.13.1"
   }
 }

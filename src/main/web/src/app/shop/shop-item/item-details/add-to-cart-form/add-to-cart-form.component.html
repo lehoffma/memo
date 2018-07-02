@@ -27,7 +27,7 @@
 		<mat-select placeholder="Anzahl" name="amount" *ngFor="let options of [(amountOptions$ | async)]"
 					[(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
 					[disabled]="(!isMerch(event) && (isPastEvent$ | async))
-								|| !((permissions$ | async)?.checkIn) || (isSoldOut(event, options))"
+								|| !((permissions)?.checkIn) || (isSoldOut(event, options))"
 					[required]="true">
 			<mat-option *ngIf="isSoldOut(event, options); else amountDropdown"
 						[value]="0"
@@ -45,7 +45,7 @@
 	<button
 		[disabled]="(!addToCartForm.valid || model.amount === 0)
 								|| (!isMerch(event) && (isPastEvent$ | async))
-								|| !((permissions$ | async)?.checkIn)
+								|| !((permissions)?.checkIn)
 					"
 		mat-raised-button
 		color="{{(isPartOfShoppingCart$ | async) ? 'warn' : 'accent'}}"
