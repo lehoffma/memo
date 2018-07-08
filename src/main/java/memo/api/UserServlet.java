@@ -152,8 +152,7 @@ public class UserServlet extends AbstractApiServlet<User> {
                                         () -> response.setStatus(HttpServletResponse.SC_NOT_FOUND)
                                 ),
                                 new ModifyPrecondition<>(
-                                        user -> UserRepository.getInstance().get(user.getId().toString()).size() > 1 ||
-                                                !(UserRepository.getInstance().findByEmail(user.getEmail()).isEmpty()),
+                                        user -> UserRepository.getInstance().get(user.getId().toString()).size() > 1,
                                         "Ambiguous results",
                                         () -> response.setStatus(HttpServletResponse.SC_NOT_FOUND)
                                 )

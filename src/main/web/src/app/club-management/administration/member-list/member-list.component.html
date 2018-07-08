@@ -1,7 +1,7 @@
 <memo-expandable-material-table
 	[dataService]="userService"
 	[filter$]="filter$"
-	[rowActions]="rowActions"
+	[rowActions]="rowActions$ | async"
 	[permissions]="memberListService.permissions$ | async"
 	[columns]="columns"
 	[title]="'Mitgliederliste'"

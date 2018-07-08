@@ -13,6 +13,8 @@ import {ShopItemIsVisibleToUserGuard} from "./http-error-handling-guards/shop-it
 import {ShopItemGuardHelper} from "./shop-item-guard.helper";
 import {IsNotLoggedInGuard} from "./is-not-logged-in.guard";
 import {SignupWasJustCompletedGuard} from "./signup-was-just-completed.guard";
+import {IsMemberGuard} from "./is-member.guard";
+import {IsBoardMemberGuard} from "./is-board-member.guard";
 
 
 const providers = [
@@ -27,7 +29,9 @@ const providers = [
 	ShopItemExistsGuard,
 	ShopItemIsVisibleToUserGuard,
 	IsNotLoggedInGuard,
-	SignupWasJustCompletedGuard
+	SignupWasJustCompletedGuard,
+	IsMemberGuard,
+	IsBoardMemberGuard
 ];
 
 @NgModule({

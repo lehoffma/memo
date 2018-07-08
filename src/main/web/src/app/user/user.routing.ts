@@ -15,6 +15,7 @@ import {SignupWasJustCompletedGuard} from "../shared/authentication/signup-was-j
 import {ApplyForMembershipComponent} from "./membership/apply-for-membership/apply-for-membership.component";
 import {RequestMembershipComponent} from "./membership/request-membership/request-membership.component";
 import {ConfirmEmailComponent} from "./confirm-email/confirm-email.component";
+import {IsMemberGuard} from "../shared/authentication/is-member.guard";
 
 const routes: Route[] = [
 
@@ -28,7 +29,7 @@ const routes: Route[] = [
 	//todo isNotAlreadyMemberGuard
 	{path: "applyForMembership", component: ApplyForMembershipComponent, canActivate: [AuthenticatedGuard]},
 	{path: "requestMembership", component: RequestMembershipComponent, canActivate: [AuthenticatedGuard]},
-	{path: "members/:id", component: ProfileComponent},
+	{path: "members/:id", component: ProfileComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
 	//nur eingeloggte User können diese Routen sehen
 	{path: "my-events", component: MyToursComponent, canActivate: [AuthenticatedGuard]},
 	{path: "order-history", component: OrderHistoryComponent, canActivate: [AuthenticatedGuard]},

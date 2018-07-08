@@ -9,14 +9,15 @@ import {DashboardComponent} from "./dashboard/dashboard.component";
 import {MilesLeaderboardComponent} from "./miles-leaderboard/miles-leaderboard.component";
 import {CanViewStockGuard} from "../shared/authentication/can-view-stock.guard";
 import {OrderOverviewComponent} from "./order-overview/order-overview.component";
-import {UserMapComponent} from "./user-map/user-map.component";
 import {UserMapContainerComponent} from "./user-map/user-map-container.component";
+import {IsMemberGuard} from "../shared/authentication/is-member.guard";
+import {IsBoardMemberGuard} from "../shared/authentication/is-board-member.guard";
 
 const routes: Route[] = [
-	{path: "dashboard", component: DashboardComponent},
-	{path: "map", component: UserMapContainerComponent},
-	{path: "leaderboard", component: MilesLeaderboardComponent},
-	{path: "members", component: MemberListComponent},
+	{path: "dashboard", component: DashboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
+	{path: "map", component: UserMapContainerComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
+	{path: "leaderboard", component: MilesLeaderboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
+	{path: "members", component: MemberListComponent, canActivate: [AuthenticatedGuard, IsBoardMemberGuard]},
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
 	{path: "management/orders", component: OrderOverviewComponent, canActivate: [AuthenticatedGuard]},
 	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},

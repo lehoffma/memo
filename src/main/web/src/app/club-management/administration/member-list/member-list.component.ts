@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
-import {User} from "../../../shared/model/user";
+import {User, userPermissions} from "../../../shared/model/user";
 import {RowActionType} from "../../../shared/utility/material-table/util/row-action-type";
 import {MemberListRowAction} from "./member-list-row-actions";
 import {MemberListService} from "./member-list.service";
@@ -9,7 +9,11 @@ import {Observable, of} from "rxjs";
 import {ExpandableMaterialTableComponent, TableColumn} from "../../../shared/utility/material-table/expandable-material-table.component";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {ResponsiveColumnsHelper} from "../../../shared/utility/material-table/responsive-columns.helper";
-import {startWith} from "rxjs/operators";
+import {map, startWith} from "rxjs/operators";
+import {RowAction} from "../../../shared/utility/material-table/util/row-action";
+import {LogInService} from "../../../shared/services/api/login.service";
+import {ClubRole, isAuthenticated} from "../../../shared/model/club-role";
+import {Permission} from "../../../shared/model/permission";
 
 @Component({
 	selector: "memo-member-list",
@@ -18,41 +22,53 @@ import {startWith} from "rxjs/operators";
 	providers: [MemberListService]
 })
 export class MemberListComponent implements OnInit, AfterViewInit {
-	rowActions: {
-		icon?: string;
-		name: string | RowActionType;
-		link?: (user: User) => string;
-		route?: (user: User) => string;
-	}[] = [
-		{
-			icon: "edit",
-			name: RowActionType.EDIT
-		},
-		{
-			icon: "delete",
-			name: RowActionType.DELETE
-		},
-		{
-			icon: "phone",
-			name: MemberListRowAction.phone,
-			link: user => "tel:" + user.telephone,
-		},
-		{
-			icon: "smartphone",
-			name: MemberListRowAction.call,
-			link: user => "tel:" + user.mobile
-		},
-		{
-			icon: "email",
-			name: MemberListRowAction.email,
-			link: user => "mailto:" + user.email
-		},
-		{
-			icon: "person",
-			name: MemberListRowAction.showProfile,
-			route: user => "/members/" + user.id
-		}
-	];
+	rowActions$: Observable<RowAction<User>[]> = this.loginService.currentUser$.pipe(
+		map((currentUser: User) => {
+			let base: RowAction<User>[] = [
+				{
+					icon: "edit",
+					name: RowActionType.EDIT
+				},
+				{
+					icon: "delete",
+					name: RowActionType.DELETE
+				},
+			];
+
+			if (currentUser && (isAuthenticated(currentUser.clubRole, ClubRole.Vorstand) || userPermissions(currentUser).userManagement > Permission.read)) {
+				base.push(...[
+						{
+							icon: "phone",
+							name: MemberListRowAction.phone,
+							predicate: user => user.telephone !== null,
+							link: user => "tel:" + user.telephone,
+						},
+						{
+							icon: "smartphone",
+							name: MemberListRowAction.call,
+							predicate: user => user.mobile !== null,
+							link: user => "tel:" + user.mobile
+						},
+						{
+							icon: "email",
+							name: MemberListRowAction.email,
+							link: user => "mailto:" + user.email
+						}
+					]
+				)
+			}
+
+			base.push(
+				{
+					icon: "person",
+					name: MemberListRowAction.showProfile,
+					route: user => "/members/" + user.id
+				}
+			);
+
+			return base;
+		})
+	);
 
 	filter$: Observable<Filter> = of(Filter.none());
 	columns: TableColumn<User>[] = [
@@ -77,6 +93,7 @@ export class MemberListComponent implements OnInit, AfterViewInit {
 
 	constructor(public memberListService: MemberListService,
 				private breakpointObserver: BreakpointObserver,
+				private loginService: LogInService,
 				public userService: UserService) {
 	}
 

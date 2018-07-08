@@ -90,6 +90,12 @@ export class ProfileComponent implements OnInit {
 		);
 	profileCategories = profileCategories;
 
+	canReadPhoneNumber$: Observable<boolean> = combineLatest(this.userObservable, this.loginService.currentUser$).pipe(
+		map(([profileUser, loggedInUser]) => loggedInUser && (profileUser.id === loggedInUser.id ||
+			userPermissions(loggedInUser).userManagement >= Permission.read ||
+			isAuthenticated(loggedInUser.clubRole, ClubRole.Vorstand)))
+	);
+
 	constructor(private route: ActivatedRoute,
 				private navigationService: NavigationService,
 				private milesService: MilesService,

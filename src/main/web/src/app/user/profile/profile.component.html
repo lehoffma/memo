@@ -43,11 +43,13 @@
 			</div>
 		</div>
 		<div class="profile-action-container">
-			<a href="tel:{{user.telephone}}" mat-button color="accent" [disabled]="!user.telephone">
+			<a href="{{(canReadPhoneNumber$ |async) ? ('tel:' + user.telephone) : '#'}}"
+			   mat-button color="accent" [disabled]="!(canReadPhoneNumber$ |async) || !user.telephone">
 				<mat-icon>local_phone</mat-icon>
 				<span class="action-text">Anrufen</span>
 			</a>
-			<a href="tel:{{user.mobile}}" mat-button color="accent" [disabled]="!user.mobile">
+			<a href="{{(canReadPhoneNumber$ |async) ? ('tel:' + user.mobile) : '#'}}"
+			   mat-button color="accent" [disabled]="!(canReadPhoneNumber$ |async) || !user.mobile">
 				<mat-icon>smartphone</mat-icon>
 				<span class="action-text">Anrufen</span>
 			</a>
