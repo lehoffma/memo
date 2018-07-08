@@ -29,8 +29,7 @@ export class MilesLeaderboardComponent implements OnInit {
 
 	showAll$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-	users$ = this.userService.get(Filter.none(), PageRequest.first(), Sort.none())
-		.pipe(map(it => it.content));
+	users$ = this.userService.getAll(Filter.none(), Sort.none());
 	loggedInUserId$ = this.loginService.accountObservable;
 
 	leaderBoard$: Observable<LeaderboardRow[]> = this.users$

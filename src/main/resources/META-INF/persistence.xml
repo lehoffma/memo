@@ -25,13 +25,14 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/memo_dev"/>
             <property name="javax.persistence.jdbc.user" value="meilenwoelfe"/>
             <property name="javax.persistence.jdbc.password" value="qwertzui"/>
+            <!--<property name="eclipselink.logging.level" value="FINE"/>-->
             <!--
             // for generating the database from scratch
             // bitte den unteren absatz auskommentieren bei bedarf und nicht den Code ändern
             -->
 
-            <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>
-            <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
+            <!--<property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>-->
+            <!--<property name="javax.persistence.schema-generation.scripts.action" value="create"/>-->
             <!--<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>-->
             <!--<property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/>-->
             <property name="javax.persistence.schema-generation.create-source" value="metadata"/>

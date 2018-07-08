@@ -1,6 +1,7 @@
 package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
+import memo.data.EventRepository;
 import memo.data.util.PredicateFactory;
 import memo.model.Permission;
 import memo.model.ShopItem;
@@ -19,6 +20,7 @@ import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRo
 import static memo.auth.api.AuthenticationPredicateFactory.userIsOneOfAuthors;
 import static memo.auth.api.ShopItemAuthHelper.getEventPermission;
 import static memo.auth.api.ShopItemAuthHelper.userFulfillsMinimumPermissions;
+import static memo.data.util.PredicateFactory.combineByOr;
 
 public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
     @Override
@@ -60,7 +62,7 @@ public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
         );
 
         return builder.or(
-                userIsOneOfAuthors,
+//                userIsOneOfAuthors,
                 userIsAuthorized
         );
     }

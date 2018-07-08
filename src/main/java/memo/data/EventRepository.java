@@ -128,6 +128,11 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
         return this.getByParticipant(builder, root, filterRequest.getValues());
     }
 
+    public List<Predicate> getByAuthorId(CriteriaBuilder builder, Root<ShopItem> root, User user) {
+        Filter.FilterRequest request = new Filter().request("authorId", user.getId().toString());
+        return this.getByAuthorId(builder, root, request);
+    }
+
     /**
      * @param builder
      * @param root
@@ -197,7 +202,7 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
         return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<ShopItem>()
                 .buildPut("searchTerm", (b, r, request) -> PredicateFactory
-                        .search(b, r, request, Arrays.asList("title", "description"))
+                        .search(b, r, request, Arrays.asList("title"))
                 )
                 .buildPut("userId", this::getByParticipant)
                 .buildPut("authorId", this::getByAuthorId)

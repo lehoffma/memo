@@ -127,8 +127,7 @@ public class AuthenticationPredicateFactory {
             return PredicateFactory.isFalse(builder);
         }
 
-        return PredicateFactory.isMember(builder, root,
-                getAuthorIds, user.getId());
+        return PredicateFactory.isMember(builder, root, getAuthorIds, user.getId());
     }
 
     /**

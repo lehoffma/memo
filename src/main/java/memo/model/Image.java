@@ -226,8 +226,13 @@ public class Image implements Serializable {
                     if (file.exists()) {
                         return file;
                     } else {
-                        this.writeResizedImages(size);
-                        return this.getFile(size);
+                        boolean success = this.writeResizedImages(size);
+                        if (success) {
+                            return this.getFile(size);
+                        }
+                        logger.error("Could not convert file " + this.getFileName() + " to size " + size);
+                        //something else went wrong
+                        return null;
                     }
                 })
                 .orElse(null);
@@ -256,7 +261,7 @@ public class Image implements Serializable {
     }
 
 
-    public void writeResizedImages(String... sizes) {
+    public boolean writeResizedImages(String... sizes) {
         List<String> sizeList = Arrays.stream(sizes).collect(Collectors.toList());
         if (sizes.length == 0) {
             sizeList = new ArrayList<>(Image.sizes.keySet());
@@ -267,7 +272,9 @@ public class Image implements Serializable {
             sizeList.forEach((key) -> this.writeResizedImage(image, key));
         } catch (IOException e) {
             logger.error("Could not read image at " + this.getFullPath(), e);
+            return false;
         }
+        return true;
     }
 
     // save uploaded file to new location
