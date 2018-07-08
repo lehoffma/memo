@@ -35,7 +35,6 @@ export class PagedDataSource<T> extends DataSource<T> {
 
 	constructor(dataService?: TableDataService<T>, page$?: Observable<PageRequest>) {
 		super();
-		console.log("huh");
 		if (dataService) {
 			this.dataService$.next(dataService);
 		}

@@ -14,7 +14,9 @@ export class CreateEventContextMenuComponent implements OnInit {
 				@Inject(MAT_DIALOG_DATA) public data: {
 					date: Date,
 					partys: Observable<boolean>,
-					tours: Observable<boolean>
+					tours: Observable<boolean>,
+					merch: Observable<boolean>,
+					show: {tours: boolean, partys: boolean, merch: boolean}
 				}) {
 
 	}

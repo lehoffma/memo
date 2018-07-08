@@ -1,10 +1,25 @@
+:host {
+	display: block;
+	position: relative;
+}
+
 table {
 	width: 100%;
 }
 
+.no-results-overlay {
+	display: flex;
+	background: white;
+	padding: 2rem;
+	color: rgba(0, 0, 0, 0.64);
+}
+
 .loading-shade {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	position: absolute;
-	top: 64px;
+	top: 0;
 	left: 0;
 	bottom: 0;
 	right: 0;

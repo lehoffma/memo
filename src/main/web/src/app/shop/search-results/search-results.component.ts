@@ -10,13 +10,18 @@ import {SearchFilterService} from "./search-filter.service";
 import {FilterOptionBuilder} from "./filter-option-builder.service";
 import {FilterOptionType} from "./filter-option-type";
 import {BehaviorSubject, combineLatest, Observable, Subscription} from "rxjs";
-import {debounceTime, map, mergeMap, scan, tap} from "rxjs/operators";
+import {debounceTime, defaultIfEmpty, filter, map, mergeMap, scan, tap} from "rxjs/operators";
 import {Filter} from "../../shared/model/api/filter";
 import {Sort} from "../../shared/model/api/sort";
 import {PageRequest} from "../../shared/model/api/page-request";
 import {NOW} from "../../util/util";
 import {PageResponse} from "../../shared/model/api/page";
-import {PageEvent} from "@angular/material";
+import {MatDialog, PageEvent} from "@angular/material";
+import {LogInService} from "../../shared/services/api/login.service";
+import {Permission, visitorPermissions} from "../../shared/model/permission";
+import {isNullOrUndefined} from "util";
+import {userPermissions} from "../../shared/model/user";
+import {CreateEventContextMenuComponent} from "../event-calendar-container/create-event-context-menu/create-event-context-menu.component";
 
 type SortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -26,6 +31,11 @@ type SortingQueryParameter = { sortedBy: string; descending: string; };
 	styleUrls: ["./search-results.component.scss"]
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
+	userCanAddItem$: Observable<boolean> = this.loginService.getActionPermissions("merch", "tour", "party")
+		.pipe(
+			map(permission => permission.Hinzufuegen)
+		);
+
 	keywords: Observable<string> = this.activatedRoute.queryParamMap
 		.pipe(
 			map(paramMap => paramMap.has("searchTerm")
@@ -77,7 +87,9 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private searchFilterService: SearchFilterService,
+				private matDialog: MatDialog,
 				private filterOptionBuilder: FilterOptionBuilder,
+				private loginService: LogInService,
 				private eventService: EventService) {
 	}
 
@@ -145,7 +157,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 				)),
 				tap(it => this.currentPage$.next(it)),
 				map(it => it.content),
-				tap(events =>{
+				tap(events => {
 					let categoryFilterOption = this.filterOptions.find(option => option.name === "Kategorie");
 					let selectedCategories: string[] = categoryFilterOption.children
 						.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
@@ -160,5 +172,31 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
 	updatePage(pageEvent: PageEvent) {
 		this.page$.next(PageRequest.fromMaterialPageEvent(pageEvent));
+	}
+
+	openCreateDialog() {
+		const permissions$ = this.loginService.currentUser$
+			.pipe(
+				filter(user => user !== null),
+				map(user => userPermissions(user)),
+				filter(permissions => !isNullOrUndefined(permissions)),
+				defaultIfEmpty(visitorPermissions)
+			);
+
+		const dialogRef = this.matDialog.open(CreateEventContextMenuComponent, {
+			data: {
+				date: new Date(),
+				tours: permissions$
+					.pipe(map(permissions => permissions.tour >= Permission.create)),
+				partys: permissions$
+					.pipe(map(permissions => permissions.party >= Permission.create)),
+				merch: permissions$
+					.pipe(map(permissions => permissions.merch >= Permission.create)),
+				show: {tours: true, partys: true, merch: true}
+			}
+		});
+
+		dialogRef.afterClosed()
+			.subscribe(console.log, console.error)
 	}
 }

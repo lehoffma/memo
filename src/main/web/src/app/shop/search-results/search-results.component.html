@@ -10,11 +10,36 @@
 			<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
 		</div>
 
+
+		<div class="add-button mobile-add-button-container mat-elevation-z2">
+			<button mat-stroked-button *ngIf="userCanAddItem$ | async"
+					[matTooltip]="'Artikel hinzufügen'"
+					[matTooltipPosition]="'above'"
+					(click)="openCreateDialog()"
+					class="mobile-add-button">
+				<mat-icon>add</mat-icon>
+				Hinzufügen
+			</button>
+
+		</div>
+
 		<div *ngIf="(keywords | async).length >= 0" class="search-results-container">
 			<div class="search-results-header">
-				<span>
-					{{resultsTitle | async}}
-				</span>
+				<div class="flex-row">
+					<div class="add-button">
+						<button mat-stroked-button *ngIf="userCanAddItem$ | async"
+								[matTooltip]="'Artikel hinzufügen'"
+								[matTooltipPosition]="'above'"
+								(click)="openCreateDialog()"
+								class="toolbar-add-button">
+							Hinzufügen
+						</button>
+
+					</div>
+					<span>
+						{{resultsTitle | async}}
+					</span>
+				</div>
 				<div class="search-results-actions">
 
 					<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>

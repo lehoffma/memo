@@ -1,6 +1,12 @@
-<div class="loading-shade" *ngIf="dataSource.isLoading$ | async">
+<div class="loading-shade" *ngIf="(dataSource.isLoading$ | async)">
 	<div class="loader"></div>
 </div>
+
+<!--<div class="loading-shade" *ngIf="!(dataSource.isLoading$ | async) && dataSource.dataLength === 0">-->
+	<!--<div class="no-results-overlay mat-elevation-z3">-->
+		<!--Keine Ergebnisse.-->
+	<!--</div>-->
+<!--</div>-->
 
 <memo-actions-header-cell [selection]="selection"
 						  [title]="title"

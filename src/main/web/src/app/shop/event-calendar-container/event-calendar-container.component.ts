@@ -27,8 +27,7 @@ import {Party} from "../shared/model/party";
 @Component({
 	selector: "memo-event-calendar-container",
 	templateUrl: "./event-calendar-container.component.html",
-	styleUrls: ["./event-calendar-container.component.scss"],
-	providers: [ParticipantUserService]
+	styleUrls: ["./event-calendar-container.component.scss"]
 })
 export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	currentlySelectedMonth$ = new BehaviorSubject(getMonth(new Date()));
@@ -189,7 +188,9 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 				tours: permissions$
 					.pipe(map(permissions => permissions.tour >= Permission.create)),
 				partys: permissions$
-					.pipe(map(permissions => permissions.party >= Permission.create))
+					.pipe(map(permissions => permissions.party >= Permission.create)),
+				merch: of(false),
+				show: {tours: true, partys: true, merch: false}
 			}
 		});
 		dialogRef.afterClosed()

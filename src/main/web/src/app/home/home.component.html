@@ -3,7 +3,7 @@
 
 	<h1>Willkommen im Meilenwölfe Shop!</h1>
 	<div [style.visibility]="(userIsLoggedIn$ | async) ? 'hidden' : 'visible'">
-		<a mat-raised-button routerLink="/login" class="login-button" color="primary">Login</a>
+		<a mat-stroked-button routerLink="/login" class="login-button">Login</a>
 		<a mat-raised-button routerLink="/signup" color="accent">Registrieren</a>
 	</div>
 </div>

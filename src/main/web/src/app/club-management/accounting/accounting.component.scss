@@ -95,14 +95,9 @@ $options-breakpoint: 850px;
 	width: 100%;
 	flex: 1;
 
-	.accounting-table-container{
+	.accounting-table-container {
 		flex: 1;
 	}
-}
-
-/deep/ .loading-shade {
-	top: 36px !important;
-	bottom: 74px !important;
 }
 
 @media all and (min-width: $options-breakpoint) {
@@ -113,10 +108,5 @@ $options-breakpoint: 850px;
 	}
 	.loader {
 		left: 65%;
-	}
-
-	/deep/ .loading-shade {
-		top: 0 !important;
-		left: 30% !important;
 	}
 }

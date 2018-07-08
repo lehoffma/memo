@@ -13,7 +13,9 @@ import {Injectable} from "@angular/core";
 import {AddOrModifyRequest, ServletService} from "../../../../../shared/services/api/servlet.service";
 import {HttpClient} from "@angular/common/http";
 
-@Injectable()
+@Injectable({
+	providedIn: "root"
+})
 export class ParticipantUserService extends ServletService<ParticipantUser> {
 
 	constructor(

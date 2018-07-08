@@ -8,10 +8,12 @@ import {RowAction} from "../../../../../shared/utility/material-table/util/row-a
 import {ParticipantDataSource, ParticipantUserService} from "./participant-data-source";
 import {UserService} from "../../../../../shared/services/api/user.service";
 import {TableColumn} from "../../../../../shared/utility/material-table/expandable-material-table.component";
-import {startWith} from "rxjs/operators";
+import {map, startWith, tap} from "rxjs/operators";
 import {ResponsiveColumnsHelper} from "../../../../../shared/utility/material-table/responsive-columns.helper";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
+import {Filter} from "../../../../../shared/model/api/filter";
+import {EventType} from "../../../../shared/model/event-type";
 
 
 @Component({
@@ -67,9 +69,13 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 
 	dataSource = new ParticipantDataSource(this.participantUserService, this.userService);
 
+	filter$ = this.participantListService.eventInfo$.pipe(
+		map((info: { eventType: EventType, eventId: number }) => Filter.by({"eventId": "" + info.eventId})),
+	);
+
 	constructor(public participantListService: ParticipantListService,
 				public orderedItemService: OrderedItemService,
-				public participantUserService:ParticipantUserService,
+				public participantUserService: ParticipantUserService,
 				public breakpointObserver: BreakpointObserver,
 				public userService: UserService) {
 		this.participantListService.dataSource = this.dataSource;

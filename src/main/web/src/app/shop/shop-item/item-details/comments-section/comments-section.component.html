@@ -17,7 +17,7 @@
 </div>
 
 <div *ngIf="comments?.length === 0" class="no-comments">
-	Bisher keine Kommentare vorhanden.
+	Bisher keine Kommentare.
 </div>
 
 <button mat-button (click)="loadMore.emit(true)" *ngIf="canLoadMore">

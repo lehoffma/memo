@@ -2,15 +2,24 @@
 <mat-dialog-content>
 	<a mat-button routerLink="/create/tours" [queryParams]="{date: isoDate}"
 	   (click)="close()"
+	   *ngIf="data?.show.tours"
 	   [disabled]="!(data?.tours | async)">
 		<mat-icon>directions_bus</mat-icon>
 		Tour
 	</a>
 	<a mat-button routerLink="/create/partys" [queryParams]="{date: isoDate}"
+	   *ngIf="data?.show.partys"
 	   (click)="close()"
 	   [disabled]="!(data?.partys | async)">
 		<mat-icon>event</mat-icon>
 		Event
+	</a>
+	<a mat-button routerLink="/create/merch"
+	   *ngIf="data?.show.merch"
+	   (click)="close()"
+	   [disabled]="!(data?.merch | async)">
+		<mat-icon>local_offer</mat-icon>
+		Merchandise
 	</a>
 </mat-dialog-content>
 

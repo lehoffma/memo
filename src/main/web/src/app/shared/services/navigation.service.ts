@@ -27,7 +27,6 @@ export class NavigationService implements OnDestroy {
 					map(user => this.filterLinks(user, links))
 				)
 			),
-			tap(console.log),
 		);
 	private _sidenavLinks$: BehaviorSubject<Link[]> = new BehaviorSubject<Link[]>([]);
 	public sidenavLinks$: Observable<Link[]> = this._sidenavLinks$
@@ -43,8 +42,6 @@ export class NavigationService implements OnDestroy {
 				private loginService: LogInService,
 				private router: Router) {
 		this.initialize();
-
-		this.loginService.currentUser$.subscribe(it => console.log(it));
 
 		this.subscriptions.push(this.router.events
 			.pipe(

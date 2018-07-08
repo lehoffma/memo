@@ -1,0 +1,9 @@
+@import "~@angular/material/theming";
+
+@media all and (min-width: 750px) {
+	:host {
+		display: block;
+		margin: 1rem;
+		@include mat-elevation(3);
+	}
+}

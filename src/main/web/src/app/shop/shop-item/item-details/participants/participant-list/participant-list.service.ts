@@ -14,7 +14,6 @@ import {EventService} from "../../../../../shared/services/api/event.service";
 import {UserService} from "../../../../../shared/services/api/user.service";
 import {CapacityService} from "../../../../../shared/services/api/capacity.service";
 import {ActionPermissions} from "../../../../../shared/utility/material-table/util/action-permissions";
-import {PagedDataSource} from "../../../../../shared/utility/material-table/paged-data-source";
 import {ParticipantDataSource} from "./participant-data-source";
 
 

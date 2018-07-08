@@ -53,8 +53,28 @@
 	min-height: calc(100vh - 64px);
 }
 
+.flex-row {
+	display: flex;
+}
 
-/deep/ .loader-wrapper{
+.mobile-add-button-container {
+	display: flex;
+	width: 100%;
+	background: white;
+
+	.mobile-add-button {
+		width: 100%;
+		border: 0;
+		color: grey;
+		border-top: 1px solid #e0e0e0;
+
+		/deep/ mat-icon{
+			margin-top: -3px;
+		}
+	}
+}
+
+/deep/ .loader-wrapper {
 	transform: translateY(120px);
 }
 
@@ -72,6 +92,10 @@
 			width: 100%;
 			background: #ededed;
 		}
+	}
+
+	.mobile-add-button-container{
+		display: none;
 	}
 
 	memo-results {
@@ -108,8 +132,12 @@
 	}
 
 	.add-button {
-		margin-top: -1rem;
-		margin-bottom: -1rem;
+		margin-top: -10px;
+		margin-bottom: -10px;
+		margin-right: 20px;
+		color: black;
 	}
 }
+
+
 
