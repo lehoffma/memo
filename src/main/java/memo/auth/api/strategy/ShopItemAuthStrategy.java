@@ -1,26 +1,22 @@
 package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
-import memo.data.EventRepository;
 import memo.data.util.PredicateFactory;
+import memo.model.ClubRole;
 import memo.model.Permission;
 import memo.model.ShopItem;
 import memo.model.User;
 import memo.util.ListBuilder;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem;
-import static memo.auth.api.AuthenticationPredicateFactory.userIsOneOfAuthors;
 import static memo.auth.api.ShopItemAuthHelper.getEventPermission;
-import static memo.auth.api.ShopItemAuthHelper.userFulfillsMinimumPermissions;
-import static memo.data.util.PredicateFactory.combineByOr;
 
 public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
     @Override
@@ -49,21 +45,43 @@ public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
 
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<ShopItem> root, User user) {
-        Predicate userIsOneOfAuthors = userIsOneOfAuthors(builder, root, user,
-                shopItemRoot -> PredicateFactory.get(shopItemRoot, "author", "id"));
+        if (user == null) {
+            return PredicateFactory.get(root, "expectedReadRole")
+                    .map(role -> builder.equal(role, ClubRole.Gast))
+                    .orElse(PredicateFactory.isFalse(builder));
+        }
 
-        Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root,
-                shopItemRoot -> shopItemRoot, "expectedReadRole");
-        Predicate userFulfillsMinimumPermissions = userFulfillsMinimumPermissions(builder, root, Permission.read, user);
+        Optional<Path<List<Integer>>> authors = PredicateFactory.get(root, "author", "id");
+        Optional<Path<ClubRole>> expectedReadRole = PredicateFactory.get(root, "expectedReadRole");
+        Optional<Path<Integer>> type = PredicateFactory.get(root, "type");
 
-        Predicate userIsAuthorized = builder.and(
-                userFulfillsMinimumRoleOfItem,
-                userFulfillsMinimumPermissions
-        );
+        Expression<Boolean> permissionCheck = builder.<Boolean>selectCase()
+                .when(
+                        type.map(it -> builder.equal(it, 1)).orElse(PredicateFactory.isFalse(builder)),
+                        user.getPermissions().getTour().toValue() >= Permission.read.ordinal()
+                )
+                .when(
+                        type.map(it -> builder.equal(it, 2)).orElse(PredicateFactory.isFalse(builder)),
+                        user.getPermissions().getParty().toValue() >= Permission.read.ordinal()
+                )
+                .when(
+                        type.map(it -> builder.equal(it, 3)).orElse(PredicateFactory.isFalse(builder)),
+                        user.getPermissions().getMerch().toValue() >= Permission.read.ordinal()
+                )
+                .otherwise(false);
+
+        Predicate roleCheck = expectedReadRole
+                .map(role -> builder.lessThanOrEqualTo(role, user.getClubRole()))
+                .orElse(PredicateFactory.isFalse(builder));
+
+        Predicate authorCheck = authors
+                .map(it -> builder.isMember(user.getId(), it))
+                .orElse(PredicateFactory.isFalse(builder));
 
         return builder.or(
-//                userIsOneOfAuthors,
-                userIsAuthorized
+                builder.isTrue(permissionCheck),
+                roleCheck,
+                authorCheck
         );
     }
 

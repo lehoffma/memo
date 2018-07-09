@@ -17,7 +17,7 @@ import java.util.Objects;
  * Entity implementation class for Entity: ShopItem
  */
 @Entity
-@Table(name = "SHOP_ITEMS")
+@Table(name = "SHOP_ITEMS", indexes = {@Index(columnList = "type", name="item_type")})
 @NamedQueries({
         @NamedQuery(
                 name = "ShopItem.findBySearchTerm",
@@ -128,7 +128,8 @@ public class ShopItem implements Serializable {
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "item")
     private List<Stock> stock = new ArrayList<>();
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "type")
+    @org.eclipse.persistence.annotations.Index()
     private Integer type;
 
     //**************************************************************

@@ -11,6 +11,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -61,30 +62,38 @@ public class AuthenticationPredicateFactory {
         return condition(builder, user.getClubRole().ordinal() >= clubRole.ordinal());
     }
 
-    public static <T> Predicate userFulfillsMinimumRoleOfItem(CriteriaBuilder builder, User user,
-                                                              Root<T> root,
-                                                              Function<Path<T>, Path<ShopItem>> getItem,
-                                                              String minimumRoleKey) {
-
+    public static <T> List<Predicate> fulfillsMinimumRoleOfItem(CriteriaBuilder builder, User user,
+                                                                Root<T> root,
+                                                                Function<Path<T>, Path<ShopItem>> getItem,
+                                                                String minimumRoleKey) {
         Optional<Path<ClubRole>> minimumRoleOptional = get(root, getItem)
                 .flatMap(item -> get(item, minimumRoleKey));
 
         if (!minimumRoleOptional.isPresent()) {
-            return PredicateFactory.isFalse(builder);
+            return Collections.singletonList(PredicateFactory.isFalse(builder));
         }
 
         Path<ClubRole> minimumRole = minimumRoleOptional.get();
         if (user == null) {
-            return builder.lessThanOrEqualTo(minimumRole, ClubRole.Gast);
+            return Collections.singletonList(builder.lessThanOrEqualTo(minimumRole, ClubRole.Gast));
         }
 
         Predicate isRequestingUser = isRequestingUser(builder, user);
 
         return PredicateFactory.<User, ClubRole>get(builder, User.class, "clubRole")
-                .map(userClubRole -> builder.and(
+                .map(userClubRole -> Arrays.asList(
                         isRequestingUser,
                         builder.greaterThanOrEqualTo(userClubRole, minimumRole)
                 ))
+                .orElse(Collections.singletonList(PredicateFactory.isFalse(builder)));
+    }
+
+    public static <T> Predicate userFulfillsMinimumRoleOfItem(CriteriaBuilder builder, User user,
+                                                              Root<T> root,
+                                                              Function<Path<T>, Path<ShopItem>> getItem,
+                                                              String minimumRoleKey) {
+        return fulfillsMinimumRoleOfItem(builder, user, root, getItem, minimumRoleKey).stream()
+                .reduce(builder::and)
                 .orElse(PredicateFactory.isFalse(builder));
     }
 

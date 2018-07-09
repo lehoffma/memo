@@ -26,7 +26,6 @@ export interface AddOrModifyResponse {
 	id: number
 }
 
-@Injectable()
 export abstract class ServletService<T> extends CachedService<T> implements ServletServiceInterface<T>, TableDataService<T> {
 
 	protected constructor(protected http: HttpClient,
