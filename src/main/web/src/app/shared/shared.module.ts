@@ -43,6 +43,7 @@ import {SharedPipesModule} from "./pipes/shared-pipes.module";
 import {ScrollSpyDirective} from "./utility/scroll-spy.directive";
 import {SpiedOnElementDirective} from "./utility/spied-on-element.directive";
 import {MatPasswordStrengthModule} from "@angular-material-extensions/password-strength";
+import {LazyLoadingModule} from "./lazy-loading/lazy-loading.module";
 
 const forms = [
 	DisableIfDirective,
@@ -76,6 +77,7 @@ const forms = [
 		MemoMaterialModule,
 		MultiLevelSelectModule,
 		CalendarModule,
+		LazyLoadingModule,
 		SharedPipesModule
 	],
 	declarations: [
@@ -112,6 +114,7 @@ const forms = [
 		MultiLevelSelectModule,
 		ExpandableMaterialTableModule,
 		SharedPipesModule,
+		LazyLoadingModule,
 
 		EventCalendarComponent,
 

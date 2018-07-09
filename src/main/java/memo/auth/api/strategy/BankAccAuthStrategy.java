@@ -1,9 +1,9 @@
 package memo.auth.api.strategy;
 
-import memo.auth.api.AuthenticationPredicateFactory;
 import memo.data.util.PredicateFactory;
 import memo.model.BankAcc;
 import memo.model.Permission;
+import memo.model.PermissionState;
 import memo.model.User;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -12,7 +12,11 @@ import javax.persistence.criteria.Root;
 import java.util.Arrays;
 
 import static memo.auth.api.AuthenticationConditionFactory.*;
-import static memo.auth.api.AuthenticationPredicateFactory.userHasCorrectPermissions;
+import static memo.auth.api.AuthenticationConditionFactory.userIsAuthor;
+import static memo.auth.api.AuthenticationConditionFactory.userIsInRegistrationProcess;
+import static memo.auth.api.AuthenticationPredicateFactory.*;
+import static memo.auth.api.AuthenticationPredicateFactory.userIsAuthor;
+import static memo.auth.api.AuthenticationPredicateFactory.userIsInRegistrationProcess;
 
 public class BankAccAuthStrategy implements AuthenticationStrategy<BankAcc> {
 
@@ -33,20 +37,25 @@ public class BankAccAuthStrategy implements AuthenticationStrategy<BankAcc> {
 
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<BankAcc> root, User user) {
-        Predicate userHasCorrectPermissions = userHasCorrectPermissions(builder, user, Permission.read,
-                "userManagement");
+        if (user == null) {
+            return PredicateFactory.isFalse(builder);
+        }
 
-        Predicate userIsAuthor = AuthenticationPredicateFactory.userIsAuthor(builder, root, user,
-                bankAccRoot -> PredicateFactory.get(bankAccRoot, "user", "id"));
 
-        Predicate userIsInRegistrationProcess = AuthenticationPredicateFactory
-                .userIsInRegistrationProcess(builder, root, bankAccRoot -> bankAccRoot.get("user"));
+        //
+        Predicate userHasPermissions = userHasPermissions(builder, user, Permission.read,
+                PermissionState::getUserManagement);
+
+        Predicate userIsAuthorOfAcc = userIsAuthor(builder, root, user, "user");
+
+        Predicate userIsInRegistrationProcess = userIsInRegistrationProcess(builder, root, bankAccRoot -> bankAccRoot.get("user"));
+
 
         return builder.or(
                 //  user fulfills the minimum permissions
-                userHasCorrectPermissions,
+                userHasPermissions,
                 //  user is author of bankAcc object
-                userIsAuthor,
+                userIsAuthorOfAcc,
                 //  the account hasn't been assigned anything (i.e. user is in registration process)
                 userIsInRegistrationProcess
         );

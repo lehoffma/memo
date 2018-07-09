@@ -46,8 +46,7 @@ public class ParticipatedEventsAuthStrategy implements AuthenticationStrategy<Sh
                 );
 
         Predicate isAtLeastMember = userFulfillsMinimumRole(builder, user, ClubRole.Mitglied);
-        Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root, shopItemRoot -> shopItemRoot,
-                "expectedReadRole");
+        Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root, "expectedReadRole");
 
         Predicate userIsAuthorized = builder.and(
                 isAtLeastMember,

@@ -16,6 +16,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem;
 import static memo.auth.api.ShopItemAuthHelper.getEventPermission;
 
 public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
@@ -70,9 +71,7 @@ public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
                 )
                 .otherwise(false);
 
-        Predicate roleCheck = expectedReadRole
-                .map(role -> builder.lessThanOrEqualTo(role, user.getClubRole()))
-                .orElse(PredicateFactory.isFalse(builder));
+        Predicate roleCheck = userFulfillsMinimumRoleOfItem(builder, user, root, "expectedReadRole");
 
         Predicate authorCheck = authors
                 .map(it -> builder.isMember(user.getId(), it))

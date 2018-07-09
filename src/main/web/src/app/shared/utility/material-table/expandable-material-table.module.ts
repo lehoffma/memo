@@ -20,6 +20,7 @@ import {TableCellFactoryComponent} from "./table-cell-factory/table-cell-factory
 import {CostValueTableCellComponent} from "./cells/cost-value-table-cell.component";
 import {EntryCategoryCellComponent} from "./cells/entry-category-cell.component";
 import {MerchColorCellComponent} from "./cells/merch-color-cell.component";
+import {LazyLoadingModule} from "../../lazy-loading/lazy-loading.module";
 
 const tableCells = [
 	//memberlist table cells
@@ -46,6 +47,7 @@ const tableCells = [
 		CommonModule,
 		RouterModule,
 		MemoMaterialModule,
+		LazyLoadingModule,
 		SharedPipesModule,
 	],
 	exports: [

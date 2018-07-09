@@ -1,17 +1,16 @@
 package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
-import memo.model.Entry;
-import memo.model.Permission;
-import memo.model.ShopItem;
-import memo.model.User;
+import memo.data.util.PredicateFactory;
+import memo.model.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Arrays;
 
-import static memo.auth.api.AuthenticationPredicateFactory.*;
+import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem;
+import static memo.auth.api.AuthenticationPredicateFactory.userHasPermissions;
 
 public class EntryAuthStrategy implements AuthenticationStrategy<Entry> {
     @Override
@@ -31,16 +30,16 @@ public class EntryAuthStrategy implements AuthenticationStrategy<Entry> {
 
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Entry> root, User user) {
-        Predicate userIsLoggedIn = userIsLoggedIn(builder, user);
+        if (user == null) {
+            return PredicateFactory.isFalse(builder);
+        }
 
-        Predicate userHasCorrectPermissions = userHasCorrectPermissions(builder, user, Permission.read,
-                "funds");
+        Predicate userHasCorrectPermissions = userHasPermissions(builder, user, Permission.read, PermissionState::getFunds);
 
         Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root,
-                entryRoot -> entryRoot.get("item"), "expectedReadRole");
+                "item", "expectedReadRole");
 
         return builder.and(
-                userIsLoggedIn,
                 userHasCorrectPermissions,
                 userFulfillsMinimumRoleOfItem
         );

@@ -1,6 +1,6 @@
 import {PageEvent} from "@angular/material";
 
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE = 10;
 
 export class PageRequest {
 	page: number;

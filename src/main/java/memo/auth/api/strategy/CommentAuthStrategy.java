@@ -25,8 +25,7 @@ public class CommentAuthStrategy implements AuthenticationStrategy<Comment> {
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Comment> root, User user) {
         return AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem(builder, user, root,
-                commentRoot -> commentRoot.get("item"),
-                "expectedReadRole");
+                "item", "expectedReadRole");
     }
 
     @Override

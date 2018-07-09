@@ -24,8 +24,11 @@ public class OrderAuthStrategy implements AuthenticationStrategy<Order> {
 
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Order> root, User user) {
-        Predicate userIsAuthor = AuthenticationPredicateFactory.userIsAuthor(builder, root, user,
-                orderRoot -> PredicateFactory.get(orderRoot, "user"));
+        if (user == null) {
+            return PredicateFactory.isFalse(builder);
+        }
+
+        Predicate userIsAuthor = AuthenticationPredicateFactory.userIsAuthor(builder, root, user, "user");
 
         Predicate fulfillsMinimumRole = AuthenticationPredicateFactory
                 .userFulfillsMinimumRole(builder, user, ClubRole.Vorstand);

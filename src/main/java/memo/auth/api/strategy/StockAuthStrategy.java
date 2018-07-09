@@ -25,7 +25,7 @@ public class StockAuthStrategy implements AuthenticationStrategy<Stock> {
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Stock> root, User user) {
         return AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem(builder, user, root,
-                stockRoot -> stockRoot.get("item"), "expectedReadRole");
+                "item", "expectedReadRole");
     }
 
     @Override

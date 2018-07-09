@@ -25,7 +25,7 @@ public class ParticipantsAuthStrategy implements AuthenticationStrategy<OrderedI
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<OrderedItem> root, User user) {
         return AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem(builder, user, root,
-                orderedItemRoot -> orderedItemRoot.get("item"), "expectedReadRole");
+                "item", "expectedReadRole");
     }
 
     @Override

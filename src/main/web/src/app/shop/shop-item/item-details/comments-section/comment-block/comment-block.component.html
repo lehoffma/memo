@@ -5,7 +5,9 @@
 		<a class="comment-image-container" routerLink="/members/{{author.id}}">
 			<img class="comment-image" [ngClass]="{'dummy': dummy}" [class.top-level]="commentObject.parent === null"
 				 memoUserPreview [user]="author"
-				 src="{{(author?.images.length > 0 ? author.images[0] : 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"/>
+				 [lazySrc]="(author?.images.length > 0 ? author.images[0] : 'resources/images/Logo.png') | imageSize:'thumbnail' | async"
+				 lazySrcVisible="visible"
+			/>
 
 		</a>
 		<div class="comment-container">

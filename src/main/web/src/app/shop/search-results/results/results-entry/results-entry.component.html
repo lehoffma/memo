@@ -23,8 +23,8 @@
 		</div>
 	</div>
 	<div class="result-entry-image-container">
-		<img
-			src="{{(!!result.images[0] ? result.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async}}">
+		<img [lazySrc]="(!!result.images[0] ? result.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
+			 lazySrcVisible="visible">
 	</div>
 </a>
 

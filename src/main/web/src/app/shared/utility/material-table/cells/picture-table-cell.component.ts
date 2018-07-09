@@ -6,7 +6,9 @@ import {ItemImagePopupComponent} from "../../../../shop/shop-item/item-details/c
 @Component({
 	selector: "td [memoPictureTableCellComponent], memo-picture-table-cell",
 	template: `
-		<img src="{{(data) | imageSize:'thumbnail' | async}}" (click)="openPreview(); $event.stopPropagation()"/>
+		<img [lazySrc]="(data) | imageSize:'thumbnail' | async"
+			 lazySrcVisible="visible"
+			 (click)="openPreview(); $event.stopPropagation()"/>
 	`,
 	styleUrls: ["./picture-table-cell.component.scss"]
 })

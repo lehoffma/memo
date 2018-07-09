@@ -20,6 +20,7 @@ public class UserAuthStrategy implements AuthenticationStrategy<User> {
 
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<User> root, User user) {
+        //todo public view of users
         //this predicate will always return true, i.e. users are publicly available
         return builder.and();
     }
