@@ -183,6 +183,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 			);
 
 		const dialogRef = this.mdDialog.open(CreateEventContextMenuComponent, {
+			autoFocus: false,
 			data: {
 				date,
 				tours: permissions$

@@ -184,6 +184,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 			);
 
 		const dialogRef = this.matDialog.open(CreateEventContextMenuComponent, {
+			autoFocus: false,
 			data: {
 				date: new Date(),
 				tours: permissions$

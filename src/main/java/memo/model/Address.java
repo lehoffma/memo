@@ -76,6 +76,8 @@ public class Address implements Serializable {
     //  getters and setters
     //**************************************************************
 
+
+
     public User getUser() {
         return user;
     }

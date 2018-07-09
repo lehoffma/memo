@@ -17,8 +17,8 @@ export class PagedDataSource<T> extends DataSource<T> {
 	private dataService$: BehaviorSubject<TableDataService<T>> = new BehaviorSubject<TableDataService<T>>(null);
 	private _pageEvents$: BehaviorSubject<PageEvent> = new BehaviorSubject<PageEvent>({
 		pageIndex: 0,
-		pageSize: 10,
-		length: 10,
+		pageSize: 20,
+		length: 20,
 		previousPageIndex: 0
 	});
 	private _sortEvents$: BehaviorSubject<{ active: string, direction: SortDirection }> = new BehaviorSubject({

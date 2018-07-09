@@ -41,7 +41,7 @@ export class EventAutocompleteComponent implements OnInit, ControlValueAccessor 
 				mergeMap(title => this.eventService
 					.get(
 						Filter.by({"searchTerm": title}),
-						PageRequest.first(100),
+						PageRequest.first(5),
 						Sort.none()
 					).pipe(
 						map(it => it.content)

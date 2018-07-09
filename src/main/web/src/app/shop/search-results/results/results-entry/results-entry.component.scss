@@ -20,6 +20,7 @@
 
 		.result-title {
 			font-size: 1.1rem;
+			word-break: break-all;
 		}
 		.result-info {
 			display: flex;
@@ -67,6 +68,13 @@
 }
 
 @media all and (min-width: 650px) {
+	.result-title {
+		word-break: initial;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	.result-entry-container {
 		margin: 0;
 
