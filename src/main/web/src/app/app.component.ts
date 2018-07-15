@@ -1,9 +1,10 @@
 import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
 import {DateAdapter} from "@angular/material";
 import {AuthService} from "./shared/authentication/auth.service";
-import {NavigationEnd, Router} from "@angular/router";
-import {filter} from "rxjs/operators";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
+import {distinctUntilChanged, filter, mergeMap} from "rxjs/operators";
 import {googleAnalytics} from "../google-analytics-init";
+import {BreadcrumbService} from "./shared/breadcrumb-navigation/breadcrumb.service";
 
 @Component({
 	selector: "memo-app",
@@ -12,8 +13,27 @@ import {googleAnalytics} from "../google-analytics-init";
 })
 export class AppComponent implements OnInit {
 
+	searchJsonLd = {
+		"@context": "http://schema.org",
+		"@type": "WebSite",
+		"url": "https://meilenwoelfe.org/",
+		"potentialAction": {
+			"@type": "SearchAction",
+			"target": "https://meilenwoelfe.org/search?searchTerm=={search_term_string}",
+			"query-input": "required name=search_term_string"
+		}
+	};
+
+	breadcrumbsJsonLd$ = this.router.events.pipe(
+		filter(event => event instanceof NavigationEnd),
+		distinctUntilChanged(),
+		mergeMap(event => this.breadcrumbService.getJsonLd$(this.activatedRoute))
+	);
+
 	constructor(private authService: AuthService,
+				private breadcrumbService: BreadcrumbService,
 				private dateAdapter: DateAdapter<Date>,
+				private activatedRoute: ActivatedRoute,
 				private router: Router,
 				@Inject(LOCALE_ID) public locale: any) {
 		dateAdapter.setLocale(locale); // DD.MM.YYYY

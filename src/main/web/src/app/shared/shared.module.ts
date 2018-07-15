@@ -45,6 +45,7 @@ import {SpiedOnElementDirective} from "./utility/spied-on-element.directive";
 import {MatPasswordStrengthModule} from "@angular-material-extensions/password-strength";
 import {LazyLoadingModule} from "./lazy-loading/lazy-loading.module";
 import { BreadcrumbNavigationComponent } from './breadcrumb-navigation/breadcrumb-navigation.component';
+import {JSONLdComponent} from "./utility/seo/json-ld.component";
 
 const forms = [
 	DisableIfDirective,
@@ -109,7 +110,7 @@ const forms = [
 		ScrollSpyDirective,
 		SpiedOnElementDirective,
 		BreadcrumbNavigationComponent,
-
+		JSONLdComponent
 	],
 	exports: [
 		MultiLevelSelectModule,
@@ -144,6 +145,7 @@ const forms = [
 		ScrollSpyDirective,
 		SpiedOnElementDirective,
 		BreadcrumbNavigationComponent,
+		JSONLdComponent,
 
 		...forms
 	],

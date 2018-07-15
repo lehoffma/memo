@@ -63,13 +63,13 @@ export class BreadcrumbService {
 			if (link.includes("members")) {
 				return this.userService.getById(id).pipe(
 					map((user: User) => user.firstName + " " + user.surname),
-					catchError(e => of(""+id))
+					catchError(e => of("" + id))
 				)
 			}
 			if (link.includes("tours") || link.includes("merch") || link.includes("partys")) {
 				return this.eventService.getById(id).pipe(
 					map((event: Event) => event.title),
-					catchError(e => of(""+id))
+					catchError(e => of("" + id))
 				)
 			}
 		}
@@ -105,5 +105,26 @@ export class BreadcrumbService {
 				})
 			)
 		)
+	}
+
+	toJsonLd(breadcrumbs: Breadcrumb[]): any {
+		return {
+			"@context": "http://schema.org",
+			"@type": "BreadcrumbList",
+			"itemListElement": breadcrumbs.map((crumb, index) => ({
+				"@type": "ListItem",
+				"position": index,
+				"item": {
+					"@id": "https://meilenwoelfe.org" + crumb.link,
+					"name": crumb.label,
+				}
+			}))
+		};
+	}
+
+	getJsonLd$(route: ActivatedRoute): Observable<any> {
+		return this.buildBreadCrumb(route).pipe(
+			map(breadcrumbs => this.toJsonLd(breadcrumbs))
+		);
 	}
 }
