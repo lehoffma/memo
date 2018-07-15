@@ -4,18 +4,22 @@
 :host {
 	background: mat-color($primary, 800);
 	color: white;
-	padding: 1rem;
+	padding: 0 1rem 1rem;
 	display: flex;
 	justify-content: center;
 
 	h3 {
-		margin: 0 0 1rem 0;
+		margin: 0;
+		padding-bottom: 0.5rem;
+		padding-top: 0.5rem;
+		border-bottom: 1px solid #e0e0e0;
 		font-weight: 400;
 	}
 }
 
 .sections {
 	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
 	flex-wrap: wrap;
 	max-width: 600px;
@@ -39,6 +43,15 @@ ol {
 
 		&:hover {
 			color: rgba(255, 255, 255, 0.8);
+		}
+	}
+}
+
+@media all and (min-width: 650px) {
+	.sections {
+		flex-direction: row;
+		h3 {
+			border: none;
 		}
 	}
 }

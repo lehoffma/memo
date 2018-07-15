@@ -1,18 +1,20 @@
 package memo.auth;
 
+import memo.util.Configuration;
+
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 
 public class KeyGenerator {
 
-    //todo
+    private static String accessTokenKey = Configuration.get("jwt.access_token_key");
+    private static String refreshTokenKey = Configuration.get("jwt.refresh_token_key");
+
     public static Key getRefreshKey() {
-        String keyString = "lefunirefreshkey";
-        return new SecretKeySpec(keyString.getBytes(), 0, keyString.getBytes().length, "DES");
+        return new SecretKeySpec(accessTokenKey.getBytes(), 0, accessTokenKey.getBytes().length, "DES");
     }
 
     public static Key getAccessKey() {
-        String keyString = "lefuniaccesskey";
-        return new SecretKeySpec(keyString.getBytes(), 0, keyString.getBytes().length, "DES");
+        return new SecretKeySpec(refreshTokenKey.getBytes(), 0, refreshTokenKey.getBytes().length, "DES");
     }
 }
