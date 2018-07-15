@@ -34,8 +34,10 @@ import java.io.IOException;
                 "/search",
                 "/shop",
                 "/tours",
+                "/events",
                 "/partys",
                 "/merch",
+                "/merchandise",
                 "/members",
 
                 "/create/*",
@@ -44,6 +46,7 @@ import java.io.IOException;
 
                 "/dashboard",
                 "/leaderboard",
+                "/map",
                 "/management/costs",
                 "/management/stock",
                 "/management/stock/merch",

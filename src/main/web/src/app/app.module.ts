@@ -39,6 +39,7 @@ import {MatPasswordStrengthModule} from "@angular-material-extensions/password-s
 import { FooterComponent } from './home/footer/footer.component';
 import {NgProgressHttpModule} from "@ngx-progressbar/http";
 import {NgProgressModule} from "@ngx-progressbar/core";
+import { SectionsComponent } from './home/footer/sections.component';
 
 registerLocaleData(localeDe);
 
@@ -90,6 +91,7 @@ registerLocaleData(localeDe);
 		ToolbarElementComponent,
 		ToolbarProfileLinkComponent,
 		FooterComponent,
+		SectionsComponent,
 	],
 	bootstrap: [
 		AppComponent

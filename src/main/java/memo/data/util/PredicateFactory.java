@@ -244,7 +244,7 @@ public class PredicateFactory {
                                                Filter.FilterRequest filterRequest) {
         return Collections.singletonList(
                 isEqualToSome(builder, root, filterRequest,
-                        Function.identity(),
+                        Integer::valueOf,
                         filterRequest.getKey()
                 )
         );
@@ -340,9 +340,9 @@ public class PredicateFactory {
         }
 
         //if that didn't match either, check for id queries
-        if (key.equalsIgnoreCase("id")) {
-            return getByIds(builder, root, filterRequest);
-        }
+//        if (key.equalsIgnoreCase("id")) {
+//            return getByIds(builder, root, filterRequest);
+//        }
 
         //otherwise, just compare the value of the key directly
         return getByKey(builder, root, filterRequest);

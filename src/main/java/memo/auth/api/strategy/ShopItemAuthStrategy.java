@@ -53,7 +53,6 @@ public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
         }
 
         Optional<Path<List<Integer>>> authors = PredicateFactory.get(root, "author", "id");
-        Optional<Path<ClubRole>> expectedReadRole = PredicateFactory.get(root, "expectedReadRole");
         Optional<Path<Integer>> type = PredicateFactory.get(root, "type");
 
         Expression<Boolean> permissionCheck = builder.<Boolean>selectCase()

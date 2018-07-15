@@ -19,6 +19,7 @@ const routes: Route[] = [
 	{path: "leaderboard", component: MilesLeaderboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
 	{path: "members", component: MemberListComponent, canActivate: [AuthenticatedGuard, IsBoardMemberGuard]},
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
+	{path: "management", redirectTo: "management/costs", pathMatch: "full", canActivate: [AuthenticatedGuard]},
 	{path: "management/orders", component: OrderOverviewComponent, canActivate: [AuthenticatedGuard]},
 	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
 

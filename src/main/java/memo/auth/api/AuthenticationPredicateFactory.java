@@ -40,6 +40,12 @@ public class AuthenticationPredicateFactory {
     public static <T> Predicate userFulfillsMinimumRoleOfItem(CriteriaBuilder builder, User user,
                                                               Root<T> root,
                                                               String... pathToRole) {
+        if (user == null) {
+            return PredicateFactory.<T, ClubRole>get(root, pathToRole)
+                    .map(role -> builder.equal(role, ClubRole.Gast))
+                    .orElse(PredicateFactory.isFalse(builder));
+        }
+
         return PredicateFactory.<T, ClubRole>get(root, pathToRole)
                 .map(role -> builder.lessThanOrEqualTo(role, user.getClubRole()))
                 .orElse(PredicateFactory.isFalse(builder));

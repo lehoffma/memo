@@ -1,0 +1,44 @@
+@import "theme";
+@import "~@angular/material/theming";
+
+:host {
+	background: mat-color($primary, 800);
+	color: white;
+	padding: 1rem;
+	display: flex;
+	justify-content: center;
+
+	h3 {
+		margin: 0 0 1rem 0;
+		font-weight: 400;
+	}
+}
+
+.sections {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	max-width: 600px;
+	width: 100%;
+}
+
+ol {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+
+	li {
+		margin: 4px 0;
+	}
+
+	a {
+		text-decoration: none;
+		font-size: 0.9em;
+		color: rgba(255, 255, 255, 0.64);
+		cursor: pointer;
+
+		&:hover {
+			color: rgba(255, 255, 255, 0.8);
+		}
+	}
+}

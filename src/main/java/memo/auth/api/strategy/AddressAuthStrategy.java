@@ -2,14 +2,10 @@ package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
 import memo.data.util.PredicateFactory;
-import memo.model.Address;
-import memo.model.Permission;
-import memo.model.ShopItem;
-import memo.model.User;
+import memo.model.*;
 
 import javax.persistence.criteria.*;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static memo.auth.api.AuthenticationConditionFactory.userHasCorrectPermission;
 import static memo.auth.api.AuthenticationConditionFactory.userIsLoggedIn;
@@ -42,60 +38,55 @@ public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
 //        Predicate userFulfillsMinimumRoleOfItem = userFulfillsMinimumRoleOfItem(builder, user, root,
 //                addressRoot -> addressRoot.get("item"), "expectedReadRole");
 
-        Optional<Path<ShopItem>> addressItem = PredicateFactory.get(root, "item");
-        Optional<Path<User>> addressUser = PredicateFactory.get(root, "user");
+        Join<Address, ShopItem> shopItemJoin = root.join("item", JoinType.LEFT);
+        Join<Address, User> userJoin = root.join("user", JoinType.LEFT);
 
         Predicate isNewlyCreatedObject = builder.and(
-                addressItem.map(builder::isNull).orElse(PredicateFactory.isFalse(builder)),
-                addressUser.map(builder::isNull).orElse(PredicateFactory.isFalse(builder))
+                builder.isNull(shopItemJoin),
+                builder.isNull(userJoin)
         );
 
         if (user == null) {
-            return isNewlyCreatedObject;
+
+            Predicate isOpenForGuests = builder.and(
+                    builder.isNotNull(shopItemJoin),
+                    PredicateFactory.get(shopItemJoin, "expectedReadRole")
+                            .map(role -> builder.equal(role, ClubRole.Gast))
+                            .orElse(PredicateFactory.isFalse(builder))
+            );
+
+            return builder.or(
+                    isNewlyCreatedObject,
+                    isOpenForGuests
+            );
         }
 
         Expression<Boolean> userHasPermissions = builder.<Boolean>selectCase()
-                .when(
-                        addressItem
-                                .map(item -> builder.and(
-                                        builder.isNotNull(item),
-                                        PredicateFactory.get(item, "type")
-                                                .map(type -> builder.equal(type, 1))
-                                                .orElse(PredicateFactory.isFalse(builder))
-                                ))
+                .when(builder.and(
+                        builder.isNotNull(shopItemJoin),
+                        PredicateFactory.get(shopItemJoin, "type")
+                                .map(type -> builder.equal(type, 1))
                                 .orElse(PredicateFactory.isFalse(builder))
-                        ,
+                        ),
                         user.getPermissions().getTour().toValue() >= Permission.read.toValue()
                 )
-                .when(
-                        addressItem
-                                .map(item -> builder.and(
-                                        builder.isNotNull(item),
-                                        PredicateFactory.get(item, "type")
-                                                .map(type -> builder.equal(type, 2))
-                                                .orElse(PredicateFactory.isFalse(builder))
-                                ))
+                .when(builder.and(
+                        builder.isNotNull(shopItemJoin),
+                        PredicateFactory.get(shopItemJoin, "type")
+                                .map(type -> builder.equal(type, 2))
                                 .orElse(PredicateFactory.isFalse(builder))
-                        ,
+                        ),
                         user.getPermissions().getParty().toValue() >= Permission.read.toValue()
                 )
-                .when(
-                        addressUser
-                                .map(builder::isNotNull)
-                                .orElse(PredicateFactory.isFalse(builder))
-                        ,
-                        user.getPermissions().getUserManagement().toValue() >= Permission.read.toValue()
-                )
+                .when(builder.isNotNull(userJoin), user.getPermissions().getUserManagement().toValue() >= Permission.read.toValue())
                 .otherwise(false);
 
-        Predicate userIsAuthor = addressUser
-                .map(it -> builder.and(
-                        builder.isNotNull(it),
-                        PredicateFactory.get(it, "id")
-                                .map(id -> builder.equal(id, user.getId()))
-                                .orElse(PredicateFactory.isFalse(builder))
-                ))
-                .orElse(PredicateFactory.isFalse(builder));
+        Predicate userIsAuthor = builder.and(
+                builder.isNotNull(userJoin),
+                PredicateFactory.get(userJoin, "id")
+                        .map(id -> builder.equal(id, user.getId()))
+                        .orElse(PredicateFactory.isFalse(builder))
+        );
 
         return builder.or(
                 userIsAuthor,

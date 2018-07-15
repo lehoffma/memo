@@ -1,0 +1,96 @@
+<div class="sections">
+	<div class="section">
+		<h3>Meilenshop</h3>
+		<ol>
+			<li>
+				<a routerLink="shop">Shop</a>
+			</li>
+			<li>
+				<a routerLink="tours">Touren</a>
+			</li>
+			<li>
+				<a routerLink="partys">Events</a>
+			</li>
+			<li>
+				<a routerLink="merchandise">Merchandise</a>
+			</li>
+		</ol>
+	</div>
+	<div class="section">
+		<h3>Verein</h3>
+		<ol>
+			<li>
+				<a routerLink="leaderboard">Meilentabelle</a>
+			</li>
+			<li>
+				<a routerLink="calendar">Kalender</a>
+			</li>
+			<li>
+				<a routerLink="applyForMembership">Mitglied werden</a>
+			</li>
+			<li>
+				<a routerLink="requestMembership">Mitgliedsstatus ändern</a>
+			</li>
+			<li>
+				<a routerLink="impressum">Impressum</a>
+			</li>
+		</ol>
+	</div>
+	<div class="section" *ngIf="userIsBoardMember$ | async">
+		<h3>Verwaltung</h3>
+		<ol>
+			<li>
+				<a routerLink="members">Mitgliederliste</a>
+			</li>
+			<li>
+				<a routerLink="management/costs">Kostenübersicht</a>
+			</li>
+			<li>
+				<a routerLink="management/orders">Bestellungen</a>
+			</li>
+			<li>
+				<a routerLink="management/stock/merch">Bestand</a>
+			</li>
+		</ol>
+	</div>
+	<div class="section" *ngIf="(user$ | async) as user; else loggedOutSection">
+		<h3>Deine Links</h3>
+		<ol>
+			<li>
+				<a routerLink="cart">Warenkorb</a>
+			</li>
+			<li>
+				<a routerLink="members/{{user.id}}">Dein Profil</a>
+			</li>
+			<li>
+				<a routerLink="my-events">Deine Events</a>
+			</li>
+			<li>
+				<a routerLink="order-history">Deine Bestellungen</a>
+			</li>
+			<li>
+				<a routerLink="members/{{user.id}}//edit">Dein Account</a>
+			</li>
+		</ol>
+	</div>
+	<ng-template #loggedOutSection>
+		<div class="section">
+			<h3>Deine Links</h3>
+			<ol>
+				<li>
+					<a routerLink="cart">Warenkorb</a>
+				</li>
+				<li>
+					<a routerLink="login">Login</a>
+				</li>
+				<li>
+					<a routerLink="signup">Registrieren</a>
+				</li>
+				<li>
+					<a routerLink="forgot-password">Passwort vergessen</a>
+				</li>
+			</ol>
+		</div>
+	</ng-template>
+
+</div>

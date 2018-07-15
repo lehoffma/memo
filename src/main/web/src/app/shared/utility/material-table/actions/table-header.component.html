@@ -2,9 +2,9 @@
 	 [ngClass]="{'items-selected-header': !selection.isEmpty()}">
 	<div *ngIf="selection.isEmpty(); then header; else actionHeader"></div>
 	<ng-template #header>
-		<div class="expandable-table-header-title">
+		<h1 class="expandable-table-header-title">
 			{{title}}
-		</div>
+		</h1>
 
 		<div class="expandable-table-header-actions">
 			<button mat-button type="button" color="accent"
