@@ -13,17 +13,6 @@ import {BreadcrumbService} from "./shared/breadcrumb-navigation/breadcrumb.servi
 })
 export class AppComponent implements OnInit {
 
-	searchJsonLd = {
-		"@context": "http://schema.org",
-		"@type": "WebSite",
-		"url": "https://meilenwoelfe.org/",
-		"potentialAction": {
-			"@type": "SearchAction",
-			"target": "https://meilenwoelfe.org/search?searchTerm=={search_term_string}",
-			"query-input": "required name=search_term_string"
-		}
-	};
-
 	breadcrumbsJsonLd$ = this.router.events.pipe(
 		filter(event => event instanceof NavigationEnd),
 		distinctUntilChanged(),
