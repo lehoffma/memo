@@ -108,7 +108,7 @@ public class User implements Serializable {
     @JoinColumn
     private PermissionState permissions;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Order> orders = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")

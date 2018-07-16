@@ -19,7 +19,7 @@ const providers = [
 	ShoppingCartService,
 	WindowService,
 	ScrollingService,
-	OverlayService
+	OverlayService,
 ];
 
 @NgModule({

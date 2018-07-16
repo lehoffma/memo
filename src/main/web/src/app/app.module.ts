@@ -36,10 +36,40 @@ import {DateFnsAdapter} from "./util/date-fns-adapter";
 import {UnauthorizedHttpClient} from "./shared/authentication/unauthorized-http-client.service";
 import {ErrorInterceptor} from "./shared/utility/error-handling/error.interceptor";
 import {MatPasswordStrengthModule} from "@angular-material-extensions/password-strength";
-import { FooterComponent } from './home/footer/footer.component';
+import {FooterComponent} from "./home/footer/footer.component";
 import {NgProgressHttpModule} from "@ngx-progressbar/http";
 import {NgProgressModule} from "@ngx-progressbar/core";
-import { SectionsComponent } from './home/footer/sections.component';
+import {SectionsComponent} from "./home/footer/sections.component";
+import {NgcCookieConsentConfig, NgcCookieConsentModule} from "ngx-cookieconsent";
+
+const cookieConfig: NgcCookieConsentConfig = {
+	"cookie": {
+		"domain": ".meilenwoelfe.org"
+	},
+	"position": "bottom",
+	"theme": "edgeless",
+	"palette": {
+		"popup": {
+			"background": "#000000",
+			"text": "#ffffff",
+			"link": "#ffffff"
+		},
+		"button": {
+			"background": "#1565c0",
+			"text": "#ffffff",
+			"border": "transparent"
+		}
+	},
+	"type": "opt-in",
+	"content": {
+		"message": "Diese Webseite verwendet Cookies, um die bestmögliche Erfahrung zu gewährleisten.",
+		"dismiss": "Verstanden!",
+		"deny": "Verbieten",
+		"allow": "Erlauben",
+		"link": "Mehr Infos",
+		"href": "https://cookiesandyou.com"
+	}
+};
 
 registerLocaleData(localeDe);
 
@@ -54,6 +84,7 @@ registerLocaleData(localeDe);
 		RouterModule.forRoot(ROUTES),
 
 		//dependencies
+		NgcCookieConsentModule.forRoot(cookieConfig),
 		AgmCoreModule.forRoot({
 			apiKey: memoConfig.mapsApiKey,
 			libraries: ["places"]

@@ -43,6 +43,7 @@
 							"src/styles/mixins.scss",
 							"src/material-theme.scss",
 							"src/spinner.scss",
+							"node_modules/cookieconsent/build/cookieconsent.min.css",
 							"node_modules/angular-calendar/css/angular-calendar.css"
 						],
 						"stylePreprocessorOptions": {
@@ -51,7 +52,8 @@
 							]
 						},
 						"scripts": [
-							"node_modules/iban/iban.js"
+							"node_modules/iban/iban.js",
+							"node_modules/cookieconsent/build/cookieconsent.min.js"
 						]
 					},
 					"configurations": {
