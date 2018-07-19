@@ -26,12 +26,14 @@
 	</div>
 
 	<div class="content-wrapper">
-		<div class="content">
-			<div *ngIf="!(orderOverviewService.loading$ | async) && (orderOverviewService.orders$|async)?.length === 0" class="no-results">
-				Keine Ergebnisse.
-			</div>
 
-			<memo-order-renderer *ngFor="let order of (orderOverviewService.orders$|async)"
+		<div *ngIf="!(orderOverviewService.loading$ | async) && (orderOverviewService.orders$|async)?.length === 0"
+			 class="no-results">
+			Keine Ergebnisse.
+		</div>
+
+		<div class="content" *ngIf="(orderOverviewService.orders$|async) as orders">
+			<memo-order-renderer *ngFor="let order of orders"
 								 [withActions]="true"
 								 (onRemove)="orderOverviewService.removeOrder($event)"
 								 [orderEntry]="order">

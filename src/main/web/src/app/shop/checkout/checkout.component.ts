@@ -25,6 +25,7 @@ import {DiscountService} from "app/shop/shared/services/discount.service";
 import {processInParallelAndWait} from "../../util/observable-util";
 import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
 import {setProperties} from "../../shared/model/util/base-object";
+import {PaymentMethod} from "./payment/payment-method";
 
 @Component({
 	selector: "memo-checkout",
@@ -174,7 +175,9 @@ export class CheckoutComponent implements OnInit {
 	 * @returns {Promise<void>}
 	 */
 	submit() {
-		const bankAccount = this.formGroup.get("payment").get("selectedAccount").value;
+		const bankAccount = this.formGroup.get("payment").get("method").value === PaymentMethod.DEBIT
+			? this.formGroup.get("payment").get("selectedAccount").value
+			: null;
 
 
 		this.loading = true;

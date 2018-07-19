@@ -206,7 +206,7 @@ export class ModifyOrderService {
 			user: value.user.id,
 		});
 
-		if (value.bankAccount) {
+		if (value.method === PaymentMethod.DEBIT && value.bankAccount) {
 			order = setProperties(order, {
 				bankAccount: value.bankAccount.id
 			})
@@ -229,6 +229,7 @@ export class ModifyOrderService {
 					if (this._previousValue !== null) {
 						return this.orderService.modify(setProperties(this._previousValue, {
 							...order,
+							bankAccount: order.method === PaymentMethod.DEBIT ? order.bankAccount : null,
 							id: this._previousValue.id
 						}));
 					}

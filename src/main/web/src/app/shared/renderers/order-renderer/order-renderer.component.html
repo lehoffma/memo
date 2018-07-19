@@ -81,18 +81,20 @@
 
 <div class="actions" *ngIf="withActions || withShow">
 	<div>
-		<a mat-button routerLink="/orders/{{orderEntry?.id}}" *ngIf="withShow">
-			<span>Ansehen</span>
-		</a>
-	</div>
+		<div>
+			<a mat-button routerLink="/orders/{{orderEntry?.id}}" *ngIf="withShow">
+				<span>Ansehen</span>
+			</a>
+		</div>
 
-	<div *ngIf="withActions">
-		<a mat-icon-button routerLink="/orders/{{orderEntry?.id}}/edit">
-			<mat-icon>edit</mat-icon>
-		</a>
-		<button mat-icon-button *ngIf="withRemove"
-				(click)="remove()">
-			<mat-icon>delete</mat-icon>
-		</button>
+		<div *ngIf="withActions">
+			<a mat-icon-button routerLink="/orders/{{orderEntry?.id}}/edit">
+				<mat-icon>edit</mat-icon>
+			</a>
+			<button mat-icon-button *ngIf="withRemove"
+					(click)="remove()">
+				<mat-icon>delete</mat-icon>
+			</button>
+		</div>
 	</div>
 </div>

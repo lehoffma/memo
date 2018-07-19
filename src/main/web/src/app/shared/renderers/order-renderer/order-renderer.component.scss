@@ -4,7 +4,6 @@
 
 :host {
 	display: flex;
-	justify-content: center;
 	width: 100%;
 	background-color: $container-content--background-color;
 	color: $container-content--color;
@@ -256,11 +255,17 @@
 
 .actions {
 	display: flex;
-	justify-content: space-between;
-	border-top: 1px solid #e0e0e0;
-	margin: -1rem;
-	margin-top: 1rem;
-	padding: 0.5rem;
+	align-items: flex-end;
+	flex: 1;
+	> div {
+		border-top: 1px solid #e0e0e0;
+		display: flex;
+		justify-content: space-between;
+		margin: -1rem;
+		margin-top: 1rem;
+		padding: 0.5rem;
+		width: calc(100% + 2rem);
+	}
 }
 
 .order-total-price {
