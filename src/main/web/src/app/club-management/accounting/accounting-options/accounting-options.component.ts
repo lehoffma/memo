@@ -8,11 +8,10 @@ import {FormControl} from "@angular/forms";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
 import {BehaviorSubject, combineLatest, Observable, Subscription} from "rxjs";
-import {filter, first, map, share, startWith, tap} from "rxjs/operators";
+import {first, map, share} from "rxjs/operators";
 import {EntryCategory} from "../../../shared/model/entry-category";
-import {isAfter, isBefore, isValid, parse} from "date-fns"
-import {PageRequest} from "../../../shared/model/api/page-request";
-import {Sort} from "../../../shared/model/api/sort";
+import {isValid, parse, setYear} from "date-fns"
+import {Filter} from "../../../shared/model/api/filter";
 
 
 @Component({
@@ -36,7 +35,6 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 
 	events: Event[] = [];
 
-	availableEvents$ = new BehaviorSubject<Event[]>([]);
 	dateOptions: { from: Date, to: Date } = {
 		from: undefined,
 		to: undefined
@@ -44,6 +42,8 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	autocompleteFormControl: FormControl = new FormControl();
 	filteredOptions: Observable<Event[]>;
 	subscription: Subscription;
+
+	filters$: BehaviorSubject<Filter> = new BehaviorSubject(Filter.none());
 
 	constructor(private queryParameterService: QueryParameterService,
 				private router: Router,
@@ -69,13 +69,6 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	get availableEvents() {
-		return this.availableEvents$.value;
-	}
-
-	set availableEvents(events: Event[]) {
-		this.availableEvents$.next(events);
-	}
 
 	async ngOnInit() {
 		const categories: EntryCategory[] = await this.costCategories$
@@ -84,7 +77,6 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 		categories.forEach(category => this.costTypes[category.name] = true);
 		// await this.getAvailableEvents();
 		this.readQueryParams();
-		this.initEventAutoComplete();
 	}
 
 
@@ -94,34 +86,19 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	/**
-	 *
-	 */
-	initEventAutoComplete() {
-		this.autocompleteFormControl.valueChanges
-			.pipe(
-				filter(value => EventUtilityService.isEvent(value)),
-			)
-			.subscribe(value => {
-				this.events.push(value);
-				this.autocompleteFormControl.reset();
-				this.updateQueryParams();
-			});
-
-
-		this.filteredOptions = this.autocompleteFormControl.valueChanges
-			.pipe(
-				startWith(""),
-				map(event => event && EventUtilityService.isEvent(event) ? event.title : event),
-				map(title => {
-					const availableEvents = this.availableEvents
-						.filter(event => !this.events.find(selectedEvent => selectedEvent.id === event.id));
-					return title
-						? this.filter(availableEvents, title)
-						: availableEvents.slice()
-				})
-			);
+	updateDateFilter() {
+		this.filters$.next(Filter.by({
+			"minDate": (this.dateOptions.from && this.dateOptions.from.toISOString()) || setYear(new Date(), 1970).toISOString(),
+			"maxDate": (this.dateOptions.to && this.dateOptions.to.toISOString()) || setYear(new Date(), 3000).toISOString()
+		}))
 	}
+
+	addEvent(event: Event) {
+		this.events.push(event);
+		this.autocompleteFormControl.reset();
+		this.updateQueryParams();
+	}
+
 
 	/**
 	 * Defines how the event will be presented in the autocomplete box
@@ -158,33 +135,6 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 		});
 	}
 
-
-	/**
-	 *
-	 */
-	async getAvailableEvents() {
-		await combineLatest(
-			this.eventService.getByEventType(EventType.tours, PageRequest.first(), Sort.none()),
-			this.eventService.getByEventType(EventType.partys, PageRequest.first(), Sort.none()),
-			this.eventService.getByEventType(EventType.merch, PageRequest.first(), Sort.none()),
-		)
-			.pipe(
-				first(),
-				tap(([tours, partys, merch]) => {
-					//todo filter
-					this.availableEvents = [...tours.content, ...partys.content, ...merch.content]
-						.filter(event => {
-							let from = !this.dateOptions.from ? parse("1970-01-01") : this.dateOptions.from;
-							let to = !this.dateOptions.to ? parse("2100-01-01") : this.dateOptions.to;
-
-							return isAfter(event.date, from) && isBefore(event.date, to);
-						});
-					this.autocompleteFormControl.setValue("", {emitEvent: true});
-				})
-			)
-			.toPromise()
-	}
-
 	/**
 	 *
 	 * @param object
@@ -212,7 +162,6 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 				this.changeDetectorRef.detectChanges();
 				this.dateOptions.from = queryParamMap.has("minDate") ? parse(queryParamMap.get("minDate")) : undefined;
 				this.dateOptions.to = queryParamMap.has("maxDate") ? parse(queryParamMap.get("maxDate")) : undefined;
-				await this.getAvailableEvents();
 				if (queryParamMap.has("eventType")) {
 					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.getAll("eventType"));
 				}
@@ -221,14 +170,14 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 				}
 				//in case the route is something like /tours/:eventId/costs, extract the event id
 				if (paramMap.has("eventId")) {
-					this.events = this.availableEvents.findIndex(event => event.id === +paramMap.get("eventId")) !== -1
-						? [this.availableEvents.find(event => event.id === +paramMap.get("eventId"))]
-						: [];
+					this.eventService.getById(+paramMap.get("eventId")).subscribe(event => this.events = [event]);
 				}
 				if (queryParamMap.has("eventId")) {
-					this.events = queryParamMap.getAll("eventId")
-						.map(eventId => this.availableEvents.find(event => event.id === +eventId))
-						.filter(event => event !== null)
+					combineLatest(
+						...queryParamMap.getAll("eventId")
+							.map(it => this.eventService.getById(+it))
+					)
+						.subscribe(events => this.events = events);
 				}
 				this.updateQueryParams();
 			})

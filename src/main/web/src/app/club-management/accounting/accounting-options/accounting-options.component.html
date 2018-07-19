@@ -6,8 +6,7 @@
 			   [disabled]="isLoading"
 			   placeholder="Von"
 			   [(ngModel)]="dateOptions.from"
-			   (ngModel)="updateQueryParams()"
-			   (blur)="updateQueryParams()"
+			   (ngModelChange)="updateQueryParams(); updateDateFilter()"
 			   #startingDateInput="ngModel"
 			   name="startingDateInput">
 		<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="startingDatePicker"></mat-datepicker-toggle>
@@ -20,8 +19,7 @@
 			   placeholder="Bis"
 			   [disabled]="isLoading"
 			   [(ngModel)]="dateOptions.to"
-			   (ngModel)="updateQueryParams()"
-			   (blur)="updateQueryParams()"
+			   (ngModelChange)="updateQueryParams(); updateDateFilter()"
 			   #endDateInput="ngModel"
 			   name="endDateInput">
 		<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
@@ -49,19 +47,11 @@
 	</mat-chip-list>
 
 
-	<mat-form-field>
-		<input matInput
-			   tabindex="-1"
-			   placeholder="Event"
-			   name="userInput"
-			   [formControl]="autocompleteFormControl"
-			   [matAutocomplete]="auto">
-	</mat-form-field>
-	<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-		<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-			{{option.title}}
-		</mat-option>
-	</mat-autocomplete>
+	<memo-event-autocomplete [formControl]="autocompleteFormControl"
+							 (onInput)="addEvent($event)"
+							 [required]="false"
+							 [additionalFilters]="filters$ | async">
+	</memo-event-autocomplete>
 </div>
 
 <div *ngFor="let categories of [(costCategories$ | async)]">

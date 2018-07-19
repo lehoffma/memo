@@ -4,7 +4,8 @@
 		   placeholder="Event"
 		   name="eventInput"
 		   [formControl]="formControl"
-		   [matAutocomplete]="auto" required>
+		   #input
+		   [matAutocomplete]="auto" [attr.required]="required">
 	<mat-error
 		*ngIf="formControl.hasError('isNotAValidEvent') || formControl.hasError('required')">
 		Bitte wähle ein gültiges Item aus.

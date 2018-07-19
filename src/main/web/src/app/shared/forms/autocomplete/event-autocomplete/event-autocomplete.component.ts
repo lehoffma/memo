@@ -1,10 +1,10 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from "@angular/core";
 import {ControlValueAccessor, FormBuilder, FormControl, NG_VALUE_ACCESSOR, Validators} from "@angular/forms";
 import {Observable} from "rxjs";
 import {Event} from "../../../../shop/shared/model/event";
 import {isEventValidator} from "../../../validators/is-event.validator";
 import {EventUtilityService} from "../../../services/event-utility.service";
-import {debounceTime, map, mergeMap, startWith} from "rxjs/operators";
+import {debounceTime, map, mergeMap, startWith, tap} from "rxjs/operators";
 import {EventType} from "../../../../shop/shared/model/event-type";
 import {EventService} from "../../../services/api/event.service";
 import {PageRequest} from "../../../model/api/page-request";
@@ -24,11 +24,17 @@ import {Filter} from "../../../model/api/filter";
 export class EventAutocompleteComponent implements OnInit, ControlValueAccessor {
 	@Input() types: EventType[] = [EventType.tours, EventType.partys, EventType.merch];
 	@Input() formControl: FormControl;
+	@Input() additionalFilters: Filter = Filter.none();
+	@Input() required: boolean = true;
+	@Output() onInput: EventEmitter<Event> = new EventEmitter<Event>();
 
 	filteredOptions$: Observable<Event[]>;
 	_onChange;
 
+	@ViewChild("input") input: ElementRef;
+
 	constructor(private formBuilder: FormBuilder,
+				private renderer: Renderer2,
 				private eventService: EventService) {
 	}
 
@@ -36,11 +42,16 @@ export class EventAutocompleteComponent implements OnInit, ControlValueAccessor 
 		this.filteredOptions$ = this.formControl.valueChanges
 			.pipe(
 				startWith(""),
-				map(event => event && EventUtilityService.isEvent(event) ? event.title : event),
 				debounceTime(300),
+				tap(event => {
+					if (EventUtilityService.isEvent(event)) {
+						this.onInput.emit(event);
+					}
+				}),
+				map(event => event && EventUtilityService.isEvent(event) ? event.title : event),
 				mergeMap(title => this.eventService
 					.get(
-						Filter.by({"searchTerm": title}),
+						Filter.combine(Filter.by({"searchTerm": title}), this.additionalFilters),
 						PageRequest.first(5),
 						Sort.none()
 					).pipe(
@@ -48,7 +59,10 @@ export class EventAutocompleteComponent implements OnInit, ControlValueAccessor 
 					)
 				)
 			);
-		this.formControl.setValidators([Validators.required, isEventValidator()]);
+		this.formControl.setValidators(this.required
+			? [Validators.required, isEventValidator()]
+			: [isEventValidator()]
+		);
 	}
 
 	/**
@@ -84,16 +98,11 @@ export class EventAutocompleteComponent implements OnInit, ControlValueAccessor 
 	}
 
 	setDisabledState(isDisabled: boolean): void {
-		if (isDisabled) {
-			this.formControl.disable();
-		}
-		else {
-			this.formControl.enable();
-		}
+		this.renderer.setProperty(this.input.nativeElement, "disabled", isDisabled);
 	}
 
 	writeValue(obj: any): void {
-		this.formControl.setValue(obj);
+		this.renderer.setValue(this.input.nativeElement, obj);
 	}
 
 }
