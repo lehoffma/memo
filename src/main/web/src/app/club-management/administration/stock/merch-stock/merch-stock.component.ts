@@ -6,7 +6,7 @@ import {LogInService} from "../../../../shared/services/api/login.service";
 import {StockEntry} from "./merch-stock-entry/stock-entry";
 import {MultiLevelSelectParent} from "../../../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {SearchFilterService} from "../../../../shop/search-results/search-filter.service";
-import {SortingOption} from "../../../../shared/model/sorting-option";
+import {SortingOption, SortingOptionHelper} from "../../../../shared/model/sorting-option";
 import {ActivatedRoute} from "@angular/router";
 import {sortingFunction} from "../../../../util/util";
 import {FilterOptionBuilder} from "../../../../shop/search-results/filter-option-builder.service";
@@ -16,7 +16,7 @@ import {debounceTime, filter, map, mergeMap, scan} from "rxjs/operators";
 import {Event} from "../../../../shop/shared/model/event";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
 import {PageRequest} from "../../../../shared/model/api/page-request";
-import {Sort} from "../../../../shared/model/api/sort";
+import {Direction, Sort} from "../../../../shared/model/api/sort";
 import {Filter} from "../../../../shared/model/api/filter";
 
 @Component({
@@ -37,20 +37,14 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 			map(permission => permission.Hinzufuegen)
 		);
 	sortingOptions: SortingOption<StockEntry>[] = [
-		{
-			name: "Alphabetisch A-Z",
-			queryParameters: {
-				sortBy: "title",
-				descending: "false"
-			},
-		},
-		{
-			name: "Alphabetisch Z-A",
-			queryParameters: {
-				sortBy: "title",
-				descending: "true"
-			}
-		},
+		SortingOptionHelper.build(
+			"Alphabetisch A-Z",
+			Sort.by(Direction.ASCENDING, "title")
+		),
+		SortingOptionHelper.build(
+			"Alphabetisch Z-A",
+			Sort.by(Direction.DESCENDING, "title")
+		),
 	];
 	filterSubscription: Subscription;
 	subscription: Subscription;

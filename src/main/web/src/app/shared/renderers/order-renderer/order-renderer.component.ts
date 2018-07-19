@@ -5,8 +5,9 @@ import {EventUtilityService} from "../../services/event-utility.service";
 import {orderStatusToString} from "../../model/order-status";
 import {UserBankAccountService} from "../../services/api/user-bank-account.service";
 import {BankAccount} from "../../model/bank-account";
-import {Observable} from "rxjs";
-import {EMPTY} from "rxjs";
+import {EMPTY, Observable} from "rxjs";
+import {User} from "../../model/user";
+import {UserService} from "../../services/api/user.service";
 
 interface OrderedEventItem extends OrderedItem {
 	cssStatus: string;
@@ -23,16 +24,19 @@ interface OrderedEventItem extends OrderedItem {
 export class OrderRendererComponent implements OnInit, OnChanges {
 	@Input() orderEntry: Order;
 	@Input() withActions = false;
+	@Input() withShow = true;
 	@Input() withRemove = true;
 	orderedEventItems: OrderedEventItem[] = [];
 	total: number = 0;
 
 	bankAccount$: Observable<BankAccount> = EMPTY;
+	user$: Observable<User> = EMPTY;
 
 	//todo show isDriver/needsTicket stuff
 	@Output() onRemove: EventEmitter<Order> = new EventEmitter<Order>();
 
-	constructor(private bankAccountService: UserBankAccountService) {
+	constructor(private bankAccountService: UserBankAccountService,
+				private userService: UserService) {
 	}
 
 	ngOnInit() {
@@ -68,6 +72,7 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 				return events;
 			}, []);
 
+		this.user$ = this.userService.getById(this.orderEntry.user);
 		this.bankAccount$ = +(this.orderEntry.bankAccount) > 0 ? this.bankAccountService.getById(this.orderEntry.bankAccount) : EMPTY;
 		this.orderedEventItems = events;
 		this.total = events

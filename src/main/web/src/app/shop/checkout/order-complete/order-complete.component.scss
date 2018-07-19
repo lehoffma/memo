@@ -58,11 +58,13 @@
 .order-container {
 	width: 100%;
 	max-width: 500px;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
 }
 
 @media all and (min-width: 800px) {
 	:host {
-		padding-top: 1rem;
+		padding: 1rem;
 		flex-direction: row-reverse;
 		justify-content: center;
 		align-items: flex-start;
@@ -73,7 +75,7 @@
 	}
 
 	.order-container {
-		margin-right: 20px;
+		margin: 0 20px 0 0;
 	}
 
 	memo-order-renderer {

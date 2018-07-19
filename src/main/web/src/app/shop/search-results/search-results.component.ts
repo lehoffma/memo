@@ -76,6 +76,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	resultsTitle: BehaviorSubject<string> = new BehaviorSubject("");
 	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
 	subscription: Subscription;
+	resultSubscription: Subscription;
+
 	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
 	filterOptions$ = this._filterOptions$
 		.asObservable()
@@ -91,6 +93,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 				private filterOptionBuilder: FilterOptionBuilder,
 				private loginService: LogInService,
 				private eventService: EventService) {
+		this.fetchResults();
 	}
 
 	get filterOptions() {
@@ -101,19 +104,9 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		this._filterOptions$.next(options);
 	}
 
-	_results$: Observable<Event[]>;
-
-	get results$() {
-		return this._results$;
-	}
-
-	set results$(results: Observable<Event[]>) {
-		this._results$ = results;
-	}
+	results$: BehaviorSubject<Event[]> = new BehaviorSubject<Event[]>([]);
 
 	ngOnInit() {
-		//todo pagination!
-		this.fetchResults();
 	}
 
 
@@ -121,15 +114,15 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		if (this.subscription) {
 			this.subscription.unsubscribe();
 		}
+		if (this.resultSubscription) {
+			this.resultSubscription.unsubscribe();
+		}
 	}
 
-	/**
-	 * Holt die Suchergebnisse aus den jeweiligen Services und sortiert und filtert sie anhand der
-	 * sortedBy und filteredBy werte.
-	 */
-	fetchResults() {
-		this.results$ = combineLatest(this.sortedBy, this.page$, this.filteredBy)
+	private fetchResults() {
+		this.resultSubscription = combineLatest(this.sortedBy, this.page$, this.filteredBy)
 			.pipe(
+				tap(it => this.results$.next(null)),
 				//reset results so the result screen can show a loading screen while the http call is performed
 				// tap(() => this.results$ = empty()),
 				tap(([sortedBy, pageRequest, filteredBy]) =>
@@ -166,9 +159,12 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 					//todo ausgewählte filter optionen in den title reintun
 					this.resultsTitle.next(events.length + " " + selectedCategories.join(", ") +
 						" Ergebnisse");
-				})
-			);
+				}),
+				tap(it => this.results$.next(it))
+			)
+			.subscribe();
 	}
+
 
 	updatePage(pageEvent: PageEvent) {
 		this.page$.next(PageRequest.fromMaterialPageEvent(pageEvent));
@@ -200,4 +196,5 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		dialogRef.afterClosed()
 			.subscribe(console.log, console.error)
 	}
+
 }

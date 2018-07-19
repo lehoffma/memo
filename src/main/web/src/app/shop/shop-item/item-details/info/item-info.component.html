@@ -16,7 +16,7 @@
 </div>
 
 <div class="available-tickets-container item-details-row" *ngIf="!isMerch(event)">
-	<memo-capacity-renderer [available]="getValue('capacity') | async"
+	<memo-capacity-renderer [available]="available$ | async"
 							[icon]="'local_play'"
 							[maxAmount]="event.capacity"
 							[textOptions]="{

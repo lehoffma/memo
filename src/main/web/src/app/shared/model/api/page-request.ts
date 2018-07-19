@@ -11,6 +11,10 @@ export class PageRequest {
 		this.pageSize = pageSize;
 	}
 
+	static all(){
+		return new PageRequest(0, 10000);
+	}
+
 	static first(pageSize: number = DEFAULT_PAGE_SIZE) {
 		return new PageRequest(0, pageSize);
 	}

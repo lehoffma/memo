@@ -136,8 +136,6 @@ export class AddToCartFormComponent implements OnInit {
 
 		this.maxAmountSubscription = this.maxAmount$
 			.subscribe(maxAmount => {
-				console.log(maxAmount);
-
 				const options = new Array(this.model.amount).fill({color: this.color, size: this.size});
 				const shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
 					this.event.id, options);
@@ -308,7 +306,6 @@ export class AddToCartFormComponent implements OnInit {
 			this._size$
 		)
 			.pipe(
-				tap(it => console.log(it)),
 				map(([stock, color, size]) => stock
 				// we have to consider the selected color and size attributes
 					.filter(stockItem =>

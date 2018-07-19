@@ -3,8 +3,6 @@ import {Event} from "../../../shared/model/event";
 import {ShoppingCartService} from "../../../../shared/services/shopping-cart.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {StockService} from "../../../../shared/services/api/stock.service";
-import {ShopItem} from "../../../../shared/model/shop-item";
-import {TypeOfProperty} from "../../../../shared/model/util/type-of-property";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {BehaviorSubject, combineLatest, Observable} from "rxjs";
 import {defaultIfEmpty, filter, map, mergeMap} from "rxjs/operators";
@@ -12,7 +10,6 @@ import {LogInService} from "../../../../shared/services/api/login.service";
 import {Discount} from "../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../shared/services/discount.service";
 import {MatSnackBar} from "@angular/material";
-import {ObservableCache} from "../../../../shared/cache/observable-cache";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {CapacityService} from "../../../../shared/services/api/capacity.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
@@ -42,14 +39,12 @@ export class ItemInfoComponent implements OnInit {
 				mergeMap(([event, userId]) => this.discountService.getEventDiscounts(event.id, userId)),
 				defaultIfEmpty([]),
 			);
-	private _cache: ObservableCache<number> = new ObservableCache<number>()
-		.withAsyncFallback("capacity", () => this._event$
-			.pipe(
-				filter(event => event.id >= 0),
-				mergeMap(event => this.capacityService.valueChanges(event.id)),
-				filter(it => it !== null),
-				map(it => it.capacity)
-			)
+	public available$ = this._event$
+		.pipe(
+			filter(event => event.id >= 0),
+			mergeMap(event => this.capacityService.valueChanges(event.id)),
+			filter(it => it !== null),
+			map(it => it.capacity)
 		);
 
 	constructor(private participantService: OrderedItemService,
@@ -76,14 +71,6 @@ export class ItemInfoComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	/**
-	 *
-	 * @param {string} key
-	 * @returns {Observable<TypeOfProperty<ShopItem>>}
-	 */
-	getValue(key: keyof Event): Observable<TypeOfProperty<Event>> {
-		return this._cache.get(key);
-	}
 
 	isMerch(item) {
 		return EventUtilityService.isMerchandise(item);

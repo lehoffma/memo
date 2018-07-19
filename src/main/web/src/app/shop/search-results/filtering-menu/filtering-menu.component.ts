@@ -98,8 +98,6 @@ export class FilteringMenuComponent implements OnInit, OnChanges {
 				})
 			});
 
-		console.log(queryParams);
-
 		this.activatedRoute.queryParamMap
 			.pipe(
 				first(),

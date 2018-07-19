@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, combineLatest, Subscription} from "rxjs";
-import {map, mergeMap} from "rxjs/operators";
+import {filter, map, mergeMap, tap} from "rxjs/operators";
 import {ActivatedRoute} from "@angular/router";
 import {OrderService} from "../../../../shared/services/api/order.service";
 import {Order} from "../../../../shared/model/order";
@@ -8,12 +8,15 @@ import {ConfirmationDialogService} from "../../../../shared/services/confirmatio
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {OrderStatus} from "../../../../shared/model/order-status";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
+import {userPermissions} from "../../../../shared/model/user";
+import {Permission} from "../../../../shared/model/permission";
 
 @Component({
 	selector: "memo-order-detail",
 	template: `
 		<memo-order-renderer *ngIf="_order$ | async as order; else loading"
-							 [withActions]="true"
+							 [withShow]="false"
+							 [withActions]="canEdit$ | async"
 							 [withRemove]="false"
 							 [orderEntry]="order">
 
@@ -36,6 +39,11 @@ import {OrderedItemService} from "../../../../shared/services/api/ordered-item.s
 		</ng-template>
 	`,
 	styles: [`
+		:host {
+			margin-bottom: 1rem;
+			display: block;
+		}
+
 		.actions {
 			max-width: 500px;
 			display: flex;
@@ -52,6 +60,7 @@ import {OrderedItemService} from "../../../../shared/services/api/ordered-item.s
 		}
 
 		memo-order-renderer {
+			max-width: 500px;
 			margin: 0;
 		}
 
@@ -74,14 +83,19 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 	subscriptions: Subscription[] = [];
 
 	canCancel$ = combineLatest(
-		this.loginService.accountObservable,
+		this.loginService.currentUser$,
 		this._order$
 	)
 		.pipe(
-			map(([userId, order]) => {
-				return order.items.some(item => item.status !== OrderStatus.CANCELLED) && userId === order.user;
+			map(([user, order]) => {
+				return user && order.items.some(item => item.status !== OrderStatus.CANCELLED) && user.id === order.user;
 			})
 		);
+
+	canEdit$ = this.loginService.currentUser$.pipe(
+		filter(user => user !== null),
+		map(user => userPermissions(user).funds >= Permission.write),
+	);
 
 	error: any;
 

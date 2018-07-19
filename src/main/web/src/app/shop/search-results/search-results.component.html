@@ -54,7 +54,7 @@
 			<memo-results [events]="results$ | async"></memo-results>
 		</div>
 	</div>
-	<mat-paginator [length]="(currentPage$ | async).totalElements"
+	<mat-paginator [length]="(currentPage$ | async)?.totalElements"
 				   [pageSize]="(currentPage$ | async).pageSize"
 				   [pageSizeOptions]="[20]"
 				   (page)="updatePage($event)">

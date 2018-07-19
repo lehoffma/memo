@@ -21,7 +21,6 @@ export class BreadcrumbNavigationComponent implements OnInit {
 	constructor(private router: Router,
 				private activatedRoute: ActivatedRoute,
 				private breadcrumbService: BreadcrumbService) {
-		this.breadcrumbs$.subscribe(it => console.log(it));
 	}
 
 	ngOnInit() {

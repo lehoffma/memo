@@ -13,7 +13,30 @@
 	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
 }
 
-.method {
+.user {
+	margin-bottom: 1rem;
+
+	a {
+		display: flex;
+		font-size: 1rem;
+		align-self: center;
+		text-decoration: none;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: mat-color($primary);
+	}
+
+	.role-icon {
+		color: mat-color($primary);
+		height: 19px;
+		width: 19px;
+		margin-left: 2px;
+		font-size: 19px;
+	}
+}
+
+.user, .method {
 	border-bottom: 1px solid #E0E0E0;
 	padding-bottom: 1rem;
 	display: flex;
@@ -229,6 +252,15 @@
 		border-radius: 50%;
 		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
 	}
+}
+
+.actions {
+	display: flex;
+	justify-content: space-between;
+	border-top: 1px solid #e0e0e0;
+	margin: -1rem;
+	margin-top: 1rem;
+	padding: 0.5rem;
 }
 
 .order-total-price {

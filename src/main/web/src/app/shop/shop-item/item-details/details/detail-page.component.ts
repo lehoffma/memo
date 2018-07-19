@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnInit, QueryList, ViewChildren} from "@angular/core";
+import {AfterViewInit, ChangeDetectorRef, Component, Input, NgZone, OnInit, QueryList, ViewChildren} from "@angular/core";
 import {Event} from "../../../shared/model/event";
 import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
 import {PageRequest} from "../../../../shared/model/api/page-request";
@@ -10,9 +10,9 @@ import {userPermissions} from "../../../../shared/model/user";
 import {Filter} from "../../../../shared/model/api/filter";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import {PagedDataSource} from "../../../../shared/utility/material-table/paged-data-source";
-import {filter, map, mergeMap, scan, take} from "rxjs/operators";
+import {filter, map, mergeMap, scan, startWith, take} from "rxjs/operators";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
-import {Sort} from "../../../../shared/model/api/sort";
+import {Direction, Sort} from "../../../../shared/model/api/sort";
 import {ParticipantUser} from "../../../shared/model/participant";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {Address} from "../../../../shared/model/address";
@@ -24,6 +24,10 @@ import {ItemImagePopupComponent} from "../container/image-popup/item-image-popup
 import {MatDialog} from "@angular/material";
 import {SpiedOnElementDirective} from "../../../../shared/utility/spied-on-element.directive";
 import {WindowService} from "../../../../shared/services/window.service";
+import {OrderedItem} from "../../../../shared/model/ordered-item";
+import {OrderStatus} from "../../../../shared/model/order-status";
+import {Order} from "../../../../shared/model/order";
+import {OrderService} from "../../../../shared/services/api/order.service";
 
 @Component({
 	selector: "memo-detail-page",
@@ -118,7 +122,38 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 				}
 			})
 		);
+	orderedItemDetails$: Observable<Order> = combineLatest(
+		this.loginService.currentUser$,
+		this.event$
+	)
+		.pipe(
+			filter(([user, event]) => user !== null && event !== null),
+			//check if there is an order for this item
+			mergeMap(([user, event]) => this.orderService.getAll(
+				Filter.by({"userId": "" + user.id}), Sort.by(Direction.DESCENDING, "timeStamp")
+				)
+					.pipe(
+						map(orders =>
+							orders.find(order => order.items.some(
+								(item: OrderedItem) => item.item.id === event.id
+									&& item.status !== OrderStatus.CANCELLED
+								)
+								&& order.user === user.id
+							)
+						)
+					)
+			),
+			filter(order => !!order)
+		);
+	linkToOrder$: Observable<string> = this.orderedItemDetails$
+		.pipe(
+			map(order => "/orders/" + order.id)
+		);
+
+
 	subscriptions = [];
+
+
 	//info, eventMap, description, eventParticipants, comments
 	elements$ = new Subject<SpiedOnElementDirective[]>();
 	sections: { id: string, label: string, predicate?: () => boolean }[] = [
@@ -135,6 +170,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 				private router: Router,
 				private zone: NgZone,
 				private participantService: OrderedItemService,
+				private orderService: OrderService,
 				private cdRef: ChangeDetectorRef,
 				private loginService: LogInService,
 				private window: WindowService,
@@ -151,7 +187,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 
 	@Input() set event(event: Event) {
 		this.event$.next(event);
-		setTimeout(() => this.cdRef.detectChanges());
+		// setTimeout(() => this.cdRef.detectChanges());
 	}
 
 	ngOnInit() {
@@ -206,8 +242,10 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.elements$.next(this.elementRefs.toArray());
-		this.elementRefs.changes.subscribe(item => {
+		// setTimeout(() => {
+		// 	this.elements$.next(this.elementRefs.toArray());
+		// }, 1);
+		this.elementRefs.changes.pipe(startWith(null)).subscribe(item => {
 			this.zone.runOutsideAngular(() => {
 				const elements = this.elementRefs.toArray();
 				this.elements$.next(elements);

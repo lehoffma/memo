@@ -4,6 +4,8 @@
 	<button mat-icon-button
 			type="submit"
 			#searchButton
+			attr.aria-label="{{inputState === searchInputState.ACTIVE ? 'Suchen' : 'Öffne Suchinput'}}"
+			title="{{inputState === searchInputState.ACTIVE ? 'Suchen' : 'Öffne Suchinput'}}"
 			*ngIf="!mobileExpanded"
 			class="search-button">
 		<mat-icon class="cart-icon">
@@ -12,6 +14,8 @@
 	</button>
 	<button mat-icon-button
 			type="button"
+			attr.aria-label="Suchinput schließen"
+			title="Suchinput schließen"
 			class="back-button"
 			*ngIf="mobileExpanded"
 			(click)="toggleInputState()"
@@ -32,11 +36,16 @@
 			   [(ngModel)]="model.searchInput"
 			   autocomplete="off">
 		<mat-icon matSuffix *ngIf="!mobileExpanded"
+				  attr.aria-label="Suchinput schließen"
+				  title="Suchinput schließen"
 				  class="cart-icon ripple" (click)="toggleInputState()">
 			clear
 		</mat-icon>
 	</mat-form-field>
-	<button mat-icon-button type="button" *ngIf="mobileExpanded" (click)="model.searchInput=''">
+	<button mat-icon-button type="button" *ngIf="mobileExpanded"
+			attr.aria-label="Input löschen"
+			title="Input löschen"
+			(click)="model.searchInput=''">
 		<mat-icon>clear</mat-icon>
 	</button>
 </form>

@@ -10,6 +10,8 @@ import {DiscountService} from "../../../shared/services/discount.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {defaultIfEmpty, filter, map, mergeMap} from "rxjs/operators";
 import {Sort} from "../../../../shared/model/api/sort";
+import {NOW} from "../../../../util/util";
+import {isBefore} from "date-fns";
 
 @Component({
 	selector: "memo-results-entry",
@@ -45,10 +47,18 @@ export class ResultsEntryComponent implements OnInit {
 	resultUrl$ = this._result
 		.pipe(
 			map(result => {
-				const itemType = EventUtilityService.getShopItemType(result)
+				const itemType = EventUtilityService.getShopItemType(result);
 				return `/${itemType}/${result.id}`;
 			})
 		);
+	resultIsPast$ = this._result.pipe(
+		map((result: Event) => {
+			if(this.resultIsMerch(result)){
+				return false;
+			}
+			return isBefore(result.date, NOW);
+		})
+	);
 
 	get result() {
 		return this._result.getValue();

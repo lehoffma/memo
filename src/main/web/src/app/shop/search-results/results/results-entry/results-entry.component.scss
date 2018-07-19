@@ -50,6 +50,9 @@
 		img {
 			height: 10rem;
 			object-fit: cover;
+			&.past {
+				filter: grayscale(1);
+			}
 		}
 	}
 }

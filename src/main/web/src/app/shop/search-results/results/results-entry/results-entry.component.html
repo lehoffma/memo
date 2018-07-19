@@ -24,7 +24,7 @@
 	</div>
 	<div class="result-entry-image-container">
 		<img [lazySrc]="(!!result.images[0] ? result.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
-			 lazySrcVisible="visible">
+			 lazySrcVisible="visible" [class.past]="resultIsPast$ | async">
 	</div>
 </a>
 

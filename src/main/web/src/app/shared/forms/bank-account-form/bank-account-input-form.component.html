@@ -18,7 +18,7 @@
 			Dies ist ein Pflichtfeld!
 		</mat-error>
 		<mat-error *ngIf="formGroup.get('iban').hasError('invalidIBAN')">
-			Die eingegebene IBAN ist inkorrekt!
+			Die eingegebene IBAN ist ungültig!
 		</mat-error>
 	</mat-form-field>
 	<mat-form-field>
@@ -32,7 +32,7 @@
 			Dies ist ein Pflichtfeld!
 		</mat-error>
 		<mat-error *ngIf="formGroup.get('bic').hasError('pattern')">
-			Die eingegebene BIC ist inkorrekt!
+			Die eingegebene BIC ist ungültig!
 		</mat-error>
 	</mat-form-field>
 

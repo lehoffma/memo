@@ -17,9 +17,57 @@ memo-add-to-cart-form {
 	}
 }
 
-#comments{
-	/deep/ .object-details-content{
+#comments {
+	/deep/ .object-details-content {
 		padding: 0;
+	}
+}
+
+.ordered-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: relative;
+	padding: 1rem;
+	text-decoration: none;
+	background: white;
+	color: black;
+	border-bottom: 1px solid #ededed;
+	font-size: 0.85rem;
+	font-weight: 500;
+
+	mat-icon {
+		margin-right: 5px;
+		transition: all ease-in 0.2s
+	}
+
+	&:hover {
+		background: lighten($accent-default, 5%);
+		mat-icon {
+			margin-right: 0;
+		}
+	}
+
+	.ordered-header-main-message {
+		font-size: 1rem;
+	}
+
+	.options {
+		font-weight: 400;
+		color: rgba(0, 0, 0, 0.4);
+	}
+
+	> div {
+		display: flex;
+		flex-direction: column;
+	}
+
+	button {
+		color: black;
+	}
+
+	&:hover {
+		background: darken(white, 5%);
 	}
 }
 
@@ -93,7 +141,7 @@ memo-add-to-cart-form {
 		display: flex;
 		padding: 0;
 
-		memo-route-list{
+		memo-route-list {
 			padding-left: 1rem;
 		}
 

@@ -4,7 +4,6 @@ import {OrderOverviewService} from "./order-overview.service";
 import {MatPaginator} from "@angular/material";
 import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
 import {Direction, Sort} from "../../shared/model/api/sort";
-import {Event} from "../../shop/shared/model/event";
 import {Order} from "../../shared/model/order";
 
 @Component({

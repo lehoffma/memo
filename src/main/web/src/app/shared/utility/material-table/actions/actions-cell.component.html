@@ -1,6 +1,8 @@
 <button mat-icon-button type="button"
 		[disabled]="!permissions?.Bearbeiten && !permissions?.Loeschen && !(rowActions.length > 2)"
 		(click)="$event.stopPropagation()"
+		title="Aktionen"
+		attr.aria-label="Aktionen"
 		[matMenuTriggerFor]="menu">
 	<mat-icon>more_vert</mat-icon>
 

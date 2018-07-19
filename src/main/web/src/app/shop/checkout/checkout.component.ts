@@ -77,7 +77,7 @@ export class CheckoutComponent implements OnInit {
 			})
 		});
 
-		this.formGroup.get("method").setValidators([debitRequiresAccountValidator()]);
+		this.formGroup.get("payment").setValidators([debitRequiresAccountValidator()]);
 
 		this.user$
 			.pipe(
@@ -106,7 +106,7 @@ export class CheckoutComponent implements OnInit {
 					.subscribe(accounts => {
 						console.log(accounts);
 						this.previousAccounts = [...accounts];
-						this.formGroup.get("method").get("bankAccounts").setValue(accounts);
+						this.formGroup.get("payment").get("bankAccounts").setValue(accounts);
 					});
 
 				if (this.subscriptions) {
@@ -122,7 +122,7 @@ export class CheckoutComponent implements OnInit {
 						.subscribe(addresses => {
 							this.previousAddresses = [...addresses];
 						}),
-					this.formGroup.get("method").get("bankAccounts").valueChanges
+					this.formGroup.get("payment").get("bankAccounts").valueChanges
 						.pipe(
 							mergeMap(newAccounts => this.updateAccounts(this.previousAccounts, newAccounts))
 						)
@@ -174,7 +174,7 @@ export class CheckoutComponent implements OnInit {
 	 * @returns {Promise<void>}
 	 */
 	submit() {
-		const bankAccount = this.formGroup.get("method").get("selectedAccount").value;
+		const bankAccount = this.formGroup.get("payment").get("selectedAccount").value;
 
 
 		this.loading = true;
@@ -192,7 +192,7 @@ export class CheckoutComponent implements OnInit {
 						map(orderedItems => setProperties(createOrder(), {
 							user: userId,
 							timeStamp: new Date(),
-							method: this.formGroup.get("method").get("method").value,
+							method: this.formGroup.get("payment").get("method").value,
 							items: orderedItems.map(it => it.id)
 						})),
 						map((order: Order) => bankAccount ? setProperties(order, {bankAccount: bankAccount.id}) : order),

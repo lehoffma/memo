@@ -203,7 +203,7 @@ export class SearchFilterService {
 		//modify children values
 		options
 			.filter(option => !!acc.find(prevOption => prevOption.name === option.name))
-			.forEach(option => {
+			.forEach((option: MultiLevelSelectParent) => {
 				const index = acc.findIndex(prevOption => prevOption.name === option.name);
 
 				//add children if array is null/undefined
@@ -212,9 +212,15 @@ export class SearchFilterService {
 				}
 				else if (acc[index].children && option.children) {
 					//remove children that are not part of the array anymore
+					//and modify children that just changed their selected status
 					for (let i = acc[index].children.length - 1; i >= 0; i--) {
-						if (option.children.findIndex(child => child.name === acc[index].children[i].name) === -1) {
+						const childIndex = option.children.findIndex(child => child.name === acc[index].children[i].name);
+						if (childIndex === -1) {
 							acc[index].children.splice(i, 1);
+						}
+						else {
+							(acc[index].children[i] as MultiLevelSelectLeaf).selected =
+								(option.children[childIndex] as MultiLevelSelectLeaf).selected;
 						}
 					}
 					//add children that aren't yet part of the array

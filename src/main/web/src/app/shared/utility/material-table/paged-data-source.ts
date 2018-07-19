@@ -111,7 +111,6 @@ export class PagedDataSource<T> extends DataSource<T> {
 			this._pageEventSubscription.unsubscribe();
 		}
 
-		console.log("huh");
 		this._pageEventSubscription = page$.pipe(
 			map(page => ({
 				previousPageIndex: page.page - 1,
@@ -119,7 +118,6 @@ export class PagedDataSource<T> extends DataSource<T> {
 				length: page.pageSize,
 				pageIndex: page.page
 			})),
-			tap(it => console.log(it)),
 		)
 			.subscribe(event => this._pageEvents$.next(event));
 	}

@@ -34,7 +34,7 @@
 
 	<div class="toolbar-action cart" *ngIf="!(searchIsExpanded$ | async)">
 		<memo-badge [value]="shoppingCartContent | async">
-			<a mat-icon-button routerLink="/cart">
+			<a mat-icon-button routerLink="/cart" attr.aria-label="Warenkorb" title="Warenkorb">
 				<mat-icon class="cart-icon ">
 					shopping_cart
 				</mat-icon>

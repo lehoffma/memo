@@ -8,8 +8,8 @@ const routes: Route[] = [
 	{path: "tours", redirectTo: "/search?type=1&date=upcoming", pathMatch: "full"},
 	{path: "events", redirectTo: "/search?type=2&date=upcoming", pathMatch: "full"},
 	{path: "partys", redirectTo: "/search?type=2&date=upcoming", pathMatch: "full"},
-	{path: "merchandise", redirectTo: "/search?type=3&date=upcoming", pathMatch: "full"},
-	{path: "merch", redirectTo: "/search?type=3&date=upcoming", pathMatch: "full"},
+	{path: "merchandise", redirectTo: "/search?type=3", pathMatch: "full"},
+	{path: "merch", redirectTo: "/search?type=3", pathMatch: "full"},
 ];
 
 @NgModule({

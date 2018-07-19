@@ -2,11 +2,15 @@
 	<h2>
 		Bestellung vom {{orderEntry?.timeStamp | dateFormat}}
 	</h2>
-	<button mat-icon-button type="button" *ngIf="withActions"
-			(click)="$event.stopPropagation(); false"
-			[matMenuTriggerFor]="menu">
-		<mat-icon>more_vert</mat-icon>
-	</button>
+</div>
+<div class="user" *ngIf="user$ | async as user">
+	<span>Bestellt von</span>
+	<a routerLink="/members/{{user.id}}" memoUserPreview [user]="user">
+		<span>{{user.firstName + ' ' + user.surname}}</span>
+		<mat-icon class="role-icon" title="{{user.clubRole}}">
+			{{user.clubRole | clubRoleIcon}}
+		</mat-icon>
+	</a>
 </div>
 <div class="method">
 	<span>Bezahlmethode</span>
@@ -75,14 +79,20 @@
 	<span class="order-total-price-amount">{{total | currency:'EUR':'symbol'}}</span>
 </div>
 
+<div class="actions" *ngIf="withActions || withShow">
+	<div>
+		<a mat-button routerLink="/orders/{{orderEntry?.id}}" *ngIf="withShow">
+			<span>Ansehen</span>
+		</a>
+	</div>
 
-<mat-menu #menu="matMenu">
-	<a mat-menu-item routerLink="/orders/{{orderEntry.id}}/edit">
-		<mat-icon>edit</mat-icon>
-		<span>Bearbeiten</span>
-	</a>
-	<button *ngIf="withRemove" mat-menu-item type="button" (click)="remove()">
-		<mat-icon>delete</mat-icon>
-		<span>Löschen</span>
-	</button>
-</mat-menu>
+	<div *ngIf="withActions">
+		<a mat-icon-button routerLink="/orders/{{orderEntry?.id}}/edit">
+			<mat-icon>edit</mat-icon>
+		</a>
+		<button mat-icon-button *ngIf="withRemove"
+				(click)="remove()">
+			<mat-icon>delete</mat-icon>
+		</button>
+	</div>
+</div>
