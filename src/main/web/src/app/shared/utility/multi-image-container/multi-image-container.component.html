@@ -17,8 +17,6 @@
 		 (click)="onClick.emit(currentImage)"
 		 class="current-image" src="{{((_currentImage$ | async)) | imageSize:'large' | async}}"/>
 	<ng-template #placeholder>
-		<div class="current-image placeholder" (click)="onClick.emit({})">
-
-		</div>
+		<img class="current-image placeholder" src="../../../../resources/images/Logo.png"/>
 	</ng-template>
 </div>

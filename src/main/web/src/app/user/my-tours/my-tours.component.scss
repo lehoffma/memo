@@ -15,11 +15,13 @@
 }
 
 .tour-entry-container {
-	padding-right: 2%;
+	//padding-right: 2%;
 }
 
-memo-my-tours-entry {
-	margin-left: 2%;
+@media all and (min-width: 650px) {
+	memo-my-tours-entry {
+		margin-left: 2%;
+	}
 }
 
 .my-tours-options {
@@ -48,5 +50,10 @@ memo-my-tours-entry {
 		display: flex;
 		flex-wrap: wrap;
 		width: 100%;
+		padding: 0 1rem 1rem;
+
+		@media all and(min-width: 650px) {
+			padding: 0;
+		}
 	}
 }

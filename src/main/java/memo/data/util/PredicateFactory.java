@@ -185,6 +185,7 @@ public class PredicateFactory {
                 isEqualToSome(builder, root, filterRequest, transformRequestValue, getValue)
         );
     }
+
     public static <T, U, V> PredicateSupplier<T> getOptionalSupplier(
             Function<Path<T>, Optional<Path<V>>> getValue,
             Function<String, Optional<U>> transformRequestValue
@@ -365,19 +366,28 @@ public class PredicateFactory {
                                              Filter.FilterRequest filterRequest,
                                              List<String> keysToSearch
     ) {
+        //separate request value by \s and search every key separately
+        //every value has to match something though
+
+        //all values have to match something
+
         List<Predicate> isLikePredicates = filterRequest.getValues().stream()
+                .flatMap(value -> Arrays.stream(value.split("\\s")))
                 .map(value -> keysToSearch.stream()
                         .map(it -> PredicateFactory.<T, String>get(root, it)
                                 .map(builder::upper)
-                                .map(upper -> builder.like(upper, "%" + value + "%"))
+                                .map(upper -> builder.like(upper, "%" + value.trim() + "%"))
                                 .orElse(PredicateFactory.isFalse(builder))
                         )
-                        .collect(Collectors.toList())
+                        .reduce(builder::or)
+                        .orElse(isTrue(builder))
                 )
-                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        return Collections.singletonList(combineByOr(builder, isLikePredicates));
+
+        return Collections.singletonList(isLikePredicates.stream()
+                .reduce(builder::and)
+                .orElse(isFalse(builder)));
     }
 
     private static LocalDateTime isoToDate(String isoDate) {

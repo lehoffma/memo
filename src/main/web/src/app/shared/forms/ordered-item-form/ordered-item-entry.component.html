@@ -1,8 +1,11 @@
 <div class="section">
 	<a class="item-container" routerLink="{{getEventData(orderedItem?.item).link}}">
-		<img [lazySrc]="orderedItem?.item.images[0]"
-			 lazySrcVisible="visible"
-			 class="item-image"/>
+		<img
+			[lazySrc]="(orderedItem?.item.images.length > 0)
+				? orderedItem?.item.images[0]
+				: 'resources/images/Logo.png'"
+			lazySrcVisible="visible"
+			class="item-image"/>
 		<div class="labelled-value">
 			<span class="label">Item</span>
 			<span class="item-title">{{orderedItem?.item.title}}</span>

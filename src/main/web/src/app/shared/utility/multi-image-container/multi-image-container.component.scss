@@ -31,6 +31,10 @@
 		max-height: 500px;
 		object-fit: scale-down;
 		border-top: 1px solid #ededed;
+
+		@media all and (min-width: 800px) {
+			border-top: none;
+		}
 	}
 }
 

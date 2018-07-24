@@ -4,9 +4,9 @@
 :host > div {
 	display: block;
 	background: white;
-	//padding: 2rem;
 
 	padding: 1rem;
+	min-width: 280px;
 }
 
 .preview-header {
@@ -19,7 +19,6 @@
 			height: 50px;
 			object-fit: cover;
 			border-radius: 50%;
-			padding: 3px;
 			border: 2px solid mat-color($primary);
 		}
 	}

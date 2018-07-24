@@ -29,7 +29,9 @@ export class BreadcrumbService {
 		"applyForMembership": {de: "Mitglied werden"},
 		"requestMembership": {de: "Mitgliedsstatus ändern"},
 		"my-events": {de: "Deine Events"},
-		"order-history": {de: "Deine Bestellungen"}
+		"order-history": {de: "Deine Bestellungen"},
+		"create": {de: "Erstellen"},
+		"entries": {de: "Kosten"}
 	};
 
 	currentLocale = "de";

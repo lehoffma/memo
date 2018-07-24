@@ -66,7 +66,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 				private cdRef: ChangeDetectorRef,
 				private searchFilterService: SearchFilterService,
 				private filterOptionBuilder: FilterOptionBuilder) {
-		this.merchListSubscription = this.merch$.subscribe(it => this.merchList = it);
+		this.merchListSubscription = this.merch$.subscribe(it => this.merchList = [...it, ...it]);
 	}
 
 	get filterOptions() {

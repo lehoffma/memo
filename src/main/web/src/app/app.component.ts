@@ -1,20 +1,21 @@
-import {Component, Inject, LOCALE_ID, OnInit} from "@angular/core";
+import {Component, EventEmitter, Inject, LOCALE_ID, OnDestroy, OnInit} from "@angular/core";
 import {DateAdapter} from "@angular/material";
 import {AuthService} from "./shared/authentication/auth.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
-import {distinctUntilChanged, filter, map, mergeMap, startWith} from "rxjs/operators";
+import {distinctUntilChanged, filter, map, mergeMap, startWith, takeUntil} from "rxjs/operators";
 import {googleAnalytics, insertGoogleAnalyticsHeadScripts} from "../google-analytics-init";
 import {BreadcrumbService} from "./shared/breadcrumb-navigation/breadcrumb.service";
 
 import {NgcCookieConsentService, NgcStatusChangeEvent} from "ngx-cookieconsent";
 import {combineLatest} from "rxjs";
+import {ScrollingService} from "./shared/services/scrolling.service";
 
 @Component({
 	selector: "memo-app",
 	templateUrl: "./app.component.html",
 	styleUrls: ["./app.component.scss"],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy{
 
 	breadcrumbsJsonLd$ = this.router.events.pipe(
 		filter(event => event instanceof NavigationEnd),
@@ -24,10 +25,12 @@ export class AppComponent implements OnInit {
 
 	gaIsInitialized = false;
 
+	onDestroy$ = new EventEmitter<any>();
 	constructor(private authService: AuthService,
 				private breadcrumbService: BreadcrumbService,
 				private cookieConsentService: NgcCookieConsentService,
 				private dateAdapter: DateAdapter<Date>,
+				private scrollService: ScrollingService,
 				private activatedRoute: ActivatedRoute,
 				private router: Router,
 				@Inject(LOCALE_ID) public locale: any) {
@@ -37,6 +40,21 @@ export class AppComponent implements OnInit {
 	ngOnInit() {
 		this.authService.initRefreshToken();
 
+		this.scrollUpOnPageChange();
+		this.configureAnalyticsCookies();
+	}
+
+	scrollUpOnPageChange(){
+		this.router.events.pipe(
+			filter(event => event instanceof NavigationEnd),
+			takeUntil(this.onDestroy$)
+		).subscribe(event => {
+			this.scrollService.scrollToTop();
+		})
+	}
+
+	configureAnalyticsCookies(){
+		//cookie consent/google analytics configuration
 		combineLatest(
 			this.cookieConsentService.statusChange$.pipe(
 				map((event: NgcStatusChangeEvent) => event.status === "allow"),
@@ -47,12 +65,13 @@ export class AppComponent implements OnInit {
 					filter(event => event instanceof NavigationEnd)
 				)
 		)
+			.pipe(takeUntil(this.onDestroy$))
 			.subscribe(([hasConsented, event]: [boolean, NavigationEnd]) => {
 				if (!hasConsented) {
 					return;
 				}
 
-				if(!this.gaIsInitialized){
+				if (!this.gaIsInitialized) {
 					insertGoogleAnalyticsHeadScripts();
 					this.gaIsInitialized = true;
 				}
@@ -62,5 +81,9 @@ export class AppComponent implements OnInit {
 					googleAnalytics(url);
 				}
 			});
+	}
+
+	ngOnDestroy(): void {
+		this.onDestroy$.emit();
 	}
 }
