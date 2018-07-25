@@ -1,16 +1,12 @@
+
+<p align="center">
+  <img height="256px" width="256px" style="text-align: center;" src="https://raw.githubusercontent.com/lehoffma/memo/master/src/main/web/src/resources/images/Logo.png">
+</p>
+
+# Der Meilenwölfe Online Shop
+
 [![Build Status](https://travis-ci.org/lehoffma/memo.svg?branch=develop)](https://travis-ci.org/lehoffma/memo)
 
+## Webseite
+Sieh dir die Live-version des Meilenwölfe Shops unter https://shop.meilenwoelfe.de an!
 
-
-
-
-https://www.owasp.org/index.php/Session_Management_Cheat_Sheet
-
-https://www.owasp.org/index.php/Transport_Layer_Protection_Cheat_Sheet
-
-https://www.owasp.org/index.php/HTTP_Strict_Transport_Security
-
-https://www.javacodegeeks.com/2013/06/java-security-tutorial-step-by-step-guide-to-create-ssl-connection-and-certificates.html
-
-
-Alternative zum Zahlungen selbst implementieren? : https://stripe.com/de
