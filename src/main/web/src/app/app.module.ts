@@ -44,7 +44,7 @@ import {NgcCookieConsentConfig, NgcCookieConsentModule} from "ngx-cookieconsent"
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
-		"domain": ".meilenwoelfe.org"
+		"domain": ".meilenwoelfe.de"
 	},
 	"position": "bottom",
 	"theme": "edgeless",

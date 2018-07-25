@@ -117,7 +117,7 @@ export class BreadcrumbService {
 				"@type": "ListItem",
 				"position": index,
 				"item": {
-					"@id": "https://meilenwoelfe.org" + crumb.link,
+					"@id": "https://shop.meilenwoelfe.de" + crumb.link,
 					"name": crumb.label,
 				}
 			}))

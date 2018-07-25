@@ -62,7 +62,7 @@ export class ItemInfoHeaderComponent implements OnInit {
 		this.matDialog.open(ShareDialogComponent, {
 			data: {
 				title: this.event.title,
-				url: "http://meilenwoelfe.org/" + this.navigationService.getUrlOfItem(this.event),
+				url: "https://shop.meilenwoelfe.de/" + this.navigationService.getUrlOfItem(this.event),
 				description: this.event.description,
 				image: this.event.images[0],
 				additionalTags: []

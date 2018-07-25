@@ -96,7 +96,7 @@ public class PredicateFactory {
         for (String property : properties) {
             try {
                 object = object.get(property);
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException | IllegalStateException e) {
                 logger.error("Could not get property '" + property + "' of " + root.getJavaType().getName(), e);
                 return Optional.empty();
             }

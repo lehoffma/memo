@@ -2,76 +2,76 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	<!--main page-->
 	<url>
-		<loc>https://meilenwoelfe.org/</loc>
+		<loc>https://shop.meilenwoelfe.de/</loc>
 		<priority>1.0</priority>
 	</url>
 	<!--search url parameter combinations aliases-->
 	<url>
-		<loc>https://meilenwoelfe.org/search</loc>
+		<loc>https://shop.meilenwoelfe.de/search</loc>
 		<priority>0.8</priority>
 	</url>
 	<url>
-		<loc>https://meilenwoelfe.org/tours</loc>
+		<loc>https://shop.meilenwoelfe.de/tours</loc>
 		<priority>0.9</priority>
 	</url>
 	<url>
-		<loc>https://meilenwoelfe.org/partys</loc>
+		<loc>https://shop.meilenwoelfe.de/partys</loc>
 		<priority>0.9</priority>
 	</url>
 	<url>
-		<loc>https://meilenwoelfe.org/merchandise</loc>
+		<loc>https://shop.meilenwoelfe.de/merchandise</loc>
 		<priority>0.9</priority>
 	</url>
 	<url>
-		<loc>https://meilenwoelfe.org/shop</loc>
+		<loc>https://shop.meilenwoelfe.de/shop</loc>
 		<priority>0.9</priority>
 	</url>
 
 	<!--calendar-->
 	<url>
-		<loc>https://meilenwoelfe.org/calendar</loc>
+		<loc>https://shop.meilenwoelfe.de/calendar</loc>
 		<priority>0.8</priority>
 	</url>
 
 	<!--meilentabelle-->
 	<!--<url>-->
-	<!--<loc>https://meilenwoelfe.org/leaderboard</loc>-->
+	<!--<loc>https://shop.meilenwoelfe.de/leaderboard</loc>-->
 	<!--<priority>0.8</priority>-->
 	<!--</url>-->
 	<!--<url>-->
-	<!--<loc>https://meilenwoelfe.org/leaderboard?t=Gesamt</loc>-->
+	<!--<loc>https://shop.meilenwoelfe.de/leaderboard?t=Gesamt</loc>-->
 	<!--<priority>0.8</priority>-->
 	<!--</url>-->
 
 	<!--login etc.-->
 	<url>
-		<loc>https://meilenwoelfe.org/login</loc>
+		<loc>https://shop.meilenwoelfe.de/login</loc>
 		<priority>0.4</priority>
 	</url>
 	<url>
-		<loc>https://meilenwoelfe.org/signup</loc>
+		<loc>https://shop.meilenwoelfe.de/signup</loc>
 		<priority>0.4</priority>
 	</url>
 	<url>
-		<loc>https://meilenwoelfe.org/forgot-password</loc>
+		<loc>https://shop.meilenwoelfe.de/forgot-password</loc>
 		<priority>0.2</priority>
 	</url>
 
 
 	<url>
-		<loc>https://meilenwoelfe.org/cart</loc>
+		<loc>https://shop.meilenwoelfe.de/cart</loc>
 		<priority>0.2</priority>
 	</url>
 	<url>
-		<loc>https://meilenwoelfe.org/applyForMembership</loc>
+		<loc>https://shop.meilenwoelfe.de/applyForMembership</loc>
 		<priority>0.5</priority>
 	</url>
 	<url>
-		<loc>https://meilenwoelfe.org/requestMembership</loc>
+		<loc>https://shop.meilenwoelfe.de/requestMembership</loc>
 		<priority>0.5</priority>
 	</url>
 	<url>
-		<loc>https://meilenwoelfe.org/impressum</loc>
+		<loc>https://shop.meilenwoelfe.de/impressum</loc>
 		<priority>0.2</priority>
 	</url>
 
