@@ -23,7 +23,7 @@ public class MailPlaceholderFactory {
             case "~Name~":
                 return recipient.getFirstName() + " " + recipient.getSurname();
             case "~OrdersLink~":
-                return "http://www.shop.meilenwoelfe.de/order-history";
+                return "https://shop.meilenwoelfe.de/order-history";
             case "~Items~":
                 return items.stream()
                         .map(item -> "<p>" +
@@ -75,9 +75,9 @@ public class MailPlaceholderFactory {
                 ClubRole newStatus = (ClubRole) options.get("newRole");
                 return newStatus.getStringValue();
             case "~OrdersLink~":
-                return "http://www.shop.meilenwoelfe.de/order-history";
+                return "https://shop.meilenwoelfe.de/order-history";
             case "~ShopLink~":
-                return "http://www.shop.meilenwoelfe.de/";
+                return "https://shop.meilenwoelfe.de/";
             case "~Name~":
                 switch (type) {
                     case CLUBROLE_CHANGE_REQUEST:
@@ -91,16 +91,16 @@ public class MailPlaceholderFactory {
             case "~Link~":
                 switch (type) {
                     case REGISTRATION:
-                        return "http://www.shop.meilenwoelfe.de/confirm-email?token=" + TokenService.getAccessToken(recipient.getEmail());
+                        return "https://shop.meilenwoelfe.de/confirm-email?token=" + TokenService.getAccessToken(recipient.getEmail());
                     case OBJECT_HAS_CHANGED:
                     case RESPONSIBLE_USER:
-                        return "http://www.shop.meilenwoelfe.de/" +
+                        return "https://shop.meilenwoelfe.de/" +
                                 EventType.findByValue(item.getType())
                                         .map(EventType::getStringRepresentation).orElse("tours") +
                                 "/" + item.getId();
                 }
             case "~LinkPassword~":
-                return "http://www.shop.meilenwoelfe.de/password-reset?auth_token=" + TokenService.getAccessToken(recipient.getEmail());
+                return "https://shop.meilenwoelfe.de/password-reset?auth_token=" + TokenService.getAccessToken(recipient.getEmail());
 
         }
         return "";

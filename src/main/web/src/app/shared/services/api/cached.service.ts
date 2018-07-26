@@ -73,7 +73,7 @@ export abstract class CachedService<T> {
 	invalidateValue(id: number, removed: boolean = false) {
 		console.log("invalidate " + id);
 		this._cache.invalidateById(id);
-		if (!removed) {
+		if (!removed && id > 0) {
 			this.getById(id)
 				.subscribe(value => this.valueChanged(id, value));
 		}

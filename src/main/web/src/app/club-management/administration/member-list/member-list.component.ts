@@ -84,8 +84,8 @@ export class MemberListComponent implements OnInit, AfterViewInit {
 		{columnDef: "gender", header: "Geschlecht", cell: element => element.gender, type: "gender"},
 		{columnDef: "birthday", header: "Geburtstag", cell: element => element.birthday.toISOString(), type: "date"},
 		{columnDef: "joinDate", header: "Beitrittsdatum", cell: element => element.joinDate.toISOString(), type: "date"},
-		{columnDef: "isWoelfeClubMember", header: "Wölfeclub", cell: element => element.isWoelfeClubMember + "", type: "boolean"},
-		{columnDef: "hasSeasonTicket", header: "Dauerkarte", cell: element => element.hasSeasonTicket + "", type: "boolean"},
+		{columnDef: "isWoelfeClubMember", header: "Wölfeclub", cell: element => element.isWoelfeClubMember, type: "boolean"},
+		{columnDef: "hasSeasonTicket", header: "Dauerkarte", cell: element => element.hasSeasonTicket, type: "boolean"},
 	];
 	displayedColumns$ = this.getDisplayedColumns();
 

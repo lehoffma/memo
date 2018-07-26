@@ -1,6 +1,5 @@
 package memo.auth.api.strategy;
 
-import memo.data.util.PredicateFactory;
 import memo.model.BankAcc;
 import memo.model.Permission;
 import memo.model.PermissionState;
@@ -37,19 +36,17 @@ public class BankAccAuthStrategy implements AuthenticationStrategy<BankAcc> {
 
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<BankAcc> root, User user) {
-        if (user == null) {
-            return PredicateFactory.isFalse(builder);
-        }
+        Predicate userIsInRegistrationProcess = userIsInRegistrationProcess(builder, root, bankAccRoot -> bankAccRoot.get("user"));
 
+        if (user == null) {
+            return userIsInRegistrationProcess;
+        }
 
         //
         Predicate userHasPermissions = userHasPermissions(builder, user, Permission.read,
                 PermissionState::getUserManagement);
 
         Predicate userIsAuthorOfAcc = userIsAuthor(builder, root, user, "user");
-
-        Predicate userIsInRegistrationProcess = userIsInRegistrationProcess(builder, root, bankAccRoot -> bankAccRoot.get("user"));
-
 
         return builder.or(
                 //  user fulfills the minimum permissions

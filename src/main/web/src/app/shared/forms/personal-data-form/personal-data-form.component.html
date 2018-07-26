@@ -6,6 +6,7 @@
 					   formControlName="firstName"
 					   type="text"
 					   name="Vorname"
+					   required
 					   placeholder="Vorname">
 				<mat-error *ngIf="formGroup.get('firstName').hasError('required')" align="end">
 					Dieses Feld darf nicht leer bleiben!
@@ -16,6 +17,7 @@
 					   type="text"
 					   formControlName="surname"
 					   name="Nachname"
+					   required
 					   placeholder="Nachname">
 				<mat-error *ngIf="formGroup.get('surname').hasError('required')" align="end">
 					Dieses Feld darf nicht leer bleiben!
@@ -29,6 +31,7 @@
 						   [max]="maxDate"
 						   placeholder="Geburtstag"
 						   formControlName="birthday"
+						   required
 						   name="Geburtstag">
 					<mat-datepicker-toggle matSuffix [for]="birthDayPicker"></mat-datepicker-toggle>
 					<mat-error
