@@ -31,7 +31,7 @@ export class IsMemberGuard implements CanActivate {
 					if (permissions.userManagement >= Permission.read) {
 						return true;
 					}
-					if (isAuthenticated(user.clubRole, ClubRole.Gast)) {
+					if (isAuthenticated(user.clubRole, ClubRole.Mitglied)) {
 						return true;
 					}
 

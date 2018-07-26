@@ -6,6 +6,8 @@ import {ClubRole, isAuthenticated} from "../model/club-role";
 import {NavigationService} from "../services/navigation.service";
 import {Observable, of} from "rxjs";
 import {map, mergeMap} from "rxjs/operators";
+import {userPermissions} from "../model/user";
+import {Permission} from "../model/permission";
 
 @Injectable()
 export class IsOwnProfileGuard implements CanActivate {
@@ -26,7 +28,9 @@ export class IsOwnProfileGuard implements CanActivate {
 					let isAllowed = false;
 
 					if (currentUser !== null) {
-						isAllowed = currentUser.id === routeId || isAuthenticated(currentUser.clubRole, ClubRole.Admin);
+						let permissions = userPermissions(currentUser);
+						isAllowed = currentUser.id === routeId || isAuthenticated(currentUser.clubRole, ClubRole.Mitglied)
+							|| permissions.userManagement >= Permission.read;
 					}
 					//redirect to login if the user isn't logged in
 					else {
