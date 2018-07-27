@@ -125,7 +125,7 @@ export function isArrayType(value): value is any[] {
 export function isEdited<T>(previous: T, updated: T, except?: string[]): boolean {
 	let keys = Object.keys(previous);
 	if (except) {
-		keys = keys.filter(key => except.includes(key));
+		keys = keys.filter(key => !except.includes(key));
 	}
 
 	return keys.some(key => previous[key] !== updated[key]);

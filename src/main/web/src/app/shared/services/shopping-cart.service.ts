@@ -54,7 +54,7 @@ export class ShoppingCartService implements OnInit {
 									mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
 										cartItem.item.id, cartItem.item.price, user !== null ? user.id : null
 									)),
-									map(discountedPrice => discountedPrice * cartItem.amount)
+									map(discountedPrice => (cartItem.amount - 1) * cartItem.item.price + discountedPrice)
 								)
 							)))
 				}),

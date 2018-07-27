@@ -60,7 +60,7 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 							map(discounts => discounts.map(it => {
 								return {
 									...it,
-									amount: it.amount * cartItem.amount
+									amount: it.amount
 								}
 							}))
 						)

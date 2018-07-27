@@ -4,8 +4,6 @@ import {Participant, ParticipantUser} from "../../../shop/shared/model/participa
 import {UserService} from "./user.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Tour} from "../../../shop/shared/model/tour";
-import {Party} from "../../../shop/shared/model/party";
 import {EventUtilityService} from "../event-utility.service";
 import {Observable, of} from "rxjs";
 import {map, mergeMap, share, tap} from "rxjs/operators";
@@ -257,6 +255,8 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 		else {
 			this.capacityService.invalidateValue(item.id);
 		}
+		this.discountService.invalidateEventDiscounts(item.id);
+
 	}
 
 	invalidateCache() {

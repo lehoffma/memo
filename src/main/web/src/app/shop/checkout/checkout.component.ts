@@ -105,7 +105,6 @@ export class CheckoutComponent implements OnInit {
 				)
 					.pipe(first())
 					.subscribe(accounts => {
-						console.log(accounts);
 						this.previousAccounts = [...accounts];
 						this.formGroup.get("payment").get("bankAccounts").setValue(accounts);
 					});
@@ -114,7 +113,6 @@ export class CheckoutComponent implements OnInit {
 					this.subscriptions.forEach(it => it.unsubscribe());
 				}
 
-				console.log("eh");
 				this.subscriptions = [
 					this.formGroup.get("address").get("addresses").valueChanges
 						.pipe(

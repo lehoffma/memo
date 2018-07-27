@@ -113,7 +113,7 @@ export class BaseApiCache<T, U> {
 	 */
 	private invalidate(type: keyof ApiInnerCache<T>, key: string) {
 		if (this.cache[type][key]) {
-			console.info(`Invalidating Cache for type ${type} and key ${key}.`);
+			console.debug(`Invalidating Cache for type ${type} and key ${key}.`);
 			this.cache[type][key].invalidate();
 		}
 	}

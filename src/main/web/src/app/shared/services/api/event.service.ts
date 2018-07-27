@@ -14,10 +14,16 @@ import {Sort} from "../../model/api/sort";
 import {Page} from "../../model/api/page";
 import {isUser} from "../../model/util/model-type-util";
 import {setProperties} from "../../model/util/base-object";
+import {CapacityService} from "./capacity.service";
+import {StockService} from "./stock.service";
+import {UserService} from "./user.service";
 
 @Injectable()
 export class EventService extends ServletService<Event> {
-	constructor(protected http: HttpClient) {
+	constructor(protected http: HttpClient,
+				private capacityService: CapacityService,
+				private userService: UserService,
+				private stockService: StockService) {
 		super(http, `/api/event`);
 	}
 
@@ -105,8 +111,20 @@ export class EventService extends ServletService<Event> {
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {event: modifiedEvent, ...body}))
 			.pipe(
 				tap(() => this._cache.invalidateById(event.id)),
-				mergeMap(response => this.getById(response.id))
+				mergeMap(response => this.getById(response.id)),
+				tap(() => this.updateCapacities(modifiedEvent))
 			);
+	}
+
+
+	/**
+	 *
+	 * @param event
+	 */
+	updateCapacities(event: Event) {
+		this.capacityService.invalidateValue(event.id);
+		this.stockService.invalidateValue(event.id);
+		event.author.forEach(id => this.userService.invalidateValue(id));
 	}
 
 	/**

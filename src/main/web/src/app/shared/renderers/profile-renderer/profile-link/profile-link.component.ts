@@ -9,7 +9,7 @@ import {User} from "../../../model/user";
 export class ProfileLinkComponent {
 	@Input() user: User;
 	@Input() shortened: boolean = false;
-	@Input() mouseLeaveDelay: number = 200000;
+	@Input() mouseLeaveDelay: number = 300;
 	@Input() hoverDelay: number = 250;
 
 	constructor() {

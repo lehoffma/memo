@@ -77,8 +77,10 @@ public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
                 .orElse(PredicateFactory.isFalse(builder));
 
         return builder.or(
-                builder.isTrue(permissionCheck),
-                roleCheck,
+                builder.and(
+                        builder.isTrue(permissionCheck),
+                        roleCheck
+                ),
                 authorCheck
         );
     }

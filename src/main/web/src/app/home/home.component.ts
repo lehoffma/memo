@@ -81,7 +81,8 @@ export class HomeComponent implements OnInit {
 	];
 
 	combinedEvents: Observable<Event[]>;
-	userIsLoggedIn$ = this.loginService.isLoggedInObservable();
+	userIsLoggedOut$ = this.loginService.isLoggedInObservable()
+		.pipe(map(it => !it));
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService) {

@@ -7,6 +7,10 @@
 	display: block;
 }
 
+.invisible {
+	visibility: hidden;
+}
+
 .category-overview-container {
 	max-width: 800px;
 	margin: auto;
@@ -100,7 +104,7 @@
 	}
 }
 
-/deep/ .loader-wrapper{
+/deep/ .loader-wrapper {
 	transform: scale(0.5);
 }
 

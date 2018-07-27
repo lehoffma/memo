@@ -50,6 +50,15 @@ export class DiscountService {
 		return this._cache.other(params, request);
 	}
 
+	invalidateEventDiscounts(eventId: number, userId?: number) {
+		let params = new HttpParams()
+			.set("eventId", "" + eventId);
+		if (userId) {
+			params = params.set("userId", "" + userId);
+		}
+		this._cache.invalidateByPartialParams(params);
+	}
+
 	/**
 	 *
 	 * @param {number} eventId

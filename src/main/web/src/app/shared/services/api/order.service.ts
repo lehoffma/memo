@@ -13,6 +13,7 @@ import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {Page} from "../../model/api/page";
 import {setProperties} from "../../model/util/base-object";
+import {DiscountService} from "../../../shop/shared/services/discount.service";
 
 @Injectable()
 export class OrderService extends ServletService<Order> {
@@ -20,6 +21,7 @@ export class OrderService extends ServletService<Order> {
 
 	constructor(protected http: HttpClient,
 				private stockService: StockService,
+				private discountService: DiscountService,
 				private capacityService: CapacityService) {
 		super(http, "/api/order");
 	}
@@ -126,6 +128,8 @@ export class OrderService extends ServletService<Order> {
 			.filter(item => item.type === typeToInteger(EventType.merch))
 			.map(item => item.id)
 			.forEach(id => this.stockService.invalidateValue(id));
+
+		items.forEach(item => this.discountService.invalidateEventDiscounts(item.id, order.user));
 	}
 
 	addOrModify(requestMethod: AddOrModifyRequest, entry: Order, options?: any): Observable<Order> {

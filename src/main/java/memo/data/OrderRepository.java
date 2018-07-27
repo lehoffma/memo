@@ -10,6 +10,8 @@ import memo.model.PaymentMethod;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -19,7 +21,6 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
 public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
 
     private static OrderRepository instance;
+
+    private static final Logger logger = LogManager.getLogger(OrderRepository.class);
 
     private OrderRepository() {
         super(Order.class, new OrderAuthStrategy());
@@ -46,32 +49,27 @@ public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
                 .findFirst();
     }
 
-    private List<Order> withParsedId(String id, HttpServletResponse response, Function<Integer, List<Order>> getValues) {
+    private List<Order> withParsedId(String id, Function<Integer, List<Order>> getValues) {
         try {
             Integer parsedId = Integer.parseInt(id);
             return getValues.apply(parsedId);
         } catch (NumberFormatException e) {
-            try {
-                response.getWriter().append("Bad ID Value");
-            } catch (IOException exc) {
-                exc.printStackTrace();
-            }
-            response.setStatus(400);
+            logger.error("Could not parse Id  " + id);
         }
         return null;
     }
 
 
-    public List<Order> findByOrderedItem(String orderedItemId, HttpServletResponse response) {
-        return this.withParsedId(orderedItemId, response,
+    public List<Order> findByOrderedItem(String orderedItemId) {
+        return this.withParsedId(orderedItemId,
                 id -> DatabaseManager.createEntityManager()
                         .createNamedQuery("Order.findByOrderedItem", Order.class)
                         .setParameter("orderedItemId", id)
                         .getResultList());
     }
 
-    public List<Order> findByUser(String userId, HttpServletResponse response) {
-        return this.withParsedId(userId, response,
+    public List<Order> findByUser(String userId) {
+        return this.withParsedId(userId,
                 id -> DatabaseManager.createEntityManager()
                         .createNamedQuery("Order.findByUser", Order.class)
                         .setParameter("userId", id)
@@ -82,8 +80,8 @@ public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
         return this.getIf(
                 new MapBuilder<String, Function<String, List<Order>>>()
                         .buildPut(orderId, this::get)
-                        .buildPut(orderedItemId, s -> this.findByOrderedItem(s, response))
-                        .buildPut(userId, s -> this.findByUser(s, response)),
+                        .buildPut(orderedItemId, this::findByOrderedItem)
+                        .buildPut(userId, this::findByUser),
                 this.getAll()
         );
     }

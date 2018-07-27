@@ -58,7 +58,7 @@ public class User implements Serializable {
     @JsonDeserialize(using = ClubRoleDeserializer.class)
     private ClubRole clubRole;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonSerialize(using = AddressIdListSerializer.class)
     @JsonDeserialize(using = AddressIdListDeserializer.class)
     private List<Address> addresses = new ArrayList<>();
@@ -119,11 +119,15 @@ public class User implements Serializable {
             joinColumns = @JoinColumn(name = "authoreditems_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
+    @JsonSerialize(using = ShopItemIdListSerializer.class)
+    @JsonDeserialize(using = ShopItemIdListDeserializer.class)
     private List<ShopItem> authoredItems = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_reportresponsibilities", joinColumns = @JoinColumn(name = "reportresponsibilities_id"),
             inverseJoinColumns = @JoinColumn(name = "reportwriters_id"))
+    @JsonSerialize(using = ShopItemIdListSerializer.class)
+    @JsonDeserialize(using = ShopItemIdListDeserializer.class)
     private List<ShopItem> reportResponsibilities = new ArrayList<>();
 
     //**************************************************************
@@ -353,7 +357,7 @@ public class User implements Serializable {
         this.comments.add(c);
     }
 
-    @JsonIgnore
+    //    @JsonIgnore
     public List<ShopItem> getAuthoredItems() {
         return authoredItems;
     }

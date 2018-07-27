@@ -1,9 +1,6 @@
 package memo.data;
 
-import memo.model.ClubRole;
-import memo.model.Discount;
-import memo.model.ShopItem;
-import memo.model.User;
+import memo.model.*;
 import memo.util.model.EventType;
 
 import java.math.BigDecimal;
@@ -13,6 +10,25 @@ import java.util.List;
 import java.util.Optional;
 
 public class DiscountService {
+
+    public static Discount getUserDiscount() {
+        return new Discount()
+                .setAmount(new BigDecimal("5.00"))
+                .setEligible(false)
+                .setLink(new Discount.DiscountLink()
+                        .setUrl("/applyForMembership")
+                        .setText("Werde jetzt Mitglied, um 5 Euro auf alle Touren zu sparen!"))
+                .setReason("Mitglieder-Rabatt");
+    }
+
+    public static boolean isFirstOrder(ShopItem item, User user) {
+        List<Order> userOrders = OrderRepository.getInstance().findByUser(user.getId().toString());
+
+        return userOrders.stream()
+                .noneMatch(order -> order.getItems().stream()
+                        .anyMatch(orderedItem -> orderedItem.getItem().getId().equals(item.getId()))
+                );
+    }
 
     public static BigDecimal getDiscountedPrice(Integer eventId, Integer userId) {
         return getDiscountedPrice("" + eventId, "" + userId);
@@ -35,16 +51,12 @@ public class DiscountService {
             return new ArrayList<>();
         }
 
-        Discount discount = new Discount()
-                .setAmount(new BigDecimal("5.00"))
-                .setEligible(false)
-                .setLink(new Discount.DiscountLink()
-                        .setUrl("/applyForMembership")
-                        .setText("Werde jetzt Mitglied, um 5 Euro auf alle Touren zu sparen!"))
-                .setReason("Mitglieder-Rabatt");
+        Discount discount = getUserDiscount();
 
         Optional<User> user = UserRepository.getInstance().getById(userId);
-        user.ifPresent(it -> discount.setEligible(it.getClubRole().ordinal() > ClubRole.Gast.ordinal()));
+        user.ifPresent(it -> discount.setEligible(isFirstOrder(shopItems.get(0), it)
+                && (it.getClubRole().ordinal() > ClubRole.Gast.ordinal()))
+        );
 
         return Arrays.asList(discount);
     }

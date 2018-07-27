@@ -340,11 +340,6 @@ public class PredicateFactory {
             return getBounded(builder, root, filterRequest, transform);
         }
 
-        //if that didn't match either, check for id queries
-//        if (key.equalsIgnoreCase("id")) {
-//            return getByIds(builder, root, filterRequest);
-//        }
-
         //otherwise, just compare the value of the key directly
         return getByKey(builder, root, filterRequest);
     }

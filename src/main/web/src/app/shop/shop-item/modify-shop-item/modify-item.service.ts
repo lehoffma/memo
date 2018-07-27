@@ -202,7 +202,7 @@ export class ModifyItemService {
 					return this.addressService.getById(address.id)
 						.pipe(
 							//but modify them in case they're different
-							mergeMap(prevAddress => isEdited(prevAddress, address, ["id"])
+							mergeMap(prevAddress => isEdited(prevAddress, address, ["id", "user"])
 								? this.addressService.modify(address)
 								//otherwise don't do anything
 								: of(prevAddress)
