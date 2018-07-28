@@ -54,7 +54,7 @@
 		color="primary"
 		type="button"
 		class="add-stop-button"
-		*ngIf="isTour"
+		*ngIf="isTour && (route$ | async)?.length < 10"
 		(click)="addNewStop()">
 	Zwischenstopp hinzufügen
 </button>

@@ -15,6 +15,7 @@ public class DiscountService {
         return new Discount()
                 .setAmount(new BigDecimal("5.00"))
                 .setEligible(false)
+                .setShowLink(false)
                 .setLink(new Discount.DiscountLink()
                         .setUrl("/applyForMembership")
                         .setText("Werde jetzt Mitglied, um 5 Euro auf alle Touren zu sparen!"))
@@ -54,9 +55,11 @@ public class DiscountService {
         Discount discount = getUserDiscount();
 
         Optional<User> user = UserRepository.getInstance().getById(userId);
-        user.ifPresent(it -> discount.setEligible(isFirstOrder(shopItems.get(0), it)
-                && (it.getClubRole().ordinal() > ClubRole.Gast.ordinal()))
-        );
+        user.ifPresent(it -> {
+            boolean firstOrder = isFirstOrder(shopItems.get(0), it);
+            discount.setEligible(firstOrder && (it.getClubRole().ordinal() > ClubRole.Gast.ordinal()));
+            discount.setShowLink((it.getClubRole().ordinal() <= ClubRole.Gast.ordinal()));
+        });
 
         return Arrays.asList(discount);
     }

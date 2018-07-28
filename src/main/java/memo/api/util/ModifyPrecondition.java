@@ -1,5 +1,6 @@
 package memo.api.util;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.function.Predicate;
 
 public class ModifyPrecondition<T> {
@@ -13,6 +14,15 @@ public class ModifyPrecondition<T> {
         this.predicate = predicate;
         this.errorMessage = errorMessage;
         this.consequence = consequence;
+    }
+
+    public ModifyPrecondition(Predicate<T> predicate,
+                              String errorMessage,
+                              HttpServletResponse response,
+                              int errorCode) {
+        this.predicate = predicate;
+        this.errorMessage = errorMessage;
+        this.consequence = () -> response.setStatus(errorCode);
     }
 
     public Predicate<T> getPredicate() {

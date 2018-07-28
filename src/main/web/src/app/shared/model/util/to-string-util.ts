@@ -6,6 +6,6 @@ export function addressToString(address: Address) {
 		return !value ? "" : ifNotEmpty(options && options.prefix) + value + ifNotEmpty(options && options.suffix);
 	};
 
-	return address.street + ifNotEmpty(address.streetNr, {prefix: " "}) + ", "
+	return ifNotEmpty((ifNotEmpty(address.street) + " " + ifNotEmpty(address.streetNr)).trim(), {prefix: " ", suffix: ","})
 		+ ifNotEmpty(address.zip, {suffix: " "}) + address.city + ", " + address.country;
 }

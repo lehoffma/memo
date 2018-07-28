@@ -30,6 +30,7 @@ public class Discount {
 
     private BigDecimal amount;
     private Boolean eligible;
+    private Boolean showLink;
     private DiscountLink link;
     private String reason;
 
@@ -66,6 +67,15 @@ public class Discount {
 
     public Discount setReason(String reason) {
         this.reason = reason;
+        return this;
+    }
+
+    public Boolean getShowLink() {
+        return showLink;
+    }
+
+    public Discount setShowLink(Boolean showLink) {
+        this.showLink = showLink;
         return this;
     }
 }

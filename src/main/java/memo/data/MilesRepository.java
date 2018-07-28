@@ -48,6 +48,8 @@ public class MilesRepository {
                 .filter(item -> item.getDate().toLocalDateTime().isBefore(LocalDateTime.now()))
                 .filter(item -> isBetween(item.getDate().toLocalDateTime(), start, end))
                 .mapToInt(ShopItem::getMiles)
+                //x2 for the way back
+                .map(it -> it * 2)
                 .sum();
     }
 

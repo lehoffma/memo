@@ -47,9 +47,10 @@ public class Address implements Serializable {
 
     private String name;
 
-    @Column(nullable = false)
+    @Column()
     private String street;
 
+    @Column()
     private String streetNr;
 
     @Column(nullable = false)
@@ -60,9 +61,9 @@ public class Address implements Serializable {
 
     private String country = "Germany";
 
-    private double latitude;
+    private Double latitude;
 
-    private double longitude;
+    private Double longitude;
 
     //**************************************************************
     //  constructor
@@ -75,7 +76,6 @@ public class Address implements Serializable {
     //**************************************************************
     //  getters and setters
     //**************************************************************
-
 
 
     public User getUser() {
@@ -150,19 +150,19 @@ public class Address implements Serializable {
         this.country = country;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 

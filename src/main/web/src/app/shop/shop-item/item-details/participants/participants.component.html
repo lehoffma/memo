@@ -8,7 +8,7 @@
 			<h3 matLine> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
 			<p matLine>
 				<span> {{participant?.user?.clubRole}} </span>
-				<span class="secondary-text"> -- {{participant?.user?.miles}} Meilen </span>
+				<span class="secondary-text"> -- {{(participant?.user | miles | async) || 0}} Meilen </span>
 			</p>
 		</mat-list-item>
 		<mat-divider></mat-divider>

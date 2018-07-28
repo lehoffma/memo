@@ -85,7 +85,7 @@ export class PriceRendererComponent implements OnInit {
 		//update the actual price value
 		this.price = this.price;
 		this.nonEligibleDiscounts = discountsCopy
-			.filter(discount => !discount.eligible);
+			.filter(discount => !discount.eligible && discount.showLink);
 	}
 
 	ngOnInit() {

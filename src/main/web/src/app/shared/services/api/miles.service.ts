@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {ApiCache} from "../../cache/api-cache";
 import {map} from "rxjs/operators";
-import {setDate, setMonth, setYear} from "date-fns";
+import {endOfDay, setDate, setMonth, setYear, startOfDay} from "date-fns";
 
 export interface MilesListEntry {
 	userId: number;
@@ -16,10 +16,11 @@ export class MilesService {
 	protected _cache: ApiCache<MilesListEntry[]> = new ApiCache<MilesListEntry[]>();
 	private baseUrl = "/api/miles";
 
-	private readonly startOfSeason = setMonth(setDate(new Date(), 1), 8);
-	private readonly endOfSeason = setMonth(setDate(new Date(), 30), 5);
+	private readonly startOfSeason = startOfDay(setDate(setMonth(new Date(), 6), 1));
+	private readonly endOfSeason = endOfDay(setDate(setMonth(new Date(), 5), 30));
 
 	constructor(private http: HttpClient) {
+
 	}
 
 	get(userId: number): Observable<MilesListEntry> {
@@ -105,7 +106,6 @@ export class MilesService {
 		const regexResults = seasonRegex.exec(season);
 		const from = +regexResults[1];
 		const to = +("20" + regexResults[2]);
-
 
 		return {
 			from: setYear(this.startOfSeason, from),

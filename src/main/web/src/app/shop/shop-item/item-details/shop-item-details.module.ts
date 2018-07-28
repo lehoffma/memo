@@ -24,6 +24,7 @@ import {ShareButtonsModule} from "@ngx-share/buttons";
 import {ItemInfoHeaderComponent} from "./item-info-header/item-info-header.component";
 import {AddToCartFormComponent} from "./add-to-cart-form/add-to-cart-form.component";
 import {DetailPageComponent} from "./details/detail-page.component";
+import { MilesPipe } from './participants/miles.pipe';
 
 @NgModule({
 	imports: [
@@ -60,6 +61,7 @@ import {DetailPageComponent} from "./details/detail-page.component";
 		RouteListComponent,
 		ItemInfoHeaderComponent,
 		AddToCartFormComponent,
+		MilesPipe,
 	],
 	entryComponents: [
 		FullNameTableCellComponent,
