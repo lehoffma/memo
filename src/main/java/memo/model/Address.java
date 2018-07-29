@@ -53,10 +53,10 @@ public class Address implements Serializable {
     @Column()
     private String streetNr;
 
-    @Column(nullable = false)
+    @Column()
     private String zip;
 
-    @Column(nullable = false)
+    @Column()
     private String city;
 
     private String country = "Germany";
