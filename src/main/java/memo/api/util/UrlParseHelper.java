@@ -1,5 +1,6 @@
 package memo.api.util;
 
+import memo.data.model.SerializationOption;
 import memo.util.model.Filter;
 import memo.util.model.PageRequest;
 import memo.util.model.Sort;
@@ -30,7 +31,8 @@ public class UrlParseHelper {
 
     private static boolean isNotSortingParameter(Map.Entry<String, String[]> entry) {
         String key = entry.getKey();
-        return !key.equalsIgnoreCase("sortBy") && !key.equalsIgnoreCase("direction")
+        return !key.equalsIgnoreCase("convertTo") &&
+                !key.equalsIgnoreCase("sortBy") && !key.equalsIgnoreCase("direction")
                 && !key.equalsIgnoreCase("page") && !key.equalsIgnoreCase("pageSize");
     }
 
@@ -59,12 +61,23 @@ public class UrlParseHelper {
     }
 
 
-    public static PageRequest readPageRequest(Map<String, String[]> parameterMap) {
+    public static PageRequest readPageRequest(Map<String, String[]> parameterMap, Integer defaultPageSize) {
         Integer page = Integer.valueOf(parameterMap.getOrDefault("page", new String[]{"0"})[0]) + 1;
-        Integer pageSize = Integer.valueOf(parameterMap.getOrDefault("pageSize", new String[]{"50"})[0]);
+        Integer pageSize = Integer.valueOf(parameterMap.getOrDefault("pageSize", new String[]{defaultPageSize.toString()})[0]);
 
         return new PageRequest()
                 .setPage(page)
                 .setPageSize(pageSize);
+    }
+
+    public static PageRequest readPageRequest(Map<String, String[]> parameterMap) {
+        return readPageRequest(parameterMap, 50);
+    }
+
+    public static SerializationOption readSerializationOption(Map<String, String[]> parameterMap) {
+        String convertTo = parameterMap.getOrDefault("convertTo", new String[]{SerializationOption.PAGE.toStringValue()})[0];
+
+        return SerializationOption.fromString(convertTo)
+                .orElse(SerializationOption.PAGE);
     }
 }

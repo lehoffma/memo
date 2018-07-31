@@ -44,7 +44,7 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response, EntryRepository.getInstance(), "entries");
+        this.get(request, response, EntryRepository.getInstance());
     }
 
     @Override

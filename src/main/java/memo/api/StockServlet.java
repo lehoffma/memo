@@ -33,7 +33,7 @@ public class StockServlet extends AbstractApiServlet<Stock> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response, StockRepository.getInstance(), "stock");
+        this.get(request, response, StockRepository.getInstance());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -74,7 +74,7 @@ public class UserServlet extends AbstractApiServlet<User> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response, UserRepository.getInstance(), "users");
+        this.get(request, response, UserRepository.getInstance());
     }
 
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

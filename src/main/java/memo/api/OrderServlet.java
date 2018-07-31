@@ -104,7 +104,7 @@ public class OrderServlet extends AbstractApiServlet<Order> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response, OrderRepository.getInstance(), "orders");
+        this.get(request, response, OrderRepository.getInstance());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

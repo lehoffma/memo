@@ -23,7 +23,7 @@ public class DiscountServlet extends AbstractApiServlet<Discount> {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response,
+        this.getList(request, response,
                 (paramMap, response1) ->
                         DiscountService.getUserDiscount(
                                 getParameter(paramMap, "eventId"),

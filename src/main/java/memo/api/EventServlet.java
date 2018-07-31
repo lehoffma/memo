@@ -51,7 +51,7 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response, EventRepository.getInstance(), "shopItems");
+        this.get(request, response, EventRepository.getInstance());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

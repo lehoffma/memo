@@ -106,12 +106,16 @@ public class User implements Serializable {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn
+    @JsonIgnore
     private PermissionState permissions;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Order> orders = new ArrayList<>();
+//    todo serialize everything as ids
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
+    @JsonSerialize(using = CommentIdListSerializer.class)
+    @JsonDeserialize(using = CommentIdListDeserializer.class)
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)

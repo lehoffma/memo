@@ -5,6 +5,8 @@ import memo.api.util.*;
 import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.AuthenticationStrategy;
 import memo.data.PagingAndSortingRepository;
+import memo.data.model.SerializationOption;
+import memo.data.util.CsvConverter;
 import memo.model.User;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
@@ -18,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -116,9 +119,9 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return getParameter(paramMap, key, null);
     }
 
-    protected List<T> get(HttpServletRequest request, HttpServletResponse response,
-                          BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
-                          String serializedKey) {
+    protected List<T> getList(HttpServletRequest request, HttpServletResponse response,
+                              BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
+                              String serializedKey) {
         Map<String, String[]> parameterMap = request.getParameterMap();
         ApiUtils.getInstance().setContentType(request, response);
 
@@ -149,15 +152,51 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return items;
     }
 
-    protected Page<T> get(HttpServletRequest request,
-                          HttpServletResponse response,
-                          PagingAndSortingRepository<T> repository,
-                          String serializedKey
-    ) {
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        ApiUtils.getInstance().setContentType(request, response);
 
-        logger.debug("Method GET called with params " + paramMapToString(parameterMap));
+    protected Page<T> getCsv(HttpServletRequest request,
+                             HttpServletResponse response,
+                             Map<String, String[]> parameterMap,
+                             PagingAndSortingRepository<T> repository) {
+
+        PageRequest pageRequest = UrlParseHelper.readPageRequest(parameterMap, 1000);
+        Filter filter = UrlParseHelper.readFilter(parameterMap);
+        Sort sort = UrlParseHelper.readSort(parameterMap);
+        User requestingUser = AuthenticationService.parseNullableUserFromRequestHeader(request);
+
+        Page<T> resultPage = repository.get(requestingUser, pageRequest, sort, filter);
+
+        String id = getParameter(parameterMap, "id");
+
+        //todo how to differentiate between 404 and 503?
+        if (stringIsNotEmpty(id) && resultPage.isEmpty()) {
+            ApiUtils.getInstance().processNotFoundError(response);
+            return new Page<>();
+        }
+
+        if (stringIsNotEmpty(id) && resultPage.isEmpty()) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            logger.error("User is not logged in or is not allowed to see this item");
+            return new Page<>();
+        }
+
+        String csv;
+        try {
+            csv = new CsvConverter<T>().convertList(resultPage.getContent());
+            response.getWriter().append(csv);
+        } catch (IOException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            logger.error("Could not convert result to csv", e);
+            return new Page<>();
+        }
+
+        return resultPage;
+    }
+
+    protected Page<T> getPage(HttpServletRequest request,
+                              HttpServletResponse response,
+                              Map<String, String[]> parameterMap,
+                              PagingAndSortingRepository<T> repository
+    ) {
 
         PageRequest pageRequest = UrlParseHelper.readPageRequest(parameterMap);
         Filter filter = UrlParseHelper.readFilter(parameterMap);
@@ -174,8 +213,6 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
             return new Page<>();
         }
 
-        //todo transform auth read strategies to Criteria API Predicate's
-
         if (stringIsNotEmpty(id) && resultPage.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to see this item");
@@ -184,6 +221,27 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         ApiUtils.getInstance().serializeObject(response, resultPage, null);
         return resultPage;
+    }
+
+    protected Page<T> get(HttpServletRequest request,
+                          HttpServletResponse response,
+                          PagingAndSortingRepository<T> repository) {
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        ApiUtils.getInstance().setContentType(request, response);
+
+        logger.debug("Method GET called with params " + paramMapToString(parameterMap));
+
+        SerializationOption serializationOption = UrlParseHelper.readSerializationOption(parameterMap);
+        switch (serializationOption) {
+            case PAGE:
+                return this.getPage(request, response, parameterMap, repository);
+            case CSV:
+                return this.getCsv(request, response, parameterMap, repository);
+            default:
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                logger.error("Serialization option " + serializationOption.toStringValue() + " not implemented yet");
+                return new Page<>();
+        }
     }
 
     protected <SerializedType> T post(HttpServletRequest request,

@@ -1,5 +1,6 @@
 package memo.data.util;
 
+import memo.model.ClubRole;
 import memo.util.model.Filter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -201,12 +202,13 @@ public class PredicateFactory {
      * @param filterRequest
      * @return
      */
-    public static <T> List<Predicate> getByKey(CriteriaBuilder builder,
-                                               Root<T> root,
-                                               Filter.FilterRequest filterRequest) {
+    public static <T, U extends Comparable<? super U>> List<Predicate> getByKey(CriteriaBuilder builder,
+                                                                                Root<T> root,
+                                                                                Filter.FilterRequest filterRequest,
+                                                                                Function<String, U> transform) {
         return Arrays.asList(
                 isEqualToSome(builder, root, filterRequest,
-                        Function.identity(),
+                        transform,
                         filterRequest.getKey()
                 )
         );
@@ -302,6 +304,9 @@ public class PredicateFactory {
         if (key.contains("date") || key.contains("timestamp")) {
             return s -> PredicateFactory.isoToTimestamp((String) s);
         }
+        if (key.contains("role")) {
+            return s -> ClubRole.fromString((String) s).orElse(ClubRole.Gast);
+        }
         return s -> s;
     }
 
@@ -334,14 +339,14 @@ public class PredicateFactory {
             return predicateSupplier.get(builder, root, filterRequest);
         }
 
+        Function<String, U> transform = (Function<String, U>) getTransform(filterRequest.getKey());
         //if nothing matched, check if the filterRequest is something like minX or maxX
         if (isMinOrMaxParameter(key)) {
-            Function<String, U> transform = (Function<String, U>) getTransform(filterRequest.getKey());
             return getBounded(builder, root, filterRequest, transform);
         }
 
         //otherwise, just compare the value of the key directly
-        return getByKey(builder, root, filterRequest);
+        return getByKey(builder, root, filterRequest, transform);
     }
 
 

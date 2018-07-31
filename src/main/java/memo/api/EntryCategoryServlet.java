@@ -21,7 +21,7 @@ public class EntryCategoryServlet extends AbstractApiServlet<EntryCategory> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response, EntryCategoryRepository.getInstance(), "categories");
+        this.get(request, response, EntryCategoryRepository.getInstance());
     }
 
     @Override

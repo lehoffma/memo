@@ -52,7 +52,7 @@ public class AddressServlet extends AbstractApiServlet<Address> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response, AddressRepository.getInstance(), "addresses");
+        this.get(request, response, AddressRepository.getInstance());
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {

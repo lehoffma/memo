@@ -127,10 +127,10 @@ export class BaseApiCache<T, U> {
 	 */
 	private getFromCache(type: keyof ApiInnerCache<T>, key: string, fallback: Observable<T> | Observable<T[]> | Observable<any>): Observable<T> | Observable<T[]> | Observable<any> {
 		if (!this.cache[type][key]) {
-			console.debug(`Cache for type ${type} and key ${key} doesn't exist, fallback will be used`);
+			// console.debug(`Cache for type ${type} and key ${key} doesn't exist, fallback will be used`);
 			this.cache[type][key] = new Cache<any>(() => fallback);
 		}
-		console.debug(`type ${type} and key ${key} is cached`);
+		// console.debug(`type ${type} and key ${key} is cached`);
 		return this.cache[type][key].get();
 	}
 

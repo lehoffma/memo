@@ -31,7 +31,7 @@ public class MilesServlet extends AbstractApiServlet<MilesListEntry> {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response,
+        this.getList(request, response,
                 (parameterMap, _response) -> {
                     String userId = this.getParameter(parameterMap, "userId");
                     String from = this.getParameter(parameterMap, "from");

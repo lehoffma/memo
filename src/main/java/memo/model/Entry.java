@@ -1,5 +1,6 @@
 package memo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -109,6 +110,7 @@ public class Entry implements Serializable {
         this.category = category;
     }
 
+    @JsonIgnore
     public BigDecimal getValue() {
         return this.value;
     }
@@ -127,19 +129,11 @@ public class Entry implements Serializable {
     }
 
     public Boolean getIsIncome() {
-        return this.getIncome();
+        return this.actualValue.signum() >= 0;
     }
 
     public void setIsIncome(Boolean isIncome) {
         this.isIncome = isIncome;
-    }
-
-    public Boolean getIncome() {
-        return this.actualValue.signum() >= 0;
-    }
-
-    public void setIncome(Boolean income) {
-        isIncome = income;
     }
 
     public String getComment() {

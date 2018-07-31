@@ -13,6 +13,9 @@ package memo.model;
   */
 
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum ClubRole {
     Gast("Gast"),
     Mitglied("Mitglied"),
@@ -29,5 +32,11 @@ public enum ClubRole {
 
     public String getStringValue() {
         return stringValue;
+    }
+
+    public static Optional<ClubRole> fromString(String value){
+        return Arrays.stream(ClubRole.values())
+                .filter(clubRole -> clubRole.stringValue.equalsIgnoreCase(value))
+                .findFirst();
     }
 }

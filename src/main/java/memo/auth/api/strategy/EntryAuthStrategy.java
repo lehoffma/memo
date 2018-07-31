@@ -31,7 +31,7 @@ public class EntryAuthStrategy implements AuthenticationStrategy<Entry> {
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Entry> root, User user) {
         if (user == null) {
-            return PredicateFactory.isFalse(builder);
+            return PredicateFactory.isTrue(builder);
         }
 
         Predicate userHasCorrectPermissions = userHasPermissions(builder, user, Permission.read, PermissionState::getFunds);

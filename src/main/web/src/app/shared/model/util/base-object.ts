@@ -1,5 +1,5 @@
 import {ClubRole, idToClubRoleEnum} from "../club-role";
-import {adminPermissions, jsonToPermissions, UserPermissions} from "../permission";
+import {jsonToPermissions, UserPermissions} from "../permission";
 import {isArray} from "util";
 import {isNumber} from "../../../util/util";
 import {toPaymentMethod} from "../../../shop/checkout/payment/payment-method";
@@ -70,13 +70,7 @@ export function setProperties<T>(object: T, properties: any): T {
 			} else if (key === "clubRole") {
 				value = isNumber(value) ? idToClubRoleEnum(value) : ClubRole["" + properties[key]];
 			} else if (key === "permissions") {
-				if (properties[key] === null || ("" + properties[key]) === "null") {
-					//todo demo permissions
-					value = adminPermissions;
-				}
-				else {
-					value = jsonToPermissions(properties[key]);
-				}
+				value = jsonToPermissions(properties[key]);
 			} else if (key === "gender") {
 				value = properties[key];
 			} else if (key === "method" && isNumber(value)) {
