@@ -7,11 +7,10 @@ import {ShopItemType} from "../shop/shared/model/shop-item-type";
 import {LogInService} from "../shared/services/api/login.service";
 import {map, mergeMap} from "rxjs/operators";
 import {combineLatest, Observable} from "rxjs";
-import {NOW} from "../util/util";
+import {flatten, NOW} from "../util/util";
 import {PageRequest} from "../shared/model/api/page-request";
 import {Direction, Sort} from "../shared/model/api/sort";
 import {Filter} from "../shared/model/api/filter";
-import {flatten} from "@angular/compiler";
 
 interface EventsPreview {
 	title: string,

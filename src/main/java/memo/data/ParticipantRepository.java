@@ -46,6 +46,14 @@ public class ParticipantRepository extends AbstractPagingAndSortingRepository<Or
                 .getResultList();
     }
 
+    public List<OrderedItem> findByUserAndEvent(Integer userId, Integer eventId) {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("OrderedItem.findByEventAndUser", OrderedItem.class)
+                .setParameter("eventId", eventId)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
     public List<OrderedItem> findByEvent(String eventId) throws NumberFormatException {
         Integer id = Integer.parseInt(eventId);
         return findByEvent(id);

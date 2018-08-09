@@ -23,6 +23,11 @@ import java.util.Objects;
                 name = "OrderedItem.findByEvent",
                 query = "SELECT DISTINCT o FROM OrderedItem o " +
                         " WHERE o.item.id = :id"
+        ),
+        @NamedQuery(
+                name = "OrderedItem.findByEventAndUser",
+                query = "SELECT DISTINCT o FROM Order o join OrderedItem item " +
+                        "WHERE o.user.id = :userId AND item.item.id = :eventId"
         )
 })
 public class OrderedItem implements Serializable {

@@ -1,8 +1,6 @@
 package memo.data;
 
-import memo.model.MilesListEntry;
-import memo.model.ShopItem;
-import memo.model.User;
+import memo.model.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,8 +21,20 @@ public class MilesRepository {
      * @return the all-time accumulated miles of the user
      */
     public static Integer milesOfUser(Integer userId) {
+        List<User> users = UserRepository.getInstance().get(userId.toString());
+        if (users.isEmpty() || users.get(0).getClubRole().ordinal() == ClubRole.Gast.ordinal()) {
+            return 0;
+        }
+
         List<ShopItem> participatedEvents = EventRepository.getInstance().findByParticipant(userId).stream()
-                .filter(item -> item.getDate().toLocalDateTime().isBefore(LocalDateTime.now()))
+                .filter(item -> {
+                    List<OrderedItem> items = ParticipantRepository.getInstance().findByUserAndEvent(userId, item.getId());
+                    if (items.isEmpty()) {
+                        return false;
+                    }
+                    OrderedItem itemOfUser = items.get(0);
+                    return itemOfUser.getStatus().equals(OrderStatus.Completed);
+                })
                 .collect(Collectors.toList());
         return participatedEvents.stream()
                 .mapToInt(ShopItem::getMiles)

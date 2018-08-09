@@ -106,6 +106,10 @@ export function isObservable(value: any): value is Observable<any> {
 const concat = (x, y) =>
 	x.concat(y);
 
+export const flatten = list => list.reduce(
+	(a, b) => a.concat(Array.isArray(b) ? flatten(b) : b), []
+);
+
 export function flatMap<T, U>(f: (val: T) => U[], xs: T[]): U[] {
 	return xs.map(f).reduce(concat, []);
 }
