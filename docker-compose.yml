@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  memocontainer:
+    build:
+      context: ./
+      dockerfile: dockerfile
+    ports:
+      - '8080:8080'
+
+
+
+
+  mysqlcontainer:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: on-failure
+    environment:
+      MYSQL_DATABASE: memo_dev
+      MYSQL_USER: meilenwoelfe
+      MYSQL_PASSWORD: qwertzui
+      MYSQL_ROOT_PASSWORD: qwertzui
+
+
