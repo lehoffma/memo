@@ -26,7 +26,7 @@ import java.util.Objects;
         ),
         @NamedQuery(
                 name = "OrderedItem.findByEventAndUser",
-                query = "SELECT DISTINCT o FROM Order o join OrderedItem item " +
+                query = "SELECT DISTINCT item FROM Order o join OrderedItem item " +
                         "WHERE o.user.id = :userId AND item.item.id = :eventId"
         )
 })

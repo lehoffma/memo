@@ -28,7 +28,7 @@ matrix:
         - sh -e /etc/init.d/xvfb start
         - google-chrome --version
         - cd src/main/web/src/app
-        - openssl aes-256-cbc -K $encrypted_71f32879112b_key -iv $encrypted_71f32879112b_iv -in app.config.ts.enc -out app.config.ts -d
+        - openssl aes-256-cbc -K $encrypted_8d0e4651946f_key -iv $encrypted_8d0e4651946f_iv -in app.config.ts.enc -out app.config.ts -d
         - cd ../../
       install:
         - npm install
