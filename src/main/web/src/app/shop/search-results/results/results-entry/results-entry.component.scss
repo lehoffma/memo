@@ -2,58 +2,42 @@
 @import "theme";
 
 .result-entry-container {
-	background-color: white;
-	display: flex;
-	flex-direction: column-reverse;
-	text-decoration: none;
-	color: black;
-	margin: 1rem;
-	box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+	margin-bottom: 10px;
+	display: block;
 
-	border-bottom: 1px solid #e0e0e0;
-
-	.result-entry-info-container {
-		display: flex;
-		justify-content: space-between;
-		padding: 1rem;
-		flex-direction: column;
-
-		.result-title {
-			margin: 0;
-			font-weight: 400;
-			font-size: 1.1rem;
-			word-break: break-all;
-		}
-		.result-info {
-			display: flex;
-			justify-content: space-between;
-			font-size: 0.9rem;
-			align-items: flex-end;
-
-			div:not(.result-title) {
-				margin-top: 20px;
-			}
-		}
-
-		.result-price {
-			font-size: 1.1rem;
-			color: red;
-		}
-
+	&:first-child{
+		margin-top: 10px;
 	}
 
-	.result-entry-image-container {
+	.result-title {
+		margin: 0;
+		font-weight: 400;
+		font-size: 1.1rem;
+		word-break: break-all;
+	}
+	.result-info {
 		display: flex;
-		justify-content: center;
-		flex-direction: column;
+		justify-content: space-between;
+		font-size: 0.9rem;
+		align-items: flex-end;
 
-		img {
-			height: 10rem;
-			object-fit: cover;
-			&.past {
-				filter: grayscale(1);
-			}
+		div:not(.result-title) {
+			margin-top: 20px;
 		}
+	}
+
+	.result-price {
+		font-size: 1.1rem;
+		color: red;
+	}
+
+}
+
+img {
+	height: 10rem;
+	object-fit: cover;
+	&.past {
+		filter: grayscale(1);
 	}
 }
 
@@ -83,31 +67,28 @@
 	.result-entry-container {
 		margin: 0;
 
-		background-color: white;
-		padding: 0;
 		cursor: pointer;
-		transition: box-shadow 0.5s;
 
-		> div {
-			flex-direction: column-reverse;
+		.result-entry-info-container {
+			width: auto;
+			padding: 10px;
+			flex-direction: column;
+			height: 100px;
+		}
 
-			.result-entry-info-container {
-				width: auto;
-				padding: 10px;
-				flex-direction: column;
-				height: 100px;
-			}
+		.result-entry-image-container img {
+			width: auto;
+			height: 150px;
+		}
 
-			.result-entry-image-container img {
-				width: auto;
-				height: 150px;
-			}
-
+		mat-card{
+			transition: box-shadow 0.5s;
 		}
 
 		&:hover {
-			box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
-			//border-color: black;
+			mat-card{
+				box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+			}
 		}
 	}
 

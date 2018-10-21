@@ -109,7 +109,7 @@ export class InMemoryDataService<T> implements TableDataService<T>, OnDestroy {
 				const filteredData = data
 					.filter(data => Object.keys(filter).every(key => {
 						const filterValue = filter[key];
-						const values = filterValue.split("|");
+						const values = filterValue.split(",");
 						return values.some(value => data[key] === value);
 					}));
 

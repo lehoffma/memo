@@ -1,15 +1,16 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {Dimension, WindowService} from "../../shared/services/window.service";
 import {AccountingTableContainerService} from "./accounting-table-container.service";
-import {map, mergeMap, startWith} from "rxjs/operators";
+import {map, mergeMap, startWith, takeUntil} from "rxjs/operators";
 import {ExpandableMaterialTableComponent, TableColumn} from "../../shared/utility/material-table/expandable-material-table.component";
 import {Entry} from "../../shared/model/entry";
 import {ResponsiveColumnsHelper} from "../../shared/utility/material-table/responsive-columns.helper";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {EntryService} from "../../shared/services/api/entry.service";
-import {of} from "rxjs";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {Sort} from "../../shared/model/api/sort";
+import {ParamMap, Router} from "@angular/router";
+import {Subject} from "rxjs";
 
 @Component({
 	selector: "memo-accounting",
@@ -18,12 +19,10 @@ import {Sort} from "../../shared/model/api/sort";
 	providers: [AccountingTableContainerService]
 })
 export class AccountingComponent implements OnInit, OnDestroy, AfterViewInit {
-
 	showOptions = true;
 	mobile = false;
 
-	subscriptions = [];
-
+	onDestroy$ = new Subject<any>();
 
 	columns: TableColumn<Entry>[] = [
 		{
@@ -54,18 +53,18 @@ export class AccountingComponent implements OnInit, OnDestroy, AfterViewInit {
 				private breakpointObserver: BreakpointObserver,
 				public entryService: EntryService,
 				public accountingTableContainerService: AccountingTableContainerService) {
-
-		this.subscriptions.push(this.windowService.dimension$
-			.subscribe(dimensions => this.onResize(dimensions)));
+		this.windowService.dimension$
+			.pipe(takeUntil(this.onDestroy$))
+			.subscribe(dimensions => this.onResize(dimensions));
 	}
 
 	ngOnInit() {
 	}
 
 	ngOnDestroy() {
-		this.subscriptions.forEach(it => it.unsubscribe());
+		this.onDestroy$.next();
+		this.onDestroy$.complete();
 	}
-
 
 	getDisplayedColumns() {
 		const columnHelper = new ResponsiveColumnsHelper(this.columns, this.breakpointObserver);

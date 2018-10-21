@@ -1,6 +1,6 @@
 <mat-card>
 	<ng-container *ngIf="(data.event | async) as event; else loading">
-		<img mat-card-image src="{{event?.images[0] | imageSize:'large' | async}}"
+		<img mat-card-image src="{{(event?.images[0] || 'resources/images/Logo.png') | imageSize:'large' | async}}"
 			 alt="Photo of {{event?.title}}"/>
 		<!--<button mat-mini-fab color="accent" [matMenuTriggerFor]="menu" class="action-menu">-->
 		<!--<mat-icon>edit</mat-icon>-->

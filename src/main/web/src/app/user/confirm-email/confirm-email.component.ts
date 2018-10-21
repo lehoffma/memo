@@ -3,7 +3,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {ActivatedRoute} from "@angular/router";
 import {first} from "rxjs/operators";
 import {AuthService} from "../../shared/authentication/auth.service";
-import {JwtHelperService} from "@auth0/angular-jwt";
+import {JwtHelperService} from "../../shared/services/jwt-helper.service";
 
 @Component({
 	selector: "memo-confirm-email",
@@ -32,6 +32,7 @@ export class ConfirmEmailComponent implements OnInit {
 
 				let isValid = false;
 				try {
+					//todo replace auth0 jwt helper with custom made solution
 					isValid = !this.jwtHelperService.isTokenExpired(auth_token)
 				}
 				catch (e) {

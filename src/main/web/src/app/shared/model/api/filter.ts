@@ -25,9 +25,9 @@ export class Filter {
 					acc[key] = filter[key];
 				}
 				else {
-					const values = acc[key].split("|");
+					const values = acc[key].split(",");
 					if (!values.includes(filter[key])) {
-						acc[key] += "|" + filter[key];
+						acc[key] += "," + filter[key];
 					}
 				}
 			});

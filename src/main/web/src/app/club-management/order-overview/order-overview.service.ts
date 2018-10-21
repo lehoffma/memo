@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from "@angular/core";
 import {Order} from "../../shared/model/order";
-import {BehaviorSubject, Observable} from "rxjs";
+import {Observable} from "rxjs";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {filter, map, mergeMap} from "rxjs/operators";
 import {Router} from "@angular/router";
@@ -9,34 +9,35 @@ import {ConfirmationDialogService} from "../../shared/services/confirmation-dial
 import {MatSnackBar} from "@angular/material";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Filter} from "../../shared/model/api/filter";
-import {Sort} from "../../shared/model/api/sort";
-import {PageRequest} from "../../shared/model/api/page-request";
-import {PageResponse} from "../../shared/model/api/page";
+import {Direction, Sort} from "../../shared/model/api/sort";
 import {PagedDataSource} from "../../shared/utility/material-table/paged-data-source";
 import {statusToInt} from "../../shared/model/order-status";
+import {getAllQueryValues} from "../../shared/model/util/url-util";
 
 @Injectable()
-export class OrderOverviewService implements OnDestroy{
+export class OrderOverviewService implements OnDestroy {
 	sortedBy$: Observable<Sort> = this.navigationService.queryParamMap$
 		.pipe(
 			map(paramMap => paramMap.has("sortBy") && paramMap.has("direction")
-				? Sort.by(paramMap.get("direction"), paramMap.getAll("sortBy").join("|"))
-				: Sort.none())
+				? Sort.by(paramMap.get("direction"), getAllQueryValues(paramMap, "sortBy").join(","))
+				: Sort.by(Direction.DESCENDING, "timeStamp"))
 		);
 
 	filteredBy$: Observable<Filter> = this.navigationService.queryParamMap$
 		.pipe(
 			map(paramMap => {
 				let paramObject = {};
-				paramMap.keys.forEach(key => {
-					let value = paramMap.getAll(key).join("|");
+				paramMap.keys
+					.filter(key => !["page", "pageSize", "sortBy", "direction"].includes(key))
+					.forEach(key => {
+						let value = getAllQueryValues(paramMap, key).join(",");
 
-					if(key === "status"){
-						value = paramMap.getAll(key).map(it => statusToInt(it as any)).join("|");
-					}
+						if (key === "status") {
+							value = getAllQueryValues(paramMap, key).map(it => statusToInt(it as any)).join(",");
+						}
 
-					paramObject[key] = value;
-				});
+						paramObject[key] = value;
+					});
 				return Filter.by(paramObject);
 			})
 		);

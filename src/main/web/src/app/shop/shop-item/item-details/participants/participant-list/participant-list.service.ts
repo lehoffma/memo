@@ -16,15 +16,16 @@ import {CapacityService} from "../../../../../shared/services/api/capacity.servi
 import {ActionPermissions} from "../../../../../shared/utility/material-table/util/action-permissions";
 import {ParticipantDataSource} from "./participant-data-source";
 
+export interface EventInfo{
+	eventType: EventType,
+	eventId: number
+}
 
 @Injectable()
 export class ParticipantListService extends ExpandableTableContainerService<ParticipantUser> {
 	dataSource: ParticipantDataSource;
 
-	eventInfo$: Observable<{
-		eventType: EventType,
-		eventId: number
-	}> = this.activatedRoute.url
+	eventInfo$: Observable<EventInfo> = this.activatedRoute.url
 		.pipe(
 			map((urls: UrlSegment[]) => {
 				// "tours/:id/participants"

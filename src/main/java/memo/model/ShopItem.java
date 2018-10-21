@@ -9,6 +9,7 @@ import memo.serialization.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -138,6 +139,31 @@ public class ShopItem implements Serializable {
 
     public ShopItem() {
         super();
+    }
+
+
+    public ShopItem(ShopItem item) {
+        this.title = item.title;
+        this.date = item.date;
+        this.description = item.description;
+        this.expectedReadRole = item.expectedReadRole;
+        this.expectedCheckInRole = item.expectedCheckInRole;
+        this.expectedWriteRole = item.expectedWriteRole;
+        this.images = item.images;
+        this.groupPicture = item.groupPicture;
+        this.capacity = item.capacity;
+        this.price = item.price;
+        this.route = item.route;
+        this.material = item.material;
+        this.vehicle = item.vehicle;
+        this.miles = item.miles;
+        this.author = item.author;
+        this.reportWriters = item.reportWriters;
+        this.comments = item.comments;
+        this.entries = item.entries;
+        this.orders = item.orders;
+        this.stock = item.stock;
+        this.type = item.type;
     }
 
     //**************************************************************

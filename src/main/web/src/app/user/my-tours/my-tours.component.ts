@@ -25,7 +25,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 				: this.eventService.get(
 					Filter.by({
 						"authorId": "" + accountId,
-						"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)
+						"type": typeToInteger(EventType.tours) + "," + typeToInteger(EventType.partys)
 					}),
 					PageRequest.first(),
 					Sort.by(Direction.ASCENDING, "date")
@@ -41,7 +41,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 				: this.eventService.get(
 					Filter.by({
 						"authorId": "" + accountId,
-						"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)
+						"type": typeToInteger(EventType.tours) + "," + typeToInteger(EventType.partys)
 					}),
 					PageRequest.first(),
 					Sort.by(Direction.ASCENDING, "date")

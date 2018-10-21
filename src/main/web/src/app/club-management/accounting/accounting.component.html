@@ -34,6 +34,7 @@
 			[columns]="columns"
 			[displayedColumns]="displayedColumns$ | async"
 			[withSelection]="true"
+			[writePageToUrl]="true"
 			[dataService]="entryService"
 			[filter$]="filter$"
 			[permissions]="accountingTableContainerService.permissions$ | async"

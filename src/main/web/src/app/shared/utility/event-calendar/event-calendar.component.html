@@ -30,32 +30,34 @@
 		</div>
 	</div>
 
-	<ng-template #customCellTemplate let-day="day" let-locale="locale">
-		<div class="cal-cell-top">
-			<span class="cal-day-badge" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span>
-			<span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
-		</div>
-		<ng-template ngFor let-typeMap [ngForOf]="[eventTypeMap$ | async]">
-			<div *ngFor="let event of day.events"
-				 class="calendar-event {{typeMap[event.meta.id].toLowerCase()}}"
-				 (click)="eventClickHandler(event); $event.stopPropagation()">
+	<ng-template #customCellTemplate let-day="day"
+				 let-locale="locale">
+		<div (click)="dayClickHandler(day); $event.stopPropagation()">
+			<div class="cal-cell-top">
+				<span class="cal-day-badge" *ngIf="day.badgeTotal > 0">{{ day.badgeTotal }}</span>
+				<span class="cal-day-number">{{ day.date | calendarDate:'monthViewDayNumber':locale }}</span>
+			</div>
+			<ng-template ngFor let-typeMap [ngForOf]="[eventTypeMap$ | async]">
+				<div *ngFor="let event of day.events"
+					 class="calendar-event {{typeMap[event.meta.id].toLowerCase()}}"
+					 (click)="eventClickHandler(event); $event.stopPropagation()">
 			<span class="calendar-event-container">
 				<span class="calendar-event-time">{{event.meta.date | dateFormat:'HH:SS'}}</span>
 				<span class="calendar-event-title">{{event.title}}</span>
 			</span>
-				<span class="calendar-event-indicator">
+					<span class="calendar-event-indicator">
 					{{event.meta.date | dateFormat:'HH:SS'}}<br/>
 					{{typeMap[event.meta.id]}}
 				</span>
-			</div>
-		</ng-template>
+				</div>
+			</ng-template>
+		</div>
 	</ng-template>
 
 	<mwl-calendar-month-view
 		[viewDate]="date"
 		[weekStartsOn]="1"
 		[events]="calendarEvents$ | async"
-		(dayClicked)="dayClickHandler($event)"
 		[cellTemplate]="customCellTemplate">
 	</mwl-calendar-month-view>
 </div>

@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {PagedDataSource} from "./paged-data-source";
 import {ServletService} from "../../services/api/servlet.service";
-import {Observable, of, Subscription} from "rxjs";
+import {Observable, of, Subject} from "rxjs";
 import {Filter} from "../../model/api/filter";
 import {MatPaginator} from "@angular/material";
 import {SelectionModel} from "@angular/cdk/collections";
@@ -9,8 +9,9 @@ import {RowAction} from "./util/row-action";
 import {RowActionType} from "./util/row-action-type";
 import {TableActionEvent} from "./util/table-action-event";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {filter} from "rxjs/operators";
+import {filter, takeUntil} from "rxjs/operators";
 import {ActionPermissions} from "./util/action-permissions";
+import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 
 export interface TableColumn<T> {
 	columnDef: string,
@@ -37,6 +38,8 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	expandedRows: TableColumn<T>[] = [];
 	@Input() withSelection = true;
 	@Input() title: string;
+	@Input() headerLink: string;
+	@Input() headerLinkText: string;
 	@Input() rowActions: RowAction<T>[] = [
 		{
 			icon: "edit",
@@ -54,24 +57,27 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	};
 	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
 	@ViewChild(MatPaginator) paginator: MatPaginator;
+	pageSize = 20;
+
 	public selection: SelectionModel<T>;
 	public expansionSelection: SelectionModel<any>;
-	subscriptions: Subscription[];
+	private onDestroy$: Subject<any> = new Subject<any>();
 	isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty("detailRow");
 
-	constructor() {
+	constructor(private activatedRoute: ActivatedRoute,
+				private router: Router,) {
 		this.selection = new SelectionModel<T>(true, []);
 		this.expansionSelection = new SelectionModel<any>(true, [], true);
 
-		this.subscriptions = [
-			this.onAction
-				.pipe(
-					filter((it: TableActionEvent<T>) => it.action === RowActionType.DELETE)
-				)
-				.subscribe(it => {
-					this.dataSource.reload();
-				})
-		];
+		this.onAction
+			.pipe(
+				filter((it: TableActionEvent<T>) => it.action === RowActionType.DELETE),
+				takeUntil(this.onDestroy$)
+			)
+			.subscribe(it => {
+				this.dataSource.reload();
+			});
+
 	}
 
 	_dataService: ServletService<T>;
@@ -116,14 +122,36 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 		this.updateExpandedRows(this.columns, this._displayedColumns);
 	}
 
+	@Input() set writePageToUrl(writePageToUrl: boolean){
+		if(writePageToUrl){
+			this.dataSource.writePaginatorUpdatesToUrl(this.router);
+		}
+	}
+
 	ngOnInit() {
 		this.dataSource.paginator = this.paginator;
+		this.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap);
 	}
 
 	updateExpandedRows(columns: TableColumn<T>[], displayedColumns: string[]) {
 		this.expandedRows = columns.filter(it => displayedColumns.indexOf(it.columnDef) === -1);
 
 	}
+
+
+	initPaginatorFromUrl(queryParamMap: ParamMap) {
+		if (queryParamMap.has("page")) {
+			const page = +queryParamMap.get("page");
+			const pageSize = +queryParamMap.get("pageSize");
+			if (!isNaN(pageSize)) {
+				this.pageSize = pageSize;
+			}
+			if (!isNaN(page)) {
+				this.paginator.pageIndex = page - 1;
+			}
+		}
+	}
+
 
 	/** Whether the number of selected elements matches the total number of rows. */
 	isAllSelected() {
@@ -140,8 +168,7 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		if (this.subscriptions) {
-			this.subscriptions.forEach(it => it.unsubscribe());
-		}
+		this.onDestroy$.next();
+		this.onDestroy$.complete();
 	}
 }

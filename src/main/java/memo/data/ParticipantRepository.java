@@ -3,6 +3,7 @@ package memo.data;
 import memo.auth.api.strategy.ParticipantsAuthStrategy;
 import memo.data.util.PredicateFactory;
 import memo.data.util.PredicateSupplierMap;
+import memo.model.OrderStatus;
 import memo.model.OrderedItem;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -96,6 +98,13 @@ public class ParticipantRepository extends AbstractPagingAndSortingRepository<Or
         return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<OrderedItem>()
                 .buildPut("eventId", PredicateFactory
                         .getIdSupplier("item", "id")
+                )
+                .buildPut("status", (b, r, request) -> Collections.singletonList(
+                        PredicateFactory.anyIsMember(b, r,
+                                itemPath -> PredicateFactory.get(itemPath, "status"),
+                                request.getValues(),
+                                s -> OrderStatus.fromOrdinal(Integer.valueOf(s))
+                        ))
                 )
         );
     }

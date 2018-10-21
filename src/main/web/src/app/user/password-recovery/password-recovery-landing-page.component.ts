@@ -5,8 +5,8 @@ import {PasswordRecoveryService} from "./password-recovery.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {filter, mergeMap, tap} from "rxjs/operators";
 import {LogInService} from "../../shared/services/api/login.service";
-import {JwtHelperService} from "@auth0/angular-jwt";
 import {MatSnackBar} from "@angular/material";
+import {JwtHelperService} from "../../shared/services/jwt-helper.service";
 
 @Component({
 	selector: "memo-password-recovery-landing-page",

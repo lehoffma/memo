@@ -65,7 +65,8 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 			value => this.modify(value),
 			value => this.remove(value),
 			object => this.userService.modify(object),
-			id => this.getById(id)
+			id => this.getById(id),
+			["user"]
 		)
 	}
 }

@@ -47,15 +47,15 @@ export function updateList<T extends BaseObject, U>(previousValue: T[],
 													add: (value: T) => Observable<T>,
 													modify: (value: T) => Observable<T>,
 													remove: (value: number) => Observable<any>,
+													additionalIgnoredProperties: string[] = []
 ): Observable<number[]> {
 	let added: T[] = [];
 	let removed: T[] = [];
 	let modified: T[] = [];
 	//both arrays are the same length => nothing has changed or something was edited
-	//accounts < previousValue => something was removed
 	if (previousValue.length === currentValue.length) {
 		const index = previousValue.findIndex(it =>
-			!!currentValue.find(prev => isEdited(prev, it, ["id"]))
+			!!currentValue.find(prev => prev.id === it.id && isEdited(it, prev, ["id", ...additionalIgnoredProperties]))
 		);
 		if (index >= 0) {
 			modified.push(previousValue[index]);
@@ -67,16 +67,17 @@ export function updateList<T extends BaseObject, U>(previousValue: T[],
 		//find the address that is part of accounts, but not of previousValue
 		const index = currentValue.findIndex(it =>
 			//there is no address in prevValues that is equal to the one that is being checked here
-			!previousValue.find(prev => !isEdited(it, prev, ["id"]))
+			!previousValue.find(prev => !isEdited(it, prev, ["id", ...additionalIgnoredProperties]))
 		);
 
 		added.push(currentValue[index]);
 	}
+	//accounts < previousValue => something was removed
 	else if (previousValue.length > currentValue.length) {
 		//find the address that is part of previousValue, but not of accounts
 		const index = previousValue.findIndex(it =>
 			//there is no address in accounts that is equal to the one that is being checked here
-			!currentValue.find(prev => !isEdited(it, prev, ["id"]))
+			!currentValue.find(prev => !isEdited(it, prev, ["id", ...additionalIgnoredProperties]))
 		);
 
 		removed.push(previousValue[index]);
@@ -146,10 +147,11 @@ export function updateListOfItem<T extends { id: number }, U>(previousValue: T[]
 															  modify: (value: T) => Observable<T>,
 															  remove: (value: number) => Observable<any>,
 															  modifyObject: (object: U) => Observable<U>,
-															  getById: (id: number) => Observable<any>
+															  getById: (id: number) => Observable<any>,
+															  additionalIgnoredProperties: string[] = []
 ) {
 	return updateList(
-		previousValue, currentValue, object, key, mapBeforeRequest, add, modify, remove
+		previousValue, currentValue, object, key, mapBeforeRequest, add, modify, remove, additionalIgnoredProperties
 	)
 		.pipe(
 			mergeMap((newIds: number[]) => {

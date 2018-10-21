@@ -22,6 +22,8 @@
 	<div [ngSwitch]="selectedView">
 		<memo-event-calendar *ngSwitchCase="'calendar'"
 							 [events]="events"
+							 [month]="month"
+							 [year]="year"
 							 (onDayClick)="onDayClick($event)"
 							 (onEventClick)="onEventClick($event)"
 							 (onMonthChange)="updateMonth($event)"

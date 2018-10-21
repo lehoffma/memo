@@ -13,7 +13,7 @@ export class SortingOptionHelper {
 			name,
 			queryParameters: {
 				direction: sort.direction,
-				sortBy: sort.sortBys.join("|")
+				sortBy: sort.sortBys.join(",")
 			}
 		}
 	}

@@ -6,12 +6,13 @@ import {Event} from "../shared/model/event";
 import {StockService} from "../../shared/services/api/stock.service";
 import {isObservable} from "../../util/util";
 import {isNullOrUndefined} from "util";
-import {ActivatedRoute, ParamMap} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {isMultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-option";
 import {combineLatest, Observable, of} from "rxjs";
-import {defaultIfEmpty, first, map} from "rxjs/operators";
+import {defaultIfEmpty, map} from "rxjs/operators";
 import {isAfter, isBefore, isEqual, startOfDay} from "date-fns";
 import {MultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-leaf";
+import {getAllQueryValues} from "../../shared/model/util/url-util";
 
 @Injectable()
 export class SearchFilterService {
@@ -23,7 +24,7 @@ export class SearchFilterService {
 	} = {
 		"category": (item, filterValue: string) => {
 			if (EventUtilityService.isMerchandise(item) || EventUtilityService.isTour(item) || EventUtilityService.isParty(item)) {
-				const values = filterValue.split("|");
+				const values = filterValue.split(",");
 				return values.includes(EventUtilityService.getEventType(item).toString());
 			}
 			return true;
@@ -63,7 +64,7 @@ export class SearchFilterService {
 		},
 		"color": (item, filterValue: string) => {
 			if (EventUtilityService.isMerchandise(item)) {
-				const selectedColors = filterValue.split("|");
+				const selectedColors = filterValue.split(",");
 				return this.stockService.getByEventId(item.id)
 					.pipe(
 						map(stockList => stockList.map(stockItem => stockItem.color.name)),
@@ -74,14 +75,14 @@ export class SearchFilterService {
 		},
 		"material": (item, filterValue: string) => {
 			if (EventUtilityService.isMerchandise(item)) {
-				const selectedMaterials = filterValue.split("|");
+				const selectedMaterials = filterValue.split(",");
 				return selectedMaterials.includes(item.material);
 			}
 			return false;
 		},
 		"size": (item, filterValue: string) => {
 			if (EventUtilityService.isMerchandise(item)) {
-				const selectedSizes = filterValue.split("|");
+				const selectedSizes = filterValue.split(",");
 				return this.stockService.getByEventId(item.id)
 					.pipe(
 						map(stockList => stockList.map(stockItem => stockItem.size)),
@@ -127,58 +128,53 @@ export class SearchFilterService {
 	 * Schaut, ob die Route query parameter beinhaltet und initialisiert die filter menü checkboxen mit den
 	 * jeweiligen werten
 	 */
-	initFilterMenu(activatedRoute: ActivatedRoute, filterOptions: MultiLevelSelectParent[]): Observable<MultiLevelSelectParent[]> {
+	initFilterMenu(activatedRoute: ActivatedRoute, filterOptions: MultiLevelSelectParent[]): MultiLevelSelectParent[] {
 		//checks if the route includes query parameters and initializes the filter-menu's checkboxes
-		return activatedRoute.queryParamMap
-			.pipe(
-				first(),
-				map((queryParamMap: ParamMap) => {
-					return [...filterOptions].map((filterOptionParent: MultiLevelSelectParent) => {
-						filterOptionParent.children
-							.filter(child => isMultiLevelSelectLeaf(child))
-							.map(it => <MultiLevelSelectLeaf>it)
-							.forEach(child => child.selected = false);
+		const queryParamMap = activatedRoute.snapshot.queryParamMap;
 
-						const matchingOptions = filterOptionParent.children
-							.filter(child => isMultiLevelSelectLeaf(child))
-							.map(it => <MultiLevelSelectLeaf>it)
-							.filter((child: MultiLevelSelectLeaf) =>
-								child.query.every(query => queryParamMap.has(query.key))
-							)
-							.filter((child: MultiLevelSelectLeaf) => {
-								if (!child.query || child.query.length === 0) {
-									return false;
-								}
-								return child.query.every(query => {
-									//combine something like 'key=tours|partys&key=partys' to one array
-									let paramValues: string[] = queryParamMap.getAll(query.key)
-										.join("|")
-										.split("|");
-									const queryValues = query.values;
-									if (queryValues) {
-										return queryValues.every(value => paramValues.includes(value))
-									}
-									return false;
-								})
-							});
+		return [...filterOptions].map((filterOptionParent: MultiLevelSelectParent) => {
+			filterOptionParent.children
+				.filter(child => isMultiLevelSelectLeaf(child))
+				.map(it => <MultiLevelSelectLeaf>it)
+				.forEach(child => child.selected = false);
 
-						matchingOptions
-							.forEach((child: MultiLevelSelectLeaf) => {
-								child.selected = true;
-							});
+			const matchingOptions = filterOptionParent.children
+				.filter(child => isMultiLevelSelectLeaf(child))
+				.map(it => <MultiLevelSelectLeaf>it)
+				.filter((child: MultiLevelSelectLeaf) =>
+					child.query.every(query => queryParamMap.has(query.key))
+				)
+				.filter((child: MultiLevelSelectLeaf) => {
+					if (!child.query || child.query.length === 0) {
+						return false;
+					}
+					return child.query.every(query => {
+						//combine something like 'key=tours|partys&key=partys' to one array
 
-						if (matchingOptions.length === 0 && filterOptionParent.selectType === "single") {
-							filterOptionParent.children
-								.filter(it => it.name === "Alle")
-								.filter(child => isMultiLevelSelectLeaf(child))
-								.map(it => <MultiLevelSelectLeaf>it)
-								.forEach(child => child.selected = true);
+						let paramValues: string[] = getAllQueryValues(queryParamMap, query.key)
+						const queryValues = query.values;
+						if (queryValues) {
+							return queryValues.every(value => paramValues.includes(value))
 						}
+						return false;
+					})
+				});
 
-						return filterOptionParent;
-					});
-				})
-			);
+			matchingOptions
+				.forEach((child: MultiLevelSelectLeaf) => {
+					child.selected = true;
+				});
+
+			if (matchingOptions.length === 0 && filterOptionParent.selectType === "single") {
+				filterOptionParent.children
+					.filter(it => it.name === "Alle")
+					.filter(child => isMultiLevelSelectLeaf(child))
+					.map(it => <MultiLevelSelectLeaf>it)
+					.forEach(child => child.selected = true);
+			}
+
+			return filterOptionParent;
+		});
 	}
 
 

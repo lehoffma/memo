@@ -3,17 +3,18 @@ import {ParticipantUser} from "../../../../shared/model/participant";
 import {RowActionType} from "../../../../../shared/utility/material-table/util/row-action-type";
 import {Subscription} from "rxjs";
 import {MemberListRowAction} from "../../../../../club-management/administration/member-list/member-list-row-actions";
-import {ParticipantListService} from "./participant-list.service";
+import {EventInfo, ParticipantListService} from "./participant-list.service";
 import {RowAction} from "../../../../../shared/utility/material-table/util/row-action";
 import {ParticipantDataSource, ParticipantUserService} from "./participant-data-source";
 import {UserService} from "../../../../../shared/services/api/user.service";
 import {TableColumn} from "../../../../../shared/utility/material-table/expandable-material-table.component";
-import {map, startWith, tap} from "rxjs/operators";
+import {map, startWith} from "rxjs/operators";
 import {ResponsiveColumnsHelper} from "../../../../../shared/utility/material-table/responsive-columns.helper";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 import {Filter} from "../../../../../shared/model/api/filter";
 import {EventType} from "../../../../shared/model/event-type";
+import {ActivatedRoute, Router} from "@angular/router";
 
 
 @Component({
@@ -73,15 +74,24 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 		map((info: { eventType: EventType, eventId: number }) => Filter.by({"eventId": "" + info.eventId})),
 	);
 
+
 	constructor(public participantListService: ParticipantListService,
 				public orderedItemService: OrderedItemService,
 				public participantUserService: ParticipantUserService,
 				public breakpointObserver: BreakpointObserver,
+				private router: Router,
+				private activatedRoute: ActivatedRoute,
 				public userService: UserService) {
 		this.participantListService.dataSource = this.dataSource;
 	}
 
 	ngOnInit() {
+		this.dataSource.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap);
+		this.dataSource.writePaginatorUpdatesToUrl(this.router);
+	}
+
+	getLinkToTour(info: EventInfo) {
+		return `/${info.eventType}/${info.eventId}`
 	}
 
 	getDisplayedColumns() {

@@ -106,7 +106,8 @@ public class User implements Serializable {
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn
-    @JsonIgnore
+    @JsonSerialize(using = PermissionIdSerializer.class)
+    @JsonDeserialize(using = PermissionIdDeserializer.class)
     private PermissionState permissions;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -120,6 +121,7 @@ public class User implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_authoreditems",
+            //todo its exactly the wrong way around..
             joinColumns = @JoinColumn(name = "authoreditems_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id")
     )
@@ -128,8 +130,11 @@ public class User implements Serializable {
     private List<ShopItem> authoredItems = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_reportresponsibilities", joinColumns = @JoinColumn(name = "reportresponsibilities_id"),
-            inverseJoinColumns = @JoinColumn(name = "reportwriters_id"))
+    @JoinTable(name = "user_reportresponsibilities",
+            //todo its exactly the wrong way around..
+            joinColumns = @JoinColumn(name = "reportresponsibilities_id"),
+            inverseJoinColumns = @JoinColumn(name = "reportwriters_id")
+    )
     @JsonSerialize(using = ShopItemIdListSerializer.class)
     @JsonDeserialize(using = ShopItemIdListDeserializer.class)
     private List<ShopItem> reportResponsibilities = new ArrayList<>();

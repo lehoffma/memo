@@ -12,6 +12,8 @@ import {first, map, share} from "rxjs/operators";
 import {EntryCategory} from "../../../shared/model/entry-category";
 import {isValid, parse, setYear} from "date-fns"
 import {Filter} from "../../../shared/model/api/filter";
+import {flatMap} from "../../../util/util";
+import {getAllQueryValues} from "../../../shared/model/util/url-util";
 
 
 @Component({
@@ -163,10 +165,12 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 				this.dateOptions.from = queryParamMap.has("minDate") ? parse(queryParamMap.get("minDate")) : undefined;
 				this.dateOptions.to = queryParamMap.has("maxDate") ? parse(queryParamMap.get("maxDate")) : undefined;
 				if (queryParamMap.has("eventType")) {
-					this.readBinaryValuesFromQueryParams(this.eventTypes, queryParamMap.getAll("eventType"));
+					this.readBinaryValuesFromQueryParams(this.eventTypes,
+						getAllQueryValues(queryParamMap, "eventType"));
 				}
 				if (queryParamMap.has("entryType")) {
-					this.readBinaryValuesFromQueryParams(this.costTypes, queryParamMap.getAll("entryType"));
+					this.readBinaryValuesFromQueryParams(this.costTypes,
+						getAllQueryValues(queryParamMap, "entryType"));
 				}
 				//in case the route is something like /tours/:eventId/costs, extract the event id
 				if (paramMap.has("eventId")) {
@@ -174,7 +178,7 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 				}
 				if (queryParamMap.has("eventId")) {
 					combineLatest(
-						...queryParamMap.getAll("eventId")
+						...getAllQueryValues(queryParamMap, "eventId")
 							.map(it => this.eventService.getById(+it))
 					)
 						.subscribe(events => this.events = events);
@@ -191,9 +195,11 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 		const params: Params = {};
 
 		params["eventType"] = Object.keys(this.eventTypes)
-			.filter(key => this.eventTypes[key]);
+			.filter(key => this.eventTypes[key])
+			.join(",");
 		params["entryType"] = Object.keys(this.costTypes)
-			.filter(key => this.costTypes[key]);
+			.filter(key => this.costTypes[key])
+			.join(",");
 
 		params["eventId"] = this.events.map(event => event.id);
 

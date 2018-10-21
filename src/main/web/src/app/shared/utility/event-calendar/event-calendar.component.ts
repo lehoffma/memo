@@ -7,6 +7,7 @@ import {defaultIfEmpty, filter, map} from "rxjs/operators";
 import {CalendarEvent} from "angular-calendar";
 import {MonthViewDay} from "calendar-utils";
 import {EventUtilityService} from "../../services/event-utility.service";
+import {setMonth, setYear} from "date-fns";
 
 @Component({
 	selector: "memo-event-calendar",
@@ -56,6 +57,14 @@ export class EventCalendarComponent implements OnInit {
 		this.onMonthChange.emit(date);
 	}
 
+	@Input() set month(month: number) {
+		this._date = setMonth(this._date, month);
+	}
+
+	@Input() set year(year: number) {
+		this._date = setYear(this._date, year);
+	}
+
 	@Input()
 	set events(events: (Tour | Party)[]) {
 		this.events$.next(events);
@@ -68,8 +77,8 @@ export class EventCalendarComponent implements OnInit {
 	 *
 	 * @param event
 	 */
-	dayClickHandler(event: { day: MonthViewDay<any> }) {
-		this.onDayClick.emit(event.day.date);
+	dayClickHandler(event) {
+		this.onDayClick.emit(event.date);
 	}
 
 	/**

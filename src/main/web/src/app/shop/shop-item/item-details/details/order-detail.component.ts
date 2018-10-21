@@ -92,6 +92,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 			})
 		);
 
+	
+
 	canEdit$ = this.loginService.currentUser$.pipe(
 		filter(user => user !== null),
 		map(user => userPermissions(user).funds >= Permission.write),

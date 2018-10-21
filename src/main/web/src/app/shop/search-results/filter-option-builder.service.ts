@@ -3,7 +3,7 @@ import {FilterOptionType} from "./filter-option-type";
 import {MultiLevelSelectParent} from "../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {Injectable} from "@angular/core";
 import {merge, Observable} from "rxjs";
-import {scan} from "rxjs/operators";
+import {filter, scan} from "rxjs/operators";
 import {Filter} from "../../shared/model/api/filter";
 
 @Injectable()
@@ -42,12 +42,14 @@ export class FilterOptionBuilder {
 			.map(option => option.option(filterRequest));
 
 
-		return merge(...sortedOptions)
-			.pipe(
-				scan((options: MultiLevelSelectParent[], value: MultiLevelSelectParent[]) => {
-					options.push(...value);
-					return options;
-				}, [])
-			);
+		const done = new Array(sortedOptions.length).map(() => false);
+		return merge(...sortedOptions).pipe(
+			scan((options: MultiLevelSelectParent[], value: MultiLevelSelectParent[], idx) => {
+				options.push(...value);
+				done[idx] = true;
+				return options;
+			}, []),
+			filter(options => done.filter(it => it).length === sortedOptions.length)
+		)
 	}
 }

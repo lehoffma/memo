@@ -69,7 +69,7 @@ export function setProperties<T>(object: T, properties: any): T {
 				value = ClubRole["" + properties[key]];
 			} else if (key === "clubRole") {
 				value = isNumber(value) ? idToClubRoleEnum(value) : ClubRole["" + properties[key]];
-			} else if (key === "permissions") {
+			} else if (key === "permissions" && properties[key]) {
 				value = jsonToPermissions(properties[key]);
 			} else if (key === "gender") {
 				value = properties[key];

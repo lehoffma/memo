@@ -11,6 +11,7 @@ import {Entry} from "../../model/entry";
 import {Page} from "../../model/api/page";
 import {TableDataService} from "../../utility/material-table/table-data-service";
 import {ParamMap} from "@angular/router";
+import {getAllQueryValues} from "../../model/util/url-util";
 
 export type AddOrModifyRequest = <T>(url: string, body: any | null, options?: {
 	headers?: HttpHeaders;
@@ -60,7 +61,7 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 	toFilter(queryParamMap: ParamMap, allowedParameters: string[]) {
 		return allowedParameters.reduce((filter, parameter) => {
 			if (queryParamMap.has(parameter)) {
-				const value = queryParamMap.getAll(parameter).join("|");
+				const value = getAllQueryValues(queryParamMap, parameter).join(",");
 				return Filter.add(filter, parameter, value);
 			}
 			return filter;

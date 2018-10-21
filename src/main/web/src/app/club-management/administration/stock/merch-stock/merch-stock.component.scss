@@ -88,6 +88,7 @@ memo-merch-stock-entry:not(:first-of-type) {
 		overflow-y: auto;
 	}
 	.stock-entry-container {
+		max-width: calc(100% - 330px);
 		.stock-options {
 			display: flex;
 			justify-content: space-between;
@@ -118,6 +119,7 @@ memo-merch-stock-entry:not(:first-of-type) {
 	.stock-entry-container {
 		flex: 1;
 		margin-bottom: 30px;
+		max-width: calc(100% - 630px);
 	}
 
 	memo-merch-stock-feed {

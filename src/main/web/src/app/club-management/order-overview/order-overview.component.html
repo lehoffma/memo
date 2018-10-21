@@ -22,7 +22,9 @@
 			</a>
 
 		</div>
-		<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
+		<memo-sorting-dropdown [defaultOption]="sortingOptions[0]"
+							   [withoutUnsorted]="true"
+							   [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
 	</div>
 
 	<div class="content-wrapper">
@@ -41,7 +43,8 @@
 		</div>
 
 		<mat-paginator #paginator
-					   [pageSize]="10"
+					   [pageSize]="pageSize"
+					   [pageIndex]="pageIndex"
 					   [length]="orderOverviewService.dataSource.dataLength"
 					   [pageSizeOptions]="[5, 10, 20, 50]"
 					   [showFirstLastButtons]="true"></mat-paginator>

@@ -45,6 +45,10 @@ a.disabled {
 	}
 }
 
+a{
+	text-decoration: none;
+}
+
 .search-button.mat-icon-button:hover .mat-button-focus-overlay {
 	opacity: 0 !important;
 }

@@ -20,12 +20,13 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../shared/services/api/user.service";
 import {debitRequiresAccountValidator} from "../../shared/validators/debit-requires-account.validator";
 import {ShoppingCartItem} from "../../shared/model/shopping-cart-item";
-import {flatMap} from "../../util/util";
+import {flatMap, flatten} from "../../util/util";
 import {DiscountService} from "app/shop/shared/services/discount.service";
 import {processInParallelAndWait} from "../../util/observable-util";
 import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
 import {setProperties} from "../../shared/model/util/base-object";
 import {PaymentMethod} from "./payment/payment-method";
+import {MerchColor} from "../shared/model/merch-color";
 
 @Component({
 	selector: "memo-checkout",
@@ -264,12 +265,31 @@ export class CheckoutComponent implements OnInit {
 			return of([]);
 		}
 
-		//setting discounted prices
+		//group by item id
+		const grouped: { [id: string]: { size?: string, item?: number, color?: MerchColor, isDriver?: boolean, needsTicket?: boolean }[] } = items
+			.reduce((grouped, it) => {
+				if (!grouped[it.item]) {
+					grouped[it.item] = [];
+				}
+				grouped[it.item].push(it);
+				return grouped;
+			}, {});
+
 		return combineLatest(
-			...items.map(it => this.discountService.getDiscountedPriceOfEvent(it.item, userId)
-				.pipe(
-					map(discountedPrice => ({...it, price: discountedPrice}))
-				))
-		)
+			...Object.keys(grouped)
+				.map(key => this.discountService.getPrices(grouped[key][0].item, userId)
+					.pipe(
+						//only one item gets discount
+						map(({discounted, normal}) => [
+							{...grouped[key][0], price: discounted},
+							...grouped[key].slice(1)
+								.map(it => ({...it, price: normal}))
+						])
+					)
+				)
+		).pipe(
+			map(items => flatten(items))
+		);
+
 	}
 }

@@ -3,7 +3,8 @@
 	<div *ngIf="selection.isEmpty(); then header; else actionHeader"></div>
 	<ng-template #header>
 		<h1 class="expandable-table-header-title">
-			{{title}}
+			<span>{{title}}</span>
+			<a *ngIf="link" routerLink="{{link}}">{{linkText || link}}</a>
 		</h1>
 
 		<div class="expandable-table-header-actions">

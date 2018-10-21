@@ -37,6 +37,10 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
                 .orElse(0);
     }
 
+    @Override
+    protected ShopItem createCopy(ShopItem object) {
+        return new ShopItem(object);
+    }
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, ShopItem object) {
@@ -48,6 +52,14 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
         this.oneToMany(object, OrderedItem.class, ShopItem::getOrders, orderedItem -> orderedItem::setItem);
         this.oneToMany(object, Address.class, ShopItem::getRoute, address -> address::setItem);
         this.oneToMany(object, Stock.class, ShopItem::getStock, stock -> stock::setItem);
+    }
+
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, ShopItem object, ShopItem previous) {
+        this.updateDependencies(jsonNode, object);
+        this.nonOwningManyToMany(object, previous, User.class, ShopItem::getAuthor, ShopItem::getId, User::getAuthoredItems, user -> user::setAuthoredItems);
+        this.nonOwningManyToMany(object, previous, User.class, ShopItem::getReportWriters, ShopItem::getId, User::getReportResponsibilities, user -> user::setReportResponsibilities);
+        System.out.println("hi");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

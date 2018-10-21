@@ -1,7 +1,8 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable, PLATFORM_ID} from "@angular/core";
 import {CdkScrollable, ScrollDispatcher} from "@angular/cdk/scrolling";
 import {Observable, Subject, Subscription} from "rxjs";
 import {tap} from "rxjs/operators";
+import {isPlatformBrowser} from "@angular/common";
 
 @Injectable()
 export class ScrollingService {
@@ -9,7 +10,8 @@ export class ScrollingService {
 	scroll: Observable<CdkScrollable> = this._scroll.asObservable();
 	private _subscription: Subscription;
 
-	constructor(private scrollDispatcher: ScrollDispatcher) {
+	constructor(private scrollDispatcher: ScrollDispatcher,
+				@Inject(PLATFORM_ID) private platformId: Object) {
 		this._subscription = this.scrollDispatcher.scrolled()
 			.pipe(
 				tap(event => {
@@ -31,6 +33,8 @@ export class ScrollingService {
 	}
 
 	scrollToTop(){
-		document.querySelector('.mat-sidenav-content').scrollTop = 0;
+		if (isPlatformBrowser(this.platformId)) {
+			document.querySelector('.mat-sidenav-content').scrollTop = 0;
+		}
 	}
 }

@@ -1,30 +1,30 @@
 <!--todo: indication if tour/party/merch/user (/entry?) -->
 <a class="result-entry-container" routerLink="{{resultUrl$|async}}">
-	<div class="result-entry-info-container">
-		<h3 class="result-title">
-			{{result.title}}
-		</h3>
-		<div class="result-info">
-			<div class="secondary-text">
-				<span *ngIf="!resultIsMerch(result)">{{result.date | dateFormat}}</span>
-				<span *ngIf="resultIsMerch(result)" class="merch-available-colors-container">
+	<mat-card>
+		<img mat-card-image [lazySrc]="(!!result.images[0] ? result.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
+			 lazySrcVisible="visible" [class.past]="resultIsPast$ | async">
+		<mat-card-content>
+			<h3 class="result-title">
+				{{result.title}}
+			</h3>
+			<div class="result-info">
+				<div class="secondary-text">
+					<span *ngIf="!resultIsMerch(result)">{{result.date | dateFormat}}</span>
+					<span *ngIf="resultIsMerch(result)" class="merch-available-colors-container">
 					<span *ngFor="let color of (colors$ | async)"
 						  class="merch-available-colors"
 						  [style.background-color]="color.hex">
 					</span>
 				</span>
+				</div>
+
+				<memo-price-renderer class="result-price"
+									 [showDiscountPossibilities]="false" [showExplanation]="false"
+									 [price]="result.price" [discounts]="discounts$ | async">
+
+				</memo-price-renderer>
 			</div>
-
-			<memo-price-renderer class="result-price"
-								 [showDiscountPossibilities]="false" [showExplanation]="false"
-								 [price]="result.price" [discounts]="discounts$ | async">
-
-			</memo-price-renderer>
-		</div>
-	</div>
-	<div class="result-entry-image-container">
-		<img [lazySrc]="(!!result.images[0] ? result.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
-			 lazySrcVisible="visible" [class.past]="resultIsPast$ | async">
-	</div>
+		</mat-card-content>
+	</mat-card>
 </a>
 

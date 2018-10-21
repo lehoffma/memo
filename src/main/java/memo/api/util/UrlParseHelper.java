@@ -50,7 +50,7 @@ public class UrlParseHelper {
 
     private static Filter.FilterRequest toFilterRequest(Map.Entry<String, String[]> entry) {
         List<String> filterValues = Arrays.stream(entry.getValue())
-                .map(it -> it.split("\\|"))
+                .map(it -> it.split(","))
                 .map(Arrays::asList)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());

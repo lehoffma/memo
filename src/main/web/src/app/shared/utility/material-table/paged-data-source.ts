@@ -1,14 +1,15 @@
 import {DataSource} from "@angular/cdk/table";
 import {CollectionViewer} from "@angular/cdk/collections";
-import {BehaviorSubject, combineLatest, Observable, Subscription} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from "rxjs";
 import {Page, PageResponse} from "../../model/api/page";
-import {filter, map, mergeMap, tap} from "rxjs/operators";
+import {filter, map, mergeMap, takeUntil, tap} from "rxjs/operators";
 import {MatPaginator, PageEvent} from "@angular/material";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {SortDirection} from "@angular/material/sort/typings/sort-direction";
 import {TableDataService} from "./table-data-service";
+import {ParamMap, Router} from "@angular/router";
 
 export class PagedDataSource<T> extends DataSource<T> {
 	public currentPage$: BehaviorSubject<Page<T>> = new BehaviorSubject<Page<T>>(PageResponse.empty());
@@ -32,6 +33,8 @@ export class PagedDataSource<T> extends DataSource<T> {
 	private _sortSubscription: Subscription;
 	private _reloadEmitter: BehaviorSubject<any> = new BehaviorSubject(true);
 	private _isExpandable$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+
+	private onDestroy$: Subject<any> = new Subject<any>();
 
 	constructor(dataService?: TableDataService<T>, page$?: Observable<PageRequest>) {
 		super();
@@ -57,6 +60,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 		}
 
 		this._pageEventSubscription = paginator.page
+			.pipe(takeUntil(this.onDestroy$))
 			.subscribe(event => this._pageEvents$.next(event));
 	}
 
@@ -71,7 +75,9 @@ export class PagedDataSource<T> extends DataSource<T> {
 			this._filterSubscription.unsubscribe();
 		}
 
-		this._filterSubscription = filter$.subscribe(filter => this._filter$.next(filter));
+		this._filterSubscription = filter$
+			.pipe(takeUntil(this.onDestroy$))
+			.subscribe(filter => this._filter$.next(filter));
 	}
 
 	public set isExpandable(value: boolean) {
@@ -95,7 +101,9 @@ export class PagedDataSource<T> extends DataSource<T> {
 			this._sortSubscription.unsubscribe();
 		}
 
-		this._sortSubscription = sort$.subscribe(sort => this.setSort(sort));
+		this._sortSubscription = sort$
+			.pipe(takeUntil(this.onDestroy$))
+			.subscribe(sort => this.setSort(sort));
 	}
 
 	public set dataService(dataService: TableDataService<T>) {
@@ -119,6 +127,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 				pageIndex: page.page
 			})),
 		)
+			.pipe(takeUntil(this.onDestroy$))
 			.subscribe(event => this._pageEvents$.next(event));
 	}
 
@@ -127,6 +136,32 @@ export class PagedDataSource<T> extends DataSource<T> {
 			active: sort.sortBys[0],
 			direction: sort.direction
 		})
+	}
+
+	initPaginatorFromUrl(queryParamMap: ParamMap) {
+		if (queryParamMap.has("page")) {
+			const page = +queryParamMap.get("page");
+			const pageSize = +queryParamMap.get("pageSize");
+			this._pageEvents$.next({
+				previousPageIndex: 0,
+				length: 200,
+				pageSize: pageSize || 20,
+				pageIndex: (page || 1) - 1
+			})
+		}
+	}
+
+	writePaginatorUpdatesToUrl(router: Router) {
+		this._pageEvents$.pipe(
+			takeUntil(this.onDestroy$)
+		)
+			.subscribe(event => {
+				const newQueryParams = {
+					page: event.pageIndex + 1,
+					pageSize: event.pageSize
+				};
+				router.navigate([], {queryParams: newQueryParams})
+			})
 	}
 
 	/**
@@ -183,12 +218,8 @@ export class PagedDataSource<T> extends DataSource<T> {
 	 * @param {CollectionViewer} collectionViewer
 	 */
 	disconnect(collectionViewer: CollectionViewer): void {
-		if (this._pageEventSubscription) {
-			this._pageEventSubscription.unsubscribe();
-		}
-		if (this._filterSubscription) {
-			this._filterSubscription.unsubscribe();
-		}
+		this.onDestroy$.next();
+		this.onDestroy$.complete();
 	}
 
 	reload() {

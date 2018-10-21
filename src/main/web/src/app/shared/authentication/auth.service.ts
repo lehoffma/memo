@@ -1,20 +1,24 @@
-import {Injectable} from "@angular/core";
+import {Inject, Injectable, PLATFORM_ID} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable, of, throwError} from "rxjs";
 import {catchError, mergeMap, tap} from "rxjs/operators";
-import {JwtHelperService} from "@auth0/angular-jwt";
+import {JwtHelperService} from "../services/jwt-helper.service";
+import {StorageService} from "../services/storage.service";
+import {isPlatformBrowser} from "@angular/common";
 
 @Injectable()
 export class AuthService {
-	private readonly AUTH_TOKEN_KEY = "auth_token";
-	private readonly REFRESH_TOKEN_KEY = "refresh_token";
-	private readonly REMEMBER_ME_KEY = "remember_me";
-	private readonly REFRESH_DELAY = 60 * 60 * 1000;	//every hour
-	private _accessToken = null;
-	private _refreshToken = null;
-	private jwtHelperService: JwtHelperService = new JwtHelperService({});
+	private readonly AUTH_TOKEN_KEY            = "auth_token";
+	private readonly REFRESH_TOKEN_KEY         = "refresh_token";
+	private readonly REMEMBER_ME_KEY           = "remember_me";
+	private readonly REFRESH_DELAY             = 60 * 60 * 1000;	//every hour
+	private _accessToken                       = null;
+	private _refreshToken                      = null;
+	private jwtHelperService: JwtHelperService = new JwtHelperService();
 
-	constructor(private http: HttpClient,) {
+	constructor(private http: HttpClient,
+				private storage: StorageService,
+				@Inject(PLATFORM_ID) private platformId: Object) {
 	}
 
 	public _saveLogin = null;
@@ -24,13 +28,15 @@ export class AuthService {
 			return this._saveLogin;
 		}
 
-		const saveLogin = localStorage.getItem(this.REMEMBER_ME_KEY);
-		return saveLogin === "true";
+		return this.storage.local()
+			.map(storage => storage.getItem(this.REMEMBER_ME_KEY))
+			.map(saveLogin => saveLogin === "true")
+			.orElse(false);
 	}
 
 	set saveLogin(saveLogin: boolean) {
 		this._saveLogin = saveLogin;
-		localStorage.setItem(this.REMEMBER_ME_KEY, "" + saveLogin);
+		this.storage.local().ifPresent(storage => storage.setItem(this.REMEMBER_ME_KEY, "" + saveLogin));
 	}
 
 
@@ -39,7 +45,9 @@ export class AuthService {
 			return this._accessToken;
 		}
 		if (this.saveLogin) {
-			return localStorage.getItem(this.AUTH_TOKEN_KEY);
+			return this.storage.local()
+				.map(storage => storage.getItem(this.AUTH_TOKEN_KEY))
+				.orElse(null);
 		}
 		return null;
 	}
@@ -47,12 +55,12 @@ export class AuthService {
 	public setAccessToken(token: string): void {
 		if (!token) {
 			this._accessToken = null;
-			localStorage.removeItem(this.AUTH_TOKEN_KEY);
+			this.storage.local().ifPresent(storage => storage.removeItem(this.AUTH_TOKEN_KEY));
 		}
 		else {
 			this._accessToken = token;
 			if (this.saveLogin) {
-				localStorage.setItem(this.AUTH_TOKEN_KEY, token);
+				this.storage.local().ifPresent(storage => storage.setItem(this.AUTH_TOKEN_KEY, token));
 			}
 		}
 	}
@@ -62,7 +70,9 @@ export class AuthService {
 			return this._refreshToken;
 		}
 		if (this.saveLogin) {
-			return localStorage.getItem(this.REFRESH_TOKEN_KEY);
+			return this.storage.local()
+				.map(storage => storage.getItem(this.REFRESH_TOKEN_KEY))
+				.orElse(null);
 		}
 		return null;
 	}
@@ -70,12 +80,12 @@ export class AuthService {
 	public setRefreshToken(token: string) {
 		if (!token) {
 			this._refreshToken = null;
-			localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+			this.storage.local().ifPresent(storage => storage.removeItem(this.REFRESH_TOKEN_KEY));
 		}
 		else {
 			this._refreshToken = token;
 			if (this.saveLogin) {
-				localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
+				this.storage.local().ifPresent(storage => storage.setItem(this.REFRESH_TOKEN_KEY, token));
 			}
 		}
 	}
@@ -89,6 +99,11 @@ export class AuthService {
 		if (!!this.getRefreshToken() && this.getRefreshToken() !== undefined) {
 			this.refreshRefreshToken()
 				.subscribe(console.log, console.error);
+		}
+
+
+		if (!isPlatformBrowser(this.platformId)) {
+			return;
 		}
 
 		//attempt to refresh after the specified interval
@@ -113,8 +128,8 @@ export class AuthService {
 		}
 
 		return this.http.get<{ auth_token: string }>("/api/refreshAccessToken", {
-			params: new HttpParams().set("refreshToken", this.getRefreshToken())
-		})
+				params: new HttpParams().set("refreshToken", this.getRefreshToken())
+			})
 			.pipe(
 				tap(response => this.setAccessToken(response.auth_token)),
 				catchError(error => {
@@ -137,15 +152,15 @@ export class AuthService {
 		}
 
 		return this.http.get<{ refresh_token: string }>("/api/refreshRefreshToken", {
-			params: new HttpParams().set("refreshToken", this.getRefreshToken())
-		})
+				params: new HttpParams().set("refreshToken", this.getRefreshToken())
+			})
 			.pipe(
 				tap(response => this.setRefreshToken(response.refresh_token)),
 				catchError(error => {
 					console.error(error);
 					this.setAccessToken("");
 					this.setRefreshToken("");
-					return of({refresh_token: null})
+					return of({refresh_token: null});
 					// return empty<{ refresh_token: string }>();
 				})
 			);
@@ -172,7 +187,7 @@ export class AuthService {
 					catchError(() => {
 						return of({auth_token: null});
 					})
-				)
+				);
 		}
 	}
 

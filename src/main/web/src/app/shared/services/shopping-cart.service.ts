@@ -8,6 +8,7 @@ import {map, mergeMap} from "rxjs/operators";
 import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {LogInService} from "./api/login.service";
 import {DiscountService} from "app/shop/shared/services/discount.service";
+import {StorageService} from "./storage.service";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -16,15 +17,16 @@ export class ShoppingCartService implements OnInit {
 		partys: [],
 		tours: []
 	});
-	public content: Observable<ShoppingCartContent> = this._content.asObservable();
+	public content: Observable<ShoppingCartContent>        = this._content.asObservable();
 	/**
 	 * Der Key, der für das Speichern des ShoppingCartContents im LocalStorage verwendet wird
 	 * @type {string}
 	 */
-	private readonly localStorageKey = "shoppingCart";
+			private readonly localStorageKey               = "shoppingCart";
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
+				private storage: StorageService,
 				private discountService: DiscountService
 	) {
 		this.initFromLocalStorage();
@@ -56,7 +58,7 @@ export class ShoppingCartService implements OnInit {
 									)),
 									map(discountedPrice => (cartItem.amount - 1) * cartItem.item.price + discountedPrice)
 								)
-							)))
+							)));
 				}),
 				map(prices => prices.reduce((acc, current) => acc + current, 0))
 			)
@@ -71,7 +73,7 @@ export class ShoppingCartService implements OnInit {
 	 */
 	reset() {
 		this._content.next({tours: [], partys: [], merch: []});
-		localStorage.removeItem(this.localStorageKey);
+		this.storage.local().ifPresent(storage => storage.removeItem(this.localStorageKey));
 	}
 
 	isPartOfShoppingCart(id: number) {
@@ -79,7 +81,7 @@ export class ShoppingCartService implements OnInit {
 			map(content => !!([...content.merch, ...content.tours, ...content.partys]
 				.find(value => value.id === id))
 			)
-		)
+		);
 	}
 
 	/**
@@ -104,7 +106,7 @@ export class ShoppingCartService implements OnInit {
 		const optionIsEqual = (optionA: ShoppingCartOption, optionB: ShoppingCartOption): boolean => {
 			return this.doesntExistOrIsEqual(optionA, optionB, "size") &&
 				this.doesntExistOrIsEqual(optionA.color, optionB.color, "hex") &&
-				this.doesntExistOrIsEqual(optionA.color, optionB.color, "name")
+				this.doesntExistOrIsEqual(optionA.color, optionB.color, "name");
 		};
 
 		const optionsAreEqual = itemA.options
@@ -177,7 +179,7 @@ export class ShoppingCartService implements OnInit {
 	private findItem(items: ShoppingCartItem[], id: number, options?: ShoppingCartOption[]) {
 		return items.find((shoppingCartItem: ShoppingCartItem) =>
 			this.itemsAreEqual(shoppingCartItem, {id, item: null, options, amount: 0})
-		)
+		);
 	}
 
 	/**
@@ -254,7 +256,7 @@ export class ShoppingCartService implements OnInit {
 	 * @param content
 	 */
 	private saveToLocalStorage(content: ShoppingCartContent) {
-		localStorage.setItem(this.localStorageKey, JSON.stringify(content));
+		this.storage.local().ifPresent(storage => storage.setItem(this.localStorageKey, JSON.stringify(content)));
 	}
 
 	/**
@@ -263,7 +265,9 @@ export class ShoppingCartService implements OnInit {
 	 * @returns {any}
 	 */
 	private getContentFromLocalStorage(): ShoppingCartContent {
-		const json: string = localStorage.getItem(this.localStorageKey);
+		const json: string = this.storage.local()
+			.map(storage => storage.getItem(this.localStorageKey))
+			.orElse(undefined);
 
 		//falls nichts im localStorage gespeichert wurde, ist der Warenkorb wohl leer
 		if (!json) {

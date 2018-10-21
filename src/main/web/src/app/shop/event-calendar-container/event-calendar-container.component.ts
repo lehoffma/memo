@@ -5,24 +5,22 @@ import {MatDialog, MatSnackBar} from "@angular/material";
 import {EventContextMenuComponent} from "./event-context-menu/event-context-menu.component";
 import {CreateEventContextMenuComponent} from "./create-event-context-menu/create-event-context-menu.component";
 import {LogInService} from "../../shared/services/api/login.service";
-import {EventUtilityService} from "../../shared/services/event-utility.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute, Router} from "@angular/router";
-import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
-import {defaultIfEmpty, filter, map, mergeMap, startWith, tap} from "rxjs/operators";
+import {BehaviorSubject, Observable, of, Subject} from "rxjs";
+import {defaultIfEmpty, filter, map, mergeMap, takeUntil} from "rxjs/operators";
 import {Event} from "../shared/model/event";
 import {Filter} from "../../shared/model/api/filter";
-import {getMonth} from "date-fns";
+import {getMonth, getYear} from "date-fns";
 import {Sort} from "../../shared/model/api/sort";
 import {userPermissions} from "../../shared/model/user";
 import {AddressService} from "../../shared/services/api/address.service";
-import {addressToString} from "../../shared/model/util/to-string-util";
 import {ParticipantUserService} from "../shop-item/item-details/participants/participant-list/participant-data-source";
-import {ParticipantListService} from "../shop-item/item-details/participants/participant-list/participant-list.service";
 import {PageRequest} from "../../shared/model/api/page-request";
 import {Tour} from "../shared/model/tour";
 import {Party} from "../shared/model/party";
+import {OrderStatus, statusToInt} from "../../shared/model/order-status";
 
 @Component({
 	selector: "memo-event-calendar-container",
@@ -33,7 +31,9 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	currentlySelectedMonth$ = new BehaviorSubject(getMonth(new Date()));
 	events$: Observable<Event[]> = this.getUpdatedEvents();
 
-	subscriptions = [];
+	onDestroy$ = new Subject<any>();
+	month = getMonth(new Date());
+	year = getYear(new Date());
 
 	selectedView: "calendar" | "list" = "calendar";
 
@@ -48,29 +48,37 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.subscriptions.push(
-			this.activatedRoute.queryParamMap
-				.pipe(
-					filter(map => map.has("view"))
-				)
-				.subscribe(queryParamMap => {
-					switch (queryParamMap.get("view")) {
-						case "calendar":
-							this.selectedView = "calendar";
-							break;
-						case "list":
-							this.selectedView = "list";
-							break;
-						default:
-							this.selectedView = "calendar";
-					}
-				})
-		);
+		this.activatedRoute.queryParamMap
+			.pipe(
+				filter(map => map.has("view")),
+				takeUntil(this.onDestroy$)
+			)
+			.subscribe(queryParamMap => {
+				switch (queryParamMap.get("view")) {
+					case "calendar":
+						this.selectedView = "calendar";
+						break;
+					case "list":
+						this.selectedView = "list";
+						break;
+					default:
+						this.selectedView = "calendar";
+				}
+			});
+
+		const paramMap = this.activatedRoute.snapshot.queryParamMap;
+		if (paramMap.has("month")) {
+			this.month = +paramMap.get("month") - 1;
+		}
+		if (paramMap.has("year")) {
+			this.year = +paramMap.get("year");
+		}
 	}
 
 
 	ngOnDestroy(): void {
-		this.subscriptions.forEach(it => it.unsubscribe());
+		this.onDestroy$.next();
+		this.onDestroy$.complete();
 	}
 
 	navigateToRoute(selectedView: "calendar" | "list") {
@@ -84,12 +92,14 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	}
 
 	updateMonth(date: Date) {
-		this.currentlySelectedMonth$.next(getMonth(date));
+		const month = getMonth(date) + 1;
+		const year = getYear(date);
+		this.router.navigate([], {queryParams: {month, year}})
 	}
 
 	getUpdatedEvents(): Observable<Event[]> {
 		const noMerchFilter = Filter
-			.by({"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)});
+			.by({"type": typeToInteger(EventType.tours) + "," + typeToInteger(EventType.partys)});
 
 		return this.eventService.getAll(
 			noMerchFilter,
@@ -102,10 +112,8 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	 * @param event
 	 */
 	onEventClick(event: (Tour | Party)) {
-
 		const permission$ = this.loginService.currentUser$
 			.pipe(
-				tap(it => console.log(it)),
 				filter(user => user !== null),
 				map(user => userPermissions(user)),
 				filter(permissions => !isNullOrUndefined(permissions)),
@@ -122,6 +130,9 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 				})
 			);
 
+		const statusses = [OrderStatus.RESERVED, OrderStatus.COMPLETED, OrderStatus.ORDERED, OrderStatus.PAID, OrderStatus.SENT]
+			.map(it => statusToInt(it))
+			.join(",");
 		const dialogRef = this.mdDialog.open(EventContextMenuComponent, {
 			data: {
 				id: event.id,
@@ -135,11 +146,14 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 						)
 					),
 					mergeMap(event => this.participantService.get(
-						Filter.by({"eventId": "" + event.id}), PageRequest.first(5), Sort.none()).pipe(
-							map(participantPage => ({
-								...event,
-								participantPage
-							}))
+						Filter.by({"eventId": "" + event.id, "status": statusses}),
+						PageRequest.first(5),
+						Sort.none()
+						).pipe(
+						map(participantPage => ({
+							...event,
+							participantPage
+						}))
 						)
 					),
 					mergeMap(event => permission$.pipe(

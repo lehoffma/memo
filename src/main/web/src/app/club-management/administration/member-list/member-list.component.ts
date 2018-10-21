@@ -14,6 +14,7 @@ import {RowAction} from "../../../shared/utility/material-table/util/row-action"
 import {LogInService} from "../../../shared/services/api/login.service";
 import {ClubRole, isAuthenticated} from "../../../shared/model/club-role";
 import {Permission} from "../../../shared/model/permission";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
 	selector: "memo-member-list",
@@ -94,10 +95,14 @@ export class MemberListComponent implements OnInit, AfterViewInit {
 	constructor(public memberListService: MemberListService,
 				private breakpointObserver: BreakpointObserver,
 				private loginService: LogInService,
+				private activatedRoute: ActivatedRoute,
+				private router: Router,
 				public userService: UserService) {
 	}
 
 	ngOnInit() {
+		this.table.dataSource.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap);
+		this.table.dataSource.writePaginatorUpdatesToUrl(this.router);
 	}
 
 	getDisplayedColumns() {

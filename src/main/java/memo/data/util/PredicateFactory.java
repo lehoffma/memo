@@ -299,7 +299,7 @@ public class PredicateFactory {
         return new ArrayList<>();
     }
 
-    private static Function getTransform(String requestKey) {
+    public static Function getTransform(String requestKey) {
         String key = requestKey.toLowerCase();
         if (key.contains("date") || key.contains("timestamp")) {
             return s -> PredicateFactory.isoToTimestamp((String) s);

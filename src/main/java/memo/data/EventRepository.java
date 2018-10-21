@@ -14,12 +14,13 @@ import javax.persistence.criteria.*;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static memo.data.util.PredicateFactory.getBounded;
+import static memo.data.util.PredicateFactory.getTransform;
 
 public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem> {
 
@@ -198,12 +199,30 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
         );
     }
 
+    private List<Predicate> minMaxOverwrite(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
+        Function<String, Timestamp> transform = (Function<String, Timestamp>) getTransform(filterRequest.getKey());
+        Predicate bounded = getBounded(builder, root, filterRequest, transform).get(0);
+
+        Optional<Path<Integer>> type = PredicateFactory.get(root, "type");
+        Predicate isMerch = type.map(it -> builder.equal(it, 3)).orElse(PredicateFactory.isFalse(builder));
+
+        return Collections.singletonList(
+                builder.or(
+                        isMerch,
+                        bounded
+                )
+        );
+    }
+
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<ShopItem> root, Filter.FilterRequest filterRequest) {
         return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<ShopItem>()
                 .buildPut("searchTerm", (b, r, request) -> PredicateFactory
-                        .search(b, r, request, Arrays.asList("title"))
+                        .search(b, r, request, Collections.singletonList("title"))
                 )
+                //overwrite min/max date to specify that merch's date will be ignored
+                .buildPut("minDate", this::minMaxOverwrite)
+                .buildPut("maxDate", this::minMaxOverwrite)
                 .buildPut("userId", this::getByParticipant)
                 .buildPut("authorId", this::getByAuthorId)
                 .buildPut("size", this::getBySize)

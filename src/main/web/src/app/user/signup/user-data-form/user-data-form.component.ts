@@ -13,6 +13,7 @@ import {first} from "rxjs/operators";
 import {ModifyItemEvent} from "../../../shop/shop-item/modify-shop-item/modify-item-event";
 import {ModifyItemService} from "../../../shop/shop-item/modify-shop-item/modify-item.service";
 import {setProperties} from "../../../shared/model/util/base-object";
+import {visitorPermissions} from "../../../shared/model/permission";
 
 @Component({
 	selector: "memo-user-data-form",

@@ -8,6 +8,8 @@ import {isValid, parse} from "date-fns";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {QueryParameterService} from "../../shared/services/query-parameter.service";
 import {Observable, of} from "rxjs";
+import {flatMap, flatten} from "../../util/util";
+import {getAllQueryValues} from "../../shared/model/util/url-util";
 
 interface OrderOptionsFormValue {
 	from: Date;
@@ -110,13 +112,14 @@ export class OrderOptionsService implements OnDestroy {
 			value.to = to && isValid(to) ? to : null;
 		}
 		if (queryParamMap.has("eventIds")) {
-			value.eventIds = queryParamMap.getAll("eventIds").map(it => +it);
+			value.eventIds = getAllQueryValues(queryParamMap, "eventIds").map(it => +it)
 		}
 		if (queryParamMap.has("userIds")) {
-			value.userIds = queryParamMap.getAll("userIds").map(it => +it);
+			value.userIds = getAllQueryValues(queryParamMap, "userIds").map(it => +it);
 		}
-		this.readBinaryValuesFromQueryParams(value.status, queryParamMap.getAll("status"));
-		this.readBinaryValuesFromQueryParams(value.method, queryParamMap.getAll("method"));
+
+		this.readBinaryValuesFromQueryParams(value.status, getAllQueryValues(queryParamMap, "status"));
+		this.readBinaryValuesFromQueryParams(value.method, getAllQueryValues(queryParamMap, "method"));
 
 		this.formGroup.patchValue(value);
 	}
@@ -129,9 +132,11 @@ export class OrderOptionsService implements OnDestroy {
 		const formValue: OrderOptionsFormValue = this.formGroup.value;
 
 		params["status"] = Object.keys(formValue.status)
-			.filter(key => formValue.status[key]);
+			.filter(key => formValue.status[key])
+			.join(",");
 		params["method"] = Object.keys(formValue.method)
-			.filter(key => formValue.method[key]);
+			.filter(key => formValue.method[key])
+			.join(",");
 
 		params["eventIds"] = formValue.eventIds;
 		params["userIds"] = formValue.userIds;

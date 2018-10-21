@@ -42,6 +42,7 @@ export class FilteringMenuComponent implements OnInit, OnChanges {
 	 * @param {SimpleChanges} changes
 	 */
 	ngOnChanges(changes: SimpleChanges): void {
+		console.log(changes);
 		if (changes["filterOptions"] && this.filterOptions) {
 			this.filterOptions
 				.filter(option => option.selectType === "single")
@@ -82,8 +83,8 @@ export class FilteringMenuComponent implements OnInit, OnChanges {
 		let queryParams: Params = children
 			.reduce((params: Params, child) => {
 				return child.query.reduce((acc, query) => {
-					let previousValue = (acc[query.key] && acc[query.key].split("|")) || [];
-					acc[query.key] = [...previousValue, ...query.values].join("|");
+					let previousValue = (acc[query.key] && acc[query.key].split(",")) || [];
+					acc[query.key] = [...previousValue, ...query.values].join(",");
 					return acc;
 				}, params);
 			}, {});

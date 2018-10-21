@@ -1,15 +1,16 @@
-<div class="participant-table-container">
-	<memo-expandable-material-table
-		[dataSource]="dataSource"
-		[dataService]="participantUserService"
-		[filter$]="filter$"
-		[rowActions]="rowActions"
-		[title]="'Teilnehmer von ' + (participantListService.eventTitle | async)"
-		[columns]="columns"
-		[displayedColumns]="displayedColumns$ | async"
-		[permissions]="participantListService.permissions$ | async"
-		(onAction)="participantListService.handleTableAction($event)"
-	>
+<memo-expandable-material-table
+	[dataSource]="dataSource"
+	[dataService]="participantUserService"
+	[filter$]="filter$"
+	[rowActions]="rowActions"
+	[title]="'Teilnehmer von '"
+	[headerLink]="getLinkToTour(participantListService.eventInfo$ | async)"
+	[headerLinkText]=" participantListService.eventTitle | async"
+	[columns]="columns"
+	[displayedColumns]="displayedColumns$ | async"
+	[permissions]="participantListService.permissions$ | async"
+	[writePageToUrl]="true"
+	(onAction)="participantListService.handleTableAction($event)"
+>
 
-	</memo-expandable-material-table>
-</div>
+</memo-expandable-material-table>

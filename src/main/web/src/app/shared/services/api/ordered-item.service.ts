@@ -235,7 +235,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 		return this.eventService.get(
 			Filter.by({
 				"userId": "" + userId,
-				"type": typeToInteger(EventType.tours) + "|" + typeToInteger(EventType.partys)
+				"type": typeToInteger(EventType.tours) + "," + typeToInteger(EventType.partys)
 			}),
 			pageRequest,
 			sort

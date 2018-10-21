@@ -14,6 +14,8 @@ export class TableHeaderComponent<T> implements OnInit {
 
 	@Input() selection: SelectionModel<T>;
 	@Input() title: string;
+	@Input() link: string;
+	@Input() linkText: string;
 	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
 
 	@Input() permissions: ActionPermissions = {

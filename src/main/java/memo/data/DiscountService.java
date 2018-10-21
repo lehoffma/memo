@@ -27,7 +27,8 @@ public class DiscountService {
 
         return userOrders.stream()
                 .noneMatch(order -> order.getItems().stream()
-                        .anyMatch(orderedItem -> orderedItem.getItem().getId().equals(item.getId()))
+                        .anyMatch(orderedItem -> !orderedItem.getStatus().equals(OrderStatus.Cancelled)
+                                && orderedItem.getItem().getId().equals(item.getId()))
                 );
     }
 

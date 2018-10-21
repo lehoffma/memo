@@ -7,6 +7,11 @@
 	background-color: white;
 }
 
+.expandable-table-header-title a {
+	color: mat-color($accent);
+}
+
+
 .expandable-table-header {
 	display: flex;
 	justify-content: space-between;

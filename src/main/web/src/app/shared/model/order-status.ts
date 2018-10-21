@@ -22,6 +22,8 @@ export const OrderStatusList: OrderStatus[] = [
 
 export const OrderStatusStringList: string[] = OrderStatusList
 	.map(status => orderStatusToString(status));
+export const OrderStatusIntList: number[] = OrderStatusList
+	.map(status => statusToInt(status));
 
 export const OrderStatusPairList: { status: OrderStatus, text: string }[] = OrderStatusList
 	.map(status => ({

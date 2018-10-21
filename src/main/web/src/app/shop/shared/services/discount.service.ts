@@ -91,6 +91,20 @@ export class DiscountService {
 			);
 	}
 
+	getPrices(eventId: number, userId?: number): Observable<{ discounted: number; normal: number }> {
+		return this.getEventDiscounts(eventId, userId)
+			.pipe(
+				mergeMap(discounts => this.eventService.getById(eventId)
+					.pipe(
+						map(item => ({
+							discounted: this.getDiscountedPrice(item.price, discounts),
+							normal: item.price
+						}))
+					)
+				)
+			);
+	}
+
 	/**
 	 *
 	 * @param {Discount[]} discounts

@@ -23,7 +23,7 @@ export class QueryParameterService {
 		oldParamKeys.forEach(key => newQueryParams[key] = paramMap.get(key));
 		Object.keys(queryParams)
 		//ignore empty parameter values (i.e. remove empty values from the param map)
-			.filter(key => queryParams[key].length > 0)
+			.filter(key => ("" + queryParams[key]).length > 0)
 			.forEach(key => newQueryParams[key] = queryParams[key]);
 
 		return newQueryParams;

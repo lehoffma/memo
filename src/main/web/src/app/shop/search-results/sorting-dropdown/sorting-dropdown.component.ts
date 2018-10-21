@@ -19,7 +19,10 @@ export class SortingDropdownComponent implements OnInit {
 	);
 
 	@Input() sortingOptions: SortingOption<any>[];
+	@Input() defaultOption: SortingOption<any> = this.noneSortingOption;
+	@Input() withoutUnsorted = false;
 	selectedOption: string = "";
+	combinedOptions = [];
 
 	@Output() onSort: EventEmitter<ColumnSortingEvent<any>> = new EventEmitter();
 
@@ -28,9 +31,6 @@ export class SortingDropdownComponent implements OnInit {
 				private queryParameterService: QueryParameterService) {
 	}
 
-	get combinedOptions() {
-		return [this.noneSortingOption, ...this.sortingOptions];
-	}
 
 	ngOnInit() {
 		this.activatedRoute.queryParamMap
@@ -47,9 +47,11 @@ export class SortingDropdownComponent implements OnInit {
 					return this.selectedOption !== "";
 				});
 				if (!somethingMatched) {
-					this.selectedOption = "Unsortiert";
+					this.selectedOption = this.defaultOption.name;
 				}
-			})
+			});
+
+		this.combinedOptions = this.withoutUnsorted ? [...this.sortingOptions] : [this.noneSortingOption, ...this.sortingOptions];
 	}
 
 	updateQueryParams(queryParams: Params) {

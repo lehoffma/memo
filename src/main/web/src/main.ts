@@ -9,3 +9,10 @@ if (environment.production) {
 }
 
 platformBrowserDynamic().bootstrapModule(AppModule);
+
+
+
+// universal/ssr
+// document.addEventListener('DOMContentLoaded', () => {
+// 	platformBrowserDynamic().bootstrapModule(AppModule);
+// });

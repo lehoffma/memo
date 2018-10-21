@@ -138,7 +138,7 @@ export class EventListViewComponent implements OnInit {
 			//example: "Juni 2017", "Juli 2017", "August 2018" etc.
 			default:
 				const pattern = /(\w+) (\d+)/;
-				const patternResults = pattern.exec(key);
+				const patternResults = pattern.exec("" + key);
 				const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober",
 					"November", "Dezember"];
 				const month = months.indexOf(patternResults[1]);

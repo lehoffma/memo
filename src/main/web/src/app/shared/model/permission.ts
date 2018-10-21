@@ -19,6 +19,10 @@ export interface UserPermissions {
 }
 
 export function jsonToPermissions(jsonPermissions): UserPermissions {
+	if (!jsonPermissions["funds"]) {
+		return jsonPermissions
+	}
+
 	return {
 		funds: jsonPermissions["funds"],
 		party: jsonPermissions["party"],

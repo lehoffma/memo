@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, LOCALE_ID, OnDestroy, OnInit} from "@angular/core";
+import {Component, EventEmitter, Inject, LOCALE_ID, OnDestroy, OnInit, PLATFORM_ID} from "@angular/core";
 import {DateAdapter} from "@angular/material";
 import {AuthService} from "./shared/authentication/auth.service";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
@@ -9,14 +9,14 @@ import {BreadcrumbService} from "./shared/breadcrumb-navigation/breadcrumb.servi
 import {NgcCookieConsentService, NgcStatusChangeEvent} from "ngx-cookieconsent";
 import {combineLatest} from "rxjs";
 import {ScrollingService} from "./shared/services/scrolling.service";
+import {isPlatformBrowser} from "@angular/common";
 
 @Component({
 	selector: "memo-app",
 	templateUrl: "./app.component.html",
 	styleUrls: ["./app.component.scss"],
 })
-export class AppComponent implements OnInit, OnDestroy{
-
+export class AppComponent implements OnInit, OnDestroy {
 	breadcrumbsJsonLd$ = this.router.events.pipe(
 		filter(event => event instanceof NavigationEnd),
 		distinctUntilChanged(),
@@ -26,6 +26,7 @@ export class AppComponent implements OnInit, OnDestroy{
 	gaIsInitialized = false;
 
 	onDestroy$ = new EventEmitter<any>();
+
 	constructor(private authService: AuthService,
 				private breadcrumbService: BreadcrumbService,
 				private cookieConsentService: NgcCookieConsentService,
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit, OnDestroy{
 				private scrollService: ScrollingService,
 				private activatedRoute: ActivatedRoute,
 				private router: Router,
+				@Inject(PLATFORM_ID) private platformId: Object,
 				@Inject(LOCALE_ID) public locale: any) {
 		dateAdapter.setLocale(locale); // DD.MM.YYYY
 	}
@@ -41,19 +43,22 @@ export class AppComponent implements OnInit, OnDestroy{
 		this.authService.initRefreshToken();
 
 		this.scrollUpOnPageChange();
-		this.configureAnalyticsCookies();
+
+		if (isPlatformBrowser(this.platformId)) {
+			this.configureAnalyticsCookies();
+		}
 	}
 
-	scrollUpOnPageChange(){
+	scrollUpOnPageChange() {
 		this.router.events.pipe(
 			filter(event => event instanceof NavigationEnd),
 			takeUntil(this.onDestroy$)
 		).subscribe(event => {
 			this.scrollService.scrollToTop();
-		})
+		});
 	}
 
-	configureAnalyticsCookies(){
+	configureAnalyticsCookies() {
 		//cookie consent/google analytics configuration
 		combineLatest(
 			this.cookieConsentService.statusChange$.pipe(

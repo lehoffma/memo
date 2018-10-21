@@ -14,6 +14,7 @@ import {ScrollingService} from "../../shared/services/scrolling.service";
 import {Router} from "@angular/router";
 import {userPermissions} from "../../shared/model/user";
 import {Permission} from "../../shared/model/permission";
+import {getAllQueryValues} from "../../shared/model/util/url-util";
 
 @Component({
 	selector: "memo-order-history",
@@ -24,7 +25,7 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
 	sortedBy$: Observable<Sort> = this.navigationService.queryParamMap$
 		.pipe(
 			map(paramMap => paramMap.has("sortBy") && paramMap.has("direction")
-				? Sort.by(paramMap.get("direction"), paramMap.getAll("sortBy").join("|"))
+				? Sort.by(paramMap.get("direction"), getAllQueryValues(paramMap, "sortBy").join(","))
 				: Sort.none())
 		);
 

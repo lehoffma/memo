@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class DependencyUpdateService {
 
@@ -99,7 +100,34 @@ public class DependencyUpdateService {
     }
 
 
+    public <T, DependencyType, IdType> List<DependencyType> nonOwningManyToMany(T object,
+                                                                                T previous,
+                                                                                Function<T, List<DependencyType>> getDependency,
+                                                                                Function<T, IdType> getId,
+                                                                                Function<DependencyType, List<T>> getCyclicListDependency,
+                                                                                Function<DependencyType, Consumer<List<T>>> updateDependencyValues
+    ) {
+        List<DependencyType> previousValues = convertFromIndirectList(getDependency.apply(previous));
+        List<DependencyType> newValues = convertFromIndirectList(getDependency.apply(object));
 
 
+        if (previousValues != null && newValues != null) {
+            //remove from lists if in prev but not in current
+            List<DependencyType> valuesToUpdate = previousValues.stream()
+                    .filter(it -> !newValues.contains(it))
+                    .collect(Collectors.toList());
+
+            valuesToUpdate.forEach(value -> {
+                List<T> items = getCyclicListDependency.apply(value);
+                //remove item from list
+                items.removeIf(item -> getId.apply(item).equals(getId.apply(object)));
+
+                updateDependencyValues.apply(value).accept(items);
+            });
+
+            return valuesToUpdate;
+        }
+        return new ArrayList<>();
+    }
 
 }

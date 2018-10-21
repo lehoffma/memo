@@ -8,6 +8,8 @@ import {ShoppingCartService} from "./shopping-cart.service";
 import {WindowService} from "./window.service";
 import {OverlayService} from "./overlay.service";
 import {ScrollingService} from "./scrolling.service";
+import {JwtHelperService} from "./jwt-helper.service";
+import {StorageService} from "./storage.service";
 
 
 const providers = [
@@ -20,6 +22,8 @@ const providers = [
 	WindowService,
 	ScrollingService,
 	OverlayService,
+	JwtHelperService,
+	StorageService
 ];
 
 @NgModule({

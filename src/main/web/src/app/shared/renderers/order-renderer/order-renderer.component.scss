@@ -4,10 +4,11 @@
 
 :host {
 	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 	width: 100%;
 	background-color: $container-content--background-color;
 	color: $container-content--color;
-	flex-direction: column;
 	padding: 1rem;
 	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
 }
@@ -35,12 +36,22 @@
 	}
 }
 
+.order-renderer-bottom {
+
+	border-top: 1px solid #e0e0e0;
+}
+
+
 .user, .method {
-	border-bottom: 1px solid #E0E0E0;
 	padding-bottom: 1rem;
 	display: flex;
 	width: 100%;
 	justify-content: space-between;
+}
+
+.user,
+.method.line-under{
+	border-bottom: 1px solid #E0E0E0;
 }
 
 .ordered-items {
@@ -49,7 +60,13 @@
 	justify-content: space-between;
 	margin: 10px 0;
 	padding: 10px 0;
-	border-bottom: 1px solid #ededed;
+
+	&:first-of-type {
+		border-top: 1px solid #e0e0e0;
+	}
+	&:not(:last-of-type) {
+		border-bottom: 1px solid #ededed;
+	}
 
 	> a {
 		display: flex;
@@ -179,9 +196,9 @@
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
-	border-bottom: 1px solid #E0E0E0;
 	padding-top: 10px;
 	padding-bottom: 10px;
+	border-bottom: 1px solid #e0e0e0;
 
 	.order-entry-info-container:last-child {
 		margin-top: 5px;

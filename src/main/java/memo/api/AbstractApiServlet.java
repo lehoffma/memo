@@ -29,7 +29,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static memo.util.ApiUtils.stringIsNotEmpty;
 
@@ -44,15 +43,19 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         this.dependencyUpdateService = new DependencyUpdateService();
     }
 
+    protected T createCopy(T object) {
+        return object;
+    }
+
     /**
      * Updates the database record of a manyToOne relationship
      */
-    protected <DependencyType, IdType> void manyToOne(T objectToUpdate,
-                                                      Class<DependencyType> clazz,
-                                                      Function<T, DependencyType> getDependency,
-                                                      Function<T, IdType> getId,
-                                                      Function<DependencyType, List<T>> getCyclicListDependency,
-                                                      Function<DependencyType, Consumer<List<T>>> updateDependencyValues
+    protected <DependencyType, IdType, ObjectType> void manyToOne(ObjectType objectToUpdate,
+                                                                  Class<DependencyType> clazz,
+                                                                  Function<ObjectType, DependencyType> getDependency,
+                                                                  Function<ObjectType, IdType> getId,
+                                                                  Function<DependencyType, List<ObjectType>> getCyclicListDependency,
+                                                                  Function<DependencyType, Consumer<List<ObjectType>>> updateDependencyValues
     ) {
         dependencyUpdateService.manyToOne(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues)
                 .ifPresent(it -> DatabaseManager.getInstance().update(it, clazz));
@@ -61,10 +64,10 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     /**
      * Updates the database record of a oneToMany relationship
      */
-    protected <DependencyType> void oneToMany(T objectToUpdate,
-                                              Class<DependencyType> clazz,
-                                              Function<T, List<DependencyType>> getDependency,
-                                              Function<DependencyType, Consumer<T>> updateDependencyValue
+    protected <DependencyType, ObjectType> void oneToMany(ObjectType objectToUpdate,
+                                                          Class<DependencyType> clazz,
+                                                          Function<ObjectType, List<DependencyType>> getDependency,
+                                                          Function<DependencyType, Consumer<ObjectType>> updateDependencyValue
     ) {
         List<DependencyType> values = dependencyUpdateService
                 .oneToMany(objectToUpdate, getDependency, updateDependencyValue);
@@ -74,10 +77,10 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     /**
      * Updates the database record of a oneToOne relationship
      */
-    protected <DependencyType> void oneToOne(T objectToUpdate,
-                                             Class<DependencyType> clazz,
-                                             Function<T, DependencyType> getDependency,
-                                             Function<DependencyType, Consumer<T>> updateDependencyValue) {
+    protected <DependencyType, ObjectType> void oneToOne(ObjectType objectToUpdate,
+                                                         Class<DependencyType> clazz,
+                                                         Function<ObjectType, DependencyType> getDependency,
+                                                         Function<DependencyType, Consumer<ObjectType>> updateDependencyValue) {
         dependencyUpdateService.oneToOne(objectToUpdate, getDependency, updateDependencyValue)
                 .ifPresent(it -> DatabaseManager.getInstance().update(it, clazz));
     }
@@ -85,18 +88,44 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     /**
      * Updates the database record of a manyToMany relationship
      */
-    protected <DependencyType, IdType> void manyToMany(T objectToUpdate,
-                                                       Class<DependencyType> clazz,
-                                                       Function<T, List<DependencyType>> getDependency,
-                                                       Function<T, IdType> getId,
-                                                       Function<DependencyType, List<T>> getCyclicListDependency,
-                                                       Function<DependencyType, Consumer<List<T>>> updateDependencyValues
+    protected <DependencyType, IdType, ObjectType> void manyToMany(ObjectType objectToUpdate,
+                                                                   Class<DependencyType> clazz,
+                                                                   Function<ObjectType, List<DependencyType>> getDependency,
+                                                                   Function<ObjectType, IdType> getId,
+                                                                   Function<DependencyType, List<ObjectType>> getCyclicListDependency,
+                                                                   Function<DependencyType, Consumer<List<ObjectType>>> updateDependencyValues
     ) {
         List<DependencyType> dependencyTypes = dependencyUpdateService.manyToMany(objectToUpdate, getDependency, getId, getCyclicListDependency, updateDependencyValues);
         DatabaseManager.getInstance().updateAll(dependencyTypes, clazz);
     }
 
+    /**
+     * Updates the database record of a manyToMany relationship
+     */
+    protected <DependencyType, IdType, ObjectType> void nonOwningManyToMany(ObjectType objectToUpdate,
+                                                                            ObjectType previousVersion,
+                                                                            Class<DependencyType> clazz,
+                                                                            Function<ObjectType, List<DependencyType>> getDependency,
+                                                                            Function<ObjectType, IdType> getId,
+                                                                            Function<DependencyType, List<ObjectType>> getCyclicListDependency,
+                                                                            Function<DependencyType, Consumer<List<ObjectType>>> updateDependencyValues
+    ) {
+        List<DependencyType> dependencyTypes = dependencyUpdateService.nonOwningManyToMany(
+                objectToUpdate,
+                previousVersion,
+                getDependency,
+                getId,
+                getCyclicListDependency,
+                updateDependencyValues
+        );
+        DatabaseManager.getInstance().updateAll(dependencyTypes, clazz);
+    }
+
     protected abstract void updateDependencies(JsonNode jsonNode, T object);
+
+    protected void updateDependencies(JsonNode jsonNode, T object, T previous) {
+        this.updateDependencies(jsonNode, object);
+    }
 
     /**
      * Transforms the given parameter map to a string representation for logging purposes
@@ -107,7 +136,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     protected String paramMapToString(Map<String, String[]> paramMap) {
         return paramMap.entrySet().stream()
                 .map(stringEntry -> stringEntry.getKey() + " = "
-                        + Stream.of(stringEntry.getValue()).collect(Collectors.joining(" | ")))
+                        + String.join(" | ", stringEntry.getValue()))
                 .collect(Collectors.joining(" + "));
     }
 
@@ -331,6 +360,8 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         }
 
         T finalItem = item;
+        T copy = this.createCopy(item);
+
         //check if any of the preconditions failed (i.e. the email is already taken or something)
         Optional<ModifyPrecondition<T>> failedCondition = preconditions.stream()
                 .filter(it -> it.getPredicate().test(finalItem)).findFirst();
@@ -349,7 +380,7 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         );
 
         //update cyclic dependencies etc.
-        this.updateDependencies(jsonItem, item);
+        this.updateDependencies(jsonItem, item, copy);
 
         DatabaseManager.getInstance().update(item, clazz);
 

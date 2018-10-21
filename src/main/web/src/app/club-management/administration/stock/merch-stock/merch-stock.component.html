@@ -35,7 +35,7 @@
 			Hinzufügen
 		</a>
 
-		<memo-merch-stock-entry *ngFor="let stockEntry of merchList"
+		<memo-merch-stock-entry *ngFor="let stockEntry of filteredMerchStock$ | async"
 								[stockEntry]="stockEntry"
 								(onDelete)="deleteMerch($event)"
 
@@ -43,11 +43,11 @@
 
 		</memo-merch-stock-entry>
 
-		<div *ngIf="(merch$|async) === null" class="loading-container">
+		<div *ngIf="(filteredMerchStock$|async) === null" class="loading-container">
 			<div class="loader"></div>
 		</div>
 
-		<div class="no-results" *ngIf="(merch$|async)?.length === 0">
+		<div class="no-results" *ngIf="(filteredMerchStock$|async)?.length === 0">
 			Keine Merchandiseartikel vorhanden.
 		</div>
 	</div>
@@ -55,6 +55,6 @@
 </div>
 
 
-<memo-merch-stock-feed [stockEntryList]="stockEntryList$ | async">
+<memo-merch-stock-feed [stockEntryList]="allMerchStock$ | async">
 
 </memo-merch-stock-feed>

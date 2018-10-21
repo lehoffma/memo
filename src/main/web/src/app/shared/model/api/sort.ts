@@ -17,7 +17,7 @@ export class Sort {
 
 	static by(direction: SortDirection | Direction | string, ...properties: string[]) {
 		let sortDirection;
-		let stringDirection = direction.toString();
+		let stringDirection = (direction || "").toString();
 
 		sortDirection = stringDirection === "asc"
 			? Direction.ASCENDING

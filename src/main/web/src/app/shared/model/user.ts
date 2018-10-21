@@ -57,7 +57,10 @@ export function createUser(): User {
 }
 
 export function userPermissions(user: User): UserPermissions {
-	let userPermissions = user.permissions || visitorPermissions;
+	let userPermissions = (user.permissions && user.permissions["funds"])
+		? user.permissions
+		: visitorPermissions;
+
 	let clubRolePermissions = rolePermissions[user.clubRole];
 	//combine both permission states
 	return Object.keys(visitorPermissions).reduce((permissions, key) => {

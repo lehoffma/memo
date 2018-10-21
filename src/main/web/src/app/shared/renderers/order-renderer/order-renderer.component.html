@@ -1,100 +1,106 @@
-<div class="header">
-	<h2>
-		Bestellung vom {{orderEntry?.timeStamp | dateFormat}}
-	</h2>
-</div>
-<div class="user" *ngIf="user$ | async as user">
-	<span>Bestellt von</span>
-	<a routerLink="/members/{{user.id}}" memoUserPreview [user]="user">
-		<span>{{user.firstName + ' ' + user.surname}}</span>
-		<mat-icon class="role-icon" title="{{user.clubRole}}">
-			{{user.clubRole | clubRoleIcon}}
-		</mat-icon>
-	</a>
-</div>
-<div class="method">
-	<span>Bezahlmethode</span>
-	<span>{{orderEntry?.method}}</span>
-</div>
-<div class="bank-account" *ngIf="bankAccount$ | async as bankAccount">
-	<div class="order-entry-info-container">
-		<span class="label">IBAN</span>
-		<span>{{bankAccount.iban}}</span>
-	</div>
-	<div class="order-entry-info-container">
-		<span class="label">BIC</span>
-		<span>{{bankAccount.bic}}</span>
-	</div>
-</div>
-<div *ngFor="let item of orderedEventItems" class="ordered-items">
-	<a routerLink="{{item.link}}">
-		<div class="order-entry-picture">
-			<img [lazySrc]="!!item.item.images[0] ? item.item.images[0] : 'resources/images/Logo.png'"
-				 lazySrcVisible="visible"
-			/>
-		</div>
-		<div class="order-entry-header order-entry-info">
-			<div class="order-entry-info-container">
-				<span class="label">Name</span>
-				<h3 class="mat-h4">{{item.item.title}}</h3>
-			</div>
+<div>
 
-			<div *ngIf="item.color && item.size">
+	<div class="header">
+		<h2>
+			Bestellung vom {{orderEntry?.timeStamp | dateFormat}}
+		</h2>
+	</div>
+	<div class="user" *ngIf="user$ | async as user">
+		<span>Bestellt von</span>
+		<a routerLink="/members/{{user.id}}" memoUserPreview [user]="user">
+			<span>{{user.firstName + ' ' + user.surname}}</span>
+			<mat-icon class="role-icon" title="{{user.clubRole}}">
+				{{user.clubRole | clubRoleIcon}}
+			</mat-icon>
+		</a>
+	</div>
+	<div class="method" [class.line-under]="!(bankAccount$ | async)">
+		<span>Bezahlmethode</span>
+		<span>{{orderEntry?.method}}</span>
+	</div>
+	<div class="bank-account" *ngIf="bankAccount$ | async as bankAccount">
+		<div class="order-entry-info-container">
+			<span class="label">IBAN</span>
+			<span>{{bankAccount.iban}}</span>
+		</div>
+		<div class="order-entry-info-container">
+			<span class="label">BIC</span>
+			<span>{{bankAccount.bic}}</span>
+		</div>
+	</div>
+	<div *ngFor="let item of orderedEventItems" class="ordered-items">
+		<a routerLink="{{item.link}}">
+			<div class="order-entry-picture">
+				<img [lazySrc]="!!item.item.images[0] ? item.item.images[0] : 'resources/images/Logo.png'"
+					 lazySrcVisible="visible"
+				/>
+			</div>
+			<div class="order-entry-header order-entry-info">
 				<div class="order-entry-info-container">
-					<span class="label">Farbe</span>
-					<div>{{item.color.name}}</div>
+					<span class="label">Name</span>
+					<h3 class="mat-h4">{{item.item.title}}</h3>
+				</div>
+
+				<div *ngIf="item.color && item.size">
+					<div class="order-entry-info-container">
+						<span class="label">Farbe</span>
+						<div>{{item.color.name}}</div>
+					</div>
+
+					<div class="order-entry-info-container">
+						<span class="label">Größe</span>
+						<div>{{item.size}}</div>
+					</div>
+
+				</div>
+			</div>
+		</a>
+		<div class="order-entry-info">
+			<div>
+				<div class="order-entry-info-container">
+					<span class="label">Status</span>
+					<span class="status {{item.cssStatus}}">{{item.status}}</span>
+				</div>
+			</div>
+			<div>
+				<div class="order-entry-info-container">
+					<span class="label">Anzahl</span>
+					<div class="order-entry-amount">{{item.amount}}</div>
 				</div>
 
 				<div class="order-entry-info-container">
-					<span class="label">Größe</span>
-					<div>{{item.size}}</div>
+					<span class="label">Preis</span>
+					<div class="price">{{item.price | currency:'EUR':'symbol'}}</div>
 				</div>
 
 			</div>
 		</div>
-	</a>
-	<div class="order-entry-info">
-		<div>
-			<div class="order-entry-info-container">
-				<span class="label">Status</span>
-				<span class="status {{item.cssStatus}}">{{item.status}}</span>
-			</div>
-		</div>
-		<div>
-			<div class="order-entry-info-container">
-				<span class="label">Anzahl</span>
-				<div class="order-entry-amount">{{item.amount}}</div>
-			</div>
-
-			<div class="order-entry-info-container">
-				<span class="label">Preis</span>
-				<div class="price">{{item.price | currency:'EUR':'symbol'}}</div>
-			</div>
-
-		</div>
 	</div>
 </div>
-<div class="order-total-price">
-	<span>Gesamt</span>
-	<span class="order-total-price-amount">{{total | currency:'EUR':'symbol'}}</span>
-</div>
+<div class="order-renderer-bottom">
+	<div class="order-total-price">
+		<span>Gesamt</span>
+		<span class="order-total-price-amount">{{total | currency:'EUR':'symbol'}}</span>
+	</div>
 
-<div class="actions" *ngIf="withActions || withShow">
-	<div>
+	<div class="actions" *ngIf="withActions || withShow">
 		<div>
-			<a mat-button routerLink="/orders/{{orderEntry?.id}}" *ngIf="withShow">
-				<span>Ansehen</span>
-			</a>
-		</div>
+			<div>
+				<a mat-button routerLink="/orders/{{orderEntry?.id}}" *ngIf="withShow">
+					<span>Ansehen</span>
+				</a>
+			</div>
 
-		<div *ngIf="withActions">
-			<a mat-icon-button routerLink="/orders/{{orderEntry?.id}}/edit">
-				<mat-icon>edit</mat-icon>
-			</a>
-			<button mat-icon-button *ngIf="withRemove"
-					(click)="remove()">
-				<mat-icon>delete</mat-icon>
-			</button>
+			<div *ngIf="withActions">
+				<a mat-icon-button routerLink="/orders/{{orderEntry?.id}}/edit">
+					<mat-icon>edit</mat-icon>
+				</a>
+				<button mat-icon-button *ngIf="withRemove"
+						(click)="remove()">
+					<mat-icon>delete</mat-icon>
+				</button>
+			</div>
 		</div>
 	</div>
+
 </div>

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 public class MailPlaceholderFactory {
 
+
     private static String getReplacement(String placeholder, MessageType type, User recipient, List<ShopItem> items, Map<String, Object> options) {
         switch (placeholder) {
             case "~Name~":
@@ -25,6 +26,7 @@ public class MailPlaceholderFactory {
             case "~OrdersLink~":
                 return "https://shop.meilenwoelfe.de/order-history";
             case "~Items~":
+                //todo price doesn't include discount properly
                 return items.stream()
                         .map(item -> "<p>" +
                                 item.getTitle() + " (" +
