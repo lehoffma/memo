@@ -5,6 +5,16 @@
 
 </memo-multi-image-container>
 
+<div class="image-error" *ngFor="let error of errors; let index = i">
+	<mat-icon>error</mat-icon>
+	<span>{{error}}</span>
+	<button mat-icon-button
+			matTooltip="Schließen"
+			type="button" (click)="errors.splice(index, 1)">
+		<mat-icon>clear</mat-icon>
+	</button>
+</div>
+
 <div class="actions-container" *ngIf="limit === 1">
 	<span (click)="fileUpload.click()">
 		Durchsuchen
@@ -48,6 +58,7 @@
 
 <div class="upload-button-container">
 	<input type="file" [multiple]="limit > 1" #fileUpload [hidden]="true"
+		   accept="image/jpeg,image/png"
 		   (input)="onFileSelect($event)"
 		   (change)="onFileSelect($event)" name="file"/>
 </div>

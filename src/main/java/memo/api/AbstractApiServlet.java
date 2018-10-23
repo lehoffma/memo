@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.*;
 import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.AuthenticationStrategy;
+import memo.communication.strategy.BaseNotificationStrategy;
+import memo.communication.strategy.NotificationStrategy;
 import memo.data.PagingAndSortingRepository;
 import memo.data.model.SerializationOption;
 import memo.data.util.CsvConverter;
@@ -34,12 +36,21 @@ import static memo.util.ApiUtils.stringIsNotEmpty;
 
 public abstract class AbstractApiServlet<T> extends HttpServlet {
     protected AuthenticationStrategy<T> authenticationStrategy;
+    protected NotificationStrategy<T> notificationStrategy;
     protected Logger logger = LogManager.getLogger(AbstractApiServlet.class);
     private DependencyUpdateService dependencyUpdateService;
 
     public AbstractApiServlet(AuthenticationStrategy<T> authenticationStrategy) {
         super();
         this.authenticationStrategy = authenticationStrategy;
+        this.notificationStrategy = new BaseNotificationStrategy<>();
+        this.dependencyUpdateService = new DependencyUpdateService();
+    }
+
+    public AbstractApiServlet(AuthenticationStrategy<T> authenticationStrategy, NotificationStrategy<T> notificationStrategy) {
+        super();
+        this.authenticationStrategy = authenticationStrategy;
+        this.notificationStrategy = notificationStrategy;
         this.dependencyUpdateService = new DependencyUpdateService();
     }
 

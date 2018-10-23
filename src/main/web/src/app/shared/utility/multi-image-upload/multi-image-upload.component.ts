@@ -9,6 +9,7 @@ import {ModifiedImages} from "../../../shop/shop-item/modify-shop-item/modified-
 import {InMemoryDataService} from "../material-table/in-memory-data.service";
 import {TableActionEvent} from "../material-table/util/table-action-event";
 import {TableColumn} from "../material-table/expandable-material-table.component";
+import {RowAction} from "../material-table/util/row-action";
 
 @Component({
 	selector: "memo-multi-image-upload",
@@ -28,12 +29,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	);
 	@Input() limit: number = Infinity;
 	@HostBinding("class.single-picture") singlePicture: boolean = false;
-	rowActions: {
-		icon?: string;
-		name: string | RowActionType;
-		link?: (object: ImageToUpload) => string;
-		route?: (object: ImageToUpload) => string;
-	}[] = [
+	rowActions: RowAction<ImageToUpload>[] = [
 		{
 			icon: "delete",
 			name: RowActionType.DELETE
@@ -47,6 +43,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 		{columnDef: "name", header: "Name", cell: element => element.name}
 	];
 	displayedColumns = this.columns.map(column => column.columnDef);
+	errors: string[];
 
 	constructor(private confirmationDialogService: ConfirmationDialogService,
 				public inMemoryDataService: InMemoryDataService<ImageToUpload>,
@@ -124,35 +121,70 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 
 	/**
 	 *
+	 * @param fileList
+	 * @param errorPredicates
+	 */
+	private handleErrors(fileList: File[], errorPredicates: { predicate: (file: File) => boolean, error: string }[]) {
+		let errors = [];
+		let filteredFileList = fileList;
+		errorPredicates.forEach(({predicate, error}) => {
+			let previousSize = filteredFileList.length;
+			filteredFileList = filteredFileList.filter(file => predicate(file));
+			if (filteredFileList.length < previousSize) {
+				errors.push(error)
+			}
+		});
+		return {filteredFileList, errors};
+	}
+
+	/**
+	 *
 	 * @param {FileList} fileList
 	 */
 	readImages(fileList: File[]): Observable<ImageToUpload[]> {
-		const value: ImageToUpload[] = Array.from(Array(length).keys())
+		const acceptableFileTypes = ["image/jpeg", "image/png"];
+		const maxFileSize = 10000000; //10mb
+
+		const {filteredFileList, errors} = this.handleErrors(fileList, [
+			{
+				predicate: file => acceptableFileTypes.includes(file.type),
+				error: `Nur Bilddateien sind erlaubt. 
+Akzeptiert sind: .jpeg, .png`
+			},
+			{
+				predicate: file => file.size <= maxFileSize,
+				error: `Bilder größer als 10MB sind nicht erlaubt.`
+			}
+		]);
+		this.errors = errors;
+
+		const value: ImageToUpload[] = Array.from(Array(filteredFileList.length).keys())
 			.map(it => ({id: null, name: null, data: null}));
 		const addedImages$ = new BehaviorSubject<ImageToUpload[]>(value);
 
-		for (let i = 0; i < fileList.length; i++) {
+		for (let i = 0; i < filteredFileList.length; i++) {
 			(() => {
 				const reader = new FileReader();
 
 				reader.onload = (event) => {
 					const currentValue = addedImages$.getValue();
 					currentValue[i] = ({
-						id: fileList[i].name,
-						name: fileList[i].name,
+						id: filteredFileList[i].name,
+						name: filteredFileList[i].name,
 						data: (<any>event.target).result
 					});
 					addedImages$.next(currentValue);
 				};
 
-				reader.readAsDataURL(fileList[i]);
+				reader.readAsDataURL(filteredFileList[i]);
 			})();
 		}
 
 		return addedImages$
 			.pipe(
 				//only update the list if all images have been read by the file reader
-				filter(images => images.filter(it => it.id !== null).length === fileList.length),
+				map(images => images.filter(it => it.id !== null)),
+				filter(images => images.length === filteredFileList.length),
 				take(1)
 			);
 	}

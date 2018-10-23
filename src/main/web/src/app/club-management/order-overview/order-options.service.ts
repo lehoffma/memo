@@ -1,14 +1,13 @@
 import {Injectable, OnDestroy} from "@angular/core";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {OrderStatus} from "../../shared/model/order-status";
-import {PaymentMethod} from "../../shop/checkout/payment/payment-method";
+import {OrderStatusList} from "../../shared/model/order-status";
+import {PaymentMethod, paymentMethodList} from "../../shop/checkout/payment/payment-method";
 import {first, map, mergeMap} from "rxjs/operators";
 import {ParamMap, Params, Router} from "@angular/router";
 import {isValid, parse} from "date-fns";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {QueryParameterService} from "../../shared/services/query-parameter.service";
 import {Observable, of} from "rxjs";
-import {flatMap, flatten} from "../../util/util";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 
 interface OrderOptionsFormValue {
@@ -38,21 +37,8 @@ export class OrderOptionsService implements OnDestroy {
 			"to": [undefined],
 			"eventIds": [[]],
 			"userIds": [[]],
-			"status": this.formBuilder.group({
-				[OrderStatus.RESERVED]: true,
-				[OrderStatus.CANCELLED]: true,
-				[OrderStatus.COMPLETED]: true,
-				[OrderStatus.ORDERED]: true,
-				[OrderStatus.PAID]: true,
-				[OrderStatus.REFUSED]: true,
-				[OrderStatus.SENT]: true,
-				[OrderStatus.UNDER_APPROVAL]: true
-			}),
-			"method": this.formBuilder.group({
-				[PaymentMethod.CASH]: true,
-				[PaymentMethod.DEBIT]: true,
-				[PaymentMethod.TRANSFER]: true
-			})
+			"status": this.formBuilder.group(OrderStatusList.reduce((acc, status) => ({...acc, [status]: true}), {})),
+			"method": this.formBuilder.group(paymentMethodList().reduce((acc, status) => ({...acc, [status]: true}), {})),
 		});
 
 		this.subscriptions.push(

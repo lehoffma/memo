@@ -6,8 +6,7 @@ import memo.api.util.ApiServletPutOptions;
 import memo.api.util.ModifyPrecondition;
 import memo.auth.BCryptHelper;
 import memo.auth.api.strategy.UserAuthStrategy;
-import memo.communication.CommunicationManager;
-import memo.communication.MessageType;
+import memo.communication.strategy.UserNotificationStrategy;
 import memo.data.UserRepository;
 import memo.model.*;
 import memo.util.ApiUtils;
@@ -31,7 +30,7 @@ import java.util.List;
 public class UserServlet extends AbstractApiServlet<User> {
 
     public UserServlet() {
-        super(new UserAuthStrategy());
+        super(new UserAuthStrategy(), new UserNotificationStrategy());
         logger = LogManager.getLogger(UserServlet.class);
     }
 
@@ -128,10 +127,7 @@ public class UserServlet extends AbstractApiServlet<User> {
                                 )
                         ))
         );
-
-        if (createdUser != null) {
-            CommunicationManager.getInstance().send(createdUser, null, MessageType.REGISTRATION);
-        }
+        this.notificationStrategy.post(createdUser);
     }
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

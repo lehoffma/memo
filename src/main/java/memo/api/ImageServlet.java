@@ -11,9 +11,9 @@ import memo.model.Image;
 import memo.model.ShopItem;
 import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -26,14 +26,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @WebServlet(name = "ImageServlet", value = "/api/image")
-//max file size is 15 MB
-@MultipartConfig(maxFileSize = 1024 * 1024 * 15)
+//max file size is 10 MB
+@MultipartConfig(maxFileSize = 1024 * 1024 * 10)
 public class ImageServlet extends AbstractApiServlet<Image> {
 
     public ImageServlet() {
@@ -73,7 +74,7 @@ public class ImageServlet extends AbstractApiServlet<Image> {
 
             response.setContentType(mime);
             File file = image.getFile(size);
-            if(file == null){
+            if (file == null) {
                 logger.error("File at '" + image.getImagePath(size) + "' does not exist.");
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;
@@ -105,9 +106,19 @@ public class ImageServlet extends AbstractApiServlet<Image> {
 
 
         Collection<Part> parts = request.getParts();
-        List<Image> images = parts.stream()
-                .map(part -> new Image().saveToFile(part))
+
+        List<String> extensions = parts.stream()
+                .map(part -> FilenameUtils.getExtension(Image.getUploadedName(part)))
                 .collect(Collectors.toList());
+        if (extensions.stream().anyMatch(extension -> !Image.isValidFileType(extension))) {
+            throw new IllegalArgumentException("Invalid file types " + extensions.toString());
+        }
+
+        List<Image> images = new ArrayList<>();
+        for (Part part : parts) {
+            Image image = new Image().saveToFile(part);
+            images.add(image);
+        }
 
         DatabaseManager.getInstance().saveAll(images, Image.class);
 

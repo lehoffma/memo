@@ -1,3 +1,6 @@
+@import "theme";
+@import "~@angular/material/theming";
+
 :host {
 	display: block;
 	background: white;
@@ -32,6 +35,24 @@
 	}
 }
 
+.image-error {
+	display: flex;
+	white-space: pre-line;
+	background: mat-color($warn, 200);
+	margin: -1rem;
+	padding: 2rem 1rem 1rem;
+
+	> span{
+		margin: auto;
+	}
+
+	> mat-icon {
+		height: 40px;
+		width: 40px;
+		font-size: 40px;
+	}
+}
+
 .images-list {
 	min-height: 200px;
 
@@ -58,6 +79,11 @@ memo-multi-image-container {
 				padding: 1rem;
 				margin-top: 0;
 			}
+		}
+
+		.image-error{
+			padding: 1rem;
+			margin: 0;
 		}
 
 		memo-multi-image-container {

@@ -12,7 +12,9 @@ public enum OrderStatus {
     Completed,
     Cancelled,
     Refused,
-    UnderApproval;
+    UnderApproval,
+    PaymentRequested,
+    Participated;
 
 
     public static Optional<OrderStatus> fromOrdinal(int ordinal){

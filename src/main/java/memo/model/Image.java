@@ -177,15 +177,21 @@ public class Image implements Serializable {
                 '}';
     }
 
-    public Image saveToFile(Part part) {
+    public static boolean isValidFileType(String extension){
+        List<String> acceptableExtensions = Arrays.asList("png", "jpg", "jpeg");
+        return acceptableExtensions.stream().anyMatch(it -> it.equalsIgnoreCase(extension));
+    }
 
+    public Image saveToFile(Part part) throws IOException {
         String extension = FilenameUtils.getExtension(getUploadedName(part));
+        if(!Image.isValidFileType(extension)){
+            throw new IllegalArgumentException("Invalid file type " + extension);
+        }
+
         File file;
         //repeat until we get an unused file name
         do {
             String filename = RandomStringUtils.randomAlphanumeric(10);
-            //todo test
-            extension = "png";
             file = new File(filePath + filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
             this.setFileName(filename + FilenameUtils.EXTENSION_SEPARATOR + extension);
         } while (file.exists());
@@ -193,8 +199,6 @@ public class Image implements Serializable {
         try (InputStream stream = part.getInputStream()) {
             writeToFile(stream, file);
             this.writeResizedImages();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return this;
     }
@@ -293,7 +297,7 @@ public class Image implements Serializable {
     /**
      * Utility method to get file name from HTTP header content-disposition
      */
-    private String getUploadedName(Part part) {
+    public static String getUploadedName(Part part) {
         String contentDisp = part.getHeader("content-disposition");
         System.out.println("content-disposition header= " + contentDisp);
         String[] tokens = contentDisp.split(";");
