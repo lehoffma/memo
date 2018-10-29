@@ -7,19 +7,16 @@ import memo.model.PermissionState;
 import memo.util.DatabaseManager;
 import memo.util.model.Filter;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
+@Named
+@ApplicationScoped
 public class PermissionRepository extends AbstractPagingAndSortingRepository<PermissionState> {
-
-    private static PermissionRepository instance;
-
-    public static PermissionRepository getInstance() {
-        if (instance == null) instance = new PermissionRepository();
-        return instance;
-    }
 
     public PermissionRepository() {
         super(

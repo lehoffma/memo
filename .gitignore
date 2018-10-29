@@ -66,3 +66,4 @@ target/
 /src/main/web/coverage/
 /.idea/
 /src/main/resources/config.properties
+!/src/main/webapp/WEB-INF/

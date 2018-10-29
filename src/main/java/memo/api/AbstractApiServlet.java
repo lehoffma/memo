@@ -10,8 +10,9 @@ import memo.data.PagingAndSortingRepository;
 import memo.data.model.SerializationOption;
 import memo.data.util.CsvConverter;
 import memo.model.User;
-import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
+import memo.util.JsonHelper;
+import memo.util.MapBuilder;
 import memo.util.model.Filter;
 import memo.util.model.Page;
 import memo.util.model.PageRequest;
@@ -21,24 +22,33 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static memo.util.ApiUtils.stringIsNotEmpty;
+import static memo.util.JsonHelper.stringIsNotEmpty;
 
-public abstract class AbstractApiServlet<T> extends HttpServlet {
+public abstract class AbstractApiServlet<T>  {
     protected AuthenticationStrategy<T> authenticationStrategy;
     protected NotificationStrategy<T> notificationStrategy;
+    protected AuthenticationService authenticationService;
     protected Logger logger = LogManager.getLogger(AbstractApiServlet.class);
     private DependencyUpdateService dependencyUpdateService;
+
+
+    public AbstractApiServlet() {
+        super();
+        this.notificationStrategy = new BaseNotificationStrategy<>();
+        this.dependencyUpdateService = new DependencyUpdateService();
+    }
+
 
     public AbstractApiServlet(AuthenticationStrategy<T> authenticationStrategy) {
         super();
@@ -47,7 +57,8 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         this.dependencyUpdateService = new DependencyUpdateService();
     }
 
-    public AbstractApiServlet(AuthenticationStrategy<T> authenticationStrategy, NotificationStrategy<T> notificationStrategy) {
+    public AbstractApiServlet(AuthenticationStrategy<T> authenticationStrategy,
+                              NotificationStrategy<T> notificationStrategy) {
         super();
         this.authenticationStrategy = authenticationStrategy;
         this.notificationStrategy = notificationStrategy;
@@ -159,157 +170,134 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         return getParameter(paramMap, key, null);
     }
 
-    protected List<T> getList(HttpServletRequest request, HttpServletResponse response,
-                              BiFunction<Map<String, String[]>, HttpServletResponse, List<T>> itemSupplier,
-                              String serializedKey) {
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        ApiUtils.getInstance().setContentType(request, response);
+    protected <U> Map<String, U> buildMap(String serializedKey, U data) {
+        return new MapBuilder<String, U>()
+                .buildPut(serializedKey, data);
+    }
 
-        logger.debug("Method GET called with params " + paramMapToString(parameterMap));
-        List<T> items = itemSupplier.apply(parameterMap, response);
-
-        String id = getParameter(parameterMap, "id");
+    protected List<T> getList(HttpServletRequest request,
+                              Supplier<List<T>> itemSupplier,
+                              String id) {
+        logger.debug("Method GET called with params " + paramMapToString(request.getParameterMap()));
+        List<T> items = itemSupplier.get();
 
         if (stringIsNotEmpty(id) && items.isEmpty()) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return new ArrayList<>();
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
         //remove items from the result the user is not allowed to see
-        items = AuthenticationService.filterUnauthorized(
+        items = authenticationService.filterUnauthorized(
                 items,
                 this.authenticationStrategy::isAllowedToRead,
                 request
         );
 
         if (stringIsNotEmpty(id) && items.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to see this item");
-            return new ArrayList<>();
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
 
-        ApiUtils.getInstance().serializeObject(response, items, serializedKey);
         return items;
     }
 
 
-    protected Page<T> getCsv(HttpServletRequest request,
-                             HttpServletResponse response,
-                             Map<String, String[]> parameterMap,
-                             PagingAndSortingRepository<T> repository) {
+    protected String getCsv(PageRequest pageRequest,
+                            Filter filter,
+                            Sort sort,
+                            User requestingUser,
+                            PagingAndSortingRepository<T> repository,
+                            String id) {
+        Page<T> resultPage = this.getPage(pageRequest, filter, sort, requestingUser, repository, id);
 
-        PageRequest pageRequest = UrlParseHelper.readPageRequest(parameterMap, 1000);
-        Filter filter = UrlParseHelper.readFilter(parameterMap);
-        Sort sort = UrlParseHelper.readSort(parameterMap);
-        User requestingUser = AuthenticationService.parseNullableUserFromRequestHeader(request);
+        try {
+            return new CsvConverter<T>().convertList(resultPage.getContent());
+        } catch (IOException e) {
+            logger.error("Could not convert result to csv", e);
+            throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 
+    protected Page<T> getPage(PageRequest pageRequest,
+                              Filter filter,
+                              Sort sort,
+                              User requestingUser,
+                              PagingAndSortingRepository<T> repository,
+                              String id
+    ) {
         Page<T> resultPage = repository.get(requestingUser, pageRequest, sort, filter);
-
-        String id = getParameter(parameterMap, "id");
 
         //todo how to differentiate between 404 and 503?
         if (stringIsNotEmpty(id) && resultPage.isEmpty()) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return new Page<>();
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
         if (stringIsNotEmpty(id) && resultPage.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to see this item");
-            return new Page<>();
-        }
-
-        String csv;
-        try {
-            csv = new CsvConverter<T>().convertList(resultPage.getContent());
-            response.getWriter().append(csv);
-        } catch (IOException e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            logger.error("Could not convert result to csv", e);
-            return new Page<>();
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
 
         return resultPage;
     }
 
-    protected Page<T> getPage(HttpServletRequest request,
-                              HttpServletResponse response,
-                              Map<String, String[]> parameterMap,
-                              PagingAndSortingRepository<T> repository
-    ) {
+    protected Object get(HttpServletRequest request,
+                         PagingAndSortingRepository<T> repository) {
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        logger.debug("Method GET called with params " + paramMapToString(parameterMap));
 
+        //parse options from parameter map and auth header
+        SerializationOption serializationOption = UrlParseHelper.readSerializationOption(parameterMap);
         PageRequest pageRequest = UrlParseHelper.readPageRequest(parameterMap);
         Filter filter = UrlParseHelper.readFilter(parameterMap);
         Sort sort = UrlParseHelper.readSort(parameterMap);
-        User requestingUser = AuthenticationService.parseNullableUserFromRequestHeader(request);
-
-        Page<T> resultPage = repository.get(requestingUser, pageRequest, sort, filter);
-
+        User requestingUser = authenticationService.parseNullableUserFromRequestHeader(request);
         String id = getParameter(parameterMap, "id");
 
-        //todo how to differentiate between 404 and 503?
-        if (stringIsNotEmpty(id) && resultPage.isEmpty()) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return new Page<>();
-        }
-
-        if (stringIsNotEmpty(id) && resultPage.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            logger.error("User is not logged in or is not allowed to see this item");
-            return new Page<>();
-        }
-
-        ApiUtils.getInstance().serializeObject(response, resultPage, null);
-        return resultPage;
-    }
-
-    protected Page<T> get(HttpServletRequest request,
-                          HttpServletResponse response,
-                          PagingAndSortingRepository<T> repository) {
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        ApiUtils.getInstance().setContentType(request, response);
-
-        logger.debug("Method GET called with params " + paramMapToString(parameterMap));
-
-        SerializationOption serializationOption = UrlParseHelper.readSerializationOption(parameterMap);
         switch (serializationOption) {
             case PAGE:
-                return this.getPage(request, response, parameterMap, repository);
+                return this.getPage(
+                        pageRequest,
+                        filter,
+                        sort,
+                        requestingUser,
+                        repository,
+                        id
+                );
             case CSV:
-                return this.getCsv(request, response, parameterMap, repository);
+                return this.getCsv(
+                        pageRequest,
+                        filter,
+                        sort,
+                        requestingUser,
+                        repository,
+                        id
+                );
             default:
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 logger.error("Serialization option " + serializationOption.toStringValue() + " not implemented yet");
-                return new Page<>();
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
     }
 
-    protected <SerializedType> T post(HttpServletRequest request,
-                                      HttpServletResponse response,
-                                      String objectName,
-                                      T baseValue,
-                                      Class<T> clazz,
-                                      Function<T, T> transform,
-                                      List<ModifyPrecondition<T>> preconditions,
-                                      Function<T, SerializedType> getSerialized,
-                                      String serializedKey
+    protected T post(HttpServletRequest request,
+                     String body,
+                     String objectName,
+                     T baseValue,
+                     Class<T> clazz,
+                     Function<T, T> transform,
+                     List<ModifyPrecondition<T>> preconditions
     ) {
-        ApiUtils.getInstance().setContentType(request, response);
-
-        JsonNode jsonItem = ApiUtils.getInstance().getJsonObject(request, objectName);
+        JsonNode jsonItem = JsonHelper.getJsonObject(body, objectName);
         logger.debug("Method POST called with params " + paramMapToString(request.getParameterMap()));
 
         //ToDo: Duplicate Items :/
         //perform transformations on the parsed item, i.e. hashing
         T item = transform.apply(
-                ApiUtils.getInstance().updateFromJson(jsonItem, baseValue, clazz)
+                JsonHelper.updateFromJson(jsonItem, baseValue, clazz)
         );
 
         //check if user is authorized to create item
-        if (!AuthenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToCreate, item)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        if (!authenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToCreate, item)) {
             logger.error("User is not logged in or is not allowed to create this item");
-            return null;
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
 
         //check if any of the preconditions failed (i.e. the email is already taken or something)
@@ -324,50 +312,52 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         //update cyclic dependencies etc.
         this.updateDependencies(jsonItem, item);
+        //send notifications if defined
+        this.notificationStrategy.post(item);
 
-        response.setStatus(HttpServletResponse.SC_CREATED);
-        ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
         return item;
     }
 
-    protected <SerializedType> T post(HttpServletRequest request, HttpServletResponse response,
+    protected <SerializedType> T post(HttpServletRequest request,
+                                      String body,
                                       ApiServletPostOptions<T, SerializedType> options) {
-        return this.post(request, response,
+        return this.post(request, body,
                 options.getObjectName(),
                 options.getBaseValue(),
                 options.getClazz(),
                 options.getTransform(),
-                options.getPreconditions(),
-                options.getGetSerialized(),
-                options.getSerializedKey()
+                options.getPreconditions()
         );
     }
 
-    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
-                                     String objectName,
-                                     String jsonId,
-                                     Class<T> clazz,
-                                     Function<T, T> transform,
-                                     List<ModifyPrecondition<T>> preconditions,
-                                     Function<T, SerializedType> getSerialized,
-                                     String serializedKey) {
-        ApiUtils.getInstance().setContentType(request, response);
+    protected <SerializedType> Response respond(T createdItem,
+                                                String serializedKey,
+                                                Function<T, SerializedType> getSerialized) {
+        return Response.status(Response.Status.CREATED)
+                .entity(buildMap(serializedKey, getSerialized.apply(createdItem)))
+                .build();
+    }
 
+    protected T put(HttpServletRequest request,
+                    String body,
+                    String objectName,
+                    String jsonId,
+                    Class<T> clazz,
+                    Function<T, T> transform,
+                    List<ModifyPrecondition<T>> preconditions) {
         logger.debug("Method PUT called with params " + paramMapToString(request.getParameterMap()));
-        JsonNode jsonItem = ApiUtils.getInstance().getJsonObject(request, objectName);
+        JsonNode jsonItem = JsonHelper.getJsonObject(body, objectName);
 
         if (!jsonItem.has(jsonId)) {
-            ApiUtils.getInstance().processInvalidError(response);
-            return null;
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }
 
         T item = DatabaseManager.getInstance().getById(clazz, jsonItem.get(jsonId).asInt());
 
         //check if user is authorized to modify item
-        if (!AuthenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToModify, item)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        if (!authenticationService.userIsAuthorized(request, authenticationStrategy::isAllowedToModify, item)) {
             logger.error("User is not logged in or is not allowed to modify this shop item");
-            return null;
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
 
         T finalItem = item;
@@ -382,12 +372,11 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
         }
 
         if (item == null) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return null;
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
         item = transform.apply(
-                ApiUtils.getInstance().updateFromJson(jsonItem, item, clazz)
+                JsonHelper.updateFromJson(jsonItem, item, clazz)
         );
 
         //update cyclic dependencies etc.
@@ -395,8 +384,9 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
 
         DatabaseManager.getInstance().update(item, clazz);
 
-        response.setStatus(HttpServletResponse.SC_CREATED);
-        ApiUtils.getInstance().serializeObject(response, getSerialized.apply(item), serializedKey);
+        //send notifications if defined
+        this.notificationStrategy.put(item);
+
         return item;
     }
 
@@ -404,61 +394,66 @@ public abstract class AbstractApiServlet<T> extends HttpServlet {
     private boolean handleFailedCondition(Optional<ModifyPrecondition<T>> failedCondition) {
         if (failedCondition.isPresent()) {
             ModifyPrecondition<T> condition = failedCondition.get();
-            condition.getConsequence().run();
             logger.error(condition.getErrorMessage());
+            condition.getConsequence().run();
             return true;
         }
         return false;
     }
 
-    protected <SerializedType> T put(HttpServletRequest request, HttpServletResponse response,
+    protected <SerializedType> T put(HttpServletRequest request, String body,
                                      ApiServletPutOptions<T, SerializedType> options) {
-        return this.put(request, response,
+        return this.put(request, body,
                 options.getObjectName(),
                 options.getJsonId(),
                 options.getClazz(),
                 options.getTransform(),
-                options.getPreconditions(),
-                options.getGetSerialized(),
-                options.getSerializedKey()
+                options.getPreconditions()
         );
     }
 
     protected T delete(HttpServletRequest request,
-                       HttpServletResponse response,
                        Class<T> clazz,
                        Function<HttpServletRequest, T> itemSupplier
     ) {
-        ApiUtils.getInstance().setContentType(request, response);
         logger.debug("Method DELETE called with params " + paramMapToString(request.getParameterMap()));
 
         T itemToDelete = itemSupplier.apply(request);
 
-        User user = AuthenticationService.parseNullableUserFromRequestHeader(request);
+        User user = authenticationService.parseNullableUserFromRequestHeader(request);
         boolean isAuthorized = authenticationStrategy.isAllowedToDelete(user, itemToDelete);
 
         if (!isAuthorized) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             logger.error("User is not logged in or is not allowed to modify this shop item");
-            return null;
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
 
         if (itemToDelete == null) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return null;
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
         logger.debug("Object: " + itemToDelete.toString() + " will be removed");
         DatabaseManager.getInstance().remove(itemToDelete, clazz);
+
+        this.notificationStrategy.delete(itemToDelete);
         return itemToDelete;
     }
 
     protected T delete(Class<T> clazz,
-                       HttpServletRequest request,
-                       HttpServletResponse response) {
+                       HttpServletRequest request) {
 
-        return this.delete(request, response, clazz, req -> {
+        return this.delete(request, clazz, req -> {
             String id = request.getParameter("id");
             return DatabaseManager.getInstance().getById(clazz, Integer.valueOf(id));
         });
+    }
+
+    public AbstractApiServlet<T> setAuthenticationStrategy(AuthenticationStrategy<T> authenticationStrategy) {
+        this.authenticationStrategy = authenticationStrategy;
+        return this;
+    }
+
+    public AbstractApiServlet<T> setNotificationStrategy(NotificationStrategy<T> notificationStrategy) {
+        this.notificationStrategy = notificationStrategy;
+        return this;
     }
 }

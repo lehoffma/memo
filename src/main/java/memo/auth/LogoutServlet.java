@@ -1,22 +1,28 @@
 package memo.auth;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Context;
 import java.io.IOException;
 
 
-@WebServlet(name = "LogoutServlet", value = "/api/logout")
-public class LogoutServlet extends HttpServlet {
+@Path("/logout")
+@Named
+@RequestScoped
+public class LogoutServlet {
 
     public LogoutServlet() {
         super();
 
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @POST
+    public void post(@Context HttpServletRequest request, @Context HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
         //lel

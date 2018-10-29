@@ -5,12 +5,19 @@ import memo.auth.api.AuthenticationPredicateFactory;
 import memo.data.util.PredicateFactory;
 import memo.model.*;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.function.BiPredicate;
 
+
+@Named
+@ApplicationScoped
 public class OrderAuthStrategy implements AuthenticationStrategy<Order> {
     @Override
     public boolean isAllowedToRead(User user, Order object) {

@@ -71,7 +71,7 @@ public class WebRoutesServlet extends HttpServlet {
             RequestDispatcher view = req.getRequestDispatcher("/index.html");
             view.forward(req, resp);
         } catch (IllegalStateException e) {
-            logger.error("Could not redirect", e);
+            logger.error("Could not forward", e);
         }
     }
 }

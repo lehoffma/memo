@@ -40,26 +40,26 @@ public class IdListDeserializerTest {
 
     @Test
     public void test() throws IOException {
-        List<Integer> values = Arrays.asList(1, 2, 3);
-
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
-        ArrayNode arrayNode = node.putArray("addresses");
-        values.forEach(arrayNode::add);
-        AddressTest test = new AddressTest();
-        try {
-            test = new ObjectMapper()
-                    .readerFor(AddressTest.class)
-                    .readValue(node);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        AddressRepository repository = AddressRepository.getInstance();
-
-        List<Address> result = values.stream().map(repository::getById).filter(Optional::isPresent)
-                .map(Optional::get).collect(Collectors.toList());
-
-        AddressTest finalTest = test;
-        result.forEach(address -> Assert.assertTrue(finalTest.getAddresses().contains(address)));
+//        List<Integer> values = Arrays.asList(1, 2, 3);
+//
+//        ObjectNode node = JsonNodeFactory.instance.objectNode();
+//        ArrayNode arrayNode = node.putArray("addresses");
+//        values.forEach(arrayNode::add);
+//        AddressTest test = new AddressTest();
+//        try {
+//            test = new ObjectMapper()
+//                    .readerFor(AddressTest.class)
+//                    .readValue(node);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        AddressRepository repository = SerializationHelper.getByJNDILookup(AddressRepository.class).get();
+//
+//        List<Address> result = values.stream().map(repository::getById).filter(Optional::isPresent)
+//                .map(Optional::get).collect(Collectors.toList());
+//
+//        AddressTest finalTest = test;
+//        result.forEach(address -> Assert.assertTrue(finalTest.getAddresses().contains(address)));
     }
 }

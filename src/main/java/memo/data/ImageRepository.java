@@ -3,23 +3,19 @@ package memo.data;
 import memo.model.Image;
 import memo.util.DatabaseManager;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Named
+@ApplicationScoped
 public class ImageRepository extends AbstractRepository<Image> {
 
-    private static ImageRepository instance;
-
-    private ImageRepository() {
+    public ImageRepository() {
         super(Image.class);
     }
-
-    public static ImageRepository getInstance() {
-        if (instance == null) instance = new ImageRepository();
-        return instance;
-    }
-
 
     public Optional<Image> findByApiPath(String apiPath) {
         return Image.getFileNameFromApiPath(apiPath)

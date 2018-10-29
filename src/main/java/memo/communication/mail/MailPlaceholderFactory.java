@@ -2,7 +2,6 @@ package memo.communication.mail;
 
 import memo.auth.TokenService;
 import memo.communication.MessageType;
-import memo.data.DiscountService;
 import memo.model.*;
 import memo.util.model.EventType;
 
@@ -27,12 +26,12 @@ public class MailPlaceholderFactory {
                 return "https://shop.meilenwoelfe.de/order-history";
             case "~Items~":
                 //todo price doesn't include discount properly
-                return items.stream()
-                        .map(item -> "<p>" +
-                                item.getTitle() + " (" +
-                                DiscountService.getDiscountedPrice(item.getId(), recipient.getId()).toString() + "&#8364;)" +
-                                "</p>")
-                        .collect(Collectors.joining());
+//                return items.stream()
+//                        .map(item -> "<p>" +
+//                                item.getTitle() + " (" +
+//                                DiscountService.getDiscountedPrice(item.getId(), recipient.getId()).toString() + "&#8364;)" +
+//                                "</p>")
+//                        .collect(Collectors.joining());
         }
         return "";
     }

@@ -7,21 +7,36 @@ import memo.model.EntryCategory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 
-@WebServlet(name = "EntryCategoryServlet", value = "/api/entryCategory")
+@Path("/entryCategory")
+@Named
+@RequestScoped
 public class EntryCategoryServlet extends AbstractApiServlet<EntryCategory> {
-
+    private EntryCategoryRepository entryCategoryRepository;
     final static Logger logger = LogManager.getLogger(EntryCategoryServlet.class);
 
     public EntryCategoryServlet() {
-        super(new ConfigurableAuthStrategy<>(true));
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response, EntryCategoryRepository.getInstance());
+    @Inject
+    public EntryCategoryServlet(EntryCategoryRepository entryCategoryRepository) {
+        super(new ConfigurableAuthStrategy<>(true));
+        this.entryCategoryRepository = entryCategoryRepository;
+    }
+
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Object get(@Context HttpServletRequest request) {
+        return this.get(request, entryCategoryRepository);
     }
 
     @Override

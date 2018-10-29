@@ -11,6 +11,9 @@ import memo.util.model.Filter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -21,19 +24,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+@Named
+@ApplicationScoped
 public class ParticipantRepository extends AbstractPagingAndSortingRepository<OrderedItem> {
-
     private static final Logger logger = LogManager.getLogger(ParticipantRepository.class);
-    private static ParticipantRepository instance;
 
-    private ParticipantRepository() {
-        super(OrderedItem.class, new ParticipantsAuthStrategy());
+    public ParticipantRepository() {
+        super(OrderedItem.class);
     }
 
-    public static ParticipantRepository getInstance() {
-        if (instance == null) instance = new ParticipantRepository();
-        return instance;
+    @Inject
+    public ParticipantRepository(ParticipantsAuthStrategy participantsAuthStrategy) {
+        super(OrderedItem.class);
+        this.authenticationStrategy = participantsAuthStrategy;
     }
+
 
     public List<OrderedItem> getParticipants() {
         return this.getAll();

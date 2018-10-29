@@ -7,6 +7,9 @@ import memo.model.ClubRole;
 import memo.model.ShopItem;
 import memo.model.User;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -17,14 +20,27 @@ import java.util.function.Function;
 import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRole;
 import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem;
 
+
+@Named
+@ApplicationScoped
 public class ParticipatedEventsAuthStrategy implements AuthenticationStrategy<ShopItem> {
+    private EventRepository eventRepository;
+
+    public ParticipatedEventsAuthStrategy() {
+    }
+
+    @Inject
+    public ParticipatedEventsAuthStrategy(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
+    }
+
     @Override
     public boolean isAllowedToRead(User user, ShopItem object) {
         return userIsAuthorized(user, object, Arrays.asList(
                 //user has to be logged in
                 //either the user is looking at his own participated events
                 AuthenticationConditionFactory.<ShopItem>userIsLoggedIn()
-                        .and((u, item) -> EventRepository.getInstance().findByParticipant(u.getId()).stream()
+                        .and((u, item) -> eventRepository.findByParticipant(u.getId()).stream()
                                 .anyMatch(shopItem -> shopItem.getId().equals(item.getId()))),
                 //or he is at least a member of the club and is allowed to view the event
                 AuthenticationConditionFactory.<ShopItem>userIsLoggedIn()
@@ -40,7 +56,7 @@ public class ParticipatedEventsAuthStrategy implements AuthenticationStrategy<Sh
         Predicate userIsLookingAtTheirOwnEvents =
                 PredicateFactory.combineByOr(
                         builder,
-                        EventRepository.getInstance().getByParticipant(builder, root,
+                        eventRepository.getByParticipant(builder, root,
                                 Collections.singletonList(user.getId().toString())
                         )
                 );

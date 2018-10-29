@@ -4,12 +4,18 @@ import memo.auth.api.AuthenticationConditionFactory;
 import memo.data.util.PredicateFactory;
 import memo.model.*;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.persistence.criteria.*;
 import java.util.Arrays;
 
 import static memo.auth.api.AuthenticationConditionFactory.userHasCorrectPermission;
 import static memo.auth.api.AuthenticationConditionFactory.userIsLoggedIn;
 
+@Named
+@ApplicationScoped
 public class AddressAuthStrategy implements AuthenticationStrategy<Address> {
     @Override
     public boolean isAllowedToRead(User user, Address object) {

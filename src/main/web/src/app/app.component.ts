@@ -10,6 +10,7 @@ import {NgcCookieConsentService, NgcStatusChangeEvent} from "ngx-cookieconsent";
 import {combineLatest} from "rxjs";
 import {ScrollingService} from "./shared/services/scrolling.service";
 import {isPlatformBrowser} from "@angular/common";
+import {NotificationService} from "./shared/services/api/user-notification.service";
 
 @Component({
 	selector: "memo-app",
@@ -33,10 +34,12 @@ export class AppComponent implements OnInit, OnDestroy {
 				private dateAdapter: DateAdapter<Date>,
 				private scrollService: ScrollingService,
 				private activatedRoute: ActivatedRoute,
+				private notificationService: NotificationService,
 				private router: Router,
 				@Inject(PLATFORM_ID) private platformId: Object,
 				@Inject(LOCALE_ID) public locale: any) {
 		dateAdapter.setLocale(locale); // DD.MM.YYYY
+		this.notificationService.notifications$.subscribe(it => console.log(it), null, () => console.error("done"));
 	}
 
 	ngOnInit() {

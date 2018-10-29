@@ -5,10 +5,28 @@ import memo.model.OrderStatus;
 import memo.model.OrderedItem;
 import memo.model.ShopItem;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Named
+@ApplicationScoped
 public class CapacityService {
+
+    private ParticipantRepository participantRepository;
+    private EventRepository eventRepository;
+
+    public CapacityService() {
+    }
+
+    @Inject
+    public CapacityService(ParticipantRepository participantRepository,
+                           EventRepository eventRepository) {
+        this.participantRepository = participantRepository;
+        this.eventRepository = eventRepository;
+    }
 
     /**
      * Checks whether the given order is valid, i.e. whether the orderedItem's status is not "refused" or "cancelled"
@@ -16,20 +34,20 @@ public class CapacityService {
      * @param orderedItem the ordered item object to check
      * @return true if valid (i.e. status != refused && status != cancelled)
      */
-    private static boolean orderIsValid(OrderedItem orderedItem) {
+    private boolean orderIsValid(OrderedItem orderedItem) {
         OrderStatus status = orderedItem.getStatus();
         return status != OrderStatus.Refused && status != OrderStatus.Cancelled;
     }
 
-    private static Integer getAmountOfValidOrders(ShopItem item) {
-        return ParticipantRepository.getInstance().findByEvent(item.getId()).stream()
-                .filter(CapacityService::orderIsValid)
+    private Integer getAmountOfValidOrders(ShopItem item) {
+        return participantRepository.findByEvent(item.getId()).stream()
+                .filter(this::orderIsValid)
                 .collect(Collectors.toList())
                 .size();
     }
 
-    public static Optional<EventCapacity> get(Integer eventId) {
-        return EventRepository.getInstance().getById(eventId)
+    public Optional<EventCapacity> get(Integer eventId) {
+        return eventRepository.getById(eventId)
                 .map(shopItem -> new EventCapacity()
                         .setEventId(shopItem.getId())
                         .setCapacity(shopItem.getCapacity() - getAmountOfValidOrders(shopItem)));

@@ -1,9 +1,10 @@
 package memo.data;
 
 import memo.auth.api.strategy.AuthenticationStrategy;
+import memo.auth.api.strategy.ConfigurableAuthStrategy;
 import memo.model.User;
-import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
+import memo.util.JsonHelper;
 import memo.util.model.Filter;
 import memo.util.model.Page;
 import memo.util.model.PageRequest;
@@ -17,6 +18,11 @@ public abstract class AbstractPagingAndSortingRepository<T> implements PagingAnd
 
     protected Class<T> clazz;
     protected AuthenticationStrategy<T> authenticationStrategy;
+
+    public AbstractPagingAndSortingRepository(Class<T> clazz) {
+        this.clazz = clazz;
+        this.authenticationStrategy = new ConfigurableAuthStrategy<>(false);
+    }
 
     public AbstractPagingAndSortingRepository(Class<T> clazz, AuthenticationStrategy<T> authenticationStrategy) {
         this.clazz = clazz;
@@ -54,7 +60,7 @@ public abstract class AbstractPagingAndSortingRepository<T> implements PagingAnd
     @Override
     public Optional<T> getById(String id) {
         return Optional.ofNullable(id)
-                .filter(ApiUtils::stringIsNotEmpty)
+                .filter(JsonHelper::stringIsNotEmpty)
                 .map(_id -> DatabaseManager.getInstance().getByStringId(clazz, _id));
     }
 

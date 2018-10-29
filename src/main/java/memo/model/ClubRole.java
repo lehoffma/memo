@@ -20,23 +20,32 @@ public enum ClubRole {
     Gast("Gast"),
     Mitglied("Mitglied"),
     Vorstand("Vorstand"),
-    Schriftfuehrer("Schriftführer"),
+    Schriftfuehrer("Schriftführer", "Schriftfuehrer"),
     Kassenwart("Kassenwart"),
     Organisator("Organisator"),
     Admin("Admin");
 
     private String stringValue;
-    ClubRole(String stringValue){
+    private String alternativeSpelling;
+
+    ClubRole(String stringValue) {
         this.stringValue = stringValue;
+        this.alternativeSpelling = stringValue;
+    }
+
+    ClubRole(String stringValue, String alternativeSpelling) {
+        this.stringValue = stringValue;
+        this.alternativeSpelling = alternativeSpelling;
     }
 
     public String getStringValue() {
         return stringValue;
     }
 
-    public static Optional<ClubRole> fromString(String value){
+    public static Optional<ClubRole> fromString(String value) {
         return Arrays.stream(ClubRole.values())
-                .filter(clubRole -> clubRole.stringValue.equalsIgnoreCase(value))
+                .filter(clubRole -> clubRole.stringValue.equalsIgnoreCase(value)
+                        || clubRole.alternativeSpelling.equalsIgnoreCase(value))
                 .findFirst();
     }
 }

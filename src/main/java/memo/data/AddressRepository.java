@@ -6,22 +6,27 @@ import memo.model.Address;
 import memo.util.DatabaseManager;
 import memo.util.model.Filter;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public class AddressRepository extends AbstractPagingAndSortingRepository<Address> {
-    protected static AddressRepository instance;
-
-    private AddressRepository() {
-        super(Address.class, new AddressAuthStrategy());
+@Named
+@ApplicationScoped
+public class AddressRepository extends AbstractPagingAndSortingRepository<Address> implements Repository<Address> {
+    public AddressRepository() {
+        super(Address.class);
     }
 
-    public static AddressRepository getInstance() {
-        if (instance == null) instance = new AddressRepository();
-        return instance;
+    @Inject
+    public AddressRepository(AddressAuthStrategy authStrategy) {
+        super(Address.class);
+        authenticationStrategy = authStrategy;
     }
+
 
     @Override
     public List<Address> getAll() {

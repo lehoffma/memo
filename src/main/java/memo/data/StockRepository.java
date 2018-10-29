@@ -8,6 +8,14 @@ import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -17,17 +25,24 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Named
+@ApplicationScoped
 public class StockRepository extends AbstractPagingAndSortingRepository<Stock> {
+    private StockAuthStrategy stockAuthStrategy;
 
-    private static StockRepository instance;
-
-    private StockRepository() {
-        super(Stock.class, new StockAuthStrategy());
+    public StockRepository() {
+        super(Stock.class);
     }
 
-    public static StockRepository getInstance() {
-        if (instance == null) instance = new StockRepository();
-        return instance;
+    @Inject
+    public StockRepository(StockAuthStrategy stockAuthStrategy){
+        super(Stock.class);
+        this.stockAuthStrategy = stockAuthStrategy;
+    }
+
+    @PostConstruct
+    public void init(){
+        authenticationStrategy = stockAuthStrategy;
     }
 
 

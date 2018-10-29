@@ -5,6 +5,8 @@ import memo.model.Permission;
 import memo.model.PermissionState;
 import memo.model.User;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -17,6 +19,8 @@ import static memo.auth.api.AuthenticationPredicateFactory.*;
 import static memo.auth.api.AuthenticationPredicateFactory.userIsAuthor;
 import static memo.auth.api.AuthenticationPredicateFactory.userIsInRegistrationProcess;
 
+@Named
+@ApplicationScoped
 public class BankAccAuthStrategy implements AuthenticationStrategy<BankAcc> {
 
     @Override

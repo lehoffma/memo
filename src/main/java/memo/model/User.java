@@ -3,6 +3,7 @@ package memo.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import memo.communication.model.Notification;
 import memo.serialization.*;
 
 import javax.persistence.*;
@@ -138,6 +139,7 @@ public class User implements Serializable {
     @JsonSerialize(using = ShopItemIdListSerializer.class)
     @JsonDeserialize(using = ShopItemIdListDeserializer.class)
     private List<ShopItem> reportResponsibilities = new ArrayList<>();
+
 
     //**************************************************************
     //  constructor

@@ -1,10 +1,9 @@
 package memo.data;
 
-import memo.util.ApiUtils;
+import memo.util.JsonHelper;
 import memo.util.DatabaseManager;
 
 import java.util.*;
-import java.util.function.Function;
 
 public abstract class AbstractRepository<T> implements Repository<T> {
     protected Class<T> clazz;
@@ -21,7 +20,7 @@ public abstract class AbstractRepository<T> implements Repository<T> {
     @Override
     public Optional<T> getById(String id) {
         return Optional.ofNullable(id)
-                .filter(ApiUtils::stringIsNotEmpty)
+                .filter(JsonHelper::stringIsNotEmpty)
                 .map(_id -> DatabaseManager.getInstance().getByStringId(clazz, _id));
     }
 }

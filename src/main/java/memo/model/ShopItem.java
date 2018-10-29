@@ -9,7 +9,6 @@ import memo.serialization.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +17,7 @@ import java.util.Objects;
  * Entity implementation class for Entity: ShopItem
  */
 @Entity
-@Table(name = "SHOP_ITEMS", indexes = {@Index(columnList = "type", name="item_type")})
+@Table(name = "SHOP_ITEMS", indexes = {@Index(columnList = "type", name = "item_type")})
 @NamedQueries({
         @NamedQuery(
                 name = "ShopItem.findBySearchTerm",

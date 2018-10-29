@@ -6,11 +6,18 @@ import memo.model.ClubRole;
 import memo.model.Image;
 import memo.model.User;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Arrays;
 
+
+@Named
+@ApplicationScoped
 public class ImageAuthStrategy implements AuthenticationStrategy<Image> {
     @Override
     public boolean isAllowedToRead(User user, Image object) {

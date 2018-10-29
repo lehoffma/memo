@@ -15,6 +15,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {MemoMaterialModule} from "../../../../material.module";
 import {MilesService} from "./miles.service";
 import {CapacityService} from "./capacity.service";
+import {NotificationService} from "./user-notification.service";
 
 const providers = [
 	AddressService,
@@ -31,13 +32,14 @@ const providers = [
 	StockService,
 	UserService,
 	UserBankAccountService,
+	NotificationService,
 ];
 
 @NgModule({
 	imports: [
 		HttpClientModule,
 		MemoMaterialModule
-	]
+	],
 })
 export class ApiServicesModule {
 	static forRoot(): ModuleWithProviders {

@@ -1,19 +1,39 @@
 package memo.communication.strategy;
 
-import memo.communication.CommunicationManager;
-import memo.communication.MessageType;
+import memo.communication.NotificationRepository;
+import memo.communication.model.Notification;
+import memo.communication.model.NotificationType;
 import memo.model.User;
 
-public class UserNotificationStrategy extends BaseNotificationStrategy<User>{
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-    private void sendRegistrationMail(User createdUser){
+@Named
+@ApplicationScoped
+public class UserNotificationStrategy extends BaseNotificationStrategy<User> {
+    private NotificationRepository notificationRepository;
+
+    public UserNotificationStrategy() {
+    }
+
+    @Inject
+    public UserNotificationStrategy(NotificationRepository notificationRepository) {
+        this.notificationRepository = notificationRepository;
+    }
+
+    private void sendRegistrationMail(User createdUser) {
         if (createdUser != null) {
-            CommunicationManager.getInstance().send(createdUser, null, MessageType.REGISTRATION);
+            this.notificationRepository.save(
+                    new Notification()
+                            .setUser(createdUser)
+                            .setNotificationType(NotificationType.REGISTRATION)
+            );
         }
     }
 
     @Override
     public void post(User item) {
-        this.async(() -> this.sendRegistrationMail(item));
+        this.sendRegistrationMail(item);
     }
 }

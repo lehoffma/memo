@@ -1,19 +1,37 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.ConfigurableAuthStrategy;
 import memo.data.DiscountService;
 import memo.model.Discount;
 
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import java.util.List;
+import java.util.Map;
 
-@WebServlet(name = "DiscountServlet", value = "/api/discounts")
+@Path("/discounts")
+@Named
+@RequestScoped
 public class DiscountServlet extends AbstractApiServlet<Discount> {
+    private DiscountService discountService;
 
     public DiscountServlet() {
+    }
+
+    @Inject
+    public DiscountServlet(DiscountService discountService,
+                           AuthenticationService authService) {
         super(new ConfigurableAuthStrategy<>(true));
+        this.discountService = discountService;
+        this.authenticationService = authService;
     }
 
     @Override
@@ -21,16 +39,15 @@ public class DiscountServlet extends AbstractApiServlet<Discount> {
 
     }
 
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.getList(request, response,
-                (paramMap, response1) ->
-                        DiscountService.getUserDiscount(
-                                getParameter(paramMap, "eventId"),
-                                getParameter(paramMap, "userId")
-                        ),
-                "discounts"
+    @GET
+    public Map<String, Object> get(@QueryParam("eventId") String eventId,
+                                   @QueryParam("userId") String userId,
+                                   @Context HttpServletRequest req) {
+        List<Discount> discounts = this.getList(req,
+                () -> discountService.getUserDiscount(eventId, userId),
+                null
         );
+        return buildMap("discounts", discounts);
     }
 
 }

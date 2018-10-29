@@ -3,6 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
+import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.StockAuthStrategy;
 import memo.data.StockRepository;
 import memo.model.Color;
@@ -11,18 +12,33 @@ import memo.model.SizeTable;
 import memo.model.Stock;
 import org.apache.logging.log4j.LogManager;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-@WebServlet(name = "StockServlet", value = "/api/stock")
+@Path("/stock")
+@Named
+@RequestScoped
 public class StockServlet extends AbstractApiServlet<Stock> {
+    private StockRepository stockRepository;
 
     public StockServlet() {
-        super(new StockAuthStrategy());
+        super();
+    }
+
+    @Inject
+    public StockServlet(StockRepository stockRepository,
+                        StockAuthStrategy authStrategy,
+                        AuthenticationService authService) {
         logger = LogManager.getLogger(StockServlet.class);
+        this.stockRepository = stockRepository;
+        this.authenticationStrategy = authStrategy;
+        this.authenticationService = authService;
     }
 
     @Override
@@ -32,25 +48,36 @@ public class StockServlet extends AbstractApiServlet<Stock> {
         this.oneToMany(object, SizeTable.class, Stock::getSizeTable, sizeTable -> sizeTable::setStock);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response, StockRepository.getInstance());
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Object get(@Context HttpServletRequest request) {
+        return this.get(request, stockRepository);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.post(request, response, new ApiServletPostOptions<>(
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response post(@Context HttpServletRequest request, String body) {
+        Stock stock = this.post(request, body, new ApiServletPostOptions<>(
                 "stock", new Stock(), Stock.class, Stock::getId
         ));
+
+        return this.respond(stock, "id", Stock::getId);
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.put(request, response, new ApiServletPutOptions<>(
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response put(@Context HttpServletRequest request, String body) {
+        Stock stock = this.put(request, body, new ApiServletPutOptions<>(
                 "stock", Stock.class, Stock::getId
         ));
+        return this.respond(stock, "id", Stock::getId);
     }
 
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.delete(Stock.class, request, response);
+    @DELETE
+    public Response delete(@Context HttpServletRequest request) {
+        this.delete(Stock.class, request);
+        return Response.status(Response.Status.OK).build();
     }
-
-
 }

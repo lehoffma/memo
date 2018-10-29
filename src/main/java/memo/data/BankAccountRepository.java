@@ -6,22 +6,33 @@ import memo.model.BankAcc;
 import memo.util.DatabaseManager;
 import memo.util.model.Filter;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
+@Named
+@ApplicationScoped
 public class BankAccountRepository extends AbstractPagingAndSortingRepository<BankAcc> {
+    private BankAccAuthStrategy bankAccAuthStrategy;
 
-    protected static BankAccountRepository instance;
-
-    private BankAccountRepository() {
-        super(BankAcc.class, new BankAccAuthStrategy());
+    public BankAccountRepository() {
+        super(BankAcc.class);
     }
 
-    public static BankAccountRepository getInstance() {
-        if (instance == null) instance = new BankAccountRepository();
-        return instance;
+    @Inject
+    public BankAccountRepository(BankAccAuthStrategy bankAccAuthStrategy) {
+        super(BankAcc.class);
+        this.bankAccAuthStrategy = bankAccAuthStrategy;
+    }
+
+    @PostConstruct
+    public void init() {
+        authenticationStrategy = bankAccAuthStrategy;
     }
 
     @Override

@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from "@angular/core";
 import {ClubRole, clubRoles} from "../../../shared/model/club-role";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {LogInService} from "../../../shared/services/api/login.service";
-import {first} from "rxjs/operators";
+import {filter, first} from "rxjs/operators";
 import {valueHasChangedValidator} from "../../../shared/validators/value-has-changed.validator";
 import {HttpClient} from "@angular/common/http";
 
@@ -33,6 +33,7 @@ export class RequestMembershipComponent implements OnInit, OnDestroy {
 				private loginService: LogInService) {
 		this.loginService.currentUser$
 			.pipe(
+				filter(it => it !== null),
 				first()
 			)
 			.subscribe(user => {

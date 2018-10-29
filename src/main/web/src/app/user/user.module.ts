@@ -10,6 +10,7 @@ import {MemoMaterialModule} from "../../material.module";
 import {AgmCoreModule} from "@agm/core";
 import {SearchModule} from "../shop/search-results/search.module";
 import {ConfirmEmailComponent} from "./confirm-email/confirm-email.component";
+import {RelativeTimeFormatPipe} from "./notifications/relative-time-format.pipe";
 
 @NgModule({
 	imports: [
@@ -31,6 +32,7 @@ import {ConfirmEmailComponent} from "./confirm-email/confirm-email.component";
 		ParticipatedToursPreviewComponent,
 
 		ConfirmEmailComponent,
+		RelativeTimeFormatPipe,
 	],
 	exports: [
 		SignUpModule

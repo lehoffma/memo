@@ -9,30 +9,44 @@ import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static memo.data.util.PredicateFactory.getBounded;
 import static memo.data.util.PredicateFactory.getTransform;
 
+@Named
+@ApplicationScoped
 public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem> {
+    private ShopItemAuthStrategy shopItemAuthStrategy;
 
-    private static EventRepository instance;
-
-    private EventRepository() {
-        super(ShopItem.class, new ShopItemAuthStrategy());
+    public EventRepository() {
+        super(ShopItem.class);
     }
 
-    public static EventRepository getInstance() {
-        if (instance == null) instance = new EventRepository();
-        return instance;
+    @Inject
+    public EventRepository(ShopItemAuthStrategy shopItemAuthStrategy) {
+        super(ShopItem.class);
+        this.shopItemAuthStrategy = shopItemAuthStrategy;
+    }
+
+    @PostConstruct
+    public void init() {
+        authenticationStrategy = shopItemAuthStrategy;
     }
 
     public List<ShopItem> findBySearchTerm(String searchTerm, Integer type) {

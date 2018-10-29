@@ -4,12 +4,20 @@ import memo.auth.api.AuthenticationConditionFactory;
 import memo.model.Permission;
 import memo.model.User;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Arrays;
 import java.util.function.Function;
 
+
+@Named
+@ApplicationScoped
 public class UserAuthStrategy implements AuthenticationStrategy<User> {
     @Override
     public boolean isAllowedToRead(User user, User object) {

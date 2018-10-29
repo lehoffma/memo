@@ -4,6 +4,10 @@ import memo.auth.api.AuthenticationConditionFactory;
 import memo.data.util.PredicateFactory;
 import memo.model.*;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -12,6 +16,8 @@ import java.util.Arrays;
 import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem;
 import static memo.auth.api.AuthenticationPredicateFactory.userHasPermissions;
 
+@Named
+@ApplicationScoped
 public class EntryAuthStrategy implements AuthenticationStrategy<Entry> {
     @Override
     public boolean isAllowedToRead(User user, Entry object) {

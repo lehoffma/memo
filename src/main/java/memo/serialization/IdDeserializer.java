@@ -12,12 +12,19 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public class IdDeserializer<T> extends StdDeserializer<T> {
+public class IdDeserializer<T, RepositoryType extends Repository<T>> extends StdDeserializer<T> {
 
-    protected Supplier<Repository<T>> getRepository;
-    protected BiFunction<Repository<T>, String, Optional<T>> getById;
+    protected Supplier<RepositoryType> getRepository;
+    protected BiFunction<RepositoryType, String, Optional<T>> getById;
 
-    protected IdDeserializer(Supplier<Repository<T>> getRepository, BiFunction<Repository<T>, String, Optional<T>> getById, Class<T> vc) {
+    protected IdDeserializer(Class<RepositoryType> repositoryClass, BiFunction<RepositoryType, String, Optional<T>> getById, Class<T> vc) {
+        super(vc);
+        this.getRepository = SerializationHelper.getByJNDILookup(repositoryClass);
+        this.getById = getById;
+    }
+
+
+    protected IdDeserializer(Supplier<RepositoryType> getRepository, BiFunction<RepositoryType, String, Optional<T>> getById, Class<T> vc) {
         super(vc);
         this.getRepository = getRepository;
         this.getById = getById;
@@ -39,7 +46,7 @@ public class IdDeserializer<T> extends StdDeserializer<T> {
     public T deserialize(JsonParser jsonParser, DeserializationContext context) throws IOException, JsonProcessingException {
         String id = jsonParser.getText();
 
-        Repository<T> repository = this.getRepository.get();
+        RepositoryType repository = this.getRepository.get();
         return getById.apply(repository, id).orElse(null);
     }
 }

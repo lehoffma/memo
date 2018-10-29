@@ -1,6 +1,7 @@
 package memo.api.util;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.function.Predicate;
 
 public class ModifyPrecondition<T> {
@@ -18,11 +19,12 @@ public class ModifyPrecondition<T> {
 
     public ModifyPrecondition(Predicate<T> predicate,
                               String errorMessage,
-                              HttpServletResponse response,
-                              int errorCode) {
+                              Response.Status status) {
         this.predicate = predicate;
         this.errorMessage = errorMessage;
-        this.consequence = () -> response.setStatus(errorCode);
+        this.consequence = () -> {
+            throw new WebApplicationException(status);
+        };
     }
 
     public Predicate<T> getPredicate() {

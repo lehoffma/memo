@@ -3,6 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
+import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.BankAccAuthStrategy;
 import memo.data.BankAccountRepository;
 import memo.model.BankAcc;
@@ -10,19 +11,35 @@ import memo.model.Order;
 import memo.model.User;
 import org.apache.logging.log4j.LogManager;
 
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 
-@WebServlet(name = "BankAccountServlet", value = "/api/bankAccount")
+@Path("/bankAccount")
+@Named
+@RequestScoped
 public class BankAccountServlet extends AbstractApiServlet<BankAcc> {
+    private BankAccountRepository bankAccountRepository;
 
     public BankAccountServlet() {
-        super(new BankAccAuthStrategy());
-        logger = LogManager.getLogger(BankAccountServlet.class);
     }
 
+    @Inject
+    public BankAccountServlet(BankAccountRepository bankAccountRepository,
+                              BankAccAuthStrategy authStrategy,
+                              AuthenticationService authService) {
+        super();
+        logger = LogManager.getLogger(BankAccountServlet.class);
+        this.bankAccountRepository = bankAccountRepository;
+        this.authenticationStrategy = authStrategy;
+        this.authenticationService = authService;
+    }
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, BankAcc object) {
@@ -30,30 +47,42 @@ public class BankAccountServlet extends AbstractApiServlet<BankAcc> {
         this.oneToMany(object, Order.class, BankAcc::getOrder, order -> order::setBankAccount);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response, BankAccountRepository.getInstance());
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Object get(@Context HttpServletRequest request) {
+        return this.get(request, bankAccountRepository);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response post(@Context HttpServletRequest request, String body) {
         ApiServletPostOptions<BankAcc, Integer> options = new ApiServletPostOptions<BankAcc, Integer>()
                 .setObjectName("account")
                 .setBaseValue(new BankAcc())
                 .setClazz(BankAcc.class)
                 .setGetSerialized(BankAcc::getId);
 
-        this.post(request, response, options);
+        BankAcc bankAcc = this.post(request, body, options);
+        return this.respond(bankAcc, options.getSerializedKey(), options.getGetSerialized());
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response put(@Context HttpServletRequest request, String body) {
         ApiServletPutOptions<BankAcc, Integer> options = new ApiServletPutOptions<BankAcc, Integer>()
                 .setObjectName("account")
                 .setClazz(BankAcc.class)
                 .setGetSerialized(BankAcc::getId);
 
-        this.put(request, response, options);
+        BankAcc bankAcc = this.put(request, body, options);
+        return this.respond(bankAcc, options.getSerializedKey(), options.getGetSerialized());
     }
 
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
-        this.delete(BankAcc.class, request, response);
+    @DELETE
+    public Response delete(@Context HttpServletRequest request) {
+        this.delete(BankAcc.class, request);
+        return Response.status(Response.Status.OK).build();
     }
 }

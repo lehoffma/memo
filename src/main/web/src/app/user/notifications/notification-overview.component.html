@@ -1,0 +1,37 @@
+<div class="notifications-header">
+	<h3>Deine Benachrichtigungen</h3>
+	<a mat-stroked-button routerLink="/notifications/settings">
+		Einstellungen
+	</a>
+</div>
+
+<a *ngFor="let notification of notifications$ | async" class="notification" routerLink="{{notification.link}}">
+	<img src="{{notification.imagePath || 'resources/images/Logo.png'}}"/>
+
+	<div class="notification-details">
+		<div class="notification-text">
+			<span>{{notification.text}}</span>
+			<span class="timestamp">
+				{{notification.timestamp | relativeTimeFormat}}
+			</span>
+		</div>
+
+		<div class="actions" (click)="$event.stopPropagation()">
+			<button mat-icon-button type="button"
+					(click)="$event.stopPropagation()"
+					title="Aktionen"
+					attr.aria-label="Aktionen"
+					[matMenuTriggerFor]="menu">
+				<mat-icon>more_vert</mat-icon>
+
+			</button>
+			<mat-menu #menu="matMenu">
+				<!--todo actions-->
+				<button mat-menu-item>
+					<span>Mute</span>
+				</button>
+			</mat-menu>
+
+		</div>
+	</div>
+</a>

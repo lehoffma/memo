@@ -1,30 +1,45 @@
 package memo.api;
 
-
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
-import memo.auth.api.strategy.ShopItemAuthStrategy;
+import memo.auth.AuthenticationService;
 import memo.communication.strategy.ShopItemNotificationStrategy;
 import memo.data.EventRepository;
 import memo.model.*;
 import memo.util.model.EventType;
 import org.apache.logging.log4j.LogManager;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-/**
- * Servlet implementation class EventServlet
- */
-@WebServlet(name = "EventServlet", value = "/api/event")
+@Path("/event")
+@Named
+@RequestScoped
 public class EventServlet extends AbstractApiServlet<ShopItem> {
+    private EventRepository eventRepository;
 
     public EventServlet() {
-        super(new ShopItemAuthStrategy(), new ShopItemNotificationStrategy());
+
+    }
+
+    @Inject
+    public EventServlet(
+            EventRepository eventRepository,
+            ShopItemNotificationStrategy notifyStrategy,
+            AuthenticationService authService
+    ) {
+        super();
+        this.eventRepository = eventRepository;
+        authenticationStrategy = eventRepository.getAuthenticationStrategy();
+        notificationStrategy = notifyStrategy;
+        authenticationService = authService;
         logger = LogManager.getLogger(EventServlet.class);
     }
 
@@ -58,23 +73,31 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
         this.nonOwningManyToMany(object, previous, User.class, ShopItem::getReportWriters, ShopItem::getId, User::getReportResponsibilities, user -> user::setReportResponsibilities);
     }
 
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response, EventRepository.getInstance());
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Object get(@Context HttpServletRequest request) {
+        return this.get(request, eventRepository);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response post(@Context HttpServletRequest request, String body) {
         ApiServletPostOptions<ShopItem, Integer> options = new ApiServletPostOptions<ShopItem, Integer>()
                 .setObjectName("event")
                 .setBaseValue(new ShopItem())
                 .setClazz(ShopItem.class)
                 .setGetSerialized(ShopItem::getId);
 
-        ShopItem item = this.post(request, response, options);
-        this.notificationStrategy.post(item);
+        ShopItem item = this.post(request, body, options);
+
+        return this.respond(item, options.getSerializedKey(), options.getGetSerialized());
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response put(@Context HttpServletRequest request, String body) {
         ApiServletPutOptions<ShopItem, Integer> options = new ApiServletPutOptions<ShopItem, Integer>()
                 .setObjectName("event")
                 .setClazz(ShopItem.class)
@@ -84,11 +107,14 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
 //        ShopItem previousValue = DatabaseManager.getInstance().getById(ShopItem.class, id);
 //        List<User> previouslyResponsible = new ArrayList<>(previousValue.getAuthor());
 
-        ShopItem changedItem = this.put(request, response, options);
-        this.notificationStrategy.put(changedItem);
+        ShopItem changedItem = this.put(request, body, options);
+
+        return this.respond(changedItem, options.getSerializedKey(), options.getGetSerialized());
     }
 
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.delete(ShopItem.class, request, response);
+    @DELETE
+    public Response delete(@Context HttpServletRequest request) {
+        this.delete(ShopItem.class, request);
+        return Response.ok().build();
     }
 }

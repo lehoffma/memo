@@ -16,12 +16,18 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class IdListDeserializer<T> extends StdDeserializer<List<T>> {
+public class IdListDeserializer<T, RepositoryType extends Repository<T>> extends StdDeserializer<List<T>> {
 
-    protected Supplier<Repository<T>> getRepository;
-    protected BiFunction<Repository<T>, String, Optional<T>> getById;
+    protected Supplier<RepositoryType> getRepository;
+    protected BiFunction<RepositoryType, String, Optional<T>> getById;
 
-    protected IdListDeserializer(Supplier<Repository<T>> getRepository, BiFunction<Repository<T>, String, Optional<T>> getById, Class<T> vc) {
+    protected IdListDeserializer(Class<RepositoryType> repositoryClass, BiFunction<RepositoryType, String, Optional<T>> getById, Class<T> vc) {
+        super(vc);
+        this.getRepository = SerializationHelper.getByJNDILookup(repositoryClass);
+        this.getById = getById;
+    }
+
+    protected IdListDeserializer(Supplier<RepositoryType> getRepository, BiFunction<RepositoryType, String, Optional<T>> getById, Class<T> vc) {
         super(vc);
         this.getRepository = getRepository;
         this.getById = getById;
@@ -46,7 +52,7 @@ public class IdListDeserializer<T> extends StdDeserializer<List<T>> {
             ids.add(jsonParser.getText());
         }
 
-        Repository<T> repository = this.getRepository.get();
+        RepositoryType repository = this.getRepository.get();
         return ids.stream()
                 .map(id -> getById.apply(repository, id))
                 .filter(Optional::isPresent)

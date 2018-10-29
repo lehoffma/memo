@@ -3,6 +3,7 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
+import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.EntryAuthStrategy;
 import memo.data.EntryRepository;
 import memo.model.Entry;
@@ -12,39 +13,41 @@ import memo.model.ShopItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-
-@WebServlet(name = "EntryServlet", value = "/api/entry")
+@Path("/entry")
+@Named
+@RequestScoped
 public class EntryServlet extends AbstractApiServlet<Entry> {
+    private EntryRepository entryRepository;
 
     final static Logger logger = LogManager.getLogger(EntryServlet.class);
 
     public EntryServlet() {
-        super(new EntryAuthStrategy());
     }
 
-    private boolean matchesDate(Entry entry, String requestString, boolean isMinDate) {
-        if (requestString != null) {
-            TemporalAccessor minDateTemporalAccessor = DateTimeFormatter.ISO_DATE_TIME
-                    .parse(requestString);
-            LocalDateTime requestDate = LocalDateTime.from(minDateTemporalAccessor);
-            LocalDate date = entry.getDate().toLocalDateTime().toLocalDate();
-            return isMinDate
-                    ? (requestDate.isBefore(date.atStartOfDay()) || requestDate.isEqual(date.atStartOfDay()))
-                    : (requestDate.isAfter(date.atStartOfDay()) || requestDate.isEqual(date.atStartOfDay()));
-        }
-        return true;
+    @Inject
+    public EntryServlet(EntryRepository entryRepository,
+                        EntryAuthStrategy authStrategy,
+                        AuthenticationService authService) {
+        super();
+        this.entryRepository = entryRepository;
+        this.authenticationStrategy = authStrategy;
+        this.authenticationService = authService;
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-        this.get(request, response, EntryRepository.getInstance());
+
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Object get(@Context HttpServletRequest request) {
+        return this.get(request, entryRepository);
     }
 
     @Override
@@ -54,20 +57,31 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
         this.oneToMany(object, Image.class, Entry::getImages, image -> image::setEntry);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        this.post(request, response, new ApiServletPostOptions<>(
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response post(@Context HttpServletRequest request, String body) {
+        Entry entry = this.post(request, body, new ApiServletPostOptions<>(
                 "entry", new Entry(), Entry.class, Entry::getId
         ));
+
+        return this.respond(entry, "id", Entry::getId);
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
-        this.put(request, response, new ApiServletPutOptions<>(
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response put(@Context HttpServletRequest request, String body) {
+        Entry entry = this.put(request, body, new ApiServletPutOptions<>(
                 "entry", Entry.class, Entry::getId
         ));
+
+        return this.respond(entry, "id", Entry::getId);
     }
 
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
-        this.delete(Entry.class, request, response);
+    @DELETE
+    public Response delete(@Context HttpServletRequest request) {
+        this.delete(Entry.class, request);
+        return Response.status(Response.Status.OK).build();
     }
-
 }

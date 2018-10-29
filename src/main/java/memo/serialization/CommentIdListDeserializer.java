@@ -4,8 +4,8 @@ import memo.data.CommentRepository;
 import memo.data.Repository;
 import memo.model.Comment;
 
-public class CommentIdListDeserializer extends IdListDeserializer<Comment> {
+public class CommentIdListDeserializer extends IdListDeserializer<Comment, CommentRepository> {
     public CommentIdListDeserializer() {
-        super(CommentRepository::getInstance, Repository::getById, Comment.class);
+        super(CommentRepository.class, Repository::getById, Comment.class);
     }
 }

@@ -3,6 +3,9 @@
 
     <persistence-unit name="memoPersistence" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <!--<jta-data-source>MemoDB</jta-data-source>-->
+        <non-jta-data-source>MemoDB_unmanaged</non-jta-data-source>
+
         <class>memo.model.Address</class>
         <class>memo.model.BankAcc</class>
         <class>memo.model.ClubRole</class>
@@ -20,38 +23,15 @@
         <class>memo.model.SizeTable</class>
         <class>memo.model.User</class>
 
+        <class>memo.communication.model.Notification</class>
+        <class>memo.communication.model.NotificationTemplate</class>
+        <class>memo.communication.model.EmailTemplate</class>
+        <class>memo.communication.model.NotificationUnsubscription</class>
+
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/memo_dev"/>
-            <property name="javax.persistence.jdbc.user" value="meilenwoelfe"/>
-            <property name="javax.persistence.jdbc.password" value="qwertzui"/>
-            <!--<property name="eclipselink.logging.level" value="FINE"/>-->
-            <!--
-            // for generating the database from scratch
-            // bitte den unteren absatz auskommentieren bei bedarf und nicht den Code ändern
-            -->
-
-            <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>
-            <property name="javax.persistence.schema-generation.scripts.action" value="create"/>
-            <!--<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>-->
-            <!--<property name="javax.persistence.schema-generation.scripts.action" value="drop-and-create"/>-->
-            <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
-            <property name="javax.persistence.schema-generation.drop-source" value="metadata"/>
-            <property name="javax.persistence.schema-generation.scripts.create-target" value="create.sql"/>
-            <property name="javax.persistence.schema-generation.scripts.drop-target" value="drop.sql"/>
-            <property name="javax.persistence.schema-generation.create-database-schemas" value="true"/>
-
-
-            <!--<property-->
-                    <!--name="eclipselink.session-name"-->
-                    <!--value="memoshop-session"-->
-            <!--/>-->
-            <!--<property-->
-                    <!--name="eclipselink.sessions-xml"-->
-                    <!--value="sessions.xml"-->
-            <!--/>-->
-
-
+            <!--<property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.MySQLPlatform"/>-->
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+            <!--<property name="eclipselink.ddl-generation.output-mode" value="database"/>-->
         </properties>
     </persistence-unit>
 </persistence>

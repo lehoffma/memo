@@ -8,6 +8,10 @@ import memo.model.ShopItem;
 import memo.model.User;
 import memo.util.ListBuilder;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.persistence.criteria.*;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +23,9 @@ import java.util.stream.Collectors;
 import static memo.auth.api.AuthenticationPredicateFactory.userFulfillsMinimumRoleOfItem;
 import static memo.auth.api.ShopItemAuthHelper.getEventPermission;
 
+
+@Named
+@ApplicationScoped
 public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
     @Override
     public boolean isAllowedToRead(User user, ShopItem object) {

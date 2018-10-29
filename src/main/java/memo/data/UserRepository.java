@@ -12,6 +12,10 @@ import memo.util.model.Filter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.ListJoin;
@@ -26,19 +30,26 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Named
+@ApplicationScoped
 public class UserRepository extends AbstractPagingAndSortingRepository<User> {
     private static final Logger logger = LogManager.getLogger(UserRepository.class);
-    private static UserRepository instance;
+    private static boolean initialized = false;
 
-    private UserRepository() {
-        super(User.class, new UserAuthStrategy());
-        this.getAdmin();
+    public UserRepository() {
+        super(User.class);
     }
 
-    public static UserRepository getInstance() {
-        if (instance == null) instance = new UserRepository();
-        return instance;
+    @Inject
+    public UserRepository(UserAuthStrategy userAuthStrategy) {
+        super(User.class);
+//        if (!initialized) {
+//            this.getAdmin();
+//            initialized = true;
+//        }
+        this.authenticationStrategy = userAuthStrategy;
     }
+
 
     /**
      * Converts the given string into a ClubRole enum value.

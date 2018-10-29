@@ -1,29 +1,47 @@
 package memo.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import memo.communication.CommunicationManager;
-import memo.communication.MessageType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import memo.communication.NotificationRepository;
+import memo.communication.model.Notification;
+import memo.communication.model.NotificationType;
 import memo.data.UserRepository;
 import memo.model.ClubRole;
 import memo.model.User;
-import memo.util.ApiUtils;
+import memo.util.JsonHelper;
 import memo.util.MapBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
 
-@WebServlet(name = "RoleChangeRequestServlet", value = "/api/requestRoleChange")
-public class RoleChangeRequestServlet extends HttpServlet {
+@Path("/requestRoleChange")
+@Named
+@RequestScoped
+public class RoleChangeRequestServlet {
     private static final Logger logger = LogManager.getLogger(RoleChangeRequestServlet.class);
+    private NotificationRepository notificationRepository;
+    private UserRepository userRepository;
+
+    public RoleChangeRequestServlet() {
+    }
+
+    @Inject
+    public RoleChangeRequestServlet(NotificationRepository notificationRepository,
+                                    UserRepository userRepository) {
+        this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
+    }
 
     private static Optional<ClubRole> fromClubRoleValue(String value) {
         return Arrays.stream(ClubRole.values())
@@ -31,25 +49,34 @@ public class RoleChangeRequestServlet extends HttpServlet {
                 .findAny();
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Optional<JsonNode> json = ApiUtils.getInstance().getJsonObject(request);
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response post(@Context HttpServletRequest request, String body) throws JsonProcessingException {
+        Optional<JsonNode> json = JsonHelper.getJsonObject(body);
         if (json.isPresent()) {
             JsonNode jsonNode = json.get();
             String jsonRole = jsonNode.get("newRole").asText();
-            Optional<ClubRole> newRole = fromClubRoleValue(jsonRole);
-            Integer userId = jsonNode.get("userId").asInt();
+            Optional<ClubRole> newRole = ClubRole.fromString(jsonRole);
+            int userId = jsonNode.get("userId").asInt();
 
             if (newRole.isPresent()) {
                 ClubRole clubRole = newRole.get();
-                User user = UserRepository.getInstance().getUserByID(userId);
-                User admin = UserRepository.getInstance().getAdmin();
+                User user = userRepository.getUserByID(userId);
+                User admin = userRepository.getAdmin();
                 if (user != null) {
-                    Map<String, Object> data = new MapBuilder<String, Object>()
-                            .buildPut("user", user)
-                            .buildPut("newRole", clubRole);
-                    CommunicationManager.getInstance().send(admin, null, MessageType.CLUBROLE_CHANGE_REQUEST, data);
-                    return;
+                    ObjectMapper mapper = new ObjectMapper();
+                    String data = mapper.writeValueAsString(new MapBuilder<String, Object>()
+                            .buildPut("userId", user.getId())
+                            .buildPut("newRole", clubRole));
+
+                    this.notificationRepository.save(
+                            new Notification()
+                                    .setUser(admin)
+                                    .setNotificationType(NotificationType.CLUBROLE_CHANGE_REQUEST)
+                                    .setData(data)
+                    );
+                    return Response.ok().build();
                 } else {
                     logger.error("The given userId " + userId + " doesn't match any user in the database.");
                 }
@@ -58,6 +85,6 @@ public class RoleChangeRequestServlet extends HttpServlet {
             }
         }
         logger.error("Could not notify admin about request change of user role.");
-        ApiUtils.getInstance().processNotFoundError(response);
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
 }

@@ -4,35 +4,48 @@ import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.api.util.ModifyPrecondition;
+import memo.auth.AuthenticationService;
 import memo.auth.BCryptHelper;
 import memo.auth.api.strategy.UserAuthStrategy;
 import memo.communication.strategy.UserNotificationStrategy;
 import memo.data.UserRepository;
 import memo.model.*;
-import memo.util.ApiUtils;
-import memo.util.Configuration;
+import memo.util.JsonHelper;
 import org.apache.logging.log4j.LogManager;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-/**
- * Servlet implementation class UserServlet
- */
-
-@WebServlet(name = "UserServlet", value = "/api/user")
+@Path("/user")
+@Named
+@RequestScoped
 public class UserServlet extends AbstractApiServlet<User> {
+    private UserRepository userRepository;
 
     public UserServlet() {
-        super(new UserAuthStrategy(), new UserNotificationStrategy());
-        logger = LogManager.getLogger(UserServlet.class);
+        super();
     }
+
+    @Inject
+    public UserServlet(UserRepository userRepository,
+                       UserAuthStrategy authStrategy,
+                       UserNotificationStrategy notifyStrategy,
+                       AuthenticationService authService) {
+        logger = LogManager.getLogger(UserServlet.class);
+        this.userRepository = userRepository;
+        this.authenticationStrategy = authStrategy;
+        this.notificationStrategy = notifyStrategy;
+        this.authenticationService = authService;
+    }
+
 
     /**
      * Hashes the password of a user, if it hasn't been hashed already.
@@ -72,29 +85,27 @@ public class UserServlet extends AbstractApiServlet<User> {
         return this.setDefaultPermissions(user);
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response, UserRepository.getInstance());
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Object get(@Context HttpServletRequest request) {
+        return this.get(request, userRepository);
     }
 
-    protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ApiUtils.getInstance().setContentType(request, response);
-
-        String email = request.getParameter("email");
+    @HEAD
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response head(@QueryParam("email") String email, @Context HttpServletRequest request) {
         logger.trace("HEAD called with email = " + email);
 
-        String adminEmail = Configuration.get("admin.email");
-        List<User> users = adminEmail.equalsIgnoreCase(email)
-                ? Collections.singletonList(UserRepository.getInstance().getAdmin())
-                : UserRepository.getInstance().findByEmail(email);
+        List<User> users = userRepository.findByEmail(email);
 
         if (users.isEmpty()) {
             logger.trace("Email is not used yet.");
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().append("Okay");
+            return Response.ok().build();
         } else {
             logger.trace("Email is already taken.");
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
-            response.getWriter().append("Email already taken");
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("Email already taken")
+                    .build();
         }
     }
 
@@ -109,8 +120,11 @@ public class UserServlet extends AbstractApiServlet<User> {
         this.manyToMany(object, ShopItem.class, User::getAuthoredItems, User::getId, ShopItem::getAuthor, shopItem -> shopItem::setAuthor);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        User createdUser = this.post(request, response, new ApiServletPostOptions<>(
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response post(@Context HttpServletRequest request, String body) {
+        User createdUser = this.post(request, body, new ApiServletPostOptions<>(
                         "user", new User(), User.class, User::getId
                 )
                         .setTransform(this::setDefaultValues)
@@ -118,46 +132,54 @@ public class UserServlet extends AbstractApiServlet<User> {
                                 new ModifyPrecondition<>(
                                         user -> user.getEmail() == null,
                                         "Email must not be empty",
-                                        () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
+                                        Response.Status.BAD_REQUEST
                                 ),
                                 new ModifyPrecondition<>(
-                                        user -> !(UserRepository.getInstance().findByEmail(user.getEmail()).isEmpty()),
+                                        user -> !(userRepository.findByEmail(user.getEmail()).isEmpty()),
                                         "Email already taken",
-                                        () -> response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
+                                        Response.Status.BAD_REQUEST
                                 )
                         ))
         );
-        this.notificationStrategy.post(createdUser);
+
+        return this.respond(createdUser, "id", User::getId);
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response put(@Context HttpServletRequest request, String body) {
 
-        this.put(request, response, new ApiServletPutOptions<>(
+        User updatedUser = this.put(request, body, new ApiServletPutOptions<>(
                         "user", User.class, User::getId, "id"
                 )
                         .setTransform(this::setDefaultValues)
                         .setPreconditions(Arrays.asList(
                                 new ModifyPrecondition<>(
-//                                        user -> UserRepository.getInstance()
+//                                        user -> userRepository
 //                                                .get(String.valueOf(user.getId()), user.getEmail(), null, null)
 //                                                .isEmpty(),
-                                        user -> !UserRepository.getInstance()
+                                        user -> !userRepository
                                                 .getById(user.getId())
                                                 .isPresent(),
                                         "Not found",
-                                        () -> response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+                                        Response.Status.NOT_FOUND
                                 ),
                                 new ModifyPrecondition<>(
-                                        user -> UserRepository.getInstance().get(user.getId().toString()).size() > 1,
+                                        user -> userRepository.get(user.getId().toString()).size() > 1,
                                         "Ambiguous results",
-                                        () -> response.setStatus(HttpServletResponse.SC_NOT_FOUND)
+                                        Response.Status.NOT_FOUND
                                 )
                         ))
         );
+
+        return this.respond(updatedUser, "id", User::getId);
     }
 
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.delete(User.class, request, response);
+    @DELETE
+    public Response delete(@Context HttpServletRequest request) {
+        this.delete(User.class, request);
+        return Response.status(Response.Status.OK).build();
     }
 
 
@@ -178,7 +200,7 @@ public class UserServlet extends AbstractApiServlet<User> {
             //If null, use a default value
             JsonNode jsonPermissions = jsonUser.get("permissions");
             if (!(jsonPermissions == null || jsonPermissions.isNull())) {
-                permissions = ApiUtils.getInstance().updateFromJson(jsonPermissions, permissions, PermissionState.class);
+                permissions = JsonHelper.updateFromJson(jsonPermissions, permissions, PermissionState.class);
             }
 
             user.setPermissions(permissions);

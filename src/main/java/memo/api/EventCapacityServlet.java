@@ -5,18 +5,35 @@ import memo.auth.api.strategy.ConfigurableAuthStrategy;
 import memo.data.CapacityService;
 import memo.model.EventCapacity;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-@WebServlet(name = "EventCapacityServlet", value = "/api/capacity")
+@Path("/capacity")
+@Named
+@RequestScoped
 public class EventCapacityServlet extends AbstractApiServlet<EventCapacity> {
+    private CapacityService capacityService;
+
     public EventCapacityServlet() {
         super(new ConfigurableAuthStrategy<>(true));
+    }
+
+    @Inject
+    public EventCapacityServlet(CapacityService capacityService) {
+        super(new ConfigurableAuthStrategy<>(true));
+        this.capacityService = capacityService;
     }
 
     @Override
@@ -24,12 +41,15 @@ public class EventCapacityServlet extends AbstractApiServlet<EventCapacity> {
 
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Map<String, List<EventCapacity>> get(@QueryParam("id") Integer id, @Context HttpServletRequest request) {
         //todo
-        this.getList(request, response, (paramMap, resp) -> CapacityService
-                .get(Integer.valueOf(getParameter(paramMap, "id")))
+        List<EventCapacity> capacity = this.getList(request, () -> capacityService
+                .get(id)
                 .map(Arrays::asList)
-                .orElse(new ArrayList<>()), "capacity");
+                .orElse(new ArrayList<>()), null);
+
+        return buildMap("capacity", capacity);
     }
 }

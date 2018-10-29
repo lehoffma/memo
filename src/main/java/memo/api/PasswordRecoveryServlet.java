@@ -3,54 +3,82 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.auth.AuthenticationService;
 import memo.auth.BCryptHelper;
-import memo.communication.CommunicationManager;
-import memo.communication.MessageType;
+import memo.communication.NotificationRepository;
+import memo.communication.model.Notification;
+import memo.communication.model.NotificationType;
 import memo.data.UserRepository;
 import memo.model.User;
-import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
+import memo.util.JsonHelper;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
-@WebServlet(name = "PasswordRecoveryServlet", value = "/api/resetPassword")
-public class PasswordRecoveryServlet extends HttpServlet {
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        JsonNode jsonItem = ApiUtils.getInstance().getJsonObject(request, "email");
-        String emailToReset = jsonItem.asText();
+@Path("/resetPassword")
+@Named
+@RequestScoped
+public class PasswordRecoveryServlet {
+    private NotificationRepository notificationRepository;
+    private UserRepository userRepository;
+    AuthenticationService authenticationService;
 
-        List<User> users = UserRepository.getInstance().findByEmail(emailToReset);
-        if (users.isEmpty()) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return;
-        }
-        User user = users.get(0);
-        boolean success = CommunicationManager.getInstance().send(user, null, MessageType.FORGOT_PASSWORD);
-        if (!success) {
-            ApiUtils.getInstance().processInvalidError(response);
-        }
+    public PasswordRecoveryServlet() {
     }
 
-    @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        JsonNode jsonItem = ApiUtils.getInstance().getJsonObject(request, "password");
+    @Inject
+    public PasswordRecoveryServlet(NotificationRepository notificationRepository,
+                                   UserRepository userRepository,
+                                   AuthenticationService authenticationService) {
+        this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
+        this.authenticationService = authenticationService;
+    }
+
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response post(@Context HttpServletRequest request,
+                         String body) {
+        JsonNode jsonItem = JsonHelper.getJsonObject(body, "email");
+        String emailToReset = jsonItem.asText();
+
+        List<User> users = userRepository.findByEmail(emailToReset);
+        if (users.isEmpty()) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        User user = users.get(0);
+        this.notificationRepository.save(
+                new Notification()
+                        .setUser(user)
+                        .setNotificationType(NotificationType.FORGOT_PASSWORD)
+        );
+
+        return Response.ok().build();
+    }
+
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response put(@Context HttpServletRequest request, String body) {
+        JsonNode jsonItem = JsonHelper.getJsonObject(body, "password");
         String newPassword = jsonItem.asText();
-        User user = AuthenticationService.parseNullableUserFromRequestHeader(request);
+        User user = authenticationService.parseNullableUserFromRequestHeader(request);
 
         if (user == null) {
-            ApiUtils.getInstance().processNotFoundError(response);
-            return;
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
         String hashedPassword = BCryptHelper.hashPassword(newPassword);
         user.setPassword(hashedPassword);
         DatabaseManager.getInstance().update(user, User.class);
+        return Response.ok().build();
     }
 
 }

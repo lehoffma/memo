@@ -10,44 +10,25 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
-public class ApiUtils {
+@Named
+@ApplicationScoped
+public class JsonHelper {
 
-    static final Logger logger = LogManager.getLogger(ApiUtils.class);
-    public static final ObjectMapper mapper = new ObjectMapper()
+    private static final Logger logger = LogManager.getLogger(JsonHelper.class);
+    private static final ObjectMapper mapper = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-    private static ApiUtils instance;
-
-    private ApiUtils() {
-    }
-
-    public static ApiUtils getInstance() {
-        if (instance == null) instance = new ApiUtils();
-        return instance;
-    }
-
-
-    public void setContentType(HttpServletRequest request, HttpServletResponse response) {
-
-        try {
-            logger.trace("Set Character Encoding to UTF-8");
-
-            request.setCharacterEncoding("UTF-8");
-            response.setContentType("application/util;charset=UTF-8");
-
-        } catch (UnsupportedEncodingException e) {
-            logger.warn("Change of Character Encoding failed", e);
-        }
-
+    public JsonHelper() {
     }
 
     public static boolean stringIsNotEmpty(String s) {
@@ -55,16 +36,23 @@ public class ApiUtils {
     }
 
 
-    public Optional<JsonNode> getJsonObject(HttpServletRequest request) {
+    public static Optional<JsonNode> getJsonObject(HttpServletRequest request) {
         try {
             logger.trace("Parse Input Body");
 
             String body = org.apache.commons.io.IOUtils.toString(request.getReader());
+            return getJsonObject(body);
+        } catch (IOException e) {
+            logger.error("Error while parsing Input to JSON", e);
+        }
+        return Optional.empty();
+    }
 
+    public static Optional<JsonNode> getJsonObject(String body) {
+        try {
             JsonNode node = mapper.readTree(body);
 
             logger.debug("Input Body parsed.");
-
             return Optional.ofNullable(node);
         } catch (IOException e) {
             logger.error("Error while parsing Input to JSON", e);
@@ -72,10 +60,9 @@ public class ApiUtils {
         return Optional.empty();
     }
 
-
-    public JsonNode getJsonObject(HttpServletRequest request, String objectName) {
+    private static <T> JsonNode getJsonObject(Function<T, Optional<JsonNode>> getJson, T object, String objectName) {
         logger.trace("Parse Input Body and search for " + objectName);
-        Optional<JsonNode> optionalJsonNode = this.getJsonObject(request)
+        Optional<JsonNode> optionalJsonNode = getJson.apply(object)
                 .map(jsonNode -> jsonNode.get(objectName));
 
         if (optionalJsonNode.isPresent()) {
@@ -85,7 +72,15 @@ public class ApiUtils {
         return optionalJsonNode.orElse(null);
     }
 
-    public <T> T updateFromJson(JsonNode jObject, T obj, Class<T> clazz) {
+    public static JsonNode getJsonObject(String body, String objectName) {
+        return getJsonObject(JsonHelper::getJsonObject, body, objectName);
+    }
+
+    public static JsonNode getJsonObject(HttpServletRequest request, String objectName) {
+        return getJsonObject(JsonHelper::getJsonObject, request, objectName);
+    }
+
+    public static <T> T updateFromJson(JsonNode jObject, T obj, Class<T> clazz) {
         try {
             logger.trace("Deserialize object of type " + clazz.getName() + "into existing object " + obj.toString());
 
@@ -102,31 +97,12 @@ public class ApiUtils {
         return null;
     }
 
-    public void processNotFoundError(HttpServletResponse response) {
-        try {
-            response.setStatus(404);
-            logger.trace("No object found");
-            response.getWriter().append("not found");
-        } catch (IOException e) {
-            logger.warn("IO Error", e);
-        }
-    }
 
-
-    public void processInvalidError(HttpServletResponse response) {
-        try {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().append("invalid data");
-        } catch (Exception e) {
-            logger.warn("IO Error", e);
-        }
-    }
-
-    public <T> JsonNode toJsonNode(T obj) {
+    public static <T> JsonNode toJsonNode(T obj) {
         return mapper.valueToTree(obj);
     }
 
-    public <T> ObjectNode toObjectNode(T obj, String objectName) {
+    public static <T> ObjectNode toObjectNode(T obj, String objectName) {
         ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
         JsonNode valueNode;
         if (obj instanceof JsonNode) {
@@ -139,7 +115,7 @@ public class ApiUtils {
     }
 
 
-    public ObjectNode toObjectNode(Map<String, Object> objectMap) {
+    public static ObjectNode toObjectNode(Map<String, Object> objectMap) {
         ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
 
         objectMap.entrySet().stream()
@@ -160,18 +136,7 @@ public class ApiUtils {
         return objectNode;
     }
 
-    public <T> void serializeObject(HttpServletResponse response, T obj, String objectName) {
-        try {
-            if (objectName != null) {
-                ObjectNode objectNode = this.toObjectNode(obj, objectName);
-                logger.trace("Serialization of object " + objectName + ": " + obj.toString());
-                response.getWriter().append(objectNode.toString());
-            } else {
-                JsonNode jsonNode = this.toJsonNode(obj);
-                response.getWriter().append(jsonNode.toString());
-            }
-        } catch (Exception e) {
-            logger.error("Unhandled Exception", e);
-        }
+    public static String toString(Map<String, Object> objectMap) {
+        return toObjectNode(objectMap).toString();
     }
 }

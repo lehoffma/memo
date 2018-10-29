@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+
 public class DependencyUpdateService {
 
     private <T> List<T> convertFromIndirectList(List<T> list) {

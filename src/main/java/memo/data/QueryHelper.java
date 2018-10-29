@@ -6,6 +6,10 @@ import memo.model.User;
 import memo.util.model.Filter;
 import memo.util.model.Sort;
 
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
@@ -16,6 +20,8 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@Named
+@ApplicationScoped
 public class QueryHelper {
     private static final Pattern belowRegex = Pattern.compile("below([\\d]+)");
     private static final Pattern rangeRegex = Pattern.compile("between([\\d]+)and([\\d]+)");

@@ -13,6 +13,9 @@ import memo.util.model.Filter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.ListJoin;
@@ -28,19 +31,19 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Named
+@ApplicationScoped
 public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
-
-    private static OrderRepository instance;
-
     private static final Logger logger = LogManager.getLogger(OrderRepository.class);
 
-    private OrderRepository() {
-        super(Order.class, new OrderAuthStrategy());
+    public OrderRepository() {
+        super(Order.class);
     }
 
-    public static OrderRepository getInstance() {
-        if (instance == null) instance = new OrderRepository();
-        return instance;
+    @Inject
+    public OrderRepository(OrderAuthStrategy orderAuthStrategy) {
+        super(Order.class);
+        this.authenticationStrategy = orderAuthStrategy;
     }
 
     public static Optional<PaymentMethod> findPaymentMethodByString(String value) {

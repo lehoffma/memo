@@ -7,6 +7,8 @@ import memo.model.EntryCategory;
 import memo.util.DatabaseManager;
 import memo.util.model.Filter;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -16,17 +18,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Named
+@ApplicationScoped
 public class EntryCategoryRepository extends AbstractPagingAndSortingRepository<EntryCategory> {
 
-    protected static EntryCategoryRepository instance;
-
-    private EntryCategoryRepository() {
+    public EntryCategoryRepository() {
         super(EntryCategory.class, new ConfigurableAuthStrategy<>(true));
-    }
-
-    public static EntryCategoryRepository getInstance() {
-        if (instance == null) instance = new EntryCategoryRepository();
-        return instance;
     }
 
     private EntryCategory build(String name, Integer category, Integer id) {

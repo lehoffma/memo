@@ -33,7 +33,6 @@ type SortingQueryParameter = { sortedBy: string; descending: string; };
 	styleUrls: ["./search-results.component.scss"]
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
-	//todo add page to url
 	userCanAddItem$: Observable<boolean> = this.loginService.getActionPermissions("merch", "tour", "party")
 		.pipe(
 			map(permission => permission.Hinzufuegen)

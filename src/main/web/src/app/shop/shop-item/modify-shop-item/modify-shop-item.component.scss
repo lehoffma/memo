@@ -24,12 +24,21 @@
 	background: white;
 	@include mat-elevation(3);
 	@include mat-elevation-transition();
+	border-radius: 4px;
+	padding-top: 4px;
 
 	> h2:first-child {
 		margin-bottom: 1rem;
 	}
 
 	form {
+
+		*:first-child {
+			.object-details-content-container {
+				border-top: none;
+			}
+		}
+
 		> h2:not(:first-child) {
 			margin-top: 1.5rem;
 		}

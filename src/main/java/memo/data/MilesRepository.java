@@ -2,15 +2,33 @@ package memo.data;
 
 import memo.model.*;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Named
+@ApplicationScoped
 public class MilesRepository {
+    private EventRepository eventRepository;
+    private UserRepository userRepository;
+    private ParticipantRepository participantRepository;
+
     public MilesRepository() {
     }
 
-    private static boolean isBetween(LocalDateTime value, LocalDateTime start, LocalDateTime end) {
+    @Inject
+    public MilesRepository(EventRepository eventRepository,
+                           UserRepository userRepository,
+                           ParticipantRepository participantRepository) {
+        this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
+        this.participantRepository = participantRepository;
+    }
+
+    private boolean isBetween(LocalDateTime value, LocalDateTime start, LocalDateTime end) {
         return (value.isAfter(start) || value.isEqual(start)) && (value.isBefore(end) || value.isEqual(end));
     }
 
@@ -20,15 +38,15 @@ public class MilesRepository {
      * @param userId a value > 0 representing the ID of a memoshop user
      * @return the all-time accumulated miles of the user
      */
-    public static Integer milesOfUser(Integer userId) {
-        List<User> users = UserRepository.getInstance().get(userId.toString());
+    public Integer milesOfUser(Integer userId) {
+        List<User> users = userRepository.get(userId.toString());
         if (users.isEmpty() || users.get(0).getClubRole().ordinal() == ClubRole.Gast.ordinal()) {
             return 0;
         }
 
-        List<ShopItem> participatedEvents = EventRepository.getInstance().findByParticipant(userId).stream()
+        List<ShopItem> participatedEvents = eventRepository.findByParticipant(userId).stream()
                 .filter(item -> {
-                    List<OrderedItem> items = ParticipantRepository.getInstance().findByUserAndEvent(userId, item.getId());
+                    List<OrderedItem> items = participantRepository.findByUserAndEvent(userId, item.getId());
                     if (items.isEmpty()) {
                         return false;
                     }
@@ -52,8 +70,8 @@ public class MilesRepository {
      * @param end    all events after this date will be filtered out
      * @return the accumulated miles of the user for the given season/date-range
      */
-    public static Integer milesOfUser(Integer userId, LocalDateTime start, LocalDateTime end) {
-        List<ShopItem> participatedEvents = EventRepository.getInstance().findByParticipant(userId);
+    public Integer milesOfUser(Integer userId, LocalDateTime start, LocalDateTime end) {
+        List<ShopItem> participatedEvents = eventRepository.findByParticipant(userId);
         return participatedEvents.stream()
                 .filter(item -> item.getDate().toLocalDateTime().isBefore(LocalDateTime.now()))
                 .filter(item -> isBetween(item.getDate().toLocalDateTime(), start, end))
@@ -67,7 +85,7 @@ public class MilesRepository {
      * @param userId a value > 0 representing the ID of a memoshop user
      * @return the all-time accumulated miles of the user, wrapped in a milesListEntry object
      */
-    public static MilesListEntry milesListEntryOfUser(Integer userId) {
+    public MilesListEntry milesListEntryOfUser(Integer userId) {
         return new MilesListEntry().setUserId(userId).setMiles(milesOfUser(userId));
     }
 
@@ -77,15 +95,15 @@ public class MilesRepository {
      * @param end    all events after this date will be filtered out
      * @return the accumulated miles of the user for the given season/date-range, wrapped in a milesListEntry object
      */
-    public static MilesListEntry milesListEntryOfUser(Integer userId, LocalDateTime start, LocalDateTime end) {
+    public MilesListEntry milesListEntryOfUser(Integer userId, LocalDateTime start, LocalDateTime end) {
         return new MilesListEntry().setUserId(userId).setMiles(milesOfUser(userId, start, end));
     }
 
     /**
      * @return the all-time miles leaderboard
      */
-    public static List<MilesListEntry> milesList() {
-        List<User> users = UserRepository.getInstance().getAll();
+    public List<MilesListEntry> milesList() {
+        List<User> users = userRepository.getAll();
         return users.stream()
                 .map(User::getId)
                 .map(userId -> new MilesListEntry()
@@ -100,8 +118,8 @@ public class MilesRepository {
      * @param end   all events after this date will be filtered out
      * @return the miles leaderboard for the given season/date-range
      */
-    public static List<MilesListEntry> milesList(LocalDateTime start, LocalDateTime end) {
-        List<User> users = UserRepository.getInstance().getAll();
+    public List<MilesListEntry> milesList(LocalDateTime start, LocalDateTime end) {
+        List<User> users = userRepository.getAll();
         return users.stream()
                 .map(User::getId)
                 .map(userId -> new MilesListEntry()

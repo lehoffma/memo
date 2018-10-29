@@ -4,13 +4,16 @@ import memo.auth.api.strategy.CommentAuthStrategy;
 import memo.data.util.PredicateFactory;
 import memo.data.util.PredicateSupplierMap;
 import memo.model.Comment;
-import memo.util.ApiUtils;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -19,18 +22,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
+@Named
+@ApplicationScoped
 public class CommentRepository extends AbstractPagingAndSortingRepository<Comment> {
-
     private static final Logger logger = LogManager.getLogger(CommentRepository.class);
-    private static CommentRepository instance;
 
-    private CommentRepository() {
-        super(Comment.class, new CommentAuthStrategy());
+    public CommentRepository() {
+        super(Comment.class);
     }
 
-    public static CommentRepository getInstance() {
-        if (instance == null) instance = new CommentRepository();
-        return instance;
+    @Inject
+    public CommentRepository(CommentAuthStrategy commentAuthStrategy) {
+        super(Comment.class);
+        this.authenticationStrategy = commentAuthStrategy;
     }
 
 
@@ -48,7 +52,7 @@ public class CommentRepository extends AbstractPagingAndSortingRepository<Commen
 
         } catch (NumberFormatException e) {
             logger.error("Parsing error", e);
-            ApiUtils.getInstance().processInvalidError(response);
+            //todo exception?
         }
         return null;
     }
@@ -63,7 +67,7 @@ public class CommentRepository extends AbstractPagingAndSortingRepository<Commen
 
         } catch (NumberFormatException e) {
             logger.error("Parsing error", e);
-            ApiUtils.getInstance().processInvalidError(response);
+            //todo exception?
         }
         return null;
     }

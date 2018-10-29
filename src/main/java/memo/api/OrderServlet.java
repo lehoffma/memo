@@ -3,33 +3,55 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
+import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.OrderAuthStrategy;
-import memo.communication.CommunicationManager;
-import memo.communication.MessageType;
+import memo.communication.strategy.OrderNotificationStrategy;
 import memo.data.CapacityService;
 import memo.data.OrderRepository;
 import memo.data.StockRepository;
-import memo.data.UserRepository;
 import memo.model.*;
-import memo.util.MapBuilder;
 import memo.util.model.EventType;
 import org.apache.logging.log4j.LogManager;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
-@WebServlet(name = "OrderServlet", value = "/api/order")
+@Path("/order")
+@Named
+@RequestScoped
 public class OrderServlet extends AbstractApiServlet<Order> {
+    private StockRepository stockRepository;
+    private OrderRepository orderRepository;
+    private CapacityService capacityService;
+
     public OrderServlet() {
-        super(new OrderAuthStrategy());
+        super();
         logger = LogManager.getLogger(OrderServlet.class);
     }
+
+    @Inject
+    public OrderServlet(StockRepository stockRepository,
+                        OrderRepository orderRepository,
+                        OrderAuthStrategy authStrategy,
+                        OrderNotificationStrategy notifyStrategy,
+                        AuthenticationService authService,
+                        CapacityService capacityService) {
+        this.stockRepository = stockRepository;
+        this.orderRepository = orderRepository;
+        this.authenticationStrategy = authStrategy;
+        this.notificationStrategy = notifyStrategy;
+        this.authenticationService = authService;
+        this.capacityService = capacityService;
+    }
+
 
     @Override
     protected void updateDependencies(JsonNode jsonNode, Order object) {
@@ -37,7 +59,7 @@ public class OrderServlet extends AbstractApiServlet<Order> {
         this.oneToMany(object, OrderedItem.class, Order::getItems, orderedItem -> orderedItem::setOrder);
     }
 
-    public static boolean checkOrder(Order order) {
+    public boolean checkOrder(Order order) {
         return checkOrder(new ArrayList<>(order.getItems()));
     }
 
@@ -46,7 +68,7 @@ public class OrderServlet extends AbstractApiServlet<Order> {
      *
      * @return
      */
-    public static boolean checkOrder(List<OrderedItem> orderedItems) {
+    public boolean checkOrder(List<OrderedItem> orderedItems) {
 
         List<OrderedItem> partysAndEvents = orderedItems.stream()
                 .filter(item -> item.getItem().getType() != EventType.merch.getValue())
@@ -59,7 +81,7 @@ public class OrderServlet extends AbstractApiServlet<Order> {
             if (seatsAfterBuying.containsKey(item)) {
                 seatsAfterBuying.put(item, seatsAfterBuying.get(item) - 1);
             } else {
-                seatsAfterBuying.put(item, CapacityService.get(item.getId())
+                seatsAfterBuying.put(item, capacityService.get(item.getId())
                         .map(EventCapacity::getCapacity)
                         .orElse(0) - 1);
             }
@@ -84,7 +106,7 @@ public class OrderServlet extends AbstractApiServlet<Order> {
             if (stockAfterBuying.containsKey(key)) {
                 stockAfterBuying.put(key, stockAfterBuying.get(key) - 1);
             } else {
-                List<Stock> stock = new ArrayList<>(StockRepository.getInstance().findByShopItem(item.getId().toString()));
+                List<Stock> stock = new ArrayList<>(stockRepository.findByShopItem(item.getId().toString()));
                 int availableStock = stock.stream()
                         .filter(it -> it.getColor().getName().equalsIgnoreCase(color.getName())
                                 && it.getSize().equalsIgnoreCase(size))
@@ -103,12 +125,17 @@ public class OrderServlet extends AbstractApiServlet<Order> {
         return false;
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.get(request, response, OrderRepository.getInstance());
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public Object get(@Context HttpServletRequest request) {
+        return this.get(request, orderRepository);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Order order = this.post(request, response, new ApiServletPostOptions<>(
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response post(@Context HttpServletRequest request, String body) {
+        Order order = this.post(request, body, new ApiServletPostOptions<>(
                         "order", new Order(), Order.class, Order::getId
                 )
                         .setTransform(it -> {
@@ -126,36 +153,15 @@ public class OrderServlet extends AbstractApiServlet<Order> {
                         ))
         );
 
-        if (order != null) {
-            User user = order.getUser();
-            List<ShopItem> orderedItems = order.getItems().stream()
-                    .map(OrderedItem::getItem)
-                    .collect(Collectors.toList());
-            CommunicationManager.getInstance().sendList(user, orderedItems, MessageType.ORDER_CONFIRMATION);
-
-            User admin = UserRepository.getInstance().getAdmin();
-            BankAcc bankAccount = order.getBankAccount();
-            Map<String, Object> options = new MapBuilder<String, Object>()
-                    .buildPut("order", order)
-                    .buildPut("bankAcc", bankAccount);
-            switch (order.getMethod()) {
-                case Bar:
-                    break;
-                case Lastschrift:
-                    CommunicationManager.getInstance().send(user, null, MessageType.DEBIT_CUSTOMER, options);
-                    CommunicationManager.getInstance().send(admin, null, MessageType.DEBIT_TREASURER, options);
-                    break;
-                case Überweisung:
-                    CommunicationManager.getInstance().send(user, null, MessageType.TRANSFER_CUSTOMER, options);
-                    CommunicationManager.getInstance().send(admin, null, MessageType.TRANSFER_TREASURER, options);
-                    break;
-            }
-        }
+        return this.respond(order, "id", Order::getId);
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response put(@Context HttpServletRequest request, String body) {
         //todo update: condition
-        Order put = this.put(request, response, new ApiServletPutOptions<>(
+        Order updatedOrder = this.put(request, body, new ApiServletPutOptions<>(
                         "order", Order.class, Order::getId, "id"
                 )
                         .setTransform(order -> {
@@ -165,10 +171,13 @@ public class OrderServlet extends AbstractApiServlet<Order> {
                             return order;
                         })
         );
+
+        return this.respond(updatedOrder, "id", Order::getId);
     }
 
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        this.delete(Order.class, request, response);
+    @DELETE
+    public Response delete(@Context HttpServletRequest request) {
+        this.delete(Order.class, request);
+        return Response.ok().build();
     }
-
 }

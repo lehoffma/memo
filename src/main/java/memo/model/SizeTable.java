@@ -46,13 +46,6 @@ public class SizeTable implements Serializable {
         super();
     }
 
-    public SizeTable(Stock stock, String name, Integer min, Integer max) {
-        this.stock = stock;
-        this.name = name;
-        this.min = min;
-        this.max = max;
-    }
-
     //**************************************************************
     //  getters and setters
     //**************************************************************
@@ -82,19 +75,21 @@ public class SizeTable implements Serializable {
     }
 
     public Integer getMin() {
-        return this.min;
+        return min;
     }
 
-    public void setMin(Integer min) {
-        this.min = min;
+    public SizeTable setMin(Integer minValue) {
+        this.min = minValue;
+        return this;
     }
 
     public Integer getMax() {
-        return this.max;
+        return max;
     }
 
-    public void setMax(Integer max) {
-        this.max = max;
+    public SizeTable setMax(Integer maxValue) {
+        this.max = maxValue;
+        return this;
     }
 
     //**************************************************************

@@ -4,7 +4,6 @@
 	"scripts": {
 		"start": "ng serve --proxy-config proxy.conf.json",
 		"start-mobile": "ng serve --proxy-config proxy.conf.json --host 192.168.188.75",
-		"production": "ng serve --proxy-config proxy.conf.json --prod",
 		"build-dev": "ng build",
 		"build": "ng build --prod",
 		"build-with-stats": "ng build --prod --stats-json",

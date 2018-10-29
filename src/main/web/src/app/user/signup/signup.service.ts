@@ -13,11 +13,10 @@ import {UserBankAccountService} from "../../shared/services/api/user-bank-accoun
 import {createBankAccount} from "../../shared/model/bank-account";
 import {ImageUploadService} from "../../shared/services/api/image-upload.service";
 import {catchError, first, map, mergeMap, tap} from "rxjs/operators";
-import {Observable, of, throwError} from "rxjs";
+import {EMPTY, Observable, of, throwError} from "rxjs";
 import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-images";
 import {processSequentially} from "../../util/observable-util";
 import {ImageToUpload} from "../../shared/utility/multi-image-upload/image-to-upload";
-import {EMPTY} from "rxjs";
 import {setProperties} from "../../shared/model/util/base-object";
 
 @Injectable()
@@ -135,7 +134,7 @@ export class SignUpService {
 	 * @returns {Promise<User>}
 	 */
 	uploadProfilePicture(user: User, pictures: ImageToUpload[]): Observable<User> {
-		if (!pictures) {
+		if (!pictures || pictures.length === 0) {
 			//no images were specified => don't bother performing the request
 			return of(user);
 		}
