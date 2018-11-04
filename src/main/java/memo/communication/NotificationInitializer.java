@@ -12,6 +12,7 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Named
@@ -21,27 +22,34 @@ public class NotificationInitializer {
 
     @PostConstruct
     public void initialize() {
+        //todo new notifications:
+        //new comment(s)
+        //time-based notifications (order status check, upcoming Xs)
+
         List<NotificationTemplate> templates = Arrays.asList(
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.CLUBROLE_CHANGE_REQUEST)
-                        .setTemplate("<Username> hat eine Statusänderung zu <NewClubRole> beantragt!")
-                        .setLink("/members/<UserId>/edit"),
+                        .setTemplate("{Username} hat eine Statusänderung zu {NewClubRole} beantragt!")
+                        .setImagePath("{UserProfilePicture}")
+                        .setLink("/members/{UserId}/edit"),
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.RESPONSIBLE_USER)
-                        .setTemplate("Du wurdest als Verantwortlicher für <ItemName> hinzugefügt!")
-                        .setLink("/<ItemType>/<ItemId>"),
+                        .setTemplate("Du wurdest als Verantwortlicher für {ItemName} hinzugefügt!")
+                        .setImagePath("{ItemImage}")
+                        .setLink("/{ItemType}/{ItemId}"),
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.OBJECT_HAS_CHANGED)
-                        .setTemplate("<ItemName> wurde verändert.")
-                        .setLink("/<ItemType>/<ItemId>"),
+                        .setTemplate("{ItemName} wurde verändert.")
+                        .setImagePath("{ItemImage}")
+                        .setLink("/{ItemType}/{ItemId}"),
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.DEBIT_TREASURER)
                         .setTemplate("Leite ein Lastschrift-Verfahren für die eingegangene Bestellung ein!")
-                        .setLink("/orders/<OrderId>"),
+                        .setLink("/orders/{OrderId}"),
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.TRANSFER_TREASURER)
                         .setTemplate("Überprüfe die eingegangene Überweisung!")
-                        .setLink("/orders/<OrderId>")
+                        .setLink("/orders/{OrderId}")
         );
         List<NotificationTemplate> currentTemplates = new ArrayList<>(DatabaseManager.createEntityManager()
                 .createQuery("SELECT e FROM NotificationTemplate e", NotificationTemplate.class)
@@ -52,7 +60,9 @@ public class NotificationInitializer {
         List<NotificationTemplate> changedTemplates = templates.stream()
                 .filter(t -> currentTemplates.stream()
                         .anyMatch(c -> c.getNotificationType().equals(t.getNotificationType())
-                                && (!c.getTemplate().equals(t.getTemplate()) || !c.getLink().equals(t.getLink()))
+                                && (!Objects.equals(c.getTemplate(), t.getTemplate())
+                                || !Objects.equals(c.getLink(), t.getLink())
+                                || !Objects.equals(c.getImagePath(), t.getImagePath()))
                         )
                 )
                 .collect(Collectors.toList());

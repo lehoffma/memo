@@ -59,12 +59,41 @@ public class NotificationRepository extends AbstractPagingAndSortingRepository<N
                 .map(_id -> DatabaseManager.getInstance().getById(EmailTemplate.class, _id));
     }
 
-    public List<Notification> get(String userId) {
+
+    public Integer getUnreadMessages(String userId) {
+        return this.getMessagesByStatus(userId, NotificationStatus.UNREAD);
+    }
+
+    public Integer getMessagesByStatus(String userId, NotificationStatus status) {
+        return ((Long) DatabaseManager.createEntityManager()
+                .createNativeQuery("SELECT COUNT(*) FROM notifications n " +
+                        "WHERE n.USER_ID = ?1 AND n.STATUS = ?2")
+                .setParameter(1, Integer.valueOf(userId))
+                .setParameter(2, status.ordinal())
+                .getSingleResult()).intValue();
+    }
+
+    public List<Notification> getByUserId(String userId, Integer limit) {
+        return getByUserId(userId, limit, 0);
+    }
+
+    public Integer getTotalMessages(String userId) {
+        return ((Long) DatabaseManager.createEntityManager()
+                .createNativeQuery("SELECT COUNT(*) FROM notifications n " +
+                        "WHERE n.USER_ID = ?1 AND n.STATUS <> 2")
+                .setParameter(1, Integer.valueOf(userId))
+                .getSingleResult()).intValue();
+    }
+
+    public List<Notification> getByUserId(String userId, Integer limit, Integer offset) {
         return DatabaseManager.createEntityManager()
                 .createQuery("SELECT n FROM Notification n " +
-                                "WHERE n.user.id = :userId ORDER BY n.timestamp DESC",
+                                "WHERE n.user.id = :userId AND n.status <> :status  ORDER BY n.timestamp DESC",
                         Notification.class)
                 .setParameter("userId", Integer.valueOf(userId))
+                .setParameter("status", NotificationStatus.DELETED)
+                .setMaxResults(limit)
+                .setFirstResult(offset)
                 .getResultList();
     }
 

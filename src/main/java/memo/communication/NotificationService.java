@@ -15,6 +15,11 @@ public class NotificationService {
             @Schedule(hour = "5"),
     })
     public void checkForDailyNotifications() {
+        //possible notifications
+        // - upcoming tour/event (today at XX:YY)
+        // - orders that have not been checked yet (after X days have passed and status is still Y)
+        //
+
         System.out.println("todo: implement");
     }
 }

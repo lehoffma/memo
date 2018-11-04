@@ -1,11 +1,11 @@
 package memo.communication.broadcasters.websocket;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import memo.auth.AuthenticationService;
 import memo.communication.NotificationRepository;
 import memo.communication.broadcasters.NotificationBroadcaster;
-import memo.communication.model.Notification;
 import memo.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,20 +16,21 @@ import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Named
-@ServerEndpoint(value = "/api/notifications_stream", configurator = WebSocketUserConfig.class)
+@ServerEndpoint(value = "/api/notifications_stream", configurator = WebsocketUserConfig.class)
 public class NotificationController {
     private final static Logger logger = LogManager.getLogger(NotificationController.class);
     private final ObjectMapper mapper = new ObjectMapper();
 
     private SessionHandler sessionHandler;
     private NotificationRepository notificationRepository;
-    private NotificationBroadcaster notificationBroadcaster;
     private AuthenticationService authenticationService;
+    private WebsocketMessageDispatcher websocketMessageDispatcher;
+    private WebsocketMessageHandler websocketMessageHandler;
 
     public NotificationController() {
     }
@@ -38,13 +39,14 @@ public class NotificationController {
     public NotificationController(SessionHandler sessionHandler,
                                   AuthenticationService authenticationService,
                                   NotificationRepository notificationRepository,
-                                  NotificationBroadcaster notificationBroadcaster) {
+                                  WebsocketMessageDispatcher dispatcher,
+                                  WebsocketMessageHandler handler) {
         this.sessionHandler = sessionHandler;
         this.authenticationService = authenticationService;
         this.notificationRepository = notificationRepository;
-        this.notificationBroadcaster = notificationBroadcaster;
+        this.websocketMessageDispatcher = dispatcher;
+        this.websocketMessageHandler = handler;
     }
-
 
     @OnOpen
     public void open(Session session) throws IOException {
@@ -55,13 +57,8 @@ public class NotificationController {
         session.getUserProperties().put("userId", userId);
         this.sessionHandler.addSession(session);
 
-        List<Notification> notifications = notificationRepository.get(userId);
-        List<Map<String, Object>> dataMap = notifications.stream()
-                .map(it -> notificationBroadcaster.toJson(it))
-                .collect(Collectors.toList());
-
-        String json = mapper.valueToTree(dataMap).toString();
-        this.sessionHandler.sendToSession(session, json);
+        Integer amount = 20;
+        this.websocketMessageDispatcher.sendNotifications(session, amount, true);
     }
 
     @OnClose
@@ -74,11 +71,17 @@ public class NotificationController {
         logger.error("Error occurred during websocket exchange", error);
     }
 
+
     @OnMessage
     public void handleMessage(String message, Session session) {
-        //notifications are a one-way socket, so no need to handle any messages
-        //read/unread status updates are handles by the non-websocket-based notifications controller
+        try {
+            TypeReference<HashMap<String, Object>> typeRef = new TypeReference<HashMap<String, Object>>() {
+            };
+            Map<String, Object> data = mapper.readValue(message, typeRef);
 
-        //todo except for: "load more"?
+            this.websocketMessageHandler.handleMessage(session, data);
+        } catch (IOException e) {
+            logger.error("Could not decode message: " + message, e);
+        }
     }
 }

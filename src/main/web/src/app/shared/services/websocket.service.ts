@@ -24,6 +24,15 @@ export class WebsocketService<T> {
 		return this.subject.asObservable();
 	}
 
+	public send(message: any): boolean{
+		if (!this.subject) {
+			console.error("Connection not established - message '" + message + "'was not sent")
+			return false;
+		}
+		this.subject.next(message);
+		return true;
+	}
+
 	/**
 	 * Closes the currently active connection
 	 */

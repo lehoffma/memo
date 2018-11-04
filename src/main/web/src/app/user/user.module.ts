@@ -32,7 +32,7 @@ import {RelativeTimeFormatPipe} from "./notifications/relative-time-format.pipe"
 		ParticipatedToursPreviewComponent,
 
 		ConfirmEmailComponent,
-		RelativeTimeFormatPipe,
+		RelativeTimeFormatPipe
 	],
 	exports: [
 		SignUpModule

@@ -17,6 +17,8 @@ public class NotificationTemplate {
 
     private String link;
 
+    private String imagePath;
+
     public NotificationType getNotificationType() {
         return notificationType;
     }
@@ -41,6 +43,15 @@ public class NotificationTemplate {
 
     public NotificationTemplate setLink(String link) {
         this.link = link;
+        return this;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public NotificationTemplate setImagePath(String imagePath) {
+        this.imagePath = imagePath;
         return this;
     }
 }

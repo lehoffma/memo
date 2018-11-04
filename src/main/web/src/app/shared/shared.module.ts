@@ -2,7 +2,6 @@ import {NgModule} from "@angular/core";
 import {MultiLevelSelectModule} from "./utility/multi-level-select/multi-level-select.module";
 import {EventCalendarComponent} from "./utility/event-calendar/event-calendar.component";
 import {CommonModule} from "@angular/common";
-import {BadgeComponent} from "./utility/badge/badge.component";
 import {PageNotFoundComponent} from "./utility/error-page/page-not-found.component";
 import {AutoSizeTextAreaDirective} from "./autosize-textarea.directive";
 import {ConfirmationDialogComponent} from "./utility/confirmation-dialog/confirmation-dialog.component";
@@ -44,7 +43,7 @@ import {ScrollSpyDirective} from "./utility/scroll-spy.directive";
 import {SpiedOnElementDirective} from "./utility/spied-on-element.directive";
 import {MatPasswordStrengthModule} from "@angular-material-extensions/password-strength";
 import {LazyLoadingModule} from "./lazy-loading/lazy-loading.module";
-import { BreadcrumbNavigationComponent } from './breadcrumb-navigation/breadcrumb-navigation.component';
+import {BreadcrumbNavigationComponent} from "./breadcrumb-navigation/breadcrumb-navigation.component";
 import {JSONLdComponent} from "./utility/seo/json-ld.component";
 
 const forms = [
@@ -87,7 +86,6 @@ const forms = [
 
 		ConfirmationDialogComponent,
 
-		BadgeComponent,
 		PageNotFoundComponent,
 		ErrorPageComponent,
 		AutoSizeTextAreaDirective,
@@ -120,7 +118,6 @@ const forms = [
 
 		EventCalendarComponent,
 
-		BadgeComponent,
 		PageNotFoundComponent,
 		ErrorPageComponent,
 

@@ -3,7 +3,6 @@ package memo.communication.broadcasters;
 import memo.communication.DataParser;
 import memo.communication.NotificationRepository;
 import memo.communication.ReplacementFactory;
-import memo.communication.mail.MailLoader;
 import memo.communication.model.EmailTemplate;
 import memo.communication.model.Notification;
 import memo.model.User;
@@ -84,14 +83,14 @@ public class MailBroadcaster extends BaseMessageBroadcaster {
         return notificationRepository.getEmailTemplateByType(notification.getNotificationType())
                 .map(EmailTemplate::getFilePath)
                 .map(this::getEmailText)
-                .map(emailText -> this.getText(notification.getData(), emailText))
+                .map(emailText -> this.getText(notification, emailText))
                 .orElseThrow(NotFoundException::new);
     }
 
 
     private String getEmailText(String fileName) {
         String path = "mails/" + fileName + ".html";
-        try (InputStream resource = MailLoader.class.getClassLoader().getResourceAsStream(path)) {
+        try (InputStream resource = MailBroadcaster.class.getClassLoader().getResourceAsStream(path)) {
             return IOUtils.toString(resource, StandardCharsets.UTF_8);
         } catch (IOException e) {
             logger.error("Could not read email template of type " + fileName, e);

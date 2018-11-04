@@ -5,6 +5,7 @@ import {Link} from "../../../shared/model/link";
 import {WindowService} from "../../../shared/services/window.service";
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter, first, map} from "rxjs/operators";
+import {NotificationService} from "../../../shared/services/api/user-notification.service";
 
 @Component({
 	selector: "memo-toolbar",
@@ -29,8 +30,10 @@ export class ToolbarComponent implements OnInit {
 	shoppingCartContent: Observable<number> = this.shoppingCartService.amountOfCartItems;
 
 	searchIsExpanded$ = new BehaviorSubject(false);
+	unreadNotifications$ = this.notificationService.unreadNotifications$;
 
 	constructor(private navigationService: NavigationService,
+				private notificationService: NotificationService,
 				private windowService: WindowService,
 				private shoppingCartService: ShoppingCartService) {
 

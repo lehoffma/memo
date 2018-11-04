@@ -12,10 +12,12 @@ public abstract class BaseMessageBroadcaster implements MessageBroadcaster {
 
     public abstract String getText(Notification notification);
 
-    protected String getText(String jsonData, String template) {
+    protected String getText(Notification notification, String template) {
+        String jsonData = notification.getData();
         Map<String, Object> data = this.dataParser.parse(jsonData);
-        Map<String, String> placeholders = this.replacementFactory.getReplacements(template, data);
+        Map<String, String> placeholders = this.replacementFactory.getReplacements(notification, template, data);
 
+        //todo maybe check for possible performance improvements (save index/length?)
         for (Map.Entry<String, String> placeholder : placeholders.entrySet()) {
             template = template.replace(placeholder.getKey(), placeholder.getValue());
         }

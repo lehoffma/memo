@@ -63,8 +63,8 @@ public class DataParser {
                 value = userRepository.getById(entry.getValue().toString())
                         .orElse(null);
                 break;
-            case "itemIds":
-                key = "items";
+            case "orderedItemIds":
+                key = "orderedItems";
                 //todo test
                 System.out.println(entry.getValue());
                 value = new ArrayList<>();

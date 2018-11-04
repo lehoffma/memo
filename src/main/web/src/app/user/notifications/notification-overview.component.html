@@ -1,37 +1,60 @@
-<div class="notifications-header">
-	<h3>Deine Benachrichtigungen</h3>
-	<a mat-stroked-button routerLink="/notifications/settings">
-		Einstellungen
-	</a>
-</div>
+<div class="stretch-height">
+	<div class="notifications-header">
+		<h3>Deine Benachrichtigungen</h3>
+		<a mat-icon-button routerLink="/notifications/settings">
+			<mat-icon>settings</mat-icon>
+		</a>
+	</div>
 
-<a *ngFor="let notification of notifications$ | async" class="notification" routerLink="{{notification.link}}">
-	<img src="{{notification.imagePath || 'resources/images/Logo.png'}}"/>
+	<ng-container *ngIf="(loading$ | async); else emptyChecker">
+		<div class="loading-notifications loader-wrapper stretch-height">
+			<div class="loader"></div>
+		</div>
+	</ng-container>
+	<ng-template #emptyChecker>
+		<ng-container *ngIf="(notifications$ | async)?.length === 0; else notEmptyNotifications">
+			<div class="no-notifications">Du hast keine Benachrichtigungen.</div>
+		</ng-container>
+	</ng-template>
+	<ng-template #notEmptyNotifications>
+		<a *ngFor="let notification of notifications$ | async"
+		   class="notification {{notification.status}}"
+		   (click)="markAsRead(notification)"
+		   routerLink="{{notification.link}}">
+			<img src="{{notification.imagePath || 'resources/images/Logo.png'}}"/>
 
-	<div class="notification-details">
-		<div class="notification-text">
-			<span>{{notification.text}}</span>
-			<span class="timestamp">
+			<div class="notification-details">
+				<div class="notification-text">
+					<span>{{notification.text}}</span>
+					<span class="timestamp">
 				{{notification.timestamp | relativeTimeFormat}}
 			</span>
-		</div>
+				</div>
 
-		<div class="actions" (click)="$event.stopPropagation()">
-			<button mat-icon-button type="button"
-					(click)="$event.stopPropagation()"
-					title="Aktionen"
-					attr.aria-label="Aktionen"
-					[matMenuTriggerFor]="menu">
-				<mat-icon>more_vert</mat-icon>
+				<div class="actions">
+					<button mat-icon-button type="button"
+							(click)="$event.stopPropagation(); $event.preventDefault()"
+							title="Aktionen"
+							attr.aria-label="Aktionen"
+							[matMenuTriggerFor]="menu">
+						<mat-icon>more_vert</mat-icon>
 
-			</button>
-			<mat-menu #menu="matMenu">
-				<!--todo actions-->
-				<button mat-menu-item>
-					<span>Mute</span>
-				</button>
-			</mat-menu>
+					</button>
+					<mat-menu #menu="matMenu">
+						<!--todo actions-->
+						<button mat-menu-item *ngIf="notification.status === 'UNREAD'"
+								(click)="markAsRead(notification); ">
+							<span>Als gelesen markieren</span>
+						</button>
+						<button mat-menu-item (click)="markAsDeleted(notification); ">
+							<span>Löschen</span>
+						</button>
+					</mat-menu>
 
-		</div>
-	</div>
-</a>
+				</div>
+			</div>
+		</a>
+	</ng-template>
+</div>
+
+<button class="load-more-button" *ngIf="canLoadMore$ | async" (click)="loadMore()">Mehr</button>

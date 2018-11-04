@@ -1,6 +1,7 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.ConfigurableAuthStrategy;
 import memo.data.CapacityService;
 import memo.model.EventCapacity;
@@ -31,9 +32,11 @@ public class EventCapacityServlet extends AbstractApiServlet<EventCapacity> {
     }
 
     @Inject
-    public EventCapacityServlet(CapacityService capacityService) {
+    public EventCapacityServlet(CapacityService capacityService,
+                                AuthenticationService authenticationService) {
         super(new ConfigurableAuthStrategy<>(true));
         this.capacityService = capacityService;
+        this.authenticationService = authenticationService;
     }
 
     @Override

@@ -32,6 +32,10 @@ public class NotificationBroadcaster extends BaseMessageBroadcaster {
     protected Logger logger = LogManager.getLogger(NotificationBroadcaster.class);
     private final ObjectMapper mapper = new ObjectMapper();
 
+    public String getCounterKey() {
+        return "sentNotifications";
+    }
+
     public NotificationBroadcaster() {
         super();
     }
@@ -57,8 +61,10 @@ public class NotificationBroadcaster extends BaseMessageBroadcaster {
 
     public Map<String, Object> toJson(Notification notification) {
         Map<String, Object> data = new HashMap<>();
+        data.put("id", notification.getId());
         data.put("text", this.getText(notification));
         data.put("link", this.getLink(notification));
+        data.put("imagePath", this.getImagePath(notification));
         data.put("type", notification.getNotificationType());
         data.put("status", notification.getStatus());
         data.put("timestamp", timestampToISO(notification.getTimestamp()));
@@ -69,15 +75,22 @@ public class NotificationBroadcaster extends BaseMessageBroadcaster {
     public String getText(Notification notification) {
         return notificationRepository.getTemplateByType(notification.getNotificationType())
                 .map(NotificationTemplate::getTemplate)
-                .map(text -> this.getText(notification.getData(), text))
+                .map(text -> this.getText(notification, text))
                 .orElseThrow(NotFoundException::new);
     }
 
     public String getLink(Notification notification) {
         return notificationRepository.getTemplateByType(notification.getNotificationType())
                 .map(NotificationTemplate::getLink)
-                .map(text -> this.getText(notification.getData(), text))
+                .map(text -> this.getText(notification, text))
                 .orElseThrow(NotFoundException::new);
+    }
+
+    public String getImagePath(Notification notification) {
+        return notificationRepository.getTemplateByType(notification.getNotificationType())
+                .map(NotificationTemplate::getImagePath)
+                .map(text -> this.getText(notification, text))
+                .orElse("");
     }
 
     @Override
@@ -93,6 +106,12 @@ public class NotificationBroadcaster extends BaseMessageBroadcaster {
         try {
             String json = mapper.valueToTree(this.toJson(notification)).toString();
             sessionHandler.sendToUserSession(user.getId(), json);
+            sessionHandler.getUserSession(user.getId())
+                    .ifPresent(session -> {
+                        Integer sentNotifications = (Integer) session.getUserProperties()
+                                .getOrDefault("offset", 0);
+                        session.getUserProperties().put("offset", sentNotifications + 1);
+                    });
             return true;
         } catch (IOException e) {
             logger.trace("Could not send notification to session for userId " + user.getId());

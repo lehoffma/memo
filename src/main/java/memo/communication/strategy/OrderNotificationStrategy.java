@@ -4,7 +4,10 @@ import memo.communication.NotificationRepository;
 import memo.communication.model.Notification;
 import memo.communication.model.NotificationType;
 import memo.data.UserRepository;
-import memo.model.*;
+import memo.model.BankAcc;
+import memo.model.Order;
+import memo.model.OrderedItem;
+import memo.model.User;
 import memo.util.JsonHelper;
 import memo.util.MapBuilder;
 
@@ -38,12 +41,11 @@ public class OrderNotificationStrategy extends BaseNotificationStrategy<Order> {
         }
         User user = order.getUser();
         List<Integer> orderedItems = order.getItems().stream()
-                .map(OrderedItem::getItem)
-                .map(ShopItem::getId)
+                .map(OrderedItem::getId)
                 .collect(Collectors.toList());
 
         String dataAsString = JsonHelper.toString(new MapBuilder<String, Object>()
-                .buildPut("itemIds", orderedItems)
+                .buildPut("orderedItemIds", orderedItems)
         );
 
         notificationRepository.save(new Notification()

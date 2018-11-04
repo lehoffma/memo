@@ -32,14 +32,32 @@
 		</memo-toolbar-element>
 	</div>
 
+
+	<div class="notification-container" *ngIf="!(searchIsExpanded$ | async)">
+		<!--todo: open notification overlay on desktop, on mobile just link to /notifications page -->
+		<ng-container *ngFor="let unreadNotifications of [unreadNotifications$ | async]">
+			<a mat-icon-button routerLink="/notifications" title="Benachrichtigungen">
+				<mat-icon matBadge="{{unreadNotifications}}"
+						  [matBadgeHidden]="!unreadNotifications || unreadNotifications === 0"
+						  matBadgeColor="accent">
+					notifications
+				</mat-icon>
+			</a>
+		</ng-container>
+	</div>
+
 	<div class="toolbar-action cart" *ngIf="!(searchIsExpanded$ | async)">
-		<memo-badge [value]="shoppingCartContent | async">
-			<a mat-icon-button routerLink="/cart" attr.aria-label="Warenkorb" title="Warenkorb">
-				<mat-icon class="cart-icon ">
+		<ng-container *ngFor="let content of [shoppingCartContent | async]">
+			<a mat-icon-button routerLink="/cart"
+			   attr.aria-label="Warenkorb" title="Warenkorb">
+				<mat-icon class="cart-icon"
+						  matBadge="{{content}}"
+						  [matBadgeHidden]="!content || content === 0"
+						  matBadgeColor="accent">
 					shopping_cart
 				</mat-icon>
 			</a>
-		</memo-badge>
+		</ng-container>
 	</div>
 
 	<div class="desktop-toolbar">

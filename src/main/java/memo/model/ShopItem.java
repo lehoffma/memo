@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.serialization.*;
+import memo.util.model.EventType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -412,5 +413,12 @@ public class ShopItem implements Serializable {
     public int hashCode() {
 
         return Objects.hash(id);
+    }
+
+    public String link() {
+        return EventType.findByValue(type)
+                .map(EventType::getStringRepresentation)
+                .map(type -> type + "/" + id)
+                .orElse("");
     }
 }

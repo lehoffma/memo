@@ -3,7 +3,6 @@ package memo.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import memo.communication.model.Notification;
 import memo.serialization.*;
 
 import javax.persistence.*;
@@ -429,5 +428,9 @@ public class User implements Serializable {
     public int hashCode() {
 
         return Objects.hash(id);
+    }
+
+    public String fullName() {
+        return this.firstName + " " + this.surname;
     }
 }
