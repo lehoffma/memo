@@ -25,9 +25,10 @@ import {
 	MatTableModule,
 	MatTabsModule,
 	MatToolbarModule,
-	MatTooltipModule
+	MatTooltipModule,
+	MatRippleModule
 } from "@angular/material";
-import {ScrollDispatchModule} from "@angular/cdk/scrolling";
+import {ScrollingModule} from "@angular/cdk/scrolling";
 import {LayoutModule} from "@angular/cdk/layout";
 
 const modules = [MatButtonModule, MatCheckboxModule, MatNativeDateModule, MatDatepickerModule,
@@ -37,7 +38,7 @@ const modules = [MatButtonModule, MatCheckboxModule, MatNativeDateModule, MatDat
 	MatAutocompleteModule, MatChipsModule, MatProgressSpinnerModule,
 	MatButtonToggleModule, MatTabsModule, MatTableModule, MatStepperModule, MatBadgeModule,
 	MatPaginatorModule, MatSortModule, LayoutModule,
-	ScrollDispatchModule
+	ScrollingModule, MatRippleModule
 ];
 
 @NgModule({

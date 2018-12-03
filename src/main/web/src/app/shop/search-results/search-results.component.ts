@@ -1,29 +1,28 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {ActivatedRoute, ParamMap, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {EventService} from "../../shared/services/api/event.service";
 import {Event} from "../shared/model/event";
 import {SortingOption} from "../../shared/model/sorting-option";
 import {eventSortingOptions} from "./sorting-options";
 import {MultiLevelSelectParent} from "app/shared/utility/multi-level-select/shared/multi-level-select-parent";
-import {isMultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-option";
 import {SearchFilterService} from "./search-filter.service";
 import {FilterOptionBuilder} from "./filter-option-builder.service";
 import {FilterOptionType} from "./filter-option-type";
-import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from "rxjs";
-import {debounceTime, defaultIfEmpty, filter, map, mergeMap, scan, takeUntil, tap} from "rxjs/operators";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {debounceTime, defaultIfEmpty, distinctUntilChanged, filter, map, mergeMap, scan, takeUntil} from "rxjs/operators";
 import {Filter} from "../../shared/model/api/filter";
 import {Sort} from "../../shared/model/api/sort";
 import {PageRequest} from "../../shared/model/api/page-request";
 import {NOW} from "../../util/util";
-import {Page, PageResponse} from "../../shared/model/api/page";
-import {MatDialog, PageEvent} from "@angular/material";
+import {Page} from "../../shared/model/api/page";
+import {MatDialog} from "@angular/material";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
 import {userPermissions} from "../../shared/model/user";
 import {CreateEventContextMenuComponent} from "../event-calendar-container/create-event-context-menu/create-event-context-menu.component";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
-import {ShopItem} from "../../shared/model/shop-item";
+import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
 
 type SortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -33,6 +32,8 @@ type SortingQueryParameter = { sortedBy: string; descending: string; };
 	styleUrls: ["./search-results.component.scss"]
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
+	private readonly PAGE_SIZE = 20;
+
 	userCanAddItem$: Observable<boolean> = this.loginService.getActionPermissions("merch", "tour", "party")
 		.pipe(
 			map(permission => permission.Hinzufuegen)
@@ -50,7 +51,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 				? Sort.by(paramMap.get("direction"), getAllQueryValues(paramMap, "sortBy").join(","))
 				: Sort.none())
 		);
-	filteredBy: Observable<Filter> = this.activatedRoute.queryParamMap
+	filter$: Observable<Filter> = this.activatedRoute.queryParamMap
 		.pipe(
 			map(paramMap => {
 				let paramObject = {};
@@ -61,8 +62,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 						if (key.toLowerCase() === "date") {
 							if (value === "past") {
 								key = "maxDate";
-							}
-							else if (value === "upcoming") {
+							} else if (value === "upcoming") {
 								key = "minDate";
 							}
 							value = NOW.toISOString();
@@ -70,11 +70,21 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 						paramObject[key] = value;
 					});
 				return Filter.by(paramObject);
-			})
+			}),
+			distinctUntilChanged((x, y) => Filter.equal(x, y))
 		);
 
-	page$ = new BehaviorSubject(PageRequest.first());
-	currentPage$ = new BehaviorSubject(PageResponse.empty());
+	page$ = new BehaviorSubject(PageRequest.first(this.PAGE_SIZE));
+
+	//results data handling
+	resultsDataSource: ManualPagedDataSource<Event> = new ManualPagedDataSource<Event>(this.eventService, this.page$);
+	canLoadMore$ = this.resultsDataSource.currentPage$.pipe(
+		map((it: Page<Event>) => !it.last)
+	);
+
+	//todo store current state in localstorage or something?
+	currentResults$ = new BehaviorSubject<Event[]>([]);
+	results$;
 
 	resultsTitle: BehaviorSubject<string> = new BehaviorSubject("");
 	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
@@ -97,9 +107,17 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 				private loginService: LogInService,
 				private router: Router,
 				private eventService: EventService) {
-		this.fetchResults();
-		this.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap);
-		this.writePaginatorUpdatesToUrl(this.router);
+		this.resultsDataSource.isExpandable = false;
+		this.resultsDataSource.filter$ = this.filter$;
+		this.resultsDataSource.sort$ = this.sortedBy;
+		this.init();
+		this.initResults();
+		this.resultsDataSource.resetPageAndUpdateOnFilter(
+			() => {
+				this.currentResults$.next(null);
+				this.page$.next(PageRequest.first(this.page$.getValue().pageSize));
+			}
+		);
 	}
 
 	get filterOptions() {
@@ -110,8 +128,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		this._filterOptions$.next(options);
 	}
 
-	results$: BehaviorSubject<Event[]> = new BehaviorSubject<Event[]>([]);
-
 	ngOnInit() {
 	}
 
@@ -119,81 +135,60 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.onDestroy$.next();
 		this.onDestroy$.complete();
+		this.resultsDataSource.disconnect(null);
 	}
 
-	private fetchResults() {
-		combineLatest(this.sortedBy, this.page$, this.filteredBy)
-			.pipe(
-				takeUntil(this.onDestroy$),
-				//reset results so the result screen can show a loading screen while the http call is performed
-				tap(it => this.results$.next(null)),
-				mergeMap(([sortedBy, pageRequest, filteredBy]) =>
-					this.filterOptionBuilder
-						.empty()
-						.withOptions(
-							FilterOptionType.EVENT_CATEGORY,
-							FilterOptionType.DATE,
-							FilterOptionType.PRICE,
-							FilterOptionType.COLOR,
-							FilterOptionType.MATERIAL,
-							FilterOptionType.SIZE
-						)
-						.build(filteredBy)
-						.pipe(
-							map(options => this.searchFilterService.initFilterMenu(this.activatedRoute, options)),
-							tap(filterOptions => this.filterOptions = filterOptions),
-							map(it => [sortedBy, pageRequest, filteredBy] as any[])
-						)
-				),
-				mergeMap(([sortedBy, pageRequest, filteredBy]) => this.eventService.get(
-					filteredBy,
-					pageRequest,
-					sortedBy,
-				)),
-				tap((it: Page<Event>) => this.currentPage$.next(it)),
-				map((it: Page<Event>) => it.content),
-				tap(events => {
-					let categoryFilterOption = this.filterOptions.find(option => option.name === "Kategorie");
-					let selectedCategories: string[] = categoryFilterOption.children
-						.filter(child => isMultiLevelSelectLeaf(child) ? child.selected : false)
-						.map(child => child.name);
+	private updateCurrentResults(results: Event[]) {
+		const currentValue = this.currentResults$.getValue() || [];
+		const newValue = [...currentValue, ...results]
+			.filter((value, i, array) => array.findIndex(it => it.id === value.id) === i);
+		this.currentResults$.next(newValue);
+	}
 
-					//todo ausgewählte filter optionen in den title reintun
-					this.resultsTitle.next(events.length + " " + selectedCategories.join(", ") +
-						" Ergebnisse");
-				}),
-				tap(it => this.results$.next(it)),
+	private updateResultsTitle(results: Event[]) {
+		const amount = this.resultsDataSource.currentPage$.getValue().totalElements;
+		this.resultsTitle.next(results.length + " von " + amount + " Ergebnissen");
+	}
+
+	private buildFilterOptions(filter: Filter) {
+		return this.filterOptionBuilder
+			.empty()
+			.withOptions(
+				FilterOptionType.EVENT_CATEGORY,
+				FilterOptionType.DATE,
+				FilterOptionType.PRICE,
+				FilterOptionType.COLOR,
+				FilterOptionType.MATERIAL,
+				FilterOptionType.SIZE
 			)
-			.subscribe();
+			.build(filter);
 	}
 
-
-	updatePage(pageEvent: PageEvent) {
-		this.page$.next(PageRequest.fromMaterialPageEvent(pageEvent));
+	private init() {
+		//initialize filter menu
+		this.filter$.pipe(
+			mergeMap(filter => this.buildFilterOptions(filter)),
+			map(options => this.searchFilterService.initFilterMenu(this.activatedRoute, options)),
+			takeUntil(this.onDestroy$),
+		).subscribe(this._filterOptions$);
 	}
 
-	initPaginatorFromUrl(queryParamMap: ParamMap) {
-		if (queryParamMap.has("page")) {
-			const page = +queryParamMap.get("page");
-			const newPage = PageRequest.at((page || 1) - 1, 20);
-			this.page$.next(newPage);
-		}
-	}
-
-	writePaginatorUpdatesToUrl(router: Router) {
-		this.page$.pipe(
+	private initResults() {
+		this.results$ = this.resultsDataSource.connect();
+		this.results$.pipe(
 			takeUntil(this.onDestroy$)
-		)
-			.subscribe(event => {
-				const newQueryParams = {
-					page: event.page + 1,
-					pageSize: event.pageSize
-				};
-
-				router.navigate([], {queryParams: newQueryParams})
-			})
+		).subscribe(results => {
+			this.updateCurrentResults(results);
+			this.updateResultsTitle(this.currentResults$.getValue());
+		});
+		this.updateResultsTitle(this.currentResults$.getValue());
 	}
 
+	loadMore() {
+		const currentValue = this.page$.getValue();
+		this.page$.next(PageRequest.at(currentValue.page + 1, currentValue.pageSize));
+		this.resultsDataSource.update();
+	}
 
 	openCreateDialog() {
 		const permissions$ = this.loginService.currentUser$

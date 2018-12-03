@@ -1,16 +1,18 @@
 @import "~@angular/material/theming";
 
 :host {
-	display: block;
-	padding: 1rem;
-	background: white;
-	max-width: 800px;
-	@include mat-elevation(3);
-	@include mat-elevation-transition();
+	display: flex;
+	justify-content: center;
+}
 
-	h1 {
-		text-align: center;
-		font-weight: 100;
+.container {
+	max-width: 800px;
+}
+
+.container--body {
+	padding: 1rem;
+
+	p:first-child {
 		margin-top: 0;
 	}
 }
@@ -33,6 +35,6 @@ form,
 
 @media all and (min-width: 600px) {
 	:host {
-		margin: 1rem auto;
+		padding: 1rem 0;
 	}
 }

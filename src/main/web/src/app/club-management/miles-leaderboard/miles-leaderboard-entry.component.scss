@@ -29,11 +29,12 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	border-bottom: 1px solid #ededed;
 	padding-left: 1rem;
 	text-decoration: none;
 	color: black;
 	border-left: 5px solid transparent;
+
+	border-top: 1px solid #ededed;
 
 	&:hover {
 		background-color: #ededed;

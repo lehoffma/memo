@@ -25,6 +25,7 @@ export class ItemInfoHeaderComponent implements OnInit {
 		checkIn: boolean;
 		edit: boolean;
 		conclude: boolean;
+		orders: boolean;
 		entries: boolean;
 		delete: boolean;
 	};

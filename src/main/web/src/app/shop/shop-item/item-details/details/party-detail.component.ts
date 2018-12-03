@@ -47,7 +47,7 @@ import {AddressService} from "../../../../shared/services/api/address.service";
 					overflow-y: auto;
 				}
 
-				memo-item-details-content /deep/ .object-details-content {
+				memo-item-details-content /deep/ .container--body{
 					display: flex;
 				}
 

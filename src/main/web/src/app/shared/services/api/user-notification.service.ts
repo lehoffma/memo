@@ -31,11 +31,10 @@ export class NotificationService implements OnDestroy {
 								this.totalNotifications$.next(value.total);
 								this.unreadNotifications$.next(value.unread);
 								return [...acc, ...value.content];
-							}
-							else if (this.isLoadMoreMessage(value)) {
+							} else if (this.isLoadMoreMessage(value)) {
 								return [...acc, ...value.content];
-							}
-							else {
+							} else {
+								this.unreadNotifications$.next(this.unreadNotifications$.getValue() + acc.length);
 								return [value, ...acc]
 							}
 						}, [])
@@ -75,8 +74,7 @@ export class NotificationService implements OnDestroy {
 			currentValue[notificationIndex].status = NotificationStatus.READ;
 			this.notifications$.next(currentValue);
 			this.unreadNotifications$.next(this.unreadNotifications$.getValue() - 1);
-		}
-		else {
+		} else {
 			//todo display error message that something went wrong
 		}
 	}
@@ -92,8 +90,7 @@ export class NotificationService implements OnDestroy {
 		if (wasSuccessful) {
 			let currentValue = this.notifications$.getValue();
 			this.notifications$.next(currentValue.filter(it => it.id !== notification.id));
-		}
-		else {
+		} else {
 			//todo display error message that something went wrong
 		}
 	}

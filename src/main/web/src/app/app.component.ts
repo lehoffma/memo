@@ -39,7 +39,6 @@ export class AppComponent implements OnInit, OnDestroy {
 				@Inject(PLATFORM_ID) private platformId: Object,
 				@Inject(LOCALE_ID) public locale: any) {
 		dateAdapter.setLocale(locale); // DD.MM.YYYY
-		this.notificationService.notifications$.subscribe(it => console.log(it), null, () => console.error("done"));
 	}
 
 	ngOnInit() {

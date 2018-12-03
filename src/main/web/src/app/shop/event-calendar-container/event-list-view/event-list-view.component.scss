@@ -1,12 +1,7 @@
 @import "theme";
 @import "variables";
 
-h3 {
-	margin: 1rem 0 0;
-}
-
 .event-list-view-container {
-	padding: 1rem;
 	background-color: $container-content--background-color;
 	margin-bottom: 1rem;
 	color: grey;
@@ -23,20 +18,14 @@ h3 {
 	}
 }
 
+.container--body {
+	padding: 1rem;
+}
+
 .event-list-view-title {
-	padding: 0 1rem;
-	margin: -1rem -1rem 0;
-	margin-bottom: 1rem;
-	background-color: $container-header--background-color;
-	color: $container-header--color;
-	border-bottom: $container-divider--height solid $container-divider--color;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-
-	h3 {
-		margin: 1rem 0;
-	}
 }
 
 @media all and (max-width: 650px) {

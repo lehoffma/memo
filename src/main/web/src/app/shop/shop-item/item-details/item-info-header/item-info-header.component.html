@@ -29,6 +29,14 @@
 		Bestand
 	</a>
 	<a mat-menu-item
+	   *ngIf="permissions?.orders"
+	   routerLink="/management/orders"
+	   [queryParams]="{eventId: event.id}"
+	>
+		<mat-icon>receipt</mat-icon>
+		Bestellungen
+	</a>
+	<a mat-menu-item
 	   *ngIf="permissions?.entries"
 	   routerLink="/management/costs"
 	   [queryParams]="{eventId: event.id}">

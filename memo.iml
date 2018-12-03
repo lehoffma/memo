@@ -25,6 +25,7 @@
         <datasource-mapping>
           <factory-entry name="memoPersistence" value="898949e9-5fb2-412d-b70e-13aef7749066" />
         </datasource-mapping>
+        <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>
     </facet>

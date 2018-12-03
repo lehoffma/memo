@@ -1,6 +1,7 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.ConfigurableAuthStrategy;
 import memo.data.EntryCategoryRepository;
 import memo.model.EntryCategory;
@@ -28,9 +29,11 @@ public class EntryCategoryServlet extends AbstractApiServlet<EntryCategory> {
     }
 
     @Inject
-    public EntryCategoryServlet(EntryCategoryRepository entryCategoryRepository) {
+    public EntryCategoryServlet(EntryCategoryRepository entryCategoryRepository,
+                                AuthenticationService authService) {
         super(new ConfigurableAuthStrategy<>(true));
         this.entryCategoryRepository = entryCategoryRepository;
+        this.authenticationService = authService;
     }
 
     @GET

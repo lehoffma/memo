@@ -1,0 +1,21 @@
+
+<mat-checkbox [formControl]="formControl" (click)="$event.stopPropagation()" #checkBox>
+	{{value}}
+</mat-checkbox>
+
+<div>
+	<button mat-icon-button type="button" class="menu-trigger-button"
+			(click)="$event.stopPropagation(); "
+			title="Aktionen"
+			attr.aria-label="Aktionen"
+			[matMenuTriggerFor]="rowMenu">
+		<mat-icon>more_vert</mat-icon>
+
+	</button>
+	<mat-menu #rowMenu="matMenu">
+		<button mat-menu-item (click)="selectOnlyThisOption.emit(); $event.stopPropagation()">
+			<span>Nur {{value}} auswählen</span>
+		</button>
+	</mat-menu>
+
+</div>

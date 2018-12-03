@@ -1,0 +1,40 @@
+.container {
+	background: white;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	border-radius: 4px;
+
+	.container--header {
+		border-top-right-radius: 4px;
+		border-top-left-radius: 4px;
+	}
+}
+
+mat-card.container > .container--header {
+	margin: -1rem;
+	margin-bottom: inherit;
+}
+
+.container--header {
+	display: flex;
+	align-items: center;
+
+	padding: 0.5rem 0.5rem 0.5rem 1rem;
+	background: #FAFAFA;
+	text-transform: uppercase;
+	color: grey;
+	font-size: 14px;
+	border: none;
+
+	h3 {
+		margin: 0;
+		padding-bottom: 0.5rem;
+		padding-top: 0.5rem;
+		font-weight: 400;
+	}
+}
+
+.container--body {
+
+}

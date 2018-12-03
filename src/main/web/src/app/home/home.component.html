@@ -9,9 +9,9 @@
 </div>
 
 <div class="category-overview-container desktop">
-	<div class="overview-preview-container mat-elevation-z1" *ngFor="let eventPreview of events">
-		<div class="overview-preview-header">
-			<h2>{{eventPreview.title}}</h2>
+	<div class="overview-preview-container container mat-elevation-z3" *ngFor="let eventPreview of events">
+		<div class="container--header">
+			<h3>{{eventPreview.title}}</h3>
 			<a routerLink="{{eventPreview.route}}">MEHR</a>
 		</div>
 

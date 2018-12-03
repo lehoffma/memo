@@ -16,3 +16,7 @@ a {
 mat-list-item img {
 	object-fit: cover;
 }
+
+mat-list-item:hover {
+	background: #ededed;
+}

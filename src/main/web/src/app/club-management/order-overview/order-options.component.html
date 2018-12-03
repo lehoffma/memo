@@ -1,6 +1,6 @@
 <div *ngIf="!hidden && orderOptionsService.formGroup" [formGroup]="orderOptionsService.formGroup">
 	<div *ngIf="!hidden">
-		<h3>Datum</h3>
+		<memo-filter-option-header [title]="'Datum'"></memo-filter-option-header>
 		<mat-form-field>
 			<input matInput [matDatepicker]="startingDatePicker"
 				   placeholder="Von"
@@ -22,21 +22,66 @@
 						[touchUi]="true"></mat-datepicker>
 	</div>
 
+	<div *ngIf="!hidden" class="events-container">
+		<memo-filter-option-header [title]="'Item'"
+								   [withReset]="orderOptionsService.formGroup.get('eventId').value.length > 0"
+								   (onReset)="orderOptionsService.eventAutocompleteFormControl.reset();
+								   orderOptionsService.formGroup.get('eventId').setValue([]);
+								   orderOptionsService.events = [];"
+		></memo-filter-option-header>
 
-	<div *ngIf="!hidden">
-		<h3>Bestellstatus</h3>
-		<mat-checkbox *ngFor="let status of statusCategories"
-					  [formControl]="orderOptionsService.formGroup.get('status').get(status)">
-			{{statusToString(status)}}
-		</mat-checkbox>
+		<mat-chip-list class="mat-chip-list-stacked">
+			<mat-chip *ngFor="let event of orderOptionsService.events; let i = index" class="mat-elevation-z1">
+				<a routerLink="/{{getEventType(event)}}/{{event.id}}"
+				   matTooltip="Auf die Detailseite dieses Events gehen">
+					{{ event.title }}
+				</a>
+				<mat-icon class="remove-chip-button" (click)="orderOptionsService.onRemoveEvent(i)"
+						  matTooltip="Löschen">
+					cancel
+				</mat-icon>
+			</mat-chip>
+			<mat-chip *ngIf="orderOptionsService.events.length === 0"
+					  class="chip-accent mat-elevation-z1">
+				Alle Events
+			</mat-chip>
+		</mat-chip-list>
+
+
+		<memo-event-autocomplete
+			[formControl]="orderOptionsService.eventAutocompleteFormControl"
+			[required]="false"
+			(onInput)="orderOptionsService.onAddEvent($event); orderOptionsService.eventAutocompleteFormControl.reset()"
+		></memo-event-autocomplete>
 	</div>
 
 	<div *ngIf="!hidden">
-		<h3>Bezahlarten</h3>
-		<mat-checkbox *ngFor="let method of paymentMethods"
-					  [formControl]="orderOptionsService.formGroup.get('method').get(method)">
-			{{method}}
-		</mat-checkbox>
+		<memo-filter-option-header [title]="'Bestellstatus'"
+								   [withReset]="atLeastOneFalse(orderOptionsService.formGroup.get('status').value)"
+								   (onReset)="setToTrue(orderOptionsService.formGroup.get('status'))"
+		></memo-filter-option-header>
+
+		<memo-filter-option-row *ngFor="let status of statusCategories"
+								[formControl]="orderOptionsService.formGroup.get('status').get(status)"
+								[value]="statusToString(status)"
+								(selectOnlyThisOption)="selectOption(orderOptionsService.formGroup.get('status'), status)"
+		>
+
+		</memo-filter-option-row>
+	</div>
+
+	<div *ngIf="!hidden">
+		<memo-filter-option-header [title]="'Bezahlarten'"
+								   [withReset]="atLeastOneFalse(orderOptionsService.formGroup.get('method').value)"
+								   (onReset)="setToTrue(orderOptionsService.formGroup.get('method'))"
+		></memo-filter-option-header>
+		<memo-filter-option-row *ngFor="let method of paymentMethods"
+								[formControl]="orderOptionsService.formGroup.get('method').get(method)"
+								[value]="method"
+								(selectOnlyThisOption)="selectOption(orderOptionsService.formGroup.get('method'), method)"
+		>
+
+		</memo-filter-option-row>
 	</div>
 
 </div>

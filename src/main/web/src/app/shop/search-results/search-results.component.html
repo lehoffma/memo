@@ -27,7 +27,7 @@
 			<div class="search-results-header">
 				<div class="flex-row">
 					<div class="add-button">
-						<button mat-stroked-button *ngIf="userCanAddItem$ | async"
+						<button mat-raised-button *ngIf="userCanAddItem$ | async"
 								[matTooltip]="'Artikel hinzufügen'"
 								[matTooltipPosition]="'above'"
 								(click)="openCreateDialog()"
@@ -51,12 +51,14 @@
 				</div>
 			</div>
 
-			<memo-results [events]="results$ | async"></memo-results>
+			<memo-results [events]="currentResults$ | async"></memo-results>
 		</div>
 	</div>
-	<mat-paginator [length]="(currentPage$ | async)?.totalElements"
-				   [pageSize]="(currentPage$ | async).pageSize"
-				   [pageSizeOptions]="[20]"
-				   (page)="updatePage($event)">
-	</mat-paginator>
+
+	<div class="load-more-button-container">
+		<button class="load-more-button mat-elevation-z1" matRipple
+				*ngIf="canLoadMore$ | async" (click)="loadMore()">
+			Mehr
+		</button>
+	</div>
 </div>

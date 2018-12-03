@@ -12,7 +12,7 @@
 <div class="info" *ngIf="(event$ | async) as item; else loading" memoScrollSpy
 	 (currentSectionChange)="onSectionChange($event)"
 	 [spyOn]="elements$ | async">
-	<div class="desktop-elevation">
+	<div class="desktop-elevation item-details-wrapper">
 		<a class="item-details-header ordered-header"
 		   routerLink="{{linkToOrder$ | async}}"
 		   *ngIf="orderedItemDetails$ | async as order"

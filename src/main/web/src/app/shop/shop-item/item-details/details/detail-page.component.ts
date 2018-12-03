@@ -19,7 +19,7 @@ import {Address} from "../../../../shared/model/address";
 import {Permission} from "../../../../shared/model/permission";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
-import {canCheckIn, canConclude, canDeleteEntries, canEdit, canReadEntries} from "../../../../util/permissions-util";
+import {canCheckIn, canConclude, canDeleteEntries, canEdit, canReadEntries, canReadOrders} from "../../../../util/permissions-util";
 import {ItemImagePopupComponent} from "../container/image-popup/item-image-popup.component";
 import {MatDialog} from "@angular/material";
 import {SpiedOnElementDirective} from "../../../../shared/utility/spied-on-element.directive";
@@ -80,6 +80,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 		checkIn: boolean;
 		edit: boolean;
 		conclude: boolean;
+		orders: boolean;
 		entries: boolean;
 		delete: boolean;
 	}> = combineLatest(
@@ -91,6 +92,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 				checkIn: canCheckIn(currentUser, event),
 				edit: canEdit(currentUser, event),
 				conclude: canConclude(currentUser, event),
+				orders: canReadOrders(currentUser, event),
 				entries: canReadEntries(currentUser, event),
 				delete: canDeleteEntries(currentUser, event)
 			}))

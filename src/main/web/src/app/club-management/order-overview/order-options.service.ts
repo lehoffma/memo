@@ -1,19 +1,21 @@
 import {Injectable, OnDestroy} from "@angular/core";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {OrderStatusList} from "../../shared/model/order-status";
-import {PaymentMethod, paymentMethodList} from "../../shop/checkout/payment/payment-method";
+import {paymentMethodList} from "../../shop/checkout/payment/payment-method";
 import {first, map, mergeMap} from "rxjs/operators";
 import {ParamMap, Params, Router} from "@angular/router";
 import {isValid, parse} from "date-fns";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {QueryParameterService} from "../../shared/services/query-parameter.service";
-import {Observable, of} from "rxjs";
+import {combineLatest, Observable, of} from "rxjs";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
+import {OrderOverviewService} from "./order-overview.service";
+import {EventService} from "../../shared/services/api/event.service";
 
 interface OrderOptionsFormValue {
 	from: Date;
 	to: Date;
-	eventIds: number[];
+	eventId: number[];
 	userIds: number[];
 	status: { [status: string]: boolean };
 	method: { [method: string]: boolean };
@@ -28,14 +30,19 @@ export class OrderOptionsService implements OnDestroy {
 
 	subscriptions = [];
 
+	public eventAutocompleteFormControl = new FormControl();
+	public events = [];
+
 	constructor(private formBuilder: FormBuilder,
 				private queryParameterService: QueryParameterService,
+				private orderOverviewService: OrderOverviewService,
 				private router: Router,
+				private eventService: EventService,
 				private navigationService: NavigationService) {
 		this.formGroup = this.formBuilder.group({
 			"from": [undefined],
 			"to": [undefined],
-			"eventIds": [[]],
+			"eventId": [[]],
 			"userIds": [[]],
 			"status": this.formBuilder.group(OrderStatusList.reduce((acc, status) => ({...acc, [status]: true}), {})),
 			"method": this.formBuilder.group(paymentMethodList().reduce((acc, status) => ({...acc, [status]: true}), {})),
@@ -49,6 +56,16 @@ export class OrderOptionsService implements OnDestroy {
 		);
 	}
 
+	onRemoveEvent(i: number) {
+		this.events.splice(i, 1);
+		this.formGroup.get("eventId").setValue(this.events.map(it => it.id));
+	}
+
+	onAddEvent(event) {
+		this.events.push(event);
+		const value = [...this.events.map(it => it.id)];
+		this.formGroup.get("eventId").setValue(value);
+	}
 
 	/**
 	 *
@@ -58,6 +75,10 @@ export class OrderOptionsService implements OnDestroy {
 	readBinaryValuesFromQueryParams(object: {
 		[key: string]: boolean
 	}, keys: string[]) {
+		if (keys.length === 0) {
+			return;
+		}
+
 		Object.keys(object)
 			.filter(key => keys.indexOf(key) === -1)
 			.forEach(key => object[key] = false);
@@ -97,8 +118,13 @@ export class OrderOptionsService implements OnDestroy {
 			const to = parse(queryParamMap.get("maxTimeStamp"));
 			value.to = to && isValid(to) ? to : null;
 		}
-		if (queryParamMap.has("eventIds")) {
-			value.eventIds = getAllQueryValues(queryParamMap, "eventIds").map(it => +it)
+		if (queryParamMap.has("eventId")) {
+			value.eventId = getAllQueryValues(queryParamMap, "eventId").map(it => +it);
+			combineLatest(
+				...value.eventId.map(id => this.eventService.getById(id))
+			).subscribe(it => {
+				this.events = [...it];
+			});
 		}
 		if (queryParamMap.has("userIds")) {
 			value.userIds = getAllQueryValues(queryParamMap, "userIds").map(it => +it);
@@ -124,11 +150,13 @@ export class OrderOptionsService implements OnDestroy {
 			.filter(key => formValue.method[key])
 			.join(",");
 
-		params["eventIds"] = formValue.eventIds;
+		params["eventId"] = formValue.eventId.join(",");
 		params["userIds"] = formValue.userIds;
 
 		params["minTimeStamp"] = (!formValue.from || !isValid(formValue.from)) ? "" : formValue.from.toISOString();
 		params["maxTimeStamp"] = (!formValue.to || !isValid(formValue.to)) ? "" : formValue.to.toISOString();
+
+		params["page"] = 1;
 
 		const update$ = this.navigationService.queryParamMap$
 			.pipe(
@@ -140,6 +168,7 @@ export class OrderOptionsService implements OnDestroy {
 		update$
 			.subscribe(newQueryParams => {
 				this.router.navigate(["management", "orders"], {queryParams: newQueryParams, replaceUrl: true});
+				this.orderOverviewService.dataSource.update();
 			}, null, () => this.loading = false);
 
 		return update$;

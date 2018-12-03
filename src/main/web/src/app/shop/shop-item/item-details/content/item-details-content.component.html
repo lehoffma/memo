@@ -1,7 +1,7 @@
-<div class="centered-container">
+<div class="centered-container container">
 
 	<div class="object-details-content-container">
-		<div class="object-details-content-title">
+		<div class="container--header">
 			<h3>{{title}}</h3>
 			<a *ngIf="route" title="Zeige mehr {{title}} Informationen"
 			   routerLink="{{route}}">
@@ -9,7 +9,7 @@
 			</a>
 		</div>
 
-		<div class="object-details-content">
+		<div class="container--body">
 			<ng-content></ng-content>
 		</div>
 	</div>

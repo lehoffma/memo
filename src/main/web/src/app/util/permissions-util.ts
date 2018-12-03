@@ -41,6 +41,15 @@ export function canReadEntries(user: User, event: Event) {
 	return false;
 }
 
+
+export function canReadOrders(user: User, event: Event) {
+	if (user !== null && event !== null) {
+		let permissions = userPermissions(user);
+		return permissions.stock >= Permission.read || event.author.includes(user.id);
+	}
+	return false;
+}
+
 export function canDeleteEntries(user: User, event: Event) {
 	if (user !== null && event !== null) {
 		const permissions = userPermissions(user);

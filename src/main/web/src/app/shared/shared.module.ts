@@ -45,6 +45,8 @@ import {MatPasswordStrengthModule} from "@angular-material-extensions/password-s
 import {LazyLoadingModule} from "./lazy-loading/lazy-loading.module";
 import {BreadcrumbNavigationComponent} from "./breadcrumb-navigation/breadcrumb-navigation.component";
 import {JSONLdComponent} from "./utility/seo/json-ld.component";
+import {FilterOptionHeaderComponent} from "./filter-option-header/filter-option-header.component";
+import { FilterOptionRowComponent } from './filter-option-row/filter-option-row.component';
 
 const forms = [
 	DisableIfDirective,
@@ -63,7 +65,9 @@ const forms = [
 
 	OrderedItemEntryComponent,
 	OrderedItemFormComponent,
-	OrderedItemInputFormComponent
+	OrderedItemInputFormComponent,
+	FilterOptionHeaderComponent,
+	FilterOptionRowComponent,
 ];
 
 @NgModule({
@@ -108,7 +112,7 @@ const forms = [
 		ScrollSpyDirective,
 		SpiedOnElementDirective,
 		BreadcrumbNavigationComponent,
-		JSONLdComponent
+		JSONLdComponent,
 	],
 	exports: [
 		MultiLevelSelectModule,

@@ -7,181 +7,167 @@
 	flex-direction: column;
 	align-items: center;
 	padding-bottom: 1rem;
+}
 
-	.profile-background {
-		width: 100%;
-		position: relative;
+.profile-background {
+	width: 100%;
+	position: relative;
+	overflow: visible;
+	//z-index: -1;
+	.no-height-image-container {
 		overflow: visible;
-		//z-index: -1;
-		.no-height-image-container {
-			overflow: visible;
-			height: 0;
+		height: 0;
 
-			.profile-background-image {
-				display: block;
-				height: 220px;
-				background-size: cover;
-			}
-
-			.profile-background-image::before {
-				content: '';
-				display: block;
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				height: 220px;
-				z-index: 1;
-				pointer-events: none;
-				background: linear-gradient(transparent, rgba(0, 0, 0, .55));
-			}
-		}
-	}
-
-	.profile-component {
-		@include mat-elevation(3);
-		@include mat-elevation-transition();
-
-		background-color: $container-content--background-color;
-		color: $container-content--color;
-		width: 95%;
-		display: inline-block;
-		padding: 1.5rem;
-		max-width: 500px;
-	}
-
-	.participated-tours {
-		margin-bottom: 1rem;
-		margin-top: 1rem;
-		padding: 0;
-
-		memo-participated-tours-preview {
+		.profile-background-image {
 			display: block;
-			margin-top: -8px;
+			height: 220px;
+			background-size: cover;
 		}
 
-		.profile-tours-title {
-			margin: 0;
+		.profile-background-image::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: 220px;
+			z-index: 1;
+			pointer-events: none;
+			background: linear-gradient(transparent, rgba(0, 0, 0, .55));
 		}
 	}
+}
 
-	.profile-details-container {
-		margin-top: 128px;
-		z-index: 1;
+.profile-component {
+	max-width: 500px;
+	width: 100%;
+}
 
-		.profile-header {
-			align-items: center;
-			justify-content: space-between;
-			display: flex;
-			flex-direction: column;
-			margin-top: -110px;
+.participated-tours {
+	margin-bottom: 1rem;
+	margin-top: 1rem;
+	padding: 0;
 
-			.profile-picture {
-				height: 8rem;
-				width: 8rem;
-				object-fit: cover;
-				background: white;
-				border-radius: 50%;
-				border: #ffffff solid 5px;
-				box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
-			}
-		}
-
-		.profile-other-actions {
-			display: flex;
-			justify-content: flex-end;
-			height: 40px;
-			margin-top: -20px;
-			margin-right: -20px;
-		}
-
-		.profile-title-container {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			flex-direction: column;
-			margin-top: -62px;
-			margin-left: -1.5rem;
-			margin-right: -1.5rem;
-			padding-bottom: 1rem;
-			padding-top: 72px;
-			background-color: $container-header--background-color;
-			color: $container-header--color;
-			border-bottom: $container-divider--height solid $container-divider--color;
-
-			.profile-name {
-				margin: 0;
-				font-weight: 200;
-				text-align: center;
-			}
-
-			.profile-role {
-				margin: 0;
-				font-weight: 200;
-			}
-		}
-
-		.profile-info-table {
-			margin-top: 2rem;
-
-			> div {
-				> div,
-				> div > div {
-					align-items: center;
-					justify-content: space-between;
-					display: flex;
-
-					.secondary-text {
-						margin-left: 10px;
-					}
-				}
-				> div {
-					margin-top: 2px;
-				}
-
-			}
-		}
-
-		.profile-action-container {
-			display: flex;
-			justify-content: space-evenly;
-			margin-top: 2rem;
-			margin-bottom: -1rem;
-
-			a {
-				//width: 45%;
-
-				span {
-
-					display: flex;
-					justify-content: center;
-					align-items: center;
-					flex-direction: column;
-				}
-
-				.action-text {
-					//margin-left: 1rem;
-					text-decoration: none;
-					//color: white;
-				}
-			}
-		}
+	memo-participated-tours-preview {
+		display: block;
+		margin-top: -8px;
 	}
 
 	.profile-tours-title {
-		font-weight: 200;
+		margin: 0;
+	}
+}
+
+.profile-details-container {
+	padding: 1.5rem;
+	margin-top: 128px;
+	z-index: 1;
+
+	.profile-header {
+		align-items: center;
+		justify-content: space-between;
+		display: flex;
+		flex-direction: column;
+		margin-top: -110px;
+		z-index: 2;
+
+		.profile-picture {
+			height: 8rem;
+			width: 8rem;
+			object-fit: cover;
+			background: white;
+			border-radius: 50%;
+			border: #ffffff solid 5px;
+			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+		}
+	}
+
+	.profile-other-actions {
+		display: flex;
+		justify-content: flex-end;
+		height: 40px;
+		margin-top: -20px;
+		margin-right: -20px;
+		z-index: 10;
+	}
+
+	.profile-title-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		margin-top: -62px;
+		margin-left: -1.5rem;
+		margin-right: -1.5rem;
+		padding-bottom: 1rem;
+		padding-top: 72px;
 		background-color: $container-header--background-color;
 		color: $container-header--color;
 		border-bottom: $container-divider--height solid $container-divider--color;
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
 
-		margin: 0 -1.5rem;
-		margin-top: -1.5rem;
-		margin-bottom: 1.5rem;
-		padding: 1rem 1.5rem;
+		.profile-name {
+			margin: 0;
+			font-weight: 200;
+			text-align: center;
+		}
+
+		.profile-role {
+			margin: 0;
+			font-weight: 200;
+		}
 	}
 
-	agm-map {
-		height: 300px;
+	.profile-info-table {
+		margin-top: 2rem;
+
+		> div {
+			> div,
+			> div > div {
+				align-items: center;
+				justify-content: space-between;
+				display: flex;
+
+				.secondary-text {
+					margin-left: 10px;
+				}
+			}
+			> div {
+				margin-top: 2px;
+			}
+
+		}
 	}
+
+	.profile-action-container {
+		display: flex;
+		justify-content: space-evenly;
+		margin-top: 2rem;
+		margin-bottom: -1rem;
+
+		a {
+			//width: 45%;
+
+			span {
+
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				flex-direction: column;
+			}
+
+			.action-text {
+				//margin-left: 1rem;
+				text-decoration: none;
+				//color: white;
+			}
+		}
+	}
+}
+
+agm-map {
+	height: 300px;
 }

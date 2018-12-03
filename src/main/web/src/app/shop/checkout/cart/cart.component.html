@@ -1,6 +1,8 @@
 <div class="cart">
-	<mat-card>
-		<h2 class="cart-title mat-headline">{{'Warenkorb'|uppercase}}</h2>
+	<mat-card class="container">
+		<div class="container--header">
+			<h3>Warenkorb</h3>
+		</div>
 		<div *ngIf="shoppingCartItems|async as events">
 			<memo-cart-entry *ngFor="let tour of events.tours" [cartItem]="tour">
 

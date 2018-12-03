@@ -51,7 +51,6 @@ export class CommentsSectionComponent implements OnInit {
 	 * @param parentId
 	 */
 	addComment(commentText: string, parentId: number) {
-		console.log(commentText, parentId);
 		if (parentId === -1) {
 			this.loginService.currentUser$
 				.pipe(
@@ -76,7 +75,6 @@ export class CommentsSectionComponent implements OnInit {
 						return this.commentService.add(comment);
 					}),
 					tap(addResult => {
-						console.log(addResult);
 						this.comments.push(addResult);
 						this.loadingAddedComment = false;
 						this.changeDetectorRef.detectChanges();

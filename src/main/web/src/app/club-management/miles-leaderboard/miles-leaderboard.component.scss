@@ -8,6 +8,10 @@
 
 	@media all and (min-width: 600px) {
 		margin: 20px auto;
+
+		border-radius: 4px;
+		padding-bottom: 4px;
+		padding-top: 4px;
 	}
 
 	@include mat-elevation(3);
@@ -18,7 +22,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		border-bottom: 1px solid #ededed;
 
 		h1 {
 			margin: 0 0 0 1rem;
@@ -31,5 +34,4 @@
 			margin-left: 2rem;
 		}
 	}
-
 }

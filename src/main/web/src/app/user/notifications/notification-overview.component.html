@@ -1,7 +1,7 @@
-<div class="stretch-height">
-	<div class="notifications-header">
+<div class="stretch-height container">
+	<div class="notifications-header container--header">
 		<h3>Deine Benachrichtigungen</h3>
-		<a mat-icon-button routerLink="/notifications/settings">
+		<a mat-icon-button routerLink="/account-settings/notifications">
 			<mat-icon>settings</mat-icon>
 		</a>
 	</div>
@@ -23,9 +23,10 @@
 		   routerLink="{{notification.link}}">
 			<img src="{{notification.imagePath || 'resources/images/Logo.png'}}"/>
 
+
 			<div class="notification-details">
 				<div class="notification-text">
-					<span>{{notification.text}}</span>
+					<span [innerHtml]="notification.text | boldNotificationText | safeHtml"></span>
 					<span class="timestamp">
 				{{notification.timestamp | relativeTimeFormat}}
 			</span>

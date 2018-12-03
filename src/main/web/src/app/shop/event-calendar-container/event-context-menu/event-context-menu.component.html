@@ -42,7 +42,7 @@
 					<div class="details__item--label participants" *ngIf="event.participantPage.totalElements > 0">
 						<span
 							*ngFor="let participant of (event.participantPage.content | removeDuplicates:userEquality)">
-							<img src="{{participant.user.images[0] | imageSize:'thumbnail' | async}}">
+							<img src="{{(participant.user.images[0] || 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}">
 						</span>
 					</div>
 					<div class="details__item--label secondary-text"

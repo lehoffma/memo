@@ -9,34 +9,36 @@ import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
 import {SortDirection} from "@angular/material/sort/typings/sort-direction";
 import {TableDataService} from "./table-data-service";
-import {ParamMap, Router} from "@angular/router";
+import {ParamMap, Params, Router} from "@angular/router";
 
 export class PagedDataSource<T> extends DataSource<T> {
 	public currentPage$: BehaviorSubject<Page<T>> = new BehaviorSubject<Page<T>>(PageResponse.empty());
 	public data: T[] = [];
 	public dataLength: number = 0;
-	private dataService$: BehaviorSubject<TableDataService<T>> = new BehaviorSubject<TableDataService<T>>(null);
-	private _pageEvents$: BehaviorSubject<PageEvent> = new BehaviorSubject<PageEvent>({
+	protected dataService$: BehaviorSubject<TableDataService<T>> = new BehaviorSubject<TableDataService<T>>(null);
+	protected _pageEvents$: BehaviorSubject<PageEvent> = new BehaviorSubject<PageEvent>({
 		pageIndex: 0,
 		pageSize: 20,
 		length: 20,
 		previousPageIndex: 0
 	});
-	private _sortEvents$: BehaviorSubject<{ active: string, direction: SortDirection }> = new BehaviorSubject({
+	protected _sortEvents$: BehaviorSubject<{ active: string, direction: SortDirection }> = new BehaviorSubject({
 		active: null,
 		direction: (<SortDirection>"")
 	});
-	private _isLoading$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+	protected _isLoading$: BehaviorSubject<boolean> = new BehaviorSubject(true);
 	public isLoading$: Observable<boolean> = this._isLoading$.asObservable();
-	private _pageEventSubscription: Subscription;
-	private _filterSubscription: Subscription;
-	private _sortSubscription: Subscription;
-	private _reloadEmitter: BehaviorSubject<any> = new BehaviorSubject(true);
-	private _isExpandable$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+	protected _pageEventSubscription: Subscription;
+	protected _filterSubscription: Subscription;
+	protected _sortSubscription: Subscription;
+	protected _reloadEmitter: BehaviorSubject<any> = new BehaviorSubject(true);
+	protected _isExpandable$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
-	private onDestroy$: Subject<any> = new Subject<any>();
+	protected _pause$ = new BehaviorSubject(false);
 
-	constructor(dataService?: TableDataService<T>, page$?: Observable<PageRequest>) {
+	protected onDestroy$: Subject<any> = new Subject<any>();
+
+	constructor(dataService?: TableDataService<T>, page$?: Observable<PageRequest>, filter$?: Observable<Filter>) {
 		super();
 		if (dataService) {
 			this.dataService$.next(dataService);
@@ -44,9 +46,12 @@ export class PagedDataSource<T> extends DataSource<T> {
 		if (page$) {
 			this.setPage(page$);
 		}
+		if (filter$) {
+			this.filter$ = filter$;
+		}
 	}
 
-	private _paginator: MatPaginator;
+	protected _paginator: MatPaginator;
 
 	/**
 	 *
@@ -126,8 +131,8 @@ export class PagedDataSource<T> extends DataSource<T> {
 				length: page.pageSize,
 				pageIndex: page.page
 			})),
+			takeUntil(this.onDestroy$)
 		)
-			.pipe(takeUntil(this.onDestroy$))
 			.subscribe(event => this._pageEvents$.next(event));
 	}
 
@@ -140,6 +145,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 
 	initPaginatorFromUrl(queryParamMap: ParamMap) {
 		if (queryParamMap.has("page")) {
+			console.log(queryParamMap.get("page"));
 			const page = +queryParamMap.get("page");
 			const pageSize = +queryParamMap.get("pageSize");
 			this._pageEvents$.next({
@@ -151,16 +157,25 @@ export class PagedDataSource<T> extends DataSource<T> {
 		}
 	}
 
-	writePaginatorUpdatesToUrl(router: Router) {
+	updateToPage(pageIndex: number, pageSize: number, router: Router, combineQueryParams?: (queryParams) => Params) {
+		const newQueryParams: Params = {
+			page: pageIndex,
+			pageSize: pageSize
+		};
+		let combinedParams = newQueryParams;
+
+		if (combineQueryParams) {
+			combinedParams = combineQueryParams(newQueryParams);
+		}
+		router.navigate([], {queryParams: {...combinedParams}})
+	}
+
+	writePaginatorUpdatesToUrl(router: Router, combineQueryParams?: (queryParams) => Params) {
 		this._pageEvents$.pipe(
 			takeUntil(this.onDestroy$)
 		)
 			.subscribe(event => {
-				const newQueryParams = {
-					page: event.pageIndex + 1,
-					pageSize: event.pageSize
-				};
-				router.navigate([], {queryParams: newQueryParams})
+				this.updateToPage(event.pageIndex + 1, event.pageSize, router, combineQueryParams);
 			})
 	}
 
@@ -179,13 +194,14 @@ export class PagedDataSource<T> extends DataSource<T> {
 			this._filter$,
 			this.dataService$,
 			this._reloadEmitter,
+			this._pause$,
 		)
 			.pipe(
-				filter(([pageEvent, sortEvent, filter, dataService, reload]:
-							[PageRequest, Sort, Filter, TableDataService<T>, any]) => dataService !== null),
+				filter(([pageEvent, sortEvent, filter, dataService, reload, pause]:
+							[PageRequest, Sort, Filter, TableDataService<T>, any, boolean]) => !pause && dataService !== null),
 				tap(() => this._isLoading$.next(true)),
-				mergeMap(([pageEvent, sortEvent, filter, dataService, reload]:
-							  [PageRequest, Sort, Filter, TableDataService<T>, any]) => {
+				mergeMap(([pageEvent, sortEvent, filter, dataService, reload, pause]:
+							  [PageRequest, Sort, Filter, TableDataService<T>, any, boolean]) => {
 					return this.getPagedData([pageEvent, sortEvent, filter, dataService, reload]);
 				}),
 				tap(it => {
@@ -201,8 +217,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 							//todo only do this if displayedColumns < columns
 							if (isExpandable) {
 								it.content.forEach(element => rows.push(element, {detailRow: true, element}));
-							}
-							else {
+							} else {
 								it.content.forEach(element => rows.push(element));
 							}
 							return rows;
@@ -211,6 +226,10 @@ export class PagedDataSource<T> extends DataSource<T> {
 
 				}),
 			)
+	}
+
+	changePauseStatus(pause: boolean) {
+		this._pause$.next(pause);
 	}
 
 	/**

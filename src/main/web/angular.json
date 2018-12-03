@@ -40,6 +40,7 @@
 						],
 						"styles": [
 							"src/styles.scss",
+							"src/styles/container.scss",
 							"src/styles/theme.scss",
 							"src/styles/mixins.scss",
 							"src/material-theme.scss",
@@ -150,7 +151,7 @@
 			}
 		},
 		"memo-web-e2e": {
-			"root": "",
+			"root": "e2e",
 			"projectType": "application",
 			"cli": {},
 			"schematics": {},

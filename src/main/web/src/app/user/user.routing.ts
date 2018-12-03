@@ -15,9 +15,9 @@ import {SignupWasJustCompletedGuard} from "../shared/authentication/signup-was-j
 import {ApplyForMembershipComponent} from "./membership/apply-for-membership/apply-for-membership.component";
 import {RequestMembershipComponent} from "./membership/request-membership/request-membership.component";
 import {ConfirmEmailComponent} from "./confirm-email/confirm-email.component";
-import {IsMemberGuard} from "../shared/authentication/is-member.guard";
 import {IsOwnProfileGuard} from "../shared/authentication/is-own-profile.guard";
 import {NotificationOverviewComponent} from "./notifications/notification-overview.component";
+import {UserSettingsComponent} from "./user-settings/user-settings.component";
 
 const routes: Route[] = [
 
@@ -33,7 +33,8 @@ const routes: Route[] = [
 	{path: "requestMembership", component: RequestMembershipComponent, canActivate: [AuthenticatedGuard]},
 	{path: "notifications", component: NotificationOverviewComponent, canActivate: [AuthenticatedGuard]},
 	{path: "members/:id", component: ProfileComponent, canActivate: [AuthenticatedGuard, IsOwnProfileGuard]},
-	//nur eingeloggte User können diese Routen sehen
+	{path: "account-settings", component: UserSettingsComponent, canActivate: [AuthenticatedGuard]},
+	{path: "account-settings/notifications", component: UserSettingsComponent, canActivate: [AuthenticatedGuard]},
 	{path: "my-events", component: MyToursComponent, canActivate: [AuthenticatedGuard]},
 	{path: "order-history", component: OrderHistoryComponent, canActivate: [AuthenticatedGuard]},
 	{path: "not-allowed", component: UnauthorizedAccessComponent},
@@ -60,5 +61,6 @@ export const routedComponents = [
 	PasswordRecoveryLandingPageComponent,
 	ApplyForMembershipComponent,
 	RequestMembershipComponent,
-	NotificationOverviewComponent
+	NotificationOverviewComponent,
+	UserSettingsComponent
 ];

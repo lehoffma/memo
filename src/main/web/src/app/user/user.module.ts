@@ -11,6 +11,9 @@ import {AgmCoreModule} from "@agm/core";
 import {SearchModule} from "../shop/search-results/search.module";
 import {ConfirmEmailComponent} from "./confirm-email/confirm-email.component";
 import {RelativeTimeFormatPipe} from "./notifications/relative-time-format.pipe";
+import {BoldNotificationTextPipe} from "./notifications/bold-notification-text.pipe";
+import {SafeHtmlPipe} from "./notifications/safe-html.pipe";
+import { UserSettingsComponent } from './user-settings/user-settings.component';
 
 @NgModule({
 	imports: [
@@ -32,7 +35,10 @@ import {RelativeTimeFormatPipe} from "./notifications/relative-time-format.pipe"
 		ParticipatedToursPreviewComponent,
 
 		ConfirmEmailComponent,
-		RelativeTimeFormatPipe
+		RelativeTimeFormatPipe,
+		BoldNotificationTextPipe,
+		SafeHtmlPipe,
+		UserSettingsComponent
 	],
 	exports: [
 		SignUpModule

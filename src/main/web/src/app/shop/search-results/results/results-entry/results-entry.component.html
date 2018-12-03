@@ -1,7 +1,8 @@
 <!--todo: indication if tour/party/merch/user (/entry?) -->
 <a class="result-entry-container" routerLink="{{resultUrl$|async}}">
 	<mat-card>
-		<img mat-card-image [lazySrc]="(!!result.images[0] ? result.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
+		<img mat-card-image
+			 [lazySrc]="(!!result.images[0] ? result.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
 			 lazySrcVisible="visible" [class.past]="resultIsPast$ | async">
 		<mat-card-content>
 			<h3 class="result-title">
@@ -11,11 +12,11 @@
 				<div class="secondary-text">
 					<span *ngIf="!resultIsMerch(result)">{{result.date | dateFormat}}</span>
 					<span *ngIf="resultIsMerch(result)" class="merch-available-colors-container">
-					<span *ngFor="let color of (colors$ | async)"
-						  class="merch-available-colors"
-						  [style.background-color]="color.hex">
+						<span *ngFor="let color of (colors$ | async)"
+							  class="merch-available-colors"
+							  [style.background-color]="color.hex">
+						</span>
 					</span>
-				</span>
 				</div>
 
 				<memo-price-renderer class="result-price"

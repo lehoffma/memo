@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -90,7 +91,15 @@ public class ReplacementFactory {
                         LocalDateTime.now().plusDays(7).format(DateTimeFormatter.ofPattern("d.MM.uuuu")));
     }
 
-    public Map<String, String> getReplacements(Notification notification, String template, Map<String, Object> data) {
+    /**
+     * @param transformReplacement In case we need to mark or further transform the replaced data. for example,
+     *                             the frontend highlights the replaced values in bold text
+     */
+    public Map<String, String> getReplacements(Notification notification,
+                                               String template,
+                                               Map<String, Object> data,
+                                               Function<String, String> transformReplacement
+    ) {
         List<String> allMatches = new ArrayList<>();
         Pattern placeholderPattern = Pattern.compile("\\{([^{}]+)\\}");
         Matcher matcher = placeholderPattern.matcher(template);
@@ -103,7 +112,11 @@ public class ReplacementFactory {
                 .filter(entry -> allMatches.contains(entry.getKey()))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> entry.getValue().apply(notification, data)
+                        entry -> transformReplacement.apply(entry.getValue().apply(notification, data))
                 ));
+    }
+
+    public Map<String, String> getReplacements(Notification notification, String template, Map<String, Object> data) {
+        return this.getReplacements(notification, template, data, Function.identity());
     }
 }

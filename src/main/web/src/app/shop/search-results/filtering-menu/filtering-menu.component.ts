@@ -42,7 +42,6 @@ export class FilteringMenuComponent implements OnInit, OnChanges {
 	 * @param {SimpleChanges} changes
 	 */
 	ngOnChanges(changes: SimpleChanges): void {
-		console.log(changes);
 		if (changes["filterOptions"] && this.filterOptions) {
 			this.filterOptions
 				.filter(option => option.selectType === "single")

@@ -72,6 +72,11 @@
 				"route": "members/PROFILE_ID/edit",
 				"icon": "description",
 				"name": "Dein Account"
+			},
+			{
+				"route": "account-settings",
+				"icon": "settings",
+				"name": "Deine Einstellungen"
 			}
 		]
 	},

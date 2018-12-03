@@ -5,10 +5,10 @@ import {MatPaginator} from "@angular/material";
 import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
 import {Direction, Sort} from "../../shared/model/api/sort";
 import {Order} from "../../shared/model/order";
-import {ActivatedRoute, ParamMap, Router} from "@angular/router";
-import {takeUntil} from "rxjs/operators";
+import {ActivatedRoute} from "@angular/router";
+import {map, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
-import {QueryParameterService} from "../../shared/services/query-parameter.service";
+import {PageRequest} from "../../shared/model/api/page-request";
 
 @Component({
 	selector: "memo-order-overview",
@@ -23,56 +23,32 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 	sortingOptions: SortingOption<any>[] = orderSortingOptions;
 
 	onDestroy$ = new Subject<any>();
-	pageIndex = 0;
-	pageSize = 10;
+	pageIndex = (+this.activatedRoute.snapshot.queryParamMap.get("page") || 1) - 1;
+	pageSize = (+this.activatedRoute.snapshot.queryParamMap.get("pageSize") || 10);
 
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 
 	constructor(private windowService: WindowService,
 				private activatedRoute: ActivatedRoute,
-				private router: Router,
-				private queryParameterService: QueryParameterService,
 				public orderOverviewService: OrderOverviewService) {
 		this.windowService.dimension$.pipe(takeUntil(this.onDestroy$))
 			.subscribe(dimensions => this.onResize(dimensions));
 	}
 
 	ngOnInit() {
-		this.orderOverviewService.dataSource.paginator = this.paginator;
-		this.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap);
-		this.writePaginatorUpdatesToUrl(this.router);
+		this.orderOverviewService.dataSource.setPage(this.paginator.page.pipe(
+			map(page => PageRequest.fromMaterialPageEvent(page))
+		));
+		this.orderOverviewService.dataSource.updateOn(this.paginator.page);
+		this.orderOverviewService.resetPage.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+			this.paginator.firstPage();
+		});
 	}
 
 	ngOnDestroy(): void {
 		this.onDestroy$.next();
 		this.onDestroy$.complete();
 	}
-
-
-	initPaginatorFromUrl(queryParamMap: ParamMap) {
-		if (queryParamMap.has("page")) {
-			const page = +queryParamMap.get("page");
-			const pageSize = queryParamMap.get("pageSize");
-			this.pageIndex = (page || 1) - 1;
-			this.pageSize = (+(pageSize || 10));
-		}
-	}
-
-	writePaginatorUpdatesToUrl(router: Router) {
-		this.paginator.page.pipe(
-			takeUntil(this.onDestroy$)
-		)
-			.subscribe(event => {
-				const newQueryParams = {
-					page: event.pageIndex + 1,
-					pageSize: event.pageSize
-				};
-				const updatedParams = this.queryParameterService
-					.updateQueryParams(this.activatedRoute.snapshot.queryParamMap, newQueryParams);
-				router.navigate([], {queryParams: updatedParams})
-			})
-	}
-
 
 	/**
 	 * Updates the columns and way the options are presented depending on the given width/height object
@@ -83,8 +59,6 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 		this.showOptions = !mobile;
 		this.mobile = mobile;
 	}
-
-
 }
 
 

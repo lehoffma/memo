@@ -75,7 +75,7 @@ public class NotificationBroadcaster extends BaseMessageBroadcaster {
     public String getText(Notification notification) {
         return notificationRepository.getTemplateByType(notification.getNotificationType())
                 .map(NotificationTemplate::getTemplate)
-                .map(text -> this.getText(notification, text))
+                .map(text -> this.getText(notification, text, s -> "*" + s + "*"))
                 .orElseThrow(NotFoundException::new);
     }
 

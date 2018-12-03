@@ -24,6 +24,7 @@ export class NotificationOverviewComponent implements OnInit {
 	ngOnInit() {
 	}
 
+
 	loadMore() {
 		this.notificationService.loadMore();
 	}

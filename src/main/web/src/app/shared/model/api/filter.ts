@@ -5,6 +5,11 @@ export class Filter {
 		Object.assign(<any>this, filters);
 	}
 
+	static equal(filterA: Filter, filterB: Filter): boolean{
+		return Object.keys(filterA).every(key => filterA[key] === filterB[key])
+			&& Object.keys(filterB).every(key => filterA[key] === filterB[key]);
+	}
+
 	static add(filter: Filter, key: string, value: string): Filter {
 		filter[key] = value;
 		return filter;

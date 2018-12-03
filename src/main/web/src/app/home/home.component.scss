@@ -26,32 +26,16 @@
 	}
 }
 
-.overview-preview-header {
-	display: flex;
+.container--header {
 	justify-content: space-between;
-	align-items: center;
-	background: $container-header--background-color;
-	border-bottom: $container-divider--height solid $container-divider--color;
-	color: $container-header--color;
-
-	padding: 1rem;
 	> a {
 		color: #2196F3;
 		text-decoration: none;
-		font-size: 1.1rem;
+		font-size: 16px;
 
 		&:hover {
 			color: mat-color($accent, 300);
 		}
-	}
-
-	> h2 {
-		margin-top: 0;
-		margin-bottom: 0;
-		font-weight: 400;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
 	}
 }
 
@@ -90,7 +74,7 @@
 		background-size: contain;
 	}
 
-	> div{
+	> div {
 		display: flex;
 	}
 

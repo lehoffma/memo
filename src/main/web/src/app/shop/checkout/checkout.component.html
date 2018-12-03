@@ -1,15 +1,14 @@
 <div class="checkout-options-container">
 
 
-	<memo-item-details-content [title]="'Addressen'" class="no-padding">
+	<memo-item-details-content [title]="'Addressen'" class="no-padding mat-elevation-z3">
 		<memo-address-form [selection]="true" [formGroup]="formGroup.get('address')"></memo-address-form>
 	</memo-item-details-content>
 
-
-	<memo-item-details-content [title]="'Bezahlung'" class="no-padding">
+	<memo-item-details-content [title]="'Bezahlung'" class="no-padding mat-elevation-z3">
 		<memo-payment [formGroup]="formGroup.get('payment')"></memo-payment>
 	</memo-item-details-content>
-	<div class="checkout-total">
+	<div class="checkout-total mat-elevation-z3">
 		<span>{{total$ | async | currency:'EUR':'symbol'}}</span>
 		<button mat-raised-button color="primary"
 				(click)="submit()"

@@ -12,13 +12,13 @@ memo-add-to-cart-form {
 :host /deep/ .centered-container > div {
 	max-width: none !important;
 
-	.object-details-content {
+	.container--body {
 		background-color: white;
 	}
 }
 
 #comments {
-	/deep/ .object-details-content {
+	/deep/ .container--body {
 		padding: 0;
 	}
 }
@@ -137,7 +137,7 @@ memo-add-to-cart-form {
 		width: 50%;
 	}
 
-	#eventMap /deep/ .object-details-content {
+	#eventMap /deep/ .container--body {
 		display: flex;
 		padding: 0;
 
@@ -148,6 +148,16 @@ memo-add-to-cart-form {
 		memo-route-list,
 		memo-route-map {
 			width: 50%;
+		}
+
+		memo-route-map {
+			display: block;
+			margin-bottom: -4px;
+			border-radius: 4px;
+
+			/deep/ .agm-map-container-inner {
+				border-bottom-right-radius: 4px;
+			}
 		}
 	}
 
@@ -171,8 +181,22 @@ memo-add-to-cart-form {
 		min-height: 150px;
 	}
 
+	.ordered-header {
+		border-top-right-radius: 4px;
+		border-top-left-radius: 4px;
+	}
+
+	.item-details-wrapper {
+		border-radius: 4px;
+
+		memo-multi-image-container,
+		memo-multi-image-container /deep/ .available-images-list,
+		memo-multi-image-container /deep/ .current-image-container {
+			border-bottom-left-radius: 4px;
+		}
+	}
 }
 
-.description{
+.description {
 	white-space: pre-line;
 }

@@ -9,7 +9,7 @@
 		</div>
 	</div>
 
-	<div class="profile-details-container profile-component">
+	<div class="profile-details-container mat-elevation-z3 profile-component container">
 		<div class="profile-other-actions">
 			<button mat-icon-button
 					*ngIf="canEditUser | async"
@@ -59,14 +59,18 @@
 			</a>
 		</div>
 	</div>
-	<div class="profile-component participated-tours">
-		<h2 class="profile-tours-title">Hat teilgenommen an</h2>
+	<div class="container mat-elevation-z3 profile-component participated-tours">
+		<div class="container--header">
+			<h3 class="profile-tours-title">Hat teilgenommen an</h3>
+		</div>
 		<!-- Touren die Member mitgefahren ist -->
 		<memo-participated-tours-preview [userEvents]="userEvents | async"></memo-participated-tours-preview>
 	</div>
 
-	<div class="profile-component" *ngIf="userDestinations | async; let destinations;">
-		<h2 class="profile-tours-title">Karte</h2>
+	<div class="container mat-elevation-z3 profile-component" *ngIf="userDestinations | async; let destinations;">
+		<div class="container--header">
+			<h3 class="profile-tours-title">Karte</h3>
+		</div>
 		<agm-map [latitude]="(centerOfUserDestinations|async)?.latitude"
 				 [longitude]="(centerOfUserDestinations|async)?.longitude">
 			<agm-marker *ngFor="let destination of destinations; let i = index;"

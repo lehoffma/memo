@@ -1,8 +1,8 @@
 <div>
 
-	<div class="header">
+	<div class="header container--header">
 		<h2>
-			Bestellung vom {{orderEntry?.timeStamp | dateFormat}}
+			Bestellung Nr. {{orderEntry.id}} vom {{orderEntry?.timeStamp | dateFormat}}
 		</h2>
 	</div>
 	<div class="user" *ngIf="user$ | async as user">
@@ -86,16 +86,17 @@
 	<div class="actions" *ngIf="withActions || withShow">
 		<div>
 			<div>
-				<a mat-button routerLink="/orders/{{orderEntry?.id}}" *ngIf="withShow">
+				<a mat-button class="hover-button" routerLink="/orders/{{orderEntry?.id}}" *ngIf="withShow">
 					<span>Ansehen</span>
 				</a>
 			</div>
 
 			<div *ngIf="withActions">
-				<a mat-icon-button routerLink="/orders/{{orderEntry?.id}}/edit">
+				<a mat-icon-button class="hover-button" color="accent"
+				   routerLink="/orders/{{orderEntry?.id}}/edit">
 					<mat-icon>edit</mat-icon>
 				</a>
-				<button mat-icon-button *ngIf="withRemove"
+				<button mat-icon-button class="hover-button" *ngIf="withRemove" color="warn"
 						(click)="remove()">
 					<mat-icon>delete</mat-icon>
 				</button>

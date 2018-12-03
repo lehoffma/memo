@@ -3,37 +3,31 @@
 @import "../centered-container";
 @import "variables";
 
+:host {
+	border-radius: 4px;
+	padding-bottom: 4px;
+}
+
 .object-details-content-container {
 	background-color: white;
 	border-top: 1px solid #ededed;
+
+	@media all and (min-width: 650px) {
+		border: none;
+		border-radius: 4px;
+	}
 }
 
-.object-details-content-title {
-	display: flex;
+.container--header {
 	justify-content: space-between;
 
-	color: $container-header--color;
-	background-color: $container-header--background-color;
-	border-bottom: $container-divider--height solid $container-divider--color;
-
-	padding: 1rem 1rem 0.5rem;
-	font-size: 1.3rem;
-
-	> h3 {
-		margin: 0;
-		font-weight: 400;
-		font-size: 1.2rem;
-		padding-bottom: 0.2rem;
-	}
-
-	> a {
+	a {
 		text-decoration: none;
 		color: rgba(0, 0, 0, 0.8);
 		font-weight: 400;
 	}
 }
 
-.object-details-content {
+.container--body {
 	padding: 1rem;
-	background-color: $container-content--background-color;
 }

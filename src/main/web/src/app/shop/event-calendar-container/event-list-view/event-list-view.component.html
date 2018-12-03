@@ -1,5 +1,5 @@
-<div *ngFor="let key of groupedListKeys" class="event-list-view-container mat-elevation-z1">
-	<div class="event-list-view-title">
+<div *ngFor="let key of groupedListKeys" class="container event-list-view-container mat-elevation-z3">
+	<div class="event-list-view-title container--header">
 
 		<h3>{{key}}</h3>
 
@@ -8,11 +8,13 @@
 		</button>
 	</div>
 
-	<div *ngIf="groupedEventList[key].length > 0; else noResults" class="event-list-container">
-		<memo-results-entry *ngFor="let event of groupedEventList[key]" [result]="event"></memo-results-entry>
-	</div>
-	<ng-template #noResults>
-		Keine bevorstehenden Veranstaltungen!
+	<div class="container--body event-list-container">
+		<ng-container *ngIf="groupedEventList[key].length > 0; else noResults">
+			<memo-results-entry *ngFor="let event of groupedEventList[key]" [result]="event"></memo-results-entry>
+		</ng-container>
+		<ng-template #noResults>
+			Keine bevorstehenden Veranstaltungen!
 
-	</ng-template>
+		</ng-template>
+	</div>
 </div>

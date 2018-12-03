@@ -20,6 +20,11 @@
 		"name": "Dein Account"
 	},
 	{
+		"route": "account-settings",
+		"icon": "",
+		"name": "Deine Einstellungen"
+	},
+	{
 		"route": "",
 		"icon": "",
 		"name": "Logout"

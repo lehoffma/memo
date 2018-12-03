@@ -1,0 +1,39 @@
+
+:host {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-left: 8px;
+	padding-right: 8px;
+	cursor: pointer;
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.1);
+	}
+
+
+	.menu-trigger-button {
+		width: 20px;
+		height: 20px;
+		line-height: 20px;
+
+		mat-icon {
+			width: 18px;
+			height: 18px;
+			font-size: 18px;
+			line-height: 18px;
+		}
+	}
+}
+
+@media all and (min-width: 650px) {
+	.menu-trigger-button {
+		visibility: hidden;
+	}
+
+	:host:hover {
+		.menu-trigger-button {
+			visibility: visible;
+		}
+	}
+}

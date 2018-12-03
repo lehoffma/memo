@@ -28,6 +28,12 @@ export class Sort {
 		return new Sort(sortDirection, properties);
 	}
 
+	static equal(sortA: Sort, sortB: Sort): boolean{
+		return sortA.direction === sortB.direction
+			&& sortA.sortBys.every((it, i) => sortB.sortBys[i] === it)
+			&& sortB.sortBys.every((it, i) => sortA.sortBys[i] === it)
+	}
+
 	static from(sort: { active: string, direction: SortDirection }): Sort {
 		if (sort.direction === "") {
 			return Sort.none();

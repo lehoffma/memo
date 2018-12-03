@@ -1,0 +1,8 @@
+<h3>{{title}}</h3>
+<button mat-icon-button *ngIf="withReset"
+		matTooltip="Filter aufheben"
+		(click)="onReset.emit()">
+	<mat-icon>
+		clear_all
+	</mat-icon>
+</button>

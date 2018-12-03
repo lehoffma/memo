@@ -70,6 +70,7 @@
 	margin: -1rem -1rem 1rem;
 	padding: 1rem;
 
+
 	.progress-indicator {
 		display: flex;
 		justify-content: center;
@@ -134,5 +135,10 @@
 	.desktop {
 		display: block;
 		margin-left: 5px;
+	}
+
+	.account-signup-progress{
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
 	}
 }

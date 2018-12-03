@@ -13,7 +13,14 @@
 
 	<div class="option-toolbar">
 		<div class="add-button">
-			<a mat-stroked-button *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !(showOptions && mobile)"
+			<a mat-raised-button *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !mobile"
+			   [matTooltip]="'Bestellung hinzufügen'"
+			   [matTooltipPosition]="'below'"
+			   routerLink="/create/orders"
+			   class="add-order-button">
+				Hinzufügen
+			</a>
+			<a mat-stroked-button *ngIf="(orderOverviewService.userCanAddOrders$ | async) && mobile && (!showOptions)"
 			   [matTooltip]="'Bestellung hinzufügen'"
 			   [matTooltipPosition]="'below'"
 			   routerLink="/create/orders"
@@ -42,7 +49,7 @@
 			</memo-order-renderer>
 		</div>
 
-		<mat-paginator #paginator
+		<mat-paginator #paginator class="mat-elevation-z3"
 					   [pageSize]="pageSize"
 					   [pageIndex]="pageIndex"
 					   [length]="orderOverviewService.dataSource.dataLength"
