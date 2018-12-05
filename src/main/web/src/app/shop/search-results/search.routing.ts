@@ -5,9 +5,9 @@ import {SearchResultComponent} from "./search-results.component";
 const routes: Route[] = [
 	{path: "search", component: SearchResultComponent},
 	{path: "shop", redirectTo: "/search", pathMatch: "full"},
-	{path: "tours", redirectTo: "/search?type=1&date=upcoming", pathMatch: "full"},
-	{path: "events", redirectTo: "/search?type=2&date=upcoming", pathMatch: "full"},
-	{path: "partys", redirectTo: "/search?type=2&date=upcoming", pathMatch: "full"},
+	{path: "tours", redirectTo: "/search?date=upcoming&type=1", pathMatch: "full"},
+	{path: "events", redirectTo: "/search?&date=upcoming&type=2", pathMatch: "full"},
+	{path: "partys", redirectTo: "/search?&date=upcoming&type=2", pathMatch: "full"},
 	{path: "merchandise", redirectTo: "/search?type=3", pathMatch: "full"},
 	{path: "merch", redirectTo: "/search?type=3", pathMatch: "full"},
 ];

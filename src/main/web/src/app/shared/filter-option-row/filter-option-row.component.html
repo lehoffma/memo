@@ -4,7 +4,7 @@
 </mat-checkbox>
 
 <div>
-	<button mat-icon-button type="button" class="menu-trigger-button"
+	<button mat-icon-button type="button" class="menu-trigger-button" #trigger="matMenuTrigger"
 			(click)="$event.stopPropagation(); "
 			title="Aktionen"
 			attr.aria-label="Aktionen"
@@ -13,7 +13,7 @@
 
 	</button>
 	<mat-menu #rowMenu="matMenu">
-		<button mat-menu-item (click)="selectOnlyThisOption.emit(); $event.stopPropagation()">
+		<button mat-menu-item (click)="selectOnlyThisOption.emit(); trigger.closeMenu()">
 			<span>Nur {{value}} auswählen</span>
 		</button>
 	</mat-menu>

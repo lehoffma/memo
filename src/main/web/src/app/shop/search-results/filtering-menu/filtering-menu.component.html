@@ -6,19 +6,24 @@
 
 <div class="filter-sidebar">
 	<div *ngFor="let option of filterOptions" [@slideUp]="1" class="filter-category-container">
-		<h3 class="filter-title">{{option.name}}</h3>
+		<memo-filter-option-header [title]="option.name"
+								   [withReset]="withReset(option)"
+								   (onReset)="reset(option)"
+		></memo-filter-option-header>
 
 		<div class="option-children" *ngIf="option.selectType === 'multiple'; else radioGroup">
-			<mat-checkbox *ngFor="let child of option.children"
-						  [(ngModel)]="child.selected"
-						  (ngModelChange)="updateQueryParams(option)">
-				{{child.name}}
-			</mat-checkbox>
+			<memo-filter-option-row *ngFor="let child of option.children"
+									[value]="child.name"
+
+									[formControl]="multiSelectionForm.get(option.name).get(child.name)"
+									(selectOnlyThisOption)="selectOption(multiSelectionForm.get(option.name), child.name)">
+
+
+			</memo-filter-option-row>
 		</div>
 		<ng-template #radioGroup>
-			<mat-radio-group [(ngModel)]="selectedOption[option.name]"
-							 (ngModelChange)="updateFromRadioSelection(option.name)">
-				<mat-radio-button *ngFor="let child of option.children" [value]="child">
+			<mat-radio-group [formControl]="singleSelectionForm.get(option.name)">
+				<mat-radio-button *ngFor="let child of option.children" [value]="child.name">
 					{{child.name}}
 				</mat-radio-button>
 			</mat-radio-group>
