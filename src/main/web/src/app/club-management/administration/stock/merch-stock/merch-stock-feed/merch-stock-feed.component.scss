@@ -6,18 +6,9 @@
 	display: block;
 	background-color: $container-content--background-color;
 	color: $container-content--color;
+	border-radius: 4px;
 
-	h3 {
-		background-color: $container-header--background-color;
-		border-bottom: $container-divider--height solid $container-divider--color;
-		color: $container-header--color;
-		margin: 0;
-		text-align: center;
-		padding: 1rem;
-		font-weight: 400;
-	}
-
-	> div {
+	> div.container--body{
 		height: calc(100% - 3.5rem);
 		overflow-y: auto;
 

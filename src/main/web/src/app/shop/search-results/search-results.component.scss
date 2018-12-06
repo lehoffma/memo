@@ -1,3 +1,7 @@
+.results-title{
+	font-size: 0.8rem;
+}
+
 
 .filter-sidebar {
 	display: none;
@@ -24,7 +28,6 @@
 	display: none;
 	color: grey;
 	margin: 0.5rem;
-	font-size: 0.8rem;
 
 	.search-results-actions {
 		display: flex;
@@ -84,8 +87,8 @@
 
 		.filter-sidebar {
 			display: block;
-			width: 350px;
-			padding: 0.85rem;
+			width: 330px;
+			padding: 3rem 0.85rem 0.85rem;
 		}
 
 		.results-container {

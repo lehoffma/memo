@@ -1,9 +1,10 @@
 :host {
 	min-height: calc(100vh - 64px - 85px);
 
-	@media all and(min-width: 650px) {
-		display: flex;
-	}
+	display: flex;
+	width: 100%;
+	max-width: 1000px;
+	margin: auto;
 }
 
 .content-wrapper {
@@ -16,10 +17,11 @@
 
 .stock-entry-container {
 	flex: 1;
+
 	.stock-options {
 		display: flex;
-		background-color: white;
 		padding: 0.5rem;
+		background: white;
 		justify-content: space-evenly;
 
 		* {
@@ -54,10 +56,10 @@ img {
 
 .add-merch-button {
 	display: flex;
+	background: white;
 	justify-content: center;
 	margin: -1rem;
 	margin-bottom: 1rem;
-	background: white;
 }
 
 memo-merch-stock-entry:not(:first-of-type) {
@@ -65,6 +67,10 @@ memo-merch-stock-entry:not(:first-of-type) {
 }
 
 @media all and (min-width: 650px) {
+	memo-filtering-menu /deep/ memo-filter-option-header{
+		color: rgba(0, 0, 0, 0.6);
+	}
+
 	.add-merch-button {
 		display: none;
 	}
@@ -75,29 +81,22 @@ memo-merch-stock-entry:not(:first-of-type) {
 		margin-bottom: -1rem;
 	}
 
-	.add-merch-button {
-		display: none;
-	}
-
 	.stock-options-sidebar {
 		display: block;
 		width: 330px;
-		border-right: 1px solid #e0e0e0;
-		background: white;
-		padding: 13px;
+
+		padding: 3rem 0.85rem 0.85rem;
 		overflow-y: auto;
 	}
 	.stock-entry-container {
-		max-width: calc(100% - 330px);
 		.stock-options {
+			background: transparent;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			background-color: white;
-			padding: 1rem;
-			border-right: 1px solid #e0e0e0;
-			border-bottom: 1px solid #e0e0e0;
+			padding: 1rem 1rem 0;
 			z-index: 2;
+
 			* {
 				width: auto;
 			}
@@ -109,23 +108,12 @@ memo-merch-stock-entry:not(:first-of-type) {
 	.mobile {
 		display: none;
 	}
-
-	memo-merch-stock-feed /deep/ h3 {
-		height: 57px;
-	}
 }
 
 @media all and (min-width: 1000px) {
 	.stock-entry-container {
 		flex: 1;
 		margin-bottom: 30px;
-		max-width: calc(100% - 630px);
-	}
-
-	memo-merch-stock-feed {
-		display: block;
-		width: 300px;
-		overflow-y: hidden;
 	}
 }
 

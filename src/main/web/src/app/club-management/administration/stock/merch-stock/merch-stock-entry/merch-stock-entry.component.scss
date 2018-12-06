@@ -7,16 +7,18 @@
 	flex-direction: column;
 	@include mat-elevation(3);
 	@include mat-elevation-transition;
+	border-radius: 4px;
 	background-color: $container-content--background-color;
 	color: $container-content--color;
 
 	.stock-entry-header {
 		display: flex;
-		background-color: $container-header--background-color;
+		background-color: #fafafa;
 		color: $container-header--color;
 		justify-content: space-between;
 		padding: 10px;
-		border-bottom: $container-divider--height solid $container-divider--color;
+		border-top-right-radius: 4px;
+		border-top-left-radius: 4px;
 
 		a {
 			color: rgba(0, 0, 0, 0.65);
@@ -25,6 +27,7 @@
 			&:hover {
 				color: black;
 			}
+
 			h3 {
 				margin: 0;
 			}
@@ -56,6 +59,8 @@
 			width: 50px;
 			height: 50px;
 			object-fit: cover;
+			border: 1px solid #e0e0e0;
+			border-radius: 4px;
 		}
 
 		button {
@@ -156,6 +161,7 @@
 	.stock-amount-cell.is-zero {
 		color: grey;
 	}
+
 	.stock-amount-cell:not(.is-zero) {
 		font-weight: bold;
 	}
@@ -176,6 +182,13 @@
 			margin-left: 10px;
 		}
 	}
+}
+
+.stock-entry-footer{
+	display: flex;
+	justify-content: space-between;
+	margin-top: 0rem;
+	padding: 0.5rem;
 }
 
 @media all and (min-width: 1200px) {

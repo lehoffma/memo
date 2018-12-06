@@ -12,7 +12,8 @@
 		</memo-filtering-menu>
 
 		<div class="add-button">
-			<a mat-stroked-button *ngIf="userCanAddMerch$ | async"
+
+			<a mat-raised-button *ngIf="userCanAddMerch$ | async"
 			   [matTooltip]="'Artikel hinzufügen'"
 			   [matTooltipPosition]="'above'"
 			   routerLink="/create/merch"
@@ -53,8 +54,3 @@
 	</div>
 
 </div>
-
-
-<memo-merch-stock-feed [stockEntryList]="allMerchStock$ | async">
-
-</memo-merch-stock-feed>
