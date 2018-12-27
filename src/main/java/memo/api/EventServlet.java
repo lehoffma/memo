@@ -3,11 +3,13 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
+import memo.api.util.UrlParseHelper;
 import memo.auth.AuthenticationService;
 import memo.communication.strategy.ShopItemNotificationStrategy;
 import memo.data.EventRepository;
+import memo.data.model.SerializationOption;
 import memo.model.*;
-import memo.util.model.EventType;
+import memo.util.model.*;
 import org.apache.logging.log4j.LogManager;
 
 import javax.enterprise.context.RequestScoped;
@@ -18,6 +20,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.Map;
 
 @Path("/event")
 @Named
@@ -77,6 +81,20 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
     @Produces({MediaType.APPLICATION_JSON})
     public Object get(@Context HttpServletRequest request) {
         return this.get(request, eventRepository);
+    }
+
+
+    @GET
+    @Path("/waiting-list")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<WaitingListEntry> getWaitingList(@Context HttpServletRequest request) {
+        Page<ShopItem> shopItemPage = (Page<ShopItem>) this.get(request, eventRepository);
+        List<ShopItem> shopItems = shopItemPage.getContent();
+        if(shopItems.isEmpty()){
+            throw new NotFoundException();
+        }
+        ShopItem item = shopItems.get(0);
+        return item.getWaitingList();
     }
 
     @POST

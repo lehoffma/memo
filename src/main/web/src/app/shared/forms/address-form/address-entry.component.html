@@ -6,8 +6,8 @@
 		<span>{{address.country}}</span>
 	</div>
 
-	<button mat-icon-button type="button"
-			(click)="$event.stopPropagation(); false"
+	<button mat-icon-button type="button" color="default"
+			(click)="$event.stopPropagation(); $event.preventDefault()"
 			[matMenuTriggerFor]="menu">
 		<mat-icon>more_vert</mat-icon>
 	</button>

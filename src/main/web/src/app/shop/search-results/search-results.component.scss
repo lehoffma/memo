@@ -1,4 +1,4 @@
-.results-title{
+.results-title {
 	font-size: 0.8rem;
 }
 
@@ -84,15 +84,23 @@
 @media all and (min-width: 650px) {
 	:host {
 		display: flex;
+		justify-content: center;
 
 		.filter-sidebar {
 			display: block;
+			min-width: 330px;
 			width: 330px;
-			padding: 3rem 0.85rem 0.85rem;
+			background: white;
+			margin: 0.85rem;
+			border-radius: 4px;
+			padding: 0 16px 16px;
+			overflow: hidden;
+			height: 100%;
 		}
 
 		.results-container {
 			width: 100%;
+			max-width: 1000px;
 		}
 	}
 
@@ -101,8 +109,12 @@
 	}
 
 	memo-results {
+		margin-right: 1rem;
+		margin-bottom: 1rem;
+		min-height: 560px;
+		background: white;
+		border-radius: 4px;
 		padding: 1rem;
-		min-height: calc(100vh - 64px - 113px);
 	}
 
 	.sorting-results-modifier-container {
@@ -112,10 +124,10 @@
 	.search-results-header {
 		display: flex;
 		justify-content: space-between;
-		padding: 1rem 1rem 0;
 		width: 100%;
 		margin: 0;
 		align-items: center;
+		padding: 1.2rem 1.2rem 1.2rem 0;
 
 		memo-filtering-menu,
 		memo-sorting-dropdown {

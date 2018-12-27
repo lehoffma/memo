@@ -27,6 +27,7 @@ import {OrderedItemService} from "../../shared/services/api/ordered-item.service
 import {setProperties} from "../../shared/model/util/base-object";
 import {PaymentMethod} from "./payment/payment-method";
 import {MerchColor} from "../shared/model/merch-color";
+import {paymentConfig} from "../shared/model/event";
 
 @Component({
 	selector: "memo-checkout",
@@ -46,6 +47,25 @@ export class CheckoutComponent implements OnInit {
 	user: User;
 
 	subscriptions = [];
+
+
+	allowedMethods$ = this.cartService.content.pipe(
+		map(content => {
+			let items = [...content.merch, ...content.partys, ...content.tours];
+			return items.reduce((methods, it) => {
+				let config = paymentConfig(it.item);
+				return Object.keys(methods)
+					.reduce((combined, key) => {
+						combined[key] = combined[key] && config.methods[key];
+						return combined;
+					}, methods)
+			}, {
+				[PaymentMethod.CASH]: true,
+				[PaymentMethod.DEBIT]: true,
+				[PaymentMethod.TRANSFER]: true,
+			})
+		})
+	);
 
 	constructor(private bankAccountService: UserBankAccountService,
 				private formBuilder: FormBuilder,

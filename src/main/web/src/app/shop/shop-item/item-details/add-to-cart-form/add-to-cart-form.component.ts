@@ -1,10 +1,10 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {BehaviorSubject, combineLatest, Observable, of, Subscription} from "rxjs";
-import {Event} from "../../../shared/model/event";
+import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core";
+import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
+import {Event, maximumItemAmount} from "../../../shared/model/event";
 import {Tour} from "../../../shared/model/tour";
 import {Merchandise} from "../../../shared/model/merchandise";
 import {MerchStock, MerchStockList} from "../../../shared/model/merch-stock";
-import {defaultIfEmpty, filter, map, mergeMap, take, tap} from "rxjs/operators";
+import {defaultIfEmpty, filter, map, mergeMap} from "rxjs/operators";
 import {ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
 import {MerchColor} from "../../../shared/model/merch-color";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
@@ -13,18 +13,20 @@ import {ObservableCache} from "../../../../shared/cache/observable-cache";
 import {TypeOfProperty} from "../../../../shared/model/util/type-of-property";
 import {Sort} from "../../../../shared/model/api/sort";
 import {ShoppingCartService} from "../../../../shared/services/shopping-cart.service";
-import {CapacityService} from "../../../../shared/services/api/capacity.service";
+import {CapacityService, EventCapacity} from "../../../../shared/services/api/capacity.service";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {StockService} from "../../../../shared/services/api/stock.service";
+import {WaitingListService} from "../../../../shared/services/api/waiting-list.service";
+import {WaitingListEntry} from "../../../shared/model/waiting-list";
+import {LogInService} from "../../../../shared/services/api/login.service";
 
 @Component({
 	selector: "memo-add-to-cart-form",
 	templateUrl: "./add-to-cart-form.component.html",
-	styleUrls: ["./add-to-cart-form.component.scss"]
+	styleUrls: ["./add-to-cart-form.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddToCartFormComponent implements OnInit {
-
-
 	private _event$: BehaviorSubject<Event> = new BehaviorSubject<Event>(null);
 	stock$: Observable<MerchStockList> = this._event$
 		.pipe(
@@ -32,6 +34,7 @@ export class AddToCartFormComponent implements OnInit {
 			filter(event => event.id !== -1),
 			mergeMap(event => this.stockService.getByEventId(event.id))
 		);
+
 	@Input() permissions: {
 		checkIn: boolean;
 		edit: boolean;
@@ -39,6 +42,7 @@ export class AddToCartFormComponent implements OnInit {
 		entries: boolean;
 		delete: boolean;
 	};
+
 	public colorSelection$: Observable<MerchColor[]> = this.getColorSelection("");
 	_color$: BehaviorSubject<MerchColor> = new BehaviorSubject(undefined);
 	public sizeSelection$: Observable<string[]> = this._color$
@@ -47,39 +51,71 @@ export class AddToCartFormComponent implements OnInit {
 		);
 	_size$: BehaviorSubject<string> = new BehaviorSubject(undefined);
 	public amountOptions$: Observable<number[]> = of([]);
-	maxAmountSubscription: Subscription;
+
 	model = {
-		amount: undefined
+		amount: 0
 	};
+
 	public maxAmount$: Observable<number> = this._event$
 		.pipe(
 			filter(event => event && event.id >= 0),
-			mergeMap(event => this.isMerch(event)
+			mergeMap(event => (this.isMerch(event)
 				? this.getStockAmount$()
-				: (<Observable<number>>this.getValue("capacity"))
-			)
+				: (<Observable<number>>this.getValue("capacity"))).pipe(map(it => maximumItemAmount(event, it)))
+			),
+			//todo waiting list needs merch information too
 		);
-	public isPartOfShoppingCart$ = this._event$
-		.pipe(
-			mergeMap(event => this.shoppingCartService.isPartOfShoppingCart(event.id))
-		);
+
+
 	public isPastEvent$: Observable<boolean> = this._event$
 		.pipe(
 			map(event => (event && event.id !== -1 && isBefore(event.date, new Date())))
 		);
+
+	isSoldOut$ = combineLatest(
+		this._event$,
+		this._size$,
+		this._color$,
+		this.amountOptions$
+	).pipe(
+		map(([event, size, color, options]) => this.isSoldOut(event, options, color, size))
+	);
+
+	waitingList$: Observable<WaitingListEntry[]> = this._event$.pipe(
+		mergeMap(event => this.waitingListService.valueChanges(event.id, this.waitingListService.getByEventId.bind(this))),
+	);
+
+	isPartOfWaitingList$ = combineLatest(
+		this.loginService.currentUser$,
+		this.waitingList$,
+		this._color$,
+		this._size$
+	).pipe(
+		map(([user, waitingList, color, size]) => {
+			return waitingList.some(entry =>
+				(color === entry.color || (color && entry.color && color.hex === entry.color.hex))
+				&& (size === entry.size)
+				&& entry.user === user.id
+			);
+		})
+	);
+
 	private _cache: ObservableCache<number> = new ObservableCache<number>()
 		.withAsyncFallback("capacity", () => this._event$
 			.pipe(
 				filter(event => event.id >= 0),
-				mergeMap(event => this.capacityService.valueChanges(event.id)),
+				mergeMap(event => this.capacityService.valueChanges<EventCapacity>(event.id)),
 				filter(it => it !== null),
 				map(it => it.capacity)
 			)
 		)
 		.withAsyncFallback("emptySeats", () => this.getEmptySeats$());
 
+
 	constructor(private participantService: OrderedItemService,
 				private shoppingCartService: ShoppingCartService,
+				private waitingListService: WaitingListService,
+				private loginService: LogInService,
 				private stockService: StockService,
 				private capacityService: CapacityService) {
 		this.updateMaxAmount();
@@ -114,9 +150,6 @@ export class AddToCartFormComponent implements OnInit {
 	}
 
 	ngOnDestroy(): void {
-		if (this.maxAmountSubscription) {
-			this.maxAmountSubscription.unsubscribe();
-		}
 	}
 
 
@@ -124,30 +157,11 @@ export class AddToCartFormComponent implements OnInit {
 	 * Updates maxAmount and amountOptions (i.e. the amount-dropdown)
 	 */
 	updateMaxAmount() {
-		if (this.maxAmountSubscription) {
-			this.maxAmountSubscription.unsubscribe();
-		}
-
 		this.amountOptions$ = this.maxAmount$
 			.pipe(
 				//fills the amountOptions variable with integers from 0 to maxAmount
-				map(maxAmount => Array((maxAmount === undefined) ? 0 : maxAmount + 1).fill(0).map((_, i) => i))
+				map(maxAmount => Array((maxAmount === undefined) ? 0 : maxAmount + 1).fill(0).map((_, i) => i)),
 			);
-
-		this.maxAmountSubscription = this.maxAmount$
-			.subscribe(maxAmount => {
-				const options = new Array(this.model.amount).fill({color: this.color, size: this.size});
-				const shoppingCartItem = this.shoppingCartService.getItem(EventUtilityService.getEventType(this.event),
-					this.event.id, options);
-
-				if (shoppingCartItem) {
-					this.model.amount = shoppingCartItem.amount;
-				}
-				else {
-					this.model.amount = 0;
-				}
-			});
-
 	}
 
 
@@ -215,8 +229,12 @@ export class AddToCartFormComponent implements OnInit {
 	}
 
 
-	isSoldOut(event, options: number[]): boolean {
-		return ((this.isMerch(event) && !!this.size && !!this.color)
+	isSoldOut(event, options: number[], color: MerchColor, size: string): boolean {
+		if (event) {
+			return true;
+		}
+
+		return ((this.isMerch(event) && !!size && !!color)
 			|| !this.isMerch(event))
 			&& options && options.length <= 1;
 	}
@@ -230,51 +248,27 @@ export class AddToCartFormComponent implements OnInit {
 	}
 
 	/**
-	 *
-	 */
-	updateShoppingCart() {
-		const options: ShoppingCartOption[] = this.isMerch(this.event)
-			? new Array(this.model.amount).fill(0).map(it => ({color: this.color, size: this.size}))
-			: (this.isTour(this.event)
-				? new Array(this.model.amount).fill(0).map(it => ({needsTicket: true, isDriver: false}))
-				: []);
-		const eventType = EventUtilityService.getEventType(this.event);
-		const newItem = {
-			id: this.event.id,
-			item: this.event,
-			amount: this.model.amount,
-			options: options,
-		};
-
-		this.isPartOfShoppingCart$
-			.pipe(take(1))
-			.subscribe(isPartOfShoppingCart => {
-				if (isPartOfShoppingCart) {
-					this.shoppingCartService.pushItem(eventType, newItem);
-				}
-			});
-	}
-
-	/**
 	 * Fügt das aktuelle Item dem Warenkorb hinzu.
 	 */
-	addOrDeleteFromCart(item: Event) {
+	addToCart(item: Event) {
 		const options: ShoppingCartOption[] = this.isMerch(this.event)
 			? new Array(this.model.amount).fill(0).map(it => ({color: this.color, size: this.size}))
 			: (this.isTour(this.event)
 				? new Array(this.model.amount).fill(0).map(it => ({needsTicket: true, isDriver: false}))
 				: []);
 
-		this.isPartOfShoppingCart$
-			.pipe(take(1))
-			.subscribe(isPartOfShoppingCart => {
-				this.shoppingCartService.pushItem(EventUtilityService.getEventType(item), {
-					id: item.id,
-					options,
-					item,
-					amount: !isPartOfShoppingCart ? this.model.amount : 0,
-				});
-			});
+		let eventType = EventUtilityService.getEventType(item);
+
+		let itemInCart = this.shoppingCartService.getItem(eventType, item.id, options) || {options: [], amount: 0};
+
+		this.shoppingCartService.pushItem(eventType, {
+			id: item.id,
+			options: [...itemInCart.options, ...options],
+			item,
+			amount: itemInCart.amount + this.model.amount,
+		});
+
+		this.model.amount = 0;
 	}
 
 	/**

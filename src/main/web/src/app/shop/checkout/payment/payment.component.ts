@@ -9,6 +9,9 @@ import {FormGroup} from "@angular/forms";
 })
 export class PaymentComponent implements OnInit {
 	@Input() formGroup: FormGroup;
+	@Input() allowedMethods: {
+		[method in PaymentMethod]: boolean;
+	};
 
 	paymentMethodEnum = PaymentMethod;
 	loading = false;

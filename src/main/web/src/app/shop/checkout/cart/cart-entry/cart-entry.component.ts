@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {ShoppingCartService} from "../../../../shared/services/shopping-cart.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
-import {Event} from "../../../shared/model/event";
+import {Event, maximumItemAmount} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {BehaviorSubject, combineLatest, Observable, of, Subscription} from "rxjs";
 import {filter, map, mergeMap} from "rxjs/operators";
@@ -95,13 +95,15 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 							stockItem.color.hex === cartItem.options[0].color.hex
 							&& stockItem.size === cartItem.options[0].size
 						)
-						.reduce((acc, stockItem) => acc + stockItem.amount, 0))
+						.reduce((acc, stockItem) => acc + stockItem.amount, 0)),
+					map(amount => maximumItemAmount(cartItem.item, amount))
 				);
 		} else {
 			return this.capacityService.valueChanges(cartItem.item.id)
 				.pipe(
 					filter(it => it !== null),
-					map(it => it.capacity)
+					map(it => it.capacity),
+					map(amount => maximumItemAmount(cartItem.item, amount))
 				);
 		}
 	}

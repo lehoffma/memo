@@ -16,6 +16,7 @@ import {MemoMaterialModule} from "../../../../material.module";
 import {MilesService} from "./miles.service";
 import {CapacityService} from "./capacity.service";
 import {NotificationService} from "./user-notification.service";
+import {WaitingListService} from "./waiting-list.service";
 
 const providers = [
 	AddressService,
@@ -33,6 +34,7 @@ const providers = [
 	UserService,
 	UserBankAccountService,
 	NotificationService,
+	WaitingListService
 ];
 
 @NgModule({

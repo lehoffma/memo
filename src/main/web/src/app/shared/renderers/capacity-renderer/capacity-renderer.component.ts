@@ -15,6 +15,7 @@ export class CapacityRendererComponent implements OnInit {
 
 	@Input() icon: string;
 
+	_waitingList$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 	_maxAmount$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 	_available$ = new BehaviorSubject<number>(null);
 	_textOptions$: BehaviorSubject<CapacityRendererText> = new BehaviorSubject<CapacityRendererText>({
@@ -83,6 +84,10 @@ export class CapacityRendererComponent implements OnInit {
 
 	@Input() set coloring(coloring: CapacityRendererColoring) {
 		this._coloring$.next(coloring);
+	}
+
+	@Input() set waitingList(waitingList: number) {
+		this._waitingList$.next(waitingList);
 	}
 
 	ngOnInit() {

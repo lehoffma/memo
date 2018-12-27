@@ -112,7 +112,6 @@ public class User implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Order> orders = new ArrayList<>();
-//    todo serialize everything as ids
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     @JsonSerialize(using = CommentIdListSerializer.class)

@@ -19,14 +19,13 @@ export class WebsocketService<T> {
 	public connect(url: string): Observable<T> {
 		if (!this.subject) {
 			this.subject = this.create(url);
-			console.log("Successfully connected: " + url);
 		}
 		return this.subject.asObservable();
 	}
 
 	public send(message: any): boolean{
 		if (!this.subject) {
-			console.error("Connection not established - message '" + message + "'was not sent")
+			console.error("Connection not established - message '" + message + "'was not sent");
 			return false;
 		}
 		this.subject.next(message);

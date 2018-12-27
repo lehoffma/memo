@@ -184,7 +184,7 @@ export class SearchFilterService {
 	 * @param {MultiLevelSelectParent[]} options
 	 * @returns {MultiLevelSelectParent[]}
 	 */
-	mergeFilterOptions(acc: MultiLevelSelectParent[], options: MultiLevelSelectParent[]) {
+	mergeFilterOptions(acc: MultiLevelSelectParent[], options: MultiLevelSelectParent[]): MultiLevelSelectParent[] {
 
 		if (!acc || options.length === 0) {
 			return options;

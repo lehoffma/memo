@@ -11,3 +11,19 @@
 .green {
 	color: $primary-default;
 }
+
+.capacity-container {
+	display: flex;
+	flex-direction: column;
+	margin-left: 10px;
+}
+
+.waiting-list-row,
+.waiting-list-row > a {
+	font-size: 0.8rem;
+	color: rgba(0, 0, 0, 0.4);
+}
+
+.waiting-list-row > a {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}

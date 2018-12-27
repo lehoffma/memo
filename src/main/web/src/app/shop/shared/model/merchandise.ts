@@ -21,6 +21,8 @@ export function createMerch(): Merchandise {
 		author: [],
 		route: [],
 		images: ["resources/images/Logo.png"],
+		paymentLimit: -1,
+		paymentMethods: [],
 		capacity: -1,
 		groupPicture: "",
 		material: "",

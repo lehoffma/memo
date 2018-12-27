@@ -28,6 +28,7 @@
 
 .container--header {
 	justify-content: space-between;
+
 	> a {
 		color: #2196F3;
 		text-decoration: none;
@@ -40,14 +41,18 @@
 }
 
 .home-header {
-	background: $primary-default;
-	height: 30rem;
-	padding-bottom: 2rem;
+	background: rgba(0, 0, 0, 0.3);
+	height: 36rem;
+	margin-top: -4rem;
+	padding-top: 4rem;
+	padding-bottom: 6rem;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	position: relative;
+	overflow: hidden;
 
 	.svg-logo-container {
 		.svg-logo {
@@ -62,8 +67,30 @@
 		}
 	}
 
+	&--background {
+		z-index: -1;
+		width: 100%;
+		background-color: mat-color($primary);
+		height: calc(100% + 64px + 2rem);
+		position: absolute;
+		object-fit: cover;
+		transform: scale(1.03);
+		filter: blur(0);
+
+		&.loading {
+			filter: blur(10px);
+		}
+
+		-webkit-transition: 0.4s filter ease-in;
+		-moz-transition: 0.4s filter ease-in;
+		-ms-transition: 0.4s filter ease-in;
+		-o-transition: 0.4s filter ease-in;
+		transition: 0.4s filter ease-in;
+	}
+
 	.login-button {
 		color: white;
+		border-color: white;
 		margin-right: 1rem;
 	}
 
@@ -76,15 +103,15 @@
 
 	> div {
 		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 1rem;
 	}
 
 	h1 {
 		color: white;
-		padding-top: 20px;
 		text-align: center;
-		max-width: 80%;
-		font-size: 2.2rem;
-		font-weight: 100;
+		font-weight: 400;
 
 		@media all and (min-width: 800px) {
 			font-size: 3rem;
@@ -146,6 +173,10 @@ memo-results /deep/ .no-results {
 	margin: 0;
 }
 
+.container--header {
+	margin-bottom: 0.5rem;
+}
+
 @media all and (max-width: 650px) {
 	memo-results /deep/ .no-results {
 		background: white;
@@ -156,6 +187,9 @@ memo-results /deep/ .no-results {
 	.category-overview-container {
 		padding-top: 1rem;
 		padding-bottom: 1rem;
+		display: block;
+		margin-top: -4rem;
+		position: relative;
 	}
 	memo-results {
 		display: block;

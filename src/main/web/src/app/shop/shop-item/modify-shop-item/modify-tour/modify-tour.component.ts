@@ -8,6 +8,10 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {createTour, Tour} from "../../../shared/model/tour";
 import {ModifyItemService} from "../modify-item.service";
 import {setProperties} from "../../../../shared/model/util/base-object";
+import {paymentConfig} from "../../../shared/model/event";
+import {numberLimitToString} from "../shared/payment-method-configuration/payment-method-limit-util";
+import {PaymentMethod} from "../../../checkout/payment/payment-method";
+import {paymentMethodLimitationValidator} from "../shared/payment-method-configuration/payment-method-limitation.validator";
 
 @Component({
 	selector: "memo-modify-tour",
@@ -64,6 +68,16 @@ export class ModifyTourComponent implements OnInit {
 					validators: []
 				}]
 			}),
+			"payment-config": this.formBuilder.group({
+				"limit": "Kein Limit",
+				"methods": this.formBuilder.group({
+					[PaymentMethod.CASH]: true,
+					[PaymentMethod.DEBIT]: true,
+					[PaymentMethod.TRANSFER]: true
+				})
+			}, {
+				validators: [paymentMethodLimitationValidator()]
+			}),
 			"responsible-users": [[], {validators: [Validators.required]}]
 		})
 	}
@@ -93,6 +107,12 @@ export class ModifyTourComponent implements OnInit {
 		this.formGroup.get("permissions").get("expectedWriteRole").patchValue(previousValue.expectedWriteRole);
 		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);
 		this.formGroup.get("addresses").patchValue(previousValue.route)
+
+
+		let config= paymentConfig(previousValue);
+
+		this.formGroup.get("payment-config").get("limit").patchValue(numberLimitToString(config.limit));
+		this.formGroup.get("payment-config").get("methods").patchValue(config.methods);
 	}
 
 	ngOnInit() {
@@ -144,6 +164,7 @@ export class ModifyTourComponent implements OnInit {
 			expectedReadRole: this.formGroup.get("permissions").get("expectedReadRole").value,
 			expectedWriteRole: this.formGroup.get("permissions").get("expectedWriteRole").value,
 			expectedCheckInRole: this.formGroup.get("permissions").get("expectedCheckInRole").value,
+			paymentConfig: this.formGroup.get("payment-config").value,
 			route: this.formGroup.get("addresses").value,
 			author: this.formGroup.get("responsible-users").value.map(it => it.id)
 		} as any);

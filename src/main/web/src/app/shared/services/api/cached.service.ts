@@ -4,7 +4,8 @@ import {PagedApiCache} from "../../cache/api-cache";
 
 
 export abstract class CachedService<T> {
-	public changed$: { [id: number]: BehaviorSubject<T> } = {};
+	public changed$: { [id: number]: BehaviorSubject<any> } = {};
+	private fallbacks$: { [id: number]: (id: number) => Observable<any> } = {};
 	protected _cache: PagedApiCache<T> = new PagedApiCache<T>();
 
 	protected constructor() {
@@ -38,12 +39,14 @@ export abstract class CachedService<T> {
 	/**
 	 *
 	 * @param {number} id
+	 * @param fallback
 	 * @returns {Observable<T>}
 	 */
-	valueChanges(id: number): Observable<T> {
+	valueChanges<U = T>(id: number, fallback: (id: number) => Observable<U> = this.getById.bind(this)): Observable<U> {
 		if (!this.changed$[id]) {
-			this.changed$[id] = new BehaviorSubject<T>(null);
-			this.getById(id)
+			this.changed$[id] = new BehaviorSubject<U>(null);
+			this.fallbacks$[id] = fallback;
+			this.fallbacks$[id](id)
 				.pipe(first())
 				.subscribe(value => this.valueChanged(id, value));
 		}
@@ -58,9 +61,9 @@ export abstract class CachedService<T> {
 	 * @param {number} id
 	 * @param {T} newValue
 	 */
-	valueChanged(id: number, newValue: T) {
+	valueChanged<U>(id: number, newValue: U) {
 		if (!this.changed$[id]) {
-			this.changed$[id] = new BehaviorSubject<T>(null);
+			this.changed$[id] = new BehaviorSubject<U>(null);
 		}
 		this.changed$[id].next(newValue);
 	}
@@ -71,10 +74,9 @@ export abstract class CachedService<T> {
 	 * @param removed
 	 */
 	invalidateValue(id: number, removed: boolean = false) {
-		console.log("invalidate " + id);
 		this._cache.invalidateById(id);
-		if (!removed && id > 0) {
-			this.getById(id)
+		if (!removed && id > 0 && this.changed$[id]) {
+			this.fallbacks$[id](id)
 				.subscribe(value => this.valueChanged(id, value));
 		}
 	}

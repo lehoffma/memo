@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {PaymentMethod} from "./payment-method";
 
 @Component({
@@ -13,6 +13,9 @@ export class PaymentMethodSelectionComponent implements OnInit {
 		PaymentMethod.TRANSFER
 	];
 	@Output() methodSelected: EventEmitter<PaymentMethod> = new EventEmitter();
+	@Input() allowedMethods: {
+		[method in PaymentMethod]: boolean;
+	};
 
 	constructor() {
 	}

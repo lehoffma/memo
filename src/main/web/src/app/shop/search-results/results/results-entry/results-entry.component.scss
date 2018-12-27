@@ -5,8 +5,9 @@
 	margin-bottom: 10px;
 	display: block;
 
-	&:first-child{
-		margin-top: 10px;
+	mat-card {
+		box-shadow: none;
+		border: 1px solid #e0e0e0;
 	}
 
 	.result-title {
@@ -15,6 +16,7 @@
 		font-size: 1.1rem;
 		word-break: break-all;
 	}
+
 	.result-info {
 		display: flex;
 		justify-content: space-between;
@@ -36,6 +38,7 @@
 img {
 	height: 10rem;
 	object-fit: cover;
+
 	&.past {
 		filter: grayscale(1);
 	}
@@ -81,12 +84,12 @@ img {
 			height: 150px;
 		}
 
-		mat-card{
+		mat-card {
 			transition: box-shadow 0.5s;
 		}
 
 		&:hover {
-			mat-card{
+			mat-card {
 				box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), 0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12);
 			}
 		}

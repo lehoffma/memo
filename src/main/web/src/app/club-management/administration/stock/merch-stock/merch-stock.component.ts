@@ -10,14 +10,12 @@ import {ActivatedRoute} from "@angular/router";
 import {FilterOptionBuilder} from "../../../../shop/search-results/filter-option-builder.service";
 import {FilterOptionType} from "../../../../shop/search-results/filter-option-type";
 import {BehaviorSubject, forkJoin, Observable, of, Subject} from "rxjs";
-import {debounceTime, filter, map, mergeMap, scan, takeUntil, tap} from "rxjs/operators";
+import {debounceTime, filter, map, mergeMap, scan, takeUntil} from "rxjs/operators";
 import {Event} from "../../../../shop/shared/model/event";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
 import {Direction, Sort} from "../../../../shared/model/api/sort";
 import {Filter} from "../../../../shared/model/api/filter";
 import {PagedDataSource} from "../../../../shared/utility/material-table/paged-data-source";
-import {EventType} from "../../../../shop/shared/model/event-type";
-import {PageRequest} from "../../../../shared/model/api/page-request";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -46,10 +44,6 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 
 	onDestroy$ = new Subject<any>();
 
-	allMerch$ = this.eventService.getByEventType(EventType.merch, PageRequest.all(), Sort.none()).pipe(
-		map(it => it.content)
-	);
-	allMerchStock$: Observable<StockEntry[]> = this.getStockEntryList$(this.allMerch$);
 	dataSource = new PagedDataSource(this.eventService);
 	filteredMerch$ = this.dataSource.connect();
 	filteredMerchStock$: Observable<Event[]> = this.getStockEntryList$(this.filteredMerch$);

@@ -10,9 +10,8 @@ import memo.util.model.EventType;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * Entity implementation class for Entity: ShopItem
@@ -129,6 +128,19 @@ public class ShopItem implements Serializable {
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "item")
     private List<Stock> stock = new ArrayList<>();
 
+    private Integer paymentLimit = -1;
+
+    @ElementCollection
+    private Set<PaymentMethod> paymentMethods = new HashSet<>(Arrays.asList(
+            PaymentMethod.Bar,
+            PaymentMethod.Lastschrift,
+            PaymentMethod.Überweisung
+    ));
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "shopItem")
+    @JsonIgnore
+    private List<WaitingListEntry> waitingList = new ArrayList<>();
+
     @Column(nullable = false, name = "type")
     @org.eclipse.persistence.annotations.Index()
     private Integer type;
@@ -169,6 +181,34 @@ public class ShopItem implements Serializable {
     //**************************************************************
     //  getters and setters
     //**************************************************************
+
+
+    public List<WaitingListEntry> getWaitingList() {
+        return waitingList;
+    }
+
+    public ShopItem setWaitingList(List<WaitingListEntry> waitingList) {
+        this.waitingList = waitingList;
+        return this;
+    }
+
+    public Integer getPaymentLimit() {
+        return paymentLimit;
+    }
+
+    public ShopItem setPaymentLimit(Integer paymentLimit) {
+        this.paymentLimit = paymentLimit;
+        return this;
+    }
+
+    public Set<PaymentMethod> getPaymentMethods() {
+        return paymentMethods;
+    }
+
+    public ShopItem setPaymentMethods(Set<PaymentMethod> paymentMethods) {
+        this.paymentMethods = paymentMethods;
+        return this;
+    }
 
     public Integer getId() {
         return this.id;

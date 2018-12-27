@@ -8,8 +8,6 @@ import memo.model.ShopItem;
 import memo.model.User;
 import memo.util.ListBuilder;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.persistence.criteria.*;
@@ -29,7 +27,6 @@ import static memo.auth.api.ShopItemAuthHelper.getEventPermission;
 public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
     @Override
     public boolean isAllowedToRead(User user, ShopItem object) {
-
         return userIsAuthorized(user, object,
                 new ListBuilder<BiPredicate<User, ShopItem>>()
                         //the user is one of the authors
@@ -47,6 +44,13 @@ public class ShopItemAuthStrategy implements AuthenticationStrategy<ShopItem> {
                                         .and(AuthenticationConditionFactory.userHasCorrectPermission(
                                                 user1 -> getEventPermission(user1, object), Permission.read
                                         ))
+                        )
+                        .buildAdd(
+                                AuthenticationConditionFactory
+                                        .userFulfillsMinimumRoleOfItem(
+                                                Function.identity(),
+                                                ShopItem::getExpectedReadRole
+                                        )
                         )
         );
     }

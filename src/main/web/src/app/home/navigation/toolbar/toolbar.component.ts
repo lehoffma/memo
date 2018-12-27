@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ShoppingCartService} from "../../../shared/services/shopping-cart.service";
 import {NavigationService} from "../../../shared/services/navigation.service";
 import {Link} from "../../../shared/model/link";
@@ -13,6 +13,8 @@ import {NotificationService} from "../../../shared/services/api/user-notificatio
 	styleUrls: ["./toolbar.component.scss", "./element/toolbar-element.component.scss"]
 })
 export class ToolbarComponent implements OnInit {
+	@Input() transparent = false;
+
 	//todo fadeout on mobile when searching
 
 

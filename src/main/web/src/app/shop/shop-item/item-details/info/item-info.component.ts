@@ -13,7 +13,11 @@ import {MatSnackBar} from "@angular/material";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {CapacityService} from "../../../../shared/services/api/capacity.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
+import {WaitingListService} from "../../../../shared/services/api/waiting-list.service";
+import {Sort} from "../../../../shared/model/api/sort";
+import {distanceInWordsToNow, isBefore} from "date-fns";
 
+import * as deLocale from "date-fns/locale/de/index"
 
 @Component({
 	selector: "memo-item-info",
@@ -26,6 +30,7 @@ export class ItemInfoComponent implements OnInit {
 		checkIn: boolean;
 		edit: boolean;
 		conclude: boolean;
+		waitingList: boolean;
 		entries: boolean;
 		delete: boolean;
 	};
@@ -47,7 +52,15 @@ export class ItemInfoComponent implements OnInit {
 			map(it => it.capacity)
 		);
 
+	public waitingList$ = this._event$.pipe(
+		filter(event => event.id >= 0),
+		mergeMap(event => this.waitingListService.getByEventId(event.id, Sort.none())),
+		filter(it => it !== null),
+		map(it => it.reduce((sum, entry) => sum + entry.amount, 0))
+	);
+
 	constructor(private participantService: OrderedItemService,
+				private waitingListService: WaitingListService,
 				private discountService: DiscountService,
 				private stockService: StockService,
 				private loginService: LogInService,
@@ -81,4 +94,11 @@ export class ItemInfoComponent implements OnInit {
 	}
 
 
+	relativeToToday(date: Date) {
+		const distance = distanceInWordsToNow(date, {locale: deLocale});
+		const before = isBefore(date, new Date());
+		const suffix = (["Tage", "Monate", "Jahre"].some(it => distance.includes(it))) ? "n" : "";
+
+		return (before ? "vor " : "in ") + distance + suffix;
+	}
 }

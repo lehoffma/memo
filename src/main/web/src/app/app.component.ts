@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Inject, LOCALE_ID, OnDestroy, OnInit, PLATFORM_ID} from "@angular/core";
 import {DateAdapter} from "@angular/material";
 import {AuthService} from "./shared/authentication/auth.service";
-import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
+import {ActivatedRoute, NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {distinctUntilChanged, filter, map, mergeMap, startWith, takeUntil} from "rxjs/operators";
 import {googleAnalytics, insertGoogleAnalyticsHeadScripts} from "../google-analytics-init";
 import {BreadcrumbService} from "./shared/breadcrumb-navigation/breadcrumb.service";
@@ -27,6 +27,13 @@ export class AppComponent implements OnInit, OnDestroy {
 	gaIsInitialized = false;
 
 	onDestroy$ = new EventEmitter<any>();
+
+
+	isTransparent$ = this.router.events.pipe(
+		filter(event => event instanceof NavigationStart),
+		map((it: NavigationStart) => it.url === "/")
+	);
+
 
 	constructor(private authService: AuthService,
 				private breadcrumbService: BreadcrumbService,

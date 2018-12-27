@@ -1,4 +1,4 @@
-<div class="filter-sidebar">
+<div class="filter-sidebar mat-elevation-z1">
 	<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>
 </div>
 
@@ -26,8 +26,8 @@
 		<div *ngIf="(keywords | async).length >= 0" class="search-results-container">
 			<div class="search-results-header">
 				<div class="flex-row">
-					<div class="add-button">
-						<button mat-raised-button *ngIf="userCanAddItem$ | async"
+					<div class="add-button" *ngIf="userCanAddItem$ | async">
+						<button mat-raised-button
 								[matTooltip]="'Artikel hinzufügen'"
 								[matTooltipPosition]="'above'"
 								(click)="openCreateDialog()"
@@ -51,7 +51,7 @@
 				</div>
 			</div>
 
-			<memo-results [events]="currentResults$ | async"></memo-results>
+			<memo-results class="mat-elevation-z1" [events]="currentResults$ | async"></memo-results>
 		</div>
 	</div>
 

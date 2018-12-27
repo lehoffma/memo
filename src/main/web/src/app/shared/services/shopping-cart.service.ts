@@ -17,12 +17,12 @@ export class ShoppingCartService implements OnInit {
 		partys: [],
 		tours: []
 	});
-	public content: Observable<ShoppingCartContent>        = this._content.asObservable();
+	public content: Observable<ShoppingCartContent> = this._content.asObservable();
 	/**
 	 * Der Key, der für das Speichern des ShoppingCartContents im LocalStorage verwendet wird
 	 * @type {string}
 	 */
-			private readonly localStorageKey               = "shoppingCart";
+	private readonly localStorageKey = "shoppingCart";
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
@@ -221,8 +221,7 @@ export class ShoppingCartService implements OnInit {
 		if (itemIndex !== -1) {
 			if (item.amount === 0) {
 				content[type].splice(itemIndex, 1);
-			}
-			else {
+			} else {
 				// content[type][itemIndex].amount = item.amount;
 				content[type][itemIndex] = {...item};
 			}

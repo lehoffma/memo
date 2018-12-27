@@ -10,6 +10,7 @@
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
+	z-index: 1000;
 
 	top: 0;
 	left: 0;
@@ -21,7 +22,7 @@
 	align-items: center;
 }
 
-@mixin fullscreen-page-title(){
+@mixin fullscreen-page-title() {
 	font-size: 2rem;
 	color: white;
 	font-weight: lighter;
@@ -35,7 +36,7 @@
 	}
 }
 
-@mixin fullscreen-page-content(){
+@mixin fullscreen-page-content() {
 	display: block;
 	padding: 1rem;
 	width: 97%;

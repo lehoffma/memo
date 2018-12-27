@@ -19,8 +19,7 @@ import {EventService} from "../../shared/services/api/event.service";
 @Injectable()
 export class FilterOptionFactoryService {
 
-	//todo
-	readonly getCategory: () => Observable<MultiLevelSelectParent[]> = () => of([{
+	readonly category: MultiLevelSelectParent = {
 		name: "Kategorie",
 		selectType: (<"multiple" | "single">"multiple"),
 		expanded: false,
@@ -29,8 +28,9 @@ export class FilterOptionFactoryService {
 			FilterOptionFactoryService.byKey("Veranstaltungen", "type", "" + typeToInteger(EventType.partys)),
 			FilterOptionFactoryService.byKey("Merchandise", "type", "" + typeToInteger(EventType.merch)),
 		]
-	}]);
-	readonly getPrice: () => Observable<MultiLevelSelectParent[]> = () => of([{
+	};
+
+	readonly price: MultiLevelSelectParent = {
 		name: "Preis",
 		expanded: false,
 		selectType: (<"multiple" | "single">"single"),
@@ -51,8 +51,9 @@ export class FilterOptionFactoryService {
 			),
 			FilterOptionFactoryService.min("Über 100 Euro", "price", 100.01)
 		]
-	}]);
-	readonly getDate: () => Observable<MultiLevelSelectParent[]> = () => of([{
+	};
+
+	readonly date: MultiLevelSelectParent = {
 		name: "Datum",
 		selectType: (<"multiple" | "single">"single"),
 		expanded: false,
@@ -65,7 +66,12 @@ export class FilterOptionFactoryService {
 			FilterOptionFactoryService.byKey("Vergangene Events", "date", "past"),
 			FilterOptionFactoryService.byKey("Zukünftige Events", "date", "upcoming")
 		]
-	}]);
+	};
+
+	//todo
+	readonly getCategory: () => Observable<MultiLevelSelectParent[]> = () => of([this.category]);
+	readonly getPrice: () => Observable<MultiLevelSelectParent[]> = () => of([this.price]);
+	readonly getDate: () => Observable<MultiLevelSelectParent[]> = () => of([this.date]);
 
 	constructor(private stockService: StockService,
 				private eventService: EventService) {

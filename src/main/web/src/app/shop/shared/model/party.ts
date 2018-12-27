@@ -18,6 +18,8 @@ export function createParty(): Party {
 		author: [],
 		route: [],
 		images: ["resources/images/Logo.png"],
+		paymentLimit: -1,
+		paymentMethods: [],
 		capacity: -1,
 		groupPicture: "",
 		price: 0,

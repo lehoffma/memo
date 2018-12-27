@@ -19,6 +19,8 @@ export function createTour(): Tour {
 		author: [],
 		route: [],
 		images: ["resources/images/Logo.png"],
+		paymentLimit: -1,
+		paymentMethods: [],
 		capacity: -1,
 		groupPicture: "",
 		price: 0,

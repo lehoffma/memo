@@ -1,0 +1,30 @@
+<div class="limit-config-container">
+	<span>Limit pro Person</span>
+	<mat-form-field appearance="outline"
+					class="limit-configuration small-outline-formfield">
+		<mat-select [formControl]="formGroup.get('limit')">
+			<mat-option *ngFor="let limit of limitOptions" [value]="limit">
+				{{limit}}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+</div>
+
+<div class="payment-method-row"
+	 *ngFor="let method of methods"
+	 (click)="formGroup.get('methods').get(method).setValue(!formGroup.get('methods').get(method).value)"
+	 [class.selected]="formGroup.get('methods').get(method).value">
+	<mat-checkbox color="primary"
+				  (click)="$event.stopPropagation()"
+				  [formControl]="formGroup.get('methods').get(method)">
+		{{method}}
+	</mat-checkbox>
+</div>
+
+<div class="error-container" *ngIf="formGroup.errors != null">
+	<mat-icon>error</mat-icon>
+
+	<ng-container *ngIf="formGroup.hasError('noPaymentMethodSelected')">
+		Mindestens eine Bezahlart muss ausgewählt sein!
+	</ng-container>
+</div>

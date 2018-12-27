@@ -5,7 +5,6 @@ import {WindowService} from "../../services/window.service";
 import {BehaviorSubject, Observable} from "rxjs";
 import {defaultIfEmpty, filter, map} from "rxjs/operators";
 import {CalendarEvent} from "angular-calendar";
-import {MonthViewDay} from "calendar-utils";
 import {EventUtilityService} from "../../services/event-utility.service";
 import {setMonth, setYear} from "date-fns";
 

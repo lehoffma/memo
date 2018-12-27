@@ -17,15 +17,16 @@ import {Address} from "../../../shared/model/address";
 import {ImageUploadService} from "../../../shared/services/api/image-upload.service";
 import {ModifyItemEvent} from "./modify-item-event";
 import {MerchStockList} from "../../shared/model/merch-stock";
-import {first, map, mergeMap, share, take, tap} from "rxjs/operators";
+import {first, map, mergeMap, share, take} from "rxjs/operators";
 import {Observable, of} from "rxjs";
-import {Event} from "../../shared/model/event";
+import {Event, paymentConfig, PaymentConfig} from "../../shared/model/event";
 import {ModifiedImages} from "./modified-images";
 import {processSequentially} from "../../../util/observable-util";
 import {isEdited} from "../../../util/util";
 import {TransactionBuilder} from "../../../util/transaction-builder";
 import {MatSnackBar} from "@angular/material";
 import {setProperties} from "../../../shared/model/util/base-object";
+import {stringToNumberLimit} from "./shared/payment-method-configuration/payment-method-limit-util";
 
 @Injectable()
 export class ModifyItemService {
@@ -149,8 +150,7 @@ export class ModifyItemService {
 				}
 			});
 			this.mode = ModifyType.EDIT;
-		}
-		else {
+		} else {
 			this.mode = ModifyType.ADD;
 		}
 	}
@@ -234,8 +234,7 @@ export class ModifyItemService {
 		const id = newObject.id === -1 ? null : newObject.id;
 		if (EventUtilityService.isUser(newObject)) {
 			addresses = addresses.map(it => setProperties(it, {user: id}));
-		}
-		else {
+		} else {
 			addresses = addresses.map(it => setProperties(it, {item: id}));
 		}
 
@@ -337,6 +336,22 @@ export class ModifyItemService {
 
 	/**
 	 *
+	 * @param newObject
+	 */
+	handlePaymentLimits(newObject: ShopItem): Observable<ShopItem> {
+		const config: any = (newObject as any).paymentConfig
+		return (config)
+			? of((() => {
+				return setProperties(newObject, {
+					paymentLimit: stringToNumberLimit(config.limit),
+					paymentMethods: Object.keys(config.methods).filter(it => config.methods[it]),
+				});
+			})())
+			: of(newObject);
+	}
+
+	/**
+	 *
 	 * @param {ShopItem} result
 	 * @param {ModifyItemEvent} modifyItemEvent
 	 * @returns {Observable<ShopItem>}
@@ -346,7 +361,6 @@ export class ModifyItemService {
 			? (this.stockService.pushChanges(result, [...this.previousStock], [...modifyItemEvent.stock])
 				.pipe(
 					share(),
-					tap(it => console.log(result)),
 					map(() => result),
 				))
 			: of(result)
@@ -359,6 +373,7 @@ export class ModifyItemService {
 	submitModifiedEvent(modifyItemEvent: ModifyItemEvent) {
 		this.loading = true;
 
+		//todo move logic to backend so we only need one request (which would allow for a proper rollback)
 		const service: ServletServiceInterface<ShopItem | Event> = EventUtilityService.shopItemSwitch<ServletServiceInterface<ShopItem | Event>>(
 			this.itemType,
 			{
@@ -377,7 +392,7 @@ export class ModifyItemService {
 		if (this.previousValue && EventUtilityService.isEvent(this.previousValue)) {
 			newObject = setProperties(newObject, {
 				groupPicture: this.previousValue.groupPicture,
-				reportWriters: this.previousValue.reportWriters
+				reportWriters: this.previousValue.reportWriters,
 			})
 		}
 
@@ -386,6 +401,7 @@ export class ModifyItemService {
 		const request = new TransactionBuilder<ShopItem>()
 			.add(input => this.handleAddresses(input))
 			.add(input => this.handleImages(input, modifyItemEvent.images))
+			.add(input => this.handlePaymentLimits(input))
 			.add(input => isEditing
 				? service.modify.bind(service)(input)
 				: service.add.bind(service)(input))
@@ -400,7 +416,6 @@ export class ModifyItemService {
 		request
 			.subscribe(
 				(result: ShopItem) => {
-					console.log(newObject);
 					if (!this || this.itemType === undefined || !result) {
 						const type = EventUtilityService.getShopItemType(newObject);
 						this.navigationService.navigateToItemWithId(type, newObject.id);
@@ -409,12 +424,10 @@ export class ModifyItemService {
 
 					if (this.itemType === ShopItemType.entry) {
 						this.navigationService.navigateByUrl("/management/costs");
-					}
-					else if (!this.eventType && !this.eventId) {
+					} else if (!this.eventType && !this.eventId) {
 						//navigiere zum neu erstellten item
 						this.navigationService.navigateToItem(result);
-					}
-					else {
+					} else {
 						this.navigationService.navigateToItemWithId(this.eventType, this.eventId);
 					}
 					this.reset();
@@ -426,14 +439,12 @@ export class ModifyItemService {
 							{
 								duration: 5000
 							});
-					}
-					else if (error.status === 500) {
+					} else if (error.status === 500) {
 						this.matSnackBar.open("Beim Verarbeiten dieser Aktion ist leider ein Fehler aufgetreten.", "Schließen",
 							{
 								duration: 5000
 							});
-					}
-					else if (error.status === 503 || error.status === 504) {
+					} else if (error.status === 503 || error.status === 504) {
 						this.matSnackBar.open("Der Server antwortet nicht.", "Schließen",
 							{
 								duration: 5000

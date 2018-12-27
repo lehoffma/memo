@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import memo.auth.AuthenticationService;
 import memo.data.ImageRepository;
 import memo.model.Entry;
 import memo.model.Image;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 public class ImageServlet extends HttpServlet {
     private class InnerImageServlet extends AbstractApiServlet<Image> {
 
+
         @Override
         protected void updateDependencies(JsonNode jsonNode, Image object) {
             this.manyToOne(object, ShopItem.class, Image::getItem, Image::getId, ShopItem::getImages, shopItem -> shopItem::setImages);
@@ -57,9 +59,10 @@ public class ImageServlet extends HttpServlet {
     }
 
     @Inject
-    public ImageServlet(ImageRepository imageRepository) {
+    public ImageServlet(ImageRepository imageRepository, AuthenticationService authenticationService) {
         this.imageRepository = imageRepository;
         this.innerServlet = new InnerImageServlet();
+        this.innerServlet.authenticationService = authenticationService;
     }
 
     @Override

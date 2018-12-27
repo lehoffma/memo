@@ -21,6 +21,7 @@ import {DirectionsMapDirective} from "./shared/tour-route-input/directions-map.d
 import {ShopItemDetailsModule} from "../item-details/shop-item-details.module";
 import {ItemPermissionsInputComponent} from "./shared/item-permissions-input/item-permissions-input.component";
 import {SharedShopModule} from "../../shared/shop-shared.module";
+import { PaymentMethodConfigurationComponent } from './shared/payment-method-configuration/payment-method-configuration.component';
 
 @NgModule({
 	imports: [
@@ -49,7 +50,8 @@ import {SharedShopModule} from "../../shared/shop-shared.module";
 		ModifyUserComponent,
 		TourRouteInputComponent,
 		ModifyMerchStockContainerComponent,
-		ItemPermissionsInputComponent
+		ItemPermissionsInputComponent,
+		PaymentMethodConfigurationComponent
 	],
 	providers: [ModifyItemService],
 	entryComponents: [

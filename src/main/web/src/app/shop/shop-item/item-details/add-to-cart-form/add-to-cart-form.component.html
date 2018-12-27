@@ -1,4 +1,4 @@
-<form #addToCartForm="ngForm" (ngSubmit)="addOrDeleteFromCart(event)">
+<form #addToCartForm="ngForm" (ngSubmit)="addToCart(event)">
 	<ng-template [ngIf]="isMerch(event)">
 		<mat-form-field>
 			<mat-select [(ngModel)]="color"
@@ -25,13 +25,13 @@
 
 	<mat-form-field>
 		<mat-select placeholder="Anzahl" name="amount" *ngFor="let options of [(amountOptions$ | async)]"
-					[(ngModel)]="model.amount" (ngModelChange)="updateShoppingCart()"
+					[(ngModel)]="model.amount"
 					[disabled]="(!isMerch(event) && (isPastEvent$ | async))
-								|| !((permissions)?.checkIn) || (isSoldOut(event, options))"
+								|| !((permissions)?.checkIn) || (isSoldOut$ | async)"
 					[required]="true">
-			<mat-option *ngIf="isSoldOut(event, options); else amountDropdown"
-						[value]="0"
-						[disabled]="true">
+			<mat-option *ngIf="isSoldOut$ | async; else amountDropdown"
+						[disabled]="true"
+						[value]="0">
 				-- Ausverkauft --
 			</mat-option>
 			<ng-template #amountDropdown>
@@ -48,8 +48,19 @@
 								|| !((permissions)?.checkIn)
 					"
 		mat-raised-button
-		color="{{(isPartOfShoppingCart$ | async) ? 'warn' : 'accent'}}"
+		color="accent"
 		class="add-to-cart-button">
-		{{(isPartOfShoppingCart$ | async) ? 'Aus dem Warenkorb löschen' : 'In den Warenkorb'}}
+		In den Warenkorb
 	</button>
 </form>
+
+
+<!--todo think through all the possible scenarios and their design-->
+<!--todo dialog where one can manage their reservation (only needs amount dropdown and save/update button)-->
+<div class="waiting-list-container" *ngIf="(permissions)?.checkIn && isSoldOut$ | async">
+	<span class="sold-out-disclaimer">
+		Dieser Artikel ist leider ausverkauft.
+		Schreib dich jetzt auf die Warteliste, um benachrichtigt zu werden, wenn die Kapazität erhöht wird.
+	</span>
+	<button mat-stroked-button class="waiting-list-link">Auf die Warteliste</button>
+</div>

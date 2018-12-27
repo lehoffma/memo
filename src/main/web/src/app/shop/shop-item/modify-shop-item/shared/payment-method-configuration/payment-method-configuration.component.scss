@@ -1,0 +1,45 @@
+@import "~@angular/material/theming";
+@import "theme";
+
+.payment-method-row {
+	padding: 1rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	cursor: pointer;
+
+	&:hover {
+		background: #ededed;
+	}
+
+	&.selected {
+		mat-checkbox {
+			color: mat-color($primary);
+		}
+	}
+
+	mat-checkbox {
+		margin-right: 12px;
+		color: grey;
+	}
+}
+
+.error-container {
+	color: mat-color($warn);
+	display: flex;
+	align-items: center;
+	padding: 0.5rem 0.8rem;
+	border-top: 1px solid mat-color($warn);
+	border-bottom: 1px solid mat-color($warn);
+
+	mat-icon {
+		margin-right: 8px;
+	}
+}
+
+.limit-config-container {
+	padding: 1rem;
+	border-bottom: 1px solid #E0E0E0;
+	display: flex;
+	justify-content: space-between;
+}

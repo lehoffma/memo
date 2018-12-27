@@ -1,29 +1,44 @@
 <div class="price-container">
-	<span class="actual-price">
-		{{price | number:'1.2-2'}}€
+	<span>
+		<span class="actual-price">
+			{{price | number:'1.2-2'}}€
+		</span>
+		<span class="base-price" *ngIf="price < _basePrice">
+			{{_basePrice | number:'1.2-2'}}€
+		</span>
+		<span class="percentage-saved" *ngIf="price < _basePrice">
+			(-{{percentageSaved | percent:'2.2-2':'en'}})
+		</span>
 	</span>
-	<span class="base-price" *ngIf="price < _basePrice">
-		{{_basePrice | number:'1.2-2'}}€
-	</span>
-	<span class="percentage-saved" *ngIf="price < _basePrice">
-		(-{{percentageSaved | percent:'2.2-2':'en'}})
-	</span>
-	<button mat-icon-button
-			class="discount-overlay-trigger"
-			*ngIf="(price < _basePrice) && showExplanation"
-			[matTooltip]="'Zeige Erklärung'"
-			[matTooltipPosition]="'below'"
-			(click)="openDiscountOverlay()"
-	>
-		<mat-icon>
-			help_outline
-		</mat-icon>
-	</button>
+	<div>
+		<button mat-icon-button class="additional-discount-possibilities-icon discount-overlay-trigger"
+				[matMenuTriggerFor]="menu"
+				*ngIf="showDiscountPossibilities && nonEligibleDiscounts.length > 0"
+			  matTooltip="{{nonEligibleDiscounts.length}} Discount{{nonEligibleDiscounts.length === 1 ? '' : 's'}} möglich">
+			<!--todo as dialog once we have more than 1 discount-->
+			<mat-icon matBadge="{{nonEligibleDiscounts.length}}">local_offer</mat-icon>
+		</button>
+
+		<mat-menu #menu="matMenu" class="discount-menu">
+			<a class="discount-menu--item" mat-menu-item *ngFor="let discount of nonEligibleDiscounts" routerLink="{{discount?.link.url}}">
+				<span>{{discount?.reason}}:</span>
+				<span class="amount">{{discount?.amount}}€</span>
+			</a>
+		</mat-menu>
+
+		<button mat-icon-button
+				class="discount-overlay-trigger"
+				*ngIf="(price < _basePrice) && showExplanation"
+				[matTooltip]="'Zeige Erklärung'"
+				[matTooltipPosition]="'below'"
+				(click)="openDiscountOverlay()"
+		>
+			<mat-icon>
+				help_outline
+			</mat-icon>
+		</button>
+	</div>
 </div>
-<div class="additional-discount-possibilities" *ngIf="showDiscountPossibilities">
-	<span *ngFor="let discountPossibility of nonEligibleDiscounts">
-		<a routerLink="{{discountPossibility.link.url}}">
-			{{discountPossibility.link.text}}
-		</a>
-	</span>
+<div class="additional-price-info" *ngIf="additionalInfo">
+	{{additionalInfo}}
 </div>

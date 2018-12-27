@@ -28,6 +28,11 @@ export class PriceRendererComponent implements OnInit {
 	 */
 	@Input() showDiscountPossibilities: boolean = true;
 
+	/**
+	 * (Optional) Additional info to be displayed next to the main price
+	 */
+	@Input() additionalInfo: string;
+
 	constructor(private matDialog: MatDialog,
 				private discountService: DiscountService) {
 	}

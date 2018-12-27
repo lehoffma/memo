@@ -1,6 +1,19 @@
+:host{
+	z-index: 100;
+}
+
 
 mat-toolbar {
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+
+	&.transparent {
+		box-shadow: none;
+		background: none;
+
+		.meilenwoelfe-logo {
+			display: none;
+		}
+	}
 }
 
 mat-toolbar, :host /deep/ mat-toolbar-row {
@@ -51,6 +64,7 @@ mat-toolbar, :host /deep/ mat-toolbar-row {
 		padding: 7px;
 		width: 50px;
 	}
+
 	img {
 		height: 50px;
 	}

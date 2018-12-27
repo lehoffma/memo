@@ -2,11 +2,14 @@ package memo.auth;
 
 import memo.data.UserRepository;
 import memo.model.User;
+import org.apache.logging.log4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
@@ -62,5 +65,17 @@ public class AuthenticationService {
                                         T item) {
         User user = this.parseNullableUserFromRequestHeader(request);
         return isAllowed.test(user, item);
+    }
+
+
+    public <T> void checkUserAuthorization(HttpServletRequest request,
+                                           BiPredicate<User, T> isAllowed,
+                                           T item,
+                                           Logger logger) {
+        //check if user is authorized to create item
+        if (!userIsAuthorized(request, isAllowed, item)) {
+            logger.error("User is not logged in or is not allowed to create this item");
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
     }
 }

@@ -9,6 +9,7 @@
 	padding-right: 1rem;
 	background: #F5F5F5;
 	margin-bottom: 1rem;
+
 	memo-cart-tour-participant:not(:first-child) {
 		border-top: 1px solid #ededed;
 	}
@@ -87,6 +88,7 @@
 		align-items: center;
 		display: flex;
 		border: 1px solid #eaeaea;
+		border-radius: 4px;
 	}
 
 	/deep/ .mat-select-value {

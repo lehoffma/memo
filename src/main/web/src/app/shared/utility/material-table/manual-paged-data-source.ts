@@ -37,7 +37,6 @@ export class ManualPagedDataSource<T> extends PagedDataSource<T> {
 				tap(it => {
 					const currentPage = {...this._pageEvents$.getValue()};
 					currentPage.pageIndex = 0;
-					console.log(currentPage);
 					this._pageEvents$.next(currentPage);
 				}),
 				tap(callback)

@@ -6,7 +6,7 @@
 }
 
 memo-add-to-cart-form {
-	margin-top: -2rem;
+	margin-top: 2rem;
 }
 
 :host /deep/ .centered-container > div {
@@ -43,6 +43,7 @@ memo-add-to-cart-form {
 
 	&:hover {
 		background: lighten($accent-default, 5%);
+
 		mat-icon {
 			margin-right: 0;
 		}
@@ -71,6 +72,10 @@ memo-add-to-cart-form {
 	}
 }
 
+.info-container-row {
+	background: white;
+}
+
 @media all and (min-width: 750px) {
 	:host {
 		display: flex;
@@ -83,7 +88,6 @@ memo-add-to-cart-form {
 
 	:host /deep/ memo-multi-image-container {
 		justify-content: center;
-		border-top: 1px solid #ededed;
 		border-right: 1px solid #ededed;
 	}
 

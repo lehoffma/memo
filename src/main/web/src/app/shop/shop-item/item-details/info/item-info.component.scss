@@ -6,17 +6,22 @@
 	display: block;
 	background-color: white;
 	color: $container-content--color;
-	padding: 1.5rem;
+	padding-top: 8px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid #e0e0e0;
+	margin-left: 16px;
+	margin-right: 16px;
 
 	.item-details-row {
 		display: flex;
-		border-bottom: 1px solid #ededed;
+		align-items: center;
+
 		background: white;
-		margin: -1.5rem;
-		margin-bottom: 1.5rem;
-		padding: 0.5rem 1rem;
 		font-size: 1.1rem;
-		min-height: 60px;
+
+		&:not(:first-child) {
+			margin-top: 24px;
+		}
 
 		mat-icon,
 		memo-capacity-renderer /deep/ mat-icon {
@@ -35,8 +40,36 @@
 		}
 	}
 
+	.waiting-list-row {
+		color: rgba(0, 0, 0, 0.8);
+
+		> div {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+			margin-left: 10px;
+
+			mat-icon {
+				transform: rotate(-90deg);
+			}
+		}
+
+		@media all and (min-width: 650px) {
+			> div mat-icon {
+				visibility: hidden;
+			}
+		}
+
+
+		&:hover > div mat-icon {
+			display: block;
+			visibility: visible;
+		}
+	}
+
+
 	.item-price-container {
-		border-top: 1px solid #ededed;
 
 		mat-icon {
 			margin-top: 10px;
@@ -48,13 +81,19 @@
 			width: 100%;
 
 			/deep/ .discount-overlay-trigger {
-				margin-left: calc(100% - 260px);
-				margin-top: -3px;
+				margin-top: -8px;
 			}
 
 			/deep/ .price-container {
+				display: flex;
+				align-items: center;
+				margin-top: 0.5rem;
+
+				.actual-price{
+					font-size: 1.3rem;
+				}
+
 				> span {
-					height: 40px;
 					display: flex;
 					align-items: center;
 				}
@@ -66,8 +105,7 @@
 		display: flex;
 		justify-content: space-between;
 		margin: -1.5rem;
-		padding: 1.5rem;
-		padding-bottom: 1rem;
+		padding: 1.5rem 1.5rem 1rem;
 		margin-bottom: 1rem;
 		background-color: $container-header--background-color;
 		color: $container-header--color;
@@ -81,12 +119,26 @@
 			div:first-child {
 				font-size: 1.1rem;
 			}
+
 			div:not(:first-child) {
 				font-size: 0.9rem;
 			}
 		}
 	}
 
+}
+
+.item-date-container {
+	.date-container {
+		display: flex;
+		flex-direction: column;
+		margin-left: 10px;
+
+		.relative-date {
+			color: rgba(0, 0, 0, 0.4);
+			font-size: 0.8rem;
+		}
+	}
 }
 
 :host /deep/ .sb-buttons.sb-style.sb-style-colors {

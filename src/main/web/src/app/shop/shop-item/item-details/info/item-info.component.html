@@ -5,6 +5,7 @@
 	<memo-price-renderer [price]="event.price"
 						 [discounts]="discounts$ | async"
 						 [showDiscountPossibilities]="true"
+						 [additionalInfo]="isTour(event) ? 'Tourpreis, zzgl. Ticketpreis' : ''"
 						 [showExplanation]="true">
 
 	</memo-price-renderer>
@@ -12,7 +13,10 @@
 
 <div class="item-date-container item-details-row" *ngIf="!isMerch(event)">
 	<mat-icon>access_time</mat-icon>
-	<span>{{event.date | dateFormat:'DD. MMMM YYYY'}}, {{event.date | dateFormat:'HH:mm'}} Uhr</span>
+	<div class="date-container">
+		<span>{{event.date | dateFormat:'DD. MMMM YYYY'}}, {{event.date | dateFormat:'HH:mm'}} Uhr</span>
+		<span class="relative-date">{{relativeToToday(event.date)}}</span>
+	</div>
 </div>
 
 <div class="available-tickets-container item-details-row" *ngIf="!isMerch(event)">
@@ -28,6 +32,7 @@
 										yellow: 0.01,
 										green: 0.9
 									}"
+							[waitingList]="waitingList$ | async"
 
 	>
 	</memo-capacity-renderer>

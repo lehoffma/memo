@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {EventService} from "../../shared/services/api/event.service";
 import {Event} from "../shared/model/event";
@@ -9,7 +9,7 @@ import {SearchFilterService} from "./search-filter.service";
 import {FilterOptionBuilder} from "./filter-option-builder.service";
 import {FilterOptionType} from "./filter-option-type";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
-import {debounceTime, defaultIfEmpty, distinctUntilChanged, filter, map, mergeMap, scan, takeUntil} from "rxjs/operators";
+import {debounceTime, defaultIfEmpty, distinctUntilChanged, filter, map, mergeMap, scan, startWith, takeUntil, tap} from "rxjs/operators";
 import {Filter} from "../../shared/model/api/filter";
 import {Sort} from "../../shared/model/api/sort";
 import {PageRequest} from "../../shared/model/api/page-request";
@@ -23,13 +23,15 @@ import {userPermissions} from "../../shared/model/user";
 import {CreateEventContextMenuComponent} from "../event-calendar-container/create-event-context-menu/create-event-context-menu.component";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
+import {FilterOptionFactoryService} from "./filter-option-factory.service";
 
 type SortingQueryParameter = { sortedBy: string; descending: string; };
 
 @Component({
 	selector: "memo-search-results",
 	templateUrl: "./search-results.component.html",
-	styleUrls: ["./search-results.component.scss"]
+	styleUrls: ["./search-results.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchResultComponent implements OnInit, OnDestroy {
 	private readonly PAGE_SIZE = 20;
@@ -71,7 +73,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 					});
 				return Filter.by(paramObject);
 			}),
-			distinctUntilChanged((x, y) => Filter.equal(x, y))
+			distinctUntilChanged((x, y) => Filter.equal(x, y)),
+			startWith(Filter.none())
 		);
 
 	page$ = new BehaviorSubject(PageRequest.first(this.PAGE_SIZE));
@@ -91,19 +94,25 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
 	onDestroy$: Subject<any> = new Subject<any>();
 
-	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
-	filterOptions$ = this._filterOptions$
+	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([
+		this.filterOptionFactory.category,
+		this.filterOptionFactory.price,
+		this.filterOptionFactory.date,
+	]);
+	filterOptions$: Observable<MultiLevelSelectParent[]> = this._filterOptions$
 		.asObservable()
 		.pipe(
 			debounceTime(200),
 			scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService)),
-			map(options => options.filter(option => option.children && option.children.length > 0))
+			map(options => options.filter(option => option.children && option.children.length > 0)),
+			tap(it => console.log(it))
 		);
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private searchFilterService: SearchFilterService,
 				private matDialog: MatDialog,
 				private filterOptionBuilder: FilterOptionBuilder,
+				private filterOptionFactory: FilterOptionFactoryService,
 				private loginService: LogInService,
 				private router: Router,
 				private eventService: EventService) {

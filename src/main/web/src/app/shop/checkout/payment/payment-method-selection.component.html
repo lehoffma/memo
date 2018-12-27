@@ -1,15 +1,19 @@
 <div>
 	<!--<div><img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg"/></div>-->
-	<div *ngFor="let paymentMethod of paymentMethods" (click)="selectedMethod = paymentMethod"
-		 [ngClass]="{
-			'selected': selectedMethod === paymentMethod,
-			'badge-container': selectedMethod === paymentMethod
-		}">
-		<label for="{{'radioButton' + paymentMethod}}">
-			<span>{{paymentMethod}}</span>
-		</label>
-		<input type="radio" name="method" [(ngModel)]="selectedMethod" id="{{'radioButton' + paymentMethod}}"
-			   [value]="paymentMethod" [hidden]="true">
-	</div>
+	<ng-container *ngFor="let paymentMethod of paymentMethods">
+		<div (click)="selectedMethod = paymentMethod"
+			 *ngIf="allowedMethods && allowedMethods[paymentMethod]"
+			 [ngClass]="{
+				'selected': selectedMethod === paymentMethod,
+				'badge-container': selectedMethod === paymentMethod
+			 }">
+			<label for="{{'radioButton' + paymentMethod}}">
+				<span>{{paymentMethod}}</span>
+			</label>
+			<input type="radio" name="method"
+				   [(ngModel)]="selectedMethod" id="{{'radioButton' + paymentMethod}}"
+				   [value]="paymentMethod" [hidden]="true">
+		</div>
 
+	</ng-container>
 </div>

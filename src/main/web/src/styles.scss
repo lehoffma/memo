@@ -1,7 +1,6 @@
 @import "theme";
 @import "mixins";
-@import '~@ngx-share/button/styles/share-buttons';
-@import '~@ngx-share/button/styles/themes/default/default-theme';
+@import "~@ngx-share/button/themes/default/default-theme";
 
 html, body, main, memo-app {
 	min-height: 100%;
@@ -152,6 +151,38 @@ mat-select {
 		transform: translateY(-1px);
 		@include mat-elevation(3);
 		@include mat-elevation-transition;
+	}
+}
+
+
+.small-outline-formfield.mat-form-field-appearance-outline {
+	width: 140px !important;
+	margin: -0.5rem !important;
+
+	.mat-form-field-wrapper {
+		margin: 0 !important;
+		padding: 0 !important;
+
+		.mat-form-field-flex {
+			margin: 0 !important;
+
+			.mat-form-field-outline {
+				top: 0 !important;
+			}
+
+			.mat-form-field-infix {
+				padding: 0.5em 0 !important;
+				border: none !important;
+
+				.mat-select-arrow-wrapper {
+					transform: none !important;
+				}
+
+				.mat-form-field-label {
+					transform: translateY(-1.19375em) scale(0.75) !important;
+				}
+			}
+		}
 	}
 }
 

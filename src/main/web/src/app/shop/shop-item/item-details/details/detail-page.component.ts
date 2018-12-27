@@ -81,6 +81,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 		edit: boolean;
 		conclude: boolean;
 		orders: boolean;
+		waitingList: boolean;
 		entries: boolean;
 		delete: boolean;
 	}> = combineLatest(
@@ -92,6 +93,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 				checkIn: canCheckIn(currentUser, event),
 				edit: canEdit(currentUser, event),
 				conclude: canConclude(currentUser, event),
+				waitingList: canEdit(currentUser, event),
 				orders: canReadOrders(currentUser, event),
 				entries: canReadEntries(currentUser, event),
 				delete: canDeleteEntries(currentUser, event)
@@ -118,8 +120,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 				}
 				if (event.groupPicture) {
 					return [...event.images, event.groupPicture];
-				}
-				else {
+				} else {
 					return [...event.images];
 				}
 			})
@@ -167,6 +168,8 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 	];
 	currentSection$ = new BehaviorSubject<string>("info");
 	@ViewChildren(SpiedOnElementDirective) elementRefs: QueryList<SpiedOnElementDirective>;
+
+	//todo redesign shopitem details + display paymentConfig
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private router: Router,

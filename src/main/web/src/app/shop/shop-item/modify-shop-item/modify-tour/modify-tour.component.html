@@ -137,6 +137,13 @@
 			</memo-item-permissions-input>
 		</memo-item-details-content>
 
+		<memo-item-details-content [title]="'Bezahlung'" class="no-padding">
+			<memo-payment-method-configuration
+				[formGroup]="formGroup.get('payment-config')">
+
+			</memo-payment-method-configuration>
+		</memo-item-details-content>
+
 		<memo-item-details-content [title]="'Verantwortliche User'" class="no-padding">
 			<memo-responsible-user-input [previousValue]="previousValue?.author"
 										 [formControl]="formGroup.get('responsible-users')">

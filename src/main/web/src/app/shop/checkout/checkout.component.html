@@ -6,7 +6,7 @@
 	</memo-item-details-content>
 
 	<memo-item-details-content [title]="'Bezahlung'" class="no-padding mat-elevation-z3">
-		<memo-payment [formGroup]="formGroup.get('payment')"></memo-payment>
+		<memo-payment [allowedMethods]="allowedMethods$ | async" [formGroup]="formGroup.get('payment')"></memo-payment>
 	</memo-item-details-content>
 	<div class="checkout-total mat-elevation-z3">
 		<span>{{total$ | async | currency:'EUR':'symbol'}}</span>
