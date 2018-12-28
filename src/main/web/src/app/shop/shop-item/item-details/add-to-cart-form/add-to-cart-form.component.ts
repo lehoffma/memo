@@ -1,10 +1,10 @@
 import {ChangeDetectionStrategy, Component, Input, OnInit} from "@angular/core";
-import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
+import {BehaviorSubject, combineLatest, forkJoin, Observable, of} from "rxjs";
 import {Event, maximumItemAmount} from "../../../shared/model/event";
 import {Tour} from "../../../shared/model/tour";
 import {Merchandise} from "../../../shared/model/merchandise";
 import {MerchStock, MerchStockList} from "../../../shared/model/merch-stock";
-import {defaultIfEmpty, filter, map, mergeMap} from "rxjs/operators";
+import {defaultIfEmpty, filter, map, mergeMap, take} from "rxjs/operators";
 import {ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
 import {MerchColor} from "../../../shared/model/merch-color";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
@@ -19,6 +19,9 @@ import {StockService} from "../../../../shared/services/api/stock.service";
 import {WaitingListService} from "../../../../shared/services/api/waiting-list.service";
 import {WaitingListEntry} from "../../../shared/model/waiting-list";
 import {LogInService} from "../../../../shared/services/api/login.service";
+import {MatDialog} from "@angular/material";
+import {ManageWaitingListDialogComponent} from "./manage-waiting-list-dialog.component";
+import {integerToType} from "../../../shared/model/event-type";
 
 @Component({
 	selector: "memo-add-to-cart-form",
@@ -82,22 +85,32 @@ export class AddToCartFormComponent implements OnInit {
 	);
 
 	waitingList$: Observable<WaitingListEntry[]> = this._event$.pipe(
-		mergeMap(event => this.waitingListService.valueChanges(event.id, this.waitingListService.getByEventId.bind(this))),
+		mergeMap(event => this.waitingListService.valueChanges(event.id, this.waitingListService.getByEventId.bind(this.waitingListService))),
 	);
 
-	isPartOfWaitingList$ = combineLatest(
+	waitingListEntryOfUser$: Observable<WaitingListEntry[]> = combineLatest(
 		this.loginService.currentUser$,
 		this.waitingList$,
 		this._color$,
 		this._size$
 	).pipe(
 		map(([user, waitingList, color, size]) => {
-			return waitingList.some(entry =>
+			console.log(waitingList);
+			if (!waitingList || !user) {
+				return [];
+			}
+
+			return waitingList.filter(entry =>
 				(color === entry.color || (color && entry.color && color.hex === entry.color.hex))
 				&& (size === entry.size)
 				&& entry.user === user.id
 			);
-		})
+		}),
+	);
+
+	isPartOfWaitingList$ = this.waitingListEntryOfUser$.pipe(
+		map(entries => entries.length > 0),
+		map(it => true)
 	);
 
 	private _cache: ObservableCache<number> = new ObservableCache<number>()
@@ -115,6 +128,7 @@ export class AddToCartFormComponent implements OnInit {
 	constructor(private participantService: OrderedItemService,
 				private shoppingCartService: ShoppingCartService,
 				private waitingListService: WaitingListService,
+				private matDialog: MatDialog,
 				private loginService: LogInService,
 				private stockService: StockService,
 				private capacityService: CapacityService) {
@@ -231,7 +245,7 @@ export class AddToCartFormComponent implements OnInit {
 
 	isSoldOut(event, options: number[], color: MerchColor, size: string): boolean {
 		if (event) {
-			return true;
+			return false;
 		}
 
 		return ((this.isMerch(event) && !!size && !!color)
@@ -311,4 +325,36 @@ export class AddToCartFormComponent implements OnInit {
 			)
 	}
 
+	openWaitingListDialog() {
+		combineLatest(
+			this.loginService.currentUser$,
+			this.waitingListEntryOfUser$
+		).pipe(take(1))
+			.subscribe(([user, entries]) => {
+				let dialogRef = this.matDialog.open(ManageWaitingListDialogComponent,
+					{
+						data: {
+							waitingList: [...entries] as WaitingListEntry[],
+							eventType: integerToType(this.event.type),
+							event: this.event,
+							user: user
+						}
+					}
+				);
+				dialogRef.afterClosed().subscribe(newEntries => {
+					if(!newEntries){
+						return;
+					}
+					//id === -1 => add
+					//else: search if something has changed (if yes => modify)
+					//see if every id of oldEntries is still there in newEntries, otherwise => call delete
+					console.log(entries);
+					console.log(newEntries);
+				})
+			});
+	}
+
+	removeFromWaitingList() {
+		//todo remove all values contained in waitingListEntryOfUser
+	}
 }

@@ -11,6 +11,7 @@ import {CartTourParticipantComponent} from "./cart/cart-entry/cart-tour-particip
 import {SharedModule} from "../../shared/shared.module";
 import {ShopItemDetailsModule} from "../shop-item/item-details/shop-item-details.module";
 import {UserModule} from "../../user/user.module";
+import {SharedCheckoutModule} from "./shared-checkout.module";
 
 @NgModule({
 	imports: [
@@ -22,14 +23,16 @@ import {UserModule} from "../../user/user.module";
 		CheckoutRoutingModule,
 		ShopItemDetailsModule,
 		SharedModule,
-		SignUpModule
+		SignUpModule,
+		SharedCheckoutModule
 	],
 	declarations: [
 		routedComponents,
 		CartEntryComponent,
 		PaymentMethodSelectionComponent,
 		PaymentComponent,
-		CartTourParticipantComponent
+	],
+	exports: [
 	]
 })
 export class CheckoutModule {

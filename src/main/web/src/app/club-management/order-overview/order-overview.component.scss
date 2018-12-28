@@ -94,11 +94,11 @@ $options-breakpoint: 850px;
 	display: grid;
 	grid-column-gap: 0.5rem;
 	grid-row-gap: 1rem;
-	margin-right: 1rem;
 	margin-bottom: 1rem;
 
 	@media all and (min-width: $options-breakpoint) {
 		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+		margin-right: 1rem;
 	}
 }
 

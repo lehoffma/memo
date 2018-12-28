@@ -25,6 +25,9 @@ import {ItemInfoHeaderComponent} from "./item-info-header/item-info-header.compo
 import {AddToCartFormComponent} from "./add-to-cart-form/add-to-cart-form.component";
 import {DetailPageComponent} from "./details/detail-page.component";
 import { MilesPipe } from './participants/miles.pipe';
+import { ManageWaitingListDialogComponent } from './add-to-cart-form/manage-waiting-list-dialog.component';
+import {CheckoutModule} from "../../checkout/checkout.module";
+import {SharedCheckoutModule} from "../../checkout/shared-checkout.module";
 
 @NgModule({
 	imports: [
@@ -35,6 +38,7 @@ import { MilesPipe } from './participants/miles.pipe';
 		ShareButtonsModule,
 		SharedModule,
 		SharedShopModule,
+		SharedCheckoutModule,
 		AgmCoreModule,
 		ShopItemDetailsRoutingModule,
 		CommentsSectionModule
@@ -62,12 +66,14 @@ import { MilesPipe } from './participants/miles.pipe';
 		ItemInfoHeaderComponent,
 		AddToCartFormComponent,
 		MilesPipe,
+		ManageWaitingListDialogComponent,
 	],
 	entryComponents: [
 		FullNameTableCellComponent,
 		ItemImagePopupComponent,
 		ModifyParticipantComponent,
-		OrderStatusTableCellComponent
+		OrderStatusTableCellComponent,
+		ManageWaitingListDialogComponent,
 	],
 	exports: [
 		ItemDetailsContentComponent,

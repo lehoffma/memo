@@ -23,11 +23,12 @@
 
 .participant-options {
 	display: flex;
+	flex-wrap: wrap;
 	margin-top: 15px;
 }
 
-.needs-ticket-container {
-	margin-left: 15px;
+.is-driver-container {
+	margin-right: 15px;
 }
 
 .remove-button-container {

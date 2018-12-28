@@ -14,4 +14,6 @@ $accent-default: mat-color($accent);
 $warn: mat-palette($mat-red);
 $warn-default: mat-color($warn);
 
+$yellow: $mat-yellow;
+
 $theme: mat-light-theme($primary, $accent, $warn);

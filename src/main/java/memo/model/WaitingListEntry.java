@@ -16,8 +16,6 @@ public class WaitingListEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer amount;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     @JsonSerialize(using = ShopItemIdSerializer.class)
@@ -32,10 +30,31 @@ public class WaitingListEntry {
 
     private String size;
 
-    //todo?
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Color color;
+
+    private Boolean isDriver;
+
+    private Boolean needsTicket;
+
+    public Boolean getIsDriver() {
+        return isDriver;
+    }
+
+    public WaitingListEntry setIsDriver(Boolean driver) {
+        isDriver = driver;
+        return this;
+    }
+
+    public Boolean getNeedsTicket() {
+        return needsTicket;
+    }
+
+    public WaitingListEntry setNeedsTicket(Boolean needsTicket) {
+        this.needsTicket = needsTicket;
+        return this;
+    }
 
     public String getSize() {
         return size;
@@ -64,21 +83,12 @@ public class WaitingListEntry {
         return this;
     }
 
-    public Integer getAmount() {
-        return amount;
-    }
-
     public ShopItem getShopItem() {
         return shopItem;
     }
 
     public WaitingListEntry setShopItem(ShopItem shopItem) {
         this.shopItem = shopItem;
-        return this;
-    }
-
-    public WaitingListEntry setAmount(Integer amount) {
-        this.amount = amount;
         return this;
     }
 

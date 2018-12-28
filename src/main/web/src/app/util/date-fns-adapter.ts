@@ -32,7 +32,7 @@ function isDisplayFormat(value: any): value is DisplayFormat {
 	return value.day !== undefined || value.month !== undefined || value.year !== undefined;
 }
 
-function range<T>(length: number, mappingFunction: (index: number) => T): T[] {
+export function range<T>(length: number, mappingFunction: (index: number) => T): T[] {
 	return Array.from(Array(length).keys())
 		.map((it, i) => i + 1)
 		.map(mappingFunction);

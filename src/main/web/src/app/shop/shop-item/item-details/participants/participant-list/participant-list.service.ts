@@ -12,7 +12,7 @@ import {combineLatest, Observable} from "rxjs";
 import {ModifyParticipantComponent} from "./modify-participant/modify-participant.component";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {UserService} from "../../../../../shared/services/api/user.service";
-import {CapacityService} from "../../../../../shared/services/api/capacity.service";
+import {CapacityService, EventCapacity} from "../../../../../shared/services/api/capacity.service";
 import {ActionPermissions} from "../../../../../shared/utility/material-table/util/action-permissions";
 import {ParticipantDataSource} from "./participant-data-source";
 
@@ -63,7 +63,7 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 							let eventType = EventType[urls[0].path];
 							let eventId = +urls[1].path;
 
-							return this.capacityService.valueChanges(eventId)
+							return this.capacityService.valueChanges<EventCapacity>(eventId)
 						}),
 						filter(it => it !== null),
 						map(it => it.capacity > 0)

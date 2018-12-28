@@ -1,0 +1,47 @@
+<h2 matDialogTitle>Warteschlange</h2>
+
+<mat-dialog-content>
+	<div class="waiting-list-header">
+		<label>
+			Anzahl
+		</label>
+		<mat-form-field appearance="outline" class="cart-entry-amount small-outline-formfield">
+			<mat-select class="amount" [(ngModel)]="amount" (ngModelChange)="updateEventAmount(amount)"
+						placeholder=" ">
+				<mat-option *ngFor="let amount of amountOptions" [value]="amount">
+					{{amount}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+	</div>
+
+	<ng-container *ngIf="waitingList.length > 0">
+		<ng-container [ngSwitch]="data.eventType">
+			<div class="participants-container" *ngSwitchCase="eventType.tours">
+				<memo-cart-tour-participant
+					*ngFor="let waitingListEntry of waitingList; let i = index"
+					[index]="i + 1"
+					[name]="'Interessierter'"
+					[isDriver]="waitingListEntry.isDriver"
+					[needsTicket]="waitingListEntry.needsTicket"
+					(optionChange)="waitingListEntry.isDriver = $event.isDriver; waitingListEntry.needsTicket = $event.needsTicket"
+					(onRemove)="waitingList.splice(i, 1); amount = waitingList.length"
+				>
+
+				</memo-cart-tour-participant>
+			</div>
+		</ng-container>
+	</ng-container>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+	<button mat-button matDialogClose>
+		Abbrechen
+	</button>
+
+	<button mat-raised-button [matDialogClose]="waitingList" color="accent">
+		Speichern
+	</button>
+</mat-dialog-actions>

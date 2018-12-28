@@ -54,13 +54,36 @@
 	</button>
 </form>
 
-
-<!--todo think through all the possible scenarios and their design-->
-<!--todo dialog where one can manage their reservation (only needs amount dropdown and save/update button)-->
 <div class="waiting-list-container" *ngIf="(permissions)?.checkIn && isSoldOut$ | async">
+	<!--1. sold out, not on waiting list yet-->
+	<!--2. sold out, but on waiting list-->
 	<span class="sold-out-disclaimer">
 		Dieser Artikel ist leider ausverkauft.
+	</span>
+	<span *ngIf="!(isPartOfWaitingList$ | async) else alreadyPartOfWaitingList" class="waiting-list-call-to-action">
 		Schreib dich jetzt auf die Warteliste, um benachrichtigt zu werden, wenn die Kapazität erhöht wird.
 	</span>
-	<button mat-stroked-button class="waiting-list-link">Auf die Warteliste</button>
+	<ng-template #alreadyPartOfWaitingList>
+		<span class="already-part-of-waiting-list">
+			Du stehst auf der Warteliste. Sobald {{isMerch(event) ? 'neue Artikel eintreffen' : 'die Kapazität erhöht wird'}}, wirst du von uns benachrichtigt.
+		</span>
+	</ng-template>
+	<button mat-stroked-button class="waiting-list-link" (click)="openWaitingListDialog()">
+		{{(isPartOfWaitingList$ | async) ? 'Warteliste betrachten' : 'Auf die Warteliste'}}
+	</button>
+</div>
+<!--3. not sold out, but on waiting list (because it was sold out previously)-->
+<div class="outdated-waiting-list-container mat-elevation-z1"
+	 *ngIf="(permissions)?.checkIn && !(isSoldOut$ | async) && (isPartOfWaitingList$ | async)">
+	<span class="outdated-hint">
+		Du bist auf der Warteliste, obwohl noch {{isMerch(event) ? 'Artikel vorhanden sind' : 'Plätze frei sind'}}.
+	</span>
+	<div class="waiting-list-link-container">
+		<button mat-stroked-button class="outdated-waiting-list-link" (click)="openWaitingListDialog()">
+			Warteliste
+		</button>
+		<button mat-button class="waiting-list-remove-button" color="warn" (click)="removeFromWaitingList()">
+			Austragen
+		</button>
+	</div>
 </div>

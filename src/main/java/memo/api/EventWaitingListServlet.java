@@ -56,11 +56,11 @@ public class EventWaitingListServlet extends AbstractApiServlet<ShopItem> {
 
     protected List<ModifyPrecondition<WaitingListEntry>> preconditions(WaitingListEntry item) {
         return Arrays.asList(
-                new ModifyPrecondition<>(
-                        listEntry -> listEntry.getAmount() > item.getShopItem().getPaymentLimit(),
-                        "Amount has to be below max allowed amount.",
-                        Response.Status.BAD_REQUEST
-                )
+//                new ModifyPrecondition<>(
+//                        listEntry -> listEntry.getAmount() > item.getShopItem().getPaymentLimit(),
+//                        "Amount has to be below max allowed amount.",
+//                        Response.Status.BAD_REQUEST
+//                )
         );
     }
 

@@ -11,7 +11,7 @@ import {Discount} from "../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../shared/services/discount.service";
 import {MatSnackBar} from "@angular/material";
 import {EventService} from "../../../../shared/services/api/event.service";
-import {CapacityService} from "../../../../shared/services/api/capacity.service";
+import {CapacityService, EventCapacity} from "../../../../shared/services/api/capacity.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {WaitingListService} from "../../../../shared/services/api/waiting-list.service";
 import {Sort} from "../../../../shared/model/api/sort";
@@ -47,7 +47,7 @@ export class ItemInfoComponent implements OnInit {
 	public available$ = this._event$
 		.pipe(
 			filter(event => event.id >= 0),
-			mergeMap(event => this.capacityService.valueChanges(event.id)),
+			mergeMap(event => this.capacityService.valueChanges<EventCapacity>(event.id)),
 			filter(it => it !== null),
 			map(it => it.capacity)
 		);
@@ -56,7 +56,7 @@ export class ItemInfoComponent implements OnInit {
 		filter(event => event.id >= 0),
 		mergeMap(event => this.waitingListService.getByEventId(event.id, Sort.none())),
 		filter(it => it !== null),
-		map(it => it.reduce((sum, entry) => sum + entry.amount, 0))
+		map(it => it.reduce((sum, entry) => sum + 1, 0))
 	);
 
 	constructor(private participantService: OrderedItemService,
