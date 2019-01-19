@@ -36,14 +36,6 @@ export class EntryCategoryService extends ServletService<EntryCategory> {
 		)
 	}
 
-	/**
-	 *
-	 * @param {number} id
-	 * @returns {Observable<Object>}
-	 */
-	remove(id: number): Observable<Object> {
-		return undefined;
-	}
 
 	addOrModify(requestMethod: AddOrModifyRequest, entry: EntryCategory, options?: any): Observable<EntryCategory> {
 		return undefined;

@@ -54,25 +54,27 @@ mat-card {
 
 			&:not(.past-event) {
 				.event-date-top {
-					color: $primary-default;
+					color: primary();
 				}
+
 				.event-date-bottom {
-					color: $accent-default;
+					color: accent();
 				}
 			}
 
 			&.past-event {
 				.event-date-top,
 				.event-date-bottom {
-					color: grey;
+					color: grey(700);
 				}
 			}
 
 			.event-date-top {
-				font-size: 1.5rem;
+				font-size: font-size(medium-large);
 			}
+
 			.event-date-bottom {
-				font-size: 1.7rem;
+				font-size: font-size(medium-large);
 			}
 		}
 
@@ -83,7 +85,7 @@ mat-card {
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;
-			font-size: 1.1rem;
+			font-size: font-size(small-medium);
 			border-left: 1px solid grey;
 			padding-left: 15px;
 

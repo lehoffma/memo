@@ -1,15 +1,15 @@
 @import "theme";
 
 .red {
-	color: $warn-default;
+	color: warn();
 }
 
 .yellow {
-	color: #ff9800;
+	color: yellow(800);
 }
 
 .green {
-	color: $primary-default;
+	color: primary();
 }
 
 .capacity-container {
@@ -20,10 +20,16 @@
 
 .waiting-list-row,
 .waiting-list-row > a {
-	font-size: 0.8rem;
-	color: rgba(0, 0, 0, 0.4);
+	font-size: font-size(smallest);
+	color: grey(500);
 }
 
 .waiting-list-row > a {
-	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+	border-bottom: 1px solid grey(500);
+
+	&.disabled {
+		text-decoration: none;
+		border-bottom-color: transparent;
+		pointer-events: none;
+	}
 }

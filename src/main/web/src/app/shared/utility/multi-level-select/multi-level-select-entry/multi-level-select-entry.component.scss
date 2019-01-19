@@ -9,6 +9,7 @@
 .multi-level-select-entry-parent {
 	display: flex;
 	justify-content: space-between;
+
 	.mat-icon {
 		margin-right: 0;
 		right: 0;
@@ -18,18 +19,18 @@
 
 .multi-level-select-entry-child {
 	text-align: right;
-	background-color: darken(#ffffff, 10%);
+	background-color: grey(50);
 
 	&:hover {
-		background-color: darken(white, 15%) !important;
+		background-color: grey(100) !important;
 	}
 
 	&.selected {
-		background-color: mat-color($accent, 700);
+		background-color: accent(700);
 		color: white;
 
 		&:hover {
-			background-color: $accent-default !important;
+			background-color: accent() !important;
 
 		}
 	}

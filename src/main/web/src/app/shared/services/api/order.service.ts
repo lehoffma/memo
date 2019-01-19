@@ -99,20 +99,6 @@ export class OrderService extends ServletService<Order> {
 
 	/**
 	 *
-	 * @param {number} id
-	 * @returns {Observable<Object>}
-	 */
-	remove(id: number): Observable<Object> {
-		return this.http.delete(this.baseUrl, {
-			params: new HttpParams().set("id", "" + id)
-		})
-			.pipe(
-				tap(() => this._cache.invalidateById(id)),
-			);
-	}
-
-	/**
-	 *
 	 * @param {Order} order
 	 */
 	updateCapacities(order: Order) {

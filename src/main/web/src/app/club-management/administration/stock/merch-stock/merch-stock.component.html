@@ -1,4 +1,12 @@
-<div class="stock-options-sidebar mat-elevation-z1 desktop">
+<div class="stock-options-sidebar desktop">
+	<a mat-raised-button *ngIf="userCanAddMerch$ | async" color="accent"
+	   [matTooltip]="'Artikel hinzufügen'"
+	   [matTooltipPosition]="'above'"
+	   routerLink="/create/merch"
+	   class="add-merch-button-desktop">
+		Hinzufügen
+	</a>
+
 	<memo-filtering-menu class="desktop" [filterOptions]="filterOptions$ | async">
 
 	</memo-filtering-menu>
@@ -10,18 +18,6 @@
 		<memo-filtering-menu class="mobile" [filterOptions]="filterOptions$ | async">
 
 		</memo-filtering-menu>
-
-		<div class="add-button">
-
-			<a mat-raised-button *ngIf="userCanAddMerch$ | async"
-			   [matTooltip]="'Artikel hinzufügen'"
-			   [matTooltipPosition]="'above'"
-			   routerLink="/create/merch"
-			   class="toolbar-add-button">
-				Hinzufügen
-			</a>
-
-		</div>
 
 		<memo-sorting-dropdown [sortingOptions]="sortingOptions">
 

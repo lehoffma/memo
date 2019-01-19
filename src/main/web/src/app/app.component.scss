@@ -6,7 +6,7 @@
 
 mat-sidenav-container {
 	height: 100%;
-	background-color: rgba(255, 255, 255, 0);
+	background: transparent;
 
 	/deep/ .mat-drawer-content > div {
 		min-height: 100%;
@@ -15,7 +15,7 @@ mat-sidenav-container {
 	}
 }
 
-.router-outlet-container{
+.router-outlet-container {
 	flex: 1;
 }
 

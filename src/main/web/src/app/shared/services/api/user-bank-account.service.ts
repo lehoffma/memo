@@ -28,23 +28,6 @@ export class UserBankAccountService extends ServletService<BankAccount> {
 			);
 	}
 
-
-	/**
-	 *
-	 * @param {number} id
-	 * @param args
-	 * @returns {Observable<Response>}
-	 */
-	remove(id: number): Observable<Object> {
-		return this.http.delete(this.baseUrl, {
-			params: new HttpParams().set("id", "" + id)
-		})
-			.pipe(
-				tap(() => this._cache.invalidateById(id))
-			);
-	}
-
-
 	/**
 	 *
 	 * @param {Address[]} previousValue

@@ -1,4 +1,5 @@
 @import "~@angular/material/theming";
+@import "theme";
 
 :host {
 	display: flex;
@@ -30,7 +31,7 @@ form,
 }
 
 .success-message {
-	color: green;
+	color: primary();
 }
 
 @media all and (min-width: 600px) {

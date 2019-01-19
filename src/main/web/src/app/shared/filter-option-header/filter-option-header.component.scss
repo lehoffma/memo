@@ -1,15 +1,16 @@
+@import "theme";
 
 :host {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin: 0 0 1rem;
-	border-bottom: 1px solid #cdcdcd;
-	color: grey;
+	height: 40px;
+	color: grey(600);
 }
 
 h3 {
-	font-weight: 500;
-	font-size: 1rem;
+	font-size: font-size(smaller);
 	text-transform: uppercase;
+	margin: 0;
+	font-weight: 500;
 }

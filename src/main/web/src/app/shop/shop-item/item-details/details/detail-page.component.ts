@@ -28,6 +28,8 @@ import {OrderedItem} from "../../../../shared/model/ordered-item";
 import {OrderStatus} from "../../../../shared/model/order-status";
 import {Order} from "../../../../shared/model/order";
 import {OrderService} from "../../../../shared/services/api/order.service";
+import {UserService} from "../../../../shared/services/api/user.service";
+import {GroupedParticipants} from "../participants/participants.component";
 
 @Component({
 	selector: "memo-detail-page",
@@ -44,16 +46,33 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 				...ids.map(id => this.addressService.getById(id))
 			)),
 		);
-	participants$ = this.event$
+	participants$: Observable<GroupedParticipants[]> = this.event$
 		.pipe(
 			filter(item => item.id !== -1),
-			mergeMap((item: Event) => this.participantService.getParticipantUsersByEvent(item.id, PageRequest.first(), Sort.none())),
+			mergeMap((item: Event) => this.participantService.getParticipantUsersByEvent(item.id, PageRequest.all(), Sort.none())),
 			map(it => it.content),
-			//remove duplicate entries
-			map((participants: ParticipantUser[]) => participants.reduce((acc: ParticipantUser[], user) => {
-				const index = acc.find(it => it.user.id === user.user.id);
-				return index === undefined ? [...acc, user] : acc;
-			}, []))
+			//group by user
+			map((participants: ParticipantUser[]) => participants.reduce((acc: GroupedParticipants[], user) => {
+				const index = acc.findIndex(it => it.user.id === user.user.id);
+				if (index >= 0) {
+					if (user.isDriver) {
+						acc[index].isDriverAmount++;
+					}
+					if (user.needsTicket) {
+						acc[index].needsTicketAmount++;
+					}
+					acc[index].extraPersons++;
+				} else {
+					acc.push({
+						user: user.user,
+						isDriverAmount: user.isDriver ? 1 : 0,
+						needsTicketAmount: user.needsTicket ? 1 : 0,
+						extraPersons: 0
+					});
+				}
+
+				return acc;
+			}, [])),
 		);
 	participantsLink$ = combineLatest(this.event$, this.loginService.currentUser$)
 		.pipe(
@@ -169,10 +188,9 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 	currentSection$ = new BehaviorSubject<string>("info");
 	@ViewChildren(SpiedOnElementDirective) elementRefs: QueryList<SpiedOnElementDirective>;
 
-	//todo redesign shopitem details + display paymentConfig
-
 	constructor(private activatedRoute: ActivatedRoute,
 				private router: Router,
+				private userService: UserService,
 				private zone: NgZone,
 				private participantService: OrderedItemService,
 				private orderService: OrderService,

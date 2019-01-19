@@ -1,3 +1,4 @@
+@import "theme";
 
 form {
 	display: flex;
@@ -15,7 +16,7 @@ button {
 }
 
 .loader-wrapper {
-	background-color: rgba(0, 0, 0, 0.3);
+	background-color: grey(900, 0.3)
 }
 
 .payment-selection-body {

@@ -25,18 +25,17 @@
 		height: 150px;
 		width: 100%;
 		text-align: center;
-		background: $primary-default;
-		color: white;
+		@include background-primary();
 
 		mat-icon {
-			font-size: 3rem;
+			font-size: 48px;
 			height: 48px;
 			width: 48px;
 		}
 	}
 
 	.order-complete-prompt-text {
-		font-size: 1.2rem;
+		font-size: font-size(medium);
 		font-weight: 400;
 		display: flex;
 		justify-content: center;

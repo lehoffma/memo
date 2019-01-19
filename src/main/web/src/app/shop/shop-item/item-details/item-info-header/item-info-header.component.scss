@@ -1,24 +1,25 @@
+@import "theme";
 
 :host {
 	display: flex;
 	justify-content: space-between;
-	color: rgba(0, 0, 0, 0.84);
+	color: grey(900);
 	padding: 1rem;
 
-	background: #fafafa;
+	background: grey(100);
 
 	> button,
 	> .object-title > span {
-		font-size: 1.3rem;
+		font-size: font-size(medium);
 	}
 
 	button {
-		margin-top: -0.5rem;
+		margin-top: -8px;
 	}
 
 	.responsible-person {
-		font-size: 0.85em;
-		color: #757575;
+		font-size: font-size(smallest);
+		color: grey(700);
 		display: flex;
 
 		> span {
@@ -28,7 +29,7 @@
 		memo-profile-link {
 			&:not(:last-child)::after {
 				content: ",";
-				color: #2196F3;
+				color: accent();
 				margin-left: -2px;
 			}
 		}

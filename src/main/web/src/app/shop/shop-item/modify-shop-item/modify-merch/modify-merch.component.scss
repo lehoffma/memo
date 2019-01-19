@@ -27,11 +27,11 @@
 }
 
 .information-container /deep/ .expandable-table-header.expandable-table-row {
-	border-bottom: 1px solid #ededed;
+	border-bottom: 1px solid grey(200);
 	padding: 1rem 1rem 0.5rem;
 
 	.expandable-table-header-title {
-		font-size: 1.5rem;
+		font-size: font-size(medium-large);
 		font-weight: 200;
 	}
 }
@@ -50,7 +50,7 @@
 
 memo-modify-merch-stock {
 	display: block;
-	border-top: 1px solid #ededed;
+	border-top: 1px solid grey(200);
 }
 
 @media all and (min-width: 800px) {
@@ -77,5 +77,5 @@ memo-modify-merch-stock {
 //	padding-right: 1rem;
 //	margin-top: -1.2rem;
 //	background: white;
-//	border-bottom: 1px solid #ededed;
+//	border-bottom: 1px solid grey(200);
 //}

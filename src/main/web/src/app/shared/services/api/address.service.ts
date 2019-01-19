@@ -26,20 +26,6 @@ export class AddressService extends ServletService<Address> {
 	}
 
 	/**
-	 *
-	 * @param id
-	 * @returns {Observable<T>}
-	 */
-	remove(id: number): Observable<Object> {
-		return this.performRequest(this.http.delete(this.baseUrl, {
-			params: new HttpParams().set("id", "" + id)
-		}))
-			.pipe(
-				tap(() => this._cache.invalidateById(id))
-			);
-	}
-
-	/**
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
 	 * @param address

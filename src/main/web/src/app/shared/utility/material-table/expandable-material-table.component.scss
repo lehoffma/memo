@@ -1,3 +1,5 @@
+@import "theme";
+
 :host {
 	display: block;
 	position: relative;
@@ -11,7 +13,7 @@ table {
 	display: flex;
 	background: white;
 	padding: 2rem;
-	color: rgba(0, 0, 0, 0.64);
+	color: grey(800);
 }
 
 .loading-shade {
@@ -40,7 +42,7 @@ table {
 }
 
 .element-row:not(.expanded):hover {
-	background: #f5f5f5;
+	background: grey(50);
 }
 
 .element-row.expanded {
@@ -60,9 +62,9 @@ table {
 
 		> .label {
 			width: 100px;
-			color: rgba(0, 0, 0, 0.54);
-			font-size: 12px;
-			font-weight: 500;
+			color: grey(900);
+			font-size: font-size(smallest);
+			font-weight: 600;
 		}
 	}
 }

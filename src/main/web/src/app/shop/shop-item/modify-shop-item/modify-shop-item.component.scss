@@ -1,5 +1,7 @@
 @import "mixins";
 
+
+//todo redesign: column layout
 :host {
 	display: flex;
 	justify-content: center;
@@ -91,7 +93,7 @@
 	}
 
 	/deep/ input {
-		font-size: 1rem;
+		font-size: font-size(default);
 	}
 }
 
@@ -104,17 +106,17 @@
 }
 
 .modify-shop-item-title {
-	font-size: 1.2rem;
+	font-size: font-size(medium);
 }
 
 .error-message {
-	color: red;
+	color: warn();
 }
 
 @media all and (max-width: 800px) {
 	form > .image-upload-container ::ng-deep .upload-container {
 		margin: 1rem -1rem -1rem;
-		border-top: 1px solid #ededed;
+		border-top: 1px solid grey(200);
 		background: white;
 
 		/deep/ .expandable-table-header {
@@ -135,17 +137,17 @@
 		}
 
 		memo-multi-image-upload {
-			background: #ffffff;
+			background: white;
 			margin: -1rem;
 
 			::ng-deep memo-multi-image-container {
 
 				.available-images-list {
-					background: #fafafa;
+					background: grey(50);
 				}
 
 				.current-image-container {
-					background: #fafafa;
+					background: grey(50);
 				}
 			}
 		}
@@ -182,7 +184,7 @@
 	}
 }
 
-.no-padding /deep/ .container--body{
+.no-padding /deep/ .container--body {
 	padding: 0;
 }
 
@@ -190,7 +192,7 @@
 	padding: 1rem;
 	display: flex;
 	justify-content: flex-end;
-	border-top: 1px solid #ededed;
+	border-top: 1px solid grey(200);
 
 	button:not(:first-child) {
 		margin-left: 10px;

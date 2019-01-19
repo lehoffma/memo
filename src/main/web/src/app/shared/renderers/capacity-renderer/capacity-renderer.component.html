@@ -15,7 +15,7 @@
 	<span class="waiting-list-row">
 		<ng-container *ngIf="(_available$ | async) !== null; else loadingWaitingList">
 			<b>{{_waitingList$ | async}}</b> steh{{(_waitingList$ | async) === 1 ? 't' : 'en'}} auf der
-			<a routerLink="waiting-list">Warteliste</a>
+			<a class="waiting-list-link" routerLink="waiting-list" [class.disabled]="!allowWaitingList">Warteliste</a>
 		</ng-container>
 		<ng-template #loadingWaitingList>
 			<span class="secondary-text loading-text">Lade Warteliste</span>

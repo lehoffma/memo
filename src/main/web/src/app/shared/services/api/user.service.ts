@@ -49,20 +49,6 @@ export class UserService extends ServletService<User> {
 	}
 
 	/**
-	 * Löscht den User mit der gegebenen ID aus der Datenbank
-	 * @param userId
-	 * @returns {Observable<T>}
-	 */
-	remove(userId: number): Observable<Object> {
-		return this.performRequest(this.http.delete<{ id: number }>(this.baseUrl, {
-			params: new HttpParams().set("id", "" + userId)
-		}))
-			.pipe(
-				tap(() => this._cache.invalidateById(userId))
-			);
-	}
-
-	/**
 	 * Hilfsmethode um den code übersichtlicher zu gestalten
 	 * @param requestMethod
 	 * @param user

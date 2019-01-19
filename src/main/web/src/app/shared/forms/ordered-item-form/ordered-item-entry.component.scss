@@ -4,7 +4,7 @@
 	display: block;
 	padding: 1rem;
 	background: white;
-	border-bottom: 1px solid #ededed;
+	border-bottom: 1px solid grey(200);
 }
 
 button.overflow-menu {
@@ -30,7 +30,7 @@ img {
 
 a {
 	text-decoration: none;
-	color: black;
+	color: grey(900);
 }
 
 .item-container {
@@ -53,8 +53,8 @@ a {
 	flex-direction: column;
 
 	.label {
-		color: rgba(0, 0, 0, 0.4);
-		font-size: 85%;
+		color: grey(500);
+		font-size: font-size(smallest);
 		text-transform: uppercase;
 	}
 }
@@ -64,6 +64,8 @@ a {
 	text-align: right;
 }
 
+//todo redesign: style as label
+//todo redesign: replace labels with more organic phrasing
 .Reserviert {
 	color: #009688;
 }
@@ -98,8 +100,8 @@ a {
 
 .price *:not(.label) {
 	font-weight: bold;
-	color: rgba(0, 0, 0, 0.70);
+	color: grey(700);
 	text-align: end;
-	font-size: 1rem;
+	font-size: font-size(default);
 	width: 5rem;
 }

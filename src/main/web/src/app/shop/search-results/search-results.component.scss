@@ -1,5 +1,7 @@
+@import "theme";
+
 .results-title {
-	font-size: 0.8rem;
+	font-size: font-size(smallest);
 }
 
 
@@ -26,7 +28,7 @@
 
 .search-results-header {
 	display: none;
-	color: grey;
+	color: grey(600);
 	margin: 0.5rem;
 
 	.search-results-actions {
@@ -68,8 +70,8 @@
 	.mobile-add-button {
 		width: 100%;
 		border: 0;
-		color: grey;
-		border-top: 1px solid #e0e0e0;
+		color: grey(600);
+		border-top: 1px solid grey(300);
 
 		/deep/ mat-icon {
 			margin-top: -3px;
@@ -90,10 +92,9 @@
 			display: block;
 			min-width: 330px;
 			width: 330px;
-			background: white;
 			margin: 0.85rem;
 			border-radius: 4px;
-			padding: 0 16px 16px;
+			padding: 34px 16px 16px;
 			overflow: hidden;
 			height: 100%;
 		}
@@ -126,8 +127,9 @@
 		justify-content: space-between;
 		width: 100%;
 		margin: 0;
-		align-items: center;
-		padding: 1.2rem 1.2rem 1.2rem 0;
+
+		align-items: flex-end;
+		padding: 12px 1.2rem 12px 0;
 
 		memo-filtering-menu,
 		memo-sorting-dropdown {
@@ -144,10 +146,12 @@
 	}
 
 	.add-button {
-		margin-top: -10px;
-		margin-bottom: -10px;
-		margin-right: 16px;
-		color: black;
+		color: grey(900);
+		margin-bottom: 16px;
+
+		button {
+			width: 100%;
+		}
 	}
 
 	.load-more-button-container {

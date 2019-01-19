@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Comment, createComment} from "../../../shop/shared/model/comment";
 import {Observable} from "rxjs";
 import {mergeMap, tap} from "rxjs/operators";
@@ -62,13 +62,14 @@ export class CommentService extends ServletService<Comment> {
 	 * @param id
 	 * @param parentId
 	 */
+	remove(id: number): Observable<Object>;
+	remove(id: number, parentId: number): Observable<Object>;
 	remove(id: number, parentId?: number): Observable<Object> {
-		return this.performRequest(this.http.delete(this.baseUrl, {
-			params: new HttpParams().set("id", "" + id).set("parentId", "" + parentId)
-		}))
-			.pipe(
-				tap(() => this._cache.invalidateById(id))
-			);
+		let params;
+		if (parentId) {
+			params = {parentId: "" + parentId};
+		}
+		return super.remove(id, params);
 	}
 
 }

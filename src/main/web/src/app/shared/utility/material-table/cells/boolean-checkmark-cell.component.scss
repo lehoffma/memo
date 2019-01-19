@@ -1,12 +1,13 @@
 @import "theme";
 
+//todo redesign as labels
 .data-as-icon {
 	//margin-left: 1.8rem;
 
 	.true {
-		color: $primary-default;
+		color: primary();
 	}
 	:not(.true) {
-		color: $warn-default;
+		color: warn();
 	}
 }

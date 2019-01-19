@@ -24,13 +24,14 @@
 	max-height: 500px;
 	display: flex;
 	justify-content: center;
+
 	.current-image {
 		width: inherit;
 		height: inherit;
 		max-width: 500px;
 		max-height: 500px;
 		object-fit: scale-down;
-		border-top: 1px solid #ededed;
+		border-top: 1px solid grey(200);
 
 		@media all and (min-width: 800px) {
 			border-top: none;
@@ -51,7 +52,7 @@
 	}
 
 	&.selected {
-		border-color: black;
+		border-color: grey(900);
 	}
 }
 
@@ -65,8 +66,7 @@
 	}
 	.available-images-list {
 		flex-direction: column;
-		padding: 1rem;
-		padding-top: 0;
+		padding: 0 1rem 1rem;
 
 		justify-content: flex-start;
 		width: 98px;

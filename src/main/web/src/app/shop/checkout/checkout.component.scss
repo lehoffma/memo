@@ -4,58 +4,120 @@
 :host {
 	width: 100%;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row-reverse;
+	justify-content: center;
+}
+
+.checkout-header {
+	display: flex;
+	padding: 2rem;
+	border-bottom: 1px solid grey(200);
+	font-size: font-size(medium);
+	font-weight: 300;
+
+	h3 {
+		font-weight: inherit;
+		margin: 0;
+	}
 }
 
 .checkout-options-container {
 	display: flex;
 	flex-wrap: wrap;
-	justify-content: center;
 	flex-direction: column;
-	align-items: center;
 	width: 100%;
+	max-width: 600px;
 	overflow-y: auto;
+	background: white;
+	border-radius: 4px;
 
 	@media all and (min-width: 500px) {
-		margin-top: 20px;
+		margin-top: 16px;
+		margin-bottom: 16px;
 	}
 }
 
-/////////////
-
-memo-item-details-content {
-	width: 100%;
-	max-width: 500px;
-	margin-bottom: 20px;
-	padding-bottom: 0;
+.payment-container {
+	margin-bottom: 16px;
 }
 
-.no-padding /deep/ .container--body {
-	padding: 0;
+.checkout-step {
+	display: flex;
+	flex-direction: column;
+	padding-right: 1rem;
+	padding-left: 1rem;
+
+	&:not(.payment-container) {
+		border-bottom: 1px solid grey(200);
+	}
 }
 
-memo-address-form /deep/ memo-address-input-form /deep/ mat-form-field {
-	width: 100%;
+.checkout-step-label {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 16px 16px 8px 0;
 }
 
+.checkout-step-label-number {
+	color: primary();
+	border: 1px solid primary();
+	border-radius: 50%;
+	width: 25px;
+	height: 25px;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	margin-right: 8px;
+}
+
+memo-address-form {
+	padding: 16px 0;
+}
+
+.checkout-step-label-text {
+	font-weight: 500;
+	font-size: font-size(small-medium);
+}
+
+memo-address-form /deep/ memo-address-input-form /deep/ mat-form-field,
 memo-payment /deep/ memo-bank-account-form /deep/ memo-bank-account-input-form /deep/ mat-form-field {
 	width: 100%;
 }
 
-///////////////
+memo-payment {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	/deep/ memo-payment-selection {
+		width: 100%;
+	}
+
+	/deep/ > div {
+		width: 100%;
+		max-width: 400px;
+
+		/deep/ memo-bank-account-form {
+			margin-top: 16px;
+		}
+	}
+}
+
 
 .checkout-total {
 	text-decoration: none;
-	border-top: 1px solid #ededed;
-
+	border-top: 1px solid grey(300);
 	width: 100%;
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
-
 	background-color: white;
-	color: rgba(0, 0, 0, 0.8);
-
+	color: grey(900);
 	padding: 1rem;
-	font-size: 1.3rem;
+	font-size: font-size(medium);
+
+	button {
+		width: 80%;
+	}
 }

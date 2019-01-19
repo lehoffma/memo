@@ -12,6 +12,10 @@ $options-breakpoint: 850px;
 
 	@media all and (max-width: $options-breakpoint) {
 		flex-direction: column;
+
+		memo-order-options {
+			box-shadow: none;
+		}
 	}
 
 	.options-button {
@@ -27,15 +31,20 @@ $options-breakpoint: 850px;
 	.overview-options {
 		width: 330px;
 		min-width: 330px;
-		padding: 0.85rem;
+		padding: 16px;
 
 		@media all and (min-width: $options-breakpoint) {
-			background: white;
-			margin: 0.85rem;
-			border-radius: 4px;
-			padding: 0 16px 16px;
 			overflow: hidden;
 			height: 100%;
+
+			margin: 0.85rem;
+			padding: 34px 16px 16px;
+
+			memo-order-options {
+				background: white;
+				border-radius: 4px;
+				padding: 8px 16px 16px;
+			}
 		}
 
 		@media all and (max-width: $options-breakpoint) {
@@ -110,8 +119,8 @@ $options-breakpoint: 850px;
 	margin: 2rem auto auto;
 
 	height: 100px;
-	font-size: 1.1rem;
-	color: grey;
+	font-size: font-size(small-medium);
+	color: grey(700);
 }
 
 .add-button {
@@ -120,25 +129,25 @@ $options-breakpoint: 850px;
 	margin-right: 20px;
 }
 
+.overview-options .add-order-button {
+	margin-bottom: 16px;
+	width: 100%;
+}
+
 @media all and (min-width: $options-breakpoint) {
-	memo-order-options /deep/ h3 {
-		color: rgba(0, 0, 0, 0.6);
-	}
-
-
 	.option-toolbar {
 		background: transparent;
 		border-bottom: 0;
 		margin: 0;
-		align-items: center;
-		padding: 1.2rem 1.2rem 1.2rem 0;
+		align-items: flex-end;
+		padding: 12px 1.2rem 12px 0;
 	}
 
 	.loader {
 		left: 65%;
 	}
 
-	mat-paginator{
+	mat-paginator {
 		margin: 0 1rem 1rem 0;
 		border-radius: 4px;
 	}

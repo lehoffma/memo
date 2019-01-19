@@ -32,7 +32,7 @@
 }
 
 .load-more-button {
-	border-top: 1px solid #e0e0e0;
+	border-top: 1px solid grey(300);
 	border-top-left-radius: 0;
 	border-top-right-radius: 0;
 }
@@ -40,15 +40,15 @@
 .no-notifications {
 	padding: 3rem 1rem;
 	text-align: center;
-	color: grey;
+	color: grey(700);
 }
 
 .notification {
 	display: flex;
 	background: white;
 	padding: 8px;
-	color: black;
-	font-size: 0.9em;
+	color: grey(900);
+	font-size: font-size(smaller);
 
 	&:last-child {
 		border-bottom-left-radius: 4px;
@@ -56,21 +56,21 @@
 	}
 
 	&:last-child:nth-of-type(-n + 5) {
-		border-bottom: 1px solid #e0e0e0;
+		border-bottom: 1px solid grey(300);
 		border-radius: 0;
 	}
 
 	&.READ {
 		&:hover {
-			background: #ededed;
+			background: grey(200);
 		}
 	}
 
 	&.UNREAD {
-		background: #E1F5FE;
+		background: accent(50);
 
 		&:hover {
-			background: darken(#E1F5FE, 5%);
+			background: accent(100);
 		}
 	}
 
@@ -100,16 +100,16 @@
 		flex-direction: column;
 		justify-content: space-between;
 		height: 100%;
-		color: rgba(0, 0, 0, 0.64);
+		color: grey(800);
 	}
 
 	.timestamp {
-		color: grey;
-		font-size: 0.85em;
+		color: grey(700);
+		font-size: font-size(smallest);
 		margin-top: 8px;
 	}
 }
 
 .actions {
-	color: grey;
+	color: grey(500);
 }

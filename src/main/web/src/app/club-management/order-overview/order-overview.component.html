@@ -1,5 +1,14 @@
-<div class="overview-options mat-elevation-z1" [ngClass]="{showOptions: showOptions}">
-	<memo-order-options [hidden]="!(!mobile || showOptions)">
+<div class="overview-options" [ngClass]="{showOptions: showOptions}">
+
+	<a mat-raised-button *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !mobile"
+	   [matTooltip]="'Bestellung hinzufügen'" color="accent"
+	   [matTooltipPosition]="'below'"
+	   routerLink="/create/orders"
+	   class="add-order-button">
+		Hinzufügen
+	</a>
+
+	<memo-order-options class="mat-elevation-z3" [hidden]="!(!mobile || showOptions)">
 	</memo-order-options>
 
 	<button mat-button color="primary" class="options-button" (click)="showOptions = !showOptions">
@@ -13,13 +22,6 @@
 
 	<div class="option-toolbar">
 		<div class="add-button">
-			<a mat-raised-button *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !mobile"
-			   [matTooltip]="'Bestellung hinzufügen'"
-			   [matTooltipPosition]="'below'"
-			   routerLink="/create/orders"
-			   class="add-order-button">
-				Hinzufügen
-			</a>
 			<a mat-stroked-button *ngIf="(orderOverviewService.userCanAddOrders$ | async) && mobile && (!showOptions)"
 			   [matTooltip]="'Bestellung hinzufügen'"
 			   [matTooltipPosition]="'below'"

@@ -1,10 +1,12 @@
-$base--color: rgba(0, 0, 0, 0.84);
-$secondary--color: rgba(0, 0, 0, 0.4);
+@import "theme";
+
+$base--color: grey(900);
+$secondary--color: grey(700);
 
 //card-like stuff
 $container-header--background-color: white;
-$container-header--color: rgba(0, 0, 0, 0.84);
-$container-divider--color: #ededed;
+$container-header--color: $base--color;
+$container-divider--color: grey(300);
 $container-divider--height: 1px;
 $container-content--background-color: white;
-$container-content--color: rgba(0, 0, 0, 0.84);
+$container-content--color: $base--color;

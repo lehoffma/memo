@@ -15,7 +15,7 @@
 				height: 30px;
 				object-fit: cover;
 				border-radius: 50%;
-				border: 1px solid #c1c1c1;
+				border: 1px solid grey(500);
 
 			}
 		}
@@ -26,6 +26,7 @@
 		flex-direction: column;
 
 		width: 100%;
+
 		textarea {
 			flex-grow: 1;
 			resize: none;
@@ -33,11 +34,11 @@
 			padding: 0.4rem;
 
 			border: 0;
-			border-bottom: 1px solid #BDBDBD;
+			border-bottom: 1px solid grey(500);
 			transition: border 0.2s ease-in;
 
 			&:focus {
-				border-color: $primary-default;
+				border-color: primary();
 				border-bottom-width: 3px;
 				outline: none;
 			}

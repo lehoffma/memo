@@ -27,8 +27,7 @@ export class SortingDropdownComponent implements OnInit {
 	@Output() onSort: EventEmitter<ColumnSortingEvent<any>> = new EventEmitter();
 
 	constructor(private router: Router,
-				private activatedRoute: ActivatedRoute,
-				private queryParameterService: QueryParameterService) {
+				private activatedRoute: ActivatedRoute) {
 	}
 
 
@@ -58,7 +57,7 @@ export class SortingDropdownComponent implements OnInit {
 		this.activatedRoute.queryParamMap
 			.pipe(
 				first(),
-				map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams)),
+				map(paramMap => QueryParameterService.updateQueryParams(paramMap, queryParams)),
 				tap(() =>
 					this.onSort.emit({
 						key: queryParams["sortBy"],

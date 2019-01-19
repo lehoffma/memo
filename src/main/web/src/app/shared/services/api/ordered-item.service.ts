@@ -124,11 +124,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	remove(id: number): Observable<Object> {
 		return this.getById(id).pipe(
 			mergeMap(orderedItem => {
-				return this.performRequest(
-					this.http.delete(this.baseUrl, {
-						params: new HttpParams().set("id", "" + id)
-					})
-				)
+				return super.remove(id)
 					.pipe(
 						//convert the observable to a hot observable, i.e. immediately perform the http request
 						//instead of waiting for someone to subscribe

@@ -73,6 +73,7 @@ public abstract class AbstractApiServlet<T> {
     interface DependencyUpdater<T> {
         void updateDependencies(JsonNode jsonNode, T object);
     }
+
     @FunctionalInterface
     interface DependencyModifier<T> {
         void updateDependencies(JsonNode jsonNode, T object, T previous);
@@ -214,9 +215,9 @@ public abstract class AbstractApiServlet<T> {
     }
 
     protected <U> U getById(HttpServletRequest request,
-                        Function<String, U> itemSupplier,
-                        AuthenticationStrategy<U> authenticationStrategy,
-                        String id) {
+                            Function<String, U> itemSupplier,
+                            AuthenticationStrategy<U> authenticationStrategy,
+                            String id) {
         logger.debug("Method GET called with params " + paramMapToString(request.getParameterMap()));
         List<U> items = Stream.of(itemSupplier.apply(id))
                 .filter(Objects::nonNull)
@@ -391,9 +392,9 @@ public abstract class AbstractApiServlet<T> {
         );
     }
 
-    protected <SerializedType> Response respond(T createdItem,
-                                                String serializedKey,
-                                                Function<T, SerializedType> getSerialized) {
+    protected <U, SerializedType> Response respond(U createdItem,
+                                                   String serializedKey,
+                                                   Function<U, SerializedType> getSerialized) {
         return Response.status(Response.Status.CREATED)
                 .entity(buildMap(serializedKey, getSerialized.apply(createdItem)))
                 .build();

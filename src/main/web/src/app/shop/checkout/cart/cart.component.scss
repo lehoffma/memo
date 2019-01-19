@@ -23,16 +23,22 @@
 
 .cart-total-price {
 	display: flex;
-	justify-content: space-between;
-	margin-bottom: 2.5rem;
-	margin-top: 1.5rem;
+	justify-content: flex-end;
+	align-items: center;
+	margin-bottom: 32px;
+	border-top: 1px solid grey(300);
+	margin-left: -16px;
+	margin-right: -16px;
+	padding: 16px;
 
 	span:not(.total-amount-value) {
-		font-weight: 500;
+		color: grey(700);
+		margin-right: 8px;
+		font-size: font-size(smaller);
 	}
 
 	span {
-		font-size: 1.2rem;
+		font-size: font-size(small-medium);
 	}
 
 	.total-amount-value {

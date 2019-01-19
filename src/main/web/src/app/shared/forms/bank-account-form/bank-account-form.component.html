@@ -26,7 +26,8 @@
 		<mat-radio-group [formControl]="formGroup.get('selectedAccount')">
 			<div *ngFor="let account of formGroup.get('bankAccounts').value; let i = index"
 				 class="bankaccount-entry-container selection-container">
-				<mat-radio-button [value]="account" *ngIf="showInlineForm !== i; else inlineEditForm">
+				<mat-radio-button [class.selected]="formGroup.get('selectedAccount').value === account"
+					[value]="account" *ngIf="showInlineForm !== i; else inlineEditForm">
 					<memo-bank-account-entry [account]="account"
 											 (onEdit)="showInlineForm = i; showNewInputForm = false"
 											 (onDelete)="deleteAccount(i)"

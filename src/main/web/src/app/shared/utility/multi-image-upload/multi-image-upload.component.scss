@@ -16,16 +16,16 @@
 	width: 100%;
 
 	span {
-		color: #2196F3;
+		color: accent(400);
 		cursor: pointer;
 
 		&.disabled {
 			pointer-events: none;
-			color: rgba(0, 0, 0, 0.64);
+			color: grey(500);
 		}
 
 		&:hover {
-			color: lighten(#2196F3, 10%);
+			color: accent(300);
 			text-decoration: underline;
 		}
 
@@ -42,7 +42,7 @@
 	margin: -1rem;
 	padding: 2rem 1rem 1rem;
 
-	> span{
+	> span {
 		margin: auto;
 	}
 
@@ -81,7 +81,7 @@ memo-multi-image-container {
 			}
 		}
 
-		.image-error{
+		.image-error {
 			padding: 1rem;
 			margin: 0;
 		}

@@ -1,3 +1,5 @@
+@import "theme";
+
 memo-multi-level-select {
 	cursor: pointer;
 }
@@ -13,6 +15,10 @@ memo-multi-level-select {
 	.filter-sidebar {
 		display: block;
 		width: 300px;
+		background: white;
+		padding: 8px 16px 16px;
+		border-radius: 4px;
+		overflow: hidden;
 	}
 
 	.filter-title {
@@ -27,18 +33,18 @@ memo-multi-level-select {
 	mat-radio-group {
 		display: flex;
 		flex-direction: column;
+		padding-left: 6px;
 	}
 }
 
 .filter-category-container {
-	width: 300px;
+	margin-bottom: 16px;
 
 	h3 {
-		font-weight: 500;
-		font-size: 1rem;
-		border-bottom: 1px solid #cdcdcd;
-		padding-bottom: 0.5rem;
-		margin: 0 0 1rem;
-		color: rgba(0, 0, 0, 0.6);
+		font-size: font-size(default);
+		text-transform: uppercase;
+		margin: 0;
+		color: grey(600);
+
 	}
 }

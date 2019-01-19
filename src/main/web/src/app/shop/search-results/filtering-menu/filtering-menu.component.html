@@ -4,7 +4,7 @@
 	[title]="'FILTERN'">
 </memo-multi-level-select>
 
-<div class="filter-sidebar">
+<div class="filter-sidebar mat-elevation-z3">
 	<div *ngFor="let option of filterOptions" [@slideUp]="1" class="filter-category-container">
 		<memo-filter-option-header [title]="option.name"
 								   [withReset]="withReset(option)"

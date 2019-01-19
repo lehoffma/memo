@@ -1,10 +1,16 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {User} from "../../../../shared/model/user";
-import {ParticipantUser} from "../../../shared/model/participant";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 
 const DEFAULT_AMOUNT_SHOWN = 3;
+
+export interface GroupedParticipants {
+	user: User;
+	isDriverAmount: number;
+	needsTicketAmount: number;
+	extraPersons: number;
+}
 
 @Component({
 	selector: "memo-participants",
@@ -28,7 +34,8 @@ const DEFAULT_AMOUNT_SHOWN = 3;
 	]
 })
 export class ParticipantsComponent implements OnInit {
-	@Input() participants: ParticipantUser[];
+	@Input() participants: GroupedParticipants[];
+	@Input() isAllowedToSeeMetaInfo: boolean = false;
 	expandedStatus = false;
 
 	constructor(private navigationService: NavigationService) {
@@ -42,10 +49,5 @@ export class ParticipantsComponent implements OnInit {
 	}
 
 	ngOnInit() {
-	}
-
-	showDetailsOfUser(user: User) {
-		let url: string = `members/${user.id}`;
-		this.navigationService.navigateByUrl(url);
 	}
 }

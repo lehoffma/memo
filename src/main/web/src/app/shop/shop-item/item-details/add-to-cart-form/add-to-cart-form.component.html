@@ -24,8 +24,7 @@
 	</ng-template>
 
 	<mat-form-field>
-		<mat-select placeholder="Anzahl" name="amount" *ngFor="let options of [(amountOptions$ | async)]"
-					[(ngModel)]="model.amount"
+		<mat-select placeholder="Anzahl" name="amount" [(ngModel)]="model.amount"
 					[disabled]="(!isMerch(event) && (isPastEvent$ | async))
 								|| !((permissions)?.checkIn) || (isSoldOut$ | async)"
 					[required]="true">
@@ -35,7 +34,7 @@
 				-- Ausverkauft --
 			</mat-option>
 			<ng-template #amountDropdown>
-				<mat-option *ngFor="let number of options" [value]="number">
+				<mat-option *ngFor="let number of (amountOptions$ | async)" [value]="number">
 					{{number}}
 				</mat-option>
 			</ng-template>
@@ -65,7 +64,8 @@
 	</span>
 	<ng-template #alreadyPartOfWaitingList>
 		<span class="already-part-of-waiting-list">
-			Du stehst auf der Warteliste. Sobald {{isMerch(event) ? 'neue Artikel eintreffen' : 'die Kapazität erhöht wird'}}, wirst du von uns benachrichtigt.
+			Du stehst auf der Warteliste. Sobald {{isMerch(event) ? 'neue Artikel eintreffen' : 'die Kapazität erhöht wird'}}
+			, wirst du von uns benachrichtigt.
 		</span>
 	</ng-template>
 	<button mat-stroked-button class="waiting-list-link" (click)="openWaitingListDialog()">
@@ -86,4 +86,13 @@
 			Austragen
 		</button>
 	</div>
+</div>
+
+<div class="waiting-list-container removal-successful-container" *ngIf="removedFromWaitingList">
+	<div class="icon-container"
+		 matTooltip="Ausblenden"
+		 (click)="removedFromWaitingList = false">
+		<mat-icon>check_mark</mat-icon>
+	</div>
+	<span>Du wurdest erfolgreich von der Warteliste entfernt. </span>
 </div>

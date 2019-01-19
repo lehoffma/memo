@@ -8,7 +8,7 @@
 	color: $container-content--color;
 	padding-top: 8px;
 	padding-bottom: 16px;
-	border-bottom: 1px solid #e0e0e0;
+	border-bottom: 1px solid grey(300);
 	margin-left: 16px;
 	margin-right: 16px;
 
@@ -17,7 +17,7 @@
 		align-items: center;
 
 		background: white;
-		font-size: 1.1rem;
+		font-size: font-size(small-medium);
 
 		&:not(:first-child) {
 			margin-top: 24px;
@@ -25,14 +25,14 @@
 
 		mat-icon,
 		memo-capacity-renderer /deep/ mat-icon {
-			color: rgba(0, 0, 0, 0.4);
+			color: grey(500);
 		}
 
 		&:not(.item-price-container),
 		memo-capacity-renderer {
 			display: flex;
 			align-items: center;
-			font-size: 1rem;
+			font-size: font-size(default);
 
 			/deep/ > span {
 				margin-left: 10px;
@@ -41,7 +41,7 @@
 	}
 
 	.waiting-list-row {
-		color: rgba(0, 0, 0, 0.8);
+		color: grey(900);
 
 		> div {
 			display: flex;
@@ -89,8 +89,8 @@
 				align-items: center;
 				margin-top: 0.5rem;
 
-				.actual-price{
-					font-size: 1.3rem;
+				.actual-price {
+					font-size: font-size(medium);
 				}
 
 				> span {
@@ -117,11 +117,11 @@
 			align-items: center;
 
 			div:first-child {
-				font-size: 1.1rem;
+				font-size: font-size(small-medium);
 			}
 
 			div:not(:first-child) {
-				font-size: 0.9rem;
+				font-size: font-size(smaller);
 			}
 		}
 	}
@@ -135,8 +135,8 @@
 		margin-left: 10px;
 
 		.relative-date {
-			color: rgba(0, 0, 0, 0.4);
-			font-size: 0.8rem;
+			color: grey(500);
+			font-size: font-size(smallest);
 		}
 	}
 }

@@ -7,15 +7,15 @@
 	text-decoration: none;
 
 	a {
-		color: rgba(0, 0, 0, 0.84);
+		color: grey(900);
 		text-decoration: none;
 	}
 
 	&:not(:last-child) {
-		border-bottom: 1px solid #ededed;
+		border-bottom: 1px solid grey(200);
 
 		&:hover {
-			background: #ededed;
+			background: grey(200);
 		}
 	}
 
@@ -49,6 +49,7 @@
 
 memo-user-autocomplete {
 	width: 100%;
+
 	/deep/ mat-form-field {
 		width: 100%;
 	}

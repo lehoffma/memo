@@ -1,24 +1,26 @@
+@import "theme";
+
 mat-card-actions {
 	display: flex;
 	justify-content: space-between;
 }
 
-mat-card{
+mat-card {
 	max-width: 280px;
 	margin: -24px;
 
 	min-width: 250px;
 	min-height: 300px;
 
-	img{
-		background: #ededed;
-		height:200px;
+	img {
+		background: grey(200);
+		height: 200px;
 		max-height: 200px;
 		object-fit: cover;
 	}
 }
 
-.loading-container{
+.loading-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -27,58 +29,59 @@ mat-card{
 
 }
 
-.details{
-	&__item{
+.details {
+	&__item {
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
 
-		&--icon{
-			font-size: 20px;
+		&--icon {
+			font-size: font-size(medium);
 			height: 20px;
 			width: 20px;
-			color: rgba(0, 0, 0, 0.54);
+			color: grey(500);
 		}
 
-		&--label{
+		&--label {
 			margin-left: 15px;
-			color: rgba(0, 0, 0, 0.84);
+			color: grey(900);
 		}
 
 
-		&:not(:first-child){
-			padding-top:0.5rem;
+		&:not(:first-child) {
+			padding-top: 0.5rem;
 		}
 	}
 }
 
-.action-menu{
+.action-menu {
 	position: absolute;
 	right: 0;
 	top: 0;
 }
 
 
-.details__item{
-	&--label.secondary-text{
+.details__item {
+	&--label.secondary-text {
 		margin-left: 5px;
 
-		&.no-elements{
+		&.no-elements {
 			margin-left: 15px;
 		}
 	}
 }
 
-.participants{
+.participants {
 	display: flex;
 	flex-direction: row-reverse;
 	margin-left: 21px;
 
 
-	img{
+	img {
 		height: 20px;
 		width: 20px;
 	}
+
 	span {
 		overflow: hidden;
 		display: flex;
@@ -88,16 +91,16 @@ mat-card{
 	}
 }
 
-.secondary-text{
-	color: rgba(0,0,0,0.54);
+.secondary-text {
+	color: grey(500);
 }
 
-.desktop{
+.desktop {
 	display: none;
 }
 
 @media all and (min-width: 650px) {
-	.desktop{
+	.desktop {
 		display: inline-block;
 	}
 }

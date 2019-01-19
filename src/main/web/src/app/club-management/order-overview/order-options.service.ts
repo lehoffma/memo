@@ -34,7 +34,6 @@ export class OrderOptionsService implements OnDestroy {
 	public events = [];
 
 	constructor(private formBuilder: FormBuilder,
-				private queryParameterService: QueryParameterService,
 				private orderOverviewService: OrderOverviewService,
 				private router: Router,
 				private eventService: EventService,
@@ -162,7 +161,7 @@ export class OrderOptionsService implements OnDestroy {
 			.pipe(
 				first(),
 				map(queryParamMap =>
-					this.queryParameterService.updateQueryParams(queryParamMap, params))
+					QueryParameterService.updateQueryParams(queryParamMap, params))
 			);
 
 		update$

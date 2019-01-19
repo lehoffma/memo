@@ -23,7 +23,7 @@
 }
 
 @mixin fullscreen-page-title() {
-	font-size: 2rem;
+	font-size: font-size(large);
 	color: white;
 	font-weight: lighter;
 

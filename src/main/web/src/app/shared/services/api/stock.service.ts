@@ -150,20 +150,6 @@ export class StockService extends ServletService<MerchStock> {
 
 	/**
 	 *
-	 * @param id
-	 * @param options
-	 */
-	remove(id: number): Observable<Object> {
-		return this.performRequest(this.http.delete(this.baseUrl, {
-			params: new HttpParams().set("id", "" + id)
-		}))
-			.pipe(
-				tap(() => this._cache.invalidateById(id))
-			);
-	}
-
-	/**
-	 *
 	 * @param {Merchandise} merch
 	 * @param {MerchStockList} previous
 	 * @param {MerchStockList} current

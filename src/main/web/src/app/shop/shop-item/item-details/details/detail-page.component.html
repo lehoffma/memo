@@ -18,7 +18,8 @@
 		   *ngIf="orderedItemDetails$ | async as order"
 		>
 			<div>
-				<span class="ordered-header-main-message">Bestellt am {{order.timeStamp | dateFormat:'DD.MM.YYYY'}}</span>
+				<span
+					class="ordered-header-main-message">Bestellt am {{order.timeStamp | dateFormat:'DD.MM.YYYY'}}</span>
 				<span class="options" *ngIf="true">
 				<!--{{order}}-->
 					<!--todo: order details => amount, color/size combination..-->
@@ -61,11 +62,14 @@
 	</memo-item-details-content>
 
 	<ng-container *ngIf="!isMerch(item)">
-		<memo-item-details-content [title]="'Wer fährt mit?'" memoSpiedOnElement="eventParticipants"
+		<memo-item-details-content [title]="'Teilnehmer (' + (participants$ | async)?.length + ')'"
+								   memoSpiedOnElement="eventParticipants"
 								   id="eventParticipants" #participants
 								   class="desktop-elevation"
 								   [route]="participantsLink$ | async">
-			<memo-participants [participants]="participants$ | async" content></memo-participants>
+			<memo-participants [participants]="participants$ | async"
+							   [isAllowedToSeeMetaInfo]="!!(participantsLink$ | async)"
+							   content></memo-participants>
 		</memo-item-details-content>
 	</ng-container>
 

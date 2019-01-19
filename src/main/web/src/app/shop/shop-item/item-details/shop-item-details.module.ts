@@ -5,7 +5,6 @@ import {RouteMapComponent} from "./route/route-map.component";
 import {FullNameTableCellComponent} from "./participants/participant-list/full-name-table-cell.component";
 import {ParticipantsComponent} from "./participants/participants.component";
 import {ModifyParticipantComponent} from "./participants/participant-list/modify-participant/modify-participant.component";
-import {ItemTableComponent} from "./details-table/item-table.component";
 import {ClothesSizePipe} from "./details/clothes-size.pipe";
 import {ItemDetailsContentComponent} from "./content/item-details-content.component";
 import {ItemDetailsContainerComponent} from "./container/item-details-container.component";
@@ -24,9 +23,8 @@ import {ShareButtonsModule} from "@ngx-share/buttons";
 import {ItemInfoHeaderComponent} from "./item-info-header/item-info-header.component";
 import {AddToCartFormComponent} from "./add-to-cart-form/add-to-cart-form.component";
 import {DetailPageComponent} from "./details/detail-page.component";
-import { MilesPipe } from './participants/miles.pipe';
-import { ManageWaitingListDialogComponent } from './add-to-cart-form/manage-waiting-list-dialog.component';
-import {CheckoutModule} from "../../checkout/checkout.module";
+import {MilesPipe} from "./participants/miles.pipe";
+import {ManageWaitingListDialogComponent} from "./add-to-cart-form/manage-waiting-list-dialog.component";
 import {SharedCheckoutModule} from "../../checkout/shared-checkout.module";
 
 @NgModule({
@@ -51,8 +49,6 @@ import {SharedCheckoutModule} from "../../checkout/shared-checkout.module";
 		FullNameTableCellComponent,
 		ParticipantsComponent,
 		ModifyParticipantComponent,
-
-		ItemTableComponent,
 
 		ClothesSizePipe,
 		AddressRendererPipe,

@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
+import {EventType, integerToType, typeToInteger} from "../../../shop/shared/model/event-type";
 import {Event} from "../../../shop/shared/model/event";
 import {createTour, Tour} from "../../../shop/shared/model/tour";
 import {createParty, Party} from "../../../shop/shared/model/party";
@@ -123,22 +123,10 @@ export class EventService extends ServletService<Event> {
 	 */
 	updateCapacities(event: Event) {
 		this.capacityService.invalidateValue(event.id);
-		this.stockService.invalidateValue(event.id);
+		if(integerToType(event.type) === EventType.merch){
+			this.stockService.invalidateValue(event.id);
+		}
 		event.author.forEach(id => this.userService.invalidateValue(id));
-	}
-
-	/**
-	 * Löscht das Event mit der gegebenen ID aus der Datenbank
-	 * @param eventId
-	 * @returns {Observable<T>}
-	 */
-	remove(eventId: number): Observable<AddOrModifyResponse> {
-		return this.performRequest(this.http.delete<AddOrModifyResponse>(this.baseUrl, {
-			params: new HttpParams().set("id", "" + eventId)
-		}))
-			.pipe(
-				tap(() => this._cache.invalidateById(eventId)),
-			);
 	}
 
 	/**

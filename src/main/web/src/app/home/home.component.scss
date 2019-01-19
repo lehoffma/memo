@@ -30,12 +30,12 @@
 	justify-content: space-between;
 
 	> a {
-		color: #2196F3;
+		color: accent(400);
 		text-decoration: none;
-		font-size: 16px;
+		font-size: font-size(default);
 
 		&:hover {
-			color: mat-color($accent, 300);
+			color: accent(300);
 		}
 	}
 }
@@ -70,7 +70,7 @@
 	&--background {
 		z-index: -1;
 		width: 100%;
-		background-color: mat-color($primary);
+		background-color: primary();
 		height: calc(100% + 64px + 2rem);
 		position: absolute;
 		object-fit: cover;
@@ -114,7 +114,7 @@
 		font-weight: 400;
 
 		@media all and (min-width: 800px) {
-			font-size: 3rem;
+			font-size: font-size(larger);
 		}
 	}
 }

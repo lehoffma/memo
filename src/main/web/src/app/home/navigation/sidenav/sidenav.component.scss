@@ -2,9 +2,9 @@
 @import "~@angular/material/theming";
 
 .account-header {
-	height: 10rem;
-	background-color: #4caf50;
-	padding: 1rem;
+	height: 160px;
+	background-color: primary();
+	padding: 16px;
 
 	> div:not(.account-header-logged-out) {
 		display: flex;
@@ -47,7 +47,7 @@
 .profile-email {
 	font-weight: 600;
 
-	color: rgba(255, 255, 255, 0.87);
+	color: grey(50);
 	text-overflow: ellipsis;
 
 	/* Required for text-overflow to do anything */
@@ -56,12 +56,12 @@
 }
 
 .profile-email {
-	color: rgba(255, 255, 255, 0.54);
+	color: hsla(123, 26%, 82%, 1);
 	font-weight: 400;
 }
 
 #navigation-links-login {
-	background-color: mat-color($accent, 900);
+	background-color: accent();
 
 	a {
 		justify-content: center;
@@ -70,7 +70,7 @@
 
 		> span {
 			color: white;
-			font-size: 1.3em;
+			font-size: font-size(medium);
 			height: auto;
 			margin-top: 0;
 		}
@@ -85,13 +85,19 @@
 	height: 3rem;
 	font-weight: 600;
 	text-decoration: none;
-	color: rgba(0, 0, 0, 0.87);
+	color: grey(900);
 	padding-left: 1rem;
 }
 
 .navigation-links > div > a:first-of-type:not(:only-of-type) {
-	color: rgba(0, 0, 0, 0.54);
-
+	color: grey(500);
+	text-transform: uppercase;
+	font-weight: 500;
+	font-size: 14px;
+	height: 40px;
+	padding-bottom: 0;
+	padding-top: 8px;
+	letter-spacing: 1px;
 }
 
 .navigation-links > div > a > span {
@@ -107,5 +113,5 @@
 	height: 24px;
 	width: 24px;
 	vertical-align: middle;
-	color: rgba(0, 0, 0, 0.5);
+	color: grey(600);
 }

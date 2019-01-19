@@ -19,6 +19,7 @@ h3 {
 .name-container {
 	display: flex;
 	justify-content: space-between;
+
 	mat-form-field {
 		width: 45%;
 	}
@@ -26,6 +27,7 @@ h3 {
 
 .aligned-mat-select {
 	margin-top: -8px;
+
 	/deep/ .mat-select-placeholder.mat-floating-placeholder {
 		top: -16px !important;
 	}
@@ -50,6 +52,7 @@ h3 {
 			mat-form-field,
 			> div {
 				width: 100%;
+
 				> mat-form-field {
 					width: 100%;
 				}
@@ -59,6 +62,7 @@ h3 {
 				mat-form-field,
 				> div {
 					width: 45%;
+
 					> mat-form-field {
 						width: 100%;
 					}
@@ -92,6 +96,7 @@ h3 {
 		mat-form-field,
 		> div {
 			width: 100%;
+
 			> mat-form-field {
 				width: 100%;
 			}
@@ -101,6 +106,7 @@ h3 {
 			mat-form-field,
 			> div {
 				width: 45%;
+
 				> mat-form-field {
 					width: 100%;
 				}
@@ -113,7 +119,7 @@ memo-address-entry {
 	width: 100%;
 	display: block;
 	padding-left: 1rem;
-	border-bottom: 1px solid #9E9E9E;
+	border-bottom: 1px solid grey(600);
 	margin-bottom: 1rem;
 	margin-top: 1rem;
 	padding-bottom: 1rem;
@@ -122,14 +128,8 @@ memo-address-entry {
 .form-divider {
 	margin-top: 25px;
 	margin-bottom: 25px;
-	//color: #ededed;
-	//background-color: #ededed;
 	width: 100%;
 	height: 2px;
-}
-
-.error-message {
-	color: red;
 }
 
 .submit-button {

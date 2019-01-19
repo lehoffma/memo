@@ -1,3 +1,4 @@
+@import "theme";
 
 .no-results {
 	display: flex;
@@ -7,8 +8,8 @@
 	margin: 2rem auto auto;
 
 	height: 100px;
-	font-size: 1.1rem;
-	color: grey;
+	font-size: font-size(small-medium);
+	color: grey(700);
 }
 
 @media all and (min-width: 650px) {

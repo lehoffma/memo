@@ -1,26 +1,54 @@
-<mat-list>
-	<span *ngFor="let participant of (participants | slice:0:amountOfParticipantsShown)">
-		<mat-list-item
-			(click)="showDetailsOfUser(participant.user)">
-			<img mat-list-avatar
-				 src="{{(participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"
-				 alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
-			<h3 matLine> {{participant?.user?.firstName + " " + participant?.user?.surname}} </h3>
-			<p matLine>
-				<span> {{participant?.user?.clubRole}} </span>
-				<span class="secondary-text"> -- {{(participant?.user | miles | async) || 0}} Meilen </span>
-			</p>
-		</mat-list-item>
-		<mat-divider></mat-divider>
-	</span>
-	<mat-list-item *ngIf="!participants || participants.length === 0">
-		Bisher keine Teilnehmer.
-	</mat-list-item>
-</mat-list>
+<div *ngFor="let participant of (participants)" class="participant mat-elevation-z1">
+	<a routerLink="/members/{{participant.user.id}}">
+		<div class="image-container">
+			<img
+				src="{{(participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"
+				alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
+		</div>
+		<h3>
+			{{participant?.user?.firstName}}
+			<br/>
+			{{participant?.user?.surname}}
+		</h3>
+		<span> {{participant?.user?.clubRole}} </span>
+	</a>
 
-<button mat-button type="button" *ngIf="participants?.length > 3" (click)="expandedStatus = !expandedStatus">
-	<span>{{expandedStatus ? 'Weniger' : 'Mehr'}}</span>
-	<mat-icon [@expandedState]="expandedStatus">expand_more</mat-icon>
-</button>
+	<div class="badges">
+		<!--todo: needsTicket, isDriver, extraPersons-->
+		<div class="participant-badge participant-tickets" *ngIf="isAllowedToSeeMetaInfo"
+			 [matTooltip]="participant.needsTicketAmount > 0
+			 ? ('Dieser Nutzer hat ' + participant.needsTicketAmount + ' Stadionticket' + (participant.needsTicketAmount === 1 ? '' : 's') + ' angefordert')
+			 : ('Dieser Nutzer benötigt keine Tickets.')"
+			 [class.needs-ticket]="participant.needsTicketAmount > 0">
+			<ng-container *ngIf="participant.needsTicketAmount > 0">
+				<span class="ticket-amount">
+					{{participant.needsTicketAmount}}
+				</span>
+				<span class="multiplier">x</span>
+			</ng-container>
+			<mat-icon>local_play</mat-icon>
+		</div>
+		<div class="participant-badge is-driver" *ngIf="isAllowedToSeeMetaInfo && participant.isDriverAmount > 0"
+			 [matTooltip]="participant.isDriverAmount + ' sind als Fahrer angemeldet.'"
+		>
+			<span class="driver-amount">
+				{{participant.isDriverAmount}}
+			</span>
+			<span class="multiplier">x</span>
+			<mat-icon>directions_car</mat-icon>
+		</div>
+		<div class="participant-badge extra-persons" *ngIf="participant.extraPersons > 0"
+			 [matTooltip]="'Dieser Nutzer hat ' + participant.extraPersons + ' extra Person' + (participant.extraPersons === 1 ? '' : 'en') + ' angemeldet'"
+		>
+			<span class="extra-persons-amount">
+				+{{participant.extraPersons}}
+			</span>
+			<span>Person{{(participant.extraPersons === 1 ? '' : 'en')}}</span>
+		</div>
+	</div>
+</div>
 
-
+<div *ngIf="!participants || participants.length === 0">
+	<!--todo redesign-->
+	Bisher keine Teilnehmer.
+</div>

@@ -1,0 +1,16 @@
+<memo-expandable-material-table class="mat-elevation-z2"
+	[dataSource]="dataSource"
+	[dataService]="waitingListUserService"
+	[filter$]="filter$"
+	[rowActions]="rowActions"
+	[title]="'Warteliste von '"
+	[headerLink]="getLinkToTour(waitingListTableService.eventInfo$ | async)"
+	[headerLinkText]=" waitingListTableService.eventTitle | async"
+	[columns]="columns"
+	[displayedColumns]="displayedColumns$ | async"
+	[permissions]="waitingListTableService.permissions$ | async"
+	[writePageToUrl]="true"
+	(onAction)="waitingListTableService.handleTableAction($event)"
+>
+
+</memo-expandable-material-table>

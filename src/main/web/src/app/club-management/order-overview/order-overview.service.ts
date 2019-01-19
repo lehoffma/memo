@@ -62,7 +62,6 @@ export class OrderOverviewService implements OnDestroy {
 				private loginService: LogInService,
 				private snackBar: MatSnackBar,
 				private router: Router,
-				private queryParameterService: QueryParameterService,
 				private confirmationDialogService: ConfirmationDialogService,
 				private orderService: OrderService) {
 		this.dataSource.isExpandable = false;
@@ -71,7 +70,7 @@ export class OrderOverviewService implements OnDestroy {
 
 		this.dataSource.initPaginatorFromUrl(this.navigationService.queryParamMap$.getValue());
 		this.dataSource.writePaginatorUpdatesToUrl(this.router,
-			queryParams => this.queryParameterService
+			queryParams => QueryParameterService
 				.updateQueryParams(this.navigationService.queryParamMap$.getValue(), queryParams));
 
 

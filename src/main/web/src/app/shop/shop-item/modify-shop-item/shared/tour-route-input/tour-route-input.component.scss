@@ -1,6 +1,7 @@
+@import "theme";
 
 span {
-	font-size: 1.2rem;
+	font-size: font-size(medium);
 }
 
 :host > div > mat-form-field {
@@ -25,6 +26,7 @@ agm-map {
 
 .tour-route-input-container {
 	display: flex;
+
 	.tour-route-indicators {
 		position: absolute;
 		display: flex;

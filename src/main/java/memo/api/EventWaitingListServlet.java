@@ -25,6 +25,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -79,14 +80,28 @@ public class EventWaitingListServlet extends AbstractApiServlet<ShopItem> {
         updateDependencies(jsonNode, object);
     }
 
+
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Page<WaitingListEntry> get(@QueryParam("id") String id, @Context HttpServletRequest request) {
-        ShopItem item = this.getById(request, s -> eventRepository.getById(s).orElse(null),
-                authenticationStrategy, id);
+    public Page<WaitingListEntry> get(@QueryParam("eventId") String eventId, @QueryParam("id") String id, @Context HttpServletRequest request) {
+        if (eventId != null) {
+            List<WaitingListEntry> waitingList = DatabaseManager.createEntityManager()
+                    .createQuery("SELECT w FROM WaitingListEntry w WHERE w.shopItem.id = :id", WaitingListEntry.class)
+                    .setParameter("id", Integer.valueOf(eventId))
+                    .getResultList();
 
-        List<WaitingListEntry> waitingList = item.getWaitingList();
-        return new Page<>(waitingList, new PageRequest(), waitingList.size());
+            return new Page<>(waitingList, new PageRequest(), waitingList.size());
+        }
+        if (id != null) {
+            WaitingListEntry entry = DatabaseManager.createEntityManager()
+                    .createQuery("SELECT w FROM WaitingListEntry w WHERE w.id = :id", WaitingListEntry.class)
+                    .setParameter("id", Integer.valueOf(id))
+                    .getSingleResult();
+
+            return new Page<>(Collections.singletonList(entry), new PageRequest(), 1);
+        }
+
+        throw new NotFoundException();
     }
 
 
@@ -101,7 +116,7 @@ public class EventWaitingListServlet extends AbstractApiServlet<ShopItem> {
                 this.waitingListEntryNotificationStrategy
         );
 
-        return Response.ok().build();
+        return this.respond(createdReservation, "id", WaitingListEntry::getId);
     }
 
     @PUT
@@ -114,13 +129,11 @@ public class EventWaitingListServlet extends AbstractApiServlet<ShopItem> {
                 this::updateDependencies, this.waitingListEntryNotificationStrategy
         );
 
-        return Response.ok().build();
+        return this.respond(updateReservation, "id", WaitingListEntry::getId);
     }
 
 
     @DELETE
-    @Consumes({MediaType.APPLICATION_JSON})
-    @Produces({MediaType.APPLICATION_JSON})
     public Response delete(@Context HttpServletRequest request, String body) {
         WaitingListEntry deletedItem = this.delete(request, WaitingListEntry.class, req -> {
             String id = request.getParameter("id");

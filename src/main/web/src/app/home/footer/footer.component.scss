@@ -4,7 +4,7 @@
 .social-media-links {
 	display: flex;
 	justify-content: center;
-	background-color: mat-color($primary, 700);
+	background-color: primary(700);
 	padding: 1rem;
 	color: white;
 
@@ -22,7 +22,7 @@
 .breadcrumbs {
 	display: flex;
 	justify-content: center;
-	background: mat-color($primary, 800);
+	background: primary(800);
 	padding: 1rem;
 
 	memo-breadcrumb-navigation {
@@ -32,10 +32,10 @@
 }
 
 .copyright {
-	background: mat-color($primary, 900);
+	background: primary(900);
 	display: flex;
 	color: white;
 	justify-content: center;
-	padding: 0.5rem;
-	font-size: 0.8em;
+	padding: 8px;
+	font-size: font-size(smallest);
 }

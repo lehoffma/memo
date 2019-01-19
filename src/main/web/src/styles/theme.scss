@@ -4,16 +4,104 @@
 $primary: mat-palette($mat-green, 600);
 $primary-default: mat-color($primary);
 
-//$accent:  mat-palette($mat-blue-grey, A200, A100, A400);
-$accent: mat-palette($mat-blue, 800, 500, 900);
+//$accent: mat-palette($mat-cyan, 800, 500, 900);
+$accent: mat-palette($mat-indigo);
 $accent-default: mat-color($accent);
-//$accent: mat-palette($mat-blue, 900, 900, 900);
-//test
-//todo: secondary color: "#203864"
+
+$accent-yellow: mat-palette($mat-yellow);
 
 $warn: mat-palette($mat-red);
 $warn-default: mat-color($warn);
 
-$yellow: $mat-yellow;
+$greys: mat-palette($mat-grey);
 
 $theme: mat-light-theme($primary, $accent, $warn);
+
+
+@function color($color-palette, $hue: default, $opacity: null) {
+	@return mat-color($color-palette, $hue, $opacity)
+}
+
+@function contrast($color-palette, $hue) {
+	@return mat-contrast($color-palette, $hue)
+}
+
+
+@mixin background-color($color-palette, $hue: 500, $opacity: null) {
+	background-color: color($color-palette, $hue, $opacity);
+	color: contrast($color-palette, $hue);
+}
+
+@function primary($hue: default, $opacity: null) {
+	@return color($primary, $hue, $opacity)
+}
+
+@mixin background-primary($hue: 600, $opacity: null) {
+	@include background-color($primary, $hue, $opacity);
+}
+
+@function accent($hue: default, $opacity: null) {
+	@return color($accent, $hue, $opacity)
+}
+
+@mixin background-accent($hue: 500, $opacity: null) {
+	@include background-color($accent, $hue, $opacity);
+}
+
+@function warn($hue: default, $opacity: null) {
+	@return color($warn, $hue, $opacity)
+}
+
+@mixin background-warn($hue: 500, $opacity: null) {
+	@include background-color($warn, $hue, $opacity);
+}
+
+@function grey($hue: default, $opacity: null) {
+	@return color($greys, $hue, $opacity)
+}
+
+@mixin background-grey($hue: 500, $opacity: null) {
+	@include background-color($greys, $hue, $opacity);
+}
+
+@function yellow($hue: default, $opacity: null) {
+	@return color($accent-yellow, $hue, $opacity)
+}
+
+@mixin background-warn($hue: 500, $opacity: null) {
+	@include background-color($accent-yellow, $hue, $opacity);
+}
+
+//font size management
+
+$font-sizes: (
+	1: 72px,
+	2: 60px,
+	3: 48px,
+	4: 36px,
+	5: 30px,
+	6: 24px,
+	7: 20px,
+	8: 18px,
+	9: 16px,
+	10: 14px,
+	11: 12px,
+	smallest: 12px,
+	smaller: 14px,
+	small: 16px,
+	default: 16px,
+	small-medium: 18px,
+	medium: 20px,
+	medium-large: 24px,
+	medium-larger: 30px,
+	large: 36px,
+	larger: 48px,
+	very-large: 60px,
+	largest: 72px
+);
+
+@function font-size($size: 9) {
+	@return map_get($font-sizes, $size);
+}
+
+

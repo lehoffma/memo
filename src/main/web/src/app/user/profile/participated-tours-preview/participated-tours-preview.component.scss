@@ -1,3 +1,6 @@
+@import "theme";
+
+//todo redesign: find a more fun way to present this data
 
 button {
 	width: 100%;
@@ -10,7 +13,7 @@ a {
 .no-tours {
 	padding: 1rem;
 	text-align: center;
-	color: grey;
+	color: grey(700);
 }
 
 mat-list-item img {
@@ -18,5 +21,5 @@ mat-list-item img {
 }
 
 mat-list-item:hover {
-	background: #ededed;
+	background: grey(100);
 }

@@ -1,6 +1,8 @@
+@import "theme";
+
 :host {
 	display: flex;
-	font-size: 0.8em;
+	font-size: font-size(smallest);
 	color: white;
 }
 
@@ -28,6 +30,6 @@ li:not(:last-child) {
 	&::after {
 		content: 'navigate_next';
 		font-family: 'Material Icons', serif;
-		font-size: 1.4rem;
+		font-size: font-size(medium);
 	}
 }

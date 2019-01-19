@@ -1,12 +1,28 @@
+@import "theme";
 
 .address-entry-container {
 	display: flex;
 	justify-content: space-between;
+	margin-left: 8px;
+
+	button {
+		margin-right: -8px;
+		margin-top: -8px;
+	}
 }
 
 .address-information {
 	display: flex;
 	flex-direction: column;
+
+	> b {
+		color: grey(900);
+	}
+
+	> span {
+		color: grey(600);
+		font-size: font-size(smaller);
+	}
 }
 
 .address-actions {

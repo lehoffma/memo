@@ -86,8 +86,8 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.dataSource.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap);
-		this.dataSource.writePaginatorUpdatesToUrl(this.router);
+		// this.dataSource.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap);
+		// this.dataSource.writePaginatorUpdatesToUrl(this.router);
 	}
 
 	getLinkToTour(info: EventInfo) {

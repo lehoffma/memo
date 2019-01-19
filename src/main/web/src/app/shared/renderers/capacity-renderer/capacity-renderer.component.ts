@@ -14,6 +14,7 @@ import {CapacityRendererColoring} from "./capacity-renderer-coloring";
 export class CapacityRendererComponent implements OnInit {
 
 	@Input() icon: string;
+	@Input() allowWaitingList: boolean;
 
 	_waitingList$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 	_maxAmount$: BehaviorSubject<number> = new BehaviorSubject<number>(0);

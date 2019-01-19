@@ -1,16 +1,15 @@
-import {Injectable} from "@angular/core";
 import {ServletServiceInterface} from "../../model/servlet-service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {combineLatest, Observable, of, throwError} from "rxjs";
 import {CachedService} from "./cached.service";
-import {defaultIfEmpty, map, mergeMap} from "rxjs/operators";
+import {defaultIfEmpty, map, mergeMap, tap} from "rxjs/operators";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
 import {Direction, Sort} from "../../model/api/sort";
 import {Entry} from "../../model/entry";
 import {Page} from "../../model/api/page";
 import {TableDataService} from "../../utility/material-table/table-data-service";
-import {ParamMap} from "@angular/router";
+import {ParamMap, Params} from "@angular/router";
 import {getAllQueryValues} from "../../model/util/url-util";
 
 export type AddOrModifyRequest = <T>(url: string, body: any | null, options?: {
@@ -232,5 +231,19 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 	abstract addOrModify(requestMethod: AddOrModifyRequest,
 						 entry: T, options?: any): Observable<T>;
 
-	abstract remove(id: number, ...args: any[]): Observable<Object>;
+
+	remove(id: number, additionalParams?: Params, ...args: any[]): Observable<Object> {
+		let params = new HttpParams().set("id", "" + id);
+		if (additionalParams) {
+			params = Object.keys(additionalParams)
+				.reduce((httpParams, key) => httpParams.set(key, additionalParams[key]), params);
+		}
+
+		return this.performRequest(this.http.delete(this.baseUrl, {
+			params
+		}))
+			.pipe(
+				tap(() => this.invalidateValue(id, true)),
+			);
+	}
 }

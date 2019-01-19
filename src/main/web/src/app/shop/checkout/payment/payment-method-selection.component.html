@@ -4,8 +4,7 @@
 		<div (click)="selectedMethod = paymentMethod"
 			 *ngIf="allowedMethods && allowedMethods[paymentMethod]"
 			 [ngClass]="{
-				'selected': selectedMethod === paymentMethod,
-				'badge-container': selectedMethod === paymentMethod
+				'selected': selectedMethod === paymentMethod
 			 }">
 			<label for="{{'radioButton' + paymentMethod}}">
 				<span>{{paymentMethod}}</span>

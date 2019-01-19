@@ -1,4 +1,4 @@
-<div [formGroup]="formGroup" *ngIf="!selection; else addressSelection">
+<div [formGroup]="formGroup" *ngIf="!selection; else addressSelection" class="address-management">
 	<div *ngFor="let address of formGroup.get('addresses').value; let i = index" class="address-entry-container">
 		<memo-address-entry *ngIf="showInlineAddressForm !== i; else inlineEditForm"
 							[address]="address"
@@ -22,11 +22,12 @@
 
 <!--selection variant-->
 <ng-template #addressSelection>
-	<div [formGroup]="formGroup">
+	<div [formGroup]="formGroup" class="address-selection">
 		<mat-radio-group [formControl]="formGroup.get('selectedAddress')">
 			<div *ngFor="let address of formGroup.get('addresses').value; let i = index"
 				 class="address-entry-container selection-container">
-				<mat-radio-button [value]="address" *ngIf="showInlineAddressForm !== i; else inlineEditForm">
+				<mat-radio-button [class.selected]="formGroup.get('selectedAddress').value === address"
+					[value]="address" *ngIf="showInlineAddressForm !== i; else inlineEditForm">
 					<memo-address-entry [address]="address"
 										(onEdit)="showInlineAddressForm = i; showNewAddressForm = false"
 										(onDelete)="deleteAddress(i)">

@@ -13,12 +13,11 @@
 	max-width: 500px;
 	position: relative;
 
-	background: $accent-default;
-	color: white;
+	@include background-accent();
 	text-decoration: none;
 
-	font-size: 1.2rem;
-	font-weight: lighter;
+	font-size: font-size(medium);
+	font-weight: 400;
 
 	mat-icon {
 		margin-right: 5px;
@@ -26,7 +25,8 @@
 	}
 
 	&:hover {
-		background: lighten($accent-default, 5%);
+		background: accent(400);
+
 		mat-icon {
 			margin-right: 0;
 		}
@@ -35,19 +35,18 @@
 
 .ordered-header {
 	background: white;
-	color: black;
-	//border-bottom: 1px solid #ededed;
-	font-size: 0.85rem;
+	color: grey(900);
+	font-size: font-size(smaller);
 	align-items: center;
 	font-weight: 500;
 
 	.ordered-header-main-message {
-		font-size: 1rem;
+		font-size: font-size(default);
 	}
 
 	.options {
 		font-weight: 400;
-		color: rgba(0, 0, 0, 0.4);
+		color: grey(500);
 	}
 
 	> div {
@@ -56,11 +55,11 @@
 	}
 
 	button {
-		color: black;
+		color: grey(900);
 	}
 
 	&:hover {
-		background: darken(white, 5%);
+		background: grey(100);
 	}
 }
 
@@ -92,7 +91,7 @@
 	display: flex;
 	justify-content: flex-end;
 	flex-direction: column;
-	font-size: 1.5rem;
+	font-size: font-size(medium-large);
 	color: white;
 	background: linear-gradient(transparent, rgba(0, 0, 0, 0.3));
 }
@@ -126,6 +125,7 @@ memo-multi-image-container {
 	.image-container {
 		height: 400px;
 		box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
 		.image-detail {
 			height: 400px;
 		}
@@ -141,7 +141,7 @@ memo-multi-image-container {
 	}
 
 	memo-item-info {
-		border-left: 1px solid #ededed;
+		border-left: 1px solid grey(200);
 	}
 
 	memo-item-info /deep/ .centered-container {

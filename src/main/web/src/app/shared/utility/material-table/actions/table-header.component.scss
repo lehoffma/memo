@@ -8,7 +8,7 @@
 }
 
 .expandable-table-header-title a {
-	color: mat-color($accent);
+	color: accent();
 }
 
 
@@ -26,18 +26,18 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		font-size: 1.2rem;
+		font-size: font-size(medium);
 
 	}
 
 	.expandable-table-actions {
 		mat-icon {
-			color: rgba(0, 0, 0, 0.54);
+			color: grey(600);
 		}
 	}
 
 	&.items-selected-header {
-		background-color: mat-color($accent, 50)
+		background-color: accent(100);
 	}
 
 }

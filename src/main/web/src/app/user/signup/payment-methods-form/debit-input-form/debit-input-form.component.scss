@@ -1,5 +1,7 @@
+@import "theme";
+
 h3 {
-	font-size: 1.2rem;
-	font-weight: lighter;
-	margin: 1rem 0;
+	font-size: font-size(medium);
+	font-weight: 400;
+	margin: 16px 0;
 }

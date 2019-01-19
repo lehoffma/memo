@@ -12,7 +12,6 @@ import {first, map, share} from "rxjs/operators";
 import {EntryCategory} from "../../../shared/model/entry-category";
 import {isValid, parse, setYear} from "date-fns"
 import {Filter} from "../../../shared/model/api/filter";
-import {flatMap} from "../../../util/util";
 import {getAllQueryValues} from "../../../shared/model/util/url-util";
 
 
@@ -47,8 +46,7 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 
 	filters$: BehaviorSubject<Filter> = new BehaviorSubject(Filter.none());
 
-	constructor(private queryParameterService: QueryParameterService,
-				private router: Router,
+	constructor(private router: Router,
 				private changeDetectorRef: ChangeDetectorRef,
 				private entryCategoryService: EntryCategoryService,
 				private eventService: EventService,
@@ -65,8 +63,7 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 		this._isLoading = value;
 		if (value) {
 			this.autocompleteFormControl.disable();
-		}
-		else {
+		} else {
 			this.autocompleteFormControl.enable();
 		}
 	}
@@ -210,7 +207,7 @@ export class AccountingOptionsComponent implements OnInit, OnDestroy {
 			.pipe(
 				first(),
 				map(queryParamMap =>
-					this.queryParameterService.updateQueryParams(queryParamMap, params))
+					QueryParameterService.updateQueryParams(queryParamMap, params))
 			)
 			.subscribe(async newQueryParams => {
 				await this.router.navigate(["management", "costs"], {queryParams: newQueryParams, replaceUrl: true});

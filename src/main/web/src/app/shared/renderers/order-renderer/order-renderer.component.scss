@@ -19,27 +19,27 @@
 
 	a {
 		display: flex;
-		font-size: 1rem;
+		font-size: font-size(default);
 		align-self: center;
 		text-decoration: none;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		color: mat-color($primary);
+		color: primary();
 	}
 
 	.role-icon {
-		color: mat-color($primary);
-		height: 19px;
-		width: 19px;
+		color: primary();
+		height: 20px;
+		width: 20px;
 		margin-left: 2px;
-		font-size: 19px;
+		font-size: font-size(medium);
 	}
 }
 
 .order-renderer-bottom {
 
-	border-top: 1px solid #e0e0e0;
+	border-top: 1px solid grey(300);
 }
 
 .user, .method {
@@ -51,7 +51,7 @@
 
 .user,
 .method.line-under {
-	border-bottom: 1px solid #E0E0E0;
+	border-bottom: 1px solid grey(300);
 }
 
 .ordered-items {
@@ -62,10 +62,11 @@
 	padding: 10px 0;
 
 	&:first-of-type {
-		border-top: 1px solid #e0e0e0;
+		border-top: 1px solid grey(300);
 	}
+
 	&:not(:last-of-type) {
-		border-bottom: 1px solid #ededed;
+		border-bottom: 1px solid grey(200);
 	}
 
 	> a {
@@ -77,6 +78,7 @@
 			max-width: 100%;
 		}
 	}
+
 	.order-entry-header {
 		display: flex;
 		//justify-content: space-between;
@@ -89,7 +91,7 @@
 		}
 
 		&.order-entry-info > div {
-			color: rgba(0, 0, 0, 0.84);
+			color: grey(900);
 
 			> .order-entry-info-container {
 				align-items: flex-start;
@@ -112,7 +114,7 @@
 			font-weight: bold;
 			margin: 0;
 			overflow-wrap: break-word;
-			color: rgba(0, 0, 0, 0.70);
+			color: grey(700);
 		}
 	}
 
@@ -141,8 +143,8 @@
 			align-items: flex-end;
 
 			.label {
-				color: rgba(0, 0, 0, 0.4);
-				font-size: 85%;
+				color: grey(600);
+				font-size: font-size(smallest);
 				text-transform: uppercase;
 			}
 		}
@@ -152,33 +154,43 @@
 			text-align: right;
 		}
 
+		//todo redesign labels/tags
 		.Reserviert {
 			color: #009688;
 		}
+
 		.Bezahlt {
 			color: $primary-default;
 		}
+
 		.Verschickt {
 			color: #2196f3;
 		}
+
 		.Abgebrochen {
 			color: #F57F17;
 		}
+
 		.Abgelehnt {
 			color: $warn-default;
 		}
+
 		.Unter-Begutachtung {
 			color: #9C27B0;
 		}
+
 		.Abgeschlossen {
 			color: rgba(0, 0, 0, 0.4);
 		}
+
 		.Bezahlung-Angefordert {
 			color: #FF6F00;
 		}
+
 		.Teilgenommen {
 			color: #388e3c;
 		}
+
 		.Bestellt {
 
 		}
@@ -193,7 +205,7 @@
 
 	.label {
 		color: rgba(0, 0, 0, 0.4);
-		font-size: 85%;
+		font-size: font-size(smallest);
 		text-transform: uppercase;
 	}
 }
@@ -204,7 +216,7 @@
 	flex-direction: column;
 	padding-top: 10px;
 	padding-bottom: 10px;
-	border-bottom: 1px solid #e0e0e0;
+	border-bottom: 1px solid grey(300);
 
 	.order-entry-info-container:last-child {
 		margin-top: 5px;
@@ -233,11 +245,11 @@
 	}
 
 	h2 {
-		font-size: 1.3em;
+		font-size: font-size(medium);
 		margin: 0;
-		font-weight: 200;
+		font-weight: 400;
 		@media all and (min-width: 500px) {
-			font-size: 1.5em;
+			font-size: font-size(small-medium);
 		}
 	}
 }
@@ -253,7 +265,7 @@
 	font-weight: bold;
 	color: rgba(0, 0, 0, 0.70);
 	text-align: end;
-	font-size: 1rem;
+	font-size: font-size(default);
 	width: 5rem;
 }
 
@@ -275,6 +287,7 @@
 	display: flex;
 	align-items: flex-end;
 	flex: 1;
+
 	> div {
 		display: flex;
 		justify-content: space-between;
@@ -290,7 +303,7 @@
 	justify-content: space-between;
 	margin-bottom: 0.5rem;
 	margin-top: 0.5rem;
-	font-size: 1.2rem;
+	font-size: font-size(medium);
 
 	.order-total-price-amount {
 		font-weight: bold;

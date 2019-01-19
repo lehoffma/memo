@@ -63,12 +63,13 @@ memo-merch-stock-entry:not(:first-of-type) {
 }
 
 @media all and (min-width: 650px) {
-	memo-filtering-menu /deep/ memo-filter-option-header{
-		color: rgba(0, 0, 0, 0.6);
-	}
-
 	.add-merch-button {
 		display: none;
+	}
+
+	.add-merch-button-desktop {
+		width: 100%;
+		margin-bottom: 16px;
 	}
 
 	.toolbar-add-button {
@@ -78,20 +79,20 @@ memo-merch-stock-entry:not(:first-of-type) {
 	}
 
 	.stock-options-sidebar {
-		background: white;
 		margin: 0.85rem;
 		border-radius: 4px;
-		padding: 0 16px 16px;
 		overflow: hidden;
 		height: 100%;
+		padding: 34px 16px 16px;
 	}
 	.stock-entry-container {
 		.stock-options {
 			background: transparent;
 			border-bottom: 0;
+			justify-content: flex-end;
 			margin: 0;
-			align-items: center;
-			padding: 1.2rem 1.2rem 1.2rem 0;
+			align-items: flex-end;
+			padding: 12px 1.2rem 12px 0;
 		}
 	}
 

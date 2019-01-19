@@ -10,13 +10,13 @@
 .base-price,
 .discount-entry {
 	> span:first-child {
-		color: rgba(0, 0, 0, 0.4);
+		color: grey(500);
 	}
 }
 
 .discount-entry {
 	> span:last-child {
-		color: mat-color($primary);
+		color: primary();
 		margin-left: 50px;
 	}
 }
@@ -24,7 +24,7 @@
 .total {
 	display: flex;
 	justify-content: space-between;
-	border-top: 1px solid grey;
+	border-top: 1px solid grey(500);
 	font-weight: bold;
 	padding-top: 5px;
 

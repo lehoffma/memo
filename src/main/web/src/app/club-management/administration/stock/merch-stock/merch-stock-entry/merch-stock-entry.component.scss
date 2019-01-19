@@ -13,7 +13,7 @@
 
 	.stock-entry-header {
 		display: flex;
-		background-color: #fafafa;
+		background-color: grey(100);
 		color: $container-header--color;
 		justify-content: space-between;
 		padding: 10px;
@@ -21,11 +21,11 @@
 		border-top-left-radius: 4px;
 
 		a {
-			color: rgba(0, 0, 0, 0.65);
+			color: grey(900);
 			text-decoration: none;
 
 			&:hover {
-				color: black;
+				text-decoration: underline;
 			}
 
 			h3 {
@@ -44,7 +44,7 @@
 				width: calc(100% - 50px);
 
 				span {
-					font-size: 0.9rem;
+					font-size: font-size(smaller);
 
 					text-overflow: ellipsis;
 
@@ -59,8 +59,10 @@
 			width: 50px;
 			height: 50px;
 			object-fit: cover;
-			border: 1px solid #e0e0e0;
-			border-radius: 4px;
+
+			overflow: hidden;
+			border-radius: 50%;
+			box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
 		}
 
 		button {
@@ -73,15 +75,15 @@
 		overflow-x: auto;
 		width: 95%;
 		border-collapse: collapse;
-		font-size: 0.8rem;
+		font-size: font-size(smallest);
 		margin: 2.5%;
 
 		thead {
-			color: rgba(0, 0, 0, 0.54);
-			font-size: 0.75rem;
+			color: grey(500);
+			font-size: font-size(smallest);
 
 			.sorted-column {
-				color: rgba(0, 0, 0, 0.87);
+				color: grey(900);
 			}
 
 			.sortable-column {
@@ -109,12 +111,12 @@
 
 		thead tr,
 		tr:not(:last-child) {
-			border-bottom: 2px solid #ededed;
+			border-bottom: 2px solid grey(200);
 		}
 
 		tr th:last-child,
 		tr td:last-child {
-			border-left: 2px solid #ededed;
+			border-left: 2px solid grey(200);
 			padding-right: 20px;
 		}
 
@@ -128,14 +130,10 @@
 		}
 
 		tbody {
-			color: rgba(0, 0, 0, 0.87);
+			color: grey(900);
 
 			tr:hover {
-				background-color: #EEEEEE;
-			}
-
-			.selected-row {
-				background-color: #F5F5F5;
+				background-color: grey(100);
 			}
 
 		}
@@ -145,11 +143,11 @@
 		}
 
 		th {
-			color: rgba(0, 0, 0, 0.54);
-			font-size: 0.75rem;
+			color: grey(700);
+			font-size: font-size(smallest);
 
 			&.total-sum {
-				font-size: 1rem;
+				font-size: font-size(default);
 			}
 		}
 
@@ -184,28 +182,28 @@
 	}
 }
 
-.stock-entry-footer{
+.stock-entry-footer {
 	display: flex;
 	justify-content: space-between;
-	margin-top: 0rem;
-	padding: 0.5rem;
+	margin-top: 0;
+	padding: 8px;
 }
 
 @media all and (min-width: 1200px) {
 	:host {
 		table {
-			font-size: 1.1rem;
+			font-size: font-size(small-medium);
 
 			thead {
-				font-size: 0.95rem;
+				font-size: font-size(default);
 			}
 
 			th {
-				color: rgba(0, 0, 0, 0.54);
-				font-size: 0.95rem;
+				color: grey(700);
+				font-size: font-size(default);
 
 				&.total-sum {
-					font-size: 1.2rem;
+					font-size: font-size(medium);
 				}
 			}
 		}

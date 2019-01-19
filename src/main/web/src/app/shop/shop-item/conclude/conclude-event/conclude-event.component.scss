@@ -1,6 +1,6 @@
 @import "theme";
 
-.responsible-user-input-container /deep/ .container--body{
+.responsible-user-input-container /deep/ .container--body {
 	padding: 0;
 }
 
@@ -23,10 +23,9 @@ memo-participant-list.participants-list /deep/ .expandable-table-component-conta
 	padding: 1.5rem;
 	margin-top: 1rem;
 
-	background-color: $accent-default;
 	transition: all ease-in 0.2s;
-	color: white;
-	font-size: 1.3rem;
+	@include background-accent();
+	font-size: font-size(medium);
 	cursor: pointer;
 
 	mat-icon {
@@ -35,10 +34,11 @@ memo-participant-list.participants-list /deep/ .expandable-table-component-conta
 	}
 
 	&.disabled {
-		background-color: #9E9E9E;
+		@include background-grey(600);
 		pointer-events: none;
 		cursor: initial;
 	}
+
 	&:not(.disabled) {
 		&:hover {
 			background: lighten($accent-default, 5%);

@@ -17,7 +17,7 @@
 	}
 
 	span {
-		font-size: 2rem;
+		font-size: font-size(medium-larger);
 		color: white;
 	}
 }
@@ -46,7 +46,7 @@ form {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		font-size: 0.9em;
+		font-size: font-size(smaller);
 		padding-top: 1rem;
 		padding-bottom: 2rem;
 
@@ -62,9 +62,13 @@ form {
 
 	a {
 		width: auto;
-		font-size: 0.8em;
-		color: #2196F3;
+		font-size: font-size(smallest);
+		color: accent();
 		text-decoration: none;
+
+		&:hover{
+			text-decoration: underline;
+		}
 	}
 }
 

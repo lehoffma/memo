@@ -1,3 +1,5 @@
+@import "theme";
+
 .container {
 	background: white;
 	display: flex;
@@ -21,10 +23,10 @@ mat-card.container > .container--header {
 	align-items: center;
 
 	padding: 0.5rem 0.5rem 0.5rem 1rem;
-	background: #FAFAFA;
-	text-transform: uppercase;
-	color: grey;
-	font-size: 14px;
+	background: grey(100);
+	//text-transform: uppercase;
+	color: grey(700);
+	font-size: font-size(smaller);
 	border: none;
 
 	h3 {

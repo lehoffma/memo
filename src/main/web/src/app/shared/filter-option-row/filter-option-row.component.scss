@@ -1,3 +1,4 @@
+@import "theme";
 
 :host {
 	display: flex;
@@ -20,7 +21,7 @@
 		mat-icon {
 			width: 18px;
 			height: 18px;
-			font-size: 18px;
+			font-size: font-size(small-medium);
 			line-height: 18px;
 		}
 	}

@@ -8,6 +8,7 @@ import {ConcludeEventComponent} from "./conclude/conclude-event/conclude-event.c
 import {ShopItemExistsGuard} from "../../shared/authentication/http-error-handling-guards/shop-item-exists.guard";
 import {ShopItemIsVisibleToUserGuard} from "../../shared/authentication/http-error-handling-guards/shop-item-is-visible-to-user.guard";
 import {OrderDetailComponent} from "./item-details/details/order-detail.component";
+import {WaitingListComponent} from "./waiting-list/waiting-list.component";
 
 
 const routes: Route[] = [
@@ -15,6 +16,7 @@ const routes: Route[] = [
 	{path: "tours/:id", component: TourDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{path: "tours/:id/participants", component: ParticipantListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{path: "tours/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "tours/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
 	{path: "partys/:id", component: PartyDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{
@@ -23,8 +25,11 @@ const routes: Route[] = [
 		canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 	{path: "partys/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "partys/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
 	{path: "merch/:id", component: MerchandiseDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "merch/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+
 ];
 
 @NgModule({
@@ -40,5 +45,6 @@ export const routedComponents = [
 	PartyDetailComponent,
 	OrderDetailComponent,
 	MerchandiseDetailComponent,
-	ConcludeEventComponent
+	ConcludeEventComponent,
+	WaitingListComponent
 ];

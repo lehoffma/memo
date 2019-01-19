@@ -14,7 +14,7 @@ export class QueryParameterService {
 	 * @param queryParams
 	 * @returns {Params}
 	 */
-	updateQueryParams(paramMap: ParamMap, queryParams: Params): Params {
+	static updateQueryParams(paramMap: ParamMap, queryParams: Params): Params {
 		const oldParamKeys = paramMap.keys
 			.filter(key => !Object.keys(queryParams).includes(key));
 

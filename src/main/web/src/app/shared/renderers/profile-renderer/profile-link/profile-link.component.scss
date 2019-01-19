@@ -3,9 +3,10 @@
 
 a {
 	text-decoration: none;
-	color: mat-color($accent);
+	color: accent();
 
 	&:hover {
-		color: lighten(mat-color($accent), 10);
+		color: accent(400);
+		border-bottom: 1px solid accent();
 	}
 }

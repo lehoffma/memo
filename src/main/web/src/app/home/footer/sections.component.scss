@@ -12,7 +12,7 @@
 		margin: 0;
 		padding-bottom: 0.5rem;
 		padding-top: 0.5rem;
-		border-bottom: 1px solid #e0e0e0;
+		border-bottom: 1px solid grey(300);
 		font-weight: 400;
 	}
 }
@@ -37,12 +37,12 @@ ol {
 
 	a {
 		text-decoration: none;
-		font-size: 0.9em;
-		color: rgba(255, 255, 255, 0.64);
+		font-size: font-size(smaller);
+		color: hsla(123, 26%, 82%, 1);
 		cursor: pointer;
 
 		&:hover {
-			color: rgba(255, 255, 255, 0.8);
+			color: grey(50);
 		}
 	}
 }
@@ -50,6 +50,7 @@ ol {
 @media all and (min-width: 650px) {
 	.sections {
 		flex-direction: row;
+
 		h3 {
 			border: none;
 		}

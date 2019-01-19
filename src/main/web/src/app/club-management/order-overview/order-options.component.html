@@ -30,8 +30,11 @@
 								   orderOptionsService.events = [];"
 		></memo-filter-option-header>
 
+
 		<mat-chip-list class="mat-chip-list-stacked">
-			<mat-chip *ngFor="let event of orderOptionsService.events; let i = index" class="mat-elevation-z1">
+			<mat-chip *ngFor="let event of orderOptionsService.events; let i = index"
+					  color="accent" selected
+					  class="mat-elevation-z1">
 				<a routerLink="/{{getEventType(event)}}/{{event.id}}"
 				   matTooltip="Auf die Detailseite dieses Events gehen">
 					{{ event.title }}
@@ -41,7 +44,7 @@
 					cancel
 				</mat-icon>
 			</mat-chip>
-			<mat-chip *ngIf="orderOptionsService.events.length === 0"
+			<mat-chip *ngIf="orderOptionsService.events.length === 0" color="default"
 					  class="chip-accent mat-elevation-z1">
 				Alle Events
 			</mat-chip>

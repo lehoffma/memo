@@ -10,7 +10,7 @@
 
 .object-details-content-container {
 	background-color: white;
-	border-top: 1px solid #ededed;
+	border-top: 1px solid grey(300);
 
 	@media all and (min-width: 650px) {
 		border: none;
@@ -23,7 +23,7 @@
 
 	a {
 		text-decoration: none;
-		color: rgba(0, 0, 0, 0.8);
+		color: grey(900);
 		font-weight: 400;
 	}
 }

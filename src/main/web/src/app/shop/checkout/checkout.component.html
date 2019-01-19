@@ -1,21 +1,31 @@
-<div class="checkout-options-container">
-
-
-	<memo-item-details-content [title]="'Addressen'" class="no-padding mat-elevation-z3">
+<div class="checkout-options-container mat-elevation-z3">
+	<div class="container--header">
+		<h3>Checkout</h3>
+	</div>
+	<div class="checkout-step address-container">
+		<div class="checkout-step-label">
+			<span class="checkout-step-label-number">1</span>
+			<span class="checkout-step-label-text">Adresse</span>
+		</div>
 		<memo-address-form [selection]="true" [formGroup]="formGroup.get('address')"></memo-address-form>
-	</memo-item-details-content>
+	</div>
 
-	<memo-item-details-content [title]="'Bezahlung'" class="no-padding mat-elevation-z3">
+	<div class="checkout-step payment-container">
+		<div class="checkout-step-label">
+			<span class="checkout-step-label-number">2</span>
+			<span class="checkout-step-label-text">Bezahlung</span>
+		</div>
 		<memo-payment [allowedMethods]="allowedMethods$ | async" [formGroup]="formGroup.get('payment')"></memo-payment>
-	</memo-item-details-content>
-	<div class="checkout-total mat-elevation-z3">
-		<span>{{total$ | async | currency:'EUR':'symbol'}}</span>
+	</div>
+
+
+	<div class="checkout-total">
 		<button mat-raised-button color="primary"
 				(click)="submit()"
 				[disabled]="!formGroup.valid || formGroup.pending || loading">
-		<span *ngIf="!loading; else loadingSpinner">
-			Abschließen
-		</span>
+			<span *ngIf="!loading; else loadingSpinner">
+				Einkauf abschließen
+			</span>
 			<ng-template #loadingSpinner>
 				<mat-icon class="loading-spinner">refresh</mat-icon>
 				<span>Lädt...</span>

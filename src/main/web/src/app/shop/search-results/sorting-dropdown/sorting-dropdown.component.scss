@@ -9,14 +9,14 @@
 }
 
 button.selected {
-	background-color: mat-color($accent, 700);
+	background-color: accent(700);
 	color: white;
 
 	&:focus {
-		background-color: mat-color($accent, 800) !important;
+		background-color: accent(800) !important;
 	}
 
 	&:hover {
-		background-color: mat-color($accent, 900) !important;
+		background-color: accent(900) !important;
 	}
 }

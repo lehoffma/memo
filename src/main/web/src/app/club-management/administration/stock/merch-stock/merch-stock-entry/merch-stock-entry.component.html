@@ -1,8 +1,7 @@
-<!--todo use container--header class -->
 <div class="stock-entry-header">
 	<div>
 		<a routerLink="/merch/{{stockEntry?.item.id}}">
-			<img src="{{stockEntry?.item.images[0]}}"/>
+			<img src="{{stockEntry?.item.images[0]  || 'resources/images/Logo.png'}}"/>
 		</a>
 
 		<div>

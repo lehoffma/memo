@@ -1,5 +1,7 @@
 @import "~@angular/material/theming";
 
+
+//todo redesign: filter options, important data above details table
 $breakpoint: 600px;
 
 :host {
@@ -13,11 +15,16 @@ $breakpoint: 600px;
 
 memo-expandable-material-table {
 	width: 100%;
+	background: white;
+	border-radius: 4px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 
 	@media all and (min-width: calc(800px + 2rem)) {
 		@include mat-elevation(3);
 		max-width: 800px;
 		margin-top: 1rem;
 		margin-bottom: 1rem;
+
 	}
 }

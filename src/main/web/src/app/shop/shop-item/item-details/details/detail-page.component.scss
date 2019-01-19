@@ -9,6 +9,10 @@ memo-add-to-cart-form {
 	margin-top: 2rem;
 }
 
+memo-participants {
+	margin: -1rem;
+}
+
 :host /deep/ .centered-container > div {
 	max-width: none !important;
 
@@ -31,9 +35,8 @@ memo-add-to-cart-form {
 	padding: 1rem;
 	text-decoration: none;
 	background: white;
-	color: black;
-	border-bottom: 1px solid #ededed;
-	font-size: 0.85rem;
+	color: grey(900);
+	font-size: font-size(smaller);
 	font-weight: 500;
 
 	mat-icon {
@@ -50,12 +53,12 @@ memo-add-to-cart-form {
 	}
 
 	.ordered-header-main-message {
-		font-size: 1rem;
+		font-size: font-size(default);
 	}
 
 	.options {
 		font-weight: 400;
-		color: rgba(0, 0, 0, 0.4);
+		color: grey(700);
 	}
 
 	> div {
@@ -64,7 +67,7 @@ memo-add-to-cart-form {
 	}
 
 	button {
-		color: black;
+		color: grey(900);
 	}
 
 	&:hover {
@@ -88,7 +91,7 @@ memo-add-to-cart-form {
 
 	:host /deep/ memo-multi-image-container {
 		justify-content: center;
-		border-right: 1px solid #ededed;
+		border-right: 1px solid grey(200);
 	}
 
 	.detail-page-navigation {
@@ -105,7 +108,7 @@ memo-add-to-cart-form {
 
 			a {
 				text-decoration: none;
-				color: rgba(0, 0, 0, 0.54);
+				color: grey(600);
 				width: 100%;
 				flex-grow: 1;
 				padding: 0.5rem 1rem 0.5rem 0.5rem;
@@ -117,14 +120,16 @@ memo-add-to-cart-form {
 				border-right: 2px solid transparent;
 
 				&:hover {
-					background: #e0e0e0;
+					a {
+						color: grey(900);
+					}
 				}
 
 				&.active {
-					border-color: mat-color($accent);
+					border-color: accent();
 
 					a {
-						color: #3F51B5;
+						color: accent();
 						font-weight: bold;
 					}
 				}
@@ -133,7 +138,7 @@ memo-add-to-cart-form {
 	}
 
 	.info {
-		width: 100%;
+		width: 80%;
 		padding-top: 1rem;
 	}
 

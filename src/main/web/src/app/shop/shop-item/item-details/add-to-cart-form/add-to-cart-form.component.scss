@@ -37,21 +37,21 @@
 	.waiting-list-remove-button {
 		margin-left: 8px;
 		text-transform: initial;
-		font-size: 0.9rem;
+		font-size: font-size(smaller);
 	}
 }
 
 .sold-out-disclaimer,
 .waiting-list-call-to-action {
-	color: mat-color($warn, 700);
+	color: warn(700);
 }
 
-.sold-out-disclaimer{
+.sold-out-disclaimer {
 	font-weight: bold;
 }
 
 .already-part-of-waiting-list {
-	color: mat-color($primary);
+	color: primary();
 }
 
 .waiting-list-link {
@@ -69,10 +69,38 @@
 	padding: 1rem;
 	margin-top: 16px;
 	border-radius: 4px;
-	background: mat-color($yellow, 100);
+	background: mat-color($accent-yellow, 100);
 }
 
 
 .waiting-list-link-container {
 	margin-top: 16px;
+}
+
+.icon-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background-color: primary(200);
+	color: primary(800);
+	border-radius: 50%;
+	padding: 6px;
+	height: 30px;
+	width: 30px;
+}
+
+.removal-successful-container {
+	flex-direction: row;
+	align-items: center;
+	background: mat-color($primary, 100);
+	border-radius: 4px;
+
+	.icon-container {
+		cursor: pointer;
+	}
+
+	> span {
+		margin-left: 16px;
+	}
 }

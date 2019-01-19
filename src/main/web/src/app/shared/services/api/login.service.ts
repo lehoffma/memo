@@ -7,7 +7,7 @@ import {Permission, UserPermissions} from "../../model/permission";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AuthService} from "../../authentication/auth.service";
 import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
-import {catchError, filter, map, mergeMap, retry, share} from "rxjs/operators";
+import {catchError, distinctUntilChanged, filter, map, mergeMap, retry, share} from "rxjs/operators";
 import {EventService} from "./event.service";
 
 interface LoginApiResponse {
@@ -29,6 +29,7 @@ export class LogInService {
 			);
 	public currentUser$: Observable<User> = this.accountObservable
 		.pipe(
+			distinctUntilChanged(),
 			mergeMap(id => id !== null ? this.userService.valueChanges(id) : of(null))
 		);
 	private readonly loginUrl = "/api/login";

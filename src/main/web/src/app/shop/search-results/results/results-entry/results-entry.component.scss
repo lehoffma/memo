@@ -7,20 +7,20 @@
 
 	mat-card {
 		box-shadow: none;
-		border: 1px solid #e0e0e0;
+		border: 1px solid grey(300);
 	}
 
 	.result-title {
 		margin: 0;
 		font-weight: 400;
-		font-size: 1.1rem;
+		font-size: font-size(small-medium);
 		word-break: break-all;
 	}
 
 	.result-info {
 		display: flex;
 		justify-content: space-between;
-		font-size: 0.9rem;
+		font-size: font-size(smaller);
 		align-items: flex-end;
 
 		div:not(.result-title) {
@@ -29,8 +29,8 @@
 	}
 
 	.result-price {
-		font-size: 1.1rem;
-		color: red;
+		font-size: font-size(small-medium);
+		color: warn();
 	}
 
 }
@@ -112,11 +112,11 @@ memo-price-renderer {
 		}
 
 		.actual-price {
-			color: $warn-default;
+			color: warn();
 		}
 
 		.base-price {
-			font-size: 0.85em;
+			font-size: font-size(smallest);
 		}
 	}
 }

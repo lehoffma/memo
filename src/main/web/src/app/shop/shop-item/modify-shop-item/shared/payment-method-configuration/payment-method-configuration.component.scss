@@ -1,6 +1,8 @@
 @import "~@angular/material/theming";
 @import "theme";
 
+//todo redesign: display in a row on desktop
+
 .payment-method-row {
 	padding: 1rem;
 	display: flex;
@@ -9,28 +11,28 @@
 	cursor: pointer;
 
 	&:hover {
-		background: #ededed;
+		background: grey(100);
 	}
 
 	&.selected {
 		mat-checkbox {
-			color: mat-color($primary);
+			color: primary();
 		}
 	}
 
 	mat-checkbox {
 		margin-right: 12px;
-		color: grey;
+		color: grey(600);
 	}
 }
 
 .error-container {
-	color: mat-color($warn);
+	color: warn();
 	display: flex;
 	align-items: center;
 	padding: 0.5rem 0.8rem;
-	border-top: 1px solid mat-color($warn);
-	border-bottom: 1px solid mat-color($warn);
+	border-top: 1px solid warn();
+	border-bottom: 1px solid warn();
 
 	mat-icon {
 		margin-right: 8px;
@@ -39,7 +41,7 @@
 
 .limit-config-container {
 	padding: 1rem;
-	border-bottom: 1px solid #E0E0E0;
+	border-bottom: 1px solid grey(200);
 	display: flex;
 	justify-content: space-between;
 }

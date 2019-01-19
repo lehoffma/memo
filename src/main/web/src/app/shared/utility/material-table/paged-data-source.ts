@@ -167,7 +167,9 @@ export class PagedDataSource<T> extends DataSource<T> {
 		if (combineQueryParams) {
 			combinedParams = combineQueryParams(newQueryParams);
 		}
-		router.navigate([], {queryParams: {...combinedParams}})
+		const containsPage = router.url.includes("page");
+		console.log(containsPage);
+		router.navigate([], {queryParams: {...combinedParams}, queryParamsHandling: "merge", replaceUrl: !containsPage})
 	}
 
 	writePaginatorUpdatesToUrl(router: Router, combineQueryParams?: (queryParams) => Params) {

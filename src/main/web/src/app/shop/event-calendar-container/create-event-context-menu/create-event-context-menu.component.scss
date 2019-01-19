@@ -1,3 +1,5 @@
+@import "theme";
+
 
 mat-dialog-content {
 	display: flex;
@@ -9,12 +11,12 @@ mat-dialog-content {
 	a {
 		display: flex;
 		flex: 1;
-		color: black;
+		color: grey(900);
 		text-decoration: none;
 		height: 120px;
 
 		&:hover {
-			background-color: darken(white, 10%);
+			background-color: grey(200);
 
 			.card-image {
 				filter: brightness(0.9);
@@ -22,11 +24,12 @@ mat-dialog-content {
 		}
 
 		&:not(:last-child) .card-footer {
-			border-bottom: 1px solid #9E9E9E;
+			border-bottom: 1px solid grey(500);
 		}
 
 		&.disabled {
-			color: grey;
+			color: grey(500);
+
 			.card-image {
 				filter: grayscale(100);
 			}
@@ -59,7 +62,7 @@ mat-dialog-content {
 
 			&:not(:last-child) .card-footer {
 				border-bottom: none;
-				border-right: 1px solid #9E9E9E;
+				border-right: 1px solid grey(500);
 			}
 		}
 
@@ -72,6 +75,7 @@ mat-dialog-content {
 
 mat-dialog-actions {
 	display: none;
+
 	button {
 		width: 100%;
 	}

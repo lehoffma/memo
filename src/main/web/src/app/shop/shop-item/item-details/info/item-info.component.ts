@@ -14,10 +14,10 @@ import {EventService} from "../../../../shared/services/api/event.service";
 import {CapacityService, EventCapacity} from "../../../../shared/services/api/capacity.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {WaitingListService} from "../../../../shared/services/api/waiting-list.service";
-import {Sort} from "../../../../shared/model/api/sort";
 import {distanceInWordsToNow, isBefore} from "date-fns";
 
 import * as deLocale from "date-fns/locale/de/index"
+import {WaitingListEntry} from "../../../shared/model/waiting-list";
 
 @Component({
 	selector: "memo-item-info",
@@ -54,7 +54,7 @@ export class ItemInfoComponent implements OnInit {
 
 	public waitingList$ = this._event$.pipe(
 		filter(event => event.id >= 0),
-		mergeMap(event => this.waitingListService.getByEventId(event.id, Sort.none())),
+		mergeMap(event => this.waitingListService.valueChanges<WaitingListEntry[]>(event.id, "search", this.waitingListService.getAllByEventId.bind(this.waitingListService))),
 		filter(it => it !== null),
 		map(it => it.reduce((sum, entry) => sum + 1, 0))
 	);

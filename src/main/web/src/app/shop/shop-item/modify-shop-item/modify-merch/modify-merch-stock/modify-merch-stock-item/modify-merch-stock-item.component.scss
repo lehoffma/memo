@@ -16,6 +16,7 @@
 		display: flex;
 		flex-direction: column;
 	}
+
 	.mat-dialog-actions {
 		display: flex;
 		justify-content: space-between;
@@ -27,9 +28,10 @@
 	justify-content: space-between;
 	align-items: center;
 
-	border-bottom: 1px solid #ededed;
+	border-bottom: 1px solid grey(200);
+
 	&:first-child {
-		border-top: 1px solid #ededed;
+		border-top: 1px solid grey(200);
 	}
 
 	padding: 1rem;
@@ -53,7 +55,7 @@
 			justify-content: center;
 			align-items: center;
 			display: flex;
-			border: 1px solid #eaeaea;
+			border: 1px solid grey(200);
 		}
 
 		/deep/ .mat-select-value {
@@ -75,13 +77,14 @@
 
 .add-size-form {
 	margin-bottom: 1.5rem;
+
 	mat-form-field {
 		width: calc(100% - 45px);
 	}
 }
 
 .error-message {
-	color: red;
+	color: warn();
 }
 
 :host {
@@ -91,15 +94,16 @@
 			justify-content: space-between;
 			align-items: center;
 			cursor: pointer;
-			background-color: $primary-default;
+			background-color: primary();
 			color: white;
+
 			&:hover {
-				background-color: mat-color($primary, 800);
+				background-color: primary(800);
 			}
 
 			&.chip-accent {
 				cursor: auto;
-				background-color: $accent-default;
+				background-color: accent();
 			}
 
 			span {
@@ -109,7 +113,7 @@
 			}
 
 			.remove-chip-button {
-				font-size: 1.5rem;
+				font-size: font-size(medium-large);
 				height: 1.5rem;
 				width: 1.5rem;
 				margin-left: 0.5rem;

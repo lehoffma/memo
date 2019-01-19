@@ -33,12 +33,6 @@ export class ParticipantUserService extends ServletService<ParticipantUser> {
 	addOrModify(requestMethod: AddOrModifyRequest, entry: ParticipantUser, options?: any): Observable<ParticipantUser> {
 		return undefined;
 	}
-
-	remove(id: number, ...args: any[]): Observable<Object>;
-	remove(id: number, options?: any): Observable<Object>;
-	remove(id: number, ...args: (any)[]): Observable<Object> {
-		return undefined;
-	}
 }
 
 export class ParticipantDataSource extends PagedDataSource<ParticipantUser> {

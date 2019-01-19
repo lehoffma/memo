@@ -1,6 +1,6 @@
 import {TableColumn} from "./expandable-material-table.component";
 import {BreakpointObserver} from "@angular/cdk/layout";
-import {map, tap} from "rxjs/operators";
+import {map} from "rxjs/operators";
 import {combineLatest, Observable} from "rxjs";
 
 
@@ -87,8 +87,7 @@ export class ResponsiveColumnsHelper<T> {
 					...alwaysAvailableColumns,
 					...matchedColumnRefs
 				]
-			}),
-			tap(it => console.log(it)),
+			})
 		);
 	}
 }

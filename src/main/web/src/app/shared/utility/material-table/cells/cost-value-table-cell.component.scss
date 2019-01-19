@@ -1,9 +1,9 @@
 @import "theme";
 
 span {
-	color: $warn-default;
+	color: warn();
 
 	&.positive {
-		color: $primary-default;
+		color: primary();
 	}
 }

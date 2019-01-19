@@ -39,8 +39,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private formBuilder: FormBuilder,
-				private router: Router,
-				private queryParameterService: QueryParameterService) {
+				private router: Router) {
 	}
 
 	ngOnInit() {
@@ -189,7 +188,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 		this.activatedRoute.queryParamMap
 			.pipe(
 				first(),
-				map(paramMap => this.queryParameterService.updateQueryParams(paramMap, combined))
+				map(paramMap => QueryParameterService.updateQueryParams(paramMap, combined))
 			)
 			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
 	}
@@ -281,7 +280,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 		this.activatedRoute.queryParamMap
 			.pipe(
 				first(),
-				map(paramMap => this.queryParameterService.updateQueryParams(paramMap, queryParams))
+				map(paramMap => QueryParameterService.updateQueryParams(paramMap, queryParams))
 			)
 			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
 	}
