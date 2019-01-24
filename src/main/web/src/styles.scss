@@ -157,18 +157,17 @@ mat-select {
 
 
 .small-outline-formfield.mat-form-field-appearance-outline {
-	width: 140px !important;
-	margin: -0.5rem !important;
-
 	.mat-form-field-wrapper {
 		margin: 0 !important;
-		padding: 0 !important;
 
 		.mat-form-field-flex {
 			margin: 0 !important;
+			align-items: center;
 
 			.mat-form-field-outline {
 				top: 0 !important;
+				background: grey(50);
+				border-radius: 4px;
 			}
 
 			.mat-form-field-infix {
@@ -185,8 +184,40 @@ mat-select {
 			}
 		}
 	}
+
+	&.mat-form-field-type-mat-input {
+		.mat-form-field-wrapper {
+			.mat-form-field-flex {
+				.mat-form-field-outline {
+					background: grey(50);
+					border-radius: 4px;
+				}
+			}
+		}
+	}
+
+	.mat-form-field-suffix {
+		top: 0 !important;
+		align-self: center;
+	}
+
+	&.no-errors {
+		.mat-form-field-wrapper {
+			padding: 0 !important;
+		}
+	}
 }
 
+.form-input-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.form-label {
+	color: grey(700);
+	font-size: 14px;
+	margin-bottom: 8px;
+}
 
 .load-more-button {
 	width: 100%;

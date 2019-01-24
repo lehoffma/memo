@@ -28,31 +28,27 @@
 <!--todo drag-n-dropable list/table of currently uploaded images with a big "upload" or "browse" button at the bottom-->
 
 <div class="upload-container" *ngIf="limit > 1">
-	<!--<memo-expandable-table [title]="'Hochgeladene Bilder' + (isFinite(limit) ? (' (max. ' + limit + ')') : '')"-->
-	<!--[data]="multiImageUploadService.data$ | async"-->
-	<!--[rowActions]="rowActions"-->
-	<!--[expandable]="false"-->
-	<!--[columnKeys]="columnKeys"-->
-	<!--[pagination]="false"-->
-	<!--(onSort)="multiImageUploadService.onSort($event)"-->
-	<!--(onAction)="multiImageUploadService.handleTableAction($event)"-->
+	<div class="upload-container-header">
+		<h3>Hochgeladene Bilder</h3>
+	</div>
+	<ng-container *ngIf="inMemoryDataService.data$ | async as data">
+		<div *ngFor="let row of data" class="uploaded-image-row" matRipple>
+			<span class="image-name">{{row.name}}</span>
+			<button mat-icon-button type="button"
+					matTooltip="Bild entfernen"
+					(click)="deleteEntries([row])">
+				<mat-icon>clear</mat-icon>
+			</button>
+		</div>
+		<div *ngIf="!data || data.length === 0" class="uploaded-image-row no-results">
+			Keine Bilder.
+		</div>
+	</ng-container>
 
-	<!--&gt;-->
 
-	<!--</memo-expandable-table>-->
-
-	<memo-expandable-material-table
-		[dataService]="inMemoryDataService"
-		[title]="'Hochgeladene Bilder' + (isFinite(limit) ? (' (max. ' + limit + ')') : '')"
-		[rowActions]="rowActions"
-		[columns]="columns"
-		[displayedColumns]="displayedColumns"
-		[withSelection]="true"
-
-		(onAction)="handleTableAction($event)">
-
-	</memo-expandable-material-table>
-
+	<button mat-stroked-button color="accent" class="add-button"
+			type="button" (click)="fileUpload.click()">Hinzufügen
+	</button>
 </div>
 
 

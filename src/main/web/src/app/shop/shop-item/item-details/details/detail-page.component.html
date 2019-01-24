@@ -42,6 +42,9 @@
 			</memo-multi-image-container>
 
 			<div class="desktop-column">
+				<!--todo redesign show hint if user is already registered for this event -->
+				<!--todo redesign outline input-->
+				<!--todo redesign show (Liegt in der Vergangenheit) label next to time-->
 				<memo-item-info [event]="item" [permissions]="permissions$ | async"></memo-item-info>
 				<memo-add-to-cart-form [event]="event" [permissions]="permissions$ | async"></memo-add-to-cart-form>
 			</div>

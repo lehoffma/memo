@@ -1,52 +1,48 @@
 <div class="modify-shop-item-container" *ngIf="formGroup">
+	<h3 class="container--header">
+		Tour bearbeiten
+	</h3>
+
 	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
-		<div class="image-upload-container">
-			<memo-item-details-content [title]="'Bilder'">
-				<memo-multi-image-upload [formGroup]="formGroup.get('images')"
-										 [previousValue]="previousValue?.images">
-				</memo-multi-image-upload>
-			</memo-item-details-content>
-		</div>
-
-		<div>
-			<memo-item-details-content [title]="'Route'">
-				<memo-tour-route-input [previousValue]="previousValue?.route" [formControl]="formGroup.get('addresses')"
-									   (distanceChange)="formGroup.get('event-data').get('miles').patchValue(meterToMiles($event))"
-									   [isTour]="true" content>
-
-				</memo-tour-route-input>
-			</memo-item-details-content>
-
-			<memo-item-details-content [title]="'Tour-Informationen'" [formGroup]="formGroup.get('event-data')">
-				<mat-form-field>
+		<memo-item-details-content class="grouped"
+								   [title]="'Tour-Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'"
+								   [formGroup]="formGroup.get('event-data')">
+			<div class="form-input-container">
+				<label class="form-label">Titel</label>
+				<mat-form-field appearance="outline"
+								class="small-outline-formfield">
 					<input matInput name="titleInput"
 						   required
 						   formControlName="title"
-						   placeholder="Titel"
 					>
 					<mat-error *ngIf="formGroup.get('event-data').get('title').hasError('required')" align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
-
-				<mat-form-field class="description-input">
+			</div>
+			<div class="form-input-container">
+				<label class="form-label">Beschreibung</label>
+				<mat-form-field appearance="outline" class="small-outline-formfield description-input">
 					<textarea autosize matInput name="descriptionInput"
 							  class="not-resizable-textarea" required
 							  type="text"
-							  formControlName="description"
-							  placeholder="Beschreibung">
+							  formControlName="description">
 					</textarea>
-					<mat-error *ngIf="formGroup.get('event-data').get('description').hasError('required')" align="end">
+					<mat-error *ngIf="formGroup.get('event-data').get('description').hasError('required')"
+							   align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
+			</div>
 
-				<div class="additional-tour-info-container">
-					<div>
-						<mat-form-field>
+			<div class="additional-tour-info-container">
+				<div>
+					<div class="form-input-container">
+						<div class="form-label">Preis</div>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
 							<input matInput name="priceInput"
-								   type="number" required
-								   placeholder="Preis"
+								   type="number" required min="0"
 								   formControlName="price"
 							>
 							<span matSuffix>€</span>
@@ -59,11 +55,30 @@
 								Maximal 2 Nachkommastellen!
 							</mat-error>
 						</mat-form-field>
+					</div>
 
-						<mat-form-field>
+				</div>
+
+				<div>
+
+					<div class="form-input-container">
+						<div class="form-label">Fahrzeug</div>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
+							<input matInput name="vehicleInput"
+								   type="text" required
+								   formControlName="vehicle">
+							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('vehicle')"
+									   align="end">
+								Dieses Feld darf nicht leer bleiben!
+							</mat-error>
+						</mat-form-field>
+
+					</div>
+					<div class="form-input-container">
+						<div class="form-label">Kapazität</div>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
 							<input matInput name="capacityInput"
 								   type="number" required
-								   placeholder="Kapazität"
 								   formControlName="capacity"
 							>
 							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('capacity')"
@@ -75,25 +90,14 @@
 							</mat-error>
 						</mat-form-field>
 					</div>
+				</div>
 
-					<div class="column">
-						<mat-form-field>
-							<input matInput name="vehicleInput"
-								   type="text" required
-								   formControlName="vehicle"
-								   placeholder="Fahrzeug">
-							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('vehicle')" align="end">
-								Dieses Feld darf nicht leer bleiben!
-							</mat-error>
-						</mat-form-field>
-
-					</div>
-
-					<div class="column">
-						<div>
-							<mat-form-field>
+				<div class="row">
+					<div>
+						<div class="form-input-container">
+							<div class="form-label">Datum</div>
+							<mat-form-field appearance="outline" class="small-outline-formfield">
 								<input matInput [matDatepicker]="myDatepicker"
-									   placeholder="Datum"
 									   formControlName="date"
 									   name="dateInput" required>
 								<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
@@ -102,30 +106,36 @@
 									Das Datum muss im Format DD.MM.YYYY vorliegen.
 								</mat-error>
 							</mat-form-field>
-							<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
 						</div>
+						<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
+					</div>
 
-						<mat-form-field>
+					<div class="form-input-container">
+						<div class="form-label">Uhrzeit</div>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
 							<input matInput
-								   placeholder="Uhrzeit"
 								   formControlName="time"
 								   name="timeInput" required>
 
-							<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('required')" align="end">
+							<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('required')"
+									   align="end">
 								Dieses Feld darf nicht leer bleiben!
 							</mat-error>
-							<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('pattern')" align="end">
+							<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('pattern')"
+									   align="end">
 								align="end">
 								Die Uhrzeit muss im Format "HH:MM" vorliegen!
 							</mat-error>
 						</mat-form-field>
-
 					</div>
-				</div>
-			</memo-item-details-content>
-		</div>
 
-		<memo-item-details-content [title]="'Berechtigungen'">
+				</div>
+			</div>
+		</memo-item-details-content>
+
+
+		<memo-item-details-content class="grouped" [title]="'Berechtigungen'" [subtitle]="'Minimum Berechtigungen'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
 			<memo-item-permissions-input
 				[formGroup]="formGroup.get('permissions')"
 				[previousValue]="{
@@ -137,15 +147,36 @@
 			</memo-item-permissions-input>
 		</memo-item-details-content>
 
-		<memo-item-details-content [title]="'Bezahlung'" class="no-padding">
+		<memo-item-details-content class="grouped" [title]="'Bezahlung'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
 			<memo-payment-method-configuration
 				[formGroup]="formGroup.get('payment-config')">
 
 			</memo-payment-method-configuration>
 		</memo-item-details-content>
 
-		<memo-item-details-content [title]="'Verantwortliche User'" class="no-padding">
-			<memo-responsible-user-input [previousValue]="previousValue?.author"
+
+		<memo-item-details-content class="grouped" [title]="'Route'" class="route-input"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+			<memo-tour-route-input class="mat-elevation-z3"
+								   [previousValue]="previousValue?.route"
+								   [formControl]="formGroup.get('addresses')"
+								   (distanceChange)="formGroup.get('event-data').get('miles').patchValue(meterToMiles($event))"
+								   [isTour]="true" content>
+
+			</memo-tour-route-input>
+		</memo-item-details-content>
+
+		<memo-item-details-content class="grouped" [title]="'Bilder'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+			<memo-multi-image-upload [formGroup]="formGroup.get('images')" class="mat-elevation-z3"
+									 [previousValue]="previousValue?.images">
+			</memo-multi-image-upload>
+		</memo-item-details-content>
+
+		<memo-item-details-content class="grouped" [title]="'Verantwortliche User'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+			<memo-responsible-user-input [previousValue]="previousValue?.author" class="mat-elevation-z3"
 										 [formControl]="formGroup.get('responsible-users')">
 
 			</memo-responsible-user-input>

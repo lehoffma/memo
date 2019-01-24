@@ -1,12 +1,13 @@
 @import "mixins";
 @import "../modify-shop-item.component";
 
+
 .additional-tour-info-container {
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
 
-	> div {
+	> div:not(.form-input-container) {
 		display: flex;
 		justify-content: space-between;
 
@@ -15,9 +16,6 @@
 		}
 	}
 
-	.time-selection {
-
-	}
 
 	> div:not(.column) > * {
 		width: 45%;
@@ -28,37 +26,7 @@
 	padding: 0;
 }
 
-.description-input {
-	margin-top: 15px;
-
-}
-
-memo-multi-image-upload {
-	background: grey(50);
-}
-
 form > div:first-child {
 	display: flex;
 	flex-direction: column;
-}
-
-.form-buttons {
-	display: flex;
-	justify-content: center;
-}
-
-@media all and (min-width: 800px) {
-	:host {
-		margin-top: 1rem;
-		margin-bottom: 1rem;
-		padding-bottom: 1rem;
-	}
-	memo-multi-image-upload {
-		display: block;
-
-		/deep/ memo-multi-image-container,
-		/deep/ .upload-container {
-			width: 100% !important;
-		}
-	}
 }

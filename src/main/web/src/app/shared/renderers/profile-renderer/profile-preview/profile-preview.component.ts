@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, OnInit} from "@angular/core";
+import {Component, EventEmitter, HostBinding, Inject, OnInit} from "@angular/core";
 import {User, userPermissions} from "../../../model/user";
 import {OverlayRef} from "@angular/cdk/overlay";
 import {OVERLAY_DATA, OVERLAY_REF} from "../../../services/overlay.service";
@@ -11,13 +11,30 @@ import {Sort} from "../../../model/api/sort";
 import {ClubRole, isAuthenticated} from "../../../model/club-role";
 import {Permission} from "../../../model/permission";
 import {LogInService} from "../../../services/api/login.service";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
 	selector: "memo-profile-preview",
 	templateUrl: "./profile-preview.component.html",
-	styleUrls: ["./profile-preview.component.scss"]
+	styleUrls: ["./profile-preview.component.scss"],
+	animations: [
+		trigger("fadeIn", [
+			transition("void => *", [
+				style({transform: "translateY(-5px)", opacity: "0"}),
+				animate("100ms ease-in", style({transform: "translateY(0)", opacity: "1"}))
+			]),
+			transition("* => void", [
+				style({opacity: "1"}),
+				animate("100ms ease-out", style({opacity: "0"}))
+			]),
+		]),
+	]
 })
 export class ProfilePreviewComponent implements OnInit {
+	@HostBinding("@fadeIn") get fadeIn() {
+		return true;
+	}
+
 	user: User;
 	amountOfTours$: Observable<number> = of(0);
 	formattedPhoneNumber: string;
@@ -46,9 +63,6 @@ export class ProfilePreviewComponent implements OnInit {
 
 		this.miles$ = this.milesService.get(this.user.id)
 			.pipe(share(), map(entry => entry.miles));
-
-		this.miles$
-			.subscribe(it => console.log(it));
 
 		if (this.user.mobile) {
 			this.formattedPhoneNumber = this.getFormattedPhoneNumber(this.user.mobile);

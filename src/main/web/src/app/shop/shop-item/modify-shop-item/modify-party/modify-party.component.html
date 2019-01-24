@@ -1,87 +1,80 @@
 <div class="modify-shop-item-container" *ngIf="formGroup">
+	<h3 class="container--header">
+		Party bearbeiten
+	</h3>
 	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
-
-		<div class="image-upload-container">
-			<memo-item-details-content [title]="'Bilder'">
-				<memo-multi-image-upload [previousValue]="previousValue?.images" [formGroup]="formGroup.get('images')">
-				</memo-multi-image-upload>
-			</memo-item-details-content>
-		</div>
-
-
-		<div>
-			<memo-item-details-content [title]="'Treffpunkt'">
-				<memo-tour-route-input [previousValue]="previousValue?.route" [formControl]="formGroup.get('addresses')"
-				></memo-tour-route-input>
-			</memo-item-details-content>
-
-			<memo-item-details-content [title]="'Party-Informationen'" [formGroup]="formGroup.get('event-data')">
-				<mat-form-field>
+		<memo-item-details-content class="grouped" [title]="'Party-Informationen'"
+								   [subtitle]="'Alle Felder sind verpflichtend'"
+								   [formGroup]="formGroup.get('event-data')"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+			<div class="form-input-container">
+				<div class="form-label">Titel</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
 					<input matInput name="titleInput"
 						   type="text" required
-						   placeholder="Titel"
 						   formControlName="title"
 					>
 					<mat-error *ngIf="formGroup.get('event-data').get('title').hasError('required')" align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
+			</div>
 
-				<mat-form-field class="description-input">
+			<div class="form-input-container">
+				<div class="form-label">Beschreibung</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
 					<textarea autosize matInput name="descriptionInput"
 							  class="not-resizable-textarea" required
 							  type="text"
-							  formControlName="description"
-							  placeholder="Beschreibung">
+							  formControlName="description">
 					</textarea>
 					<mat-error *ngIf="formGroup.get('event-data').get('description').hasError('required')" align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
+			</div>
 
-				<div class="additional-party-info-container">
-					<div>
-						<div>
-							<mat-form-field>
-								<input matInput [matDatepicker]="myDatepicker"
-									   placeholder="Datum"
-									   formControlName="date"
-									   name="dateInput" required>
-								<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-								<mat-error *ngIf="formGroup.get('event-data').get('date').hasError('required')"
-										   align="end">
-									Das Datum muss im Format DD.MM.YYYY vorliegen.
-								</mat-error>
-							</mat-form-field>
-							<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
-						</div>
+			<div class="additional-party-info-container">
+				<div>
+					<div class="form-input-container">
+						<div class="form-label">Datum</div>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
+							<input matInput [matDatepicker]="myDatepicker"
+								   formControlName="date"
+								   name="dateInput" required>
+							<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+							<mat-error *ngIf="formGroup.get('event-data').get('date').hasError('required')"
+									   align="end">
+								Das Datum muss im Format DD.MM.YYYY vorliegen.
+							</mat-error>
+						</mat-form-field>
+						<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
 					</div>
+					<div class="form-input-container">
+						<div class="form-label">Uhrzeit</div>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
+							<input matInput
+								   formControlName="time"
+								   name="timeInput" required>
 
-					<div>
-						<div class="time-selection">
-							<mat-form-field>
-								<input matInput
-									   placeholder="Uhrzeit"
-									   formControlName="time"
-									   name="timeInput" required>
-
-								<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('required')"
-										   align="end">
-									Dieses Feld darf nicht leer bleiben!
-								</mat-error>
-								<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('pattern')"
-										   align="end">
-									Die Uhrzeit muss im Format "HH:MM" vorliegen!
-								</mat-error>
-							</mat-form-field>
-						</div>
+							<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('required')"
+									   align="end">
+								Dieses Feld darf nicht leer bleiben!
+							</mat-error>
+							<mat-error *ngIf="formGroup.get('event-data').get('time').hasError('pattern')"
+									   align="end">
+								Die Uhrzeit muss im Format "HH:MM" vorliegen!
+							</mat-error>
+						</mat-form-field>
 					</div>
-					<div>
-						<mat-form-field>
+				</div>
+				<div>
+					<div class="form-input-container">
+						<div class="form-label">Preis</div>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
 							<input matInput name="priceInput"
 								   type="number" required
-								   formControlName="price"
-								   placeholder="Preis">
+								   formControlName="price">
 							<span matSuffix>€</span>
 							<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('required')"
 									   align="end">
@@ -92,8 +85,11 @@
 								Maximal 2 Nachkommastellen!
 							</mat-error>
 						</mat-form-field>
+					</div>
 
-						<mat-form-field>
+					<div class="form-input-container">
+						<div class="form-label">Kapazität</div>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
 							<input matInput name="capacityInput"
 								   type="number" required
 								   placeholder="Kapazität"
@@ -108,13 +104,14 @@
 							</mat-error>
 						</mat-form-field>
 					</div>
-
 				</div>
 
-			</memo-item-details-content>
-		</div>
+			</div>
 
-		<memo-item-details-content [title]="'Berechtigungen'">
+		</memo-item-details-content>
+
+		<memo-item-details-content class="grouped" [title]="'Berechtigungen'" [subtitle]="'Minimum Berechtigungen'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
 			<memo-item-permissions-input
 				[formGroup]="formGroup.get('permissions')"
 				[previousValue]="{
@@ -126,16 +123,31 @@
 			</memo-item-permissions-input>
 		</memo-item-details-content>
 
-		<memo-item-details-content [title]="'Bezahlung'" class="no-padding">
+		<memo-item-details-content class="grouped" [title]="'Bezahlung'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
 			<memo-payment-method-configuration
 				[formGroup]="formGroup.get('payment-config')">
 
 			</memo-payment-method-configuration>
 		</memo-item-details-content>
 
+		<memo-item-details-content class="grouped" [title]="'Treffpunkt'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+			<memo-tour-route-input class="mat-elevation-z3" [previousValue]="previousValue?.route"
+								   [formControl]="formGroup.get('addresses')"
+			></memo-tour-route-input>
+		</memo-item-details-content>
 
-		<memo-item-details-content [title]="'Verantwortliche User'" class="no-padding">
-			<memo-responsible-user-input [previousValue]="previousValue?.author"
+		<memo-item-details-content class="grouped" [title]="'Bilder'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+			<memo-multi-image-upload class="mat-elevation-z3" [previousValue]="previousValue?.images"
+									 [formGroup]="formGroup.get('images')">
+			</memo-multi-image-upload>
+		</memo-item-details-content>
+
+		<memo-item-details-content [title]="'Verantwortliche User'"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+			<memo-responsible-user-input class="mat-elevation-z3" [previousValue]="previousValue?.author"
 										 [formControl]="formGroup.get('responsible-users')">
 
 			</memo-responsible-user-input>

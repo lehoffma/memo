@@ -1,81 +1,79 @@
 @import "theme";
 @import "../../../../../../node_modules/@angular/material/theming";
 
-
-//todo redesign: less labels
 :host > div {
 	display: block;
 	background: white;
 
 	padding: 1rem;
-	min-width: 280px;
+	min-width: 400px;
 	border-radius: 4px;
 }
 
-.preview-header {
+.preview-card-info-container {
 	display: flex;
+}
 
-	.preview-image {
-		margin-right: 10px;
+.preview-image {
+	margin-right: 24px;
 
-		img {
-			width: 50px;
-			height: 50px;
-			object-fit: cover;
-			border-radius: 50%;
-			border: 2px solid mat-color($primary);
-		}
-	}
-
-	.preview-name-container {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-
-		.preview-username {
-			color: primary();
-			text-decoration: none;
-
-			&:hover {
-				color: primary(500);
-			}
-		}
-
-		.preview-club-role {
-			color: grey(700);
-		}
+	img {
+		width: 100px;
+		height: 100px;
+		object-fit: cover;
+		border-radius: 50%;
+		box-shadow: inset 0 0 0 1px hsla(0, 0%, 0%, 0.1);
 	}
 }
 
-.preview-header,
-.preview-user-info {
-	margin-left: -1rem;
-	margin-right: -1rem;
-	padding-bottom: 1rem;
-	padding-left: 1rem;
-	padding-right: 1rem;
-	border-bottom: 1px solid grey(200);
+.preview-card-info {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 }
 
+.preview-name-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	.preview-username {
+		color: primary(700);
+		text-decoration: none;
+		font-size: font-size(small-medium);
+
+		&:hover {
+			color: primary(500);
+		}
+	}
+
+	.preview-club-role {
+		color: grey(700);
+		font-size: font-size(smaller);
+	}
+}
+
+
 .preview-user-info {
-	margin-top: 1rem;
-	margin-bottom: 1rem;
+	margin-top: 4px;
+	margin-bottom: 16px;
 
 	.user-info-row {
 		display: flex;
-		justify-content: space-between;
-
-		&:not(:first-child) {
-			padding-top: 5px;
-		}
+		align-items: center;
+		font-size: 14px;
+		padding-top: 6px;
 
 		.row-header {
 			color: grey(600);
+			margin-right: 8px;
+			width: 18px;
+			height: 18px;
+			font-size: font-size(small-medium);
 		}
 
 		.row-value {
-			color: grey(900);
-			font-weight: 500;
+			color: grey(700);
 		}
 	}
 }
@@ -83,4 +81,27 @@
 .preview-card-actions {
 	display: flex;
 	justify-content: space-around;
+	margin: -16px;
+	margin-top: 0;
+	padding: 8px 48px;
+	background: primary();
+	color: white;
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 4px;
+
+	a[disabled] {
+		color: white;
+	}
+
+	.mat-icon-button[disabled]::after {
+		content: "";
+		width: 2px;
+		background: white;
+		border: 1px solid primary(700);
+		height: 30px;
+		position: absolute;
+		transform: translateX(-50%) translateY(-50%) rotate(45deg);
+		top: 50%;
+		left: 50%;
+	}
 }

@@ -4,17 +4,33 @@
 @import "variables";
 
 :host {
-	border-radius: 4px;
-	padding-bottom: 4px;
+	display: block;
+
+	@media all and (min-width: 800px) {
+
+		&:not(:first-of-type) {
+			border-top: 1px solid grey(300);
+		}
+	}
 }
 
 .object-details-content-container {
 	background-color: white;
 	border-top: 1px solid grey(300);
 
-	@media all and (min-width: 650px) {
+}
+
+
+@media all and (min-width: 650px) {
+	:host:not(.grouped) {
+		&,
+		.object-details-content-container,
+		.container--body {
+			border-radius: 4px;
+		}
+	}
+	.object-details-content-container {
 		border: none;
-		border-radius: 4px;
 	}
 }
 
@@ -31,3 +47,35 @@
 .container--body {
 	padding: 1rem;
 }
+
+.title-subtitle-container {
+	display: flex;
+	flex-direction: column;
+
+	.subtitle {
+		display: block;
+		font-size: font-size(smallest);
+		color: grey(600);
+		font-style: italic;
+	}
+
+}
+
+.container.horizontal {
+	.container--header {
+		align-items: flex-start;
+		background: white;
+		width: 33%;
+		font-size: 16px;
+	}
+
+	.container--body {
+		flex: 1;
+	}
+
+	.object-details-content-container {
+		display: flex;
+	}
+
+}
+

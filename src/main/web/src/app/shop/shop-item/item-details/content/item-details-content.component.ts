@@ -7,7 +7,10 @@ import {Component, Input, OnInit} from "@angular/core";
 })
 export class ItemDetailsContentComponent implements OnInit {
 	@Input() title: string = "";
+	@Input() subtitle: string = "";
 	@Input() route: string;
+
+	@Input() direction: "vertical" | "horizontal" = "vertical";
 
 	constructor() {
 	}

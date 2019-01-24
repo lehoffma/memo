@@ -13,6 +13,7 @@ import {PaymentMethod} from "../../../checkout/payment/payment-method";
 import {paymentMethodLimitationValidator} from "../shared/payment-method-configuration/payment-method-limitation.validator";
 import {numberLimitToString} from "../shared/payment-method-configuration/payment-method-limit-util";
 import {paymentConfig} from "../../../shared/model/event";
+import {WindowService} from "../../../../shared/services/window.service";
 
 @Component({
 	selector: "memo-modify-party",
@@ -25,9 +26,12 @@ export class ModifyPartyComponent implements OnInit {
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 	ModifyType = ModifyType;
 
+	isDesktop$ = this.windowService.hasMinDimensions(800);
+
 	constructor(private location: Location,
 				public modifyItemService: ModifyItemService,
 				private addressService: AddressService,
+				private windowService: WindowService,
 				private formBuilder: FormBuilder) {
 		this.formGroup = this.formBuilder.group({
 			"event-data": this.formBuilder.group({
@@ -105,7 +109,7 @@ export class ModifyPartyComponent implements OnInit {
 		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);
 		this.formGroup.get("addresses").patchValue(previousValue.route);
 
-		let config= paymentConfig(previousValue);
+		let config = paymentConfig(previousValue);
 
 		this.formGroup.get("payment-config").get("limit").patchValue(numberLimitToString(config.limit));
 		this.formGroup.get("payment-config").get("methods").patchValue(config.methods);

@@ -67,10 +67,46 @@ memo-multi-image-container {
 	width: 100%;
 }
 
+.uploaded-image-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 8px 8px 16px;
+
+	&.no-results {
+		color: grey(600);
+		font-style: italic;
+		text-align: center;
+		justify-content: center;
+	}
+}
+
+
+.upload-container {
+	display: flex;
+	flex-direction: column;
+
+	> button {
+		margin: 8px auto;
+	}
+}
+
+.upload-container-header {
+	h3 {
+		margin: 0;
+		padding: 16px;
+		border-bottom: 1px solid grey(300);
+		font-weight: 500;
+		font-size: font-size(default);
+		color: grey(900);
+	}
+}
+
 @media all and (min-width: 800px) {
 	:host {
 		display: flex;
 		padding: 0;
+		max-width: 500px;
 
 		&.single-picture {
 			flex-direction: column;

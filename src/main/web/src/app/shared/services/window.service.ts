@@ -1,7 +1,8 @@
 import {Inject, Injectable, PLATFORM_ID} from "@angular/core";
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 import {Optional} from "../utility/optional";
 import {isPlatformBrowser} from "@angular/common";
+import {map} from "rxjs/operators";
 
 function getWindow(): Window {
 	return window;
@@ -18,7 +19,7 @@ export class WindowService {
 		width: this.window.map(it => it.innerWidth).orElse(0),
 		height: this.window.map(it => it.innerHeight).orElse(0)
 	});
-			dimension$                                                       = this._dimensions$.asObservable();
+	dimension$ = this._dimensions$.asObservable();
 
 	constructor(@Inject(PLATFORM_ID) private platformId: Object) {
 		this.window.ifPresent(it => it.addEventListener("resize", ev => {
@@ -42,6 +43,21 @@ export class WindowService {
 			width: this._dimensions$.getValue().width,
 			height: this._dimensions$.getValue().height
 		};
+	}
+
+	hasMinDimensions(width?: number, height?: number): Observable<boolean>{
+		return this._dimensions$.pipe(
+			map(dimensions => {
+				let hasMinDimensions = true;
+				if(width){
+					hasMinDimensions = hasMinDimensions && dimensions.width >= width;
+				}
+				if(height){
+					hasMinDimensions = hasMinDimensions && dimensions.height >= height;
+				}
+				return hasMinDimensions;
+			})
+		)
 	}
 
 	isTouchDevice() {

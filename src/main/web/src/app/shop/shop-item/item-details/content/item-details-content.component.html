@@ -1,8 +1,11 @@
-<div class="centered-container container">
+<div class="centered-container container" [class.horizontal]="direction === 'horizontal'">
 
 	<div class="object-details-content-container">
 		<div class="container--header">
-			<h3>{{title}}</h3>
+			<div class="title-subtitle-container">
+				<h3>{{title}}</h3>
+				<span class="subtitle" *ngIf="subtitle">{{subtitle}}</span>
+			</div>
 			<a *ngIf="route" title="Zeige mehr {{title}} Informationen"
 			   routerLink="{{route}}">
 				<mat-icon>list</mat-icon>

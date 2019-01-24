@@ -1,55 +1,52 @@
 <div class="mat-elevation-z3"
 	 (mouseenter)="mouseIsOver.emit(true)"
 	 (mouseleave)="mouseIsOver.emit(false)">
-
-	<div class="preview-header">
+	<div class="preview-card-info-container">
 		<div class="preview-image">
 			<img
-				src="{{(user.images.length > 0 ? user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"/>
+				src="{{(user.images.length > 0 ? user.images[0]: 'resources/images/Logo.png') | imageSize:'large' | async}}"/>
 		</div>
-		<div class="preview-name-container">
-			<a class="preview-username" routerLink="members/{{user.id}}">
-				{{user.firstName}} {{user.surname}}
-			</a>
-			<div class="preview-club-role">
-				{{user.clubRole}}
+		<div class="preview-card-info">
+			<div class="preview-name-container">
+				<a class="preview-username" routerLink="members/{{user.id}}">
+					{{user.firstName}} {{user.surname}}
+				</a>
+				<div class="preview-club-role">
+					{{user.clubRole}}
+				</div>
 			</div>
-		</div>
-	</div>
 
-	<div class="preview-user-info">
-		<div class="user-info-row">
-			<div class="row-header">
-				Mitglied seit
-			</div>
-			<div class="row-value">
-				{{user.joinDate | dateFormat:"DD.MM.YYYY"}}
-			</div>
-		</div>
-		<div class="user-info-row">
-			<div class="row-header">
-				Mitgefahrene Touren
-			</div>
-			<div class="row-value">
-				{{amountOfTours$ | async}}
-			</div>
-		</div>
-		<div class="user-info-row">
-			<div class="row-header">
-				Meilen
-			</div>
-			<div class="row-value">
-				<span *ngIf="(miles$ | async) == null">
-					Loading...
-				</span>
-				<span *ngIf="(miles$ | async) >= 0">{{miles$ | async}}</span>
+			<div class="preview-user-info">
+				<div class="user-info-row">
+					<mat-icon class="row-header">date_range</mat-icon>
+					<div class="row-value">
+						Seit {{user.joinDate | dateFormat:"DD.MM.YYYY"}} Meilenwolf
+					</div>
+				</div>
+				<div class="user-info-row">
+					<mat-icon class="row-header">directions_car</mat-icon>
+					<div class="row-value">
+						{{amountOfTours$ | async}} mitgefahrene Touren
+					</div>
+				</div>
+				<div class="user-info-row">
+					<mat-icon class="row-header">map</mat-icon>
+					<div class="row-value">
+					<span class="loading-text" *ngIf="(miles$ | async) == null">
+						Loading
+					</span>
+						<span *ngIf="(miles$ | async) >= 0">
+						{{miles$ | async}} gefahrene Meilen
+					</span>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
 
+	</div>
 	<div class="preview-card-actions">
 		<a mat-icon-button
-		   [disabled]="!(canReadPhoneNumber$ | async) || user?.mobile?.length === 0"
+		   [disabled]="!(canReadPhoneNumber$ | async) || !(user?.mobile?.length > 0)"
 		   href="https://api.whatsapp.com/send?phone={{(canReadPhoneNumber$ | async) && formattedPhoneNumber}}"
 		   [matTooltip]="'Per WhatsApp kontaktieren'"
 		   [matTooltipPosition]="'below'"
@@ -59,7 +56,7 @@
 			</mat-icon>
 		</a>
 		<a mat-icon-button
-		   [disabled]="!(canReadPhoneNumber$ | async) || user?.mobile?.length === 0"
+		   [disabled]="!(canReadPhoneNumber$ | async) || !(user?.mobile?.length > 0)"
 		   href="tel:{{(canReadPhoneNumber$ | async) && user?.mobile}}"
 		   [matTooltip]="'Anrufen'"
 		   [matTooltipPosition]="'below'"

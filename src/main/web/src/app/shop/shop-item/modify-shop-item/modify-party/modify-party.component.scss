@@ -6,19 +6,17 @@
 	justify-content: space-between;
 	flex-direction: column;
 
-	> div:not(:first-child) {
+	> div {
 		width: 100%;
 		display: flex;
-		justify-content: space-between;
-		> *:not(.time-selection) {
-			width: 45%;
-		}
-		.time-selection {
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding-bottom: 6px;
+		justify-content: flex-start;
+
+		> div {
+			max-width: 200px;
+
+			&:first-child {
+				margin-right: 48px;
+			}
 		}
 	}
 }
@@ -37,19 +35,10 @@
 			display: flex;
 			flex-direction: column;
 			margin-bottom: 0;
-
-			/deep/ agm-map {
-				width: calc(100% + 1rem);
-				margin: -1rem;
-				margin-bottom: 1rem;
-			}
 		}
 	}
 }
 
-.description-input {
-	margin-top: 15px;
-}
 
 @media all and (min-width: 800px) {
 	:host {

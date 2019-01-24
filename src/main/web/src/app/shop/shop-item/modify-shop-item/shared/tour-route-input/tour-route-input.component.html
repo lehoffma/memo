@@ -16,7 +16,7 @@
 </agm-map>
 
 
-<div *ngIf="(route$ | async) as route">
+<div *ngIf="(route$ | async) as route" class="main-input-container">
 	<div *ngFor="let tourStop of route; let i = index;" class="tour-route-input-container">
 		<div class="tour-route-indicators">
 
@@ -26,7 +26,7 @@
 				<span class="waypoint-dot" *ngFor="let x of [1,2,3]"></span>
 			</ng-template>
 		</div>
-		<mat-form-field>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
 			<!--Format: "Alexanderpl. 2, 10178 Berlin, Deutschland"-->
 
 			<input matInput (keydown.enter)="$event.preventDefault()" #routeInput
