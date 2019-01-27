@@ -5,82 +5,20 @@
 	margin-bottom: 1rem;
 }
 
-form > mat-form-field {
-	margin-top: 1rem;
-
-	@media all and (min-width: 600px) {
-		margin-top: 0;
-	}
-}
-
-memo-multi-image-upload {
-	margin-bottom: 1rem;
-	border-bottom: 1px solid grey(500);
-}
-
-memo-multi-image-upload /deep/ memo-multi-image-container {
-	@media all and (max-width: 800px) {
-		margin-bottom: 1rem;
-	}
-}
-
-.modify-shop-item-container {
-	background: $container-content--background-color;
-	color: $container-content--color;
-	padding-top: 0;
-	max-width: 1000px;
-
-	@media all and (min-width: 600px) {
-		margin-top: 1rem;
-	}
-}
-
-.entry-info-container {
-	display: flex;
-	justify-content: space-between;
-
-	&:nth-child(1) {
-		justify-content: space-between;
-		align-items: center;
-
-		> * {
-			width: 45%;
-		}
-
-		mat-select {
-			margin-top: -8px;
-		}
-
-		/deep/ .mat-select-placeholder.mat-floating-placeholder {
-			top: -16px !important;
-		}
-	}
-
-	&:nth-child(2) {
-		width: 100%;
-
-		> div {
-			width: 45%;
-		}
-	}
-}
-
-memo-multi-image-upload {
-	margin: 0;
-
-	/deep/ memo-multi-image-container {
-		border-right: 1px solid grey(500);
-	}
-}
-
-.entry-info {
-	width: 90%;
-	max-width: 500px;
-	margin: 1rem auto;
-}
-
 .form-buttons {
 	margin-top: 20px;
 	display: flex;
 	justify-content: flex-end;
+}
+
+@media all and (min-width: 800px) {
+	.desktop-row {
+		> * {
+			width: 200px;
+
+			&:first-child {
+				margin-right: 48px;
+			}
+		}
+	}
 }

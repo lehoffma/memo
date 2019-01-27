@@ -1,18 +1,20 @@
-<mat-form-field>
-	<input matInput
-		   tabindex="-1"
-		   placeholder="Event"
-		   name="eventInput"
-		   [formControl]="formControl"
-		   #input
-		   [matAutocomplete]="auto" [attr.required]="required">
-	<mat-error
-		*ngIf="formControl.hasError('isNotAValidEvent') || formControl.hasError('required')">
-		Bitte wähle ein gültiges Item aus.
-	</mat-error>
-</mat-form-field>
-<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-	<mat-option *ngFor="let option of filteredOptions$ | async" [value]="option">
-		{{option.title}}
-	</mat-option>
-</mat-autocomplete>
+<div class="form-input-container">
+	<div class="form-label">Event</div>
+	<mat-form-field appearance="outline" class="small-outline-formfield">
+		<input matInput
+			   tabindex="-1"
+			   name="eventInput"
+			   [formControl]="formControl"
+			   #input
+			   [matAutocomplete]="auto" [attr.required]="required">
+		<mat-error
+			*ngIf="formControl.hasError('isNotAValidEvent') || formControl.hasError('required')">
+			Bitte wähle ein gültiges Item aus.
+		</mat-error>
+	</mat-form-field>
+	<mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+		<mat-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+			{{option.title}}
+		</mat-option>
+	</mat-autocomplete>
+</div>

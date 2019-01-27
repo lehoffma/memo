@@ -13,6 +13,7 @@ import {filter, map, mergeMap, take} from "rxjs/operators";
 import {createEntry, Entry} from "../../../../shared/model/entry";
 import {ModifyItemService} from "../modify-item.service";
 import {setProperties} from "../../../../shared/model/util/base-object";
+import {WindowService} from "../../../../shared/services/window.service";
 
 @Component({
 	selector: "memo-modify-entry",
@@ -51,10 +52,12 @@ export class ModifyEntryComponent implements OnInit {
 		map(it => it.content)
 	);
 
+	isDesktop$ = this.windowService.hasMinDimensions(800);
 	constructor(private location: Location,
 				private formBuilder: FormBuilder,
 				private activatedRoute: ActivatedRoute,
 				public modifyItemService: ModifyItemService,
+				private windowService: WindowService,
 				private entryCategoryService: EntryCategoryService,
 				private eventService: EventService) {
 		this.activatedRoute.queryParamMap

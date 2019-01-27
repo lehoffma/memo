@@ -38,6 +38,7 @@ a.disabled {
 	cursor: default;
 }
 
+
 //todo redesign: search input should be open all the time on desktop
 .search-input {
 	.mat-input-underline {
@@ -235,4 +236,16 @@ mat-select {
 
 	color: accent();
 	font-weight: 500;
+}
+
+
+@media all and (min-width: 800px) {
+	.desktop-column,
+	.desktop-row {
+		display: flex;
+	}
+
+	.desktop-column {
+		flex-direction: column;
+	}
 }

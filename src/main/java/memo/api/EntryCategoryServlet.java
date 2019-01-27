@@ -5,6 +5,8 @@ import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.ConfigurableAuthStrategy;
 import memo.data.EntryCategoryRepository;
 import memo.model.EntryCategory;
+import memo.util.model.Page;
+import memo.util.model.PageRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("/entryCategory")
 @Named
@@ -39,7 +42,8 @@ public class EntryCategoryServlet extends AbstractApiServlet<EntryCategory> {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public Object get(@Context HttpServletRequest request) {
-        return this.get(request, entryCategoryRepository);
+        List<EntryCategory> categories = entryCategoryRepository.getAll();
+        return new Page(categories, new PageRequest(), categories.size());
     }
 
     @Override

@@ -5,7 +5,8 @@
 	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
 
 
-		<memo-item-details-content [title]="'Merch-Informationen'" class="grouped"
+		<memo-item-details-content [title]="'Merch-Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
+								   class="grouped"
 								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'"
 								   [formGroup]="formGroup.get('event-data')">
 
@@ -37,7 +38,7 @@
 						<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('required')" align="end">
 							Dieses Feld darf nicht leer bleiben!
 						</mat-error>
-						<mat-error *ngIf="formGroup.get('event-data').get('price').value < 0" align="end">
+						<mat-error *ngIf="formGroup.get('event-datae').get('price').value < 0" align="end">
 							Der Preis muss positiv sein.
 						</mat-error>
 						<mat-error

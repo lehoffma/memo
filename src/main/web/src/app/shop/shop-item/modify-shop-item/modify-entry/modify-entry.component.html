@@ -1,41 +1,33 @@
 <div class="modify-shop-item-container">
+	<h3 class="container--header">
+		Posten bearbeiten
+	</h3>
 	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
-		<div class="image-upload">
-			<memo-multi-image-upload [previousValue]="previousValue?.images" [formGroup]="formGroup.get('images')">
 
-			</memo-multi-image-upload>
-		</div>
+		<memo-item-details-content [title]="'Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
+								   class="grouped"
+								   [formGroup]="formGroup"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
 
-		<div class="entry-info">
-			<div class="entry-info-container">
-				<mat-form-field>
+			<div class="form-input-container">
+				<div class="form-label">Titel</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
 					<input matInput
 						   name="titleInput"
 						   required
-						   placeholder="Titel"
 						   formControlName="name"
 					>
 					<mat-error *ngIf="formGroup.get('name').hasError('required')" align="end">
 						Dieses Feld darf nicht leer bleiben!
 					</mat-error>
 				</mat-form-field>
-				<mat-form-field>
-					<mat-select [formControl]="formGroup.get('category')"
-								[compareWith]="compareCategories"
-								placeholder="Kategorie"
-								name="categorySelect">
-						<mat-option *ngFor="let option of (entryCategories$ | async)" [value]="option">
-							{{option.name}}
-						</mat-option>
-					</mat-select>
-				</mat-form-field>
 			</div>
+			<div class="desktop-row">
 
-			<div class="entry-info-container">
-				<div>
-					<mat-form-field>
+				<div class="form-input-container">
+					<div class="form-label">Datum</div>
+					<mat-form-field appearance="outline" class="small-outline-formfield">
 						<input matInput [matDatepicker]="myDatepicker"
-							   placeholder="Datum"
 							   formControlName="date"
 							   name="dateInput" required>
 						<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
@@ -45,11 +37,29 @@
 					</mat-form-field>
 					<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
 				</div>
-				<div>
-					<mat-form-field>
+				<div class="form-input-container">
+					<div class="form-label">Kategorie</div>
+					<mat-form-field appearance="outline" class="small-outline-formfield">
+						<mat-select [formControl]="formGroup.get('category')"
+									[compareWith]="compareCategories"
+									name="categorySelect">
+							<mat-option *ngFor="let option of (entryCategories$ | async)" [value]="option">
+								{{option.name}}
+							</mat-option>
+						</mat-select>
+					</mat-form-field>
+				</div>
+
+			</div>
+			<div class="desktop-row">
+				<div class="form-input-container">
+					<div class="form-label">
+						Wert
+						<span class="form-label--additional-info">(Werte < 0 sind Kosten)</span>
+					</div>
+					<mat-form-field appearance="outline" class="small-outline-formfield">
 						<input matInput name="valueInput"
 							   type="number" required
-							   placeholder="Wert"
 							   formControlName="value"
 						>
 						<span matSuffix>€</span>
@@ -58,27 +68,38 @@
 						</mat-error>
 					</mat-form-field>
 				</div>
+
+				<memo-event-autocomplete [formControl]="formGroup.get('item')">
+
+				</memo-event-autocomplete>
 			</div>
+		</memo-item-details-content>
 
-			<memo-event-autocomplete [formControl]="formGroup.get('item')">
+		<memo-item-details-content [title]="'Bilder'" class="grouped"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+			<memo-multi-image-upload [previousValue]="previousValue?.images"
+									 class="mat-elevation-z3"
+									 [formGroup]="formGroup.get('images')">
 
-			</memo-event-autocomplete>
-			<!--below all that-->
-			<div class="form-buttons">
-				<!--	cancel button-->
-				<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
-				<!--	save button-->
-				<button mat-raised-button color="accent"
-						[disabled]="!formGroup.valid || formGroup.pending || modifyItemService.loading">
+			</memo-multi-image-upload>
+		</memo-item-details-content>
+
+
+		<!--below all that-->
+		<div class="form-buttons">
+			<!--	cancel button-->
+			<button mat-button color="warning" type="button" (click)="cancel()">Abbrechen</button>
+			<!--	save button-->
+			<button mat-raised-button color="accent"
+					[disabled]="!formGroup.valid || formGroup.pending || modifyItemService.loading">
 					<span *ngIf="!modifyItemService.loading; else loadingSpinner">
 						{{mode === ModifyType.ADD ? 'Erstellen' : 'Speichern'}}
 					</span>
-					<ng-template #loadingSpinner>
-						<mat-icon class="loading-spinner">refresh</mat-icon>
-						<span>Speichert...</span>
-					</ng-template>
-				</button>
-			</div>
+				<ng-template #loadingSpinner>
+					<mat-icon class="loading-spinner">refresh</mat-icon>
+					<span>Speichert...</span>
+				</ng-template>
+			</button>
 		</div>
 	</form>
 </div>

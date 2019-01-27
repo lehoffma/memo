@@ -170,14 +170,6 @@ memo-participants {
 		}
 	}
 
-	.desktop-column,
-	.desktop-row {
-		display: flex;
-	}
-
-	.desktop-column {
-		flex-direction: column;
-	}
 
 	.desktop-elevation {
 		@include mat-elevation(3);
