@@ -14,6 +14,7 @@ import {PaymentMethod} from "../../../checkout/payment/payment-method";
 import {paymentMethodLimitationValidator} from "../shared/payment-method-configuration/payment-method-limitation.validator";
 import {paymentConfig} from "../../../shared/model/event";
 import {numberLimitToString} from "../shared/payment-method-configuration/payment-method-limit-util";
+import {WindowService} from "../../../../shared/services/window.service";
 
 @Component({
 	selector: "memo-modify-merch",
@@ -27,9 +28,12 @@ export class ModifyMerchComponent implements OnInit {
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 	ModifyType = ModifyType;
 
+	isDesktop$ = this.windowService.hasMinDimensions(800);
+
 	constructor(private location: Location,
 				public modifyItemService: ModifyItemService,
 				private stockService: StockService,
+				private windowService: WindowService,
 				private formBuilder: FormBuilder) {
 		this.formGroup = this.formBuilder.group({
 			"event-data": this.formBuilder.group({

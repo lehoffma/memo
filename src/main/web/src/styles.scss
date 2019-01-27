@@ -215,8 +215,13 @@ mat-select {
 
 .form-label {
 	color: grey(700);
-	font-size: 14px;
+	font-size: font-size(smaller);
 	margin-bottom: 8px;
+
+	.form-label--additional-info {
+		color: grey(600);
+		font-size: font-size(smallest);
+	}
 }
 
 .load-more-button {

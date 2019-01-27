@@ -2,55 +2,17 @@
 
 .merch-info-container {
 	display: flex;
-	justify-content: space-between;
-
-	> mat-form-field {
-		width: 45%;
-	}
-}
-
-.modify-shop-item-container {
-	> h2:first-child {
-		margin-bottom: 1rem;
-	}
-
-	form {
-		> h2:not(:first-child) {
-			margin-top: 1.5rem;
-		}
-
-		memo-tour-route-input {
-			display: block;
-			margin-bottom: 1.5rem;
-		}
-	}
-}
-
-.information-container /deep/ .expandable-table-header.expandable-table-row {
-	border-bottom: 1px solid grey(200);
-	padding: 1rem 1rem 0.5rem;
-
-	.expandable-table-header-title {
-		font-size: font-size(medium-large);
-		font-weight: 200;
-	}
-}
-
-.information-container /deep/ .expandable-table-component-container {
-	max-width: 500px;
-	width: 100%;
-	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-}
-
-.information-container /deep/ .expandable-table-container {
-	padding-left: 1rem;
-	padding-right: 1rem;
-	background: white;
+	flex-direction: column;
 }
 
 memo-modify-merch-stock {
 	display: block;
-	border-top: 1px solid grey(200);
+	max-width: 500px;
+	margin: auto;
+}
+
+.desktop-padding /deep/ .container--body {
+	padding: 0;
 }
 
 @media all and (min-width: 800px) {
@@ -59,12 +21,39 @@ memo-modify-merch-stock {
 		margin-bottom: 1rem;
 		padding-bottom: 1rem;
 	}
+
+	.merch-info-container {
+		flex-direction: row;
+
+		> *:first-child {
+			margin-right: 48px;
+		}
+	}
+
+	.desktop-padding /deep/ .container--body {
+		padding: 16px;
+	}
+
 	memo-multi-image-upload {
 		display: block;
 
 		/deep/ memo-multi-image-container,
 		/deep/ .upload-container {
 			width: 100% !important;
+		}
+	}
+
+	memo-modify-merch-stock {
+		border-radius: 4px;
+
+		/deep/ mat-paginator {
+			border-bottom-right-radius: 4px;
+			border-bottom-left-radius: 4px;
+		}
+
+		/deep/ .expandable-table-header {
+			border-top-right-radius: 4px;
+			border-top-left-radius: 4px;
 		}
 	}
 }
