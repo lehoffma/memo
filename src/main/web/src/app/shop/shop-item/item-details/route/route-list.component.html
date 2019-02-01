@@ -1,31 +1,73 @@
-<div class="route-list-inner-container" *ngIf="googleMapsUrls$ | async; let mapsUrls">
-	<div *ngFor="let address of (_route$ | async); let i = index"
-		 (click)="toggleFormat(i)"
-		 class="route-list-entry">
-		<div class="route-list-entry-text">
-			<div class="index">
-				{{i+1}}.
+<div class="route-list">
+	<div *ngIf="first$ | async as meetingPoint" class="route-list-entry">
+		<div class="progress-line-container">
+			<span class="indicator circle"></span>
+			<span class="progress-line progress-line-after"></span>
+		</div>
+		<div class="address-display">
+			<span class="address-city">{{meetingPoint.city}}, {{meetingPoint.country}}</span>
+			<span class="address-specific-info">{{meetingPoint.street}} {{meetingPoint.streetNr}}, {{meetingPoint.zip}}</span>
+		</div>
+	</div>
+
+	<div *ngIf="layovers$ | async as layovers" class="layovers">
+		<div class="route-list-entry layover-info-container">
+			<div class="progress-line-container">
+				<span class="progress-line progress-line-before"></span>
+				<span class="progress-line progress-line-after"></span>
 			</div>
-			<div class="address-display">
-				{{address | address:routeFormats[i]}}
+			<div class="layover-info">
+				{{layovers.length}} Zwischenhalt{{layovers.length === 1 ? '' : 'e'}}
+			</div>
+			<div class="route-list-entry-actions">
+				<!--todo redesign animation-->
+				<button mat-icon-button class="show-long-name-toggle"
+						matTooltip="{{showLayovers ? 'Zwischenstops ausblenden' : 'Zwischenstops anzeigen'}}"
+						(click)="toggleLayover(); $event.stopPropagation()">
+					<mat-icon>
+						{{(!showLayovers) ? 'expand_more' : 'expand_less'}}
+					</mat-icon>
+				</button>
 			</div>
 		</div>
-		<div class="route-list-entry-actions">
-			<button mat-icon-button class="show-long-name-toggle"
-					matTooltip="{{(routeFormats[i]===addressFormats.Short) ? 'Lange Version anzeigen' : 'Kurze Version anzeigen'}}"
-					(click)="toggleFormat(i); $event.stopPropagation()">
-				<mat-icon>
-					{{(routeFormats[i]===addressFormats.Short) ? 'expand_more' : 'expand_less'}}
-				</mat-icon>
-			</button>
-			<!--Opens the tour stop in google maps-->
-			<a mat-icon-button class="maps-link-button"
-			   matTooltip="Auf Google Maps öffnen"
-			   [href]="mapsUrls[i]">
-				<mat-icon>
-					map
-				</mat-icon>
-			</a>
+
+		<ng-container *ngIf="showLayovers">
+			<div *ngFor="let layover of layovers" class="route-list-entry layover">
+				<div class="progress-line-container">
+					<span class="progress-line progress-line-before"></span>
+					<span class="indicator circle"></span>
+					<span class="progress-line progress-line-after"></span>
+				</div>
+				<div class="address-display">
+					<span class="address-city">{{layover.city}}, {{layover.country}}</span>
+					<span class="address-specific-info">{{layover.street}} {{layover.streetNr}}, {{layover.zip}}</span>
+				</div>
+			</div>
+		</ng-container>
+	</div>
+
+	<div *ngIf="last$ | async as destination" class="route-list-entry">
+		<div class="progress-line-container">
+			<span class="progress-line progress-line-before"></span>
+			<mat-icon class="indicator destination-indicator">place</mat-icon>
 		</div>
+		<div class="address-display">
+			<span class="address-city">{{destination.city}}, {{destination.country}}</span>
+			<span class="address-specific-info">{{destination.street}} {{destination.streetNr}}, {{destination.zip}}</span>
+		</div>
+	</div>
+</div>
+
+
+<div class="route-info-container">
+	<div class="route-info">
+		<mat-icon>watch_later</mat-icon>
+		<!--todo-->
+		<span>~5 Stunden Fahrt</span>
+	</div>
+	<div class="route-info">
+		<mat-icon>directions_car</mat-icon>
+		<!--todo-->
+		<span>131 Meilen</span>
 	</div>
 </div>

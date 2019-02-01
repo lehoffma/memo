@@ -1,5 +1,4 @@
 <div [formGroup]="formGroup">
-	<h2>Bestellte Items</h2>
 	<div class="ordered-item-container" *ngFor="let item of formGroup.get('items').value; let i = index">
 		<memo-ordered-item-entry *ngIf="showInlineForm !== i; else inlineEditForm"
 								 (onEdit)="showInlineForm = i;"

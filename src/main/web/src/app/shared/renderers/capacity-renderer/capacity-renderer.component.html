@@ -1,4 +1,4 @@
-<mat-icon>{{icon}}</mat-icon>
+<mat-icon matTooltip="Kapazität">{{icon}}</mat-icon>
 <div class="capacity-container">
 	<span class="{{(currentColor$ | async)}}">
 		<ng-container *ngIf="(_available$ | async) !== null; else loading">

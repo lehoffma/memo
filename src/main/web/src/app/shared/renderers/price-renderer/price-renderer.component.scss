@@ -11,6 +11,16 @@
 	}
 }
 
+
+.additional-discount-possibilities-icon {
+	&,
+	mat-icon {
+		color: grey();
+		margin: 0 !important;
+	}
+}
+
+
 .actual-price {
 	color: grey(900);
 }

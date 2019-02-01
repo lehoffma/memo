@@ -14,10 +14,9 @@ import {EventService} from "../../../../shared/services/api/event.service";
 import {CapacityService, EventCapacity} from "../../../../shared/services/api/capacity.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {WaitingListService} from "../../../../shared/services/api/waiting-list.service";
-import {distanceInWordsToNow, isBefore} from "date-fns";
-
-import * as deLocale from "date-fns/locale/de/index"
 import {WaitingListEntry} from "../../../shared/model/waiting-list";
+import {AddressService} from "../../../../shared/services/api/address.service";
+import {Address} from "../../../../shared/model/address";
 
 @Component({
 	selector: "memo-item-info",
@@ -58,10 +57,23 @@ export class ItemInfoComponent implements OnInit {
 		filter(it => it !== null),
 		map(it => it.reduce((sum, entry) => sum + 1, 0))
 	);
+	destination$: Observable<Address> = this._event$.pipe(
+		filter(event => event.id >= 0),
+		filter(event => !this.isMerch(event)),
+		mergeMap(event => this.addressService.getById(event.route[event.route.length - 1]))
+	);
+	tour$: Observable<Address[]> = this._event$.pipe(
+		filter(event => event.id >= 0),
+		filter(event => this.isTour(event)),
+		mergeMap(event => combineLatest(
+			...event.route.map(id => this.addressService.getById(id))
+		))
+	);
 
 	constructor(private participantService: OrderedItemService,
 				private waitingListService: WaitingListService,
 				private discountService: DiscountService,
+				private addressService: AddressService,
 				private stockService: StockService,
 				private loginService: LogInService,
 				private navigationService: NavigationService,
@@ -91,14 +103,5 @@ export class ItemInfoComponent implements OnInit {
 
 	isTour(item) {
 		return EventUtilityService.isTour(item);
-	}
-
-
-	relativeToToday(date: Date) {
-		const distance = distanceInWordsToNow(date, {locale: deLocale});
-		const before = isBefore(date, new Date());
-		const suffix = (["Tage", "Monate", "Jahre"].some(it => distance.includes(it))) ? "n" : "";
-
-		return (before ? "vor " : "in ") + distance + suffix;
 	}
 }

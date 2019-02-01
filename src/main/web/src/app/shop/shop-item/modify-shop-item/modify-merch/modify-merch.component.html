@@ -38,7 +38,7 @@
 						<mat-error *ngIf="formGroup.get('event-data').get('price').hasError('required')" align="end">
 							Dieses Feld darf nicht leer bleiben!
 						</mat-error>
-						<mat-error *ngIf="formGroup.get('event-datae').get('price').value < 0" align="end">
+						<mat-error *ngIf="formGroup.get('event-data').get('price').value < 0" align="end">
 							Der Preis muss positiv sein.
 						</mat-error>
 						<mat-error

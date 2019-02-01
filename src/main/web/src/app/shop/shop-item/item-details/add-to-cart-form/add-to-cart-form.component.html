@@ -1,45 +1,54 @@
 <form #addToCartForm="ngForm" (ngSubmit)="addToCart(event)">
+	<!--todo: redesign color / size selection-->
+	<!--todo redesign "past event"-->
 	<ng-template [ngIf]="isMerch(event)">
-		<mat-form-field>
-			<mat-select [(ngModel)]="color"
-						placeholder="Farbe"
-						[required]="true"
-						name="colorSelectionInput">
-				<mat-option *ngFor="let color of colorSelection$ | async"
-							[value]="color">
-					{{color.name}}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
-		<mat-form-field>
-			<mat-select [(ngModel)]="size"
-						placeholder="Größe"
-						[required]="true"
-						name="sizeSelectionInput">
-				<mat-option *ngFor="let size of sizeSelection$ | async" [value]="size">
-					{{size}}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
+		<div class="form-input-container">
+			<div class="form-label">Farbe</div>
+			<mat-form-field appearance="outline" class="small-outline-formfield">
+				<mat-select [(ngModel)]="color"
+							[required]="true"
+							name="colorSelectionInput">
+					<mat-option *ngFor="let color of colorSelection$ | async"
+								[value]="color">
+						{{color.name}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+		<div class="form-input-container">
+			<div class="form-label">Größe</div>
+			<mat-form-field appearance="outline" class="small-outline-formfield">
+				<mat-select [(ngModel)]="size"
+							[required]="true"
+							name="sizeSelectionInput">
+					<mat-option *ngFor="let size of sizeSelection$ | async" [value]="size">
+						{{size}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
 	</ng-template>
 
-	<mat-form-field>
-		<mat-select placeholder="Anzahl" name="amount" [(ngModel)]="model.amount"
-					[disabled]="(!isMerch(event) && (isPastEvent$ | async))
+	<div class="form-input-container">
+		<div class="form-label">Anzahl</div>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<mat-select name="amount" [(ngModel)]="model.amount"
+						[disabled]="(!isMerch(event) && (isPastEvent$ | async))
 								|| !((permissions)?.checkIn) || (isSoldOut$ | async)"
-					[required]="true">
-			<mat-option *ngIf="isSoldOut$ | async; else amountDropdown"
-						[disabled]="true"
-						[value]="0">
-				-- Ausverkauft --
-			</mat-option>
-			<ng-template #amountDropdown>
-				<mat-option *ngFor="let number of (amountOptions$ | async)" [value]="number">
-					{{number}}
+						[required]="true">
+				<mat-option *ngIf="isSoldOut$ | async; else amountDropdown"
+							[disabled]="true"
+							[value]="0">
+					-- Ausverkauft --
 				</mat-option>
-			</ng-template>
-		</mat-select>
-	</mat-form-field>
+				<ng-template #amountDropdown>
+					<mat-option *ngFor="let number of (amountOptions$ | async)" [value]="number">
+						{{number}}
+					</mat-option>
+				</ng-template>
+			</mat-select>
+		</mat-form-field>
+	</div>
 
 	<button
 		[disabled]="(!addToCartForm.valid || model.amount === 0)

@@ -47,6 +47,7 @@ import {BreadcrumbNavigationComponent} from "./breadcrumb-navigation/breadcrumb-
 import {JSONLdComponent} from "./utility/seo/json-ld.component";
 import {FilterOptionHeaderComponent} from "./filter-option-header/filter-option-header.component";
 import { FilterOptionRowComponent } from './filter-option-row/filter-option-row.component';
+import { EventDestinationRendererComponent } from './renderers/event-destination-renderer/event-destination-renderer.component';
 
 const forms = [
 	DisableIfDirective,
@@ -113,6 +114,7 @@ const forms = [
 		SpiedOnElementDirective,
 		BreadcrumbNavigationComponent,
 		JSONLdComponent,
+		EventDestinationRendererComponent,
 	],
 	exports: [
 		MultiLevelSelectModule,
@@ -147,6 +149,7 @@ const forms = [
 		SpiedOnElementDirective,
 		BreadcrumbNavigationComponent,
 		JSONLdComponent,
+		EventDestinationRendererComponent,
 
 		...forms
 	],

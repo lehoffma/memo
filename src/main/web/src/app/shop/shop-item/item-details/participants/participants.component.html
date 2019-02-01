@@ -1,4 +1,3 @@
-<!--todo redesign: all pills below info, next to each other-->
 <div *ngFor="let participant of (participants)" class="participant mat-elevation-z1">
 	<a routerLink="/members/{{participant.user.id}}">
 		<div class="image-container">
@@ -16,7 +15,8 @@
 
 	<div class="badges">
 		<!--todo: needsTicket, isDriver, extraPersons-->
-		<div class="participant-badge participant-tickets" *ngIf="isAllowedToSeeMetaInfo"
+		<div class="participant-badge participant-tickets"
+			 [style.visibility]="(isAllowedToSeeMetaInfo) ? 'visible' : 'hidden'"
 			 [matTooltip]="participant.needsTicketAmount > 0
 			 ? ('Dieser Nutzer hat ' + participant.needsTicketAmount + ' Stadionticket' + (participant.needsTicketAmount === 1 ? '' : 's') + ' angefordert')
 			 : ('Dieser Nutzer benötigt keine Tickets.')"
@@ -29,7 +29,17 @@
 			</ng-container>
 			<mat-icon>local_play</mat-icon>
 		</div>
-		<div class="participant-badge is-driver" *ngIf="isAllowedToSeeMetaInfo && participant.isDriverAmount > 0"
+		<div class="participant-badge extra-persons"
+			 [style.visibility]="(participant.extraPersons > 0) ? 'visible' : 'hidden'"
+			 [matTooltip]="'Dieser Nutzer hat ' + participant.extraPersons + ' extra Person' + (participant.extraPersons === 1 ? '' : 'en') + ' angemeldet'"
+		>
+			<span class="extra-persons-amount">
+				+{{participant.extraPersons}}
+			</span>
+			<span>Person{{(participant.extraPersons === 1 ? '' : 'en')}}</span>
+		</div>
+		<div class="participant-badge is-driver"
+			 [style.visibility]="(isAllowedToSeeMetaInfo && participant.isDriverAmount > 0) ? 'visible' : 'hidden'"
 			 [matTooltip]="participant.isDriverAmount + ' sind als Fahrer angemeldet.'"
 		>
 			<span class="driver-amount">
@@ -37,14 +47,6 @@
 			</span>
 			<span class="multiplier">x</span>
 			<mat-icon>directions_car</mat-icon>
-		</div>
-		<div class="participant-badge extra-persons" *ngIf="participant.extraPersons > 0"
-			 [matTooltip]="'Dieser Nutzer hat ' + participant.extraPersons + ' extra Person' + (participant.extraPersons === 1 ? '' : 'en') + ' angemeldet'"
-		>
-			<span class="extra-persons-amount">
-				+{{participant.extraPersons}}
-			</span>
-			<span>Person{{(participant.extraPersons === 1 ? '' : 'en')}}</span>
 		</div>
 	</div>
 </div>

@@ -1,50 +1,62 @@
-<div class="item-price-container item-details-row">
-	<mat-icon>
-		attach_money
-	</mat-icon>
-	<memo-price-renderer [price]="event.price"
-						 [discounts]="discounts$ | async"
-						 [showDiscountPossibilities]="true"
-						 [additionalInfo]="isTour(event) ? 'Tourpreis, zzgl. Ticketpreis' : ''"
-						 [showExplanation]="true">
+<ng-container *ngIf="_event$ | async as event">
+	<div class="item-price-container item-details-row">
+		<mat-icon matTooltip="Preis">
+			attach_money
+		</mat-icon>
+		<memo-price-renderer [price]="event.price"
+							 [discounts]="discounts$ | async"
+							 [showDiscountPossibilities]="true"
+							 [additionalInfo]="isTour(event) ? 'Tourpreis, zzgl. Ticketpreis' : ''"
+							 [showExplanation]="true">
 
-	</memo-price-renderer>
-</div>
-
-<div class="item-date-container item-details-row" *ngIf="!isMerch(event)">
-	<mat-icon>access_time</mat-icon>
-	<div class="date-container">
-		<span>{{event.date | dateFormat:'DD. MMMM YYYY'}}, {{event.date | dateFormat:'HH:mm'}} Uhr</span>
-		<span class="relative-date">{{relativeToToday(event.date)}}</span>
+		</memo-price-renderer>
 	</div>
-</div>
 
-<div class="available-tickets-container item-details-row" *ngIf="!isMerch(event)">
-	<memo-capacity-renderer [available]="available$ | async"
-							[icon]="'local_play'"
-							[maxAmount]="event.capacity"
-							[textOptions]="{
+	<div class="item-date-container item-details-row" *ngIf="!isMerch(event)">
+		<mat-icon matTooltip="Datum und Uhrzeit">access_time</mat-icon>
+		<div class="date-container">
+			<span>{{event.date | dateFormat:'DD. MMMM YYYY'}}, {{event.date | dateFormat:'HH:mm'}} Uhr</span>
+			<span class="relative-date">{{event.date | dateFormat:'relative'}}</span>
+		</div>
+	</div>
+
+	<div class="available-tickets-container item-details-row" *ngIf="!isMerch(event)">
+		<memo-capacity-renderer [available]="available$ | async"
+								[icon]="'local_play'"
+								[maxAmount]="event.capacity"
+								[textOptions]="{
 										singular: 'Platz',
 										plural: 'Plätzen'
 									}"
-							[coloring]="{
+								[coloring]="{
 										red: 0,
 										yellow: 0.01,
 										green: 0.9
 									}"
-							[waitingList]="waitingList$ | async"
-							[allowWaitingList]="permissions?.waitingList"
+								[waitingList]="waitingList$ | async"
+								[allowWaitingList]="permissions?.waitingList"
 
+		>
+		</memo-capacity-renderer>
+	</div>
+
+	<div class="item-details-row material-container" *ngIf="isMerch(event)">
+		<mat-icon [matTooltip]="'Material'">content_cut</mat-icon>
+		<span>{{event.material}}</span>
+	</div>
+
+	<memo-event-destination-renderer *ngIf="!isMerch(event)"
+									 [destination]="destination$ | async"
+									 [tour]="tour$ | async"
+									 [miles]="event.miles"
 	>
-	</memo-capacity-renderer>
-</div>
 
-<div class="item-details-row material-container" *ngIf="isMerch(event)">
-	<mat-icon>content_cut</mat-icon>
-	<span>{{event.material}}</span>
-</div>
+	</memo-event-destination-renderer>
 
-<div class="miles-vehicle-container item-vehicle item-details-row" *ngIf="isTour(event)">
-	<mat-icon>directions_bus</mat-icon>
-	<span>{{event.vehicle}}</span>
-</div>
+	<div class="miles-vehicle-container item-vehicle item-details-row"
+		 *ngIf="isTour(event)">
+		<mat-icon matTooltip="Transportmittel">directions_bus</mat-icon>
+		<span>{{event.vehicle}}</span>
+	</div>
+
+</ng-container>

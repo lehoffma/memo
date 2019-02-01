@@ -88,6 +88,7 @@
 				display: flex;
 				align-items: center;
 				margin-top: 0.5rem;
+				padding-right: 8px;
 
 				.actual-price {
 					font-size: font-size(medium);
@@ -126,6 +127,10 @@
 		}
 	}
 
+}
+
+memo-event-destination-renderer {
+	margin-top: 24px;
 }
 
 .item-date-container {

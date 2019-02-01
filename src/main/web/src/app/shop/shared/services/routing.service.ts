@@ -74,7 +74,7 @@ export class RoutingService {
 	 */
 	findNameOfAddressComponent(components: AddressComponent[], type: AddressComponentType): string {
 		const component = components.find(component => component.types.includes(type.toString()));
-		if (component && component !== null) {
+		if (component) {
 			return component.long_name;
 		}
 		return null;

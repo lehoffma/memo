@@ -2,18 +2,9 @@
 
 //todo redesign: redesign this whole part
 .route-list-entry {
-	cursor: pointer;
-	margin-left: -1rem;
-	margin-right: -1rem;
-	padding: 0.5rem 1rem;
-	background-color: white;
+	padding: 16px;
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
-
-	&:not(:first-child) {
-		border-top: 1px solid grey(200);
-	}
 }
 
 .index {
@@ -22,7 +13,114 @@
 }
 
 .route-list-entry-text {
-	width: calc(100% - 100px);
+	width: 100%;
 	display: flex;
 	align-items: center;
+}
+
+.address-display {
+	.address-city {
+		font-weight: 500;
+		font-size: font-size(default);
+		color: grey(900);
+	}
+
+	.address-specific-info {
+		font-size: font-size(smaller);
+		color: grey(700);
+	}
+}
+
+
+.progress-line-container{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-right: 16px;
+	width: 24px;
+}
+
+
+.indicator {
+	font-size: font-size(medium);
+	color: grey();
+
+	&.circle {
+		width: 12px;
+		height: 12px;
+		display: block;
+		margin-top: 5px;
+		position: relative;
+		border: 2px solid grey(400);
+		border-radius: 50%;
+	}
+}
+
+span.progress-line.progress-line-after {
+	display: block;
+	width: 2px;
+	background: grey(200);
+	height: 35px;
+	margin-bottom: -30px;
+}
+
+span.progress-line.progress-line-before {
+	display: block;
+	width: 2px;
+	background: grey(200);
+	height: 35px;
+	margin-top: -30px;
+	margin-bottom: -4px;
+}
+
+.layovers {
+	background: grey(50);
+
+	.layover-info-container {
+		margin: 0;
+		padding-top: 4px;
+		padding-bottom: 4px;
+	}
+
+	.layover-info {
+		flex-grow: 1;
+		color: grey();
+		font-size: font-size(smaller);
+		font-weight: 500;
+	}
+}
+
+.address-display {
+	display: flex;
+	flex-direction: column;
+}
+
+.destination-indicator{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.route-info-container {
+	display: flex;
+	width: 100%;
+	justify-content: center;
+	border-top: 1px solid grey(100);
+	font-size: 14px;
+	color: grey(600);
+
+	.route-info {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin: 16px;
+	}
+}
+
+.route-info mat-icon {
+	width: 16px;
+	height: 16px;
+	font-size: font-size();
+	color: grey();
+	margin-right: 4px;
 }

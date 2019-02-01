@@ -1,0 +1,32 @@
+@import "theme";
+
+:host {
+	display: flex;
+	align-items: center;
+
+	> mat-icon {
+		color: grey();
+		margin-right: 10px;
+	}
+
+	.destination-renderer-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+
+		.destination-container {
+			display: flex;
+			flex-direction: column;
+
+			.destination-miles {
+				color: grey();
+				font-size: font-size(smallest);
+			}
+		}
+	}
+
+	.maps-link {
+		color: grey(500);
+	}
+}

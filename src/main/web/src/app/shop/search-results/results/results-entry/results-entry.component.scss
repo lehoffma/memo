@@ -98,8 +98,10 @@ img {
 }
 
 memo-price-renderer {
-	/deep/ .price-container {
+	/deep/ .price-container > span {
+		display: flex;
 		flex-direction: column-reverse;
+		align-items: flex-end;
 
 		.percentage-saved,
 		.actual-price,

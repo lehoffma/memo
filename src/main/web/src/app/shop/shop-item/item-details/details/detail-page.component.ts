@@ -250,6 +250,11 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 			})
 	}
 
+
+	isTour(item: any) {
+		return EventUtilityService.isTour(item);
+	}
+
 	isMerch(item: any) {
 		return EventUtilityService.isMerchandise(item);
 	}

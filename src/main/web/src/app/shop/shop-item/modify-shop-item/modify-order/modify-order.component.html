@@ -1,66 +1,76 @@
-<div class="form-container">
-	<div class="modify-header">
-		<h2>Bestellung bearbeiten</h2>
-	</div>
+<div class="modify-shop-item-container">
+	<h3 class="container--header">
+		Bestellung bearbeiten
+	</h3>
 	<form [formGroup]="modifyOrderService.formGroup" (ngSubmit)="modifyOrderService.submit()"
 		  *ngIf="modifyOrderService">
-		<memo-user-autocomplete
-			[resetOnSelect]="false" [required]="true"
-			[user]="modifyOrderService.formGroup.get('user').value"
-			(userChanged)="modifyOrderService.updateUser($event)"
-		>
-		</memo-user-autocomplete>
-		<div>
-			<mat-form-field>
-				<input matInput [matDatepicker]="myDatepicker"
-					   placeholder="Datum"
-					   formControlName="date"
-					   name="dateInput" required>
-				<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-				<mat-error *ngIf="modifyOrderService.formGroup.get('date').hasError('required')" align="end">
-					Das Datum muss im Format DD.MM.YYYY vorliegen.
-				</mat-error>
-			</mat-form-field>
-			<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
-		</div>
-		<div class="time-selection">
-			<mat-form-field>
-				<input matInput
-					   placeholder="Uhrzeit"
-					   formControlName="time"
-					   name="timeInput" required>
+		<memo-item-details-content [title]="'Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
+								   class="grouped"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
 
-				<mat-error *ngIf="modifyOrderService.formGroup.get('time').hasError('required')"
-						   align="end">
-					Dieses Feld darf nicht leer bleiben!
-				</mat-error>
-				<mat-error *ngIf="modifyOrderService.formGroup.get('time').hasError('pattern')"
-						   align="end">
-					Die Uhrzeit muss im Format "HH:MM" vorliegen!
-				</mat-error>
-			</mat-form-field>
-		</div>
-
-		<mat-form-field>
-			<mat-select [formControl]="modifyOrderService.formGroup.get('method')"
-						placeholder="Bezahlmethode"
-						name="Bezahlmethode"
+			<memo-user-autocomplete
+				[resetOnSelect]="false" [required]="true"
+				[user]="modifyOrderService.formGroup.get('user').value"
+				(userChanged)="modifyOrderService.updateUser($event)"
 			>
-				<mat-option *ngFor="let option of paymentMethods" [value]="option">
-					{{option}}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
+			</memo-user-autocomplete>
+			<div class="desktop-row">
+				<div class="form-input-container">
+					<div class="form-label">Datum</div>
+					<mat-form-field appearance="outline" class="small-outline-formfield">
+						<input matInput [matDatepicker]="myDatepicker"
+							   formControlName="date"
+							   name="dateInput" required>
+						<mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+						<mat-error *ngIf="modifyOrderService.formGroup.get('date').hasError('required')" align="end">
+							Das Datum muss im Format DD.MM.YYYY vorliegen.
+						</mat-error>
+					</mat-form-field>
+					<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
+				</div>
+				<div class="form-input-container">
+					<div class="form-label">Uhrzeit</div>
+					<mat-form-field appearance="outline" class="small-outline-formfield">
+						<input matInput
+							   formControlName="time"
+							   name="timeInput" required>
+
+						<mat-error *ngIf="modifyOrderService.formGroup.get('time').hasError('required')"
+								   align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</mat-error>
+						<mat-error *ngIf="modifyOrderService.formGroup.get('time').hasError('pattern')"
+								   align="end">
+							Die Uhrzeit muss im Format "HH:MM" vorliegen!
+						</mat-error>
+					</mat-form-field>
+				</div>
+			</div>
+
+			<div class="form-input-container payment-method">
+				<div class="form-label">Bezahlmethode</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
+					<mat-select [formControl]="modifyOrderService.formGroup.get('method')"
+								name="Bezahlmethode">
+						<mat-option *ngFor="let option of paymentMethods" [value]="option">
+							{{option}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</memo-item-details-content>
 
 
-		<div class="ordered-item-container">
-			<memo-ordered-item-form [formGroup]="modifyOrderService.formGroup">
+		<memo-item-details-content [title]="'Bestelle Items'"
+								   class="grouped"
+								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+			<memo-ordered-item-form [formGroup]="modifyOrderService.formGroup" class="mat-elevation-z3">
 
 			</memo-ordered-item-form>
-		</div>
+		</memo-item-details-content>
 
 
-		<div class="form-actions">
+		<div class="form-buttons">
 			<button mat-raised-button type="button" (click)="modifyOrderService.cancel()">
 				Abbrechen
 			</button>

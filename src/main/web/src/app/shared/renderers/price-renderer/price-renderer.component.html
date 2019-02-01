@@ -11,7 +11,7 @@
 		</span>
 	</span>
 	<div>
-		<button mat-icon-button class="additional-discount-possibilities-icon discount-overlay-trigger"
+		<button mat-icon-button class="additional-discount-possibilities-icon small-icon-button discount-overlay-trigger"
 				[matMenuTriggerFor]="menu"
 				*ngIf="showDiscountPossibilities && nonEligibleDiscounts.length > 0"
 			  matTooltip="{{nonEligibleDiscounts.length}} Discount{{nonEligibleDiscounts.length === 1 ? '' : 's'}} möglich">
@@ -27,7 +27,7 @@
 		</mat-menu>
 
 		<button mat-icon-button
-				class="discount-overlay-trigger"
+				class="discount-overlay-trigger small-icon-button"
 				*ngIf="(price < _basePrice) && showExplanation"
 				[matTooltip]="'Zeige Erklärung'"
 				[matTooltipPosition]="'below'"

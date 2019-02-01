@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Address} from "../../../../shared/model/address";
 import {RoutingService} from "../../../shared/services/routing.service";
-import {BehaviorSubject, Subject} from "rxjs";
-import {map} from "rxjs/operators";
+import {BehaviorSubject} from "rxjs";
+import {filter, map} from "rxjs/operators";
 
 enum AddressDisplayFormat {
 	Short = "short",
@@ -15,45 +15,35 @@ enum AddressDisplayFormat {
 	styleUrls: ["./route-list.component.scss"]
 })
 export class RouteListComponent implements OnInit {
-	_route$: Subject<Address[]> = new BehaviorSubject([]);
+	_route$: BehaviorSubject<Address[]> = new BehaviorSubject([]);
+	first$ = this._route$.pipe(
+		filter(it => it && it.length > 0),
+		map(it => it[0])
+	);
+	layovers$ = this._route$.pipe(
+		filter(it => it && it.length > 2),
+		map(it => it.slice(1, it.length - 1))
+	);
+	last$ = this._route$.pipe(
+		filter(it => it && it.length > 0),
+		map(it => it[it.length - 1])
+	);
 
 	addressFormats = AddressDisplayFormat;
 
-	googleMapsUrls$ = this._route$
-		.pipe(
-			map(route => route.map(address => this.routingService.getGoogleMapsUrl(address)))
-		);
-
-	routeFormats: AddressDisplayFormat[] = [];
-
-	/**
-	 */
+	showLayovers = false;
 
 	constructor(private routingService: RoutingService) {
 	}
 
 	@Input() set route(route: Address[]) {
 		this._route$.next(route);
-		this.routeFormats = route.map(it => AddressDisplayFormat.Short);
 	}
 
 	ngOnInit() {
 	}
 
-	/**
-	 *
-	 * @param {number} index
-	 */
-	toggleFormat(index: number) {
-		let currentValue = this.routeFormats[index];
-		switch (currentValue) {
-			case AddressDisplayFormat.Short:
-				currentValue = AddressDisplayFormat.Long;
-				break;
-			case AddressDisplayFormat.Long:
-				currentValue = AddressDisplayFormat.Short;
-				break;
-		}
-		this.routeFormats[index] = currentValue;
+	toggleLayover() {
+		this.showLayovers = !this.showLayovers;
 	}
 }

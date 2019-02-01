@@ -13,7 +13,7 @@
 	transition: all 0.2s ease-in;
 	padding: 16px;
 	width: 210px;
-	height: 230px;
+	height: 240px;
 
 	&:hover {
 		transform: translateY(-1px);
@@ -57,12 +57,15 @@
 }
 
 .badges {
+	margin-top: 8px;
+	display: flex;
+	justify-content: center;
+
 	.participant-badge {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		padding: 4px;
-		position: absolute;
 		border-radius: 200px;
 		font-size: font-size(smallest);
 
@@ -83,8 +86,6 @@
 	}
 
 	.participant-tickets {
-		top: 8px;
-		right: 8px;
 		background: primary(50);
 		color: primary(900);
 		border: 1px solid primary(900);
@@ -106,8 +107,6 @@
 	}
 
 	.is-driver {
-		top: 38px;
-		right: 8px;
 		background: primary(50);
 		color: primary(900);
 		border: 1px solid primary(900);
@@ -118,12 +117,11 @@
 	}
 
 	.extra-persons {
-		bottom: 8px;
-		left: 50%;
-		transform: translateX(-50%);
 		background: grey(50);
 		color: grey(700);
 		border: 1px solid grey(700);
+		margin-left: 8px;
+		margin-right: 8px;
 
 		&:hover {
 			background: grey(200);

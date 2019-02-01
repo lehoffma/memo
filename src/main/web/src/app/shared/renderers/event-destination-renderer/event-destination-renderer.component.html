@@ -1,0 +1,21 @@
+<mat-icon [matTooltip]="miles ? 'Ziel' : 'Treffpunkt'">{{miles ? 'near_me' : 'place'}}</mat-icon>
+<div class="destination-renderer-container">
+	<div class="destination-container">
+		<span class="loading-text" *ngIf="!destination else destinationContainer">
+			Lade Addresse
+		</span>
+		<ng-template #destinationContainer>
+			<div class="destination-address">
+				<span class="destination-street">{{destination.street}} {{destination.streetNr}}</span>
+				<span class="destination-delimiter">,</span>
+				<span class="destination-city"> {{destination.city}}</span>
+			</div>
+			<span class="destination-miles" *ngIf="miles">Insgesamt {{miles}} Meilen</span>
+		</ng-template>
+	</div>
+	<a href="{{tourUrl}}" mat-icon-button
+	   matTooltip="Auf Google Maps ansehen"
+	   class="small-icon-button maps-link">
+		<mat-icon>map</mat-icon>
+	</a>
+</div>

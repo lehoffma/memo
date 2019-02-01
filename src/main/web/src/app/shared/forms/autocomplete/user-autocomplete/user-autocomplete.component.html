@@ -1,19 +1,23 @@
-<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
-	<input type="text"
-		   matInput
-		   tabindex="-1"
-		   placeholder="z.B. Nils Pöcking"
-		   name="userInput"
-		   #userInput
-		   [formControl]="autocompleteFormControl"
-		   [matAutocomplete]="auto">
-	<mat-error *ngIf="autocompleteFormControl.hasError('required')">
-		Bitte wähle einen Nutzer aus der Liste!
-	</mat-error>
-</mat-form-field>
-<mat-autocomplete #auto="matAutocomplete"
-				  [displayWith]="displayFn">
-	<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-		{{ option.firstName + " " + option.surname }}
-	</mat-option>
-</mat-autocomplete>
+<div class="form-input-container">
+	<div class="form-label">User</div>
+	<mat-form-field appearance="outline" class="small-outline-formfield">
+		<input type="text"
+			   matInput
+			   tabindex="-1"
+			   placeholder="z.B. Nils Pöcking"
+			   name="userInput"
+			   #userInput
+			   [formControl]="autocompleteFormControl"
+			   [matAutocomplete]="auto">
+		<mat-error *ngIf="autocompleteFormControl.hasError('required')">
+			Bitte wähle einen Nutzer aus der Liste!
+		</mat-error>
+	</mat-form-field>
+	<mat-autocomplete #auto="matAutocomplete"
+					  [displayWith]="displayFn">
+		<mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+			{{ option.firstName + " " + option.surname }}
+		</mat-option>
+	</mat-autocomplete>
+
+</div>

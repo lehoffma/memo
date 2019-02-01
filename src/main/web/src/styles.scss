@@ -16,6 +16,18 @@ html, body, main, memo-app {
 	font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+.mat-icon-button.small-icon-button {
+	height: 24px;
+	width: 24px;
+	line-height: 24px;
+
+	mat-icon {
+		width: 24px;
+		height: 24px;
+		font-size: 20px;
+	}
+}
+
 .hover-button:not(:hover) {
 	color: grey(500) !important;
 }
