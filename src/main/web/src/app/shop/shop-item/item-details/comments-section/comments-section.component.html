@@ -17,7 +17,16 @@
 </div>
 
 <div *ngIf="comments?.length === 0" class="no-comments">
-	Bisher keine Kommentare.
+	<div class="left-chat-bubble-container">
+		<mat-icon class="left-chat-bubble">comment</mat-icon>
+	</div>
+	<div class="empty-state-middle-section">
+		<span class="empty-state-headline">Bisher keine Kommentare</span>
+		<span class="empty-state-subheader">Sei der Erste, der seine Meinung teilt!</span>
+	</div>
+	<div class="right-chat-bubble-container">
+		<mat-icon class="right-chat-bubble">comment</mat-icon>
+	</div>
 </div>
 
 <button mat-button (click)="loadMore.emit(true)" *ngIf="canLoadMore">
@@ -30,6 +39,8 @@
 
 <div class="reply-form-container" *ngIf="loggedInUser$ | async; let loggedInUser">
 	<memo-comment-input (submitComment)="addComment($event, -1)"
+						[submitCommentText]="'Kommentieren'"
+						[canBeCancelled]="false"
 						[author]="loggedInUser"
 						[commentText]="''"></memo-comment-input>
 </div>

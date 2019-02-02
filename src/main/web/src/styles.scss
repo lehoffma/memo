@@ -108,6 +108,11 @@ mat-select {
 	width: 0;
 }
 
+
+memo-comments-section .reply-form-container memo-comment-input form {
+	margin: auto;
+}
+
 @keyframes ellipsis {
 	to {
 		width: 1.25em;

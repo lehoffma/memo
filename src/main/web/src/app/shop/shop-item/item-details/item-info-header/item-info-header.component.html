@@ -12,7 +12,7 @@
 
 <mat-menu #menu="matMenu">
 	<button mat-menu-item
-			(click)="openShareDialog()">
+			(click)="shareEvent.emit(true)">
 		<mat-icon>share</mat-icon>
 		<span>Teilen</span>
 	</button>

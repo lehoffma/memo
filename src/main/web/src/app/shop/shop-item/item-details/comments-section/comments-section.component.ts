@@ -1,25 +1,15 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Comment, createComment} from "../../../shared/model/comment";
-import {animate, state, style, transition, trigger} from "@angular/animations";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {CommentService} from "../../../../shared/services/api/comment.service";
-import {of} from "rxjs";
+import {EMPTY, of} from "rxjs";
 import {catchError, first, mergeMap, tap} from "rxjs/operators";
-import {EMPTY} from "rxjs";
 import {setProperties} from "../../../../shared/model/util/base-object";
 
 @Component({
 	selector: "memo-comments-section",
 	templateUrl: "./comments-section.component.html",
 	styleUrls: ["./comments-section.component.scss"],
-	animations: [
-		trigger("expandedState", [
-			state("1", style({transform: "rotate(180deg)"})),
-			state("0", style({transform: "rotate(360deg)"})),
-			transition("0 => 1", animate("200ms ease-in")),
-			transition("1 => 0", animate("200ms ease-out")),
-		])
-	],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CommentsSectionComponent implements OnInit {

@@ -6,7 +6,7 @@
 		</span>
 		<ng-template #destinationContainer>
 			<div class="destination-address">
-				<span class="destination-street">{{destination.street}} {{destination.streetNr}}</span>
+				<span class="destination-street">{{destination.street}}{{destination.streetNr ? " " + destination.streetNr : ""}}</span>
 				<span class="destination-delimiter">,</span>
 				<span class="destination-city"> {{destination.city}}</span>
 			</div>

@@ -3,6 +3,7 @@ import {Address} from "../../../../shared/model/address";
 import {RoutingService} from "../../../shared/services/routing.service";
 import {BehaviorSubject} from "rxjs";
 import {filter, map} from "rxjs/operators";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 enum AddressDisplayFormat {
 	Short = "short",
@@ -12,7 +13,19 @@ enum AddressDisplayFormat {
 @Component({
 	selector: "memo-route-list",
 	templateUrl: "./route-list.component.html",
-	styleUrls: ["./route-list.component.scss"]
+	styleUrls: ["./route-list.component.scss"],
+	animations: [
+		trigger("growAndShrink", [
+			transition("void => *", [
+				style({height: 0}),
+				animate("250ms ease-in", style({height: "*"}))
+			]),
+
+			transition("* => void", [
+				animate("250ms ease-in", style({height: "0"}))
+			])
+		])
+	]
 })
 export class RouteListComponent implements OnInit {
 	_route$: BehaviorSubject<Address[]> = new BehaviorSubject([]);

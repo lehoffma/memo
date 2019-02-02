@@ -31,6 +31,7 @@
 		</a>
 
 		<memo-item-info-header id="info" memoSpiedOnElement="info"
+							   (shareEvent)="openShareDialog()"
 							   [event]="event"
 							   [permissions]="permissions$ | async"></memo-item-info-header>
 
@@ -51,7 +52,6 @@
 	</div>
 
 	<ng-container *ngIf="isTour(item)">
-		<!--todo redesign tour list-->
 		<memo-item-details-content [title]="'Route'" memoSpiedOnElement="eventMap" id="eventMap"
 								   class="desktop-elevation">
 			<memo-route-list *ngIf="(route$ | async) as route" [route]="route"></memo-route-list>
@@ -72,6 +72,8 @@
 								   [route]="participantsLink$ | async">
 			<memo-participants [participants]="participants$ | async"
 							   [isAllowedToSeeMetaInfo]="!!(participantsLink$ | async)"
+							   (shareEvent)="openShareDialog()"
+							   (toRegistration)="scrollToId('info')"
 							   content></memo-participants>
 		</memo-item-details-content>
 	</ng-container>

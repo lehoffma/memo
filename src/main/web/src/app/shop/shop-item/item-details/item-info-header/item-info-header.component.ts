@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {ShareDialogComponent} from "../../../../shared/share-dialog/share-dialog.component";
 import {MatDialog, MatSnackBar} from "@angular/material";
 import {Event} from "../../../shared/model/event";
@@ -29,6 +29,7 @@ export class ItemInfoHeaderComponent implements OnInit {
 		entries: boolean;
 		delete: boolean;
 	};
+	@Output() shareEvent = new EventEmitter();
 	private _event$: BehaviorSubject<Event> = new BehaviorSubject<Event>(null);
 	public isMerch$ = this._event$.pipe(
 		map(it => EventUtilityService.isMerchandise(it))
@@ -42,9 +43,7 @@ export class ItemInfoHeaderComponent implements OnInit {
 				private eventService: EventService,
 				private snackBar: MatSnackBar,
 				private router: Router,
-				private responsibilityService: ResponsibilityService,
-				private discountService: DiscountService,
-				private navigationService: NavigationService) {
+				private responsibilityService: ResponsibilityService) {
 	}
 
 	get event() {
@@ -58,19 +57,6 @@ export class ItemInfoHeaderComponent implements OnInit {
 
 	ngOnInit() {
 	}
-
-	openShareDialog() {
-		this.matDialog.open(ShareDialogComponent, {
-			data: {
-				title: this.event.title,
-				url: "https://shop.meilenwoelfe.de/" + this.navigationService.getUrlOfItem(this.event),
-				description: this.event.description,
-				image: this.event.images[0],
-				additionalTags: []
-			}
-		})
-	}
-
 
 	/**
 	 * Deletes the current item, after showing a confirmation dialog

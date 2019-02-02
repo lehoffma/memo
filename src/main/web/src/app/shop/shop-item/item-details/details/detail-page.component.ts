@@ -30,6 +30,8 @@ import {Order} from "../../../../shared/model/order";
 import {OrderService} from "../../../../shared/services/api/order.service";
 import {UserService} from "../../../../shared/services/api/user.service";
 import {GroupedParticipants} from "../participants/participants.component";
+import {ShareDialogComponent} from "../../../../shared/share-dialog/share-dialog.component";
+import {NavigationService} from "../../../../shared/services/navigation.service";
 
 @Component({
 	selector: "memo-detail-page",
@@ -196,6 +198,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 				private orderService: OrderService,
 				private cdRef: ChangeDetectorRef,
 				private loginService: LogInService,
+				private navigationService: NavigationService,
 				private window: WindowService,
 				private commentService: CommentService,
 				private matDialog: MatDialog,
@@ -292,4 +295,21 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 		}
 		selectedElement.elementRef.nativeElement.scrollIntoView();
 	}
+
+	scrollToId(id: string){
+		this.scrollTo({id, label: ""});
+	}
+
+	openShareDialog() {
+		this.matDialog.open(ShareDialogComponent, {
+			data: {
+				title: this.event.title,
+				url: "https://shop.meilenwoelfe.de/" + this.navigationService.getUrlOfItem(this.event),
+				description: this.event.description,
+				image: this.event.images[0],
+				additionalTags: []
+			}
+		})
+	}
+
 }

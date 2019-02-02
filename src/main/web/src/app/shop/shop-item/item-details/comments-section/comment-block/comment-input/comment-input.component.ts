@@ -12,6 +12,7 @@ export class CommentInputComponent implements OnInit, AfterViewInit {
 	@Input() author: User;
 	@Input() focus: boolean;
 	@Input() submitCommentText = "Antworten";
+	@Input() canBeCancelled = true;
 
 	@Output() submitComment: EventEmitter<string> = new EventEmitter();
 	@Output() closeSubmitComment: EventEmitter<any> = new EventEmitter();

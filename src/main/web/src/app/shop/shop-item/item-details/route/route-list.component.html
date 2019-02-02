@@ -6,7 +6,7 @@
 		</div>
 		<div class="address-display">
 			<span class="address-city">{{meetingPoint.city}}, {{meetingPoint.country}}</span>
-			<span class="address-specific-info">{{meetingPoint.street}} {{meetingPoint.streetNr}}, {{meetingPoint.zip}}</span>
+			<span class="address-specific-info">{{meetingPoint.street}}{{meetingPoint.streetNr ? " " + meetingPoint.streetNr : ""}}, {{meetingPoint.zip}}</span>
 		</div>
 	</div>
 
@@ -20,7 +20,6 @@
 				{{layovers.length}} Zwischenhalt{{layovers.length === 1 ? '' : 'e'}}
 			</div>
 			<div class="route-list-entry-actions">
-				<!--todo redesign animation-->
 				<button mat-icon-button class="show-long-name-toggle"
 						matTooltip="{{showLayovers ? 'Zwischenstops ausblenden' : 'Zwischenstops anzeigen'}}"
 						(click)="toggleLayover(); $event.stopPropagation()">
@@ -31,7 +30,7 @@
 			</div>
 		</div>
 
-		<ng-container *ngIf="showLayovers">
+		<div *ngIf="showLayovers" [@growAndShrink]="true" class="layover-list-container">
 			<div *ngFor="let layover of layovers" class="route-list-entry layover">
 				<div class="progress-line-container">
 					<span class="progress-line progress-line-before"></span>
@@ -40,10 +39,10 @@
 				</div>
 				<div class="address-display">
 					<span class="address-city">{{layover.city}}, {{layover.country}}</span>
-					<span class="address-specific-info">{{layover.street}} {{layover.streetNr}}, {{layover.zip}}</span>
+					<span class="address-specific-info">{{layover.street}}{{layover.streetNr ? " " + layover.streetNr : ""}}, {{layover.zip}}</span>
 				</div>
 			</div>
-		</ng-container>
+		</div>
 	</div>
 
 	<div *ngIf="last$ | async as destination" class="route-list-entry">
@@ -53,7 +52,7 @@
 		</div>
 		<div class="address-display">
 			<span class="address-city">{{destination.city}}, {{destination.country}}</span>
-			<span class="address-specific-info">{{destination.street}} {{destination.streetNr}}, {{destination.zip}}</span>
+			<span class="address-specific-info">{{destination.street}}{{destination.streetNr ? " " + destination.streetNr : ""}}, {{destination.zip}}</span>
 		</div>
 	</div>
 </div>

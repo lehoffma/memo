@@ -1,7 +1,3 @@
-<div class="author-image-container">
-	<img src="{{(!!author?.images[0] ? author.images[0] : 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"/>
-</div>
-
 <form #commentInputForm="ngForm" (ngSubmit)="submit(); commentInputForm.reset()">
 
 	<textarea autosize
@@ -15,12 +11,12 @@
 	</textarea>
 
 	<div *ngIf="showActionButtons || commentText.length > 0">
-		<button mat-button type="button" (click)="closeSubmitComment.emit()">
-			ABBRECHEN
+		<button mat-button type="button" (click)="closeSubmitComment.emit()" *ngIf="canBeCancelled">
+			Abbrechen
 		</button>
 		<button mat-raised-button color="accent"
 				[disabled]="!commentText || commentText.length === 0">
-			{{submitCommentText | uppercase}}
+			{{submitCommentText}}
 		</button>
 	</div>
 </form>

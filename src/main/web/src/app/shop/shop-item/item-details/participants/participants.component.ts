@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {User} from "../../../../shared/model/user";
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -37,6 +37,8 @@ export class ParticipantsComponent implements OnInit {
 	@Input() participants: GroupedParticipants[];
 	@Input() isAllowedToSeeMetaInfo: boolean = false;
 	expandedStatus = false;
+	@Output() toRegistration = new EventEmitter();
+	@Output() shareEvent = new EventEmitter();
 
 	constructor(private navigationService: NavigationService) {
 	}
