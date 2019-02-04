@@ -5,7 +5,7 @@
 		<label>
 			Anzahl
 		</label>
-		<mat-form-field appearance="outline" class="cart-entry-amount small-outline-formfield">
+		<mat-form-field appearance="outline" class="cart-entry-amount small-outline-formfield no-errors">
 			<mat-select class="amount" [(ngModel)]="amount" (ngModelChange)="updateEventAmount(amount)"
 						placeholder=" ">
 				<mat-option *ngFor="let amount of amountOptions" [value]="amount">

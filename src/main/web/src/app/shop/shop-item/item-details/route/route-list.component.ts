@@ -4,6 +4,8 @@ import {RoutingService} from "../../../shared/services/routing.service";
 import {BehaviorSubject} from "rxjs";
 import {filter, map} from "rxjs/operators";
 import {animate, style, transition, trigger} from "@angular/animations";
+import {format} from "date-fns";
+import * as deLocale from "date-fns/locale/de";
 
 enum AddressDisplayFormat {
 	Short = "short",
@@ -41,8 +43,14 @@ export class RouteListComponent implements OnInit {
 		filter(it => it && it.length > 0),
 		map(it => it[it.length - 1])
 	);
+	@Input() miles;
 
-	addressFormats = AddressDisplayFormat;
+	durationInWords = "";
+
+	@Input() set duration(duration: number) {
+		this.durationInWords = format(duration * 1000, "H [Std.] mm [Min.]", {locale: deLocale});
+	}
+
 
 	showLayovers = false;
 

@@ -104,7 +104,6 @@ export class AddToCartFormComponent implements OnInit {
 		this._size$
 	).pipe(
 		map(([user, waitingList, color, size]) => {
-			console.log(waitingList);
 			if (!waitingList || !user) {
 				return [];
 			}

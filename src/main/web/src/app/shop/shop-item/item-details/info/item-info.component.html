@@ -48,7 +48,7 @@
 	<memo-event-destination-renderer *ngIf="!isMerch(event)"
 									 [destination]="destination$ | async"
 									 [tour]="tour$ | async"
-									 [miles]="event.miles"
+									 [miles]="event.miles * 2"
 	>
 
 	</memo-event-destination-renderer>

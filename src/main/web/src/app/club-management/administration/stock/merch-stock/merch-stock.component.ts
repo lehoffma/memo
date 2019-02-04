@@ -6,16 +6,17 @@ import {StockEntry} from "./merch-stock-entry/stock-entry";
 import {MultiLevelSelectParent} from "../../../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {SearchFilterService} from "../../../../shop/search-results/search-filter.service";
 import {SortingOption, SortingOptionHelper} from "../../../../shared/model/sorting-option";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterOptionBuilder} from "../../../../shop/search-results/filter-option-builder.service";
 import {FilterOptionType} from "../../../../shop/search-results/filter-option-type";
 import {BehaviorSubject, forkJoin, Observable, of, Subject} from "rxjs";
-import {debounceTime, filter, map, mergeMap, scan, takeUntil} from "rxjs/operators";
+import {debounceTime, filter, first, map, mergeMap, scan, takeUntil} from "rxjs/operators";
 import {Event} from "../../../../shop/shared/model/event";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
 import {Direction, Sort} from "../../../../shared/model/api/sort";
 import {Filter} from "../../../../shared/model/api/filter";
 import {PagedDataSource} from "../../../../shared/utility/material-table/paged-data-source";
+import {QueryParameterService} from "../../../../shared/services/query-parameter.service";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -54,6 +55,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 				private confirmationDialogService: ConfirmationDialogService,
 				private activatedRoute: ActivatedRoute,
 				private cdRef: ChangeDetectorRef,
+				private router: Router,
 				private searchFilterService: SearchFilterService,
 				private filterOptionBuilder: FilterOptionBuilder) {
 		this.dataSource.isExpandable = false;
@@ -152,6 +154,16 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 						this.updateList();
 					}, error => console.error(error));
 			})
+	}
+
+
+	updateQueryParams($event: Params) {
+		this.activatedRoute.queryParamMap.pipe(
+			first()
+		).subscribe(paramMap => {
+			let params = QueryParameterService.updateQueryParams(paramMap, $event);
+			this.router.navigate([], {queryParams: params})
+		})
 	}
 
 }

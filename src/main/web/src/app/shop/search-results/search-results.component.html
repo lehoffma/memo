@@ -9,7 +9,8 @@
 		</button>
 
 	</div>
-	<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>
+	<memo-filtering-menu (queryParamChange)="updateQueryParams($event)"
+		[filterOptions]="filterOptions$ | async"></memo-filtering-menu>
 </div>
 
 

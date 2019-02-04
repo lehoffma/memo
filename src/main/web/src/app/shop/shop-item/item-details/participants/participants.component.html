@@ -56,12 +56,20 @@
 	<mat-icon class="empty-state-header-icon">people</mat-icon>
 	<span class="empty-state-headline">Bisher keine Teilnehmer</span>
 	<!--todo only show if user is allowed-->
-	<div class="empty-state-subheader">
+	<div class="empty-state-subheader" *ngIf="canCheckIn else cannotCheckIn">
 		<span>Melde dich jetzt für dieses Event an!</span>
 		<span>Oder teile es mit deinen Freunden:</span>
 	</div>
+	<ng-template #cannotCheckIn>
+		<div class="empty-state-subheader">
+			<span>Dir fehlen leider die Berechtigungen zur Anmeldung.</span>
+			<span>Du darfst es aber gern mit deinen Freunden teilen:</span>
+		</div>
+	</ng-template>
 	<div class="empty-state-actions">
-		<button mat-raised-button color="accent" (click)="toRegistration.emit(true)">Anmelden</button>
+		<button mat-raised-button color="accent"
+				*ngIf="canCheckIn"
+				(click)="toRegistration.emit(true)">Anmelden</button>
 		<button mat-stroked-button (click)="shareEvent.emit(true)">
 			<mat-icon>share</mat-icon>
 			<span>Teilen</span>

@@ -44,6 +44,7 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, AfterViewInit
 	inputControls: FormArray;
 	loading: { [index: number]: boolean } = {};
 	@Output() distanceChange = new EventEmitter<number>();
+	@Output() durationChange = new EventEmitter<number>();
 	@ViewChildren("routeInput") inputs: QueryList<ElementRef>;
 	_onChange = null;
 	centerOfTour$;
@@ -134,8 +135,6 @@ export class TourRouteInputComponent implements OnInit, OnDestroy, AfterViewInit
 					latitude: 0
 				})
 			);
-
-		this.formControl.valueChanges.subscribe(it => console.log(it));
 
 		this.initializedRoute$ = this.formControl.valueChanges
 			.pipe(

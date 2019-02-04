@@ -94,7 +94,7 @@ export class EventService extends ServletService<Event> {
 				.forEach(key => body[key] = options[key]);
 		}
 
-		const allowedAttributes = ["priceMember", "expectedReadRole", "orders", "material", "price", "expectedCheckInRole",
+		const allowedAttributes = ["priceMember", "expectedReadRole", "duration", "orders", "material", "price", "expectedCheckInRole",
 			"vehicle", "date", "entries", "comments", "stock", "title", "capacity", "id", "description", "expectedWriteRole",
 			"miles", "route", "author", "images", "type", "groupPicture", "reportWriters", "paymentLimit", "paymentMethods"];
 		let modifiedEvent = {...event};

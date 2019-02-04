@@ -1,11 +1,10 @@
-import {ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from "@angular/core";
 import {isMultiLevelSelectLeaf, MultiLevelSelectOption} from "../../../shared/utility/multi-level-select/shared/multi-level-select-option";
-import {ActivatedRoute, Params, Router} from "@angular/router";
-import {QueryParameterService} from "../../../shared/services/query-parameter.service";
+import {ActivatedRoute, Params} from "@angular/router";
 import {MultiLevelSelectParent} from "../../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {MultiLevelSelectLeaf} from "../../../shared/utility/multi-level-select/shared/multi-level-select-leaf";
 import {animate, state, style, transition, trigger} from "@angular/animations";
-import {first, map, takeUntil} from "rxjs/operators";
+import {filter, takeUntil} from "rxjs/operators";
 import {AbstractControl, FormBuilder} from "@angular/forms";
 import {combineLatest, Subject} from "rxjs";
 
@@ -29,6 +28,7 @@ import {combineLatest, Subject} from "rxjs";
 })
 export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 	@Input() filterOptions: MultiLevelSelectParent[];
+	@Output() queryParamChange = new EventEmitter<Params>();
 
 	filterOptionMap: { [option: string]: MultiLevelSelectParent | MultiLevelSelectOption };
 	singleSelectionForm = this.formBuilder.group({});
@@ -37,9 +37,10 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 
 	onDestroy$ = new Subject<any>();
 
+	pauseFormUpdates = false;
+
 	constructor(private activatedRoute: ActivatedRoute,
-				private formBuilder: FormBuilder,
-				private router: Router) {
+				private formBuilder: FormBuilder) {
 	}
 
 	ngOnInit() {
@@ -54,9 +55,13 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 		combineLatest(
 			this.singleSelectionForm.valueChanges,
 			this.multiSelectionForm.valueChanges
-		).pipe(takeUntil(this.onDestroy$)).subscribe(([singleSelection, multiSelection]) => {
-			this.updateParams(singleSelection, multiSelection);
-		});
+		).pipe(
+			filter(it => !this.pauseFormUpdates),
+			takeUntil(this.onDestroy$)
+		)
+			.subscribe(([singleSelection, multiSelection]) => {
+				this.updateParams(singleSelection, multiSelection);
+			});
 	}
 
 	ngOnDestroy(): void {
@@ -76,6 +81,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 					return acc;
 				}, {});
 
+			this.pauseFormUpdates = true;
 			this.filterOptions
 				.forEach(option => {
 					if (option.selectType === "single") {
@@ -86,7 +92,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 								selectedChild
 							));
 						} else {
-							this.singleSelectionForm.get(option.name).setValue(selectedChild);
+							this.singleSelectionForm.get(option.name).setValue(selectedChild, {emitEvent: false});
 						}
 					} else {
 						const value = option.children
@@ -99,10 +105,12 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 								value
 							));
 						} else {
-							this.multiSelectionForm.get(option.name).setValue(value);
+							this.multiSelectionForm.get(option.name).setValue(value, {emitEvent: false});
 						}
 					}
-				})
+				});
+
+			this.pauseFormUpdates = false;
 		}
 	}
 
@@ -185,12 +193,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 	updateQueryParameters(singleSelection: Params, multiSelection: Params) {
 		const combined = {...singleSelection, ...multiSelection};
 
-		this.activatedRoute.queryParamMap
-			.pipe(
-				first(),
-				map(paramMap => QueryParameterService.updateQueryParams(paramMap, combined))
-			)
-			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
+		this.queryParamChange.emit(combined);
 	}
 
 	/**
@@ -277,12 +280,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 				})
 			});
 
-		this.activatedRoute.queryParamMap
-			.pipe(
-				first(),
-				map(paramMap => QueryParameterService.updateQueryParams(paramMap, queryParams))
-			)
-			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
+		this.queryParamChange.emit(queryParams);
 	}
 
 }

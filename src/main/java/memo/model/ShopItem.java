@@ -11,7 +11,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.Supplier;
 
 /**
  * Entity implementation class for Entity: ShopItem
@@ -103,6 +102,8 @@ public class ShopItem implements Serializable {
 
     private Integer miles = 0;
 
+    private Integer duration = 0;
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "authoredItems")
     @JsonSerialize(using = UserIdListSerializer.class)
     @JsonDeserialize(using = UserIdListDeserializer.class)
@@ -169,6 +170,7 @@ public class ShopItem implements Serializable {
         this.material = item.material;
         this.vehicle = item.vehicle;
         this.miles = item.miles;
+        this.duration = item.duration;
         this.author = item.author;
         this.reportWriters = item.reportWriters;
         this.comments = item.comments;
@@ -189,6 +191,15 @@ public class ShopItem implements Serializable {
 
     public ShopItem setWaitingList(List<WaitingListEntry> waitingList) {
         this.waitingList = waitingList;
+        return this;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public ShopItem setDuration(Integer duration) {
+        this.duration = duration;
         return this;
     }
 

@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from "@angular/core";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {EventService} from "../../shared/services/api/event.service";
 import {Event} from "../shared/model/event";
 import {SortingOption} from "../../shared/model/sorting-option";
@@ -9,7 +9,19 @@ import {SearchFilterService} from "./search-filter.service";
 import {FilterOptionBuilder} from "./filter-option-builder.service";
 import {FilterOptionType} from "./filter-option-type";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
-import {debounceTime, defaultIfEmpty, distinctUntilChanged, filter, map, mergeMap, scan, startWith, takeUntil, tap} from "rxjs/operators";
+import {
+	debounceTime,
+	defaultIfEmpty,
+	distinctUntilChanged,
+	filter,
+	first,
+	map,
+	scan,
+	startWith,
+	switchMap,
+	takeUntil,
+	tap
+} from "rxjs/operators";
 import {Filter} from "../../shared/model/api/filter";
 import {Sort} from "../../shared/model/api/sort";
 import {PageRequest} from "../../shared/model/api/page-request";
@@ -24,6 +36,7 @@ import {CreateEventContextMenuComponent} from "../event-calendar-container/creat
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
 import {FilterOptionFactoryService} from "./filter-option-factory.service";
+import {QueryParameterService} from "../../shared/services/query-parameter.service";
 
 type SortingQueryParameter = { sortedBy: string; descending: string; };
 
@@ -74,7 +87,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 				return Filter.by(paramObject);
 			}),
 			distinctUntilChanged((x, y) => Filter.equal(x, y)),
-			startWith(Filter.none())
+			startWith(Filter.none()),
 		);
 
 	page$ = new BehaviorSubject(PageRequest.first(this.PAGE_SIZE));
@@ -105,17 +118,17 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 			debounceTime(200),
 			scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService)),
 			map(options => options.filter(option => option.children && option.children.length > 0)),
-			tap(it => console.log(it))
 		);
 
+	isInitialized = false;
 	constructor(private activatedRoute: ActivatedRoute,
 				private searchFilterService: SearchFilterService,
 				private matDialog: MatDialog,
 				private filterOptionBuilder: FilterOptionBuilder,
 				private filterOptionFactory: FilterOptionFactoryService,
 				private loginService: LogInService,
-				private router: Router,
-				private eventService: EventService) {
+				private eventService: EventService,
+				private router: Router) {
 		this.resultsDataSource.isExpandable = false;
 		this.resultsDataSource.filter$ = this.filter$;
 		this.resultsDataSource.sort$ = this.sortedBy;
@@ -140,6 +153,14 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 	}
 
+	updateQueryParams($event: Params) {
+		this.activatedRoute.queryParamMap.pipe(
+			first()
+		).subscribe(paramMap => {
+			let params = QueryParameterService.updateQueryParams(paramMap, $event);
+			this.router.navigate([], {queryParams: params})
+		})
+	}
 
 	ngOnDestroy() {
 		this.onDestroy$.next();
@@ -176,8 +197,9 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	private init() {
 		//initialize filter menu
 		this.filter$.pipe(
-			mergeMap(filter => this.buildFilterOptions(filter)),
+			switchMap(filter => this.buildFilterOptions(filter)),
 			map(options => this.searchFilterService.initFilterMenu(this.activatedRoute, options)),
+			tap(it => console.log(it)),
 			takeUntil(this.onDestroy$),
 		).subscribe(this._filterOptions$);
 	}

@@ -1,19 +1,22 @@
 import {GoogleMapsAPIWrapper} from "@agm/core";
-import {Directive, EventEmitter, Input, Output} from "@angular/core";
+import {Directive, EventEmitter, Input, OnDestroy, Output} from "@angular/core";
 import {Address} from "../../../../../shared/model/address";
-import {BehaviorSubject} from "rxjs";
-import {filter} from "rxjs/operators";
+import {BehaviorSubject, Subject} from "rxjs";
+import {filter, takeUntil} from "rxjs/operators";
 
 declare var google;
 
 @Directive({
 	selector: "sebm-google-map-directions"
 })
-export class DirectionsMapDirective {
+export class DirectionsMapDirective implements OnDestroy {
 	_route$: BehaviorSubject<Address[]> = new BehaviorSubject([]);
 	totalDistance: BehaviorSubject<number> = new BehaviorSubject(0);
 	@Input() directionsDisplay;
 	@Output() totalDistanceChange: EventEmitter<number> = new EventEmitter();
+	@Output() durationChange = new EventEmitter();
+
+	onDestroy$ = new Subject();
 
 	constructor(private googleMapsApi: GoogleMapsAPIWrapper) {
 	}
@@ -24,10 +27,14 @@ export class DirectionsMapDirective {
 	}
 
 	getTotalDistance(response: any): number {
-		return response.routes.reduce((totalDistance, route) => {
-			return totalDistance + route.legs.reduce((total, leg) => {
-				return total + leg.distance.value;
-			}, 0)
+		return response.routes[0].legs.reduce((total, leg) => {
+			return total + leg.distance.value;
+		}, 0);
+	}
+
+	getTotalDuration(response: any): number {
+		return response.routes[0].legs.reduce((total, leg) => {
+			return total + leg.duration.value
 		}, 0);
 	}
 
@@ -36,13 +43,15 @@ export class DirectionsMapDirective {
 	ngOnInit() {
 		this.totalDistance
 			.pipe(
-				filter(value => value > 0)
+				filter(value => value > 0),
+				takeUntil(this.onDestroy$)
 			)
 			.subscribe(value => this.totalDistanceChange.emit(value));
 
 		this._route$
 			.pipe(
-				filter(route => route && route.length > 1)
+				filter(route => route && route.length > 1),
+				takeUntil(this.onDestroy$)
 			)
 			.subscribe(route => {
 				this.googleMapsApi.getNativeMap().then(map => {
@@ -69,7 +78,7 @@ export class DirectionsMapDirective {
 										lat: stop.latitude,
 										lng: stop.longitude
 									},
-									stopover: false
+									stopover: true
 								}));
 						}
 					}
@@ -85,6 +94,7 @@ export class DirectionsMapDirective {
 						}, (response, status) => {
 							if (status === "OK") {
 								this.totalDistance.next(this.getTotalDistance(response));
+								this.durationChange.next(this.getTotalDuration(response));
 								this.directionsDisplay.setDirections(response);
 							} else {
 								window.alert("Directions request failed due to " + status);
@@ -93,5 +103,9 @@ export class DirectionsMapDirective {
 
 				});
 			})
+	}
+
+	ngOnDestroy(): void {
+		this.onDestroy$.next(true);
 	}
 }

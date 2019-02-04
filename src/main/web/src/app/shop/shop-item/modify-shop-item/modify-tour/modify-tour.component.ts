@@ -49,6 +49,7 @@ export class ModifyTourComponent implements OnInit {
 					validators: [Validators.required, Validators.pattern(/([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/i)]
 				}],
 				"miles": [0],
+				"duration": [0],
 				"price": [0, {
 					validators: [Validators.required, Validators.pattern(/^[\d]+((\.|\,)[\d]{1,2})?$/)]
 				}],
@@ -164,6 +165,7 @@ export class ModifyTourComponent implements OnInit {
 			price: this.formGroup.get("event-data").get("price").value,
 			vehicle: this.formGroup.get("event-data").get("vehicle").value,
 			miles: this.formGroup.get("event-data").get("miles").value,
+			duration: this.formGroup.get("event-data").get("duration").value,
 			expectedReadRole: this.formGroup.get("permissions").get("expectedReadRole").value,
 			expectedWriteRole: this.formGroup.get("permissions").get("expectedWriteRole").value,
 			expectedCheckInRole: this.formGroup.get("permissions").get("expectedCheckInRole").value,

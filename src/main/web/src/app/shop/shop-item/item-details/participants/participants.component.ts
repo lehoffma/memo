@@ -36,6 +36,7 @@ export interface GroupedParticipants {
 export class ParticipantsComponent implements OnInit {
 	@Input() participants: GroupedParticipants[];
 	@Input() isAllowedToSeeMetaInfo: boolean = false;
+	@Input() canCheckIn = false;
 	expandedStatus = false;
 	@Output() toRegistration = new EventEmitter();
 	@Output() shareEvent = new EventEmitter();

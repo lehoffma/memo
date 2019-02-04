@@ -4,6 +4,7 @@
 	<sebm-google-map-directions *ngIf="showDirective && route.length > 1"
 								[directionsDisplay]="directionsDisplay"
 								(totalDistanceChange)="totalDistance = $event"
+								(durationChange)="durationChange.next($event)"
 								[route]="(initializedRoute$ | async)">
 
 	</sebm-google-map-directions>
@@ -34,10 +35,10 @@
 				   [formControl]="inputControls.at(i)"
 				   placeholder="{{i === 0 ? 'Treffpunkt' : ((i===route.length - 1) ? 'Ziel' : 'Zwischenstopp')}}">
 
-			<mat-error *ngIf="inputControls.at(i).hasError('required')">
+			<mat-error *ngIf="inputControls.at(i)?.hasError('required')">
 				Dieses Feld darf nicht leer bleiben!
 			</mat-error>
-			<mat-error *ngIf="inputControls.at(i).hasError('not-a-valid-address')">
+			<mat-error *ngIf="inputControls.at(i)?.hasError('not-a-valid-address')">
 				Dies ist keine gültige Addresse.
 			</mat-error>
 

@@ -5,6 +5,7 @@ import {EventType, typeToInteger} from "./event-type";
 export interface Tour extends Party {
 	vehicle: string;
 	miles: number;
+	duration: number;
 }
 
 export function createTour(): Tour {
@@ -27,6 +28,7 @@ export function createTour(): Tour {
 		emptySeats: -1,
 		type: typeToInteger(EventType.tours),
 		vehicle: "",
-		miles: -1
+		miles: -1,
+		duration: -1
 	}
 }

@@ -7,7 +7,9 @@
 		Hinzufügen
 	</a>
 
-	<memo-filtering-menu class="desktop" [filterOptions]="filterOptions$ | async">
+	<memo-filtering-menu class="desktop"
+						 (queryParamChange)="updateQueryParams($event)"
+						 [filterOptions]="filterOptions$ | async">
 
 	</memo-filtering-menu>
 </div>
@@ -15,7 +17,9 @@
 <div class="stock-entry-container">
 
 	<div class="stock-options">
-		<memo-filtering-menu class="mobile" [filterOptions]="filterOptions$ | async">
+		<memo-filtering-menu class="mobile"
+							 (queryParamChange)="updateQueryParams($event)"
+							 [filterOptions]="filterOptions$ | async">
 
 		</memo-filtering-menu>
 

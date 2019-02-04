@@ -162,6 +162,7 @@
 								   [previousValue]="previousValue?.route"
 								   [formControl]="formGroup.get('addresses')"
 								   (distanceChange)="formGroup.get('event-data').get('miles').patchValue(meterToMiles($event))"
+								   (durationChange)="formGroup.get('event-data').get('duration').patchValue($event)"
 								   [isTour]="true" content>
 
 			</memo-tour-route-input>
