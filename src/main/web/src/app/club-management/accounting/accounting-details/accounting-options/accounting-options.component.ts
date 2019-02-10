@@ -1,18 +1,18 @@
 import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {QueryParameterService} from "../../../shared/services/query-parameter.service";
-import {Event} from "../../../shop/shared/model/event";
-import {EventService} from "../../../shared/services/api/event.service";
-import {EventType} from "../../../shop/shared/model/event-type";
+import {QueryParameterService} from "../../../../shared/services/query-parameter.service";
+import {Event} from "../../../../shop/shared/model/event";
+import {EventService} from "../../../../shared/services/api/event.service";
+import {EventType} from "../../../../shop/shared/model/event-type";
 import {FormControl} from "@angular/forms";
-import {EventUtilityService} from "../../../shared/services/event-utility.service";
-import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
+import {EventUtilityService} from "../../../../shared/services/event-utility.service";
+import {EntryCategoryService} from "../../../../shared/services/api/entry-category.service";
 import {BehaviorSubject, combineLatest, Observable, Subscription} from "rxjs";
 import {first, map, share} from "rxjs/operators";
-import {EntryCategory} from "../../../shared/model/entry-category";
+import {EntryCategory} from "../../../../shared/model/entry-category";
 import {isValid, parse, setYear} from "date-fns"
-import {Filter} from "../../../shared/model/api/filter";
-import {getAllQueryValues} from "../../../shared/model/util/url-util";
+import {Filter} from "../../../../shared/model/api/filter";
+import {getAllQueryValues} from "../../../../shared/model/util/url-util";
 
 
 @Component({

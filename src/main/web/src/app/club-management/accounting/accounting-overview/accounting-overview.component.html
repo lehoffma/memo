@@ -1,0 +1,74 @@
+<ng-container *ngIf="state$ | async as state">
+	<div class="overview-header">
+		<h2>Kostenübersicht</h2>
+		<span class="last-refresh-date">Stand: {{state.timestamp | dateFormat:'relative'}}</span>
+	</div>
+	<div class="overview-numbers-container">
+		<memo-accounting-number-card class="mat-elevation-z3"
+									 [title]="'Gesamtbilanz'"
+									 [total]="state.currentBalance"
+									 [change]="state.lastMonthChange">
+
+		</memo-accounting-number-card>
+
+		<memo-accounting-number-card class="mat-elevation-z3"
+									 [title]="'Touren'"
+									 [total]="state.tourTotal"
+									 [change]="state.tourChange">
+
+		</memo-accounting-number-card>
+
+		<memo-accounting-number-card class="mat-elevation-z3"
+									 [title]="'Partys'"
+									 [total]="state.partyTotal"
+									 [change]="state.partyChange">
+
+		</memo-accounting-number-card>
+		<memo-accounting-number-card class="mat-elevation-z3"
+									 [title]="'Merchandise'"
+									 [total]="state.merchTotal"
+									 [change]="state.merchChange">
+
+		</memo-accounting-number-card>
+
+	</div>
+
+
+	<div class="accounting-preview-container">
+		<div class="preview-container mat-elevation-z3">
+			<div class="preview-header">
+				<div>
+					<mat-icon>subject</mat-icon>
+					<h3>Letzte Abrechnungen</h3>
+				</div>
+				<a routerLink="/management/costs/time" class="preview-more-link">Mehr</a>
+			</div>
+			<!--todo link cost table-->
+			<a memoCostPreview *ngFor="let monthlyChange of state.monthlyChanges | slice:0:5"
+			   routerLink="/management/costs"
+			   [queryParams]="monthlyChange.month | pipeFunction:getMonthDetailParams"
+			   [label]="monthlyChange.month | date:'MMMM yyyy'"
+			   [totalBalance]="monthlyChange.totalBalance"></a>
+
+		</div>
+
+		<div class="preview-container mat-elevation-z3">
+			<div class="preview-header">
+				<div>
+					<mat-icon>directions_car</mat-icon>
+					<h3>Letzte Events</h3>
+				</div>
+				<a routerLink="/management/costs/items" class="preview-more-link">Mehr</a>
+			</div>
+
+			<!--todo cost table-->
+			<a memoCostPreview *ngFor="let itemTotal of state.itemTotals | slice:0:5"
+			   routerLink="/management/costs"
+			   [queryParams]="itemTotal.itemId | pipeFunction:getItemDetailParams"
+			   [label]="itemTotal.itemTitle"
+			   [totalBalance]="itemTotal.totalBalance"></a>
+		</div>
+	</div>
+
+
+</ng-container>

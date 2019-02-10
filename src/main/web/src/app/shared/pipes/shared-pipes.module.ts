@@ -1,7 +1,8 @@
 import {NgModule} from "@angular/core";
 import {DateFormatPipe} from "./date-format.pipe";
 import {ImageSizePipe} from "./image-size.pipe";
-import { ClubRoleIconPipe } from './club-role-icon.pipe';
+import {ClubRoleIconPipe} from "./club-role-icon.pipe";
+import {PipeFunction} from "./function.pipe";
 
 
 @NgModule({
@@ -9,12 +10,14 @@ import { ClubRoleIconPipe } from './club-role-icon.pipe';
 	exports: [
 		DateFormatPipe,
 		ImageSizePipe,
-		ClubRoleIconPipe
+		ClubRoleIconPipe,
+		PipeFunction
 	],
 	declarations: [
 		DateFormatPipe,
 		ImageSizePipe,
-		ClubRoleIconPipe
+		ClubRoleIconPipe,
+		PipeFunction
 	],
 	providers: [],
 })

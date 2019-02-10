@@ -1,0 +1,7 @@
+<span class="preview-label">{{label}}</span>
+<div class="preview-value-container">
+	<span class="preview-value {{totalBalance >= 0 ? 'positive' : 'negative'}}">
+		{{totalBalance > 0 ? '+' : ''}}{{totalBalance | currency:'EUR'}}
+	</span>
+	<mat-icon>chevron_right</mat-icon>
+</div>

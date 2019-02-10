@@ -1,7 +1,7 @@
 import {Route, RouterModule} from "@angular/router";
 import {MemberListComponent} from "./administration/member-list/member-list.component";
 import {MerchStockComponent} from "./administration/stock/merch-stock/merch-stock.component";
-import {AccountingComponent} from "./accounting/accounting.component";
+import {AccountingComponent} from "./accounting/accounting-details/accounting.component";
 import {AuthenticatedGuard} from "../shared/authentication/authenticated.guard";
 import {IsTreasurerGuard} from "../shared/authentication/is-treasurer.guard";
 import {NgModule} from "@angular/core";
@@ -12,6 +12,9 @@ import {OrderOverviewComponent} from "./order-overview/order-overview.component"
 import {UserMapContainerComponent} from "./user-map/user-map-container.component";
 import {IsMemberGuard} from "../shared/authentication/is-member.guard";
 import {IsBoardMemberGuard} from "../shared/authentication/is-board-member.guard";
+import {AccountingOverviewComponent} from "./accounting/accounting-overview/accounting-overview.component";
+import {AccountingTimeSummaryComponent} from "./accounting/accounting-overview/accounting-time-summary/accounting-time-summary.component";
+import {AccountingItemSummaryComponent} from "./accounting/accounting-overview/accounting-item-summary/accounting-item-summary.component";
 
 const routes: Route[] = [
 	{path: "dashboard", component: DashboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
@@ -22,6 +25,9 @@ const routes: Route[] = [
 	{path: "management", redirectTo: "management/costs", pathMatch: "full", canActivate: [AuthenticatedGuard]},
 	{path: "management/orders", component: OrderOverviewComponent, canActivate: [AuthenticatedGuard]},
 	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
+	{path: "management/costs-overview", component: AccountingOverviewComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
+	{path: "management/costs/items", component: AccountingItemSummaryComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
+	{path: "management/costs/time", component: AccountingTimeSummaryComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
 
 	{
 		path: ":itemType/:eventId/costs",

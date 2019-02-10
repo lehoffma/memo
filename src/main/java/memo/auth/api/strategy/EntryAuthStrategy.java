@@ -4,8 +4,6 @@ import memo.auth.api.AuthenticationConditionFactory;
 import memo.data.util.PredicateFactory;
 import memo.model.*;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -31,6 +29,16 @@ public class EntryAuthStrategy implements AuthenticationStrategy<Entry> {
                         .and(AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(
                                 Entry::getItem, ShopItem::getExpectedReadRole
                         ))
+        ));
+    }
+
+    public boolean isAllowedToReadState(User user) {
+        return userIsAuthorized(user, null, Arrays.asList(
+                //the user is logged in..
+                AuthenticationConditionFactory.<Entry>userIsLoggedIn()
+                        //..has the correct permissions necessary..
+                        .and(AuthenticationConditionFactory
+                                .userHasCorrectPermission(it -> it.getPermissions().getFunds(), Permission.read))
         ));
     }
 

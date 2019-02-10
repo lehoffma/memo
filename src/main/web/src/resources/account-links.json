@@ -15,14 +15,9 @@
 		"name": "Deine Bestellungen"
 	},
 	{
-		"route": "members/PROFILE_ID/edit",
-		"icon": "",
-		"name": "Dein Account"
-	},
-	{
 		"route": "account-settings",
 		"icon": "",
-		"name": "Deine Einstellungen"
+		"name": "Deine Account"
 	},
 	{
 		"route": "",

@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.websocket.Session;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,7 +46,7 @@ public class WebsocketMessageDispatcher {
         String userId = (String) session.getUserProperties().get("userId");
         Integer offset = (Integer) session.getUserProperties().getOrDefault("offset", 0);
 
-        List<Notification> notifications = notificationRepository.getByUserId(userId, amount, offset);
+        List<Notification> notifications = notificationRepository.getWebNotificationsByUserId(userId, amount, offset);
         List<Map<String, Object>> dataMap = notifications.stream()
                 .map(it -> notificationBroadcaster.toJson(it))
                 .collect(Collectors.toList());

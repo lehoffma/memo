@@ -48,6 +48,7 @@ import {JSONLdComponent} from "./utility/seo/json-ld.component";
 import {FilterOptionHeaderComponent} from "./filter-option-header/filter-option-header.component";
 import { FilterOptionRowComponent } from './filter-option-row/filter-option-row.component';
 import { EventDestinationRendererComponent } from './renderers/event-destination-renderer/event-destination-renderer.component';
+import { LetDirective } from './utility/let.directive';
 
 const forms = [
 	DisableIfDirective,
@@ -115,6 +116,7 @@ const forms = [
 		BreadcrumbNavigationComponent,
 		JSONLdComponent,
 		EventDestinationRendererComponent,
+		LetDirective,
 	],
 	exports: [
 		MultiLevelSelectModule,
@@ -150,6 +152,7 @@ const forms = [
 		BreadcrumbNavigationComponent,
 		JSONLdComponent,
 		EventDestinationRendererComponent,
+		LetDirective,
 
 		...forms
 	],

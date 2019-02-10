@@ -47,7 +47,7 @@ export class UserDataFormComponent implements OnInit {
 				"gender": [undefined, {
 					validators: [Validators.required]
 				}],
-				"phone": ["", {
+				"telephone": ["", {
 					validators: [Validators.pattern(/^[0-9\-+\s()]*$/)]
 				}],
 				"mobile": ["", {
@@ -130,7 +130,7 @@ export class UserDataFormComponent implements OnInit {
 			"surname": previousValue.surname,
 			"birthday": previousValue.birthday,
 			"gender": previousValue.gender,
-			"phone": previousValue.telephone,
+			"telephone": previousValue.telephone,
 			"mobile": previousValue.mobile,
 			"isStudent": previousValue.isStudent,
 			"hasSeasonTicket": previousValue.hasSeasonTicket,

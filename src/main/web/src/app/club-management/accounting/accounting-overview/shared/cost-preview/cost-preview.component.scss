@@ -1,0 +1,37 @@
+@import "theme";
+
+:host {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px;
+	cursor: pointer;
+	color: grey(800);
+
+	&:hover {
+		background: grey(100);
+	}
+
+
+	.preview-value-container {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		.preview-value {
+			font-size: font-size(medium);
+			color: primary(700);
+
+			&.negative {
+				color: warn(700);
+			}
+		}
+
+
+		mat-icon {
+			color: grey(500);
+			margin-left: 8px;
+		}
+	}
+
+}

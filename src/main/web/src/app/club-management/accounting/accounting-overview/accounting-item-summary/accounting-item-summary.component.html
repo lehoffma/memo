@@ -1,0 +1,24 @@
+<div class="filter-sidebar">
+	<memo-filtering-menu (queryParamChange)="updateQueryParams($event)"
+						  [filterOptions]="filterOptions$ | async"></memo-filtering-menu>
+</div>
+
+
+<div class="item-summary-main-container" *ngLet="(itemPreviews$ |async) as itemPreviews">
+	<div class="main-container-header">
+		<h3>Item Abrechnungen</h3>
+		<div class="header-actions">
+			<!--todo search, filter (on mobile), sort-->
+		</div>
+	</div>
+
+	<a memoCostPreview *ngFor="let preview of itemPreviews"
+	   routerLink="/management/costs"
+	   [queryParams]="preview.itemId | pipeFunction:getDetailParams"
+	   [label]="preview.itemTitle"
+	   [totalBalance]="preview.totalBalance"></a>
+
+	<div *ngIf="!itemPreviews ||itemPreviews.length === 0" class="loading-text no-results-text">
+		Warte auf Ergebnisse
+	</div>
+</div>

@@ -48,6 +48,8 @@ import java.io.IOException;
                 "/leaderboard",
                 "/map",
                 "/management/costs",
+                "/management/costs/*",
+                "/management/costs-overview",
                 "/management/stock",
                 "/management/stock/merch",
                 "/management/orders",

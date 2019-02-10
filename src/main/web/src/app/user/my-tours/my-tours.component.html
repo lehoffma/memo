@@ -1,3 +1,55 @@
+<mat-tab-group>
+	<mat-tab label="Teilgenommen">
+		<ng-template matTabContent>
+			<div>
+				<h3>Events</h3>
+				<mat-button-toggle-group #myToursViewGroup="matButtonToggleGroup"
+										 [(ngModel)]="selectedView" (ngModelChange)="navigateToRoute(selectedView)">
+					<mat-button-toggle value="participated" title="Teilgenommen">
+						<mat-icon>person</mat-icon>
+						<span>Vergangen</span>
+					</mat-button-toggle>
+					<mat-button-toggle value="created" title="Erstellt">
+						<mat-icon>create</mat-icon>
+						<span>Bevorstehend</span>
+					</mat-button-toggle>
+				</mat-button-toggle-group>
+			</div>
+
+			<div>
+				<memo-my-tours-entry *ngFor="let event of (participatedTours$ | async)" [event]="event">
+				</memo-my-tours-entry>
+			</div>
+
+		</ng-template>
+	</mat-tab>
+	<mat-tab label="Verantwortlich">
+		<ng-template matTabContent>
+			<div>
+				<h3>Events</h3>
+				<mat-button-toggle-group #myToursViewGroup="matButtonToggleGroup"
+										 [(ngModel)]="selectedView" (ngModelChange)="navigateToRoute(selectedView)">
+					<mat-button-toggle value="participated" title="Teilgenommen">
+						<mat-icon>person</mat-icon>
+						<span>Vergangen</span>
+					</mat-button-toggle>
+					<mat-button-toggle value="created" title="Erstellt">
+						<mat-icon>create</mat-icon>
+						<span>Bevorstehend</span>
+					</mat-button-toggle>
+				</mat-button-toggle-group>
+			</div>
+
+			<div>
+				<memo-my-tours-entry *ngFor="let event of (createdTours$ | async)" [event]="event">
+				</memo-my-tours-entry>
+			</div>
+
+		</ng-template>
+	</mat-tab>
+</mat-tab-group>
+
+
 <div class="my-tours-options">
 	<div>
 		<span class="secondary-text">Ansichten:</span>

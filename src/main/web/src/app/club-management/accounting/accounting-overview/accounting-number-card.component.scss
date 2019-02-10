@@ -1,0 +1,63 @@
+@import "theme";
+
+:host {
+	display: flex;
+	flex-direction: column;
+	margin: 8px;
+	padding: 16px;
+	border-radius: 4px;
+	min-width: 170px;
+	flex: 1;
+
+	background: accent();
+	color: white;
+}
+
+.number-card-label {
+	color: hsla(231, 48%, 84%, 1);
+	font-weight: 500;
+	text-transform: uppercase;
+	font-size: font-size(smaller);
+}
+
+.number-card-main {
+	font-size: font-size(medium-large);
+	margin-top: 4px;
+	margin-bottom: 4px;
+	font-weight: 500;
+	color: white;
+}
+
+.number-change-container {
+	color: hsla(231, 48%, 84%, 1);
+	display: flex;
+	align-items: flex-end;
+
+	mat-icon {
+		line-height: 16px;
+		height: 16px;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		margin-right: 4px;
+	}
+
+	.number-change {
+		font-weight: 500;
+		font-size: font-size(smaller);
+		margin-right: 4px;
+	}
+
+	.change-subtext {
+		font-size: font-size(smallest);
+	}
+}
+
+:host.negative {
+	background: warn(700);
+
+	.number-card-label,
+	.number-change-container {
+		color: hsla(0, 76%, 87%, 1);
+	}
+}

@@ -1,0 +1,71 @@
+@import "theme";
+
+:host {
+	box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 100%;
+	max-width: 900px;
+	background: white;
+	min-height: 400px;
+	margin: 16px auto;
+	border-radius: 4px;
+}
+
+.sidebar {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	max-width: 230px;
+	border-right: 1px solid grey(100);
+}
+
+.container--body {
+	display: flex;
+	flex: 1;
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	flex: 2;
+	padding: 16px;
+
+	.routed-content {
+		padding-bottom: 16px;
+	}
+
+	.save-footer {
+		display: flex;
+		justify-content: flex-end;
+		background: grey(100);
+		padding: 16px;
+		margin: -16px;
+		margin-top: 0;
+		border-radius: 0 0 4px 4px;
+
+		button:not(:last-child) {
+			margin-right: 8px;
+		}
+	}
+}
+
+.sidebar-row {
+	padding: 16px;
+	cursor: pointer;
+	color: grey(600);
+
+	&.active {
+		color: accent(600);
+		font-weight: 500;
+		border-left: 3px solid;
+		margin-right: -1px;
+	}
+
+	&:hover:not(.active) {
+		font-weight: 500;
+		color: grey(800);
+	}
+}

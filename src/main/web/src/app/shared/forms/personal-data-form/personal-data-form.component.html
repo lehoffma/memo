@@ -1,35 +1,39 @@
 <div [formGroup]="formGroup">
 	<div class="user-personal-data-input-container">
 		<div class="name-input">
-			<mat-form-field>
-				<input matInput
-					   formControlName="firstName"
-					   type="text"
-					   name="Vorname"
-					   required
-					   placeholder="Vorname">
-				<mat-error *ngIf="formGroup.get('firstName').hasError('required')" align="end">
-					Dieses Feld darf nicht leer bleiben!
-				</mat-error>
-			</mat-form-field>
-			<mat-form-field>
-				<input matInput
-					   type="text"
-					   formControlName="surname"
-					   name="Nachname"
-					   required
-					   placeholder="Nachname">
-				<mat-error *ngIf="formGroup.get('surname').hasError('required')" align="end">
-					Dieses Feld darf nicht leer bleiben!
-				</mat-error>
-			</mat-form-field>
+			<div class="form-input-container">
+				<div class="form-label">Vorname</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
+					<input matInput
+						   formControlName="firstName"
+						   type="text"
+						   name="Vorname"
+						   required>
+					<mat-error *ngIf="formGroup.get('firstName').hasError('required')" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</mat-error>
+				</mat-form-field>
+			</div>
+			<div class="form-input-container">
+				<div class="form-label">Nachname</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
+					<input matInput
+						   type="text"
+						   formControlName="surname"
+						   name="Nachname"
+						   required>
+					<mat-error *ngIf="formGroup.get('surname').hasError('required')" align="end">
+						Dieses Feld darf nicht leer bleiben!
+					</mat-error>
+				</mat-form-field>
+			</div>
 		</div>
 		<div class="date-and-gender-input">
-			<div>
-				<mat-form-field>
+			<div class="form-input-container">
+				<div class="form-label">Geburtstag</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
 					<input matInput [matDatepicker]="birthDayPicker"
 						   [max]="maxDate"
-						   placeholder="Geburtstag"
 						   formControlName="birthday"
 						   required
 						   name="Geburtstag">
@@ -44,10 +48,10 @@
 				</mat-form-field>
 				<mat-datepicker [touchUi]="true" #birthDayPicker></mat-datepicker>
 			</div>
-			<div>
-				<mat-form-field>
+			<div class="form-input-container">
+				<div class="form-label">Geschlecht</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
 					<mat-select [formControl]="formGroup.get('gender')"
-								placeholder="Geschlecht"
 								name="Geschlecht"
 								class="aligned-mat-select">
 						<mat-option *ngFor="let option of genderOptions" [value]="option">
@@ -57,27 +61,27 @@
 				</mat-form-field>
 			</div>
 		</div>
-		<div>
-			<mat-form-field>
+		<div class="form-input-container phone-input-container">
+			<div class="form-label">Telefon</div>
+			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput
-					   placeholder="Telefon"
-					   name="phone"
+					   name="telephone"
 					   type="tel"
-					   formControlName="phone"
+					   formControlName="telephone"
 				>
-				<mat-error align="end" *ngIf="formGroup.get('phone').hasError('pattern')">
+				<mat-error align="end" *ngIf="formGroup.get('telephone').hasError('pattern')">
 					Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
 				</mat-error>
-				<mat-error align="end" *ngIf="formGroup.get('phone').hasError('required')">
+				<mat-error align="end" *ngIf="formGroup.get('telephone').hasError('required')">
 					Dieses Feld darf nicht leer bleiben!
 				</mat-error>
 			</mat-form-field>
 		</div>
-		<div>
-			<mat-form-field>
+		<div class="form-input-container phone-input-container">
+			<div class="form-label">Mobiltelefon</div>
+			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput
 					   name="mobile"
-					   placeholder="Mobiltelefon"
 					   type="tel"
 					   formControlName="mobile"
 				>

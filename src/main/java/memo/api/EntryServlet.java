@@ -6,10 +6,7 @@ import memo.api.util.ApiServletPutOptions;
 import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.EntryAuthStrategy;
 import memo.data.EntryRepository;
-import memo.model.Entry;
-import memo.model.EntryCategory;
-import memo.model.Image;
-import memo.model.ShopItem;
+import memo.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,6 +40,21 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
         this.authenticationService = authService;
     }
 
+
+    @GET
+    @Path("/state")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getState(@Context HttpServletRequest request) {
+        User requestingUser = authenticationService.parseNullableUserFromRequestHeader(request);
+        boolean isAllowed = ((EntryAuthStrategy) this.authenticationStrategy).isAllowedToReadState(requestingUser);
+
+        if (!isAllowed) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .build();
+        }
+
+        return Response.ok(entryRepository.state()).build();
+    }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})

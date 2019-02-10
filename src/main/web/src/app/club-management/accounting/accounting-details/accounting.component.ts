@@ -1,15 +1,14 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {Dimension, WindowService} from "../../shared/services/window.service";
-import {AccountingTableContainerService} from "./accounting-table-container.service";
+import {Dimension, WindowService} from "../../../shared/services/window.service";
+import {AccountingTableContainerService} from "../accounting-table-container.service";
 import {map, mergeMap, startWith, takeUntil} from "rxjs/operators";
-import {ExpandableMaterialTableComponent, TableColumn} from "../../shared/utility/material-table/expandable-material-table.component";
-import {Entry} from "../../shared/model/entry";
-import {ResponsiveColumnsHelper} from "../../shared/utility/material-table/responsive-columns.helper";
+import {ExpandableMaterialTableComponent, TableColumn} from "../../../shared/utility/material-table/expandable-material-table.component";
+import {Entry} from "../../../shared/model/entry";
+import {ResponsiveColumnsHelper} from "../../../shared/utility/material-table/responsive-columns.helper";
 import {BreakpointObserver} from "@angular/cdk/layout";
-import {EntryService} from "../../shared/services/api/entry.service";
-import {NavigationService} from "../../shared/services/navigation.service";
-import {Sort} from "../../shared/model/api/sort";
-import {ParamMap, Router} from "@angular/router";
+import {EntryService} from "../../../shared/services/api/entry.service";
+import {NavigationService} from "../../../shared/services/navigation.service";
+import {Sort} from "../../../shared/model/api/sort";
 import {Subject} from "rxjs";
 
 @Component({

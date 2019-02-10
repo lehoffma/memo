@@ -1,0 +1,9 @@
+<span class="number-card-label">{{title}}</span>
+<span class="number-card-main">{{total | currency:'EUR'}}</span>
+<div class="number-change-container">
+	<mat-icon>trending_{{change > 0 ? 'up' : change < 0 ? 'down' : 'flat'}}</mat-icon>
+	<span class="number-change">
+		{{change >= 0 ? '+' : ''}}{{change | currency:'EUR'}}
+	</span>
+	<span class="change-subtext">im letzten Monat</span>
+</div>

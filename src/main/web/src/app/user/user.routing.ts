@@ -18,6 +18,12 @@ import {ConfirmEmailComponent} from "./confirm-email/confirm-email.component";
 import {IsOwnProfileGuard} from "../shared/authentication/is-own-profile.guard";
 import {NotificationOverviewComponent} from "./notifications/notification-overview.component";
 import {UserSettingsComponent} from "./user-settings/user-settings.component";
+import {PersonalDataWrapperComponent} from "./user-settings/subsections/personal-data-wrapper/personal-data-wrapper.component";
+import {ProfilePictureWrapperComponent} from "./user-settings/subsections/profile-picture-wrapper/profile-picture-wrapper.component";
+import {AddressesWrapperComponent} from "./user-settings/subsections/addresses-wrapper/addresses-wrapper.component";
+import {AccountDataWrapperComponent} from "./user-settings/subsections/account-data-wrapper/account-data-wrapper.component";
+import {ClubInformationWrapperComponent} from "./user-settings/subsections/club-information-wrapper/club-information-wrapper.component";
+import {NotificationSettingsComponent} from "./user-settings/subsections/notification-settings/notification-settings.component";
 
 const routes: Route[] = [
 
@@ -33,12 +39,25 @@ const routes: Route[] = [
 	{path: "requestMembership", component: RequestMembershipComponent, canActivate: [AuthenticatedGuard]},
 	{path: "notifications", component: NotificationOverviewComponent, canActivate: [AuthenticatedGuard]},
 	{path: "members/:id", component: ProfileComponent, canActivate: [AuthenticatedGuard, IsOwnProfileGuard]},
-	{path: "account-settings", component: UserSettingsComponent, canActivate: [AuthenticatedGuard]},
-	{path: "account-settings/notifications", component: UserSettingsComponent, canActivate: [AuthenticatedGuard]},
 	{path: "my-events", component: MyToursComponent, canActivate: [AuthenticatedGuard]},
 	{path: "order-history", component: OrderHistoryComponent, canActivate: [AuthenticatedGuard]},
 	{path: "not-allowed", component: UnauthorizedAccessComponent},
 
+	{
+		path: "account-settings",
+		component: UserSettingsComponent,
+		children: [
+			{path: "", redirectTo: "personal-data", pathMatch: "full"},
+			{path: "personal-data", component: PersonalDataWrapperComponent,},
+			{path: "profile-picture", component: ProfilePictureWrapperComponent,},
+			{path: "addresses", component: AddressesWrapperComponent,},
+			{path: "account", component: AccountDataWrapperComponent,},
+			{path: "club", component: ClubInformationWrapperComponent,},
+			{path: "notifications", component: NotificationSettingsComponent,},
+		],
+		canActivate: [AuthenticatedGuard]
+	},
+	{path: "account-settings/notifications", component: UserSettingsComponent, canActivate: [AuthenticatedGuard]},
 ];
 
 

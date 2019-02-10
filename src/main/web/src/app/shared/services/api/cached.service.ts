@@ -98,7 +98,7 @@ export abstract class CachedService<T> {
 			case "search":
 			//todo?
 		}
-		if (!removed && id > 0) {
+		if (!removed && id > 0 && this.fallbacks$[type][id]) {
 			this.fallbacks$[type][id](id)
 				.subscribe(value => this.valueChanged(id, value, type));
 		}

@@ -1,0 +1,83 @@
+@import "theme";
+
+:host {
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100vh - 64px);
+	max-width: 1000px;
+	margin: auto;
+}
+
+.overview-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-wrap: wrap;
+	margin: 16px 8px 8px;
+	padding-left: 8px;
+	padding-right: 8px;
+
+	h2 {
+		margin: 0;
+		font-size: font-size(medium);
+		font-weight: 400;
+		color: grey(700);
+	}
+
+	.last-refresh-date {
+		color: grey();
+		font-size: font-size(smaller);
+	}
+}
+
+
+.overview-numbers-container {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.accounting-preview-container {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.preview-container {
+	background: white;
+	border-radius: 4px;
+	margin: 8px;
+	flex: 1;
+}
+
+.preview-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px;
+	background: grey(50);
+	border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+
+	mat-icon {
+		color: grey(600);
+		margin-right: 4px;
+	}
+
+	h3 {
+		margin: 0;
+		color: grey(800);
+		font-weight: 500;
+	}
+
+	> div:first-child {
+
+		display: flex;
+		align-items: center;
+	}
+
+	.preview-more-link {
+		color: accent();
+		font-weight: 500;
+		cursor: pointer;
+	}
+}

@@ -1,0 +1,53 @@
+<div class="time-summary-header">
+	<div class="title-container">
+		<span>Abrechnungen</span>
+		<div class="filter-container" [formGroup]="formGroup">
+			<div class="filter-inner-container">
+				<span>pro</span>
+				<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
+					<mat-select formControlName="timespan">
+						<mat-option *ngFor="let timeOption of timeOptions" [value]="timeOption.value">
+							{{timeOption.label}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+			<div class="filter-inner-container" *ngIf="formGroup.get('timespan').value === 'month'">
+				<span>in</span>
+				<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
+					<mat-select formControlName="year">
+						<mat-option *ngFor="let yearOption of yearOptions" [value]="yearOption.value">
+							{{yearOption.label}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+		</div>
+	</div>
+	<a routerLink="/management/costs-overview">Zurück zur Übersicht</a>
+</div>
+
+<div class="main-list-container mat-elevation-z3">
+	<div class="time-summary-body" *ngIf="datePreviews$ | async as datePreviews"
+		 [class.loading]="datePreviews.length > 0 && loading">
+		<div class="preview-header">
+			<div>
+				<mat-icon>subject</mat-icon>
+				<h3>Abrechnungen</h3>
+			</div>
+		</div>
+		<!--todo year format jumps when changing-->
+		<ng-container *ngLet="(formGroup.get('timespan').value === 'month') as isMonth">
+			<a memoCostPreview *ngFor="let datePreview of datePreviews"
+			   routerLink="/management/costs"
+			   [queryParams]="datePreview.date | pipeFunction:getDetailParams:isMonth"
+			   [label]="datePreview.date | date:(isMonth ? 'MMMM yyyy' : 'yyyy')"
+			   [totalBalance]="datePreview.totalBalance"></a>
+		</ng-container>
+
+		<div *ngIf="!datePreviews ||datePreviews.length === 0" class="loading-text no-results-text">
+			Warte auf Ergebnisse
+		</div>
+	</div>
+
+</div>
