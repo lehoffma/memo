@@ -296,10 +296,10 @@ export class ModifyItemService {
 	/**
 	 *
 	 * @param newObject
-	 * @param images
+	 * @param modifiedImages
 	 */
-	uploadImage(newObject: ShopItem, images: ModifiedImages): Observable<ShopItem> {
-		const {imagePaths, imagesToUpload} = images;
+	uploadImage(newObject: ShopItem, modifiedImages: ModifiedImages): Observable<ShopItem> {
+		const {images, imagesToUpload} = modifiedImages;
 
 		if (imagesToUpload && imagesToUpload.length > 0) {
 			//todo: error handling, progress report
@@ -312,12 +312,12 @@ export class ModifyItemService {
 			return this.imageUploadService.uploadImages(formData)
 				.pipe(
 					map(response => response.images),
-					map(images => setProperties(newObject, {images: [...imagePaths, ...images]}))
+					map(uploadedImages => setProperties(newObject, {images: [...images, ...uploadedImages]}))
 				)
 
 		}
 
-		return of(setProperties(newObject, {images: [...imagePaths]}));
+		return of(setProperties(newObject, {images: [...images]}));
 	}
 
 	/**
@@ -328,7 +328,7 @@ export class ModifyItemService {
 	 * @returns {Observable<ShopItem>}
 	 */
 	handleImages(newObject: ShopItem, images: ModifiedImages, previousValue: ShopItem = this.previousValue): Observable<ShopItem> {
-		return this.deleteOldImages(images.imagePaths, previousValue)
+		return this.deleteOldImages(images.images, previousValue)
 			.pipe(
 				mergeMap(() => this.uploadImage(newObject, images))
 			)

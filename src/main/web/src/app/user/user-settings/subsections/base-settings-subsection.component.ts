@@ -37,11 +37,16 @@ export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestr
 		if (valueA instanceof Date && valueB instanceof Date) {
 			return isEqual(valueA, valueB);
 		}
-		const equalValues = [null, undefined, ""];
+		const equalValues = [null, undefined, "", []];
 		if (equalValues.some(val => (valueA as any) === val) && equalValues.some(val => (valueB as any) === val)) {
 			return true;
 		}
 		return valueA === valueB;
+	}
+
+	hasChanges(user: User, value: any) {
+		return Object.keys(value)
+			.some(key => !this.valuesAreEqual(user[key], value[key]))
 	}
 
 	initChangeTracking(formGroup: FormGroup) {
@@ -49,12 +54,12 @@ export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestr
 			this.user$.pipe(filter(it => it !== null)),
 			formGroup.valueChanges.pipe(distinctUntilChanged())
 		).pipe(
-			map(([user, value]) => {
-				return Object.keys(value)
-					.some(key => !this.valuesAreEqual(user[key], value[key]))
-			}),
+			map(([user, value]) => this.hasChanges(user, value)),
 			takeUntil(this.onDestroy$)
-		).subscribe(hasChanges => this.accountSettingsService.hasChanges$.next(hasChanges))
+		).subscribe(hasChanges => this.accountSettingsService.hasChanges$.next(hasChanges));
+
+		formGroup.statusChanges.pipe(takeUntil(this.onDestroy$))
+			.subscribe(status => this.accountSettingsService.formIsValid$.next(status === "VALID"));
 	}
 
 	initFromUser$(formGroup: FormGroup) {
@@ -62,8 +67,19 @@ export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestr
 	}
 
 	private initFromUser(user: User, formGroup: FormGroup) {
-		const value = formGroup.value;
+		const value = formGroup.getRawValue();
 		const updatedValue = value;
+
+		Object.keys(value)
+			.filter(key => !user.hasOwnProperty(key))
+			.forEach(key => {
+				if (value[key] instanceof Array) {
+					updatedValue[key] = [];
+				} else {
+					updatedValue[key] = "";
+				}
+			});
+
 		Object.keys(value)
 			.filter(key => user.hasOwnProperty(key))
 			.forEach(key => updatedValue[key] = user[key]);

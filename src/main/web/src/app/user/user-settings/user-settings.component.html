@@ -46,7 +46,7 @@
 						(click)="accountSettingsService.reset()">
 					Abbrechen
 				</button>
-				<button mat-raised-button color="accent" [disabled]="!(hasChanges$ | async)"
+				<button mat-raised-button color="accent" [disabled]="!(hasChanges$ | async) || !(formIsValid$ | async)"
 						(click)="accountSettingsService.save()">
 					Speichern
 				</button>

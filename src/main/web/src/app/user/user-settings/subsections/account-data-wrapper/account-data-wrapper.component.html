@@ -1,0 +1,14 @@
+<ng-container *ngLet="wantsToChangePassword$ | async as allowPasswordChange">
+	<ng-container *ngIf="formGroup">
+		<memo-email-input [form]="formGroup"></memo-email-input>
+		<memo-password-input [form]="formGroup" [required]="false"
+							 [isDisabled]="!allowPasswordChange"
+							 [repeatPassword]="allowPasswordChange"></memo-password-input>
+		<div class="change-password-container">
+			<button mat-stroked-button (click)="wantsToChangePassword = !allowPasswordChange">
+				{{allowPasswordChange ? 'Abbrechen' : 'Passwort ändern'}}
+			</button>
+		</div>
+	</ng-container>
+
+</ng-container>

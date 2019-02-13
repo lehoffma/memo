@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 import {Participant, ParticipantUser} from "../../../shop/shared/model/participant";
 import {UserService} from "./user.service";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {EventUtilityService} from "../event-utility.service";
 import {Observable, of} from "rxjs";
@@ -226,13 +226,17 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	 * @param userId
 	 * @param pageRequest
 	 * @param sort
+	 * @param additionalFilter
 	 */
-	getParticipatedEventsOfUser(userId: number, pageRequest: PageRequest, sort: Sort): Observable<Page<Event>> {
+	getParticipatedEventsOfUser(userId: number, pageRequest: PageRequest, sort: Sort, additionalFilter?: Filter): Observable<Page<Event>> {
 		return this.eventService.get(
-			Filter.by({
-				"userId": "" + userId,
-				"type": typeToInteger(EventType.tours) + "," + typeToInteger(EventType.partys)
-			}),
+			Filter.combine(
+				Filter.by({
+					"userId": "" + userId,
+					"type": typeToInteger(EventType.tours) + "," + typeToInteger(EventType.partys)
+				}),
+				additionalFilter || Filter.none()
+			),
 			pageRequest,
 			sort
 		);
@@ -247,8 +251,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 
 		if (item.type === typeToInteger(EventType.merch)) {
 			this.stockService.invalidateValue(item.id);
-		}
-		else {
+		} else {
 			this.capacityService.invalidateValue(item.id);
 		}
 		this.discountService.invalidateEventDiscounts(item.id);

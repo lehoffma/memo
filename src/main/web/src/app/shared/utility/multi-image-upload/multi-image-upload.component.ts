@@ -22,7 +22,7 @@ import {RowAction} from "../material-table/util/row-action";
 export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	//todo maximum size stuff
 
-	//contains: imagePaths (string[]) + imagesToUpload (ImageToUpload[])
+	//contains: images (string[]) + imagesToUpload (ImageToUpload[])
 	images$ = new BehaviorSubject<ImageToUpload[]>([]);
 	imagePaths$ = this.images$.pipe(
 		map(images => images.map(it => it.data))
@@ -58,13 +58,10 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 
 	@Input() set previousValue(previousValue: string[]) {
 		this._previousValue = previousValue;
-		this.formGroup.get("imagePaths").setValue(previousValue);
+		this.formGroup.get("images").setValue(previousValue);
 	}
 
-	_formGroup: FormGroup = this.formBuilder.group({
-		"imagePaths": this.formBuilder.control([]),
-		"imagesToUpload": this.formBuilder.control([])
-	});
+	_formGroup: FormGroup;
 
 	get formGroup() {
 		return this._formGroup;
@@ -74,7 +71,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 		this._formGroup = formGroup;
 
 		if (this.previousValue) {
-			this.formGroup.get("imagePaths").setValue(this.previousValue);
+			this.formGroup.get("images").setValue(this.previousValue);
 		}
 		this.images$.next(this.getValueFromForm(formGroup.value));
 		if (this.imageSubscription) {
@@ -115,7 +112,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 	}
 
 	getValueFromForm(value: ModifiedImages): ImageToUpload[] {
-		return [...value.imagePaths.map(path => ({id: path, name: path, data: path})),
+		return [...value.images.map(path => ({id: path, name: path, data: path})),
 			...value.imagesToUpload];
 	}
 
@@ -196,7 +193,7 @@ Akzeptiert sind: .jpeg, .png`
 	 */
 	onFileSelect(event) {
 		const fileList: FileList = event.target.files;
-		let imagePaths = [...this.formGroup.value.imagePaths];
+		let imagePaths = [...this.formGroup.value.images];
 		let imagesToUpload = [...this.formGroup.value.imagesToUpload];
 		let filesToUpload: File[] = [];
 
@@ -245,7 +242,7 @@ Akzeptiert sind: .jpeg, .png`
 					}
 				}
 
-				this.formGroup.get("imagePaths").setValue(imagePaths, {emitEvent: true});
+				this.formGroup.get("images").setValue(imagePaths, {emitEvent: true});
 				this.formGroup.get("imagesToUpload").setValue(imagesToUpload, {emitEvent: true});
 			})
 	}
@@ -260,20 +257,20 @@ Akzeptiert sind: .jpeg, .png`
 			.map((entry: ImageToUpload) => this.formGroup.get("imagesToUpload").value.findIndex(it => it.id === entry.id))
 			.sort();
 		const deletedPrevious = entries.filter(it => !isImageToUpload(it))
-			.map((entry: ImageToUpload) => this.formGroup.get("imagePaths").value.indexOf(entry.id))
+			.map((entry: ImageToUpload) => this.formGroup.get("images").value.indexOf(entry.id))
 			.sort();
 		const uploaded: ImageToUpload[] = [...this.formGroup.get("imagesToUpload").value];
 		for (let i = deletedUploaded.length - 1; i >= 0; i--) {
 			uploaded.splice(deletedUploaded[i], 1);
 		}
 
-		const previous: string[] = [...this.formGroup.get("imagePaths").value];
+		const previous: string[] = [...this.formGroup.get("images").value];
 		for (let i = deletedPrevious.length - 1; i >= 0; i--) {
 			previous.splice(deletedPrevious[i], 1);
 		}
 
 		this.formGroup.get("imagesToUpload").setValue(uploaded);
-		this.formGroup.get("imagePaths").setValue(previous);
+		this.formGroup.get("images").setValue(previous);
 	}
 
 

@@ -1,11 +1,12 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core";
+import {Component, Input, OnInit} from "@angular/core";
 import {Event} from "../../../shop/shared/model/event";
 import {Address} from "../../../shared/model/address";
 import {EventType} from "../../../shop/shared/model/event-type";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
-import {Observable} from "rxjs";
+import {BehaviorSubject, EMPTY, Observable, Subject} from "rxjs";
 import {isBefore} from "date-fns";
 import {AddressService} from "../../../shared/services/api/address.service";
+import {filter, map, switchMap} from "rxjs/operators";
 
 
 @Component({
@@ -13,14 +14,40 @@ import {AddressService} from "../../../shared/services/api/address.service";
 	templateUrl: "./my-tours-entry.component.html",
 	styleUrls: ["./my-tours-entry.component.scss"]
 })
-export class MyToursEntryComponent implements OnInit, OnChanges {
-	@Input() event: Event;
+export class MyToursEntryComponent implements OnInit {
+	event$: BehaviorSubject<Event> = new BehaviorSubject(null);
 
-	isTour: boolean = true;
-	from$: Observable<Address>;
-	to$: Observable<Address>;
-	eventType: EventType;
-	eventIsInThePast: boolean = false;
+	@Input() set event(event: Event) {
+		if (event) {
+			this.event$.next(event);
+		}
+	}
+
+	from$: Observable<Address> = this.event$.pipe(
+		filter(it => it !== null),
+		switchMap(event => event.route.length > 0
+			? this.addressService.getById(event.route[0])
+			: EMPTY
+		)
+	);
+	to$: Observable<Address> = this.event$.pipe(
+		filter(it => it !== null),
+		switchMap(event => event.route.length > 1
+			? this.addressService.getById(event.route[event.route.length - 1])
+			: EMPTY
+		)
+	);
+	eventType$: Observable<EventType> = this.event$.pipe(
+		filter(it => it !== null),
+		map(event => EventUtilityService.getEventType(event))
+	);
+	isTour$: Observable<boolean> = this.eventType$.pipe(
+		map(type => type === EventType.tours)
+	);
+	eventIsInThePast$: Observable<boolean> = this.event$.pipe(
+		filter(it => it !== null),
+		map(event => isBefore(event.date, new Date()))
+	);
 
 	constructor(private addressService: AddressService) {
 	}
@@ -28,17 +55,4 @@ export class MyToursEntryComponent implements OnInit, OnChanges {
 	ngOnInit() {
 	}
 
-	ngOnChanges(changes: SimpleChanges): void {
-		if (changes["event"]) {
-			this.isTour = this.event.route.length > 1;
-			this.eventIsInThePast = isBefore(this.event.date, new Date());
-			this.eventType = EventUtilityService.getEventType(this.event);
-			if (this.event.route.length > 0) {
-				this.from$ = this.addressService.getById(this.event.route[0]);
-				if (this.event.route.length > 1) {
-					this.to$ = this.addressService.getById(this.event.route[this.event.route.length - 1]);
-				}
-			}
-		}
-	}
 }

@@ -17,6 +17,19 @@ export class PasswordInputComponent implements OnInit, ControlValueAccessor {
 	@Input() required: boolean = true;
 	@Input() repeatPassword: boolean = true;
 	@Input() showStrengthBar: boolean = true;
+
+	@Input() set isDisabled(disabled: boolean) {
+		if(disabled){
+			this.form.get('password').disable();
+			this.form.get('confirmedPassword').disable();
+		}
+		else{
+			this.form.get('password').enable();
+			this.form.get('confirmedPassword').enable();
+		}
+	}
+
+
 	_onChange;
 
 	constructor() {
@@ -35,8 +48,7 @@ export class PasswordInputComponent implements OnInit, ControlValueAccessor {
 	setDisabledState(isDisabled: boolean): void {
 		if (isDisabled) {
 			this.form.disable();
-		}
-		else {
+		} else {
 			this.form.enable();
 		}
 	}

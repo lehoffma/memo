@@ -14,47 +14,45 @@
 	color: grey(700);
 }
 
-.tour-entry-container {
-	//padding-right: 2%;
-}
-
-@media all and (min-width: 650px) {
-	memo-my-tours-entry {
-		margin-left: 2%;
-	}
-}
-
-.my-tours-options {
-	padding: 1% 2% 0;
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 1rem;
-
-	mat-button-toggle-group {
-		background-color: white;
-	}
-
-	.my-tours-options-actions {
-		display: flex;
-		justify-content: space-between;
-	}
-
-}
 
 :host {
 	display: flex;
 	justify-content: center;
 	width: 100%;
 	flex-direction: column;
+	background: white;
+	max-width: 600px;
+	border-radius: 4px;
+	margin: 16px auto;
+	box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+}
 
-	.tour-entry-container {
-		display: flex;
-		flex-wrap: wrap;
-		width: 100%;
-		padding: 0 1rem 1rem;
+mat-tab-group /deep/ mat-tab-header {
+	background: grey(50);
+	border: none;
+}
 
-		@media all and(min-width: 650px) {
-			padding: 0;
-		}
+.my-tours-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid grey(200);
+	padding: 16px;
+
+	h3 {
+		font-weight: 500;
+		color: grey(700);
+		margin: 0;
 	}
+
+	mat-button-toggle-group {
+		display: flex;
+		align-items: center;
+		height: 40px;
+	}
+}
+
+memo-my-tours-entry {
+	border-top: 1px solid grey(200);
+
 }

@@ -10,6 +10,7 @@ export class AccountSettingsService {
 	onSave = new Subject();
 	onReset = new Subject();
 	hasChanges$ = new BehaviorSubject(false);
+	formIsValid$ = new BehaviorSubject(false);
 	loading$ = new BehaviorSubject(false);
 
 	userDataForm: FormGroup;

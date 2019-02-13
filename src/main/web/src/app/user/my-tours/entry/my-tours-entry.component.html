@@ -1,29 +1,27 @@
-<a routerLink="/{{eventType}}/{{event?.id}}">
-	<mat-card>
-		<img mat-card-image src="{{event?.images?.length > 0 ? event?.images[0] : 'resources/images/Logo.png'}}"
-			 [ngClass]="{'past-event-image': eventIsInThePast}">
-		<mat-card-content>
-			<div class="event-date" [ngClass]="{'past-event': eventIsInThePast}">
-				<span class="event-date-top">
-				{{event?.date | dateFormat:'MMM'}}
-
-
-				</span>
-				<span class="event-date-bottom">
-				{{event?.date | dateFormat:'DD'}}
-				</span>
+<ng-container *ngLet="event$ | async as event">
+	<ng-container *ngLet="eventIsInThePast$ | async as eventIsInThePast">
+		<a routerLink="/{{eventType$ | async}}/{{event?.id}}" class="my-events-entry">
+			<img src="{{event?.images?.length > 0 ? event?.images[0] : 'resources/images/Logo.png'}}"
+				 [ngClass]="{'past-event-image': eventIsInThePast}">
+			<div class="my-events-info">
+				<div class="event-date" [ngClass]="{'past-event': eventIsInThePast}">
+					<span class="event-date-top">{{event?.date | dateFormat:'MMM'}}</span>
+					<span class="event-date-bottom">{{event?.date | dateFormat:'DD'}}</span>
+				</div>
+				<div class="event-other-info">
+					<h3 class="event-title">
+						{{event?.title}}
+					</h3>
+					<!--todo align design with new detail page design-->
+					<div class="event-route">
+						<span>{{(from$ | async)?.city}}</span>
+						<mat-icon *ngIf="event?.route.length > 1" [style.transform]="'rotate(-90deg)'">
+							arrow_downward
+						</mat-icon>
+						<span>{{(to$ | async)?.city}}</span>
+					</div>
+				</div>
 			</div>
-			<div class="event-other-info">
-				<h3 class="event-title">
-					{{event?.title}}
-				</h3>
-				<span class="event-route">
-				<span>{{(from$ | async)?.city}}</span>
-				<mat-icon *ngIf="event.route.length > 1" [style.transform]="'rotate(-90deg)'">arrow_downward</mat-icon>
-				<span>{{(to$ | async)?.city}}</span>
-			</span>
-			</div>
-		</mat-card-content>
-	</mat-card>
-
-</a>
+		</a>
+	</ng-container>
+</ng-container>

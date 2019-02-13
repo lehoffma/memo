@@ -1,4 +1,6 @@
-:host{
+@import "theme";
+
+:host {
 	z-index: 100;
 }
 
@@ -61,12 +63,17 @@ mat-toolbar, :host /deep/ mat-toolbar-row {
 	align-items: center;
 
 	a {
-		padding: 7px;
-		width: 50px;
+		padding: 8px;
 	}
 
 	img {
 		height: 50px;
+	}
+
+	.tag-line {
+		font-size: font-size(medium-large);
+		font-weight: 200;
+		text-transform: initial;
 	}
 
 }

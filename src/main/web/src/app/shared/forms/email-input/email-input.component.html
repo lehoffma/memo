@@ -1,9 +1,9 @@
-<div *ngIf="form" [formGroup]="form" novalidate>
-	<mat-form-field>
+<div *ngIf="form" [formGroup]="form" class="form-input-container">
+	<span class="form-label">Email</span>
+	<mat-form-field appearance="outline" class="small-outline-formfield">
 		<input matInput
 			   type="email"
 			   formControlName="email"
-			   placeholder="Email"
 			   name="emailInput"
 			   pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
 			   required
