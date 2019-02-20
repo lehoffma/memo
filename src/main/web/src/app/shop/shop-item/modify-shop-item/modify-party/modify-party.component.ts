@@ -56,7 +56,7 @@ export class ModifyPartyComponent implements OnInit {
 			}),
 			"addresses": [[], {validators: [Validators.required]}],
 			"images": this.formBuilder.group({
-				"imagePaths": [[], {validators: []}],
+				"images": [[], {validators: []}],
 				"imagesToUpload": [[], {validators: []}]
 			}),
 			"permissions": this.formBuilder.group({
@@ -103,7 +103,7 @@ export class ModifyPartyComponent implements OnInit {
 		this.formGroup.get("event-data").get("time").patchValue(format(previousValue.date, "HH:ss"));
 		this.formGroup.get("event-data").get("capacity").patchValue(previousValue.capacity);
 		this.formGroup.get("event-data").get("price").patchValue(previousValue.price);
-		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
+		this.formGroup.get("images").get("images").patchValue(previousValue.images);
 		this.formGroup.get("permissions").get("expectedReadRole").patchValue(previousValue.expectedReadRole);
 		this.formGroup.get("permissions").get("expectedWriteRole").patchValue(previousValue.expectedWriteRole);
 		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);

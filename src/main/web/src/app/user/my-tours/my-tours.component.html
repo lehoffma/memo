@@ -1,6 +1,5 @@
-
 <div *ngLet="selectedTime$ |async as selectedTime" class="my-tours-header">
-	<h3>Events</h3>
+	<h3>Deine Events</h3>
 	<mat-button-toggle-group [value]="selectedTime" (change)="updateTime($event.value)">
 		<mat-button-toggle [value]="'future'" title="Bevorstehend">
 			<span>Bevorstehend</span>
@@ -11,7 +10,7 @@
 	</mat-button-toggle-group>
 </div>
 
-<mat-tab-group (selectedTabChange)="updateView($event.tab)">
+<mat-tab-group (selectedTabChange)="updateView($event.tab)" [selectedIndex]="selectedTabIndex">
 	<mat-tab label="Teilgenommen">
 		<ng-template matTabContent>
 			<ng-container *ngIf="events$ | async as events">
@@ -22,10 +21,9 @@
 				<div *ngIf="!events" class="loading-text">
 					Lade Daten...
 				</div>
-				<div *ngIf="events.length === 0" class="no-results">
-					<!--todo-->
-					Keine Ergebnisse.
-				</div>
+				<memo-user-event-empty-state *ngIf="events.length === 0" [time]="selectedTime$ | async">
+
+				</memo-user-event-empty-state>
 			</ng-container>
 		</ng-template>
 	</mat-tab>
@@ -39,10 +37,10 @@
 				<div *ngIf="!events" class="loading-text">
 					Lade Daten...
 				</div>
-				<div *ngIf="events.length === 0" class="no-results">
-					<!--todo-->
-					Keine Ergebnisse.
-				</div>
+				<memo-user-event-empty-state *ngIf="events.length === 0" [view]="'responsible'"
+											 [time]="selectedTime$ | async">
+
+				</memo-user-event-empty-state>
 			</ng-container>
 		</ng-template>
 	</mat-tab>

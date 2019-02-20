@@ -1,10 +1,10 @@
 import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {ClubRole} from "../../model/club-role";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {UserService} from "../../services/api/user.service";
 import {LogInService} from "../../services/api/login.service";
-import {map} from "rxjs/operators";
+import {map, takeUntil} from "rxjs/operators";
 
 @Component({
 	selector: "memo-club-information-form",
@@ -18,19 +18,18 @@ export class ClubInformationFormComponent implements OnInit, OnDestroy {
 		.pipe(map(user => user !== null && user.clubRole === ClubRole.Admin));
 	clubRoleOptions = [ClubRole.Organisator, ClubRole.Admin, ClubRole.Vorstand, ClubRole.Kassenwart, ClubRole.Mitglied, ClubRole.Gast];
 
-	subscription;
+	onDestroy$ = new Subject();
 
 	constructor(private userService: UserService,
 				private loginService: LogInService) {
 	}
 
 	ngOnInit() {
-		this.subscription = this.isAdmin$.subscribe(isAdmin => {
+		this.isAdmin$.pipe(takeUntil(this.onDestroy$)).subscribe(isAdmin => {
 			if (isAdmin) {
 				this.formGroup.get("clubRole").enable();
 				this.formGroup.get("joinDate").enable();
-			}
-			else {
+			} else {
 				this.formGroup.get("clubRole").disable();
 				this.formGroup.get("joinDate").disable();
 			}
@@ -38,6 +37,7 @@ export class ClubInformationFormComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
+		this.onDestroy$.next(true);
 	}
 
 }

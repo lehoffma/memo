@@ -58,7 +58,7 @@ export class UserDataFormComponent implements OnInit {
 				"isWoelfeClubMember": [false, {validators: []}],
 			}),
 			"images": this.formBuilder.group({
-				"imagePaths": [[], {validators: []}],
+				"images": [[], {validators: []}],
 				"imagesToUpload": [[], {validators: []}]
 			}),
 			"addresses": [[], {
@@ -140,7 +140,7 @@ export class UserDataFormComponent implements OnInit {
 			"clubRole": previousValue.clubRole,
 			"joinDate": previousValue.joinDate
 		});
-		this.userDataForm.get("images").get("imagePaths").patchValue(previousValue.images);
+		this.userDataForm.get("images").get("images").patchValue(previousValue.images);
 
 		if (previousValue.addresses.length === 0) {
 			return;

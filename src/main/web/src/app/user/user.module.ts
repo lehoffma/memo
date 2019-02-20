@@ -20,6 +20,7 @@ import { AddressesWrapperComponent } from './user-settings/subsections/addresses
 import { AccountDataWrapperComponent } from './user-settings/subsections/account-data-wrapper/account-data-wrapper.component';
 import { ClubInformationWrapperComponent } from './user-settings/subsections/club-information-wrapper/club-information-wrapper.component';
 import { NotificationSettingsComponent } from './user-settings/subsections/notification-settings/notification-settings.component';
+import { UserEventEmptyStateComponent } from './user-event-empty-state/user-event-empty-state.component';
 
 @NgModule({
 	imports: [
@@ -50,7 +51,8 @@ import { NotificationSettingsComponent } from './user-settings/subsections/notif
 		AddressesWrapperComponent,
 		AccountDataWrapperComponent,
 		ClubInformationWrapperComponent,
-		NotificationSettingsComponent
+		NotificationSettingsComponent,
+		UserEventEmptyStateComponent
 	],
 	exports: [
 		SignUpModule

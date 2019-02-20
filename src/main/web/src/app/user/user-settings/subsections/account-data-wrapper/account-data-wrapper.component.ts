@@ -33,7 +33,6 @@ export class AccountDataWrapperComponent extends BaseSettingsSubsectionComponent
 				protected accountSettingsService: AccountSettingsService,
 				private userService: UserService,
 				private formBuilder: FormBuilder) {
-		//todo on changes password tracking
 		super(loginService, accountSettingsService);
 		this.formGroup = this.formBuilder.group({
 			"email": ["", {

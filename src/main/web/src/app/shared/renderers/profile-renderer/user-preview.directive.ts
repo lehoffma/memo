@@ -60,7 +60,6 @@ export class UserPreviewDirective implements OnDestroy {
 
 	@HostListener("mouseenter")
 	openPreview() {
-		console.log("mouseenter");
 		this.disposeStream.next(false);
 		if (!this.dialogIsInitialized && (!this.overlayRef || (this.overlayRef && !this.overlayRef.hasAttached()))) {
 			this.dialogIsInitialized = true;

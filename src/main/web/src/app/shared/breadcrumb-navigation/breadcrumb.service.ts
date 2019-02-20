@@ -19,6 +19,7 @@ export class BreadcrumbService {
 		"search": {de: "Suche"},
 		"orders": {de: "Bestellungen"},
 		"costs": {de: "Kosten"},
+		"costs-overview": {de: "Kostenübersicht"},
 		"stock": {de: "Bestand"},
 		"management": {de: "Vereinsverwaltung"},
 		"edit": {de: "Bearbeiten"},
@@ -31,7 +32,8 @@ export class BreadcrumbService {
 		"my-events": {de: "Deine Events"},
 		"order-history": {de: "Deine Bestellungen"},
 		"create": {de: "Erstellen"},
-		"entries": {de: "Kosten"}
+		"entries": {de: "Kosten"},
+		"account-settings": {de: "Dein Account"}
 	};
 
 	currentLocale = "de";

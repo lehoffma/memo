@@ -52,7 +52,7 @@ export class ModifyMerchComponent implements OnInit {
 				}]
 			}),
 			"images": this.formBuilder.group({
-				"imagePaths": [[], {validators: []}],
+				"images": [[], {validators: []}],
 				"imagesToUpload": [[], {validators: []}]
 			}),
 			"permissions": this.formBuilder.group({
@@ -97,7 +97,7 @@ export class ModifyMerchComponent implements OnInit {
 		this.formGroup.get("event-data").get("description").patchValue(previousValue.description);
 		this.formGroup.get("event-data").get("price").patchValue(previousValue.price);
 		this.formGroup.get("event-data").get("material").patchValue(previousValue.material);
-		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
+		this.formGroup.get("images").get("images").patchValue(previousValue.images);
 		this.formGroup.get("permissions").get("expectedReadRole").patchValue(previousValue.expectedReadRole);
 		this.formGroup.get("permissions").get("expectedWriteRole").patchValue(previousValue.expectedWriteRole);
 		this.formGroup.get("permissions").get("expectedCheckInRole").patchValue(previousValue.expectedCheckInRole);

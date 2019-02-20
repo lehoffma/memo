@@ -38,7 +38,7 @@ export class ModifyEntryComponent implements OnInit {
 			validators: []
 		}],
 		"images": this.formBuilder.group({
-			"imagePaths": [[], {validators: []}],
+			"images": [[], {validators: []}],
 			"imagesToUpload": [[], {validators: []}]
 		}),
 		"category": [undefined, {
@@ -91,7 +91,7 @@ export class ModifyEntryComponent implements OnInit {
 		this.formGroup.get("date").patchValue(previousValue.date);
 		this.formGroup.get("comment").patchValue(previousValue.comment);
 		this.formGroup.get("category").patchValue(previousValue.category);
-		this.formGroup.get("images").get("imagePaths").patchValue(previousValue.images);
+		this.formGroup.get("images").get("images").patchValue(previousValue.images);
 	}
 
 	ngOnInit() {

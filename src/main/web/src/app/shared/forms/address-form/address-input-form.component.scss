@@ -6,3 +6,20 @@
 		margin-left: 10px;
 	}
 }
+
+@media all and (min-width: 700px) {
+	form > div:not(.form-input-container) {
+		display: flex;
+		flex-wrap: wrap;
+
+		> div {
+			max-width: 250px;
+			width: 100%;
+
+			&:not(:first-child) {
+				margin-left: 16px;
+			}
+		}
+
+	}
+}

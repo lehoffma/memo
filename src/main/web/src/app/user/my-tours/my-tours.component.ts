@@ -32,7 +32,6 @@ export class MyToursComponent implements OnInit, OnDestroy {
 			distinctUntilChanged(),
 			debounceTime(250),
 			switchMap(([selectedView, selectedTime, accountId]) => {
-				console.log([selectedView, selectedTime, accountId]);
 				if (accountId === null) {
 					return EMPTY
 				}
@@ -70,6 +69,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 			map(it => it.content)
 		);
 
+	selectedTabIndex = 0;
 
 	constructor(private loginService: LogInService,
 				private participantService: OrderedItemService,
@@ -77,6 +77,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 				private activatedRoute: ActivatedRoute,
 				private eventService: EventService) {
 
+		//todo pagination/load more stuff
 		this.subscriptions.push(
 			this.activatedRoute.queryParamMap
 				.pipe(
@@ -85,6 +86,7 @@ export class MyToursComponent implements OnInit, OnDestroy {
 				.subscribe(queryParamMap => {
 					if (queryParamMap.has("view")) {
 						this.selectedView$.next(queryParamMap.get("view"));
+						this.selectedTabIndex = ["participated", "created"].indexOf(queryParamMap.get("view"));
 					}
 					if (queryParamMap.has("time")) {
 						this.selectedTime$.next(queryParamMap.get("time"));

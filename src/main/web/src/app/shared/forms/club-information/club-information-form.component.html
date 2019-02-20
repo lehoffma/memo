@@ -1,24 +1,27 @@
 <div class="club-information-forms" [formGroup]="formGroup">
-	<mat-form-field>
-		<mat-select [formControl]="formGroup.get('clubRole')"
-					placeholder="Vereinsrolle"
-					[disableIf]="!(isAdmin$ | async)"
-					class="aligned-mat-select"
-					matTooltip="{{!(isAdmin$ | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
-					matTooltipPosition="above">
-			<mat-option *ngFor="let option of clubRoleOptions" [value]="option">
-				{{option}}
-			</mat-option>
-		</mat-select>
-	</mat-form-field>
-	<div>
-		<mat-form-field matTooltip="{{!(isAdmin$ | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
+	<div class="form-input-container">
+		<span class="form-label">Vereinsrolle</span>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<mat-select [formControl]="formGroup.get('clubRole')"
+						[disableIf]="!(isAdmin$ | async)"
+						class="aligned-mat-select"
+						matTooltip="{{!(isAdmin$ | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
+						matTooltipPosition="above">
+				<mat-option *ngFor="let option of clubRoleOptions" [value]="option">
+					{{option}}
+				</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+	<div class="form-input-container">
+		<span class="form-label">Mitglied seit</span>
+		<mat-form-field appearance="outline" class="small-outline-formfield"
+						matTooltip="{{!(isAdmin$ | async) ? 'Du musst Admin sein, um diese Daten zu ändern' : ''}}"
 						[matTooltipPosition]="'above'">
 			<input matInput
 				   name="joinDate"
 				   formControlName="joinDate"
-				   [matDatepicker]="joinDatePicker"
-				   placeholder="Mitglied seit">
+				   [matDatepicker]="joinDatePicker">
 			<mat-datepicker-toggle [disabled]="!(isAdmin$ | async)" matSuffix
 								   [for]="joinDatePicker"></mat-datepicker-toggle>
 			<mat-error *ngIf="formGroup.get('joinDate').hasError('required')">

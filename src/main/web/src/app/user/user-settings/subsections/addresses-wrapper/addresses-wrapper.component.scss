@@ -1,0 +1,6 @@
+memo-address-form /deep/ .address-entry-container {
+	&:first-of-type {
+		border-top-right-radius: 4px;
+		border-top-left-radius: 4px;
+	}
+}

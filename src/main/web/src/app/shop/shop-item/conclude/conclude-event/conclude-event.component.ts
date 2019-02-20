@@ -24,7 +24,7 @@ export class ConcludeEventComponent implements OnInit, OnDestroy {
 	loading = false;
 	formGroup: FormGroup = this.formBuilder.group({
 		"images": this.formBuilder.group({
-			"imagePaths": [],
+			"images": [],
 			"imagesToUpload": [[]]
 		}),
 		"responsibleUsers": [[], {

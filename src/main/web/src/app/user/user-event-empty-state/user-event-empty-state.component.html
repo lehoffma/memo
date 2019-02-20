@@ -1,0 +1,12 @@
+<mat-icon>{{icons[view]}}</mat-icon>
+<span class="no-results-header">{{titles[view][time]}}</span>
+<span class="no-results-body">{{body}}</span>
+<div class="no-results-call-to-action">
+	<!--todo-->
+	<a *ngFor="let link of links[view]" class="mat-elevation-z3" routerLink="{{link.link}}">
+		<img src="{{link.image}}"/>
+		<span class="call-to-action-image-label">
+			{{link.label}}
+		</span>
+	</a>
+</div>

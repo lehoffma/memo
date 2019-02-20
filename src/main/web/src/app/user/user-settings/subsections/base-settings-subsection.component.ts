@@ -66,7 +66,7 @@ export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestr
 		this.user$.pipe(filter(it => it !== null), take(1)).subscribe(it => this.initFromUser(it, formGroup));
 	}
 
-	private initFromUser(user: User, formGroup: FormGroup) {
+	protected initFromUser(user: User, formGroup: FormGroup) {
 		const value = formGroup.getRawValue();
 		const updatedValue = value;
 

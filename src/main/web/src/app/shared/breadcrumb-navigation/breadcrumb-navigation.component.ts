@@ -1,8 +1,7 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {Breadcrumb} from "./breadcrumb";
+import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 import {BreadcrumbService} from "./breadcrumb.service";
-import {distinctUntilChanged, filter, map, mergeMap} from "rxjs/operators";
+import {distinctUntilChanged, filter, mergeMap} from "rxjs/operators";
 
 @Component({
 	selector: "memo-breadcrumb-navigation",
@@ -14,7 +13,7 @@ export class BreadcrumbNavigationComponent implements OnInit {
 	breadcrumbs$ = this.router.events.pipe(
 		filter(event => event instanceof NavigationEnd),
 		distinctUntilChanged(),
-		mergeMap(event =>  this.breadcrumbService.buildBreadCrumb(this.activatedRoute))
+		mergeMap(event => this.breadcrumbService.buildBreadCrumb(this.activatedRoute))
 	);
 
 

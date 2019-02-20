@@ -58,7 +58,9 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 
 	@Input() set previousValue(previousValue: string[]) {
 		this._previousValue = previousValue;
-		this.formGroup.get("images").setValue(previousValue);
+		if (this.formGroup) {
+			this.formGroup.get("images").setValue(previousValue);
+		}
 	}
 
 	_formGroup: FormGroup;
@@ -235,8 +237,7 @@ Akzeptiert sind: .jpeg, .png`
 					}
 					if (imagesToUpload.length < this.limit) {
 						imagesToUpload.push(overflowedImage);
-					}
-					else {
+					} else {
 						imagesToUpload.splice(replaceIndex, 1, overflowedImage);
 						replaceIndex++;
 					}

@@ -2,17 +2,6 @@
 @import "variables";
 @import "~@angular/material/theming";
 
-.no-results {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	margin: 2rem auto auto;
-
-	height: 100px;
-	font-size: font-size(small-medium);
-	color: grey(700);
-}
 
 
 :host {
@@ -30,6 +19,10 @@
 mat-tab-group /deep/ mat-tab-header {
 	background: grey(50);
 	border: none;
+}
+
+mat-tab-group /deep/ mat-tab-body {
+	min-height: 260px;
 }
 
 .my-tours-header {
@@ -53,6 +46,5 @@ mat-tab-group /deep/ mat-tab-header {
 }
 
 memo-my-tours-entry {
-	border-top: 1px solid grey(200);
-
+	border-bottom: 1px solid grey(200);
 }

@@ -38,8 +38,6 @@ import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-
 import {FilterOptionFactoryService} from "./filter-option-factory.service";
 import {QueryParameterService} from "../../shared/services/query-parameter.service";
 
-type SortingQueryParameter = { sortedBy: string; descending: string; };
-
 @Component({
 	selector: "memo-search-results",
 	templateUrl: "./search-results.component.html",
@@ -98,7 +96,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		map((it: Page<Event>) => !it.last)
 	);
 
-	//todo store current state in localstorage or something?
 	currentResults$ = new BehaviorSubject<Event[]>([]);
 	results$;
 
@@ -199,7 +196,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		this.filter$.pipe(
 			switchMap(filter => this.buildFilterOptions(filter)),
 			map(options => this.searchFilterService.initFilterMenu(this.activatedRoute, options)),
-			tap(it => console.log(it)),
 			takeUntil(this.onDestroy$),
 		).subscribe(this._filterOptions$);
 	}
