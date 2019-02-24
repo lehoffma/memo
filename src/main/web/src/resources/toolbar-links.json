@@ -5,39 +5,44 @@
 		"name": "Shop",
 		"children": [
 			{
-				"route": "tours",
+				"route": "shop/tours",
 				"icon": "",
 				"name": "Fahrten"
 			},
 			{
-				"route": "partys",
+				"route": "shop/partys",
 				"icon": "",
 				"name": "Veranstaltungen"
 			},
 			{
-				"route": "merch",
+				"route": "shop/merch",
 				"icon": "",
 				"name": "Merchandise"
-			},
-			{
-				"route": "calendar",
-				"icon": "",
-				"name": "Kalender"
 			}
 		]
 	},
 	{
-		"route": "",
+		"route": "club",
 		"icon": "",
 		"name": "Verein",
 		"children": [
 			{
-				"route": "leaderboard",
+				"route": "club/calendar",
+				"icon": "",
+				"name": "Kalender"
+			},
+			{
+				"route": "club/leaderboard",
 				"icon": "",
 				"name": "Meilentabelle"
 			},
 			{
-				"route": "/impressum",
+				"route": "club/members",
+				"icon": "",
+				"name": "Mitgliederliste"
+			},
+			{
+				"route": "club/impressum",
 				"name": "Impressum",
 				"icon": ""
 			},
@@ -52,23 +57,23 @@
 	{
 		"name": "Mitgliedschaft",
 		"icon": "",
-		"route": "",
+		"route": "membership",
 		"loginNeeded": true,
 		"children": [
 			{
-				"route": "/applyForMembership",
+				"route": "membership/apply",
 				"name": "Mitglied werden",
 				"icon": ""
 			},
 			{
-				"route": "/requestMembership",
+				"route": "membership/change",
 				"name": "Mitgliedsstatus ändern",
 				"icon": ""
 			}
 		]
 	},
 	{
-		"route": "",
+		"route": "management",
 		"icon": "",
 		"name": "Vereinsverwaltung",
 		"loginNeeded": true,
@@ -112,11 +117,6 @@
 				"route": "management/orders",
 				"icon": "",
 				"name": "Bestellungen"
-			},
-			{
-				"route": "members",
-				"icon": "",
-				"name": "Mitgliederliste"
 			},
 			{
 				"route": "management/stock",

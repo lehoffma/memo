@@ -19,7 +19,7 @@ import {ModifyItemEvent} from "./modify-item-event";
 import {MerchStockList} from "../../shared/model/merch-stock";
 import {first, map, mergeMap, share, take} from "rxjs/operators";
 import {Observable, of} from "rxjs";
-import {Event, paymentConfig, PaymentConfig} from "../../shared/model/event";
+import {Event} from "../../shared/model/event";
 import {ModifiedImages} from "./modified-images";
 import {processSequentially} from "../../../util/observable-util";
 import {isEdited} from "../../../util/util";

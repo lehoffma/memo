@@ -8,7 +8,7 @@ import {Observable} from "rxjs";
 @Component({
 	selector: "td [memoProfileLinkCellComponent]",
 	template: `
-		<a *ngIf="user$ | async; let user" routerLink="/members/{{user.id}}" mat-button color="accent">
+		<a *ngIf="user$ | async; let user" routerLink="/club/members/{{user.id}}" mat-button color="accent">
 			<mat-icon>person</mat-icon>
 			<span class="action-text">Profil anzeigen</span>
 		</a>

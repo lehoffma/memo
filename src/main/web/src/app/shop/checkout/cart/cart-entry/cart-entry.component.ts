@@ -42,7 +42,7 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 
 	get linkToItem() {
 		let category = EventUtilityService.getEventType(this.cartItem.item);
-		return `/${category}/${this.cartItem.item.id}`
+		return `/shop/${category}/${this.cartItem.item.id}`
 	}
 
 	ngOnInit() {

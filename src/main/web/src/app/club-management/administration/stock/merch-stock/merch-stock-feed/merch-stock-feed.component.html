@@ -9,10 +9,10 @@
 	<div *ngFor="let merch of merch$ | async">
 		<div class="out-of-stock-item-header">
 			<div>
-				<a routerLink="/merch/{{merch.item.id}}">
+				<a routerLink="/shop/merch/{{merch.item.id}}">
 					<img src="{{merch.item.images[0] || 'resources/images/Logo.png'}}"/>
 				</a>
-				<a routerLink="/merch/{{merch.item.id}}">
+				<a routerLink="/shop/merch/{{merch.item.id}}">
 					<h4>
 						{{merch.item.title}}
 					</h4>
@@ -20,7 +20,7 @@
 			</div>
 			<mat-menu #menu="matMenu">
 				<a mat-menu-item
-				   routerLink="/merch/{{merch.item.id}}/edit">
+				   routerLink="/shop/merch/{{merch.item.id}}/edit">
 					<mat-icon>edit</mat-icon>
 					<span>Bearbeiten</span>
 				</a>

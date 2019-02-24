@@ -7,7 +7,7 @@
 	</div>
 	<div class="user" *ngIf="user$ | async as user">
 		<span>Bestellt von</span>
-		<a routerLink="/members/{{user.id}}" memoUserPreview [user]="user">
+		<a routerLink="/club/members/{{user.id}}" memoUserPreview [user]="user">
 			<span>{{user.firstName + ' ' + user.surname}}</span>
 			<mat-icon class="role-icon" title="{{user.clubRole}}">
 				{{user.clubRole | clubRoleIcon}}
@@ -88,14 +88,14 @@
 	<div class="actions" *ngIf="withActions || withShow">
 		<div>
 			<div>
-				<a mat-button class="hover-button" routerLink="/orders/{{orderEntry?.id}}" *ngIf="withShow">
+				<a mat-button class="hover-button" routerLink="/management/orders/{{orderEntry?.id}}" *ngIf="withShow">
 					<span>Ansehen</span>
 				</a>
 			</div>
 
 			<div *ngIf="withActions">
 				<a mat-icon-button class="hover-button" color="accent"
-				   routerLink="/orders/{{orderEntry?.id}}/edit">
+				   routerLink="/management/orders/{{orderEntry?.id}}/edit">
 					<mat-icon>edit</mat-icon>
 				</a>
 				<button mat-icon-button class="hover-button" *ngIf="withRemove" color="warn"

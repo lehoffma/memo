@@ -2,7 +2,7 @@
 	<a mat-raised-button *ngIf="userCanAddMerch$ | async" color="accent"
 	   [matTooltip]="'Artikel hinzufügen'"
 	   [matTooltipPosition]="'above'"
-	   routerLink="/create/merch"
+	   routerLink="/shop/create/merch"
 	   class="add-merch-button-desktop">
 		Hinzufügen
 	</a>
@@ -31,7 +31,7 @@
 		<a mat-stroked-button *ngIf="userCanAddMerch$ | async"
 		   [matTooltip]="'Artikel hinzufügen'"
 		   [matTooltipPosition]="'above'"
-		   routerLink="/create/merch"
+		   routerLink="/shop/create/merch"
 		   class="add-merch-button">
 			Hinzufügen
 		</a>

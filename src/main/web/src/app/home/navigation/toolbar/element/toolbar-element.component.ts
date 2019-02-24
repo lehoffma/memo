@@ -1,17 +1,17 @@
-	import {Component, Input} from "@angular/core";
+import {ChangeDetectionStrategy, Component, Input} from "@angular/core";
 import {Link} from "../../../../shared/model/link";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 
 @Component({
 	selector: "memo-toolbar-element",
 	templateUrl: "./toolbar-element.component.html",
-	styleUrls: ["./toolbar-element.component.scss"]
+	styleUrls: ["./toolbar-element.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToolbarElementComponent {
 	@Input() link: Link;
 
 	constructor(public navigationService: NavigationService) {
-
 	}
 
 	activateRoute(route: string) {

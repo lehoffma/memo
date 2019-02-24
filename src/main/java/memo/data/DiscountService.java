@@ -37,7 +37,7 @@ public class DiscountService {
                 .setEligible(false)
                 .setShowLink(false)
                 .setLink(new Discount.DiscountLink()
-                        .setUrl("/applyForMembership")
+                        .setUrl("/membership/apply")
                         .setText("Werde jetzt Mitglied, um 5 Euro auf alle Touren zu sparen!"))
                 .setReason("Mitglieder-Rabatt");
     }

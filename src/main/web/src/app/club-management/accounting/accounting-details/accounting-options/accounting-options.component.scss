@@ -6,6 +6,12 @@ div {
 	flex-direction: column;
 }
 
+.date-range-container {
+	> div {
+		margin-bottom: 8px;
+	}
+}
+
 :host {
 	memo-event-autocomplete /deep/ mat-form-field,
 	mat-form-field {
@@ -24,6 +30,10 @@ div {
 		align-items: center;
 		cursor: pointer;
 		@include background-primary();
+
+		&:last-child {
+			margin-bottom: 16px;
+		}
 
 		&:hover {
 			background-color: primary(800);
@@ -49,14 +59,6 @@ div {
 	}
 }
 
-.account-options-title {
-	font-weight: 200;
-	@include background-primary();
-	padding: 24px 16px 10px 24px;
-	margin: -16px -16px 10px !important;
+@media all and (min-width: 850px) {
 
-	@media all and (max-width: 600px) {
-		margin-left: -16px !important;
-		margin-right: -16px !important;
-	}
 }

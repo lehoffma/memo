@@ -1,6 +1,7 @@
 @import "theme";
 
 //todo redesign: more ambitious dropdowns
+//todo redesign: center links
 
 .dropbtn {
 	padding: 14px;
@@ -8,6 +9,15 @@
 	font-weight: 400;
 	border: none;
 	cursor: pointer;
+	color: #c5ddc6;
+}
+
+.dropdown > .dropbtn.active {
+	color: white;
+}
+
+.dropdown > .dropbtn:hover {
+	color: white;
 }
 
 .dropdown {
@@ -40,6 +50,17 @@
 .dropdown-content a:hover {
 	background-color: grey(100);
 }
+
+a.dropbtn.mat-button.active::after {
+	content: "";
+	width: 100%;
+	background: white;
+	height: 3px;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+}
+
 
 .dropdown:hover .dropdown-content {
 	display: block;

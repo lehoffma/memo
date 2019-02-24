@@ -6,8 +6,13 @@ $options-breakpoint: 850px;
 
 :host {
 	display: flex;
+	justify-content: center;
+	align-items: flex-start;
 	width: 100%;
+	max-width: 1200px;
+	margin: auto;
 	min-height: calc(100vh - 64px);
+
 
 	@media all and (max-width: $options-breakpoint) {
 		flex-direction: column;
@@ -23,17 +28,21 @@ $options-breakpoint: 850px;
 	}
 
 	.accounting-options {
-		width: 30%;
-		min-width: 30%;
-		max-width: 300px;
-		padding: 1rem;
+		width: 300px;
+		padding: 8px 16px 16px;
+		margin: 16px;
+		border-radius: 4px;
+		height: auto;
 		overflow-y: auto;
 		background-color: white;
-		box-shadow: 0 4px 2px 2px rgba(0, 0, 0, 0.2), 0 2px 0 0 rgba(0, 0, 0, 0.14), 0 1px 0 0 rgba(0, 0, 0, 0.12);
+
 
 		@media all and (max-width: $options-breakpoint) {
 			height: auto;
 			max-width: none;
+			margin: 0;
+			box-shadow: none;
+
 			&:not(.showOptions) {
 				padding: 0;
 			}
@@ -70,11 +79,6 @@ $options-breakpoint: 850px;
 		padding: 1.5rem;
 		font-size: font-size(medium);
 		font-weight: 200;
-
-		@media all and (max-width: $options-breakpoint) {
-			width: 100%;
-			left: 0;
-		}
 
 		&.positive {
 			@include background-primary();
@@ -120,5 +124,9 @@ $options-breakpoint: 850px;
 	}
 	.loader {
 		left: 65%;
+	}
+
+	.total-amount {
+		display: none !important;
 	}
 }

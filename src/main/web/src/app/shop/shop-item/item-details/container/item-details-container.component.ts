@@ -62,7 +62,7 @@ export class ItemDetailsContainerComponent implements OnInit {
 		);
 	linkToOrder$: Observable<string> = this.orderedItemDetails$
 		.pipe(
-			map(order => "/orders/" + order.id)
+			map(order => "/management/orders/" + order.id)
 		);
 	showConcludeEventHeader$: Observable<boolean> = this.loginService.currentUser$
 		.pipe(

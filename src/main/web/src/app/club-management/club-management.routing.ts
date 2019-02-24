@@ -17,10 +17,10 @@ import {AccountingTimeSummaryComponent} from "./accounting/accounting-overview/a
 import {AccountingItemSummaryComponent} from "./accounting/accounting-overview/accounting-item-summary/accounting-item-summary.component";
 
 const routes: Route[] = [
-	{path: "dashboard", component: DashboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
-	{path: "map", component: UserMapContainerComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
-	{path: "leaderboard", component: MilesLeaderboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
-	{path: "members", component: MemberListComponent, canActivate: [AuthenticatedGuard, IsBoardMemberGuard]},
+	{path: "club/dashboard", component: DashboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
+	{path: "club/map", component: UserMapContainerComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
+	{path: "club/leaderboard", component: MilesLeaderboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
+	{path: "club/members", component: MemberListComponent, canActivate: [AuthenticatedGuard, IsBoardMemberGuard]},
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
 	{path: "management", redirectTo: "management/costs", pathMatch: "full", canActivate: [AuthenticatedGuard]},
 	{path: "management/orders", component: OrderOverviewComponent, canActivate: [AuthenticatedGuard]},
@@ -30,12 +30,11 @@ const routes: Route[] = [
 	{path: "management/costs/time", component: AccountingTimeSummaryComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
 
 	{
-		path: ":itemType/:eventId/costs",
+		path: "shop/:itemType/:eventId/costs",
 		redirectTo: "management/costs?eventId=:eventId",
 		pathMatch: "full"
 	},
 
-	//todo update once there is more than one type of stock
 	{path: "management/stock", redirectTo: "management/stock/merch", pathMatch: "full"},
 	{
 		path: "management/stock/merch",

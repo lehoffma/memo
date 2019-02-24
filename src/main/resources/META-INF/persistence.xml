@@ -20,7 +20,6 @@
         <class>memo.model.PermissionState</class>
         <class>memo.model.ShopItem</class>
         <class>memo.model.Stock</class>
-        <class>memo.model.SizeTable</class>
         <class>memo.model.User</class>
 
         <class>memo.communication.model.Notification</class>

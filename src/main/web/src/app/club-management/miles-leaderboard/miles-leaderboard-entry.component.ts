@@ -4,7 +4,7 @@ import {LeaderboardRow} from "./leaderboard-row";
 @Component({
 	selector: "memo-miles-leaderboard-entry",
 	template: `
-		<a routerLink="/members/{{user.id}}"
+		<a routerLink="/club/members/{{user.id}}"
 		   *ngIf="user; else dummy"
 		   [ngClass]="{'logged-in-user': loggedInUser === user.id}"
 		   class="leaderboard-entry position-{{user.position}}">

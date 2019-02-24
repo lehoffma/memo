@@ -5,42 +5,54 @@
 		"name": "Startseite"
 	},
 	{
-		"route": "tours",
+		"route": "shop/tours",
 		"icon": "drive_eta",
 		"name": "Fahrten"
 	},
 	{
-		"route": "partys",
+		"route": "shop/partys",
 		"icon": "local_bar",
 		"name": "Veranstaltungen"
 	},
 	{
-		"route": "merch",
+		"route": "shop/merch",
 		"icon": "local_offer",
 		"name": "Merchandise"
 	},
 	{
-		"route": "calendar",
-		"icon": "event",
-		"name": "Kalender"
-	},
-	{
-		"route": "leaderboard",
-		"icon": "format_list_numbered",
-		"name": "Meilentabelle"
+		"name": "Mitgliedschaft",
+		"icon": "",
+		"route": "membership",
+		"children": [
+			{
+				"route": "club/calendar",
+				"icon": "event",
+				"name": "Kalender"
+			},
+			{
+				"route": "club/members",
+				"icon": "view_list",
+				"name": "Mitgliederliste"
+			},
+			{
+				"route": "club/leaderboard",
+				"icon": "format_list_numbered",
+				"name": "Meilentabelle"
+			}
+		]
 	},
 	{
 		"name": "Mitgliedschaft",
 		"icon": "",
-		"route": "",
+		"route": "membership",
 		"children": [
 			{
-				"route": "/applyForMembership",
+				"route": "membership/apply",
 				"name": "Mitglied werden",
 				"icon": "book"
 			},
 			{
-				"route": "/requestMembership",
+				"route": "membership/change",
 				"loginNeeded": true,
 				"name": "Mitgliedsstatus ändern",
 				"icon": "email"
@@ -54,29 +66,24 @@
 		"loginNeeded": true,
 		"children": [
 			{
-				"route": "members/PROFILE_ID",
+				"route": "club/members/PROFILE_ID",
 				"icon": "account_circle",
 				"name": "Dein Profil"
 			},
 			{
-				"route": "my-events",
+				"route": "user/events",
 				"icon": "event",
 				"name": "Deine Events"
 			},
 			{
-				"route": "order-history",
+				"route": "user/order-history",
 				"icon": "history",
 				"name": "Deine Bestellungen"
 			},
 			{
-				"route": "members/PROFILE_ID/edit",
+				"route": "user/account-settings",
 				"icon": "description",
 				"name": "Dein Account"
-			},
-			{
-				"route": "account-settings",
-				"icon": "settings",
-				"name": "Deine Einstellungen"
 			}
 		]
 	},
@@ -112,11 +119,6 @@
 				"route": "management/orders",
 				"icon": "assignment",
 				"name": "Bestellungen"
-			},
-			{
-				"route": "members",
-				"icon": "view_list",
-				"name": "Mitgliederliste"
 			},
 			{
 				"route": "management/stock",

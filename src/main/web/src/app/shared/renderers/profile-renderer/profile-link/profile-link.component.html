@@ -1,4 +1,4 @@
-<a routerLink="/members/{{user.id}}" memoUserPreview [user]="user" [hoverDelay]="hoverDelay"
+<a routerLink="/club/members/{{user.id}}" memoUserPreview [user]="user" [hoverDelay]="hoverDelay"
    [mouseLeaveDelay]="mouseLeaveDelay">
 	{{user.firstName + (shortened ? "" : (" " + user.surname))}}
 </a>

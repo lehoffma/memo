@@ -28,17 +28,16 @@ export class ToolbarComponent implements OnInit {
 	//die links die vom User gesehen werden dürfen als observable
 	links: Observable<Link[]> = this.navigationService.toolbarLinks$;
 
-
 	shoppingCartContent: Observable<number> = this.shoppingCartService.amountOfCartItems;
 
 	searchIsExpanded$ = new BehaviorSubject(false);
 	unreadNotifications$ = this.notificationService.unreadNotifications$;
 
+
 	constructor(private navigationService: NavigationService,
 				private notificationService: NotificationService,
 				private windowService: WindowService,
 				private shoppingCartService: ShoppingCartService) {
-
 	}
 
 	ngOnInit() {

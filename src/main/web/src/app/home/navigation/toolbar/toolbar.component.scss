@@ -4,6 +4,23 @@
 	z-index: 100;
 }
 
+.align-left,
+.align-center,
+.align-right {
+	display: flex;
+	align-items: center;
+	flex: 1;
+}
+
+
+.align-center {
+	justify-content: center;
+}
+
+.align-right {
+	justify-content: flex-end;
+}
+
 
 mat-toolbar {
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
@@ -13,7 +30,11 @@ mat-toolbar {
 		background: none;
 
 		.meilenwoelfe-logo {
-			display: none;
+			visibility: hidden;
+		}
+
+		memo-toolbar-element /deep/ .dropbtn {
+			color: white;
 		}
 	}
 }
@@ -69,13 +90,6 @@ mat-toolbar, :host /deep/ mat-toolbar-row {
 	img {
 		height: 50px;
 	}
-
-	.tag-line {
-		font-size: font-size(medium-large);
-		font-weight: 200;
-		text-transform: initial;
-	}
-
 }
 
 .mobile-toolbar {
@@ -86,7 +100,19 @@ mat-toolbar, :host /deep/ mat-toolbar-row {
 	display: none;
 }
 
+.align-center {
+	flex: 0;
+}
+
 @media all and (min-width: 1100px) {
+	mat-toolbar {
+		display: flex;
+		justify-content: space-between;
+	}
+	.align-center {
+		flex: 1;
+	}
+
 	mat-toolbar, :host /deep/ mat-toolbar-row {
 		height: 64px;
 	}
@@ -101,6 +127,10 @@ mat-toolbar, :host /deep/ mat-toolbar-row {
 
 	mat-toolbar {
 		padding: 0;
+	}
+
+	memo-search-input {
+		margin-right: 8px;
 	}
 
 	.cart {

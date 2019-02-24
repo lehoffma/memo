@@ -63,7 +63,7 @@ export class MemberListComponent implements OnInit, AfterViewInit {
 				{
 					icon: "person",
 					name: MemberListRowAction.showProfile,
-					route: user => "/members/" + user.id
+					route: user => "/club/members/" + user.id
 				}
 			);
 

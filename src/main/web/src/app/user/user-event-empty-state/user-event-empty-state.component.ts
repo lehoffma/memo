@@ -38,26 +38,26 @@ export class UserEventEmptyStateComponent implements OnInit {
 	} = {
 		"participated": [
 			{
-				link: "/tours",
+				link: "/shop/tours",
 				image: "../resources/images/tour_image.jpg",
 				label: "Touren"
 			},
 
 			{
-				link: "/partys",
+				link: "/shop/partys",
 				image: "../resources/images/event_image.jpg",
 				label: "Veranstaltungen"
 			}
 		],
 		"responsible": [
 			{
-				link: "/create/tours",
+				link: "/shop/create/tours",
 				image: "../resources/images/tour_image.jpg",
 				label: "Tour erstellen"
 			},
 
 			{
-				link: "/create/partys",
+				link: "/shop/create/partys",
 				image: "../resources/images/event_image.jpg",
 				label: "Veranstaltung erstellen"
 			}

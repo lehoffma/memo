@@ -15,17 +15,17 @@ import {ModifyOrderComponent} from "./modify-order/modify-order.component";
 
 const routes: Routes = [
 	{
-		path: "orders/:id/edit", component: ModifyOrderComponent, pathMatch: "full", canActivate: [
-			AuthenticatedGuard, CanModifyItemGuard, ShopItemIsVisibleToUserGuard
-		]
-	},
-	{
-		path: "create/orders", component: ModifyOrderComponent, pathMatch: "full", canActivate: [
+		path: "management/create/orders", component: ModifyOrderComponent, pathMatch: "full", canActivate: [
 			AuthenticatedGuard, CanModifyItemGuard
 		]
 	},
 	{
-		path: ":itemType/:id/stock/edit", component: ModifyMerchStockContainerComponent,
+		path: "management/orders/:id/edit", component: ModifyOrderComponent, pathMatch: "full", canActivate: [
+			AuthenticatedGuard, CanModifyItemGuard, ShopItemIsVisibleToUserGuard
+		]
+	},
+	{
+		path: "shop/:itemType/:id/stock/edit", component: ModifyMerchStockContainerComponent,
 		pathMatch: "full",
 		canActivate: [AuthenticatedGuard, CanModifyItemGuard, IsMerchandiseGuard,
 			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
@@ -33,28 +33,28 @@ const routes: Routes = [
 
 	//nur eingeloggte user, die die Tour erstellt haben oder Organisator oder Admin sind
 	{
-		path: ":itemType/:id/edit",
+		path: "shop/:itemType/:id/edit",
 		component: ModifyShopItemComponent,
 		pathMatch: "full",
 		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard,
 			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 	{
-		path: "create/:itemType",
+		path: "shop/create/:itemType",
 		component: ModifyShopItemComponent,
 		pathMatch: "full",
 		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
 	},
 
 	{
-		path: ":itemType/:eventId/costs/:id/edit",
+		path: "shop/:itemType/:eventId/costs/:id/edit",
 		component: ModifyShopItemComponent,
 		pathMatch: "full",
 		canActivate: [/*todo is-event guard*/ CanModifyItemGuard,
 			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 	{
-		path: ":itemType/:eventId/costs/create",
+		path: "shop/:itemType/:eventId/costs/create",
 		component: ModifyShopItemComponent,
 		pathMatch: "full",
 		canActivate: [/*todo is-event guard*/ CanModifyItemGuard,

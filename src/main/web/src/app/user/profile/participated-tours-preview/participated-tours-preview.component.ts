@@ -60,7 +60,7 @@ export class ParticipatedToursPreviewComponent implements OnInit {
 
 		if (!this._links[event.id]) {
 			const eventType: EventType = EventUtilityService.getEventType(event);
-			this._links[event.id] = `/${eventType}/${event.id}`;
+			this._links[event.id] = `/shop/${eventType}/${event.id}`;
 		}
 
 		return this._links[event.id];

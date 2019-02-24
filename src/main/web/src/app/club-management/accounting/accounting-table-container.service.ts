@@ -102,7 +102,7 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 				mergeMap(this.getQueryParamsForEntryModification.bind(this))
 			)
 			.subscribe(queryParams => {
-				this.router.navigate(["create", "entries"], {queryParams});
+				this.router.navigate(["shop", "create", "entries"], {queryParams});
 			});
 	}
 

@@ -17,51 +17,24 @@ import java.io.IOException;
                 "/signup/*",
                 "/forgot-password",
                 "/password-reset",
-                "/my-events",
-                "/order-history",
                 "/not-allowed",
                 "/confirm-email",
-                "/applyForMembership",
-                "/requestMembership",
 
-                "/tours/*",
-                "/partys/*",
-                "/merch/*",
-                "/members/*",
-                "/entries/*",
-                "/orders/*",
-
-                "/search",
+                //todo make routes more precise?
                 "/shop",
-                "/tours",
-                "/events",
-                "/partys",
-                "/merch",
-                "/merchandise",
-                "/members",
+                "/shop/*",
+                "/club",
+                "/club/*",
+                "/management",
+                "/management/*",
+                "/user",
+                "/user/*",
 
-                "/create/*",
-
-                "/calendar",
-
-                "/dashboard",
-                "/leaderboard",
-                "/map",
-                "/management/costs",
-                "/management/costs/*",
-                "/management/costs-overview",
-                "/management/stock",
-                "/management/stock/merch",
-                "/management/orders",
 
                 "/cart",
                 "/checkout",
                 "/order-complete",
                 "/address",
-
-
-                "/impressum",
-                "/settings"
         }
 )
 public class WebRoutesServlet extends HttpServlet {

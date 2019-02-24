@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" [class.transparent]="transparent">
-	<div class="mobile-toolbar" *ngIf="!(searchIsExpanded$ | async)">
+	<div class="mobile-toolbar align-left" *ngIf="!(searchIsExpanded$ | async)">
 		<!--The left side-->
 		<div>
 			<!--The left side is hidden when the screen size is larger than small -->
@@ -8,59 +8,57 @@
 			</div>
 		</div>
 	</div>
-	<div class="desktop-toolbar meilenwoelfe-logo">
+	<div class="desktop-toolbar meilenwoelfe-logo align-left">
 		<a mat-button routerLink="/">
 			<img src="../../../../resources/images/Logo.png"/>
-			<span class="tag-line">
-				Meilenwölfe Shop
-			</span>
 		</a>
 	</div>
 
-	<span class="navigation-fill-remaining-space navigation-left-space"></span>
-
-	<div class="toolbar-actions" [class.expanded-mobile]="searchIsExpanded$ | async">
-		<memo-search-input (onFocus)="expandSearchBar($event)" [mobileExpanded]="searchIsExpanded$ | async">
-
-		</memo-search-input>
+	<div class="align-center">
+		<div class="desktop-toolbar">
+			<!--The right side-->
+			<memo-toolbar-element *ngFor="let link of (links|async);" [link]="link">
+			</memo-toolbar-element>
+		</div>
 	</div>
 
-	<div class="desktop-toolbar">
-		<!--The right side-->
-		<memo-toolbar-element *ngFor="let link of (links|async);" [link]="link">
-		</memo-toolbar-element>
-	</div>
+	<div class="align-right">
+		<div class="toolbar-actions" [class.expanded-mobile]="searchIsExpanded$ | async">
+			<memo-search-input (onFocus)="expandSearchBar($event)" [mobileExpanded]="searchIsExpanded$ | async">
 
+			</memo-search-input>
+		</div>
 
-	<div class="notification-container" *ngIf="!(searchIsExpanded$ | async)">
-		<!--todo: open notification overlay on desktop, on mobile just link to /notifications page -->
-		<ng-container *ngFor="let unreadNotifications of [unreadNotifications$ | async]">
-			<a mat-icon-button routerLink="/notifications" title="Benachrichtigungen">
-				<mat-icon matBadge="{{unreadNotifications}}"
-						  [matBadgeHidden]="!unreadNotifications || unreadNotifications === 0"
-						  matBadgeColor="accent">
-					notifications
-				</mat-icon>
-			</a>
-		</ng-container>
-	</div>
+		<div class="notification-container" *ngIf="!(searchIsExpanded$ | async)">
+			<!--todo: open notification overlay on desktop, on mobile just link to /notifications page -->
+			<ng-container *ngFor="let unreadNotifications of [unreadNotifications$ | async]">
+				<a mat-icon-button routerLink="/notifications" title="Benachrichtigungen">
+					<mat-icon matBadge="{{unreadNotifications}}"
+							  [matBadgeHidden]="!unreadNotifications || unreadNotifications === 0"
+							  matBadgeColor="accent">
+						notifications
+					</mat-icon>
+				</a>
+			</ng-container>
+		</div>
 
-	<div class="toolbar-action cart" *ngIf="!(searchIsExpanded$ | async)">
-		<ng-container *ngFor="let content of [shoppingCartContent | async]">
-			<a mat-icon-button routerLink="/cart"
-			   attr.aria-label="Warenkorb" title="Warenkorb">
-				<mat-icon class="cart-icon"
-						  matBadge="{{content}}"
-						  [matBadgeHidden]="!content || content === 0"
-						  matBadgeColor="accent">
-					shopping_cart
-				</mat-icon>
-			</a>
-		</ng-container>
-	</div>
+		<div class="toolbar-action cart" *ngIf="!(searchIsExpanded$ | async)">
+			<ng-container *ngFor="let content of [shoppingCartContent | async]">
+				<a mat-icon-button routerLink="/cart"
+				   attr.aria-label="Warenkorb" title="Warenkorb">
+					<mat-icon class="cart-icon"
+							  matBadge="{{content}}"
+							  [matBadgeHidden]="!content || content === 0"
+							  matBadgeColor="accent">
+						shopping_cart
+					</mat-icon>
+				</a>
+			</ng-container>
+		</div>
 
-	<div class="desktop-toolbar">
-		<memo-toolbar-profile-link></memo-toolbar-profile-link>
+		<div class="desktop-toolbar">
+			<memo-toolbar-profile-link></memo-toolbar-profile-link>
+		</div>
 	</div>
 
 </mat-toolbar>

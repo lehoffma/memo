@@ -55,7 +55,7 @@ export class WaitingListComponent implements OnInit {
 		{
 			icon: "person",
 			name: MemberListRowAction.showProfile,
-			route: participant => "/members/" + participant.user.id
+			route: participant => "club/members/" + participant.user.id
 		}
 	];
 
@@ -73,7 +73,7 @@ export class WaitingListComponent implements OnInit {
 
 	private eventType: EventType = (() => {
 		let urlSegments = this.activatedRoute.snapshot.url;
-		return EventType[urlSegments[0].path];
+		return EventType[urlSegments[1].path];
 	})();
 
 	constructor(public waitingListTableService: WaitingListTableService,
@@ -89,7 +89,7 @@ export class WaitingListComponent implements OnInit {
 	}
 
 	getLinkToTour(info: EventInfo) {
-		return `/${info.eventType}/${info.eventId}`
+		return `/shop/${info.eventType}/${info.eventId}`
 	}
 
 	isMerch(): boolean {

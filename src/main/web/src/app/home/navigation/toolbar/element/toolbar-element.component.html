@@ -1,20 +1,21 @@
 <div class="dropdown">
 
+	<!--todo: check link.children for .active class-->
 	<a class="dropbtn" mat-button routerLink="{{link.route}}" routerLinkActive="active" *ngIf="link.route !== null">
 		<mat-icon *ngIf="link.icon">{{link.icon}}</mat-icon>
 		{{link.name}}
 	</a>
-	<a class="dropbtn" mat-button href="{{link.link}}" routerLinkActive="active" *ngIf="link.link">
+	<a class="dropbtn" mat-button href="{{link.link}}" routerLinkActive="active"  *ngIf="link.link">
 		<mat-icon *ngIf="link.icon">{{link.icon}}</mat-icon>
 		{{link.name}}
 	</a>
 	<div *ngIf="link.children" class="dropdown-content">
 		<ng-container *ngFor="let childLink of link.children">
-			<a routerLink="{{childLink.route}}" routerLinkActive="active" *ngIf="childLink.route !== null">
+			<a routerLink="{{childLink.route}}" *ngIf="childLink.route !== null">
 				<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
 				{{childLink.name}}
 			</a>
-			<a href="{{childLink.link}}" routerLinkActive="active" *ngIf="childLink.link">
+			<a href="{{childLink.link}}" *ngIf="childLink.link">
 				<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
 				{{childLink.name}}
 			</a>

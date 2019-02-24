@@ -1,6 +1,6 @@
 <ng-container *ngLet="event$ | async as event">
 	<ng-container *ngLet="eventIsInThePast$ | async as eventIsInThePast">
-		<a routerLink="/{{eventType$ | async}}/{{event?.id}}" class="my-events-entry">
+		<a routerLink="/shop/{{eventType$ | async}}/{{event?.id}}" class="my-events-entry">
 			<img src="{{event?.images?.length > 0 ? event?.images[0] : 'resources/images/Logo.png'}}"
 				 [ngClass]="{'past-event-image': eventIsInThePast}">
 			<div class="my-events-info">

@@ -9,7 +9,7 @@
 
 		<mat-menu #menu="matMenu">
 
-			<a mat-menu-item routerLink="{{IntegerToType(event.type)}}/{{event?.id}}/edit"
+			<a mat-menu-item routerLink="/shop/{{IntegerToType(event.type)}}/{{event?.id}}/edit"
 			   (click)="close()"
 			   [disabled]="!(event.permission.edit)"
 			   [class.disabled]="!(event.permission.edit)">
@@ -56,7 +56,7 @@
 		</mat-card-content>
 
 		<mat-card-actions>
-			<a mat-button routerLink="{{IntegerToType(event.type)}}/{{data?.id}}"
+			<a mat-button routerLink="/shop/{{IntegerToType(event.type)}}/{{data?.id}}"
 			   [disabled]="!event.permission.view"
 			   [class.disabled]="!event.permission.view"
 			   (click)="close()">
@@ -64,7 +64,7 @@
 			</a>
 
 			<div>
-				<a mat-icon-button routerLink="{{IntegerToType(event.type)}}/{{data?.id}}/edit"
+				<a mat-icon-button routerLink="/shop/{{IntegerToType(event.type)}}/{{data?.id}}/edit"
 				   (click)="close()"
 				   [disabled]="!event.permission.edit"
 				   [class.disabled]="!event.permission.edit">
@@ -86,33 +86,3 @@
 		</div>
 	</ng-template>
 </mat-card>
-
-
-<!--<h2 matDialogTitle>{{data?.title | async}}</h2>-->
-
-<!--<mat-dialog-content>-->
-<!--<a mat-button routerLink="{{data?.eventType | async}}/{{data?.id}}"-->
-<!--(click)="close()"-->
-<!--[disabled]="!(data?.view | async)"-->
-<!--[class.disabled]="!(data?.view | async)">-->
-<!--<mat-icon>view_list</mat-icon>-->
-<!--Details ansehen-->
-<!--</a>-->
-<!--<a mat-button routerLink="{{data?.eventType | async}}/{{data?.id}}/edit"-->
-<!--(click)="close()"-->
-<!--[disabled]="!(data?.edit | async)"-->
-<!--[class.disabled]="!(data?.edit | async)">-->
-<!--<mat-icon>edit</mat-icon>-->
-<!--Bearbeiten-->
-<!--</a>-->
-<!--<button mat-raised-button color="warn"-->
-<!--[disabled]="!(data?.remove | async)"-->
-<!--(click)="deleteEvent()">-->
-<!--<mat-icon>delete</mat-icon>-->
-<!--Löschen-->
-<!--</button>-->
-
-<!--</mat-dialog-content>-->
-<!--<mat-dialog-actions>-->
-<!--<button mat-button matDialogClose>Schließen</button>-->
-<!--</mat-dialog-actions>-->

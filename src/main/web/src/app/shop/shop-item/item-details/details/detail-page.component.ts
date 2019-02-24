@@ -84,12 +84,12 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 					return EventUtilityService.optionalShopItemSwitch(item, {
 						tours: () => {
 							return permissions.tour >= Permission.write
-								? "/tours/" + item.id + "/participants"
+								? "/shop/tours/" + item.id + "/participants"
 								: null
 						},
 						partys: () => {
 							return permissions.party >= Permission.write
-								? "/partys/" + item.id + "/participants"
+								? "/shop/partys/" + item.id + "/participants"
 								: null
 						}
 					});
@@ -171,7 +171,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 		);
 	linkToOrder$: Observable<string> = this.orderedItemDetails$
 		.pipe(
-			map(order => "/orders/" + order.id)
+			map(order => "/management/orders/" + order.id)
 		);
 
 

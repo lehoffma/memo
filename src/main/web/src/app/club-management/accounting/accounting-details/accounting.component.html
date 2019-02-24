@@ -1,4 +1,5 @@
-<div class="accounting-options" [ngClass]="{showOptions: showOptions}">
+<!--todo redesign date-range picker-->
+<div class="accounting-options mat-elevation-z3" [ngClass]="{showOptions: showOptions}">
 	<memo-accounting-options [hidden]="!(!mobile || showOptions)">
 	</memo-accounting-options>
 
@@ -7,14 +8,14 @@
 	</button>
 </div>
 
-<!--todo redesign date-range picker-->
+<!--todo redesign show empty-state if nothing matches-->
 <div class="content-wrapper">
 	<div class="accounting-table-container"
 		 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 110px)' : 'calc(100% - 74px)')">
 
 		<memo-expandable-material-table
 			(onAction)="accountingTableContainerService.handleTableAction($event)"
-			[title]="'Kostenübersicht'"
+			[title]="'Kostenverwaltung'"
 			[columns]="columns"
 			[displayedColumns]="displayedColumns$ | async"
 			[withSelection]="true"
@@ -35,6 +36,7 @@
 	</div>
 
 
+	<!--todo as footer row in table-->
 	<div class="total-amount"
 		 [ngClass]="{
 			positive: (total$ | async) >= 0,

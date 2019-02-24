@@ -1,48 +1,48 @@
-<div *ngIf="!hidden">
-	<h2 class="account-options-title mat-headline">{{'Optionen'|uppercase}}</h2>
-	<h3>Datum</h3>
-	<mat-form-field>
-		<input matInput [matDatepicker]="startingDatePicker"
-			   [disabled]="isLoading"
-			   placeholder="Von"
-			   [(ngModel)]="dateOptions.from"
-			   (ngModelChange)="updateQueryParams(); updateDateFilter()"
-			   #startingDateInput="ngModel"
-			   name="startingDateInput">
-		<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="startingDatePicker"></mat-datepicker-toggle>
-	</mat-form-field>
-	<mat-datepicker [disabled]="isLoading" #startingDatePicker
-					(selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
+<div *ngIf="!hidden" class="date-range-container">
+	<memo-filter-option-header [title]="'Datum'"></memo-filter-option-header>
+	<!--todo date range picker-->
+	<div class="form-input-container">
+		<div class="form-label">Von</div>
+		<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
+			<input matInput [matDatepicker]="startingDatePicker"
+				   [disabled]="isLoading"
+				   [(ngModel)]="dateOptions.from"
+				   (ngModelChange)="updateQueryParams(); updateDateFilter()"
+				   #startingDateInput="ngModel"
+				   name="startingDateInput">
+			<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="startingDatePicker"></mat-datepicker-toggle>
+		</mat-form-field>
+		<mat-datepicker [disabled]="isLoading" #startingDatePicker
+						(selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
 
-	<mat-form-field>
-		<input matInput [matDatepicker]="endDatePicker"
-			   placeholder="Bis"
-			   [disabled]="isLoading"
-			   [(ngModel)]="dateOptions.to"
-			   (ngModelChange)="updateQueryParams(); updateDateFilter()"
-			   #endDateInput="ngModel"
-			   name="endDateInput">
-		<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
-	</mat-form-field>
-	<mat-datepicker #endDatePicker [disabled]="isLoading"
-					(selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
+	</div>
+	<div class="form-input-container">
+		<div class="form-label">Bis</div>
+		<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
+			<input matInput [matDatepicker]="endDatePicker"
+				   [disabled]="isLoading"
+				   [(ngModel)]="dateOptions.to"
+				   (ngModelChange)="updateQueryParams(); updateDateFilter()"
+				   #endDateInput="ngModel"
+				   name="endDateInput">
+			<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+		</mat-form-field>
+		<mat-datepicker #endDatePicker [disabled]="isLoading"
+						(selectedChanged)="updateQueryParams()" [touchUi]="true"></mat-datepicker>
+	</div>
 </div>
 
 
 <div *ngIf="!hidden" class="events-container">
-	<h3>Nach Events filtern</h3>
+	<memo-filter-option-header [title]="'Nach Items filtern'"></memo-filter-option-header>
 	<mat-chip-list class="mat-chip-list-stacked">
-		<mat-chip *ngFor="let event of events; let i = index"
-				  color="primary">
-			<a routerLink="/{{getEventType(event)}}/{{event.id}}" matTooltip="Auf die Detailseite dieses Events gehen">
+		<mat-chip *ngFor="let event of events; let i = index" color="accent">
+			<a routerLink="/shop/{{getEventType(event)}}/{{event.id}}" matTooltip="Auf die Detailseite dieses Events gehen">
 				{{ event.title }}
 			</a>
 			<mat-icon class="remove-chip-button" (click)="events.splice(i,1); updateQueryParams()" matTooltip="Löschen">
 				cancel
 			</mat-icon>
-		</mat-chip>
-		<mat-chip *ngIf="events.length === 0" class="chip-accent" color="accent">
-			Alle Events
 		</mat-chip>
 	</mat-chip-list>
 
@@ -55,13 +55,13 @@
 </div>
 
 <div *ngFor="let categories of [(costCategories$ | async)]">
-	<ng-template [ngIf]="!hidden">
-		<h3>Kostenarten</h3>
+	<ng-container *ngIf="!hidden">
+		<memo-filter-option-header [title]="'Kostenarten'"></memo-filter-option-header>
 		<mat-checkbox *ngFor="let costType of categories"
 					  [(ngModel)]="costTypes[costType.name]"
 					  [disabled]="isLoading"
 					  (ngModelChange)="updateQueryParams()">
 			{{costType.name}}
 		</mat-checkbox>
-	</ng-template>
+	</ng-container>
 </div>

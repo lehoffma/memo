@@ -8,6 +8,7 @@ export interface UserNotification {
 	timestamp: string;
 }
 
+//todo redesign: change notification templates
 
 export enum NotificationStatus {
 	READ = "READ",

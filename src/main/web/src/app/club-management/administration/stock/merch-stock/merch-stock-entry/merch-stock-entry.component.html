@@ -1,11 +1,11 @@
 <div class="stock-entry-header">
 	<div>
-		<a routerLink="/merch/{{stockEntry?.item.id}}">
+		<a routerLink="/shop/merch/{{stockEntry?.item.id}}">
 			<img src="{{stockEntry?.item.images[0]  || 'resources/images/Logo.png'}}"/>
 		</a>
 
 		<div>
-			<a routerLink="/merch/{{stockEntry?.item.id}}">
+			<a routerLink="/shop/merch/{{stockEntry?.item.id}}">
 				<h3>{{stockEntry?.item.title}}</h3>
 			</a>
 			<span class="secondary-text">{{stockEntry?.item.description}}</span>
@@ -77,7 +77,7 @@
 <div class="stock-entry-footer">
 	<a mat-button
 	   matTooltip="Bestand bearbeiten"
-	   routerLink="/merch/{{stockEntry?.item.id}}/stock/edit" class="hover-button">
+	   routerLink="/shop/merch/{{stockEntry?.item.id}}/stock/edit" class="hover-button">
 		Bearbeiten
 	</a>
 	<div>

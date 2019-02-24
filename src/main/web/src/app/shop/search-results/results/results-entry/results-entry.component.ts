@@ -48,7 +48,7 @@ export class ResultsEntryComponent implements OnInit {
 		.pipe(
 			map(result => {
 				const itemType = EventUtilityService.getShopItemType(result);
-				return `/${itemType}/${result.id}`;
+				return `/shop/${itemType}/${result.id}`;
 			})
 		);
 	resultIsPast$ = this._result.pipe(

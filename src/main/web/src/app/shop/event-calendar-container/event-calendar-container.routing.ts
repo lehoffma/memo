@@ -4,7 +4,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {EventCalendarContainerComponent} from "./event-calendar-container.component";
 
 const routes: Routes = [
-	{path: "calendar", component: EventCalendarContainerComponent,},
+	{path: "club/calendar", component: EventCalendarContainerComponent,},
 ];
 
 @NgModule({

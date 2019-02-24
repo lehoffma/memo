@@ -1,12 +1,13 @@
-import {Component, EventEmitter, Input, OnInit, Output, Renderer2, ViewChild} from "@angular/core";
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2, ViewChild} from "@angular/core";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 import {WindowService} from "../../../../shared/services/window.service";
-import {map} from "rxjs/operators";
+import {map, takeUntil} from "rxjs/operators";
+import {Subject} from "rxjs";
 
 export enum SearchInputState {
-	ACTIVE = <any> "active",
-	INACTIVE = <any> "inactive"
+	ACTIVE = <any>"active",
+	INACTIVE = <any>"inactive"
 }
 
 @Component({
@@ -26,13 +27,14 @@ export enum SearchInputState {
 		]),
 	]
 })
-export class SearchInputComponent implements OnInit {
+export class SearchInputComponent implements OnInit, OnDestroy {
 	searchInputState = SearchInputState;
 	inputState = SearchInputState.INACTIVE;
 	showClear = false;
 	model = {
 		searchInput: ""
 	};
+
 
 	@ViewChild("searchInput") searchInput: any;
 	@Input() mobileExpanded = false;
@@ -44,12 +46,24 @@ export class SearchInputComponent implements OnInit {
 			map(dim => dim.width < 600 ? "mobile" : "desktop")
 		);
 
+	state: "mobile" | "desktop";
+	onDestroy$ = new Subject();
+
 	constructor(private navigationService: NavigationService,
 				private windowService: WindowService,
 				private renderer: Renderer2) {
+		this.screenState$.pipe(takeUntil(this.onDestroy$))
+			.subscribe(state => {
+				this.state = state as "mobile" | "desktop";
+				this.inputState = state === "desktop" ? SearchInputState.ACTIVE : SearchInputState.INACTIVE;
+			});
 	}
 
 	ngOnInit() {
+	}
+
+	ngOnDestroy(): void {
+		this.onDestroy$.next(true);
 	}
 
 
@@ -62,20 +76,27 @@ export class SearchInputComponent implements OnInit {
 			setTimeout(() => {
 				this.renderer.selectRootElement("#searchInput").focus();
 			}, 300);
-		}
-		else {
+		} else {
 			this.onFocus.emit(false);
 		}
 	}
 
 	onSearch() {
-		if (this.inputState === SearchInputState.ACTIVE) {
-			this.takeToPage("/search?searchTerm=" + this.model.searchInput);
+		this.navigationService.navigateByUrl("/shop/search?searchTerm=" + this.model.searchInput);
+		if (this.state === "mobile") {
 			this.toggleInputState();
 		}
 	}
 
-	takeToPage(url: string) {
-		this.navigationService.navigateByUrl(url);
+	submit() {
+		if (this.state === "mobile") {
+			if (this.inputState === SearchInputState.INACTIVE) {
+				this.toggleInputState();
+			} else {
+				this.onSearch();
+			}
+		} else {
+			this.onSearch();
+		}
 	}
 }

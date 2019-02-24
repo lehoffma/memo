@@ -35,16 +35,16 @@ const routes: Route[] = [
 	{path: "password-reset", component: PasswordRecoveryLandingPageComponent, canActivate: [IsNotLoggedInGuard]},
 	{path: "confirm-email", component: ConfirmEmailComponent, canActivate: [IsNotLoggedInGuard]},
 	//todo isNotAlreadyMemberGuard
-	{path: "applyForMembership", component: ApplyForMembershipComponent, canActivate: [AuthenticatedGuard]},
-	{path: "requestMembership", component: RequestMembershipComponent, canActivate: [AuthenticatedGuard]},
+	{path: "membership/apply", component: ApplyForMembershipComponent, canActivate: [AuthenticatedGuard]},
+	{path: "membership/change", component: RequestMembershipComponent, canActivate: [AuthenticatedGuard]},
 	{path: "notifications", component: NotificationOverviewComponent, canActivate: [AuthenticatedGuard]},
-	{path: "members/:id", component: ProfileComponent, canActivate: [AuthenticatedGuard, IsOwnProfileGuard]},
-	{path: "my-events", component: MyToursComponent, canActivate: [AuthenticatedGuard]},
-	{path: "order-history", component: OrderHistoryComponent, canActivate: [AuthenticatedGuard]},
+	{path: "club/members/:id", component: ProfileComponent, canActivate: [AuthenticatedGuard, IsOwnProfileGuard]},
+	{path: "user/events", component: MyToursComponent, canActivate: [AuthenticatedGuard]},
+	{path: "user/order-history", component: OrderHistoryComponent, canActivate: [AuthenticatedGuard]},
 	{path: "not-allowed", component: UnauthorizedAccessComponent},
 
 	{
-		path: "account-settings",
+		path: "user/account-settings",
 		component: UserSettingsComponent,
 		children: [
 			{path: "", redirectTo: "personal-data", pathMatch: "full"},
@@ -57,7 +57,6 @@ const routes: Route[] = [
 		],
 		canActivate: [AuthenticatedGuard]
 	},
-	{path: "account-settings/notifications", component: UserSettingsComponent, canActivate: [AuthenticatedGuard]},
 ];
 
 

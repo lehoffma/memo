@@ -8,7 +8,6 @@ import memo.auth.api.strategy.StockAuthStrategy;
 import memo.data.StockRepository;
 import memo.model.Color;
 import memo.model.ShopItem;
-import memo.model.SizeTable;
 import memo.model.Stock;
 import org.apache.logging.log4j.LogManager;
 
@@ -45,7 +44,6 @@ public class StockServlet extends AbstractApiServlet<Stock> {
     protected void updateDependencies(JsonNode jsonNode, Stock object) {
         this.manyToOne(object, ShopItem.class, Stock::getItem, Stock::getId, ShopItem::getStock, shopItem -> shopItem::setStock);
         this.manyToOne(object, Color.class, Stock::getColor, Stock::getId, Color::getStock, color -> color::setStock);
-        this.oneToMany(object, SizeTable.class, Stock::getSizeTable, sizeTable -> sizeTable::setStock);
     }
 
     @GET

@@ -17,11 +17,11 @@ export class WaitingListTableService extends ExpandableTableContainerService<Wai
 	eventInfo$: Observable<EventInfo> = this.activatedRoute.url
 		.pipe(
 			map((urls: UrlSegment[]) => {
-				// "tours/:id/waiting-list"
-				// "partys/:id/waiting-list"
-				// "merch/:id/waiting-list"
-				let eventType = EventType[urls[0].path];
-				let eventId = +urls[1].path;
+				// "/shop/tours/:id/waiting-list"
+				// "/shop/partys/:id/waiting-list"
+				// "/shop/merch/:id/waiting-list"
+				let eventType = EventType[urls[1].path];
+				let eventId = +urls[2].path;
 
 				return {eventType, eventId};
 			})

@@ -12,7 +12,7 @@ import {Location} from "@angular/common";
 			{{errorMessage}}
 		</div>
 		<div class="actions">
-			<button mat-raised-button color="accent" (click)="location.back()">
+			<button mat-button (click)="location.back()">
 				Zurück
 			</button>
 			<a mat-raised-button color="accent" routerLink="/">
@@ -23,15 +23,12 @@ import {Location} from "@angular/common";
 	styles: [`
 		:host {
 			display: flex;
-			justify-content: center;
 			flex-direction: column;
 			align-items: center;
-			position: absolute;
-			background: #43a047;
-			top: 0;
-			left: 0;
-			height: 100%;
+			min-height: 100vh;
 			width: 100%;
+			padding-top: 32px;
+			padding-bottom: 32px;
 		}
 
 		.sad-emoji {

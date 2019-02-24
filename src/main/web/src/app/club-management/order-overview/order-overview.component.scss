@@ -31,7 +31,7 @@ $options-breakpoint: 850px;
 	.overview-options {
 		width: 330px;
 		min-width: 330px;
-		padding: 16px;
+		padding: 16px 16px 8px;
 
 		@media all and (min-width: $options-breakpoint) {
 			overflow: hidden;

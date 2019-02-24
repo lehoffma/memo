@@ -2,9 +2,6 @@
 
 .search-input {
 	font-size: font-size(default);
-	margin-left: 4px;
-	margin-right: 4px;
-	margin-top: 4px;
 	width: 200px;
 
 	@media all and (max-width: 340px) {
@@ -16,6 +13,35 @@
 .material-icons {
 	vertical-align: middle;
 }
+
+:host /deep/ .small-outline-formfield.mat-form-field-appearance-outline .mat-form-field-wrapper .mat-form-field-flex {
+	border-radius: 500px;
+	background: white;
+
+	height: 32px;
+	font-size: font-size(smaller);
+	padding-left: 16px;
+	padding-right: 4px;
+}
+
+mat-form-field {
+
+	border-radius: 500px !important;
+
+	/deep/ .mat-form-field-outline {
+		border-radius: 500px !important;
+	}
+
+	/deep/ .mat-form-field-outline-start {
+		border-radius: 500px 0 0 500px;
+		min-width: 24px;
+	}
+
+	/deep/ .mat-form-field-outline-end {
+		border-radius: 0 500px 500px 0;
+	}
+}
+
 
 form:not(.expanded-mobile) {
 	.cart-icon {
@@ -35,10 +61,12 @@ form:not(.expanded-mobile) {
 
 .expanded-mobile {
 	display: flex;
+	align-items: center;
 
 	> button {
 		margin: auto;
 	}
+
 	::ng-deep .mat-input-wrapper {
 		padding-bottom: calc(64px / 2 - 16px) !important;
 	}
@@ -53,5 +81,11 @@ form:not(.expanded-mobile) {
 
 	mat-form-field {
 		width: calc(100% - 50px);
+	}
+}
+
+@media all and (min-width: 600px) {
+	form {
+		color: black;
 	}
 }

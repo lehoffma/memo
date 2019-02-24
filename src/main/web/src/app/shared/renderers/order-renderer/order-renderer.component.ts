@@ -59,7 +59,7 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 				//it's not already part of the array
 				if (eventIndex === -1) {
 					events.push({
-						link: "/" + EventUtilityService.getEventType(item.item) + "/" + item.item.id,
+						link: "/shop/" + EventUtilityService.getEventType(item.item) + "/" + item.item.id,
 						amount: 1,
 						...item,
 						cssStatus: orderStatusToString(item.status).replace(" ", "-"),

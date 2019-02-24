@@ -23,6 +23,9 @@ import {getAllQueryValues} from "../../../../shared/model/util/url-util";
 export class AccountingOptionsComponent implements OnInit, OnDestroy {
 	@Input() hidden: boolean = false;
 
+
+	//todo reactive forms..
+	// and use <filter-options-row>
 	eventTypes = {
 		tours: true,
 		events: true,

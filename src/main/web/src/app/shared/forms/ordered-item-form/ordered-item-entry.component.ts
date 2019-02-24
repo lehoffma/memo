@@ -38,7 +38,7 @@ export class OrderedItemEntryComponent implements OnInit {
 		if (!this._cache[item.id]) {
 			const type = EventUtilityService.getEventType(item);
 			this._cache[item.id] = {
-				link: `/${type}/${item.id}`,
+				link: `/shop/${type}/${item.id}`,
 				type
 			};
 

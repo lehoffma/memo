@@ -4,6 +4,7 @@ export interface Link {
 	route: string;
 	icon: string;
 	name: string;
+	//todo synonyms?
 	link?: string;
 	loginNeeded?: boolean;
 	minimumPermission?: UserPermissions;

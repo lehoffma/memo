@@ -1,5 +1,5 @@
 <mat-dialog-content>
-	<a routerLink="/create/tours" [queryParams]="{date: isoDate}"
+	<a routerLink="/shop/create/tours" [queryParams]="{date: isoDate}"
 	   (click)="close()"
 	   [class.disabled]="!(data?.tours | async)"
 	   *ngIf="data?.show.tours">
@@ -8,7 +8,7 @@
 			<span>Tour</span>
 		</div>
 	</a>
-	<a routerLink="/create/partys" [queryParams]="{date: isoDate}"
+	<a routerLink="/shop/create/partys" [queryParams]="{date: isoDate}"
 	   *ngIf="data?.show.partys"
 	   [class.disabled]="!(data?.partys | async)"
 	   (click)="close()">
@@ -17,7 +17,7 @@
 			<span>Event</span>
 		</div>
 	</a>
-	<a routerLink="/create/merch"
+	<a routerLink="/shop/create/merch"
 	   *ngIf="data?.show.merch"
 	   [class.disabled]="!(data?.merch | async)"
 	   (click)="close()">

@@ -54,7 +54,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 		{
 			icon: "person",
 			name: MemberListRowAction.showProfile,
-			route: participant => "/members/" + participant.user.id
+			route: participant => "/club/members/" + participant.user.id
 		}
 	];
 
@@ -91,7 +91,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	}
 
 	getLinkToTour(info: EventInfo) {
-		return `/${info.eventType}/${info.eventId}`
+		return `/shop/${info.eventType}/${info.eventId}`
 	}
 
 	getDisplayedColumns() {

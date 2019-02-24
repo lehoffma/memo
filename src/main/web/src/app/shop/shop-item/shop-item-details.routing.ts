@@ -12,23 +12,23 @@ import {WaitingListComponent} from "./waiting-list/waiting-list.component";
 
 
 const routes: Route[] = [
-	{path: "orders/:id", component: OrderDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "tours/:id", component: TourDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "tours/:id/participants", component: ParticipantListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "tours/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "tours/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "management/orders/:id", component: OrderDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/tours/:id", component: TourDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/tours/:id/participants", component: ParticipantListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/tours/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/tours/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
-	{path: "partys/:id", component: PartyDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/partys/:id", component: PartyDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{
-		path: "partys/:id/participants",
+		path: "shop/partys/:id/participants",
 		component: ParticipantListComponent,
 		canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
-	{path: "partys/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "partys/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/partys/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/partys/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
-	{path: "merch/:id", component: MerchandiseDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "merch/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/merch/:id", component: MerchandiseDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/merch/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
 ];
 

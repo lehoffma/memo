@@ -3,13 +3,13 @@ import {Route, RouterModule} from "@angular/router";
 import {SearchResultComponent} from "./search-results.component";
 
 const routes: Route[] = [
-	{path: "search", component: SearchResultComponent},
-	{path: "shop", redirectTo: "/search", pathMatch: "full"},
-	{path: "tours", redirectTo: "/search?date=upcoming&type=1", pathMatch: "full"},
-	{path: "events", redirectTo: "/search?&date=upcoming&type=2", pathMatch: "full"},
-	{path: "partys", redirectTo: "/search?&date=upcoming&type=2", pathMatch: "full"},
-	{path: "merchandise", redirectTo: "/search?type=3", pathMatch: "full"},
-	{path: "merch", redirectTo: "/search?type=3", pathMatch: "full"},
+	{path: "shop/search", component: SearchResultComponent},
+	{path: "shop", redirectTo: "/shop/search", pathMatch: "full"},
+	{path: "shop/tours", redirectTo: "/shop/search?date=upcoming&type=1", pathMatch: "full"},
+	{path: "shop/events", redirectTo: "/shop/search?&date=upcoming&type=2", pathMatch: "full"},
+	{path: "shop/partys", redirectTo: "/shop/search?&date=upcoming&type=2", pathMatch: "full"},
+	{path: "shop/merchandise", redirectTo: "/shop/search?type=3", pathMatch: "full"},
+	{path: "shop/merch", redirectTo: "/shop/search?type=3", pathMatch: "full"},
 ];
 
 @NgModule({

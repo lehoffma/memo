@@ -8,8 +8,6 @@ import memo.serialization.StockAmountSerializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -71,10 +69,6 @@ public class Stock implements Serializable {
     @JoinColumn
     private Color color;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinColumn
-    private List<SizeTable> sizeTable = new ArrayList<>();
-
     //**************************************************************
     //  constructor
     //**************************************************************
@@ -132,18 +126,6 @@ public class Stock implements Serializable {
 
     public void setColor(Color color) {
         this.color = color;
-    }
-
-    public List<SizeTable> getSizeTable() {
-        return sizeTable;
-    }
-
-    public void setSizeTable(List<SizeTable> sizeTable) {
-        this.sizeTable = sizeTable;
-    }
-
-    public void addSizeTable(SizeTable s) {
-        this.sizeTable.add(s);
     }
 
     //**************************************************************

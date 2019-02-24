@@ -1,21 +1,21 @@
 [
 	{
-		"route": "members/PROFILE_ID",
+		"route": "club/members/PROFILE_ID",
 		"icon": "",
 		"name": "Dein Profil"
 	},
 	{
-		"route": "my-events",
+		"route": "user/events",
 		"icon": "",
 		"name": "Deine Events"
 	},
 	{
-		"route": "order-history",
+		"route": "user/order-history",
 		"icon": "",
 		"name": "Deine Bestellungen"
 	},
 	{
-		"route": "account-settings",
+		"route": "user/account-settings",
 		"icon": "",
 		"name": "Dein Account"
 	},

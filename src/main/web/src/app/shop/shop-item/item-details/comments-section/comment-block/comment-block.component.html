@@ -2,7 +2,7 @@
 
 <ng-container *ngIf="comment$ | async; let commentObject">
 	<div class="main-comment-container" *ngIf="author$ | async; let author">
-		<a class="comment-image-container" routerLink="/members/{{author.id}}">
+		<a class="comment-image-container" routerLink="/club/members/{{author.id}}">
 			<img class="comment-image" [ngClass]="{'dummy': dummy}" [class.top-level]="commentObject.parent === null"
 				 memoUserPreview [user]="author"
 				 [lazySrc]="(author?.images.length > 0 ? author.images[0] : 'resources/images/Logo.png') | imageSize:'thumbnail' | async"

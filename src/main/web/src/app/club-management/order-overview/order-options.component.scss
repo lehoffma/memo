@@ -12,27 +12,28 @@ div {
 	> div > div {
 		padding-bottom: 1rem;
 	}
+}
 
-	mat-form-field {
-		width: 200px;
+
+.date-range-container {
+	> div {
+		margin-bottom: 8px;
 	}
 }
 
 
 .events-container {
-	memo-event-autocomplete /deep/ mat-form-field {
-		width: 100%;
-		margin-top: 12px;
-	}
-
-
 	mat-chip {
 		display: flex !important;
 		justify-content: space-between;
 		align-items: center;
 		cursor: pointer;
 
-		margin: 8px 0 0 !important;
+		margin: 8px 0 0;
+
+		&:last-child {
+			margin-bottom: 16px;
+		}
 
 		a {
 			text-decoration: none;

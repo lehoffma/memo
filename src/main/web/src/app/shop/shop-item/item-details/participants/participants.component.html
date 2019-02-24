@@ -1,6 +1,6 @@
 <div class="participants-container" *ngIf="participants && participants.length > 0">
 	<div *ngFor="let participant of (participants)" class="participant mat-elevation-z1">
-		<a routerLink="/members/{{participant.user.id}}">
+		<a routerLink="/club/members/{{participant.user.id}}">
 			<div class="image-container">
 				<img
 					src="{{(participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"

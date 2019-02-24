@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 	events: EventsPreview[] = [
 		{
 			title: "Touren",
-			route: "tours",
+			route: "/shop/tours",
 			type: ShopItemType.tour,
 			events: this.loginService.isLoggedInObservable()
 				.pipe(
@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 		},
 		{
 			title: "Veranstaltungen",
-			route: "partys",
+			route: "/shop/partys",
 			type: ShopItemType.party,
 			events: this.loginService.isLoggedInObservable()
 				.pipe(
@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 		},
 		{
 			title: "Merchandise",
-			route: "merch",
+			route: "/shop/merch",
 			type: ShopItemType.merch,
 			events: this.loginService.isLoggedInObservable()
 				.pipe(
