@@ -30,6 +30,7 @@ import {
 } from "@angular/material";
 import {ScrollingModule} from "@angular/cdk/scrolling";
 import {LayoutModule} from "@angular/cdk/layout";
+import {TextFieldModule} from "@angular/cdk/text-field";
 
 const modules = [MatButtonModule, MatCheckboxModule, MatNativeDateModule, MatDatepickerModule,
 	MatMenuModule, MatSidenavModule, MatToolbarModule, MatCardModule,
@@ -37,7 +38,7 @@ const modules = [MatButtonModule, MatCheckboxModule, MatNativeDateModule, MatDat
 	MatListModule, MatSelectModule, MatInputModule, MatRadioModule,
 	MatAutocompleteModule, MatChipsModule, MatProgressSpinnerModule,
 	MatButtonToggleModule, MatTabsModule, MatTableModule, MatStepperModule, MatBadgeModule,
-	MatPaginatorModule, MatSortModule, LayoutModule,
+	MatPaginatorModule, MatSortModule, LayoutModule, TextFieldModule,
 	ScrollingModule, MatRippleModule
 ];
 

@@ -10,7 +10,7 @@ export class UserSettingsComponent implements OnInit {
 	hasChanges$ = this.accountSettingsService.hasChanges$;
 	formIsValid$ = this.accountSettingsService.formIsValid$;
 
-	constructor(private accountSettingsService: AccountSettingsService) {
+	constructor(public accountSettingsService: AccountSettingsService) {
 	}
 
 	ngOnInit() {

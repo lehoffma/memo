@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
-import {ApiCache} from "../../cache/api-cache";
+import {ApiCache} from "../../utility/cache/api-cache";
 import {map} from "rxjs/operators";
 import {endOfDay, setDate, setMonth, setYear, startOfDay} from "date-fns";
 

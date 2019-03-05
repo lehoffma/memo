@@ -1,41 +1,30 @@
 import {NgModule} from "@angular/core";
 import {routedComponents, SearchRoutingModule} from "./search.routing";
-import {FilteringMenuComponent} from "./filtering-menu/filtering-menu.component";
 import {ResultsComponent} from "./results/results.component";
 import {ResultsEntryComponent} from "./results/results-entry/results-entry.component";
-import {SortingDropdownComponent} from "./sorting-dropdown/sorting-dropdown.component";
 import {CommonModule} from "@angular/common";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MemoMaterialModule} from "../../../material.module";
+import {SharedSearchModule} from "../../shared/search/shared-search.module";
 import {SharedModule} from "../../shared/shared.module";
-import {SearchFilterService} from "./search-filter.service";
-import {FilterOptionBuilder} from "./filter-option-builder.service";
-import {FilterOptionFactoryService} from "./filter-option-factory.service";
+import {FilterOptionBuilder} from "../../shared/search/filter-option-builder.service";
 
 @NgModule({
 	imports: [
 		CommonModule,
-		FormsModule,
-		ReactiveFormsModule,
 		MemoMaterialModule,
+		SharedSearchModule,
 		SharedModule,
 		SearchRoutingModule,
 	],
 	declarations: [
 		routedComponents,
-		FilteringMenuComponent,
 		ResultsComponent,
 		ResultsEntryComponent,
-		SortingDropdownComponent
 	],
 	providers: [
-		SearchFilterService,
-		FilterOptionBuilder,
-		FilterOptionFactoryService
+		FilterOptionBuilder
 	],
 	exports: [
-		SortingDropdownComponent,
-		FilteringMenuComponent,
 		ResultsComponent,
 		ResultsEntryComponent,
 	]

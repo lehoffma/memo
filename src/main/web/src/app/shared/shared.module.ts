@@ -3,7 +3,6 @@ import {MultiLevelSelectModule} from "./utility/multi-level-select/multi-level-s
 import {EventCalendarComponent} from "./utility/event-calendar/event-calendar.component";
 import {CommonModule} from "@angular/common";
 import {PageNotFoundComponent} from "./utility/error-page/page-not-found.component";
-import {AutoSizeTextAreaDirective} from "./autosize-textarea.directive";
 import {ConfirmationDialogComponent} from "./utility/confirmation-dialog/confirmation-dialog.component";
 import {MemoMaterialModule} from "../../material.module";
 import {PriceRendererComponent} from "./renderers/price-renderer/price-renderer.component";
@@ -45,10 +44,9 @@ import {MatPasswordStrengthModule} from "@angular-material-extensions/password-s
 import {LazyLoadingModule} from "./lazy-loading/lazy-loading.module";
 import {BreadcrumbNavigationComponent} from "./breadcrumb-navigation/breadcrumb-navigation.component";
 import {JSONLdComponent} from "./utility/seo/json-ld.component";
-import {FilterOptionHeaderComponent} from "./filter-option-header/filter-option-header.component";
-import { FilterOptionRowComponent } from './filter-option-row/filter-option-row.component';
-import { EventDestinationRendererComponent } from './renderers/event-destination-renderer/event-destination-renderer.component';
-import { LetDirective } from './utility/let.directive';
+import {EventDestinationRendererComponent} from "./renderers/event-destination-renderer/event-destination-renderer.component";
+import {SharedSearchModule} from "./search/shared-search.module";
+import {LetModule} from "./utility/let/let.module";
 
 const forms = [
 	DisableIfDirective,
@@ -68,8 +66,6 @@ const forms = [
 	OrderedItemEntryComponent,
 	OrderedItemFormComponent,
 	OrderedItemInputFormComponent,
-	FilterOptionHeaderComponent,
-	FilterOptionRowComponent,
 ];
 
 @NgModule({
@@ -85,7 +81,9 @@ const forms = [
 		MultiLevelSelectModule,
 		CalendarModule,
 		LazyLoadingModule,
-		SharedPipesModule
+		SharedPipesModule,
+		SharedSearchModule,
+		LetModule,
 	],
 	declarations: [
 		EventCalendarComponent,
@@ -94,7 +92,6 @@ const forms = [
 
 		PageNotFoundComponent,
 		ErrorPageComponent,
-		AutoSizeTextAreaDirective,
 		MultiImageUploadComponent,
 		MultiImageContainerComponent,
 		PriceRendererComponent,
@@ -116,20 +113,20 @@ const forms = [
 		BreadcrumbNavigationComponent,
 		JSONLdComponent,
 		EventDestinationRendererComponent,
-		LetDirective,
 	],
 	exports: [
 		MultiLevelSelectModule,
 		ExpandableMaterialTableModule,
 		SharedPipesModule,
 		LazyLoadingModule,
+		//todo remove
+		SharedSearchModule,
+		LetModule,
 
 		EventCalendarComponent,
 
 		PageNotFoundComponent,
 		ErrorPageComponent,
-
-		AutoSizeTextAreaDirective,
 
 		ShareDialogComponent,
 
@@ -152,7 +149,6 @@ const forms = [
 		BreadcrumbNavigationComponent,
 		JSONLdComponent,
 		EventDestinationRendererComponent,
-		LetDirective,
 
 		...forms
 	],

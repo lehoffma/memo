@@ -4,8 +4,8 @@ import {ItemCostPreview} from "../../../../shared/model/accounting-state";
 import {Params} from "@angular/router";
 import {MultiLevelSelectParent} from "../../../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {debounceTime, map, scan} from "rxjs/operators";
-import {FilterOptionFactoryService} from "../../../../shop/search-results/filter-option-factory.service";
-import {SearchFilterService} from "../../../../shop/search-results/search-filter.service";
+import {FilterOptionFactoryService} from "../../../../shared/search/filter-option-factory.service";
+import {SearchFilterService} from "../../../../shared/search/search-filter.service";
 
 @Component({
 	selector: "memo-accounting-item-summary",

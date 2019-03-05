@@ -21,6 +21,7 @@ import { AccountDataWrapperComponent } from './user-settings/subsections/account
 import { ClubInformationWrapperComponent } from './user-settings/subsections/club-information-wrapper/club-information-wrapper.component';
 import { NotificationSettingsComponent } from './user-settings/subsections/notification-settings/notification-settings.component';
 import { UserEventEmptyStateComponent } from './user-event-empty-state/user-event-empty-state.component';
+import {SharedSearchModule} from "../shared/search/shared-search.module";
 
 @NgModule({
 	imports: [
@@ -28,7 +29,7 @@ import { UserEventEmptyStateComponent } from './user-event-empty-state/user-even
 		FormsModule,
 		ReactiveFormsModule,
 		SharedModule,
-		SearchModule,
+		SharedSearchModule,
 		MemoMaterialModule,
 		AgmCoreModule,
 		UserRoutingModule,

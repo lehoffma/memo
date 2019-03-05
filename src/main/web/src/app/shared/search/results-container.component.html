@@ -1,0 +1,41 @@
+<div class="sidebar desktop">
+	<button mat-raised-button color="accent" *ngIf="canAdd" (click)="add()">Hinzufügen</button>
+	<memo-filtering-menu [filterOptions]="filterOptions"
+						 (queryParamChange)="updateQueryParams($event)">
+
+	</memo-filtering-menu>
+</div>
+<div class="content">
+	<div class="results-header">
+		<h3 class="results-title">{{title}}</h3>
+
+		<!--todo mobile add button-->
+		<!--<button mat-stroked-button color="accent" *ngIf="canAdd"-->
+		<!--class="mobile"-->
+		<!--(click)="add()">Hinzufügen-->
+
+		<div class="sorting-container">
+			<span class="results-subtitle">
+				{{page.content.length}} von {{page.totalElements}} Ergebnis{{page.totalElements !== 1 ? 'sen' : ''}}
+			</span>
+			<span class="sorting-label desktop">Sortieren nach: </span>
+			<memo-sorting-dropdown [defaultOption]="defaultOption" class="desktop"
+								   [sortingOptions]="sortingOptions"
+								   [withoutUnsorted]="withoutUnsorted"></memo-sorting-dropdown>
+		</div>
+	</div>
+	<div class="mobile filter-sort-container">
+		<memo-filtering-menu [filterOptions]="filterOptions" (queryParamChange)="updateQueryParams($event)">
+
+		</memo-filtering-menu>
+		<memo-sorting-dropdown [defaultOption]="defaultOption"
+							   [sortingOptions]="sortingOptions"
+							   [withoutUnsorted]="withoutUnsorted"></memo-sorting-dropdown>
+	</div>
+	<div class="results-body">
+		<!--todo if resultsLength === 0 show empty state-->
+		<ng-content></ng-content>
+	</div>
+
+	<memo-pagination [page]="page" (pageChange)="pageChange($event)"></memo-pagination>
+</div>

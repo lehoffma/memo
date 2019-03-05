@@ -1,0 +1,32 @@
+<div *ngFor="let option of filterOptions" [@slideUp]="1" class="filter-category-container">
+	<memo-filter-option-header [title]="option.name"
+							   [withReset]="withReset(option)"
+							   (onReset)="reset(option)"
+	></memo-filter-option-header>
+
+	<div class="option-children" *ngIf="option.selectType === 'multiple'; else radioGroup">
+		<memo-filter-option-row *ngFor="let child of option.children"
+								[value]="child.name"
+
+								[formControl]="multiSelectionForm.get(option.name).get(child.name)"
+								(selectOnlyThisOption)="selectOption(multiSelectionForm.get(option.name), child.name)">
+
+
+		</memo-filter-option-row>
+	</div>
+	<ng-template #radioGroup>
+		<mat-radio-group [formControl]="singleSelectionForm.get(option.name)">
+			<mat-radio-button *ngFor="let child of option.children" [value]="child.name">
+				{{child.name}}
+			</mat-radio-button>
+		</mat-radio-group>
+
+		<!--todo ngIf type === "date-range"-->
+		<!--todo ngIf type === "filter-by-event"-->
+	</ng-template>
+</div>
+
+<div class="close-actions" *ngIf="showActions">
+	<button mat-button (click)="cancel()">Schließen</button>
+	<button mat-raised-button color="accent" (click)="apply()">Anwenden</button>
+</div>

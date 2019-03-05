@@ -1,0 +1,14 @@
+<button mat-stroked-button class="mobile-filter-trigger" (click)="startFiltering()">
+	<mat-icon>filter_list</mat-icon>
+	FILTERN
+</button>
+
+<memo-filter-sidebar class="filter-sidebar"
+					 [filterOptions]="filterOptions"
+					 [singleSelectionForm]="singleSelectionForm"
+					 [multiSelectionForm]="multiSelectionForm"
+					 (onSubmit)="apply()"
+					 (onCancel)="cancel()"
+					 [class.open]="open">
+
+</memo-filter-sidebar>

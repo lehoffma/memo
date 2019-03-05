@@ -3,11 +3,11 @@ import {ActivatedRoute, Params, Router} from "@angular/router";
 import {EventService} from "../../shared/services/api/event.service";
 import {Event} from "../shared/model/event";
 import {SortingOption} from "../../shared/model/sorting-option";
-import {eventSortingOptions} from "./sorting-options";
+import {eventSortingOptions} from "../../shared/search/sorting-options";
 import {MultiLevelSelectParent} from "app/shared/utility/multi-level-select/shared/multi-level-select-parent";
-import {SearchFilterService} from "./search-filter.service";
-import {FilterOptionBuilder} from "./filter-option-builder.service";
-import {FilterOptionType} from "./filter-option-type";
+import {SearchFilterService} from "../../shared/search/search-filter.service";
+import {FilterOptionBuilder} from "../../shared/search/filter-option-builder.service";
+import {FilterOptionType} from "../../shared/search/filter-option-type";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {
 	debounceTime,
@@ -19,8 +19,7 @@ import {
 	scan,
 	startWith,
 	switchMap,
-	takeUntil,
-	tap
+	takeUntil
 } from "rxjs/operators";
 import {Filter} from "../../shared/model/api/filter";
 import {Sort} from "../../shared/model/api/sort";
@@ -35,7 +34,7 @@ import {userPermissions} from "../../shared/model/user";
 import {CreateEventContextMenuComponent} from "../event-calendar-container/create-event-context-menu/create-event-context-menu.component";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
-import {FilterOptionFactoryService} from "./filter-option-factory.service";
+import {FilterOptionFactoryService} from "../../shared/search/filter-option-factory.service";
 import {QueryParameterService} from "../../shared/services/query-parameter.service";
 
 @Component({
@@ -100,6 +99,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	results$;
 
 	resultsTitle: BehaviorSubject<string> = new BehaviorSubject("");
+	resultLength$: BehaviorSubject<number> = new BehaviorSubject(0);
+	totalResultLength$: BehaviorSubject<number> = new BehaviorSubject(0);
 	sortingOptions: SortingOption<Event>[] = eventSortingOptions;
 
 	onDestroy$: Subject<any> = new Subject<any>();
@@ -118,6 +119,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		);
 
 	isInitialized = false;
+
 	constructor(private activatedRoute: ActivatedRoute,
 				private searchFilterService: SearchFilterService,
 				private matDialog: MatDialog,
@@ -175,6 +177,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	private updateResultsTitle(results: Event[]) {
 		const amount = this.resultsDataSource.currentPage$.getValue().totalElements;
 		this.resultsTitle.next(results.length + " von " + amount + " Ergebnissen");
+		this.resultLength$.next(results.length);
+		this.totalResultLength$.next(amount);
 	}
 
 	private buildFilterOptions(filter: Filter) {

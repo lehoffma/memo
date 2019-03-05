@@ -14,6 +14,8 @@ import {setMonth, setYear} from "date-fns";
 	styleUrls: ["./event-calendar.component.scss"]
 })
 export class EventCalendarComponent implements OnInit {
+	//todo lazy loading: move to club package
+
 	events$: BehaviorSubject<(Tour | Party)[]> = new BehaviorSubject<(Tour | Party)[]>([]);
 	@Output() onDayClick: EventEmitter<Date> = new EventEmitter();
 	@Output() onEventClick: EventEmitter<(Tour | Party)> = new EventEmitter();

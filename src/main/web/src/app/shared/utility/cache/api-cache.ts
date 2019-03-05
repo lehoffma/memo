@@ -1,7 +1,7 @@
 import {Cache} from "./cache";
 import {HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Page} from "../model/api/page";
+import {Page} from "../../model/api/page";
 
 export interface ApiInnerCache<T> {
 	getById: {

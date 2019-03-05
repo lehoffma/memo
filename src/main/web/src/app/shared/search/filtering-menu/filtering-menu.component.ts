@@ -1,29 +1,18 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from "@angular/core";
-import {isMultiLevelSelectLeaf, MultiLevelSelectOption} from "../../../shared/utility/multi-level-select/shared/multi-level-select-option";
+import {isMultiLevelSelectLeaf, MultiLevelSelectOption} from "../../utility/multi-level-select/shared/multi-level-select-option";
 import {ActivatedRoute, Params} from "@angular/router";
-import {MultiLevelSelectParent} from "../../../shared/utility/multi-level-select/shared/multi-level-select-parent";
-import {MultiLevelSelectLeaf} from "../../../shared/utility/multi-level-select/shared/multi-level-select-leaf";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import {MultiLevelSelectParent} from "../../utility/multi-level-select/shared/multi-level-select-parent";
+import {MultiLevelSelectLeaf} from "../../utility/multi-level-select/shared/multi-level-select-leaf";
 import {filter, takeUntil} from "rxjs/operators";
-import {AbstractControl, FormBuilder} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {combineLatest, Subject} from "rxjs";
+import {MatDialog} from "@angular/material";
+import {FilterDialogComponent} from "./filter-sidebar/filter-dialog.component";
 
 @Component({
 	selector: "memo-filtering-menu",
 	templateUrl: "./filtering-menu.component.html",
 	styleUrls: ["./filtering-menu.component.scss"],
-	animations: [
-		trigger("slideUp", [
-			state("1", style({transform: "translateX(0)"})),
-			transition(":enter", [
-				style({transform: "translateX(-100%)"}),
-				animate("200ms ease-in"),
-			]),
-			transition(":leave", [
-				animate("200ms ease-in", style({transform: "translateX(-100%)"}))
-			])
-		])
-	],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
@@ -39,7 +28,10 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 
 	pauseFormUpdates = false;
 
+	open = false;
+
 	constructor(private activatedRoute: ActivatedRoute,
+				private matDialog: MatDialog,
 				private formBuilder: FormBuilder) {
 	}
 
@@ -196,56 +188,6 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 		this.queryParamChange.emit(combined);
 	}
 
-	/**
-	 *
-	 * @param control
-	 * @param method
-	 */
-	selectOption(control: AbstractControl, method: any) {
-		const value = control.value;
-		control.setValue(Object.keys(value).reduce((acc, key) => {
-			acc[key] = key === method;
-			return acc
-		}, {}));
-	}
-
-	withReset(option: MultiLevelSelectParent) {
-		if (option.selectType === "multiple") {
-			return this.multiSelectionHasFilterApplied(this.multiSelectionForm.get(option.name))
-		} else {
-			//there is a reset option
-			if (option.children.some(child => child.name === "Alle")) {
-				return this.singleSelectionForm.get(option.name).value !== "Alle";
-			}
-		}
-	}
-
-	multiSelectionHasFilterApplied(control: AbstractControl) {
-		const value = control.value;
-		return Object.keys(value).some(key => value[key]);
-	}
-
-	reset(option: MultiLevelSelectParent) {
-		if (option.selectType === "multiple") {
-			let control = this.multiSelectionForm.get(option.name);
-			this.resetMultiSelection(control);
-		} else {
-			let control = this.singleSelectionForm.get(option.name);
-			this.resetSingleSelection(control);
-		}
-	}
-
-	resetSingleSelection(control: AbstractControl) {
-		control.setValue("Alle");
-	}
-
-	resetMultiSelection(control: AbstractControl) {
-		const value = control.value;
-		control.setValue(Object.keys(value).reduce((acc, key) => {
-			acc[key] = false;
-			return acc
-		}, {}));
-	}
 
 	/**
 	 *
@@ -283,4 +225,31 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 		this.queryParamChange.emit(queryParams);
 	}
 
+	startFiltering() {
+		this.open = true;
+		this.matDialog.open(FilterDialogComponent, {
+			width: "100vw",
+			height: "100%",
+			maxHeight: "100vh",
+			maxWidth: "none",
+			id: "filter-dialog",
+			autoFocus: false,
+			data: {
+				filterOptions: this.filterOptions,
+				singleSelectionForm: this.singleSelectionForm,
+				multiSelectionForm: this.multiSelectionForm,
+			}
+		});
+		//stop automatic url updating
+	}
+
+	cancel() {
+		this.open = false;
+		//reset form group to previous value
+	}
+
+	apply() {
+		this.open = false;
+		//update url manually
+	}
 }

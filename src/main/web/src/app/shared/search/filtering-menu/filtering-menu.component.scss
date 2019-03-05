@@ -9,15 +9,13 @@ memo-multi-level-select {
 }
 
 @media all and (min-width: 650px) {
-	memo-multi-level-select {
+	.mobile-filter-trigger {
 		display: none;
 	}
+
 	.filter-sidebar {
 		display: block;
-		width: 300px;
-		background: white;
-		padding: 8px 16px 16px;
-		border-radius: 4px;
+		width: 250px;
 		overflow: hidden;
 	}
 

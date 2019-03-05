@@ -33,7 +33,9 @@
 	.container--header {
 		margin: 0;
 		padding: 16px;
-		font-size: font-size();
+		font-weight: 400;
+		border-bottom: 1px solid #e0e0e0;
+		font-size: font-size(medium-larger);
 
 		@media all and (min-width: 800px) {
 			border-top-right-radius: 4px;

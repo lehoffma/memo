@@ -9,7 +9,7 @@ import {ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
 import {MerchColor} from "../../../shared/model/merch-color";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {isBefore} from "date-fns";
-import {ObservableCache} from "../../../../shared/cache/observable-cache";
+import {ObservableCache} from "../../../../shared/utility/cache/observable-cache";
 import {TypeOfProperty} from "../../../../shared/model/util/type-of-property";
 import {Sort} from "../../../../shared/model/api/sort";
 import {ShoppingCartService} from "../../../../shared/services/shopping-cart.service";
@@ -130,7 +130,7 @@ export class AddToCartFormComponent implements OnInit {
 			)
 		)
 		.withAsyncFallback("emptySeats", () => this.getEmptySeats$());
-	private removedFromWaitingList: boolean = false;
+	removedFromWaitingList: boolean = false;
 
 
 	constructor(private participantService: OrderedItemService,

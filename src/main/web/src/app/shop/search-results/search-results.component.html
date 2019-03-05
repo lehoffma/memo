@@ -1,65 +1,76 @@
-<div class="filter-sidebar">
-	<div class="add-button" *ngIf="userCanAddItem$ | async">
-		<button mat-raised-button color="accent"
-				[matTooltip]="'Artikel hinzufügen'"
-				[matTooltipPosition]="'above'"
-				(click)="openCreateDialog()"
-				class="toolbar-add-button">
-			Hinzufügen
-		</button>
+<memo-results-container [filterOptions]="filterOptions$ | async"
+						[sortingOptions]="sortingOptions"
+						[title]="'Suchergebnisse'"
+						[page]="resultsDataSource.currentPage$ | async"
+						[canAdd]="userCanAddItem$ | async"
 
-	</div>
-	<memo-filtering-menu (queryParamChange)="updateQueryParams($event)"
-		[filterOptions]="filterOptions$ | async"></memo-filtering-menu>
-</div>
+						(onAdd)="openCreateDialog()"
+>
+	<memo-results [events]="currentResults$ | async"></memo-results>
+</memo-results-container>
+
+<!--<div class="filter-sidebar">-->
+<!--<div class="add-button" *ngIf="userCanAddItem$ | async">-->
+<!--<button mat-raised-button color="accent"-->
+<!--[matTooltip]="'Artikel hinzufügen'"-->
+<!--[matTooltipPosition]="'above'"-->
+<!--(click)="openCreateDialog()"-->
+<!--class="toolbar-add-button">-->
+<!--Hinzufügen-->
+<!--</button>-->
+
+<!--</div>-->
+<!--<memo-filtering-menu (queryParamChange)="updateQueryParams($event)"-->
+<!--[filterOptions]="filterOptions$ | async"></memo-filtering-menu>-->
+<!--</div>-->
 
 
-<div class="results-container">
-	<div>
-		<div class="sorting-results-modifier-container">
-			<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>
-			<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
-		</div>
+<!--<div class="results-container">-->
+<!--<div>-->
+<!--<div class="sorting-results-modifier-container">-->
+<!--<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>-->
+<!--<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>-->
+<!--</div>-->
 
 
-		<div class="add-button mobile-add-button-container mat-elevation-z2">
-			<button mat-stroked-button *ngIf="userCanAddItem$ | async"
-					[matTooltip]="'Artikel hinzufügen'"
-					[matTooltipPosition]="'above'"
-					(click)="openCreateDialog()"
-					class="mobile-add-button">
-				<mat-icon>add</mat-icon>
-				Hinzufügen
-			</button>
+<!--<div class="add-button mobile-add-button-container mat-elevation-z2">-->
+<!--<button mat-stroked-button *ngIf="userCanAddItem$ | async"-->
+<!--[matTooltip]="'Artikel hinzufügen'"-->
+<!--[matTooltipPosition]="'above'"-->
+<!--(click)="openCreateDialog()"-->
+<!--class="mobile-add-button">-->
+<!--<mat-icon>add</mat-icon>-->
+<!--Hinzufügen-->
+<!--</button>-->
 
-		</div>
+<!--</div>-->
 
-		<div *ngIf="(keywords | async).length >= 0" class="search-results-container">
-			<div class="search-results-header">
-				<div class="flex-row">
-					<span class="results-title">
-						{{resultsTitle | async}}
-					</span>
-				</div>
-				<div class="search-results-actions">
+<!--<div *ngIf="(keywords | async).length >= 0" class="search-results-container">-->
+<!--<div class="search-results-header">-->
+<!--<div class="flex-row">-->
+<!--<span class="results-title">-->
+<!--{{resultsTitle | async}}-->
+<!--</span>-->
+<!--</div>-->
+<!--<div class="search-results-actions">-->
 
-					<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>
-					<!--todo-->
-					<!--<button mat-stroked-button class="add-button">-->
-					<!--Hinzufügen-->
-					<!--</button>-->
-					<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
-				</div>
-			</div>
+<!--<memo-filtering-menu [filterOptions]="filterOptions$ | async"></memo-filtering-menu>-->
+<!--&lt;!&ndash;todo&ndash;&gt;-->
+<!--&lt;!&ndash;<button mat-stroked-button class="add-button">&ndash;&gt;-->
+<!--&lt;!&ndash;Hinzufügen&ndash;&gt;-->
+<!--&lt;!&ndash;</button>&ndash;&gt;-->
+<!--<memo-sorting-dropdown [sortingOptions]="sortingOptions"></memo-sorting-dropdown>-->
+<!--</div>-->
+<!--</div>-->
 
-			<memo-results class="mat-elevation-z1" [events]="currentResults$ | async"></memo-results>
-		</div>
-	</div>
+<!--<memo-results class="mat-elevation-z1" [events]="currentResults$ | async"></memo-results>-->
+<!--</div>-->
+<!--</div>-->
 
-	<div class="load-more-button-container">
-		<button class="load-more-button mat-elevation-z1" matRipple
-				*ngIf="canLoadMore$ | async" (click)="loadMore()">
-			Mehr
-		</button>
-	</div>
-</div>
+<!--<div class="load-more-button-container">-->
+<!--<button class="load-more-button mat-elevation-z1" matRipple-->
+<!--*ngIf="canLoadMore$ | async" (click)="loadMore()">-->
+<!--Mehr-->
+<!--</button>-->
+<!--</div>-->
+<!--</div>-->

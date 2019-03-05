@@ -1,0 +1,45 @@
+@import "../../../../../node_modules/@angular/material/theming";
+@import "theme";
+
+.sorting-dropdown {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+
+	@media all and (min-width: 650px) {
+		background: white;
+		border-radius: 4px;
+		height: 32px;
+		padding: 4px 8px;
+
+		/deep/ .mat-button-wrapper {
+			height: 24px;
+			display: flex;
+			align-items: center;
+
+			> span {
+				text-transform: initial;
+			}
+		}
+	}
+}
+
+button.selected {
+	background-color: accent(700);
+	color: white;
+
+	&:focus {
+		background-color: accent(800) !important;
+	}
+
+	&:hover {
+		background-color: accent(900) !important;
+	}
+}
+
+@media all and (min-width: 650px) {
+	.mobile {
+		display: none;
+	}
+}

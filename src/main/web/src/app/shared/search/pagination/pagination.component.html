@@ -1,0 +1,22 @@
+<div class="pagination-container mat-elevation-z3">
+	<button mat-flat-button class="first-page page" (click)="firstPage()" [disabled]="isFirstPage$ | async">
+		<mat-icon>first_page</mat-icon>
+	</button>
+	<button mat-flat-button class="prev-page page" (click)="changePage(-1)" [disabled]="isFirstPage$ | async">
+		<mat-icon>chevron_left</mat-icon>
+	</button>
+	<button mat-flat-button color="{{(page$ | async).page === option ? 'accent' : 'default'}}"
+			[class.active]="(page$ | async).page === option" class="page"
+			*ngFor="let option of pageOptions$ | async"
+			(click)="pageChange.emit(option)"
+	>
+		{{option}}
+	</button>
+	<button mat-flat-button class="next-page page" (click)="changePage(1)" [disabled]="isLastPage$ | async">
+		<mat-icon>chevron_right</mat-icon>
+	</button>
+	<button mat-flat-button class="last-page page" (click)="lastPage()" [disabled]="isLastPage$ | async">
+		<mat-icon>last_page</mat-icon>
+	</button>
+
+</div>

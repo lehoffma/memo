@@ -1,6 +1,6 @@
-import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
-import {Event} from "../shared/model/event";
-import {Direction, Sort} from "../../shared/model/api/sort";
+import {SortingOption, SortingOptionHelper} from "../model/sorting-option";
+import {Event} from "../../shop/shared/model/event";
+import {Direction, Sort} from "../model/api/sort";
 
 /**
  * Alphabetisch A-Z

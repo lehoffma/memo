@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {ApiCache} from "../../../shared/cache/api-cache";
+import {ApiCache} from "../../../shared/utility/cache/api-cache";
 import {Permission} from "../../../shared/model/permission";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {catchError, map, mergeMap, retry} from "rxjs/operators";

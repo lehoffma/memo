@@ -1,30 +1,42 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {SortingOption, SortingOptionHelper} from "../../../shared/model/sorting-option";
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
+import {SortingOption, SortingOptionHelper} from "../../model/sorting-option";
 import {ActivatedRoute, Params, Router} from "@angular/router";
-import {QueryParameterService} from "../../../shared/services/query-parameter.service";
-import {ColumnSortingEvent} from "../../../shared/utility/expandable-table/column-sorting-event";
-import {first, map, tap} from "rxjs/operators";
-import {Sort} from "../../../shared/model/api/sort";
+import {QueryParameterService} from "../../services/query-parameter.service";
+import {distinctUntilChanged, first, map, takeUntil} from "rxjs/operators";
+import {Sort} from "../../model/api/sort";
+import {BehaviorSubject, Subject} from "rxjs";
 
 @Component({
 	selector: "memo-sorting-dropdown",
 	templateUrl: "./sorting-dropdown.component.html",
 	styleUrls: ["./sorting-dropdown.component.scss"]
 })
-export class SortingDropdownComponent implements OnInit {
-
+export class SortingDropdownComponent implements OnInit, OnDestroy {
 	noneSortingOption: SortingOption<any> = SortingOptionHelper.build(
 		"Unsortiert",
 		Sort.none()
 	);
 
 	@Input() sortingOptions: SortingOption<any>[];
-	@Input() defaultOption: SortingOption<any> = this.noneSortingOption;
+
+	_defaultOption = this.noneSortingOption;
+	@Input() set defaultOption(option: SortingOption<any>) {
+		if (option) {
+			this._defaultOption = option;
+		}
+	};
+
+	get defaultOption() {
+		return this._defaultOption;
+	}
+
 	@Input() withoutUnsorted = false;
-	selectedOption: string = "";
+	selectedOption$: BehaviorSubject<string> = new BehaviorSubject("");
 	combinedOptions = [];
 
-	@Output() onSort: EventEmitter<ColumnSortingEvent<any>> = new EventEmitter();
+	@Output() selectionChange: EventEmitter<string> = new EventEmitter();
+
+	onDestroy$ = new Subject();
 
 	constructor(private router: Router,
 				private activatedRoute: ActivatedRoute) {
@@ -32,22 +44,24 @@ export class SortingDropdownComponent implements OnInit {
 
 
 	ngOnInit() {
+		this.selectedOption$.pipe(distinctUntilChanged(), takeUntil(this.onDestroy$))
+			.subscribe(option => this.selectionChange.emit(option));
+
 		this.activatedRoute.queryParamMap
+			.pipe(takeUntil(this.onDestroy$))
 			.subscribe(queryParamMap => {
-				this.selectedOption = "";
+				let selectedOption = "";
 				const somethingMatched = this.sortingOptions.some(option => {
 					const optionKeys = Object.keys(option.queryParameters);
 
 					if (optionKeys.every(key => queryParamMap.has(key))
 						&& optionKeys.every(key => queryParamMap.get(key) === option.queryParameters[key])) {
-						this.selectedOption = option.name;
+						selectedOption = option.name;
 					}
 
-					return this.selectedOption !== "";
+					return selectedOption !== "";
 				});
-				if (!somethingMatched) {
-					this.selectedOption = this.defaultOption.name;
-				}
+				this.selectedOption$.next(somethingMatched ? selectedOption : this.defaultOption.name);
 			});
 
 		this.combinedOptions = this.withoutUnsorted ? [...this.sortingOptions] : [this.noneSortingOption, ...this.sortingOptions];
@@ -58,13 +72,11 @@ export class SortingDropdownComponent implements OnInit {
 			.pipe(
 				first(),
 				map(paramMap => QueryParameterService.updateQueryParams(paramMap, queryParams)),
-				tap(() =>
-					this.onSort.emit({
-						key: queryParams["sortBy"],
-						descending: queryParams["descending"] === "true"
-					})
-				)
 			)
 			.subscribe(newQueryParams => this.router.navigate([], {queryParams: newQueryParams}));
+	}
+
+	ngOnDestroy(): void {
+		this.onDestroy$.next(true);
 	}
 }

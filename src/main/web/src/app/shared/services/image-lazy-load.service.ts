@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {BehaviorSubject, Observable} from "rxjs";
 import {Dimension} from "./window.service";
 import {HttpClient} from "@angular/common/http";
-import {Cache} from "../cache/cache";
+import {Cache} from "../utility/cache/cache";
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 import {map, tap, delay} from "rxjs/operators";
 

@@ -1,22 +1,23 @@
 import {Injectable} from "@angular/core";
 import {FilterOptionType} from "./filter-option-type";
-import {MultiLevelSelectParent} from "../../shared/utility/multi-level-select/shared/multi-level-select-parent";
-import {Event} from "../shared/model/event";
-import {MerchStockList} from "../shared/model/merch-stock";
-import {Merchandise} from "../shared/model/merchandise";
-import {EventUtilityService} from "../../shared/services/event-utility.service";
+import {MultiLevelSelectParent} from "../utility/multi-level-select/shared/multi-level-select-parent";
+import {MerchStockList} from "../../shop/shared/model/merch-stock";
+import {Merchandise} from "../../shop/shared/model/merchandise";
+import {EventUtilityService} from "../services/event-utility.service";
 import {attributeSortingFunction, sortingFunction} from "../../util/util";
-import {MerchColor} from "../shared/model/merch-color";
-import {StockService} from "../../shared/services/api/stock.service";
+import {MerchColor} from "../../shop/shared/model/merch-color";
+import {StockService} from "../services/api/stock.service";
 import {combineLatest, Observable, of, throwError} from "rxjs";
 import {defaultIfEmpty, map, mergeMap} from "rxjs/operators";
-import {Sort} from "../../shared/model/api/sort";
-import {MultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-leaf";
-import {EventType, typeToInteger} from "../shared/model/event-type";
-import {Filter} from "../../shared/model/api/filter";
-import {EventService} from "../../shared/services/api/event.service";
+import {Sort} from "../model/api/sort";
+import {MultiLevelSelectLeaf} from "../utility/multi-level-select/shared/multi-level-select-leaf";
+import {EventType, typeToInteger} from "../../shop/shared/model/event-type";
+import {Filter} from "../model/api/filter";
+import {EventService} from "../services/api/event.service";
 
-@Injectable()
+@Injectable({
+	providedIn: "root"
+})
 export class FilterOptionFactoryService {
 
 	readonly category: MultiLevelSelectParent = {
@@ -123,14 +124,12 @@ export class FilterOptionFactoryService {
 			const index = combinedList.findIndex(it => it.name === leaf.name);
 			if (index === -1) {
 				combinedList.push(leaf);
-			}
-			else {
+			} else {
 				for (let query of leaf.query) {
 					const queryIndex = combinedList[index].query.findIndex(it => it.key === query.key);
 					if (queryIndex === -1) {
 						combinedList[index].query.push(query);
-					}
-					else {
+					} else {
 						combinedList[index].query[queryIndex].values = Array.from(
 							new Set([
 								...combinedList[index].query[queryIndex].values,
@@ -153,7 +152,7 @@ export class FilterOptionFactoryService {
 				return this.getPrice;
 			case FilterOptionType.DATE:
 				return this.getDate;
-				//todo move to server to avoid huge requests every time
+			//todo move to server to avoid huge requests every time
 			case FilterOptionType.COLOR:
 				return this.getColorFilterOptions.bind(this);
 			case FilterOptionType.MATERIAL:

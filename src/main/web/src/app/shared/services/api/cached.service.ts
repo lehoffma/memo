@@ -1,6 +1,6 @@
 import {BehaviorSubject, Observable, throwError} from "rxjs";
 import {catchError, first, retry, share} from "rxjs/operators";
-import {ApiInnerCache, PagedApiCache} from "../../cache/api-cache";
+import {ApiInnerCache, PagedApiCache} from "../../utility/cache/api-cache";
 
 
 export abstract class CachedService<T> {

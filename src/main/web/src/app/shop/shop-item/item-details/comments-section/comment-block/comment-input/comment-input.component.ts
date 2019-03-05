@@ -1,6 +1,6 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
 import {User} from "../../../../../../shared/model/user";
-import {AutoSizeTextAreaDirective} from "../../../../../../shared/autosize-textarea.directive";
+import {CdkTextareaAutosize} from "@angular/cdk/text-field";
 
 @Component({
 	selector: "memo-comment-input",
@@ -17,7 +17,7 @@ export class CommentInputComponent implements OnInit, AfterViewInit {
 	@Output() submitComment: EventEmitter<string> = new EventEmitter();
 	@Output() closeSubmitComment: EventEmitter<any> = new EventEmitter();
 
-	@ViewChild(AutoSizeTextAreaDirective) commentInput: AutoSizeTextAreaDirective;
+	@ViewChild(CdkTextareaAutosize, {read: ElementRef}) commentInput: ElementRef;
 
 	showActionButtons = true;
 
@@ -33,7 +33,7 @@ export class CommentInputComponent implements OnInit, AfterViewInit {
 
 	ngAfterViewInit(): void {
 		if (this.focus) {
-			this.commentInput.elementRef.nativeElement.focus();
+			this.commentInput.nativeElement.focus();
 		}
 	}
 

@@ -1,20 +1,22 @@
 import {Injectable} from "@angular/core";
-import {MultiLevelSelectParent} from "../../shared/utility/multi-level-select/shared/multi-level-select-parent";
-import {EventUtilityService} from "../../shared/services/event-utility.service";
-import {ShopItem} from "../../shared/model/shop-item";
-import {Event} from "../shared/model/event";
-import {StockService} from "../../shared/services/api/stock.service";
+import {MultiLevelSelectParent} from "../utility/multi-level-select/shared/multi-level-select-parent";
+import {EventUtilityService} from "../services/event-utility.service";
+import {ShopItem} from "../model/shop-item";
+import {Event} from "../../shop/shared/model/event";
+import {StockService} from "../services/api/stock.service";
 import {isObservable} from "../../util/util";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute} from "@angular/router";
-import {isMultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-option";
+import {isMultiLevelSelectLeaf} from "../utility/multi-level-select/shared/multi-level-select-option";
 import {combineLatest, Observable, of} from "rxjs";
 import {defaultIfEmpty, map} from "rxjs/operators";
 import {isAfter, isBefore, isEqual, startOfDay} from "date-fns";
-import {MultiLevelSelectLeaf} from "../../shared/utility/multi-level-select/shared/multi-level-select-leaf";
-import {getAllQueryValues} from "../../shared/model/util/url-util";
+import {MultiLevelSelectLeaf} from "../utility/multi-level-select/shared/multi-level-select-leaf";
+import {getAllQueryValues} from "../model/util/url-util";
 
-@Injectable()
+@Injectable({
+	providedIn: "root"
+})
 export class SearchFilterService {
 
 

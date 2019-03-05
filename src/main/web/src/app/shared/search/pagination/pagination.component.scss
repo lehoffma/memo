@@ -1,0 +1,37 @@
+@import "theme";
+
+:host {
+	display: flex;
+	justify-content: center;
+}
+
+.pagination-container {
+	border-radius: 4px;
+	flex: 1;
+	display: flex;
+	max-width: 400px;
+}
+
+.page {
+	flex: 1;
+	min-width: unset;
+	width: 40px;
+	padding: 0;
+	border-radius: 0;
+
+	&:first-child {
+		border-radius: 4px 0 0 4px;
+	}
+
+	&:last-child {
+		border-radius: 0 4px 4px 0;
+	}
+}
+
+.prev-page{
+	border-right: 1px solid #e0e0e0;
+}
+
+.next-page{
+	border-left: 1px solid #e0e0e0;
+}

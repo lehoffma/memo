@@ -7,7 +7,7 @@ export interface Unit<T> {
 }
 
 export class TransactionBuilder<T> {
-
+	//todo refactoring: can be removed as soon as requests are remodelled
 	private units: Unit<T>[] = [];
 
 	public constructor() {

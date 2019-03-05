@@ -8,8 +8,6 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MerchStockTableCellComponent} from "./administration/stock/merch-stock/merch-stock-table-cell.component";
 import {MerchStockFeedComponent} from "./administration/stock/merch-stock/merch-stock-feed/merch-stock-feed.component";
 import {MerchStockEntryComponent} from "app/club-management/administration/stock/merch-stock/merch-stock-entry/merch-stock-entry.component";
-import {SearchFilterService} from "../shop/search-results/search-filter.service";
-import {SearchModule} from "../shop/search-results/search.module";
 import {MilesLeaderboardEntryComponent} from "app/club-management/miles-leaderboard/miles-leaderboard-entry.component";
 import {ModifyShopItemModule} from "../shop/shop-item/modify-shop-item/modify-shop-item.module";
 import {OrderOptionsComponent} from "./order-overview/order-options.component";
@@ -23,6 +21,7 @@ import {AccountingNumberCardComponent} from "./accounting/accounting-overview/ac
 import {AccountingTimeSummaryComponent} from "./accounting/accounting-overview/accounting-time-summary/accounting-time-summary.component";
 import {AccountingItemSummaryComponent} from "./accounting/accounting-overview/accounting-item-summary/accounting-item-summary.component";
 import {CostPreviewComponent} from "./accounting/accounting-overview/shared/cost-preview/cost-preview.component";
+import {SharedSearchModule} from "../shared/search/shared-search.module";
 
 const tableCellComponents = [
 
@@ -32,7 +31,7 @@ const tableCellComponents = [
 ];
 
 
-//todo utilize lazy loading for this module (logged out/not vorstand users can't do anything here anyway)
+//todo lazy loading for this module (logged out/not vorstand users can't do anything here anyway)
 @NgModule({
 	imports: [
 		FormsModule,
@@ -41,7 +40,7 @@ const tableCellComponents = [
 		MemoMaterialModule,
 		SharedModule,
 		AgmCoreModule,
-		SearchModule,
+		SharedSearchModule,
 		UserModule,
 		ShopItemDetailsModule,
 		ModifyShopItemModule,
@@ -62,9 +61,6 @@ const tableCellComponents = [
 		AccountingTimeSummaryComponent,
 		AccountingItemSummaryComponent,
 		CostPreviewComponent,
-	],
-	providers: [
-		SearchFilterService
 	],
 	entryComponents: [tableCellComponents]
 })

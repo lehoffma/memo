@@ -1,6 +1,6 @@
 <form #commentInputForm="ngForm" (ngSubmit)="submit(); commentInputForm.reset()">
 
-	<textarea autosize
+	<textarea cdkTextareaAutosize [cdkAutosizeMinRows]="2"
 			  placeholder="Kommentar posten..."
 			  rows="2"
 			  (focus)="showActionButtons = true"

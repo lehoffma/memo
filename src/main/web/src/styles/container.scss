@@ -23,17 +23,15 @@ mat-card.container > .container--header {
 	align-items: center;
 
 	padding: 0.5rem 0.5rem 0.5rem 1rem;
-	background: grey(100);
-	//text-transform: uppercase;
 	color: grey(700);
-	font-size: font-size(smaller);
-	border: none;
+	font-size: font-size(medium);
 
 	h3 {
 		margin: 0;
 		padding-bottom: 0.5rem;
 		padding-top: 0.5rem;
 		font-weight: 400;
+		font-size: font-size(medium-large);
 	}
 }
 

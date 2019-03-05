@@ -38,10 +38,10 @@
 		max-width: 700px;
 
 		textarea {
-			flex-grow: 1;
 			resize: none;
 			min-height: 2rem;
 			padding: 8px;
+			box-sizing: content-box;
 			transition: height 0.2s ease-in;
 			border: 1px solid grey(300);
 			border-top-right-radius: 4px;

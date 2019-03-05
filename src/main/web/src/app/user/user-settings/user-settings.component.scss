@@ -21,6 +21,11 @@
 	border-right: 1px solid grey(100);
 }
 
+.container--header {
+	border-bottom: 1px solid grey(200) !important;
+}
+
+
 .container--body {
 	display: flex;
 	flex: 1;
