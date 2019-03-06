@@ -3,8 +3,8 @@
 						[title]="'Suchergebnisse'"
 						[page]="resultsDataSource.currentPage$ | async"
 						[canAdd]="userCanAddItem$ | async"
-
 						(onAdd)="openCreateDialog()"
+						(pageChange)="pageAt($event)"
 >
 	<memo-results [events]="currentResults$ | async"></memo-results>
 </memo-results-container>

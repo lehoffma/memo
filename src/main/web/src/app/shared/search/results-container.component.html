@@ -37,5 +37,5 @@
 		<ng-content></ng-content>
 	</div>
 
-	<memo-pagination [page]="page" (pageChange)="pageChange($event)"></memo-pagination>
+	<memo-pagination [page]="page" (pageChange)="pageChange.emit($event - 1)"></memo-pagination>
 </div>

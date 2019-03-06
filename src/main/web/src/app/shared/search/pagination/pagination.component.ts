@@ -64,7 +64,6 @@ export class PaginationComponent implements OnInit {
 			];
 		}
 
-		console.log(options);
 		return options
 			.filter(it => it !== null)
 			.filter(it => it >= 1 && it <= lastPage);
@@ -75,11 +74,11 @@ export class PaginationComponent implements OnInit {
 	}
 
 	firstPage() {
-		this.pageChange.emit(0);
+		this.pageChange.emit(1);
 	}
 
 	lastPage() {
 		const page = this._page$.getValue();
-		this.pageChange.emit(Math.floor(page.totalElements / page.pageSize));
+		this.pageChange.emit(Math.ceil(page.totalElements / page.pageSize));
 	}
 }

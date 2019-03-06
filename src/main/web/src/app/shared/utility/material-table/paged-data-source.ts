@@ -2,7 +2,7 @@ import {DataSource} from "@angular/cdk/table";
 import {CollectionViewer} from "@angular/cdk/collections";
 import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from "rxjs";
 import {Page, PageResponse} from "../../model/api/page";
-import {filter, map, mergeMap, takeUntil, tap} from "rxjs/operators";
+import {filter, map, mergeMap, skip, takeUntil, tap} from "rxjs/operators";
 import {MatPaginator, PageEvent} from "@angular/material";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
@@ -143,18 +143,13 @@ export class PagedDataSource<T> extends DataSource<T> {
 		})
 	}
 
-	initPaginatorFromUrl(queryParamMap: ParamMap) {
+	static initPaginatorFromUrl(queryParamMap: ParamMap): PageRequest {
 		if (queryParamMap.has("page")) {
-			console.log(queryParamMap.get("page"));
 			const page = +queryParamMap.get("page");
 			const pageSize = +queryParamMap.get("pageSize");
-			this._pageEvents$.next({
-				previousPageIndex: 0,
-				length: 200,
-				pageSize: pageSize || 20,
-				pageIndex: (page || 1) - 1
-			})
+			return PageRequest.at((page || 1) - 1, pageSize || 20);
 		}
+		return PageRequest.at(0);
 	}
 
 	updateToPage(pageIndex: number, pageSize: number, router: Router, combineQueryParams?: (queryParams) => Params) {
@@ -168,7 +163,6 @@ export class PagedDataSource<T> extends DataSource<T> {
 			combinedParams = combineQueryParams(newQueryParams);
 		}
 		const containsPage = router.url.includes("page");
-		console.log(containsPage);
 		router.navigate([], {queryParams: {...combinedParams}, queryParamsHandling: "merge", replaceUrl: !containsPage})
 	}
 
@@ -177,6 +171,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 			takeUntil(this.onDestroy$)
 		)
 			.subscribe(event => {
+				console.log(event);
 				this.updateToPage(event.pageIndex + 1, event.pageSize, router, combineQueryParams);
 			})
 	}

@@ -8,7 +8,7 @@ import {MultiLevelSelectParent} from "app/shared/utility/multi-level-select/shar
 import {SearchFilterService} from "../../shared/search/search-filter.service";
 import {FilterOptionBuilder} from "../../shared/search/filter-option-builder.service";
 import {FilterOptionType} from "../../shared/search/filter-option-type";
-import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
 import {
 	debounceTime,
 	defaultIfEmpty,
@@ -16,7 +16,7 @@ import {
 	filter,
 	first,
 	map,
-	scan,
+	scan, skip,
 	startWith,
 	switchMap,
 	takeUntil
@@ -36,6 +36,7 @@ import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
 import {FilterOptionFactoryService} from "../../shared/search/filter-option-factory.service";
 import {QueryParameterService} from "../../shared/services/query-parameter.service";
+import {PagedDataSource} from "../../shared/utility/material-table/paged-data-source";
 
 @Component({
 	selector: "memo-search-results",
@@ -50,18 +51,12 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		.pipe(
 			map(permission => permission.Hinzufuegen)
 		);
-
-	keywords: Observable<string> = this.activatedRoute.queryParamMap
-		.pipe(
-			map(paramMap => paramMap.has("searchTerm")
-				? paramMap.get("searchTerm")
-				: "")
-		);
 	sortedBy: Observable<Sort> = this.activatedRoute.queryParamMap
 		.pipe(
 			map(paramMap => paramMap.has("sortBy") && paramMap.has("direction")
 				? Sort.by(paramMap.get("direction"), getAllQueryValues(paramMap, "sortBy").join(","))
-				: Sort.none())
+				: Sort.none()),
+			distinctUntilChanged((a, b) => Sort.equal(a, b))
 		);
 	filter$: Observable<Filter> = this.activatedRoute.queryParamMap
 		.pipe(
@@ -87,13 +82,10 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 			startWith(Filter.none()),
 		);
 
-	page$ = new BehaviorSubject(PageRequest.first(this.PAGE_SIZE));
+	page$ = new BehaviorSubject(PagedDataSource.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap));
 
 	//results data handling
 	resultsDataSource: ManualPagedDataSource<Event> = new ManualPagedDataSource<Event>(this.eventService, this.page$);
-	canLoadMore$ = this.resultsDataSource.currentPage$.pipe(
-		map((it: Page<Event>) => !it.last)
-	);
 
 	currentResults$ = new BehaviorSubject<Event[]>([]);
 	results$;
@@ -118,8 +110,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 			map(options => options.filter(option => option.children && option.children.length > 0)),
 		);
 
-	isInitialized = false;
-
 	constructor(private activatedRoute: ActivatedRoute,
 				private searchFilterService: SearchFilterService,
 				private matDialog: MatDialog,
@@ -133,12 +123,13 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		this.resultsDataSource.sort$ = this.sortedBy;
 		this.init();
 		this.initResults();
-		this.resultsDataSource.resetPageAndUpdateOnFilter(
-			() => {
-				this.currentResults$.next(null);
-				this.page$.next(PageRequest.first(this.page$.getValue().pageSize));
-			}
-		);
+		this.resultsDataSource.writePaginatorUpdatesToUrl(router);
+		this.resultsDataSource.updateOn(this.filter$);
+		this.resultsDataSource.updateOn(this.sortedBy);
+		combineLatest(this.filter$, this.sortedBy).pipe(skip(1),takeUntil(this.onDestroy$)).subscribe(() => {
+			this.currentResults$.next(null);
+			this.pageAt(0)
+		});
 	}
 
 	get filterOptions() {
@@ -152,6 +143,12 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 	}
 
+	pageAt(page: number) {
+		const currentValue = this.page$.getValue();
+		this.page$.next(PageRequest.at(page, currentValue.pageSize));
+		this.resultsDataSource.update();
+	}
+
 	updateQueryParams($event: Params) {
 		this.activatedRoute.queryParamMap.pipe(
 			first()
@@ -162,16 +159,9 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.onDestroy$.next();
+		this.onDestroy$.next(true);
 		this.onDestroy$.complete();
 		this.resultsDataSource.disconnect(null);
-	}
-
-	private updateCurrentResults(results: Event[]) {
-		const currentValue = this.currentResults$.getValue() || [];
-		const newValue = [...currentValue, ...results]
-			.filter((value, i, array) => array.findIndex(it => it.id === value.id) === i);
-		this.currentResults$.next(newValue);
 	}
 
 	private updateResultsTitle(results: Event[]) {
@@ -209,16 +199,10 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		this.results$.pipe(
 			takeUntil(this.onDestroy$)
 		).subscribe(results => {
-			this.updateCurrentResults(results);
+			this.currentResults$.next(results);
 			this.updateResultsTitle(this.currentResults$.getValue());
 		});
 		this.updateResultsTitle(this.currentResults$.getValue());
-	}
-
-	loadMore() {
-		const currentValue = this.page$.getValue();
-		this.page$.next(PageRequest.at(currentValue.page + 1, currentValue.pageSize));
-		this.resultsDataSource.update();
 	}
 
 	openCreateDialog() {

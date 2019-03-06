@@ -28,22 +28,6 @@ export class ManualPagedDataSource<T> extends PagedDataSource<T> {
 		obs.pipe(takeUntil(this.onDestroy$)).subscribe(it => this.update());
 	}
 
-	resetPageAndUpdateOnFilter(callback: () => void){
-		this.updateOn(
-			combineLatest(
-				this._filter$,
-				this._sortEvents$
-			).pipe(
-				tap(it => {
-					const currentPage = {...this._pageEvents$.getValue()};
-					currentPage.pageIndex = 0;
-					this._pageEvents$.next(currentPage);
-				}),
-				tap(callback)
-			)
-		)
-	}
-
 	update() {
 		this.reload();
 	}

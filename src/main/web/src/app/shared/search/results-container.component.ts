@@ -1,8 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {SortingOption} from "../model/sorting-option";
 import {MultiLevelSelectParent} from "../utility/multi-level-select/shared/multi-level-select-parent";
-import {Params} from "@angular/router";
+import {ActivatedRoute, Params, Router} from "@angular/router";
 import {Page} from "../model/api/page";
+import {first} from "rxjs/operators";
+import {QueryParameterService} from "../services/query-parameter.service";
 
 @Component({
 	selector: "memo-results-container",
@@ -21,9 +23,11 @@ export class ResultsContainerComponent implements OnInit {
 
 	@Input() canAdd = false;
 
+	@Output() pageChange: EventEmitter<number> = new EventEmitter();
 	@Output() onAdd: EventEmitter<any> = new EventEmitter();
 
-	constructor() {
+	constructor(private activatedRoute: ActivatedRoute,
+				private router: Router) {
 	}
 
 	ngOnInit() {
@@ -34,10 +38,11 @@ export class ResultsContainerComponent implements OnInit {
 	}
 
 	updateQueryParams(newParams: Params) {
-
-	}
-
-	pageChange($event: number) {
-		console.log($event);
+		this.activatedRoute.queryParamMap.pipe(
+			first()
+		).subscribe(paramMap => {
+			let params = QueryParameterService.updateQueryParams(paramMap, newParams);
+			this.router.navigate([], {queryParams: params})
+		})
 	}
 }
