@@ -1,7 +1,7 @@
 <memo-filter-sidebar [filterOptions]="data.filterOptions"
 					 [formGroup]="formGroup"
 					 [showActions]="true"
-					 (onSubmit)="dialogRef.close(true)"
+					 (onSubmit)="dialogRef.close(formGroup.value)"
 					 (onCancel)="dialogRef.close(false)"
 >
 

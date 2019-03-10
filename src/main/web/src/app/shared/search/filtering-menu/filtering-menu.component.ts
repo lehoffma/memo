@@ -135,7 +135,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 
 	startFiltering() {
 		this.open = true;
-		this.matDialog.open(FilterDialogComponent, {
+		const dialogRef = this.matDialog.open(FilterDialogComponent, {
 			width: "100vw",
 			height: "100%",
 			maxHeight: "100vh",
@@ -144,20 +144,13 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 			autoFocus: false,
 			data: {
 				filterOptions: this.filterOptions,
-				//todo
 				value: this.formGroup.value,
 			}
 		});
-		//stop automatic url updating
-	}
-
-	cancel() {
-		this.open = false;
-		//reset form group to previous value
-	}
-
-	apply() {
-		this.open = false;
-		//update url manually
+		dialogRef.afterClosed().subscribe(value => {
+			if(value){
+				this.queryParamChange.emit(this.getParams(value))
+			}
+		})
 	}
 }

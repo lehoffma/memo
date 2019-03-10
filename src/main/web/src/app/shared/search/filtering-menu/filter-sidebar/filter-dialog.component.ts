@@ -12,13 +12,10 @@ import {FilterOption} from "../../filter-options/filter-option";
 export class FilterDialogComponent implements OnInit {
 
 	public formGroup = this.fb.group({
-		"single": this.fb.control(""),
+		"single": this.fb.group({}),
 		"multiple": this.fb.group({}),
-		"date-range": this.fb.group({
-			from: undefined,
-			to: undefined
-		}),
-		"shop-item": this.fb.control([])
+		"date-range": this.fb.group({}),
+		"shop-item": this.fb.group([])
 	});
 
 	constructor(public dialogRef: MatDialogRef<FilterDialogComponent>,
@@ -28,19 +25,39 @@ export class FilterDialogComponent implements OnInit {
 					value: FilterFormValue
 				}) {
 		data.filterOptions.forEach(option => {
-			const childFormGroup: FormGroup = (this.formGroup.get(option.type) as FormGroup);
-			let value = data.value[option.type];
-			switch (option.type) {
-				case "single":
-				case "shop-item":
-					childFormGroup.addControl(option.key, this.fb.control(value));
-					break;
-				case "multiple":
-				case "date-range":
-					childFormGroup.addControl(option.key, this.fb.group(value));
-					break;
-			}
-		})
+			const typeFormGroup: FormGroup = (this.formGroup.get(option.type) as FormGroup);
+			let valueGroup = data.value[option.type];
+
+			Object.keys(valueGroup).forEach(key => {
+				const value = valueGroup[key];
+
+				if(typeFormGroup.contains(key)){
+					typeFormGroup.get(key).setValue(value, {emitEvent: false});
+				}
+				else{
+					switch (option.type) {
+						case "single":
+						case "shop-item":
+							typeFormGroup.addControl(option.key, this.fb.control(value));
+							break;
+						case "multiple":
+							typeFormGroup.addControl(option.key, this.fb.group(
+								Object.keys(value).reduce((acc, key) => {
+									acc[key] = this.fb.control(value[key]);
+									return acc;
+								}, {})
+							));
+							break;
+						case "date-range":
+							typeFormGroup.addControl(option.key, this.fb.group({
+								from: this.fb.control((value as any).from),
+								to: this.fb.control((value as any).to)
+							}));
+							break;
+					}
+				}
+			})
+		});
 		console.log(this.formGroup.getRawValue());
 	}
 

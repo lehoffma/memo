@@ -1,15 +1,15 @@
 <button mat-stroked-button class="sorting-dropdown" [matMenuTriggerFor]="menu">
 	<mat-icon class="mobile">sort</mat-icon>
 	<span *ngLet="selectedOption$ | async as selectedOption">
-		{{(selectedOption === defaultOption.name) ? 'Sortieren' : selectedOption}}
+		{{(selectedOption.name === defaultOption.name) ? 'Sortieren' : (selectedOption.shortName)}}
 	</span>
 </button>
 <mat-menu #menu="matMenu">
 	<ng-container *ngLet="selectedOption$ | async as selectedOption">
 		<button mat-menu-item
 				*ngFor="let sortingOption of combinedOptions"
-				[ngClass]="{'selected': (selectedOption) === sortingOption.name}"
-				(click)="selectedOption !== sortingOption.name ? updateQueryParams(sortingOption.queryParameters) : $event.stopPropagation()">
+				[ngClass]="{'selected': (selectedOption.name) === sortingOption.name}"
+				(click)="selectedOption.name !== sortingOption.name ? updateQueryParams(sortingOption.queryParameters) : $event.stopPropagation()">
 			{{sortingOption.name}}
 		</button>
 	</ng-container>

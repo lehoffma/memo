@@ -16,34 +16,42 @@ import {Direction, Sort} from "../model/api/sort";
 export const eventSortingOptions: SortingOption<Event>[] = [
 	SortingOptionHelper.build(
 		"Alphabetisch A-Z",
-		Sort.by(Direction.ASCENDING, "title")
+		Sort.by(Direction.ASCENDING, "title"),
+		"A-Z"
 	),
 	SortingOptionHelper.build(
 		"Alphabetisch Z-A",
-		Sort.by(Direction.DESCENDING, "title")
+		Sort.by(Direction.DESCENDING, "title"),
+		"Z-A"
 	),
 	SortingOptionHelper.build(
 		"Preis aufsteigend",
-		Sort.by(Direction.ASCENDING, "price")
+		Sort.by(Direction.ASCENDING, "price"),
+		"Preis ↑"
 	),
 	SortingOptionHelper.build(
 		"Preis absteigend",
-		Sort.by(Direction.DESCENDING, "price")
+		Sort.by(Direction.DESCENDING, "price"),
+		"Preis ↓"
 	),
 	SortingOptionHelper.build(
 		"Meilen aufsteigend",
-		Sort.by(Direction.ASCENDING, "miles")
+		Sort.by(Direction.ASCENDING, "miles"),
+		"Meilen ↑"
 	),
 	SortingOptionHelper.build(
 		"Meilen absteigend",
-		Sort.by(Direction.DESCENDING, "miles")
+		Sort.by(Direction.DESCENDING, "miles"),
+		"Meilen ↓"
 	),
 	SortingOptionHelper.build(
 		"Datum neueste - älteste",
-		Sort.by(Direction.DESCENDING, "date")
+		Sort.by(Direction.DESCENDING, "date"),
+		"Neu - Alt"
 	),
 	SortingOptionHelper.build(
 		"Datum älteste - neueste",
-		Sort.by(Direction.ASCENDING, "date")
+		Sort.by(Direction.ASCENDING, "date"),
+		"Alt - Neu"
 	)
 ];

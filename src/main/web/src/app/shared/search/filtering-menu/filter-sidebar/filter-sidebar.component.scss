@@ -1,8 +1,25 @@
+@import "theme";
+
 mat-radio-group {
 	display: flex;
 	flex-direction: column;
 }
 
-.filter-category-container{
+.filter-category-container {
 	margin-bottom: 16px;
+}
+
+.filter-menu-header {
+	h2 {
+		margin: 0;
+		color: grey(800);
+	}
+}
+
+.close-actions {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 12px;
+	border-top: 1px solid grey(200);
+	padding-top: 12px;
 }

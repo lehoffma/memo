@@ -31,7 +31,7 @@ export class SortingDropdownComponent implements OnInit, OnDestroy {
 	}
 
 	@Input() withoutUnsorted = false;
-	selectedOption$: BehaviorSubject<string> = new BehaviorSubject("");
+	selectedOption$: BehaviorSubject<SortingOption<any>> = new BehaviorSubject(this.noneSortingOption);
 	combinedOptions = [];
 
 	@Output() selectionChange: EventEmitter<string> = new EventEmitter();
@@ -45,23 +45,23 @@ export class SortingDropdownComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.selectedOption$.pipe(distinctUntilChanged(), takeUntil(this.onDestroy$))
-			.subscribe(option => this.selectionChange.emit(option));
+			.subscribe(option => this.selectionChange.emit(option.name));
 
 		this.activatedRoute.queryParamMap
 			.pipe(takeUntil(this.onDestroy$))
 			.subscribe(queryParamMap => {
-				let selectedOption = "";
+				let selectedOption = this.defaultOption;
 				const somethingMatched = this.sortingOptions.some(option => {
 					const optionKeys = Object.keys(option.queryParameters);
 
 					if (optionKeys.every(key => queryParamMap.has(key))
 						&& optionKeys.every(key => queryParamMap.get(key) === option.queryParameters[key])) {
-						selectedOption = option.name;
+						selectedOption = option;
 					}
 
-					return selectedOption !== "";
+					return selectedOption.name !== this.defaultOption.name;
 				});
-				this.selectedOption$.next(somethingMatched ? selectedOption : this.defaultOption.name);
+				this.selectedOption$.next(selectedOption);
 			});
 
 		this.combinedOptions = this.withoutUnsorted ? [...this.sortingOptions] : [this.noneSortingOption, ...this.sortingOptions];
