@@ -5,7 +5,6 @@ import {ShopItem} from "../model/shop-item";
 import {Event} from "../../shop/shared/model/event";
 import {StockService} from "../services/api/stock.service";
 import {isObservable} from "../../util/util";
-import {isNullOrUndefined} from "util";
 import {ActivatedRoute} from "@angular/router";
 import {isMultiLevelSelectLeaf} from "../utility/multi-level-select/shared/multi-level-select-option";
 import {combineLatest, Observable, of} from "rxjs";
@@ -13,6 +12,8 @@ import {defaultIfEmpty, map} from "rxjs/operators";
 import {isAfter, isBefore, isEqual, startOfDay} from "date-fns";
 import {MultiLevelSelectLeaf} from "../utility/multi-level-select/shared/multi-level-select-leaf";
 import {getAllQueryValues} from "../model/util/url-util";
+import {FilterOption, FilterOptionType} from "./filter-options/filter-option";
+import {isNullOrUndefined} from "util";
 
 @Injectable({
 	providedIn: "root"
@@ -41,12 +42,10 @@ export class SearchFilterService {
 				if (belowRegex.test(filterValue)) {
 					const result = belowRegex.exec(filterValue);
 					return price < +result[1];
-				}
-				else if (rangeRegex.test(filterValue)) {
+				} else if (rangeRegex.test(filterValue)) {
 					const result = rangeRegex.exec(filterValue);
 					return price >= +result[1] && price <= +result[2];
-				}
-				else if (moreThanRegex.test(filterValue)) {
+				} else if (moreThanRegex.test(filterValue)) {
 					const result = moreThanRegex.exec(filterValue);
 					return price > +result[1];
 				}
@@ -186,45 +185,41 @@ export class SearchFilterService {
 	 * @param {MultiLevelSelectParent[]} options
 	 * @returns {MultiLevelSelectParent[]}
 	 */
-	mergeFilterOptions(acc: MultiLevelSelectParent[], options: MultiLevelSelectParent[]): MultiLevelSelectParent[] {
-
+	mergeFilterOptions(acc: FilterOption[], options: FilterOption[]): FilterOption[] {
 		if (!acc || options.length === 0) {
 			return options;
 		}
 		//remove values that are not part of the array anymore
 		for (let i = acc.length - 1; i >= 0; i--) {
-			if (options.findIndex(option => option.name === acc[i].name) === -1) {
+			if (options.findIndex(option => option.key === acc[i].key) === -1) {
 				acc.splice(i, 1);
 			}
 		}
 
 		//modify children values
 		options
-			.filter(option => !!acc.find(prevOption => prevOption.name === option.name))
-			.forEach((option: MultiLevelSelectParent) => {
-				const index = acc.findIndex(prevOption => prevOption.name === option.name);
+			.filter(option => option.type === FilterOptionType.SINGLE || option.type === FilterOptionType.MULTIPLE)
+			.filter(option => !!acc.find(prevOption => prevOption.key === option.key))
+			.forEach((option: FilterOption) => {
+				const index = acc.findIndex(prevOption => prevOption.key === option.key);
 
 				//add children if array is null/undefined
-				if (isNullOrUndefined(acc[index].children) && option.children) {
-					acc[index].children = [...option.children];
+				if (isNullOrUndefined(acc[index].values) && option.values) {
+					acc[index].values = [...option.values];
 				}
-				else if (acc[index].children && option.children) {
+				else if (acc[index].values && option.values) {
 					//remove children that are not part of the array anymore
 					//and modify children that just changed their selected status
-					for (let i = acc[index].children.length - 1; i >= 0; i--) {
-						const childIndex = option.children.findIndex(child => child.name === acc[index].children[i].name);
+					for (let i = acc[index].values.length - 1; i >= 0; i--) {
+						const childIndex = option.values.findIndex(child => child.key === acc[index].values[i].key);
 						if (childIndex === -1) {
-							acc[index].children.splice(i, 1);
-						}
-						else {
-							(acc[index].children[i] as MultiLevelSelectLeaf).selected =
-								(option.children[childIndex] as MultiLevelSelectLeaf).selected;
+							acc[index].values.splice(i, 1);
 						}
 					}
 					//add children that aren't yet part of the array
-					acc[index].children.push(
-						...option.children.filter(child =>
-							!acc[index].children.find(childOption => childOption.name === child.name)
+					acc[index].values.push(
+						...option.values.filter(child =>
+							!acc[index].values.find(childOption => childOption.key === child.key)
 						)
 					);
 				}
@@ -233,7 +228,7 @@ export class SearchFilterService {
 		//add options that aren't yet part of the array to the array
 		acc.push(
 			...options.filter(option =>
-				!acc.find(prevOption => prevOption.name === option.name)
+				!acc.find(prevOption => prevOption.key === option.key)
 			)
 		);
 

@@ -2,7 +2,7 @@ import {DataSource} from "@angular/cdk/table";
 import {CollectionViewer} from "@angular/cdk/collections";
 import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from "rxjs";
 import {Page, PageResponse} from "../../model/api/page";
-import {filter, map, mergeMap, skip, takeUntil, tap} from "rxjs/operators";
+import {filter, map, mergeMap, takeUntil, tap} from "rxjs/operators";
 import {MatPaginator, PageEvent} from "@angular/material";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
@@ -143,7 +143,19 @@ export class PagedDataSource<T> extends DataSource<T> {
 		})
 	}
 
-	static initPaginatorFromUrl(queryParamMap: ParamMap): PageRequest {
+
+	initPaginatorFromUrl(queryParamMap: ParamMap): PageRequest {
+		const pageRequest = PagedDataSource.initPaginatorFromUrl2(queryParamMap);
+		this._pageEvents$.next({
+			length: 200,
+			pageIndex: pageRequest.page,
+			previousPageIndex: this._pageEvents$.getValue().pageIndex,
+			pageSize: pageRequest.pageSize
+		});
+		return pageRequest;
+	}
+
+	static initPaginatorFromUrl2(queryParamMap: ParamMap): PageRequest {
 		if (queryParamMap.has("page")) {
 			const page = +queryParamMap.get("page");
 			const pageSize = +queryParamMap.get("pageSize");

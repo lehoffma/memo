@@ -4,10 +4,9 @@ import {EventService} from "../../shared/services/api/event.service";
 import {Event} from "../shared/model/event";
 import {SortingOption} from "../../shared/model/sorting-option";
 import {eventSortingOptions} from "../../shared/search/sorting-options";
-import {MultiLevelSelectParent} from "app/shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {SearchFilterService} from "../../shared/search/search-filter.service";
 import {FilterOptionBuilder} from "../../shared/search/filter-option-builder.service";
-import {FilterOptionType} from "../../shared/search/filter-option-type";
+import {SearchResultsFilterOption} from "../../shared/search/search-results-filter-option";
 import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
 import {
 	debounceTime,
@@ -16,7 +15,8 @@ import {
 	filter,
 	first,
 	map,
-	scan, skip,
+	scan,
+	skip,
 	startWith,
 	switchMap,
 	takeUntil
@@ -25,7 +25,6 @@ import {Filter} from "../../shared/model/api/filter";
 import {Sort} from "../../shared/model/api/sort";
 import {PageRequest} from "../../shared/model/api/page-request";
 import {NOW} from "../../util/util";
-import {Page} from "../../shared/model/api/page";
 import {MatDialog} from "@angular/material";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
@@ -37,6 +36,7 @@ import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-
 import {FilterOptionFactoryService} from "../../shared/search/filter-option-factory.service";
 import {QueryParameterService} from "../../shared/services/query-parameter.service";
 import {PagedDataSource} from "../../shared/utility/material-table/paged-data-source";
+import {FilterOption} from "../../shared/search/filter-options/filter-option";
 
 @Component({
 	selector: "memo-search-results",
@@ -82,7 +82,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 			startWith(Filter.none()),
 		);
 
-	page$ = new BehaviorSubject(PagedDataSource.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap));
+	page$ = new BehaviorSubject(PagedDataSource.initPaginatorFromUrl2(this.activatedRoute.snapshot.queryParamMap));
 
 	//results data handling
 	resultsDataSource: ManualPagedDataSource<Event> = new ManualPagedDataSource<Event>(this.eventService, this.page$);
@@ -97,17 +97,16 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 
 	onDestroy$: Subject<any> = new Subject<any>();
 
-	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([
-		this.filterOptionFactory.category,
-		this.filterOptionFactory.price,
-		this.filterOptionFactory.date,
+	private _filterOptions$ = new BehaviorSubject<FilterOption[]>([
+		this.filterOptionFactory.category2,
+		this.filterOptionFactory.price2,
 	]);
-	filterOptions$: Observable<MultiLevelSelectParent[]> = this._filterOptions$
+	filterOptions$: Observable<FilterOption[]> = this._filterOptions$
 		.asObservable()
 		.pipe(
 			debounceTime(200),
 			scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService)),
-			map(options => options.filter(option => option.children && option.children.length > 0)),
+			map(options => options.filter(option => option.isShown())),
 		);
 
 	constructor(private activatedRoute: ActivatedRoute,
@@ -126,19 +125,12 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		this.resultsDataSource.writePaginatorUpdatesToUrl(router);
 		this.resultsDataSource.updateOn(this.filter$);
 		this.resultsDataSource.updateOn(this.sortedBy);
-		combineLatest(this.filter$, this.sortedBy).pipe(skip(1),takeUntil(this.onDestroy$)).subscribe(() => {
+		combineLatest(this.filter$, this.sortedBy).pipe(skip(1), takeUntil(this.onDestroy$)).subscribe(() => {
 			this.currentResults$.next(null);
 			this.pageAt(0)
 		});
 	}
 
-	get filterOptions() {
-		return this._filterOptions$.getValue();
-	}
-
-	set filterOptions(options: MultiLevelSelectParent[]) {
-		this._filterOptions$.next(options);
-	}
 
 	ngOnInit() {
 	}
@@ -171,16 +163,16 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		this.totalResultLength$.next(amount);
 	}
 
-	private buildFilterOptions(filter: Filter) {
+	private buildFilterOptions(filter: Filter): Observable<FilterOption[]> {
 		return this.filterOptionBuilder
 			.empty()
 			.withOptions(
-				FilterOptionType.EVENT_CATEGORY,
-				FilterOptionType.DATE,
-				FilterOptionType.PRICE,
-				FilterOptionType.COLOR,
-				FilterOptionType.MATERIAL,
-				FilterOptionType.SIZE
+				SearchResultsFilterOption.EVENT_CATEGORY,
+				SearchResultsFilterOption.DATE,
+				SearchResultsFilterOption.PRICE,
+				SearchResultsFilterOption.COLOR,
+				SearchResultsFilterOption.MATERIAL,
+				SearchResultsFilterOption.SIZE
 			)
 			.build(filter);
 	}
@@ -189,7 +181,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		//initialize filter menu
 		this.filter$.pipe(
 			switchMap(filter => this.buildFilterOptions(filter)),
-			map(options => this.searchFilterService.initFilterMenu(this.activatedRoute, options)),
 			takeUntil(this.onDestroy$),
 		).subscribe(this._filterOptions$);
 	}

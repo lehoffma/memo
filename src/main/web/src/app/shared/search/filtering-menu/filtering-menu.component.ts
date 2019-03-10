@@ -1,13 +1,19 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from "@angular/core";
-import {isMultiLevelSelectLeaf, MultiLevelSelectOption} from "../../utility/multi-level-select/shared/multi-level-select-option";
 import {ActivatedRoute, Params} from "@angular/router";
-import {MultiLevelSelectParent} from "../../utility/multi-level-select/shared/multi-level-select-parent";
-import {MultiLevelSelectLeaf} from "../../utility/multi-level-select/shared/multi-level-select-leaf";
-import {filter, takeUntil} from "rxjs/operators";
-import {FormBuilder} from "@angular/forms";
-import {combineLatest, Subject} from "rxjs";
+import {filter, takeUntil, tap} from "rxjs/operators";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material";
 import {FilterDialogComponent} from "./filter-sidebar/filter-dialog.component";
+import {FilterOption} from "../filter-options/filter-option";
+import {ShopItem} from "../../model/shop-item";
+
+export interface FilterFormValue {
+	single: { [key: string]: string },
+	multiple: { [keyA: string]: { [key: string]: boolean } },
+	"date-range": { [key: string]: { from: Date, to: Date } },
+	"shop-item": { [key: string]: ShopItem[] }
+}
 
 @Component({
 	selector: "memo-filtering-menu",
@@ -16,18 +22,22 @@ import {FilterDialogComponent} from "./filter-sidebar/filter-dialog.component";
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
-	@Input() filterOptions: MultiLevelSelectParent[];
+	@Input() filterOptions: FilterOption[];
+	@Input() queryParams: Params = {};
 	@Output() queryParamChange = new EventEmitter<Params>();
 
-	filterOptionMap: { [option: string]: MultiLevelSelectParent | MultiLevelSelectOption };
-	singleSelectionForm = this.formBuilder.group({});
-	multiSelectionForm = this.formBuilder.group({});
-	selectedOption = {};
+	//"single" | "multiple" | "date-range" | "shop-item"
+	formGroup: FormGroup = this.formBuilder.group({
+		"single": this.formBuilder.group({}),
+		"multiple": this.formBuilder.group({}),
+		"date-range": this.formBuilder.group({}),
+		"shop-item": this.formBuilder.group([])
+	});
+
 
 	onDestroy$ = new Subject<any>();
 
 	pauseFormUpdates = false;
-
 	open = false;
 
 	constructor(private activatedRoute: ActivatedRoute,
@@ -36,23 +46,12 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 	}
 
 	ngOnInit() {
-		if (this.filterOptions) {
-			this.filterOptionMap = this.filterOptions
-				.reduce((acc, option) => {
-					acc[option.name] = option;
-					return acc;
-				}, {});
-		}
-
-		combineLatest(
-			this.singleSelectionForm.valueChanges,
-			this.multiSelectionForm.valueChanges
-		).pipe(
+		this.formGroup.valueChanges.pipe(
 			filter(it => !this.pauseFormUpdates),
 			takeUntil(this.onDestroy$)
 		)
-			.subscribe(([singleSelection, multiSelection]) => {
-				this.updateParams(singleSelection, multiSelection);
+			.subscribe((value: FilterFormValue) => {
+				this.queryParamChange.emit(this.getParams(value));
 			});
 	}
 
@@ -66,164 +65,73 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 	 * @param {SimpleChanges} changes
 	 */
 	ngOnChanges(changes: SimpleChanges): void {
-		if (changes["filterOptions"] && this.filterOptions) {
-			this.filterOptionMap = this.filterOptions
-				.reduce((acc, option) => {
-					acc[option.name] = option;
-					return acc;
-				}, {});
-
+		if ((changes["filterOptions"] || changes["queryParams"]) && this.filterOptions) {
 			this.pauseFormUpdates = true;
 			this.filterOptions
 				.forEach(option => {
-					if (option.selectType === "single") {
-						const selectedChild = option.children.find(child => child["selected"])
-							.name;
-						if (!this.singleSelectionForm.contains(option.name)) {
-							this.singleSelectionForm.addControl(option.name, this.formBuilder.control(
-								selectedChild
-							));
-						} else {
-							this.singleSelectionForm.get(option.name).setValue(selectedChild, {emitEvent: false});
-						}
-					} else {
-						const value = option.children
-							.reduce((acc, child) => {
-								acc[child.name] = child["selected"];
-								return acc;
-							}, {});
-						if (!this.multiSelectionForm.contains(option.name)) {
-							this.multiSelectionForm.addControl(option.name, this.formBuilder.group(
-								value
-							));
-						} else {
-							this.multiSelectionForm.get(option.name).setValue(value, {emitEvent: false});
+					let value = option.toFormValue(this.queryParams);
+					const childFormGroup: FormGroup = (this.formGroup.get(option.type) as FormGroup);
+					if(childFormGroup.contains(option.key)){
+						childFormGroup.get(option.key).setValue(value, {emitEvent: false});
+					}
+					else{
+						switch (option.type) {
+							case "single":
+							case "shop-item":
+								childFormGroup.addControl(option.key, this.formBuilder.control(value));
+								break;
+							case "multiple":
+								childFormGroup.addControl(option.key, this.formBuilder.group(
+									Object.keys(value).reduce((acc, key) => {
+										acc[key] = this.formBuilder.control(value[key]);
+										return acc;
+									}, {})
+								));
+								break;
+							case "date-range":
+								childFormGroup.addControl(option.key, this.formBuilder.group({
+									from: this.formBuilder.control((value as any).from),
+									to: this.formBuilder.control((value as any).to)
+								}));
+								break;
 						}
 					}
 				});
 
+			this.formGroup.updateValueAndValidity();
 			this.pauseFormUpdates = false;
 		}
 	}
 
-	private updateParams(singleSelection: { [key: string]: string }, multiSelection: { [key: string]: { [key: string]: boolean } }) {
-		this.updateQueryParameters(
-			this.getSingleSelectionParams(singleSelection),
-			this.getMultiSelectionParams(multiSelection)
-		)
-	}
-
-	private getChildParams(children: MultiLevelSelectLeaf[]) {
-		return children.reduce((params: Params, child: MultiLevelSelectLeaf) => {
-			return child.query.reduce((acc, query) => {
-				let previousValue = (acc[query.key] && acc[query.key].split(",")) || [];
-				acc[query.key] = [...previousValue, ...query.values].join(",");
-				return acc;
-			}, params);
+	private getParams(value: FilterFormValue): Params {
+		return this.filterOptions.reduce((params, option) => {
+			return {
+				...params,
+				...this.getOptionParams(value, option)
+			};
 		}, {});
 	}
 
-	/**
-	 *
-	 * @param selection
-	 */
-	getSingleSelectionParams(selection: { [key: string]: string }): Params {
-		return Object.keys(selection)
-			.reduce((acc, parentKey) => {
-				const parent = (this.filterOptionMap[parentKey] as MultiLevelSelectParent);
-
-				if (!parent) {
-					return acc;
-				}
-
-				(parent.children as MultiLevelSelectLeaf[]).forEach(child => {
-					child.query.forEach(query => {
-						acc[query.key] = "";
-					})
-				});
-
-				const childParams = this.getChildParams((parent.children as MultiLevelSelectLeaf[])
-					.filter(child => selection[parentKey] === child.name)
+	private getOptionParams(value: FilterFormValue, option: FilterOption): Params {
+		switch (option.type) {
+			case "single":
+				return option.toQueryParams(value.single[option.key]);
+			case "multiple":
+				return option.toQueryParams(
+					Object.keys(value.multiple[option.key])
+						.filter(key => value.multiple[option.key][key])
 				);
-
-				return {...acc, ...childParams};
-			}, {});
-	}
-
-	/**
-	 *
-	 * @param selection
-	 */
-	getMultiSelectionParams(selection: { [key: string]: { [key: string]: boolean } }): Params {
-		return Object.keys(selection)
-			.reduce((acc, parentKey) => {
-				const parent = (this.filterOptionMap[parentKey] as MultiLevelSelectParent);
-
-				if (!parent) {
-					return acc;
-				}
-
-				(parent.children as MultiLevelSelectLeaf[]).forEach(child => {
-					child.query.forEach(query => {
-						acc[query.key] = "";
-					})
+			case "date-range":
+				return option.toQueryParams({
+					from: value["date-range"][option.key].from,
+					to: value["date-range"][option.key].to
 				});
-
-				const childParams = this.getChildParams((parent.children as MultiLevelSelectLeaf[])
-					.filter(child => selection[parentKey][child.name])
-				);
-
-				return {...acc, ...childParams};
-			}, {});
+			case "shop-item":
+				return option.toQueryParams(value["shop-item"][option.key]);
+		}
+		return {};
 	}
 
-	/**
-	 *
-	 * @param singleSelection
-	 * @param multiSelection
-	 */
-	updateQueryParameters(singleSelection: Params, multiSelection: Params) {
-		const combined = {...singleSelection, ...multiSelection};
-
-		this.queryParamChange.emit(combined);
-	}
-
-
-	/**
-	 *
-	 * @param {MultiLevelSelectParent} option
-	 */
-	updateQueryParams(option: MultiLevelSelectParent) {
-		const children = option.children
-			.filter(child => {
-				if (isMultiLevelSelectLeaf(child)) {
-					return child.selected
-				}
-				return false;
-			})
-			.map(child => (<MultiLevelSelectLeaf>child));
-
-		let queryParams: Params = children
-			.reduce((params: Params, child) => {
-				return child.query.reduce((acc, query) => {
-					let previousValue = (acc[query.key] && acc[query.key].split(",")) || [];
-					acc[query.key] = [...previousValue, ...query.values].join(",");
-					return acc;
-				}, params);
-			}, {});
-
-		option.children
-			.map(child => (<MultiLevelSelectLeaf>child))
-			.forEach(child => {
-				child.query.forEach(query => {
-					if (!queryParams[query.key]) {
-						queryParams[query.key] = "";
-					}
-				})
-			});
-
-		this.queryParamChange.emit(queryParams);
-	}
 
 	startFiltering() {
 		this.open = true;
@@ -236,8 +144,8 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 			autoFocus: false,
 			data: {
 				filterOptions: this.filterOptions,
-				singleSelectionForm: this.singleSelectionForm,
-				multiSelectionForm: this.multiSelectionForm,
+				//todo
+				value: this.formGroup.value,
 			}
 		});
 		//stop automatic url updating

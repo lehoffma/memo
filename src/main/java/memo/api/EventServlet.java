@@ -3,13 +3,13 @@ package memo.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
-import memo.api.util.UrlParseHelper;
 import memo.auth.AuthenticationService;
 import memo.communication.strategy.ShopItemNotificationStrategy;
 import memo.data.EventRepository;
-import memo.data.model.SerializationOption;
+import memo.data.StockRepository;
 import memo.model.*;
-import memo.util.model.*;
+import memo.util.model.EventType;
+import memo.util.model.Page;
 import org.apache.logging.log4j.LogManager;
 
 import javax.enterprise.context.RequestScoped;
@@ -20,14 +20,16 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Function;
 
 @Path("/event")
 @Named
 @RequestScoped
 public class EventServlet extends AbstractApiServlet<ShopItem> {
     private EventRepository eventRepository;
+    private StockRepository stockRepository;
 
     public EventServlet() {
 
@@ -36,11 +38,13 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
     @Inject
     public EventServlet(
             EventRepository eventRepository,
+            StockRepository stockRepository,
             ShopItemNotificationStrategy notifyStrategy,
             AuthenticationService authService
     ) {
         super();
         this.eventRepository = eventRepository;
+        this.stockRepository = stockRepository;
         authenticationStrategy = eventRepository.getAuthenticationStrategy();
         notificationStrategy = notifyStrategy;
         authenticationService = authService;
@@ -90,11 +94,42 @@ public class EventServlet extends AbstractApiServlet<ShopItem> {
     public List<WaitingListEntry> getWaitingList(@Context HttpServletRequest request) {
         Page<ShopItem> shopItemPage = (Page<ShopItem>) this.get(request, eventRepository);
         List<ShopItem> shopItems = shopItemPage.getContent();
-        if(shopItems.isEmpty()){
+        if (shopItems.isEmpty()) {
             throw new NotFoundException();
         }
         ShopItem item = shopItems.get(0);
         return item.getWaitingList();
+    }
+
+    private <T> List<T> getStockPropertyList(HttpServletRequest request, Function<List<ShopItem>, List<T>> get) {
+        //todo rewrite this with criteria query, since this is neither scalable nor best practice
+        Page<ShopItem> shopItemPage = (Page<ShopItem>) this.get(request, eventRepository);
+        List<ShopItem> shopItems = shopItemPage.getContent();
+        if (shopItems.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return get.apply(shopItems);
+    }
+
+    @GET
+    @Path("/colors")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<Color> getColors(@Context HttpServletRequest request) {
+        return this.getStockPropertyList(request, stockRepository::getColors);
+    }
+
+    @GET
+    @Path("/sizes")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<String> getSizes(@Context HttpServletRequest request) {
+        return this.getStockPropertyList(request, stockRepository::getSizes);
+    }
+
+    @GET
+    @Path("/materials")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<String> getMaterials(@Context HttpServletRequest request) {
+        return this.getStockPropertyList(request, stockRepository::getMaterials);
     }
 
     @POST

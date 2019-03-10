@@ -9,6 +9,8 @@ import memo.data.StockRepository;
 import memo.model.Color;
 import memo.model.ShopItem;
 import memo.model.Stock;
+import memo.model.WaitingListEntry;
+import memo.util.model.Page;
 import org.apache.logging.log4j.LogManager;
 
 import javax.enterprise.context.RequestScoped;
@@ -19,6 +21,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/stock")
 @Named
@@ -51,6 +54,8 @@ public class StockServlet extends AbstractApiServlet<Stock> {
     public Object get(@Context HttpServletRequest request) {
         return this.get(request, stockRepository);
     }
+
+
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})

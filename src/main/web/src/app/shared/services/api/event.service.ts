@@ -5,7 +5,7 @@ import {createTour, Tour} from "../../../shop/shared/model/tour";
 import {createParty, Party} from "../../../shop/shared/model/party";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {createMerch, Merchandise} from "../../../shop/shared/model/merchandise";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {mergeMap, tap} from "rxjs/operators";
 import {Filter} from "../../model/api/filter";
@@ -17,6 +17,8 @@ import {setProperties} from "../../model/util/base-object";
 import {CapacityService} from "./capacity.service";
 import {StockService} from "./stock.service";
 import {UserService} from "./user.service";
+import {MerchColor} from "../../../shop/shared/model/merch-color";
+import {ApiCache} from "../../utility/cache/api-cache";
 
 @Injectable()
 export class EventService extends ServletService<Event> {
@@ -29,6 +31,31 @@ export class EventService extends ServletService<Event> {
 
 	jsonToObject(json: any): Event {
 		return setProperties(this.getFactoryFromType((json["type"]))(), json);
+	}
+
+	urlCaches = {
+		sizes: new ApiCache<string>(),
+		colors: new ApiCache<MerchColor>(),
+		materials: new ApiCache<string>()
+	};
+
+	getByUrl<ReturnType>(cache: ApiCache<ReturnType>, url: string, filter: Filter): Observable<ReturnType[]> {
+		const params = this.buildParams(filter, PageRequest.all(), Sort.none());
+		const request = this.performRequest(this.http.get<ReturnType[]>(url, {params}));
+
+		return cache.other(params, request);
+	}
+
+	getSizes(filter: Filter): Observable<string[]> {
+		return this.getByUrl(this.urlCaches.sizes, "/api/event/sizes", filter);
+	}
+
+	getColors(filter: Filter): Observable<MerchColor[]> {
+		return this.getByUrl(this.urlCaches.colors, "/api/event/colors", filter);
+	}
+
+	getMaterials(filter: Filter): Observable<string[]> {
+		return this.getByUrl(this.urlCaches.materials, "/api/event/materials", filter);
 	}
 
 	/**
@@ -123,7 +150,7 @@ export class EventService extends ServletService<Event> {
 	 */
 	updateCapacities(event: Event) {
 		this.capacityService.invalidateValue(event.id);
-		if(integerToType(event.type) === EventType.merch){
+		if (integerToType(event.type) === EventType.merch) {
 			this.stockService.invalidateValue(event.id);
 		}
 		event.author.forEach(id => this.userService.invalidateValue(id));

@@ -1,7 +1,8 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {AbstractControl, FormGroup} from "@angular/forms";
-import {MultiLevelSelectParent} from "../../../utility/multi-level-select/shared/multi-level-select-parent";
 import {animate, state, style, transition, trigger} from "@angular/animations";
+import {FilterOption} from "../../filter-options/filter-option";
+import {SingleFilterOption} from "../../filter-options/single-filter-option";
 
 @Component({
 	selector: "memo-filter-sidebar",
@@ -22,9 +23,8 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterSidebarComponent implements OnInit {
-	@Input() filterOptions: MultiLevelSelectParent[];
-	@Input() singleSelectionForm: FormGroup;
-	@Input() multiSelectionForm: FormGroup;
+	@Input() filterOptions: FilterOption[];
+	@Input() formGroup: FormGroup;
 	@Input() showActions = false;
 	@Output() onCancel = new EventEmitter();
 	@Output() onSubmit = new EventEmitter();
@@ -42,6 +42,7 @@ export class FilterSidebarComponent implements OnInit {
 	 * @param method
 	 */
 	selectOption(control: AbstractControl, method: any) {
+		//multiple: {[key: string]: boolean}
 		const value = control.value;
 		control.setValue(Object.keys(value).reduce((acc, key) => {
 			acc[key] = key === method;
@@ -49,42 +50,53 @@ export class FilterSidebarComponent implements OnInit {
 		}, {}));
 	}
 
-	withReset(option: MultiLevelSelectParent) {
-		if (option.selectType === "multiple") {
-			return this.multiSelectionHasFilterApplied(this.multiSelectionForm.get(option.name))
-		} else {
-			//there is a reset option
-			if (option.children.some(child => child.name === "Alle")) {
-				return this.singleSelectionForm.get(option.name).value !== "Alle";
-			}
+	withReset(option: FilterOption) {
+		//todo as observable?
+		let group = this.formGroup.get(option.type);
+		if (!group) {
+			return false;
+		}
+		group = group.get(option.key);
+		if (!group) {
+			return false;
+		}
+
+		//todo move to classes
+		const value = group.value;
+		switch (option.type) {
+			case "single":
+				const resetOption = option.values.find(child => child.label === SingleFilterOption.ALL_OPTION);
+				return resetOption && value !== resetOption.key;
+			case "multiple":
+				return Object.keys(value).some(key => value[key]);
+			case "date-range":
+				return value.from || value.to;
+			case "shop-item":
+				return value && value.length > 0;
 		}
 	}
 
-	multiSelectionHasFilterApplied(control: AbstractControl) {
-		const value = control.value;
-		return Object.keys(value).some(key => value[key]);
-	}
-
-	reset(option: MultiLevelSelectParent) {
-		if (option.selectType === "multiple") {
-			let control = this.multiSelectionForm.get(option.name);
-			this.resetMultiSelection(control);
-		} else {
-			let control = this.singleSelectionForm.get(option.name);
-			this.resetSingleSelection(control);
+	reset(option: FilterOption) {
+		const formControl = this.formGroup.get(option.type).get(option.key);
+		switch (option.type) {
+			case "single":
+				formControl.setValue("Alle", {emitEvent: true});
+				break;
+			case "multiple":
+				formControl.setValue(Object.keys(formControl.value).reduce((acc, key) => {
+					acc[key] = false;
+					return acc;
+				}, {}), {emitEvent: true});
+				break;
+			case "date-range":
+				formControl.setValue({
+					from: undefined,
+					to: undefined
+				}, {emitEvent: true});
+				break;
+			case "shop-item":
+				formControl.setValue([], {emitEvent: true});
 		}
-	}
-
-	resetSingleSelection(control: AbstractControl) {
-		control.setValue("Alle");
-	}
-
-	resetMultiSelection(control: AbstractControl) {
-		const value = control.value;
-		control.setValue(Object.keys(value).reduce((acc, key) => {
-			acc[key] = false;
-			return acc
-		}, {}));
 	}
 
 

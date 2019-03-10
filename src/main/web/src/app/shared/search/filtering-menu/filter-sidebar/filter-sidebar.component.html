@@ -1,29 +1,34 @@
 <div *ngFor="let option of filterOptions" [@slideUp]="1" class="filter-category-container">
-	<memo-filter-option-header [title]="option.name"
+	<memo-filter-option-header [title]="option.title"
 							   [withReset]="withReset(option)"
 							   (onReset)="reset(option)"
 	></memo-filter-option-header>
 
-	<div class="option-children" *ngIf="option.selectType === 'multiple'; else radioGroup">
-		<memo-filter-option-row *ngFor="let child of option.children"
-								[value]="child.name"
-
-								[formControl]="multiSelectionForm.get(option.name).get(child.name)"
-								(selectOnlyThisOption)="selectOption(multiSelectionForm.get(option.name), child.name)">
-
-
-		</memo-filter-option-row>
-	</div>
-	<ng-template #radioGroup>
-		<mat-radio-group [formControl]="singleSelectionForm.get(option.name)">
-			<mat-radio-button *ngFor="let child of option.children" [value]="child.name">
-				{{child.name}}
-			</mat-radio-button>
-		</mat-radio-group>
-
-		<!--todo ngIf type === "date-range"-->
-		<!--todo ngIf type === "filter-by-event"-->
-	</ng-template>
+	<ng-container [ngSwitch]="option.type">
+		<div class="option-children" *ngSwitchCase="'multiple'">
+			<ng-container *ngFor="let child of option.values">
+				<memo-filter-option-row *ngIf="formGroup.get(option.type)?.get(option.key)?.get(child.key)"
+										[value]="child.label"
+										[formControl]="formGroup.get(option.type)?.get(option.key)?.get(child.key)"
+										(selectOnlyThisOption)="selectOption(formGroup.get(option.type).get(option.key), child.key)">
+				</memo-filter-option-row>
+			</ng-container>
+		</div>
+		<ng-container *ngSwitchCase="'single'">
+			<mat-radio-group *ngIf="formGroup.get(option.type)?.get(option.key)"
+							 [formControl]="formGroup.get(option.type)?.get(option.key)">
+				<mat-radio-button *ngFor="let child of option.values" [value]="child.key">
+					{{child.label}}
+				</mat-radio-button>
+			</mat-radio-group>
+		</ng-container>
+		<div *ngSwitchCase="'date-range'">
+			Date-range
+		</div>
+		<div *ngSwitchCase="'by-item'">
+			By-Item
+		</div>
+	</ng-container>
 </div>
 
 <div class="close-actions" *ngIf="showActions">

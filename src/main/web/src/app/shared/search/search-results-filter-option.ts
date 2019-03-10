@@ -1,4 +1,4 @@
-export enum FilterOptionType {
+export enum SearchResultsFilterOption {
 	EVENT_CATEGORY,
 	PRICE,
 	DATE,

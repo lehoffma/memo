@@ -1,6 +1,7 @@
 <div class="sidebar desktop">
 	<button mat-raised-button color="accent" *ngIf="canAdd" (click)="add()">Hinzufügen</button>
 	<memo-filtering-menu [filterOptions]="filterOptions"
+						 [queryParams]="queryParams$ | async"
 						 (queryParamChange)="updateQueryParams($event)">
 
 	</memo-filtering-menu>
@@ -25,7 +26,9 @@
 		</div>
 	</div>
 	<div class="mobile filter-sort-container">
-		<memo-filtering-menu [filterOptions]="filterOptions" (queryParamChange)="updateQueryParams($event)">
+		<memo-filtering-menu [filterOptions]="filterOptions"
+							 [queryParams]="queryParams$ | async"
+							 (queryParamChange)="updateQueryParams($event)">
 
 		</memo-filtering-menu>
 		<memo-sorting-dropdown [defaultOption]="defaultOption"

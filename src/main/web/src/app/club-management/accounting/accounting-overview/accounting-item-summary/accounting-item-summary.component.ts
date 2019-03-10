@@ -6,6 +6,7 @@ import {MultiLevelSelectParent} from "../../../../shared/utility/multi-level-sel
 import {debounceTime, map, scan} from "rxjs/operators";
 import {FilterOptionFactoryService} from "../../../../shared/search/filter-option-factory.service";
 import {SearchFilterService} from "../../../../shared/search/search-filter.service";
+import {FilterOption} from "../../../../shared/search/filter-options/filter-option";
 
 @Component({
 	selector: "memo-accounting-item-summary",
@@ -25,17 +26,17 @@ export class AccountingItemSummaryComponent implements OnInit {
 			totalBalance: -500.25
 		}
 	]);
-	private _filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([
-		this.filterOptionFactory.category,
-		this.filterOptionFactory.price,
-		this.filterOptionFactory.date,
+	private _filterOptions$ = new BehaviorSubject<FilterOption[]>([
+		this.filterOptionFactory.category2,
+		this.filterOptionFactory.price2,
+		this.filterOptionFactory.date2,
 	]);
-	filterOptions$: Observable<MultiLevelSelectParent[]> = this._filterOptions$
+	filterOptions$: Observable<FilterOption[]> = this._filterOptions$
 		.asObservable()
 		.pipe(
 			debounceTime(200),
 			scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService)),
-			map(options => options.filter(option => option.children && option.children.length > 0)),
+			map(options => options.filter(option => option.isShown())),
 		);
 	onDestroy$ = new Subject();
 

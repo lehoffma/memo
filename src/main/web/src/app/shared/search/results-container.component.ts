@@ -1,10 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {SortingOption} from "../model/sorting-option";
-import {MultiLevelSelectParent} from "../utility/multi-level-select/shared/multi-level-select-parent";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {Page} from "../model/api/page";
 import {first} from "rxjs/operators";
 import {QueryParameterService} from "../services/query-parameter.service";
+import {FilterOption} from "./filter-options/filter-option";
 
 @Component({
 	selector: "memo-results-container",
@@ -19,13 +19,14 @@ export class ResultsContainerComponent implements OnInit {
 	@Input() defaultOption: SortingOption<any>;
 	@Input() withoutUnsorted = false;
 
-	@Input() filterOptions: MultiLevelSelectParent[];
+	@Input() filterOptions: FilterOption[];
 
 	@Input() canAdd = false;
 
 	@Output() pageChange: EventEmitter<number> = new EventEmitter();
 	@Output() onAdd: EventEmitter<any> = new EventEmitter();
 
+	queryParams$ = this.activatedRoute.queryParams;
 	constructor(private activatedRoute: ActivatedRoute,
 				private router: Router) {
 	}

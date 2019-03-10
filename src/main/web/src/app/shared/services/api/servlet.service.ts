@@ -70,10 +70,11 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 	/**
 	 *
 	 * @param {HttpParams} params
+	 * @param url
 	 * @returns {Observable<Page<T>>}
 	 */
-	getRequest(params: HttpParams): Observable<Page<T>> {
-		return this.performRequest(this.http.get<Page<T>>(this.baseUrl, {params}))
+	getRequest(params: HttpParams, url: string = this.baseUrl): Observable<Page<T>> {
+		return this.performRequest(this.http.get<Page<T>>(url, {params}))
 			.pipe(
 				mergeMap((json) => {
 					return combineLatest(
@@ -177,8 +178,20 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 	 * @returns {Observable<Page<T>>}
 	 */
 	get(filter: Filter, pageRequest: PageRequest, sort: Sort): Observable<Page<T>> {
+		return this.getForUrl(this.baseUrl, filter, pageRequest, sort);
+	}
+
+	/**
+	 *
+	 * @param url
+	 * @param {Filter} filter
+	 * @param {PageRequest} pageRequest
+	 * @param {Sort} sort
+	 * @returns {Observable<Page<T>>}
+	 */
+	getForUrl(url: string, filter: Filter, pageRequest: PageRequest, sort: Sort): Observable<Page<T>> {
 		const params = this.buildParams(filter, pageRequest, sort);
-		const request = this.getRequest(params)
+		const request = this.getRequest(params, url)
 			.pipe(
 				map(page => this.addPrevAndNext(page, filter, pageRequest, sort))
 			);

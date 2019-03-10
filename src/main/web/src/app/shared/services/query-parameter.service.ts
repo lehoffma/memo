@@ -16,6 +16,7 @@ export class QueryParameterService {
 	 */
 	static updateQueryParams(paramMap: ParamMap, queryParams: Params): Params {
 		const oldParamKeys = paramMap.keys
+			.filter(key => ["page", "pageSize"].includes(key))
 			.filter(key => !Object.keys(queryParams).includes(key));
 
 		let newQueryParams: Params = {};
@@ -23,9 +24,11 @@ export class QueryParameterService {
 		oldParamKeys.forEach(key => newQueryParams[key] = paramMap.get(key));
 		Object.keys(queryParams)
 		//ignore empty parameter values (i.e. remove empty values from the param map)
+			.filter(key => queryParams[key])
 			.filter(key => ("" + queryParams[key]).length > 0)
 			.forEach(key => newQueryParams[key] = queryParams[key]);
 
+		console.log(paramMap, queryParams, newQueryParams);
 		return newQueryParams;
 	}
 }

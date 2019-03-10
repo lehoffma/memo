@@ -8,7 +8,7 @@ import {SearchFilterService} from "../../../../shared/search/search-filter.servi
 import {SortingOption, SortingOptionHelper} from "../../../../shared/model/sorting-option";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterOptionBuilder} from "../../../../shared/search/filter-option-builder.service";
-import {FilterOptionType} from "../../../../shared/search/filter-option-type";
+import {SearchResultsFilterOption} from "../../../../shared/search/search-results-filter-option";
 import {BehaviorSubject, forkJoin, Observable, of, Subject} from "rxjs";
 import {debounceTime, filter, first, map, mergeMap, scan, takeUntil} from "rxjs/operators";
 import {Event} from "../../../../shop/shared/model/event";
@@ -17,6 +17,7 @@ import {Direction, Sort} from "../../../../shared/model/api/sort";
 import {Filter} from "../../../../shared/model/api/filter";
 import {PagedDataSource} from "../../../../shared/utility/material-table/paged-data-source";
 import {QueryParameterService} from "../../../../shared/services/query-parameter.service";
+import {FilterOption} from "../../../../shared/search/filter-options/filter-option";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -38,7 +39,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 			Sort.by(Direction.DESCENDING, "title")
 		),
 	];
-	filterOptions$ = new BehaviorSubject<MultiLevelSelectParent[]>([]);
+	filterOptions$ = new BehaviorSubject<FilterOption[]>([]);
 
 	filter$ = new BehaviorSubject<Filter>(Filter.by({type: "3"}));
 	sort$ = new BehaviorSubject<Sort>(Sort.none());
@@ -66,17 +67,16 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.filterOptionBuilder.empty()
 			.withOptions(
-				FilterOptionType.PRICE,
-				FilterOptionType.COLOR,
-				FilterOptionType.MATERIAL,
-				FilterOptionType.SIZE
+				SearchResultsFilterOption.PRICE,
+				SearchResultsFilterOption.COLOR,
+				SearchResultsFilterOption.MATERIAL,
+				SearchResultsFilterOption.SIZE
 			)
 			.build(Filter.none())
 			.pipe(
-				map(filterOptions => this.searchFilterService.initFilterMenu(this.activatedRoute, filterOptions)),
 				debounceTime(200),
 				scan(this.searchFilterService.mergeFilterOptions.bind(this.searchFilterService)),
-				map(options => options.filter(option => option.children && option.children.length > 0)),
+				map(options => options.filter(option => option.isShown())),
 				map(options => [...options]),
 			)
 			.subscribe(val => this.filterOptions$.next(val));
@@ -122,6 +122,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 	 */
 	getStockEntryList$(merch$: Observable<Event[]>) {
 		//todo pagination?
+		//todo move to server side
 		return merch$
 			.pipe(
 				filter(it => it !== null),
