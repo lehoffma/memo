@@ -1,71 +1,16 @@
-<div class="overview-options" [ngClass]="{showOptions: showOptions}">
-
-	<a mat-raised-button *ngIf="(orderOverviewService.userCanAddOrders$ | async) && !mobile"
-	   [matTooltip]="'Bestellung hinzufügen'" color="accent"
-	   [matTooltipPosition]="'below'"
-	   routerLink="/management/create/orders"
-	   class="add-order-button">
-		Hinzufügen
-	</a>
-
-	<memo-order-options class="mat-elevation-z3" [hidden]="!(!mobile || showOptions)">
-	</memo-order-options>
-
-	<button mat-button color="primary" class="options-button" (click)="showOptions = !showOptions">
-		<mat-icon>{{showOptions ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
-	</button>
-</div>
-
-
-<div class="overview-data-container"
-	 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 36px)' : 'calc(100%)')">
-
-	<div class="option-toolbar">
-		<div class="add-button">
-			<a mat-stroked-button *ngIf="(orderOverviewService.userCanAddOrders$ | async) && mobile && (!showOptions)"
-			   [matTooltip]="'Bestellung hinzufügen'"
-			   [matTooltipPosition]="'below'"
-			   routerLink="/management/create/orders"
-			   class="add-order-button">
-				Hinzufügen
-			</a>
-
-		</div>
-		<memo-sorting-dropdown [defaultOption]="sortingOptions[0]"
-							   [withoutUnsorted]="true"
-							   [sortingOptions]="sortingOptions"></memo-sorting-dropdown>
-	</div>
-
-	<div class="content-wrapper">
-
-		<div *ngIf="!(orderOverviewService.loading$ | async) && (orderOverviewService.orders$|async)?.length === 0"
-			 class="no-results">
-			Keine Ergebnisse.
-			<!--todo redesign order empty state-->
-		</div>
-
-		<div class="content" *ngIf="(orderOverviewService.orders$|async) as orders">
-			<memo-order-renderer *ngFor="let order of orders"
-								 [withActions]="true"
-								 (onRemove)="orderOverviewService.removeOrder($event)"
-								 [orderEntry]="order">
-			</memo-order-renderer>
-		</div>
-
-		<mat-paginator #paginator class="mat-elevation-z3"
-					   [pageSize]="pageSize"
-					   [pageIndex]="pageIndex"
-					   [length]="orderOverviewService.dataSource.dataLength"
-					   [pageSizeOptions]="[5, 10, 20, 50]"
-					   [showFirstLastButtons]="true"></mat-paginator>
-	</div>
-
-
-	<div *ngIf="orderOverviewService.loading$ | async">
-		<div class="loader-wrapper">
-			<div class="loader"></div>
-		</div>
-	</div>
-
-
-</div>
+<memo-results-container [filterOptions]="filterOptions"
+						[sortingOptions]="sortingOptions"
+						[defaultOption]="sortingOptions[0]"
+						[withoutUnsorted]="true"
+						[title]="'Bestellungen'"
+						[page]="orderOverviewService.dataSource.currentPage$ | async"
+						[canAdd]="orderOverviewService.userCanAddOrders$ | async"
+						(onAdd)="linkToCreatePage()"
+						(pageChange)="orderOverviewService.pageAt($event)"
+>
+	<memo-order-renderer *ngFor="let order of (orderOverviewService.orders$|async)"
+						 [withActions]="true"
+						 (onRemove)="orderOverviewService.removeOrder($event)"
+						 [orderEntry]="order">
+	</memo-order-renderer>
+</memo-results-container>

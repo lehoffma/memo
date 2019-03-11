@@ -11,7 +11,6 @@ import {ProfileLinkComponent} from "./renderers/profile-renderer/profile-link/pr
 import {ProfilePreviewComponent} from "./renderers/profile-renderer/profile-preview/profile-preview.component";
 import {CapacityRendererComponent} from "./renderers/capacity-renderer/capacity-renderer.component";
 import {ShareDialogComponent} from "./share-dialog/share-dialog.component";
-import {UserAutocompleteComponent} from "./forms/autocomplete/user-autocomplete/user-autocomplete.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ShareButtonsModule} from "@ngx-share/buttons";
 import {DisplayErrorDirective} from "./template-validators/display-error.directive";
@@ -28,7 +27,6 @@ import {AddressEntryComponent} from "./forms/address-form/address-entry.componen
 import {BankAccountFormComponent} from "./forms/bank-account-form/bank-account-form.component";
 import {BankAccountEntryComponent} from "./forms/bank-account-form/bank-account-entry.component";
 import {BankAccountInputFormComponent} from "./forms/bank-account-form/bank-account-input-form.component";
-import {EventAutocompleteComponent} from "./forms/autocomplete/event-autocomplete/event-autocomplete.component";
 import {OrderedItemFormComponent} from "./forms/ordered-item-form/ordered-item-form.component";
 import {OrderedItemInputFormComponent} from "./forms/ordered-item-form/ordered-item-input-form.component";
 import {OrderedItemEntryComponent} from "./forms/ordered-item-form/ordered-item-entry.component";
@@ -47,6 +45,7 @@ import {JSONLdComponent} from "./utility/seo/json-ld.component";
 import {EventDestinationRendererComponent} from "./renderers/event-destination-renderer/event-destination-renderer.component";
 import {SharedSearchModule} from "./search/shared-search.module";
 import {LetModule} from "./utility/let/let.module";
+import {AutocompleteFormsModule} from "./forms/autocomplete/autocomplete-forms.module";
 
 const forms = [
 	DisableIfDirective,
@@ -60,8 +59,6 @@ const forms = [
 	BankAccountFormComponent,
 	BankAccountEntryComponent,
 	BankAccountInputFormComponent,
-
-	EventAutocompleteComponent,
 
 	OrderedItemEntryComponent,
 	OrderedItemFormComponent,
@@ -83,6 +80,7 @@ const forms = [
 		LazyLoadingModule,
 		SharedPipesModule,
 		SharedSearchModule,
+		AutocompleteFormsModule,
 		LetModule,
 	],
 	declarations: [
@@ -100,14 +98,11 @@ const forms = [
 		ProfilePreviewComponent,
 		CapacityRendererComponent,
 		ShareDialogComponent,
-		UserAutocompleteComponent,
 		DisplayErrorDirective,
 		UserPreviewDirective,
 		OrderRendererComponent,
 
 		...forms,
-
-		EventAutocompleteComponent,
 		ScrollSpyDirective,
 		SpiedOnElementDirective,
 		BreadcrumbNavigationComponent,
@@ -121,6 +116,7 @@ const forms = [
 		LazyLoadingModule,
 		//todo remove
 		SharedSearchModule,
+		AutocompleteFormsModule,
 		LetModule,
 
 		EventCalendarComponent,
@@ -138,7 +134,6 @@ const forms = [
 		ProfileLinkComponent,
 
 		CapacityRendererComponent,
-		UserAutocompleteComponent,
 
 		DisplayErrorDirective,
 

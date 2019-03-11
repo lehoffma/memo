@@ -1,14 +1,15 @@
-import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {Dimension, WindowService} from "../../shared/services/window.service";
+import {Component, OnDestroy, OnInit} from "@angular/core";
+import {WindowService} from "../../shared/services/window.service";
 import {OrderOverviewService} from "./order-overview.service";
-import {MatPaginator} from "@angular/material";
 import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
 import {Direction, Sort} from "../../shared/model/api/sort";
 import {Order} from "../../shared/model/order";
 import {ActivatedRoute} from "@angular/router";
-import {map, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
-import {PageRequest} from "../../shared/model/api/page-request";
+import {FilterOption, FilterOptionType} from "../../shared/search/filter-options/filter-option";
+import {DateRangeFilterOption} from "../../shared/search/filter-options/date-range-filter-option";
+import {ShopItemFilterOption} from "../../shared/search/filter-options/shop-item-filter-option";
+import {EventService} from "../../shared/services/api/event.service";
 
 @Component({
 	selector: "memo-order-overview",
@@ -17,58 +18,54 @@ import {PageRequest} from "../../shared/model/api/page-request";
 	providers: [OrderOverviewService]
 })
 export class OrderOverviewComponent implements OnInit, OnDestroy {
-	showOptions = true;
-	mobile = false;
-
 	sortingOptions: SortingOption<any>[] = orderSortingOptions;
+	filterOptions: FilterOption<FilterOptionType>[] = [
+		new DateRangeFilterOption(
+			"timestamp",
+			"Datum",
+		),
+		new ShopItemFilterOption(
+			"item",
+			"Nach Item filtern",
+			id => this.itemService.getById(id),
+
+		)
+	];
+
 
 	onDestroy$ = new Subject<any>();
 	pageIndex = (+this.activatedRoute.snapshot.queryParamMap.get("page") || 1) - 1;
 	pageSize = (+this.activatedRoute.snapshot.queryParamMap.get("pageSize") || 10);
 
-	@ViewChild(MatPaginator) paginator: MatPaginator;
-
 	constructor(private windowService: WindowService,
 				private activatedRoute: ActivatedRoute,
+				private itemService: EventService,
 				public orderOverviewService: OrderOverviewService) {
-		this.windowService.dimension$.pipe(takeUntil(this.onDestroy$))
-			.subscribe(dimensions => this.onResize(dimensions));
 	}
 
 	ngOnInit() {
-		this.orderOverviewService.dataSource.setPage(this.paginator.page.pipe(
-			map(page => PageRequest.fromMaterialPageEvent(page))
-		));
-		this.orderOverviewService.dataSource.updateOn(this.paginator.page);
-		this.orderOverviewService.resetPage.pipe(takeUntil(this.onDestroy$)).subscribe(() => {
-			this.paginator.firstPage();
-		});
 	}
 
 	ngOnDestroy(): void {
-		this.onDestroy$.next();
-		this.onDestroy$.complete();
+		this.onDestroy$.next(true);
 	}
 
-	/**
-	 * Updates the columns and way the options are presented depending on the given width/height object
-	 * @param {Dimension} dimension the current window dimensions
-	 */
-	onResize(dimension: Dimension) {
-		let mobile = dimension.width < 850;
-		this.showOptions = !mobile;
-		this.mobile = mobile;
+	linkToCreatePage() {
+		console.log("todo");
 	}
+
 }
 
 
 export const orderSortingOptions: SortingOption<Order>[] = [
 	SortingOptionHelper.build(
 		"Datum neueste - älteste",
-		Sort.by(Direction.DESCENDING, "timeStamp")
+		Sort.by(Direction.DESCENDING, "timeStamp"),
+		"Neu - Alt"
 	),
 	SortingOptionHelper.build(
 		"Datum älteste - neueste",
-		Sort.by(Direction.ASCENDING, "timeStamp")
+		Sort.by(Direction.ASCENDING, "timeStamp"),
+		"Alt - Neu"
 	)
 ];

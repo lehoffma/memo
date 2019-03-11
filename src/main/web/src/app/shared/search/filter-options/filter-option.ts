@@ -1,6 +1,7 @@
 import {ShopItem} from "../../model/shop-item";
 import {Params} from "@angular/router";
 import {Observable} from "rxjs";
+import {AbstractControl, FormBuilder, FormGroup} from "@angular/forms";
 
 export enum FilterOptionType {
 	SINGLE = "single",
@@ -14,23 +15,44 @@ export interface FilterOption<Type = FilterOptionType> {
 	title: string;
 	type: Type;
 	values: Type extends "single" | "multiple"
-		? { key: string, label: string, query: { key: string; value: number |string; }[] }[]
+		? { key: string, label: string, query: { key: string; value: number | string; }[] }[]
 		: undefined;
+
 	isShown(): boolean;
+
+	reset(formControl: AbstractControl);
+
+	canBeReset(formValue: Type extends "single" ? string :
+		Type extends "multiple" ? { [key: string]: boolean } :
+			Type extends "date-range" ? { from: Date, to: Date } :
+				Type extends "shop-item" ? { items: ShopItem[], input: string } : never): boolean;
+
+	setFormValue(value: Type extends "single" ? string :
+		Type extends "multiple" ? { [key: string]: boolean } :
+			Type extends "date-range" ? { from: Date, to: Date } :
+				Type extends "shop-item" ? Observable<{ items: ShopItem[], input: string }> :
+					never, formControl: AbstractControl): Observable<any>;
+
+	addControl(value: Type extends "single" ? string :
+		Type extends "multiple" ? { [key: string]: boolean } :
+			Type extends "date-range" ? { from: Date, to: Date } :
+				Type extends "shop-item" ? Observable<{ items: ShopItem[], input: string }> :
+					never, formGroup: FormGroup, formBuilder: FormBuilder): void;
+
 	toFormValue(params: Params):
 		Type extends "single" ? string :
 			Type extends "multiple" ? { [key: string]: boolean } :
 				Type extends "date-range" ? { from: Date, to: Date } :
-					Type extends "shop-item" ? Observable<ShopItem[]> :
+					Type extends "shop-item" ? Observable<{ items: ShopItem[], input: string }> :
 						never;
-	toQueryParams(value:
-						Type extends "single" ? string :
-							Type extends "multiple" ? string[] :
-								Type extends "date-range" ? { from: Date, to: Date } :
-									Type extends "shop-item" ? ShopItem[] :
-										never) : Params;
-}
 
+	toQueryParams(value:
+					  Type extends "single" ? string :
+						  Type extends "multiple" ? string[] :
+							  Type extends "date-range" ? { from: Date, to: Date } :
+								  Type extends "shop-item" ? ShopItem[] :
+									  never): Params;
+}
 
 
 export function combineFilterParams(...paramsList: Params[]): Params {

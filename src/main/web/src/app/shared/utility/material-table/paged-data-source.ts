@@ -183,7 +183,6 @@ export class PagedDataSource<T> extends DataSource<T> {
 			takeUntil(this.onDestroy$)
 		)
 			.subscribe(event => {
-				console.log(event);
 				this.updateToPage(event.pageIndex + 1, event.pageSize, router, combineQueryParams);
 			})
 	}

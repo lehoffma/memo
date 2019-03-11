@@ -3,6 +3,10 @@
 mat-radio-group {
 	display: flex;
 	flex-direction: column;
+
+	mat-radio-button {
+		padding-left: 6px;
+	}
 }
 
 .filter-category-container {
@@ -15,6 +19,13 @@ mat-radio-group {
 		color: grey(800);
 	}
 }
+
+.date-range-container {
+	> div {
+		margin-bottom: 8px;
+	}
+}
+
 
 .close-actions {
 	display: flex;

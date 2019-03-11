@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from "@angular/core";
 import {ActivatedRoute, Params} from "@angular/router";
-import {filter, takeUntil, tap} from "rxjs/operators";
+import {filter, takeUntil} from "rxjs/operators";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {MatDialog} from "@angular/material";
 import {FilterDialogComponent} from "./filter-sidebar/filter-dialog.component";
 import {FilterOption} from "../filter-options/filter-option";
@@ -71,13 +71,11 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 				.forEach(option => {
 					let value = option.toFormValue(this.queryParams);
 					const childFormGroup: FormGroup = (this.formGroup.get(option.type) as FormGroup);
-					if(childFormGroup.contains(option.key)){
+					if (childFormGroup.contains(option.key)) {
 						childFormGroup.get(option.key).setValue(value, {emitEvent: false});
-					}
-					else{
+					} else {
 						switch (option.type) {
 							case "single":
-							case "shop-item":
 								childFormGroup.addControl(option.key, this.formBuilder.control(value));
 								break;
 							case "multiple":
@@ -93,6 +91,15 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 									from: this.formBuilder.control((value as any).from),
 									to: this.formBuilder.control((value as any).to)
 								}));
+								break;
+							case "shop-item":
+								value = value as Observable<{items: ShopItem[], input: string}>;
+								value.subscribe(it => {
+									childFormGroup.addControl(option.key, this.formBuilder.group({
+										items: this.formBuilder.control(it.items),
+										input: this.formBuilder.control(it.input)
+									}));
+								})
 								break;
 						}
 					}
@@ -127,7 +134,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 					to: value["date-range"][option.key].to
 				});
 			case "shop-item":
-				return option.toQueryParams(value["shop-item"][option.key]);
+				return option.toQueryParams(value["shop-item"][option.key]["items"]);
 		}
 		return {};
 	}
@@ -148,7 +155,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 			}
 		});
 		dialogRef.afterClosed().subscribe(value => {
-			if(value){
+			if (value) {
 				this.queryParamChange.emit(this.getParams(value))
 			}
 		})

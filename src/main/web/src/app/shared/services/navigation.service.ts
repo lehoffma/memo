@@ -46,7 +46,7 @@ export class NavigationService implements OnDestroy {
 		this.subscriptions.push(this.router.events
 			.pipe(
 				filter(val => val instanceof RoutesRecognized),
-				map(val => (<RoutesRecognized>val).state.root.queryParamMap)
+				map(val => (<RoutesRecognized>val).state.root.queryParamMap),
 			)
 			.subscribe(it => {
 				this.queryParamMap$.next(it);

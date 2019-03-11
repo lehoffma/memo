@@ -141,15 +141,6 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		this.resultsDataSource.update();
 	}
 
-	updateQueryParams($event: Params) {
-		this.activatedRoute.queryParamMap.pipe(
-			first()
-		).subscribe(paramMap => {
-			let params = QueryParameterService.updateQueryParams(paramMap, $event);
-			this.router.navigate([], {queryParams: params})
-		})
-	}
-
 	ngOnDestroy() {
 		this.onDestroy$.next(true);
 		this.onDestroy$.complete();

@@ -11,12 +11,16 @@ import {FilterSidebarComponent} from "./filtering-menu/filter-sidebar/filter-sid
 import { FilterDialogComponent } from './filtering-menu/filter-sidebar/filter-dialog.component';
 import {LetModule} from "../utility/let/let.module";
 import { PaginationComponent } from './pagination/pagination.component';
+import {AutocompleteFormsModule} from "../forms/autocomplete/autocomplete-forms.module";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
 	imports: [
 		CommonModule,
+		RouterModule,
 		ReactiveFormsModule,
 		MemoMaterialModule,
+		AutocompleteFormsModule,
 		LetModule,
 	],
 	declarations: [

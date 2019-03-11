@@ -3,6 +3,10 @@ import {AbstractControl, FormGroup} from "@angular/forms";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {FilterOption} from "../../filter-options/filter-option";
 import {SingleFilterOption} from "../../filter-options/single-filter-option";
+import {ShopItem} from "../../../model/shop-item";
+import {EventType} from "../../../../shop/shared/model/event-type";
+import {EventUtilityService} from "../../../services/event-utility.service";
+import {Event} from "../../../../shop/shared/model/event";
 
 @Component({
 	selector: "memo-filter-sidebar",
@@ -28,6 +32,7 @@ export class FilterSidebarComponent implements OnInit {
 	@Input() showActions = false;
 	@Output() onCancel = new EventEmitter();
 	@Output() onSubmit = new EventEmitter();
+	@Input() isLoading = false;
 
 	constructor() {
 	}
@@ -72,7 +77,7 @@ export class FilterSidebarComponent implements OnInit {
 			case "date-range":
 				return value.from || value.to;
 			case "shop-item":
-				return value && value.length > 0;
+				return value && value.items.length > 0;
 		}
 	}
 
@@ -89,13 +94,16 @@ export class FilterSidebarComponent implements OnInit {
 				}, {}), {emitEvent: true});
 				break;
 			case "date-range":
-				formControl.setValue({
-					from: undefined,
-					to: undefined
+				formControl.reset({
+					from: null,
+					to: null
 				}, {emitEvent: true});
 				break;
 			case "shop-item":
-				formControl.setValue([], {emitEvent: true});
+				formControl.setValue({
+					items: [],
+					input: "",
+				}, {emitEvent: true});
 		}
 	}
 
@@ -108,4 +116,18 @@ export class FilterSidebarComponent implements OnInit {
 		this.onSubmit.emit(true);
 	}
 
+	getEventType(event: Event): EventType{
+		return EventUtilityService.getEventType(event);
+	}
+
+	onRemoveEvent(i: number, formGroup: FormGroup) {
+		const currentValue = formGroup.get('items').value;
+		currentValue.splice(i, 1);
+		formGroup.get('items').setValue([...currentValue]);
+	}
+
+	addEvent(item: Event, formGroup: FormGroup) {
+		const currentValue = formGroup.get('items').value;
+		formGroup.get('items').setValue([...currentValue, item]);
+	}
 }

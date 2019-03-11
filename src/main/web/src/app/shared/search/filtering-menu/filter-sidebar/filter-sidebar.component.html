@@ -26,11 +26,56 @@
 				</mat-radio-button>
 			</mat-radio-group>
 		</ng-container>
-		<div *ngSwitchCase="'date-range'">
-			Date-range
+		<div *ngSwitchCase="'date-range'" class="date-range-container">
+			<div class="form-input-container">
+				<div class="form-label">Von</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
+					<input matInput [matDatepicker]="startingDatePicker"
+						   [formControl]="formGroup.get(option.type)?.get(option.key).get('from')"
+						   name="startingDateInput">
+					<mat-datepicker-toggle [disabled]="isLoading" matSuffix
+										   [for]="startingDatePicker"></mat-datepicker-toggle>
+				</mat-form-field>
+				<mat-datepicker [disabled]="isLoading" #startingDatePicker
+								[touchUi]="true"></mat-datepicker>
+			</div>
+
+			<div class="form-input-container">
+				<div class="form-label">Bis</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
+					<input matInput [matDatepicker]="endDatePicker"
+						   [formControl]="formGroup.get(option.type)?.get(option.key).get('to')"
+						   name="endDateInput">
+					<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+				</mat-form-field>
+				<mat-datepicker #endDatePicker [disabled]="isLoading"
+								[touchUi]="true"></mat-datepicker>
+			</div>
 		</div>
-		<div *ngSwitchCase="'by-item'">
-			By-Item
+		<div *ngSwitchCase="'shop-item'">
+
+
+			<mat-chip-list class="mat-chip-list-stacked">
+				<mat-chip *ngFor="let event of formGroup.get(option.type)?.get(option.key).get('items').value; let i = index"
+						  color="accent" selected
+						  class="mat-elevation-z1">
+					<a routerLink="/shop/{{getEventType(event)}}/{{event.id}}"
+					   matTooltip="Auf die Detailseite dieses Events gehen">
+						{{ event.title }}
+					</a>
+					<mat-icon class="remove-chip-button" (click)="onRemoveEvent(i, formGroup.get(option.type)?.get(option.key))"
+							  matTooltip="Löschen">
+						cancel
+					</mat-icon>
+				</mat-chip>
+			</mat-chip-list>
+
+
+			<memo-event-autocomplete
+				[formControl]="formGroup.get(option.type)?.get(option.key).get('input')"
+				[required]="false"
+				(onInput)="addEvent($event, formGroup.get(option.type)?.get(option.key)); formGroup.get(option.type)?.get(option.key).get('input').reset()"
+			></memo-event-autocomplete>
 		</div>
 	</ng-container>
 </div>

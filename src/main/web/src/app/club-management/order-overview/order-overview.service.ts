@@ -1,8 +1,8 @@
 import {Injectable, OnDestroy} from "@angular/core";
 import {Order} from "../../shared/model/order";
-import {combineLatest, Observable, Subject} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {distinctUntilChanged, filter, map, mergeMap, tap} from "rxjs/operators";
+import {debounceTime, distinctUntilChanged, filter, map, mergeMap, takeUntil, tap} from "rxjs/operators";
 import {Router} from "@angular/router";
 import {OrderService} from "../../shared/services/api/order.service";
 import {ConfirmationDialogService} from "../../shared/services/confirmation-dialog.service";
@@ -14,6 +14,7 @@ import {statusToInt} from "../../shared/model/order-status";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
 import {QueryParameterService} from "../../shared/services/query-parameter.service";
+import {PageRequest} from "../../shared/model/api/page-request";
 
 @Injectable()
 export class OrderOverviewService implements OnDestroy {
@@ -45,18 +46,24 @@ export class OrderOverviewService implements OnDestroy {
 			distinctUntilChanged((a, b) => Filter.equal(a, b))
 		);
 
+	page$ = new BehaviorSubject(PageRequest.at(
+		(+this.navigationService.queryParamMap$.getValue().get("page") || 1) - 1,
+		(+this.navigationService.queryParamMap$.getValue().get("pageSize") || 20)
+	));
 
 	userCanAddOrders$ = this.loginService.getActionPermissions("funds")
 		.pipe(
 			map(permission => permission.Hinzufuegen)
 		);
 
-	public dataSource: ManualPagedDataSource<Order> = new ManualPagedDataSource<Order>(this.orderService);
+	public dataSource: ManualPagedDataSource<Order> = new ManualPagedDataSource<Order>(this.orderService, this.page$);
 	loading$ = this.dataSource.isLoading$;
 
 	orders$: Observable<Order[]> = this.dataSource.connect();
 
 	public resetPage = new Subject();
+
+	onDestroy$ = new Subject();
 
 	constructor(private navigationService: NavigationService,
 				private loginService: LogInService,
@@ -69,20 +76,27 @@ export class OrderOverviewService implements OnDestroy {
 		this.dataSource.sort$ = this.sortedBy$;
 
 		this.dataSource.initPaginatorFromUrl(this.navigationService.queryParamMap$.getValue());
-		this.dataSource.writePaginatorUpdatesToUrl(this.router,
-			queryParams => QueryParameterService
-				.updateQueryParams(this.navigationService.queryParamMap$.getValue(), queryParams));
-
+		this.dataSource.writePaginatorUpdatesToUrl(this.router);
 
 		this.dataSource.updateOn(
 			combineLatest(
 				this.filteredBy$,
 				this.sortedBy$
 			).pipe(
+				debounceTime(100),
 				tap(() => this.resetPage.next()),
 			)
 		);
 
+		this.resetPage.pipe(takeUntil(this.onDestroy$))
+			.subscribe(it => this.pageAt(0));
+	}
+
+
+	pageAt(page: number) {
+		const currentValue = this.page$.getValue();
+		this.page$.next(PageRequest.at(page, currentValue.pageSize));
+		this.dataSource.update();
 	}
 
 	removeOrder(order: Order) {
@@ -106,6 +120,7 @@ export class OrderOverviewService implements OnDestroy {
 
 	ngOnDestroy(): void {
 		this.dataSource.disconnect(null);
+		this.onDestroy$.next(true);
 	}
 
 }
