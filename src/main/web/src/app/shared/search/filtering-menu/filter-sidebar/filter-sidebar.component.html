@@ -53,10 +53,8 @@
 			</div>
 		</div>
 		<div *ngSwitchCase="'shop-item'">
-
-
 			<mat-chip-list class="mat-chip-list-stacked">
-				<mat-chip *ngFor="let event of formGroup.get(option.type)?.get(option.key).get('items').value; let i = index"
+				<mat-chip *ngFor="let event of (formGroup.get(option.type)?.get(option.key)?.get('items')?.value || []) let i = index"
 						  color="accent" selected
 						  class="mat-elevation-z1">
 					<a routerLink="/shop/{{getEventType(event)}}/{{event.id}}"
@@ -71,10 +69,10 @@
 			</mat-chip-list>
 
 
-			<memo-event-autocomplete
-				[formControl]="formGroup.get(option.type)?.get(option.key).get('input')"
+			<memo-event-autocomplete *ngIf="formGroup.get(option.type)?.get(option.key) as formControl"
+				[formControl]="formControl?.get('input')"
 				[required]="false"
-				(onInput)="addEvent($event, formGroup.get(option.type)?.get(option.key)); formGroup.get(option.type)?.get(option.key).get('input').reset()"
+				(onInput)="addEvent($event, formGroup.get(option.type)?.get(option.key)); formGroup.get(option.type)?.get(option.key)?.get('input')?.reset()"
 			></memo-event-autocomplete>
 		</div>
 	</ng-container>

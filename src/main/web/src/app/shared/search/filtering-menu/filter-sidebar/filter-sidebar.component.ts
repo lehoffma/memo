@@ -66,45 +66,13 @@ export class FilterSidebarComponent implements OnInit {
 			return false;
 		}
 
-		//todo move to classes
 		const value = group.value;
-		switch (option.type) {
-			case "single":
-				const resetOption = option.values.find(child => child.label === SingleFilterOption.ALL_OPTION);
-				return resetOption && value !== resetOption.key;
-			case "multiple":
-				return Object.keys(value).some(key => value[key]);
-			case "date-range":
-				return value.from || value.to;
-			case "shop-item":
-				return value && value.items.length > 0;
-		}
+		return option.canBeReset(value);
 	}
 
 	reset(option: FilterOption) {
 		const formControl = this.formGroup.get(option.type).get(option.key);
-		switch (option.type) {
-			case "single":
-				formControl.setValue("Alle", {emitEvent: true});
-				break;
-			case "multiple":
-				formControl.setValue(Object.keys(formControl.value).reduce((acc, key) => {
-					acc[key] = false;
-					return acc;
-				}, {}), {emitEvent: true});
-				break;
-			case "date-range":
-				formControl.reset({
-					from: null,
-					to: null
-				}, {emitEvent: true});
-				break;
-			case "shop-item":
-				formControl.setValue({
-					items: [],
-					input: "",
-				}, {emitEvent: true});
-		}
+		option.reset(formControl);
 	}
 
 

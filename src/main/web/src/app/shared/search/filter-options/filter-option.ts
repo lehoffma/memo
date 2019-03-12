@@ -37,7 +37,7 @@ export interface FilterOption<Type = FilterOptionType> {
 		Type extends "multiple" ? { [key: string]: boolean } :
 			Type extends "date-range" ? { from: Date, to: Date } :
 				Type extends "shop-item" ? Observable<{ items: ShopItem[], input: string }> :
-					never, formGroup: FormGroup, formBuilder: FormBuilder): void;
+					never, formGroup: FormGroup, formBuilder: FormBuilder): Observable<any>;
 
 	toFormValue(params: Params):
 		Type extends "single" ? string :

@@ -34,11 +34,6 @@ export class OrderOverviewService implements OnDestroy {
 					.filter(key => !["page", "pageSize", "sortBy", "direction"].includes(key))
 					.forEach(key => {
 						let value = getAllQueryValues(paramMap, key).join(",");
-
-						if (key === "status") {
-							value = getAllQueryValues(paramMap, key).map(it => statusToInt(it as any)).join(",");
-						}
-
 						paramObject[key] = value;
 					});
 				return Filter.by(paramObject);

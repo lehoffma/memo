@@ -1,8 +1,19 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from "@angular/core";
+import {
+	ChangeDetectionStrategy,
+	ChangeDetectorRef,
+	Component,
+	EventEmitter,
+	Input,
+	OnChanges,
+	OnDestroy,
+	OnInit,
+	Output,
+	SimpleChanges
+} from "@angular/core";
 import {ActivatedRoute, Params} from "@angular/router";
-import {filter, takeUntil} from "rxjs/operators";
+import {filter, take, takeUntil} from "rxjs/operators";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {Observable, Subject} from "rxjs";
+import {combineLatest, Subject} from "rxjs";
 import {MatDialog} from "@angular/material";
 import {FilterDialogComponent} from "./filter-sidebar/filter-dialog.component";
 import {FilterOption} from "../filter-options/filter-option";
@@ -12,7 +23,7 @@ export interface FilterFormValue {
 	single: { [key: string]: string },
 	multiple: { [keyA: string]: { [key: string]: boolean } },
 	"date-range": { [key: string]: { from: Date, to: Date } },
-	"shop-item": { [key: string]: ShopItem[] }
+	"shop-item": { [key: string]: {items: ShopItem[], input: string} }
 }
 
 @Component({
@@ -42,6 +53,7 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 
 	constructor(private activatedRoute: ActivatedRoute,
 				private matDialog: MatDialog,
+				private cdRef: ChangeDetectorRef,
 				private formBuilder: FormBuilder) {
 	}
 
@@ -66,47 +78,24 @@ export class FilteringMenuComponent implements OnInit, OnDestroy, OnChanges {
 	 */
 	ngOnChanges(changes: SimpleChanges): void {
 		if ((changes["filterOptions"] || changes["queryParams"]) && this.filterOptions) {
-			this.pauseFormUpdates = true;
-			this.filterOptions
-				.forEach(option => {
-					let value = option.toFormValue(this.queryParams);
-					const childFormGroup: FormGroup = (this.formGroup.get(option.type) as FormGroup);
-					if (childFormGroup.contains(option.key)) {
-						childFormGroup.get(option.key).setValue(value, {emitEvent: false});
-					} else {
-						switch (option.type) {
-							case "single":
-								childFormGroup.addControl(option.key, this.formBuilder.control(value));
-								break;
-							case "multiple":
-								childFormGroup.addControl(option.key, this.formBuilder.group(
-									Object.keys(value).reduce((acc, key) => {
-										acc[key] = this.formBuilder.control(value[key]);
-										return acc;
-									}, {})
-								));
-								break;
-							case "date-range":
-								childFormGroup.addControl(option.key, this.formBuilder.group({
-									from: this.formBuilder.control((value as any).from),
-									to: this.formBuilder.control((value as any).to)
-								}));
-								break;
-							case "shop-item":
-								value = value as Observable<{items: ShopItem[], input: string}>;
-								value.subscribe(it => {
-									childFormGroup.addControl(option.key, this.formBuilder.group({
-										items: this.formBuilder.control(it.items),
-										input: this.formBuilder.control(it.input)
-									}));
-								})
-								break;
-						}
-					}
-				});
 
-			this.formGroup.updateValueAndValidity();
-			this.pauseFormUpdates = false;
+			this.pauseFormUpdates = true;
+			combineLatest(
+				...this.filterOptions
+					.map(option => {
+						let value = option.toFormValue(this.queryParams);
+						const childFormGroup: FormGroup = (this.formGroup.get(option.type) as FormGroup);
+						if (childFormGroup.contains(option.key)) {
+							return option.setFormValue(value, childFormGroup.get(option.key));
+						} else {
+							return option.addControl(value, childFormGroup, this.formBuilder)
+								.pipe(take(1));
+						}
+					})
+			).subscribe(it => {
+				this.pauseFormUpdates = false;
+				this.formGroup.updateValueAndValidity();
+			})
 		}
 	}
 

@@ -4,12 +4,15 @@ import {OrderOverviewService} from "./order-overview.service";
 import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
 import {Direction, Sort} from "../../shared/model/api/sort";
 import {Order} from "../../shared/model/order";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Subject} from "rxjs";
 import {FilterOption, FilterOptionType} from "../../shared/search/filter-options/filter-option";
 import {DateRangeFilterOption} from "../../shared/search/filter-options/date-range-filter-option";
 import {ShopItemFilterOption} from "../../shared/search/filter-options/shop-item-filter-option";
 import {EventService} from "../../shared/services/api/event.service";
+import {MultiFilterOption} from "../../shared/search/filter-options/multi-filter-option";
+import {orderStatusMap} from "../../shared/model/order-status";
+import {paymentMethodList} from "../../shop/checkout/payment/payment-method";
 
 @Component({
 	selector: "memo-order-overview",
@@ -25,10 +28,29 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 			"Datum",
 		),
 		new ShopItemFilterOption(
-			"item",
+			"eventId",
 			"Nach Item filtern",
 			id => this.itemService.getById(id),
-
+		),
+		new MultiFilterOption(
+			"status",
+			"Bestellstatus",
+			Object.keys(orderStatusMap)
+				.map(key => ({
+					key,
+					label: orderStatusMap[key].label,
+					query: [{key: "status", value: orderStatusMap[key].value}]
+				}))
+		),
+		new MultiFilterOption(
+			"method",
+			"Bezahlmethoden",
+			paymentMethodList()
+				.map(paymentMethod => ({
+					key: paymentMethod,
+					label: paymentMethod,
+					query: [{key: "method", value: paymentMethod}]
+				}))
 		)
 	];
 
@@ -40,6 +62,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 	constructor(private windowService: WindowService,
 				private activatedRoute: ActivatedRoute,
 				private itemService: EventService,
+				private router: Router,
 				public orderOverviewService: OrderOverviewService) {
 	}
 
@@ -51,7 +74,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 	}
 
 	linkToCreatePage() {
-		console.log("todo");
+		this.router.navigate(["..", "management", "create", "orders"]);
 	}
 
 }

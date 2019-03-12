@@ -26,6 +26,16 @@ mat-radio-group {
 	}
 }
 
+mat-chip-list /deep/ mat-chip {
+	display: flex;
+	justify-content: space-between;
+	width: 95% !important;
+	margin-bottom: 16px !important;
+
+	a {
+		color: white;
+	}
+}
 
 .close-actions {
 	display: flex;

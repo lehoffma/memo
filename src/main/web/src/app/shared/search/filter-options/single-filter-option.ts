@@ -1,5 +1,7 @@
 import {Params} from "@angular/router";
 import {combineFilterParams, FilterOption, FilterOptionType} from "./filter-option";
+import {AbstractControl, FormBuilder, FormGroup} from "@angular/forms";
+import {Observable, of} from "rxjs";
 
 
 export class SingleFilterOption implements FilterOption<FilterOptionType.SINGLE> {
@@ -43,6 +45,25 @@ export class SingleFilterOption implements FilterOption<FilterOptionType.SINGLE>
 
 	isShown(): boolean {
 		return this.values.length > 0;
+	}
+
+
+	addControl(value: string, formGroup: FormGroup, formBuilder: FormBuilder): Observable<any> {
+		formGroup.addControl(this.key, formBuilder.control(value));
+		return of(true);
+	}
+
+	canBeReset(formValue: string): boolean {
+		return formValue !== SingleFilterOption.ALL_OPTION;
+	}
+
+	reset(formControl: AbstractControl) {
+		formControl.setValue(SingleFilterOption.ALL_OPTION);
+	}
+
+	setFormValue(value: string, formControl: AbstractControl): Observable<any> {
+		formControl.setValue(value);
+		return of(true);
 	}
 
 }

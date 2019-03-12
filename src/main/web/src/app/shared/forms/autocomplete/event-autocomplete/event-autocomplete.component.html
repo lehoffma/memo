@@ -1,6 +1,6 @@
 <div class="form-input-container">
 	<div class="form-label">Event</div>
-	<mat-form-field appearance="outline" class="small-outline-formfield">
+	<mat-form-field appearance="outline" class="small-outline-formfield" [class.no-errors]="!(formControl.hasError('isNotAValidEvent') || formControl.hasError('required'))">
 		<input matInput
 			   tabindex="-1"
 			   name="eventInput"

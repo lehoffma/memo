@@ -31,14 +31,18 @@ export class FilterDialogComponent implements OnInit {
 			Object.keys(valueGroup).forEach(key => {
 				const value = valueGroup[key];
 
-				if(typeFormGroup.contains(key)){
+				if (typeFormGroup.contains(key)) {
 					typeFormGroup.get(key).setValue(value, {emitEvent: false});
-				}
-				else{
+				} else {
 					switch (option.type) {
 						case "single":
-						case "shop-item":
 							typeFormGroup.addControl(option.key, this.fb.control(value));
+							break;
+						case "shop-item":
+							typeFormGroup.addControl(option.key, this.fb.group({
+								items: this.fb.control((value as any).items),
+								input: this.fb.control((value as any).input)
+							}));
 							break;
 						case "multiple":
 							typeFormGroup.addControl(option.key, this.fb.group(

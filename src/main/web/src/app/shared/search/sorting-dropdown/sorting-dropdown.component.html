@@ -1,7 +1,7 @@
 <button mat-stroked-button class="sorting-dropdown" [matMenuTriggerFor]="menu">
 	<mat-icon class="mobile">sort</mat-icon>
 	<span *ngLet="selectedOption$ | async as selectedOption">
-		{{(selectedOption.name === defaultOption.name) ? 'Sortieren' : (selectedOption.shortName)}}
+		{{(selectedOption.name === "Unsortiert") ? 'Sortieren' : (selectedOption.shortName)}}
 	</span>
 </button>
 <mat-menu #menu="matMenu">

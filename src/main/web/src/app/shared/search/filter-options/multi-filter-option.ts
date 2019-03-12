@@ -1,5 +1,7 @@
 import {combineFilterParams, FilterOption, FilterOptionType} from "./filter-option";
 import {Params} from "@angular/router";
+import {AbstractControl, FormBuilder, FormGroup} from "@angular/forms";
+import {Observable, of} from "rxjs";
 
 export class MultiFilterOption implements FilterOption<FilterOptionType.MULTIPLE> {
 	public type: FilterOptionType.MULTIPLE = FilterOptionType.MULTIPLE;
@@ -17,7 +19,7 @@ export class MultiFilterOption implements FilterOption<FilterOptionType.MULTIPLE
 			//set to true if all query values are contained in the params object
 			acc[optionValue.key] = optionValue.query.every(query => {
 				const paramValue = params[query.key] as string;
-				if(!paramValue){
+				if (!paramValue) {
 					return false;
 				}
 				return paramValue.split(",").includes("" + query.value);
@@ -40,6 +42,33 @@ export class MultiFilterOption implements FilterOption<FilterOptionType.MULTIPLE
 
 	isShown(): boolean {
 		return this.values.length > 0;
+	}
+
+
+	addControl(value: { [key: string]: boolean }, formGroup: FormGroup, formBuilder: FormBuilder): Observable<any> {
+		formGroup.addControl(this.key, formBuilder.group(
+			Object.keys(value).reduce((acc, key) => {
+				acc[key] = formBuilder.control(value[key]);
+				return acc;
+			}, {})
+		));
+		return of(true);
+	}
+
+	canBeReset(formValue: { [key: string]: boolean }): boolean {
+		return Object.keys(formValue).some(key => formValue[key]);
+	}
+
+	reset(formControl: AbstractControl) {
+		formControl.setValue(Object.keys(formControl.value).reduce((acc, key) => {
+			acc[key] = false;
+			return acc;
+		}, {}), {emitEvent: true});
+	}
+
+	setFormValue(value: { [key: string]: boolean }, formControl: AbstractControl): Observable<any> {
+		formControl.setValue(value);
+		return of(true);
 	}
 
 
