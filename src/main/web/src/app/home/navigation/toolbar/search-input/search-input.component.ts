@@ -4,6 +4,8 @@ import {NavigationService} from "../../../../shared/services/navigation.service"
 import {WindowService} from "../../../../shared/services/window.service";
 import {map, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
+import {QueryParameterService} from "../../../../shared/services/query-parameter.service";
+import {Router} from "@angular/router";
 
 export enum SearchInputState {
 	ACTIVE = <any>"active",
@@ -50,6 +52,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
 	onDestroy$ = new Subject();
 
 	constructor(private navigationService: NavigationService,
+				private router: Router,
 				private windowService: WindowService,
 				private renderer: Renderer2) {
 		this.screenState$.pipe(takeUntil(this.onDestroy$))
@@ -82,7 +85,10 @@ export class SearchInputComponent implements OnInit, OnDestroy {
 	}
 
 	onSearch() {
-		this.navigationService.navigateByUrl("/shop/search?searchTerm=" + this.model.searchInput);
+		const currentParams = this.navigationService.queryParams$.getValue();
+		const updatedParams = QueryParameterService.updateQueryParams(currentParams, {searchTerm: this.model.searchInput ? this.model.searchInput : null});
+
+		this.router.navigate(["shop", "search"], {queryParams: updatedParams});
 		if (this.state === "mobile") {
 			this.toggleInputState();
 		}

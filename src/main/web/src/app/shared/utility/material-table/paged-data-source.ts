@@ -164,26 +164,30 @@ export class PagedDataSource<T> extends DataSource<T> {
 		return PageRequest.at(0);
 	}
 
-	updateToPage(pageIndex: number, pageSize: number, router: Router, combineQueryParams?: (queryParams) => Params) {
+	updateToPage(pageIndex: number, pageSize: number, router: Router, getParams?: () => Params) {
 		const newQueryParams: Params = {
 			page: pageIndex,
 			pageSize: pageSize
 		};
-		let combinedParams = newQueryParams;
-
-		if (combineQueryParams) {
-			combinedParams = combineQueryParams(newQueryParams);
-		}
 		const containsPage = router.url.includes("page");
-		router.navigate([], {queryParams: {...combinedParams}, queryParamsHandling: "merge", replaceUrl: !containsPage})
+		let currentParams = {};
+
+		if (getParams) {
+			currentParams = getParams();
+			console.log(currentParams);
+
+		}
+		currentParams["page"] = newQueryParams.page;
+		currentParams["pageSize"] = newQueryParams.pageSize;
+		router.navigate([], {queryParams: {...currentParams}, queryParamsHandling: "merge", replaceUrl: !containsPage})
 	}
 
-	writePaginatorUpdatesToUrl(router: Router, combineQueryParams?: (queryParams) => Params) {
+	writePaginatorUpdatesToUrl(router: Router, getParams?: () => Params) {
 		this._pageEvents$.pipe(
 			takeUntil(this.onDestroy$)
 		)
 			.subscribe(event => {
-				this.updateToPage(event.pageIndex + 1, event.pageSize, router, combineQueryParams);
+				this.updateToPage(event.pageIndex + 1, event.pageSize, router, getParams);
 			})
 	}
 

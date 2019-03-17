@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {SortingOption, SortingOptionHelper} from "../../model/sorting-option";
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {QueryParameterService} from "../../services/query-parameter.service";
 import {distinctUntilChanged, first, map, takeUntil} from "rxjs/operators";
-import {Sort} from "../../model/api/sort";
+import {Direction, Sort} from "../../model/api/sort";
 import {BehaviorSubject, Subject} from "rxjs";
 
 @Component({
@@ -67,8 +67,17 @@ export class SortingDropdownComponent implements OnInit, OnDestroy {
 		this.combinedOptions = this.withoutUnsorted ? [...this.sortingOptions] : [this.noneSortingOption, ...this.sortingOptions];
 	}
 
-	updateQueryParams(queryParams: Params) {
-		this.activatedRoute.queryParamMap
+	updateQueryParams(sortingOption: SortingOption<any>) {
+		let queryParams = sortingOption.queryParameters;
+
+		if (sortingOption.queryParameters["direction"] === Direction.NONE) {
+			queryParams = Object.keys(queryParams).reduce((acc, key) => {
+				acc[key] = null;
+				return acc;
+			}, queryParams)
+		}
+
+		this.activatedRoute.queryParams
 			.pipe(
 				first(),
 				map(paramMap => QueryParameterService.updateQueryParams(paramMap, queryParams)),

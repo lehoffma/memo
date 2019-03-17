@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {ParamMap, Params} from "@angular/router";
+import {Params} from "@angular/router";
 
 @Injectable()
 export class QueryParameterService {
@@ -10,25 +10,29 @@ export class QueryParameterService {
 
 	/**
 	 *
-	 * @param paramMap
+	 * @param params
 	 * @param queryParams
 	 * @returns {Params}
 	 */
-	static updateQueryParams(paramMap: ParamMap, queryParams: Params): Params {
-		const oldParamKeys = paramMap.keys
-			.filter(key => ["page", "pageSize", "sortBy", "direction"].includes(key))
-			.filter(key => !Object.keys(queryParams).includes(key));
-
-		let newQueryParams: Params = {};
-
-		oldParamKeys.forEach(key => newQueryParams[key] = paramMap.get(key));
-		Object.keys(queryParams)
-		//ignore empty parameter values (i.e. remove empty values from the param map)
+	static updateQueryParams(params: Params, queryParams: Params): Params {
+		const addedKeys = Object.keys(queryParams)
 			.filter(key => queryParams[key] !== null && queryParams[key] !== undefined)
-			.filter(key => ("" + queryParams[key]).length > 0)
-			.forEach(key => newQueryParams[key] = queryParams[key]);
+			.filter(key => !Object.keys(params).includes(key));
 
-		console.log(paramMap, queryParams, newQueryParams);
+		const overwrittenParamKeys = Object.keys(params)
+			.filter(key => Object.keys(queryParams).includes(key))
+			.filter(key => queryParams[key] !== null && queryParams[key] !== undefined);
+
+		const removedKeys = Object.keys(params)
+			.filter(key => Object.keys(queryParams).includes(key))
+			.filter(key => queryParams[key] === null || queryParams[key] === undefined);
+
+		let newQueryParams: Params = {...params};
+
+		addedKeys.forEach(key => newQueryParams[key] = queryParams[key]);
+		removedKeys.forEach(removedKey => delete newQueryParams[removedKey]);
+		overwrittenParamKeys.forEach(overwrittenKey => newQueryParams[overwrittenKey] = queryParams[overwrittenKey]);
+
 		return newQueryParams;
 	}
 }

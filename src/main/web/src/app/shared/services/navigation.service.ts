@@ -1,6 +1,6 @@
 import {Injectable, OnDestroy} from "@angular/core";
 import {Link} from "../model/link";
-import {ParamMap, Router, RoutesRecognized} from "@angular/router";
+import {ParamMap, Params, Router, RoutesRecognized} from "@angular/router";
 import {ShopItemType} from "../../shop/shared/model/shop-item-type";
 import {EventUtilityService} from "./event-utility.service";
 import {ShopItem} from "../model/shop-item";
@@ -18,6 +18,7 @@ import {isNullOrUndefined} from "util";
 export class NavigationService implements OnDestroy {
 	public accountLinks: Observable<Link[]>;
 	queryParamMap$: BehaviorSubject<ParamMap> = new BehaviorSubject(null);
+	queryParams$: BehaviorSubject<Params> = new BehaviorSubject({});
 	subscriptions = [];
 	private _toolbarLinks$: BehaviorSubject<Link[]> = new BehaviorSubject<Link[]>([]);
 	public toolbarLinks$: Observable<Link[]> = this._toolbarLinks$
@@ -46,10 +47,11 @@ export class NavigationService implements OnDestroy {
 		this.subscriptions.push(this.router.events
 			.pipe(
 				filter(val => val instanceof RoutesRecognized),
-				map(val => (<RoutesRecognized>val).state.root.queryParamMap),
+				map(val => (<RoutesRecognized>val)),
 			)
-			.subscribe(it => {
-				this.queryParamMap$.next(it);
+			.subscribe((it: RoutesRecognized) => {
+				this.queryParamMap$.next(it.state.root.queryParamMap);
+				this.queryParams$.next({...it.state.root.queryParams});
 			}));
 	}
 

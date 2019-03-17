@@ -3,21 +3,23 @@ import {EventService} from "../../../../shared/services/api/event.service";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {StockEntry} from "./merch-stock-entry/stock-entry";
-import {MultiLevelSelectParent} from "../../../../shared/utility/multi-level-select/shared/multi-level-select-parent";
 import {SearchFilterService} from "../../../../shared/search/search-filter.service";
 import {SortingOption, SortingOptionHelper} from "../../../../shared/model/sorting-option";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterOptionBuilder} from "../../../../shared/search/filter-option-builder.service";
 import {SearchResultsFilterOption} from "../../../../shared/search/search-results-filter-option";
-import {BehaviorSubject, forkJoin, Observable, of, Subject} from "rxjs";
-import {debounceTime, filter, first, map, mergeMap, scan, takeUntil} from "rxjs/operators";
+import {BehaviorSubject, combineLatest, forkJoin, Observable, of, Subject} from "rxjs";
+import {debounceTime, distinctUntilChanged, filter, first, map, mergeMap, scan, takeUntil, tap} from "rxjs/operators";
 import {Event} from "../../../../shop/shared/model/event";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
 import {Direction, Sort} from "../../../../shared/model/api/sort";
 import {Filter} from "../../../../shared/model/api/filter";
-import {PagedDataSource} from "../../../../shared/utility/material-table/paged-data-source";
 import {QueryParameterService} from "../../../../shared/services/query-parameter.service";
 import {FilterOption} from "../../../../shared/search/filter-options/filter-option";
+import {PageRequest} from "../../../../shared/model/api/page-request";
+import {ManualPagedDataSource} from "../../../../shared/utility/material-table/manual-paged-data-source";
+import {getAllQueryValues} from "../../../../shared/model/util/url-util";
+import {NavigationService} from "../../../../shared/services/navigation.service";
 
 @Component({
 	selector: "memo-merch-stock",
@@ -25,6 +27,11 @@ import {FilterOption} from "../../../../shared/search/filter-options/filter-opti
 	styleUrls: ["./merch-stock.component.scss"]
 })
 export class MerchStockComponent implements OnInit, OnDestroy {
+	page$ = new BehaviorSubject(PageRequest.at(
+		(+this.activatedRoute.snapshot.queryParamMap.get("page") || 1) - 1,
+		(+this.activatedRoute.snapshot.queryParamMap.get("pageSize") || 20)
+	));
+
 	userCanAddMerch$ = this.loginService.getActionPermissions("merch")
 		.pipe(
 			map(permission => permission.Hinzufuegen)
@@ -41,12 +48,34 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 	];
 	filterOptions$ = new BehaviorSubject<FilterOption[]>([]);
 
-	filter$ = new BehaviorSubject<Filter>(Filter.by({type: "3"}));
-	sort$ = new BehaviorSubject<Sort>(Sort.none());
+	sortedBy$: Observable<Sort> = this.navigationService.queryParamMap$
+		.pipe(
+			map(paramMap => paramMap.has("sortBy") && paramMap.has("direction")
+				? Sort.by(paramMap.get("direction"), getAllQueryValues(paramMap, "sortBy").join(","))
+				: Sort.by(Direction.ASCENDING, "title")),
+			distinctUntilChanged((a, b) => Sort.equal(a, b))
+		);
+
+	filteredBy$: Observable<Filter> = this.navigationService.queryParamMap$
+		.pipe(
+			map(paramMap => {
+				let paramObject = {};
+				paramMap.keys
+					.filter(key => !["page", "pageSize", "sortBy", "direction"].includes(key))
+					.forEach(key => {
+						paramObject[key] = getAllQueryValues(paramMap, key).join(",");
+					});
+
+				paramObject["type"] = 3;
+
+				return Filter.by(paramObject);
+			}),
+			distinctUntilChanged((a, b) => Filter.equal(a, b))
+		);
 
 	onDestroy$ = new Subject<any>();
 
-	dataSource = new PagedDataSource(this.eventService);
+	dataSource = new ManualPagedDataSource(this.eventService, this.page$);
 	filteredMerch$ = this.dataSource.connect();
 	filteredMerchStock$: Observable<Event[]> = this.getStockEntryList$(this.filteredMerch$);
 
@@ -55,13 +84,28 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 				private stockService: StockService,
 				private confirmationDialogService: ConfirmationDialogService,
 				private activatedRoute: ActivatedRoute,
+				private navigationService: NavigationService,
 				private cdRef: ChangeDetectorRef,
 				private router: Router,
 				private searchFilterService: SearchFilterService,
 				private filterOptionBuilder: FilterOptionBuilder) {
 		this.dataSource.isExpandable = false;
-		this.dataSource.filter$ = this.filter$;
-		this.dataSource.sort$ = this.sort$;
+		this.dataSource.filter$ = this.filteredBy$;
+		this.dataSource.sort$ = this.sortedBy$;
+
+		this.dataSource.initPaginatorFromUrl(this.navigationService.queryParamMap$.getValue());
+		this.dataSource.writePaginatorUpdatesToUrl(this.router);
+
+		this.dataSource.updateOn(
+			combineLatest(
+				this.filteredBy$,
+				this.sortedBy$
+			).pipe(
+				debounceTime(100),
+				tap(() => this.pageAt(0)),
+			)
+		);
+
 	}
 
 	ngOnInit() {
@@ -80,41 +124,13 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 				map(options => [...options]),
 			)
 			.subscribe(val => this.filterOptions$.next(val));
-
-		this.updateFilterFromUrl();
-		this.updateSortFromUrl();
-		this.updateList();
 	}
 
 	ngOnDestroy(): void {
-		this.onDestroy$.next();
-		this.onDestroy$.complete();
+		this.onDestroy$.next(true);
 		this.dataSource.disconnect(null);
 	}
 
-	updateList() {
-		this.dataSource.reload();
-	}
-
-	updateFilterFromUrl() {
-		this.activatedRoute.queryParamMap.pipe(
-			takeUntil(this.onDestroy$)
-		).subscribe(queryParamMap => {
-			const filteredBy = {type: "3"};
-			queryParamMap.keys.forEach(key => filteredBy[key] = queryParamMap.get(key));
-			this.filter$.next(Filter.by(filteredBy));
-		})
-	}
-
-	updateSortFromUrl() {
-		this.activatedRoute.queryParamMap.pipe(
-			takeUntil(this.onDestroy$)
-		).subscribe(queryParamMap => {
-			const attribute = queryParamMap.get("sortBy");
-			const descending = queryParamMap.get("descending");
-			this.sort$.next(Sort.by(descending, attribute));
-		})
-	}
 
 	/**
 	 *
@@ -131,7 +147,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 						return of([]);
 					}
 
-					return forkJoin(
+					return combineLatest(
 						...merch.map(merchItem => this.stockService.getByEventId(merchItem.id)
 							.pipe(
 								map(stockList => ({
@@ -152,7 +168,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 				this.eventService.remove(id)
 				//todo
 					.subscribe(() => {
-						this.updateList();
+						this.dataSource.reload()
 					}, error => console.error(error));
 			})
 	}
@@ -167,4 +183,13 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 		})
 	}
 
+	linkToCreatePage() {
+		this.router.navigate(["shop", "create", "merch"])
+	}
+
+	pageAt(page: number) {
+		const currentValue = this.page$.getValue();
+		this.page$.next(PageRequest.at(page, currentValue.pageSize));
+		this.dataSource.update();
+	}
 }

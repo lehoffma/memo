@@ -1,56 +1,19 @@
-<div class="stock-options-sidebar desktop">
-	<a mat-raised-button *ngIf="userCanAddMerch$ | async" color="accent"
-	   [matTooltip]="'Artikel hinzufügen'"
-	   [matTooltipPosition]="'above'"
-	   routerLink="/shop/create/merch"
-	   class="add-merch-button-desktop">
-		Hinzufügen
-	</a>
+<memo-results-container *ngLet="filteredMerchStock$ | async as stock"
+						[results]="stock"
+						[filterOptions]="filterOptions$ | async"
+						[sortingOptions]="sortingOptions"
+						[defaultOption]="sortingOptions[0]"
+						[withoutUnsorted]="true"
+						[title]="'Bestand'"
+						[page]="dataSource.currentPage$ | async"
+						[canAdd]="userCanAddMerch$ | async"
+						(onAdd)="linkToCreatePage()"
+						(pageChange)="pageAt($event)"
+>
+	<memo-merch-stock-entry *ngFor="let stockEntry of stock"
+							[stockEntry]="stockEntry"
+							(onDelete)="deleteMerch($event)"
+	>
 
-	<memo-filtering-menu class="desktop"
-						 (queryParamChange)="updateQueryParams($event)"
-						 [filterOptions]="filterOptions$ | async">
-
-	</memo-filtering-menu>
-</div>
-
-<div class="stock-entry-container">
-
-	<div class="stock-options">
-		<memo-filtering-menu class="mobile"
-							 (queryParamChange)="updateQueryParams($event)"
-							 [filterOptions]="filterOptions$ | async">
-
-		</memo-filtering-menu>
-
-		<memo-sorting-dropdown [sortingOptions]="sortingOptions">
-
-		</memo-sorting-dropdown>
-	</div>
-	<div class="content-wrapper">
-		<a mat-stroked-button *ngIf="userCanAddMerch$ | async"
-		   [matTooltip]="'Artikel hinzufügen'"
-		   [matTooltipPosition]="'above'"
-		   routerLink="/shop/create/merch"
-		   class="add-merch-button">
-			Hinzufügen
-		</a>
-
-		<memo-merch-stock-entry *ngFor="let stockEntry of filteredMerchStock$ | async"
-								[stockEntry]="stockEntry"
-								(onDelete)="deleteMerch($event)"
-
-		>
-
-		</memo-merch-stock-entry>
-
-		<div *ngIf="(filteredMerchStock$|async) === null" class="loading-container">
-			<div class="loader"></div>
-		</div>
-
-		<div class="no-results" *ngIf="(filteredMerchStock$|async)?.length === 0">
-			Keine Merchandiseartikel vorhanden.
-		</div>
-	</div>
-
-</div>
+	</memo-merch-stock-entry>
+</memo-results-container>

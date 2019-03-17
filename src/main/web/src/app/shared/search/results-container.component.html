@@ -36,9 +36,34 @@
 							   [withoutUnsorted]="withoutUnsorted"></memo-sorting-dropdown>
 	</div>
 	<div class="results-body">
-		<!--todo if resultsLength === 0 show empty state-->
-		<ng-content></ng-content>
+		<div *ngIf="!results; else resultsContainer" class="loading loader-wrapper">
+			<div class="loader"></div>
+		</div>
+		<ng-template #resultsContainer>
+			<ng-container *ngIf="results && results.length > 0 else emptyState">
+				<div class="results-container">
+					<ng-content></ng-content>
+				</div>
+				<memo-pagination *ngIf="!(page.first && page.last)"
+					[page]="page" (pageChange)="pageChange.emit($event - 1)"></memo-pagination>
+			</ng-container>
+		</ng-template>
+		<ng-template #emptyState>
+			<div class="empty-state">
+				<mat-icon class="empty-state-header-icon">find_in_page</mat-icon>
+				<h3 class="empty-state-headline">Keine Ergebnisse</h3>
+				<span class="empty-state-subheader">
+					Es konnten zu deiner Suchanfrage leider keine Ergebnisse gefunden werden.
+				</span>
+				<div class="empty-state-actions">
+					<a mat-stroked-button routerLink="./" [queryParams]="{}">
+						<mat-icon>clear_all</mat-icon>
+						Filter zurücksetzen
+					</a>
+				</div>
+			</div>
+		</ng-template>
+
 	</div>
 
-	<memo-pagination [page]="page" (pageChange)="pageChange.emit($event - 1)"></memo-pagination>
 </div>

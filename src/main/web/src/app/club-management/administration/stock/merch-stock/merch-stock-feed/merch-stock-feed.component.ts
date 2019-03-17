@@ -14,6 +14,7 @@ import {filter, map} from "rxjs/operators";
 })
 export class MerchStockFeedComponent implements OnInit {
 	stockEntries$ = new BehaviorSubject([]);
+	//todo move to server
 	merch$: Observable<{
 		item: Merchandise,
 		emptyOptions: {

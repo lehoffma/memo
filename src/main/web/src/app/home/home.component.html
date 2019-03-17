@@ -35,5 +35,5 @@
 	<memo-results [events]="combinedEvents | async">
 	</memo-results>
 
-	<a routerLink="/shop/search" class="show-more-link">Zeige mehr</a>
+	<a routerLink="/shop/search" [queryParams]="{date: 'upcoming'}" class="show-more-link">Zeige mehr</a>
 </div>

@@ -2,6 +2,7 @@ import {combineFilterParams, FilterOption, FilterOptionType} from "./filter-opti
 import {Params} from "@angular/router";
 import {AbstractControl, FormBuilder, FormGroup} from "@angular/forms";
 import {Observable, of} from "rxjs";
+import {flatMap} from "../../../util/util";
 
 export class MultiFilterOption implements FilterOption<FilterOptionType.MULTIPLE> {
 	public type: FilterOptionType.MULTIPLE = FilterOptionType.MULTIPLE;
@@ -31,6 +32,14 @@ export class MultiFilterOption implements FilterOption<FilterOptionType.MULTIPLE
 
 	toQueryParams(selectedKeys: string[]): Params {
 		const selectedOptions = this.values.filter(option => selectedKeys.includes(option.key));
+
+		if (!selectedKeys || selectedKeys.length === 0) {
+			return flatMap(val => val.query, this.values)
+				.reduce((acc, query) => {
+					acc[query.key] = null;
+					return acc;
+				}, {});
+		}
 
 		return selectedOptions.reduce((params, option) => {
 			return combineFilterParams(params, option.query.reduce((queryAcc, query) =>

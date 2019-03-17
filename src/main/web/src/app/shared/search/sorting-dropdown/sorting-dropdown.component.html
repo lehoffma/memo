@@ -9,7 +9,7 @@
 		<button mat-menu-item
 				*ngFor="let sortingOption of combinedOptions"
 				[ngClass]="{'selected': (selectedOption.name) === sortingOption.name}"
-				(click)="selectedOption.name !== sortingOption.name ? updateQueryParams(sortingOption.queryParameters) : $event.stopPropagation()">
+				(click)="selectedOption.name !== sortingOption.name ? updateQueryParams(sortingOption) : $event.stopPropagation()">
 			{{sortingOption.name}}
 		</button>
 	</ng-container>

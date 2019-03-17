@@ -1,4 +1,6 @@
-<memo-results-container [filterOptions]="filterOptions$ | async"
+<memo-results-container *ngLet="currentResults$ | async as results"
+						[results]="results"
+						[filterOptions]="filterOptions$ | async"
 						[sortingOptions]="sortingOptions"
 						[title]="'Suchergebnisse'"
 						[page]="resultsDataSource.currentPage$ | async"
@@ -6,5 +8,11 @@
 						(onAdd)="openCreateDialog()"
 						(pageChange)="pageAt($event)"
 >
-	<memo-results [events]="currentResults$ | async"></memo-results>
+	<div class="results-container">
+		<memo-results-entry
+			*ngFor="let result of results"
+			[result]="result">
+
+		</memo-results-entry>
+	</div>
 </memo-results-container>

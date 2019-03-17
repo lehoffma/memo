@@ -1,4 +1,6 @@
-<memo-results-container [filterOptions]="filterOptions"
+<memo-results-container *ngLet="(orderOverviewService.orders$|async) as orders"
+						[results]="orders"
+						[filterOptions]="filterOptions"
 						[sortingOptions]="sortingOptions"
 						[defaultOption]="sortingOptions[0]"
 						[withoutUnsorted]="true"
@@ -8,7 +10,7 @@
 						(onAdd)="linkToCreatePage()"
 						(pageChange)="orderOverviewService.pageAt($event)"
 >
-	<memo-order-renderer *ngFor="let order of (orderOverviewService.orders$|async)"
+	<memo-order-renderer *ngFor="let order of orders"
 						 [withActions]="true"
 						 (onRemove)="orderOverviewService.removeOrder($event)"
 						 [orderEntry]="order">

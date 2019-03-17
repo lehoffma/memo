@@ -2,6 +2,7 @@ import {Params} from "@angular/router";
 import {combineFilterParams, FilterOption, FilterOptionType} from "./filter-option";
 import {AbstractControl, FormBuilder, FormGroup} from "@angular/forms";
 import {Observable, of} from "rxjs";
+import {flatMap} from "../../../util/util";
 
 
 export class SingleFilterOption implements FilterOption<FilterOptionType.SINGLE> {
@@ -29,7 +30,11 @@ export class SingleFilterOption implements FilterOption<FilterOptionType.SINGLE>
 
 	toQueryParams(key: string): Params {
 		if (key === SingleFilterOption.ALL_OPTION) {
-			return {};
+			return flatMap(val => val.query, this.values)
+				.reduce((acc, query) => {
+					acc[query.key] = null;
+					return acc;
+				}, {});
 		}
 
 		const selectedOption = this.values.find(it => it.key === key);

@@ -14,6 +14,7 @@ import {FilterOption} from "./filter-options/filter-option";
 export class ResultsContainerComponent implements OnInit {
 	@Input() title: string;
 	@Input() page: Page<any>;
+	@Input() results: any[] | null;
 
 	@Input() sortingOptions: SortingOption<any>[];
 	@Input() defaultOption: SortingOption<any>;
@@ -27,6 +28,7 @@ export class ResultsContainerComponent implements OnInit {
 	@Output() onAdd: EventEmitter<any> = new EventEmitter();
 
 	queryParams$ = this.activatedRoute.queryParams;
+
 	constructor(private activatedRoute: ActivatedRoute,
 				private router: Router) {
 	}
@@ -39,10 +41,10 @@ export class ResultsContainerComponent implements OnInit {
 	}
 
 	updateQueryParams(newParams: Params) {
-		this.activatedRoute.queryParamMap.pipe(
+		this.activatedRoute.queryParams.pipe(
 			first()
-		).subscribe(paramMap => {
-			let params = QueryParameterService.updateQueryParams(paramMap, newParams);
+		).subscribe(queryParams => {
+			let params = QueryParameterService.updateQueryParams(queryParams, newParams);
 			this.router.navigate([], {queryParams: params})
 		})
 	}

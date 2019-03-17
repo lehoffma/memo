@@ -33,7 +33,7 @@ export class ShopItemFilterOption implements FilterOption<FilterOptionType.SHOP_
 
 	toQueryParams(value: ShopItem[]): Params {
 		return {
-			[this.queryKey]: value.map(it => it.id).join(",")
+			[this.queryKey]: value.length === 0 ? null : value.map(it => it.id).join(",")
 		}
 	}
 

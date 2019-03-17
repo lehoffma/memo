@@ -6,10 +6,9 @@
 	display: block;
 
 	.result-title {
-		margin: 0;
 		font-weight: 400;
-		font-size: font-size(small-medium);
 		word-break: break-all;
+		margin-bottom: 24px;
 	}
 
 	.result-info {
@@ -17,10 +16,6 @@
 		justify-content: space-between;
 		font-size: font-size(smaller);
 		align-items: flex-end;
-
-		div:not(.result-title) {
-			margin-top: 20px;
-		}
 	}
 
 	.result-price {

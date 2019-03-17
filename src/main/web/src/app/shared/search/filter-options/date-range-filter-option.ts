@@ -32,12 +32,8 @@ export class DateRangeFilterOption implements FilterOption<FilterOptionType.DATE
 	toQueryParams(value: { from: Date, to: Date }): Params {
 		let params: Params = {};
 
-		if (value.from) {
-			params[this.minDateKey] = value.from.toISOString();
-		}
-		if (value.to) {
-			params[this.maxDateKey] = value.to.toISOString();
-		}
+		params[this.minDateKey] = value.from ? value.from.toISOString() : null;
+		params[this.maxDateKey] = value.to ? value.to.toISOString() : null;
 
 		return params;
 	}

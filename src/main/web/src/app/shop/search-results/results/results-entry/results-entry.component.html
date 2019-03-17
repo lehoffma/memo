@@ -5,9 +5,7 @@
 			 [lazySrc]="(!!result.images[0] ? result.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
 			 lazySrcVisible="visible" [class.past]="resultIsPast$ | async">
 		<mat-card-content>
-			<h3 class="result-title">
-				{{result.title}}
-			</h3>
+			<mat-card-title class="result-title">{{result.title}}</mat-card-title>
 			<div class="result-info">
 				<div class="secondary-text">
 					<span *ngIf="!resultIsMerch(result)">{{result.date | dateFormat}}</span>

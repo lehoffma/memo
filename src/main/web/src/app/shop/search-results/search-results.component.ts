@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from "@angular/core";
-import {ActivatedRoute, Params, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {EventService} from "../../shared/services/api/event.service";
 import {Event} from "../shared/model/event";
 import {SortingOption} from "../../shared/model/sorting-option";
@@ -8,19 +8,7 @@ import {SearchFilterService} from "../../shared/search/search-filter.service";
 import {FilterOptionBuilder} from "../../shared/search/filter-option-builder.service";
 import {SearchResultsFilterOption} from "../../shared/search/search-results-filter-option";
 import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
-import {
-	debounceTime,
-	defaultIfEmpty,
-	distinctUntilChanged,
-	filter,
-	first,
-	map,
-	scan,
-	skip,
-	startWith,
-	switchMap,
-	takeUntil
-} from "rxjs/operators";
+import {debounceTime, defaultIfEmpty, distinctUntilChanged, filter, map, scan, skip, startWith, switchMap, takeUntil} from "rxjs/operators";
 import {Filter} from "../../shared/model/api/filter";
 import {Sort} from "../../shared/model/api/sort";
 import {PageRequest} from "../../shared/model/api/page-request";
@@ -34,9 +22,10 @@ import {CreateEventContextMenuComponent} from "../event-calendar-container/creat
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
 import {FilterOptionFactoryService} from "../../shared/search/filter-option-factory.service";
-import {QueryParameterService} from "../../shared/services/query-parameter.service";
 import {PagedDataSource} from "../../shared/utility/material-table/paged-data-source";
 import {FilterOption} from "../../shared/search/filter-options/filter-option";
+import {NavigationService} from "../../shared/services/navigation.service";
+import {QueryParameterService} from "../../shared/services/query-parameter.service";
 
 @Component({
 	selector: "memo-search-results",
@@ -114,6 +103,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 				private matDialog: MatDialog,
 				private filterOptionBuilder: FilterOptionBuilder,
 				private filterOptionFactory: FilterOptionFactoryService,
+				private navigationService: NavigationService,
 				private loginService: LogInService,
 				private eventService: EventService,
 				private router: Router) {
@@ -122,7 +112,7 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 		this.resultsDataSource.sort$ = this.sortedBy;
 		this.init();
 		this.initResults();
-		this.resultsDataSource.writePaginatorUpdatesToUrl(router);
+		this.resultsDataSource.writePaginatorUpdatesToUrl(router, () => this.navigationService.queryParams$.getValue());
 		this.resultsDataSource.updateOn(this.filter$);
 		this.resultsDataSource.updateOn(this.sortedBy);
 		combineLatest(this.filter$, this.sortedBy).pipe(skip(1), takeUntil(this.onDestroy$)).subscribe(() => {
