@@ -1,3 +1,5 @@
+@import "theme";
+
 :host {
 	display: block;
 	background: white;
@@ -5,13 +7,18 @@
 	border-bottom: 1px solid grey(200);
 }
 
+memo-event-autocomplete {
+	display: block;
+	margin-bottom: 16px;
+}
+
+.tour-checkboxes {
+	flex-direction: column;
+}
+
 form > div {
 	display: flex;
 	justify-content: space-between;
-
-	mat-form-field {
-		width: 45%;
-	}
 
 	&.form-actions {
 		justify-content: flex-end;

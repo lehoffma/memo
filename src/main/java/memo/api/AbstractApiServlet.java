@@ -495,7 +495,7 @@ public abstract class AbstractApiServlet<T> {
 
     protected <SerializedType> T put(HttpServletRequest request, String body,
                                      ApiServletPutOptions<T, SerializedType> options) {
-        return this.put(request, body,
+            return this.put(request, body,
                 options.getObjectName(),
                 options.getJsonId(),
                 options.getClazz(),

@@ -6,7 +6,6 @@
 		</memo-sorting-dropdown>
 		<div class="content">
 			<memo-order-renderer *ngFor="let order of (orders$|async)"
-								 [withShow]="true"
 								 [withActions]="canEdit$ | async"
 								 [orderEntry]="order">
 			</memo-order-renderer>

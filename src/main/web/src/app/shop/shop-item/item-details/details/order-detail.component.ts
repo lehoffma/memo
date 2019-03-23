@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {BehaviorSubject, combineLatest, Subscription} from "rxjs";
-import {filter, map, mergeMap, tap} from "rxjs/operators";
+import {filter, map, mergeMap} from "rxjs/operators";
 import {ActivatedRoute} from "@angular/router";
 import {OrderService} from "../../../../shared/services/api/order.service";
 import {Order} from "../../../../shared/model/order";
@@ -10,19 +10,22 @@ import {OrderStatus} from "../../../../shared/model/order-status";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {userPermissions} from "../../../../shared/model/user";
 import {Permission} from "../../../../shared/model/permission";
+import {OrderedItem} from "../../../../shared/model/ordered-item";
 
 @Component({
 	selector: "memo-order-detail",
 	template: `
 		<memo-order-renderer *ngIf="_order$ | async as order; else loading"
-							 [withShow]="false"
+							 (onCancel)="cancelItem($event)"
 							 [withActions]="canEdit$ | async"
+							 [withItemActions]="true"
+							 [isOnDetailsPage]="true"
 							 [withRemove]="false"
 							 [orderEntry]="order">
 
 		</memo-order-renderer>
 
-		<div class="actions" *ngIf="canCancel$ | async">
+		<div class="actions" *ngIf="canCancelAll$ | async">
 			<button mat-raised-button color="warn" (click)="cancelOrder()">
 				Stornieren
 			</button>
@@ -82,17 +85,16 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 
 	subscriptions: Subscription[] = [];
 
-	canCancel$ = combineLatest(
+	canCancelAll$ = combineLatest(
 		this.loginService.currentUser$,
 		this._order$
 	)
 		.pipe(
 			map(([user, order]) => {
-				return user && order.items.some(item => item.status !== OrderStatus.CANCELLED) && user.id === order.user;
+				return user && order.items.some(item => item.status !== OrderStatus.PARTICIPATED) && user.id === order.user;
 			})
 		);
 
-	
 
 	canEdit$ = this.loginService.currentUser$.pipe(
 		filter(user => user !== null),
@@ -124,7 +126,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 	}
 
 	cancelOrder() {
-		this.confirmationDialogService.open("Möchtest du diese Bestellung wirklich stornieren?", () => {
+		this.confirmationDialogService.open("Möchtest du die komplette Bestellung wirklich stornieren?", () => {
 			this.orderedItemService.cancelOrder(this._order$.getValue())
 				.subscribe(
 					success => {
@@ -136,4 +138,16 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 		});
 	}
 
+	cancelItem(item: OrderedItem) {
+		this.confirmationDialogService.open("Möchtest du diese Teilbestellung wirklich stornieren?", () => {
+			this.orderedItemService.cancelOrderItem(this._order$.getValue(), item)
+				.subscribe(
+					success => {
+					},
+					error => {
+						this.error = error;
+					}
+				)
+		});
+	}
 }

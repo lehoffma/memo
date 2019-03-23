@@ -8,66 +8,86 @@
 	flex-direction: column;
 	justify-content: space-between;
 	width: 100%;
+	max-width: 500px;
 	background-color: $container-content--background-color;
 	color: $container-content--color;
-	padding: 1rem;
 	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
 }
 
+.order-information-container {
+	display: flex;
+	justify-content: space-between;
+	padding: 16px;
+	background: grey(50);
+
+	> div {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+
+.label {
+	color: grey(600);
+	font-size: font-size(smallest);
+	text-transform: uppercase;
+}
+
+.labelled-value {
+	font-weight: 500;
+	color: grey(800);
+}
+
+.subtitle {
+	color: grey(600);
+	font-size: font-size(smallest);
+}
+
+.method {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	padding: 8px 16px;
+	background: grey(50);
+	border-bottom: 1px solid grey(300);
+	border-top: 1px solid grey(300);
+
+	> div {
+		display: flex;
+		align-items: center;
+	}
+
+	.label {
+		width: 130px;
+	}
+}
+
 .user {
-	margin-bottom: 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 
 	a {
 		display: flex;
 		font-size: font-size(default);
-		align-self: center;
 		text-decoration: none;
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		color: primary();
+
 	}
-
-	.role-icon {
-		color: primary();
-		height: 20px;
-		width: 20px;
-		margin-left: 2px;
-		font-size: font-size(medium);
-	}
-}
-
-.order-renderer-bottom {
-
-	border-top: 1px solid grey(300);
-}
-
-.user, .method {
-	padding-bottom: 1rem;
-	display: flex;
-	width: 100%;
-	justify-content: space-between;
-}
-
-.user,
-.method.line-under {
-	border-bottom: 1px solid grey(300);
 }
 
 .ordered-items {
 	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	margin: 10px 0;
-	padding: 10px 0;
+	flex-direction: column;
 
 	&:first-of-type {
 		border-top: 1px solid grey(300);
 	}
 
-	&:not(:last-of-type) {
-		border-bottom: 1px solid grey(200);
-	}
+	border-bottom: 1px solid grey(200);
 
 	> a {
 		display: flex;
@@ -136,78 +156,49 @@
 				flex-direction: row;
 			}
 		}
-
-		.order-entry-info-container {
-			display: flex;
-			flex-direction: column;
-			align-items: flex-end;
-
-			.label {
-				color: grey(600);
-				font-size: font-size(smallest);
-				text-transform: uppercase;
-			}
-		}
-
-		.status {
-			font-weight: bold;
-			text-align: right;
-		}
-
-		//todo redesign labels/tags
-		.Reserviert {
-			color: #009688;
-		}
-
-		.Bezahlt {
-			color: $primary-default;
-		}
-
-		.Verschickt {
-			color: #2196f3;
-		}
-
-		.Abgebrochen {
-			color: #F57F17;
-		}
-
-		.Abgelehnt {
-			color: $warn-default;
-		}
-
-		.Unter-Begutachtung {
-			color: #9C27B0;
-		}
-
-		.Abgeschlossen {
-			color: rgba(0, 0, 0, 0.4);
-		}
-
-		.Bezahlung-Angefordert {
-			color: #FF6F00;
-		}
-
-		.Teilgenommen {
-			color: #388e3c;
-		}
-
-		.Bestellt {
-
-		}
 	}
 
 }
 
-.order-entry-info-container {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
+//todo redesign labels/tags
+.Reserviert {
+	color: #009688;
+}
 
-	.label {
-		color: rgba(0, 0, 0, 0.4);
-		font-size: font-size(smallest);
-		text-transform: uppercase;
-	}
+.Bezahlt {
+	color: $primary-default;
+}
+
+.Verschickt {
+	color: #2196f3;
+}
+
+.Storniert {
+	color: #F57F17;
+}
+
+.Abgelehnt {
+	color: $warn-default;
+}
+
+.Unter-Begutachtung {
+	color: #9C27B0;
+}
+
+.Abgeschlossen {
+	color: rgba(0, 0, 0, 0.4);
+}
+
+.Bezahlung-Angefordert {
+	color: #FF6F00;
+}
+
+.Teilgenommen {
+	color: #388e3c;
+}
+
+.Bestellt {
+
 }
 
 .bank-account {
@@ -233,15 +224,16 @@
 }
 
 .header {
-	margin: -1rem -1rem 1rem;
-	padding: 1rem;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding-top: 16px;
 	font-weight: 200;
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
+	background: grey(50);
 
 	button {
-		margin-right: -5px;
-		margin-top: -2px;
+		margin-top: -8px;
 	}
 
 	h2 {
@@ -252,13 +244,116 @@
 			font-size: font-size(small-medium);
 		}
 	}
+
+	.date-subtitle {
+		font-size: font-size(smaller);
+	}
 }
 
-.order-entry-picture > img {
-	width: 45px;
-	height: 45px;
-	margin-right: 1rem;
-	object-fit: contain;
+.ordered-item-main-information-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.ordered-item-actions {
+	display: flex;
+	justify-content: center;
+	padding: 8px;
+}
+
+.ordered-item-main-information {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	padding: 8px 16px;
+}
+
+.ordered-item-header {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 16px;
+
+	h3 {
+		margin: 0;
+		font-size: font-size();
+	}
+}
+
+.order-price {
+	font-weight: 500;
+	font-size: font-size();
+}
+
+img {
+	width: 100%;
+	height: 80px;
+	object-fit: cover;
+}
+
+.secondary-information-container {
+	.info-row {
+		display: flex;
+		align-items: center;
+
+		.label {
+			display: block;
+			width: 150px;
+		}
+
+		mat-icon {
+			color: warn(700);
+			background: warn(50);
+			border-radius: 50%;
+			border: 1px solid;
+			padding: 1px;
+			width: auto;
+			height: auto;
+			font-size: font-size();
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			&.green {
+				color: primary(700);
+				background: primary(50);
+			}
+		}
+	}
+
+	.status-row {
+		margin-top: 8px;
+
+		.label {
+			font-size: font-size(smaller);
+			font-weight: 500;
+		}
+
+		.labelled-value {
+			font-size: font-size(small-medium);
+		}
+	}
+}
+
+.order-renderer-bottom {
+	display: flex;
+	justify-content: center;
+	padding: 8px;
+
+	> *:not(:first-child) {
+		margin-left: 8px;
+	}
+
+	> *:not(.mat-warn) {
+		color: grey(700);
+
+		mat-icon {
+			color: grey(600);
+		}
+	}
+}
+
+td.center {
+	margin: auto;
 }
 
 .price {
@@ -298,14 +393,32 @@
 	}
 }
 
-.order-total-price {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 0.5rem;
-	margin-top: 0.5rem;
-	font-size: font-size(medium);
+.details-button {
+	display: none;
+}
 
-	.order-total-price-amount {
-		font-weight: bold;
+@media all and (min-width: 500px) {
+	.ordered-item-main-information-container {
+		flex-direction: row;
+
+		> a {
+			width: 150px;
+			height: 130px;
+		}
+	}
+
+	.details-button {
+		display: block;
+	}
+
+	.header {
+		button {
+			display: none;
+		}
+	}
+
+	img {
+		width: 150px;
+		height: 130px;
 	}
 }

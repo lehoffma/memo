@@ -51,7 +51,7 @@ export const orderStatusMap: OrderStatusMap = {
 	},
 	[OrderStatus.CANCELLED]: {
 		value: 5,
-		label: "Abgebrochen"
+		label: "Storniert"
 	},
 	[OrderStatus.REFUSED]: {
 		value: 6,

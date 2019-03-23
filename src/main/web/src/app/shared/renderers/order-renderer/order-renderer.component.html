@@ -1,109 +1,136 @@
 <div>
 
 	<div class="header container--header">
-		<h2>
-			Bestellung Nr. {{orderEntry.id}} vom {{orderEntry?.timeStamp | dateFormat}}
-		</h2>
+		<div>
+			<h2>Bestellung Nr. {{orderEntry?.id}}</h2>
+			<span class="date-subtitle">Bestellt am {{orderEntry?.timeStamp | dateFormat:'DD. MMMM YYYY'}}</span>
+		</div>
+		<button mat-icon-button [matMenuTriggerFor]="editMenu" *ngIf="!isOnDetailsPage">
+			<mat-icon>more_vert</mat-icon>
+		</button>
 	</div>
-	<div class="user" *ngIf="user$ | async as user">
-		<span>Bestellt von</span>
-		<a routerLink="/club/members/{{user.id}}" memoUserPreview [user]="user">
-			<span>{{user.firstName + ' ' + user.surname}}</span>
-			<mat-icon class="role-icon" title="{{user.clubRole}}">
-				{{user.clubRole | clubRoleIcon}}
-			</mat-icon>
-		</a>
+	<div class="order-information-container">
+		<div class="user" *ngIf="user$ | async as user">
+			<span class="label">Bestellt von</span>
+			<a class="labelled-value" routerLink="/club/members/{{user.id}}" memoUserPreview [user]="user">
+				<span>{{user.firstName + ' ' + user.surname}}</span>
+			</a>
+		</div>
+		<div>
+			<span class="label">Items</span>
+			<span class="labelled-value">{{orderedEventItems.length}}</span>
+		</div>
+		<div>
+			<span class="label">Gesamt</span>
+			<span class="labelled-value">{{total | currency:'EUR':'symbol'}}</span>
+		</div>
 	</div>
 	<div class="method" [class.line-under]="!(bankAccount$ | async)">
-		<span>Bezahlmethode</span>
-		<span>{{orderEntry?.method}}</span>
-	</div>
-	<div class="bank-account" *ngIf="bankAccount$ | async as bankAccount">
-		<div class="order-entry-info-container">
-			<span class="label">IBAN</span>
-			<span>{{bankAccount.iban}}</span>
+		<div>
+			<span class="label">Bezahlmethode</span>
+			<span class="labelled-value">{{orderEntry?.method}}</span>
 		</div>
-		<div class="order-entry-info-container">
-			<span class="label">BIC</span>
-			<span>{{bankAccount.bic}}</span>
-		</div>
+		<ng-container *ngIf="bankAccount$ | async as bankAccount">
+			<div class="order-entry-info-container">
+				<span class="label">IBAN</span>
+				<span class="labelled-value">{{bankAccount?.iban}}</span>
+			</div>
+			<div class="order-entry-info-container">
+				<span class="label">BIC</span>
+				<span class="labelled-value">{{bankAccount?.bic}}</span>
+			</div>
+		</ng-container>
 	</div>
-	<!--todo redesign user ordered-item-entry-->
 
 	<div *ngFor="let item of orderedEventItems" class="ordered-items">
-		<a routerLink="{{item.link}}">
-			<div class="order-entry-picture">
-				<img [lazySrc]="!!item.item.images[0] ? item.item.images[0] : 'resources/images/Logo.png'"
+		<div class="ordered-item-main-information-container">
+			<a routerLink="{{item.link}}">
+				<img [lazySrc]="(!!item.originalItem.item?.images[0] ? item.originalItem.item.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
 					 lazySrcVisible="visible"
 				/>
-			</div>
-			<div class="order-entry-header order-entry-info">
-				<div class="order-entry-info-container">
-					<span class="label">Name</span>
-					<h3 class="mat-h4">{{item.item.title}}</h3>
-				</div>
-
-				<div *ngIf="item.color && item.size">
-					<div class="order-entry-info-container">
-						<span class="label">Farbe</span>
-						<div>{{item.color.name}}</div>
+			</a>
+			<div class="ordered-item-main-information">
+				<div class="ordered-item-header">
+					<a routerLink="{{item.link}}" class="item-title">
+						<h3 class="labelled-value">{{item.originalItem.item.title}}</h3>
+					</a>
+					<div class="order-price">
+						<!--<span class="order-price-amount">{{item.amount}} x </span>-->
+						<span class="order-price-value">{{item.originalItem.price | currency:'EUR':'symbol'}}</span>
 					</div>
-
-					<div class="order-entry-info-container">
-						<span class="label">Größe</span>
-						<div>{{item.size}}</div>
-					</div>
-
 				</div>
+
+				<table class="secondary-information-container">
+					<tbody>
+					<ng-container *ngIf="item.originalItem.item.type === 3">
+						<tr class="info-row">
+							<td class="label">Farbe</td>
+							<td class="center">{{item.originalItem.color.name}}</td>
+						</tr>
+						<tr class="info-row">
+							<td class="label">Größe</td>
+							<td class="center">{{item.originalItem.size}}</td>
+						</tr>
+					</ng-container>
+					<ng-container *ngIf="item.originalItem.item.type !== 3">
+						<tr class="info-row">
+							<td class="label">Ist Fahrer</td>
+							<td class="center">
+								<mat-icon [class.green]="item.originalItem.isDriver">
+									{{item.originalItem.isDriver ? 'check' : 'clear'}}
+								</mat-icon>
+							</td>
+						</tr>
+						<tr class="info-row">
+							<td class="label">Benötigt Ticket</td>
+							<td class="center">
+								<mat-icon [class.green]="item.originalItem.needsTicket">
+									{{item.originalItem.needsTicket ? 'check' : 'clear'}}
+								</mat-icon>
+							</td>
+						</tr>
+					</ng-container>
+					<tr class="info-row status-row">
+						<td class="label">Status</td>
+						<td class="center">
+							<span class="labelled-value status {{item.status.css}}">{{item.status.label}}</span>
+						</td>
+					</tr>
+					</tbody>
+				</table>
 			</div>
-		</a>
-		<div class="order-entry-info">
-			<div>
-				<div class="order-entry-info-container">
-					<span class="label">Status</span>
-					<span class="status {{item.cssStatus}}">{{item.status}}</span>
-				</div>
-			</div>
-			<div>
-				<div class="order-entry-info-container">
-					<span class="label">Anzahl</span>
-					<div class="order-entry-amount">{{item.amount}}</div>
-				</div>
+		</div>
 
-				<div class="order-entry-info-container">
-					<span class="label">Preis</span>
-					<div class="price">{{item.price | currency:'EUR':'symbol'}}</div>
-				</div>
-
-			</div>
+		<div class="ordered-item-actions" *ngIf="withItemActions && canBeCancelled(item)">
+			<button mat-button color="warn" (click)="cancel(item)">
+				<mat-icon>clear</mat-icon>
+				<span>Stornieren</span>
+			</button>
 		</div>
 	</div>
 </div>
 <div class="order-renderer-bottom">
-	<div class="order-total-price">
-		<span>Gesamt</span>
-		<span class="order-total-price-amount">{{total | currency:'EUR':'symbol'}}</span>
-	</div>
-
-	<div class="actions" *ngIf="withActions || withShow">
-		<div>
-			<div>
-				<a mat-button class="hover-button" routerLink="/management/orders/{{orderEntry?.id}}" *ngIf="withShow">
-					<span>Ansehen</span>
-				</a>
-			</div>
-
-			<div *ngIf="withActions">
-				<a mat-icon-button class="hover-button" color="accent"
-				   routerLink="/management/orders/{{orderEntry?.id}}/edit">
-					<mat-icon>edit</mat-icon>
-				</a>
-				<button mat-icon-button class="hover-button" *ngIf="withRemove" color="warn"
-						(click)="remove()">
-					<mat-icon>delete</mat-icon>
-				</button>
-			</div>
-		</div>
-	</div>
-
+	<a class="details-button" mat-button *ngIf="!isOnDetailsPage"
+	   routerLink="/management/orders/{{orderEntry?.id}}/">
+		<mat-icon>description</mat-icon>
+		Ansehen
+	</a>
+	<a mat-button
+	   routerLink="/management/orders/{{orderEntry?.id}}/edit">
+		<mat-icon>edit</mat-icon>
+		Bearbeiten
+	</a>
+	<button mat-button *ngIf="withRemove" color="warn"
+			(click)="remove()">
+		<mat-icon>delete</mat-icon>
+		Löschen
+	</button>
 </div>
+
+
+<mat-menu #editMenu="matMenu">
+	<a mat-menu-item
+	   routerLink="/management/orders/{{orderEntry?.id}}/">
+		Details
+	</a>
+</mat-menu>

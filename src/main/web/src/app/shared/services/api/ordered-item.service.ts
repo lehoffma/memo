@@ -149,6 +149,29 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 		return this.changeStatusOfOrder(order, OrderStatus.CANCELLED);
 	}
 
+	cancelOrderItem(order: Order, item: OrderedItem){
+		return this.changeStatusOfOrderItem(order,item, OrderStatus.CANCELLED);
+	}
+
+	/**
+	 *
+	 * @param {Order} order
+	 * @param item
+	 * @param status
+	 * @returns {Observable<Order>}
+	 */
+	changeStatusOfOrderItem(order: Order, item: OrderedItem, status: OrderStatus): Observable<Order> {
+		return this.modify({
+			...item,
+			status
+		})
+			.pipe(
+				tap(() => this.orderService.invalidateValue(order.id)),
+				mergeMap(items => this.orderService.getById(order.id)),
+				tap(newOrder => this.orderService.updateCapacities(newOrder))
+			)
+	}
+
 	/**
 	 *
 	 * @param {Order} order
