@@ -11,6 +11,18 @@ html, body, main, memo-app {
 	font-size: font-size(default);
 }
 
+.mat-stroked-button.mat-accent{
+	border-color: accent() !important;
+}
+
+.mat-stroked-button.mat-primary{
+	border-color: primary() !important;
+}
+
+.mat-stroked-button.mat-warn{
+	border-color: warn() !important;
+}
+
 * {
 	box-sizing: border-box;
 	font-family: Roboto, "Helvetica Neue", sans-serif;

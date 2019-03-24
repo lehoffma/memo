@@ -10,15 +10,17 @@
 	border-radius: 4px;
 	background-color: $container-content--background-color;
 	color: $container-content--color;
+	width: 100%;
+	max-width: 500px;
 
 	.stock-entry-header {
 		display: flex;
-		background-color: grey(100);
+		flex-direction: column;
+		background-color: grey(50);
 		color: $container-header--color;
-		justify-content: space-between;
-		padding: 10px;
 		border-top-right-radius: 4px;
 		border-top-left-radius: 4px;
+		border-bottom: 1px solid #e0e0e0;
 
 		a {
 			color: grey(900);
@@ -30,138 +32,37 @@
 
 			h3 {
 				margin: 0;
+				font-size: font-size(medium);
+				font-weight: 500;
 			}
 		}
 
 		> div {
+			padding: 8px 16px;
 			display: flex;
-			max-width: 85%;
+			flex-direction: column;
+		}
 
-			> div {
-				margin-left: 10px;
-				display: flex;
-				flex-direction: column;
-				width: calc(100% - 50px);
-
-				span {
-					font-size: font-size(smaller);
-
-					text-overflow: ellipsis;
-
-					/* Required for text-overflow to do anything */
-					white-space: nowrap;
-					overflow: hidden;
-				}
-			}
+		> a,
+		img {
+			width: 100%;
+			height: 100px;
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+			border-bottom: 1px solid #e0e0e0;
 		}
 
 		img {
-			width: 50px;
-			height: 50px;
 			object-fit: cover;
+			background: white;
 
 			overflow: hidden;
-			border-radius: 50%;
-			box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
 		}
 
 		button {
 			margin-right: -10px;
 			margin-top: -10px;
 		}
-	}
-
-	table {
-		overflow-x: auto;
-		width: 95%;
-		border-collapse: collapse;
-		font-size: font-size(smallest);
-		margin: 2.5%;
-
-		thead {
-			color: grey(500);
-			font-size: font-size(smallest);
-
-			.sorted-column {
-				color: grey(900);
-			}
-
-			.sortable-column {
-				cursor: pointer;
-				-webkit-user-select: none;
-				-moz-user-select: none;
-				-ms-user-select: none;
-				user-select: none;
-
-				mat-icon {
-					display: inline-flex;
-					vertical-align: middle;
-				}
-			}
-
-			th:not(.sortable-column):not(.empty-column) {
-				width: 50px;
-
-				@media all and (min-width: 1000px) {
-					width: 60px;
-				}
-			}
-
-		}
-
-		thead tr,
-		tr:not(:last-child) {
-			border-bottom: 2px solid grey(200);
-		}
-
-		tr th:last-child,
-		tr td:last-child {
-			border-left: 2px solid grey(200);
-			padding-right: 20px;
-		}
-
-		.total-header {
-			padding-left: 10px;
-			padding-right: 10px;
-		}
-
-		.empty-column {
-			width: 20px;
-		}
-
-		tbody {
-			color: grey(900);
-
-			tr:hover {
-				background-color: grey(100);
-			}
-
-		}
-
-		tr {
-			height: 56px;
-		}
-
-		th {
-			color: grey(700);
-			font-size: font-size(smallest);
-
-			&.total-sum {
-				font-size: font-size(default);
-			}
-		}
-
-		th, td {
-			text-align: end;
-		}
-	}
-
-	.stock-amount-cell.is-zero {
-		color: grey;
-	}
-
-	.stock-amount-cell:not(.is-zero) {
-		font-weight: bold;
 	}
 
 	.color-container {
@@ -177,19 +78,55 @@
 		}
 
 		span {
-			margin-left: 10px;
+			margin-left: 4px;
+		}
+	}
+}
+
+
+.responsible-person {
+	font-size: font-size(smallest);
+	color: grey(700);
+	display: flex;
+	align-items: baseline;
+
+	> span {
+		margin-right: 5px;
+	}
+
+	memo-profile-link {
+		&:not(:last-child)::after {
+			content: ",";
+			color: accent();
+			margin-left: -2px;
 		}
 	}
 }
 
 .stock-entry-footer {
 	display: flex;
-	justify-content: space-between;
-	margin-top: 0;
+	justify-content: flex-end;
 	padding: 8px;
 }
 
-@media all and (min-width: 1200px) {
+mat-cell.status-cell .status-label {
+	display: none;
+}
+
+mat-cell.status-cell .status-icon {
+	color: primary(500);
+}
+
+mat-cell.warning .status-icon {
+	color: yellow(900);
+}
+
+mat-cell.error .status-icon {
+	color: warn(500);
+}
+
+@media all and (min-width: 500px) {
+
 	:host {
 		table {
 			font-size: font-size(small-medium);
@@ -207,5 +144,36 @@
 				}
 			}
 		}
+
+
+		.stock-entry-header {
+			flex-direction: row;
+
+			> a,
+			img {
+				width: 100px;
+				height: 100px;
+				border-top-right-radius: 0;
+				border-right: 1px solid #e0e0e0;
+			}
+		}
+	}
+
+	:host /deep/ .mat-column-status {
+		min-width: 200px;
+	}
+
+	mat-cell.status-cell .status-label {
+		display: block;
+		margin-left: 4px;
+		color: primary(900);
+	}
+
+	mat-cell.warning .status-label {
+		color: yellow(900);
+	}
+
+	mat-cell.error .status-label {
+		color: warn(900);
 	}
 }

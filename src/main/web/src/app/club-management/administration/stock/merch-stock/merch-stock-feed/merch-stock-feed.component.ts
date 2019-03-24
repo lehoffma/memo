@@ -15,33 +15,28 @@ import {filter, map} from "rxjs/operators";
 export class MerchStockFeedComponent implements OnInit {
 	stockEntries$ = new BehaviorSubject([]);
 	//todo move to server
+	//todo le
 	merch$: Observable<{
 		item: Merchandise,
 		emptyOptions: {
-			[size: string]: MerchColor
-		}
+			color: MerchColor;
+			size: string;
+		}[]
 	}[]> = this.stockEntries$
 		.pipe(
 			filter(it => it !== null),
 			map((dataList: StockEntry[]) => {
+
 				return dataList
-				//contains at least one size/color pair that is not in stock
-					.filter(dataItem => Object.keys(dataItem.stockMap)
-						.some(size => Object.keys(dataItem.stockMap[size])
-							.some(colorName => dataItem.stockMap[size][colorName] === 0)))
-					.map(dataItem => ({
-						item: dataItem.item,
-						emptyOptions: Object.keys(dataItem.stockMap)
-							.filter(size => Object.keys(dataItem.stockMap[size])
-								.some(colorName => dataItem.stockMap[size][colorName] === 0))
-							.reduce((options, size) => {
-								options[size] = Object.keys(dataItem.stockMap[size])
-									.filter(colorName => dataItem.stockMap[size][colorName] === 0)
-									.map(colorName => dataItem.options.color
-										.find(color => color.name === colorName));
-								return options;
-							}, {})
-					}))
+					.filter(entry => entry.stock.some(stock => stock.amount === 0))
+					.map(entry => ({
+						item: entry.item,
+						emptyOptions: entry.stock.filter(stock => stock.amount === 0)
+							.map(it => ({
+								color: it.color,
+								size: it.size
+							}))
+					}));
 			})
 		);
 

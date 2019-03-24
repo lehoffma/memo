@@ -77,7 +77,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 
 	dataSource = new ManualPagedDataSource(this.eventService, this.page$);
 	filteredMerch$ = this.dataSource.connect();
-	filteredMerchStock$: Observable<Event[]> = this.getStockEntryList$(this.filteredMerch$);
+	filteredMerchStock$: Observable<StockEntry[]> = this.getStockEntryList$(this.filteredMerch$);
 
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
@@ -136,9 +136,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 	 *
 	 * @returns {Observable<any[]>}
 	 */
-	getStockEntryList$(merch$: Observable<Event[]>) {
-		//todo pagination?
-		//todo move to server side
+	getStockEntryList$(merch$: Observable<Event[]>): Observable<StockEntry[]>{
 		return merch$
 			.pipe(
 				filter(it => it !== null),
@@ -151,8 +149,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 						...merch.map(merchItem => this.stockService.getByEventId(merchItem.id)
 							.pipe(
 								map(stockList => ({
-									stockMap: this.stockService.toStockMap(stockList),
-									options: this.stockService.getStockOptions([stockList]),
+									stock: this.stockService.toStock(stockList),
 									item: merchItem
 								}))
 							)

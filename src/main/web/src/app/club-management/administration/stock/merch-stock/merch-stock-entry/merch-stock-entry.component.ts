@@ -1,46 +1,35 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {StockEntry} from "./stock-entry";
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
+import {StockEntry, StockListEntry, StockStatus} from "./stock-entry";
 import {WindowService} from "../../../../../shared/services/window.service";
-import {MatDialog} from "@angular/material";
-import {BehaviorSubject} from "rxjs";
-import {filter, map} from "rxjs/operators";
+import {MatTableDataSource} from "@angular/material";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
+import {filter, mergeMap, takeUntil} from "rxjs/operators";
+import {ResponsibilityService} from "../../../../../shop/shared/services/responsibility.service";
+import {User} from "../../../../../shared/model/user";
 
 @Component({
 	selector: "memo-merch-stock-entry",
 	templateUrl: "./merch-stock-entry.component.html",
 	styleUrls: ["./merch-stock-entry.component.scss"]
 })
-export class MerchStockEntryComponent implements OnInit {
+export class MerchStockEntryComponent implements OnInit, OnDestroy {
+	Status = StockStatus;
+
 	@Output() onDelete = new EventEmitter<number>();
 	private _stockEntry$ = new BehaviorSubject<StockEntry>(null);
-	totals$ = this._stockEntry$
-		.pipe(
-			filter(it => it !== null),
-			map(stockEntry => {
-				const totals = {};
-				stockEntry.options.size.forEach(size => {
-					totals[size] = stockEntry.options.color
-						.reduce((acc, color) => {
-							return acc + stockEntry.stockMap[size][color.name];
-						}, 0);
-				});
 
-				totals["total"] = Object.keys(totals)
-					.reduce((acc, key) => acc + totals[key], 0);
+	responsible$: Observable<User[]> = this._stockEntry$
+		.pipe(mergeMap(event => this.responsibilityServive.getResponsible(event.item.id)));
 
-				stockEntry.options.color.forEach(color => {
-					totals[color.name] = stockEntry.options.size
-						.reduce((acc, size) => {
-							return acc + stockEntry.stockMap[size][color.name];
-						}, 0);
-				});
+	dataSource: MatTableDataSource<StockListEntry> = new MatTableDataSource();
 
-				return totals;
-			})
-		);
+	_onDestroy$ = new Subject();
+	displayedColumns: string[] = ['color', 'size', 'amount', 'status']
 
 	constructor(public windowService: WindowService,
-				public mdDialog: MatDialog) {
+				private responsibilityServive: ResponsibilityService) {
+		this._stockEntry$.pipe(filter(it => it !== null && it !== undefined), takeUntil(this._onDestroy$))
+			.subscribe(stockEntry => this.dataSource.data = stockEntry.stock)
 	}
 
 	get stockEntry() {
@@ -57,6 +46,10 @@ export class MerchStockEntryComponent implements OnInit {
 
 	deleteMerch(id: number) {
 		this.onDelete.emit(id);
+	}
+
+	ngOnDestroy(): void {
+		this._onDestroy$.next(true);
 	}
 
 }

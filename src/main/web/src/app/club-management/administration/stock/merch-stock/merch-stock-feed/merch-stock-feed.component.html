@@ -1,4 +1,3 @@
-
 <div class="container--header">
 	<h3>
 		Ausverkaufte Artikel
@@ -37,18 +36,16 @@
 		<div class="out-of-stock-item-options">
 			<table>
 				<tbody>
-				<tr *ngFor="let size of keysOfObject(merch.emptyOptions)">
-					<th>
-						{{size}}
-					</th>
+				<tr *ngFor="let entry of merch.emptyOptions">
 					<td class="color-container">
-						<div *ngFor="let color of merch.emptyOptions[size]">
-							<span class="merch-available-colors"
-								  [style.background-color]="color.hex">
+						<span class="merch-available-colors"
+							  [style.background-color]="entry.color.hex">
 
-							</span>
-							<span>{{color.name}}</span>
-						</div>
+						</span>
+						<span>{{entry.color.name}}</span>
+					</td>
+					<td>
+						{{entry.size}}
 					</td>
 				</tr>
 				</tbody>

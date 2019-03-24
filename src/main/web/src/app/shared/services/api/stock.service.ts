@@ -9,6 +9,7 @@ import {mergeMap, share, tap} from "rxjs/operators";
 import {processSequentiallyAndWait} from "../../../util/observable-util";
 import {Sort} from "../../model/api/sort";
 import {Filter} from "../../model/api/filter";
+import {stockAmountToStatus, StockListEntry} from "../../../club-management/administration/stock/merch-stock/merch-stock-entry/stock-entry";
 
 export interface StockMap {
 	[size: string]: {
@@ -55,58 +56,12 @@ export class StockService extends ServletService<MerchStock> {
 	 * @param {MerchStockList} stockList
 	 * @returns {StockMap}
 	 */
-	toStockMap(stockList: MerchStockList): StockMap {
-		const options = this.getStockOptions([stockList]);
-
-		//initialize the 2d map with zeroes
-		const stockMap: StockMap = options.size.reduce((map, size) => {
-			map[size] = options.color.reduce((object, color) => {
-				object[color.name] = 0;
-				return object;
-			}, {});
-			return map;
-		}, {});
-
-
-		return stockList
-			.reduce((map, stockItem: MerchStock) => {
-				map[stockItem.size][stockItem.color.name] += stockItem.amount;
-				return map;
-			}, stockMap)
+	toStock(stockList: MerchStockList): StockListEntry[] {
+		return stockList.map(stockEntry => ({
+			...stockEntry,
+			status: stockAmountToStatus(stockEntry.amount)
+		}))
 	}
-
-	/**
-	 *
-	 * @param stockList
-	 * @returns {{size: string[], color: string[]}}
-	 */
-	getStockOptions(stockList: MerchStockList[]) {
-		return {
-			size: stockList.reduce((sizes: string[], current) => {
-				current.forEach(stock => {
-					if (!sizes.includes(stock.size)) {
-						sizes.push(stock.size);
-					}
-				});
-				return sizes;
-			}, [])
-				.sort((a, b) => {
-					const valueA = this.possibleSizes.indexOf(a);
-					const valueB = this.possibleSizes.indexOf(b);
-					return valueA - valueB;
-				})
-			,
-			color: stockList.reduce((colors: MerchColor[], current) => {
-				current.forEach(stock => {
-					if (!colors.find(color => color.name === stock.color.name)) {
-						colors.push(stock.color);
-					}
-				});
-				return colors;
-			}, [])
-		};
-	}
-
 	/**
 	 *
 	 * @param requestMethod
