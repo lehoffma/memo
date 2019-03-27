@@ -55,7 +55,10 @@
 				<div class="form-input-container">
 					<div class="form-label">
 						Wert
-						<span class="form-label--additional-info">(Werte < 0 sind Kosten)</span>
+						<mat-icon class="form-label--additional-info"
+								  matTooltip="Werte < 0 sind Kosten, Werte > 0 sind Einnahmen">
+							help
+						</mat-icon>
 					</div>
 					<mat-form-field appearance="outline" class="small-outline-formfield">
 						<input matInput name="valueInput"

@@ -11,15 +11,15 @@ html, body, main, memo-app {
 	font-size: font-size(default);
 }
 
-.mat-stroked-button.mat-accent{
+.mat-stroked-button.mat-accent {
 	border-color: accent() !important;
 }
 
-.mat-stroked-button.mat-primary{
+.mat-stroked-button.mat-primary {
 	border-color: primary() !important;
 }
 
-.mat-stroked-button.mat-warn{
+.mat-stroked-button.mat-warn {
 	border-color: warn() !important;
 }
 
@@ -244,10 +244,20 @@ memo-comments-section .reply-form-container memo-comment-input form {
 	color: grey(700);
 	font-size: font-size(smaller);
 	margin-bottom: 8px;
+	display: flex;
+	align-items: center;
 
 	.form-label--additional-info {
 		color: grey(600);
 		font-size: font-size(smallest);
+	}
+
+	mat-icon.form-label--additional-info {
+		font-size: font-size(medium);
+		width: 20px;
+		height: 20px;
+		line-height: 20px;
+		margin-left: 8px;
 	}
 }
 
