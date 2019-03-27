@@ -4,6 +4,7 @@ import {Observable, of} from "rxjs";
 import {AccountingState} from "../../../shared/model/accounting-state";
 import {endOfMonth, startOfMonth, subMonths} from "date-fns";
 import {Params} from "@angular/router";
+import {map} from "rxjs/operators";
 
 @Component({
 	selector: "memo-accounting-overview",
@@ -52,8 +53,25 @@ export class AccountingOverviewComponent implements OnInit {
 				totalBalance: 0,
 				month: subMonths(startOfMonth(new Date()), 4)
 			}
-		]
+		],
+		expensesByCategory: {
+			"Verpflegung": 100,
+			"Tickets": 155,
+			"Mietkosten": 750,
+			"Steuern": 100,
+			"Sonstiges": 0
+		},
+		incomeByCategory: {
+			"Verpflegung": 0,
+			"Tickets": 822.50,
+			"Mietkosten": 100,
+			"Steuern": 540,
+			"Sonstiges": 300
+		},
 	});
+
+	expensesByCategory$ = this.state$.pipe(map(state => this.toPieChart(state.expensesByCategory)));
+	incomeByCategory$ = this.state$.pipe(map(state => this.toPieChart(state.incomeByCategory)));
 
 	constructor(private entryService: EntryService) {
 	}
@@ -72,5 +90,12 @@ export class AccountingOverviewComponent implements OnInit {
 		return {
 			"eventId": itemId,
 		}
+	}
+
+	toPieChart(byCategory: { [p: string]: number }): { name: string, value: number }[] {
+		return Object.keys(byCategory).reduce((acc, key) => {
+			acc.push({name: key, value: byCategory[key]});
+			return acc;
+		}, []);
 	}
 }

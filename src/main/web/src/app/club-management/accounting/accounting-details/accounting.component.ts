@@ -1,15 +1,21 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
-import {Dimension, WindowService} from "../../../shared/services/window.service";
+import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {WindowService} from "../../../shared/services/window.service";
 import {AccountingTableContainerService} from "../accounting-table-container.service";
-import {map, mergeMap, startWith, takeUntil} from "rxjs/operators";
-import {ExpandableMaterialTableComponent, TableColumn} from "../../../shared/utility/material-table/expandable-material-table.component";
+import {map, mergeMap} from "rxjs/operators";
+import {ExpandableMaterialTableComponent} from "../../../shared/utility/material-table/expandable-material-table.component";
 import {Entry} from "../../../shared/model/entry";
-import {ResponsiveColumnsHelper} from "../../../shared/utility/material-table/responsive-columns.helper";
-import {BreakpointObserver} from "@angular/cdk/layout";
 import {EntryService} from "../../../shared/services/api/entry.service";
 import {NavigationService} from "../../../shared/services/navigation.service";
-import {Sort} from "../../../shared/model/api/sort";
+import {Direction, Sort} from "../../../shared/model/api/sort";
 import {Subject} from "rxjs";
+import {Order} from "../../../shared/model/order";
+import {SortingOption, SortingOptionHelper} from "../../../shared/model/sorting-option";
+import {FilterOption, FilterOptionType} from "../../../shared/search/filter-options/filter-option";
+import {DateRangeFilterOption} from "../../../shared/search/filter-options/date-range-filter-option";
+import {ShopItemFilterOption} from "../../../shared/search/filter-options/shop-item-filter-option";
+import {MultiFilterOption} from "../../../shared/search/filter-options/multi-filter-option";
+import {EventService} from "../../../shared/services/api/event.service";
+import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
 
 @Component({
 	selector: "memo-accounting",
@@ -17,30 +23,25 @@ import {Subject} from "rxjs";
 	styleUrls: ["./accounting.component.scss"],
 	providers: [AccountingTableContainerService]
 })
-export class AccountingComponent implements OnInit, OnDestroy, AfterViewInit {
-	showOptions = true;
-	mobile = false;
+export class AccountingComponent implements OnInit, OnDestroy {
+
+	sortingOptions: SortingOption<any>[] = entrySortingOptions;
+	filterOptions: FilterOption<FilterOptionType>[] = [
+		new DateRangeFilterOption(
+			"timestamp",
+			"Datum",
+		),
+		new ShopItemFilterOption(
+			"eventId",
+			"Nach Item filtern",
+			id => this.itemService.getById(id),
+		),
+	];
 
 	onDestroy$ = new Subject<any>();
 
-	columns: TableColumn<Entry>[] = [
-		{
-			columnDef: "image",
-			header: "Bild",
-			cell: element => element.images.length > 0 ? element.images[0] : "resources/images/Logo.png",
-			type: "image"
-		},
-		{columnDef: "date", header: "Datum", cell: element => element.date.toISOString(), type: "date"},
-		{columnDef: "name", header: "Name", cell: element => element.name},
-		{columnDef: "category", header: "Kategorie", cell: element => element.category.name},
-		{columnDef: "value", header: "Wert", cell: element => element.value.toString(), type: "costValue"},
-	];
-	displayedColumns$ = this.getDisplayedColumns();
-
-	filter$ = this.navigationService.queryParamMap$.pipe(
-		map(queryParamMap => this.entryService.paramMapToFilter(queryParamMap))
-	);
-	total$ = this.filter$.pipe(
+	//todo move to server
+	total$ = this.accountingTableContainerService.filteredBy$.pipe(
 		mergeMap(filter => this.entryService.getAll(filter, Sort.none())),
 		map(entries => entries.reduce((acc, entry) => acc + entry.value, 0))
 	);
@@ -48,13 +49,30 @@ export class AccountingComponent implements OnInit, OnDestroy, AfterViewInit {
 	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent<Entry>;
 
 	constructor(private windowService: WindowService,
+				private itemService: EventService,
 				private navigationService: NavigationService,
-				private breakpointObserver: BreakpointObserver,
 				public entryService: EntryService,
+				private entryCategoryService: EntryCategoryService,
 				public accountingTableContainerService: AccountingTableContainerService) {
-		this.windowService.dimension$
-			.pipe(takeUntil(this.onDestroy$))
-			.subscribe(dimensions => this.onResize(dimensions));
+		this.entryCategoryService.getCategories().subscribe(page => {
+			let categories = page.content;
+
+			console.log(categories.map(category => ({
+				key: category,
+				label: category,
+				query: [{key: "entryType", value: category}]
+			})));
+
+			this.filterOptions = [...this.filterOptions, new MultiFilterOption(
+				"entryType",
+				"Kostenarten",
+				categories.map(category => ({
+					key: category.name,
+					label: category.name,
+					query: [{key: "entryType", value: category.name}]
+				}))
+			)]
+		})
 	}
 
 	ngOnInit() {
@@ -64,28 +82,19 @@ export class AccountingComponent implements OnInit, OnDestroy, AfterViewInit {
 		this.onDestroy$.next();
 		this.onDestroy$.complete();
 	}
-
-	getDisplayedColumns() {
-		const columnHelper = new ResponsiveColumnsHelper(this.columns, this.breakpointObserver);
-		columnHelper.addPixelBreakpoint(850, "image", "category", "date");
-		columnHelper.addPixelBreakpoint(0, "name", "value");
-		return columnHelper.build()
-			.pipe(startWith([]));
-	}
-
-
-	/**
-	 * Updates the columns and way the options are presented depending on the given width/height object
-	 * @param {Dimension} dimension the current window dimensions
-	 */
-	onResize(dimension: Dimension) {
-		let mobile = dimension.width < 850;
-		this.showOptions = !mobile;
-		this.mobile = mobile;
-	}
-
-	ngAfterViewInit(): void {
-		this.accountingTableContainerService.dataSource = this.table.dataSource;
-	}
-
 }
+
+
+export const entrySortingOptions: SortingOption<Entry>[] = [
+	SortingOptionHelper.build(
+		"Datum neueste - älteste",
+		Sort.by(Direction.DESCENDING, "date"),
+		"Neu - Alt"
+	),
+	SortingOptionHelper.build(
+		"Datum älteste - neueste",
+		Sort.by(Direction.ASCENDING, "date"),
+		"Alt - Neu"
+	)
+];
+

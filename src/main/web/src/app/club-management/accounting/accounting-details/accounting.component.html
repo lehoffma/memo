@@ -1,50 +1,26 @@
-<!--todo redesign date-range picker-->
-<div class="accounting-options mat-elevation-z3" [ngClass]="{showOptions: showOptions}">
-	<memo-accounting-options [hidden]="!(!mobile || showOptions)">
-	</memo-accounting-options>
-
-	<button mat-button color="primary" class="options-button" (click)="showOptions = !showOptions">
-		<mat-icon>{{showOptions ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
-	</button>
-</div>
-
-<!--todo redesign show empty-state if nothing matches-->
-<div class="content-wrapper">
-	<div class="accounting-table-container"
-		 [style.height]="(mobile && showOptions) ? 0 : ((mobile) ? 'calc(100% - 110px)' : 'calc(100% - 74px)')">
-
-		<memo-expandable-material-table
-			(onAction)="accountingTableContainerService.handleTableAction($event)"
-			[title]="'Kostenverwaltung'"
-			[columns]="columns"
-			[displayedColumns]="displayedColumns$ | async"
-			[withSelection]="true"
-			[writePageToUrl]="true"
-			[dataService]="entryService"
-			[filter$]="filter$"
-			[permissions]="accountingTableContainerService.permissions$ | async"
-			[rowActions]="accountingTableContainerService.rowActions">
-
-		</memo-expandable-material-table>
-
-		<ng-template #loadingContainer>
-			<div class="loader-wrapper">
-				<div class="loader"></div>
-			</div>
-		</ng-template>
-
+<memo-results-container *ngLet="(accountingTableContainerService.entries$ |async) as entries"
+						[results]="entries"
+						[filterOptions]="filterOptions"
+						[sortingOptions]="sortingOptions"
+						[defaultOption]="sortingOptions[0]"
+						[withoutUnsorted]="true"
+						[title]="'Kostenverwaltung'"
+						[page]="accountingTableContainerService.dataSource.currentPage$ | async"
+						[canAdd]="(accountingTableContainerService.permissions$ | async).Hinzufuegen"
+						(onAdd)="accountingTableContainerService.add()"
+						(pageChange)="accountingTableContainerService.pageAt($event)"
+>
+	<div *ngFor="let entry of entries">
+		{{entry.id}}
 	</div>
+</memo-results-container>
 
 
-	<!--todo as footer row in table-->
-	<div class="total-amount"
-		 [ngClass]="{
+<div class="total-amount"
+	 [ngClass]="{
 			positive: (total$ | async) >= 0,
 			negative: (total$ | async) < 0
 		}">
-		<span>Gesamt</span>
-		<span>{{(total$ | async) | currency:'EUR':'symbol'}}</span>
-	</div>
-
+	<span>Gesamt</span>
+	<span>{{(total$ | async) | currency:'EUR':'symbol'}}</span>
 </div>
-

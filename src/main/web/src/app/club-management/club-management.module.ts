@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {ClubManagementRoutingModule, routedComponents} from "./club-management.routing";
-import {AccountingOptionsComponent} from "./accounting/accounting-details/accounting-options/accounting-options.component";
 import {CommonModule} from "@angular/common";
 import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
@@ -21,6 +20,7 @@ import {AccountingTimeSummaryComponent} from "./accounting/accounting-overview/a
 import {AccountingItemSummaryComponent} from "./accounting/accounting-overview/accounting-item-summary/accounting-item-summary.component";
 import {CostPreviewComponent} from "./accounting/accounting-overview/shared/cost-preview/cost-preview.component";
 import {SharedSearchModule} from "../shared/search/shared-search.module";
+import {PieChartModule} from "@swimlane/ngx-charts";
 
 const tableCellComponents = [
 
@@ -39,15 +39,15 @@ const tableCellComponents = [
 		MemoMaterialModule,
 		SharedModule,
 		AgmCoreModule,
+		PieChartModule,
 		SharedSearchModule,
 		UserModule,
 		ShopItemDetailsModule,
 		ModifyShopItemModule,
-		ClubManagementRoutingModule
+		ClubManagementRoutingModule,
 	],
 	declarations: [
 		routedComponents,
-		AccountingOptionsComponent,
 		tableCellComponents,
 		MerchStockFeedComponent,
 		MerchStockEntryComponent,

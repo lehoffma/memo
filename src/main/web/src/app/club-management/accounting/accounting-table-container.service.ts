@@ -7,39 +7,57 @@ import {EntryService} from "../../shared/services/api/entry.service";
 import {isNullOrUndefined} from "util";
 import {EventService} from "../../shared/services/api/event.service";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {Observable, of} from "rxjs";
-import {first, map, mergeMap} from "rxjs/operators";
-import {RowAction} from "../../shared/utility/material-table/util/row-action";
-import {RowActionType} from "../../shared/utility/material-table/util/row-action-type";
+import {BehaviorSubject, combineLatest, Observable, of, Subject} from "rxjs";
+import {debounceTime, distinctUntilChanged, first, map, mergeMap, takeUntil, tap} from "rxjs/operators";
 import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
 import {MatDialog} from "@angular/material";
-import {PagedDataSource} from "../../shared/utility/material-table/paged-data-source";
+import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
+import {PageRequest} from "../../shared/model/api/page-request";
+import {Direction, Sort} from "../../shared/model/api/sort";
+import {getAllQueryValues} from "../../shared/model/util/url-util";
+import {Filter} from "../../shared/model/api/filter";
 
 
 @Injectable()
 export class AccountingTableContainerService extends ExpandableTableContainerService<Entry> {
+	sortedBy$: Observable<Sort> = this.navigationService.queryParamMap$
+		.pipe(
+			map(paramMap => paramMap.has("sortBy") && paramMap.has("direction")
+				? Sort.by(paramMap.get("direction"), getAllQueryValues(paramMap, "sortBy").join(","))
+				: Sort.by(Direction.DESCENDING, "date")),
+			distinctUntilChanged((a, b) => Sort.equal(a, b))
+		);
 
-	dataSource: PagedDataSource<Entry>;
+	filteredBy$: Observable<Filter> = this.navigationService.queryParamMap$
+		.pipe(
+			map(paramMap => {
+				let paramObject = {};
+				paramMap.keys
+					.filter(key => !["page", "pageSize", "sortBy", "direction"].includes(key))
+					.forEach(key => {
+						let value = getAllQueryValues(paramMap, key).join(",");
+						paramObject[key] = value;
+					});
+				return Filter.by(paramObject);
+			}),
+			distinctUntilChanged((a, b) => Filter.equal(a, b))
+		);
 
-	rowActions: RowAction<Entry>[] = [
-		{
-			icon: "collections",
-			predicate: entry => entry.images.length > 0,
-			name: "Bilder"
-		},
-		{
-			icon: "edit",
-			name: RowActionType.EDIT
-		},
-		{
-			icon: "delete",
-			name: RowActionType.DELETE
-		},
-	];
+	page$ = new BehaviorSubject(PageRequest.at(
+		(+this.navigationService.queryParamMap$.getValue().get("page") || 1) - 1,
+		(+this.navigationService.queryParamMap$.getValue().get("pageSize") || 20)
+	));
+	public dataSource: ManualPagedDataSource<Entry> = new ManualPagedDataSource<Entry>(this.entryService, this.page$);
+	loading$ = this.dataSource.isLoading$;
+
+	entries$: Observable<Entry[]> = this.dataSource.connect();
 
 	subscriptions = [];
 
 	loading = false;
+
+	private resetPage = new Subject();
+	private onDestroy$ = new Subject();
 
 	constructor(protected loginService: LogInService,
 				protected router: Router,
@@ -48,6 +66,26 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 				protected matDialog: MatDialog,
 				protected entryService: EntryService) {
 		super(loginService.getActionPermissions("funds"));
+
+		this.dataSource.isExpandable = false;
+		this.dataSource.filter$ = this.filteredBy$;
+		this.dataSource.sort$ = this.sortedBy$;
+
+		this.dataSource.initPaginatorFromUrl(this.navigationService.queryParamMap$.getValue());
+		this.dataSource.writePaginatorUpdatesToUrl(this.router);
+
+		this.dataSource.updateOn(
+			combineLatest(
+				this.filteredBy$,
+				this.sortedBy$
+			).pipe(
+				debounceTime(100),
+				tap(() => this.resetPage.next()),
+			)
+		);
+
+		this.resetPage.pipe(takeUntil(this.onDestroy$))
+			.subscribe(it => this.pageAt(0));
 
 		this.actionHandlers["Bilder"] = entries => {
 			const images = entries[0].images;
@@ -61,8 +99,15 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 		};
 	}
 
+	pageAt(page: number) {
+		const currentValue = this.page$.getValue();
+		this.page$.next(PageRequest.at(page, currentValue.pageSize));
+		this.dataSource.update();
+	}
+
 	ngOnDestroy() {
 		super.ngOnDestroy();
+		this.onDestroy$.next(true);
 		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 

@@ -4,7 +4,6 @@
 	display: flex;
 	flex-direction: column;
 	min-height: calc(100vh - 64px);
-	max-width: 1000px;
 	margin: auto;
 }
 
@@ -79,5 +78,22 @@
 		color: accent();
 		font-weight: 500;
 		cursor: pointer;
+	}
+}
+
+.pie-chart {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	margin: 8px;
+	border-radius: 4px;
+	background: white;
+
+	.chart-container {
+		flex: 1;
+	}
+
+	.preview-header {
+		margin: 0;
 	}
 }

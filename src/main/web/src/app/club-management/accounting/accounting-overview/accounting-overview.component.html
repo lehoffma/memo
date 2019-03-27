@@ -68,7 +68,20 @@
 			   [label]="itemTotal.itemTitle"
 			   [totalBalance]="itemTotal.totalBalance"></a>
 		</div>
+		<div class="pie-chart mat-elevation-z3">
+			<h3 class="preview-header">Ausgaben pro Kategorie</h3>
+			<div class="chart-container">
+				<ngx-charts-pie-chart *ngIf="expensesByCategory$ | async as expenses"
+									  [results]="expenses"></ngx-charts-pie-chart>
+			</div>
+		</div>
+		<div class="pie-chart mat-elevation-z3">
+			<h3 class="preview-header">Einnahmen pro Kategorie</h3>
+			<div class="chart-container">
+				<ngx-charts-pie-chart *ngIf="incomeByCategory$ | async as income"
+									  [results]="income"></ngx-charts-pie-chart>
+			</div>
+		</div>
 	</div>
-
 
 </ng-container>

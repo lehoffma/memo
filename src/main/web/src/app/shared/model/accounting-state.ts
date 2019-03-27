@@ -1,3 +1,5 @@
+import {EntryCategory} from "./entry-category";
+
 export interface AccountingState {
 	timestamp?: Date,
 
@@ -19,6 +21,14 @@ export interface AccountingState {
 		month: Date,
 		totalBalance: number;
 	}[];
+
+	expensesByCategory: {
+		[entryCategory: string]: number;
+	};
+
+	incomeByCategory: {
+		[entryCategory: string]: number;
+	}
 }
 
 export interface DatePreview {
