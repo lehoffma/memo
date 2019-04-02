@@ -1,0 +1,51 @@
+<ng-container *ngIf="entry$ | async as entry">
+	<div class="image-container">
+		<!--todo on click open image gallery-->
+		<img src="{{entry?.images[0]  || 'resources/images/Logo.png'}}"/>
+	</div>
+	<div class="main-info-container">
+		<div class="main-info-header">
+			<h3 class="entry-name">
+				{{entry.name}}
+			</h3>
+			<span class="entry-value" [class.is-positive]="entry.value >= 0">
+			{{entry.value >= 0 ? '+' : ''}}{{entry.value | currency:'EUR':'symbol'}}
+		</span>
+		</div>
+		<div class="main-info-comment" *ngIf="entry.comment">
+			{{entry.comment}}
+		</div>
+		<div class="secondary-information">
+			<div class="date-container">
+				<mat-icon>date_range</mat-icon>
+				<span>{{entry.date | dateFormat}}</span>
+			</div>
+			<div class="date-container">
+				<mat-icon>local_offer</mat-icon>
+				<span>{{entry.category}}</span>
+			</div>
+		</div>
+		<div class="item-information">
+			<img src="{{entry?.item.images[0]  || 'resources/images/Logo.png'}}"/>
+			<div class="item-title">
+				<h1>
+					{{entry.item.title}}
+				</h1>
+				<div class="responsible-person" *ngIf="responsible$ | async; let responsible">
+					<span>Verantwortlich: </span>
+					<div>
+						<memo-profile-link *ngFor="let user of responsible" [user]="user"></memo-profile-link>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="entry-actions">
+		<button mat-button>
+			Löschen
+		</button>
+		<button mat-stroked-button color="accent">
+			Bearbeiten
+		</button>
+	</div>
+</ng-container>

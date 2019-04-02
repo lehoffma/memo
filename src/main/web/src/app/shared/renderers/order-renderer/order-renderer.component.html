@@ -109,22 +109,21 @@
 		</div>
 	</div>
 </div>
-<div class="order-renderer-bottom">
-	<a class="details-button" mat-button *ngIf="!isOnDetailsPage"
-	   routerLink="/management/orders/{{orderEntry?.id}}/">
-		<mat-icon>description</mat-icon>
-		Ansehen
-	</a>
-	<a mat-button
-	   routerLink="/management/orders/{{orderEntry?.id}}/edit">
-		<mat-icon>edit</mat-icon>
-		Bearbeiten
-	</a>
-	<button mat-button *ngIf="withRemove" color="warn"
+<div class="order-renderer-bottom" [class.space-between]="withRemove">
+	<button mat-button *ngIf="withRemove"
 			(click)="remove()">
-		<mat-icon>delete</mat-icon>
 		Löschen
 	</button>
+	<div>
+		<a class="details-button" mat-button *ngIf="!isOnDetailsPage"
+		   routerLink="/management/orders/{{orderEntry?.id}}/">
+			Ansehen
+		</a>
+		<a mat-stroked-button color="accent"
+		   routerLink="/management/orders/{{orderEntry?.id}}/edit">
+			Bearbeiten
+		</a>
+	</div>
 </div>
 
 

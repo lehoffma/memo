@@ -72,16 +72,16 @@
 	</mat-table>
 
 	<div class="stock-entry-footer">
-		<a mat-button
+		<button mat-button type="button"
+				matTooltip="Merch löschen"
+				(click)="deleteMerch(stockEntry?.item.id)">
+			Löschen
+		</button>
+		<a mat-stroked-button color="accent"
 		   matTooltip="Bestand bearbeiten"
 		   routerLink="/shop/merch/{{stockEntry?.item.id}}/stock/edit">
 			Bearbeiten
 		</a>
-		<button mat-stroked-button type="button"
-				matTooltip="Merch löschen"
-				color="warn" (click)="deleteMerch(stockEntry?.item.id)">
-			Löschen
-		</button>
 	</div>
 
 </ng-container>

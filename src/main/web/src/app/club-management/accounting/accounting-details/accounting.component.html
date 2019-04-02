@@ -10,9 +10,9 @@
 						(onAdd)="accountingTableContainerService.add()"
 						(pageChange)="accountingTableContainerService.pageAt($event)"
 >
-	<div *ngFor="let entry of entries">
-		{{entry.id}}
-	</div>
+	<memo-entry-renderer [entry]="entry" *ngFor="let entry of entries">
+
+	</memo-entry-renderer>
 </memo-results-container>
 
 

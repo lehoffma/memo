@@ -336,19 +336,20 @@ img {
 
 .order-renderer-bottom {
 	display: flex;
-	justify-content: center;
+	justify-content: flex-end;
 	padding: 8px;
 
-	> *:not(:first-child) {
-		margin-left: 8px;
+	&.space-between{
+		justify-content: space-between;
 	}
 
-	> *:not(.mat-warn) {
-		color: grey(700);
+	> div {
+		display: flex;
+		align-items: center;
+	}
 
-		mat-icon {
-			color: grey(600);
-		}
+	> div > *:not(:first-child) {
+		margin-left: 8px;
 	}
 }
 

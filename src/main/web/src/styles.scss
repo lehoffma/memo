@@ -165,12 +165,6 @@ memo-comments-section .reply-form-container memo-comment-input form {
 	transform: none !important;
 }
 
-.mat-button:not(.dropbtn),
-.mat-stroked-button,
-.mat-raised-button,
-.mat-icon-button {
-	text-transform: uppercase
-}
 
 .mat-raised-button:not([disabled]) {
 	transition: all .15s ease !important;

@@ -21,6 +21,7 @@ import {AccountingItemSummaryComponent} from "./accounting/accounting-overview/a
 import {CostPreviewComponent} from "./accounting/accounting-overview/shared/cost-preview/cost-preview.component";
 import {SharedSearchModule} from "../shared/search/shared-search.module";
 import {PieChartModule} from "@swimlane/ngx-charts";
+import { EntryRendererComponent } from './accounting/entry-renderer/entry-renderer.component';
 
 const tableCellComponents = [
 
@@ -59,6 +60,7 @@ const tableCellComponents = [
 		AccountingTimeSummaryComponent,
 		AccountingItemSummaryComponent,
 		CostPreviewComponent,
+		EntryRendererComponent,
 	],
 	entryComponents: [tableCellComponents]
 })
