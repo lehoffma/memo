@@ -76,7 +76,7 @@ export class MemberListComponent implements OnInit, AfterViewInit {
 		{
 			columnDef: "image",
 			header: "Bild",
-			cell: element => element.images.length > 0 ? element.images[0] : "resources/images/Logo.png",
+			cell: element => element.images.length > 0 ? element.images : ["resources/images/Logo.png"],
 			type: "image"
 		},
 		{columnDef: "firstName", header: "Vorname", cell: element => element.firstName},

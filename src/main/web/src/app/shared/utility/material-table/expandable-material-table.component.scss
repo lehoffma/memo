@@ -29,6 +29,14 @@ table {
 	z-index: 1;
 }
 
+.table-container {
+	overflow-x: auto;
+}
+
+td.mat-cell {
+	padding-right: 16px;
+}
+
 .mat-column-select {
 	overflow: initial;
 }

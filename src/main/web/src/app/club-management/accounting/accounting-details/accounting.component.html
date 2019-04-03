@@ -5,22 +5,32 @@
 						[defaultOption]="sortingOptions[0]"
 						[withoutUnsorted]="true"
 						[title]="'Kostenverwaltung'"
+						[displayHeader]="false"
 						[page]="accountingTableContainerService.dataSource.currentPage$ | async"
 						[canAdd]="(accountingTableContainerService.permissions$ | async).Hinzufuegen"
 						(onAdd)="accountingTableContainerService.add()"
 						(pageChange)="accountingTableContainerService.pageAt($event)"
 >
-	<memo-entry-renderer [entry]="entry" *ngFor="let entry of entries">
 
-	</memo-entry-renderer>
-</memo-results-container>
-
-
-<div class="total-amount"
-	 [ngClass]="{
-			positive: (total$ | async) >= 0,
-			negative: (total$ | async) < 0
+	<memo-expandable-material-table class="mat-elevation-z2"
+									[withHeaderAction]="false"
+									[dataSource]="accountingTableContainerService.dataSource"
+									[filter$]="accountingTableContainerService.filteredBy$"
+									[title]="'Kosten'"
+									[columns]="columns"
+									[rowActions]="rowActions"
+									[displayedColumns]="displayedColumns$ | async"
+									[permissions]="accountingTableContainerService.permissions$ | async"
+									[writePageToUrl]="false"
+	>
+		<div material-footer *ngLet="total$ | async as total"
+			 class="total-amount"
+			 [ngClass]="{
+			positive: total >= 0,
+			negative: total < 0
 		}">
-	<span>Gesamt</span>
-	<span>{{(total$ | async) | currency:'EUR':'symbol'}}</span>
-</div>
+			<span class="label">Gesamt</span>
+			<span class="value">{{total | currency:'EUR':'symbol'}}</span>
+		</div>
+	</memo-expandable-material-table>
+</memo-results-container>

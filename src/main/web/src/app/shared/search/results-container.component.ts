@@ -22,6 +22,8 @@ export class ResultsContainerComponent implements OnInit {
 
 	@Input() filterOptions: FilterOption[];
 
+	@Input() displayHeader = true;
+
 	@Input() canAdd = false;
 
 	@Output() pageChange: EventEmitter<number> = new EventEmitter();

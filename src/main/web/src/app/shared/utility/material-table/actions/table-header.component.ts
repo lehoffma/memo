@@ -16,6 +16,7 @@ export class TableHeaderComponent<T> implements OnInit {
 	@Input() title: string;
 	@Input() link: string;
 	@Input() linkText: string;
+	@Input() withAdd = true;
 	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
 
 	@Input() permissions: ActionPermissions = {

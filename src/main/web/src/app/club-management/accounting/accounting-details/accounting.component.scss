@@ -4,6 +4,10 @@
 $breakpoint: 600px;
 $options-breakpoint: 850px;
 
+memo-expandable-material-table {
+	width: 100%;
+}
+
 :host {
 	display: flex;
 	justify-content: center;
@@ -73,19 +77,37 @@ $options-breakpoint: 850px;
 
 	.total-amount {
 		display: flex;
-		justify-content: space-between;
-		color: white;
+		justify-content: flex-end;
+		align-items: baseline;
 		@include transition(background-color 0.3s ease-in);
-		padding: 1.5rem;
-		font-size: font-size(medium);
-		font-weight: 200;
+		padding: 16px;
+
+		.label {
+			font-size: font-size(default);
+			margin-right: 8px;
+		}
+
+		.value {
+			font-size: font-size(medium);
+		}
 
 		&.positive {
 			@include background-primary();
+			background: primary();
+			color: white;
+
+			.label {
+				color: hsla(123, 41%, 85%, 1);
+			}
 		}
 
 		&.negative {
-			@include background-warn();
+			background: warn();
+			color: white;
+
+			.label {
+				color: hsla(4, 90%, 87%, 1);
+			}
 		}
 
 		&:not(.positive):not(.negative) {
@@ -108,7 +130,7 @@ $options-breakpoint: 850px;
 @media all and (min-width: $options-breakpoint) {
 	memo-expandable-material-table {
 		display: block;
-		margin: 1rem;
+		margin-top: 8px;
 		@include mat-elevation(3);
 		border-radius: 4px;
 
@@ -117,16 +139,12 @@ $options-breakpoint: 850px;
 			border-top-right-radius: 4px;
 		}
 
-		/deep/ mat-paginator {
+		/deep/ .total-amount {
 			border-bottom-left-radius: 4px;
 			border-bottom-right-radius: 4px;
 		}
 	}
 	.loader {
 		left: 65%;
-	}
-
-	.total-amount {
-		display: none !important;
 	}
 }

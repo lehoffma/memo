@@ -6,17 +6,22 @@ import {ItemImagePopupComponent} from "../../../../shop/shop-item/item-details/c
 @Component({
 	selector: "td [memoPictureTableCellComponent], memo-picture-table-cell",
 	template: `
-		<img [lazySrc]="(data) | imageSize:'thumbnail' | async"
-			 lazySrcVisible="visible"
-			 (click)="openPreview(); $event.stopPropagation()"/>
+		<ng-container *ngIf="!data || data.length === 0">
+			<img [lazySrc]="defaultPath"
+				 lazySrcVisible="visible"/>
+		</ng-container>
+		<ng-container *ngIf="data && data.length > 0">
+			<img [lazySrc]="data[0] | imageSize:'small' | async"
+				 lazySrcVisible="visible"
+				 (click)="openPreview(); $event.stopPropagation()">
+		</ng-container>
 	`,
 	styleUrls: ["./picture-table-cell.component.scss"]
 })
 
 export class PictureTableCellComponent implements OnInit, ExpandableTableCellComponent {
 	defaultPath = "resources/images/Logo.png";
-	@Input() data: string;
-	@Input() images: string[];
+	@Input() data: string[];
 
 	constructor(private matDialog: MatDialog) {
 	}
@@ -27,8 +32,8 @@ export class PictureTableCellComponent implements OnInit, ExpandableTableCellCom
 	openPreview() {
 		this.matDialog.open(ItemImagePopupComponent, {
 			data: {
-				images: this.images,
-				imagePath: this.data
+				images: this.data,
+				imagePath: this.data[0]
 			}
 		})
 	}

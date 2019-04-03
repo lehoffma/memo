@@ -18,6 +18,10 @@ export interface TableColumn<T> {
 	header: string,
 	cell: (element: T) => any;
 	type?: string;
+	footer?: {
+		cell: () => any;
+		type?: string;
+	}
 }
 
 @Component({
@@ -40,6 +44,7 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	@Input() title: string;
 	@Input() headerLink: string;
 	@Input() headerLinkText: string;
+	@Input() withHeaderAction = true;
 	@Input() rowActions: RowAction<T>[] = [
 		{
 			icon: "edit",
@@ -55,6 +60,8 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 		Bearbeiten: true,
 		Loeschen: true
 	};
+	@Input() withFooter = false;
+	@Input() stickyFooter = false;
 	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	pageSize = 20;
@@ -122,8 +129,8 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 		this.updateExpandedRows(this.columns, this._displayedColumns);
 	}
 
-	@Input() set writePageToUrl(writePageToUrl: boolean){
-		if(writePageToUrl){
+	@Input() set writePageToUrl(writePageToUrl: boolean) {
+		if (writePageToUrl) {
 			this.dataSource.writePaginatorUpdatesToUrl(this.router);
 		}
 	}

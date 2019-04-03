@@ -8,7 +8,10 @@ import {TableColumn} from "../expandable-material-table.component";
 })
 export class TableCellFactoryComponent<T> implements OnInit {
 	@Input() element: T;
-	@Input() column: TableColumn<T>;
+	@Input() column: {
+		cell: (element?: T) => any;
+		type?: string;
+	};
 
 	constructor() {
 	}

@@ -7,13 +7,8 @@
 	</memo-filtering-menu>
 </div>
 <div class="content">
-	<div class="results-header">
+	<div class="results-header" *ngIf="displayHeader">
 		<h3 class="results-title">{{title}}</h3>
-
-		<!--todo mobile add button-->
-		<!--<button mat-stroked-button color="accent" *ngIf="canAdd"-->
-		<!--class="mobile"-->
-		<!--(click)="add()">Hinzufügen-->
 
 		<div class="sorting-container">
 			<span class="results-subtitle">

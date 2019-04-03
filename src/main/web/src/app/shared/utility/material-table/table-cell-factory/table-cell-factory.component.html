@@ -3,8 +3,7 @@
 		{{column.cell(element) | dateFormat}}
 	</ng-container>
 
-	<memo-picture-table-cell [data]="column.cell(element)"
-							 [images]="element.images || [column.cell(element)]"
+	<memo-picture-table-cell [data]="element.images || column.cell(element)"
 							 *ngSwitchCase="'image'">
 	</memo-picture-table-cell>
 
