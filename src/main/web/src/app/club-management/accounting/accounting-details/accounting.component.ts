@@ -6,9 +6,8 @@ import {ExpandableMaterialTableComponent, TableColumn} from "../../../shared/uti
 import {Entry} from "../../../shared/model/entry";
 import {EntryService} from "../../../shared/services/api/entry.service";
 import {NavigationService} from "../../../shared/services/navigation.service";
-import {Direction, Sort} from "../../../shared/model/api/sort";
+import {Sort} from "../../../shared/model/api/sort";
 import {Observable, Subject} from "rxjs";
-import {SortingOption, SortingOptionHelper} from "../../../shared/model/sorting-option";
 import {FilterOption, FilterOptionType} from "../../../shared/search/filter-options/filter-option";
 import {DateRangeFilterOption} from "../../../shared/search/filter-options/date-range-filter-option";
 import {ShopItemFilterOption} from "../../../shared/search/filter-options/shop-item-filter-option";
@@ -34,7 +33,6 @@ import {EntryCategory} from "../../../shared/model/entry-category";
 })
 export class AccountingComponent implements OnInit, OnDestroy {
 
-	sortingOptions: SortingOption<any>[] = entrySortingOptions;
 	filterOptions: FilterOption<FilterOptionType>[] = [
 		new DateRangeFilterOption(
 			"timestamp",
@@ -139,23 +137,16 @@ export class AccountingComponent implements OnInit, OnDestroy {
 		switch (category.name) {
 			case "Verpflegung":
 				return "blue";
+			case "Tickets":
+				return "green";
+			case "Mietkosten":
+				return "red";
+			case "Steuern":
+				return "yellow";
+			case "Sonstiges":
+				return "purple";
 		}
 
 		return "grey";
 	}
 }
-
-
-export const entrySortingOptions: SortingOption<Entry>[] = [
-	SortingOptionHelper.build(
-		"Datum neueste - älteste",
-		Sort.by(Direction.DESCENDING, "date"),
-		"Neu - Alt"
-	),
-	SortingOptionHelper.build(
-		"Datum älteste - neueste",
-		Sort.by(Direction.ASCENDING, "date"),
-		"Alt - Neu"
-	)
-];
-

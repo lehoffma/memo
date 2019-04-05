@@ -16,7 +16,7 @@ export class ResultsContainerComponent implements OnInit {
 	@Input() page: Page<any>;
 	@Input() results: any[] | null;
 
-	@Input() sortingOptions: SortingOption<any>[];
+	@Input() sortingOptions: SortingOption<any>[] = [];
 	@Input() defaultOption: SortingOption<any>;
 	@Input() withoutUnsorted = false;
 
