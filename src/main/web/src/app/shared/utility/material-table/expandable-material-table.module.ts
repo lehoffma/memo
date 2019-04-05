@@ -21,6 +21,10 @@ import {CostValueTableCellComponent} from "./cells/cost-value-table-cell.compone
 import {EntryCategoryCellComponent} from "./cells/entry-category-cell.component";
 import {MerchColorCellComponent} from "./cells/merch-color-cell.component";
 import {LazyLoadingModule} from "../../lazy-loading/lazy-loading.module";
+import { TitleSubtitleCellComponent } from './cells/title-subtitle-cell.component';
+import { LinkTableCellComponent } from './cells/link-table-cell.component';
+import { TagTableCellComponent } from './cells/tag-table-cell.component';
+import {IconCellDetailsDialog, IconDialogTableCellComponent} from "./cells/icon-dialog-table-cell.component";
 
 const tableCells = [
 	//memberlist table cells
@@ -40,6 +44,13 @@ const tableCells = [
 	CostValueTableCellComponent,
 
 	MerchColorCellComponent,
+
+	ActionsCellComponent,
+	TableCellFactoryComponent,
+	TitleSubtitleCellComponent,
+	LinkTableCellComponent,
+	TagTableCellComponent,
+	IconDialogTableCellComponent,
 ];
 
 @NgModule({
@@ -58,10 +69,12 @@ const tableCells = [
 		ExpandableMaterialTableComponent,
 		tableCells,
 		TableHeaderComponent,
-		ActionsCellComponent,
-		TableCellFactoryComponent
+		IconCellDetailsDialog,
 	],
 	providers: [],
+	entryComponents: [
+		IconCellDetailsDialog
+	],
 })
 export class ExpandableMaterialTableModule {
 }

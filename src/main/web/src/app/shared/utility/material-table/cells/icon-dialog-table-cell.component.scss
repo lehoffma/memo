@@ -1,0 +1,25 @@
+@import "theme";
+
+:host {
+	display: flex;
+	align-items: center;
+}
+
+:host > span {
+	margin-right: 8px;
+	display: block;
+	white-space: nowrap;
+}
+
+memo-picture-table-cell {
+	margin-right: 4px;
+}
+
+
+mat-icon {
+	height: 20px;
+	font-size: 20px;
+	width: 20px;
+	color: memo-grey(600);
+	cursor: pointer;
+}

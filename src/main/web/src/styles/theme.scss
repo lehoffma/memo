@@ -10,13 +10,21 @@ $accent-default: mat-color($accent);
 
 $accent-yellow: mat-palette($mat-yellow);
 
-//$warn: mat-palette($mat-red);
 $warn: mat-palette($mat-red);
 $warn-default: mat-color($warn);
 
-$greys: mat-palette($mat-grey);
 
 $theme: mat-light-theme($primary, $accent, $warn);
+
+
+//palettes
+$grey-palette: mat-palette($mat-grey);
+$yellow-palette: mat-palette($mat-yellow);
+$red-palette: mat-palette($mat-red);
+$green-palette: mat-palette($mat-green);
+$blue-palette: mat-palette($mat-blue);
+$orange-palette: mat-palette($mat-orange);
+$purple-palette: mat-palette($mat-purple);
 
 
 @function color($color-palette, $hue: default, $opacity: null) {
@@ -57,19 +65,62 @@ $theme: mat-light-theme($primary, $accent, $warn);
 	@include background-color($warn, $hue, $opacity);
 }
 
-@function grey($hue: default, $opacity: null) {
-	@return color($greys, $hue, $opacity)
-}
 
-@mixin background-grey($hue: 500, $opacity: null) {
-	@include background-color($greys, $hue, $opacity);
+@function grey($hue: default, $opacity: null) {
+	@return color($grey-palette, $hue, $opacity)
+}
+@function memo-grey($hue: default, $opacity: null) {
+	@return grey($hue, $opacity)
 }
 
 @function yellow($hue: default, $opacity: null) {
-	@return color($accent-yellow, $hue, $opacity)
+	@return color($yellow-palette, $hue, $opacity)
+}
+@function memo-yellow($hue: default, $opacity: null) {
+	@return yellow($hue, $opacity)
 }
 
-@mixin background-warn($hue: 500, $opacity: null) {
+@function red($hue: default, $opacity: null) {
+	@return color($red-palette, $hue, $opacity)
+}
+@function memo-red($hue: default, $opacity: null) {
+	@return red($hue, $opacity)
+}
+
+@function green($hue: default, $opacity: null) {
+	@return color($green-palette, $hue, $opacity)
+}
+@function memo-green($hue: default, $opacity: null) {
+	@return green($hue, $opacity)
+}
+
+@function blue($hue: default, $opacity: null) {
+	@return color($blue-palette, $hue, $opacity)
+}
+@function memo-blue($hue: default, $opacity: null) {
+	@return blue($hue, $opacity)
+}
+
+@function orange($hue: default, $opacity: null) {
+	@return color($orange-palette, $hue, $opacity)
+}
+@function memo-orange($hue: default, $opacity: null) {
+	@return orange($hue, $opacity)
+}
+
+@function purple($hue: default, $opacity: null) {
+	@return color($purple-palette, $hue, $opacity)
+}
+@function memo-purple($hue: default, $opacity: null) {
+	@return purple($hue, $opacity)
+}
+
+
+@mixin background-grey($hue: 500, $opacity: null) {
+	@include background-color($grey-palette, $hue, $opacity);
+}
+
+@mixin background-yellow($hue: 500, $opacity: null) {
 	@include background-color($accent-yellow, $hue, $opacity);
 }
 

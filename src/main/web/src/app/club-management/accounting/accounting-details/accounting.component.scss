@@ -8,12 +8,17 @@ memo-expandable-material-table {
 	width: 100%;
 }
 
+:host /deep/ .mat-column-images {
+	//max-width: 40px;
+	padding-left: 16px !important;
+}
+
 :host {
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
 	width: 100%;
-	max-width: 1200px;
+	//max-width: 1200px;
 	margin: auto;
 	min-height: calc(100vh - 64px);
 

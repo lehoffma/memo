@@ -31,6 +31,9 @@ export interface Event extends BaseObject {
 	type: number;
 }
 
+//alias because intellij won't import the correct version of the event interface otherwise
+export type ShopEvent = Event;
+
 export function paymentConfig(event: Event): PaymentConfig {
 	let methods = {
 		[PaymentMethod.CASH]: true,

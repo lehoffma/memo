@@ -1,0 +1,50 @@
+@import "theme";
+
+:host{
+	display: flex;
+}
+
+.tag {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4px 8px;
+	border: 1px solid;
+	font-weight: 500;
+	border-radius: 500px;
+	width: auto;
+	font-size: font-size(smallest);
+
+	&.no-borders {
+		border: none;
+	}
+
+	&.color-grey {
+		color: grey(800);
+		background-color: grey(100);
+	}
+	&.color-yellow {
+		color: yellow(900);
+		background-color: yellow(50);
+	}
+	&.color-red {
+		color: memo-red(900);
+		background-color: memo-red(50);
+	}
+	&.color-green {
+		color: memo-green(900);
+		background-color: memo-green(50);
+	}
+	&.color-blue {
+		color: memo-blue(900);
+		background-color: memo-blue(50);
+	}
+	&.color-orange {
+		color: memo-orange(900);
+		background-color: memo-orange(50);
+	}
+	&.color-purple {
+		color: memo-purple(900);
+		background-color: memo-purple(50);
+	}
+}

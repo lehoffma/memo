@@ -25,6 +25,15 @@
 
 	</memo-merch-color-cell>
 
+	<memo-title-subtitle-cell [data]="column.cell(element)" *ngSwitchCase="'title-subtitle'">
+
+	</memo-title-subtitle-cell>
+
+	<memo-link-table-cell [data]="column.cell(element)" *ngSwitchCase="'link'"></memo-link-table-cell>
+	<memo-tag-table-cell [data]="column.cell(element)" *ngSwitchCase="'tag'"></memo-tag-table-cell>
+	<memo-icon-dialog-table-cell [data]="column.cell(element)"
+								 *ngSwitchCase="'icon-dialog'"></memo-icon-dialog-table-cell>
+
 
 	<!--default: just show the text-->
 	<ng-container *ngSwitchDefault>

@@ -16,9 +16,15 @@ import {MultiFilterOption} from "../../../shared/search/filter-options/multi-fil
 import {EventService} from "../../../shared/services/api/event.service";
 import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
 import {of} from "rxjs/internal/observable/of";
-import {format} from "date-fns";
+import {distanceInWordsToNow, format} from "date-fns";
 import {RowAction} from "../../../shared/utility/material-table/util/row-action";
 import {RowActionType} from "../../../shared/utility/material-table/util/row-action-type";
+import * as deLocale from "date-fns/locale/de";
+import {EventUtilityService} from "../../../shared/services/event-utility.service";
+import {ShopEvent} from "../../../shop/shared/model/event";
+import {TagColor} from "../../../shared/utility/material-table/cells/tag-table-cell.component";
+import {EntryCategory} from "../../../shared/model/entry-category";
+
 
 @Component({
 	selector: "memo-accounting",
@@ -51,12 +57,33 @@ export class AccountingComponent implements OnInit, OnDestroy {
 
 	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent<Entry>;
 	columns: TableColumn<Entry>[] = [
-		{header: "", columnDef: "images", cell: element => element, type: "image"},
-		{header: "Name", columnDef: "name", cell: element => element.name},
-		{header: "Kommentar", columnDef: "comment", cell: element => element.comment, type: "comment"},
-		{header: "Item", columnDef: "item", cell: element => element.item.title, type: "item-details"},
-		{header: "Kategorie", columnDef: "category", cell: element => element.category.name},
-		{header: "Datum", columnDef: "date", cell: element => format(element.date, "DD.MM.YYYY")},
+		{
+			header: "Name", columnDef: "name", cell: element => ({
+				text: element.name,
+				icon: "comment",
+				details: element.comment,
+			}), type: "icon-dialog"
+		},
+		{
+			header: "Datum", columnDef: "date", cell: element => ({
+				title: format(element.date, "DD.MM.YYYY"),
+				subtitle: distanceInWordsToNow(element.date, {locale: deLocale, addSuffix: true})
+			}), type: "title-subtitle"
+		},
+		{
+			header: "Kategorie", columnDef: "category", cell: element => ({
+				text: element.category.name,
+				color: this.getCategoryColor(element.category)
+			}), type: "tag"
+		},
+		{header: "Bilder", columnDef: "images", cell: element => element, type: "image"},
+		{
+			header: "Item", columnDef: "item", cell: element => ({
+				text: element.item.title,
+				routerLink: this.getLinkToItem(element.item),
+				tooltip: "Item ansehen"
+			}), type: "link"
+		},
 		{header: "Wert", columnDef: "value", cell: element => element.value, type: "costValue"},
 	];
 	displayedColumns$: Observable<string[]> = of(
@@ -73,6 +100,11 @@ export class AccountingComponent implements OnInit, OnDestroy {
 			name: RowActionType.DELETE
 		}
 	];
+
+	private getLinkToItem(item: ShopEvent) {
+		let category = EventUtilityService.getEventType(item);
+		return `/shop/${category}/${item.id}`
+	}
 
 	constructor(private windowService: WindowService,
 				private itemService: EventService,
@@ -101,6 +133,15 @@ export class AccountingComponent implements OnInit, OnDestroy {
 	ngOnDestroy() {
 		this.onDestroy$.next();
 		this.onDestroy$.complete();
+	}
+
+	private getCategoryColor(category: EntryCategory): TagColor {
+		switch (category.name) {
+			case "Verpflegung":
+				return "blue";
+		}
+
+		return "grey";
 	}
 }
 

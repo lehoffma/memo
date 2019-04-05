@@ -1,0 +1,11 @@
+@import "theme";
+
+.subtitle {
+	color: grey(600);
+	font-size: font-size(smallest);
+}
+
+:host {
+	display: flex;
+	flex-direction: column;
+}
