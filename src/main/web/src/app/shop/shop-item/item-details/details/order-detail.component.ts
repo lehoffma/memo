@@ -17,6 +17,7 @@ import {OrderedItem} from "../../../../shared/model/ordered-item";
 	template: `
 		<memo-order-renderer *ngIf="_order$ | async as order; else loading"
 							 (onCancel)="cancelItem($event)"
+							 [canSeeDescription]="canSeeDescription$ | async"
 							 [withActions]="canEdit$ | async"
 							 [withItemActions]="true"
 							 [isOnDetailsPage]="true"
@@ -95,6 +96,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 			})
 		);
 
+	canSeeDescription$ = this.loginService.currentUser$.pipe(
+		filter(user => user !== null),
+		map(user => userPermissions(user).funds >= Permission.read),
+	);
 
 	canEdit$ = this.loginService.currentUser$.pipe(
 		filter(user => user !== null),

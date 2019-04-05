@@ -11,6 +11,7 @@
 						(pageChange)="orderOverviewService.pageAt($event)"
 >
 	<memo-order-renderer *ngFor="let order of orders"
+						 [canSeeDescription]="true"
 						 [withActions]="true"
 						 (onRemove)="orderOverviewService.removeOrder($event)"
 						 [orderEntry]="order">

@@ -20,8 +20,16 @@
 	</button>
 </div>
 
+<div class="options-container">
+	<div class="labelled-value">
+		<span class="label">Beschreibung</span>
+		<span *ngIf="orderedItem.description">{{orderedItem.description }}</span>
+		<span *ngIf="!orderedItem.description" class="no-description">-/-</span>
+	</div>
+</div>
 
 <div class="section right-aligned">
+
 	<div class="options-container">
 		<ng-container *ngIf="getEventData(orderedItem?.item).type === eventType.tours;">
 			<div class="labelled-value">

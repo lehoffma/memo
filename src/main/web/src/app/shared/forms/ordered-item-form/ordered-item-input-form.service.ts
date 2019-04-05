@@ -17,6 +17,7 @@ export class OrderedItemInputFormService implements OnDestroy {
 		"item": [undefined, {
 			validators: [Validators.required]
 		}],
+		"description": [undefined],
 		"price": [undefined, {
 			validators: [Validators.required, Validators.pattern(/^[\d]+((\.|\,)[\d]{1,2})?$/)]
 		}],
@@ -91,6 +92,7 @@ export class OrderedItemInputFormService implements OnDestroy {
 		this.addOrderedItemForm.setValue({
 			id: orderedItem.id,
 			item: orderedItem.item,
+			description: orderedItem.description,
 			price: orderedItem.price,
 			status: orderedItem.status,
 			size: orderedItem.size,

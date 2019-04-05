@@ -75,7 +75,6 @@ export class AccountingComponent implements OnInit, OnDestroy {
 				color: this.getCategoryColor(element.category)
 			}), type: "tag"
 		},
-		{header: "Bilder", columnDef: "images", cell: element => element, type: "image"},
 		{
 			header: "Item", columnDef: "item", cell: element => ({
 				text: element.item.title,
@@ -84,6 +83,7 @@ export class AccountingComponent implements OnInit, OnDestroy {
 			}), type: "link"
 		},
 		{header: "Wert", columnDef: "value", cell: element => element.value, type: "costValue"},
+		{header: "Bilder", columnDef: "images", cell: element => element, type: "image"},
 	];
 	displayedColumns$: Observable<string[]> = of(
 		this.columns.map(it => it.columnDef)

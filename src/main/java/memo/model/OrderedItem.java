@@ -3,6 +3,7 @@ package memo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.sun.istack.internal.Nullable;
 import memo.serialization.OrderIdDeserializer;
 import memo.serialization.ShopItemIdDeserializer;
 
@@ -59,6 +60,9 @@ public class OrderedItem implements Serializable {
     private BigDecimal price = BigDecimal.valueOf(0);
 
     private OrderStatus status = OrderStatus.Reserved;
+
+    @Lob
+    private String description;
 
     private String size;
 
@@ -155,6 +159,15 @@ public class OrderedItem implements Serializable {
 
     public void setNeedsTicket(Boolean needsTicket) {
         this.needsTicket = needsTicket;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public OrderedItem setDescription(String description) {
+        this.description = description;
+        return this;
     }
 
     //**************************************************************

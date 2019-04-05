@@ -7,6 +7,7 @@
 		<div class="content">
 			<memo-order-renderer *ngFor="let order of (orders$|async)"
 								 [withActions]="canEdit$ | async"
+								 [canSeeDescription]="canSeeDescription$ | async"
 								 [orderEntry]="order">
 			</memo-order-renderer>
 		</div>

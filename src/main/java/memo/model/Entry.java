@@ -72,6 +72,7 @@ public class Entry implements Serializable {
     @Column(name = "IS_INCOME")
     private Boolean isIncome = false;
 
+    @Lob
     private String comment;
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "entry")

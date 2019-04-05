@@ -39,6 +39,13 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
 			Sort.by(Direction.ASCENDING, "timeStamp")
 		),
 	];
+
+	canSeeDescription$ = this.loginService.currentUser$.pipe(
+		filter(user => user !== null),
+		map(user => userPermissions(user).funds >= Permission.read),
+	);
+
+
 	canEdit$ = this.loginService.currentUser$.pipe(
 		filter(user => user !== null),
 		map(user => userPermissions(user).funds >= Permission.write),

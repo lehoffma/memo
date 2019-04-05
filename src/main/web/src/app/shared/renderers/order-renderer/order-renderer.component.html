@@ -60,6 +60,10 @@
 					</div>
 				</div>
 
+				<div class="ordered-item-description" *ngIf="canSeeDescription">
+					{{item.originalItem.description}}
+				</div>
+
 				<table class="secondary-information-container">
 					<tbody>
 					<ng-container *ngIf="item.originalItem.item.type === 3">

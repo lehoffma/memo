@@ -34,6 +34,7 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 	@Input() isOnDetailsPage = false;
 	@Input() withItemActions = false;
 	@Input() withRemove = true;
+	@Input() canSeeDescription = false;
 	orderedEventItems: OrderedEventItem[] = [];
 	total: number = 0;
 
