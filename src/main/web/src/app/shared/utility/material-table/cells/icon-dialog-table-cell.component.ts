@@ -14,7 +14,23 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material";
 		</mat-dialog-actions>
 	`,
 	styles: [`
+		:host {
+			display: block;
+			max-width: 300px;
+		}
 
+		mat-dialog-content {
+			white-space: pre-line;
+		}
+
+		h3 {
+			margin-bottom: 8px;
+		}
+
+		mat-dialog-actions {
+			margin-top: 8px;
+			justify-content: flex-end;
+		}
 	`]
 })
 export class IconCellDetailsDialog {
@@ -56,7 +72,8 @@ export class IconDialogTableCellComponent implements OnInit, ExpandableTableCell
 			data: {
 				title: this.data.dialogTitle,
 				body: this.data.details
-			}
+			},
+			autoFocus: false,
 		})
 	}
 }

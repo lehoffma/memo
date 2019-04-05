@@ -22,6 +22,22 @@
 					</mat-error>
 				</mat-form-field>
 			</div>
+			<div class="form-input-container">
+				<div class="form-label">
+					Kommentar
+
+					<mat-icon class="form-label--additional-info" [inline]="true"
+							  matTooltip="Zusätzliche Informationen, Notizen, etc.">
+						help
+					</mat-icon>
+				</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
+					<textarea matInput cdkTextareaAutosize [cdkAutosizeMinRows]="2"
+							  name="commentInput"
+							  formControlName="comment"
+					></textarea>
+				</mat-form-field>
+			</div>
 			<div class="desktop-row">
 
 				<div class="form-input-container">

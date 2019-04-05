@@ -14,6 +14,7 @@ import {createEntry, Entry} from "../../../../shared/model/entry";
 import {ModifyItemService} from "../modify-item.service";
 import {setProperties} from "../../../../shared/model/util/base-object";
 import {WindowService} from "../../../../shared/services/window.service";
+import {ibanValidator} from "../../../../shared/validators/iban.validator";
 
 @Component({
 	selector: "memo-modify-entry",

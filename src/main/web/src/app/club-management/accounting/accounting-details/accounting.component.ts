@@ -60,6 +60,7 @@ export class AccountingComponent implements OnInit, OnDestroy {
 				text: element.name,
 				icon: "comment",
 				details: element.comment,
+				dialogTitle: "Kommentar"
 			}), type: "icon-dialog"
 		},
 		{

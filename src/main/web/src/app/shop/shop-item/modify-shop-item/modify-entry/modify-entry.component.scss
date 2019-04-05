@@ -13,12 +13,10 @@
 
 @media all and (min-width: 800px) {
 	.desktop-row {
+		display: flex;
+		justify-content: space-between;
 		> * {
 			width: 200px;
-
-			&:first-child {
-				margin-right: 48px;
-			}
 		}
 	}
 }

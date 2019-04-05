@@ -13,10 +13,8 @@
 
 		> div {
 			max-width: 200px;
-
-			&:first-child {
-				margin-right: 48px;
-			}
+			display: flex;
+			justify-content: space-between;
 		}
 	}
 }

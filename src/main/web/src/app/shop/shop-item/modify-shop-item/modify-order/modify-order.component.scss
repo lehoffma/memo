@@ -26,12 +26,10 @@ memo-ordered-item-form {
 	}
 
 	.desktop-row {
+		display: flex;
+		justify-content: space-between;
 		> * {
 			width: 200px;
-
-			&:first-child {
-				margin-right: 48px;
-			}
 		}
 	}
 

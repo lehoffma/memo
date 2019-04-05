@@ -30,6 +30,11 @@
 		margin-bottom: 1rem;
 	}
 
+	/deep/ .container--body {
+		max-width: 480px;
+		margin: auto;
+	}
+
 	.container--header {
 		margin: 0;
 		padding: 16px;

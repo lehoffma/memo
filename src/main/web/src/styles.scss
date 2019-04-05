@@ -206,6 +206,10 @@ memo-comments-section .reply-form-container memo-comment-input form {
 		}
 	}
 
+	textarea {
+		overflow: hidden;
+	}
+
 	&.mat-form-field-type-mat-input {
 		.mat-form-field-wrapper {
 			.mat-form-field-flex {
