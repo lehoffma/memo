@@ -56,6 +56,12 @@ export class AccountingComponent implements OnInit, OnDestroy {
 	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent<Entry>;
 	columns: TableColumn<Entry>[] = [
 		{
+			header: "Kategorie", columnDef: "category", cell: element => ({
+				text: element.category.name,
+				color: this.getCategoryColor(element.category)
+			}), type: "tag"
+		},
+		{
 			header: "Name", columnDef: "name", cell: element => ({
 				text: element.name,
 				icon: "comment",
@@ -64,16 +70,7 @@ export class AccountingComponent implements OnInit, OnDestroy {
 			}), type: "icon-dialog"
 		},
 		{
-			header: "Datum", columnDef: "date", cell: element => ({
-				title: format(element.date, "DD.MM.YYYY"),
-				subtitle: distanceInWordsToNow(element.date, {locale: deLocale, addSuffix: true})
-			}), type: "title-subtitle"
-		},
-		{
-			header: "Kategorie", columnDef: "category", cell: element => ({
-				text: element.category.name,
-				color: this.getCategoryColor(element.category)
-			}), type: "tag"
+			header: "Datum", columnDef: "date", cell: element => format(element.date, "DD.MM.YYYY"),
 		},
 		{
 			header: "Item", columnDef: "item", cell: element => ({

@@ -25,49 +25,60 @@ export const OrderStatusList: OrderStatus[] = [
 ];
 
 export type OrderStatusMap = {
-	[P in OrderStatus]: { value: number; label: string; };
+	[P in OrderStatus]: { value: number; label: string; tooltip: string; };
 }
 
+//todo help texts (part of issue #199)
 export const orderStatusMap: OrderStatusMap = {
 	[OrderStatus.RESERVED]: {
 		value: 0,
-		label: "Reserviert"
+		label: "Reserviert",
+		tooltip: "",
 	},
 	[OrderStatus.ORDERED]: {
 		value: 1,
-		label: "Bestellt"
+		label: "Bestellt",
+		tooltip: "",
 	},
 	[OrderStatus.PAID]: {
 		value: 2,
-		label: "Bezahlt"
+		label: "Bezahlt",
+		tooltip: "",
 	},
 	[OrderStatus.SENT]: {
 		value: 3,
-		label: "Verschickt"
+		label: "Verschickt",
+		tooltip: "",
 	},
 	[OrderStatus.COMPLETED]: {
 		value: 4,
-		label: "Abgeschlossen"
+		label: "Abgeschlossen",
+		tooltip: "",
 	},
 	[OrderStatus.CANCELLED]: {
 		value: 5,
-		label: "Storniert"
+		label: "Storniert",
+		tooltip: "Dieses Item wurde vom Nutzer storniert.",
 	},
 	[OrderStatus.REFUSED]: {
 		value: 6,
-		label: "Abgelehnt"
+		label: "Abgelehnt",
+		tooltip: "",
 	},
 	[OrderStatus.UNDER_APPROVAL]: {
 		value: 7,
-		label: "Unter Begutachtung"
+		label: "Unter Begutachtung",
+		tooltip: "",
 	},
 	[OrderStatus.PAYMENT_REQUESTED]: {
 		value: 8,
-		label: "Bezahlung angefordert"
+		label: "Bezahlung angefordert",
+		tooltip: "",
 	},
 	[OrderStatus.PARTICIPATED]: {
 		value: 9,
-		label: "Teilgenommen"
+		label: "Teilgenommen",
+		tooltip: "",
 	}
 };
 
@@ -77,6 +88,10 @@ export function statusToInt(status: OrderStatus): number {
 
 export function orderStatusToString(status: OrderStatus): string {
 	return orderStatusMap[status].label;
+}
+
+export function orderStatusTooltip(status: OrderStatus): string {
+	return orderStatusMap[status].tooltip;
 }
 
 

@@ -51,6 +51,7 @@ export class ModifyParticipantComponent implements OnInit {
 			this.participant = {
 				isDriver: false,
 				needsTicket: false,
+				description: "",
 				status: OrderStatus.RESERVED,
 				price: 0,
 				item: this.associatedEvent,

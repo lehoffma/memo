@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnIn
 import {Order} from "../../model/order";
 import {OrderedItem} from "../../model/ordered-item";
 import {EventUtilityService} from "../../services/event-utility.service";
-import {OrderStatus, orderStatusToString} from "../../model/order-status";
+import {OrderStatus, orderStatusTooltip, orderStatusToString} from "../../model/order-status";
 import {UserBankAccountService} from "../../services/api/user-bank-account.service";
 import {BankAccount} from "../../model/bank-account";
 import {EMPTY, Observable} from "rxjs";
@@ -17,6 +17,7 @@ interface OrderedEventItem {
 		label: string;
 		css: string;
 		value: OrderStatus;
+		tooltip?: string;
 	};
 	link: string;
 	amount: number;
@@ -77,9 +78,10 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 						status: {
 							css: orderStatusToString(item.status).replace(" ", "-"),
 							label: orderStatusToString(item.status),
+							tooltip: orderStatusTooltip(item.status),
 							value: item.status
 						},
-					})
+					});
 				// } else {
 				// 	events[eventIndex].amount++;
 				// }

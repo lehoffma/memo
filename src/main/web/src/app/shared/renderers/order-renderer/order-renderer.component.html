@@ -42,11 +42,12 @@
 		</ng-container>
 	</div>
 
-	<div *ngFor="let item of orderedEventItems" class="ordered-items">
+	<div *ngFor="let item of orderedEventItems" class="ordered-items" [class.cancelled]="item.status.value === 'Cancelled'">
 		<div class="ordered-item-main-information-container">
 			<a routerLink="{{item.link}}">
-				<img [lazySrc]="(!!item.originalItem.item?.images[0] ? item.originalItem.item.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
-					 lazySrcVisible="visible"
+				<img
+					[lazySrc]="(!!item.originalItem.item?.images[0] ? item.originalItem.item.images[0] : 'resources/images/Logo.png') | imageSize:'large' | async"
+					lazySrcVisible="visible"
 				/>
 			</a>
 			<div class="ordered-item-main-information">
@@ -61,58 +62,64 @@
 				</div>
 
 				<div class="ordered-item-description" *ngIf="canSeeDescription">
+					<ng-container *ngIf="!item.originalItem.description">
+						<span class="no-description">Keine zusätzlichen Informationen.</span>
+					</ng-container>
 					{{item.originalItem.description}}
 				</div>
 
-				<table class="secondary-information-container">
-					<tbody>
-					<ng-container *ngIf="item.originalItem.item.type === 3">
-						<tr class="info-row">
-							<td class="label">Farbe</td>
-							<td class="center">{{item.originalItem.color.name}}</td>
-						</tr>
-						<tr class="info-row">
-							<td class="label">Größe</td>
-							<td class="center">{{item.originalItem.size}}</td>
-						</tr>
-					</ng-container>
+				<div class="ordered-item-tags">
 					<ng-container *ngIf="item.originalItem.item.type !== 3">
-						<tr class="info-row">
-							<td class="label">Ist Fahrer</td>
-							<td class="center">
-								<mat-icon [class.green]="item.originalItem.isDriver">
-									{{item.originalItem.isDriver ? 'check' : 'clear'}}
-								</mat-icon>
-							</td>
-						</tr>
-						<tr class="info-row">
-							<td class="label">Benötigt Ticket</td>
-							<td class="center">
-								<mat-icon [class.green]="item.originalItem.needsTicket">
-									{{item.originalItem.needsTicket ? 'check' : 'clear'}}
-								</mat-icon>
-							</td>
-						</tr>
+						<div class="tag" *ngIf="item.originalItem.isDriver"
+							 matTooltip="Dieser Nutzer hat sich als potenzieller Fahrer angemeldet">
+							<mat-icon [inline]="true">drive_eta</mat-icon>
+							<span>Fahrer</span>
+						</div>
+						<div class="tag" *ngIf="item.originalItem.needsTicket"
+							 matTooltip="Diese Bestellung beinhaltet ein Stadion Ticket">
+							<mat-icon [inline]="true">local_play</mat-icon>
+							<span>Ticket</span>
+						</div>
 					</ng-container>
-					<tr class="info-row status-row">
-						<td class="label">Status</td>
-						<td class="center">
-							<span class="labelled-value status {{item.status.css}}">{{item.status.label}}</span>
-						</td>
+				</div>
+
+				<table class="secondary-information-container" *ngIf="item.originalItem.item.type === 3">
+					<tbody>
+					<tr class="info-row">
+						<td class="label">Farbe</td>
+						<td class="center">{{item.originalItem.color.name}}</td>
+					</tr>
+					<tr class="info-row">
+						<td class="label">Größe</td>
+						<td class="center">{{item.originalItem.size}}</td>
 					</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
 
-		<div class="ordered-item-actions" *ngIf="withItemActions && canBeCancelled(item)">
-			<button mat-button color="warn" (click)="cancel(item)">
+		<div class="info-row status-row {{item.status.css}}">
+			<span class="status">
+				{{item.status.label}}
+				<mat-icon [inline]="true" *ngIf="item.status.tooltip" matTooltip="{{item.status.tooltip}}">
+					help
+				</mat-icon>
+			</span>
+			<button class="action-button"
+					mat-icon-button [matMenuTriggerFor]="cancelMenu" *ngIf="withItemActions && canBeCancelled(item)">
+				<mat-icon>more_vert</mat-icon>
+			</button>
+		</div>
+
+		<mat-menu #cancelMenu="matMenu">
+			<button mat-menu-item (click)="cancel(item)">
 				<mat-icon>clear</mat-icon>
 				<span>Stornieren</span>
 			</button>
-		</div>
+		</mat-menu>
 	</div>
 </div>
+
 <div class="order-renderer-bottom" [class.space-between]="withRemove">
 	<button mat-button *ngIf="withRemove"
 			(click)="remove()">
