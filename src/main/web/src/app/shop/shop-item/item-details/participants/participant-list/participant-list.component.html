@@ -1,16 +1,27 @@
-<memo-expandable-material-table
-	[dataSource]="dataSource"
-	[dataService]="participantUserService"
-	[filter$]="filter$"
-	[rowActions]="rowActions"
-	[title]="'Teilnehmer von '"
-	[headerLink]="getLinkToTour(participantListService.eventInfo$ | async)"
-	[headerLinkText]=" participantListService.eventTitle | async"
-	[columns]="columns"
-	[displayedColumns]="displayedColumns$ | async"
-	[permissions]="participantListService.permissions$ | async"
-	[writePageToUrl]="true"
-	(onAction)="participantListService.handleTableAction($event)"
+<div class="participants-header">
+	<!--	"go back to event" -->
+</div>
+
+<memo-participants-category-selection>
+
+</memo-participants-category-selection>
+
+<memo-expandable-material-table class="mat-elevation-z3"
+								[dataSource]="dataSource"
+								[dataService]="participantUserService"
+								[filter$]="filter$"
+								[selectedActions]="selectedActions"
+								[rowActions]="rowActions"
+								[withMultiEdit]="true"
+								[title]="'Teilnehmer'"
+								[columns]="columns"
+								[displayedColumns]="displayedColumns$ | async"
+								[permissions]="participantListService.permissions$ | async"
+								(onAction)="participantListService.handleTableAction($event)"
 >
 
 </memo-expandable-material-table>
+
+<memo-waiting-list>
+
+</memo-waiting-list>

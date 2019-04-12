@@ -26,6 +26,7 @@ import {DetailPageComponent} from "./details/detail-page.component";
 import {MilesPipe} from "./participants/miles.pipe";
 import {ManageWaitingListDialogComponent} from "./add-to-cart-form/manage-waiting-list-dialog.component";
 import {SharedCheckoutModule} from "../../checkout/shared-checkout.module";
+import {ParticipantsModule} from "./participants/participant-list/participants.module";
 
 @NgModule({
 	imports: [
@@ -39,6 +40,7 @@ import {SharedCheckoutModule} from "../../checkout/shared-checkout.module";
 		SharedCheckoutModule,
 		AgmCoreModule,
 		ShopItemDetailsRoutingModule,
+		ParticipantsModule,
 		CommentsSectionModule
 	],
 	declarations: [

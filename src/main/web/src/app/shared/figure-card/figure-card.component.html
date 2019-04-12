@@ -1,0 +1,22 @@
+<mat-icon>
+	{{icon}}
+</mat-icon>
+<div class="figure-card-main-container">
+	<div class="figure-card-top">
+		<span class="figure-card-main-value">
+			{{titleValue}}
+		</span>
+		<span class="figure-card-main-label">
+			{{titleLabel}}
+		</span>
+	</div>
+	<div class="figure-card-subtitle" *ngIf="subtitle">
+		{{subtitle}}
+	</div>
+</div>
+
+<span class="figure-card-selected-indicator" *ngIf="selectable">
+	<mat-icon [inline]="true" *ngIf="selected">
+		check
+	</mat-icon>
+</span>

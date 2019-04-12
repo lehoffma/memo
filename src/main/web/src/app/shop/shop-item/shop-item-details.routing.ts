@@ -8,15 +8,17 @@ import {ConcludeEventComponent} from "./conclude/conclude-event/conclude-event.c
 import {ShopItemExistsGuard} from "../../shared/authentication/http-error-handling-guards/shop-item-exists.guard";
 import {ShopItemIsVisibleToUserGuard} from "../../shared/authentication/http-error-handling-guards/shop-item-is-visible-to-user.guard";
 import {OrderDetailComponent} from "./item-details/details/order-detail.component";
-import {WaitingListComponent} from "./waiting-list/waiting-list.component";
 
 
 const routes: Route[] = [
 	{path: "management/orders/:id", component: OrderDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{path: "shop/tours/:id", component: TourDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "shop/tours/:id/participants", component: ParticipantListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{
+		path: "shop/tours/:id/participants",
+		component: ParticipantListComponent,
+		canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
+	},
 	{path: "shop/tours/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "shop/tours/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
 	{path: "shop/partys/:id", component: PartyDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{
@@ -25,11 +27,9 @@ const routes: Route[] = [
 		canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 	{path: "shop/partys/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "shop/partys/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
 	{path: "shop/merch/:id", component: MerchandiseDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-	{path: "shop/merch/:id/waiting-list", component: WaitingListComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
-
+//	todo merch warteschlange
 ];
 
 @NgModule({
@@ -41,10 +41,8 @@ export class ShopItemDetailsRoutingModule {
 
 export const routedComponents = [
 	TourDetailComponent,
-	ParticipantListComponent,
 	PartyDetailComponent,
 	OrderDetailComponent,
 	MerchandiseDetailComponent,
 	ConcludeEventComponent,
-	WaitingListComponent
 ];

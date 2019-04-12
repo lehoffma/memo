@@ -52,6 +52,7 @@ import {faFacebook} from "@fortawesome/free-brands-svg-icons/faFacebook";
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons/faEnvelope";
 import {faGlobe} from "@fortawesome/free-solid-svg-icons/faGlobe";
 import {adapterFactory} from "angular-calendar/date-adapters/date-fns";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -121,6 +122,7 @@ registerLocaleData(localeDe);
 			useFactory: adapterFactory
 		}),
 		MatPasswordStrengthModule.forRoot(),
+		FlexLayoutModule,
 		NgProgressModule.forRoot(),
 		NgProgressHttpModule.forRoot(),
 

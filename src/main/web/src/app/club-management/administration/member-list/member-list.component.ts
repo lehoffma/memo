@@ -15,6 +15,8 @@ import {LogInService} from "../../../shared/services/api/login.service";
 import {ClubRole, isAuthenticated} from "../../../shared/model/club-role";
 import {Permission} from "../../../shared/model/permission";
 import {ActivatedRoute, Router} from "@angular/router";
+import {FilterOption} from "../../../shared/search/filter-options/filter-option";
+import {MultiFilterOption} from "../../../shared/search/filter-options/multi-filter-option";
 
 @Component({
 	selector: "memo-member-list",
@@ -71,7 +73,6 @@ export class MemberListComponent implements OnInit, AfterViewInit {
 		})
 	);
 
-	filter$: Observable<Filter> = of(Filter.none());
 	columns: TableColumn<User>[] = [
 		{
 			columnDef: "image",
@@ -90,19 +91,21 @@ export class MemberListComponent implements OnInit, AfterViewInit {
 	];
 	displayedColumns$ = this.getDisplayedColumns();
 
-	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent<User>;
+	filterOptions: FilterOption[] = [
+		//filter by
+		//	- search input (todo)
+		//	- age
+		//	- club role
+		//	- club zugehörigkeit
+	];
 
 	constructor(public memberListService: MemberListService,
 				private breakpointObserver: BreakpointObserver,
 				private loginService: LogInService,
-				private activatedRoute: ActivatedRoute,
-				private router: Router,
 				public userService: UserService) {
 	}
 
 	ngOnInit() {
-		this.table.dataSource.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap);
-		this.table.dataSource.writePaginatorUpdatesToUrl(this.router);
 	}
 
 	getDisplayedColumns() {
@@ -117,6 +120,5 @@ export class MemberListComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.memberListService.dataSource = this.table.dataSource;
 	}
 }

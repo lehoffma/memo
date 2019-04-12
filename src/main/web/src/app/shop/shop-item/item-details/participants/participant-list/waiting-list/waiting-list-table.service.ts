@@ -1,14 +1,15 @@
 import {Injectable} from "@angular/core";
-import {ExpandableTableContainerService} from "../../../shared/utility/material-table/util/expandable-table-container.service";
-import {WaitingListUser} from "../../shared/model/waiting-list";
+import {ExpandableTableContainerService} from "../../../../../../shared/utility/material-table/util/expandable-table-container.service";
+import {WaitingListUser} from "../../../../../shared/model/waiting-list";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
-import {LogInService} from "../../../shared/services/api/login.service";
+import {LogInService} from "../../../../../../shared/services/api/login.service";
 import {Observable} from "rxjs";
-import {map, mergeMap} from "rxjs/operators";
-import {EventType} from "../../shared/model/event-type";
-import {EventInfo} from "../item-details/participants/participant-list/participant-list.service";
-import {EventService} from "../../../shared/services/api/event.service";
+import {map} from "rxjs/operators";
+import {EventType} from "../../../../../shared/model/event-type";
+import {EventInfo} from "../participant-list.service";
+import {EventService} from "../../../../../../shared/services/api/event.service";
 import {WaitingListDataSource} from "./waiting-list-data-source";
+import {ParticipantListOption} from "../participants-category-selection/participants-category-selection.component";
 
 @Injectable()
 export class WaitingListTableService extends ExpandableTableContainerService<WaitingListUser> {
@@ -27,10 +28,21 @@ export class WaitingListTableService extends ExpandableTableContainerService<Wai
 			})
 		);
 
-	eventTitle = this.eventInfo$
+
+	view$: Observable<ParticipantListOption> = this.activatedRoute.queryParamMap
 		.pipe(
-			mergeMap(eventInfo => this.eventService.getById(eventInfo.eventId)),
-			map(event => event.title)
+			map((queryParamMap) => {
+				if (!queryParamMap.has("view")) {
+					return "participated";
+				}
+
+				const view = queryParamMap.get("view");
+				if (!(["participated", "isDriver", "needsTicket"].includes(view))) {
+					return ["participated"];
+				}
+
+				return view as any;
+			})
 		);
 
 	constructor(private loginService: LogInService,

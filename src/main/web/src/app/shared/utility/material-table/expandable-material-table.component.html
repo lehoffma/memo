@@ -4,12 +4,12 @@
 
 <memo-actions-header-cell [selection]="selection"
 						  [withAdd]="withHeaderAction"
+						  [selectedActions]="selectedActions"
 						  [title]="title"
 						  [link]="headerLink"
 						  [linkText]="headerLinkText"
 						  [permissions]="permissions"
 						  (onAction)="onAction.emit($event)">
-
 </memo-actions-header-cell>
 <div class="table-container">
 	<table mat-table #table [dataSource]="dataSource" matSort (matSortChange)="dataSource.sort = $event">

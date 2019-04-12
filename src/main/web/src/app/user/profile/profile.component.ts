@@ -1,7 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {User, userPermissions} from "../../shared/model/user";
 import {ActivatedRoute} from "@angular/router";
-import {profileCategories} from "./profile-info-category";
 import {UserService} from "../../shared/services/api/user.service";
 import {Event} from "../../shop/shared/model/event";
 import {LogInService} from "../../shared/services/api/login.service";
@@ -87,13 +86,22 @@ export class ProfileComponent implements OnInit {
 					|| userPermissions(currentUser).userManagement >= Permission.write);
 			})
 		);
-	profileCategories = profileCategories;
 
 	canReadPhoneNumber$: Observable<boolean> = combineLatest(this.userObservable, this.loginService.currentUser$).pipe(
 		map(([profileUser, loggedInUser]) => loggedInUser && (profileUser.id === loggedInUser.id ||
 			userPermissions(loggedInUser).userManagement >= Permission.read ||
 			isAuthenticated(loggedInUser.clubRole, ClubRole.Vorstand)))
 	);
+
+	//todo
+	amountOfTours$: Observable<number> = this.userObservable
+		.pipe(
+			mergeMap(user => this.participantService.getParticipatedEventsOfUser(
+				user.id,
+				PageRequest.first(),
+				Sort.by(Direction.DESCENDING, "date"))),
+			map(it => it.elements)
+		);
 
 	constructor(private route: ActivatedRoute,
 				private navigationService: NavigationService,
@@ -106,16 +114,5 @@ export class ProfileComponent implements OnInit {
 	}
 
 	ngOnInit() {
-	}
-
-	editProfile() {
-		this.route.params
-			.pipe(
-				map(params => +params["id"]),
-				first()
-			)
-			.subscribe(
-				id => this.navigationService.navigateByUrl(`/members/${id}/edit`)
-			)
 	}
 }

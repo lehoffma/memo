@@ -15,6 +15,10 @@ import {IsBoardMemberGuard} from "../shared/authentication/is-board-member.guard
 import {AccountingOverviewComponent} from "./accounting/accounting-overview/accounting-overview.component";
 import {AccountingTimeSummaryComponent} from "./accounting/accounting-overview/accounting-time-summary/accounting-time-summary.component";
 import {AccountingItemSummaryComponent} from "./accounting/accounting-overview/accounting-item-summary/accounting-item-summary.component";
+import {IsMerchandiseGuard} from "../shared/authentication/is-merchandise.guard";
+import {ShopItemExistsGuard} from "../shared/authentication/http-error-handling-guards/shop-item-exists.guard";
+import {ShopItemIsVisibleToUserGuard} from "../shared/authentication/http-error-handling-guards/shop-item-is-visible-to-user.guard";
+import {MerchStockContainerComponent} from "./administration/stock/merch-stock/merch-stock-container/merch-stock-container.component";
 
 const routes: Route[] = [
 	{path: "club/dashboard", component: DashboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
@@ -40,6 +44,13 @@ const routes: Route[] = [
 		path: "management/stock/merch",
 		component: MerchStockComponent,
 		canActivate: [AuthenticatedGuard, CanViewStockGuard]
+	},
+
+	{
+		path: "management/stock/:itemType/:id", component: MerchStockContainerComponent,
+		pathMatch: "full",
+		canActivate: [AuthenticatedGuard, CanViewStockGuard, IsMerchandiseGuard,
+			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
 ];
 

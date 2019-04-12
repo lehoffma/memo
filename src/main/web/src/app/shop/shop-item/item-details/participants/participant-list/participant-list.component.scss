@@ -4,10 +4,18 @@
 //todo redesign: filter options, important data above details table
 $breakpoint: 600px;
 
-:host {
+.participant-overview {
+	width: 100%;
+}
 
+:host {
+	display: block;
+	max-width: 800px;
+	margin: auto;
+	padding: 16px;
 	@media all and (min-width: $breakpoint) {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 	}
@@ -16,15 +24,11 @@ $breakpoint: 600px;
 memo-expandable-material-table {
 	width: 100%;
 	background: white;
-	border-radius: 4px;
-	padding-top: 4px;
-	padding-bottom: 4px;
+	margin-top: 1rem;
+}
 
-	@media all and (min-width: calc(800px + 2rem)) {
-		@include mat-elevation(3);
-		max-width: 800px;
-		margin-top: 1rem;
-		margin-bottom: 1rem;
-
-	}
+memo-waiting-list {
+	display: block;
+	width: 100%;
+	margin-top: 16px;
 }

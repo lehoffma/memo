@@ -46,6 +46,7 @@ import {EventDestinationRendererComponent} from "./renderers/event-destination-r
 import {SharedSearchModule} from "./search/shared-search.module";
 import {LetModule} from "./utility/let/let.module";
 import {AutocompleteFormsModule} from "./forms/autocomplete/autocomplete-forms.module";
+import { FigureCardComponent } from './figure-card/figure-card.component';
 
 const forms = [
 	DisableIfDirective,
@@ -108,6 +109,7 @@ const forms = [
 		BreadcrumbNavigationComponent,
 		JSONLdComponent,
 		EventDestinationRendererComponent,
+		FigureCardComponent,
 	],
 	exports: [
 		MultiLevelSelectModule,
@@ -144,6 +146,8 @@ const forms = [
 		BreadcrumbNavigationComponent,
 		JSONLdComponent,
 		EventDestinationRendererComponent,
+
+		FigureCardComponent,
 
 		...forms
 	],

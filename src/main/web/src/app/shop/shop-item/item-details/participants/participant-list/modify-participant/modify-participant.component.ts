@@ -46,8 +46,7 @@ export class ModifyParticipantComponent implements OnInit {
 		this.associatedEvent = this.data.event;
 		if (this.isEditing) {
 			this.participant = Object.assign({}, this.data.participant);
-		}
-		else {
+		} else {
 			this.participant = {
 				isDriver: false,
 				needsTicket: false,
@@ -72,18 +71,6 @@ export class ModifyParticipantComponent implements OnInit {
 			const regex = new RegExp(`^${name}`, "gi");
 			return regex.test(option.firstName + " " + option.surname) || regex.test(option.surname);
 		});
-	}
-
-	/**
-	 * Defines how the user will be presented in the autocomplete box
-	 * @param user
-	 * @returns {any}
-	 */
-	displayFn(user: User): string {
-		if (user) {
-			return user.firstName + " " + user.surname;
-		}
-		return "";
 	}
 
 	/**

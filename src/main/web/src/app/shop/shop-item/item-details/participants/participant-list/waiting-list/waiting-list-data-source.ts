@@ -1,15 +1,15 @@
 import {Injectable} from "@angular/core";
-import {AddOrModifyRequest, ServletService} from "../../../shared/services/api/servlet.service";
+import {AddOrModifyRequest, ServletService} from "../../../../../../shared/services/api/servlet.service";
 import {HttpClient} from "@angular/common/http";
-import {Filter} from "../../../shared/model/api/filter";
-import {PageRequest} from "../../../shared/model/api/page-request";
-import {Sort} from "../../../shared/model/api/sort";
+import {Filter} from "../../../../../../shared/model/api/filter";
+import {PageRequest} from "../../../../../../shared/model/api/page-request";
+import {Sort} from "../../../../../../shared/model/api/sort";
 import {combineLatest, Observable, of} from "rxjs";
-import {Page} from "../../../shared/model/api/page";
-import {PagedDataSource} from "../../../shared/utility/material-table/paged-data-source";
-import {UserService} from "../../../shared/services/api/user.service";
-import {WaitingListUser} from "../../shared/model/waiting-list";
-import {WaitingListService} from "../../../shared/services/api/waiting-list.service";
+import {Page} from "../../../../../../shared/model/api/page";
+import {PagedDataSource} from "../../../../../../shared/utility/material-table/paged-data-source";
+import {UserService} from "../../../../../../shared/services/api/user.service";
+import {WaitingListUser} from "../../../../../shared/model/waiting-list";
+import {WaitingListService} from "../../../../../../shared/services/api/waiting-list.service";
 import {map, mergeMap} from "rxjs/operators";
 
 @Injectable({

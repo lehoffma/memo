@@ -10,54 +10,74 @@
 	</div>
 
 	<div class="profile-details-container mat-elevation-z3 profile-component container">
-		<div class="profile-other-actions">
-			<button mat-icon-button
-					*ngIf="canEditUser | async"
-					[matMenuTriggerFor]="menu">
-				<mat-icon>more_vert</mat-icon>
-			</button>
-			<mat-menu #menu="matMenu">
-				<button mat-menu-item (click)="editProfile()">
-					<span>Bearbeiten</span>
-				</button>
-			</mat-menu>
-		</div>
-		<div class="profile-header">
-			<img class="profile-picture"
-				 src="{{(user.images.length > 0 ? user.images[0] : 'resources/images/Logo.png') | imageSize:'medium' | async}}">
-		</div>
 		<div class="profile-title-container">
-			<h1 class="profile-name">{{user.firstName}} {{user.surname}}</h1>
-			<h3 class="profile-role">{{user.clubRole}}</h3>
+			<!-- todo show detailed on click -->
+			<img class="profile-picture mat-elevation-z3"
+				 src="{{(user.images.length > 0 ? user.images[0] : 'resources/images/Logo.png') | imageSize:'medium' | async}}">
+			<div>
+				<h1 class="profile-name">{{user.firstName}} {{user.surname}}</h1>
+				<h3 class="profile-role">{{user.clubRole}}</h3>
+			</div>
 		</div>
 		<div class="profile-info-table">
-			<div *ngFor="let category of profileCategories;">
-				<div *ngFor="let item of category">
-					<div>
-						<mat-icon class="middle-icon mat-dark">{{item.icon}}</mat-icon>
-						<span class="secondary-text">{{item.name}}</span>
-					</div>
-					<span *ngIf="item.isDate" class="icon-text secondary-text">{{user[item.key] | dateFormat}}</span>
-					<span *ngIf="!item.isDate" class="icon-text secondary-text">{{user[item.key]}}</span>
+			<!-- todo show something nice if the user's birthday is today-->
+			<!-- 	like a party hat or something -->
+			<div class="profile-info-row">
+				<mat-icon class="middle-icon mat-dark">cake</mat-icon>
+				<div class="title-subtitle-container">
+					<span>{{user.birthday | dateFormat:'age'}} alt</span>
+					<span class="subtitle">Hat am {{user.birthday | dateFormat}} Geburtstag</span>
+				</div>
+			</div>
+			<div class="profile-info-row">
+				<mat-icon class="middle-icon mat-dark">event</mat-icon>
+				<div class="title-subtitle-container">
+					<span>Seit {{user.joinDate | dateFormat:'days'}} ein Meilenwolf</span>
+					<span class="subtitle">Am {{user.joinDate | dateFormat}} eingetreten</span>
+				</div>
+			</div>
+			<div class="profile-info-row">
+				<mat-icon class="middle-icon mat-dark">directions_car</mat-icon>
+				<div class="title-subtitle-container">
+					<span>{{user.miles}} Meilen gefahren</span>
+					<span class="subtitle">Verteilt über {{amountOfTours$ | async}} Fahrten</span>
 				</div>
 			</div>
 		</div>
 		<div class="profile-action-container">
+
+			<ng-container *ngIf="canEditUser | async">
+				<!-- todo link is broken -->
+				<a mat-button routerLink="edit">
+					<span>Bearbeiten</span>
+				</a>
+
+				<span class="spacer"></span>
+			</ng-container>
+
+			<button mat-stroked-button color="accent" [matMenuTriggerFor]="contactMenu">
+				<mat-icon>local_post_office</mat-icon>
+				Kontaktieren
+				<mat-icon [inline]="false">arrow_drop_down</mat-icon>
+			</button>
+		</div>
+
+		<mat-menu #contactMenu="matMenu">
 			<a href="{{(canReadPhoneNumber$ |async) ? ('tel:' + user.telephone) : '#'}}"
-			   mat-button color="accent" [disabled]="!(canReadPhoneNumber$ |async) || !user.telephone">
+			   mat-menu-item color="accent" [disabled]="!(canReadPhoneNumber$ |async) || !user.telephone">
 				<mat-icon>local_phone</mat-icon>
-				<span class="action-text">Anrufen</span>
+				<span class="action-text">Festnetz anrufen</span>
 			</a>
 			<a href="{{(canReadPhoneNumber$ |async) ? ('tel:' + user.mobile) : '#'}}"
-			   mat-button color="accent" [disabled]="!(canReadPhoneNumber$ |async) || !user.mobile">
+			   mat-menu-item color="accent" [disabled]="!(canReadPhoneNumber$ |async) || !user.mobile">
 				<mat-icon>smartphone</mat-icon>
-				<span class="action-text">Anrufen</span>
+				<span class="action-text">Handy anrufen</span>
 			</a>
-			<a href="mailto:{{user.email}}" mat-button color="accent" [disabled]="!user.email">
+			<a href="mailto:{{user.email}}" mat-menu-item color="accent" [disabled]="!user.email">
 				<mat-icon>local_post_office</mat-icon>
-				<span class="action-text">Schreiben</span>
+				<span class="action-text">Email Schreiben</span>
 			</a>
-		</div>
+		</mat-menu>
 	</div>
 	<div class="container mat-elevation-z3 profile-component participated-tours">
 		<div class="container--header">
@@ -69,7 +89,7 @@
 
 	<div class="container mat-elevation-z3 profile-component" *ngIf="userDestinations | async; let destinations;">
 		<div class="container--header">
-			<h3 class="profile-tours-title">Karte</h3>
+			<h3 class="profile-tours-title">Bereiste Orte</h3>
 		</div>
 		<agm-map [latitude]="(centerOfUserDestinations|async)?.latitude"
 				 [longitude]="(centerOfUserDestinations|async)?.longitude">

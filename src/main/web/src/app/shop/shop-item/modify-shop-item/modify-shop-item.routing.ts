@@ -24,8 +24,9 @@ const routes: Routes = [
 			AuthenticatedGuard, CanModifyItemGuard, ShopItemIsVisibleToUserGuard
 		]
 	},
+
 	{
-		path: "shop/:itemType/:id/stock/edit", component: ModifyMerchStockContainerComponent,
+		path: "management/stock/:itemType/:id/edit", component: ModifyMerchStockContainerComponent,
 		pathMatch: "full",
 		canActivate: [AuthenticatedGuard, CanModifyItemGuard, IsMerchandiseGuard,
 			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]

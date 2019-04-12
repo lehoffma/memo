@@ -20,6 +20,138 @@
 			{{selection.selected.length}} {{selection.selected.length > 1 ? 'Einträge' : 'Eintrag'}} ausgewählt.
 		</div>
 		<div class="expandable-table-header-actions">
+			<ng-container *ngFor="let action of selectedActions">
+
+				<ng-container *ngIf="action?.link !== undefined">
+
+					<ng-container [ngSwitch]="action.type || 'mat-button'">
+						<a *ngSwitchCase="'mat-stroked-button'" mat-stroked-button
+						   [color]="action.color" type="button"
+						   href="{{action?.link(selection.selected)}}"
+						   [disabled]="actionIsDisabled(selection.selected, action)">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+						<a *ngSwitchCase="'mat-raised-button'" mat-raised-button
+						   [color]="action.color" type="button"
+						   href="{{action?.link(selection.selected)}}"
+						   [disabled]="actionIsDisabled(selection.selected, action)">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+						<a *ngSwitchCase="'mat-flat-button'" mat-flat-button
+						   [color]="action.color" type="button"
+						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   href="{{action?.link(selection.selected)}}">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+						<a *ngSwitchCase="'mat-icon-button'" mat-icon-button
+						   [color]="action.color" type="button"
+						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   href="{{action?.link(selection.selected)}}">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+						</a>
+						<a *ngSwitchCase="'mat-button'" mat-button
+						   [color]="action.color" type="button"
+						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   href="{{action?.link(selection.selected)}}">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+						<a *ngSwitchDefault class="link-button"
+						   type="button"
+						   href="{{action?.link(selection.selected)}}">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+					</ng-container>
+				</ng-container>
+				<ng-container *ngIf="action?.route !== undefined">
+
+					<ng-container [ngSwitch]="action.type || 'mat-button'">
+						<a *ngSwitchCase="'mat-stroked-button'" mat-stroked-button
+						   [color]="action.color" type="button"
+						   routerLink="{{action?.route(selection.selected)}}"
+						   [disabled]="actionIsDisabled(selection.selected, action)">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+						<a *ngSwitchCase="'mat-raised-button'" mat-raised-button
+						   [color]="action.color" type="button"
+						   routerLink="{{action?.route(selection.selected)}}"
+						   [disabled]="actionIsDisabled(selection.selected, action)">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+						<a *ngSwitchCase="'mat-flat-button'" mat-flat-button
+						   [color]="action.color" type="button"
+						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   routerLink="{{action?.route(selection.selected)}}">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+						<a *ngSwitchCase="'mat-icon-button'" mat-icon-button
+						   [color]="action.color" type="button"
+						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   routerLink="{{action?.route(selection.selected)}}">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+						</a>
+						<a *ngSwitchCase="'mat-button'" mat-button
+						   [color]="action.color" type="button"
+						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   routerLink="{{action?.route(selection.selected)}}">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+						<a *ngSwitchDefault class="link-button"
+						   type="button"
+						   routerLink="{{action?.route(selection.selected)}}">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</a>
+					</ng-container>
+				</ng-container>
+				<ng-container *ngIf="!action?.link && !action?.route">
+					<ng-container [ngSwitch]="action.type || 'mat-button'">
+						<button *ngSwitchCase="'mat-stroked-button'" mat-stroked-button
+								[color]="action.color" type="button"
+								[disabled]="actionIsDisabled(selection.selected, action)"
+								(click)="actionCallback(action?.name, selection.selected)">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</button>
+						<button *ngSwitchCase="'mat-raised-button'" mat-raised-button
+								[color]="action.color" type="button"
+								[disabled]="actionIsDisabled(selection.selected, action)"
+								(click)="actionCallback(action?.name, selection.selected)">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</button>
+						<button *ngSwitchCase="'mat-flat-button'" mat-flat-button
+								[color]="action.color" type="button"
+								[disabled]="actionIsDisabled(selection.selected, action)"
+								(click)="actionCallback(action?.name, selection.selected)">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</button>
+						<button *ngSwitchCase="'mat-icon-button'" mat-icon-button
+								[color]="action.color" type="button"
+								[disabled]="actionIsDisabled(selection.selected, action)"
+								(click)="actionCallback(action?.name, selection.selected)">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+						</button>
+						<button *ngSwitchDefault mat-button
+								[color]="action.color" type="button"
+								[disabled]="actionIsDisabled(selection.selected, action)"
+								(click)="actionCallback(action?.name, selection.selected)">
+							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+							<span>{{action?.label}}</span>
+						</button>
+
+					</ng-container>
+				</ng-container>
+			</ng-container>
 			<button mat-icon-button
 					[disabled]="!permissions?.Loeschen"
 					type="button" (click)="deleteSelected()">

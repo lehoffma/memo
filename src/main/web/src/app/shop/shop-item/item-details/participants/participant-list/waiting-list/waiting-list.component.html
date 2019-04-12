@@ -1,0 +1,13 @@
+<memo-expandable-material-table class="mat-elevation-z3"
+								[dataSource]="dataSource"
+								[dataService]="waitingListUserService"
+								[filter$]="filter$"
+								[rowActions]="rowActions"
+								[title]="'Warteliste'"
+								[columns]="columns"
+								[displayedColumns]="displayedColumns$ | async"
+								[permissions]="waitingListTableService.permissions$ | async"
+								(onAction)="waitingListTableService.handleTableAction($event)"
+>
+
+</memo-expandable-material-table>

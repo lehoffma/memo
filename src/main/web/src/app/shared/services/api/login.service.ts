@@ -9,6 +9,7 @@ import {AuthService} from "../../authentication/auth.service";
 import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {catchError, distinctUntilChanged, filter, map, mergeMap, retry, share} from "rxjs/operators";
 import {EventService} from "./event.service";
+import {tap} from "rxjs/internal/operators/tap";
 
 interface LoginApiResponse {
 	id: number;
@@ -113,8 +114,7 @@ export class LogInService {
 					//todo better error handling
 					return of(false);
 				}),
-				//convert the observable to a hot observable, i.e. immediately perform the http request
-				//instead of waiting for someone to subscribe
+				//convert the observable to a hot observable
 				share()
 			);
 	}
@@ -151,8 +151,7 @@ export class LogInService {
 					//todo better error handling
 					return of(false);
 				}),
-				//convert the observable to a hot observable, i.e. immediately perform the http request
-				//instead of waiting for someone to subscribe
+				//convert the observable to a hot observable
 				share()
 			);
 	}
@@ -179,7 +178,7 @@ export class LogInService {
 							userPermissions[permissionsKey] >= Permission.write),
 						"Loeschen": permissionsKeys.some(permissionsKey =>
 							userPermissions[permissionsKey] >= Permission.delete)
-					})
+					}),
 			);
 	}
 

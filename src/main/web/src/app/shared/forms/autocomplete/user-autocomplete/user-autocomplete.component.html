@@ -9,7 +9,7 @@
 			   #userInput
 			   [formControl]="autocompleteFormControl"
 			   [matAutocomplete]="auto">
-		<mat-error *ngIf="autocompleteFormControl.hasError('required')">
+		<mat-error *ngIf="autocompleteFormControl.hasError('required')" align="end">
 			Bitte wähle einen Nutzer aus der Liste!
 		</mat-error>
 	</mat-form-field>

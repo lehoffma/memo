@@ -24,7 +24,7 @@
 	</a>
 	<a mat-menu-item
 	   *ngIf="(isMerch$ | async) && permissions?.edit"
-	   routerLink="./stock/edit">
+	   routerLink="/management/stock/merch/{{event.id}}/">
 		<mat-icon>book</mat-icon>
 		Bestand
 	</a>

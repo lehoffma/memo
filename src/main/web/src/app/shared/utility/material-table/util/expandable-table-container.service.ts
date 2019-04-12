@@ -27,6 +27,11 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 	 */
 	abstract edit(entry: T): void;
 
+
+	editMultiple(entries: T[]): void {
+		throw new Error("Not implemented");
+	}
+
 	/**
 	 * Removes the list of objects
 	 * @param {T[]} entries
@@ -44,6 +49,9 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 			case RowActionType.ADD:
 				return this.add();
 			case RowActionType.EDIT:
+				if (event.entries.length > 1) {
+					return this.editMultiple(event.entries);
+				}
 				return this.edit(event.entries[0]);
 			case RowActionType.DELETE:
 				return this.remove(event.entries);

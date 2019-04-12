@@ -1,0 +1,37 @@
+<ng-container
+	*ngLet="eventType$ | async as eventType">
+	<div fxLayout="column" fxLayoutGap="16px"
+		 fxLayout.gt-xs="row"
+		 class="participant-overview" *ngIf="eventType !== 'merch'"
+	>
+		<memo-figure-card [icon]="'people'" fxFlex="grow"
+						  [titleValue]="'15'"
+						  [titleLabel]="'angemeldet'"
+						  [subtitle]="'2 in der Warteschlange'"
+						  (onSelect)="selectionModel.select('participated')"
+						  [selected]="eventType === 'tours' && selectionModel.selected[0] === 'participated'"
+						  [selectable]="eventType === 'tours'">
+		</memo-figure-card>
+
+		<memo-figure-card [icon]="'drive_eta'" fxFlex="grow" *ngIf="eventType === 'tours'"
+						  [titleValue]="'5'"
+						  [titleLabel]="'Fahrer'"
+						  [subtitle]="'2 in der Warteschlange'"
+						  (onSelect)="selectionModel.select('isDriver')"
+						  [selected]="selectionModel.selected[0] === 'isDriver'"
+						  [selectable]="eventType === 'tours'">
+
+		</memo-figure-card>
+
+		<memo-figure-card [icon]="'local_activity'" fxFlex="grow" *ngIf="eventType === 'tours'"
+						  [titleValue]="'13'"
+						  [titleLabel]="'Tickets'"
+						  [subtitle]="'5 in der Warteschlange'"
+						  (onSelect)="selectionModel.select('needsTicket')"
+						  [selected]="selectionModel.selected[0] === 'needsTicket'"
+						  [selectable]="eventType === 'tours'">
+
+		</memo-figure-card>
+	</div>
+
+</ng-container>

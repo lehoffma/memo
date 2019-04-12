@@ -4,6 +4,8 @@ import {TableActionEvent} from "../util/table-action-event";
 import {RowActionType} from "../util/row-action-type";
 import {ConfirmationDialogService} from "../../../services/confirmation-dialog.service";
 import {ActionPermissions} from "../util/action-permissions";
+import {TableAction} from "../util/row-action";
+
 
 @Component({
 	selector: "memo-actions-header-cell",
@@ -11,7 +13,7 @@ import {ActionPermissions} from "../util/action-permissions";
 	styleUrls: ["./table-header.component.scss"]
 })
 export class TableHeaderComponent<T> implements OnInit {
-
+	@Input() selectedActions: TableAction<T>[] = [];
 	@Input() selection: SelectionModel<T>;
 	@Input() title: string;
 	@Input() link: string;
@@ -36,6 +38,17 @@ export class TableHeaderComponent<T> implements OnInit {
 
 
 	/**
+	 *
+	 * @param object
+	 * @param action
+	 * @returns {boolean}
+	 */
+	actionIsDisabled(object: T[], action: TableAction<T>): boolean {
+		return !this.permissions || (action.predicate && !action.predicate(object)) ||
+			(this.permissions[action.name] === undefined ? false : !this.permissions[action.name])
+	}
+
+	/**
 	 * Callback of a generic action (e.g. edit/remove/see profile etc.
 	 * @param {string} action
 	 * @param {T[]} data
@@ -46,8 +59,7 @@ export class TableHeaderComponent<T> implements OnInit {
 				"Wollen Sie diesen Eintrag wirklich löschen?",
 				() => this.onAction.emit({action, entries: data})
 			)
-		}
-		else {
+		} else {
 			this.onAction.emit({action, entries: data});
 		}
 	}
@@ -69,4 +81,8 @@ export class TableHeaderComponent<T> implements OnInit {
 		)
 	}
 
+	editMultiple() {
+		this.onAction.emit({action: RowActionType.EDIT, entries: this.selection.selected});
+		this.selection.clear();
+	}
 }

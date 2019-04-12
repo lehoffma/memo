@@ -3,7 +3,7 @@
 
 //todo redesign: table labels, secondary information as subtitle, ...
 @media all and (min-width: 750px) {
-	:host {
+	memo-expandable-material-table {
 		display: block;
 		margin: 1rem;
 		@include mat-elevation(3);

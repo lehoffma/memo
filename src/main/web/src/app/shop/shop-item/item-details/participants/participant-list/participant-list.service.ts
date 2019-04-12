@@ -15,8 +15,9 @@ import {UserService} from "../../../../../shared/services/api/user.service";
 import {CapacityService, EventCapacity} from "../../../../../shared/services/api/capacity.service";
 import {ActionPermissions} from "../../../../../shared/utility/material-table/util/action-permissions";
 import {ParticipantDataSource} from "./participant-data-source";
+import {ParticipantListOption} from "./participants-category-selection/participants-category-selection.component";
 
-export interface EventInfo{
+export interface EventInfo {
 	eventType: EventType,
 	eventId: number
 }
@@ -30,17 +31,28 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			map((urls: UrlSegment[]) => {
 				// "tours/:id/participants"
 				// "partys/:id/participants"
-				let eventType = EventType[urls[0].path];
-				let eventId = +urls[1].path;
+				//shop/partys/1/participants?page=1&pageSize=20
+				let eventType = EventType[urls[1].path];
+				let eventId = +urls[2].path;
 
 				return {eventType, eventId};
 			})
 		);
 
-	eventTitle = this.eventInfo$
+	view$: Observable<ParticipantListOption> = this.activatedRoute.queryParamMap
 		.pipe(
-			mergeMap(eventInfo => this.eventService.getById(eventInfo.eventId)),
-			map(event => event.title)
+			map((queryParamMap) => {
+				if (!queryParamMap.has("view")) {
+					return "participated";
+				}
+
+				const view = queryParamMap.get("view");
+				if (!(["participated", "isDriver", "needsTicket"].includes(view))) {
+					return ["participated"];
+				}
+
+				return view as any;
+			})
 		);
 
 	constructor(private loginService: LogInService,
@@ -60,8 +72,9 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 						mergeMap((urls: UrlSegment[]) => {
 							// "tours/:id/participants"
 							// "partys/:id/participants"
-							let eventType = EventType[urls[0].path];
-							let eventId = +urls[1].path;
+							//shop/partys/1/participants?page=1&pageSize=20
+							let eventType = EventType[urls[1].path];
+							let eventId = +urls[2].path;
 
 							return this.capacityService.valueChanges<EventCapacity>(eventId)
 						}),
@@ -78,6 +91,8 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 				})
 			)
 		);
+
+		this.actionHandlers["editMultiple"] = this.editMultiple.bind(this);
 
 	}
 
@@ -145,6 +160,12 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			}, error => {
 				console.error(error);
 			})
+	}
+
+
+	editMultiple(entries: ParticipantUser[]): void {
+
+		console.log(entries);
 	}
 
 	/**

@@ -5,7 +5,7 @@ import {Observable, of, Subject} from "rxjs";
 import {Filter} from "../../model/api/filter";
 import {MatPaginator} from "@angular/material";
 import {SelectionModel} from "@angular/cdk/collections";
-import {RowAction} from "./util/row-action";
+import {RowAction, TableAction} from "./util/row-action";
 import {RowActionType} from "./util/row-action-type";
 import {TableActionEvent} from "./util/table-action-event";
 import {animate, state, style, transition, trigger} from "@angular/animations";
@@ -45,6 +45,8 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	@Input() headerLink: string;
 	@Input() headerLinkText: string;
 	@Input() withHeaderAction = true;
+	@Input() withMultiEdit = false;
+	@Input() selectedActions: TableAction<T>[] = [];
 	@Input() rowActions: RowAction<T>[] = [
 		{
 			icon: "edit",

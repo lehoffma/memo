@@ -1,19 +1,20 @@
 import {Component, OnInit} from "@angular/core";
 import {map, startWith} from "rxjs/operators";
-import {RowAction} from "../../../shared/utility/material-table/util/row-action";
-import {RowActionType} from "../../../shared/utility/material-table/util/row-action-type";
-import {MemberListRowAction} from "../../../club-management/administration/member-list/member-list-row-actions";
-import {TableColumn} from "../../../shared/utility/material-table/expandable-material-table.component";
-import {EventInfo} from "../item-details/participants/participant-list/participant-list.service";
+import {RowAction} from "../../../../../../shared/utility/material-table/util/row-action";
+import {RowActionType} from "../../../../../../shared/utility/material-table/util/row-action-type";
+import {MemberListRowAction} from "../../../../../../club-management/administration/member-list/member-list-row-actions";
+import {TableColumn} from "../../../../../../shared/utility/material-table/expandable-material-table.component";
 import {BreakpointObserver} from "@angular/cdk/layout";
-import {UserService} from "../../../shared/services/api/user.service";
-import {ResponsiveColumnsHelper} from "../../../shared/utility/material-table/responsive-columns.helper";
+import {UserService} from "../../../../../../shared/services/api/user.service";
+import {ResponsiveColumnsHelper} from "../../../../../../shared/utility/material-table/responsive-columns.helper";
 import {WaitingListTableService} from "./waiting-list-table.service";
 import {WaitingListDataSource, WaitingListUserService} from "./waiting-list-data-source";
-import {EventType} from "../../shared/model/event-type";
-import {Filter} from "../../../shared/model/api/filter";
-import {WaitingListUser} from "../../shared/model/waiting-list";
+import {EventType} from "../../../../../shared/model/event-type";
+import {Filter} from "../../../../../../shared/model/api/filter";
+import {WaitingListUser} from "../../../../../shared/model/waiting-list";
 import {ActivatedRoute} from "@angular/router";
+import {combineLatest} from "rxjs";
+import {ParticipantListOption} from "../participants-category-selection/participants-category-selection.component";
 
 @Component({
 	selector: "memo-waiting-list",
@@ -24,8 +25,6 @@ import {ActivatedRoute} from "@angular/router";
 	]
 })
 export class WaitingListComponent implements OnInit {
-	//todo basically just copy the participant-list component i guess
-
 	rowActions: RowAction<WaitingListUser>[] = [
 		{
 			icon: "edit",
@@ -67,14 +66,31 @@ export class WaitingListComponent implements OnInit {
 
 	dataSource = new WaitingListDataSource(this.waitingListUserService, this.userService);
 
-	filter$ = this.waitingListTableService.eventInfo$.pipe(
-		map((info: { eventType: EventType, eventId: number }) => Filter.by({"eventId": "" + info.eventId})),
-	);
 
-	private eventType: EventType = (() => {
-		let urlSegments = this.activatedRoute.snapshot.url;
-		return EventType[urlSegments[1].path];
-	})();
+	filter$ = combineLatest(
+		this.waitingListTableService.view$,
+		this.waitingListTableService.eventInfo$
+	)
+		.pipe(
+			map(([view, info]: [ParticipantListOption, { eventType: EventType, eventId: number }]) => {
+				let viewFilters = Filter.none();
+				if (info.eventType !== EventType.merch) {
+					switch (view) {
+						case "needsTicket":
+							viewFilters = Filter.by({needsTicket: "true"});
+							break;
+						case "isDriver":
+							viewFilters = Filter.by({isDriver: "true"});
+					}
+				}
+
+				return Filter.combine(
+					Filter.by({"eventId": "" + info.eventId}),
+					viewFilters
+				)
+			}),
+		);
+
 
 	constructor(public waitingListTableService: WaitingListTableService,
 				public waitingListUserService: WaitingListUserService,
@@ -88,25 +104,15 @@ export class WaitingListComponent implements OnInit {
 
 	}
 
-	getLinkToTour(info: EventInfo) {
-		return `/shop/${info.eventType}/${info.eventId}`
-	}
-
-	isMerch(): boolean {
-		return false;
-	}
-
-	isTour(): boolean {
-		return true;
-	}
-
 	getDisplayedColumns() {
+		let urlSegments = this.activatedRoute.snapshot.url;
+		const eventType = urlSegments[1].path as EventType;
 		const columnHelper = new ResponsiveColumnsHelper(this.columns, this.breakpointObserver);
 
-		if (this.eventType === EventType.merch) {
+		if (eventType === EventType.merch) {
 			columnHelper.addPixelBreakpoint(500, "color");
 			columnHelper.addPixelBreakpoint(700, "size");
-		} else if (this.eventType === EventType.tours) {
+		} else if (eventType === EventType.tours) {
 			columnHelper.addPixelBreakpoint(500, "isDriver");
 			columnHelper.addPixelBreakpoint(700, "needsTicket");
 		}
@@ -121,12 +127,14 @@ export class WaitingListComponent implements OnInit {
 
 
 	private getAdditionalColumns(): TableColumn<WaitingListUser>[] {
-		if (this.eventType === EventType.merch) {
+		let urlSegments = this.activatedRoute.snapshot.url;
+		const eventType = urlSegments[1].path as EventType;
+		if (eventType === EventType.merch) {
 			return [
 				{columnDef: "color", header: "Farbe", cell: element => element.color, type: "color"},
 				{columnDef: "size", header: "Größe", cell: element => element.size}
 			]
-		} else if (this.eventType === EventType.tours) {
+		} else if (eventType === EventType.tours) {
 			return [
 				{columnDef: "isDriver", header: "Ist Fahrer", cell: element => element.isDriver, type: "boolean"},
 				{columnDef: "needsTicket", header: "Braucht Ticket", cell: element => element.needsTicket, type: "boolean"},
