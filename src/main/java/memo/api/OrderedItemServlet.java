@@ -6,11 +6,9 @@ import memo.api.util.ApiServletPutOptions;
 import memo.api.util.ModifyPrecondition;
 import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.ParticipantsAuthStrategy;
+import memo.data.EventRepository;
 import memo.data.ParticipantRepository;
-import memo.model.Color;
-import memo.model.Order;
-import memo.model.OrderedItem;
-import memo.model.ShopItem;
+import memo.model.*;
 import org.apache.logging.log4j.LogManager;
 
 import javax.enterprise.context.RequestScoped;
@@ -22,12 +20,15 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 @Path("/orderedItem")
 @Named
 @RequestScoped
 public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     private ParticipantRepository participantRepository;
+    private EventRepository eventRepository;
     private OrderServlet orderServlet;
 
     public OrderedItemServlet() {
@@ -36,11 +37,13 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     @Inject
     public OrderedItemServlet(ParticipantRepository participantRepository,
                               OrderServlet orderServlet,
+                              EventRepository eventRepository,
                               ParticipantsAuthStrategy authStrategy,
                               AuthenticationService authService) {
         super();
         logger = LogManager.getLogger(OrderedItemServlet.class);
         this.participantRepository = participantRepository;
+        this.eventRepository = eventRepository;
         this.orderServlet = orderServlet;
         this.authenticationStrategy = authStrategy;
         this.authenticationService = authService;
@@ -60,6 +63,32 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     @Produces({MediaType.APPLICATION_JSON})
     public Object get(@Context HttpServletRequest request) {
         return this.get(request, participantRepository);
+    }
+
+
+    @GET
+    @Path("/state")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getState(@Context HttpServletRequest request) {
+        User requestingUser = authenticationService.parseNullableUserFromRequestHeader(request);
+
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        String id = getParameter(parameterMap, "id");
+        String showCancelled = getParameter(parameterMap, "showCancelled");
+        Optional<ShopItem> optionalItem = this.eventRepository.getById(id);
+
+        if (!optionalItem.isPresent()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        ShopItem shopItem = optionalItem.get();
+        boolean isAllowed = ((ParticipantsAuthStrategy) this.authenticationStrategy).isAllowedToReadState(requestingUser, shopItem);
+
+        if (!isAllowed) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
+        return Response.ok(participantRepository.getStateOfItem(shopItem, showCancelled.equals("true"))).build();
     }
 
     @POST

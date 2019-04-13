@@ -5,6 +5,8 @@ import memo.data.util.PredicateFactory;
 import memo.data.util.PredicateSupplierMap;
 import memo.model.OrderStatus;
 import memo.model.OrderedItem;
+import memo.model.ShopItem;
+import memo.model.management.ParticipantState;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
@@ -19,6 +21,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +47,44 @@ public class ParticipantRepository extends AbstractPagingAndSortingRepository<Or
         return this.getAll();
     }
 
+    public ParticipantState getStateOfItem(ShopItem shopItem, boolean showCancelled) {
+        Object[] o = (Object[]) DatabaseManager.createEntityManager()
+                .createNativeQuery("SELECT " +
+                        "   participants.total as total," +
+                        "   participants.drivers as drivers," +
+                        "   participants.needsTicket as needsTicket," +
+                        "   waiting.waitingListTotal as waitingListTotal," +
+                        "   waiting.waitingListDrivers as waitingListDrivers," +
+                        "   waiting.waitingListTicketsNeeded as waitingListTicketNeeded" +
+                        "\n" +
+                        "FROM (SELECT COUNT(*)                                        as total,\n" +
+                        "             SUM(case when o.IS_DRIVER then 1 else 0 end)    as drivers,\n" +
+                        "             SUM(case when o.NEEDS_TICKET then 1 else 0 end) as needsTicket\n" +
+                        "      FROM ordered_items o\n" +
+                        "      WHERE o.ITEM_ID = ?1\n" +
+                        "        AND (?2 OR o.STATUS != 5)\n" +
+                        "     ) participants,\n" +
+                        "     (SELECT COUNT(*)                                       as waitingListTotal,\n" +
+                        "             SUM(case when w.ISDRIVER then 1 else 0 end)    as waitingListDrivers,\n" +
+                        "             SUM(case when w.NEEDSTICKET then 1 else 0 end) as waitingListTicketsNeeded\n" +
+                        "      FROM waiting_list w\n" +
+                        "      WHERE w.SHOPITEM_ID = ?1\n" +
+                        "     ) waiting;")
+                .setParameter(1, shopItem.getId())
+                .setParameter(2, showCancelled)
+                .getResultList()
+                .get(0);
+
+        ParticipantState state = new ParticipantState();
+        state.setTotal(o[0] == null ? 0 : (Long) o[0]);
+        state.setDrivers(o[1] == null ? 0 : ((BigDecimal) o[1]).longValue());
+        state.setTicketsNeeded(o[2] == null ? 0 : ((BigDecimal) o[2]).longValue());
+        state.setWaitingListTotal(o[3] == null ? 0 : (Long) o[3]);
+        state.setWaitingListDrivers(o[4] == null ? 0 : ((BigDecimal) o[4]).longValue());
+        state.setWaitingListTicketsNeeded(o[5] == null ? 0 : ((BigDecimal) o[5]).longValue());
+
+        return state;
+    }
 
     public List<OrderedItem> findByEvent(Integer id) {
         //ToDo: gibt null aus wenn id nicht vergeben

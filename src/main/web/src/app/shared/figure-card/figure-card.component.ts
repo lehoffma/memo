@@ -11,9 +11,10 @@ import {ChangeDetectionStrategy, Component, EventEmitter, HostBinding, HostListe
 })
 export class FigureCardComponent implements OnInit {
 	@Input() icon: string;
-	@Input() titleValue: string;
+	@Input() titleValue: string | number;
 	@Input() titleLabel: string;
 	@Input() subtitle: string;
+	@Input() loading: boolean;
 
 	@HostBinding("class.selectable")
 	_selectable = true;

@@ -1,9 +1,12 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {SelectionModel} from "@angular/cdk/collections";
 import {ActivatedRoute, Router} from "@angular/router";
-import {Observable, Subject} from "rxjs";
-import {map, takeUntil} from "rxjs/operators";
+import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
+import {map, switchMap, takeUntil} from "rxjs/operators";
 import {EventType} from "../../../../../shared/model/event-type";
+import {OrderedItemService} from "../../../../../../shared/services/api/ordered-item.service";
+import {ParticipantState} from "../../../../../../shared/model/participant-state";
+import {tap} from "rxjs/internal/operators/tap";
 
 export type ParticipantListOption = "participated" | "isDriver" | "needsTicket";
 
@@ -29,7 +32,22 @@ export class ParticipantsCategorySelectionComponent implements OnInit, OnDestroy
 		})
 	);
 
+	loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+	state$: Observable<ParticipantState> = combineLatest(
+		this.activatedRoute.queryParamMap.pipe(
+			map(it => it.has("showCancelled") ? (it.get("showCancelled") === "true") : false)
+		),
+		this.activatedRoute.url.pipe(
+			map(urls => urls[2].path)
+		)
+	).pipe(
+		tap(it => this.loading$.next(true)),
+		switchMap(([showCancelled, itemId]) => this.orderedItemService.getStateOfItem(itemId, showCancelled)),
+		tap(it => this.loading$.next(false)),
+	);
+
 	constructor(private activatedRoute: ActivatedRoute,
+				private orderedItemService: OrderedItemService,
 				private router: Router) {
 		this.selectionModel.changed.pipe(takeUntil(this.onDestroy$))
 			.subscribe(changed => this.router.navigate([], {queryParams: {view: this.selectionModel.selected[0]}}))

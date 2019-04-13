@@ -7,13 +7,17 @@ import {RowAction, TableAction} from "../../../../../shared/utility/material-tab
 import {ParticipantDataSource, ParticipantUserService} from "./participant-data-source";
 import {UserService} from "../../../../../shared/services/api/user.service";
 import {TableColumn} from "../../../../../shared/utility/material-table/expandable-material-table.component";
-import {map, startWith} from "rxjs/operators";
+import {map, startWith, switchMap, takeUntil} from "rxjs/operators";
 import {ResponsiveColumnsHelper} from "../../../../../shared/utility/material-table/responsive-columns.helper";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {Filter} from "../../../../../shared/model/api/filter";
 import {EventType} from "../../../../shared/model/event-type";
-import {combineLatest} from "rxjs";
+import {combineLatest, Observable, Subject} from "rxjs";
 import {ParticipantListOption} from "./participants-category-selection/participants-category-selection.component";
+import {EventService} from "../../../../../shared/services/api/event.service";
+import {FormControl} from "@angular/forms";
+import {ActivatedRoute, ParamMap, Router} from "@angular/router";
+import {OrderStatusIntList} from "../../../../../shared/model/order-status";
 
 
 @Component({
@@ -23,6 +27,12 @@ import {ParticipantListOption} from "./participants-category-selection/participa
 	providers: [ParticipantListService]
 })
 export class ParticipantListComponent implements OnInit, OnDestroy {
+	showCancelledFormControl = new FormControl(
+		this.activatedRoute.snapshot.queryParamMap.has("showCancelled")
+			? this.activatedRoute.snapshot.queryParamMap.get("showCancelled") === "true"
+			: false
+	);
+
 	rowActions: RowAction<ParticipantUser>[] = [
 		{
 			icon: "edit",
@@ -77,10 +87,11 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 
 	filter$ = combineLatest(
 		this.participantListService.view$,
-		this.participantListService.eventInfo$
+		this.participantListService.eventInfo$,
+		this.activatedRoute.queryParamMap,
 	)
 		.pipe(
-			map(([view, info]: [ParticipantListOption, { eventType: EventType, eventId: number }]) => {
+			map(([view, info, queryParamMap]: [ParticipantListOption, { eventType: EventType, eventId: number }, ParamMap]) => {
 				let viewFilters = Filter.none();
 				switch (view) {
 					case "needsTicket":
@@ -90,20 +101,48 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 						viewFilters = Filter.by({isDriver: "true"});
 				}
 
+				let showCancelledFilter = Filter.none();
+				if (!queryParamMap.has("showCancelled") || queryParamMap.get("showCancelled") === "false") {
+					showCancelledFilter = Filter.by({
+						status: OrderStatusIntList.filter(it => it !== 5).join(",")
+					})
+				}
+
 
 				return Filter.combine(
 					Filter.by({"eventId": "" + info.eventId}),
+					showCancelledFilter,
 					viewFilters
 				)
 			}),
 		);
 
+	additionalItemInfo$: Observable<{ title: string; }> = this.participantListService.eventInfo$.pipe(
+		switchMap(eventInfo => {
+			return this.eventService.getById(eventInfo.eventId).pipe(
+				map(item => ({
+					title: item.title,
+				}))
+			)
+		})
+	);
+
+
+	onDestroy$ = new Subject();
 
 	constructor(public participantListService: ParticipantListService,
 				public participantUserService: ParticipantUserService,
 				public breakpointObserver: BreakpointObserver,
+				private eventService: EventService,
+				private router: Router,
+				private activatedRoute: ActivatedRoute,
 				public userService: UserService) {
 		this.participantListService.dataSource = this.dataSource;
+
+		this.showCancelledFormControl.valueChanges.pipe(takeUntil(this.onDestroy$))
+			.subscribe(showCancelled =>
+				this.router.navigate([], {queryParams: {showCancelled}, queryParamsHandling: "merge"})
+			)
 	}
 
 	ngOnInit() {
@@ -118,6 +157,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
+		this.onDestroy$.next(true);
 	}
 
 

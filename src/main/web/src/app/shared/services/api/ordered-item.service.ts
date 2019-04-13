@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 import {Participant, ParticipantUser} from "../../../shop/shared/model/participant";
 import {UserService} from "./user.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {EventUtilityService} from "../event-utility.service";
 import {Observable, of} from "rxjs";
@@ -23,6 +23,7 @@ import {Page, PageResponse} from "../../model/api/page";
 import {EventService} from "./event.service";
 import {setProperties} from "../../model/util/base-object";
 import {Event} from "../../../shop/shared/model/event";
+import {ParticipantState} from "../../model/participant-state";
 
 interface ParticipantApiResponse {
 	orderedItems: Participant[]
@@ -139,6 +140,15 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 
 	}
 
+	getStateOfItem(itemId: string, showCancelled = false): Observable<ParticipantState> {
+		const params = new HttpParams()
+			.set("id", itemId)
+			.set("showCancelled", "" + showCancelled);
+		const request = this.http.get<ParticipantState>("/api/orderedItem/state", {params});
+
+		return this._cache.other(params, request);
+	}
+
 
 	/**
 	 *
@@ -149,8 +159,8 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 		return this.changeStatusOfOrder(order, OrderStatus.CANCELLED);
 	}
 
-	cancelOrderItem(order: Order, item: OrderedItem){
-		return this.changeStatusOfOrderItem(order,item, OrderStatus.CANCELLED);
+	cancelOrderItem(order: Order, item: OrderedItem) {
+		return this.changeStatusOfOrderItem(order, item, OrderStatus.CANCELLED);
 	}
 
 	/**

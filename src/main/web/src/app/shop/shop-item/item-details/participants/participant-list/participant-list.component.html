@@ -1,6 +1,29 @@
-<div class="participants-header">
-	<!--	"go back to event" -->
+<div class="event-header" fxHide.gt-xs *ngIf="additionalItemInfo$ | async as info">
+	<span class="event-title">
+		{{info.title}}
+	</span>
 </div>
+<div class="participants-header" fxLayout="row">
+	<mat-icon routerLink="../" fxHide.gt-xs>chevron_left</mat-icon>
+	<div class="participants-header-title">
+		<h1>Teilnehmerübersicht</h1>
+		<span class="event-title" fxHide.lt-sm *ngIf="additionalItemInfo$ | async as info">
+			von <a routerLink="../">{{info.title}}</a>
+		</span>
+	</div>
+	<span fxFlex="grow"></span>
+	<button mat-icon-button [matMenuTriggerFor]="configMenu" fxHide.gt-xs>
+		<mat-icon>more_vert</mat-icon>
+	</button>
+	<mat-checkbox fxHide.lt-sm [formControl]="showCancelledFormControl">Zeige stornierte</mat-checkbox>
+</div>
+
+<mat-menu #configMenu>
+	<div mat-menu-item (click)="$event.stopPropagation()">
+		<mat-checkbox [formControl]="showCancelledFormControl">Zeige stornierte</mat-checkbox>
+	</div>
+</mat-menu>
+
 
 <memo-participants-category-selection>
 

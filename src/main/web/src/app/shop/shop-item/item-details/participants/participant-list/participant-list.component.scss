@@ -1,11 +1,68 @@
 @import "~@angular/material/theming";
-
+@import "theme";
 
 //todo redesign: filter options, important data above details table
 $breakpoint: 600px;
 
 .participant-overview {
 	width: 100%;
+}
+
+.participants-header {
+	display: flex;
+	align-items: center;
+	margin: -16px;
+	padding: 8px 8px 8px 0;
+	margin-bottom: 16px;
+	border-bottom: 1px solid memo-grey(300);
+	background: white;
+
+	> mat-icon {
+		font-size: 30px;
+		width: 30px;
+		height: 30px;
+	}
+
+	h1 {
+		margin: 0;
+		font-size: font-size(small-medium);
+		font-weight: 400;
+	}
+
+	@media all and (min-width: 600px) {
+		margin: -16px 0 16px;
+		align-items: baseline;
+		background: none;
+		padding: 16px 0;
+		width: 100%;
+
+		h1 {
+			font-size: font-size(medium-large);
+		}
+	}
+}
+
+.event-header {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 16px;
+	border-bottom: 1px solid memo-grey(200);
+	margin: -16px;
+	margin-bottom: 16px;
+	background: white;
+	font-weight: 400;
+	font-size: font-size(medium-large);
+}
+
+.participants-header-title {
+	display: flex;
+	align-items: baseline;
+
+	.event-title {
+		margin-left: 6px;
+		white-space: nowrap;
+	}
 }
 
 :host {

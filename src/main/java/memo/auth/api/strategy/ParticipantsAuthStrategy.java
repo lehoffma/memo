@@ -7,10 +7,7 @@ import memo.model.OrderedItem;
 import memo.model.ShopItem;
 import memo.model.User;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
@@ -29,6 +26,12 @@ public class ParticipantsAuthStrategy implements AuthenticationStrategy<OrderedI
                 AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(OrderedItem::getItem, ShopItem::getExpectedReadRole)
         ));
     }
+
+    public boolean isAllowedToReadState(User user, ShopItem object) {
+        return AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(t -> object, ShopItem::getExpectedReadRole)
+                .test(user, null);
+    }
+
 
     @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<OrderedItem> root, User user) {
