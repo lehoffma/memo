@@ -9,7 +9,7 @@
 		"build-with-stats": "ng build --prod --stats-json",
 		"bundle-report": "webpack-bundle-analyzer ../webapp/stats.json",
 		"test": "ng test",
-		"test-once": "ng test --watch=false --browsers Chrome",
+		"test-once": "ng test --watch=false --browsers ChromeHeadless",
 		"lint": "ng lint",
 		"e2e": "ng e2e"
 	},

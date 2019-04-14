@@ -100,20 +100,8 @@
 					"options": {
 						"main": "src/test.ts",
 						"karmaConfig": "./karma.conf.js",
-						"polyfills": "src/polyfills.ts",
 						"tsConfig": "src/tsconfig.spec.json",
-						"deleteOutputPath": false,
-						"scripts": [
-							"node_modules/iban/iban.js"
-						],
-						"styles": [
-							"src/styles.scss",
-							"src/styles/theme.scss",
-							"src/styles/mixins.scss",
-							"src/material-theme.scss",
-							"src/spinner.scss",
-							"node_modules/angular-calendar/css/angular-calendar.css"
-						],
+						"polyfills": "src/polyfills.ts",
 						"assets": [
 							{
 								"glob": "**/*",
@@ -135,6 +123,25 @@
 								"input": "src",
 								"output": "/"
 							}
+						],
+						"styles": [
+							"src/styles.scss",
+							"src/styles/container.scss",
+							"src/styles/theme.scss",
+							"src/styles/mixins.scss",
+							"src/material-theme.scss",
+							"src/spinner.scss",
+							"node_modules/cookieconsent/build/cookieconsent.min.css",
+							"node_modules/angular-calendar/css/angular-calendar.css"
+						],
+						"stylePreprocessorOptions": {
+							"includePaths": [
+								"src/styles"
+							]
+						},
+						"scripts": [
+							"node_modules/iban/iban.js",
+							"node_modules/cookieconsent/build/cookieconsent.min.js"
 						]
 					}
 				},
