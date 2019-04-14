@@ -2,7 +2,8 @@
 								[dataSource]="dataSource"
 								[dataService]="waitingListUserService"
 								[filter$]="filter$"
-								[rowActions]="rowActions"
+								[rowActions]="rowActions$ | async"
+								[selectedActions]="selectedActions"
 								[title]="'Warteliste'"
 								[columns]="columns"
 								[displayedColumns]="displayedColumns$ | async"
@@ -11,3 +12,25 @@
 >
 
 </memo-expandable-material-table>
+
+
+<mat-menu #bulkEditingMenu="matMenu">
+	<ng-container *ngLet="waitingListTableService.eventInfo$ | async as eventInfo">
+		<ng-container *ngIf="eventInfo.eventType === 'tours'">
+			<button mat-menu-item (click)="openBulkEdit('isDriver')">
+				Fahrerstatus bearbeiten
+			</button>
+			<button mat-menu-item (click)="openBulkEdit('needsTicket')">
+				Ticketwunsch bearbeiten
+			</button>
+		</ng-container>
+		<ng-container *ngIf="eventInfo.eventType === 'merch'">
+			<button mat-menu-item (click)="openBulkEdit('size')">
+				Größe bearbeiten
+			</button>
+			<button mat-menu-item (click)="openBulkEdit('color')">
+				Farbe bearbeiten
+			</button>
+		</ng-container>
+	</ng-container>
+</mat-menu>

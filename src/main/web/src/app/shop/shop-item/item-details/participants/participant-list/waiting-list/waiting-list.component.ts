@@ -1,8 +1,6 @@
-import {Component, OnInit} from "@angular/core";
+import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
 import {map, startWith} from "rxjs/operators";
-import {RowAction} from "../../../../../../shared/utility/material-table/util/row-action";
-import {RowActionType} from "../../../../../../shared/utility/material-table/util/row-action-type";
-import {MemberListRowAction} from "../../../../../../club-management/administration/member-list/member-list-row-actions";
+import {RowAction, TableAction} from "../../../../../../shared/utility/material-table/util/row-action";
 import {TableColumn} from "../../../../../../shared/utility/material-table/expandable-material-table.component";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {UserService} from "../../../../../../shared/services/api/user.service";
@@ -13,8 +11,9 @@ import {EventType} from "../../../../../shared/model/event-type";
 import {Filter} from "../../../../../../shared/model/api/filter";
 import {WaitingListUser} from "../../../../../shared/model/waiting-list";
 import {ActivatedRoute} from "@angular/router";
-import {combineLatest} from "rxjs";
+import {combineLatest, Observable} from "rxjs";
 import {ParticipantListOption} from "../participants-category-selection/participants-category-selection.component";
+import {UserActionsService} from "../../../../../../shared/services/user-actions.service";
 
 @Component({
 	selector: "memo-waiting-list",
@@ -24,39 +23,12 @@ import {ParticipantListOption} from "../participants-category-selection/particip
 		WaitingListTableService
 	]
 })
-export class WaitingListComponent implements OnInit {
-	rowActions: RowAction<WaitingListUser>[] = [
-		{
-			icon: "edit",
-			name: RowActionType.EDIT
-		},
-		{
-			icon: "delete",
-			name: RowActionType.DELETE
-		},
-		{
-			icon: "phone",
-			name: MemberListRowAction.phone,
-			predicate: participant => !!participant.user.telephone,
-			link: participant => "tel:" + participant.user.telephone
-		},
-		{
-			icon: "smartphone",
-			name: MemberListRowAction.call,
-			predicate: participant => !!participant.user.mobile,
-			link: participant => "tel:" + participant.user.mobile
-		},
-		{
-			icon: "email",
-			name: MemberListRowAction.email,
-			link: participant => "mailto:" + participant.user.email
-		},
-		{
-			icon: "person",
-			name: MemberListRowAction.showProfile,
-			route: participant => "club/members/" + participant.user.id
-		}
-	];
+export class WaitingListComponent implements OnInit, AfterViewInit {
+	rowActions$: Observable<RowAction<WaitingListUser>[]> = this.userActionsService.getUserActions<WaitingListUser>(T => T.user);
+
+	selectedActions: TableAction<WaitingListUser>[] = [];
+
+	@ViewChild("bulkEditingMenu") bulkEditingMenu: any;
 
 	columns: TableColumn<WaitingListUser>[] = [
 		{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
@@ -94,6 +66,7 @@ export class WaitingListComponent implements OnInit {
 
 	constructor(public waitingListTableService: WaitingListTableService,
 				public waitingListUserService: WaitingListUserService,
+				private userActionsService: UserActionsService,
 				private activatedRoute: ActivatedRoute,
 				public breakpointObserver: BreakpointObserver,
 				public userService: UserService) {
@@ -141,5 +114,23 @@ export class WaitingListComponent implements OnInit {
 			]
 		}
 		return [];
+	}
+
+	ngAfterViewInit(): void {
+		this.selectedActions = [
+			{
+				name: "editMultiple",
+				label: "",
+				icon: "edit",
+				type: "mat-icon-menu",
+				menu: this.bulkEditingMenu,
+				tooltip: "Batchbearbeitung"
+			}
+		];
+	}
+
+	openBulkEdit(property: string) {
+		//todo
+		console.log(property);
 	}
 }

@@ -11,6 +11,21 @@
 	color: accent();
 }
 
+.icon-menu-container {
+	display: inline-flex;
+	align-items: center;
+
+	> button {
+		width: initial;
+		padding: 0 8px;
+		border-radius: 4px;
+
+		/deep/ .dropdown-icon {
+			margin-left: -4px;
+			margin-right: -4px;
+		}
+	}
+}
 
 .expandable-table-header {
 	display: flex;
@@ -37,7 +52,7 @@
 	}
 
 	&.items-selected-header {
-		background-color: accent(100);
+		background-color: rgb(194, 219, 255);
 	}
 
 }

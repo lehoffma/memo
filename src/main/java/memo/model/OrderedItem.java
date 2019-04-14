@@ -3,7 +3,6 @@ package memo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.sun.istack.internal.Nullable;
 import memo.serialization.OrderIdDeserializer;
 import memo.serialization.ShopItemIdDeserializer;
 

@@ -34,7 +34,7 @@
 								[dataService]="participantUserService"
 								[filter$]="filter$"
 								[selectedActions]="selectedActions"
-								[rowActions]="rowActions"
+								[rowActions]="rowActions$ | async"
 								[withMultiEdit]="true"
 								[title]="'Teilnehmer'"
 								[columns]="columns"
@@ -44,6 +44,22 @@
 >
 
 </memo-expandable-material-table>
+
+<mat-menu #bulkEditingMenu="matMenu">
+	<button mat-menu-item (click)="openBulkEdit('status')">
+		Status bearbeiten
+	</button>
+	<ng-container *ngLet="participantListService.eventInfo$ | async as eventInfo">
+		<ng-container *ngIf="eventInfo.eventType === 'tours'">
+			<button mat-menu-item (click)="openBulkEdit('isDriver')">
+				Fahrerstatus bearbeiten
+			</button>
+			<button mat-menu-item (click)="openBulkEdit('needsTicket')">
+				Ticketwunsch bearbeiten
+			</button>
+		</ng-container>
+	</ng-container>
+</mat-menu>
 
 <memo-waiting-list>
 

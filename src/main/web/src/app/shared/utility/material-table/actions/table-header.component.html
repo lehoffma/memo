@@ -28,6 +28,7 @@
 						<a *ngSwitchCase="'mat-stroked-button'" mat-stroked-button
 						   [color]="action.color" type="button"
 						   href="{{action?.link(selection.selected)}}"
+						   [matTooltip]="action?.tooltip"
 						   [disabled]="actionIsDisabled(selection.selected, action)">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 							<span>{{action?.label}}</span>
@@ -35,6 +36,7 @@
 						<a *ngSwitchCase="'mat-raised-button'" mat-raised-button
 						   [color]="action.color" type="button"
 						   href="{{action?.link(selection.selected)}}"
+						   [matTooltip]="action?.tooltip"
 						   [disabled]="actionIsDisabled(selection.selected, action)">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 							<span>{{action?.label}}</span>
@@ -49,6 +51,7 @@
 						<a *ngSwitchCase="'mat-icon-button'" mat-icon-button
 						   [color]="action.color" type="button"
 						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   [matTooltip]="action?.tooltip"
 						   href="{{action?.link(selection.selected)}}">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 						</a>
@@ -61,6 +64,7 @@
 						</a>
 						<a *ngSwitchDefault class="link-button"
 						   type="button"
+						   [matTooltip]="action?.tooltip"
 						   href="{{action?.link(selection.selected)}}">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 							<span>{{action?.label}}</span>
@@ -73,6 +77,7 @@
 						<a *ngSwitchCase="'mat-stroked-button'" mat-stroked-button
 						   [color]="action.color" type="button"
 						   routerLink="{{action?.route(selection.selected)}}"
+						   [matTooltip]="action?.tooltip"
 						   [disabled]="actionIsDisabled(selection.selected, action)">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 							<span>{{action?.label}}</span>
@@ -80,6 +85,7 @@
 						<a *ngSwitchCase="'mat-raised-button'" mat-raised-button
 						   [color]="action.color" type="button"
 						   routerLink="{{action?.route(selection.selected)}}"
+						   [matTooltip]="action?.tooltip"
 						   [disabled]="actionIsDisabled(selection.selected, action)">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 							<span>{{action?.label}}</span>
@@ -87,6 +93,7 @@
 						<a *ngSwitchCase="'mat-flat-button'" mat-flat-button
 						   [color]="action.color" type="button"
 						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   [matTooltip]="action?.tooltip"
 						   routerLink="{{action?.route(selection.selected)}}">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 							<span>{{action?.label}}</span>
@@ -94,18 +101,21 @@
 						<a *ngSwitchCase="'mat-icon-button'" mat-icon-button
 						   [color]="action.color" type="button"
 						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   [matTooltip]="action?.tooltip"
 						   routerLink="{{action?.route(selection.selected)}}">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 						</a>
 						<a *ngSwitchCase="'mat-button'" mat-button
 						   [color]="action.color" type="button"
 						   [disabled]="actionIsDisabled(selection.selected, action)"
+						   [matTooltip]="action?.tooltip"
 						   routerLink="{{action?.route(selection.selected)}}">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 							<span>{{action?.label}}</span>
 						</a>
 						<a *ngSwitchDefault class="link-button"
 						   type="button"
+						   [matTooltip]="action?.tooltip"
 						   routerLink="{{action?.route(selection.selected)}}">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 							<span>{{action?.label}}</span>
@@ -116,6 +126,7 @@
 					<ng-container [ngSwitch]="action.type || 'mat-button'">
 						<button *ngSwitchCase="'mat-stroked-button'" mat-stroked-button
 								[color]="action.color" type="button"
+								[matTooltip]="action?.tooltip"
 								[disabled]="actionIsDisabled(selection.selected, action)"
 								(click)="actionCallback(action?.name, selection.selected)">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
@@ -123,6 +134,7 @@
 						</button>
 						<button *ngSwitchCase="'mat-raised-button'" mat-raised-button
 								[color]="action.color" type="button"
+								[matTooltip]="action?.tooltip"
 								[disabled]="actionIsDisabled(selection.selected, action)"
 								(click)="actionCallback(action?.name, selection.selected)">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
@@ -130,6 +142,7 @@
 						</button>
 						<button *ngSwitchCase="'mat-flat-button'" mat-flat-button
 								[color]="action.color" type="button"
+								[matTooltip]="action?.tooltip"
 								[disabled]="actionIsDisabled(selection.selected, action)"
 								(click)="actionCallback(action?.name, selection.selected)">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
@@ -137,12 +150,24 @@
 						</button>
 						<button *ngSwitchCase="'mat-icon-button'" mat-icon-button
 								[color]="action.color" type="button"
+								[matTooltip]="action?.tooltip"
 								[disabled]="actionIsDisabled(selection.selected, action)"
 								(click)="actionCallback(action?.name, selection.selected)">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
 						</button>
+						<div class="icon-menu-container" *ngSwitchCase="'mat-icon-menu'">
+							<button mat-icon-button
+									[color]="action.color" type="button"
+									[matTooltip]="action?.tooltip"
+									[matMenuTriggerFor]="action?.menu"
+									[disabled]="actionIsDisabled(selection.selected, action)">
+								<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+								<mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+							</button>
+						</div>
 						<button *ngSwitchDefault mat-button
 								[color]="action.color" type="button"
+								[matTooltip]="action?.tooltip"
 								[disabled]="actionIsDisabled(selection.selected, action)"
 								(click)="actionCallback(action?.name, selection.selected)">
 							<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
@@ -154,6 +179,7 @@
 			</ng-container>
 			<button mat-icon-button
 					[disabled]="!permissions?.Loeschen"
+					[matTooltip]="'Löschen'"
 					type="button" (click)="deleteSelected()">
 				<mat-icon>delete</mat-icon>
 			</button>

@@ -9,12 +9,14 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 import {WaitingListComponent} from "./waiting-list/waiting-list.component";
 import {ParticipantsCategorySelectionComponent} from "./participants-category-selection/participants-category-selection.component";
 import {RouterModule} from "@angular/router";
+import { BatchModifyParticipantComponent } from './batch-modify-participant/batch-modify-participant.component';
 
 @NgModule({
 	declarations: [
 		ParticipantListComponent,
 		WaitingListComponent,
-		ParticipantsCategorySelectionComponent
+		ParticipantsCategorySelectionComponent,
+		BatchModifyParticipantComponent
 	],
 	imports: [
 		CommonModule,

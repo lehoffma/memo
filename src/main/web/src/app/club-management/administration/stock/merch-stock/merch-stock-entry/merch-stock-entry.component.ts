@@ -16,7 +16,7 @@ export class MerchStockEntryComponent implements OnInit, OnDestroy {
 	Status = StockStatus;
 
 	@Output() onDelete = new EventEmitter<number>();
-	private _stockEntry$ = new BehaviorSubject<StockEntry>(null);
+	_stockEntry$ = new BehaviorSubject<StockEntry>(null);
 
 	responsible$: Observable<User[]> = this._stockEntry$
 		.pipe(mergeMap(event => this.responsibilityServive.getResponsible(event.item.id)));

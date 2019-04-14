@@ -9,27 +9,82 @@
 </button>
 <mat-menu #menu="matMenu">
 	<div *ngFor="let action of rowActions">
-		<a *ngIf="action?.link !== undefined"
-		   href="{{action?.link(element)}}"
-		   mat-menu-item
-		   [disabled]="actionIsDisabled(element, action)">
-			<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
-			<span>{{action?.name}}</span>
-		</a>
-		<a *ngIf="action?.route !== undefined"
-		   routerLink="{{action?.route(element)}}"
-		   mat-menu-item
-		   [disabled]="actionIsDisabled(element, action)">
-			<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
-			<span>{{action?.name}}</span>
-		</a>
-		<button *ngIf="!action?.link && !action?.route" mat-menu-item
-				type="button"
-				[disabled]="actionIsDisabled(element, action)"
-				(click)="actionCallback(action?.name, [element])">
-			<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
-			<span>{{action?.name}}</span>
+		<ng-container *ngIf="action.children else noChildren">
+			<a *ngIf="action?.link !== undefined"
+			   href="{{action?.link(element)}}"
+			   mat-menu-item
+			   [matMenuTriggerFor]="nestedMenu"
+			   [disabled]="actionIsDisabled(element, action)">
+				<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+				<span>{{action?.name}}</span>
+			</a>
+			<a *ngIf="action?.route !== undefined"
+			   routerLink="{{action?.route(element)}}"
+			   mat-menu-item
+			   [matMenuTriggerFor]="nestedMenu"
+			   [disabled]="actionIsDisabled(element, action)">
+				<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+				<span>{{action?.name}}</span>
+			</a>
+			<button *ngIf="!action?.link && !action?.route" mat-menu-item
+					type="button"
+					[matMenuTriggerFor]="nestedMenu"
+					[disabled]="actionIsDisabled(element, action)"
+					(click)="actionCallback(action?.name, [element])">
+				<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+				<span>{{action?.name}}</span>
 
-		</button>
+			</button>
+			<mat-menu #nestedMenu="matMenu">
+				<ng-container *ngFor="let child of action.children">
+					<a *ngIf="child?.link !== undefined"
+					   href="{{child?.link(element)}}"
+					   mat-menu-item
+					   [disabled]="actionIsDisabled(element, child)">
+						<mat-icon *ngIf="child?.icon">{{child?.icon}}</mat-icon>
+						<span>{{child?.name}}</span>
+					</a>
+					<a *ngIf="child?.route !== undefined"
+					   routerLink="{{child?.route(element)}}"
+					   mat-menu-item
+					   [disabled]="actionIsDisabled(element, child)">
+						<mat-icon *ngIf="child?.icon">{{child?.icon}}</mat-icon>
+						<span>{{child?.name}}</span>
+					</a>
+					<button *ngIf="!child?.link && !child?.route" mat-menu-item
+							type="button"
+							[disabled]="actionIsDisabled(element, child)"
+							(click)="actionCallback(child?.name, [element])">
+						<mat-icon *ngIf="child?.icon">{{child?.icon}}</mat-icon>
+						<span>{{child?.name}}</span>
+
+					</button>
+				</ng-container>
+			</mat-menu>
+		</ng-container>
+		<ng-template #noChildren>
+			<a *ngIf="action?.link !== undefined"
+			   href="{{action?.link(element)}}"
+			   mat-menu-item
+			   [disabled]="actionIsDisabled(element, action)">
+				<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+				<span>{{action?.name}}</span>
+			</a>
+			<a *ngIf="action?.route !== undefined"
+			   routerLink="{{action?.route(element)}}"
+			   mat-menu-item
+			   [disabled]="actionIsDisabled(element, action)">
+				<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+				<span>{{action?.name}}</span>
+			</a>
+			<button *ngIf="!action?.link && !action?.route" mat-menu-item
+					type="button"
+					[disabled]="actionIsDisabled(element, action)"
+					(click)="actionCallback(action?.name, [element])">
+				<mat-icon *ngIf="action?.icon">{{action?.icon}}</mat-icon>
+				<span>{{action?.name}}</span>
+
+			</button>
+		</ng-template>
 	</div>
 </mat-menu>

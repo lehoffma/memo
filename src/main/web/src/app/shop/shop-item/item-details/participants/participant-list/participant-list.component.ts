@@ -1,7 +1,5 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {ParticipantUser} from "../../../../shared/model/participant";
-import {RowActionType} from "../../../../../shared/utility/material-table/util/row-action-type";
-import {MemberListRowAction} from "../../../../../club-management/administration/member-list/member-list-row-actions";
 import {ParticipantListService} from "./participant-list.service";
 import {RowAction, TableAction} from "../../../../../shared/utility/material-table/util/row-action";
 import {ParticipantDataSource, ParticipantUserService} from "./participant-data-source";
@@ -18,6 +16,7 @@ import {EventService} from "../../../../../shared/services/api/event.service";
 import {FormControl} from "@angular/forms";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {OrderStatusIntList} from "../../../../../shared/model/order-status";
+import {UserActionsService} from "../../../../../shared/services/user-actions.service";
 
 
 @Component({
@@ -26,54 +25,18 @@ import {OrderStatusIntList} from "../../../../../shared/model/order-status";
 	styleUrls: ["./participant-list.component.scss"],
 	providers: [ParticipantListService]
 })
-export class ParticipantListComponent implements OnInit, OnDestroy {
+export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestroy {
 	showCancelledFormControl = new FormControl(
 		this.activatedRoute.snapshot.queryParamMap.has("showCancelled")
 			? this.activatedRoute.snapshot.queryParamMap.get("showCancelled") === "true"
 			: false
 	);
 
-	rowActions: RowAction<ParticipantUser>[] = [
-		{
-			icon: "edit",
-			name: RowActionType.EDIT
-		},
-		{
-			icon: "delete",
-			name: RowActionType.DELETE
-		},
-		{
-			icon: "phone",
-			name: MemberListRowAction.phone,
-			predicate: participant => !!participant.user.telephone,
-			link: participant => "tel:" + participant.user.telephone
-		},
-		{
-			icon: "smartphone",
-			name: MemberListRowAction.call,
-			predicate: participant => !!participant.user.mobile,
-			link: participant => "tel:" + participant.user.mobile
-		},
-		{
-			icon: "email",
-			name: MemberListRowAction.email,
-			link: participant => "mailto:" + participant.user.email
-		},
-		{
-			icon: "person",
-			name: MemberListRowAction.showProfile,
-			route: participant => "/club/members/" + participant.user.id
-		}
-	];
+	rowActions$: Observable<RowAction<ParticipantUser>[]> = this.userActionsService.getUserActions<ParticipantUser>(T => T.user);
 
-	selectedActions: TableAction<ParticipantUser>[] = [
-		{
-			name: "editMultiple",
-			label: "",
-			icon: "edit",
-			type: "mat-icon-button"
-		}
-	];
+	selectedActions: TableAction<ParticipantUser>[] = [];
+
+	@ViewChild("bulkEditingMenu") bulkEditingMenu: any;
 
 	columns: TableColumn<ParticipantUser>[] = [
 		{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
@@ -133,6 +96,7 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 	constructor(public participantListService: ParticipantListService,
 				public participantUserService: ParticipantUserService,
 				public breakpointObserver: BreakpointObserver,
+				private userActionsService: UserActionsService,
 				private eventService: EventService,
 				private router: Router,
 				private activatedRoute: ActivatedRoute,
@@ -160,5 +124,22 @@ export class ParticipantListComponent implements OnInit, OnDestroy {
 		this.onDestroy$.next(true);
 	}
 
+	ngAfterViewInit(): void {
+		this.selectedActions = [
+			{
+				name: "editMultiple",
+				label: "",
+				icon: "edit",
+				type: "mat-icon-menu",
+				menu: this.bulkEditingMenu,
+				tooltip: "Batchbearbeitung"
+			}
+		];
+	}
+
+	openBulkEdit(property: string) {
+		//todo
+		console.log(property);
+	}
 
 }

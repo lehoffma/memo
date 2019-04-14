@@ -50,7 +50,7 @@ export class ParticipantsCategorySelectionComponent implements OnInit, OnDestroy
 				private orderedItemService: OrderedItemService,
 				private router: Router) {
 		this.selectionModel.changed.pipe(takeUntil(this.onDestroy$))
-			.subscribe(changed => this.router.navigate([], {queryParams: {view: this.selectionModel.selected[0]}}))
+			.subscribe(changed => this.router.navigate([], {queryParams: {view: this.selectionModel.selected[0]}, queryParamsHandling: "merge"}))
 	}
 
 	ngOnInit() {
