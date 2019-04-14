@@ -69,7 +69,7 @@ public class MailTransmitter implements MessageTransmitter {
             message.setFrom(new InternetAddress(getUser(), getUserName()));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to.getEmail()));
             message.setSubject(subject);
-            message.setContent(content, "text/html");
+            message.setContent(content, "text/html; charset=UTF-8");
 
             //send the message
             Transport.send(message);
