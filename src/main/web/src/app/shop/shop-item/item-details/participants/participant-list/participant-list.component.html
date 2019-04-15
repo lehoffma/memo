@@ -29,7 +29,7 @@
 
 </memo-participants-category-selection>
 
-<memo-expandable-material-table class="mat-elevation-z3"
+<memo-expandable-material-table class="mat-elevation-z3" #participantsTable
 								[dataSource]="dataSource"
 								[dataService]="participantUserService"
 								[filter$]="filter$"
@@ -60,6 +60,29 @@
 		</ng-container>
 	</ng-container>
 </mat-menu>
+
+<ng-template #statusInput>
+	<mat-form-field appearance="outline" class="small-outline-formfield">
+		<mat-select [formControl]="statusFormControl" placeholder="Diverse">
+			<mat-option *ngFor="let option of availableStatus" [value]="option.status">
+				{{option.text}}
+			</mat-option>
+		</mat-select>
+		<mat-error *ngIf="statusFormControl.hasError('required')">
+			Bitte wähle einen Wert aus.
+		</mat-error>
+	</mat-form-field>
+</ng-template>
+<ng-template #isDriverInput>
+	<mat-checkbox [formControl]="isDriverFormControl">
+		Ist Fahrer
+	</mat-checkbox>
+</ng-template>
+<ng-template #needsTicketInput>
+	<mat-checkbox [formControl]="isDriverFormControl">
+		Braucht ein Stadion Ticket
+	</mat-checkbox>
+</ng-template>
 
 <memo-waiting-list>
 

@@ -1,11 +1,14 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild} from "@angular/core";
 import {ParticipantUser} from "../../../../shared/model/participant";
 import {ParticipantListService} from "./participant-list.service";
 import {RowAction, TableAction} from "../../../../../shared/utility/material-table/util/row-action";
 import {ParticipantDataSource, ParticipantUserService} from "./participant-data-source";
 import {UserService} from "../../../../../shared/services/api/user.service";
-import {TableColumn} from "../../../../../shared/utility/material-table/expandable-material-table.component";
-import {map, startWith, switchMap, takeUntil} from "rxjs/operators";
+import {
+	ExpandableMaterialTableComponent,
+	TableColumn
+} from "../../../../../shared/utility/material-table/expandable-material-table.component";
+import {catchError, map, startWith, switchMap, takeUntil} from "rxjs/operators";
 import {ResponsiveColumnsHelper} from "../../../../../shared/utility/material-table/responsive-columns.helper";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {Filter} from "../../../../../shared/model/api/filter";
@@ -13,10 +16,17 @@ import {EventType} from "../../../../shared/model/event-type";
 import {combineLatest, Observable, Subject} from "rxjs";
 import {ParticipantListOption} from "./participants-category-selection/participants-category-selection.component";
 import {EventService} from "../../../../../shared/services/api/event.service";
-import {FormControl} from "@angular/forms";
+import {FormControl, Validators} from "@angular/forms";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
-import {OrderStatusIntList} from "../../../../../shared/model/order-status";
+import {OrderStatusIntList, OrderStatusPairList, orderStatusToString} from "../../../../../shared/model/order-status";
 import {UserActionsService} from "../../../../../shared/services/user-actions.service";
+import {
+	BatchModifyParticipantComponent,
+	BatchModifyParticipantOptions
+} from "./batch-modify-participant/batch-modify-participant.component";
+import {MatDialog, MatSnackBar} from "@angular/material";
+import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
+import {of} from "rxjs/internal/observable/of";
 
 
 @Component({
@@ -40,7 +50,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 
 	columns: TableColumn<ParticipantUser>[] = [
 		{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
-		{columnDef: "status", header: "Status", cell: element => element.status},
+		{columnDef: "status", header: "Status", cell: element => orderStatusToString(element.status)},
 		{columnDef: "isDriver", header: "Ist Fahrer", cell: element => element.isDriver, type: "boolean"},
 		{columnDef: "needsTicket", header: "Braucht Ticket", cell: element => element.needsTicket, type: "boolean"}
 	];
@@ -90,14 +100,30 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 		})
 	);
 
+	@ViewChild("statusInput") statusInput: TemplateRef<any>;
+	availableStatus = OrderStatusPairList;
+	statusFormControl = new FormControl(undefined, {validators: [Validators.required]});
+
+	@ViewChild("isDriverInput") isDriverInput: TemplateRef<any>;
+	isDriverFormControl = new FormControl();
+
+	@ViewChild("needsTicketInput") needsTicketInput: TemplateRef<any>;
+	needsTicketFormControl = new FormControl();
+
+	@ViewChild("participantsTable") participantsTable: ExpandableMaterialTableComponent<ParticipantUser>;
+
+	private bulkEditDialogOptions: BatchModifyParticipantOptions[];
 
 	onDestroy$ = new Subject();
 
 	constructor(public participantListService: ParticipantListService,
 				public participantUserService: ParticipantUserService,
+				private participantService: OrderedItemService,
 				public breakpointObserver: BreakpointObserver,
 				private userActionsService: UserActionsService,
+				private matDialog: MatDialog,
 				private eventService: EventService,
+				private snackBar: MatSnackBar,
 				private router: Router,
 				private activatedRoute: ActivatedRoute,
 				public userService: UserService) {
@@ -132,14 +158,69 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 				icon: "edit",
 				type: "mat-icon-menu",
 				menu: this.bulkEditingMenu,
-				tooltip: "Batchbearbeitung"
+				tooltip: "Batchbearbeitung",
 			}
 		];
+
+		this.bulkEditDialogOptions = [
+			{
+				label: "Status",
+				subtitle: "Diese Aktion wird den Status aller ausgewählten Einträge auf den neuen Wert ändern.",
+				formField: this.statusInput,
+				formControl: this.statusFormControl,
+				withFormLabel: true,
+			},
+			{
+				label: "Fahrer",
+				subtitle: "Diese Aktion wird den Fahrerzustand aller ausgewählten Einträge auf den neuen Wert ändern.",
+				formField: this.isDriverInput,
+				formControl: this.isDriverFormControl,
+				withFormLabel: false,
+			},
+			{
+				label: "Stadion Ticket",
+				subtitle: "Diese Aktion wird den Ticketwunsch aller ausgewählten Einträge auf den neuen Wert ändern.",
+				formField: this.needsTicketInput,
+				formControl: this.needsTicketFormControl,
+				withFormLabel: false,
+			}
+		]
 	}
 
 	openBulkEdit(property: string) {
-		//todo
-		console.log(property);
+		let indices = ["status", "isDriver", "needsTicket"];
+		let option: BatchModifyParticipantOptions = this.bulkEditDialogOptions[indices.indexOf(property)];
+		this.matDialog.open(BatchModifyParticipantComponent, {data: option, autoFocus: false})
+			.afterClosed()
+			.subscribe(submitted => {
+				if (!submitted) {
+					return;
+				}
+
+				const selectedRows = this.participantsTable.selection.selected;
+				console.log("Change " + property + " to " + option.formControl.value, selectedRows);
+
+				combineLatest(
+					...selectedRows
+						.map(it => ({
+							...it,
+							[property]: option.formControl.value
+						}))
+						.map(it => this.participantService.modifyParticipant(it)
+							.pipe(
+								catchError(error => {
+									console.error(error);
+									this.snackBar.open("Nicht alle Änderungen konnten gesichert werden. Die Konsole beinhaltet mehr Informationen.");
+									return of(null);
+								})
+							)
+						)
+				)
+					.subscribe(() => {
+						this.participantsTable.selection.clear();
+						this.dataSource.reload();
+					});
+			})
 	}
 
 }

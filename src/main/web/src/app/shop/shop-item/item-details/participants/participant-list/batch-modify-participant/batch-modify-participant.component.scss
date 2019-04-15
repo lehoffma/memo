@@ -1,0 +1,21 @@
+@import "theme";
+
+:host {
+	display: block;
+	max-width: 350px;
+}
+
+.mat-dialog-title {
+	margin-bottom: 0;
+}
+
+.subtitle {
+	display: block;
+	font-size: font-size(smallest);
+	color: grey(600);
+	margin-bottom: 16px;
+}
+
+.form-input-container {
+	margin-bottom: 8px;
+}

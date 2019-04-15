@@ -1,0 +1,24 @@
+<div mat-dialog-title>
+	Batchbearbeitung - {{data.label}}
+</div>
+<mat-dialog-content>
+	<div class="subtitle">
+		{{data.subtitle}}
+	</div>
+	<div class="form-input-container">
+		<span class="form-label" *ngIf="data.withFormLabel">
+			{{data.label}}
+		</span>
+		<ng-container *ngTemplateOutlet="data.formField"></ng-container>
+	</div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="flex-end center">
+	<button mat-button matDialogClose>
+		Abbrechen
+	</button>
+	<button mat-raised-button color="accent" [disabled]="!data.formControl.valid" [matDialogClose]="true">
+		Speichern
+	</button>
+</mat-dialog-actions>
+
+
