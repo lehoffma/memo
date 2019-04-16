@@ -11,7 +11,7 @@ import {BooleanCheckMarkCellComponent} from "./cells/boolean-checkmark-cell.comp
 import {TelephoneTableCellComponent} from "./cells/telephone-table-cell.component";
 import {MemoMaterialModule} from "../../../../material.module";
 import {CommonModule} from "@angular/common";
-import {ExpandableMaterialTableComponent} from "./expandable-material-table.component";
+import {ExpandableMaterialTableComponent, ExpandableMaterialTableEmptyStateActions} from "./expandable-material-table.component";
 import {SharedPipesModule} from "../../pipes/shared-pipes.module";
 import {RouterModule} from "@angular/router";
 import {TableHeaderComponent} from "./actions/table-header.component";
@@ -63,10 +63,12 @@ const tableCells = [
 	],
 	exports: [
 		ExpandableMaterialTableComponent,
+		ExpandableMaterialTableEmptyStateActions,
 		tableCells
 	],
 	declarations: [
 		ExpandableMaterialTableComponent,
+		ExpandableMaterialTableEmptyStateActions,
 		tableCells,
 		TableHeaderComponent,
 		IconCellDetailsDialog,

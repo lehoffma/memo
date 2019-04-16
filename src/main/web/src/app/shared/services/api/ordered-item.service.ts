@@ -73,7 +73,6 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 					newParticipant.price = discountedPrice;
 					//todo add name/phone number to text or order
 
-
 					return this.add(newParticipant)
 						.pipe(
 							mergeMap(item => {
@@ -138,6 +137,10 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 			})
 		)
 
+	}
+
+	invalidateState(itemId: string) {
+		this._cache.invalidateByPartialParams(new HttpParams().set("id", itemId))
 	}
 
 	getStateOfItem(itemId: string, showCancelled = false): Observable<ParticipantState> {

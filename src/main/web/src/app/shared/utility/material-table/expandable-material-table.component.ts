@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
+import {Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from "@angular/core";
 import {PagedDataSource} from "./paged-data-source";
 import {ServletService} from "../../services/api/servlet.service";
 import {Observable, of, Subject} from "rxjs";
@@ -22,6 +22,14 @@ export interface TableColumn<T> {
 		cell: () => any;
 		type?: string;
 	}
+}
+
+@Component({
+	selector: "memo-expandable-table-empty-state-actions",
+	template: "<ng-content></ng-content>",
+})
+export class ExpandableMaterialTableEmptyStateActions {
+
 }
 
 @Component({
@@ -67,6 +75,11 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	pageSize = 20;
+
+	@Input() emptyStateHeader: string;
+	@Input() emptyStateSubtitle: string;
+	@Input() emptyStateIcon: string;
+	@ContentChild(ExpandableMaterialTableEmptyStateActions) customActions: ExpandableMaterialTableEmptyStateActions;
 
 	public selection: SelectionModel<T>;
 	public expansionSelection: SelectionModel<any>;

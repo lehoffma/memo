@@ -1,7 +1,10 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from "@angular/core";
-import {map, startWith} from "rxjs/operators";
+import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild} from "@angular/core";
+import {catchError, map, startWith} from "rxjs/operators";
 import {RowAction, TableAction} from "../../../../../../shared/utility/material-table/util/row-action";
-import {TableColumn} from "../../../../../../shared/utility/material-table/expandable-material-table.component";
+import {
+	ExpandableMaterialTableComponent,
+	TableColumn
+} from "../../../../../../shared/utility/material-table/expandable-material-table.component";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {UserService} from "../../../../../../shared/services/api/user.service";
 import {ResponsiveColumnsHelper} from "../../../../../../shared/utility/material-table/responsive-columns.helper";
@@ -11,9 +14,17 @@ import {EventType} from "../../../../../shared/model/event-type";
 import {Filter} from "../../../../../../shared/model/api/filter";
 import {WaitingListUser} from "../../../../../shared/model/waiting-list";
 import {ActivatedRoute} from "@angular/router";
-import {combineLatest, Observable} from "rxjs";
+import {combineLatest, Observable, of} from "rxjs";
 import {ParticipantListOption} from "../participants-category-selection/participants-category-selection.component";
 import {UserActionsService} from "../../../../../../shared/services/user-actions.service";
+import {
+	BatchModifyParticipantComponent,
+	BatchModifyParticipantOptions
+} from "../batch-modify-participant/batch-modify-participant.component";
+import {FormControl, Validators} from "@angular/forms";
+import {MatDialog, MatSnackBar} from "@angular/material";
+import {WaitingListService} from "../../../../../../shared/services/api/waiting-list.service";
+import {ParticipantListService} from "../participant-list.service";
 
 @Component({
 	selector: "memo-waiting-list",
@@ -64,9 +75,28 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 		);
 
 
+	@ViewChild("waitingListTable") waitingListTable: ExpandableMaterialTableComponent<WaitingListUser>;
+
+	batchEditOptions: BatchModifyParticipantOptions[] = [];
+	@ViewChild("isDriverInput") isDriverInput: TemplateRef<any>;
+	isDriverFormControl = new FormControl();
+
+	@ViewChild("needsTicketInput") needsTicketInput: TemplateRef<any>;
+	needsTicketFormControl = new FormControl();
+
+	@ViewChild("colorInput") colorInput: TemplateRef<any>;
+	colorFormControl = new FormControl(undefined, {validators: [Validators.required]});
+
+	@ViewChild("sizeInput") sizeInput: TemplateRef<any>;
+	sizeFormControl = new FormControl(undefined, {validators: [Validators.required]});
+
 	constructor(public waitingListTableService: WaitingListTableService,
 				public waitingListUserService: WaitingListUserService,
+				private waitingListService: WaitingListService,
+				private participantListService: ParticipantListService,
 				private userActionsService: UserActionsService,
+				private matDialog: MatDialog,
+				private snackBar: MatSnackBar,
 				private activatedRoute: ActivatedRoute,
 				public breakpointObserver: BreakpointObserver,
 				public userService: UserService) {
@@ -127,10 +157,79 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 				tooltip: "Batchbearbeitung"
 			}
 		];
+
+
+		this.batchEditOptions = [
+			{
+				label: "Fahrer",
+				subtitle: "Diese Aktion wird den Fahrerzustand aller ausgewählten Einträge auf den neuen Wert ändern.",
+				formField: this.isDriverInput,
+				formControl: this.isDriverFormControl,
+				withFormLabel: false,
+			},
+			{
+				label: "Stadion Ticket",
+				subtitle: "Diese Aktion wird den Ticketwunsch aller ausgewählten Einträge auf den neuen Wert ändern.",
+				formField: this.needsTicketInput,
+				formControl: this.needsTicketFormControl,
+				withFormLabel: false,
+			},
+			//todo support merch waiting list
+			// {
+			// 	label: "Farbe",
+			// 	subtitle: "Diese Aktion wird den Farbwunsch aller ausgewählten Einträge auf den neuen Wert ändern.",
+			// 	formField: this.colorInput,
+			// 	formControl: this.colorFormControl,
+			// 	withFormLabel: true,
+			// },
+			// {
+			// 	label: "Größe",
+			// 	subtitle: "Diese Aktion wird den Größenwunsch aller ausgewählten Einträge auf den neuen Wert ändern.",
+			// 	formField: this.sizeInput,
+			// 	formControl: this.sizeFormControl,
+			// 	withFormLabel: true,
+			// }
+		]
 	}
 
 	openBulkEdit(property: string) {
-		//todo
-		console.log(property);
+		let indices = [
+			"isDriver", "needsTicket",
+			//todo support merch waiting list
+			// "color", "size"
+		];
+		let option: BatchModifyParticipantOptions = this.batchEditOptions[indices.indexOf(property)];
+		this.matDialog.open(BatchModifyParticipantComponent, {data: option, autoFocus: false})
+			.afterClosed()
+			.subscribe(submitted => {
+				if (!submitted) {
+					return;
+				}
+
+				const selectedRows = this.waitingListTable.selection.selected;
+
+				combineLatest(
+					...selectedRows
+						.map(it => ({
+							...it,
+							[property]: option.formControl.value,
+							user: it.user.id,
+						}))
+						.map(it => this.waitingListService.modify(it)
+							.pipe(
+								catchError(error => {
+									console.error(error);
+									this.snackBar.open("Nicht alle Änderungen konnten gesichert werden. Die Konsole beinhaltet mehr Informationen.");
+									return of(null);
+								})
+							)
+						)
+				)
+					.subscribe(() => {
+						this.waitingListTable.selection.clear();
+						this.dataSource.reload();
+						this.participantListService.reloadStats();
+					});
+			})
 	}
 }

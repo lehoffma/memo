@@ -41,8 +41,10 @@
 								[displayedColumns]="displayedColumns$ | async"
 								[permissions]="participantListService.permissions$ | async"
 								(onAction)="participantListService.handleTableAction($event)"
+								emptyStateIcon="person"
+								emptyStateHeader="Keine Teilnehmer"
+								emptyStateSubtitle="Bis jetzt hat sich keiner für dieses Event angemeldet"
 >
-
 </memo-expandable-material-table>
 
 <mat-menu #bulkEditingMenu="matMenu">
@@ -79,7 +81,7 @@
 	</mat-checkbox>
 </ng-template>
 <ng-template #needsTicketInput>
-	<mat-checkbox [formControl]="isDriverFormControl">
+	<mat-checkbox [formControl]="needsTicketFormControl">
 		Braucht ein Stadion Ticket
 	</mat-checkbox>
 </ng-template>

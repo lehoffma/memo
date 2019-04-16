@@ -2,105 +2,122 @@
 	<div class="loader"></div>
 </div>
 
-<memo-actions-header-cell [selection]="selection"
-						  [withAdd]="withHeaderAction"
-						  [selectedActions]="selectedActions"
-						  [title]="title"
-						  [link]="headerLink"
-						  [linkText]="headerLinkText"
-						  [permissions]="permissions"
-						  (onAction)="onAction.emit($event)">
-</memo-actions-header-cell>
-<div class="table-container">
-	<table mat-table #table [dataSource]="dataSource" matSort (matSortChange)="dataSource.sort = $event">
-		<ng-container matColumnDef="{{column.columnDef}}" *ngFor="let column of columns">
-			<th mat-header-cell *matHeaderCellDef mat-sort-header> {{column.header}}</th>
-			<td mat-cell *matCellDef="let element">
-				<memo-table-cell-factory [column]="column" [element]="element">
+<div [class.invisible]="(dataSource.isLoading$ | async) || dataSource.dataLength !== 0"
+	 *ngIf="emptyStateIcon"
+	 class="empty-state">
+	<mat-icon class="empty-state-header-icon">{{emptyStateIcon}}</mat-icon>
+	<span class="empty-state-headline">{{emptyStateHeader}}</span>
+	<span class="empty-state-subheader">{{emptyStateSubtitle}}</span>
+	<div class="empty-state-actions" [ngSwitch]="!!customActions">
+		<ng-content select="memo-expandable-table-empty-state-actions" *ngSwitchCase="true"></ng-content>
+		<button *ngSwitchDefault mat-raised-button color="accent"
+				(click)="onAction.emit({action: 'Hinzufuegen', entries: []})">
+			Hinzufügen
+		</button>
+	</div>
+</div>
 
-				</memo-table-cell-factory>
-			</td>
-			<ng-container *ngIf="withFooter">
-				<td mat-footer-cell *matFooterCellDef>
-					<memo-table-cell-factory *ngIf="column.footer" [column]="column.footer">
+<div [class.invisible]="!(dataSource.isLoading$ | async) && dataSource.dataLength === 0 && emptyStateIcon">
+	<memo-actions-header-cell [selection]="selection"
+							  [withAdd]="withHeaderAction"
+							  [selectedActions]="selectedActions"
+							  [title]="title"
+							  [link]="headerLink"
+							  [linkText]="headerLinkText"
+							  [permissions]="permissions"
+							  (onAction)="onAction.emit($event)">
+	</memo-actions-header-cell>
+	<div class="table-container">
+		<table mat-table #table [dataSource]="dataSource" matSort (matSortChange)="dataSource.sort = $event">
+			<ng-container matColumnDef="{{column.columnDef}}" *ngFor="let column of columns">
+				<th mat-header-cell *matHeaderCellDef mat-sort-header> {{column.header}}</th>
+				<td mat-cell *matCellDef="let element">
+					<memo-table-cell-factory [column]="column" [element]="element">
+
 					</memo-table-cell-factory>
 				</td>
-			</ng-container>
-		</ng-container>
-
-		<ng-container matColumnDef="select">
-			<th mat-header-cell  *matHeaderCellDef class="select-cell">
-				<mat-checkbox (change)="$event ? masterToggle() : null"
-							  [checked]="selection.hasValue() && isAllSelected()"
-							  [indeterminate]="selection.hasValue() && !isAllSelected()">
-				</mat-checkbox>
-			</th>
-			<td mat-cell *matCellDef="let row" class="select-cell">
-				<mat-checkbox (click)="$event.stopPropagation()"
-							  (change)="$event ? selection.toggle(row) : null"
-							  [checked]="selection.isSelected(row)">
-				</mat-checkbox>
-			</td>
-
-			<ng-container *ngIf="withFooter">
-				<td mat-footer-cell *matFooterCellDef></td>
+				<ng-container *ngIf="withFooter">
+					<td mat-footer-cell *matFooterCellDef>
+						<memo-table-cell-factory *ngIf="column.footer" [column]="column.footer">
+						</memo-table-cell-factory>
+					</td>
+				</ng-container>
 			</ng-container>
 
-		</ng-container>
+			<ng-container matColumnDef="select">
+				<th mat-header-cell *matHeaderCellDef class="select-cell">
+					<mat-checkbox (change)="$event ? masterToggle() : null"
+								  [checked]="selection.hasValue() && isAllSelected()"
+								  [indeterminate]="selection.hasValue() && !isAllSelected()">
+					</mat-checkbox>
+				</th>
+				<td mat-cell *matCellDef="let row" class="select-cell">
+					<mat-checkbox (click)="$event.stopPropagation()"
+								  (change)="$event ? selection.toggle(row) : null"
+								  [checked]="selection.isSelected(row)">
+					</mat-checkbox>
+				</td>
 
-		<ng-container matColumnDef="actions">
-			<th mat-header-cell *matHeaderCellDef class="action-cell"></th>
-			<td mat-cell *matCellDef="let element" class="action-cell">
-				<memo-actions-cell [rowActions]="rowActions"
-								   [element]="element"
-								   [selection]="selection"
-								   [permissions]="permissions"
-								   (onAction)="onAction.emit($event)">
+				<ng-container *ngIf="withFooter">
+					<td mat-footer-cell *matFooterCellDef></td>
+				</ng-container>
 
-				</memo-actions-cell>
-			</td>
-			<ng-container *ngIf="withFooter">
-				<td mat-footer-cell *matFooterCellDef></td>
 			</ng-container>
 
-		</ng-container>
+			<ng-container matColumnDef="actions">
+				<th mat-header-cell *matHeaderCellDef class="action-cell"></th>
+				<td mat-cell *matCellDef="let element" class="action-cell">
+					<memo-actions-cell [rowActions]="rowActions"
+									   [element]="element"
+									   [selection]="selection"
+									   [permissions]="permissions"
+									   (onAction)="onAction.emit($event)">
+
+					</memo-actions-cell>
+				</td>
+				<ng-container *ngIf="withFooter">
+					<td mat-footer-cell *matFooterCellDef></td>
+				</ng-container>
+
+			</ng-container>
 
 
-		<ng-container matColumnDef="expandedDetail">
-			<td mat-cell *matCellDef="let detail" class="expanded-container">
-				<div *ngFor="let row of expandedRows" class="detail-row">
+			<ng-container matColumnDef="expandedDetail">
+				<td mat-cell *matCellDef="let detail" class="expanded-container">
+					<div *ngFor="let row of expandedRows" class="detail-row">
 				<span class="label">
 					{{row.header}}
 				</span>
-					<memo-table-cell-factory [column]="row" [element]="detail.element">
+						<memo-table-cell-factory [column]="row" [element]="detail.element">
 
-					</memo-table-cell-factory>
-				</div>
-			</td>
-		</ng-container>
+						</memo-table-cell-factory>
+					</div>
+				</td>
+			</ng-container>
 
 
-		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-		<tr mat-row *matRowDef="let row; columns: displayedColumns;"
-			class="element-row"
-			[class.expanded]="expansionSelection.isSelected(row)"
-			(click)="expansionSelection.toggle(row)"></tr>
-		<tr mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
-			[@detailExpand]="expansionSelection.isSelected(row.element) ? 'expanded' : 'collapsed'"
-			style="overflow: hidden">
-		</tr>
+			<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: displayedColumns;"
+				class="element-row"
+				[class.expanded]="expansionSelection.isSelected(row)"
+				(click)="expansionSelection.toggle(row)"></tr>
+			<tr mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
+				[@detailExpand]="expansionSelection.isSelected(row.element) ? 'expanded' : 'collapsed'"
+				style="overflow: hidden">
+			</tr>
 
-		<ng-container *ngIf="withFooter">
-			<tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: stickyFooter"></tr>
-		</ng-container>
-	</table>
+			<ng-container *ngIf="withFooter">
+				<tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: stickyFooter"></tr>
+			</ng-container>
+		</table>
+	</div>
+	<mat-paginator #paginator
+				   [pageSize]="pageSize"
+				   [length]="dataSource.dataLength"
+				   [pageSizeOptions]="[5, 10, 20, 50]"
+				   [showFirstLastButtons]="true"></mat-paginator>
+
+	<ng-content select="[material-footer]">
+
+	</ng-content>
 </div>
-<mat-paginator #paginator
-			   [pageSize]="pageSize"
-			   [length]="dataSource.dataLength"
-			   [pageSizeOptions]="[5, 10, 20, 50]"
-			   [showFirstLastButtons]="true"></mat-paginator>
-
-<ng-content select="[material-footer]">
-
-</ng-content>

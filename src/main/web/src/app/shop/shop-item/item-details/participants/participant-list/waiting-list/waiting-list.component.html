@@ -1,4 +1,4 @@
-<memo-expandable-material-table class="mat-elevation-z3"
+<memo-expandable-material-table class="mat-elevation-z3" #waitingListTable
 								[dataSource]="dataSource"
 								[dataService]="waitingListUserService"
 								[filter$]="filter$"
@@ -9,6 +9,9 @@
 								[displayedColumns]="displayedColumns$ | async"
 								[permissions]="waitingListTableService.permissions$ | async"
 								(onAction)="waitingListTableService.handleTableAction($event)"
+								emptyStateIcon="access_time"
+								emptyStateHeader="Die Warteliste ist leer"
+								emptyStateSubtitle="Es hat sich bis jetzt niemand auf die Warteliste geschrieben."
 >
 
 </memo-expandable-material-table>
@@ -34,3 +37,23 @@
 		</ng-container>
 	</ng-container>
 </mat-menu>
+
+<ng-template #isDriverInput>
+	<mat-checkbox [formControl]="isDriverFormControl">
+		Ist Fahrer
+	</mat-checkbox>
+</ng-template>
+<ng-template #needsTicketInput>
+	<mat-checkbox [formControl]="needsTicketFormControl">
+		Braucht ein Stadion Ticket
+	</mat-checkbox>
+</ng-template>
+
+<ng-template #colorInput>
+	<mat-form-field appearance="outline" class="small-outline-formfield">
+		<input matInput placeholder="Diverse" [formControl]="colorFormControl"/>
+		<mat-error *ngIf="colorFormControl.hasError('required')">
+			Bitte gib eine Größe ein.
+		</mat-error>
+	</mat-form-field>
+</ng-template>

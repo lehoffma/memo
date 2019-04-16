@@ -13,6 +13,7 @@ import {OrderDetailComponent} from "./item-details/details/order-detail.componen
 const routes: Route[] = [
 	{path: "management/orders/:id", component: OrderDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 	{path: "shop/tours/:id", component: TourDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/tours/:id/waiting-list", pathMatch: "full", redirectTo: "shop/tours/:id/participants"},
 	{
 		path: "shop/tours/:id/participants",
 		component: ParticipantListComponent,
@@ -21,6 +22,7 @@ const routes: Route[] = [
 	{path: "shop/tours/:id/conclude", component: ConcludeEventComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
 
 	{path: "shop/partys/:id", component: PartyDetailComponent, canActivate: [ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]},
+	{path: "shop/partys/:id/waiting-list", pathMatch: "full", redirectTo: "shop/partys/:id/participants"},
 	{
 		path: "shop/partys/:id/participants",
 		component: ParticipantListComponent,

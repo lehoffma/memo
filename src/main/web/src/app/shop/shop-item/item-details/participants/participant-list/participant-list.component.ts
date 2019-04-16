@@ -198,7 +198,6 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 				}
 
 				const selectedRows = this.participantsTable.selection.selected;
-				console.log("Change " + property + " to " + option.formControl.value, selectedRows);
 
 				combineLatest(
 					...selectedRows
@@ -219,6 +218,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 					.subscribe(() => {
 						this.participantsTable.selection.clear();
 						this.dataSource.reload();
+						this.participantListService.reloadStats();
 					});
 			})
 	}

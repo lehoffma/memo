@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 @Path("/event/waiting-list")
@@ -83,19 +84,42 @@ public class EventWaitingListServlet extends AbstractApiServlet<ShopItem> {
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Page<WaitingListEntry> get(@QueryParam("eventId") String eventId, @QueryParam("id") String id, @Context HttpServletRequest request) {
+    public Page<WaitingListEntry> get(@QueryParam("eventId") String eventId,
+                                      @QueryParam("id") String id,
+                                      @Context HttpServletRequest request) {
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        Boolean isDriver = null;
+        Boolean needsTicket = null;
+
+        if (parameterMap.containsKey("isDriver")) {
+            isDriver = parameterMap.get("isDriver")[0].equals("true");
+        }
+        if (parameterMap.containsKey("needsTicket")) {
+            needsTicket = parameterMap.get("needsTicket")[0].equals("true");
+        }
+
         if (eventId != null) {
             List<WaitingListEntry> waitingList = DatabaseManager.createEntityManager()
-                    .createQuery("SELECT w FROM WaitingListEntry w WHERE w.shopItem.id = :id", WaitingListEntry.class)
+                    .createQuery("SELECT w FROM WaitingListEntry w " +
+                            "WHERE w.shopItem.id = :id " +
+                            "   AND (:isDriver is NULL OR w.isDriver = :isDriver)\n" +
+                            "   AND (:needsTicket is NULL OR w.needsTicket = :needsTicket)", WaitingListEntry.class)
                     .setParameter("id", Integer.valueOf(eventId))
+                    .setParameter("isDriver", isDriver)
+                    .setParameter("needsTicket", needsTicket)
                     .getResultList();
 
             return new Page<>(waitingList, new PageRequest(), waitingList.size());
         }
         if (id != null) {
             WaitingListEntry entry = DatabaseManager.createEntityManager()
-                    .createQuery("SELECT w FROM WaitingListEntry w WHERE w.id = :id", WaitingListEntry.class)
+                    .createQuery("SELECT w FROM WaitingListEntry w " +
+                            "WHERE w.id = :id " +
+                            "   AND (:isDriver is NULL OR w.isDriver = :isDriver)\n" +
+                            "   AND (:needsTicket is NULL OR w.needsTicket = :needsTicket)", WaitingListEntry.class)
                     .setParameter("id", Integer.valueOf(id))
+                    .setParameter("isDriver", isDriver)
+                    .setParameter("needsTicket", needsTicket)
                     .getSingleResult();
 
             return new Page<>(Collections.singletonList(entry), new PageRequest(), 1);

@@ -7,6 +7,7 @@ import {EventType} from "../../../../../shared/model/event-type";
 import {OrderedItemService} from "../../../../../../shared/services/api/ordered-item.service";
 import {ParticipantState} from "../../../../../../shared/model/participant-state";
 import {tap} from "rxjs/internal/operators/tap";
+import {ParticipantListService} from "../participant-list.service";
 
 export type ParticipantListOption = "participated" | "isDriver" | "needsTicket";
 
@@ -34,6 +35,7 @@ export class ParticipantsCategorySelectionComponent implements OnInit, OnDestroy
 
 	loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	state$: Observable<ParticipantState> = combineLatest(
+		this.participantListService.loadCategoryStatsTrigger$,
 		this.activatedRoute.queryParamMap.pipe(
 			map(it => it.has("showCancelled") ? (it.get("showCancelled") === "true") : false)
 		),
@@ -42,15 +44,19 @@ export class ParticipantsCategorySelectionComponent implements OnInit, OnDestroy
 		)
 	).pipe(
 		tap(it => this.loading$.next(true)),
-		switchMap(([showCancelled, itemId]) => this.orderedItemService.getStateOfItem(itemId, showCancelled)),
+		switchMap(([trigger, showCancelled, itemId]) => this.orderedItemService.getStateOfItem(itemId, showCancelled)),
 		tap(it => this.loading$.next(false)),
 	);
 
 	constructor(private activatedRoute: ActivatedRoute,
+				private participantListService: ParticipantListService,
 				private orderedItemService: OrderedItemService,
 				private router: Router) {
 		this.selectionModel.changed.pipe(takeUntil(this.onDestroy$))
-			.subscribe(changed => this.router.navigate([], {queryParams: {view: this.selectionModel.selected[0]}, queryParamsHandling: "merge"}))
+			.subscribe(changed => this.router.navigate([], {
+				queryParams: {view: this.selectionModel.selected[0]},
+				queryParamsHandling: "merge"
+			}))
 	}
 
 	ngOnInit() {

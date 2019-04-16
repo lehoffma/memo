@@ -4,11 +4,11 @@ import {ParticipantUser} from "../../../../shared/model/participant";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {MatDialog} from "@angular/material";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
-import {filter, first, map, mergeMap} from "rxjs/operators";
+import {filter, first, map, mergeMap, take} from "rxjs/operators";
 import {EventType} from "../../../../shared/model/event-type";
 import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 import {WindowService} from "../../../../../shared/services/window.service";
-import {combineLatest, Observable} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
 import {ModifyParticipantComponent} from "./modify-participant/modify-participant.component";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {UserService} from "../../../../../shared/services/api/user.service";
@@ -16,6 +16,8 @@ import {CapacityService, EventCapacity} from "../../../../../shared/services/api
 import {ActionPermissions} from "../../../../../shared/utility/material-table/util/action-permissions";
 import {ParticipantDataSource} from "./participant-data-source";
 import {ParticipantListOption} from "./participants-category-selection/participants-category-selection.component";
+import {WaitingListUser} from "../../../../shared/model/waiting-list";
+import {ShopEvent} from "../../../../shared/model/event";
 
 export interface EventInfo {
 	eventType: EventType,
@@ -54,6 +56,8 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 				return view as any;
 			})
 		);
+
+	loadCategoryStatsTrigger$ = new BehaviorSubject(true);
 
 	constructor(private loginService: LogInService,
 				private activatedRoute: ActivatedRoute,
@@ -96,6 +100,14 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 
 	}
 
+	reloadStats() {
+		this.eventInfo$.pipe(take(1))
+			.subscribe(info => {
+				this.participantService.invalidateState(info.eventId + "");
+				this.loadCategoryStatsTrigger$.next(true);
+			})
+	}
+
 	/**
 	 *
 	 * @param {ParticipantUser} entry
@@ -111,9 +123,15 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			mergeMap(info =>
 				this.dialog.open(ModifyParticipantComponent, {
 					data: {
-						participant: entry,
+						entry: entry,
 						associatedEventInfo: info.eventInfo,
-						event: info.event
+						event: info.event,
+						editingParticipant: true,
+					} as {
+						entry: ParticipantUser | WaitingListUser,
+						associatedEventInfo: EventInfo,
+						event: ShopEvent,
+						editingParticipant: boolean,
 					}
 				})
 					.afterClosed()
@@ -133,10 +151,11 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 		this.openModifyDialog().pipe(
 			mergeMap(({result, info}) => {
 				return this.participantService
-					.addParticipant(result.participant, info.eventInfo.eventType, info.eventInfo.eventId);
+					.addParticipant(result.entry, info.eventInfo.eventType, info.eventInfo.eventId);
 			})
 		)
 			.subscribe(it => {
+				this.reloadStats();
 				this.dataSource.reload();
 			}, error => {
 				console.error(error);
@@ -152,21 +171,17 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			.pipe(
 				mergeMap(({result, info}) => {
 					return this.participantService
-						.modifyParticipant(result.participant)
+						.modifyParticipant(result.entry)
 				}),
 			)
 			.subscribe(it => {
+				this.reloadStats();
 				this.dataSource.reload();
 			}, error => {
 				console.error(error);
 			})
 	}
 
-
-	editMultiple(entries: ParticipantUser[]): void {
-
-		console.log(entries);
-	}
 
 	/**
 	 *
@@ -177,6 +192,7 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			this.participantService
 				.remove(participantUser.id)
 				.subscribe(response => {
+					this.reloadStats();
 					this.dataSource.reload();
 				}, error => {
 					console.error(error);

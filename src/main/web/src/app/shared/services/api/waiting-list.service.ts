@@ -35,6 +35,7 @@ export class WaitingListService extends ServletService<WaitingListEntry> {
 		);
 	}
 
+
 	addOrModify(requestMethod: AddOrModifyRequest, entry: WaitingListEntry, options?: any): Observable<WaitingListEntry> {
 		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {"waiting-list": entry}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
