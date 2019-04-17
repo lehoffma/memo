@@ -52,7 +52,7 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 	constructor(private loginService: LogInService,
 				private router: Router,
 				private navigationService: NavigationService,
-				private userService: UserService) {
+				public userService: UserService) {
 		super(loginService.getActionPermissions("userManagement")
 			.pipe(
 				defaultIfEmpty({
@@ -88,7 +88,7 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 	 *
 	 */
 	add() {
-		this.navigationService.navigateByUrl("/create/members");
+		this.navigationService.navigateByUrl("/club/create/members");
 	}
 
 	/**

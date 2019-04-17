@@ -46,6 +46,20 @@ const routes: Routes = [
 		pathMatch: "full",
 		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
 	},
+	//todo
+	{
+		path: "club/:itemType/:id/edit",
+		component: ModifyShopItemComponent,
+		pathMatch: "full",
+		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard,
+			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
+	},
+	{
+		path: "club/create/:itemType",
+		component: ModifyShopItemComponent,
+		pathMatch: "full",
+		canActivate: [IsValidItemTypeGuard, CanModifyItemGuard]
+	},
 
 	{
 		path: "shop/:itemType/:eventId/costs/:id/edit",
@@ -61,6 +75,7 @@ const routes: Routes = [
 		canActivate: [/*todo is-event guard*/ CanModifyItemGuard,
 			ShopItemExistsGuard, ShopItemIsVisibleToUserGuard]
 	},
+	//todo should probably be restructured
 ];
 
 @NgModule({

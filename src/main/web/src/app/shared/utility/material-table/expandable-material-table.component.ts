@@ -3,7 +3,7 @@ import {PagedDataSource} from "./paged-data-source";
 import {ServletService} from "../../services/api/servlet.service";
 import {Observable, of, Subject} from "rxjs";
 import {Filter} from "../../model/api/filter";
-import {MatPaginator} from "@angular/material";
+import {MatPaginator, PageEvent} from "@angular/material";
 import {SelectionModel} from "@angular/cdk/collections";
 import {RowAction, TableAction} from "./util/row-action";
 import {RowActionType} from "./util/row-action-type";
@@ -73,8 +73,9 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	@Input() withFooter = false;
 	@Input() stickyFooter = false;
 	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
+	@Output() pageChange = new EventEmitter<PageEvent>();
 	@ViewChild(MatPaginator) paginator: MatPaginator;
-	pageSize = 20;
+	pageSize = 1;
 
 	@Input() emptyStateHeader: string;
 	@Input() emptyStateSubtitle: string;
@@ -152,6 +153,8 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.dataSource.paginator = this.paginator;
+		this.paginator.page.pipe(takeUntil(this.onDestroy$))
+			.subscribe(it => this.pageChange.emit(it));
 		this.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap);
 	}
 

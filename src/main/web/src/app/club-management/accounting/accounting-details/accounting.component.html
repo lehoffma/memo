@@ -19,6 +19,7 @@
 									[displayedColumns]="displayedColumns$ | async"
 									[permissions]="accountingTableContainerService.permissions$ | async"
 									[writePageToUrl]="false"
+									(pageChange)="accountingTableContainerService.pageAt($event.pageIndex)"
 	>
 		<div material-footer *ngLet="total$ | async as total"
 			 class="total-amount"

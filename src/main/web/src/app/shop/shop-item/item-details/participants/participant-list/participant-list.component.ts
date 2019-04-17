@@ -139,11 +139,18 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 	}
 
 	getDisplayedColumns() {
-		const columnHelper = new ResponsiveColumnsHelper(this.columns, this.breakpointObserver);
-		columnHelper.addPixelBreakpoint(500, "isDriver");
-		columnHelper.addPixelBreakpoint(700, "needsTicket");
-		return columnHelper.build()
-			.pipe(startWith([]));
+		return this.participantListService.eventInfo$
+			.pipe(
+				switchMap(info => {
+					const columnHelper = new ResponsiveColumnsHelper(this.columns, this.breakpointObserver);
+					if (info.eventType === EventType.tours) {
+						columnHelper.addPixelBreakpoint(500, "isDriver");
+						columnHelper.addPixelBreakpoint(700, "needsTicket");
+					}
+					return columnHelper.build()
+						.pipe(startWith([]));
+				})
+			)
 	}
 
 	ngOnDestroy(): void {

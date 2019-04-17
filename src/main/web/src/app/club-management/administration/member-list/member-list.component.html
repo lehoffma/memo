@@ -1,27 +1,16 @@
-<memo-results-container *ngLet="(memberListService.entries$ |async) as entries"
-						[results]="entries"
-						[filterOptions]="filterOptions"
-						[title]="'Kostenverwaltung'"
-						[displayHeader]="false"
-						[page]="memberListService.dataSource.currentPage$ | async"
-						[canAdd]="(memberListService.permissions$ | async).Hinzufuegen"
-						(onAdd)="memberListService.add()"
-						(pageChange)="memberListService.pageAt($event)"
+<memo-expandable-material-table
+	[withHeaderAction]="true"
+	[dataService]="memberListService.userService"
+	[dataSource]="memberListService.dataSource"
+	[filter$]="memberListService.filteredBy$"
+	[title]="'Mitglieder'"
+	[columns]="columns"
+	[rowActions]="rowActions$ | async"
+	[displayedColumns]="displayedColumns$ | async"
+	[permissions]="memberListService.permissions$ | async"
+	[writePageToUrl]="true"
+	(pageChange)="memberListService.pageAt($event.pageIndex)"
+	(onAction)="memberListService.handleTableAction($event)"
 >
 
-	<memo-expandable-material-table
-		[withHeaderAction]="false"
-		[dataSource]="memberListService.dataSource"
-		[filter$]="memberListService.filteredBy$"
-		[title]="'Mitglieder'"
-		[columns]="columns"
-		[rowActions]="rowActions$ | async"
-		[displayedColumns]="displayedColumns$ | async"
-		[permissions]="memberListService.permissions$ | async"
-		[writePageToUrl]="false"
-		(onAction)="memberListService.handleTableAction($event)"
-	>
-
-	</memo-expandable-material-table>
-
-</memo-results-container>
+</memo-expandable-material-table>

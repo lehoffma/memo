@@ -20,18 +20,25 @@ export class UserActionsService {
 	public getUserActions<T>(getUser: (value: T) => User): Observable<RowAction<T>[]> {
 		return this.loginService.currentUser$.pipe(
 			map((currentUser: User) => {
+				const canRead = currentUser && (isAuthenticated(currentUser.clubRole, ClubRole.Vorstand) || userPermissions(currentUser).userManagement >= Permission.read);
+				const canEdit = currentUser && (isAuthenticated(currentUser.clubRole, ClubRole.Vorstand) || userPermissions(currentUser).userManagement > Permission.read);
 				let base: RowAction<T>[] = [
 					{
 						icon: "edit",
-						name: RowActionType.EDIT
+						name: RowActionType.EDIT,
+						predicate: value => canEdit,
+						route: value => `/club/members/${getUser(value).id}/edit`,
 					},
 					{
 						icon: "delete",
-						name: RowActionType.DELETE
+						name: RowActionType.DELETE,
+						predicate: value => getUser(value).telephone !== null,
 					},
 				];
 
-				if (currentUser && (isAuthenticated(currentUser.clubRole, ClubRole.Vorstand) || userPermissions(currentUser).userManagement > Permission.read)) {
+
+
+				if (canRead) {
 					base.push(
 						{
 							icon: "email",
