@@ -4,7 +4,7 @@
 			{{
 				data.editingParticipant
 					? (isEditing ? 'Teilnehmer modifizieren' : 'Teilnehmer hinzufügen')
-					: 'Warteschlange bearbeiten'
+					: (isEditing ? 'Warteschlange bearbeiten' : 'Zur Warteschlange hinzufügen')
 			}}
 		</h1>
 		<div mat-dialog-content class="dialog-content-container">
@@ -24,7 +24,7 @@
 				</mat-form-field>
 			</div>
 
-			<div class="participant-checkboxes">
+			<div class="participant-checkboxes" *ngIf="associatedEventInfo.eventType === 'tours'">
 				<mat-checkbox name="isDriverCheckbox" #isDriverCheckbox="ngModel" [(ngModel)]="entry.isDriver">
 					Ist Fahrer
 				</mat-checkbox>
