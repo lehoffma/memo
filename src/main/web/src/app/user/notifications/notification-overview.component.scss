@@ -55,11 +55,6 @@
 		border-bottom-right-radius: 4px;
 	}
 
-	&:last-child:nth-of-type(-n + 5) {
-		border-bottom: 1px solid grey(300);
-		border-radius: 0;
-	}
-
 	&.READ {
 		&:hover {
 			background: grey(200);

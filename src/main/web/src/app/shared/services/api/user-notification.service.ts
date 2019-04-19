@@ -34,7 +34,7 @@ export class NotificationService implements OnDestroy {
 							} else if (this.isLoadMoreMessage(value)) {
 								return [...acc, ...value.content];
 							} else {
-								this.unreadNotifications$.next(this.unreadNotifications$.getValue() + acc.length);
+								this.unreadNotifications$.next(this.unreadNotifications$.getValue() + 1);
 								return [value, ...acc]
 							}
 						}, [])

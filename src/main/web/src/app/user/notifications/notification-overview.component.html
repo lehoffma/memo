@@ -1,7 +1,9 @@
 <div class="stretch-height container">
 	<div class="notifications-header container--header">
 		<h3>Deine Benachrichtigungen</h3>
-		<a mat-icon-button routerLink="/user/account-settings/notifications">
+		<a mat-icon-button
+		   matTooltip="Einstellungen"
+		   routerLink="/user/account-settings/notifications">
 			<mat-icon>settings</mat-icon>
 		</a>
 	</div>
@@ -58,4 +60,4 @@
 	</ng-template>
 </div>
 
-<button class="load-more-button" *ngIf="canLoadMore$ | async" (click)="loadMore()">Mehr</button>
+<button class="load-more-button" *ngIf="canLoadMore$ | async" matRipple (click)="loadMore()">Mehr</button>

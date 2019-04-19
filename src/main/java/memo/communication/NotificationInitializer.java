@@ -31,25 +31,25 @@ public class NotificationInitializer {
                         .setNotificationType(NotificationType.CLUBROLE_CHANGE_REQUEST)
                         .setTemplate("{Username} hat eine Statusänderung zu {NewClubRole} beantragt!")
                         .setImagePath("{UserProfilePicture}")
-                        .setLink("/members/{UserId}/edit"),
+                        .setLink("/club/members/{UserId}/edit"),
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.RESPONSIBLE_USER)
                         .setTemplate("Du wurdest als Verantwortlicher für {ItemName} hinzugefügt!")
                         .setImagePath("{ItemImage}")
-                        .setLink("/{ItemType}/{ItemId}"),
+                        .setLink("/shop/{ItemType}/{ItemId}"),
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.OBJECT_HAS_CHANGED)
                         .setTemplate("{ItemName} wurde verändert.")
                         .setImagePath("{ItemImage}")
-                        .setLink("/{ItemType}/{ItemId}"),
+                        .setLink("/shop/{ItemType}/{ItemId}"),
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.DEBIT_TREASURER)
                         .setTemplate("Leite ein Lastschrift-Verfahren für die eingegangene Bestellung ein!")
-                        .setLink("/orders/{OrderId}"),
+                        .setLink("/management/orders/{OrderId}"),
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.TRANSFER_TREASURER)
                         .setTemplate("Überprüfe die eingegangene Überweisung!")
-                        .setLink("/orders/{OrderId}")
+                        .setLink("/management/orders/{OrderId}")
         );
         List<NotificationTemplate> currentTemplates = new ArrayList<>(DatabaseManager.createEntityManager()
                 .createQuery("SELECT e FROM NotificationTemplate e", NotificationTemplate.class)
