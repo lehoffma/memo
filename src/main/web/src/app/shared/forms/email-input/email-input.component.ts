@@ -14,6 +14,7 @@ import {AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular
 })
 export class EmailInputComponent implements OnInit, ControlValueAccessor {
 	@Input() form: AbstractControl;
+	@Input() withoutAutocomplete = true;
 	_onChange;
 
 	constructor() {

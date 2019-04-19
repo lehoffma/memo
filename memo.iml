@@ -44,8 +44,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/web/src/styles" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/web/dist" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/web/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/webapp" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
+    <content url="file://$MODULE_DIR$/src/main/webapp/WEB-INF" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="checkout" level="application" />

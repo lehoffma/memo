@@ -1,7 +1,9 @@
 <div [formGroup]="formGroup">
 	<div class="user-personal-data-input-container">
-		<div class="name-input">
-			<div class="form-input-container">
+		<div class="name-input"
+			 fxLayout="column" fxLayoutGap="0"
+			 fxLayout.gt-xs="row" fxLayoutGap.gt-xs="16px">
+			<div class="form-input-container" fxFlex="grow">
 				<div class="form-label">Vorname</div>
 				<mat-form-field appearance="outline" class="small-outline-formfield">
 					<input matInput
@@ -14,7 +16,7 @@
 					</mat-error>
 				</mat-form-field>
 			</div>
-			<div class="form-input-container">
+			<div class="form-input-container" fxFlex="grow">
 				<div class="form-label">Nachname</div>
 				<mat-form-field appearance="outline" class="small-outline-formfield">
 					<input matInput
@@ -28,8 +30,10 @@
 				</mat-form-field>
 			</div>
 		</div>
-		<div class="date-and-gender-input">
-			<div class="form-input-container">
+		<div class="date-and-gender-input"
+			 fxLayout="column" fxLayoutGap="0"
+			 fxLayout.gt-xs="row" fxLayoutGap.gt-xs="16px">
+			<div class="form-input-container" fxFlex="grow">
 				<div class="form-label">Geburtstag</div>
 				<mat-form-field appearance="outline" class="small-outline-formfield">
 					<input matInput [matDatepicker]="birthDayPicker"
@@ -40,7 +44,7 @@
 					<mat-datepicker-toggle matSuffix [for]="birthDayPicker"></mat-datepicker-toggle>
 					<mat-error
 						*ngIf="formGroup.get('birthday').hasError('required')">
-						Das Datum muss im Format DD.MM.YYYY vorliegen.
+						Format: DD.MM.YYYY
 					</mat-error>
 					<mat-error *ngIf="formGroup.get('birthday').hasError('matDatepickerMax')">
 						Das Datum darf nicht in der Zukunft liegen
@@ -48,7 +52,7 @@
 				</mat-form-field>
 				<mat-datepicker [touchUi]="true" #birthDayPicker></mat-datepicker>
 			</div>
-			<div class="form-input-container">
+			<div class="form-input-container" fxFlex="grow">
 				<div class="form-label">Geschlecht</div>
 				<mat-form-field appearance="outline" class="small-outline-formfield">
 					<mat-select [formControl]="formGroup.get('gender')"
@@ -62,7 +66,7 @@
 			</div>
 		</div>
 		<div class="form-input-container phone-input-container">
-			<div class="form-label">Telefon</div>
+			<div class="form-label" optional>Telefon</div>
 			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput
 					   name="telephone"
@@ -72,13 +76,10 @@
 				<mat-error align="end" *ngIf="formGroup.get('telephone').hasError('pattern')">
 					Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
 				</mat-error>
-				<mat-error align="end" *ngIf="formGroup.get('telephone').hasError('required')">
-					Dieses Feld darf nicht leer bleiben!
-				</mat-error>
 			</mat-form-field>
 		</div>
 		<div class="form-input-container phone-input-container">
-			<div class="form-label">Mobiltelefon</div>
+			<div class="form-label" optional>Mobiltelefon</div>
 			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput
 					   name="mobile"
@@ -88,14 +89,11 @@
 				<mat-error align="end" *ngIf="formGroup.get('mobile').hasError('pattern')">
 					Nummer darf nur Zahlen und die Zeichen +, -, ( und ) enthalten
 				</mat-error>
-				<mat-error align="end" *ngIf="formGroup.get('mobile').hasError('required')">
-					Dieses Feld darf nicht leer bleiben!
-				</mat-error>
 			</mat-form-field>
 		</div>
 	</div>
 
-	<div class="checkboxes-container">
+	<div fxLayout="column" fxLayoutGap="4px">
 		<mat-checkbox [formControl]="formGroup.get('isStudent')" align="start">
 			Student
 		</mat-checkbox>

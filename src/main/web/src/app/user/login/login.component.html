@@ -6,7 +6,7 @@
 <mat-card>
 	<span mat-card-title>Login</span>
 	<form [formGroup]="formGroup" (ngSubmit)="checkLogin()">
-		<memo-email-input [form]="formGroup"></memo-email-input>
+		<memo-email-input [withoutAutocomplete]="false" [form]="formGroup"></memo-email-input>
 		<memo-password-input [form]="formGroup" [showStrengthBar]="false"
 							 [repeatPassword]="false"></memo-password-input>
 

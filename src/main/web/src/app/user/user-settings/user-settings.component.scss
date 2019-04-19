@@ -1,5 +1,7 @@
 @import "theme";
 
+$breakpoint: 700px;
+
 :host {
 	box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
 	display: flex;
@@ -9,26 +11,51 @@
 	max-width: 900px;
 	background: white;
 	min-height: 400px;
-	margin: 16px auto;
 	border-radius: 4px;
+	margin: 0 auto 16px;
 }
 
+/deep/ .mat-menu-panel.full-width-menu {
+	max-width: none;
+	width: 100vw;
+}
+
+
 .sidebar {
-	display: flex;
+	display: none;
 	flex-direction: column;
 	flex: 1;
 	max-width: 230px;
 	border-right: 1px solid grey(100);
 }
 
-.container--header {
-	border-bottom: 1px solid grey(200) !important;
-}
-
-
 .container--body {
 	display: flex;
+	flex-direction: column;
 	flex: 1;
+}
+
+.mobile-settings-selection {
+	display: flex;
+	flex-direction: column;
+
+	.mobile-settings-header {
+		font-size: font-size();
+		font-weight: 500;
+		color: grey(800);
+		background: grey(100);
+		border-radius: 0;
+		padding: 8px 16px;
+	}
+}
+
+/deep/ .mat-menu-item.active {
+	font-weight: 500;
+	color: accent();
+}
+
+.container--header {
+	border-bottom: 1px solid grey(200) !important;
 }
 
 .content {
@@ -72,5 +99,23 @@
 	&:hover:not(.active) {
 		font-weight: 500;
 		color: grey(800);
+	}
+}
+
+@media all and (min-width: $breakpoint) {
+	:host {
+		margin: 16px auto;
+	}
+
+	.container--body {
+		flex-direction: row;
+	}
+
+	.sidebar {
+		display: flex;
+	}
+
+	.mobile-settings-selection {
+		display: none;
 	}
 }

@@ -13,7 +13,7 @@ import {first} from "rxjs/operators";
 import {ModifyItemEvent} from "../../../shop/shop-item/modify-shop-item/modify-item-event";
 import {ModifyItemService} from "../../../shop/shop-item/modify-shop-item/modify-item.service";
 import {setProperties} from "../../../shared/model/util/base-object";
-import {visitorPermissions} from "../../../shared/model/permission";
+import {WindowService} from "../../../shared/services/window.service";
 
 @Component({
 	selector: "memo-user-data-form",
@@ -23,13 +23,17 @@ import {visitorPermissions} from "../../../shared/model/permission";
 export class UserDataFormComponent implements OnInit {
 	userDataForm: FormGroup;
 
+	@Input() showHeader = true;
 	@Output() onSubmit = new EventEmitter<ModifyItemEvent>();
 	@Output() onCancel = new EventEmitter();
+
+	isDesktop$ = this.windowService.hasMinDimensions(800);
 
 	constructor(public loginService: LogInService,
 				private formBuilder: FormBuilder,
 				public userService: UserService,
 				public modifyItemService: ModifyItemService,
+				private windowService: WindowService,
 				public router: Router,
 				public activatedRoute: ActivatedRoute,
 				public addressService: AddressService) {
@@ -62,7 +66,7 @@ export class UserDataFormComponent implements OnInit {
 				"imagesToUpload": [[], {validators: []}]
 			}),
 			"addresses": [[], {
-				validators: [Validators.required]
+				validators: []
 			}],
 			"club-information": this.formBuilder.group({
 				"clubRole": [ClubRole.Gast, {validators: []}],
@@ -86,8 +90,7 @@ export class UserDataFormComponent implements OnInit {
 		if (this.userDataForm.get("account-data")) {
 			if (checkEmail) {
 				this.userDataForm.get("account-data").setAsyncValidators(emailAlreadyTakenValidator(this));
-			}
-			else {
+			} else {
 				this.userDataForm.get("account-data").clearAsyncValidators();
 			}
 		}
@@ -103,8 +106,7 @@ export class UserDataFormComponent implements OnInit {
 		this._withEmailAndPassword = value;
 		if (value) {
 			this.userDataForm.addControl("account-data", this.getAccountDataFormGroup());
-		}
-		else {
+		} else {
 			this.userDataForm.removeControl("account-data")
 		}
 	}

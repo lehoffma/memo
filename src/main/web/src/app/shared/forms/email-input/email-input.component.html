@@ -1,5 +1,9 @@
 <div *ngIf="form" [formGroup]="form" class="form-input-container">
-	<span class="form-label">Email</span>
+	<div style="height:0; overflow:hidden" *ngIf="withoutAutocomplete">
+		<input style="opacity:0;" name="email" type="email" value=""/>
+		<input style="opacity:0;" type="password" value=""/>
+	</div>
+	<span class="form-label" required>Email</span>
 	<mat-form-field appearance="outline" class="small-outline-formfield">
 		<input matInput
 			   type="email"

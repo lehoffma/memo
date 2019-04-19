@@ -4,7 +4,9 @@
 		<mat-form-field appearance="outline" class="small-outline-formfield">
 			<input matInput
 				   formControlName="name"
-				   name="name">
+				   name="name"
+				   required
+			>
 			<mat-error *ngIf="formGroup.get('name').hasError('required')">
 				Der Name darf nicht leer bleiben!
 			</mat-error>
@@ -12,22 +14,24 @@
 
 	</div>
 
-	<div>
-		<div class="form-input-container">
+	<div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+		<div class="form-input-container" fxFlex.gt-sm="grow">
 			<span class="form-label">Straße</span>
 			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput
 					   formControlName="street"
+					   required
 					   name="street">
 				<mat-error *ngIf="formGroup.get('street').hasError('required')">
 					Der Straßenname darf nicht leer bleiben!
 				</mat-error>
 			</mat-form-field>
 		</div>
-		<div class="form-input-container">
+		<div class="form-input-container" fxFlex.gt-sm="grow">
 			<span class="form-label">Hausnummer</span>
 			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput
+					   required
 					   formControlName="streetNr"
 					   name="streetNr">
 				<mat-error *ngIf="formGroup.get('streetNr').hasError('required')">
@@ -40,11 +44,12 @@
 		</div>
 	</div>
 
-	<div>
-		<div class="form-input-container">
+	<div fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+		<div class="form-input-container" fxFlex.gt-sm="grow">
 			<span class="form-label">Stadt</span>
 			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput
+					   required
 					   formControlName="city"
 					   name="city">
 				<mat-error *ngIf="formGroup.get('city').hasError('required')">
@@ -52,10 +57,11 @@
 				</mat-error>
 			</mat-form-field>
 		</div>
-		<div class="form-input-container">
+		<div class="form-input-container" fxFlex.gt-sm="grow">
 			<span class="form-label">PLZ</span>
 			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput
+					   required
 					   formControlName="zip"
 					   name="zip">
 				<mat-error *ngIf="formGroup.get('zip').hasError('required')">
@@ -72,6 +78,7 @@
 		<span class="form-label">Land</span>
 		<mat-form-field appearance="outline" class="small-outline-formfield">
 			<input matInput
+				   required
 				   formControlName="country"
 				   name="country">
 			<mat-error *ngIf="formGroup.get('country').hasError('required')">
@@ -81,7 +88,7 @@
 	</div>
 
 
-	<div class="input-form-actions">
+	<div class="input-form-actions" fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="flex-end center">
 		<button mat-button color="default" type="button" (click)="onCancel.emit(true)">
 			Abbrechen
 		</button>

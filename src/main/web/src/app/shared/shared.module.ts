@@ -46,7 +46,8 @@ import {EventDestinationRendererComponent} from "./renderers/event-destination-r
 import {SharedSearchModule} from "./search/shared-search.module";
 import {LetModule} from "./utility/let/let.module";
 import {AutocompleteFormsModule} from "./forms/autocomplete/autocomplete-forms.module";
-import { FigureCardComponent } from './figure-card/figure-card.component';
+import {FigureCardComponent} from "./figure-card/figure-card.component";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 const forms = [
 	DisableIfDirective,
@@ -83,6 +84,7 @@ const forms = [
 		SharedSearchModule,
 		AutocompleteFormsModule,
 		LetModule,
+		FlexLayoutModule,
 	],
 	declarations: [
 		EventCalendarComponent,

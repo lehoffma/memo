@@ -4,7 +4,7 @@
 </div>
 
 
-<div class="signup-container">
+<div class="signup-container" *ngIf="currentSection | async as section" [class.wide]="section === sectionEnum.PersonalData">
 	<div class="account-signup-progress" *ngIf="currentSection | async as section">
 		<ng-template ngFor let-item [ngForOf]="signUpService.sections" let-i="index">
 			<div class="progress-indicator" [ngClass]="{
@@ -21,11 +21,12 @@
 		</ng-template>
 	</div>
 
-	<div *ngIf="currentSection | async as section" class="form-container">
+	<div class="form-container">
 		<div [ngSwitch]="section">
 			<memo-account-data-form *ngSwitchCase="sectionEnum.AccountData"
 									(onSubmit)="onSubmit(sectionEnum.AccountData, $event)"></memo-account-data-form>
 			<memo-user-data-form *ngSwitchCase="sectionEnum.PersonalData"
+								 [showHeader]="false"
 								 (onSubmit)="submitUserDataForm($event)">
 
 			</memo-user-data-form>

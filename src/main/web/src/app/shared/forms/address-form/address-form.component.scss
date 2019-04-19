@@ -54,10 +54,6 @@ mat-radio-button /deep/ .mat-radio-label {
 	width: 100%;
 
 	&:not(.selection-container) {
-		padding: 16px;
-	}
-
-	&:not(.selection-container) {
 		border-bottom: 1px solid grey(300);
 		border-radius: 0;
 	}

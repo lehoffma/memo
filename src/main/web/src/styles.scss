@@ -290,9 +290,16 @@ memo-comments-section .reply-form-container memo-comment-input form {
 .form-label {
 	color: grey(700);
 	font-size: font-size(smaller);
-	margin-bottom: 8px;
+	margin-bottom: 4px;
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+
+	&[optional]::after {
+		content: "Optional";
+		color: grey(500);
+		font-size: font-size(smallest);
+	}
 
 	.form-label--additional-info {
 		color: grey(600);

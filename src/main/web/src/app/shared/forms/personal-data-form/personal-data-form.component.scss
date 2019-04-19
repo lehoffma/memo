@@ -1,36 +1,6 @@
-@media all and (min-width: 600px) {
-	.name-input {
-		display: flex;
 
-		> div {
-			margin-right: 16px;
-		}
-	}
-
-	.date-and-gender-input {
-		display: flex;
-
-		> div {
-			margin-right: 16px;
-		}
-
-		/deep/ mat-datepicker-toggle /deep/ button.mat-icon-button {
-			width: 24px !important;
-			height: 24px !important;
-			font-size: 16px !important;
-		}
-	}
-
-	.phone-input-container {
-		max-width: 250px;
-	}
-}
-
-.checkboxes-container {
-	display: flex;
-	flex-direction: column;
-
-	mat-checkbox {
-		margin-top: 4px;
-	}
+/deep/ mat-datepicker-toggle /deep/ button.mat-icon-button {
+	width: 24px !important;
+	height: 24px !important;
+	font-size: 16px !important;
 }

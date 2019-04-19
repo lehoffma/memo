@@ -22,6 +22,7 @@ import { ClubInformationWrapperComponent } from './user-settings/subsections/clu
 import { NotificationSettingsComponent } from './user-settings/subsections/notification-settings/notification-settings.component';
 import { UserEventEmptyStateComponent } from './user-event-empty-state/user-event-empty-state.component';
 import {SharedSearchModule} from "../shared/search/shared-search.module";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 @NgModule({
 	imports: [
@@ -33,7 +34,8 @@ import {SharedSearchModule} from "../shared/search/shared-search.module";
 		MemoMaterialModule,
 		AgmCoreModule,
 		UserRoutingModule,
-		SignUpModule
+		SignUpModule,
+		FlexLayoutModule
 	],
 	declarations: [
 		routedComponents,

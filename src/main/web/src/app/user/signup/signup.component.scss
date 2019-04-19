@@ -24,7 +24,7 @@
 		}
 
 		@media all and (min-width: 550px) {
-			max-width: 550px !important;
+			//max-width: 550px !important;
 		}
 	}
 
@@ -33,6 +33,7 @@
 
 		/deep/ .modify-shop-item-container {
 			width: 100%;
+			box-shadow: none;
 			max-width: none;
 		}
 
@@ -60,6 +61,10 @@
 
 .signup-container {
 	@include fullscreen-page-content();
+
+	&.wide {
+		max-width: 850px;
+	}
 }
 
 .account-signup-progress {
