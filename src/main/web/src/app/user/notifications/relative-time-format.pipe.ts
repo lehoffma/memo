@@ -5,7 +5,7 @@ import {format} from "date-fns";
 	name: "relativeTimeFormat"
 })
 export class RelativeTimeFormatPipe implements PipeTransform {
-	transform(value: Date): string {
+	transform(value: Date | string): string {
 		//todo date-fns v2
 		// return formatDistance()
 		return format(value, "DD.MM.YYYY [um] HH:mm");

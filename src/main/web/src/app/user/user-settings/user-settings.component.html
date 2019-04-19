@@ -33,7 +33,7 @@
 			<div class="save-footer">
 				<button mat-button [disabled]="!(hasChanges$ | async)"
 						(click)="accountSettingsService.reset()">
-					Abbrechen
+					Zurücksetzen
 				</button>
 				<button mat-raised-button color="accent" [disabled]="!(hasChanges$ | async) || !(formIsValid$ | async)"
 						(click)="accountSettingsService.save()">

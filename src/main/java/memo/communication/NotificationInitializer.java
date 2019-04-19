@@ -23,7 +23,7 @@ public class NotificationInitializer {
     @PostConstruct
     public void initialize() {
         //todo new notifications:
-        //new comment(s)
+        //new comment(s) on [participated, responsible]
         //time-based notifications (order status check, upcoming Xs)
 
         List<NotificationTemplate> templates = Arrays.asList(

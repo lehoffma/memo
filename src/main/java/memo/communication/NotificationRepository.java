@@ -39,6 +39,16 @@ public class NotificationRepository extends AbstractPagingAndSortingRepository<N
         this.notificationEvent.fire(notification);
     }
 
+    public List<NotificationUnsubscription> getUnsubscriptionsOfUser(Integer userId) {
+        return DatabaseManager.createEntityManager()
+                .createQuery("SELECT n FROM NotificationUnsubscription n " +
+                                "WHERE n.user.id = :userId",
+                        NotificationUnsubscription.class)
+                .setParameter("userId", userId)
+                .getResultList();
+    }
+
+
     public List<NotificationUnsubscription> getUnsubscriptions(Integer userId, NotificationType notificationType) {
         return DatabaseManager.createEntityManager()
                 .createQuery("SELECT n FROM NotificationUnsubscription n " +

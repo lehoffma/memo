@@ -7,7 +7,7 @@
 	<span mat-card-title>Login</span>
 	<form [formGroup]="formGroup" (ngSubmit)="checkLogin()">
 		<memo-email-input [withoutAutocomplete]="false" [form]="formGroup"></memo-email-input>
-		<memo-password-input [form]="formGroup" [showStrengthBar]="false"
+		<memo-password-input [form]="formGroup" [showStrengthBar]="false" [required]="true"
 							 [repeatPassword]="false"></memo-password-input>
 
 		<span [style.visibility]="error ? 'visible' : 'hidden'" class="wrong-input error-message">

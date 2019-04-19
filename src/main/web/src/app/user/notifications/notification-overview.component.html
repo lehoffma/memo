@@ -42,7 +42,7 @@
 
 					</button>
 					<mat-menu #menu="matMenu">
-						<!--todo actions-->
+						<!-- todo: unsubscribe from this type of notifications -->
 						<button mat-menu-item *ngIf="notification.status === 'UNREAD'"
 								(click)="markAsRead(notification); ">
 							<span>Als gelesen markieren</span>

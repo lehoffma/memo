@@ -1,0 +1,28 @@
+@import "theme";
+
+:host {
+	display: flex;
+	flex-direction: column;
+
+	> *:not(:last-child) {
+		margin-bottom: 16px;
+		border-bottom: 1px solid grey(100);
+		padding-bottom: 16px;
+	}
+}
+
+.notification-setting-block {
+	h4 {
+		margin: 0;
+		font-weight: 500;
+		font-size: font-size(default);
+		color: grey(900);
+	}
+
+	.subtitle {
+		font-size: font-size(smallest);
+		color: grey(600);
+		margin-top: 2px;
+		margin-bottom: 8px;
+	}
+}

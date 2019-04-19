@@ -1,3 +1,57 @@
-<p>
-  notification-settings works!
-</p>
+<div class="notification-setting-block" fxLayout="column" *ngIf="canGetClubroleChangeNotifications$ | async"
+	 [formGroup]="formGroup.get('' + NotificationType.CLUBROLE_CHANGE_REQUEST)"
+>
+	<h4>Statusänderung</h4>
+	<span class="subtitle">Bei Anträgen zur Änderung des Mitgliedsstatus</span>
+
+	<div fxLayout="row" fxLayoutGap="16px">
+		<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+		<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+	</div>
+</div>
+
+<div class="notification-setting-block" fxLayout="column"
+	 [formGroup]="formGroup.get('' + NotificationType.RESPONSIBLE_USER)"
+>
+	<h4>Item Verantwortlichkeit</h4>
+	<span class="subtitle">Wenn du als Verantwortlicher hinzugefügt wurdest</span>
+
+	<div fxLayout="row" fxLayoutGap="16px">
+		<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+		<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+	</div>
+</div>
+
+<div class="notification-setting-block" fxLayout="column"
+	 [formGroup]="formGroup.get('' + NotificationType.OBJECT_HAS_CHANGED)">
+	<h4>Itemänderung</h4>
+	<span class="subtitle">Änderungen an Events, an denen du teilgenommen hast oder für die du verantwortlich bist</span>
+
+	<div fxLayout="row" fxLayoutGap="16px">
+		<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+		<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+	</div>
+</div>
+
+<ng-container *ngIf="canGetTreasurerNotifications$ | async"
+			  [formGroup]="formGroup.get('' + NotificationType.DEBIT_TREASURER)">
+	<div class="notification-setting-block" fxLayout="column">
+		<h4>Lastschrift</h4>
+		<span class="subtitle">Eingehende Bestellungen, die mit <b>Lastschrift</b> bezahlt werden sollen</span>
+
+		<div fxLayout="row" fxLayoutGap="16px">
+			<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+			<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+		</div>
+	</div>
+	<div class="notification-setting-block" fxLayout="column"
+		 [formGroup]="formGroup.get('' + NotificationType.TRANSFER_TREASURER)">
+		<h4>Überweisungen</h4>
+		<span class="subtitle">Eingehende Bestellungen, die per <b>Überweisung</b> bezahlt werden sollen</span>
+
+		<div fxLayout="row" fxLayoutGap="16px">
+			<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+			<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+		</div>
+	</div>
+</ng-container>
