@@ -140,7 +140,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 						this.error = error;
 					}
 				)
-		});
+		}, {confirmMessage: "Stornieren", cancelMessage: "Abbrechen"});
 	}
 
 	cancelItem(item: OrderedItem) {
@@ -153,6 +153,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy {
 						this.error = error;
 					}
 				)
-		});
+		}, {confirmMessage: "Stornieren", cancelMessage: "Abbrechen"});
 	}
 }

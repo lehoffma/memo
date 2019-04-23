@@ -82,7 +82,7 @@
 .ordered-items {
 	display: flex;
 	flex-direction: column;
-	border-bottom: 1px solid #e0e0e0;
+	border-bottom: 1px solid memo-grey(200);
 
 	&.cancelled {
 		background: memo-red(50);
@@ -274,6 +274,11 @@
 	display: flex;
 	justify-content: center;
 	padding: 8px;
+	border-top: 1px solid memo-grey(100);
+
+	> button /deep/ span{
+		text-decoration: underline;
+	}
 }
 
 .ordered-item-main-information {

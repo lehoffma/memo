@@ -4,23 +4,26 @@ import {ConfirmationDialogComponent} from "../utility/confirmation-dialog/confir
 import {Observable} from "rxjs";
 import {map} from "rxjs/operators";
 
+export interface ConfirmDialogOptions {
+	confirmMessage: string;
+	cancelMessage: string;
+}
+
 @Injectable()
 export class ConfirmationDialogService {
 
 	constructor(private mdDialog: MatDialog) {
 	}
 
-	openDialog(message: string): Observable<any> {
-		let dialogRef = this.mdDialog.open(ConfirmationDialogComponent, {
-			data: {
-				message
-			}
-		});
+	openDialog(message: string, options: Partial<ConfirmDialogOptions> = {}): Observable<any> {
+		let data = {message, ...options};
+
+		let dialogRef = this.mdDialog.open(ConfirmationDialogComponent, {data});
 		return dialogRef.afterClosed();
 	}
 
-	openWithCallback<T>(message: string, callback: () => T): Observable<T | null> {
-		return this.openDialog(message)
+	openWithCallback<T>(message: string, callback: () => T, options?: Partial<ConfirmDialogOptions>): Observable<T | null> {
+		return this.openDialog(message, options)
 			.pipe(map(yes => {
 				if (yes) {
 					return callback();
@@ -29,7 +32,7 @@ export class ConfirmationDialogService {
 			}))
 	}
 
-	open<T>(message: string, callback: () => T): void {
-		this.openWithCallback(message, callback).subscribe();
+	open<T>(message: string, callback: () => T, options?: Partial<ConfirmDialogOptions>): void {
+		this.openWithCallback(message, callback, options).subscribe();
 	}
 }

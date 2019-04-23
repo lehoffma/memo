@@ -42,7 +42,8 @@
 		</ng-container>
 	</div>
 
-	<div *ngFor="let item of orderedEventItems" class="ordered-items" [class.cancelled]="item.status.value === 'Cancelled'">
+	<div *ngFor="let item of orderedEventItems" class="ordered-items"
+		 [class.cancelled]="item.status.value === 'Cancelled'">
 		<div class="ordered-item-main-information-container">
 			<a routerLink="{{item.link}}">
 				<img
@@ -97,9 +98,16 @@
 				</table>
 
 				<memo-order-item-status [status]="item.status"></memo-order-item-status>
+
+				<div class="ordered-item-actions" *ngIf="isOnDetailsPage && canBeCancelled(item)">
+					<button mat-button type="button"
+							(click)="cancel(item)"
+							matTooltip="Teilbestellung stornieren" color="warn">
+						Item Stornieren
+					</button>
+				</div>
 			</div>
 		</div>
-
 
 		<mat-menu #cancelMenu="matMenu">
 			<button mat-menu-item (click)="cancel(item)">
