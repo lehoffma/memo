@@ -72,6 +72,8 @@ memo-add-to-cart-form {
 }
 
 .info-container-row {
+	display: flex;
+	flex-direction: column-reverse;
 	background: white;
 }
 
@@ -96,9 +98,42 @@ memo-route-map /deep/ .sebm-google-map-container {
 		margin: auto;
 	}
 
+	.info-container-row{
+		border-bottom-left-radius: 4px;
+		border-bottom-right-radius: 4px;
+	}
+
+	memo-add-to-cart-form{
+		border-bottom-left-radius: 4px;
+	};
+
+	:host /deep/ memo-item-info-header {
+		background: primary();
+		padding-right: 50%;
+		color: white;
+	}
+
+	:host /deep/ .responsible-person {
+		color: hsla(123, 41%, 86%, 1) !important
+	}
+
+	:host memo-item-info-header /deep/ memo-profile-link {
+		> a {
+			color: white !important;
+			border-color: white !important;
+		}
+	}
+
+
 	:host /deep/ memo-multi-image-container {
-		justify-content: center;
-		border-right: 1px solid grey(200);
+		background: white;
+		position: absolute;
+		right: 16px;
+		top: 16px;
+		border-radius: 4px;
+		width: calc(50% - 32px);
+		height: calc(100% - 32px);
+		@include mat-elevation(3);
 	}
 
 	.detail-page-navigation {
@@ -149,8 +184,16 @@ memo-route-map /deep/ .sebm-google-map-container {
 		padding-top: 1rem;
 	}
 
-	.info-container-row > * {
-		width: 50%;
+	.item-details-wrapper {
+		position: relative;
+	}
+
+	.info-container-row {
+		flex-direction: row;
+
+		> .desktop-column {
+			width: 50%;
+		}
 	}
 
 	#eventMap /deep/ .container--body {

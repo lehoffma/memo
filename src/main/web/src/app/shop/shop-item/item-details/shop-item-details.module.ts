@@ -27,6 +27,7 @@ import {MilesPipe} from "./participants/miles.pipe";
 import {ManageWaitingListDialogComponent} from "./add-to-cart-form/manage-waiting-list-dialog.component";
 import {SharedCheckoutModule} from "../../checkout/shared-checkout.module";
 import {ParticipantsModule} from "./participants/participant-list/participants.module";
+import { ItemOrderInfoComponent } from './item-order-info/item-order-info.component';
 
 @NgModule({
 	imports: [
@@ -65,6 +66,7 @@ import {ParticipantsModule} from "./participants/participant-list/participants.m
 		AddToCartFormComponent,
 		MilesPipe,
 		ManageWaitingListDialogComponent,
+		ItemOrderInfoComponent,
 	],
 	entryComponents: [
 		FullNameTableCellComponent,

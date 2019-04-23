@@ -10,7 +10,7 @@ import {userPermissions} from "../../../../shared/model/user";
 import {Filter} from "../../../../shared/model/api/filter";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import {PagedDataSource} from "../../../../shared/utility/material-table/paged-data-source";
-import {filter, map, mergeMap, scan, startWith, take} from "rxjs/operators";
+import {filter, map, mergeMap, scan, startWith, take, tap} from "rxjs/operators";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {Direction, Sort} from "../../../../shared/model/api/sort";
 import {ParticipantUser} from "../../../shared/model/participant";

@@ -1,0 +1,21 @@
+<div class="order-status-visualization-container"
+	 fxLayout="row"
+	 fxLayoutAlign="center center"
+	 fxLayoutGap="-4px"
+
+	 *ngLet="statusData[status.value] as data">
+	<div *ngFor="let pos of [1,2,3,4,5,6]" class="arrow-container {{data.colorClass}}"
+		 [matTooltip]="data.position === pos ? data.tooltip : tooltips[pos]">
+		<svg  viewBox="0 0 70 30" fill="none"
+			 xmlns="http://www.w3.org/2000/svg">
+			<path [class.done]="data.position >= pos"
+				  d="M-7.62939e-06 29.3878L54.603 29.3878L69.4947 13.8091L54.603 0.979591L-7.62939e-06 0.979591L13.2371 13.8091L-7.62939e-06 29.3878Z"></path>
+		</svg>
+		<mat-icon *ngIf="data.icon && data.position === pos">
+			{{data.icon}}
+		</mat-icon>
+	</div>
+</div>
+<div class="status" [matTooltip]="status.tooltip">
+	{{status.label}}
+</div>

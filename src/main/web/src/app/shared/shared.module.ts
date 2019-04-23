@@ -48,6 +48,7 @@ import {LetModule} from "./utility/let/let.module";
 import {AutocompleteFormsModule} from "./forms/autocomplete/autocomplete-forms.module";
 import {FigureCardComponent} from "./figure-card/figure-card.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import { OrderItemStatusComponent } from './renderers/order-renderer/order-item-status/order-item-status.component';
 
 const forms = [
 	DisableIfDirective,
@@ -112,6 +113,7 @@ const forms = [
 		JSONLdComponent,
 		EventDestinationRendererComponent,
 		FigureCardComponent,
+		OrderItemStatusComponent,
 	],
 	exports: [
 		MultiLevelSelectModule,

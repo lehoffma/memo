@@ -1,14 +1,14 @@
 export enum OrderStatus {
 	RESERVED = "Reserved",
 	ORDERED = "Ordered",
+	PAYMENT_REQUESTED = "PaymentRequested",
 	PAID = "Paid",
 	SENT = "Sent",
 	COMPLETED = "Completed",
+	PARTICIPATED = "Participated",
 	CANCELLED = "Cancelled",
 	REFUSED = "Refused",
 	UNDER_APPROVAL = "UnderApproval",
-	PAYMENT_REQUESTED = "PaymentRequested",
-	PARTICIPATED = "Participated"
 }
 
 export const OrderStatusList: OrderStatus[] = [

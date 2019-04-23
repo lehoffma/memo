@@ -95,21 +95,11 @@
 					</tr>
 					</tbody>
 				</table>
+
+				<memo-order-item-status [status]="item.status"></memo-order-item-status>
 			</div>
 		</div>
 
-		<div class="info-row status-row {{item.status.css}}">
-			<span class="status">
-				{{item.status.label}}
-				<mat-icon [inline]="true" *ngIf="item.status.tooltip" matTooltip="{{item.status.tooltip}}">
-					help
-				</mat-icon>
-			</span>
-			<button class="action-button"
-					mat-icon-button [matMenuTriggerFor]="cancelMenu" *ngIf="withItemActions && canBeCancelled(item)">
-				<mat-icon>more_vert</mat-icon>
-			</button>
-		</div>
 
 		<mat-menu #cancelMenu="matMenu">
 			<button mat-menu-item (click)="cancel(item)">
