@@ -2,6 +2,8 @@
 
 span {
 	color: warn();
+	font-weight: 500;
+	font-size: font-size(small-medium);
 
 	&.positive {
 		color: primary();

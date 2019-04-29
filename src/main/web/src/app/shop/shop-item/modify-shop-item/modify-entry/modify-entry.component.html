@@ -1,4 +1,4 @@
-<div class="modify-shop-item-container">
+<div class="modify-shop-item-container" *ngLet="isDesktop$ |async as isDesktop">
 	<h3 class="container--header">
 		Posten bearbeiten
 	</h3>
@@ -7,7 +7,7 @@
 		<memo-item-details-content [title]="'Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
 								   class="grouped"
 								   [formGroup]="formGroup"
-								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
 
 			<div class="form-input-container">
 				<div class="form-label">Titel</div>
@@ -51,7 +51,7 @@
 							Wert muss im Format DD.MM.YYYY vorliegen.
 						</mat-error>
 					</mat-form-field>
-					<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
+					<mat-datepicker [touchUi]="!isDesktop" #myDatepicker></mat-datepicker>
 				</div>
 				<div class="form-input-container">
 					<div class="form-label">Kategorie</div>
@@ -95,7 +95,7 @@
 		</memo-item-details-content>
 
 		<memo-item-details-content [title]="'Bilder'" class="grouped"
-								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
 			<memo-multi-image-upload [previousValue]="previousValue?.images"
 									 class="mat-elevation-z3"
 									 [formGroup]="formGroup.get('images')">

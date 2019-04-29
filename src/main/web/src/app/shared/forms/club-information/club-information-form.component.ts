@@ -1,15 +1,17 @@
-import {Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {ClubRole} from "../../model/club-role";
 import {Observable, Subject} from "rxjs";
 import {UserService} from "../../services/api/user.service";
 import {LogInService} from "../../services/api/login.service";
 import {map, takeUntil} from "rxjs/operators";
+import {BreakpointObserver} from "@angular/cdk/layout";
 
 @Component({
 	selector: "memo-club-information-form",
 	templateUrl: "./club-information-form.component.html",
-	styleUrls: ["./club-information-form.component.scss"]
+	styleUrls: ["./club-information-form.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClubInformationFormComponent implements OnInit, OnDestroy {
 	@Input() formGroup: FormGroup;
@@ -20,7 +22,12 @@ export class ClubInformationFormComponent implements OnInit, OnDestroy {
 
 	onDestroy$ = new Subject();
 
-	constructor(private userService: UserService,
+	get isMobile() {
+		return this.breakpointObserver.isMatched("(max-width: 650px)");
+	}
+
+	constructor(private breakpointObserver: BreakpointObserver,
+				private userService: UserService,
 				private loginService: LogInService) {
 	}
 

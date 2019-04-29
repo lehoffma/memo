@@ -1,27 +1,51 @@
-<ng-container>
-	<div class="content-container">
-		<memo-sorting-dropdown *ngIf="(orders$|async)?.length > 0"
-							   [sortingOptions]="sortingOptions">
+<div class="header" fxLayout="row" fxLayoutAlign="space-between center">
+	<h3 class="results-title">Deine Bestellungen</h3>
+	<mat-form-field appearance="outline" class="search-input small-outline-formfield no-errors">
+		<input matInput placeholder="Suche..">
+	</mat-form-field>
+</div>
 
-		</memo-sorting-dropdown>
-		<div class="content">
-			<memo-order-renderer *ngFor="let order of (orders$|async)"
-								 [withActions]="canEdit$ | async"
-								 [canSeeDescription]="canSeeDescription$ | async"
-								 [orderEntry]="order">
-			</memo-order-renderer>
-		</div>
-		<mat-paginator #paginator class="mat-elevation-z3"
-					   [pageSize]="20"
-					   [length]="dataSource.dataLength"
-					   [pageSizeOptions]="[5, 10, 20, 50]"
-					   (page)="scrollToTop()"
-					   [showFirstLastButtons]="true"></mat-paginator>
 
-	</div>
-	<div *ngIf="(orders$|async)?.length === 0" class="no-results">
-		Du hast bisher keine Bestellungen getätigt.
-	</div>
+<mat-tab-group (selectedTabChange)="updateView($event.index)" [selectedIndex]="selectedTabIndex">
+	<ng-container *ngFor="let tab of TABS">
+		<mat-tab *ngLet="orders[tab] | async as tabOrders">
+			<ng-template mat-tab-label>
+				{{labels[tab]}}
+				<mat-icon class="loading-spinner" *ngIf="tabOrders === null" [inline]="true">refresh</mat-icon>
+				<span *ngIf="tabOrders !== null" class="badge"
+					  [class.no-results]="dataSources[tab].dataLength === 0"
+					  matBadge="{{dataSources[tab].dataLength}}"></span>
+			</ng-template>
+			<ng-template matTabContent>
+				<div class="content-container" *ngIf="tabOrders !== null && tabOrders.length > 0">
+					<div class="content">
+						<memo-order-renderer *ngFor="let order of tabOrders"
+											 [withActions]="canEdit$ | async"
+											 [canSeeDescription]="canSeeDescription$ | async"
+											 [orderEntry]="order">
+						</memo-order-renderer>
+					</div>
+				</div>
+				<div *ngIf="tabOrders !== null && dataSources[tab].dataLength === 0" class="empty-state">
+					<mat-icon class="empty-state-header-icon">{{emptyState[tab].icon}}</mat-icon>
+					<span class="empty-state-headline">{{emptyState[tab].title}}</span>
+					<span class="empty-state-subheader">{{emptyState[tab].subtitle}}</span>
+				</div>
+				<div *ngIf="tabOrders === null" class="loader-wrapper">
+					<div class="loader"></div>
+				</div>
+			</ng-template>
+		</mat-tab>
+	</ng-container>
+</mat-tab-group>
 
-</ng-container>
+
+<mat-paginator #paginator
+			   [style.visibility]="dataSources[TABS[selectedTabIndex]].dataLength < 20 ? 'hidden' : 'visible'"
+			   [pageSize]="20"
+			   [length]="dataSources[TABS[selectedTabIndex]].dataLength"
+			   [pageSizeOptions]="[5, 10, 20, 50]"
+			   (page)="scrollToTop()"
+			   [showFirstLastButtons]="true"></mat-paginator>
+
 <!--todo generic loading component, that also shows errors properly-->

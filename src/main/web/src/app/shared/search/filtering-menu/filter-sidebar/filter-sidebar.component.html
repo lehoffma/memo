@@ -37,7 +37,7 @@
 										   [for]="startingDatePicker"></mat-datepicker-toggle>
 				</mat-form-field>
 				<mat-datepicker [disabled]="isLoading" #startingDatePicker
-								[touchUi]="true"></mat-datepicker>
+								[touchUi]="isMobile"></mat-datepicker>
 			</div>
 
 			<div class="form-input-container">
@@ -49,7 +49,7 @@
 					<mat-datepicker-toggle [disabled]="isLoading" matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
 				</mat-form-field>
 				<mat-datepicker #endDatePicker [disabled]="isLoading"
-								[touchUi]="true"></mat-datepicker>
+								[touchUi]="isMobile"></mat-datepicker>
 			</div>
 		</div>
 		<div *ngSwitchCase="'shop-item'">

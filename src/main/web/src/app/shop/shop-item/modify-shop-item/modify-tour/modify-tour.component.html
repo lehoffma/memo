@@ -1,12 +1,12 @@
-<div class="modify-shop-item-container" *ngIf="formGroup">
+<div class="modify-shop-item-container" *ngLet="isDesktop$ | async as isDesktop">
 	<h3 class="container--header">
 		Tour bearbeiten
 	</h3>
 
-	<form #modifyShopItemForm="ngForm" (ngSubmit)="submitModifiedObject()">
+	<form #modifyShopItemForm="ngForm" *ngIf="formGroup" (ngSubmit)="submitModifiedObject()">
 		<memo-item-details-content class="grouped"
 								   [title]="'Tour-Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
-								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'"
+								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'"
 								   [formGroup]="formGroup.get('event-data')">
 			<div class="form-input-container">
 				<label class="form-label">Titel</label>
@@ -107,7 +107,7 @@
 								</mat-error>
 							</mat-form-field>
 						</div>
-						<mat-datepicker [touchUi]="true" #myDatepicker></mat-datepicker>
+						<mat-datepicker [touchUi]="!isDesktop" #myDatepicker></mat-datepicker>
 					</div>
 
 					<div class="form-input-container">
@@ -135,7 +135,7 @@
 
 
 		<memo-item-details-content class="grouped" [title]="'Berechtigungen'" [subtitle]="'Minimum Berechtigungen'"
-								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
 			<memo-item-permissions-input
 				[formGroup]="formGroup.get('permissions')"
 				[previousValue]="{
@@ -148,7 +148,7 @@
 		</memo-item-details-content>
 
 		<memo-item-details-content class="grouped" [title]="'Bezahlung'"
-								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
 			<memo-payment-method-configuration
 				[formGroup]="formGroup.get('payment-config')">
 
@@ -156,8 +156,8 @@
 		</memo-item-details-content>
 
 
-		<memo-item-details-content class="grouped" [title]="'Route'" class="route-input"
-								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+		<memo-item-details-content class="grouped route-input" [title]="'Route'"
+								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
 			<memo-tour-route-input class="mat-elevation-z3"
 								   [previousValue]="previousValue?.route"
 								   [formControl]="formGroup.get('addresses')"
@@ -169,14 +169,14 @@
 		</memo-item-details-content>
 
 		<memo-item-details-content class="grouped" [title]="'Bilder'"
-								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
 			<memo-multi-image-upload [formGroup]="formGroup.get('images')" class="mat-elevation-z3"
 									 [previousValue]="previousValue?.images">
 			</memo-multi-image-upload>
 		</memo-item-details-content>
 
 		<memo-item-details-content class="grouped" [title]="'Verantwortliche User'"
-								   [direction]="!(isDesktop$ | async) ? 'vertical' : 'horizontal'">
+								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
 			<memo-responsible-user-input [previousValue]="previousValue?.author" class="mat-elevation-z3"
 										 [formControl]="formGroup.get('responsible-users')">
 

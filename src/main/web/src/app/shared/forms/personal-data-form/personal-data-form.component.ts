@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {FormGroup} from "@angular/forms";
 import {Gender} from "../../model/gender";
+import {WindowService} from "../../services/window.service";
 
 @Component({
 	selector: "memo-personal-data-form",
@@ -12,7 +13,9 @@ export class PersonalDataFormComponent implements OnInit {
 	maxDate: Date = new Date();
 	genderOptions = [Gender.FEMALE, Gender.MALE, Gender.OTHER];
 
-	constructor() {
+	isDesktop$ = this.windowService.hasMinDimensions(800);
+
+	constructor(private windowService: WindowService) {
 	}
 
 	ngOnInit() {

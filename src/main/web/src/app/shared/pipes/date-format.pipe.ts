@@ -4,6 +4,14 @@ import {isString} from "../../util/util";
 
 import * as deLocale from "date-fns/locale/de/index"
 
+export function relativeDateFormat(value: Date|string){
+	const distance = distanceInWordsToNow(value, {locale: deLocale});
+	const before = isBefore(value, new Date());
+	const suffix = (["Tage", "Monate", "Jahre"].some(it => distance.includes(it))) ? "n" : "";
+
+	return (before ? "vor " : "in ") + distance + suffix;
+}
+
 @Pipe({
 	name: "dateFormat"
 })
@@ -13,11 +21,7 @@ export class DateFormatPipe implements PipeTransform {
 			return format(parse(value), formatString, {locale: deLocale});
 		}
 		if (formatString === "relative") {
-			const distance = distanceInWordsToNow(value, {locale: deLocale});
-			const before = isBefore(value, new Date());
-			const suffix = (["Tage", "Monate", "Jahre"].some(it => distance.includes(it))) ? "n" : "";
-
-			return (before ? "vor " : "in ") + distance + suffix;
+			return relativeDateFormat(value);
 		}
 		if (formatString === "age") {
 			const difference = -differenceInYears(value, new Date());

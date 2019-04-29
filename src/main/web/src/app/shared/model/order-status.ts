@@ -24,6 +24,10 @@ export const OrderStatusList: OrderStatus[] = [
 	OrderStatus.UNDER_APPROVAL,
 ];
 
+export function orderStatusList(...except: OrderStatus[]){
+	return OrderStatusList.filter(it => !except.includes(it));
+}
+
 export type OrderStatusMap = {
 	[P in OrderStatus]: { value: number; label: string; tooltip: string; };
 }

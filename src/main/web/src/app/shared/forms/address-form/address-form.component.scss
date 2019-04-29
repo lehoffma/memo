@@ -45,6 +45,10 @@ mat-radio-button /deep/ .mat-radio-label {
 	padding: 1rem;
 }
 
+mat-radio-button /deep/ memo-address-entry {
+	padding: 0;
+}
+
 .address-entry-container {
 	display: block;
 	margin-top: 0;

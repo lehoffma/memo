@@ -88,7 +88,6 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 				return events;
 			}, []);
 
-		console.log(events);
 		this.user$ = this.userService.getById(this.orderEntry.user);
 		this.bankAccount$ = +(this.orderEntry.bankAccount) > 0 ? this.bankAccountService.getById(this.orderEntry.bankAccount) : EMPTY;
 		this.orderedEventItems = events;

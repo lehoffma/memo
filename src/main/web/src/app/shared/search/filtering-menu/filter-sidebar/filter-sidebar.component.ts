@@ -2,11 +2,10 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output}
 import {AbstractControl, FormGroup} from "@angular/forms";
 import {animate, state, style, transition, trigger} from "@angular/animations";
 import {FilterOption} from "../../filter-options/filter-option";
-import {SingleFilterOption} from "../../filter-options/single-filter-option";
-import {ShopItem} from "../../../model/shop-item";
 import {EventType} from "../../../../shop/shared/model/event-type";
 import {EventUtilityService} from "../../../services/event-utility.service";
 import {Event} from "../../../../shop/shared/model/event";
+import {BreakpointObserver} from "@angular/cdk/layout";
 
 @Component({
 	selector: "memo-filter-sidebar",
@@ -34,7 +33,11 @@ export class FilterSidebarComponent implements OnInit {
 	@Output() onSubmit = new EventEmitter();
 	@Input() isLoading = false;
 
-	constructor() {
+	get isMobile(){
+		return this.breakpointObserver.isMatched("(max-width: 650px)");
+	}
+
+	constructor(private breakpointObserver: BreakpointObserver) {
 	}
 
 	ngOnInit() {
@@ -84,18 +87,18 @@ export class FilterSidebarComponent implements OnInit {
 		this.onSubmit.emit(true);
 	}
 
-	getEventType(event: Event): EventType{
+	getEventType(event: Event): EventType {
 		return EventUtilityService.getEventType(event);
 	}
 
 	onRemoveEvent(i: number, formGroup: FormGroup) {
-		const currentValue = formGroup.get('items').value;
+		const currentValue = formGroup.get("items").value;
 		currentValue.splice(i, 1);
-		formGroup.get('items').setValue([...currentValue]);
+		formGroup.get("items").setValue([...currentValue]);
 	}
 
 	addEvent(item: Event, formGroup: FormGroup) {
-		const currentValue = formGroup.get('items').value;
-		formGroup.get('items').setValue([...currentValue, item]);
+		const currentValue = formGroup.get("items").value;
+		formGroup.get("items").setValue([...currentValue, item]);
 	}
 }

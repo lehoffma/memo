@@ -1,4 +1,4 @@
-<div [formGroup]="formGroup">
+<div [formGroup]="formGroup" *ngLet="isDesktop$ | async as isDesktop">
 	<div class="user-personal-data-input-container">
 		<div class="name-input"
 			 fxLayout="column" fxLayoutGap="0"
@@ -50,7 +50,7 @@
 						Das Datum darf nicht in der Zukunft liegen
 					</mat-error>
 				</mat-form-field>
-				<mat-datepicker [touchUi]="true" #birthDayPicker></mat-datepicker>
+				<mat-datepicker [touchUi]="!isDesktop" #birthDayPicker></mat-datepicker>
 			</div>
 			<div class="form-input-container" fxFlex="grow">
 				<div class="form-label">Geschlecht</div>

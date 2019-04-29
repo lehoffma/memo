@@ -3,7 +3,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {OrderService} from "../../shared/services/api/order.service";
 import {Order} from "../../shared/model/order";
 import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {filter, first, map} from "rxjs/operators";
 import {Direction, Sort} from "../../shared/model/api/sort";
 import {PagedDataSource} from "../../shared/utility/material-table/paged-data-source";
@@ -11,10 +11,17 @@ import {Filter} from "../../shared/model/api/filter";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {MatPaginator} from "@angular/material";
 import {ScrollingService} from "../../shared/services/scrolling.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {userPermissions} from "../../shared/model/user";
 import {Permission} from "../../shared/model/permission";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
+import {OrderStatus, orderStatusList, statusToInt} from "../../shared/model/order-status";
+
+export enum OrderHistoryTab {
+	ALL = "all",
+	OPEN = "open",
+	CANCELLED = "cancelled"
+}
 
 @Component({
 	selector: "memo-order-history",
@@ -45,49 +52,131 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
 		map(user => userPermissions(user).funds >= Permission.read),
 	);
 
-
 	canEdit$ = this.loginService.currentUser$.pipe(
 		filter(user => user !== null),
 		map(user => userPermissions(user).funds >= Permission.write),
 	);
 
-
-	//todo schönere "keine bestellungen" message
-	//todo timeline slider
+	selectedTabIndex = 0;
 
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	filter$: Observable<Filter> = this.loginService.accountObservable
 		.pipe(
-			map(userId => Filter.by({
-				"userId": "" + userId
-			}))
+			map(userId => Filter.by({"userId": "" + userId}))
 		);
-	public dataSource: PagedDataSource<Order> = new PagedDataSource<Order>(this.orderService);
-	orders$: Observable<Order[]> = this.dataSource.connect();
+
+
+	readonly TABS = [OrderHistoryTab.ALL, OrderHistoryTab.OPEN, OrderHistoryTab.CANCELLED];
+
+	public dataSources: { [tab in OrderHistoryTab]: PagedDataSource<Order> } = {
+		all: new PagedDataSource<Order>(this.orderService),
+		cancelled: new PagedDataSource<Order>(this.orderService),
+		open: new PagedDataSource<Order>(this.orderService)
+	};
+
+	filters: { [tab in OrderHistoryTab]: Observable<Filter> } = {
+		all: this.filter$,
+		cancelled: this.filter$.pipe(
+			map(filter => Filter.combine(
+				filter,
+				Filter.by({"status": "5"})
+			))
+		),
+		open: this.filter$.pipe(
+			map(filter => Filter.combine(
+				filter,
+				Filter.by({"status": orderStatusList(OrderStatus.CANCELLED, OrderStatus.COMPLETED, OrderStatus.PARTICIPATED)
+						.map(it => statusToInt(it))
+						.join(",")})
+			))
+		)
+	};
+
+	orders: { [tab in OrderHistoryTab]: Observable<Order[]> } = {
+		all: this.dataSources.all.connect(),
+		cancelled: this.dataSources.cancelled.connect(),
+		open: this.dataSources.open.connect(),
+	};
+
+	labels: { [tab in OrderHistoryTab]: string } = {
+		all: "Alle",
+		cancelled: "Storniert",
+		open: "Offen"
+	};
+
+	emptyState: { [tab in OrderHistoryTab]: { icon: string; title: string; subtitle: string; } } = {
+		all: {
+			icon: "assignment",
+			title: "Keine Bestellungen",
+			subtitle: "Du hast bisher keine Bestellungen getätigt, was du hoffentlich bald nachholen wirst."
+		},
+		cancelled: {
+			icon: "assignment",
+			title: "Keine Stornierungen",
+			subtitle: "Du hast bisher noch nichts storniert. Yay!"
+		},
+		open: {
+			icon: "assignment",
+			title: "Keine offenen Bestellungen",
+			subtitle: "Du hast keine offenen Bestellungen mehr. Wird Zeit für eine neue Bestellung!"
+		}
+	};
+
+	onDestroy$ = new Subject();
 
 	constructor(private loginService: LogInService,
 				private navigationService: NavigationService,
 				private scrollService: ScrollingService,
 				private router: Router,
+				private activatedRoute: ActivatedRoute,
 				private orderService: OrderService) {
-		this.dataSource.isExpandable = false;
-		this.dataSource.filter$ = this.filter$;
-		this.dataSource.sort$ = this.sortedBy$;
+		this.TABS.forEach(tab => {
+			this.dataSources[tab].isExpandable = false;
+			this.dataSources[tab].filter$ = this.filters[tab];
+			this.dataSources[tab].sort$ = this.sortedBy$
+		});
 
 		this.sortedBy$.pipe(first()).subscribe((sortedBy: Sort) => {
 			if (sortedBy.sortBys.length === 0) {
 				this.router.navigate([], {queryParams: this.sortingOptions[0].queryParameters, skipLocationChange: true})
 			}
-		})
+		});
+
+		this.activatedRoute.queryParamMap
+			.pipe(
+				filter(map => map.has("view"))
+			)
+			.subscribe(queryParamMap => {
+				this.selectedTabIndex = this.TABS.findIndex(tab => tab === queryParamMap.get("view"));
+			})
 	}
 
 	ngOnInit() {
-		this.dataSource.paginator = this.paginator;
+		this.TABS.forEach(tab => {
+			this.dataSources[tab].paginator = this.paginator;
+		});
 	}
 
 	ngOnDestroy(): void {
-		this.dataSource.disconnect(null);
+		this.TABS.forEach(tab => this.dataSources[tab].disconnect(null));
+		this.onDestroy$.next(true);
 	}
+
+
+	updateView(index: number) {
+		const view = this.TABS[index];
+
+		this.paginator.firstPage();
+		this.router.navigate([], {
+			queryParams: {
+				view: view,
+			},
+			queryParamsHandling: "merge",
+			relativeTo: this.activatedRoute,
+			replaceUrl: !this.activatedRoute.snapshot.queryParamMap.has("view")
+		});
+	}
+
 
 	scrollToTop() {
 		this.scrollService.scrollToTop();

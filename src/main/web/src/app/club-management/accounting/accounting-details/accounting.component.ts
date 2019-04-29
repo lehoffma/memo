@@ -15,14 +15,14 @@ import {MultiFilterOption} from "../../../shared/search/filter-options/multi-fil
 import {EventService} from "../../../shared/services/api/event.service";
 import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
 import {of} from "rxjs/internal/observable/of";
-import {distanceInWordsToNow, format} from "date-fns";
+import {format} from "date-fns";
 import {RowAction} from "../../../shared/utility/material-table/util/row-action";
 import {RowActionType} from "../../../shared/utility/material-table/util/row-action-type";
-import * as deLocale from "date-fns/locale/de";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {ShopEvent} from "../../../shop/shared/model/event";
 import {TagColor} from "../../../shared/utility/material-table/cells/tag-table-cell.component";
 import {EntryCategory} from "../../../shared/model/entry-category";
+import {relativeDateFormat} from "../../../shared/pipes/date-format.pipe";
 
 
 @Component({
@@ -55,32 +55,26 @@ export class AccountingComponent implements OnInit, OnDestroy {
 
 	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent<Entry>;
 	columns: TableColumn<Entry>[] = [
+		{header: "Bilder", columnDef: "images", cell: element => element, type: "image"},
 		{
-			header: "Kategorie", columnDef: "category", cell: element => ({
-				text: element.category.name,
-				color: this.getCategoryColor(element.category)
-			}), type: "tag"
+			header: "Datum", columnDef: "date", cell: element => ({
+				title: format(element.date, "DD.MM.YYYY"),
+				subtitle: relativeDateFormat(element.date)
+			}),
+			type: "title-subtitle"
 		},
+		{header: "Kategorie", columnDef: "category", cell: element => element.category.name},
+		{header: "Name", columnDef: "name", cell: element => element.name},
+		{header: "Item", columnDef: "item", cell: element => element.item.title},
 		{
-			header: "Name", columnDef: "name", cell: element => ({
-				text: element.name,
+			header: "Info", columnDef: "comment", cell: element => ({
+				text: "",
 				icon: "comment",
 				details: element.comment,
 				dialogTitle: "Kommentar"
 			}), type: "icon-dialog"
 		},
-		{
-			header: "Datum", columnDef: "date", cell: element => format(element.date, "DD.MM.YYYY"),
-		},
-		{
-			header: "Item", columnDef: "item", cell: element => ({
-				text: element.item.title,
-				routerLink: this.getLinkToItem(element.item),
-				tooltip: "Item ansehen"
-			}), type: "link"
-		},
 		{header: "Wert", columnDef: "value", cell: element => element.value, type: "costValue"},
-		{header: "Bilder", columnDef: "images", cell: element => element, type: "image"},
 	];
 	displayedColumns$: Observable<string[]> = of(
 		this.columns.map(it => it.columnDef)
