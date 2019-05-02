@@ -3,7 +3,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {OrderService} from "../../shared/services/api/order.service";
 import {Order} from "../../shared/model/order";
 import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
-import {Observable, Subject} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
 import {filter, first, map} from "rxjs/operators";
 import {Direction, Sort} from "../../shared/model/api/sort";
 import {PagedDataSource} from "../../shared/utility/material-table/paged-data-source";
@@ -16,6 +16,8 @@ import {userPermissions} from "../../shared/model/user";
 import {Permission} from "../../shared/model/permission";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {OrderStatus, orderStatusList, statusToInt} from "../../shared/model/order-status";
+import {WindowService} from "../../shared/services/window.service";
+import {QueryParameterService} from "../../shared/services/query-parameter.service";
 
 export enum OrderHistoryTab {
 	ALL = "all",
@@ -60,9 +62,18 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
 	selectedTabIndex = 0;
 
 	@ViewChild(MatPaginator) paginator: MatPaginator;
-	filter$: Observable<Filter> = this.loginService.accountObservable
+	filter$: Observable<Filter> = combineLatest(
+		this.navigationService.queryParamMap$,
+		this.loginService.accountObservable
+	)
 		.pipe(
-			map(userId => Filter.by({"userId": "" + userId}))
+			map(([queryParamMap, userId]) => {
+				let filter = {"userId": "" + userId};
+				if (queryParamMap.has("searchTerm")) {
+					filter["searchTerm"] = queryParamMap.get("searchTerm");
+				}
+				return Filter.by(filter);
+			})
 		);
 
 
@@ -85,9 +96,11 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
 		open: this.filter$.pipe(
 			map(filter => Filter.combine(
 				filter,
-				Filter.by({"status": orderStatusList(OrderStatus.CANCELLED, OrderStatus.COMPLETED, OrderStatus.PARTICIPATED)
+				Filter.by({
+					"status": orderStatusList(OrderStatus.CANCELLED, OrderStatus.COMPLETED, OrderStatus.PARTICIPATED)
 						.map(it => statusToInt(it))
-						.join(",")})
+						.join(",")
+				})
 			))
 		)
 	};
@@ -122,12 +135,18 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
 		}
 	};
 
+	initialValue = this.activatedRoute.snapshot.queryParamMap.has("searchTerm")
+		? this.activatedRoute.snapshot.queryParamMap.get("searchTerm")
+		: undefined;
+
+	searchIsExpanded$ = new BehaviorSubject(false);
 	onDestroy$ = new Subject();
 
 	constructor(private loginService: LogInService,
 				private navigationService: NavigationService,
 				private scrollService: ScrollingService,
 				private router: Router,
+				private windowService: WindowService,
 				private activatedRoute: ActivatedRoute,
 				private orderService: OrderService) {
 		this.TABS.forEach(tab => {
@@ -180,5 +199,22 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
 
 	scrollToTop() {
 		this.scrollService.scrollToTop();
+	}
+
+	search(keyword: string) {
+		const currentParams = this.navigationService.queryParams$.getValue();
+		const updatedParams = QueryParameterService.updateQueryParams(currentParams,
+			{searchTerm: keyword ? keyword : null}
+		);
+
+		this.router.navigate([], {queryParams: updatedParams});
+	}
+
+	onFocus(focus: boolean) {
+		if (this.windowService.dimensions.width <= 600) {
+			this.searchIsExpanded$.next(focus);
+		} else {
+			this.searchIsExpanded$.next(false);
+		}
 	}
 }

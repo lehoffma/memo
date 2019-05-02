@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, Renderer2, ViewChild} from "@angular/core";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {NavigationService} from "../../../../shared/services/navigation.service";
-import {WindowService} from "../../../../shared/services/window.service";
+import {NavigationService} from "../../services/navigation.service";
+import {WindowService} from "../../services/window.service";
 import {map, takeUntil} from "rxjs/operators";
 import {Subject} from "rxjs";
-import {QueryParameterService} from "../../../../shared/services/query-parameter.service";
 import {Router} from "@angular/router";
+import {FormBuilder} from "@angular/forms";
 
 export enum SearchInputState {
 	ACTIVE = <any>"active",
@@ -33,14 +33,25 @@ export class SearchInputComponent implements OnInit, OnDestroy {
 	searchInputState = SearchInputState;
 	inputState = SearchInputState.INACTIVE;
 	showClear = false;
-	model = {
-		searchInput: ""
-	};
+
+	@Input() set value(value: string) {
+		console.log(value);
+		if (!value) {
+			return;
+		}
+		this.formGroup.get("search").setValue(value);
+	}
+
+	formGroup = this.fb.group({
+		search: this.fb.control("")
+	});
 
 
 	@ViewChild("searchInput") searchInput: any;
+	@Input() placeholder = "Suche";
 	@Input() mobileExpanded = false;
 	@Output() onFocus: EventEmitter<boolean> = new EventEmitter();
+	@Output() search: EventEmitter<string> = new EventEmitter();
 
 
 	screenState$ = this.windowService.dimension$
@@ -53,6 +64,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
 
 	constructor(private navigationService: NavigationService,
 				private router: Router,
+				private fb: FormBuilder,
 				private windowService: WindowService,
 				private renderer: Renderer2) {
 		this.screenState$.pipe(takeUntil(this.onDestroy$))
@@ -85,10 +97,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
 	}
 
 	onSearch() {
-		const currentParams = this.navigationService.queryParams$.getValue();
-		const updatedParams = QueryParameterService.updateQueryParams(currentParams, {searchTerm: this.model.searchInput ? this.model.searchInput : null});
-
-		this.router.navigate(["shop", "search"], {queryParams: updatedParams});
+		this.search.emit(this.formGroup.value.search);
 		if (this.state === "mobile") {
 			this.toggleInputState();
 		}

@@ -11,7 +11,7 @@ import {ROUTES} from "./app.routes";
 import {memoConfig} from "./app.config";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-link/toolbar-profile-link.component";
-import {SearchInputComponent} from "./home/navigation/toolbar/search-input/search-input.component";
+import {SearchInputComponent} from "./shared/search/search-input/search-input.component";
 import {ImpressumComponent} from "./home/impressum/impressum.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
@@ -145,7 +145,6 @@ registerLocaleData(localeDe);
 		HomeComponent,
 		ImpressumComponent,
 
-		SearchInputComponent,
 		SideNavComponent,
 		ToolbarComponent,
 		ToolbarElementComponent,

@@ -70,7 +70,7 @@ export class OrderOverviewService implements OnDestroy {
 		this.dataSource.filter$ = this.filteredBy$;
 		this.dataSource.sort$ = this.sortedBy$;
 
-		this.dataSource.initPaginatorFromUrl(this.navigationService.queryParamMap$.getValue());
+		this.dataSource.initPaginatorFromUrlAndUpdatePage(this.navigationService.queryParamMap$.getValue());
 		this.dataSource.writePaginatorUpdatesToUrl(this.router);
 
 		this.dataSource.updateOn(

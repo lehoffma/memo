@@ -1,9 +1,8 @@
-<form #searchForm="ngForm"
-	  [class.expanded-mobile]="mobileExpanded"
-	  (ngSubmit)="inputState === searchInputState.INACTIVE ? toggleInputState() : onSearch()">
+<form [class.expanded-mobile]="mobileExpanded"
+	  (ngSubmit)="inputState === searchInputState.INACTIVE ? toggleInputState() : onSearch()"
+	  [formGroup]="formGroup">
 	<button mat-icon-button
 			type="submit"
-			#searchButton
 			title="{{inputState === searchInputState.ACTIVE ? 'Suchen' : 'Öffne Suchinput'}}"
 			*ngIf="!mobileExpanded && (screenState$ | async) === 'mobile'"
 			class="search-button">
@@ -32,13 +31,11 @@
 			   #searchInput
 			   id="searchInput"
 			   name="searchInput"
-			   placeholder="Suche"
-			   [(ngModel)]="model.searchInput"
+			   placeholder="{{placeholder}}"
+			   formControlName="search"
 			   autocomplete="off">
-		<button mat-icon-button matSuffix *ngIf="!mobileExpanded"
-				type="submit">
-			<mat-icon title="Suchen"
-					  class="cart-icon ripple">
+		<button mat-icon-button matSuffix *ngIf="!mobileExpanded" type="submit">
+			<mat-icon title="Suchen" class="cart-icon">
 				search
 			</mat-icon>
 		</button>
@@ -46,7 +43,7 @@
 	<button mat-icon-button type="button" *ngIf="mobileExpanded"
 			attr.aria-label="Input löschen"
 			title="Input löschen"
-			(click)="model.searchInput=''">
+			(click)="formGroup.reset()">
 		<mat-icon>clear</mat-icon>
 	</button>
 </form>

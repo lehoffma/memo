@@ -24,7 +24,9 @@
 
 	<div class="align-right">
 		<div class="toolbar-actions" [class.expanded-mobile]="searchIsExpanded$ | async">
-			<memo-search-input (onFocus)="expandSearchBar($event)" [mobileExpanded]="searchIsExpanded$ | async">
+			<memo-search-input (onFocus)="expandSearchBar($event)"
+							   (search)="search($event)"
+							   [mobileExpanded]="searchIsExpanded$ | async">
 
 			</memo-search-input>
 		</div>

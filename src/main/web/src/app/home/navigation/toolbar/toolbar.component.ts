@@ -6,6 +6,8 @@ import {WindowService} from "../../../shared/services/window.service";
 import {BehaviorSubject, Observable} from "rxjs";
 import {filter, first, map} from "rxjs/operators";
 import {NotificationService} from "../../../shared/services/api/user-notification.service";
+import {QueryParameterService} from "../../../shared/services/query-parameter.service";
+import {Router} from "@angular/router";
 
 @Component({
 	selector: "memo-toolbar",
@@ -35,6 +37,7 @@ export class ToolbarComponent implements OnInit {
 
 
 	constructor(private navigationService: NavigationService,
+				private router: Router,
 				private notificationService: NotificationService,
 				private windowService: WindowService,
 				private shoppingCartService: ShoppingCartService) {
@@ -53,6 +56,16 @@ export class ToolbarComponent implements OnInit {
 		});
 	}
 
+	search(keyword: string){
+		const isSearchPage = this.router.url.includes("shop/search");
+		//todo: if on shop search page: keep query params | else erase them
+		const currentParams = isSearchPage ? this.navigationService.queryParams$.getValue() : {};
+		const updatedParams = QueryParameterService.updateQueryParams(currentParams,
+			{searchTerm: keyword ? keyword : null}
+		);
+
+		this.router.navigate(["shop", "search"], {queryParams: updatedParams});
+	}
 
 	expandSearchBar(event) {
 		this.windowService.dimension$

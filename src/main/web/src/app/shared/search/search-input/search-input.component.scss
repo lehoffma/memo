@@ -2,7 +2,6 @@
 
 .search-input {
 	font-size: font-size(default);
-	width: 200px;
 
 	@media all and (max-width: 340px) {
 		width: 130px;
@@ -26,19 +25,19 @@
 
 mat-form-field {
 
-	border-radius: 500px !important;
+	border-radius: 4px !important;
 
 	/deep/ .mat-form-field-outline {
-		border-radius: 500px !important;
+		border-radius: 4px !important;
 	}
 
 	/deep/ .mat-form-field-outline-start {
-		border-radius: 500px 0 0 500px;
+		border-radius: 4px 0 0 4px;
 		min-width: 24px;
 	}
 
 	/deep/ .mat-form-field-outline-end {
-		border-radius: 0 500px 500px 0;
+		border-radius: 0 4px 4px 0;
 	}
 }
 

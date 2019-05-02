@@ -2,7 +2,7 @@ import {DataSource} from "@angular/cdk/table";
 import {CollectionViewer} from "@angular/cdk/collections";
 import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from "rxjs";
 import {Page, PageResponse} from "../../model/api/page";
-import {filter, map, mergeMap, takeUntil, tap} from "rxjs/operators";
+import {filter, map, mergeMap, switchMap, takeUntil, tap} from "rxjs/operators";
 import {MatPaginator, PageEvent} from "@angular/material";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
@@ -144,7 +144,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 	}
 
 
-	initPaginatorFromUrl(queryParamMap: ParamMap): PageRequest {
+	initPaginatorFromUrlAndUpdatePage(queryParamMap: ParamMap): PageRequest {
 		const pageRequest = PagedDataSource.initPaginatorFromUrl2(queryParamMap);
 		this._pageEvents$.next({
 			length: 200,
@@ -212,7 +212,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 				filter(([pageEvent, sortEvent, filter, dataService, reload, pause]:
 							[PageRequest, Sort, Filter, TableDataService<T>, any, boolean]) => !pause && dataService !== null),
 				tap(() => this._isLoading$.next(true)),
-				mergeMap(([pageEvent, sortEvent, filter, dataService, reload, pause]:
+				switchMap(([pageEvent, sortEvent, filter, dataService, reload, pause]:
 							  [PageRequest, Sort, Filter, TableDataService<T>, any, boolean]) => {
 					return this.getPagedData([pageEvent, sortEvent, filter, dataService, reload]);
 				}),
@@ -222,7 +222,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 					this.data = it.content;
 					this._isLoading$.next(false);
 				}),
-				mergeMap(it => {
+				switchMap(it => {
 					return this._isExpandable$.pipe(
 						map(isExpandable => {
 							let rows = [];

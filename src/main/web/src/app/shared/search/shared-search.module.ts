@@ -13,6 +13,7 @@ import {LetModule} from "../utility/let/let.module";
 import { PaginationComponent } from './pagination/pagination.component';
 import {AutocompleteFormsModule} from "../forms/autocomplete/autocomplete-forms.module";
 import {RouterModule} from "@angular/router";
+import {SearchInputComponent} from "./search-input/search-input.component";
 
 @NgModule({
 	imports: [
@@ -32,6 +33,7 @@ import {RouterModule} from "@angular/router";
 		FilterSidebarComponent,
 		FilterDialogComponent,
 		PaginationComponent,
+		SearchInputComponent,
 	],
 	exports: [
 		ResultsContainerComponent,
@@ -39,6 +41,7 @@ import {RouterModule} from "@angular/router";
 		SortingDropdownComponent,
 		FilterOptionHeaderComponent,
 		FilterOptionRowComponent,
+		SearchInputComponent,
 	],
 	entryComponents: [
 		FilterDialogComponent

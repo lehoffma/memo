@@ -1,8 +1,12 @@
 <div class="header" fxLayout="row" fxLayoutAlign="space-between center">
-	<h3 class="results-title">Deine Bestellungen</h3>
-	<mat-form-field appearance="outline" class="search-input small-outline-formfield no-errors">
-		<input matInput placeholder="Suche..">
-	</mat-form-field>
+	<h3 class="results-title" *ngIf="!(searchIsExpanded$ | async)">Deine Bestellungen</h3>
+	<memo-search-input placeholder="Durchsuche Bestellungen" [class.flex-grow]="searchIsExpanded$ | async"
+					   [mobileExpanded]="searchIsExpanded$ | async"
+					   [value]="initialValue"
+					   (search)="search($event)"
+					   (onFocus)="onFocus($event)"
+
+	></memo-search-input>
 </div>
 
 
