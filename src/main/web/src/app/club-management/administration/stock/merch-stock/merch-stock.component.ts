@@ -8,8 +8,8 @@ import {SortingOption, SortingOptionHelper} from "../../../../shared/model/sorti
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FilterOptionBuilder} from "../../../../shared/search/filter-option-builder.service";
 import {SearchResultsFilterOption} from "../../../../shared/search/search-results-filter-option";
-import {BehaviorSubject, combineLatest, forkJoin, Observable, of, Subject} from "rxjs";
-import {debounceTime, distinctUntilChanged, filter, first, map, mergeMap, scan, takeUntil, tap} from "rxjs/operators";
+import {BehaviorSubject, combineLatest, Observable, of, Subject} from "rxjs";
+import {debounceTime, distinctUntilChanged, filter, first, map, mergeMap, scan, tap} from "rxjs/operators";
 import {Event} from "../../../../shop/shared/model/event";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";
 import {Direction, Sort} from "../../../../shared/model/api/sort";
@@ -136,7 +136,7 @@ export class MerchStockComponent implements OnInit, OnDestroy {
 	 *
 	 * @returns {Observable<any[]>}
 	 */
-	getStockEntryList$(merch$: Observable<Event[]>): Observable<StockEntry[]>{
+	getStockEntryList$(merch$: Observable<Event[]>): Observable<StockEntry[]> {
 		return merch$
 			.pipe(
 				filter(it => it !== null),

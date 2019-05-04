@@ -87,6 +87,10 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	private onDestroy$: Subject<any> = new Subject<any>();
 	isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty("detailRow");
 
+	get hasExpandableInfo(){
+		return this.expandedRows.length > 0;
+	}
+
 	constructor(private activatedRoute: ActivatedRoute,
 				private router: Router,) {
 		this.selection = new SelectionModel<T>(true, []);
@@ -160,7 +164,6 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 
 	updateExpandedRows(columns: TableColumn<T>[], displayedColumns: string[]) {
 		this.expandedRows = columns.filter(it => displayedColumns.indexOf(it.columnDef) === -1);
-
 	}
 
 

@@ -12,10 +12,6 @@ $options-breakpoint: 850px;
 
 	@media all and (max-width: $options-breakpoint) {
 		flex-direction: column;
-
-		memo-order-options {
-			box-shadow: none;
-		}
 	}
 
 	.options-button {
@@ -39,12 +35,6 @@ $options-breakpoint: 850px;
 
 			margin: 0.85rem;
 			padding: 34px 16px 16px;
-
-			memo-order-options {
-				background: white;
-				border-radius: 4px;
-				padding: 8px 16px 16px;
-			}
 		}
 
 		@media all and (max-width: $options-breakpoint) {
@@ -108,6 +98,14 @@ $options-breakpoint: 850px;
 	@media all and (min-width: $options-breakpoint) {
 		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 		margin-right: 1rem;
+	}
+}
+
+:host {
+	/deep/ .results-container {
+		> *:not(:last-child) {
+			margin-bottom: 24px;
+		}
 	}
 }
 

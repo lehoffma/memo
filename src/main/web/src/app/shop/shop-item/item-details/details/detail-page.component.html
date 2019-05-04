@@ -34,7 +34,7 @@
 						</span>
 						<span class="options" *ngIf="true">
 							<!--{{order}}-->
-						<!--todo: order details => amount, color/size combination..-->
+							<!--todo: order details => amount, color/size combination..-->
 						</span>
 					</div>
 					<mat-icon>
@@ -54,7 +54,7 @@
 
 	<ng-container *ngIf="isTour(item)">
 		<memo-simple-content-container [title]="'Route'" memoSpiedOnElement="eventMap" id="eventMap"
-								class="desktop-elevation">
+									   class="desktop-elevation">
 			<memo-route-list *ngIf="(route$ | async) as route"
 							 [miles]="item?.miles * 2"
 							 [duration]="item?.duration"
@@ -64,17 +64,18 @@
 	</ng-container>
 
 	<memo-simple-content-container id="description" #description [title]="'Beschreibung'" class="desktop-elevation"
-							memoSpiedOnElement="description">
+								   memoSpiedOnElement="description">
 		<span class="description secondary-text" content>{{item?.description}}</span>
 	</memo-simple-content-container>
 
 	<ng-container *ngIf="!isMerch(item)">
 		<memo-simple-content-container [title]="'Teilnehmer (' + (participants$ | async)?.length + ')'"
-								memoSpiedOnElement="eventParticipants"
-								id="eventParticipants" #participants
-								class="desktop-elevation"
-								[route]="participantsLink$ | async">
+									   memoSpiedOnElement="eventParticipants"
+									   id="eventParticipants" #participants
+									   class="desktop-elevation"
+									   [route]="participantsLink$ | async">
 			<memo-participants [participants]="participants$ | async"
+							   [type]="item.type"
 							   [isAllowedToSeeMetaInfo]="!!(participantsLink$ | async)"
 							   [canCheckIn]="(permissions$ | async).checkIn"
 							   (shareEvent)="openShareDialog()"
@@ -84,7 +85,7 @@
 	</ng-container>
 
 	<memo-simple-content-container [title]="'Kommentare'" #comments id="comments" class="desktop-elevation"
-							memoSpiedOnElement="comments">
+								   memoSpiedOnElement="comments">
 		<memo-comments-section [comments]="comments$ | async"
 							   [canLoadMore]="canLoadMore$ | async"
 							   (loadMore)="loadMoreComments()"

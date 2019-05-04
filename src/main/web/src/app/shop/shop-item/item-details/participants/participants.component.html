@@ -1,54 +1,55 @@
 <div class="participants-container" *ngIf="participants && participants.length > 0">
 	<div *ngFor="let participant of (participants)" class="participant mat-elevation-z1">
 		<a routerLink="/club/members/{{participant.user.id}}">
-			<div class="image-container">
-				<img
-					src="{{(participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"
-					alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
+			<div fxLayout="column" fxLayoutAlign="flex-start center">
+				<div class="image-container">
+					<img
+						src="{{(participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"
+						alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
+				</div>
+				<h3>
+					{{participant?.user?.firstName}}
+					<br/>
+					{{participant?.user?.surname}}
+				</h3>
+				<span> {{participant?.user?.clubRole}} </span>
 			</div>
-			<h3>
-				{{participant?.user?.firstName}}
-				<br/>
-				{{participant?.user?.surname}}
-			</h3>
-			<span> {{participant?.user?.clubRole}} </span>
-		</a>
-
-		<div class="badges">
-			<div class="participant-badge participant-tickets"
-				 [style.visibility]="(isAllowedToSeeMetaInfo) ? 'visible' : 'hidden'"
-				 [matTooltip]="participant.needsTicketAmount > 0
+			<div class="badges">
+				<div class="participant-badge participant-tickets"
+					 [style.visibility]="(isAllowedToSeeMetaInfo && type === 'tours') ? 'visible' : 'hidden'"
+					 [matTooltip]="participant.needsTicketAmount > 0
 			 ? ('Dieser Nutzer hat ' + participant.needsTicketAmount + ' Stadionticket' + (participant.needsTicketAmount === 1 ? '' : 's') + ' angefordert')
 			 : ('Dieser Nutzer benötigt keine Tickets.')"
-				 [class.needs-ticket]="participant.needsTicketAmount > 0">
-				<ng-container *ngIf="participant.needsTicketAmount > 0">
+					 [class.needs-ticket]="participant.needsTicketAmount > 0">
+					<ng-container *ngIf="participant.needsTicketAmount > 0">
 				<span class="ticket-amount">
 					{{participant.needsTicketAmount}}
 				</span>
-					<span class="multiplier">x</span>
-				</ng-container>
-				<mat-icon>local_play</mat-icon>
-			</div>
-			<div class="participant-badge extra-persons"
-				 [style.visibility]="(participant.extraPersons > 0) ? 'visible' : 'hidden'"
-				 [matTooltip]="'Dieser Nutzer hat ' + participant.extraPersons + ' extra Person' + (participant.extraPersons === 1 ? '' : 'en') + ' angemeldet'"
-			>
+						<span class="multiplier">x</span>
+					</ng-container>
+					<mat-icon>local_play</mat-icon>
+				</div>
+				<div class="participant-badge extra-persons"
+					 [style.visibility]="(participant.extraPersons > 0) ? 'visible' : 'hidden'"
+					 [matTooltip]="'Dieser Nutzer hat ' + participant.extraPersons + ' extra Person' + (participant.extraPersons === 1 ? '' : 'en') + ' angemeldet'"
+				>
 			<span class="extra-persons-amount">
 				+{{participant.extraPersons}}
 			</span>
-				<span>Person{{(participant.extraPersons === 1 ? '' : 'en')}}</span>
-			</div>
-			<div class="participant-badge is-driver"
-				 [style.visibility]="(isAllowedToSeeMetaInfo && participant.isDriverAmount > 0) ? 'visible' : 'hidden'"
-				 [matTooltip]="participant.isDriverAmount + ' sind als Fahrer angemeldet.'"
-			>
+					<span>Person{{(participant.extraPersons === 1 ? '' : 'en')}}</span>
+				</div>
+				<div class="participant-badge is-driver"
+					 [style.visibility]="(isAllowedToSeeMetaInfo && participant.isDriverAmount > 0 && type === 'tours') ? 'visible' : 'hidden'"
+					 [matTooltip]="participant.isDriverAmount + ' sind als Fahrer angemeldet.'"
+				>
 			<span class="driver-amount">
 				{{participant.isDriverAmount}}
 			</span>
-				<span class="multiplier">x</span>
-				<mat-icon>directions_car</mat-icon>
+					<span class="multiplier">x</span>
+					<mat-icon>directions_car</mat-icon>
+				</div>
 			</div>
-		</div>
+		</a>
 	</div>
 
 </div>

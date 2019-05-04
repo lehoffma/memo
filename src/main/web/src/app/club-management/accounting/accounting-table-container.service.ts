@@ -67,7 +67,6 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 				protected entryService: EntryService) {
 		super(loginService.getActionPermissions("funds"));
 
-		this.dataSource.isExpandable = false;
 		this.dataSource.filter$ = this.filteredBy$;
 		this.dataSource.sort$ = this.sortedBy$;
 

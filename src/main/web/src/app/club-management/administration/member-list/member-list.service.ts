@@ -63,7 +63,6 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 			));
 
 
-		this.dataSource.isExpandable = false;
 		this.dataSource.filter$ = this.filteredBy$;
 		this.dataSource.sort$ = this.sortedBy$;
 
