@@ -13,7 +13,7 @@ import {Direction, Sort} from "../shared/model/api/sort";
 import {Filter} from "../shared/model/api/filter";
 import {HttpClient} from "@angular/common/http";
 import {WindowService} from "../shared/services/window.service";
-import {ImageLazyLoadService} from "../shared/services/image-lazy-load.service";
+import {ImageLazyLoadService} from "../shared/progressive-image-loading/image-lazy-load.service";
 
 interface EventsPreview {
 	title: string,
@@ -84,15 +84,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 	onDestroy$ = new Subject<any>();
 
-	private heroImageUrl = "landing-page-hero-image";
-
-	public hasBeenLoadedOnce = this.imageLazyLoadService.hasBeenLoaded(this.heroImageUrl, this.windowService.dimensions);
-
-	heroImage$ = this.windowService.dimension$
-		.pipe(
-			mergeMap(dimensions => this.imageLazyLoadService.getImage(this.heroImageUrl, dimensions)),
-			tap(() => setTimeout(() => this.hasBeenLoadedOnce = true, 100))
-		);
+	heroImageUrl = "landing-page-hero-image";
 
 	combinedEvents: Observable<Event[]>;
 	userIsLoggedOut$ = this.loginService.isLoggedInObservable()
@@ -116,7 +108,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy(): void {
-		this.onDestroy$.next();
-		this.onDestroy$.complete();
+		this.onDestroy$.next(true);
 	}
 }

@@ -1,7 +1,8 @@
 <div class="home-header">
-	<img class="home-header--background"
-		 [class.loading]="!hasBeenLoadedOnce"
-		 [src]='(heroImage$ | async) || "/resources/images/landing-page-hero-image-preview.jpg"' alt=""/>
+	<img class="home-header--background" memoProgressiveImageSrc
+		 [progressiveImageSrc]="heroImageUrl"
+		 fallbackImage="/resources/images/landing-page-hero-image-preview.jpg"
+		 alt=""/>
 
 	<div>
 		<img src="../../resources/images/Logo.png" class="header-logo"/>

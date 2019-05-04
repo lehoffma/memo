@@ -53,6 +53,7 @@ import {faEnvelope} from "@fortawesome/free-solid-svg-icons/faEnvelope";
 import {faGlobe} from "@fortawesome/free-solid-svg-icons/faGlobe";
 import {adapterFactory} from "angular-calendar/date-adapters/date-fns";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import {ProgressiveImageLoadingModule} from "./shared/progressive-image-loading/progressive-image-loading.module";
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -128,6 +129,7 @@ registerLocaleData(localeDe);
 
 		//memo modules
 		SharedModule,
+		ProgressiveImageLoadingModule,
 		//includes every servlet/api service
 		ApiServicesModule.forRoot(),
 		//includes other (non-api) services needed throughout the app
