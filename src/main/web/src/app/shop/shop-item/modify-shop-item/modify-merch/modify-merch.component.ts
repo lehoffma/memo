@@ -28,8 +28,6 @@ export class ModifyMerchComponent implements OnInit {
 	@Output() onSubmit: EventEmitter<ModifyItemEvent> = new EventEmitter();
 	ModifyType = ModifyType;
 
-	isDesktop$ = this.windowService.hasMinDimensions(800);
-
 	constructor(private location: Location,
 				public modifyItemService: ModifyItemService,
 				private stockService: StockService,

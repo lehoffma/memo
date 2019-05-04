@@ -4,10 +4,9 @@
 	</h3>
 	<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
 
-		<memo-item-details-content [title]="'Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
-								   class="grouped"
-								   [formGroup]="formGroup"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container [title]="'Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
+							 class="grouped"
+							 [formGroup]="formGroup">
 
 			<div class="form-input-container">
 				<div class="form-label">Titel</div>
@@ -92,16 +91,15 @@
 
 				</memo-event-autocomplete>
 			</div>
-		</memo-item-details-content>
+		</memo-form-container>
 
-		<memo-item-details-content [title]="'Bilder'" class="grouped"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container [title]="'Bilder'" class="grouped">
 			<memo-multi-image-upload [previousValue]="previousValue?.images"
 									 class="mat-elevation-z3"
 									 [formGroup]="formGroup.get('images')">
 
 			</memo-multi-image-upload>
-		</memo-item-details-content>
+		</memo-form-container>
 
 
 		<!--below all that-->

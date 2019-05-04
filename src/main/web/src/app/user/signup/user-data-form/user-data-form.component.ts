@@ -27,13 +27,10 @@ export class UserDataFormComponent implements OnInit {
 	@Output() onSubmit = new EventEmitter<ModifyItemEvent>();
 	@Output() onCancel = new EventEmitter();
 
-	isDesktop$ = this.windowService.hasMinDimensions(800);
-
 	constructor(public loginService: LogInService,
 				private formBuilder: FormBuilder,
 				public userService: UserService,
 				public modifyItemService: ModifyItemService,
-				private windowService: WindowService,
 				public router: Router,
 				public activatedRoute: ActivatedRoute,
 				public addressService: AddressService) {

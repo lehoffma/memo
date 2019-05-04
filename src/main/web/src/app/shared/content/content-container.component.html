@@ -1,4 +1,5 @@
-<div class="centered-container container" [class.horizontal]="direction === 'horizontal'">
+<div class="centered-container container"
+	 [class.horizontal]="direction ? direction === 'horizontal' : automaticDirection === 'horizontal'">
 
 	<div class="object-details-content-container">
 		<div class="container--header">

@@ -33,6 +33,7 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			map((urls: UrlSegment[]) => {
 				// "tours/:id/participants"
 				// "partys/:id/participants"
+				// shop/partys/1/conclude?showCancelled=true
 				//shop/partys/1/participants?page=1&pageSize=20
 				let eventType = EventType[urls[1].path];
 				let eventId = +urls[2].path;

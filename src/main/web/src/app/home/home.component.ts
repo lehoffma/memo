@@ -95,7 +95,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 				private http: HttpClient,
 				private cdRef: ChangeDetectorRef,
 				private windowService: WindowService,
-				private imageLazyLoadService: ImageLazyLoadService,
 				private loginService: LogInService) {
 	}
 

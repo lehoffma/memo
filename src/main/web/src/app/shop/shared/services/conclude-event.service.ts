@@ -39,6 +39,8 @@ export class ConcludeEventService {
 	 * @param {User[]} reportResponsibleUsers
 	 */
 	public concludeEvent(eventId: number, groupPicture: ImageToUpload, reportResponsibleUsers: User[]): Observable<Event> {
+		//todo set status of every valid participant to PARTICIPATED (see #204)
+
 		return this.eventService.getById(eventId)
 			.pipe(
 				mergeMap(event => this.replaceGroupImage(event, groupPicture)),

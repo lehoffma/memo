@@ -49,6 +49,7 @@ import {AutocompleteFormsModule} from "./forms/autocomplete/autocomplete-forms.m
 import {FigureCardComponent} from "./figure-card/figure-card.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import { OrderItemStatusComponent } from './renderers/order-renderer/order-item-status/order-item-status.component';
+import {ContentContainerModule} from "./content/content-container.module";
 
 const forms = [
 	DisableIfDirective,
@@ -86,6 +87,7 @@ const forms = [
 		AutocompleteFormsModule,
 		LetModule,
 		FlexLayoutModule,
+		ContentContainerModule,
 	],
 	declarations: [
 		EventCalendarComponent,
@@ -120,6 +122,7 @@ const forms = [
 		ExpandableMaterialTableModule,
 		SharedPipesModule,
 		LazyLoadingModule,
+		ContentContainerModule,
 		//todo remove
 		SharedSearchModule,
 		AutocompleteFormsModule,

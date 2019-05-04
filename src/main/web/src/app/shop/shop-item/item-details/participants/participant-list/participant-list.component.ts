@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, TemplateRef, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, HostBinding, Input, OnDestroy, OnInit, TemplateRef, ViewChild} from "@angular/core";
 import {ParticipantUser} from "../../../../shared/model/participant";
 import {ParticipantListService} from "./participant-list.service";
 import {RowAction, TableAction} from "../../../../../shared/utility/material-table/util/row-action";
@@ -36,6 +36,18 @@ import {of} from "rxjs/internal/observable/of";
 	providers: [ParticipantListService]
 })
 export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestroy {
+	_partOfForm = false;
+	@HostBinding("class.part-of-form")
+	@Input()
+	get partOfForm() {
+		return this._partOfForm;
+	}
+
+	set partOfForm(partOfForm: boolean) {
+		this._partOfForm = partOfForm;
+		this.showCancelledFormControl.setValue(true);
+	}
+
 	showCancelledFormControl = new FormControl(
 		this.activatedRoute.snapshot.queryParamMap.has("showCancelled")
 			? this.activatedRoute.snapshot.queryParamMap.get("showCancelled") === "true"
@@ -48,12 +60,21 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 
 	@ViewChild("bulkEditingMenu") bulkEditingMenu: any;
 
-	columns: TableColumn<ParticipantUser>[] = [
-		{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
-		{columnDef: "status", header: "Status", cell: element => orderStatusToString(element.status)},
-		{columnDef: "isDriver", header: "Ist Fahrer", cell: element => element.isDriver, type: "boolean"},
-		{columnDef: "needsTicket", header: "Braucht Ticket", cell: element => element.needsTicket, type: "boolean"}
-	];
+	columns$: Observable<TableColumn<ParticipantUser>[]> = this.participantListService.eventInfo$.pipe(
+		map(eventInfo => {
+			let columns: TableColumn<ParticipantUser>[] = [
+				{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
+				{columnDef: "status", header: "Status", cell: element => orderStatusToString(element.status)}
+			];
+			if (eventInfo.eventType === EventType.tours) {
+				columns.push(
+					{columnDef: "isDriver", header: "Ist Fahrer", cell: element => element.isDriver, type: "boolean"},
+					{columnDef: "needsTicket", header: "Braucht Ticket", cell: element => element.needsTicket, type: "boolean"}
+				)
+			}
+			return columns;
+		})
+	);
 	displayedColumns$ = this.getDisplayedColumns();
 
 	dataSource = new ParticipantDataSource(this.participantUserService, this.userService);
@@ -89,6 +110,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 				)
 			}),
 		);
+
 
 	additionalItemInfo$: Observable<{ title: string; }> = this.participantListService.eventInfo$.pipe(
 		switchMap(eventInfo => {
@@ -130,26 +152,33 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 		this.participantListService.dataSource = this.dataSource;
 
 		this.showCancelledFormControl.valueChanges.pipe(takeUntil(this.onDestroy$))
-			.subscribe(showCancelled =>
-				this.router.navigate([], {queryParams: {showCancelled}, queryParamsHandling: "merge"})
-			)
+			.subscribe(showCancelled => {
+				if (!this._partOfForm) {
+
+					this.router.navigate([], {queryParams: {showCancelled}, queryParamsHandling: "merge"})
+				}
+			})
 	}
 
 	ngOnInit() {
 	}
 
 	getDisplayedColumns() {
-		return this.participantListService.eventInfo$
+		return this.columns$
 			.pipe(
-				switchMap(info => {
-					const columnHelper = new ResponsiveColumnsHelper(this.columns, this.breakpointObserver);
-					if (info.eventType === EventType.tours) {
-						columnHelper.addPixelBreakpoint(500, "isDriver");
-						columnHelper.addPixelBreakpoint(700, "needsTicket");
-					}
-					return columnHelper.build()
-						.pipe(startWith([]));
-				})
+				switchMap(columns => {
+					return this.participantListService.eventInfo$.pipe(
+						switchMap(eventInfo => {
+							const columnHelper = new ResponsiveColumnsHelper(columns, this.breakpointObserver);
+							if (eventInfo.eventType === EventType.tours) {
+								columnHelper.addPixelBreakpoint(500, "isDriver");
+								columnHelper.addPixelBreakpoint(700, "needsTicket");
+							}
+							return columnHelper.build();
+						}),
+						startWith([]),
+					)
+				}),
 			)
 	}
 

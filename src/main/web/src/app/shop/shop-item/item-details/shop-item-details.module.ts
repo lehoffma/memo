@@ -6,7 +6,6 @@ import {FullNameTableCellComponent} from "./participants/participant-list/full-n
 import {ParticipantsComponent} from "./participants/participants.component";
 import {ModifyParticipantComponent} from "./participants/participant-list/modify-participant/modify-participant.component";
 import {ClothesSizePipe} from "./details/clothes-size.pipe";
-import {ItemDetailsContentComponent} from "./content/item-details-content.component";
 import {ItemDetailsContainerComponent} from "./container/item-details-container.component";
 import {ItemInfoComponent} from "./info/item-info.component";
 import {ItemImagePopupComponent} from "./container/image-popup/item-image-popup.component";
@@ -27,7 +26,8 @@ import {MilesPipe} from "./participants/miles.pipe";
 import {ManageWaitingListDialogComponent} from "./add-to-cart-form/manage-waiting-list-dialog.component";
 import {SharedCheckoutModule} from "../../checkout/shared-checkout.module";
 import {ParticipantsModule} from "./participants/participant-list/participants.module";
-import { ItemOrderInfoComponent } from './item-order-info/item-order-info.component';
+import {ItemOrderInfoComponent} from "./item-order-info/item-order-info.component";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 @NgModule({
 	imports: [
@@ -42,7 +42,8 @@ import { ItemOrderInfoComponent } from './item-order-info/item-order-info.compon
 		AgmCoreModule,
 		ShopItemDetailsRoutingModule,
 		ParticipantsModule,
-		CommentsSectionModule
+		CommentsSectionModule,
+		FlexLayoutModule
 	],
 	declarations: [
 		routedComponents,
@@ -56,7 +57,6 @@ import { ItemOrderInfoComponent } from './item-order-info/item-order-info.compon
 		ClothesSizePipe,
 		AddressRendererPipe,
 
-		ItemDetailsContentComponent,
 		ItemDetailsContainerComponent,
 		ItemInfoComponent,
 		ItemImagePopupComponent,
@@ -76,7 +76,6 @@ import { ItemOrderInfoComponent } from './item-order-info/item-order-info.compon
 		ManageWaitingListDialogComponent,
 	],
 	exports: [
-		ItemDetailsContentComponent,
 		ItemImagePopupComponent,
 	]
 })

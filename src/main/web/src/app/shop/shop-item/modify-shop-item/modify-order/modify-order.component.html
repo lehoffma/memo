@@ -4,9 +4,8 @@
 	</h3>
 	<form [formGroup]="modifyOrderService.formGroup" (ngSubmit)="modifyOrderService.submit()"
 		  *ngIf="modifyOrderService">
-		<memo-item-details-content [title]="'Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
-								   class="grouped"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container [title]="'Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
+							 class="grouped">
 
 			<memo-user-autocomplete
 				[resetOnSelect]="false" [required]="true"
@@ -58,16 +57,15 @@
 					</mat-select>
 				</mat-form-field>
 			</div>
-		</memo-item-details-content>
+		</memo-form-container>
 
 
-		<memo-item-details-content [title]="'Bestelle Items'"
-								   class="grouped"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container [title]="'Bestelle Items'"
+							 class="grouped">
 			<memo-ordered-item-form [formGroup]="modifyOrderService.formGroup" class="mat-elevation-z3">
 
 			</memo-ordered-item-form>
-		</memo-item-details-content>
+		</memo-form-container>
 
 
 		<div class="form-buttons">

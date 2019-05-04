@@ -53,46 +53,47 @@
 	</div>
 
 	<ng-container *ngIf="isTour(item)">
-		<memo-item-details-content [title]="'Route'" memoSpiedOnElement="eventMap" id="eventMap"
-								   class="desktop-elevation">
+		<memo-simple-content-container [title]="'Route'" memoSpiedOnElement="eventMap" id="eventMap"
+								class="desktop-elevation">
 			<memo-route-list *ngIf="(route$ | async) as route"
 							 [miles]="item?.miles * 2"
 							 [duration]="item?.duration"
 							 [route]="route"></memo-route-list>
 			<memo-route-map *ngIf="(route$ | async) as route" [tourRoute]="route" content></memo-route-map>
-		</memo-item-details-content>
+		</memo-simple-content-container>
 	</ng-container>
 
-	<memo-item-details-content id="description" #description [title]="'Beschreibung'" class="desktop-elevation"
-							   memoSpiedOnElement="description">
+	<memo-simple-content-container id="description" #description [title]="'Beschreibung'" class="desktop-elevation"
+							memoSpiedOnElement="description">
 		<span class="description secondary-text" content>{{item?.description}}</span>
-	</memo-item-details-content>
+	</memo-simple-content-container>
 
 	<ng-container *ngIf="!isMerch(item)">
-		<memo-item-details-content [title]="'Teilnehmer (' + (participants$ | async)?.length + ')'"
-								   memoSpiedOnElement="eventParticipants"
-								   id="eventParticipants" #participants
-								   class="desktop-elevation"
-								   [route]="participantsLink$ | async">
+		<memo-simple-content-container [title]="'Teilnehmer (' + (participants$ | async)?.length + ')'"
+								memoSpiedOnElement="eventParticipants"
+								id="eventParticipants" #participants
+								class="desktop-elevation"
+								[route]="participantsLink$ | async">
 			<memo-participants [participants]="participants$ | async"
 							   [isAllowedToSeeMetaInfo]="!!(participantsLink$ | async)"
 							   [canCheckIn]="(permissions$ | async).checkIn"
 							   (shareEvent)="openShareDialog()"
 							   (toRegistration)="scrollToId('info')"
 							   content></memo-participants>
-		</memo-item-details-content>
+		</memo-simple-content-container>
 	</ng-container>
 
-	<memo-item-details-content [title]="'Kommentare'" #comments id="comments" class="desktop-elevation"
-							   memoSpiedOnElement="comments">
+	<memo-simple-content-container [title]="'Kommentare'" #comments id="comments" class="desktop-elevation"
+							memoSpiedOnElement="comments">
 		<memo-comments-section [comments]="comments$ | async"
 							   [canLoadMore]="canLoadMore$ | async"
 							   (loadMore)="loadMoreComments()"
 							   [eventId]="item.id"
 							   (onDeleteComment)="deleteComment($event)"
 							   content></memo-comments-section>
-	</memo-item-details-content>
+	</memo-simple-content-container>
 </div>
+
 
 <ng-template #loading>
 	loading...

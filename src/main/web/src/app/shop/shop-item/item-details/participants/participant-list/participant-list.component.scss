@@ -1,7 +1,14 @@
 @import "~@angular/material/theming";
 @import "theme";
 
-//todo redesign: filter options, important data above details table
+:host.part-of-form {
+	padding: 0;
+
+	memo-expandable-material-table {
+		margin: 0;
+	}
+}
+
 $breakpoint: 600px;
 
 .participant-overview {

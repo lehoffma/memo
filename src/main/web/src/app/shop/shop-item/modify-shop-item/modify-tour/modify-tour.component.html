@@ -4,10 +4,9 @@
 	</h3>
 
 	<form #modifyShopItemForm="ngForm" *ngIf="formGroup" (ngSubmit)="submitModifiedObject()">
-		<memo-item-details-content class="grouped"
-								   [title]="'Tour-Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'"
-								   [formGroup]="formGroup.get('event-data')">
+		<memo-form-container class="grouped"
+							 [title]="'Tour-Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
+							 [formGroup]="formGroup.get('event-data')">
 			<div class="form-input-container">
 				<label class="form-label">Titel</label>
 				<mat-form-field appearance="outline"
@@ -131,11 +130,10 @@
 
 				</div>
 			</div>
-		</memo-item-details-content>
+		</memo-form-container>
 
 
-		<memo-item-details-content class="grouped" [title]="'Berechtigungen'" [subtitle]="'Minimum Berechtigungen'"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container class="grouped" [title]="'Berechtigungen'" [subtitle]="'Minimum Berechtigungen'">
 			<memo-item-permissions-input
 				[formGroup]="formGroup.get('permissions')"
 				[previousValue]="{
@@ -145,19 +143,17 @@
 				}">
 
 			</memo-item-permissions-input>
-		</memo-item-details-content>
+		</memo-form-container>
 
-		<memo-item-details-content class="grouped" [title]="'Bezahlung'"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container class="grouped" [title]="'Bezahlung'">
 			<memo-payment-method-configuration
 				[formGroup]="formGroup.get('payment-config')">
 
 			</memo-payment-method-configuration>
-		</memo-item-details-content>
+		</memo-form-container>
 
 
-		<memo-item-details-content class="grouped route-input" [title]="'Route'"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container class="grouped route-input" [title]="'Route'">
 			<memo-tour-route-input class="mat-elevation-z3"
 								   [previousValue]="previousValue?.route"
 								   [formControl]="formGroup.get('addresses')"
@@ -166,22 +162,20 @@
 								   [isTour]="true" content>
 
 			</memo-tour-route-input>
-		</memo-item-details-content>
+		</memo-form-container>
 
-		<memo-item-details-content class="grouped" [title]="'Bilder'"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container class="grouped" [title]="'Bilder'">
 			<memo-multi-image-upload [formGroup]="formGroup.get('images')" class="mat-elevation-z3"
 									 [previousValue]="previousValue?.images">
 			</memo-multi-image-upload>
-		</memo-item-details-content>
+		</memo-form-container>
 
-		<memo-item-details-content class="grouped" [title]="'Verantwortliche User'"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container class="grouped" [title]="'Verantwortliche User'">
 			<memo-responsible-user-input [previousValue]="previousValue?.author" class="mat-elevation-z3"
 										 [formControl]="formGroup.get('responsible-users')">
 
 			</memo-responsible-user-input>
-		</memo-item-details-content>
+		</memo-form-container>
 
 
 		<!--below all that-->

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
-import {map, mergeMap} from "rxjs/operators";
+import {map, mergeMap, tap} from "rxjs/operators";
 import {combineLatest, Observable, of} from "rxjs";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {EventType} from "../../../shared/model/event-type";
@@ -40,14 +40,15 @@ export class ConcludeEventComponent implements OnInit, OnDestroy {
 			map((urls: UrlSegment[]) => {
 				// "tours/:id/participants"
 				// "partys/:id/participants"
-				let eventType = EventType[urls[0].path];
-				let eventId = +urls[1].path;
+				let eventType = EventType[urls[1].path];
+				let eventId = +urls[2].path;
 
 				return {eventType, eventId};
 			})
 		);
 
 	event$ = this.eventInfo$.pipe(
+		tap(it => console.log(it)),
 		mergeMap(info => this.eventService.getById(info.eventId))
 	);
 

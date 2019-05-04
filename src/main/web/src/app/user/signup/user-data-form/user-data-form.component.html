@@ -1,12 +1,10 @@
-<div class="modify-shop-item-container" *ngLet="isDesktop$ | async as isDesktop">
+<div class="modify-shop-item-container">
 	<h3 class="container--header" *ngIf="showHeader">
 		Nutzer bearbeiten
 	</h3>
 	<form (ngSubmit)="submit()" [formGroup]="userDataForm" novalidate>
-		<memo-item-details-content [title]="'Profilbild'"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'"
-								   subtitle="Optional"
-
+		<memo-form-container [title]="'Profilbild'"
+							 subtitle="Optional"
 		>
 			<memo-multi-image-upload class="mat-elevation-z3"
 				[formGroup]="userDataForm.get('images')"
@@ -15,34 +13,30 @@
 			>
 
 			</memo-multi-image-upload>
-		</memo-item-details-content>
+		</memo-form-container>
 
-		<memo-item-details-content [title]="'Persönliche Daten'"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container [title]="'Persönliche Daten'">
 			<memo-personal-data-form [formGroup]="userDataForm.get('personal-data')"></memo-personal-data-form>
-		</memo-item-details-content>
-		<memo-item-details-content [title]="'Addressen'"
-								   subtitle="Wird für Abrechnungen benötigt (Optional bis zum Abschluss eines Kaufs)"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		</memo-form-container>
+		<memo-form-container [title]="'Addressen'"
+							 subtitle="Wird für Abrechnungen benötigt (Optional bis zum Abschluss eines Kaufs)">
 			<memo-address-form class="mat-elevation-z3" [formGroup]="userDataForm"></memo-address-form>
-		</memo-item-details-content>
+		</memo-form-container>
 
-		<memo-item-details-content [title]="'Account Informationen'" *ngIf="withEmailAndPassword"
-								   subtitle="Passwort bleibt unverändert wenn Feld leer gelassen wird"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container [title]="'Account Informationen'" *ngIf="withEmailAndPassword"
+							 subtitle="Passwort bleibt unverändert wenn Feld leer gelassen wird">
 			<memo-email-input [form]="userDataForm.get('account-data')"></memo-email-input>
 			<memo-password-input [form]="userDataForm.get('account-data')" [required]="false">
 
 			</memo-password-input>
-		</memo-item-details-content>
+		</memo-form-container>
 
 		<!--todo permissions component?-->
 
-		<memo-item-details-content [title]="'Vereinsinformationen'" *ngIf="loginService.isLoggedInObservable() | async"
-								   [direction]="!(isDesktop) ? 'vertical' : 'horizontal'">
+		<memo-form-container [title]="'Vereinsinformationen'" *ngIf="loginService.isLoggedInObservable() | async">
 			<memo-club-information-form
 				[formGroup]="userDataForm.get('club-information')"></memo-club-information-form>
-		</memo-item-details-content>
+		</memo-form-container>
 
 
 		<div class="form-buttons">

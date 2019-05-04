@@ -1,7 +1,7 @@
 import {TableColumn} from "./expandable-material-table.component";
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {map} from "rxjs/operators";
-import {combineLatest, Observable} from "rxjs";
+import {combineLatest, Observable, of} from "rxjs";
 
 
 export class ResponsiveColumnsHelper<T> {
@@ -62,19 +62,23 @@ export class ResponsiveColumnsHelper<T> {
 	build(): Observable<string[]> {
 		const observedBreakpoints = Array.from(this.observedBreakpoints.values());
 
-		return combineLatest(
-			...observedBreakpoints
-				.map(breakpoint =>
-					this.breakpointObserver.observe(breakpoint).pipe(
-						map(result => {
-							if (!result.matches) {
-								return [];
-							}
-							return this.getColumnDefsOfBreakpoint(breakpoint);
-						})
+		const breakpointsObserver = observedBreakpoints.length === 0
+			? of([])
+			: combineLatest(
+				...observedBreakpoints
+					.map(breakpoint =>
+						this.breakpointObserver.observe(breakpoint).pipe(
+							map(result => {
+								if (!result.matches) {
+									return [];
+								}
+								return this.getColumnDefsOfBreakpoint(breakpoint);
+							})
+						)
 					)
-				)
-		).pipe(
+			);
+
+		return breakpointsObserver.pipe(
 			map((columnRefListList: string[][]) => {
 				const alwaysAvailableColumns = this.getAlwaysAvailableColumndefs();
 

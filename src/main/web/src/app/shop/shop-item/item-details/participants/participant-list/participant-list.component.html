@@ -1,9 +1,11 @@
-<div class="event-header" fxHide.gt-xs *ngIf="additionalItemInfo$ | async as info">
-	<span class="event-title">
-		{{info.title}}
-	</span>
-</div>
-<div class="participants-header" fxLayout="row">
+<ng-container *ngIf="!partOfForm">
+	<div class="event-header" fxHide.gt-xs *ngIf="additionalItemInfo$ | async as info">
+		<span class="event-title">
+			{{info.title}}
+		</span>
+	</div>
+</ng-container>
+<div class="participants-header" fxLayout="row" *ngIf="!partOfForm">
 	<mat-icon routerLink="../" fxHide.gt-xs>chevron_left</mat-icon>
 	<div class="participants-header-title">
 		<h1>Teilnehmerübersicht</h1>
@@ -12,7 +14,7 @@
 		</span>
 	</div>
 	<span fxFlex="grow"></span>
-	<button mat-icon-button [matMenuTriggerFor]="configMenu" fxHide.gt-xs>
+	<button mat-icon-button type="button" [matMenuTriggerFor]="configMenu" fxHide.gt-xs>
 		<mat-icon>more_vert</mat-icon>
 	</button>
 	<mat-checkbox fxHide.lt-sm [formControl]="showCancelledFormControl">Zeige stornierte</mat-checkbox>
@@ -25,11 +27,11 @@
 </mat-menu>
 
 
-<memo-participants-category-selection>
+<memo-participants-category-selection *ngIf="!partOfForm">
 
 </memo-participants-category-selection>
 
-<memo-expandable-material-table class="mat-elevation-z3" #participantsTable
+<memo-expandable-material-table class="mat-elevation-z3" #participantsTable *ngIf="columns$ | async as columns"
 								[dataSource]="dataSource"
 								[dataService]="participantUserService"
 								[filter$]="filter$"
@@ -48,15 +50,15 @@
 </memo-expandable-material-table>
 
 <mat-menu #bulkEditingMenu="matMenu">
-	<button mat-menu-item (click)="openBulkEdit('status')">
+	<button mat-menu-item type="button" (click)="openBulkEdit('status')">
 		Status bearbeiten
 	</button>
 	<ng-container *ngLet="participantListService.eventInfo$ | async as eventInfo">
 		<ng-container *ngIf="eventInfo.eventType === 'tours'">
-			<button mat-menu-item (click)="openBulkEdit('isDriver')">
+			<button mat-menu-item type="button" (click)="openBulkEdit('isDriver')">
 				Fahrerstatus bearbeiten
 			</button>
-			<button mat-menu-item (click)="openBulkEdit('needsTicket')">
+			<button mat-menu-item type="button" (click)="openBulkEdit('needsTicket')">
 				Ticketwunsch bearbeiten
 			</button>
 		</ng-container>

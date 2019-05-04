@@ -1,30 +1,44 @@
-<form [formGroup]="formGroup" (ngSubmit)="submit()">
-	<memo-participant-list class="participants-list mat-elevation-z3"></memo-participant-list>
+<div class="modify-shop-item-container">
+	<memo-content-container class="header" [title]="'Eventabschluss'" [direction]="'vertical'"
+							subtitle="Bevor die {{(eventInfo$ | async)?.eventType === 'tours' ? 'Tour' : 'Party'}} zu den Akten gelegt werden kann, müssen noch ein paar Dinge geklärt werden!">
+	</memo-content-container>
+	<div class="container--body">
+		<form [formGroup]="formGroup" (ngSubmit)="submit()">
+			<memo-content-container [title]="'Teilnehmer'"
+									subtitle="Falls noch Änderungen der Teilnehmerliste anstehen, sollte dies hier erledigt werden.
+									Änderungen in diesem Bereich werden automatisch gespeichert.">
+				<memo-participant-list [partOfForm]="true"></memo-participant-list>
+			</memo-content-container>
 
-	<div class="secondary-event-information">
-		<memo-item-details-content [title]="'Gruppenbild'">
-			<memo-multi-image-upload [limit]="1"
-									 [previousValue]="(previousValue$|async)?.images || []"
-									 [formGroup]="formGroup.get('images')"></memo-multi-image-upload>
-		</memo-item-details-content>
+			<memo-content-container [title]="'Gruppenbild'" subtitle="Das weltberühmte Gruppenfoto darf natürlich auch nicht fehlen!">
+				<memo-multi-image-upload [limit]="1" class="mat-elevation-z3"
+										 [previousValue]="(previousValue$|async)?.images || []"
+										 [formGroup]="formGroup.get('images')"></memo-multi-image-upload>
+			</memo-content-container>
 
-		<memo-item-details-content [title]="'Bericht-Verantwortliche'" class="responsible-user-input-container">
-			<memo-responsible-user-input [previousValue]="(previousValue$ | async)?.responsible"
-										 [formControl]="formGroup.get('responsibleUsers')">
+			<memo-content-container [title]="'Bericht-Verantwortliche'" subtitle="Und einen Bericht muss ja auch irgendjemand schreiben. Hier angegebene Personen werden sowohl über Email als auch über Web-Notification benachrichtigt.">
+				<memo-responsible-user-input [previousValue]="(previousValue$ | async)?.responsible"
+											 class="mat-elevation-z3"
+											 [formControl]="formGroup.get('responsibleUsers')">
 
-			</memo-responsible-user-input>
-		</memo-item-details-content>
+				</memo-responsible-user-input>
+			</memo-content-container>
+
+			<div class="form-buttons" fxLayout="row" fxLayoutGap="16px">
+
+				<a mat-button [routerLink]="['..']" type="button">Zurück</a>
+				<button mat-raised-button color="accent" type="submit"
+						[class.disabled]="!formGroup.valid || formGroup.pending">
+					<span *ngIf="!loading; else loadingSpinner">
+						Speichern
+					</span>
+					<ng-template #loadingSpinner>
+						<mat-icon class="loading-spinner">refresh</mat-icon>
+						<span>Speichert...</span>
+					</ng-template>
+				</button>
+			</div>
+
+		</form>
 	</div>
-
-
-	<div class="conclude-event-button mat-elevation-z6" type="submit" (click)="submit()"
-		 [class.disabled]="!formGroup.valid || formGroup.pending">
-		<span *ngIf="!loading; else loadingSpinner">
-			Speichern
-		</span>
-		<ng-template #loadingSpinner>
-			<mat-icon class="loading-spinner">refresh</mat-icon>
-			<span>Speichert...</span>
-		</ng-template>
-	</div>
-</form>
+</div>

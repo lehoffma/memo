@@ -10,7 +10,7 @@
 	<span class="empty-state-subheader">{{emptyStateSubtitle}}</span>
 	<div class="empty-state-actions" [ngSwitch]="!!customActions">
 		<ng-content select="memo-expandable-table-empty-state-actions" *ngSwitchCase="true"></ng-content>
-		<button *ngSwitchDefault mat-raised-button color="accent"
+		<button *ngSwitchDefault mat-raised-button color="accent" type="button"
 				(click)="onAction.emit({action: 'Hinzufuegen', entries: []})">
 			Hinzufügen
 		</button>

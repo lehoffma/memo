@@ -1,94 +1,59 @@
 @import "theme";
 
-.responsible-user-input-container /deep/ .container--body {
-	padding: 0;
-}
-
-.participants-list {
-	display: block;
-	box-shadow: 0 3px 3px -2px rgba(0, 0, 0, .2), 0 3px 4px 0 rgba(0, 0, 0, .14), 0 1px 8px 0 rgba(0, 0, 0, .12);
-}
-
-memo-participant-list.participants-list /deep/ .expandable-table-component-container {
-	max-width: 500px;
-	min-width: 0;
-}
-
-.conclude-event-button {
+:host {
 	display: flex;
 	justify-content: center;
-	align-items: center;
+}
+
+.modify-shop-item-container {
 	width: 100%;
+	max-width: 1000px;
+	background: white;
+	@include mat-elevation(3);
+	@include mat-elevation-transition();
+	border-radius: 4px;
+}
 
-	padding: 1.5rem;
-	margin-top: 1rem;
+.container--header {
+	margin: 0;
+	padding: 16px;
+	font-weight: 400;
+	border-bottom: 1px solid grey(200);
+	font-size: font-size(medium-larger);
+}
 
-	transition: all ease-in 0.2s;
-	@include background-accent();
-	font-size: font-size(medium);
-	cursor: pointer;
-
-	mat-icon {
-		margin-right: 5px;
-		transition: all ease-in 0.2s
+.header {
+	/deep/ .container--header h3 {
+		font-size: font-size(medium-larger);
 	}
 
-	&.disabled {
-		@include background-grey(600);
-		pointer-events: none;
-		cursor: initial;
+	/deep/ .container--body {
+		display: none;
 	}
 
-	&:not(.disabled) {
-		&:hover {
-			background: lighten($accent-default, 5%);
-			//mat-icon {
-			//	margin-right: 0;
-			//}
-		}
-	}
+	border-bottom: 1px solid grey(200);
 }
 
 memo-multi-image-upload {
-	padding: 0;
+	margin: auto;
+	border-radius: 4px;
 
-	/deep/ .actions-container {
-		padding: 1rem;
+	/deep/ memo-multi-image-container {
+		border-top-left-radius: 4px;
+		border-top-right-radius: 4px;
 	}
 }
 
-@media all and (min-width: 500px) {
-	.participants-list {
-		box-shadow: none;
-	}
+.form-buttons {
+	padding: 1rem;
+	display: flex;
+	justify-content: flex-end;
+	border-top: 1px solid grey(100);
 }
 
-@media all and (min-width: 600px) {
-	.secondary-event-information /deep/ .object-details-content-container {
-		@include mat-elevation(3);
-	}
-
-	memo-item-details-content:last-child {
-		margin-top: 2rem;
-		margin-bottom: 2rem;
-		display: block;
-	}
-}
-
-@media all and (min-width: 1000px) {
-	memo-participant-list.participants-list /deep/ .expandable-table-component-container {
-		min-width: calc(1000px - 1rem);
-		margin-bottom: 0.5rem;
-	}
-
-	.secondary-event-information {
-		display: flex;
-		justify-content: center;
-		flex-direction: column;
-		align-items: center;
-
-		memo-item-details-content {
-			width: 500px;
-		}
+@media all and(min-width: 800px) {
+	:host {
+		margin-top: 32px;
+		margin-bottom: 32px;
 	}
 }
