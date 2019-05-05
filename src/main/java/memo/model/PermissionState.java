@@ -175,17 +175,6 @@ public class PermissionState implements Serializable {
                 break;
 
             case Vorstand:
-
-                this.funds = Permission.read;
-                this.party = Permission.write;
-                this.userManagement = Permission.create;
-                this.merch = Permission.write;
-                this.tour = Permission.read;
-                this.stock = Permission.create;
-                this.settings = Permission.read;
-
-                break;
-
             case Schriftfuehrer:
 
                 this.funds = Permission.read;

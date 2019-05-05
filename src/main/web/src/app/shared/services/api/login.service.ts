@@ -31,7 +31,7 @@ export class LogInService {
 	public currentUser$: Observable<User> = this.accountObservable
 		.pipe(
 			distinctUntilChanged(),
-			mergeMap(id => id !== null ? this.userService.valueChanges(id) : of(null))
+			mergeMap(id => id !== null ? this.userService.valueChanges(id) : of(null)),
 		);
 	private readonly loginUrl = "/api/login";
 	private readonly logoutUrl = "/api/logout";

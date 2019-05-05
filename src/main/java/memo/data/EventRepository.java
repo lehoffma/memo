@@ -81,21 +81,6 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
                 .getResultList();
     }
 
-    public List<ShopItem> get(String eventId, String searchTerm, String eventType, String userId, String authorId,
-                              HttpServletResponse response) {
-        return this.getIf(new MapBuilder<String, Function<String, List<ShopItem>>>()
-                        .buildPut(eventId, this::get)
-                        .buildPut(searchTerm, it -> this.findBySearchTerm(searchTerm, EventServlet.getType(eventType)))
-                        .buildPut(eventType, s -> {
-                            if (searchTerm == null) {
-                                return this.findByType(EventServlet.getType(s));
-                            }
-                            return this.findBySearchTerm(searchTerm, EventServlet.getType(eventType));
-                        })
-                        .buildPut(userId, s -> this.findByParticipant(Integer.valueOf(s)))
-                        .buildPut(authorId, s -> this.findByAuthor(Integer.valueOf(s))),
-                this.getAll());
-    }
 
     @Override
     public List<ShopItem> getAll() {

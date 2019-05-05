@@ -20,7 +20,7 @@
 		"name": "Merchandise"
 	},
 	{
-		"name": "Mitgliedschaft",
+		"name": "Verein",
 		"icon": "",
 		"route": "membership",
 		"children": [
@@ -32,12 +32,30 @@
 			{
 				"route": "club/members",
 				"icon": "view_list",
-				"name": "Mitgliederliste"
+				"loginNeeded": true,
+				"name": "Mitgliederliste",
+				"minimumPermission": {
+					"userManagement": 3,
+					"merch": 0,
+					"tour": 0,
+					"party": 0,
+					"funds": 0,
+					"stock": 0
+				}
 			},
 			{
 				"route": "club/leaderboard",
 				"icon": "format_list_numbered",
-				"name": "Meilentabelle"
+				"loginNeeded": true,
+				"name": "Meilentabelle",
+				"minimumPermission": {
+					"userManagement": 0,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 0,
+					"stock": 0
+				}
 			}
 		]
 	},

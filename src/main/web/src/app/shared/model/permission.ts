@@ -39,7 +39,7 @@ export const visitorPermissions: UserPermissions = {
 	userManagement: Permission.none,
 	tour: Permission.read,
 	party: Permission.read,
-	merch: Permission.read,
+	merch: Permission.none,
 	funds: Permission.none,
 	stock: Permission.none,
 	settings: Permission.none

@@ -22,7 +22,7 @@
 		]
 	},
 	{
-		"route": "club",
+		"route": "club/calendar",
 		"icon": "",
 		"name": "Verein",
 		"children": [
@@ -34,12 +34,30 @@
 			{
 				"route": "club/leaderboard",
 				"icon": "",
-				"name": "Meilentabelle"
+				"loginNeeded": true,
+				"name": "Meilentabelle",
+				"minimumPermission": {
+					"userManagement": 0,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 0,
+					"stock": 0
+				}
 			},
 			{
 				"route": "club/members",
 				"icon": "",
-				"name": "Mitgliederliste"
+				"loginNeeded": true,
+				"name": "Mitgliederliste",
+				"minimumPermission": {
+					"userManagement": 3,
+					"merch": 0,
+					"tour": 0,
+					"party": 0,
+					"funds": 0,
+					"stock": 0
+				}
 			},
 			{
 				"route": "club/impressum",
@@ -57,8 +75,7 @@
 	{
 		"name": "Mitgliedschaft",
 		"icon": "",
-		"route": "membership",
-		"loginNeeded": true,
+		"route": "membership/apply",
 		"children": [
 			{
 				"route": "membership/apply",
@@ -68,6 +85,7 @@
 			{
 				"route": "membership/change",
 				"name": "Mitgliedsstatus ändern",
+				"loginNeeded": true,
 				"icon": ""
 			}
 		]
