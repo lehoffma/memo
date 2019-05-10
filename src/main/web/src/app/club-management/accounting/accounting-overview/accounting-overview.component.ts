@@ -2,9 +2,11 @@ import {Component, OnInit} from "@angular/core";
 import {EntryService} from "../../../shared/services/api/entry.service";
 import {Observable, of} from "rxjs";
 import {AccountingState} from "../../../shared/model/accounting-state";
-import {endOfMonth, startOfMonth, subMonths} from "date-fns";
+import {endOfMonth, format, isBefore, startOfMonth, subMonths} from "date-fns";
 import {Params} from "@angular/router";
 import {map} from "rxjs/operators";
+
+import * as shape from 'd3-shape';
 
 @Component({
 	selector: "memo-accounting-overview",
@@ -12,6 +14,7 @@ import {map} from "rxjs/operators";
 	styleUrls: ["./accounting-overview.component.scss"]
 })
 export class AccountingOverviewComponent implements OnInit {
+	curve = shape.curveBasis;
 
 	// state$: Observable<AccountingState> = this.entryService.getState();
 	state$: Observable<AccountingState> = of({
@@ -52,6 +55,22 @@ export class AccountingOverviewComponent implements OnInit {
 			{
 				totalBalance: 0,
 				month: subMonths(startOfMonth(new Date()), 4)
+			},
+			{
+				totalBalance: 1252,
+				month: subMonths(startOfMonth(new Date()), 5)
+			},
+			{
+				totalBalance: -205,
+				month: subMonths(startOfMonth(new Date()), 6)
+			},
+			{
+				totalBalance: 100,
+				month: subMonths(startOfMonth(new Date()), 7)
+			},
+			{
+				totalBalance: -200,
+				month: subMonths(startOfMonth(new Date()), 8)
 			}
 		],
 		expensesByCategory: {
@@ -72,6 +91,19 @@ export class AccountingOverviewComponent implements OnInit {
 
 	expensesByCategory$ = this.state$.pipe(map(state => this.toPieChart(state.expensesByCategory)));
 	incomeByCategory$ = this.state$.pipe(map(state => this.toPieChart(state.incomeByCategory)));
+	totalOverTime$ = this.state$.pipe(map(state => this.toLineChart(state.monthlyChanges)));
+
+	customColors: { name: string; value: string }[] = [
+		{name: "Verpflegung", value: "#FFC107"},
+		{name: "Tickets", value: "#43a047"},
+		{name: "Mietkosten", value: "#d32f2f"},
+		{name: "Steuern", value: "#3f51b5"},
+		{name: "Sonstiges", value: "#9E9E9E"},
+	];
+
+	lineChartCustomColors = [
+		{name: "Einnahmen", value: "#43a047"}
+	];
 
 	constructor(private entryService: EntryService) {
 	}
@@ -90,6 +122,33 @@ export class AccountingOverviewComponent implements OnInit {
 		return {
 			"eventId": itemId,
 		}
+	}
+
+	toLineChart(monthlyValues: { totalBalance: number, month: Date }[]): { name: string, series: { name: string, value: number }[] }[] {
+		const summedMonthlyValues = monthlyValues
+			.sort((a, b) => isBefore(a.month, b.month) ? -1 : 1)
+			.reduce((acc, monthly) => {
+				let sum = 0;
+				if (acc.length > 0) {
+					sum = acc[acc.length - 1].sum;
+				}
+				sum += monthly.totalBalance;
+
+				acc.push({sum, name: format(monthly.month, "MMM")});
+
+				return acc;
+			}, []);
+
+		console.log(summedMonthlyValues);
+
+		return [{
+			name: "Einnahmen",
+			series: summedMonthlyValues
+				.map(it => ({
+					name: it.name,
+					value: it.sum
+				}))
+		}]
 	}
 
 	toPieChart(byCategory: { [p: string]: number }): { name: string, value: number }[] {

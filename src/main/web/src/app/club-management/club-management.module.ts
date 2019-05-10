@@ -20,9 +20,10 @@ import {AccountingTimeSummaryComponent} from "./accounting/accounting-overview/a
 import {AccountingItemSummaryComponent} from "./accounting/accounting-overview/accounting-item-summary/accounting-item-summary.component";
 import {CostPreviewComponent} from "./accounting/accounting-overview/shared/cost-preview/cost-preview.component";
 import {SharedSearchModule} from "../shared/search/shared-search.module";
-import {PieChartModule} from "@swimlane/ngx-charts";
+import {AreaChartModule, LineChartModule, PieChartModule} from "@swimlane/ngx-charts";
 import { EntryRendererComponent } from './accounting/entry-renderer/entry-renderer.component';
 import { MerchStockContainerComponent } from './administration/stock/merch-stock/merch-stock-container/merch-stock-container.component';
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 const tableCellComponents = [
 
@@ -47,6 +48,9 @@ const tableCellComponents = [
 		ShopItemDetailsModule,
 		ModifyShopItemModule,
 		ClubManagementRoutingModule,
+		FlexLayoutModule,
+		LineChartModule,
+		AreaChartModule,
 	],
 	declarations: [
 		routedComponents,

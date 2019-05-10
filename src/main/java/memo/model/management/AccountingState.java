@@ -29,6 +29,7 @@ public class AccountingState {
     }
 
     public AccountingState(Object[] objects) {
+        //todo expenses by category
         this.currentBalance = BigDecimal.valueOf((Double) Optional.ofNullable(objects[0]).orElse(0D));
         this.lastMonthChange = BigDecimal.valueOf((Double) Optional.ofNullable(objects[1]).orElse(0D));
         this.tourTotal = BigDecimal.valueOf((Double) Optional.ofNullable(objects[2]).orElse(0D));

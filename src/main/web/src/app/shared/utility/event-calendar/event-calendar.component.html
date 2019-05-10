@@ -41,14 +41,14 @@
 				<div *ngFor="let event of day.events"
 					 class="calendar-event {{typeMap[event.meta.id].toLowerCase()}}"
 					 (click)="eventClickHandler(event); $event.stopPropagation()">
-			<span class="calendar-event-container">
-				<span class="calendar-event-time">{{event.meta.date | dateFormat:'HH:SS'}}</span>
-				<span class="calendar-event-title">{{event.title}}</span>
-			</span>
+					<span class="calendar-event-container">
+						<span class="calendar-event-time">{{event.meta.date | dateFormat:'HH:SS'}} </span>
+						<span class="calendar-event-title">{{event.title}}</span>
+					</span>
 					<span class="calendar-event-indicator">
-					{{event.meta.date | dateFormat:'HH:SS'}}<br/>
-					{{typeMap[event.meta.id]}}
-				</span>
+						{{event.meta.date | dateFormat:'HH:SS'}}<br/>
+						{{typeMap[event.meta.id]}}
+					</span>
 				</div>
 			</ng-template>
 		</div>

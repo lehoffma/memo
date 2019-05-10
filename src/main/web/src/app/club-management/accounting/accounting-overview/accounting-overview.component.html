@@ -34,6 +34,24 @@
 	</div>
 
 
+	<div class="preview-container linechart-container mat-elevation-z3">
+		<h3 class="preview-header">Einnahmen über Zeit</h3>
+		<div class="chart-container" *ngIf="totalOverTime$ | async as totalOverTime">
+			<ngx-charts-area-chart [gradient]="false"
+								   [baseValue]="0"
+								   [customColors]="lineChartCustomColors"
+								   [xAxis]="true"
+								   [yAxis]="true"
+								   [curve]="curve"
+								   [xAxisLabel]="'Zeit'"
+								   [yAxisLabel]="'Einnahmen'"
+								   [autoScale]="true"
+								   [results]="totalOverTime">
+
+			</ngx-charts-area-chart>
+		</div>
+	</div>
+
 	<div class="accounting-preview-container">
 		<div class="preview-container mat-elevation-z3">
 			<div class="preview-header">
@@ -68,10 +86,18 @@
 			   [label]="itemTotal.itemTitle"
 			   [totalBalance]="itemTotal.totalBalance"></a>
 		</div>
+	</div>
+
+
+	<div fxLayout="row" fxLayoutGap="16px" fxLayout.lt-sm="column">
 		<div class="pie-chart mat-elevation-z3">
 			<h3 class="preview-header">Ausgaben pro Kategorie</h3>
 			<div class="chart-container">
 				<ngx-charts-pie-chart *ngIf="expensesByCategory$ | async as expenses"
+									  [doughnut]="true"
+									  [legend]="true"
+									  legendPosition="bottom"
+									  [customColors]="customColors"
 									  [results]="expenses"></ngx-charts-pie-chart>
 			</div>
 		</div>
@@ -79,6 +105,10 @@
 			<h3 class="preview-header">Einnahmen pro Kategorie</h3>
 			<div class="chart-container">
 				<ngx-charts-pie-chart *ngIf="incomeByCategory$ | async as income"
+									  [doughnut]="true"
+									  [legend]="true"
+									  legendPosition="bottom"
+									  [customColors]="customColors"
 									  [results]="income"></ngx-charts-pie-chart>
 			</div>
 		</div>

@@ -22,7 +22,7 @@
 		]
 	},
 	{
-		"route": "club/calendar",
+		"route": "club",
 		"icon": "",
 		"name": "Verein",
 		"children": [
