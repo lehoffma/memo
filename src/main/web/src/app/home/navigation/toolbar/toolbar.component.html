@@ -17,7 +17,9 @@
 	<div class="align-center">
 		<div class="desktop-toolbar">
 			<!--The right side-->
-			<memo-toolbar-element *ngFor="let link of (links|async);" [link]="link">
+			<memo-toolbar-element *ngFor="let link of (links|async);"
+								  [centered]="true"
+								  [link]="link">
 			</memo-toolbar-element>
 		</div>
 	</div>

@@ -6,17 +6,20 @@
 		"children": [
 			{
 				"route": "shop/tours",
-				"icon": "",
+				"icon": "drive_eta",
+				"description": "Bevorstehende Meilenwölfe Auswärtsfahrten",
 				"name": "Fahrten"
 			},
 			{
 				"route": "shop/partys",
-				"icon": "",
+				"icon": "calendar_today",
+				"description": "Bevorstehende Vereinsevents",
 				"name": "Veranstaltungen"
 			},
 			{
 				"route": "shop/merch",
-				"icon": "",
+				"icon": "local_offer",
+				"description": "Unsere Merchandise Artikel",
 				"name": "Merchandise"
 			}
 		]
@@ -28,12 +31,14 @@
 		"children": [
 			{
 				"route": "club/calendar",
-				"icon": "",
+				"icon": "calendar_today",
+				"description": "Fahrten und Events",
 				"name": "Kalender"
 			},
 			{
 				"route": "club/leaderboard",
-				"icon": "",
+				"icon": "format_list_numbered",
+				"description": "Siehe wer die meisten Meilen zurückgelegt hat",
 				"loginNeeded": true,
 				"name": "Meilentabelle",
 				"minimumPermission": {
@@ -47,7 +52,8 @@
 			},
 			{
 				"route": "club/members",
-				"icon": "",
+				"icon": "people",
+				"description": "Verwalte Mitglieder des Clubs",
 				"loginNeeded": true,
 				"name": "Mitgliederliste",
 				"minimumPermission": {
@@ -61,14 +67,16 @@
 			},
 			{
 				"route": "club/impressum",
-				"name": "Impressum",
-				"icon": ""
+				"icon": "description",
+				"description": "und Datenschutzerklärung",
+				"name": "Impressum"
 			},
 			{
 				"route": null,
 				"link": "http://meilenwoelfe.de/meilenblog",
 				"name": "Blog",
-				"icon": ""
+				"icon": "open_in_new",
+				"description": "Kommentare zu Geschehnissen rund um den VfL Wolfsburg"
 			}
 		]
 	},
@@ -80,13 +88,15 @@
 			{
 				"route": "membership/apply",
 				"name": "Mitglied werden",
-				"icon": ""
+				"icon": "assignment",
+				"description": "Werde ein Meilenwolf!"
 			},
 			{
 				"route": "membership/change",
 				"name": "Mitgliedsstatus ändern",
 				"loginNeeded": true,
-				"icon": ""
+				"icon": "contact_support",
+				"description": "Beantrage eine Änderung deiner Rolle im Verein"
 			}
 		]
 	},
@@ -106,9 +116,10 @@
 		},
 		"children": [
 			{
-				"route": "management/costs-overview",
-				"icon": "",
-				"name": "Kostenübersicht",
+				"route": "management/dashboard",
+				"icon": "dashboard",
+				"name": "Dashboard",
+				"description": "Ein Überblick über den Verein",
 				"minimumPermission": {
 					"userManagement": 1,
 					"merch": 1,
@@ -119,9 +130,8 @@
 				}
 			},
 			{
-				"route": "management/costs",
-				"icon": "",
-				"name": "Kostenverwaltung",
+				"route": "",
+				"name": "Kosten",
 				"minimumPermission": {
 					"userManagement": 1,
 					"merch": 1,
@@ -129,25 +139,149 @@
 					"party": 1,
 					"funds": 1,
 					"stock": 1
-				}
+				},
+				"children": [
+					{
+						"route": "management/costs-overview",
+						"icon": "payment",
+						"name": "Übersicht",
+						"description": "Erhalte eine Überblick über alle Kosten",
+						"minimumPermission": {
+							"userManagement": 1,
+							"merch": 1,
+							"tour": 1,
+							"party": 1,
+							"funds": 1,
+							"stock": 1
+						}
+					},
+					{
+						"route": "management/costs/time",
+						"icon": "access_time",
+						"description": "pro Monat und Jahr",
+						"name": "Abrechnungen",
+						"minimumPermission": {
+							"userManagement": 1,
+							"merch": 1,
+							"tour": 1,
+							"party": 1,
+							"funds": 1,
+							"stock": 1
+						}
+					},
+					{
+						"route": "management/costs/items",
+						"icon": "drive_eta",
+						"description": "Touren, Partys und Merchandise",
+						"name": "Item Abrechnungen",
+						"minimumPermission": {
+							"userManagement": 1,
+							"merch": 1,
+							"tour": 1,
+							"party": 1,
+							"funds": 1,
+							"stock": 1
+						}
+					},
+					{
+						"route": "management/costs",
+						"icon": "list",
+						"name": "Verwaltung",
+						"description": "Verwalte angefallene Kosten und Einnahmen",
+						"minimumPermission": {
+							"userManagement": 1,
+							"merch": 1,
+							"tour": 1,
+							"party": 1,
+							"funds": 1,
+							"stock": 1
+						}
+					}
+				]
 			},
 			{
-				"route": "management/orders",
-				"icon": "",
-				"name": "Bestellungen"
+				"route": "",
+				"name": "Bestellungen",
+				"minimumPermission": {
+					"userManagement": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
+					"stock": 1
+				},
+				"children": [
+					{
+						"route": "management/orders-overview",
+						"icon": "receipt",
+						"name": "Übersicht",
+						"description": "Erhalte eine Überblick über alle Bestellungen",
+						"minimumPermission": {
+							"userManagement": 1,
+							"merch": 1,
+							"tour": 1,
+							"party": 1,
+							"funds": 1,
+							"stock": 1
+						}
+					},
+					{
+						"route": "management/orders",
+						"icon": "list",
+						"name": "Verwaltung",
+						"description": "Verwalte Bestellungen unserer Nutzer",
+						"minimumPermission": {
+							"userManagement": 1,
+							"merch": 1,
+							"tour": 1,
+							"party": 1,
+							"funds": 1,
+							"stock": 1
+						}
+					}
+				]
 			},
 			{
-				"route": "management/stock",
-				"icon": "",
+				"route": "",
 				"name": "Bestand",
 				"minimumPermission": {
 					"userManagement": 1,
 					"merch": 1,
 					"tour": 1,
 					"party": 1,
-					"funds": 0,
+					"funds": 1,
 					"stock": 1
-				}
+				},
+				"children": [
+					{
+						"route": "management/stock-overview",
+						"icon": "local_shipping",
+						"name": "Übersicht",
+						"description": "Erhalte eine Überblick über den Gesamtbestand",
+						"minimumPermission": {
+							"userManagement": 1,
+							"merch": 1,
+							"tour": 1,
+							"party": 1,
+							"funds": 1,
+							"stock": 1
+						}
+					},
+					{
+						"route": "management/stock",
+						"icon": "local_offer",
+						"name": "Merchandise",
+						"description": "Verwalte Bestände unserer Merchandise-Artikel",
+						"minimumPermission": {
+							"userManagement": 1,
+							"merch": 1,
+							"tour": 1,
+							"party": 1,
+							"funds": 1,
+							"stock": 1
+						}
+					}
+				]
 			}
 		]
 	}

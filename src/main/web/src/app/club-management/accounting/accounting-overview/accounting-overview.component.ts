@@ -14,7 +14,7 @@ import * as shape from 'd3-shape';
 	styleUrls: ["./accounting-overview.component.scss"]
 })
 export class AccountingOverviewComponent implements OnInit {
-	curve = shape.curveBasis;
+	curve = shape.curveMonotoneX;
 
 	// state$: Observable<AccountingState> = this.entryService.getState();
 	state$: Observable<AccountingState> = of({

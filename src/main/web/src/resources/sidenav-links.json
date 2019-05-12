@@ -25,6 +25,20 @@
 		"route": "membership",
 		"children": [
 			{
+				"route": "management/dashboard",
+				"icon": "dashboard",
+				"name": "Dashboard",
+				"description": "Erhalte eine Überblick über den Verein",
+				"minimumPermission": {
+					"userManagement": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
+					"stock": 1
+				}
+			},
+			{
 				"route": "club/calendar",
 				"icon": "event",
 				"name": "Kalender"
@@ -106,9 +120,9 @@
 		]
 	},
 	{
-		"route": "management",
+		"route": "management/costs-overview",
 		"icon": "",
-		"name": "Vereinsverwaltung",
+		"name": "Kosten",
 		"loginNeeded": true,
 		"minimumPermission": {
 			"userManagement": 1,
@@ -121,7 +135,7 @@
 		},
 		"children": [
 			{
-				"route": "management/costs",
+				"route": "management/costs-overview",
 				"icon": "payment",
 				"name": "Kostenübersicht",
 				"minimumPermission": {
@@ -134,20 +148,122 @@
 				}
 			},
 			{
-				"route": "management/orders",
-				"icon": "assignment",
-				"name": "Bestellungen"
-			},
-			{
-				"route": "management/stock",
-				"icon": "local_shipping",
-				"name": "Bestand",
+				"route": "management/costs/time",
+				"icon": "access_time",
+				"name": "Abrechnungen",
 				"minimumPermission": {
 					"userManagement": 1,
 					"merch": 1,
 					"tour": 1,
 					"party": 1,
-					"funds": 0,
+					"funds": 1,
+					"stock": 1
+				}
+			},
+			{
+				"route": "management/costs/items",
+				"icon": "drive_eta",
+				"name": "Item Abrechnungen",
+				"minimumPermission": {
+					"userManagement": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
+					"stock": 1
+				}
+			},
+			{
+				"route": "management/costs",
+				"icon": "list",
+				"name": "Kostenverwaltung",
+				"minimumPermission": {
+					"userManagement": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
+					"stock": 1
+				}
+			}
+		]
+	},
+	{
+		"route": "management/orders-overview",
+		"icon": "",
+		"name": "Bestellungen",
+		"loginNeeded": true,
+		"minimumPermission": {
+			"userManagement": 1,
+			"merch": 1,
+			"tour": 1,
+			"party": 1,
+			"funds": 0,
+			"stock": 0,
+			"settings": 0
+		},
+		"children": [
+			{
+				"route": "management/orders-overview",
+				"icon": "receipt",
+				"name": "Bestellungsübersicht",
+				"description": "Erhalte eine Überblick über alle Bestellungen",
+				"minimumPermission": {
+					"userManagement": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
+					"stock": 1
+				}
+			},
+			{
+				"route": "management/orders",
+				"icon": "assignment",
+				"name": "Bestellungsverwaltung"
+			}
+		]
+	},
+	{
+		"route": "management/stock-overview",
+		"icon": "",
+		"name": "Bestand",
+		"loginNeeded": true,
+		"minimumPermission": {
+			"userManagement": 1,
+			"merch": 1,
+			"tour": 1,
+			"party": 1,
+			"funds": 0,
+			"stock": 0,
+			"settings": 0
+		},
+		"children": [
+			{
+				"route": "management/stock-overview",
+				"icon": "local_shipping",
+				"name": "Bestandübersicht",
+				"description": "Erhalte eine Überblick über den Gesamtbestand",
+				"minimumPermission": {
+					"userManagement": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
+					"stock": 1
+				}
+			},
+			{
+				"route": "management/stock",
+				"icon": "local_offer",
+				"name": "Merchandise Bestand",
+				"description": "Verwalte Bestände unserer Merchandise-Artikel",
+				"minimumPermission": {
+					"userManagement": 1,
+					"merch": 1,
+					"tour": 1,
+					"party": 1,
+					"funds": 1,
 					"stock": 1
 				}
 			}

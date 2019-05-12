@@ -35,7 +35,7 @@
 
 
 	<div class="preview-container linechart-container mat-elevation-z3">
-		<h3 class="preview-header">Einnahmen über Zeit</h3>
+		<h3 class="preview-header">Gesamt über Zeit</h3>
 		<div class="chart-container" *ngIf="totalOverTime$ | async as totalOverTime">
 			<ngx-charts-area-chart [gradient]="false"
 								   [baseValue]="0"
@@ -45,9 +45,8 @@
 								   [curve]="curve"
 								   [xAxisLabel]="'Zeit'"
 								   [yAxisLabel]="'Einnahmen'"
-								   [autoScale]="true"
+								   [autoScale]="false"
 								   [results]="totalOverTime">
-
 			</ngx-charts-area-chart>
 		</div>
 	</div>

@@ -11,7 +11,9 @@
 		   routerLink="{{childLink.route}}"
 		   routerLinkActive="active">
 			<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
-			{{childLink.name}}</a>
+			{{childLink.name}}
+			{{childLink.description}}
+		</a>
 	</div>
 </div>
 <!--user is not logged in -> show log-in button instead -->

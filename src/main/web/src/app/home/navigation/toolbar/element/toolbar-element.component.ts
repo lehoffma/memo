@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, Input} from "@angular/core";
+import {ChangeDetectionStrategy, Component, HostBinding, Input} from "@angular/core";
 import {Link} from "../../../../shared/model/link";
 import {NavigationService} from "../../../../shared/services/navigation.service";
 
@@ -10,6 +10,9 @@ import {NavigationService} from "../../../../shared/services/navigation.service"
 })
 export class ToolbarElementComponent {
 	@Input() link: Link;
+
+	@HostBinding("class.centered")
+	@Input() centered: boolean;
 
 	constructor(public navigationService: NavigationService) {
 	}

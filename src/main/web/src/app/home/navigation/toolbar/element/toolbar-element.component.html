@@ -1,24 +1,53 @@
 <div class="dropdown">
 
-	<!--todo: check link.children for .active class-->
 	<a class="dropbtn" mat-button routerLink="{{link.route}}" routerLinkActive="active" *ngIf="link.route !== null">
 		<mat-icon *ngIf="link.icon">{{link.icon}}</mat-icon>
 		{{link.name}}
 	</a>
-	<a class="dropbtn" mat-button href="{{link.link}}" routerLinkActive="active"  *ngIf="link.link">
+	<a class="dropbtn" mat-button href="{{link.link}}" routerLinkActive="active" *ngIf="link.link">
 		<mat-icon *ngIf="link.icon">{{link.icon}}</mat-icon>
 		{{link.name}}
 	</a>
 	<div *ngIf="link.children" class="dropdown-content">
 		<ng-container *ngFor="let childLink of link.children">
-			<a routerLink="{{childLink.route}}" *ngIf="childLink.route !== null">
-				<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
-				{{childLink.name}}
-			</a>
-			<a href="{{childLink.link}}" *ngIf="childLink.link">
-				<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
-				{{childLink.name}}
-			</a>
+			<div *ngIf="childLink.children else noNestedChildren" class="nested-children-container">
+				<h4 class="nested-child-header">
+					{{childLink.name}}
+				</h4>
+				<ng-container *ngFor="let nestedChild of childLink.children" class="nested-child">
+					<a routerLink="{{nestedChild.route}}" *ngIf="nestedChild.route">
+						<div>
+							<mat-icon *ngIf="nestedChild.icon">{{nestedChild.icon}}</mat-icon>
+							<span>{{nestedChild.name}}</span>
+						</div>
+						<span class="link-description">{{nestedChild.description}}</span>
+					</a>
+					<a href="{{nestedChild.link}}" *ngIf="nestedChild.link">
+						<div>
+							<mat-icon *ngIf="nestedChild.icon">{{nestedChild.icon}}</mat-icon>
+							<span>{{nestedChild.name}}</span>
+						</div>
+						<span class="link-description">{{nestedChild.description}}</span>
+					</a>
+				</ng-container>
+			</div>
+
+			<ng-template #noNestedChildren>
+				<a routerLink="{{childLink.route}}" *ngIf="childLink.route !== null">
+					<div>
+						<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
+						{{childLink.name}}
+					</div>
+					<span class="link-description">{{childLink.description}}</span>
+				</a>
+				<a href="{{childLink.link}}" *ngIf="childLink.link">
+					<div>
+						<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
+						{{childLink.name}}
+					</div>
+					<span class="link-description">{{childLink.description}}</span>
+				</a>
+			</ng-template>
 		</ng-container>
 	</div>
 </div>

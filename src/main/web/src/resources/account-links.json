@@ -1,27 +1,28 @@
 [
 	{
 		"route": "club/members/PROFILE_ID",
-		"icon": "",
+		"icon": "person",
+		"description": "",
 		"name": "Dein Profil"
 	},
 	{
 		"route": "user/events",
-		"icon": "",
+		"icon": "calendar_today",
 		"name": "Deine Events"
 	},
 	{
 		"route": "user/order-history",
-		"icon": "",
+		"icon": "history",
 		"name": "Deine Bestellungen"
 	},
 	{
 		"route": "user/account-settings",
-		"icon": "",
+		"icon": "settings",
 		"name": "Dein Account"
 	},
 	{
 		"route": "",
-		"icon": "",
+		"icon": "power_settings_new",
 		"name": "Logout"
 	}
 ]
