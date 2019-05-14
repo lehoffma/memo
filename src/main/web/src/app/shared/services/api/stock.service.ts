@@ -9,7 +9,7 @@ import {mergeMap, share, tap} from "rxjs/operators";
 import {processSequentiallyAndWait} from "../../../util/observable-util";
 import {Sort} from "../../model/api/sort";
 import {Filter} from "../../model/api/filter";
-import {stockAmountToStatus, StockListEntry} from "../../../club-management/administration/stock/merch-stock/merch-stock-entry/stock-entry";
+import {stockAmountToStatus, StockListEntry} from "../../../club-management/stock/merch-stock/merch-stock-entry/stock-entry";
 
 export interface StockMap {
 	[size: string]: {

@@ -1,0 +1,39 @@
+<div class="leaderboard-header" [formGroup]="formGroup">
+	<h1>Meilentabelle</h1>
+	<mat-select formControlName="selectedSeason">
+		<mat-option *ngFor="let option of seasonOptions" [value]="option">{{option}}</mat-option>
+	</mat-select>
+</div>
+
+
+<div *ngIf="!(leaderBoard$ | async)">
+	<div class="loader-wrapper">
+		<div class="loader"></div>
+	</div>
+</div>
+
+<ng-container *ngIf="(leaderBoard$ | async) as leaderboard">
+	<memo-miles-leaderboard-entry
+		*ngFor="let user of (leaderboard|slice:0:(rowsAmount$|async)); let i = index"
+		[user]="user"
+		[loggedInUser]="(loggedInUserId$ | async)">
+
+	</memo-miles-leaderboard-entry>
+
+	<memo-miles-leaderboard-entry *ngIf="(leaderboard)?.length > (rowsAmount$|async)"
+								  (onShowMore)="toggleShowAll($event)">
+	</memo-miles-leaderboard-entry>
+
+	<memo-miles-leaderboard-entry
+		*ngIf="(loggedInUserPosition$|async)?.index > (rowsAmount$|async)"
+		[user]="(loggedInUserPosition$|async)"
+		[loggedInUser]="(loggedInUserId$|async)">
+
+	</memo-miles-leaderboard-entry>
+
+	<memo-miles-leaderboard-entry
+		*ngIf="(loggedInUserPosition$|async)?.index > (rowsAmount$|async)
+			&& (loggedInUserPosition$|async)?.index < (leaderboard)?.length"
+		(onShowMore)="toggleShowAll($event)">
+	</memo-miles-leaderboard-entry>
+</ng-container>

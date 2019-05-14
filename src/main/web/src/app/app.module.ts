@@ -11,8 +11,7 @@ import {ROUTES} from "./app.routes";
 import {memoConfig} from "./app.config";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-link/toolbar-profile-link.component";
-import {SearchInputComponent} from "./shared/search/search-input/search-input.component";
-import {ImpressumComponent} from "./home/impressum/impressum.component";
+import {ImpressumComponent} from "./club/impressum/impressum.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS} from "@angular/material";
@@ -54,6 +53,7 @@ import {faGlobe} from "@fortawesome/free-solid-svg-icons/faGlobe";
 import {adapterFactory} from "angular-calendar/date-adapters/date-fns";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {ProgressiveImageLoadingModule} from "./shared/progressive-image-loading/progressive-image-loading.module";
+import {ClubModule} from "./club/club.module";
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -138,6 +138,7 @@ registerLocaleData(localeDe);
 		AuthenticationModule.forRoot(),
 		//includes discount service
 		ShopModule.forRoot(),
+		ClubModule,
 		ClubManagementModule,
 		UserModule,
 	],

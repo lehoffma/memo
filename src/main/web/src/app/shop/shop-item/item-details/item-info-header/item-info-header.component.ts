@@ -1,12 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {ShareDialogComponent} from "../../../../shared/share-dialog/share-dialog.component";
 import {MatDialog, MatSnackBar} from "@angular/material";
 import {Event} from "../../../shared/model/event";
-import {NavigationService} from "../../../../shared/services/navigation.service";
 import {map, mergeMap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";
 import {User} from "../../../../shared/model/user";
-import {DiscountService} from "../../../shared/services/discount.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {ResponsibilityService} from "../../../shared/services/responsibility.service";
 import {ConfirmationDialogService} from "../../../../shared/services/confirmation-dialog.service";

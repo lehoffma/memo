@@ -1,0 +1,179 @@
+@import "theme";
+@import "variables";
+@import "../../../../../../node_modules/@angular/material/theming";
+
+:host {
+	display: flex;
+	flex-direction: column;
+	@include mat-elevation(3);
+	@include mat-elevation-transition;
+	border-radius: 4px;
+	background-color: $container-content--background-color;
+	color: $container-content--color;
+	width: 100%;
+	max-width: 500px;
+
+	.stock-entry-header {
+		display: flex;
+		flex-direction: column;
+		background-color: grey(50);
+		color: $container-header--color;
+		border-top-right-radius: 4px;
+		border-top-left-radius: 4px;
+		border-bottom: 1px solid #e0e0e0;
+
+		a {
+			color: grey(900);
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+
+			h3 {
+				margin: 0;
+				font-size: font-size(medium);
+				font-weight: 500;
+			}
+		}
+
+		> div {
+			padding: 8px 16px;
+			display: flex;
+			flex-direction: column;
+		}
+
+		> a,
+		img {
+			width: 100%;
+			height: 100px;
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+		img {
+			object-fit: cover;
+			background: white;
+
+			overflow: hidden;
+		}
+
+		button {
+			margin-right: -10px;
+			margin-top: -10px;
+		}
+	}
+
+	.color-container {
+		align-items: center;
+		height: 56px;
+		display: inline-flex;
+
+		.merch-available-colors {
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+		}
+
+		span {
+			margin-left: 4px;
+		}
+	}
+}
+
+
+.responsible-person {
+	font-size: font-size(smallest);
+	color: grey(700);
+	display: flex;
+	align-items: baseline;
+
+	> span {
+		margin-right: 5px;
+	}
+
+	memo-profile-link {
+		&:not(:last-child)::after {
+			content: ",";
+			color: accent();
+			margin-left: -2px;
+		}
+	}
+}
+
+.stock-entry-footer {
+	display: flex;
+	justify-content: space-between;
+	padding: 8px;
+}
+
+mat-cell.status-cell .status-label {
+	display: none;
+}
+
+mat-cell.status-cell .status-icon {
+	color: primary(500);
+}
+
+mat-cell.warning .status-icon {
+	color: yellow(900);
+}
+
+mat-cell.error .status-icon {
+	color: warn(500);
+}
+
+@media all and (min-width: 500px) {
+
+	:host {
+		table {
+			font-size: font-size(small-medium);
+
+			thead {
+				font-size: font-size(default);
+			}
+
+			th {
+				color: grey(700);
+				font-size: font-size(default);
+
+				&.total-sum {
+					font-size: font-size(medium);
+				}
+			}
+		}
+
+
+		.stock-entry-header {
+			flex-direction: row;
+
+			> a,
+			img {
+				width: 100px;
+				height: 100px;
+				border-top-right-radius: 0;
+				border-right: 1px solid #e0e0e0;
+			}
+		}
+	}
+
+	:host /deep/ .mat-column-status {
+		min-width: 200px;
+	}
+
+	mat-cell.status-cell .status-label {
+		display: block;
+		margin-left: 4px;
+		color: primary(900);
+	}
+
+	mat-cell.warning .status-label {
+		color: yellow(900);
+	}
+
+	mat-cell.error .status-label {
+		color: warn(900);
+	}
+}

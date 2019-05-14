@@ -1,0 +1,45 @@
+@import "../../../../node_modules/@angular/material/theming";
+@import "theme";
+
+:host {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.container--header h3 {
+	margin: 0;
+
+}
+
+.container {
+	display: block;
+	background: white;
+	max-width: 800px;
+
+	h3:first-child {
+		margin-top: 0;
+		text-align: center;
+		font-size: font-size(medium-large);
+	}
+
+	h1 {
+		word-break: break-all;
+	}
+
+	.container--body {
+		padding: 1rem;
+		margin-top: -16px;
+		h1, h2, h3 {
+			font-weight: 100;
+		}
+	}
+}
+
+@media all and (min-width: 600px) {
+	.container {
+		margin: 1rem auto;
+		@include mat-elevation(3);
+		@include mat-elevation-transition();
+	}
+}

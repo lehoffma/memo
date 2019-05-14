@@ -8,7 +8,7 @@ import {setProperties} from "../../model/util/base-object";
 import {RowAction} from "../../utility/material-table/util/row-action";
 import {ParticipantUser} from "../../../shop/shared/model/participant";
 import {RowActionType} from "../../utility/material-table/util/row-action-type";
-import {MemberListRowAction} from "../../../club-management/administration/member-list/member-list-row-actions";
+import {MemberListRowAction} from "../../../club/member-list/member-list-row-actions";
 
 export const userRowActions: RowAction<ParticipantUser>[] =[
 	{

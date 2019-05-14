@@ -25,6 +25,7 @@ import {AccountDataWrapperComponent} from "./user-settings/subsections/account-d
 import {ClubInformationWrapperComponent} from "./user-settings/subsections/club-information-wrapper/club-information-wrapper.component";
 import {NotificationSettingsComponent} from "./user-settings/subsections/notification-settings/notification-settings.component";
 
+//todo put stuff that isnt under user/ into separate package
 const routes: Route[] = [
 
 	{path: "login", component: LoginComponent, canActivate: [IsNotLoggedInGuard]},

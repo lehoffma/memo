@@ -1,7 +1,7 @@
 import {ModuleWithProviders, NgModule} from "@angular/core";
 import {CheckoutModule} from "./checkout/checkout.module";
 import {SearchModule} from "./search-results/search.module";
-import {EventCalendarContainerModule} from "./event-calendar-container/event-calendar-container.module";
+import {EventCalendarContainerModule} from "../club/event-calendar-container/event-calendar-container.module";
 import {ModifyShopItemModule} from "./shop-item/modify-shop-item/modify-shop-item.module";
 import {ShopItemDetailsModule} from "./shop-item/item-details/shop-item-details.module";
 import {DiscountService} from "./shared/services/discount.service";

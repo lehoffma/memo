@@ -16,14 +16,4 @@ export class ToolbarElementComponent {
 
 	constructor(public navigationService: NavigationService) {
 	}
-
-	activateRoute(route: string) {
-		this.navigationService.navigateByUrl(route);
-	}
-
-	activateRouteIfNoChildren(route: string) {
-		if (!this.link.children) {
-			this.activateRoute(route);
-		}
-	}
 }

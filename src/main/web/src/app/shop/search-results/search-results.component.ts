@@ -18,7 +18,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
 import {userPermissions} from "../../shared/model/user";
-import {CreateEventContextMenuComponent} from "../event-calendar-container/create-event-context-menu/create-event-context-menu.component";
+import {CreateEventContextMenuComponent} from "../../club/event-calendar-container/create-event-context-menu/create-event-context-menu.component";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
 import {FilterOptionFactoryService} from "../../shared/search/filter-option-factory.service";

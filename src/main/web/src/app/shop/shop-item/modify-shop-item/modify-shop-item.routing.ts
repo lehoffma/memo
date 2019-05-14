@@ -13,6 +13,7 @@ import {ShopItemIsVisibleToUserGuard} from "../../../shared/authentication/http-
 import {ModifyOrderComponent} from "./modify-order/modify-order.component";
 
 
+//todo break up modify stuff into other modules
 const routes: Routes = [
 	{
 		path: "management/create/orders", component: ModifyOrderComponent, pathMatch: "full", canActivate: [

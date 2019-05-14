@@ -6,7 +6,7 @@ import {User, userPermissions} from "../model/user";
 import {RowActionType} from "../utility/material-table/util/row-action-type";
 import {ClubRole, isAuthenticated} from "../model/club-role";
 import {Permission} from "../model/permission";
-import {MemberListRowAction} from "../../club-management/administration/member-list/member-list-row-actions";
+import {MemberListRowAction} from "../../club/member-list/member-list-row-actions";
 import {Observable} from "rxjs";
 
 @Injectable({
