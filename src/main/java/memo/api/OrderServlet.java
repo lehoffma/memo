@@ -22,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Path("/order")
@@ -130,6 +131,7 @@ public class OrderServlet extends AbstractApiServlet<Order> {
     public Object get(@Context HttpServletRequest request) {
         return this.get(request, orderRepository);
     }
+
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})

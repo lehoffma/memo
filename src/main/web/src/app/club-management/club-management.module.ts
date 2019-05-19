@@ -24,6 +24,8 @@ import {AreaChartModule, LineChartModule, PieChartModule} from "@swimlane/ngx-ch
 import { EntryRendererComponent } from './accounting/entry-renderer/entry-renderer.component';
 import { MerchStockContainerComponent } from './stock/merch-stock/merch-stock-container/merch-stock-container.component';
 import {FlexLayoutModule} from "@angular/flex-layout";
+import { OrderOverviewComponent } from './orders/order-overview.component';
+import { StockOverviewComponent } from './stock/stock-overview.component';
 
 const tableCellComponents = [
 	//merch table cell
@@ -62,6 +64,8 @@ const tableCellComponents = [
 		CostPreviewComponent,
 		EntryRendererComponent,
 		MerchStockContainerComponent,
+		OrderOverviewComponent,
+		StockOverviewComponent,
 	],
 	entryComponents: [tableCellComponents]
 })

@@ -30,6 +30,17 @@ public class OrderAuthStrategy implements AuthenticationStrategy<Order> {
     }
 
     @Override
+    public boolean isAllowedToReadState(User user) {
+        return userIsAuthorized(user, null, Arrays.asList(
+                //the user is logged in..
+                AuthenticationConditionFactory.<Order>userIsLoggedIn()
+                        //..and has the correct permissions necessary..
+                        .and(AuthenticationConditionFactory
+                                .userHasCorrectPermission(it -> it.getPermissions().getFunds(), Permission.read))
+        ));
+    }
+
+    @Override
     public Predicate isAllowedToRead(CriteriaBuilder builder, Root<Order> root, User user) {
         if (user == null) {
             return PredicateFactory.isFalse(builder);

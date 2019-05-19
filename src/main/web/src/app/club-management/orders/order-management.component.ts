@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {WindowService} from "../../shared/services/window.service";
-import {OrderOverviewService} from "./order-overview.service";
+import {OrderManagementService} from "./order-management.service";
 import {SortingOption, SortingOptionHelper} from "../../shared/model/sorting-option";
 import {Direction, Sort} from "../../shared/model/api/sort";
 import {Order} from "../../shared/model/order";
@@ -15,12 +15,12 @@ import {orderStatusMap} from "../../shared/model/order-status";
 import {paymentMethodList} from "../../shop/checkout/payment/payment-method";
 
 @Component({
-	selector: "memo-order-overview",
-	templateUrl: "./order-overview.component.html",
-	styleUrls: ["./order-overview.component.scss"],
-	providers: [OrderOverviewService]
+	selector: "memo-order-management",
+	templateUrl: "./order-management.component.html",
+	styleUrls: ["./order-management.component.scss"],
+	providers: [OrderManagementService]
 })
-export class OrderOverviewComponent implements OnInit, OnDestroy {
+export class OrderManagementComponent implements OnInit, OnDestroy {
 	sortingOptions: SortingOption<any>[] = orderSortingOptions;
 	filterOptions: FilterOption<FilterOptionType>[] = [
 		new DateRangeFilterOption(
@@ -63,7 +63,7 @@ export class OrderOverviewComponent implements OnInit, OnDestroy {
 				private activatedRoute: ActivatedRoute,
 				private itemService: EventService,
 				private router: Router,
-				public orderOverviewService: OrderOverviewService) {
+				public orderOverviewService: OrderManagementService) {
 	}
 
 	ngOnInit() {

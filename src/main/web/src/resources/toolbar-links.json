@@ -268,7 +268,7 @@
 						}
 					},
 					{
-						"route": "management/stock",
+						"route": "management/stock/merch",
 						"icon": "local_offer",
 						"name": "Merchandise",
 						"description": "Verwalte Bestände unserer Merchandise-Artikel",

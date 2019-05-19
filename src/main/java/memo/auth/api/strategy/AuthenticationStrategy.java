@@ -21,6 +21,10 @@ public interface AuthenticationStrategy<T> {
 
     boolean isAllowedToRead(User user, T object);
 
+    default boolean isAllowedToReadState(User user) {
+        return true;
+    }
+
     default Predicate isAllowedToRead(CriteriaBuilder builder,
                                       Root<T> root,
                                       User user) {

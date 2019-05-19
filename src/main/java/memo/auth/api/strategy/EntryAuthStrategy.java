@@ -36,7 +36,7 @@ public class EntryAuthStrategy implements AuthenticationStrategy<Entry> {
         return userIsAuthorized(user, null, Arrays.asList(
                 //the user is logged in..
                 AuthenticationConditionFactory.<Entry>userIsLoggedIn()
-                        //..has the correct permissions necessary..
+                        //..and has the correct permissions necessary..
                         .and(AuthenticationConditionFactory
                                 .userHasCorrectPermission(it -> it.getPermissions().getFunds(), Permission.read))
         ));

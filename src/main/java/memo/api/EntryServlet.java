@@ -46,7 +46,7 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getState(@Context HttpServletRequest request) {
         User requestingUser = authenticationService.parseNullableUserFromRequestHeader(request);
-        boolean isAllowed = ((EntryAuthStrategy) this.authenticationStrategy).isAllowedToReadState(requestingUser);
+        boolean isAllowed = this.authenticationStrategy.isAllowedToReadState(requestingUser);
 
         if (!isAllowed) {
             return Response.status(Response.Status.FORBIDDEN)

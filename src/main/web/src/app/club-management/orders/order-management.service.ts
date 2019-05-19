@@ -10,14 +10,12 @@ import {MatSnackBar} from "@angular/material";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Filter} from "../../shared/model/api/filter";
 import {Direction, Sort} from "../../shared/model/api/sort";
-import {statusToInt} from "../../shared/model/order-status";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
-import {QueryParameterService} from "../../shared/services/query-parameter.service";
 import {PageRequest} from "../../shared/model/api/page-request";
 
 @Injectable()
-export class OrderOverviewService implements OnDestroy {
+export class OrderManagementService implements OnDestroy {
 	sortedBy$: Observable<Sort> = this.navigationService.queryParamMap$
 		.pipe(
 			map(paramMap => paramMap.has("sortBy") && paramMap.has("direction")
