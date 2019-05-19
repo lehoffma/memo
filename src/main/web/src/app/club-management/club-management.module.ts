@@ -15,7 +15,7 @@ import {UserMapComponent} from "../club/user-map/user-map.component";
 import {AgmCoreModule} from "@agm/core";
 import {UserMapContainerComponent} from "../club/user-map/user-map-container.component";
 import {AccountingOverviewComponent} from "./accounting/accounting-overview/accounting-overview.component";
-import {AccountingNumberCardComponent} from "./accounting/accounting-overview/accounting-number-card.component";
+import {NumberCardComponent} from "./shared/number-card/number-card.component";
 import {AccountingTimeSummaryComponent} from "./accounting/accounting-overview/accounting-time-summary/accounting-time-summary.component";
 import {AccountingItemSummaryComponent} from "./accounting/accounting-overview/accounting-item-summary/accounting-item-summary.component";
 import {CostPreviewComponent} from "./accounting/accounting-overview/shared/cost-preview/cost-preview.component";
@@ -26,6 +26,12 @@ import { MerchStockContainerComponent } from './stock/merch-stock/merch-stock-co
 import {FlexLayoutModule} from "@angular/flex-layout";
 import { OrderOverviewComponent } from './orders/order-overview.component';
 import { StockOverviewComponent } from './stock/stock-overview.component';
+import { DashboardContainerComponent } from './shared/dashboard-container/dashboard-container.component';
+import { OrdersOverTimeChartComponent } from './orders/orders-over-time-chart/orders-over-time-chart.component';
+import { PopularItemsComponent } from './orders/popular-items/popular-items.component';
+import { PopularColorsComponent } from './orders/popular-colors/popular-colors.component';
+import { PopularSizesComponent } from './orders/popular-sizes/popular-sizes.component';
+import { LatestOrdersComponent } from './orders/latest-orders/latest-orders.component';
 
 const tableCellComponents = [
 	//merch table cell
@@ -58,7 +64,7 @@ const tableCellComponents = [
 		MerchStockFeedComponent,
 		MerchStockEntryComponent,
 		AccountingOverviewComponent,
-		AccountingNumberCardComponent,
+		NumberCardComponent,
 		AccountingTimeSummaryComponent,
 		AccountingItemSummaryComponent,
 		CostPreviewComponent,
@@ -66,6 +72,12 @@ const tableCellComponents = [
 		MerchStockContainerComponent,
 		OrderOverviewComponent,
 		StockOverviewComponent,
+		DashboardContainerComponent,
+		OrdersOverTimeChartComponent,
+		PopularItemsComponent,
+		PopularColorsComponent,
+		PopularSizesComponent,
+		LatestOrdersComponent,
 	],
 	entryComponents: [tableCellComponents]
 })

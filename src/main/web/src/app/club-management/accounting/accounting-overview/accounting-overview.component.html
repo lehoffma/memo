@@ -4,38 +4,41 @@
 		<span class="last-refresh-date">Stand: {{state.timestamp | dateFormat:'relative'}}</span>
 	</div>
 	<div class="overview-numbers-container">
-		<memo-accounting-number-card class="mat-elevation-z3"
-									 [title]="'Gesamtbilanz'"
-									 [total]="state.currentBalance"
-									 [change]="state.lastMonthChange">
+		<memo-number-card class="mat-elevation-z3"
+						  [title]="'Gesamtbilanz'"
+						  [render]="renderMoney"
+						  [total]="state.currentBalance"
+						  [change]="state.lastMonthChange">
 
-		</memo-accounting-number-card>
+		</memo-number-card>
 
-		<memo-accounting-number-card class="mat-elevation-z3"
-									 [title]="'Touren'"
-									 [total]="state.tourTotal"
-									 [change]="state.tourChange">
+		<memo-number-card class="mat-elevation-z3"
+						  [title]="'Touren'"
+						  [render]="renderMoney"
+						  [total]="state.tourTotal"
+						  [change]="state.tourChange">
 
-		</memo-accounting-number-card>
+		</memo-number-card>
 
-		<memo-accounting-number-card class="mat-elevation-z3"
-									 [title]="'Partys'"
-									 [total]="state.partyTotal"
-									 [change]="state.partyChange">
+		<memo-number-card class="mat-elevation-z3"
+						  [title]="'Partys'"
+						  [render]="renderMoney"
+						  [total]="state.partyTotal"
+						  [change]="state.partyChange">
 
-		</memo-accounting-number-card>
-		<memo-accounting-number-card class="mat-elevation-z3"
-									 [title]="'Merchandise'"
-									 [total]="state.merchTotal"
-									 [change]="state.merchChange">
+		</memo-number-card>
+		<memo-number-card class="mat-elevation-z3"
+						  [title]="'Merchandise'"
+						  [render]="renderMoney"
+						  [total]="state.merchTotal"
+						  [change]="state.merchChange">
 
-		</memo-accounting-number-card>
+		</memo-number-card>
 
 	</div>
 
 
-	<div class="preview-container linechart-container mat-elevation-z3">
-		<h3 class="preview-header">Gesamt über Zeit</h3>
+	<memo-dashboard-container title="Gesamt über Zeit" class="linechart-container">
 		<div class="chart-container" *ngIf="totalOverTime$ | async as totalOverTime">
 			<ngx-charts-area-chart [gradient]="false"
 								   [baseValue]="0"
@@ -49,48 +52,28 @@
 								   [results]="totalOverTime">
 			</ngx-charts-area-chart>
 		</div>
-	</div>
+	</memo-dashboard-container>
 
 	<div class="accounting-preview-container">
-		<div class="preview-container mat-elevation-z3">
-			<div class="preview-header">
-				<div>
-					<mat-icon>subject</mat-icon>
-					<h3>Letzte Abrechnungen</h3>
-				</div>
-				<a routerLink="/management/costs/time" class="preview-more-link">Mehr</a>
-			</div>
-			<!--todo link cost table-->
+		<memo-dashboard-container icon="subject" title="Letzte Abrechnungen" link="/management/costs/time">
 			<a memoCostPreview *ngFor="let monthlyChange of state.monthlyChanges | slice:0:5"
 			   routerLink="/management/costs"
 			   [queryParams]="monthlyChange.month | pipeFunction:getMonthDetailParams"
 			   [label]="monthlyChange.month | date:'MMMM yyyy'"
 			   [totalBalance]="monthlyChange.totalBalance"></a>
+		</memo-dashboard-container>
 
-		</div>
-
-		<div class="preview-container mat-elevation-z3">
-			<div class="preview-header">
-				<div>
-					<mat-icon>directions_car</mat-icon>
-					<h3>Letzte Events</h3>
-				</div>
-				<a routerLink="/management/costs/items" class="preview-more-link">Mehr</a>
-			</div>
-
-			<!--todo cost table-->
+		<memo-dashboard-container icon="directions_car" title="Letzte Events" link="/management/costs/items">
 			<a memoCostPreview *ngFor="let itemTotal of state.itemTotals | slice:0:5"
 			   routerLink="/management/costs"
 			   [queryParams]="itemTotal.itemId | pipeFunction:getItemDetailParams"
 			   [label]="itemTotal.itemTitle"
 			   [totalBalance]="itemTotal.totalBalance"></a>
-		</div>
+		</memo-dashboard-container>
 	</div>
 
-
 	<div fxLayout="row" fxLayoutGap="16px" fxLayout.lt-sm="column">
-		<div class="pie-chart mat-elevation-z3">
-			<h3 class="preview-header">Ausgaben pro Kategorie</h3>
+		<memo-dashboard-container class="pie-chart" title="Ausgaben pro Kategorie">
 			<div class="chart-container">
 				<ngx-charts-pie-chart *ngIf="expensesByCategory$ | async as expenses"
 									  [doughnut]="true"
@@ -99,9 +82,9 @@
 									  [customColors]="customColors"
 									  [results]="expenses"></ngx-charts-pie-chart>
 			</div>
-		</div>
-		<div class="pie-chart mat-elevation-z3">
-			<h3 class="preview-header">Einnahmen pro Kategorie</h3>
+		</memo-dashboard-container>
+
+		<memo-dashboard-container class="pie-chart" title="Einnahmen pro Kategorie">
 			<div class="chart-container">
 				<ngx-charts-pie-chart *ngIf="incomeByCategory$ | async as income"
 									  [doughnut]="true"
@@ -110,7 +93,7 @@
 									  [customColors]="customColors"
 									  [results]="income"></ngx-charts-pie-chart>
 			</div>
-		</div>
+		</memo-dashboard-container>
 	</div>
 
 </ng-container>

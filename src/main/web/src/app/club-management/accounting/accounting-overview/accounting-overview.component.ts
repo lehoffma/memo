@@ -102,8 +102,12 @@ export class AccountingOverviewComponent implements OnInit {
 	];
 
 	lineChartCustomColors = [
-		{name: "Einnahmen", value: "#43a047"}
+		{name: "Kontostand", value: "#43a047"}
 	];
+
+	renderMoney(input: number): string{
+		return input.toFixed(2) + " €";
+	}
 
 	constructor(private entryService: EntryService) {
 	}
@@ -139,10 +143,8 @@ export class AccountingOverviewComponent implements OnInit {
 				return acc;
 			}, []);
 
-		console.log(summedMonthlyValues);
-
 		return [{
-			name: "Einnahmen",
+			name: "Kontostand",
 			series: summedMonthlyValues
 				.map(it => ({
 					name: it.name,

@@ -1,42 +1,42 @@
 
-
-<!--todo mach ne komponente draus-->
-<div class="preview-container mat-elevation-z3">
-	<h3 class="preview-header">Käufe über Zeit</h3>
-	<div class="preview-body">
-
-	</div>
+<div class="overview-header">
+	<h2>Bestellungsübersicht</h2>
+	<span class="last-refresh-date">Stand: {{orderOverviewService.loadDate | dateFormat:'relative'}}</span>
 </div>
-
-
-
-<div class="preview-container mat-elevation-z3">
-	<h3 class="preview-header">Neueste Bestellungen</h3>
-	<div class="preview-body">
-
+<div fxLayout.gt-sm="row" fxLayout="column" fxLayoutGap="16px">
+	<div fxLayout="column" fxLayoutGap="16px" class="left-side">
+		<div fxLayout.gt-xs="row" fxLayout="column" fxLayoutGap="16px">
+			<memo-number-card class="mat-elevation-z3" title="Offene Bestellungen"
+							  *ngLet="openOrders$ | async as openOrders"
+							  matIcon="access_time"
+							  [class.loading]="openOrders === null"
+							  [total]="openOrders?.open || 0"
+							  [change]="openOrders?.change|| 0">
+			</memo-number-card>
+			<memo-number-card class="mat-elevation-z3" title="Bestellungen insgesamt"
+							  *ngLet="totalOrders$ | async as totalOrders"
+							  matIcon="receipt"
+							  [class.loading]="totalOrders === null"
+							  [total]="totalOrders?.total|| 0"
+							  [change]="totalOrders?.change|| 0">
+			</memo-number-card>
+		</div>
+		<memo-dashboard-container title="Neueste Bestellungen" link="/management/orders">
+			<memo-latest-orders></memo-latest-orders>
+		</memo-dashboard-container>
 	</div>
-</div>
-
-
-<div class="preview-container mat-elevation-z3">
-	<h3 class="preview-header">Beliebteste Items</h3>
-	<div class="preview-body">
-
-	</div>
-</div>
-
-
-<div class="preview-container mat-elevation-z3">
-	<h3 class="preview-header">Beliebteste Größen</h3>
-	<div class="preview-body">
-
-	</div>
-</div>
-
-
-<div class="preview-container mat-elevation-z3">
-	<h3 class="preview-header">Beliebteste Farben</h3>
-	<div class="preview-body">
-
+	<div fxLayout="column" fxLayoutGap="16px" class="right-side">
+		<memo-dashboard-container title="Bestellungen über Zeit">
+			<memo-orders-over-time-chart></memo-orders-over-time-chart>
+		</memo-dashboard-container>
+		<memo-dashboard-container title="Beliebteste Items">
+			<memo-popular-items></memo-popular-items>
+		</memo-dashboard-container>
+		<memo-dashboard-container title="Beliebteste Farben">
+			<memo-popular-colors></memo-popular-colors>
+		</memo-dashboard-container>
+		<memo-dashboard-container title="Beliebteste Größen">
+			<memo-popular-colors></memo-popular-colors>
+		</memo-dashboard-container>
 	</div>
 </div>

@@ -26,11 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-@Path("/order")
+@Path("/orders")
 @Named
 @RequestScoped
 public class OrderStateServlet extends AbstractApiServlet<Order> {
-    private OrderRepository orderRepository;
     private OrderStateRepository orderStateRepository;
 
     public OrderStateServlet() {
@@ -40,13 +39,11 @@ public class OrderStateServlet extends AbstractApiServlet<Order> {
 
     @Inject
     public OrderStateServlet(
-            OrderRepository orderRepository,
             OrderStateRepository orderStateRepository,
             OrderAuthStrategy authStrategy,
             OrderNotificationStrategy notifyStrategy,
             AuthenticationService authService) {
         this.orderStateRepository = orderStateRepository;
-        this.orderRepository = orderRepository;
         this.authenticationStrategy = authStrategy;
         this.notificationStrategy = notifyStrategy;
         this.authenticationService = authService;

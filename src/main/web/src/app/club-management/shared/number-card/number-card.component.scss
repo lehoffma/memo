@@ -2,8 +2,7 @@
 
 :host {
 	display: flex;
-	flex-direction: column;
-	margin: 8px;
+	justify-content: space-between;
 	padding: 16px;
 	border-radius: 4px;
 	min-width: 170px;
@@ -11,6 +10,13 @@
 
 	background: accent();
 	color: white;
+}
+
+.number-card-icon{
+	font-size: 72px;
+	height: 72px;
+	width: 72px;
+	color: hsla(231, 48%, 78%, 1);
 }
 
 .number-card-label {
@@ -60,4 +66,9 @@
 	.number-change-container {
 		color: hsla(0, 76%, 87%, 1);
 	}
+
+	.number-card-icon{
+		color: hsla(0, 76%, 87%, 1);
+	}
 }
+

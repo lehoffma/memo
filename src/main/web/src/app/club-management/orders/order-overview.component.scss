@@ -3,43 +3,43 @@
 :host {
 	display: flex;
 	flex-direction: column;
-	min-height: calc(100vh - 64px);
+	//min-height: calc(100vh - 64px);
 	max-width: 1000px;
 	margin: auto;
-}
-
-.preview-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
 	padding: 16px;
-	background: grey(50);
-	border-top-right-radius: 4px;
-	border-top-left-radius: 4px;
-	margin: 0;
-	color: grey(800);
-	font-weight: 500;
+}
 
-	mat-icon {
-		color: grey(600);
-		margin-right: 4px;
+
+.overview-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-wrap: wrap;
+	margin-bottom: 16px;
+
+	h2 {
+		margin: 0;
+		font-size: font-size(medium);
+		font-weight: 400;
+		color: grey(700);
 	}
 
-	> div:first-child {
-
-		display: flex;
-		align-items: center;
-	}
-
-	.preview-more-link {
-		color: accent();
-		font-weight: 500;
-		cursor: pointer;
+	.last-refresh-date {
+		color: grey();
+		font-size: font-size(smaller);
 	}
 }
 
-.preview-body {
-	display: block;
-	background: white;
-	min-height: 50px;
+
+memo-dashboard-container,
+memo-number-card {
+	flex: 1;
+}
+
+.left-side {
+	flex: 2;
+}
+
+.right-side {
+	flex: 1;
 }

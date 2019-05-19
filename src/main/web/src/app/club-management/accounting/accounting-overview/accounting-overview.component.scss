@@ -13,9 +13,7 @@
 	justify-content: space-between;
 	align-items: baseline;
 	flex-wrap: wrap;
-	margin: 16px 8px 8px;
-	padding-left: 8px;
-	padding-right: 8px;
+	margin: 16px 16px 8px;
 
 	h2 {
 		margin: 0;
@@ -42,46 +40,6 @@
 	flex-wrap: wrap;
 }
 
-.preview-container {
-	background: white;
-	border-radius: 4px;
-	margin: 8px;
-	flex: 1;
-}
-
-.preview-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 16px;
-	margin: 0;
-	background: grey(50);
-	border-top-right-radius: 4px;
-	border-top-left-radius: 4px;
-
-	mat-icon {
-		color: grey(600);
-		margin-right: 4px;
-	}
-
-	h3 {
-		margin: 0;
-		color: grey(800);
-		font-weight: 500;
-	}
-
-	> div:first-child {
-
-		display: flex;
-		align-items: center;
-	}
-
-	.preview-more-link {
-		color: accent();
-		font-weight: 500;
-		cursor: pointer;
-	}
-}
 
 h3 {
 	margin: 0;
@@ -93,7 +51,7 @@ h3 {
 	overflow: hidden;
 
 
-	.chart-container {
+	/deep/ .chart-container {
 		position: relative;
 		flex: 1;
 		height: 200px;
@@ -112,16 +70,14 @@ h3 {
 	}
 }
 
+memo-dashboard-container {
+	flex: 1;
+}
+
 
 .pie-chart {
-	display: flex;
-	flex-direction: column;
-	flex: 1;
-	margin: 8px;
-	border-radius: 4px;
-	background: white;
 
-	.chart-container {
+	/deep/ .chart-container {
 		position: relative;
 		flex: 1;
 		height: 200px;
@@ -130,7 +86,7 @@ h3 {
 		min-height: 200px;
 	}
 
-	.preview-header {
+	/deep/ .preview-header {
 		margin: 0;
 	}
 }
@@ -163,4 +119,10 @@ h3 {
 
 :host /deep/ .chart-legend .legend-wrap {
 	width: 100%;
+}
+
+
+memo-number-card,
+memo-dashboard-container{
+	margin: 8px;
 }

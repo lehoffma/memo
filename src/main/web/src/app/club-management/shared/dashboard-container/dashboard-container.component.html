@@ -1,0 +1,10 @@
+<div class="preview-header">
+	<div>
+		<mat-icon *ngIf="icon">{{icon}}</mat-icon>
+		<h3>{{title}}</h3>
+	</div>
+	<a [routerLink]="link" *ngIf="link" class="preview-more-link">Mehr</a>
+</div>
+<div class="preview-body">
+	<ng-content></ng-content>
+</div>

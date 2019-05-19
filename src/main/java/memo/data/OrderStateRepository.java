@@ -13,8 +13,7 @@ import java.util.List;
 @ApplicationScoped
 public class OrderStateRepository {
 
-
-    //___ state related stuff starts here ___
+    //todo: we still have to cast the object array returned by getResult() to the appropriate wrapper classes
 
     private final String openOrdersSql = "SELECT count(*) AS open,\n" +
             "       sum(case\n" +
@@ -68,7 +67,7 @@ public class OrderStateRepository {
     }
 
 
-    public static class TotalOrdersState{
+    public static class TotalOrdersState {
         private Integer total;
         private Integer totalChange;
 
