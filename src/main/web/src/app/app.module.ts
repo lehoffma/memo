@@ -117,15 +117,15 @@ registerLocaleData(localeDe);
 			apiKey: memoConfig.mapsApiKey,
 			libraries: ["places"]
 		}),
-		ShareButtonsModule.forRoot(),
+		ShareButtonsModule,
 		CalendarModule.forRoot({
 			provide: calendarAdapter,
 			useFactory: adapterFactory
 		}),
 		MatPasswordStrengthModule.forRoot(),
 		FlexLayoutModule,
-		NgProgressModule.forRoot(),
-		NgProgressHttpModule.forRoot(),
+		NgProgressModule,
+		NgProgressHttpModule,
 
 		//memo modules
 		SharedModule,
