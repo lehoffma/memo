@@ -23,7 +23,10 @@ h3 {
 	border-top-left-radius: 4px;
 	margin: 0;
 	color: grey(800);
-	font-weight: 500;
+
+	h3 {
+		font-weight: 400;
+	}
 
 	mat-icon {
 		color: grey(600);

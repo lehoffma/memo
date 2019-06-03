@@ -7,13 +7,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Named
 @ApplicationScoped
 public class OrderStateRepository {
-
-    //todo: we still have to cast the object array returned by getResult() to the appropriate wrapper classes
 
     private final String openOrdersSql = "SELECT count(*) AS open,\n" +
             "       sum(case\n" +
@@ -25,29 +25,37 @@ public class OrderStateRepository {
             "where o.ID = item.ORDER_ID AND item.STATUS NOT IN (4,5,6,9)";
 
     public OpenOrdersState openOrders() {
-        return (OpenOrdersState) DatabaseManager.createEntityManager()
+        Object[] result = (Object[]) DatabaseManager.createEntityManager()
                 .createNativeQuery(openOrdersSql)
                 .getSingleResult();
+
+        return new OpenOrdersState(result);
     }
 
     public static class OpenOrdersState {
-        private Integer open;
-        private Integer openChange;
+        private Long open;
+        private Long openChange;
 
-        public Integer getOpen() {
+        public OpenOrdersState(){}
+        public OpenOrdersState(Object[] objects){
+            this.open = (Long) objects[0];
+            this.openChange = (Long) objects[0];
+        }
+
+        public Long getOpen() {
             return open;
         }
 
-        public OpenOrdersState setOpen(Integer open) {
+        public OpenOrdersState setOpen(Long open) {
             this.open = open;
             return this;
         }
 
-        public Integer getOpenChange() {
+        public Long getOpenChange() {
             return openChange;
         }
 
-        public OpenOrdersState setOpenChange(Integer openChange) {
+        public OpenOrdersState setOpenChange(Long openChange) {
             this.openChange = openChange;
             return this;
         }
@@ -61,30 +69,37 @@ public class OrderStateRepository {
             "FROM orders o";
 
     public TotalOrdersState totalOrders() {
-        return (TotalOrdersState) DatabaseManager.createEntityManager()
+        Object[] result = (Object[]) DatabaseManager.createEntityManager()
                 .createNativeQuery(totalOrdersSql)
                 .getSingleResult();
+
+        return new TotalOrdersState(result);
     }
 
 
     public static class TotalOrdersState {
-        private Integer total;
-        private Integer totalChange;
+        private Long total;
+        private Long totalChange;
+        public TotalOrdersState(){}
+        public TotalOrdersState(Object[] objects){
+            this.total = (Long) objects[0];
+            this.totalChange = (Long) objects[0];
+        }
 
-        public Integer getTotal() {
+        public Long getTotal() {
             return total;
         }
 
-        public TotalOrdersState setTotal(Integer total) {
+        public TotalOrdersState setTotal(Long total) {
             this.total = total;
             return this;
         }
 
-        public Integer getTotalChange() {
+        public Long getTotalChange() {
             return totalChange;
         }
 
-        public TotalOrdersState setTotalChange(Integer totalChange) {
+        public TotalOrdersState setTotalChange(Long totalChange) {
             this.totalChange = totalChange;
             return this;
         }
@@ -100,16 +115,24 @@ public class OrderStateRepository {
         Timestamp fromTimestamp = Timestamp.valueOf(from);
         Timestamp toTimestamp = Timestamp.valueOf(to);
 
-        return (List<DataPoint>) DatabaseManager.createEntityManager()
+        return ((List<Object[]>) DatabaseManager.createEntityManager()
                 .createNativeQuery(ordersOverTimeSql)
                 .setParameter(1, fromTimestamp)
                 .setParameter(2, toTimestamp)
-                .getResultList();
+                .getResultList()).stream()
+                .map(DataPoint::new)
+                .collect(Collectors.toList());
     }
 
     public static class DataPoint {
         private String timestamp;
-        private Integer amount;
+        private Long amount;
+
+        public DataPoint(){}
+        public DataPoint(Object[] objects){
+            this.amount = (Long) objects[0];
+            this.timestamp = (String) objects[1];
+        }
 
         public String getTimestamp() {
             return timestamp;
@@ -120,11 +143,11 @@ public class OrderStateRepository {
             return this;
         }
 
-        public Integer getAmount() {
+        public Long getAmount() {
             return amount;
         }
 
-        public DataPoint setAmount(Integer amount) {
+        public DataPoint setAmount(Long amount) {
             this.amount = amount;
             return this;
         }
@@ -137,19 +160,28 @@ public class OrderStateRepository {
             "ORDER BY count DESC";
 
     public List<PopularItemsDataPoint> popularItems() {
-        return (List<PopularItemsDataPoint>) DatabaseManager.createEntityManager()
+        return ((List<Object[]>) DatabaseManager.createEntityManager()
                 .createNativeQuery(popularItemsSql)
-                .getResultList();
+                .getResultList()).stream()
+                .map(PopularItemsDataPoint::new)
+                .collect(Collectors.toList());
     }
 
     public static class PopularItemsDataPoint extends ShopItem {
-        private Integer amount;
+        private Long amount;
 
-        public Integer getAmount() {
+        public PopularItemsDataPoint(){}
+        public PopularItemsDataPoint(Object[] objects){
+            //todo
+            this.amount = (Long) objects[0];
+            System.out.println(Arrays.toString(objects));
+        }
+
+        public Long getAmount() {
             return amount;
         }
 
-        public PopularItemsDataPoint setAmount(Integer amount) {
+        public PopularItemsDataPoint setAmount(Long amount) {
             this.amount = amount;
             return this;
         }
@@ -163,15 +195,24 @@ public class OrderStateRepository {
             "ORDER BY count DESC";
 
     public List<PopularColorsDataPoint> popularColors() {
-        return (List<PopularColorsDataPoint>) DatabaseManager.createEntityManager()
+        return ((List<Object[]>) DatabaseManager.createEntityManager()
                 .createNativeQuery(popularColorsSql)
-                .getResultList();
+                .getResultList()).stream()
+                .map(PopularColorsDataPoint::new)
+                .collect(Collectors.toList());
     }
 
     public static class PopularColorsDataPoint {
         private String name;
         private String hex;
-        private Integer amount;
+        private Long amount;
+
+        public PopularColorsDataPoint(){}
+        public PopularColorsDataPoint(Object[] objects){
+            this.amount = (Long) objects[0];
+            this.name = (String) objects[1];
+            this.hex = (String) objects[2];
+        }
 
         public String getName() {
             return name;
@@ -191,11 +232,11 @@ public class OrderStateRepository {
             return this;
         }
 
-        public Integer getAmount() {
+        public Long getAmount() {
             return amount;
         }
 
-        public PopularColorsDataPoint setAmount(Integer amount) {
+        public PopularColorsDataPoint setAmount(Long amount) {
             this.amount = amount;
             return this;
         }
@@ -209,14 +250,23 @@ public class OrderStateRepository {
             "ORDER BY count DESC";
 
     public List<PopularSizesDataPoint> popularSizes() {
-        return (List<PopularSizesDataPoint>) DatabaseManager.createEntityManager()
+        return ((List<Object[]>) DatabaseManager.createEntityManager()
                 .createNativeQuery(popularSizesSql)
-                .getResultList();
+                .getResultList()).stream()
+                .map(PopularSizesDataPoint::new)
+                .collect(Collectors.toList());
     }
 
     public static class PopularSizesDataPoint {
         private String size;
-        private Integer amount;
+        private Long amount;
+
+
+        public PopularSizesDataPoint(){}
+        public PopularSizesDataPoint(Object[] objects){
+            this.amount = (Long) objects[0];
+            this.size = (String) objects[1];
+        }
 
         public String getSize() {
             return size;
@@ -227,11 +277,11 @@ public class OrderStateRepository {
             return this;
         }
 
-        public Integer getAmount() {
+        public Long getAmount() {
             return amount;
         }
 
-        public PopularSizesDataPoint setAmount(Integer amount) {
+        public PopularSizesDataPoint setAmount(Long amount) {
             this.amount = amount;
             return this;
         }

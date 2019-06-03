@@ -38,7 +38,7 @@
 	</div>
 
 
-	<memo-dashboard-container title="Gesamt über Zeit" class="linechart-container">
+	<memo-dashboard-container containerTitle="Gesamt über Zeit" class="linechart-container">
 		<div class="chart-container" *ngIf="totalOverTime$ | async as totalOverTime">
 			<ngx-charts-area-chart [gradient]="false"
 								   [baseValue]="0"
@@ -55,7 +55,7 @@
 	</memo-dashboard-container>
 
 	<div class="accounting-preview-container">
-		<memo-dashboard-container icon="subject" title="Letzte Abrechnungen" link="/management/costs/time">
+		<memo-dashboard-container icon="subject" containerTitle="Letzte Abrechnungen" link="/management/costs/time">
 			<a memoCostPreview *ngFor="let monthlyChange of state.monthlyChanges | slice:0:5"
 			   routerLink="/management/costs"
 			   [queryParams]="monthlyChange.month | pipeFunction:getMonthDetailParams"
@@ -63,7 +63,7 @@
 			   [totalBalance]="monthlyChange.totalBalance"></a>
 		</memo-dashboard-container>
 
-		<memo-dashboard-container icon="directions_car" title="Letzte Events" link="/management/costs/items">
+		<memo-dashboard-container icon="directions_car" containerTitle="Letzte Events" link="/management/costs/items">
 			<a memoCostPreview *ngFor="let itemTotal of state.itemTotals | slice:0:5"
 			   routerLink="/management/costs"
 			   [queryParams]="itemTotal.itemId | pipeFunction:getItemDetailParams"
@@ -73,7 +73,7 @@
 	</div>
 
 	<div fxLayout="row" fxLayoutGap="16px" fxLayout.lt-sm="column">
-		<memo-dashboard-container class="pie-chart" title="Ausgaben pro Kategorie">
+		<memo-dashboard-container class="pie-chart" containerTitle="Ausgaben pro Kategorie">
 			<div class="chart-container">
 				<ngx-charts-pie-chart *ngIf="expensesByCategory$ | async as expenses"
 									  [doughnut]="true"
@@ -84,7 +84,7 @@
 			</div>
 		</memo-dashboard-container>
 
-		<memo-dashboard-container class="pie-chart" title="Einnahmen pro Kategorie">
+		<memo-dashboard-container class="pie-chart" containerTitle="Einnahmen pro Kategorie">
 			<div class="chart-container">
 				<ngx-charts-pie-chart *ngIf="incomeByCategory$ | async as income"
 									  [doughnut]="true"

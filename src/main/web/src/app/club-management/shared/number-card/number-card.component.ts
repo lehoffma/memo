@@ -1,9 +1,10 @@
-import {Component, HostBinding, Input, OnInit} from "@angular/core";
+import {ChangeDetectionStrategy, Component, HostBinding, Input, OnInit} from "@angular/core";
 
 @Component({
 	selector: "memo-number-card",
 	templateUrl: "./number-card.component.html",
-	styleUrls: ["./number-card.component.scss"]
+	styleUrls: ["./number-card.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NumberCardComponent implements OnInit {
 	@Input() title: string;

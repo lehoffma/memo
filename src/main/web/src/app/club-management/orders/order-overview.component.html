@@ -1,9 +1,8 @@
-
 <div class="overview-header">
 	<h2>Bestellungsübersicht</h2>
 	<span class="last-refresh-date">Stand: {{orderOverviewService.loadDate | dateFormat:'relative'}}</span>
 </div>
-<div fxLayout.gt-sm="row" fxLayout="column" fxLayoutGap="16px">
+<div fxLayout.gt-sm="row" fxLayoutAlign.gt-sm="flex-start flex-start" fxLayout="column" fxLayoutGap="16px">
 	<div fxLayout="column" fxLayoutGap="16px" class="left-side">
 		<div fxLayout.gt-xs="row" fxLayout="column" fxLayoutGap="16px">
 			<memo-number-card class="mat-elevation-z3" title="Offene Bestellungen"
@@ -11,32 +10,39 @@
 							  matIcon="access_time"
 							  [class.loading]="openOrders === null"
 							  [total]="openOrders?.open || 0"
-							  [change]="openOrders?.change|| 0">
+							  [change]="openOrders?.openChange|| 0">
 			</memo-number-card>
 			<memo-number-card class="mat-elevation-z3" title="Bestellungen insgesamt"
 							  *ngLet="totalOrders$ | async as totalOrders"
 							  matIcon="receipt"
 							  [class.loading]="totalOrders === null"
 							  [total]="totalOrders?.total|| 0"
-							  [change]="totalOrders?.change|| 0">
+							  [change]="totalOrders?.totalChange|| 0">
 			</memo-number-card>
 		</div>
-		<memo-dashboard-container title="Neueste Bestellungen" link="/management/orders">
-			<memo-latest-orders></memo-latest-orders>
-		</memo-dashboard-container>
-	</div>
-	<div fxLayout="column" fxLayoutGap="16px" class="right-side">
-		<memo-dashboard-container title="Bestellungen über Zeit">
+		<memo-dashboard-container containerTitle="Bestellungen über Zeit">
 			<memo-orders-over-time-chart></memo-orders-over-time-chart>
 		</memo-dashboard-container>
-		<memo-dashboard-container title="Beliebteste Items">
-			<memo-popular-items></memo-popular-items>
-		</memo-dashboard-container>
-		<memo-dashboard-container title="Beliebteste Farben">
-			<memo-popular-colors></memo-popular-colors>
-		</memo-dashboard-container>
-		<memo-dashboard-container title="Beliebteste Größen">
-			<memo-popular-colors></memo-popular-colors>
-		</memo-dashboard-container>
 	</div>
+	<memo-dashboard-container containerTitle="Neueste Bestellungen" class="right-side" link="/management/orders">
+		<memo-latest-orders></memo-latest-orders>
+	</memo-dashboard-container>
+</div>
+
+
+<div class="overview-header">
+	<h2>Trends</h2>
+</div>
+
+<div fxLayout="column" fxLayout.gt-sm="row"
+	 fxLayoutGap="16px">
+	<memo-dashboard-container containerTitle="Beliebteste Items">
+		<memo-popular-items></memo-popular-items>
+	</memo-dashboard-container>
+	<memo-dashboard-container containerTitle="Beliebteste Farben">
+		<memo-popular-colors></memo-popular-colors>
+	</memo-dashboard-container>
+	<memo-dashboard-container containerTitle="Beliebteste Größen">
+		<memo-popular-colors></memo-popular-colors>
+	</memo-dashboard-container>
 </div>

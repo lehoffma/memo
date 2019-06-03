@@ -6,7 +6,7 @@ import {Component, Input, OnInit} from "@angular/core";
 	styleUrls: ["./dashboard-container.component.scss"]
 })
 export class DashboardContainerComponent implements OnInit {
-	@Input() title: string;
+	@Input() containerTitle: string;
 	@Input() icon: string;
 	@Input() link: string;
 

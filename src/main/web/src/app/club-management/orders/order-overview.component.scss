@@ -4,7 +4,7 @@
 	display: flex;
 	flex-direction: column;
 	//min-height: calc(100vh - 64px);
-	max-width: 1000px;
+	max-width: 1200px;
 	margin: auto;
 	padding: 16px;
 }
@@ -19,7 +19,7 @@
 
 	h2 {
 		margin: 0;
-		font-size: font-size(medium);
+		font-size: font-size(medium-larger);
 		font-weight: 400;
 		color: grey(700);
 	}
@@ -30,6 +30,9 @@
 	}
 }
 
+.overview-header:not(:first-of-type) {
+	margin-top: 32px;
+}
 
 memo-dashboard-container,
 memo-number-card {
@@ -42,4 +45,13 @@ memo-number-card {
 
 .right-side {
 	flex: 1;
+
+	/deep/ .preview-body{
+		border-bottom-right-radius: 4px;
+		border-bottom-left-radius: 4px;
+	}
+
+	@media all and (min-width: 960px) {
+		max-width: 350px;
+	}
 }

@@ -37,10 +37,11 @@ export class BaseApiCache<T, U> {
 	 *
 	 * @param {HttpParams} params
 	 * @param {Observable<T>} fallback
+	 * @param url
 	 * @returns {Observable<T[]>}
 	 */
-	search(params: HttpParams, fallback: Observable<U>): Observable<U> {
-		const key = this.getKeyFromParams(params);
+	search(params: HttpParams, fallback: Observable<U>, url?: string): Observable<U> {
+		const key = this.getKeyFromParams(params, url);
 		return (<Observable<U>>this.getFromCache("search", key, fallback));
 	}
 
@@ -147,14 +148,19 @@ export class BaseApiCache<T, U> {
 	/**
 	 *
 	 * @param {HttpParams} params
+	 * @param url
 	 * @returns {string}
 	 */
-	private getKeyFromParams(params: HttpParams): string {
-		const key = params.keys()
+	private getKeyFromParams(params: HttpParams, url?: string): string {
+		let key = params.keys()
 			.sort()
 			.map(key => key + "=" + params.get(key))
 			.join("&")
 			.toLowerCase();
+
+		if (url) {
+			key = url + "?" + key;
+		}
 
 		if (key.length > 0) {
 			return key;

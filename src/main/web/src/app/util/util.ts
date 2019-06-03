@@ -142,3 +142,8 @@ export function arrayIsEqual<T>(left: T[], right: T[]): boolean {
 	}
 	return left.every(leftObject => right.some(rightObject => isEdited(leftObject, rightObject)))
 }
+
+
+
+//typescript utilities
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>

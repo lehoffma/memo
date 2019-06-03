@@ -32,6 +32,69 @@ export type OrderStatusMap = {
 	[P in OrderStatus]: { value: number; label: string; tooltip: string; };
 }
 
+export const OrderStatusData: {
+	[key in OrderStatus]: {
+		position: number;
+		icon?: string;
+		colorClass: string;
+		tooltip: string;
+	}
+} = {
+	[OrderStatus.RESERVED]: {
+		position: 1,
+		colorClass: "info",
+		tooltip: "Reserviert"
+	},
+	[OrderStatus.UNDER_APPROVAL]: {
+		position: 1,
+		colorClass: "wait",
+		icon: "search",
+		tooltip: "Unter Begutachtung"
+	},
+	[OrderStatus.REFUSED]: {
+		position: 1,
+		colorClass: "error",
+		icon: "clear",
+		tooltip: "Abgelehnt"
+	},
+	[OrderStatus.ORDERED]: {
+		position: 2,
+		colorClass: "info",
+		tooltip: "Bestellt"
+	},
+	[OrderStatus.PAYMENT_REQUESTED]: {
+		position: 2,
+		colorClass: "warn",
+		icon: "access_time",
+		tooltip: "Bezahlung angefordert"
+	},
+	[OrderStatus.PAID]: {
+		position: 3,
+		colorClass: "info",
+		tooltip: "Bezahlt"
+	},
+	[OrderStatus.SENT]: {
+		position: 4,
+		colorClass: "info",
+		tooltip: "Verschickt"
+	},
+	[OrderStatus.COMPLETED]: {
+		position: 5,
+		colorClass: "info",
+		tooltip: "Abgeschlossen"
+	},
+	[OrderStatus.PARTICIPATED]: {
+		position: 6,
+		colorClass: "success",
+		tooltip: "Teilgenommen"
+	},
+	[OrderStatus.CANCELLED]: {
+		position: 10,
+		colorClass: "error",
+		tooltip: "Storniert"
+	},
+};
+
 //todo help texts (part of issue #199)
 export const orderStatusMap: OrderStatusMap = {
 	[OrderStatus.RESERVED]: {
