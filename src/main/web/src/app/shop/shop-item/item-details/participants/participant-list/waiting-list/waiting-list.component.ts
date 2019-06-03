@@ -39,7 +39,7 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 
 	selectedActions: TableAction<WaitingListUser>[] = [];
 
-	@ViewChild("bulkEditingMenu") bulkEditingMenu: any;
+	@ViewChild("bulkEditingMenu", { static: true }) bulkEditingMenu: any;
 
 	columns: TableColumn<WaitingListUser>[] = [
 		{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
@@ -75,19 +75,19 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 		);
 
 
-	@ViewChild("waitingListTable") waitingListTable: ExpandableMaterialTableComponent<WaitingListUser>;
+	@ViewChild("waitingListTable", { static: true }) waitingListTable: ExpandableMaterialTableComponent<WaitingListUser>;
 
 	batchEditOptions: BatchModifyParticipantOptions[] = [];
-	@ViewChild("isDriverInput") isDriverInput: TemplateRef<any>;
+	@ViewChild("isDriverInput", { static: true }) isDriverInput: TemplateRef<any>;
 	isDriverFormControl = new FormControl();
 
-	@ViewChild("needsTicketInput") needsTicketInput: TemplateRef<any>;
+	@ViewChild("needsTicketInput", { static: true }) needsTicketInput: TemplateRef<any>;
 	needsTicketFormControl = new FormControl();
 
-	@ViewChild("colorInput") colorInput: TemplateRef<any>;
+	@ViewChild("colorInput", { static: true }) colorInput: TemplateRef<any>;
 	colorFormControl = new FormControl(undefined, {validators: [Validators.required]});
 
-	@ViewChild("sizeInput") sizeInput: TemplateRef<any>;
+	@ViewChild("sizeInput", { static: false }) sizeInput: TemplateRef<any>;
 	sizeFormControl = new FormControl(undefined, {validators: [Validators.required]});
 
 	constructor(public waitingListTableService: WaitingListTableService,

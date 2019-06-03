@@ -17,7 +17,7 @@ export class FilterOptionRowComponent implements OnInit, ControlValueAccessor {
 	@Input() valueToString = (it => it);
 	@Input() value;
 
-	@ViewChild("checkBox") checkBox: MatCheckbox;
+	@ViewChild("checkBox", { static: true }) checkBox: MatCheckbox;
 
 	public onChange;
 	@Output() selectOnlyThisOption: EventEmitter<any> = new EventEmitter<any>();

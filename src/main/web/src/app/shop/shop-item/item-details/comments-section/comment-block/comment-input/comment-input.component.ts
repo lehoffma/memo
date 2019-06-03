@@ -17,7 +17,7 @@ export class CommentInputComponent implements OnInit, AfterViewInit {
 	@Output() submitComment: EventEmitter<string> = new EventEmitter();
 	@Output() closeSubmitComment: EventEmitter<any> = new EventEmitter();
 
-	@ViewChild(CdkTextareaAutosize, {read: ElementRef}) commentInput: ElementRef;
+	@ViewChild(CdkTextareaAutosize, { read: ElementRef, static: true }) commentInput: ElementRef;
 
 	showActionButtons = true;
 

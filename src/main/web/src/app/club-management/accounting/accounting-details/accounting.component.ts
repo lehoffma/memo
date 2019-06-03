@@ -53,7 +53,7 @@ export class AccountingComponent implements OnInit, OnDestroy {
 		map(entries => entries.reduce((acc, entry) => acc + entry.value, 0))
 	);
 
-	@ViewChild(ExpandableMaterialTableComponent) table: ExpandableMaterialTableComponent<Entry>;
+	@ViewChild(ExpandableMaterialTableComponent, { static: false }) table: ExpandableMaterialTableComponent<Entry>;
 	columns: TableColumn<Entry>[] = [
 		{header: "Bilder", columnDef: "images", cell: element => element, type: "image"},
 		{

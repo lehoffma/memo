@@ -61,7 +61,7 @@ export class OrderHistoryComponent implements OnInit, OnDestroy {
 
 	selectedTabIndex = 0;
 
-	@ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	filter$: Observable<Filter> = combineLatest(
 		this.navigationService.queryParamMap$,
 		this.loginService.accountObservable

@@ -35,7 +35,7 @@ export class MultiImageUploadComponent implements OnInit, OnDestroy {
 			name: RowActionType.DELETE
 		},
 	];
-	@ViewChild("fileUpload") fileUpload: ElementRef;
+	@ViewChild("fileUpload", { static: true }) fileUpload: ElementRef;
 	currentFiles: File[] = [];
 	imageSubscription: Subscription;
 	subscriptions = [];

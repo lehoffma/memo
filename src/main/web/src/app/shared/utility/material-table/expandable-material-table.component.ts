@@ -74,13 +74,14 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	@Input() stickyFooter = false;
 	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
 	@Output() pageChange = new EventEmitter<PageEvent>();
-	@ViewChild(MatPaginator) paginator: MatPaginator;
+	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	pageSize = 1;
 
 	@Input() emptyStateHeader: string;
 	@Input() emptyStateSubtitle: string;
 	@Input() emptyStateIcon: string;
-	@ContentChild(ExpandableMaterialTableEmptyStateActions) customActions: ExpandableMaterialTableEmptyStateActions;
+	//todo static false?
+	@ContentChild(ExpandableMaterialTableEmptyStateActions, {static: true}) customActions: ExpandableMaterialTableEmptyStateActions;
 
 	public selection: SelectionModel<T>;
 	public expansionSelection: SelectionModel<any>;

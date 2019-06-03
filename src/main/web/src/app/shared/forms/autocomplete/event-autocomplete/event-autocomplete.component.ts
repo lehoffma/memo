@@ -31,7 +31,7 @@ export class EventAutocompleteComponent implements OnInit, ControlValueAccessor 
 	filteredOptions$: Observable<Event[]>;
 	_onChange;
 
-	@ViewChild("input") input: ElementRef;
+	@ViewChild("input", { static: true }) input: ElementRef;
 
 	constructor(private formBuilder: FormBuilder,
 				private renderer: Renderer2,

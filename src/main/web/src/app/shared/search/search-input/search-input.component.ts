@@ -47,7 +47,7 @@ export class SearchInputComponent implements OnInit, OnDestroy {
 	});
 
 
-	@ViewChild("searchInput") searchInput: any;
+	@ViewChild("searchInput", { static: false }) searchInput: any;
 	@Input() placeholder = "Suche";
 	@Input() mobileExpanded = false;
 	@Output() onFocus: EventEmitter<boolean> = new EventEmitter();

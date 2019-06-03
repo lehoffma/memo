@@ -58,7 +58,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 
 	selectedActions: TableAction<ParticipantUser>[] = [];
 
-	@ViewChild("bulkEditingMenu") bulkEditingMenu: any;
+	@ViewChild("bulkEditingMenu", { static: true }) bulkEditingMenu: any;
 
 	columns$: Observable<TableColumn<ParticipantUser>[]> = this.participantListService.eventInfo$.pipe(
 		map(eventInfo => {
@@ -122,17 +122,17 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 		})
 	);
 
-	@ViewChild("statusInput") statusInput: TemplateRef<any>;
+	@ViewChild("statusInput", { static: true }) statusInput: TemplateRef<any>;
 	availableStatus = OrderStatusPairList;
 	statusFormControl = new FormControl(undefined, {validators: [Validators.required]});
 
-	@ViewChild("isDriverInput") isDriverInput: TemplateRef<any>;
+	@ViewChild("isDriverInput", { static: true }) isDriverInput: TemplateRef<any>;
 	isDriverFormControl = new FormControl();
 
-	@ViewChild("needsTicketInput") needsTicketInput: TemplateRef<any>;
+	@ViewChild("needsTicketInput", { static: true }) needsTicketInput: TemplateRef<any>;
 	needsTicketFormControl = new FormControl();
 
-	@ViewChild("participantsTable") participantsTable: ExpandableMaterialTableComponent<ParticipantUser>;
+	@ViewChild("participantsTable", { static: false }) participantsTable: ExpandableMaterialTableComponent<ParticipantUser>;
 
 	private bulkEditDialogOptions: BatchModifyParticipantOptions[];
 

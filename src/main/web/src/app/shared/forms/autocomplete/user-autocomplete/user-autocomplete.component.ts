@@ -26,7 +26,7 @@ export class UserAutocompleteComponent implements OnInit, OnDestroy {
 	blackListedUsers$ = new BehaviorSubject<User[]>([]);
 	@Input() resetOnSelect = true;
 	@Output() userChanged = new EventEmitter<User>();
-	@ViewChild("userInput") userInput: MatInput;
+	@ViewChild("userInput", { static: true }) userInput: MatInput;
 	subscriptions = [];
 
 	constructor(private userService: UserService) {
