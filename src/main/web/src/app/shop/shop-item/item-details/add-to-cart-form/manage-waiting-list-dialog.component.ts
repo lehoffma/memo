@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA} from "@angular/material";
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import {WaitingListEntry} from "../../../shared/model/waiting-list";
 import {FormBuilder} from "@angular/forms";
 import {EventType} from "../../../shared/model/event-type";

@@ -115,7 +115,7 @@
 	}
 }
 
-/deep/ .loader-wrapper {
+::ng-deep .loader-wrapper {
 	transform: scale(0.5);
 }
 
@@ -165,7 +165,7 @@
 	text-decoration: none;
 }
 
-memo-results /deep/ .no-results {
+memo-results ::ng-deep .no-results {
 	margin: 0;
 }
 
@@ -174,7 +174,7 @@ memo-results /deep/ .no-results {
 }
 
 @media all and (max-width: 650px) {
-	memo-results /deep/ .no-results {
+	memo-results ::ng-deep .no-results {
 		background: white;
 	}
 }

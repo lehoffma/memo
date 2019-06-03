@@ -12,7 +12,7 @@ import {WaitingListDataSource} from "./waiting-list-data-source";
 import {ParticipantListOption} from "../participants-category-selection/participants-category-selection.component";
 import {ParticipantUser} from "../../../../../shared/model/participant";
 import {ModifyParticipantComponent, ModifyParticipantEvent} from "../modify-participant/modify-participant.component";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {WaitingListService} from "../../../../../../shared/services/api/waiting-list.service";
 
 @Injectable()

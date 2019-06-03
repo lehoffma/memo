@@ -13,7 +13,7 @@ import {Filter} from "../../shared/model/api/filter";
 import {Sort} from "../../shared/model/api/sort";
 import {PageRequest} from "../../shared/model/api/page-request";
 import {NOW} from "../../util/util";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";

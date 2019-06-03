@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit, TemplateRef} from "@angular/core";
-import {MAT_DIALOG_DATA} from "@angular/material";
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 import {AbstractControl} from "@angular/forms";
 
 export interface BatchModifyParticipantOptions {

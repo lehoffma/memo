@@ -9,7 +9,7 @@ memo-add-to-cart-form {
 	margin-top: 16px;
 }
 
-:host /deep/ .centered-container > div {
+:host ::ng-deep .centered-container > div {
 	max-width: none !important;
 
 	.container--body {
@@ -18,7 +18,7 @@ memo-add-to-cart-form {
 }
 
 #comments {
-	/deep/ .container--body {
+	::ng-deep .container--body {
 		padding: 0;
 	}
 }
@@ -78,13 +78,13 @@ memo-add-to-cart-form {
 }
 
 
-#eventMap /deep/ .container--body {
+#eventMap ::ng-deep .container--body {
 	display: block;
 	padding: 0;
 }
 
 memo-route-map,
-memo-route-map /deep/ .sebm-google-map-container {
+memo-route-map ::ng-deep .sebm-google-map-container {
 	height: 300px;
 }
 
@@ -107,17 +107,17 @@ memo-route-map /deep/ .sebm-google-map-container {
 		border-bottom-left-radius: 4px;
 	}
 
-	:host /deep/ memo-item-info-header {
+	:host ::ng-deep memo-item-info-header {
 		background: primary();
 		padding-right: 50%;
 		color: white;
 	}
 
-	:host /deep/ .responsible-person {
+	:host ::ng-deep .responsible-person {
 		color: hsla(123, 41%, 86%, 1) !important
 	}
 
-	:host memo-item-info-header /deep/ memo-profile-link {
+	:host memo-item-info-header ::ng-deep memo-profile-link {
 		> a {
 			color: white !important;
 			border-color: white !important;
@@ -125,7 +125,7 @@ memo-route-map /deep/ .sebm-google-map-container {
 	}
 
 
-	:host /deep/ memo-multi-image-container {
+	:host ::ng-deep memo-multi-image-container {
 		background: white;
 		position: absolute;
 		right: 16px;
@@ -197,7 +197,7 @@ memo-route-map /deep/ .sebm-google-map-container {
 		}
 	}
 
-	#eventMap /deep/ .container--body {
+	#eventMap ::ng-deep .container--body {
 		display: flex;
 
 		memo-route-list,
@@ -211,11 +211,11 @@ memo-route-map /deep/ .sebm-google-map-container {
 			height: auto;
 			border-radius: 4px;
 
-			/deep/ .sebm-google-map-container {
+			::ng-deep .sebm-google-map-container {
 				height: 100%;
 			}
 
-			/deep/ .agm-map-container-inner {
+			::ng-deep .agm-map-container-inner {
 				border-bottom-right-radius: 4px;
 			}
 		}
@@ -237,8 +237,8 @@ memo-route-map /deep/ .sebm-google-map-container {
 		border-radius: 4px;
 
 		memo-multi-image-container,
-		memo-multi-image-container /deep/ .available-images-list,
-		memo-multi-image-container /deep/ .current-image-container {
+		memo-multi-image-container ::ng-deep .available-images-list,
+		memo-multi-image-container ::ng-deep .current-image-container {
 			border-bottom-left-radius: 4px;
 		}
 	}

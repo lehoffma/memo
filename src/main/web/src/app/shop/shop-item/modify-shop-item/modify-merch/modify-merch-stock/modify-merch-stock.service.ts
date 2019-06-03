@@ -6,7 +6,7 @@ import {LogInService} from "../../../../../shared/services/api/login.service";
 import {ModifyMerchStockItemComponent} from "./modify-merch-stock-item/modify-merch-stock-item.component";
 import {ModifyStockItemEvent} from "./modify-merch-stock-item/modify-stock-item-event";
 import {ModifyType} from "../../modify-type";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {InMemoryDataService} from "../../../../../shared/utility/material-table/in-memory-data.service";
 
 @Injectable()

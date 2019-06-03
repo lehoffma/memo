@@ -80,8 +80,8 @@ memo-address-form {
 	font-size: font-size(small-medium);
 }
 
-memo-address-form /deep/ memo-address-input-form /deep/ mat-form-field,
-memo-payment /deep/ memo-bank-account-form /deep/ memo-bank-account-input-form /deep/ mat-form-field {
+memo-address-form ::ng-deep memo-address-input-form ::ng-deep mat-form-field,
+memo-payment ::ng-deep memo-bank-account-form ::ng-deep memo-bank-account-input-form ::ng-deep mat-form-field {
 	width: 100%;
 }
 
@@ -90,15 +90,15 @@ memo-payment {
 	flex-direction: column;
 	align-items: center;
 
-	/deep/ memo-payment-selection {
+	::ng-deep memo-payment-selection {
 		width: 100%;
 	}
 
-	/deep/ > div {
+	::ng-deep > div {
 		width: 100%;
 		max-width: 400px;
 
-		/deep/ memo-bank-account-form {
+		::ng-deep memo-bank-account-form {
 			margin-top: 16px;
 		}
 	}

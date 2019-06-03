@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Discount} from "./discount";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {DiscountOverlayComponent} from "./discount-overlay.component";
 import {DiscountService} from "../../../shop/shared/services/discount.service";
 

@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {MatDialog, MatSnackBar} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {Event} from "../../../shared/model/event";
 import {map, mergeMap} from "rxjs/operators";
 import {BehaviorSubject, Observable} from "rxjs";

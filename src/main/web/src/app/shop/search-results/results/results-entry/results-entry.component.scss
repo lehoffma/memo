@@ -89,7 +89,7 @@ img {
 }
 
 memo-price-renderer {
-	/deep/ .price-container > span {
+	::ng-deep .price-container > span {
 		display: flex;
 		flex-direction: column-reverse;
 		align-items: flex-end;

@@ -20,7 +20,7 @@
 		padding: 0 8px;
 		border-radius: 4px;
 
-		/deep/ .dropdown-icon {
+		::ng-deep .dropdown-icon {
 			margin-left: -4px;
 			margin-right: -4px;
 		}

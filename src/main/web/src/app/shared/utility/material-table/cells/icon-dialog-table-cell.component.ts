@@ -1,6 +1,6 @@
 import {Component, Inject, Input, OnInit} from "@angular/core";
 import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
 	selector: "memo-icon-cell-details-dialog",

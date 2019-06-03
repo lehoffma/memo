@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import {ParticipantUser} from "../../../../../shared/model/participant";
 import {ModifyType} from "../../../../modify-shop-item/modify-type";
 import {UserService} from "../../../../../../shared/services/api/user.service";

@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {ItemImagePopupComponent} from "./image-popup/item-image-popup.component";
 import {Event} from "../../../shared/model/event";
 import {LogInService} from "../../../../shared/services/api/login.service";

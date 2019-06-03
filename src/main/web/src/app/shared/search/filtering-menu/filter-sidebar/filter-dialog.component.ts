@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {FilterFormValue} from "../filtering-menu.component";
 import {FilterOption} from "../../filter-options/filter-option";

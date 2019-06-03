@@ -11,7 +11,7 @@ memo-modify-merch-stock {
 	margin: auto;
 }
 
-.desktop-padding /deep/ .container--body {
+.desktop-padding ::ng-deep .container--body {
 	padding: 0;
 }
 
@@ -28,15 +28,15 @@ memo-modify-merch-stock {
 		flex-direction: row;
 	}
 
-	.desktop-padding /deep/ .container--body {
+	.desktop-padding ::ng-deep .container--body {
 		padding: 16px;
 	}
 
 	memo-multi-image-upload {
 		display: block;
 
-		/deep/ memo-multi-image-container,
-		/deep/ .upload-container {
+		::ng-deep memo-multi-image-container,
+		::ng-deep .upload-container {
 			width: 100% !important;
 		}
 	}
@@ -44,12 +44,12 @@ memo-modify-merch-stock {
 	memo-modify-merch-stock {
 		border-radius: 4px;
 
-		/deep/ mat-paginator {
+		::ng-deep mat-paginator {
 			border-bottom-right-radius: 4px;
 			border-bottom-left-radius: 4px;
 		}
 
-		/deep/ .expandable-table-header {
+		::ng-deep .expandable-table-header {
 			border-top-right-radius: 4px;
 			border-top-left-radius: 4px;
 		}
@@ -57,7 +57,7 @@ memo-modify-merch-stock {
 }
 
 //
-//:host /deep/ .expandable-table-component-container {
+//:host ::ng-deep .expandable-table-component-container {
 //	margin-left: -1rem;
 //	padding-left: 1rem;
 //	margin-right: -1rem;

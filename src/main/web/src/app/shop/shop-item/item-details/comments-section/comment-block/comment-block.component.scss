@@ -54,7 +54,7 @@
 			margin-right: 5px;
 			width: calc(100% - 30px);
 
-			.comment-author-name /deep/ a,
+			.comment-author-name ::ng-deep a,
 			.comment-author-name {
 				font-size: font-size(smallest);
 				text-decoration: none;

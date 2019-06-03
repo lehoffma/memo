@@ -1,5 +1,5 @@
 import {Component, Inject, OnDestroy, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import {ModifyType} from "../../../modify-type";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {noDuplicatesValidator} from "../../../../../../shared/validators/no-duplicates.validator";

@@ -10,7 +10,7 @@
 	min-height: 100%;
 	padding-top: 2rem;
 
-	/deep/ .object-details-content-container {
+	::ng-deep .object-details-content-container {
 		max-width: none !important;
 		width: calc(100% + 2rem) !important;
 		margin: 0 !important;
@@ -19,7 +19,7 @@
 		box-shadow: none !important;
 		border-top: 1px solid grey(200);
 
-		/deep/ .current-image-container .current-image {
+		::ng-deep .current-image-container .current-image {
 			border: none !important;
 		}
 
@@ -31,17 +31,17 @@
 	memo-user-data-form {
 		margin-top: -1rem;
 
-		/deep/ .modify-shop-item-container {
+		::ng-deep .modify-shop-item-container {
 			width: 100%;
 			box-shadow: none;
 			max-width: none;
 		}
 
-		/deep/ .current-image-container {
+		::ng-deep .current-image-container {
 			margin: auto;
 		}
 
-		/deep/ .form-actions {
+		::ng-deep .form-actions {
 			justify-content: space-between;
 			background: white;
 			padding: 0.5rem;

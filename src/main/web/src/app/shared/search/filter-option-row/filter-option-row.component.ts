@@ -1,6 +1,6 @@
 import {Component, EventEmitter, HostListener, Input, OnInit, Output, ViewChild} from "@angular/core";
 import {ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR} from "@angular/forms";
-import {MatCheckbox} from "@angular/material";
+import { MatCheckbox } from "@angular/material/checkbox";
 
 @Component({
 	selector: "memo-filter-option-row",

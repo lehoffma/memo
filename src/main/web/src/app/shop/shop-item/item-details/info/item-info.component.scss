@@ -24,7 +24,7 @@
 		}
 
 		mat-icon,
-		memo-capacity-renderer /deep/ mat-icon {
+		memo-capacity-renderer ::ng-deep mat-icon {
 			color: grey(500);
 		}
 
@@ -34,7 +34,7 @@
 			align-items: center;
 			font-size: font-size(default);
 
-			/deep/ > span {
+			::ng-deep > span {
 				margin-left: 10px;
 			}
 		}
@@ -80,11 +80,11 @@
 			margin-left: 10px;
 			width: 100%;
 
-			/deep/ .discount-overlay-trigger {
+			::ng-deep .discount-overlay-trigger {
 				margin-top: -8px;
 			}
 
-			/deep/ .price-container {
+			::ng-deep .price-container {
 				display: flex;
 				align-items: center;
 				margin-top: 0.5rem;
@@ -146,7 +146,7 @@ memo-event-destination-renderer {
 	}
 }
 
-:host /deep/ .sb-buttons.sb-style.sb-style-colors {
+:host ::ng-deep .sb-buttons.sb-style.sb-style-colors {
 	justify-content: center;
 	width: 100%;
 }

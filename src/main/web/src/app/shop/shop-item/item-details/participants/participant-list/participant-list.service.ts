@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {ExpandableTableContainerService} from "../../../../../shared/utility/material-table/util/expandable-table-container.service";
 import {ParticipantUser} from "../../../../shared/model/participant";
 import {LogInService} from "../../../../../shared/services/api/login.service";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {filter, first, map, mergeMap, take} from "rxjs/operators";
 import {EventType} from "../../../../shared/model/event-type";

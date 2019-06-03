@@ -13,7 +13,7 @@
 	vertical-align: middle;
 }
 
-:host /deep/ .small-outline-formfield.mat-form-field-appearance-outline .mat-form-field-wrapper .mat-form-field-flex {
+:host ::ng-deep .small-outline-formfield.mat-form-field-appearance-outline .mat-form-field-wrapper .mat-form-field-flex {
 	border-radius: 500px;
 	background: white;
 
@@ -27,16 +27,16 @@ mat-form-field {
 
 	border-radius: 4px !important;
 
-	/deep/ .mat-form-field-outline {
+	::ng-deep .mat-form-field-outline {
 		border-radius: 4px !important;
 	}
 
-	/deep/ .mat-form-field-outline-start {
+	::ng-deep .mat-form-field-outline-start {
 		border-radius: 4px 0 0 4px;
 		min-width: 24px;
 	}
 
-	/deep/ .mat-form-field-outline-end {
+	::ng-deep .mat-form-field-outline-end {
 		border-radius: 0 4px 4px 0;
 	}
 }

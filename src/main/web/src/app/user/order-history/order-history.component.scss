@@ -56,12 +56,12 @@ memo-order-renderer {
 	padding-bottom: 64px;
 }
 
-.no-results /deep/ .mat-badge-content {
+.no-results ::ng-deep .mat-badge-content {
 	background: memo-grey(300);
 	color: memo-grey(800);
 }
 
-:host /deep/ .mat-tab-label-active {
+:host ::ng-deep .mat-tab-label-active {
 	opacity: 1;
 }
 
@@ -104,7 +104,7 @@ memo-order-renderer {
 		background: white;
 	}
 
-	:host /deep/ .mat-tab-labels {
+	:host ::ng-deep .mat-tab-labels {
 		background: white;
 
 		.mat-tab-label {

@@ -33,13 +33,13 @@ mat-toolbar {
 			visibility: hidden;
 		}
 
-		memo-toolbar-element /deep/ .dropbtn {
+		memo-toolbar-element ::ng-deep .dropbtn {
 			color: white;
 		}
 	}
 }
 
-mat-toolbar, :host /deep/ mat-toolbar-row {
+mat-toolbar, :host ::ng-deep mat-toolbar-row {
 	transition: height 0.5s;
 	height: 64px;
 }
@@ -113,7 +113,7 @@ mat-toolbar, :host /deep/ mat-toolbar-row {
 		flex: 1;
 	}
 
-	mat-toolbar, :host /deep/ mat-toolbar-row {
+	mat-toolbar, :host ::ng-deep mat-toolbar-row {
 		height: 64px;
 	}
 

@@ -1,5 +1,5 @@
 import {RowActionType} from "./row-action-type";
-import {ThemePalette} from "@angular/material";
+import { ThemePalette } from "@angular/material/core";
 import {MatMenuPanel} from "@angular/material/typings/menu";
 
 export type RowActionLeaf<T> = Pick<RowAction<T>, Exclude<keyof RowAction<T>, "children">>

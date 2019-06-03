@@ -1,9 +1,8 @@
 import {Injectable} from "@angular/core";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
-import {Response} from "@angular/http";
 import {BankAccount} from "../../model/bank-account";
 import {UserService} from "./user.service";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {mergeMap, tap} from "rxjs/operators";
 import {User} from "../../model/user";

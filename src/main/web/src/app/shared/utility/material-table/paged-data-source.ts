@@ -3,7 +3,7 @@ import {CollectionViewer} from "@angular/cdk/collections";
 import {BehaviorSubject, combineLatest, Observable, Subject, Subscription} from "rxjs";
 import {Page, PageResponse} from "../../model/api/page";
 import {filter, map, mergeMap, switchMap, takeUntil, tap} from "rxjs/operators";
-import {MatPaginator, PageEvent} from "@angular/material";
+import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";

@@ -22,7 +22,8 @@ import {
 	BatchModifyParticipantOptions
 } from "../batch-modify-participant/batch-modify-participant.component";
 import {FormControl, Validators} from "@angular/forms";
-import {MatDialog, MatSnackBar} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {WaitingListService} from "../../../../../../shared/services/api/waiting-list.service";
 import {ParticipantListService} from "../participant-list.service";
 

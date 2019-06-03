@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Inject, LOCALE_ID, OnDestroy, OnInit, PLATFORM_ID} from "@angular/core";
-import {DateAdapter} from "@angular/material";
+import { DateAdapter } from "@angular/material/core";
 import {AuthService} from "./shared/authentication/auth.service";
 import {ActivatedRoute, NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {distinctUntilChanged, filter, map, mergeMap, startWith, takeUntil} from "rxjs/operators";

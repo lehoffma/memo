@@ -14,7 +14,7 @@ import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-lin
 import {ImpressumComponent} from "./club/impressum/impressum.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
-import {DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS} from "@angular/material";
+import { DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS } from "@angular/material/core";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./shared/authentication/auth.interceptor";
 import {ClubManagementModule} from "./club-management/club-management.module";

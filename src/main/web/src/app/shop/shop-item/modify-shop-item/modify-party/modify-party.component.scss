@@ -47,8 +47,8 @@
 	memo-multi-image-upload {
 		display: block;
 
-		/deep/ memo-multi-image-container,
-		/deep/ .upload-container {
+		::ng-deep memo-multi-image-container,
+		::ng-deep .upload-container {
 			width: 100% !important;
 		}
 	}

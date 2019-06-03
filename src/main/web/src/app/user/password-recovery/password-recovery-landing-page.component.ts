@@ -5,7 +5,7 @@ import {PasswordRecoveryService} from "./password-recovery.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {filter, mergeMap, tap} from "rxjs/operators";
 import {LogInService} from "../../shared/services/api/login.service";
-import {MatSnackBar} from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {JwtHelperService} from "../../shared/services/jwt-helper.service";
 
 @Component({

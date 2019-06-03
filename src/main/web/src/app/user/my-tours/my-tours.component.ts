@@ -9,7 +9,7 @@ import {Filter} from "../../shared/model/api/filter";
 import {PageRequest} from "../../shared/model/api/page-request";
 import {Direction, Sort} from "../../shared/model/api/sort";
 import {Event} from "../../shop/shared/model/event";
-import {MatTab} from "@angular/material";
+import { MatTab } from "@angular/material/tabs";
 import {EventType, typeToInteger} from "../../shop/shared/model/event-type";
 
 @Component({

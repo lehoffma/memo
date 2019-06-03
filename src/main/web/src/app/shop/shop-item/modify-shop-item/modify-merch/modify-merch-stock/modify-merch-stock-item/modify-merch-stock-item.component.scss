@@ -47,7 +47,7 @@
 			background: white;
 		}
 
-		/deep/ .mat-select-trigger {
+		::ng-deep .mat-select-trigger {
 			min-width: 50px;
 			height: 30px;
 			width: 50px;
@@ -58,18 +58,18 @@
 			border: 1px solid grey(200);
 		}
 
-		/deep/ .mat-select-value {
+		::ng-deep .mat-select-value {
 			top: auto;
 			left: auto;
 			bottom: auto;
 			max-width: none;
 		}
 
-		/deep/ .mat-select-arrow {
+		::ng-deep .mat-select-arrow {
 			display: none;
 		}
 
-		/deep/ .mat-select-underline {
+		::ng-deep .mat-select-underline {
 			display: none;
 		}
 	}

@@ -9,12 +9,12 @@ memo-ordered-item-form {
 	margin: auto;
 	border-radius: 4px;
 
-	/deep/ memo-ordered-item-entry:first-of-type {
+	::ng-deep memo-ordered-item-entry:first-of-type {
 		border-top-left-radius: 4px;
 		border-top-right-radius: 4px;
 	}
 
-	/deep/ memo-ordered-item-input-form {
+	::ng-deep memo-ordered-item-input-form {
 		border-radius: 4px;
 	}
 }

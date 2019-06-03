@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, HostListener, Inject, OnInit} from "@angular/core";
-import {MAT_DIALOG_DATA} from "@angular/material";
+import { MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 
 export enum KEY_CODE {

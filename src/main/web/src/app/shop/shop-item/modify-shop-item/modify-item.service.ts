@@ -24,7 +24,7 @@ import {ModifiedImages} from "./modified-images";
 import {processSequentially} from "../../../util/observable-util";
 import {isEdited} from "../../../util/util";
 import {TransactionBuilder} from "../../../util/transaction-builder";
-import {MatSnackBar} from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {setProperties} from "../../../shared/model/util/base-object";
 import {stringToNumberLimit} from "./shared/payment-method-configuration/payment-method-limit-util";
 

@@ -276,7 +276,7 @@
 	padding: 8px;
 	border-top: 1px solid memo-grey(100);
 
-	> button /deep/ span{
+	> button ::ng-deep span{
 		text-decoration: underline;
 	}
 }

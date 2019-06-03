@@ -36,16 +36,16 @@ mat-radio-group {
 }
 
 mat-radio-button,
-mat-radio-button /deep/ .mat-radio-label,
-mat-radio-button /deep/ .mat-radio-label-content {
+mat-radio-button ::ng-deep .mat-radio-label,
+mat-radio-button ::ng-deep .mat-radio-label-content {
 	width: 100%;
 }
 
-mat-radio-button /deep/ .mat-radio-label {
+mat-radio-button ::ng-deep .mat-radio-label {
 	padding: 1rem;
 }
 
-mat-radio-button /deep/ memo-address-entry {
+mat-radio-button ::ng-deep memo-address-entry {
 	padding: 0;
 }
 

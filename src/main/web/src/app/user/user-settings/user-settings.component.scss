@@ -15,7 +15,7 @@ $breakpoint: 700px;
 	margin: 0 auto 16px;
 }
 
-/deep/ .mat-menu-panel.full-width-menu {
+::ng-deep .mat-menu-panel.full-width-menu {
 	max-width: none;
 	width: 100vw;
 }
@@ -49,7 +49,7 @@ $breakpoint: 700px;
 	}
 }
 
-/deep/ .mat-menu-item.active {
+::ng-deep .mat-menu-item.active {
 	font-weight: 500;
 	color: accent();
 }

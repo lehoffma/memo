@@ -6,7 +6,7 @@ import {debounceTime, distinctUntilChanged, filter, map, mergeMap, takeUntil, ta
 import {Router} from "@angular/router";
 import {OrderService} from "../../shared/services/api/order.service";
 import {ConfirmationDialogService} from "../../shared/services/confirmation-dialog.service";
-import {MatSnackBar} from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Filter} from "../../shared/model/api/filter";
 import {Direction, Sort} from "../../shared/model/api/sort";

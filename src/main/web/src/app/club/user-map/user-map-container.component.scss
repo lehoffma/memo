@@ -8,11 +8,11 @@
 		display: block;
 	}
 
-	/deep/ agm-map{
+	::ng-deep agm-map{
 		height: calc(100vh - 64px - 2rem - 21px);
 	}
 
-	/deep/ .object-details-content-container{
+	::ng-deep .object-details-content-container{
 		max-width: none !important;
 
 		.object-details-content-title{

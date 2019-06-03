@@ -85,7 +85,7 @@
 		background: white;
 	}
 
-	/deep/ .mat-select-trigger {
+	::ng-deep .mat-select-trigger {
 		min-width: 50px;
 		height: 30px;
 		width: 50px;
@@ -97,18 +97,18 @@
 		border-radius: 4px;
 	}
 
-	/deep/ .mat-select-value {
+	::ng-deep .mat-select-value {
 		top: auto;
 		left: auto;
 		bottom: auto;
 		max-width: none;
 	}
 
-	/deep/ .mat-select-arrow {
+	::ng-deep .mat-select-arrow {
 		display: none;
 	}
 
-	/deep/ .mat-select-underline {
+	::ng-deep .mat-select-underline {
 		display: none;
 	}
 }
@@ -116,21 +116,21 @@
 .price {
 
 	memo-price-renderer {
-		/deep/ .price-container {
+		::ng-deep .price-container {
 			flex-direction: column-reverse;
 			align-items: flex-end;
 		}
 
-		/deep/ .actual-price {
+		::ng-deep .actual-price {
 			font-size: font-size(default);
 		}
 
 		&.hasDiscounts {
-			/deep/ .price-container {
+			::ng-deep .price-container {
 				margin-top: -20px;
 			}
 
-			/deep/ .percentage-saved {
+			::ng-deep .percentage-saved {
 				display: none;
 			}
 		}

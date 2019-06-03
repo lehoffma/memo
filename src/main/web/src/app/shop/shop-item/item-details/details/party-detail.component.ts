@@ -25,7 +25,7 @@ import {AddressService} from "../../../../shared/services/api/address.service";
 			}
 
 			/*todo remove*/
-			:host /deep/ .item-details-parent-container {
+			:host ::ng-deep .item-details-parent-container {
 				margin-bottom: 8rem !important;
 			}
 

@@ -5,7 +5,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {AddressService} from "../../shared/services/api/address.service";
 import {Address} from "../../shared/model/address";
 import {ShoppingCartService} from "../../shared/services/shopping-cart.service";
-import {MatSnackBar} from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {OrderService} from "../../shared/services/api/order.service";
 import {createOrder, Order} from "../../shared/model/order";
 import {ShoppingCartContent} from "../../shared/model/shopping-cart-content";

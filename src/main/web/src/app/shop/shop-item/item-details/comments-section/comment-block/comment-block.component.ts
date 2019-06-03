@@ -5,7 +5,7 @@ import {User} from "../../../../../shared/model/user";
 import {UserService} from "../../../../../shared/services/api/user.service";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {Router} from "@angular/router";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {EditCommentDialogComponent} from "../edit-comment-dialog/edit-comment-dialog.component";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
 import {WindowService} from "../../../../../shared/services/window.service";

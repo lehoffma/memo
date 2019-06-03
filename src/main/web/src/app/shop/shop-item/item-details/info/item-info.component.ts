@@ -9,7 +9,7 @@ import {defaultIfEmpty, filter, map, mergeMap} from "rxjs/operators";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {Discount} from "../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../shared/services/discount.service";
-import {MatSnackBar} from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {EventService} from "../../../../shared/services/api/event.service";
 import {CapacityService, EventCapacity} from "../../../../shared/services/api/capacity.service";
 import {NavigationService} from "../../../../shared/services/navigation.service";

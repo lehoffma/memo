@@ -21,7 +21,7 @@ import {LogInService} from "../../../../shared/services/api/login.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {canCheckIn, canConclude, canDeleteEntries, canEdit, canReadEntries, canReadOrders} from "../../../../util/permissions-util";
 import {ItemImagePopupComponent} from "../container/image-popup/item-image-popup.component";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {SpiedOnElementDirective} from "../../../../shared/utility/spied-on-element.directive";
 import {WindowService} from "../../../../shared/services/window.service";
 import {OrderedItem} from "../../../../shared/model/ordered-item";

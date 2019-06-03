@@ -22,7 +22,7 @@
 	}
 }
 
-.no-padding /deep/ .container--body {
+.no-padding ::ng-deep .container--body {
 	padding: 0;
 }
 

@@ -68,7 +68,7 @@
 memo-user-autocomplete {
 	width: 100%;
 
-	/deep/ mat-form-field {
+	::ng-deep mat-form-field {
 		width: 100%;
 	}
 }

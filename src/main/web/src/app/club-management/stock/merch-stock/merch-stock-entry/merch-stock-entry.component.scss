@@ -159,7 +159,7 @@ mat-cell.error .status-icon {
 		}
 	}
 
-	:host /deep/ .mat-column-status {
+	:host ::ng-deep .mat-column-status {
 		min-width: 200px;
 	}
 

@@ -3,7 +3,7 @@
 memo-user-data-form {
 	width: 100%;
 
-	/deep/ .modify-shop-item-container {
+	::ng-deep .modify-shop-item-container {
 		@include mat-elevation(3);
 		@include mat-elevation-transition();
 	}

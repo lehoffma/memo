@@ -26,7 +26,7 @@ mat-radio-group {
 	}
 }
 
-mat-chip-list /deep/ mat-chip {
+mat-chip-list ::ng-deep mat-chip {
 	display: flex;
 	justify-content: space-between;
 	width: 95% !important;

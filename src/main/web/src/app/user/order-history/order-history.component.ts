@@ -9,7 +9,7 @@ import {Direction, Sort} from "../../shared/model/api/sort";
 import {PagedDataSource} from "../../shared/utility/material-table/paged-data-source";
 import {Filter} from "../../shared/model/api/filter";
 import {NavigationService} from "../../shared/services/navigation.service";
-import {MatPaginator} from "@angular/material";
+import { MatPaginator } from "@angular/material/paginator";
 import {ScrollingService} from "../../shared/services/scrolling.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {userPermissions} from "../../shared/model/user";

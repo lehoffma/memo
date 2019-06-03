@@ -19,7 +19,7 @@ import {StockService} from "../../../../shared/services/api/stock.service";
 import {WaitingListService} from "../../../../shared/services/api/waiting-list.service";
 import {WaitingListEntry} from "../../../shared/model/waiting-list";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {ManageWaitingListDialogComponent} from "./manage-waiting-list-dialog.component";
 import {integerToType} from "../../../shared/model/event-type";
 import {isEdited} from "../../../../util/util";
@@ -94,7 +94,7 @@ export class AddToCartFormComponent implements OnInit {
 	);
 
 	waitingList$: Observable<WaitingListEntry[]> = this._event$.pipe(
-		mergeMap(event => this.waitingListService.valueChanges(event.id, "search", this.waitingListService.getAllByEventId.bind(this.waitingListService))),
+		mergeMap(event => this.waitingListService.valueChanges<WaitingListEntry[]>(event.id, "search", this.waitingListService.getAllByEventId.bind(this.waitingListService))),
 	);
 
 	waitingListEntryOfUser$: Observable<WaitingListEntry[]> = combineLatest(

@@ -1,7 +1,8 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {EventService} from "../../shared/services/api/event.service";
 import {EventType, integerToType, typeToInteger} from "../../shop/shared/model/event-type";
-import {MatDialog, MatSnackBar} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {EventContextMenuComponent} from "./event-context-menu/event-context-menu.component";
 import {CreateEventContextMenuComponent} from "./create-event-context-menu/create-event-context-menu.component";
 import {LogInService} from "../../shared/services/api/login.service";

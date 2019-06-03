@@ -4,7 +4,7 @@ import {FormControl, Validators} from "@angular/forms";
 import {BehaviorSubject, combineLatest, Observable} from "rxjs";
 import {EventUtilityService} from "../../../services/event-utility.service";
 import {debounceTime, map, mergeMap, startWith} from "rxjs/operators";
-import {MatInput} from "@angular/material";
+import { MatInput } from "@angular/material/input";
 import {Filter} from "../../../model/api/filter";
 import {UserService} from "../../../services/api/user.service";
 import {PageRequest} from "../../../model/api/page-request";

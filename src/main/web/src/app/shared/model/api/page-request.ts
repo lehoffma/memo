@@ -1,4 +1,4 @@
-import {PageEvent} from "@angular/material";
+import { PageEvent } from "@angular/material/paginator";
 
 const DEFAULT_PAGE_SIZE = 20;
 

@@ -11,7 +11,7 @@
 		memo-results-entry {
 			margin: 0.2rem;
 
-			/deep/ img {
+			::ng-deep img {
 				height: 150px !important;
 			}
 		}
@@ -30,7 +30,7 @@
 
 @media all and (max-width: 650px) {
 	:host {
-		/deep/ .result-entry-container {
+		::ng-deep .result-entry-container {
 			box-shadow: none !important;
 			margin: -1rem !important;
 		}

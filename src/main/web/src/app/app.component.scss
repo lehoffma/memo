@@ -8,7 +8,7 @@ mat-sidenav-container {
 	height: 100%;
 	background: transparent;
 
-	/deep/ .mat-drawer-content > div {
+	::ng-deep .mat-drawer-content > div {
 		min-height: 100%;
 		display: flex;
 		flex-direction: column;

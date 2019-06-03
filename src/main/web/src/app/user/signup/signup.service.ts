@@ -5,7 +5,7 @@ import {SignUpSection} from "./signup-section";
 import {SignUpSubmitEvent} from "./signup-submit-event";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {UserService} from "../../shared/services/api/user.service";
-import {MatSnackBar} from "@angular/material";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {LogInService} from "../../shared/services/api/login.service";
 import {Address} from "../../shared/model/address";
 import {AddressService} from "../../shared/services/api/address.service";

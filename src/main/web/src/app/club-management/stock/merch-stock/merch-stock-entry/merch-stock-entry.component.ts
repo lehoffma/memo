@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {StockEntry, StockListEntry, StockStatus} from "./stock-entry";
 import {WindowService} from "../../../../shared/services/window.service";
-import {MatTableDataSource} from "@angular/material";
+import { MatTableDataSource } from "@angular/material/table";
 import {BehaviorSubject, Observable, Subject} from "rxjs";
 import {filter, mergeMap, takeUntil} from "rxjs/operators";
 import {ResponsibilityService} from "../../../../shop/shared/services/responsibility.service";

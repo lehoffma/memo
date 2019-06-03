@@ -6,7 +6,7 @@
 	border-radius: 4px;
 
 	memo-actions-header-cell,
-	memo-actions-header-cell /deep/ .expandable-table-header {
+	memo-actions-header-cell ::ng-deep .expandable-table-header {
 		border-top-right-radius: 4px;
 		border-top-left-radius: 4px;
 	}

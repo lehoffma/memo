@@ -24,7 +24,8 @@ import {
 	BatchModifyParticipantComponent,
 	BatchModifyParticipantOptions
 } from "./batch-modify-participant/batch-modify-participant.component";
-import {MatDialog, MatSnackBar} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
+import { MatSnackBar } from "@angular/material/snack-bar";
 import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 import {of} from "rxjs/internal/observable/of";
 

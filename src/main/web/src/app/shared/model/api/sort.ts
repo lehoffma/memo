@@ -1,4 +1,4 @@
-import {SortDirection} from "@angular/material";
+import { SortDirection } from "@angular/material/sort";
 
 export enum Direction {
 	ASCENDING = "asc",

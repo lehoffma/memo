@@ -144,12 +144,12 @@ memo-multi-image-container {
 		border-left: 1px solid grey(200);
 	}
 
-	memo-item-info /deep/ .centered-container {
+	memo-item-info ::ng-deep .centered-container {
 		height: 500px;
 		width: 500px;
 	}
 
-	memo-item-info /deep/ .object-overview-container {
+	memo-item-info ::ng-deep .object-overview-container {
 		margin: 0;
 	}
 
@@ -159,7 +159,7 @@ memo-multi-image-container {
 		margin: 0;
 	}
 
-	.item-details-container /deep/ .object-details-content-container {
+	.item-details-container ::ng-deep .object-details-content-container {
 		max-width: 1000px !important;
 		z-index: 2;
 		position: relative;

@@ -7,12 +7,12 @@
 }
 
 @media all and (max-width: 800px) {
-	:host /deep/ memo-multi-image-upload /deep/ memo-multi-image-container {
+	:host ::ng-deep memo-multi-image-upload ::ng-deep memo-multi-image-container {
 		margin: -1rem;
 		width: calc(100% + 2rem) !important;
 		max-width: none;
 
-		/deep/ img.current-image {
+		::ng-deep img.current-image {
 			border: none !important;
 		}
 	}
@@ -30,7 +30,7 @@
 		margin-bottom: 1rem;
 	}
 
-	/deep/ .container--body {
+	::ng-deep .container--body {
 		max-width: 480px;
 		margin: auto;
 	}
@@ -97,20 +97,20 @@
 	}
 
 
-	/deep/ input {
+	::ng-deep input {
 		font-size: font-size(default);
 	}
 }
 
 
-mat-datepicker-toggle /deep/ button,
-mat-datepicker-toggle /deep/ svg {
+mat-datepicker-toggle ::ng-deep button,
+mat-datepicker-toggle ::ng-deep svg {
 	width: 24px !important;
 	height: 24px !important;
 }
 
 @media all and (max-width: 800px) {
-	.route-input /deep/ .container--body {
+	.route-input ::ng-deep .container--body {
 		padding: 0;
 	}
 }
@@ -137,7 +137,7 @@ mat-datepicker-toggle /deep/ svg {
 		border-top: 1px solid grey(200);
 		background: white;
 
-		/deep/ .expandable-table-header {
+		::ng-deep .expandable-table-header {
 			margin: 0;
 		}
 	}
@@ -211,13 +211,13 @@ mat-datepicker-toggle /deep/ svg {
 		display: block;
 		margin: auto;
 
-		/deep/ memo-multi-image-container {
+		::ng-deep memo-multi-image-container {
 			flex-direction: column-reverse;
 			border-bottom: 1px solid #e0e0e0;
 			background: white !important;
 		}
 
-		/deep/ .available-images-list {
+		::ng-deep .available-images-list {
 			flex-direction: row;
 			width: 100%;
 			padding: 0;
@@ -228,20 +228,20 @@ mat-datepicker-toggle /deep/ svg {
 			}
 		}
 
-		/deep/ .current-image-container {
+		::ng-deep .current-image-container {
 			height: 250px;
 			background: white;
 		}
 
-		/deep/ memo-multi-image-container,
-		/deep/ .upload-container {
+		::ng-deep memo-multi-image-container,
+		::ng-deep .upload-container {
 			width: 100% !important;
 		}
 	}
 }
 
 
-.no-padding /deep/ .container--body {
+.no-padding ::ng-deep .container--body {
 	padding: 0;
 }
 

@@ -68,8 +68,8 @@ h3.results-title {
 		}
 	}
 
-	/deep/ .mobile-filter-trigger,
-	> memo-sorting-dropdown /deep/ > button {
+	::ng-deep .mobile-filter-trigger,
+	> memo-sorting-dropdown ::ng-deep > button {
 		width: 100%;
 		background-color: white;
 	}

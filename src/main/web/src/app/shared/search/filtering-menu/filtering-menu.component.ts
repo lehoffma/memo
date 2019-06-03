@@ -14,7 +14,7 @@ import {ActivatedRoute, Params} from "@angular/router";
 import {filter, take, takeUntil} from "rxjs/operators";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {combineLatest, Subject} from "rxjs";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {FilterDialogComponent} from "./filter-sidebar/filter-dialog.component";
 import {FilterOption} from "../filter-options/filter-option";
 import {ShopItem} from "../../model/shop-item";

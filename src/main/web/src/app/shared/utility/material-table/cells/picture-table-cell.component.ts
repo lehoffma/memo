@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
-import {MatDialog} from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import {ItemImagePopupComponent} from "../../../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
 
 @Component({

@@ -7,7 +7,7 @@
 	@media all and (min-width: 800px) {
 		border-radius: 4px;
 
-		/deep/ .agm-map-container-inner {
+		::ng-deep .agm-map-container-inner {
 			border-top-left-radius: 4px;
 			border-top-right-radius: 4px;
 		}
