@@ -1,0 +1,9 @@
+<a [routerLink]="link" [queryParams]="queryParams || {}">
+	<ng-content select=".row-icon"></ng-content>
+	<div class="trending-container">
+		<span>
+		<span class="title">{{name}}</span>
+		<span class="amount">{{amount}} Bestellung{{amount !== 1 ? 'en' : ''}}</span>
+		</span>
+	</div>
+</a>

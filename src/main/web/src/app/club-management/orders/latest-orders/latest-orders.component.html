@@ -1,22 +1,16 @@
-<ng-container *ngLet="latestOrders$ | async as latestOrders">
-	<div class="loader-wrapper" *ngIf="latestOrders === null">
-		<div class="loader"></div>
-	</div>
-	<ng-container *ngIf="latestOrders !==null">
+<memo-data-container *ngLet="latestOrders$ | async as latestOrders"
+					 [data]="latestOrders"
+					 [error]="error"
+					 emptyStateIcon="receipt"
+					 emptyStateHeadline="Keine Bestellungen"
+					 emptyStateSubtitle="Es wurden bisher noch keine Bestellungen getätigt"
+					 [renderer]="renderer"
+>
+</memo-data-container>
 
-		<div *ngIf="latestOrders.length === 0" class="empty-state">
-			<mat-icon class="empty-state-header-icon">receipt</mat-icon>
-			<span class="empty-state-headline">Keine Bestellungen</span>
-			<span class="empty-state-subheader">Es wurden bisher noch keine Bestellungen getätigt</span>
-		</div>
-
-		<memo-order-preview-renderer [items]="order.items"
-									 [timestamp]="order.timeStamp"
-									 [user]="order.user"
-									 *ngFor="let order of latestOrders">
-		</memo-order-preview-renderer>
-	</ng-container>
-</ng-container>
-
-
-<!--todo loading/empty state-->
+<ng-template #renderer let-order>
+	<memo-order-preview-renderer [items]="order.items"
+								 [timestamp]="order.timeStamp"
+								 [user]="order.user">
+	</memo-order-preview-renderer>
+</ng-template>

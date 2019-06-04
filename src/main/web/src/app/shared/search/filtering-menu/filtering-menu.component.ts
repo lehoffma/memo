@@ -14,7 +14,7 @@ import {ActivatedRoute, Params} from "@angular/router";
 import {filter, take, takeUntil} from "rxjs/operators";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {combineLatest, Subject} from "rxjs";
-import { MatDialog } from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {FilterDialogComponent} from "./filter-sidebar/filter-dialog.component";
 import {FilterOption} from "../filter-options/filter-option";
 import {ShopItem} from "../../model/shop-item";
@@ -23,7 +23,7 @@ export interface FilterFormValue {
 	single: { [key: string]: string },
 	multiple: { [keyA: string]: { [key: string]: boolean } },
 	"date-range": { [key: string]: { from: Date, to: Date } },
-	"shop-item": { [key: string]: {items: ShopItem[], input: string} }
+	"shop-item": { [key: string]: { items: ShopItem[], input: string } }
 }
 
 @Component({

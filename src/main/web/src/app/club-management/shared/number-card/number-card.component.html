@@ -1,18 +1,27 @@
 
-<div fxLayout="column">
-	<span class="number-card-label">{{title}}</span>
-	<span class="number-card-main">{{total | pipeFunction:render}}</span>
-	<div class="number-change-container">
-		<mat-icon>trending_{{change > 0 ? 'up' : change < 0 ? 'down' : 'flat'}}</mat-icon>
-		<span class="number-change">
+<div class="card-container" *ngIf="!link">
+	<ng-container *ngTemplateOutlet="cardContent"></ng-container>
+</div>
+<a class="card-container" *ngIf="link" [routerLink]="link" [queryParams]="queryParams || {}">
+	<ng-container *ngTemplateOutlet="cardContent"></ng-container>
+</a>
+
+<ng-template #cardContent>
+	<div fxLayout="column">
+		<span class="number-card-label">{{title}}</span>
+		<span class="number-card-main">{{total | pipeFunction:render}}</span>
+		<div class="number-change-container">
+			<mat-icon>trending_{{change > 0 ? 'up' : change < 0 ? 'down' : 'flat'}}</mat-icon>
+			<span class="number-change">
 		{{change >= 0 ? '+' : ''}}{{change | pipeFunction:render}}
 	</span>
-		<span class="change-subtext">im letzten Monat</span>
+			<span class="change-subtext">im letzten Monat</span>
+		</div>
+
 	</div>
 
-</div>
-
-<mat-icon *ngIf="matIcon" class="number-card-icon">
-	{{matIcon}}
-</mat-icon>
-<i *ngIf="faIcon" class="{{faIcon}} number-card-icon"></i>
+	<mat-icon *ngIf="matIcon" class="number-card-icon">
+		{{matIcon}}
+	</mat-icon>
+	<i *ngIf="faIcon" class="{{faIcon}} number-card-icon"></i>
+</ng-template>

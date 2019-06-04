@@ -1,5 +1,6 @@
 package memo.data;
 
+import memo.model.ClubRole;
 import memo.model.ShopItem;
 import memo.util.DatabaseManager;
 
@@ -167,14 +168,14 @@ public class OrderStateRepository {
                 .collect(Collectors.toList());
     }
 
-    public static class PopularItemsDataPoint extends ShopItem {
+    public static class PopularItemsDataPoint{
         private Long amount;
+        private Integer id;
 
         public PopularItemsDataPoint(){}
         public PopularItemsDataPoint(Object[] objects){
-            //todo
             this.amount = (Long) objects[0];
-            System.out.println(Arrays.toString(objects));
+            this.id = (Integer) objects[1];
         }
 
         public Long getAmount() {
@@ -183,6 +184,15 @@ public class OrderStateRepository {
 
         public PopularItemsDataPoint setAmount(Long amount) {
             this.amount = amount;
+            return this;
+        }
+
+        public Integer getId() {
+            return id;
+        }
+
+        public PopularItemsDataPoint setId(Integer id) {
+            this.id = id;
             return this;
         }
     }

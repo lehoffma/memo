@@ -1,3 +1,16 @@
-<p>
-  popular-items works!
-</p>
+<memo-data-container [data]="items"
+					 [error]="error"
+					 [renderer]="templateRef"
+					 emptyStateIcon="drive_eta"
+					 emptyStateSubtitle="Es wurden bisher noch keine Items bestellt"
+>
+</memo-data-container>
+
+<ng-template #templateRef let-item>
+	<memo-trend-row [name]="item.item.title" [amount]="item.amount" link="/management/orders" [queryParams]="{eventId: item.item.id}">
+		<img class="row-icon item-icon"
+			 lazySrc="{{item.item.images[0] || 'resources/images/Logo.png'}}"
+			 lazySrcVisible="visible"
+		/>
+	</memo-trend-row>
+</ng-template>

@@ -1,3 +1,13 @@
-<p>
-  popular-colors works!
-</p>
+<memo-data-container [data]="colors"
+					 [error]="error"
+					 [renderer]="templateRef"
+					 emptyStateIcon="color_lens"
+					 emptyStateSubtitle="Es wurden bisher noch keine Merchandise Bestellungen getätigt"
+>
+</memo-data-container>
+
+<ng-template #templateRef let-color>
+	<memo-trend-row [name]="color.name" [amount]="color.amount">
+		<span class="row-icon color-icon" [style.background]="color.hex"></span>
+	</memo-trend-row>
+</ng-template>

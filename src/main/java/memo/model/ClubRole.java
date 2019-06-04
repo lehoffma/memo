@@ -14,6 +14,7 @@ package memo.model;
 
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public enum ClubRole {
@@ -47,5 +48,22 @@ public enum ClubRole {
                 .filter(clubRole -> clubRole.stringValue.equalsIgnoreCase(value)
                         || clubRole.alternativeSpelling.equalsIgnoreCase(value))
                 .findFirst();
+    }
+
+
+    /*
+     0 : Gast,
+     1 : member,
+     2 : board,
+     3 : secretary,
+     4 : funds,
+     5 : organizer,
+     6 : admin
+      */
+    public static Optional<ClubRole> fromInteger(Integer value) {
+        List<ClubRole> hierarchy = Arrays.asList(ClubRole.Gast, ClubRole.Mitglied, ClubRole.Vorstand, ClubRole.Schriftfuehrer, ClubRole.Kassenwart, ClubRole.Organisator, ClubRole.Admin);
+        return hierarchy.size() >= value
+                ? Optional.ofNullable(hierarchy.get(value))
+                : Optional.empty();
     }
 }

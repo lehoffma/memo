@@ -1,12 +1,12 @@
 @import "theme";
-@import "../../../../../../node_modules/@angular/material/theming";
+@import "~@angular/material/theming";
 
 a {
 	text-decoration: none;
-	color: accent();
+	color: primary(700);
 
 	&:hover {
-		color: accent(400);
-		border-bottom: 1px solid accent();
+		color: primary(500);
+		border-bottom: 1px solid primary(700);
 	}
 }

@@ -10,6 +10,7 @@
 				"build": {
 					"builder": "@angular-devkit/build-angular:browser",
 					"options": {
+						"aot": false,
 						"outputPath": "../webapp",
 						"deleteOutputPath": false,
 						"index": "src/index.html",

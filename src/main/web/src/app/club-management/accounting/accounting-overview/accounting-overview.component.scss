@@ -8,6 +8,11 @@
 	margin: auto;
 }
 
+memo-number-card {
+	flex: 1;
+	min-width: 220px;
+}
+
 .overview-header {
 	display: flex;
 	justify-content: space-between;
@@ -123,6 +128,6 @@ memo-dashboard-container {
 
 
 memo-number-card,
-memo-dashboard-container{
+memo-dashboard-container {
 	margin: 8px;
 }

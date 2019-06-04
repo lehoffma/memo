@@ -6,6 +6,10 @@
 	background: white;
 	border-radius: 4px;
 	@include mat-elevation(3);
+
+	::ng-deep .loader-wrapper {
+		transform: scale(0.5);
+	}
 }
 
 h3 {

@@ -58,7 +58,7 @@ export interface FilterOption<Type = FilterOptionType> {
 export function combineFilterParams(...paramsList: Params[]): Params {
 	return paramsList.reduce((combined, params) => {
 		return Object.keys(params).reduce((acc, key) => {
-			if (acc[key]) {
+			if (acc[key] !== undefined && acc[key] !== null) {
 				acc[key] += "," + params[key];
 			} else {
 				acc[key] = params[key];

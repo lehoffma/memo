@@ -1,6 +1,9 @@
 @import "theme";
 
-:host {
+$light-green: hsla(123, 41%, 90%, 1);
+
+
+.card-container {
 	display: flex;
 	justify-content: space-between;
 	padding: 16px;
@@ -8,19 +11,21 @@
 	min-width: 170px;
 	flex: 1;
 
-	background: accent();
+	background: primary();
 	color: white;
+
+	@include mat-elevation(3);
 }
 
-.number-card-icon{
+.number-card-icon {
 	font-size: 72px;
 	height: 72px;
 	width: 72px;
-	color: hsla(231, 48%, 78%, 1);
+	color: $light-green;
 }
 
 .number-card-label {
-	color: hsla(231, 48%, 84%, 1);
+	color: $light-green;
 	font-weight: 500;
 	text-transform: uppercase;
 	font-size: font-size(smaller);
@@ -35,7 +40,7 @@
 }
 
 .number-change-container {
-	color: hsla(231, 48%, 84%, 1);
+	color: $light-green;
 	display: flex;
 	align-items: flex-end;
 
@@ -59,16 +64,57 @@
 	}
 }
 
-:host.negative {
-	background: warn(700);
 
-	.number-card-label,
-	.number-change-container {
-		color: hsla(0, 76%, 87%, 1);
+:host {
+	border-radius: 4px;
+
+	&.with-link {
+		cursor: pointer;
+		transition: transform 0.2s ease-in;
+
+		.card-container {
+			transition: box-shadow 0.2s ease-in;
+		}
+
+		&:hover {
+			transform: translateY(-3px);
+
+			.card-container {
+				@include mat-elevation(8);
+			}
+		}
 	}
 
-	.number-card-icon{
-		color: hsla(0, 76%, 87%, 1);
+	&.negative {
+		.card-container {
+			background: warn(700);
+		}
+
+		.number-card-label,
+		.number-change-container,
+		.number-card-icon {
+			color: hsla(0, 76%, 87%, 1);
+		}
+
+	}
+
+	&.neutral {
+		.card-container {
+			background: white;
+			color: grey(700);
+		}
+
+		.number-card-main{
+			color: grey(900);
+		}
+
+		.number-card-label,
+		.number-change-container {
+			color: grey(600);
+		}
+
+		.number-card-icon {
+			color: grey(400);
+		}
 	}
 }
-

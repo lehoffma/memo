@@ -6,6 +6,7 @@ import {endOfMonth, format, isBefore, startOfMonth, subMonths} from "date-fns";
 import {Params} from "@angular/router";
 import {map} from "rxjs/operators";
 
+import * as deLocale from "date-fns/locale/de";
 import * as shape from 'd3-shape';
 
 @Component({
@@ -138,7 +139,7 @@ export class AccountingOverviewComponent implements OnInit {
 				}
 				sum += monthly.totalBalance;
 
-				acc.push({sum, name: format(monthly.month, "MMM")});
+				acc.push({sum, name: format(monthly.month, "MMM", {locale: deLocale})});
 
 				return acc;
 			}, []);

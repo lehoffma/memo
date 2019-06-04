@@ -1,9 +1,10 @@
-import {ChangeDetectorRef, Injectable} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {combineLatest, Observable, of} from "rxjs";
 import {ApiCache} from "../../shared/utility/cache/api-cache";
 import {Event} from "../../shop/shared/model/event";
-import {map} from "rxjs/operators";
+import {map, switchMap, tap} from "rxjs/operators";
+import {EventService} from "../../shared/services/api/event.service";
 
 @Injectable({
 	providedIn: "root"
@@ -12,7 +13,8 @@ export class OrderOverviewService {
 	private _cache: ApiCache<any> = new ApiCache();
 	loadDate = new Date();
 
-	constructor(private http: HttpClient) {
+	constructor(private http: HttpClient,
+				private eventService: EventService) {
 	}
 
 	openOrders(): Observable<{ open: number; openChange: number }> {
@@ -45,8 +47,23 @@ export class OrderOverviewService {
 	popularItems(): Observable<PopularItem[]> {
 		const url = "/api/orders/popular-items";
 		const params = new HttpParams();
-		const request = this.http.get<{ popularItems: PopularItem[] }>(url).pipe(
-			map(it => it.popularItems)
+		const request = this.http.get<{ popularItems: PopularItemId[] }>(url).pipe(
+			map(it => it.popularItems),
+			switchMap(items => {
+				if (items.length === 0) {
+					return of([]);
+				}
+
+				return combineLatest(
+					items.map(item => this.eventService.getById(item.id).pipe(
+						map(event => ({
+							item: event,
+							amount: item.amount
+						}))
+					))
+				)
+			}),
+			tap(it => console.log(it)),
 		);
 		return this._cache.search(params, request, url);
 	}
@@ -70,7 +87,13 @@ export class OrderOverviewService {
 	}
 }
 
-export interface PopularItem extends Event {
+export interface PopularItemId {
+	id: number;
+	amount: number;
+}
+
+export interface PopularItem {
+	item: Event;
 	amount: number;
 }
 
@@ -82,5 +105,5 @@ export interface PopularColor {
 
 export interface PopularSize {
 	size: string;
-	amount: string;
+	amount: number;
 }

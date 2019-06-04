@@ -5,7 +5,7 @@ import {Order} from "../../../shared/model/order";
 import {Filter} from "../../../shared/model/api/filter";
 import {PageRequest} from "../../../shared/model/api/page-request";
 import {Sort} from "../../../shared/model/api/sort";
-import {filter, map, switchMap} from "rxjs/operators";
+import {map, switchMap} from "rxjs/operators";
 import {UserService} from "../../../shared/services/api/user.service";
 import {User} from "../../../shared/model/user";
 import {Omit} from "../../../util/util";
@@ -29,11 +29,11 @@ export class LatestOrdersComponent implements OnInit {
 		map(it => it.content),
 		// replace user ids with actual user objects
 		switchMap(content => {
-			if(!content || content.length === 0){
+			if (!content || content.length === 0) {
 				return of([]);
 			}
 			return combineLatest(
-				...content.map(entry => this.userService.getById(entry.user)
+				content.map(entry => this.userService.getById(entry.user)
 					.pipe(
 						map(user => ({
 							...entry,
@@ -44,6 +44,8 @@ export class LatestOrdersComponent implements OnInit {
 			)
 		}),
 	);
+
+	error: any;
 
 	constructor(public orderService: OrderService,
 				private userService: UserService,) {

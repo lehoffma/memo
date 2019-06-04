@@ -1,3 +1,13 @@
-<p>
-  popular-sizes works!
-</p>
+<memo-data-container [data]="sizes"
+					 [error]="error"
+					 [renderer]="templateRef"
+					 emptyStateIcon="receipt"
+					 emptyStateSubtitle="Es wurden bisher noch keine Merchandise Bestellungen getätigt"
+>
+</memo-data-container>
+
+<ng-template #templateRef let-size>
+	<memo-trend-row [name]="size.size" [amount]="size.amount">
+		<mat-icon class="row-icon">trending_up</mat-icon>
+	</memo-trend-row>
+</ng-template>

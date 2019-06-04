@@ -10,6 +10,10 @@ export function attributeSortingFunction<ObjectType>(attribute: string, descendi
 	return sortingFunction(obj => obj[attribute], descending);
 }
 
+export function dateWithCorrectTimezone(date: Date): Date{
+	return new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+}
+
 export function dateSortingFunction<ObjectType>(getAttribute: (obj: ObjectType) => Date, descending: boolean): SortingFunction<ObjectType> {
 	return (a, b) => {
 		let dateA = getAttribute(a),

@@ -1,0 +1,42 @@
+@import "theme";
+
+:host ::ng-deep .row-icon {
+	width: 24px;
+	height: 24px;
+	margin-right: 8px;
+}
+
+.trending-container {
+	display: flex;
+	flex-wrap: wrap;
+
+	span.amount {
+		font-size: font-size(smaller);
+		color: grey(500);
+	}
+}
+
+:host {
+	display: block;
+	padding: 12px 16px;
+
+	&:hover {
+		.title,
+		.amount {
+			text-decoration: underline;
+		}
+	}
+}
+
+:host > a {
+	color: initial;
+	display: flex;
+	align-items: center;
+}
+
+span.title {
+	font-size: font-size(smaller);
+	color: grey(800);
+	font-weight: 500;
+	margin-right: 8px;
+}

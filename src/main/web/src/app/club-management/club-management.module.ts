@@ -32,6 +32,8 @@ import { PopularItemsComponent } from './orders/popular-items/popular-items.comp
 import { PopularColorsComponent } from './orders/popular-colors/popular-colors.component';
 import { PopularSizesComponent } from './orders/popular-sizes/popular-sizes.component';
 import { LatestOrdersComponent } from './orders/latest-orders/latest-orders.component';
+import { TrendRowComponent } from './orders/trend-row/trend-row.component';
+import {DataContainerModule} from "../shared/utility/data-container/data-container.module";
 
 const tableCellComponents = [
 	//merch table cell
@@ -57,6 +59,7 @@ const tableCellComponents = [
 		FlexLayoutModule,
 		LineChartModule,
 		AreaChartModule,
+		DataContainerModule,
 	],
 	declarations: [
 		routedComponents,
@@ -78,6 +81,7 @@ const tableCellComponents = [
 		PopularColorsComponent,
 		PopularSizesComponent,
 		LatestOrdersComponent,
+		TrendRowComponent,
 	],
 	entryComponents: [tableCellComponents]
 })

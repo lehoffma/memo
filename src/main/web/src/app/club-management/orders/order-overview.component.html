@@ -4,24 +4,31 @@
 </div>
 <div fxLayout.gt-sm="row" fxLayoutAlign.gt-sm="flex-start flex-start" fxLayout="column" fxLayoutGap="16px">
 	<div fxLayout="column" fxLayoutGap="16px" class="left-side">
-		<div fxLayout.gt-xs="row" fxLayout="column" fxLayoutGap="16px">
-			<memo-number-card class="mat-elevation-z3" title="Offene Bestellungen"
+		<div class="number-card-container">
+			<memo-number-card title="Offene Bestellungen"
 							  *ngLet="openOrders$ | async as openOrders"
 							  matIcon="access_time"
+							  link="/management/orders"
+							  [queryParams]="{status: '0,1,2,3,7,8'}"
 							  [class.loading]="openOrders === null"
 							  [total]="openOrders?.open || 0"
 							  [change]="openOrders?.openChange|| 0">
 			</memo-number-card>
-			<memo-number-card class="mat-elevation-z3" title="Bestellungen insgesamt"
+			<memo-number-card title="Bestellungen insgesamt"
+							  colorSelector="change"
 							  *ngLet="totalOrders$ | async as totalOrders"
 							  matIcon="receipt"
+							  link="/management/orders"
 							  [class.loading]="totalOrders === null"
 							  [total]="totalOrders?.total|| 0"
 							  [change]="totalOrders?.totalChange|| 0">
 			</memo-number-card>
 		</div>
-		<memo-dashboard-container containerTitle="Bestellungen über Zeit">
-			<memo-orders-over-time-chart></memo-orders-over-time-chart>
+		<memo-dashboard-container *ngLet="ordersOverTime$ | async as ordersOverTime"
+								  containerTitle="Bestellungen über Zeit">
+			<memo-orders-over-time-chart [data]="ordersOverTime">
+
+			</memo-orders-over-time-chart>
 		</memo-dashboard-container>
 	</div>
 	<memo-dashboard-container containerTitle="Neueste Bestellungen" class="right-side" link="/management/orders">
@@ -36,13 +43,13 @@
 
 <div fxLayout="column" fxLayout.gt-sm="row"
 	 fxLayoutGap="16px">
-	<memo-dashboard-container containerTitle="Beliebteste Items">
-		<memo-popular-items></memo-popular-items>
+	<memo-dashboard-container containerTitle="Beliebteste Items" *ngLet="popularItems$ | async as popularItems">
+		<memo-popular-items [items]="popularItems"></memo-popular-items>
 	</memo-dashboard-container>
-	<memo-dashboard-container containerTitle="Beliebteste Farben">
-		<memo-popular-colors></memo-popular-colors>
+	<memo-dashboard-container containerTitle="Beliebteste Farben" *ngLet="popularColors$ | async as popularColors">
+		<memo-popular-colors [colors]="popularColors"></memo-popular-colors>
 	</memo-dashboard-container>
-	<memo-dashboard-container containerTitle="Beliebteste Größen">
-		<memo-popular-colors></memo-popular-colors>
+	<memo-dashboard-container containerTitle="Beliebteste Größen" *ngLet="popularSizes$ | async as popularSizes">
+		<memo-popular-sizes [sizes]="popularSizes"></memo-popular-sizes>
 	</memo-dashboard-container>
 </div>
