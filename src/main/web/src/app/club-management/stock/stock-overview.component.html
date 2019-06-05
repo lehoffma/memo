@@ -1,17 +1,44 @@
-
-
-<div class="preview-container mat-elevation-z3">
-	<h3 class="preview-header">Ausverkaufte Artikel</h3>
-	<div class="preview-body">
-
-	</div>
+<div class="overview-header">
+	<h2>Bestandsübersicht</h2>
+	<span class="last-refresh-date">Stand: {{stockOverviewService.loadDate | dateFormat:'relative'}}</span>
 </div>
 
+<div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="16px" class="number-card-container">
+	<memo-number-card *ngLet="soldOut$ | async as soldOut"
+					  [total]="soldOut || 0"
+					  [withChange]="false"
+					  positiveThemeColor="warn"
+					  title="Ausverkauft"
+					  [class.loading]="soldOut === null"
+					  colorSelector="total"
+					  faIcon="fire"
+	></memo-number-card>
+	<memo-number-card *ngLet="warning$ | async as warning"
+					  [total]="warning || 0"
+					  [withChange]="false"
+					  positiveThemeColor="accent"
+					  title="Knapp"
+					  [class.loading]="warning === null"
+					  colorSelector="total"
+					  matIcon="error"
 
-<div class="preview-container mat-elevation-z3">
-	<h3 class="preview-header">Neueste Artikel</h3>
-	<div class="preview-body">
-
-	</div>
+	></memo-number-card>
+	<memo-number-card *ngLet="noProblem$ | async as noProblem"
+					  [total]="noProblem || 0"
+					  [withChange]="false"
+					  positiveThemeColor="primary"
+					  title="Genug"
+					  [class.loading]="noProblem === null"
+					  colorSelector="total"
+					  matIcon="check"
+	></memo-number-card>
 </div>
 
+<memo-dashboard-container containerTitle="Status">
+	<ng-container *ngLet="data$ | async as data">
+		<div class="loader-wrapper" *ngIf="data === null">
+			<div class="loader"></div>
+		</div>
+		<memo-merch-stock-status-chart *ngIf="data !== null" [data]="data"></memo-merch-stock-status-chart>
+	</ng-container>
+</memo-dashboard-container>

@@ -1,9 +1,45 @@
+@import "theme";
+
 :host {
 	display: flex;
 	flex-direction: column;
 	min-height: calc(100vh - 64px);
 	max-width: 1000px;
 	margin: auto;
+	padding: 16px;
+}
+
+
+.overview-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	flex-wrap: wrap;
+	margin-bottom: 16px;
+
+	h2 {
+		margin: 0;
+		font-size: font-size(medium-larger);
+		font-weight: 400;
+		color: grey(700);
+	}
+
+	.last-refresh-date {
+		color: grey();
+		font-size: font-size(smaller);
+	}
+}
+
+.overview-header:not(:first-of-type) {
+	margin-top: 32px;
+}
+
+.number-card-container {
+	margin-bottom: 16px;
+
+	memo-number-card {
+		flex: 1;
+	}
 }
 
 .preview-header {

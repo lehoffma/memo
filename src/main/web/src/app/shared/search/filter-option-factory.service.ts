@@ -17,7 +17,7 @@ import {FilterOption} from "./filter-options/filter-option";
 })
 export class FilterOptionFactoryService {
 
-	readonly category2: MultiFilterOption = new MultiFilterOption(
+	readonly category: MultiFilterOption = new MultiFilterOption(
 		"type",
 		"Kategorie",
 		[
@@ -39,7 +39,7 @@ export class FilterOptionFactoryService {
 		],
 	);
 
-	readonly price2: SingleFilterOption = new SingleFilterOption(
+	readonly price: SingleFilterOption = new SingleFilterOption(
 		"price",
 		"Preis",
 		[
@@ -69,7 +69,7 @@ export class FilterOptionFactoryService {
 		]
 	);
 
-	readonly date2: SingleFilterOption = new SingleFilterOption(
+	readonly date: SingleFilterOption = new SingleFilterOption(
 		"date",
 		"Datum",
 		[
@@ -88,9 +88,9 @@ export class FilterOptionFactoryService {
 	);
 
 	//todo
-	readonly getCategory: () => Observable<FilterOption> = () => of(this.category2);
-	readonly getPrice: () => Observable<FilterOption> = () => of(this.price2);
-	readonly getDate: () => Observable<FilterOption> = () => of(this.date2);
+	readonly getCategory: () => Observable<FilterOption> = () => of(this.category);
+	readonly getPrice: () => Observable<FilterOption> = () => of(this.price);
+	readonly getDate: () => Observable<FilterOption> = () => of(this.date);
 
 	constructor(private stockService: StockService,
 				private eventService: EventService) {

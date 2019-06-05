@@ -87,8 +87,8 @@ export class SearchResultComponent implements OnInit, OnDestroy {
 	onDestroy$: Subject<any> = new Subject<any>();
 
 	private _filterOptions$ = new BehaviorSubject<FilterOption[]>([
-		this.filterOptionFactory.category2,
-		this.filterOptionFactory.price2,
+		this.filterOptionFactory.category,
+		this.filterOptionFactory.price,
 	]);
 	filterOptions$: Observable<FilterOption[]> = this._filterOptions$
 		.asObservable()

@@ -34,6 +34,8 @@ import { PopularSizesComponent } from './orders/popular-sizes/popular-sizes.comp
 import { LatestOrdersComponent } from './orders/latest-orders/latest-orders.component';
 import { TrendRowComponent } from './orders/trend-row/trend-row.component';
 import {DataContainerModule} from "../shared/utility/data-container/data-container.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import { MerchStockStatusChartComponent } from './stock/merch-stock-status-chart/merch-stock-status-chart.component';
 
 const tableCellComponents = [
 	//merch table cell
@@ -60,6 +62,7 @@ const tableCellComponents = [
 		LineChartModule,
 		AreaChartModule,
 		DataContainerModule,
+		FontAwesomeModule,
 	],
 	declarations: [
 		routedComponents,
@@ -82,6 +85,7 @@ const tableCellComponents = [
 		PopularSizesComponent,
 		LatestOrdersComponent,
 		TrendRowComponent,
+		MerchStockStatusChartComponent,
 	],
 	entryComponents: [tableCellComponents]
 })

@@ -1,6 +1,79 @@
 @import "theme";
 
-$light-green: hsla(123, 41%, 90%, 1);
+:host {
+	--card-main-size: #{font-size(large)};
+
+	&:not(.negative):not(.neutral) {
+		&.positive-primary {
+			//green
+			--number-card-background: #{primary()};
+			--on-card-default: white;
+			--on-card-main: white;
+			--on-card-light: hsla(123, 41%, 90%, 1);
+			--on-card-icon: hsla(123, 41%, 90%, 1);
+		}
+
+		&.positive-accent {
+			//blue
+			--number-card-background: #{accent()};
+			--on-card-default: white;
+			--on-card-main: white;
+			--on-card-light: hsla(231, 48%, 88%, 1);
+			--on-card-icon: hsla(231, 48%, 88%, 1);
+		}
+
+		&.positive-warn {
+			//red
+			--number-card-background: #{warn(700)};
+			--on-card-default: white;
+			--on-card-main: white;
+			--on-card-light: hsla(0, 76%, 87%, 1);
+			--on-card-icon: hsla(0, 76%, 87%, 1);
+		}
+	}
+}
+
+:host.with-change{
+	--card-main-size: #{font-size(medium-large)};
+}
+
+:host.negative {
+	&.negative-primary {
+		//green
+		--number-card-background: #{primary()};
+		--on-card-default: white;
+		--on-card-main: white;
+		--on-card-light: hsla(123, 41%, 90%, 1);
+		--on-card-icon: hsla(123, 41%, 90%, 1);
+	}
+
+	&.negative-accent {
+		//blue
+		--number-card-background: #{accent()};
+		--on-card-default: white;
+		--on-card-main: white;
+		--on-card-light: hsla(123, 41%, 90%, 1);
+		--on-card-icon: hsla(123, 41%, 90%, 1);
+	}
+
+	&.negative-warn {
+		//red
+		--number-card-background: #{warn(700)};
+		--on-card-default: white;
+		--on-card-main: white;
+		--on-card-light: hsla(0, 76%, 87%, 1);
+		--on-card-icon: hsla(0, 76%, 87%, 1);
+	}
+}
+
+
+:host.neutral {
+	--number-card-background: white;
+	--on-card-default: #{grey(700)};
+	--on-card-main: #{grey(900)};
+	--on-card-light: #{grey(600)};
+	--on-card-icon: #{grey(400)};
+}
 
 
 .card-container {
@@ -11,8 +84,8 @@ $light-green: hsla(123, 41%, 90%, 1);
 	min-width: 170px;
 	flex: 1;
 
-	background: primary();
-	color: white;
+	background: var(--number-card-background);
+	color: var(--on-card-default);
 
 	@include mat-elevation(3);
 }
@@ -21,26 +94,27 @@ $light-green: hsla(123, 41%, 90%, 1);
 	font-size: 72px;
 	height: 72px;
 	width: 72px;
-	color: $light-green;
+	line-height: 72px;
+	color: var(--on-card-icon);
 }
 
 .number-card-label {
-	color: $light-green;
+	color: var(--on-card-light);
 	font-weight: 500;
 	text-transform: uppercase;
 	font-size: font-size(smaller);
 }
 
 .number-card-main {
-	font-size: font-size(medium-large);
+	font-size: var(--card-main-size);
 	margin-top: 4px;
 	margin-bottom: 4px;
 	font-weight: 500;
-	color: white;
+	color: var(--on-card-main);
 }
 
 .number-change-container {
-	color: $light-green;
+	color: var(--on-card-light);
 	display: flex;
 	align-items: flex-end;
 
@@ -85,36 +159,4 @@ $light-green: hsla(123, 41%, 90%, 1);
 		}
 	}
 
-	&.negative {
-		.card-container {
-			background: warn(700);
-		}
-
-		.number-card-label,
-		.number-change-container,
-		.number-card-icon {
-			color: hsla(0, 76%, 87%, 1);
-		}
-
-	}
-
-	&.neutral {
-		.card-container {
-			background: white;
-			color: grey(700);
-		}
-
-		.number-card-main{
-			color: grey(900);
-		}
-
-		.number-card-label,
-		.number-change-container {
-			color: grey(600);
-		}
-
-		.number-card-icon {
-			color: grey(400);
-		}
-	}
 }

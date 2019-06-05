@@ -54,6 +54,7 @@ import {adapterFactory} from "angular-calendar/date-adapters/date-fns";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {ProgressiveImageLoadingModule} from "./shared/progressive-image-loading/progressive-image-loading.module";
 import {ClubModule} from "./club/club.module";
+import {faFire} from "@fortawesome/free-solid-svg-icons/faFire";
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -86,7 +87,8 @@ const cookieConfig: NgcCookieConsentConfig = {
 
 const shareButtonsIcons = [
 	faFacebookF, faTwitter, faFacebook, faEnvelope, faGlobe,
-	faWhatsapp, faFacebookMessenger, faTelegramPlane, faLink
+	faWhatsapp, faFacebookMessenger, faTelegramPlane, faLink,
+	faFire,
 ];
 
 library.add(...shareButtonsIcons);

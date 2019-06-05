@@ -10,11 +10,11 @@
 	<div fxLayout="column">
 		<span class="number-card-label">{{title}}</span>
 		<span class="number-card-main">{{total | pipeFunction:render}}</span>
-		<div class="number-change-container">
+		<div class="number-change-container" *ngIf="withChange">
 			<mat-icon>trending_{{change > 0 ? 'up' : change < 0 ? 'down' : 'flat'}}</mat-icon>
 			<span class="number-change">
-		{{change >= 0 ? '+' : ''}}{{change | pipeFunction:render}}
-	</span>
+				{{change >= 0 ? '+' : ''}}{{change | pipeFunction:render}}
+			</span>
 			<span class="change-subtext">im letzten Monat</span>
 		</div>
 
@@ -23,5 +23,5 @@
 	<mat-icon *ngIf="matIcon" class="number-card-icon">
 		{{matIcon}}
 	</mat-icon>
-	<i *ngIf="faIcon" class="{{faIcon}} number-card-icon"></i>
+	<fa-icon *ngIf="faIcon" class="number-card-icon" [icon]="faIcon"></fa-icon>
 </ng-template>

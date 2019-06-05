@@ -1,3 +1,25 @@
+<!--todo use results thingy-->
+<!--<memo-results-container *ngLet="(itemPreviews$ |async) as itemPreviews"-->
+<!--						[results]="itemPreviews"-->
+<!--						[filterOptions]="filterOptions$ | async"-->
+<!--						[sortingOptions]="sortingOptions"-->
+<!--						[title]="'Item Abrechnungen'"-->
+<!--						[page]="resultsDataSource.currentPage$ | async"-->
+<!--						[canAdd]="false"-->
+<!--						(pageChange)="pageAt($event)"-->
+<!--&gt;-->
+<!--	<div class="results-container">-->
+<!--&lt;!&ndash;		todo table &ndash;&gt;-->
+<!--		<a memoCostPreview *ngFor="let preview of itemPreviews"-->
+<!--		   routerLink="/management/costs"-->
+<!--		   [queryParams]="preview.itemId | pipeFunction:getDetailParams"-->
+<!--		   [label]="preview.itemTitle"-->
+<!--		   [totalBalance]="preview.totalBalance"></a>-->
+<!--	</div>-->
+<!--</memo-results-container>-->
+
+
+
 <div class="filter-sidebar">
 	<memo-filtering-menu (queryParamChange)="updateQueryParams($event)"
 						  [filterOptions]="filterOptions$ | async"></memo-filtering-menu>

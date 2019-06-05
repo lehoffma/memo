@@ -25,20 +25,6 @@
 		"route": "membership",
 		"children": [
 			{
-				"route": "management/dashboard",
-				"icon": "dashboard",
-				"name": "Dashboard",
-				"description": "Erhalte eine Überblick über den Verein",
-				"minimumPermission": {
-					"userManagement": 1,
-					"merch": 1,
-					"tour": 1,
-					"party": 1,
-					"funds": 1,
-					"stock": 1
-				}
-			},
-			{
 				"route": "club/calendar",
 				"icon": "event",
 				"name": "Kalender"
@@ -151,19 +137,6 @@
 				"route": "management/costs/time",
 				"icon": "access_time",
 				"name": "Abrechnungen",
-				"minimumPermission": {
-					"userManagement": 1,
-					"merch": 1,
-					"tour": 1,
-					"party": 1,
-					"funds": 1,
-					"stock": 1
-				}
-			},
-			{
-				"route": "management/costs/items",
-				"icon": "drive_eta",
-				"name": "Item Abrechnungen",
 				"minimumPermission": {
 					"userManagement": 1,
 					"merch": 1,

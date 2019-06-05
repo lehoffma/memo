@@ -116,20 +116,6 @@
 		},
 		"children": [
 			{
-				"route": "management/dashboard",
-				"icon": "dashboard",
-				"name": "Dashboard",
-				"description": "Ein Überblick über den Verein",
-				"minimumPermission": {
-					"userManagement": 1,
-					"merch": 1,
-					"tour": 1,
-					"party": 1,
-					"funds": 1,
-					"stock": 1
-				}
-			},
-			{
 				"route": "",
 				"name": "Kosten",
 				"minimumPermission": {
@@ -160,20 +146,6 @@
 						"icon": "access_time",
 						"description": "pro Monat und Jahr",
 						"name": "Abrechnungen",
-						"minimumPermission": {
-							"userManagement": 1,
-							"merch": 1,
-							"tour": 1,
-							"party": 1,
-							"funds": 1,
-							"stock": 1
-						}
-					},
-					{
-						"route": "management/costs/items",
-						"icon": "drive_eta",
-						"description": "Touren, Partys und Merchandise",
-						"name": "Item Abrechnungen",
 						"minimumPermission": {
 							"userManagement": 1,
 							"merch": 1,

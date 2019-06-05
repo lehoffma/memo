@@ -63,7 +63,7 @@
 			   [totalBalance]="monthlyChange.totalBalance"></a>
 		</memo-dashboard-container>
 
-		<memo-dashboard-container icon="directions_car" containerTitle="Letzte Events" link="/management/costs/items">
+		<memo-dashboard-container icon="directions_car" containerTitle="Letzte Events">
 			<a memoCostPreview *ngFor="let itemTotal of state.itemTotals | slice:0:5"
 			   routerLink="/management/costs"
 			   [queryParams]="itemTotal.itemId | pipeFunction:getItemDetailParams"

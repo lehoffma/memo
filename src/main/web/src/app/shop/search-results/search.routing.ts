@@ -4,7 +4,7 @@ import {SearchResultComponent} from "./search-results.component";
 
 const routes: Route[] = [
 	{path: "shop/search", component: SearchResultComponent},
-	{path: "shop", redirectTo: "/shop/search", pathMatch: "full"},
+	{path: "shop", redirectTo: "/shop/search?date=upcoming", pathMatch: "full"},
 	{path: "shop/tours", redirectTo: "/shop/search?date=upcoming&type=1", pathMatch: "full"},
 	{path: "shop/events", redirectTo: "/shop/search?&date=upcoming&type=2", pathMatch: "full"},
 	{path: "shop/partys", redirectTo: "/shop/search?&date=upcoming&type=2", pathMatch: "full"},
