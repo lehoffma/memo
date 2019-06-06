@@ -1,8 +1,11 @@
 import {Component} from "@angular/core";
 import {BaseSettingsSubsectionComponent} from "../base-settings-subsection.component";
-import {FormBuilder, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {AccountSettingsService} from "../account-settings.service";
+import {UserService} from "../../../../shared/services/api/user.service";
+import {MatSnackBar} from "@angular/material";
+import {User} from "../../../../shared/model/user";
 
 @Component({
 	selector: "memo-personal-data-wrapper",
@@ -12,8 +15,10 @@ import {AccountSettingsService} from "../account-settings.service";
 export class PersonalDataWrapperComponent extends BaseSettingsSubsectionComponent {
 	constructor(protected loginService: LogInService,
 				protected accountSettingsService: AccountSettingsService,
+				protected snackBar: MatSnackBar,
+				private userService: UserService,
 				private formBuilder: FormBuilder) {
-		super(loginService, accountSettingsService);
+		super(loginService, snackBar, accountSettingsService);
 		this.formGroup = this.formBuilder.group({
 			"firstName": ["", {
 				validators: [Validators.required]
@@ -39,5 +44,15 @@ export class PersonalDataWrapperComponent extends BaseSettingsSubsectionComponen
 		});
 
 		this.init();
+	}
+
+
+	save(formGroup: FormGroup, user: User) {
+		const updatedUser = {
+			...user,
+			...formGroup.value
+		};
+
+		return this.userService.modify(updatedUser);
 	}
 }

@@ -23,6 +23,13 @@ export class PaymentComponent implements OnInit {
 		//todo https://developer.paypal.com/demo/checkout/#/pattern/client
 	}
 
+	public get options(): PaymentMethod[] {
+		if (!this.allowedMethods) {
+			return [];
+		}
+		return Object.keys(this.allowedMethods).filter(key => this.allowedMethods[key]) as PaymentMethod[];
+	}
+
 	/**
 	 *
 	 * @param {PaymentMethod} method

@@ -1,1 +1,5 @@
 <memo-personal-data-form [formGroup]="formGroup"></memo-personal-data-form>
+
+<div *ngIf="error" class="error-message">
+	<span>Änderungen konnten nicht gespeichert werden: {{error?.message || 'Unbekannter Fehler'}}</span>
+</div>

@@ -1,6 +1,6 @@
-<memo-payment-selection
-	[allowedMethods]="allowedMethods"
-	(methodSelected)="updateSelectedMethod($event)"></memo-payment-selection>
+<memo-radio-selection
+	[options]="options"
+	(onSelected)="updateSelectedMethod($event)"></memo-radio-selection>
 
 
 <div [ngSwitch]="formGroup.get('method').value">

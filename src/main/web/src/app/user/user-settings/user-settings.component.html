@@ -35,9 +35,15 @@
 						(click)="accountSettingsService.reset()">
 					Zurücksetzen
 				</button>
-				<button mat-raised-button color="accent" [disabled]="!(hasChanges$ | async) || !(formIsValid$ | async)"
+				<button mat-raised-button color="accent"
+						*ngLet="accountSettingsService.loading$ | async as loading"
+						[disabled]="!(hasChanges$ | async) || !(formIsValid$ | async) || loading"
 						(click)="accountSettingsService.save()">
-					Speichern
+					<span *ngIf="!loading; else loadingSpinner">Speichern</span>
+					<ng-template #loadingSpinner>
+						<mat-icon class="loading-spinner">refresh</mat-icon>
+						<span>Speichert...</span>
+					</ng-template>
 				</button>
 			</div>
 		</div>

@@ -3,12 +3,12 @@
 
 
 //todo redesign: align progress indicator with checkout design
-//todo redesign: form redesign
 :host {
 	justify-content: flex-start;
 	height: auto;
 	min-height: 100%;
 	padding-top: 2rem;
+	padding-bottom: 100px;
 
 	::ng-deep .object-details-content-container {
 		max-width: none !important;

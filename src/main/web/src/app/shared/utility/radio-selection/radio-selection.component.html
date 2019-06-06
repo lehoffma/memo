@@ -1,0 +1,17 @@
+<div>
+	<!--<div><img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg"/></div>-->
+	<ng-container *ngFor="let option of options">
+		<div (click)="selected = option"
+			 [ngClass]="{
+				'selected': selected === option
+			 }">
+			<label for="{{'radioButton' + option}}">
+				<span>{{option}}</span>
+			</label>
+			<input type="radio" name="method"
+				   [(ngModel)]="selected" id="{{'radioButton' + option}}"
+				   [value]="option" [hidden]="true">
+		</div>
+
+	</ng-container>
+</div>

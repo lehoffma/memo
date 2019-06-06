@@ -11,16 +11,12 @@ import {User} from "../../../shared/model/user";
 export class PaymentMethodsFormComponent implements OnInit {
 	@Input() user: User;
 	@Input() loading: boolean = false;
-	paymentMethod: { value: string, name: string };
-	paymentMethods = [
-		{
-			value: "debit",
-			name: "Lastschrift"
-		},
-		{
-			value: "other",
-			name: "Sonstiges"
-		}];
+	paymentMethod: string;
+	paymentMethods = ["Lastschrift", "Sonstiges"];
+	paymentMethodValues = {
+		"Lastschrift": "debit",
+		"Sonstiges": "other"	//todo
+	};
 
 	debitFormIsValid = false;
 	debitInfo: PaymentInfo;

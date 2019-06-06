@@ -2,23 +2,17 @@
 
 <form (ngSubmit)="submit()" #debitInputForm="ngForm" novalidate>
 
-	<div class="payment-method-choice">
-		<div *ngFor="let method of paymentMethods|slice:0:1"
-			 class="payment-method-option"
-			 (click)="paymentMethod = method"
-			 [ngClass]="{'selected-payment-method': paymentMethod === method}"
-			 [style.width]="90/(paymentMethods.length) + '%'">
-			{{method.name}}
-		</div>
-	</div>
+	<!--	todo use same component as checkout -->
+	<memo-radio-selection [options]="paymentMethods | slice:0:1" (onSelected)="paymentMethod = $event">
+	</memo-radio-selection>
 
-	<memo-debit-input-form *ngIf="paymentMethod && paymentMethod.value === 'debit'"
+	<memo-debit-input-form *ngIf="paymentMethod && paymentMethodValues[paymentMethod] === 'debit'"
 						   [name]="(user.firstName && user.surname) ? user.firstName + ' ' + user.surname : ''"
 						   (onChange)="saveDebitInfo($event)">
 	</memo-debit-input-form>
 
 	<button mat-raised-button type="submit" color="{{debitFormIsValid ? 'primary' : 'accent'}}">
 		<mat-icon *ngIf="loading" class="loading-spinner">refresh</mat-icon>
-		{{debitFormIsValid ? 'Registrierung abschließen' :'Überspringen und abschließen'}}
+		{{debitFormIsValid ? 'Registrierung abschließen' : 'Überspringen und abschließen'}}
 	</button>
 </form>

@@ -3,18 +3,23 @@ import {combineLatest, Observable, Subject} from "rxjs";
 import {User} from "../../../shared/model/user";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {FormGroup} from "@angular/forms";
-import {distinctUntilChanged, filter, map, take, takeUntil} from "rxjs/operators";
+import {delay, distinctUntilChanged, filter, map, switchMap, take, takeUntil} from "rxjs/operators";
 import {AccountSettingsService} from "./account-settings.service";
 import {isEqual} from "date-fns";
+import {MatSnackBar} from "@angular/material";
 
 export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestroy {
 	public formGroup: FormGroup;
 	public onDestroy$ = new Subject();
+	public error: any;
 	public user$: Observable<User> = this.loginService.currentUser$;
 
 	protected constructor(protected loginService: LogInService,
+						  protected snackBar: MatSnackBar,
 						  protected accountSettingsService: AccountSettingsService) {
 		this.accountSettingsService.onReset.pipe(takeUntil(this.onDestroy$)).subscribe(it => this.reset(this.formGroup));
+
+		this.accountSettingsService.onSave.pipe(takeUntil(this.onDestroy$)).subscribe(it => this.saveChanges(this.formGroup));
 	}
 
 	ngOnInit() {
@@ -23,6 +28,31 @@ export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestr
 	ngOnDestroy(): void {
 		this.onDestroy$.next(true);
 	}
+
+	protected saveChanges(formGroup: FormGroup) {
+		this.accountSettingsService.loading(true);
+		this.user$.pipe(
+			take(1),
+			switchMap(it => this.save(formGroup, it))
+		).subscribe(
+			updatedUser => {
+				this.snackBar.open("Die Änderungen wurden erfolgreich gespeichert!", null, {
+					duration: 5000
+				});
+				this.accountSettingsService.loading(false);
+			},
+			error => {
+				console.error(error);
+				this.error = error;
+				this.accountSettingsService.loading(false);
+				this.snackBar.open("Änderungen konnten nicht gespeichert werden.", "Schließen");
+			},
+			() => {
+			}
+		);
+	}
+
+	abstract save(formGroup: FormGroup, user: User): Observable<any>;
 
 	init() {
 		this.initFromUser$(this.formGroup);
@@ -50,10 +80,10 @@ export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestr
 	}
 
 	initChangeTracking(formGroup: FormGroup) {
-		combineLatest(
+		combineLatest([
 			this.user$.pipe(filter(it => it !== null)),
 			formGroup.valueChanges.pipe(distinctUntilChanged())
-		).pipe(
+		]).pipe(
 			map(([user, value]) => this.hasChanges(user, value)),
 			takeUntil(this.onDestroy$)
 		).subscribe(hasChanges => this.accountSettingsService.hasChanges$.next(hasChanges));

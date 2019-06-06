@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {Observable} from "rxjs";
+import {Observable, of} from "rxjs";
 import {filter, map, switchMap, takeUntil} from "rxjs/operators";
 import {ClubRole, isAuthenticated} from "../../../../shared/model/club-role";
 import {UserNotificationUnsubscriptionService} from "../../../../shared/services/api/user-notification-unsubscription.service";
@@ -9,6 +9,7 @@ import {notificationTypes, UserNotificationBroadcastType, UserNotificationType} 
 import {BaseSettingsSubsectionComponent} from "../base-settings-subsection.component";
 import {AccountSettingsService} from "../account-settings.service";
 import {User} from "../../../../shared/model/user";
+import {MatSnackBar} from "@angular/material";
 
 export type NotificationSettings = { [type in UserNotificationType]: { [broadCaster in UserNotificationBroadcastType]: boolean; } };
 
@@ -37,8 +38,9 @@ export class NotificationSettingsComponent extends BaseSettingsSubsectionCompone
 	constructor(protected loginService: LogInService,
 				protected accountSettingsService: AccountSettingsService,
 				private fb: FormBuilder,
+				protected snackBar: MatSnackBar,
 				private notificationUnsubscriptionsService: UserNotificationUnsubscriptionService) {
-		super(loginService, accountSettingsService);
+		super(loginService, snackBar, accountSettingsService);
 		this.user$.pipe(filter(it => it !== null), switchMap(user => this.userToSettingsValue(user)), takeUntil(this.onDestroy$))
 			.subscribe(settingsValue => this.previousValue = settingsValue);
 
@@ -116,6 +118,13 @@ export class NotificationSettingsComponent extends BaseSettingsSubsectionCompone
 				return value[key][UserNotificationBroadcastType.NOTIFICATION] !== this.previousValue[key][UserNotificationBroadcastType.NOTIFICATION] ||
 					value[key][UserNotificationBroadcastType.MAIL] !== this.previousValue[key][UserNotificationBroadcastType.MAIL];
 			});
+	}
+
+
+
+	save(formGroup: FormGroup, user: User) {
+		console.log(formGroup);
+		return of(true);
 	}
 
 }

@@ -12,6 +12,7 @@ import {RouterModule} from "@angular/router";
 import {SharedModule} from "../../shared/shared.module";
 import {ShopItemDetailsModule} from "../../shop/shop-item/item-details/shop-item-details.module";
 import {SignupCompletedComponent} from "./signup-completed.component";
+import {RadioSelectionModule} from "../../shared/utility/radio-selection/radio-selection.module";
 
 @NgModule({
 	imports: [
@@ -22,6 +23,7 @@ import {SignupCompletedComponent} from "./signup-completed.component";
 		SharedModule,
 		MemoMaterialModule,
 		ShopItemDetailsModule,
+		RadioSelectionModule,
 	],
 	declarations: [
 		SignUpComponent,

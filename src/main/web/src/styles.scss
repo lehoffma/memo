@@ -295,7 +295,7 @@ memo-comments-section .reply-form-container memo-comment-input form {
 	align-items: center;
 	justify-content: space-between;
 
-	&[optional]::after {
+	&[optional]:not([optional=false])::after {
 		content: "Optional";
 		color: grey(500);
 		font-size: font-size(smallest);

@@ -1,8 +1,8 @@
 export enum PaymentMethod {
-	CASH = <any> "Bar",
+	CASH = "Bar",
 	// PAYPAL = <any> "Paypal",
-	TRANSFER = <any> "Überweisung",
-	DEBIT = <any> "Lastschrift"
+	TRANSFER = "Überweisung",
+	DEBIT = "Lastschrift"
 }
 
 const paymentMethodMap = {
