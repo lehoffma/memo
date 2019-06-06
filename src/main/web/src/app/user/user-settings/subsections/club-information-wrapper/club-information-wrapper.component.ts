@@ -6,6 +6,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {User} from "../../../../shared/model/user";
 import {of} from "rxjs";
 import {MatSnackBar} from "@angular/material";
+import {UserService} from "../../../../shared/services/api/user.service";
 
 @Component({
 	selector: "memo-club-information-wrapper",
@@ -16,6 +17,7 @@ export class ClubInformationWrapperComponent extends BaseSettingsSubsectionCompo
 	constructor(protected loginService: LogInService,
 				protected accountSettingsService: AccountSettingsService,
 				protected snackBar: MatSnackBar,
+				private userService: UserService,
 				private formBuilder: FormBuilder) {
 		super(loginService, snackBar, accountSettingsService);
 		this.formGroup = this.formBuilder.group({
@@ -33,7 +35,10 @@ export class ClubInformationWrapperComponent extends BaseSettingsSubsectionCompo
 
 
 	save(formGroup: FormGroup, user: User) {
-		console.log(formGroup);
-		return of(true);
+		const updatedUser = {
+			...user,
+			...formGroup.value
+		};
+		return this.userService.modify(updatedUser);
 	}
 }

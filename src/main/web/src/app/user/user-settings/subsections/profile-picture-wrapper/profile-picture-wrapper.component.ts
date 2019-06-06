@@ -90,9 +90,7 @@ export class ProfilePictureWrapperComponent extends BaseSettingsSubsectionCompon
 
 	save(formGroup: FormGroup, user: User) {
 		const modifiedImages = formGroup.value as ModifiedImages;
-		return this.user$.pipe(
-			take(1),
-			switchMap(user => this.handleImages(user, modifiedImages)),
+		return this.handleImages(user, modifiedImages).pipe(
 			switchMap(user => this.userService.modify(user))
 		);
 	}

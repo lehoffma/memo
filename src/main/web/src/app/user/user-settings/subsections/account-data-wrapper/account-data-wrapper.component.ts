@@ -5,8 +5,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AccountSettingsService} from "../account-settings.service";
 import {UserService} from "../../../../shared/services/api/user.service";
 import {confirmPasswordValidator} from "../../../../shared/validators/confirm-password.validator";
-import {BehaviorSubject, of, timer} from "rxjs";
-import {first, takeUntil} from "rxjs/operators";
+import {BehaviorSubject} from "rxjs";
+import {takeUntil, tap} from "rxjs/operators";
 import {MatSnackBar} from "@angular/material";
 import {User} from "../../../../shared/model/user";
 
@@ -55,8 +55,38 @@ export class AccountDataWrapperComponent extends BaseSettingsSubsectionComponent
 		this.accountSettingsService.onReset.pipe(takeUntil(this.onDestroy$)).subscribe(it => this.wantsToChangePassword = false);
 	}
 
+
+	protected initFromUser(user: User, formGroup: FormGroup) {
+		const value = formGroup.getRawValue();
+		const updatedValue = value;
+
+		Object.keys(value)
+			.filter(key => !user.hasOwnProperty(key))
+			.filter(key => key !== "password")
+			.forEach(key => {
+				if (value[key] instanceof Array) {
+					updatedValue[key] = [];
+				} else {
+					updatedValue[key] = "";
+				}
+			});
+
+		Object.keys(value)
+			.filter(key => user.hasOwnProperty(key))
+			.filter(key => key !== "password")
+			.forEach(key => updatedValue[key] = user[key]);
+
+		formGroup.setValue(updatedValue);
+	}
+
 	save(formGroup: FormGroup, user: User) {
-		console.log(formGroup);
-		return of(true);
+		const updatedUser: User = {
+			...user,
+			email: formGroup.value.email,
+			password: formGroup.value.password,
+		};
+		return this.userService.modify(updatedUser).pipe(
+			tap(it => this.wantsToChangePassword = false),
+		)
 	}
 }
