@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -321,7 +322,11 @@ public class Image implements Serializable {
                     Files.delete(Paths.get(imagePath.get()));
                 }
             }
-        } catch (IOException e) {
+        }
+        catch (NoSuchFileException e){
+            //empty
+        }
+        catch (IOException e) {
             logger.error("Deleting the image at " + this.getFullPath() + " went wrong", e);
         }
     }

@@ -35,6 +35,13 @@ export class ImageUploadService {
 		return new Blob([uint8Array], {type: mimeString});
 	}
 
+	uploadData(data: string, name: string): Observable<ImageUploadApiResponse> {
+		let formData = new FormData();
+		const blob = this.dataURItoBlob(data);
+		formData.append("file[]", blob, name);
+		return this.uploadImages(formData);
+	}
+
 	uploadImages(formData: FormData): Observable<ImageUploadApiResponse> {
 		return this.http.post<ImageUploadApiResponse>(this.baseUrl, formData)
 	}
