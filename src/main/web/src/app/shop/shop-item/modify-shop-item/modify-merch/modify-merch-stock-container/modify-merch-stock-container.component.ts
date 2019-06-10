@@ -6,7 +6,7 @@ import {EventService} from "../../../../../shared/services/api/event.service";
 import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
 import {filter, first, map, mergeMap} from "rxjs/operators";
-import {FormBuilder, FormControl} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {Sort} from "../../../../../shared/model/api/sort";
 
 @Component({
@@ -15,7 +15,7 @@ import {Sort} from "../../../../../shared/model/api/sort";
 	styleUrls: ["./modify-merch-stock-container.component.scss"]
 })
 export class ModifyMerchStockContainerComponent implements OnInit {
-	formControl: FormControl = this.formBuilder.control([]);
+	formGroup: FormGroup = this.formBuilder.group({});
 	previousStock: MerchStockList;
 	stock: MerchStockList;
 
@@ -61,7 +61,7 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 	}
 
 	saveChanges() {
-		let newStock: MerchStockList = this.formControl.value;
+		let newStock: MerchStockList = this.formGroup.value.stock;
 		newStock = newStock.map(it => {
 			it.item = this.merch;
 			return it;

@@ -22,6 +22,10 @@ import {ShopItemDetailsModule} from "../item-details/shop-item-details.module";
 import {ItemPermissionsInputComponent} from "./shared/item-permissions-input/item-permissions-input.component";
 import {SharedShopModule} from "../../shared/shop-shared.module";
 import { PaymentMethodConfigurationComponent } from './shared/payment-method-configuration/payment-method-configuration.component';
+import { ModifyMerchStock2Component } from './modify-merch/modify-merch-stock/modify-merch-stock2.component';
+import {MatSlideToggleModule} from "@angular/material";
+import {FlexLayoutModule} from "@angular/flex-layout";
+import { AddColorDialogComponent } from './modify-merch/modify-merch-stock/add-color-dialog.component';
 
 @NgModule({
 	imports: [
@@ -36,6 +40,8 @@ import { PaymentMethodConfigurationComponent } from './shared/payment-method-con
 		ModifyShopItemRoutingModule,
 		ShopItemDetailsModule,
 		UserModule,
+		MatSlideToggleModule,
+		FlexLayoutModule,
 	],
 	exports: [ModifyMerchStockComponent],
 	declarations: [
@@ -51,11 +57,14 @@ import { PaymentMethodConfigurationComponent } from './shared/payment-method-con
 		TourRouteInputComponent,
 		ModifyMerchStockContainerComponent,
 		ItemPermissionsInputComponent,
-		PaymentMethodConfigurationComponent
+		PaymentMethodConfigurationComponent,
+		ModifyMerchStock2Component,
+		AddColorDialogComponent
 	],
 	providers: [ModifyItemService],
 	entryComponents: [
 		ModifyMerchStockItemComponent,
+		AddColorDialogComponent,
 	],
 })
 export class ModifyShopItemModule {

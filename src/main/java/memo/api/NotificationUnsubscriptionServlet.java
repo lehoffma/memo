@@ -2,7 +2,6 @@ package memo.api;
 
 import memo.communication.NotificationRepository;
 import memo.communication.model.NotificationUnsubscription;
-import memo.data.UserRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -36,4 +35,7 @@ public class NotificationUnsubscriptionServlet {
             @QueryParam("userId") Integer userId) {
         return this.notificationRepository.getUnsubscriptionsOfUser(userId);
     }
+
+
+    //todo updateUnsubscriptionsOfUser(Map<NotificationType, Map<BroadcasterType, Boolean>> config) or something like that
 }

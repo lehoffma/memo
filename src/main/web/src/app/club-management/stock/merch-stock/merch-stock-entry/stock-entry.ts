@@ -18,7 +18,7 @@ export interface StockEntry {
 
 //if the status function gets any more complicated than this simple switch, we should definitely compute that server-side
 export function stockAmountToStatus(amount: number): StockStatus {
-	if (amount === 0) {
+	if (amount <= 0) {
 		return StockStatus.OUT_OF_STOCK;
 	}
 	if (amount < 5) {

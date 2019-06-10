@@ -22,11 +22,7 @@ export class ModifyMerchStockComponent implements OnInit, OnDestroy, ControlValu
 	@Input() merchTitle: string;
 	_onChange;
 	subscription;
-	/*
-			new ExpandableTableColumn<MerchStock>("Größe", "size"),
-			new ExpandableTableColumn<MerchStock>("Farbe", "color", MerchColorCellComponent),
-			new ExpandableTableColumn<MerchStock>("Anzahl", "amount")
-	 */
+
 	columns: TableColumn<MerchStock>[] = [
 		{columnDef: "size", header: "Größe", cell: element => element.size},
 		{columnDef: "color", header: "Farbe", cell: element => element.color, type: "color"},

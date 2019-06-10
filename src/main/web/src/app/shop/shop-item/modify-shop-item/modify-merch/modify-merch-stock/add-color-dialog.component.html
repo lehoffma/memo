@@ -1,0 +1,46 @@
+<div mat-dialog-title>
+	Farbe {{data.previousValue ? 'anpassen' : 'hinzufügen'}}
+</div>
+<mat-dialog-content>
+	<div class="subtitle">
+		<!-- todo? -->
+	</div>
+	<div class="form-input-container">
+		<span class="form-label">Farbe</span>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<input required
+				   [formControl]="data.formGroup.get('name')"
+				   name="colorInput" matInput>
+			<button mat-icon-button class="color-picker-trigger"
+					type="button"
+					[colorPicker]="data.formGroup.get('hex').value"
+					[value]="data.formGroup.get('hex').value"
+					(colorPickerChange)="data.formGroup.get('hex').setValue($event)"
+					[style.background]="data.formGroup.get('hex').value"
+					[style.color]="textColor"
+					[cpPosition]="'left'"
+					matSuffix>
+				<mat-icon>
+					color_lens
+				</mat-icon>
+			</button>
+			<mat-error *ngIf="data.formGroup.get('name').hasError('required')">
+				Bitte gib einen Namen für die Farbe an!
+			</mat-error>
+			<mat-error *ngIf="data.formGroup.get('hex').hasError('required')">
+				Bitte gib einen Farbwert für die Farbe an!
+			</mat-error>
+		</mat-form-field>
+	</div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="flex-end center">
+	<button mat-button matDialogClose>
+		Abbrechen
+	</button>
+	<button mat-raised-button color="accent" [disabled]="!data.formGroup.valid"
+			[matDialogClose]="true">
+		Speichern
+	</button>
+</mat-dialog-actions>
+
+
