@@ -31,7 +31,7 @@ export class ModifyMerchStock2Component implements OnInit {
 	colors: { [colorId: number]: MerchColor } = {};
 	controls: { [colorId: number]: AbstractControl } = {};
 
-	getStatus(amount: number): StockStatus{
+	getStatus(amount: number): StockStatus {
 		return stockAmountToStatus(amount);
 	}
 
@@ -62,6 +62,10 @@ export class ModifyMerchStock2Component implements OnInit {
 		this.colors = this.getColors();
 	}
 
+	getColorId(color: MerchColor): string {
+		return color.id + "-" + color.name + "-" + color.hex;
+	}
+
 	private initializeFormGroup(stock: MerchStock[]) {
 		const groupedMap = this.groupByColor(stock);
 		const colors: MerchColor[] = Array.from(groupedMap.keys());
@@ -71,18 +75,19 @@ export class ModifyMerchStock2Component implements OnInit {
 
 		//removed controls
 		currentControls
-			.filter(it => !colors.find(color => ("" + color.id) === it))
+			.filter(it => !colors.find(color => (this.getColorId(color)) === it))
 			.forEach(group.removeControl);
 
 		//todo amount minimum(0) validator
 		//newly added or edited colors
 		colors
 			.forEach(color => {
-				if (!currentControls.includes(color.id + "")) {
-					group.addControl(color.id + "", this.fb.array([]));
+				const id = this.getColorId(color);
+				if (!currentControls.includes(id)) {
+					group.addControl(id, this.fb.array([]));
 				}
 
-				const innerArray = group.get(color.id + "") as FormArray;
+				const innerArray = group.get(id) as FormArray;
 				innerArray.clear();
 				groupedMap.get(color).forEach(stockEntry => {
 					innerArray.push(this.fb.group(stockEntry))
@@ -114,15 +119,20 @@ export class ModifyMerchStock2Component implements OnInit {
 	}
 
 	addColor(color: MerchColor) {
-		this.formGroup.addControl(color.id + "", this.fb.array([]));
-		this.colors[color.id] = color;
-		this.controls = this.formGroup.controls;
+		const id = this.getColorId(color);
+		this.formGroup.addControl(id, this.fb.array([]));
+		this.addSize(id);
+		this.colors[id] = color;
+		this.controls = {...this.formGroup.controls};
+		this.cdRef.detectChanges();
 	}
 
 	removeColor(colorId: number) {
+		//todo with confirmation dialog
 		this.formGroup.removeControl(colorId + "");
 		this.colors[colorId] = undefined;
-		this.controls = this.formGroup.controls;
+		this.colors = {...this.colors};
+		this.controls = {...this.formGroup.controls};
 	}
 
 	addSize(colorId: string) {
@@ -136,18 +146,18 @@ export class ModifyMerchStock2Component implements OnInit {
 		}));
 	}
 
-	get(colorId: string, index: number): MerchStock{
-		return this.previousValue.filter(it => (it.color.id + "") === colorId)[index];
+	get(colorId: string, index: number): MerchStock {
+		return this.previousValue.filter(it => (this.getColorId(it.color)) === colorId)[index];
 	}
 
-	hasChanges(colorId: string, index: number){
+	hasChanges(colorId: string, index: number) {
 		const previous = this.get(colorId, index);
 		const current = (this.formGroup.get(colorId) as FormArray).at(index).value;
 
 		return previous.amount !== current.amount || previous.size !== current.size
 	}
 
-	revertChanges(colorId: string, index: number){
+	revertChanges(colorId: string, index: number) {
 		const previous = this.get(colorId, index);
 		(this.formGroup.get(colorId) as FormArray).at(index).setValue(previous)
 	}
@@ -179,11 +189,15 @@ export class ModifyMerchStock2Component implements OnInit {
 
 		dialogRef.afterClosed()
 			.subscribe(result => {
-				if(!result){
+				if (!result) {
 					return;
 				}
 
-				console.log(formGroup.value);
+				this.addColor({
+					id: -1,
+					name: formGroup.value.name,
+					hex: formGroup.value.hex
+				});
 			})
 	}
 }

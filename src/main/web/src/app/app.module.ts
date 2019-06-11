@@ -14,7 +14,7 @@ import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-lin
 import {ImpressumComponent} from "./club/impressum/impressum.component";
 import {AgmCoreModule} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
-import { DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS } from "@angular/material/core";
+import {DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS} from "@angular/material/core";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {AuthInterceptor} from "./shared/authentication/auth.interceptor";
 import {ClubManagementModule} from "./club-management/club-management.module";
@@ -55,6 +55,7 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 import {ProgressiveImageLoadingModule} from "./shared/progressive-image-loading/progressive-image-loading.module";
 import {ClubModule} from "./club/club.module";
 import {faFire} from "@fortawesome/free-solid-svg-icons/faFire";
+import {faCubes, faTshirt} from "@fortawesome/free-solid-svg-icons";
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -88,7 +89,7 @@ const cookieConfig: NgcCookieConsentConfig = {
 const shareButtonsIcons = [
 	faFacebookF, faTwitter, faFacebook, faEnvelope, faGlobe,
 	faWhatsapp, faFacebookMessenger, faTelegramPlane, faLink,
-	faFire,
+	faFire, faCubes, faTshirt
 ];
 
 library.add(...shareButtonsIcons);

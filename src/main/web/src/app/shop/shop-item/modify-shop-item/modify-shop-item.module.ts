@@ -26,6 +26,7 @@ import { ModifyMerchStock2Component } from './modify-merch/modify-merch-stock/mo
 import {MatSlideToggleModule} from "@angular/material";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import { AddColorDialogComponent } from './modify-merch/modify-merch-stock/add-color-dialog.component';
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
 	imports: [
@@ -42,6 +43,7 @@ import { AddColorDialogComponent } from './modify-merch/modify-merch-stock/add-c
 		UserModule,
 		MatSlideToggleModule,
 		FlexLayoutModule,
+		FontAwesomeModule,
 	],
 	exports: [ModifyMerchStockComponent],
 	declarations: [

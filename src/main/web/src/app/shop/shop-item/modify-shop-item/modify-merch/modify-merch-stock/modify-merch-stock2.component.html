@@ -8,106 +8,146 @@
 	</div>
 </div>
 
-<div class="mat-elevation-z3 color-card"
-	 *ngFor="let colorId of (controls | pipeFunction:objectKeys); trackBy: trackByIdentity">
-	<div class="card-header">
-		<div class="color-header" fxLayoutGap="8px">
-			<span class="color-bubble" [style.background]="colors[colorId].hex"></span>
-			<h3 class="color-title">{{colors[colorId].name}}</h3>
-
-			<button mat-icon-button class="color-edit-button">
-				<mat-icon>edit</mat-icon>
-			</button>
-
-			<span class="amount-container" *ngLet="(formGroup.controls[colorId].value | pipeFunction:sum) as amountSum">
-				{{amountSum}} Stück
-				<span class="changes-container">(+0 Änderungen)</span>
-			</span>
+<ng-container *ngLet="(controls | pipeFunction:objectKeys) as colorIds">
+	<div *ngIf="colorIds?.length === 0" class="empty-state">
+		<fa-icon class="empty-state-header-icon" [icon]="['fas', 'cubes']"></fa-icon>
+		<span class="empty-state-headline">Kein Bestand</span>
+		<span class="empty-state-subheader">Dieser Artikel besitzt noch keine Farboptionen. Füge eine hinzu!</span>
+		<div class="empty-state-actions">
+			<button mat-stroked-button color="accent" (click)="openAddColorDialog()">Farbe hinzufügen</button>
 		</div>
-		<div></div>
 	</div>
-	<div class="content-container">
-		<mat-table [dataSource]="formGroup.controls[colorId].value" [trackBy]="trackById">
-			<ng-container matColumnDef="size">
-				<mat-header-cell *matHeaderCellDef>
-					Größe
-				</mat-header-cell>
-				<mat-cell *matCellDef="let element;let i = index;">
-					<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
-						<input matInput placeholder="z.B. S, M oder L"
-							   [formControl]="formGroup.controls[colorId].at(i).get('size')"/>
-					</mat-form-field>
-				</mat-cell>
-			</ng-container>
-			<ng-container matColumnDef="amount">
-				<mat-header-cell *matHeaderCellDef>
-					Anzahl
-				</mat-header-cell>
-				<mat-cell *matCellDef="let element; let i = index;">
-					<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
-						<input matInput type="number"
-							   [formControl]="formGroup.controls[colorId].at(i).get('amount')"/>
-					</mat-form-field>
-				</mat-cell>
-			</ng-container>
-			<ng-container matColumnDef="status">
-				<mat-header-cell *matHeaderCellDef>
-					Status
-				</mat-header-cell>
-				<mat-cell *matCellDef="let element; let i = index">
-					<ng-container *ngLet="getStatus(formGroup.controls[colorId].at(i).get('amount').value) as status">
-						<div class="status-cell"
-							 matTooltip="{{status}}"
-							 [class.warning]="status === Status.WARNING"
-							 [class.out-of-stock]="status === Status.OUT_OF_STOCK">
-							<mat-icon class="status-icon">
-								{{status === Status.OUT_OF_STOCK
-								? 'clear'
-								: status === Status.WARNING
-									? 'error'
-									: 'check'
-								}}
+
+	<ng-container *ngIf="colorIds.length > 0">
+		<div class="mat-elevation-z3 color-card"
+			 *ngFor="let colorId of colorIds; trackBy: trackByIdentity">
+			<div class="card-header">
+				<div class="color-header" fxLayoutGap="8px">
+					<span class="color-bubble" [style.background]="colors[colorId].hex"></span>
+					<h3 class="color-title">{{colors[colorId].name}}</h3>
+
+					<button mat-icon-button class="color-edit-button">
+						<mat-icon>edit</mat-icon>
+					</button>
+
+					<span class="amount-container" *ngLet="(formGroup.controls[colorId].value | pipeFunction:sum) as amountSum">
+						{{amountSum}} Stück
+						<span class="changes-container">(+0 Änderungen)</span>
+					</span>
+				</div>
+				<div></div>
+				<div>
+					<button mat-icon-button [matMenuTriggerFor]="overflowMenu">
+						<mat-icon>more_vert</mat-icon>
+					</button>
+					<mat-menu #overflowMenu="matMenu">
+						<button mat-menu-item (click)="removeColor(colorId)">
+							<mat-icon>
+								delete
 							</mat-icon>
-							<span class="status-label">{{status}}</span>
-						</div>
-					</ng-container>
-				</mat-cell>
-			</ng-container>
+							<span>Farbe entfernen</span>
+						</button>
+					</mat-menu>
+				</div>
+			</div>
+			<div class="content-container">
 
-			<ng-container matColumnDef="actions">
-				<mat-header-cell *matHeaderCellDef>
+				<div *ngIf="formGroup.controls[colorId].value?.length === 0; else colorTable" class="empty-state">
+					<fa-icon class="empty-state-header-icon size-empty-state-icon" [icon]="['fas', 'tshirt']"></fa-icon>
+					<span class="empty-state-headline">Keine Größen</span>
+					<span class="empty-state-subheader">Diese Farbe besitzt noch keine Größenoptionen. Füge eine hinzu!</span>
+					<div class="empty-state-actions">
+						<button mat-raised-button color="accent" (click)="addSize(colorId)">Größe hinzufügen</button>
+					</div>
+				</div>
+				<ng-template #colorTable>
+					<mat-table [dataSource]="formGroup.controls[colorId].value" [trackBy]="trackById">
+						<ng-container matColumnDef="size">
+							<mat-header-cell *matHeaderCellDef>
+								Größe
+							</mat-header-cell>
+							<mat-cell *matCellDef="let element;let i = index;">
+								<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
+									<input matInput placeholder="z.B. S, M oder L"
+										   [formControl]="formGroup.controls[colorId].at(i).get('size')"/>
+								</mat-form-field>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="amount">
+							<mat-header-cell *matHeaderCellDef>
+								Anzahl
+							</mat-header-cell>
+							<mat-cell *matCellDef="let element; let i = index;">
+								<mat-form-field appearance="outline" class="small-outline-formfield no-errors">
+									<input matInput type="number"
+										   [formControl]="formGroup.controls[colorId].at(i).get('amount')"/>
+								</mat-form-field>
+							</mat-cell>
+						</ng-container>
+						<ng-container matColumnDef="status">
+							<mat-header-cell *matHeaderCellDef>
+								Status
+							</mat-header-cell>
+							<mat-cell *matCellDef="let element; let i = index">
+								<ng-container *ngLet="getStatus(formGroup.controls[colorId].at(i).get('amount').value) as status">
+									<div class="status-cell"
+										 matTooltip="{{status}}"
+										 [class.warning]="status === Status.WARNING"
+										 [class.out-of-stock]="status === Status.OUT_OF_STOCK">
+										<mat-icon class="status-icon">
+											{{status === Status.OUT_OF_STOCK
+											? 'clear'
+											: status === Status.WARNING
+												? 'error'
+												: 'check'
+											}}
+										</mat-icon>
+										<span class="status-label">{{status}}</span>
+									</div>
+								</ng-container>
+							</mat-cell>
+						</ng-container>
 
-				</mat-header-cell>
-				<mat-cell *matCellDef="let element; let i = index;"
-						  fxLayout="row"
-						  fxLayoutGap="8px"
-						  fxLayoutAlign="flex-end center">
-					<button mat-icon-button *ngIf="element.id !== -1"
-							[disabled]="!hasChanges(colorId, i)"
-							matTooltip="Vorherigen Zustand wiederherstellen"
-							(click)="revertChanges(colorId, i)">
-						<mat-icon>refresh</mat-icon>
-					</button>
-					<button mat-icon-button
-							matTooltip="Größe für diese Farbe entfernen"
-							(click)="removeSize(colorId, i)">
-						<mat-icon>delete</mat-icon>
-					</button>
-				</mat-cell>
-			</ng-container>
+						<ng-container matColumnDef="actions">
+							<mat-header-cell *matHeaderCellDef>
+
+							</mat-header-cell>
+							<mat-cell *matCellDef="let element; let i = index;"
+									  fxLayout="row"
+									  fxLayoutGap="8px"
+									  fxLayoutAlign="flex-end center">
+								<button mat-icon-button *ngIf="element.id !== -1"
+										[disabled]="!hasChanges(colorId, i)"
+										matTooltip="Vorherigen Zustand wiederherstellen"
+										(click)="revertChanges(colorId, i)">
+									<mat-icon>refresh</mat-icon>
+								</button>
+								<button mat-icon-button
+										matTooltip="Größe für diese Farbe entfernen"
+										(click)="removeSize(colorId, i)">
+									<mat-icon>delete</mat-icon>
+								</button>
+							</mat-cell>
+						</ng-container>
 
 
-			<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-			<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-		</mat-table>
+						<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+						<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+					</mat-table>
 
-		<div class="color-card-actions">
-			<button mat-button color="accent" (click)="addSize(colorId)">Größe hinzufügen</button>
+					<div class="color-card-actions">
+						<button mat-button color="accent" (click)="addSize(colorId)">Größe hinzufügen</button>
+					</div>
+				</ng-template>
+
+
+			</div>
 		</div>
+		<div class="add-color-action-container">
+			<button mat-stroked-button color="accent" (click)="openAddColorDialog()">Farbe hinzufügen</button>
+		</div>
+	</ng-container>
 
-	</div>
-</div>
 
-<div class="add-color-action-container">
-	<button mat-stroked-button color="accent" (click)="openAddColorDialog()">Farbe hinzufügen</button>
-</div>
+</ng-container>
+

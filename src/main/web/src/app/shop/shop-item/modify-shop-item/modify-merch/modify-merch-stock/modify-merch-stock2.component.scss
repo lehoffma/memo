@@ -18,16 +18,42 @@
 	cursor: pointer;
 }
 
+
+.size-empty-state-icon {
+	margin-left: -16px;
+}
+
+.empty-state-header-icon:not(.size-empty-state-icon) {
+	width: 112px;
+	height: 112px;
+	font-size: 112px;
+}
+
+.empty-state-headline {
+	margin-top: 16px;
+}
+
+.empty-state-actions {
+	margin-top: 16px;
+}
+
 .card-header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+
+	margin-top: -8px;
+	margin-right: -8px;
 }
 
 .color-card {
 	border-radius: 4px;
 	background: white;
 	padding: 16px;
+
+	&:not(:first-of-type) {
+		margin-top: 16px;
+	}
 }
 
 .color-header {
@@ -88,7 +114,6 @@
 	font-size: font-size(smaller);
 	margin-left: 4px;
 }
-
 
 
 mat-cell .status-cell .status-label {

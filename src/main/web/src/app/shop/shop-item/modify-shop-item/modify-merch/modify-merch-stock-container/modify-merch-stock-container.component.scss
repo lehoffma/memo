@@ -1,3 +1,5 @@
+@import "theme";
+
 :host {
 	padding-bottom: 1rem;
 	display: flex;
@@ -12,6 +14,7 @@
 	width: 100%;
 }
 
+
 .stock-table-container {
 	background: white;
 
@@ -23,7 +26,9 @@
 
 .action-buttons {
 	display: flex;
-	margin-top: 20px;
+	margin-top: 32px;
+	padding-top: 16px;
+	border-top: 1px solid grey(300);
 	justify-content: flex-end;
 }
 
@@ -33,7 +38,7 @@
 	}
 
 
-	.stock-table-container{
+	.stock-table-container {
 		display: block;
 		border-radius: 4px;
 		background: white;

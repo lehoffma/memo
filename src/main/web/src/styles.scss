@@ -219,8 +219,8 @@ memo-comments-section .reply-form-container memo-comment-input form {
 		align-items: center;
 		margin-top: 32px;
 
-		> button:first-child {
-			margin-right: 16px;
+		> button:not(:first-child) {
+			margin-left: 16px;
 		}
 	}
 }
