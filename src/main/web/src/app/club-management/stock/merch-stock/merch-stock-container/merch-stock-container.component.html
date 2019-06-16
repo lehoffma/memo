@@ -9,11 +9,11 @@
 </memo-data-container>
 
 <ng-template #renderer let-item>
-	<memo-modify-merch-stock2 [editing]="false"
-							  [item]="item.item"
-							  [merchTitle]="item.item.title"
-							  [previousValue]="item.stock"
-	></memo-modify-merch-stock2>
+	<memo-modify-merch-stock [editing]="false"
+							 [item]="item.item"
+							 [merchTitle]="item.item.title"
+							 [previousValue]="item.stock"
+	></memo-modify-merch-stock>
 </ng-template>
 
 

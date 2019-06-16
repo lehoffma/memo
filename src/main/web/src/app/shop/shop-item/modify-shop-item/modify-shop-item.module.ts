@@ -6,7 +6,6 @@ import {ModifyPartyComponent} from "./modify-party/modify-party.component";
 import {ModifyTourComponent} from "./modify-tour/modify-tour.component";
 import {ModifyUserComponent} from "./modify-user/modify-user.component";
 import {TourRouteInputComponent} from "./shared/tour-route-input/tour-route-input.component";
-import {ModifyMerchStockComponent} from "./modify-merch/modify-merch-stock/modify-merch-stock.component";
 import {ModifyMerchStockItemComponent} from "./modify-merch/modify-merch-stock/modify-merch-stock-item/modify-merch-stock-item.component";
 import {ModifyItemService} from "./modify-item.service";
 import {CommonModule} from "@angular/common";
@@ -21,11 +20,11 @@ import {DirectionsMapDirective} from "./shared/tour-route-input/directions-map.d
 import {ShopItemDetailsModule} from "../item-details/shop-item-details.module";
 import {ItemPermissionsInputComponent} from "./shared/item-permissions-input/item-permissions-input.component";
 import {SharedShopModule} from "../../shared/shop-shared.module";
-import { PaymentMethodConfigurationComponent } from './shared/payment-method-configuration/payment-method-configuration.component';
-import { ModifyMerchStock2Component } from './modify-merch/modify-merch-stock/modify-merch-stock2.component';
+import {PaymentMethodConfigurationComponent} from "./shared/payment-method-configuration/payment-method-configuration.component";
+import {ModifyMerchStockComponent} from "./modify-merch/modify-merch-stock/modify-merch-stock.component";
 import {MatSlideToggleModule} from "@angular/material";
 import {FlexLayoutModule} from "@angular/flex-layout";
-import { AddColorDialogComponent } from './modify-merch/modify-merch-stock/add-color-dialog.component';
+import {AddColorDialogComponent} from "./modify-merch/modify-merch-stock/add-color-dialog.component";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
@@ -45,13 +44,12 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 		FlexLayoutModule,
 		FontAwesomeModule,
 	],
-	exports: [ModifyMerchStockComponent, ModifyMerchStock2Component],
+	exports: [ModifyMerchStockComponent],
 	declarations: [
 		routedComponents,
 		DirectionsMapDirective,
 		ModifyEntryComponent,
 		ModifyMerchComponent,
-		ModifyMerchStockComponent,
 		ModifyMerchStockItemComponent,
 		ModifyPartyComponent,
 		ModifyTourComponent,
@@ -60,7 +58,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 		ModifyMerchStockContainerComponent,
 		ItemPermissionsInputComponent,
 		PaymentMethodConfigurationComponent,
-		ModifyMerchStock2Component,
+		ModifyMerchStockComponent,
 		AddColorDialogComponent
 	],
 	providers: [ModifyItemService],

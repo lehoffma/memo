@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ModifyMerchStock2Component } from './modify-merch-stock2.component';
+import { ModifyMerchStockComponent } from './modify-merch-stock.component';
 
-describe('ModifyMerchStock2Component', () => {
-  let component: ModifyMerchStock2Component;
-  let fixture: ComponentFixture<ModifyMerchStock2Component>;
+describe('ModifyMerchStockComponent', () => {
+  let component: ModifyMerchStockComponent;
+  let fixture: ComponentFixture<ModifyMerchStockComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ModifyMerchStock2Component ]
+      declarations: [ ModifyMerchStockComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ModifyMerchStock2Component);
+    fixture = TestBed.createComponent(ModifyMerchStockComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
