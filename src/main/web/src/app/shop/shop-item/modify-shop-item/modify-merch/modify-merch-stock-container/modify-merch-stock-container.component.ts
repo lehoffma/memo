@@ -1,13 +1,15 @@
 import {Component, OnInit} from "@angular/core";
-import {MerchStockList} from "../../../../shared/model/merch-stock";
+import {MerchStock, MerchStockList} from "../../../../shared/model/merch-stock";
 import {Merchandise} from "../../../../shared/model/merchandise";
 import {StockService} from "../../../../../shared/services/api/stock.service";
 import {EventService} from "../../../../../shared/services/api/event.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {filter, first, map, mergeMap} from "rxjs/operators";
-import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {Sort} from "../../../../../shared/model/api/sort";
+import {flatMap} from "../../../../../util/util";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
 	selector: "memo-modify-merch-stock-container",
@@ -26,6 +28,8 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 				private eventService: EventService,
 				private formBuilder: FormBuilder,
 				private location: Location,
+				private snackBar: MatSnackBar,
+				private router: Router,
 				private activatedRoute: ActivatedRoute) {
 	}
 
@@ -61,16 +65,26 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 	}
 
 	saveChanges() {
-		let newStock: MerchStockList = this.formGroup.value.stock;
-		newStock = newStock.map(it => {
-			it.item = this.merch;
-			return it;
-		});
-		this.stockService.pushChanges(this.merch, [...this.previousStock], [...newStock])
+		const value: { [colorAsJson: string]: MerchStock[] } = this.formGroup.value;
+
+		const jsonColors: string[] = Object.keys(value);
+
+		const stockList = flatMap(jsonColor => value[jsonColor].map(stock => ({
+			...stock,
+			color: JSON.parse(jsonColor)
+		})), jsonColors)
+			.map(it => {
+				it.item = this.merch;
+				return it;
+			});
+
+		this.stockService.pushChanges(this.merch, [...this.previousStock], [...stockList])
 			.subscribe(result => {
-				this.goBack();
+				this.router.navigate([".."], {relativeTo: this.activatedRoute});
+				this.snackBar.open("Änderungen wurden erfolgreich gespeichert!");
 			}, error => {
 				console.error(error);
+				this.snackBar.open("Error! Änderungen konnten leider nicht gespeichert werden.");
 			})
 	}
 }

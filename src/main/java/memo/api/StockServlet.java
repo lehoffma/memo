@@ -9,8 +9,7 @@ import memo.data.StockRepository;
 import memo.model.Color;
 import memo.model.ShopItem;
 import memo.model.Stock;
-import memo.model.WaitingListEntry;
-import memo.util.model.Page;
+import memo.util.DatabaseManager;
 import org.apache.logging.log4j.LogManager;
 
 import javax.enterprise.context.RequestScoped;
@@ -21,7 +20,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 @Path("/stock")
 @Named
@@ -55,15 +53,26 @@ public class StockServlet extends AbstractApiServlet<Stock> {
         return this.get(request, stockRepository);
     }
 
+    private Stock persistNotExistingEntities(Stock item) {
+        Color color = item.getColor();
+        if (color.getId() == -1) {
+            DatabaseManager.getInstance().save(color, Color.class);
+        } else {
+            DatabaseManager.getInstance().update(color, Color.class);
+        }
 
+        return item;
+    }
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response post(@Context HttpServletRequest request, String body) {
-        Stock stock = this.post(request, body, new ApiServletPostOptions<>(
-                "stock", new Stock(), Stock.class, Stock::getId
-        ));
+        Stock stock = this.post(request, body,
+                new ApiServletPostOptions<>(
+                        "stock", new Stock(), Stock.class, Stock::getId
+                ).setPersistNotExistingEntities(this::persistNotExistingEntities)
+        );
 
         return this.respond(stock, "id", Stock::getId);
     }

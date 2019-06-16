@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ApiServletPostOptions<T, SerializedType> {
     private String objectName;
     private T baseValue;
     private Class<T> clazz;
+    private Function<T,  T> persistNotExistingEntities = t -> t;
     private Function<T, T> transform;
     private Function<T, SerializedType> getSerialized;
     private List<ModifyPrecondition<T>> preconditions = new ArrayList<>();
@@ -41,6 +43,15 @@ public class ApiServletPostOptions<T, SerializedType> {
         this.transform = transform;
         this.serializedKey = serializedKey;
         this.preconditions = new ArrayList<>();
+    }
+
+    public Function<T, T> getPersistNotExistingEntities() {
+        return persistNotExistingEntities;
+    }
+
+    public ApiServletPostOptions<T, SerializedType> setPersistNotExistingEntities(Function<T,  T> persistNotExistingEntities) {
+        this.persistNotExistingEntities = persistNotExistingEntities;
+        return this;
     }
 
     public String getObjectName() {

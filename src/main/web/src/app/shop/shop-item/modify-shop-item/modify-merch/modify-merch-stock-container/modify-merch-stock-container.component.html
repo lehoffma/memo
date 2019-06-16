@@ -9,7 +9,9 @@
 	<button mat-button (click)="goBack()">
 		Abbrechen
 	</button>
-	<button mat-raised-button color="accent" (click)="saveChanges()">
+	<button mat-raised-button color="accent"
+			[disabled]="!formGroup.valid"
+			(click)="saveChanges()">
 		Änderungen speichern
 	</button>
 </div>

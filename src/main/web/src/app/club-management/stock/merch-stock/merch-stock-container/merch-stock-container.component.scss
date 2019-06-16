@@ -1,5 +1,28 @@
+@import "theme";
+
 :host {
 	padding: 16px;
 	display: flex;
+	flex-direction: column;
+	align-items: center;
 	justify-content: center;
+	max-width: 1000px;
+	margin: auto;
+}
+
+memo-data-container {
+	width: 100%;
+}
+
+.action-buttons {
+	display: flex;
+	width: 100%;
+	margin-top: 32px;
+	padding-top: 16px;
+	border-top: 1px solid grey(300);
+	justify-content: flex-end;
+}
+
+memo-modify-merch-stock2 ::ng-deep mat-row:last-child {
+	border-bottom: none;
 }

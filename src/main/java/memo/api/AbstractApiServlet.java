@@ -325,7 +325,8 @@ public abstract class AbstractApiServlet<T> {
                          Function<U, List<ModifyPrecondition<U>>> preconditionsSupplier,
                          BiPredicate<User, U> isAllowed,
                          DependencyUpdater<U> dependencyUpdater,
-                         NotificationStrategy<U> notificationStrategy
+                         NotificationStrategy<U> notificationStrategy,
+                         Function<U, U> persistNotExistingEntities
     ) {
         JsonNode jsonItem = JsonHelper.getJsonObject(body, objectName);
         logger.debug("Method POST called with params " + paramMapToString(request.getParameterMap()));
@@ -341,6 +342,8 @@ public abstract class AbstractApiServlet<T> {
 
         //check if any of the preconditions failed (i.e. the email is already taken or something)
         checkConditions(preconditionsSupplier.apply(item), item);
+
+        item = persistNotExistingEntities.apply(item);
 
         DatabaseManager.getInstance().save(item, clazz);
 
@@ -361,9 +364,10 @@ public abstract class AbstractApiServlet<T> {
                          List<ModifyPrecondition<U>> preconditions,
                          BiPredicate<User, U> isAllowed,
                          DependencyUpdater<U> dependencyUpdater,
-                         NotificationStrategy<U> notificationStrategy
+                         NotificationStrategy<U> notificationStrategy,
+                         Function<U, U> persistNotExistingEntities
     ) {
-        return post(request, body, objectName, baseValue, clazz, transform, item -> preconditions, isAllowed, dependencyUpdater, notificationStrategy);
+        return post(request, body, objectName, baseValue, clazz, transform, item -> preconditions, isAllowed, dependencyUpdater, notificationStrategy, persistNotExistingEntities);
     }
 
     protected T post(HttpServletRequest request,
@@ -372,11 +376,13 @@ public abstract class AbstractApiServlet<T> {
                      T baseValue,
                      Class<T> clazz,
                      Function<T, T> transform,
-                     List<ModifyPrecondition<T>> preconditions
+                     List<ModifyPrecondition<T>> preconditions,
+                     Function<T, T> persistNotExistingEntities
     ) {
         return post(
                 request, body, objectName, baseValue, clazz, transform, preconditions,
-                authenticationStrategy::isAllowedToCreate, this::updateDependencies, this.notificationStrategy
+                authenticationStrategy::isAllowedToCreate, this::updateDependencies, this.notificationStrategy,
+                persistNotExistingEntities
         );
     }
 
@@ -388,7 +394,8 @@ public abstract class AbstractApiServlet<T> {
                 options.getBaseValue(),
                 options.getClazz(),
                 options.getTransform(),
-                options.getPreconditions()
+                options.getPreconditions(),
+                options.getPersistNotExistingEntities()
         );
     }
 
@@ -411,7 +418,9 @@ public abstract class AbstractApiServlet<T> {
                         BiPredicate<User, U> isAllowed,
                         Function<U, U> createCopy,
                         DependencyModifier<U> dependencyUpdater,
-                        NotificationStrategy<U> notificationStrategy) {
+                        NotificationStrategy<U> notificationStrategy,
+                        Function<U, U> persistNotExistingEntities
+    ) {
 
         logger.debug("Method PUT called with params " + paramMapToString(request.getParameterMap()));
         JsonNode jsonItem = JsonHelper.getJsonObject(body, objectName);
@@ -441,6 +450,8 @@ public abstract class AbstractApiServlet<T> {
         //update cyclic dependencies etc.
         dependencyUpdater.updateDependencies(jsonItem, item, copy);
 
+        item = persistNotExistingEntities.apply(item);
+
         DatabaseManager.getInstance().update(item, clazz);
 
         //send notifications if defined
@@ -459,8 +470,10 @@ public abstract class AbstractApiServlet<T> {
                         BiPredicate<User, U> isAllowed,
                         Function<U, U> createCopy,
                         DependencyModifier<U> dependencyUpdater,
-                        NotificationStrategy<U> notificationStrategy) {
-        return put(request, body, objectName, jsonId, clazz, transform, (item) -> preconditions, isAllowed, createCopy, dependencyUpdater, notificationStrategy);
+                        NotificationStrategy<U> notificationStrategy,
+                        Function<U, U> persistNotExistingEntities
+    ) {
+        return put(request, body, objectName, jsonId, clazz, transform, (item) -> preconditions, isAllowed, createCopy, dependencyUpdater, notificationStrategy, persistNotExistingEntities);
     }
 
     protected T put(HttpServletRequest request,
@@ -469,10 +482,11 @@ public abstract class AbstractApiServlet<T> {
                     String jsonId,
                     Class<T> clazz,
                     Function<T, T> transform,
-                    List<ModifyPrecondition<T>> preconditions) {
+                    List<ModifyPrecondition<T>> preconditions,
+                    Function<T, T> persistNotExistingEntities) {
         return put(request, body, objectName, jsonId, clazz, transform, preconditions,
                 authenticationStrategy::isAllowedToModify, this::createCopy, this::updateDependencies,
-                notificationStrategy);
+                notificationStrategy, persistNotExistingEntities);
     }
 
     protected <U> void checkConditions(List<ModifyPrecondition<U>> preconditions, U item) {
@@ -495,12 +509,13 @@ public abstract class AbstractApiServlet<T> {
 
     protected <SerializedType> T put(HttpServletRequest request, String body,
                                      ApiServletPutOptions<T, SerializedType> options) {
-            return this.put(request, body,
+        return this.put(request, body,
                 options.getObjectName(),
                 options.getJsonId(),
                 options.getClazz(),
                 options.getTransform(),
-                options.getPreconditions()
+                options.getPreconditions(),
+                options.getPersistNotExistingEntities()
         );
     }
 

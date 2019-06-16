@@ -2,6 +2,7 @@ package memo.api.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ApiServletPutOptions<T, SerializedType> {
@@ -12,6 +13,7 @@ public class ApiServletPutOptions<T, SerializedType> {
     private Function<T, SerializedType> getSerialized;
     private List<ModifyPrecondition<T>> preconditions;
     private String serializedKey;
+    private Function<T,  T> persistNotExistingEntities = t -> t;
 
     public ApiServletPutOptions() {
         this.jsonId = "id";
@@ -47,6 +49,15 @@ public class ApiServletPutOptions<T, SerializedType> {
         this.transform = transform;
         this.serializedKey = serializedKey;
         this.preconditions = new ArrayList<>();
+    }
+
+    public Function<T,  T> getPersistNotExistingEntities() {
+        return persistNotExistingEntities;
+    }
+
+    public ApiServletPutOptions<T, SerializedType> setPersistNotExistingEntities(Function<T,  T> persistNotExistingEntities) {
+        this.persistNotExistingEntities = persistNotExistingEntities;
+        return this;
     }
 
     public String getObjectName() {

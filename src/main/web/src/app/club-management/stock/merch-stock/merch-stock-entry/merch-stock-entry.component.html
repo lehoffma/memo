@@ -77,11 +77,18 @@
 				(click)="deleteMerch(stockEntry?.item.id)">
 			Löschen
 		</button>
-		<a mat-stroked-button color="accent"
-		   matTooltip="Bestand bearbeiten"
-		   routerLink="/management/stock/merch/{{stockEntry?.item.id}}/edit">
-			Bearbeiten
-		</a>
+		<div>
+			<a mat-button
+			   matTooltip="Bestand bearbeiten"
+			   routerLink="/management/stock/merch/{{stockEntry?.item.id}}">
+				Ansehen
+			</a>
+			<a mat-stroked-button color="accent"
+			   matTooltip="Bestand bearbeiten"
+			   routerLink="/management/stock/merch/{{stockEntry?.item.id}}/edit">
+				Bearbeiten
+			</a>
+		</div>
 	</div>
 
 </ng-container>

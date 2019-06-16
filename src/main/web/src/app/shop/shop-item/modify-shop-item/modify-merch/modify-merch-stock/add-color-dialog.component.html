@@ -24,11 +24,14 @@
 					color_lens
 				</mat-icon>
 			</button>
-			<mat-error *ngIf="data.formGroup.get('name').hasError('required')">
+			<mat-error *ngIf="data.formGroup.get('name').hasError('required')" align="end">
 				Bitte gib einen Namen für die Farbe an!
 			</mat-error>
-			<mat-error *ngIf="data.formGroup.get('hex').hasError('required')">
+			<mat-error *ngIf="data.formGroup.get('hex').hasError('required')" align="end">
 				Bitte gib einen Farbwert für die Farbe an!
+			</mat-error>
+			<mat-error *ngIf="data.formGroup.get('name').hasError('duplicateColor')" align="end">
+				Diese Farbe existiert bereits.
 			</mat-error>
 		</mat-form-field>
 	</div>

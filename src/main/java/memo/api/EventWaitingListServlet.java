@@ -137,7 +137,8 @@ public class EventWaitingListServlet extends AbstractApiServlet<ShopItem> {
                 request, body, "waiting-list", new WaitingListEntry(), WaitingListEntry.class,
                 Function.identity(), this::preconditions, waitingListEntryAuthenticationStrategy::isAllowedToCreate,
                 this::updateDependencies,
-                this.waitingListEntryNotificationStrategy
+                this.waitingListEntryNotificationStrategy,
+                t -> t
         );
 
         return this.respond(createdReservation, "id", WaitingListEntry::getId);
@@ -150,7 +151,8 @@ public class EventWaitingListServlet extends AbstractApiServlet<ShopItem> {
         WaitingListEntry updateReservation = put(
                 request, body, "waiting-list", "id", WaitingListEntry.class, Function.identity(),
                 this::preconditions, waitingListEntryAuthenticationStrategy::isAllowedToModify, Function.identity(),
-                this::updateDependencies, this.waitingListEntryNotificationStrategy
+                this::updateDependencies, this.waitingListEntryNotificationStrategy,
+                t -> t
         );
 
         return this.respond(updateReservation, "id", WaitingListEntry::getId);

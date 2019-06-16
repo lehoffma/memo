@@ -45,7 +45,7 @@ import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 		FlexLayoutModule,
 		FontAwesomeModule,
 	],
-	exports: [ModifyMerchStockComponent],
+	exports: [ModifyMerchStockComponent, ModifyMerchStock2Component],
 	declarations: [
 		routedComponents,
 		DirectionsMapDirective,

@@ -1,16 +1,17 @@
 @import "theme";
 
 :host {
-	padding-bottom: 1rem;
+	padding: 16px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	max-width: 1000px;
+	margin: auto;
 }
 
 .stock-table-container,
 .action-buttons {
-	//max-width: 600px;
 	width: 100%;
 }
 
@@ -33,10 +34,6 @@
 }
 
 @media all and (min-width: 600px) {
-	:host {
-		padding: 1rem;
-	}
-
 
 	.stock-table-container {
 		display: block;

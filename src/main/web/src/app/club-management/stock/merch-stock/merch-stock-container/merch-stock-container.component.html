@@ -1,3 +1,24 @@
-<memo-merch-stock-entry [stockEntry]="merchStock" *ngIf="merchStock$ | async as merchStock">
+<memo-data-container *ngLet="merchStock$ | async as merchStock"
+					 [data]="merchStock ? [merchStock] : null"
+					 [error]="error"
+					 [renderer]="renderer"
+					 errorStateHeadline="Fehler beim Laden"
+					 errorStateSubtitle="Der Bestand dieses Artikels konnte leider nicht geladen werden. Probiere es später noch mal."
+>
 
-</memo-merch-stock-entry>
+</memo-data-container>
+
+<ng-template #renderer let-item>
+	<memo-modify-merch-stock2 [editing]="false"
+							  [item]="item.item"
+							  [merchTitle]="item.item.title"
+							  [previousValue]="item.stock"
+	></memo-modify-merch-stock2>
+</ng-template>
+
+
+<div class="action-buttons">
+	<a mat-raised-button color="accent" [disabled]="!(canEdit$ | async)" routerLink="edit">
+		Bearbeiten
+	</a>
+</div>

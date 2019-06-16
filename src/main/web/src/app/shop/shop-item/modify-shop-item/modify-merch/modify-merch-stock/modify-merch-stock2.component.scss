@@ -5,13 +5,58 @@
 	width: 100%;
 }
 
+.invisible {
+	width: 0 !important;
+	max-width: 0 !important;
+	visibility: hidden;
+}
+
 .modify-stock-header {
-	margin-bottom: 8px;
+	display: flex;
+	align-items: center;
+	margin: -16px;
+	padding: 8px 8px 8px 0;
+	margin-bottom: 16px;
+	border-bottom: 1px solid grey(200);
+	background: white;
+
+	mat-icon {
+		font-size: 30px;
+		width: 30px;
+		height: 30px;
+	}
 
 	h1 {
 		margin: 0;
+		font-size: font-size(small-medium);
 		font-weight: 400;
 	}
+
+	@media all and (min-width: 601px) {
+		flex-wrap: wrap;
+		margin: 0 0 24px;
+		padding: 0 0 16px;
+		border-bottom: 1px solid grey(300);
+		background: transparent;
+
+		h1 {
+			font-weight: 400;
+			font-size: font-size(medium-large);
+			margin: 0 4px 0 0;
+		}
+	}
+}
+
+mat-form-field {
+	width: 100px;
+}
+
+
+.subtitle {
+	display: block;
+	font-size: font-size(smallest);
+	color: grey(600);
+	margin-left: 1px;
 }
 
 .available-toggle {
@@ -44,12 +89,16 @@
 
 	margin-top: -8px;
 	margin-right: -8px;
+	height: 40px;
 }
 
 .color-card {
 	border-radius: 4px;
 	background: white;
 	padding: 16px;
+	margin: auto;
+	max-width: 500px;
+	width: 100%;
 
 	&:not(:first-of-type) {
 		margin-top: 16px;
@@ -90,9 +139,15 @@
 }
 
 .mat-column-actions {
-	width: 100px;
-	max-width: 100px;
+	width: 50px;
+	max-width: 50px;
 	padding: 0;
+
+	@media all and (min-width: 480px) {
+		width: 100px;
+		max-width: 100px;
+		padding: 0;
+	}
 }
 
 .add-color-action-container,
@@ -131,3 +186,24 @@ mat-cell .warning .status-icon {
 mat-cell .out-of-stock .status-icon {
 	color: warn(500);
 }
+
+
+.mobile-item-header {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 16px;
+	border-bottom: 1px solid memo-grey(200);
+	margin: -16px;
+	margin-bottom: 16px;
+	background: white;
+	font-weight: 400;
+	font-size: font-size(medium-large);
+
+	h3 {
+		font-size: inherit;
+		font-weight: inherit;
+		margin: 0;
+	}
+}
+

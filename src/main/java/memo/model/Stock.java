@@ -65,7 +65,7 @@ public class Stock implements Serializable {
     @JsonSerialize(using = StockAmountSerializer.class)
     private Integer amount = 0;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Color color;
 
