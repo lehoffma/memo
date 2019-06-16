@@ -66,7 +66,6 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 
 	saveChanges() {
 		const value: { [colorAsJson: string]: MerchStock[] } = this.formGroup.value;
-
 		const jsonColors: string[] = Object.keys(value);
 
 		const stockList = flatMap(jsonColor => value[jsonColor].map(stock => ({

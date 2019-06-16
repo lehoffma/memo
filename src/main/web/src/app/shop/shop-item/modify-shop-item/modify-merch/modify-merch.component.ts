@@ -15,6 +15,7 @@ import {paymentMethodLimitationValidator} from "../shared/payment-method-configu
 import {paymentConfig} from "../../../shared/model/event";
 import {numberLimitToString} from "../shared/payment-method-configuration/payment-method-limit-util";
 import {WindowService} from "../../../../shared/services/window.service";
+import {flatMap} from "../../../../util/util";
 
 @Component({
 	selector: "memo-modify-merch",
@@ -44,7 +45,7 @@ export class ModifyMerchComponent implements OnInit {
 				"price": [0, {
 					validators: [Validators.required, Validators.pattern(/^[\d]+((\.|\,)[\d]{1,2})?$/)]
 				}],
-				"stock": [[], {validators: [Validators.required]}],
+				"stock": this.formBuilder.group({}, {validators: [Validators.required]}),
 				"material": ["", {
 					validators: [Validators.required]
 				}]
@@ -117,6 +118,15 @@ export class ModifyMerchComponent implements OnInit {
 		this.location.back();
 	}
 
+	private toStockList(formGroup: FormGroup): MerchStock[]{
+		const value: { [colorAsJson: string]: MerchStock[] } = formGroup.value;
+		const jsonColors: string[] = Object.keys(value);
+
+		return flatMap(jsonColor => value[jsonColor].map(stock => ({
+			...stock,
+			color: JSON.parse(jsonColor)
+		})), jsonColors);
+	}
 
 	/**
 	 * Emit submit event
@@ -133,11 +143,13 @@ export class ModifyMerchComponent implements OnInit {
 			paymentConfig: this.formGroup.get("payment-config").value,
 			author: this.formGroup.get("responsible-users").value
 		} as any);
-		//todo emit merch object + images + stock
+
+		const stock = this.toStockList(this.formGroup.get('event-data').get('stock') as FormGroup);
+
 		this.onSubmit.emit({
 			item: merch,
 			images: this.formGroup.get("images").value,
-			stock: this.formGroup.get("event-data").get("stock").value
+			stock
 		});
 	}
 }

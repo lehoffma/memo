@@ -1,8 +1,8 @@
-<div class="mobile-item-header" fxHide fxShow.lt-sm>
+<div class="mobile-item-header" fxHide fxShow.lt-sm *ngIf="!inline">
 	<h3>{{merchTitle}}</h3>
 </div>
 
-<div class="modify-stock-header" fxLayout="row" fxLayoutAlign="flex-start center">
+<div class="modify-stock-header" fxLayout="row" fxLayoutAlign="flex-start center" *ngIf="!inline">
 	<a routerLink="{{getItemLink()}}" fxHide fxShow.lt-sm>
 		<mat-icon>chevron_left</mat-icon>
 	</a>
@@ -22,7 +22,7 @@
 		<span
 			class="empty-state-subheader">Dieser Artikel besitzt noch keine Farboptionen. {{editing ? 'Füge eine hinzu!' : ''}}</span>
 		<div class="empty-state-actions" *ngIf="editing">
-			<button mat-stroked-button color="accent" (click)="openAddColorDialog()">Farbe hinzufügen</button>
+			<button type="button" mat-stroked-button color="accent" (click)="openAddColorDialog()">Farbe hinzufügen</button>
 		</div>
 	</div>
 
@@ -34,7 +34,7 @@
 					<span class="color-bubble" [style.background]="colors[colorId]?.hex"></span>
 					<h3 class="color-title">{{colors[colorId].name}}</h3>
 
-					<button mat-icon-button class="color-edit-button"
+					<button mat-icon-button type="button" class="color-edit-button"
 							*ngIf="editing"
 							(click)="openEditColorDialog(colors[colorId])">
 						<mat-icon>edit</mat-icon>
@@ -42,11 +42,11 @@
 				</div>
 				<div></div>
 				<div *ngIf="editing">
-					<button mat-icon-button [matMenuTriggerFor]="overflowMenu">
+					<button mat-icon-button type="button" [matMenuTriggerFor]="overflowMenu">
 						<mat-icon>more_vert</mat-icon>
 					</button>
 					<mat-menu #overflowMenu="matMenu">
-						<button mat-menu-item (click)="removeColor(colorId)">
+						<button mat-menu-item type="button" (click)="removeColor(colorId)">
 							<mat-icon>
 								delete
 							</mat-icon>
@@ -63,7 +63,7 @@
 					<span
 						class="empty-state-subheader">Diese Farbe besitzt noch keine Größenoptionen. {{editing ? 'Füge eine hinzu!' : ''}}</span>
 					<div class="empty-state-actions" *ngIf="editing">
-						<button mat-raised-button color="accent" (click)="addSize(colorId)">Größe hinzufügen</button>
+						<button mat-raised-button type="button" color="accent" (click)="addSize(colorId)">Größe hinzufügen</button>
 					</div>
 				</div>
 				<ng-template #colorTable>
@@ -143,28 +143,28 @@
 									  fxLayout="row"
 									  fxLayoutGap="8px"
 									  fxLayoutAlign="flex-end center">
-								<button mat-icon-button *ngIf="element.id !== -1" fxHide.lt-sm
+								<button mat-icon-button *ngIf="element.id !== -1" fxHide.lt-sm type="button"
 										[disabled]="!hasChanges(colorId, i)"
 										matTooltip="Vorherigen Zustand wiederherstellen"
 										(click)="revertChanges(colorId, i)">
 									<mat-icon>refresh</mat-icon>
 								</button>
-								<button mat-icon-button fxHide.lt-sm
+								<button mat-icon-button fxHide.lt-sm type="button"
 										matTooltip="Größe für diese Farbe entfernen"
 										(click)="removeSize(colorId, i)">
 									<mat-icon>delete</mat-icon>
 								</button>
-								<button mat-icon-button fxHide fxShow.lt-sm [matMenuTriggerFor]="actionMenu">
+								<button mat-icon-button fxHide fxShow.lt-sm type="button" [matMenuTriggerFor]="actionMenu">
 									<mat-icon>more_vert</mat-icon>
 								</button>
 								<mat-menu #actionMenu>
-									<button mat-menu-item *ngIf="element.id !== -1"
+									<button mat-menu-item *ngIf="element.id !== -1" type="button"
 											[disabled]="!hasChanges(colorId, i)"
 											(click)="revertChanges(colorId, i)">
 										<mat-icon>refresh</mat-icon>
 										Zurücksetzen
 									</button>
-									<button mat-menu-item (click)="removeSize(colorId, i)">
+									<button mat-menu-item type="button" (click)="removeSize(colorId, i)">
 										<mat-icon>delete</mat-icon>
 										Größe entfernen
 									</button>
@@ -178,7 +178,7 @@
 					</mat-table>
 
 					<div class="color-card-actions" *ngIf="editing">
-						<button mat-button color="accent" (click)="addSize(colorId)">Größe hinzufügen</button>
+						<button mat-button type="button" color="accent" (click)="addSize(colorId)">Größe hinzufügen</button>
 					</div>
 				</ng-template>
 
@@ -186,7 +186,7 @@
 			</div>
 		</div>
 		<div class="add-color-action-container" *ngIf="editing">
-			<button mat-stroked-button color="accent" (click)="openAddColorDialog()">Farbe hinzufügen</button>
+			<button mat-stroked-button type="button" color="accent" (click)="openAddColorDialog()">Farbe hinzufügen</button>
 		</div>
 	</ng-container>
 

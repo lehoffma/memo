@@ -23,6 +23,7 @@ export class ModifyMerchStock2Component implements OnInit {
 	@Input() item: Event;
 
 	@Input() editing = true;
+	@Input() inline = false;
 
 	Status = StockStatus;
 
@@ -59,8 +60,9 @@ export class ModifyMerchStock2Component implements OnInit {
 		}
 		this._previousValue = previousValue;
 		this.initializeFormGroup(previousValue);
-		this.colors = this.getColors();
-		this.controls = this.formGroup.controls;
+		this.colors = {...this.getColors()};
+		this.controls = {...this.formGroup.controls};
+		console.log(Object.keys(this.controls));
 		this.cdRef.detectChanges();
 	}
 
@@ -217,6 +219,7 @@ export class ModifyMerchStock2Component implements OnInit {
 	}
 
 	objectKeys(any: any): string[] {
+		console.log(any);
 		return Object.keys(any);
 	}
 

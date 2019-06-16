@@ -81,7 +81,7 @@ export class NavigationService implements OnDestroy {
 	 * @returns {string}
 	 */
 	public getUrl(category: ShopItemType | EventType, id: number, suffix?: string): string {
-		return `${category}/${id}${(suffix ? suffix : "")}`;
+		return `shop/${category}/${id}${(suffix ? suffix : "")}`;
 	}
 
 	/**

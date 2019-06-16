@@ -24,7 +24,7 @@ import {ModifiedImages} from "./modified-images";
 import {processSequentially} from "../../../util/observable-util";
 import {isEdited} from "../../../util/util";
 import {TransactionBuilder} from "../../../util/transaction-builder";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {setProperties} from "../../../shared/model/util/base-object";
 import {stringToNumberLimit} from "./shared/payment-method-configuration/payment-method-limit-util";
 
@@ -358,7 +358,14 @@ export class ModifyItemService {
 	 */
 	handleStock(result: ShopItem, modifyItemEvent: ModifyItemEvent): Observable<ShopItem> {
 		return (EventUtilityService.isMerchandise(result) && modifyItemEvent.stock)
-			? (this.stockService.pushChanges(result, [...this.previousStock], [...modifyItemEvent.stock])
+			? (this.stockService.pushChanges(
+				result,
+				[...this.previousStock],
+				[...modifyItemEvent.stock].map(it => {
+					it.item = result;
+					return it;
+				})
+			)
 				.pipe(
 					share(),
 					map(() => result),
@@ -416,6 +423,12 @@ export class ModifyItemService {
 		request
 			.subscribe(
 				(result: ShopItem) => {
+					const isNewItem = (!this || !this.eventType && !this.eventId);
+					const snackBarMessage = isNewItem ? "Item wurde erfolgreich erstellt" : "Änderungen wurden erfolgreich gespeichert";
+					this.matSnackBar.open(snackBarMessage, "OK",
+						{
+							duration: 5000
+						});
 					if (!this || this.itemType === undefined || !result) {
 						const type = EventUtilityService.getShopItemType(newObject);
 						this.navigationService.navigateToItemWithId(type, newObject.id);

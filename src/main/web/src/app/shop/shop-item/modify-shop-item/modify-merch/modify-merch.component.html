@@ -98,14 +98,15 @@
 
 
 		<memo-form-container [title]="'Bestand'" class="grouped desktop-padding">
-			<memo-modify-merch-stock class="mat-elevation-z3"
-									 [previousValue]="_previousStock"
-									 [formControl]="formGroup.get('event-data').get('stock')">
-			</memo-modify-merch-stock>
+			<memo-modify-merch-stock2 [editing]="true"
+									  [inline]="true"
+									  [previousValue]="_previousStock"
+									  [formGroup]="formGroup.get('event-data').get('stock')">
+			</memo-modify-merch-stock2>
 		</memo-form-container>
 
 
-		<memo-form-container [title]="'Bilder'" >
+		<memo-form-container [title]="'Bilder'">
 			<memo-multi-image-upload [previousValue]="previousValue?.images" class="mat-elevation-z3"
 									 [formGroup]="formGroup.get('images')"
 			>
