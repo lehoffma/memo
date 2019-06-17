@@ -24,6 +24,7 @@ import {AddressesWrapperComponent} from "./user-settings/subsections/addresses-w
 import {AccountDataWrapperComponent} from "./user-settings/subsections/account-data-wrapper/account-data-wrapper.component";
 import {ClubInformationWrapperComponent} from "./user-settings/subsections/club-information-wrapper/club-information-wrapper.component";
 import {NotificationSettingsComponent} from "./user-settings/subsections/notification-settings/notification-settings.component";
+import {PaymentSettingsComponent} from "./user-settings/subsections/payment-settings/payment-settings.component";
 
 //todo put stuff that isnt under user/ into separate package
 const routes: Route[] = [
@@ -53,6 +54,7 @@ const routes: Route[] = [
 			{path: "profile-picture", component: ProfilePictureWrapperComponent,},
 			{path: "addresses", component: AddressesWrapperComponent,},
 			{path: "account", component: AccountDataWrapperComponent,},
+			{path: "payment", component: PaymentSettingsComponent},
 			{path: "club", component: ClubInformationWrapperComponent,},
 			{path: "notifications", component: NotificationSettingsComponent,},
 		],

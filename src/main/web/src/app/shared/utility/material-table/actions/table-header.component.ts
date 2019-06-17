@@ -56,7 +56,7 @@ export class TableHeaderComponent<T> implements OnInit {
 	actionCallback(action: string | RowActionType, data: T[]) {
 		if (action === RowActionType.DELETE && data.length === 1) {
 			this.confirmationDialogService.open(
-				"Wollen Sie diesen Eintrag wirklich löschen?",
+				"Möchtest du diesen Eintrag wirklich löschen?",
 				() => this.onAction.emit({action, entries: data})
 			)
 		} else {
@@ -72,8 +72,8 @@ export class TableHeaderComponent<T> implements OnInit {
 
 		this.confirmationDialogService.open(
 			entriesToDelete.length > 1
-				? `Wollen Sie diese ${entriesToDelete.length} Einträge wirklich löschen?`
-				: `Wollen Sie diesen Eintrag wirklich löschen?`,
+				? `Möchtest du diese ${entriesToDelete.length} Einträge wirklich löschen?`
+				: `Möchtest du diesen Eintrag wirklich löschen?`,
 			() => {
 				this.onAction.emit({action: RowActionType.DELETE, entries: entriesToDelete});
 				this.selection.clear();

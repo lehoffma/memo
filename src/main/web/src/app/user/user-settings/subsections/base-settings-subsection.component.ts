@@ -3,7 +3,7 @@ import {combineLatest, Observable, Subject} from "rxjs";
 import {User} from "../../../shared/model/user";
 import {LogInService} from "../../../shared/services/api/login.service";
 import {FormGroup} from "@angular/forms";
-import {delay, distinctUntilChanged, filter, map, switchMap, take, takeUntil} from "rxjs/operators";
+import {distinctUntilChanged, filter, map, switchMap, take, takeUntil} from "rxjs/operators";
 import {AccountSettingsService} from "./account-settings.service";
 import {isEqual} from "date-fns";
 import {MatSnackBar} from "@angular/material";
@@ -40,6 +40,7 @@ export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestr
 					duration: 5000
 				});
 				this.accountSettingsService.loading(false);
+				this.reset(this.formGroup);
 			},
 			error => {
 				console.error(error);

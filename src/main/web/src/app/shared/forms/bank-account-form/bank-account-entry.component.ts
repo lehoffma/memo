@@ -21,7 +21,7 @@ export class BankAccountEntryComponent implements OnInit {
 
 	deleteAccount() {
 		this.confirmationDialogService.openDialog(
-			"Wollen Sie diese Bankdaten wirklich löschen?"
+			"Möchtest du diese Bankdaten wirklich löschen?"
 		).subscribe(accepted => {
 			if (accepted) {
 				this.onDelete.emit(true);

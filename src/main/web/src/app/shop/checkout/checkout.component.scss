@@ -121,3 +121,15 @@ memo-payment {
 		width: 80%;
 	}
 }
+
+
+:host ::ng-deep memo-bank-account-input-form {
+	width: 100%;
+	padding-top: 16px;
+}
+
+:host ::ng-deep memo-address-input-form {
+	display: block;
+	padding: 16px;
+	width: 100%;
+}

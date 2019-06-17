@@ -24,7 +24,9 @@ export class DataContainerEmptyStateActions{
 	styleUrls: ["./data-container.component.scss"]
 })
 export class DataContainerComponent implements OnInit {
-	@Input() data: any[] = null;
+	@Input() data: any[];
+	@Input() empty: boolean;
+	@Input() initialLoad: boolean;
 	@Input() loading: boolean;
 	@Input() error: any;
 

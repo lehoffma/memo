@@ -20,7 +20,7 @@
 		</memo-form-container>
 		<memo-form-container [title]="'Addressen'"
 							 subtitle="Wird für Abrechnungen benötigt (Optional bis zum Abschluss eines Kaufs)">
-			<memo-address-form class="mat-elevation-z3" [formGroup]="userDataForm"></memo-address-form>
+			<memo-address-form [formGroup]="userDataForm"></memo-address-form>
 		</memo-form-container>
 
 		<memo-form-container [title]="'Account Informationen'" *ngIf="withEmailAndPassword"

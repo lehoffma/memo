@@ -1,6 +1,20 @@
+@import "theme";
+@import "~@angular/material/theming";
+
 memo-address-form ::ng-deep .address-entry-container {
 	&:first-of-type {
 		border-top-right-radius: 4px;
 		border-top-left-radius: 4px;
 	}
+}
+
+
+:host ::ng-deep .address-management {
+	@include mat-elevation(3);
+	border-radius: 4px;
+}
+
+:host ::ng-deep memo-address-input-form {
+	display: block;
+	padding: 16px;
 }

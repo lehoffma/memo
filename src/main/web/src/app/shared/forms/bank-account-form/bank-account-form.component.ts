@@ -10,6 +10,8 @@ import {BankAccount} from "../../model/bank-account";
 export class BankAccountFormComponent implements OnInit {
 	@Input() formGroup: FormGroup;
 	@Input() selection = false;
+	@Input() initialLoad: boolean;
+	@Input() error: any;
 
 	showInlineForm = -1;
 	showNewInputForm = false;

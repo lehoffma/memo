@@ -1,1 +1,3 @@
-<memo-address-form class="mat-elevation-z3" [formGroup]="formGroup"></memo-address-form>
+<memo-address-form [initialLoad]="accountSettingsService.loading$ | async"
+				   [error]="error"
+				   [formGroup]="formGroup"></memo-address-form>

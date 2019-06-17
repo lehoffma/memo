@@ -59,7 +59,7 @@ export class ActionsCellComponent<T> implements OnInit {
 	actionCallback(action: string | RowActionType, data: T[]) {
 		if (action === RowActionType.DELETE && data.length === 1) {
 			this.confirmationDialogService.open(
-				"Wollen Sie diesen Eintrag wirklich löschen?",
+				"Möchtest du diesen Eintrag wirklich löschen?",
 				() => this.onAction.emit({action, entries: data})
 			)
 		}

@@ -22,6 +22,8 @@ import {NotificationSettingsComponent} from "./user-settings/subsections/notific
 import {UserEventEmptyStateComponent} from "./user-event-empty-state/user-event-empty-state.component";
 import {SharedSearchModule} from "../shared/search/shared-search.module";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import { PaymentSettingsComponent } from './user-settings/subsections/payment-settings/payment-settings.component';
+import {DataContainerModule} from "../shared/utility/data-container/data-container.module";
 
 @NgModule({
 	imports: [
@@ -35,6 +37,7 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 		UserRoutingModule,
 		SignUpModule,
 		FlexLayoutModule,
+		DataContainerModule,
 	],
 	declarations: [
 		routedComponents,
@@ -54,7 +57,8 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 		AccountDataWrapperComponent,
 		ClubInformationWrapperComponent,
 		NotificationSettingsComponent,
-		UserEventEmptyStateComponent
+		UserEventEmptyStateComponent,
+		PaymentSettingsComponent
 	],
 	exports: [
 		SignUpModule

@@ -36,6 +36,10 @@ export class UserSettingsComponent implements OnInit, OnDestroy, AfterViewInit {
 			name: "Account"
 		},
 		{
+			routerLink: "/user/account-settings/payment",
+			name: "Bezahlmethoden"
+		},
+		{
 			routerLink: "/user/account-settings/club",
 			name: "Vereinsinformationen"
 		},

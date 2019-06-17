@@ -49,40 +49,11 @@ export function updateList<T extends BaseObject, U>(previousValue: T[],
 													remove: (value: number) => Observable<any>,
 													additionalIgnoredProperties: string[] = []
 ): Observable<number[]> {
-	let added: T[] = [];
-	let removed: T[] = [];
-	let modified: T[] = [];
-	//both arrays are the same length => nothing has changed or something was edited
-	if (previousValue.length === currentValue.length) {
-		const index = previousValue.findIndex(it =>
-			!!currentValue.find(prev => prev.id === it.id && isEdited(it, prev, ["id", ...additionalIgnoredProperties]))
-		);
-		if (index >= 0) {
-			modified.push(previousValue[index]);
-		}
-		//otherwise, nothing changed
-	}
-	//something was added
-	else if (previousValue.length < currentValue.length) {
-		//find the address that is part of accounts, but not of previousValue
-		const index = currentValue.findIndex(it =>
-			//there is no address in prevValues that is equal to the one that is being checked here
-			!previousValue.find(prev => !isEdited(it, prev, ["id", ...additionalIgnoredProperties]))
-		);
 
-		added.push(currentValue[index]);
-	}
-	//accounts < previousValue => something was removed
-	else if (previousValue.length > currentValue.length) {
-		//find the address that is part of previousValue, but not of accounts
-		const index = previousValue.findIndex(it =>
-			//there is no address in accounts that is equal to the one that is being checked here
-			!currentValue.find(prev => !isEdited(it, prev, ["id", ...additionalIgnoredProperties]))
-		);
-
-		removed.push(previousValue[index]);
-	}
-
+	const added = currentValue.filter(newIt => !previousValue.find(oldIt => newIt.id === oldIt.id));
+	const modified = currentValue
+		.filter(newIt => !!previousValue.find(oldIt => newIt.id === oldIt.id && isEdited(newIt, oldIt, ["id", ...additionalIgnoredProperties])));
+	const removed = previousValue.filter(it => !currentValue.find(newIt => it.id === newIt.id));
 
 	const addRequests = added
 		.map(it => mapBeforeRequest(it))

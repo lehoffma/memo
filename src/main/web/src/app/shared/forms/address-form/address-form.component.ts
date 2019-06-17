@@ -10,6 +10,8 @@ import {Address} from "../../model/address";
 export class AddressFormComponent implements OnInit {
 	@Input() formGroup: FormGroup;
 	@Input() selection = false;
+	@Input() initialLoad: boolean;
+	@Input() error: any;
 	showInlineAddressForm = -1;
 	showNewAddressForm = false;
 

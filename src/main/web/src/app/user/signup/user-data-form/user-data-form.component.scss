@@ -1,1 +1,12 @@
 @import "../../../shop/shop-item/modify-shop-item/modify-shop-item.component";
+
+
+:host ::ng-deep .address-management {
+	@include mat-elevation(3);
+	border-radius: 4px;
+}
+
+:host ::ng-deep memo-address-input-form {
+	display: block;
+	padding: 16px;
+}

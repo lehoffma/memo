@@ -5,10 +5,11 @@ import {AccountSettingsService} from "../account-settings.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {User} from "../../../../shared/model/user";
 import {AddressService} from "../../../../shared/services/api/address.service";
-import {forkJoin, of} from "rxjs";
+import {forkJoin} from "rxjs";
 import {first} from "rxjs/operators";
 import {Address} from "../../../../shared/model/address";
 import {MatSnackBar} from "@angular/material";
+import {isEdited} from "../../../../util/util";
 
 @Component({
 	selector: "memo-addresses-wrapper",
@@ -17,7 +18,7 @@ import {MatSnackBar} from "@angular/material";
 })
 export class AddressesWrapperComponent extends BaseSettingsSubsectionComponent {
 	constructor(protected loginService: LogInService,
-				protected accountSettingsService: AccountSettingsService,
+				public accountSettingsService: AccountSettingsService,
 				private addressService: AddressService,
 				protected snackBar: MatSnackBar,
 				private formBuilder: FormBuilder) {
@@ -42,19 +43,29 @@ export class AddressesWrapperComponent extends BaseSettingsSubsectionComponent {
 			})
 	}
 
-	hasChanges(user: User, value: Address[]) {
-		if (this.previousAddresses.length !== value.length) {
+	hasChanges(user: User, value: { addresses: Address[] }) {
+		if (this.previousAddresses.length !== value.addresses.length) {
 			return true;
 		}
 
-		if(value.some(newAddr => newAddr.id === -1)){
+		if (value.addresses.some(newAddr => newAddr.id === -1)) {
 			return true;
 		}
+
+		const anyAddressHasChanges = value.addresses
+			.some(newAddress => {
+				const oldValue = this.previousAddresses.find(oldAcc => newAddress.id === oldAcc.id);
+				return isEdited(oldValue, newAddress, ["user", "item"])
+			});
+		if (anyAddressHasChanges) {
+			return true;
+		}
+
+		return false;
 	}
 
 
 	save(formGroup: FormGroup, user: User) {
-		console.log(formGroup);
-		return of(true);
+		return this.addressService.updateAddressesOfUser(this.previousAddresses, formGroup.value.addresses, user);
 	}
 }

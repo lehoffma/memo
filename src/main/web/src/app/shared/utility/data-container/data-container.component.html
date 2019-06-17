@@ -11,7 +11,7 @@
 		<div class="loader"></div>
 	</div>
 	<ng-template #noLoading>
-		<div *ngIf="data.length === 0" class="empty-state">
+		<div *ngIf="data?.length === 0 || empty; else notEmpty" class="empty-state">
 			<mat-icon class="empty-state-header-icon">{{emptyStateIcon || 'find_in_page'}}</mat-icon>
 			<span class="empty-state-headline">{{emptyStateHeadline || 'Keine Daten'}}</span>
 			<span
@@ -21,9 +21,16 @@
 			</div>
 		</div>
 
-		<ng-container *ngFor="let entry of data">
-			<ng-container *ngTemplateOutlet="renderer; context: {$implicit: entry}"></ng-container>
-		</ng-container>
+		<ng-template #notEmpty>
+			<ng-container *ngIf="data; else noDataRenderer">
+				<ng-container *ngFor="let entry of data">
+					<ng-container *ngTemplateOutlet="renderer; context: {$implicit: entry}"></ng-container>
+				</ng-container>
+			</ng-container>
+			<ng-template #noDataRenderer>
+				<ng-container *ngTemplateOutlet="renderer;"></ng-container>
+			</ng-template>
+		</ng-template>
 	</ng-template>
 
 </ng-template>

@@ -22,7 +22,7 @@ export class AddressEntryComponent implements OnInit {
 
 	deleteAddress() {
 		this.confirmationDialogService.openDialog(
-			"Wollen Sie diese Addresse wirklich löschen?"
+			"Möchtest du diese Addresse wirklich löschen?"
 		).subscribe(accepted => {
 			if (accepted) {
 				this.onDelete.emit(true);

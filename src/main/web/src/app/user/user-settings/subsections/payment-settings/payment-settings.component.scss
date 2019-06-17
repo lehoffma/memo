@@ -1,0 +1,38 @@
+@import "theme";
+@import "~@angular/material/theming";
+
+:host ::ng-deep .bankaccount-entry-container memo-bank-account-input-form {
+	padding: 0 !important;
+}
+
+:host ::ng-deep .add-button {
+	width: 100%;
+	margin: 0 !important;
+}
+
+h3 {
+	font-size: font-size(medium);
+	font-weight: 500;
+	padding-bottom: 4px;
+	margin: 0 0 8px;
+}
+
+:host ::ng-deep memo-bank-account-input-form {
+	display: block;
+	padding: 16px;
+}
+
+:host ::ng-deep .bankaccount-entry-container:first-child {
+	border-top-right-radius: 4px !important;
+	border-top-left-radius: 4px !important;
+}
+
+:host ::ng-deep .bankaccount-entry-container:last-child {
+	border-bottom-right-radius: 4px !important;
+	border-bottom-left-radius: 4px !important;
+}
+
+:host ::ng-deep .bankaccount-form-container {
+	@include mat-elevation(3);
+	border-radius: 4px;
+}

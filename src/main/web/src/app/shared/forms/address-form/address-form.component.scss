@@ -6,8 +6,8 @@
 	display: block;
 	border-radius: 4px;
 
-	> div {
-		&.address-selection button {
+	.address-selection {
+		button {
 			margin-top: 16px;
 		}
 

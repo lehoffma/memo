@@ -1,40 +1,46 @@
 <form [formGroup]="formGroup" (ngSubmit)="submit()" novalidate>
-	<mat-form-field>
-		<input placeholder="Kontoinhaber"
-			   name="name"
-			   formControlName="name"
-			   matInput required>
-		<mat-error *ngIf="formGroup.get('name').hasError('required')">
-			Dies ist ein Pflichtfeld!
-		</mat-error>
-	</mat-form-field>
-	<mat-form-field>
-		<input placeholder="IBAN"
-			   name="iban"
-			   formControlName="iban"
-			   matInput required>
-		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
-		<mat-error *ngIf="formGroup.get('iban').hasError('required')">
-			Dies ist ein Pflichtfeld!
-		</mat-error>
-		<mat-error *ngIf="formGroup.get('iban').hasError('invalidIBAN')">
-			Die eingegebene IBAN ist ungültig!
-		</mat-error>
-	</mat-form-field>
-	<mat-form-field>
-		<input placeholder="BIC"
-			   name="bicInput"
-			   formControlName="bic"
-			   pattern="[a-zA-Z]{6}[a-zA-Z2-9][a-nA-Np-zP-Z0-9]([a-wyzA-WYZ0-9][a-zA-Z0-9]{2})?([xX]{3})?"
-			   matInput required>
-		<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
-		<mat-error *ngIf="formGroup.get('bic').hasError('required')">
-			Dies ist ein Pflichtfeld!
-		</mat-error>
-		<mat-error *ngIf="formGroup.get('bic').hasError('pattern')">
-			Die eingegebene BIC ist ungültig!
-		</mat-error>
-	</mat-form-field>
+	<div class="form-input-container">
+		<div class="form-label">Kontoinhaber</div>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<input name="name"
+				   formControlName="name"
+				   matInput required>
+			<mat-error *ngIf="formGroup.get('name').hasError('required')" align="end">
+				Dies ist ein Pflichtfeld!
+			</mat-error>
+		</mat-form-field>
+	</div>
+	<div class="form-input-container">
+		<div class="form-label">IBAN</div>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<input name="iban"
+				   formControlName="iban"
+				   matInput required>
+			<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
+			<mat-error *ngIf="formGroup.get('iban').hasError('required')" align="end">
+				Dies ist ein Pflichtfeld!
+			</mat-error>
+			<mat-error *ngIf="!formGroup.get('iban').hasError('required') && formGroup.get('iban').hasError('invalidIBAN')" align="end">
+				Die eingegebene IBAN ist ungültig!
+			</mat-error>
+		</mat-form-field>
+	</div>
+	<div class="form-input-container">
+		<div class="form-label">BIC</div>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<input name="bicInput"
+				   formControlName="bic"
+				   pattern="[a-zA-Z]{6}[a-zA-Z2-9][a-nA-Np-zP-Z0-9]([a-wyzA-WYZ0-9][a-zA-Z0-9]{2})?([xX]{3})?"
+				   matInput required>
+			<!--zeige Fehlermeldung wenn die iban inkorrekt ist-->
+			<mat-error *ngIf="formGroup.get('bic').hasError('required')" align="end">
+				Dies ist ein Pflichtfeld!
+			</mat-error>
+			<mat-error *ngIf="!formGroup.get('bic').hasError('required') && formGroup.get('bic').hasError('pattern')" align="end">
+				Die eingegebene BIC ist ungültig!
+			</mat-error>
+		</mat-form-field>
+	</div>
 
 	<div class="account-input-actions">
 		<button mat-button type="button" (click)="onCancel.emit(true)">
