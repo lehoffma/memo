@@ -1,11 +1,17 @@
 import {Component} from "@angular/core";
 import {LogInService} from "../../../../shared/services/api/login.service";
-import {Observable, of} from "rxjs";
-import {filter, map, switchMap, takeUntil} from "rxjs/operators";
+import {BehaviorSubject, Observable} from "rxjs";
+import {filter, map, switchMap, takeUntil, tap} from "rxjs/operators";
 import {ClubRole, isAuthenticated} from "../../../../shared/model/club-role";
 import {UserNotificationUnsubscriptionService} from "../../../../shared/services/api/user-notification-unsubscription.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {notificationTypes, UserNotificationBroadcastType, UserNotificationType} from "../../../../shared/model/user-notification";
+import {
+	broadcastTypeFromString,
+	notificationTypeFromString,
+	notificationTypes,
+	UserNotificationBroadcastType,
+	UserNotificationType
+} from "../../../../shared/model/user-notification";
 import {BaseSettingsSubsectionComponent} from "../base-settings-subsection.component";
 import {AccountSettingsService} from "../account-settings.service";
 import {User} from "../../../../shared/model/user";
@@ -35,13 +41,21 @@ export class NotificationSettingsComponent extends BaseSettingsSubsectionCompone
 
 	private previousValue: NotificationSettings = null;
 
+	private reloadTrigger$: BehaviorSubject<any> = new BehaviorSubject(true);
+
 	constructor(protected loginService: LogInService,
 				protected accountSettingsService: AccountSettingsService,
 				private fb: FormBuilder,
 				protected snackBar: MatSnackBar,
 				private notificationUnsubscriptionsService: UserNotificationUnsubscriptionService) {
 		super(loginService, snackBar, accountSettingsService);
-		this.user$.pipe(filter(it => it !== null), switchMap(user => this.userToSettingsValue(user)), takeUntil(this.onDestroy$))
+
+		this.reloadTrigger$.pipe(
+			switchMap(() => this.user$),
+			filter(it => it !== null),
+			switchMap(user => this.userToSettingsValue(user)),
+			takeUntil(this.onDestroy$)
+		)
 			.subscribe(settingsValue => this.previousValue = settingsValue);
 
 		this.formGroup = this.fb.group({
@@ -87,7 +101,9 @@ export class NotificationSettingsComponent extends BaseSettingsSubsectionCompone
 						return acc;
 					}, {} as NotificationSettings);
 					return unsubscriptions.reduce((acc, value) => {
-						acc[value.notificationType][value.broadcasterType] = false;
+						const notificationType = notificationTypeFromString(value.notificationType as any);
+						const broadcasterType = broadcastTypeFromString(value.broadcasterType as any);
+						acc[notificationType][broadcasterType] = false;
 						return acc;
 					}, previousValue)
 				})
@@ -121,10 +137,9 @@ export class NotificationSettingsComponent extends BaseSettingsSubsectionCompone
 	}
 
 
-
 	save(formGroup: FormGroup, user: User) {
-		console.log(formGroup);
-		return of(true);
+		return this.notificationUnsubscriptionsService.pushConfig(user.id, formGroup.value)
+			.pipe(tap(() => this.reloadTrigger$.next(true)))
 	}
 
 }

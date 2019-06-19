@@ -1,7 +1,7 @@
 export interface UserNotification {
 	id: string;
 	text: string;
-	type: UserNotificationType; //todo enum
+	type: UserNotificationType;
 	status: NotificationStatus;
 	imagePath: string;
 	link: string;
@@ -38,6 +38,23 @@ export enum UserNotificationType {
 	TRANSFER_TREASURER,
 }
 
+export const notificationTypeMap: { [value: string]: UserNotificationType } = {
+	REGISTRATION: UserNotificationType.REGISTRATION,
+	FORGOT_PASSWORD: UserNotificationType.FORGOT_PASSWORD,
+	ORDER_CONFIRMATION: UserNotificationType.ORDER_CONFIRMATION,
+	DEBIT_CUSTOMER: UserNotificationType.DEBIT_CUSTOMER,
+	TRANSFER_CUSTOMER: UserNotificationType.TRANSFER_CUSTOMER,
+	CLUBROLE_CHANGE_REQUEST: UserNotificationType.CLUBROLE_CHANGE_REQUEST,
+	RESPONSIBLE_USER: UserNotificationType.RESPONSIBLE_USER,
+	OBJECT_HAS_CHANGED: UserNotificationType.OBJECT_HAS_CHANGED,
+	DEBIT_TREASURER: UserNotificationType.DEBIT_TREASURER,
+	TRANSFER_TREASURER: UserNotificationType.TRANSFER_TREASURER,
+};
+
+export function notificationTypeFromString(input: string): UserNotificationType {
+	return notificationTypeMap[input];
+}
+
 export const notificationTypes: UserNotificationType[] = [
 	UserNotificationType.REGISTRATION,
 	UserNotificationType.FORGOT_PASSWORD,
@@ -62,6 +79,15 @@ export const configurableNotificationTypes: UserNotificationType[] = [
 export enum UserNotificationBroadcastType {
 	MAIL,
 	NOTIFICATION
+}
+
+export const broadcastTypeMap: { [value: string]: UserNotificationBroadcastType } = {
+	MAIL: UserNotificationBroadcastType.MAIL,
+	NOTIFICATION: UserNotificationBroadcastType.NOTIFICATION
+}
+
+export function broadcastTypeFromString(input: string): UserNotificationBroadcastType {
+	return broadcastTypeMap[input];
 }
 
 export interface UserNotificationUnsubscription {

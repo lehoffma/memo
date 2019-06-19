@@ -40,7 +40,9 @@
 				<mat-icon class="middle-icon mat-dark">directions_car</mat-icon>
 				<div class="title-subtitle-container">
 					<span>{{user.miles}} Meilen gefahren</span>
-					<span class="subtitle">Verteilt über {{amountOfTours$ | async}} Fahrten</span>
+					<span class="subtitle" *ngLet="amountOfTours$ | async as amountOfTours">
+						Verteilt über {{amountOfTours}} Fahrt{{amountOfTours !== 1 ? 'en' : ''}}
+					</span>
 				</div>
 			</div>
 		</div>

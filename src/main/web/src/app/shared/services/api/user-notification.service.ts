@@ -5,6 +5,7 @@ import {BehaviorSubject, Subscription} from "rxjs";
 import {NotificationStatus, UserNotification} from "../../model/user-notification";
 import {filter, mergeMap, scan, tap} from "rxjs/operators";
 import {AuthService} from "../../authentication/auth.service";
+import {MatSnackBar} from "@angular/material";
 
 @Injectable()
 export class NotificationService implements OnDestroy {
@@ -18,6 +19,7 @@ export class NotificationService implements OnDestroy {
 
 	constructor(private websocketService: WebsocketService<UserNotification[]>,
 				private authService: AuthService,
+				private snackBar: MatSnackBar,
 				private loginService: LogInService) {
 		this.notificationSubscription = this.loginService.currentUser$
 			.pipe(
@@ -75,7 +77,10 @@ export class NotificationService implements OnDestroy {
 			this.notifications$.next(currentValue);
 			this.unreadNotifications$.next(this.unreadNotifications$.getValue() - 1);
 		} else {
-			//todo display error message that something went wrong
+			//display error message that something went wrong
+			this.snackBar.open("Die Notification konnte leider nicht als gelesen markiert werden. Probiere es später noch mal!", null, {
+				duration: 5000
+			});
 		}
 	}
 
@@ -91,7 +96,10 @@ export class NotificationService implements OnDestroy {
 			let currentValue = this.notifications$.getValue();
 			this.notifications$.next(currentValue.filter(it => it.id !== notification.id));
 		} else {
-			//todo display error message that something went wrong
+			//display error message that something went wrong
+			this.snackBar.open("Die Notification konnte leider nicht gelöscht werden. Probiere es später noch mal!", null, {
+				duration: 5000
+			});
 		}
 	}
 }
