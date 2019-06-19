@@ -12,7 +12,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -134,30 +133,18 @@ public class NotificationRepository extends AbstractPagingAndSortingRepository<N
 
     public List<Notification> getWebNotificationsByUserId(String userId, Integer limit, Integer offset) {
         Integer id = Integer.valueOf(userId);
-        List<NotificationType> unsubs = this.getWebUnsubscriptions(id);
-
-        String qlString = "SELECT n FROM Notification n, NotificationTemplate template " +
-                "WHERE n.notificationType = template.notificationType AND " +
-                "   n.user.id = :userId AND n.status NOT IN :status " +
-                (unsubs.isEmpty()
-                        ? ""
-                        : "AND n.notificationType NOT IN :unsubs"
-                ) +
-                " ORDER BY n.timestamp DESC";
 
         //todo should ignored notification types still be fetched, if they were not ignored before?
-        TypedQuery<Notification> query = DatabaseManager.createEntityManager()
-                .createQuery(qlString, Notification.class)
+        return DatabaseManager.createEntityManager()
+                .createQuery("SELECT n FROM Notification n, NotificationTemplate template " +
+                        "WHERE n.notificationType = template.notificationType AND " +
+                        "   n.user.id = :userId AND n.status NOT IN :status " +
+                        " ORDER BY n.timestamp DESC", Notification.class)
                 .setParameter("userId", id)
                 .setParameter("status", Arrays.asList(NotificationStatus.DELETED, NotificationStatus.HIDDEN))
                 .setMaxResults(limit)
-                .setFirstResult(offset);
-
-        if (!unsubs.isEmpty()) {
-            query.setParameter("unsubs", unsubs);
-        }
-
-        return query.getResultList();
+                .setFirstResult(offset)
+                .getResultList();
     }
 
     @Override
