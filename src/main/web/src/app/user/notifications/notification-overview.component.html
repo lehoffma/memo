@@ -15,7 +15,12 @@
 	</ng-container>
 	<ng-template #emptyChecker>
 		<ng-container *ngIf="(notifications$ | async)?.length === 0; else notEmptyNotifications">
-			<div class="no-notifications">Du hast keine Benachrichtigungen.</div>
+			<div class="empty-state">
+				<mat-icon class="empty-state-header-icon">notifications_none</mat-icon>
+				<span class="empty-state-headline">Keine Benachrichtigungen</span>
+				<span class="empty-state-subheader">Du hast alle deine Benachrichtigungen abgearbeitet.</span>
+
+			</div>
 		</ng-container>
 	</ng-template>
 	<ng-template #notEmptyNotifications>

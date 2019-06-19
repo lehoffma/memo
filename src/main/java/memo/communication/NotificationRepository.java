@@ -12,11 +12,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Named
 @ApplicationScoped
@@ -35,6 +38,14 @@ public class NotificationRepository extends AbstractPagingAndSortingRepository<N
 
 
     public void save(Notification notification) {
+        List<NotificationUnsubscription> unsubs = this.getUnsubscriptionsOfUser(notification.getUser().getId());
+        boolean isUnsubbed = unsubs.stream()
+                .anyMatch(unsub -> unsub.getNotificationType().equals(notification.getNotificationType()));
+
+        if (isUnsubbed) {
+            notification.setStatus(NotificationStatus.HIDDEN);
+        }
+
         DatabaseManager.getInstance().save(notification, Notification.class);
         this.notificationEvent.fire(notification);
     }
@@ -74,34 +85,79 @@ public class NotificationRepository extends AbstractPagingAndSortingRepository<N
         return this.getMessagesByStatus(userId, NotificationStatus.UNREAD);
     }
 
+    private List<NotificationType> getWebUnsubscriptions(Integer userId) {
+        List<NotificationUnsubscription> unsubscriptions = this.getUnsubscriptionsOfUser(userId);
+        return unsubscriptions.stream()
+                .filter(it -> it.getBroadcasterType().equals(BroadcasterType.NOTIFICATION))
+                .map(NotificationUnsubscription::getNotificationType)
+                .collect(Collectors.toList());
+    }
+
+    private String getUnsubCheck(Integer userId) {
+        List<NotificationType> unsubs = this.getWebUnsubscriptions(userId);
+        return unsubs.isEmpty()
+                ? ""
+                : (
+                " AND n.notificationType NOT IN ("
+                        + unsubs.stream()
+                        .map(NotificationType::getValue)
+                        .map(Object::toString)
+                        .collect(Collectors.joining(","))
+                        + ")"
+        );
+    }
+
     public Integer getMessagesByStatus(String userId, NotificationStatus status) {
+        Integer id = Integer.valueOf(userId);
+        String unsubCheck = this.getUnsubCheck(id);
+
         return ((Long) DatabaseManager.createEntityManager()
                 .createNativeQuery("SELECT COUNT(*) FROM notifications n, notification_templates template " +
-                        "WHERE n.NOTIFICATIONTYPE = template.NOTIFICATION_TEMPLATE_ID AND n.USER_ID = ?1 AND n.STATUS = ?2")
+                        "WHERE n.NOTIFICATIONTYPE = template.NOTIFICATION_TEMPLATE_ID AND n.USER_ID = ?1 " +
+                        "AND n.STATUS = ?2 " + unsubCheck)
                 .setParameter(1, Integer.valueOf(userId))
                 .setParameter(2, status.ordinal())
                 .getSingleResult()).intValue();
     }
 
     public Integer getTotalMessages(String userId) {
+        Integer id = Integer.valueOf(userId);
+        String unsubCheck = this.getUnsubCheck(id);
+
         return ((Long) DatabaseManager.createEntityManager()
                 .createNativeQuery("SELECT COUNT(*) FROM notifications n, notification_templates template " +
-                        "WHERE n.NOTIFICATIONTYPE = template.NOTIFICATION_TEMPLATE_ID AND n.USER_ID = ?1 AND n.STATUS <> 2")
+                        "WHERE n.NOTIFICATIONTYPE = template.NOTIFICATION_TEMPLATE_ID AND n.USER_ID = ?1 " +
+                        "AND n.STATUS NOT IN (2,3) " + unsubCheck)
                 .setParameter(1, Integer.valueOf(userId))
                 .getSingleResult()).intValue();
     }
 
     public List<Notification> getWebNotificationsByUserId(String userId, Integer limit, Integer offset) {
-        return DatabaseManager.createEntityManager()
-                .createQuery("SELECT n FROM Notification n, NotificationTemplate template " +
-                                "WHERE n.notificationType = template.notificationType AND " +
-                                "   n.user.id = :userId AND n.status <> :status ORDER BY n.timestamp DESC",
-                        Notification.class)
-                .setParameter("userId", Integer.valueOf(userId))
-                .setParameter("status", NotificationStatus.DELETED)
+        Integer id = Integer.valueOf(userId);
+        List<NotificationType> unsubs = this.getWebUnsubscriptions(id);
+
+        String qlString = "SELECT n FROM Notification n, NotificationTemplate template " +
+                "WHERE n.notificationType = template.notificationType AND " +
+                "   n.user.id = :userId AND n.status NOT IN :status " +
+                (unsubs.isEmpty()
+                        ? ""
+                        : "AND n.notificationType NOT IN :unsubs"
+                ) +
+                " ORDER BY n.timestamp DESC";
+
+        //todo should ignored notification types still be fetched, if they were not ignored before?
+        TypedQuery<Notification> query = DatabaseManager.createEntityManager()
+                .createQuery(qlString, Notification.class)
+                .setParameter("userId", id)
+                .setParameter("status", Arrays.asList(NotificationStatus.DELETED, NotificationStatus.HIDDEN))
                 .setMaxResults(limit)
-                .setFirstResult(offset)
-                .getResultList();
+                .setFirstResult(offset);
+
+        if (!unsubs.isEmpty()) {
+            query.setParameter("unsubs", unsubs);
+        }
+
+        return query.getResultList();
     }
 
     @Override

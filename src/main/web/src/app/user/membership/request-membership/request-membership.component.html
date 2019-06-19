@@ -3,22 +3,26 @@
 		<h3>Mitgliedsstatus ändern</h3>
 	</div>
 	<div class="container--body">
-		<p>Bist du bereits Mitglied, bist im Shop aber noch als Gast gespeichert? Oder wurdest du vom Mitglied zum Vorstand
+		<p>Bist du bereits Mitglied, bist im Shop aber noch als Gast gespeichert? Oder wurdest du vom Mitglied zum
+			Vorstand
 			befördert und dein Status ist noch nicht aktualisiert? Und den <a href="mailto:admin@meilenwoelfe.de">Administrator
 				persönlich anschreiben</a> ist dir zu viel Aufwand?</p>
 		<p>Dann beantrage mithilfe des untenstehenden Formulars einen Mitgliedsstatusänderung!</p>
 
 		<form [formGroup]="formGroup" (ngSubmit)="submit()" *ngIf="!success">
-			<mat-form-field>
-				<mat-select [formControl]="formGroup.get('newRole')" placeholder="Neue Rolle">
-					<mat-option *ngFor="let role of clubRoles" [value]="role">
-						{{role}}
-					</mat-option>
-				</mat-select>
-				<mat-error *ngIf="formGroup.get('newRole').hasError('hasNotChanged')">
-					Du bist bereits {{formGroup.get('newRole').value}}!
-				</mat-error>
-			</mat-form-field>
+			<div class="form-input-container">
+				<div class="form-label">Neue Rolle</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
+					<mat-select [formControl]="formGroup.get('newRole')">
+						<mat-option *ngFor="let role of clubRoles" [value]="role">
+							{{role}}
+						</mat-option>
+					</mat-select>
+					<mat-error *ngIf="formGroup.get('newRole').hasError('hasNotChanged')">
+						Du bist bereits {{formGroup.get('newRole').value}}!
+					</mat-error>
+				</mat-form-field>
+			</div>
 			<button mat-raised-button [disabled]="!formGroup.valid || formGroup.pending" color="accent">
 				<span *ngIf="!loading; else loadingSpinner">Änderung beantragen</span>
 				<ng-template #loadingSpinner>
@@ -35,7 +39,8 @@
 		</div>
 
 		<div class="error-message" *ngIf="!success && error">
-			<p>Bei der Übermittlung der Statusänderung ist ein Fehler aufgetreten. Bitte probiere es in einigen Momenten noch
+			<p>Bei der Übermittlung der Statusänderung ist ein Fehler aufgetreten. Bitte probiere es in einigen Momenten
+				noch
 				mal.</p>
 		</div>
 
