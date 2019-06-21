@@ -6,6 +6,7 @@ import memo.util.DatabaseManager;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -18,8 +19,8 @@ public class OrderStateRepository {
 
     private final String openOrdersSql = "SELECT count(*) AS open,\n" +
             "       sum(case\n" +
-            "               when (YEAR(o.TIMESTAMP) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND\n" +
-            "                     MONTH(o.TIMESTAMP) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)) THEN 1\n" +
+            "               when (YEAR(o.TIMESTAMP) = YEAR(CURRENT_DATE) AND\n" +
+            "                     MONTH(o.TIMESTAMP) = MONTH(CURRENT_DATE)) THEN 1\n" +
             "               else 0 end) AS openChange\n" +
             "FROM orders o,\n" +
             "     ordered_items item\n" +
@@ -40,7 +41,7 @@ public class OrderStateRepository {
         public OpenOrdersState(){}
         public OpenOrdersState(Object[] objects){
             this.open = (Long) objects[0];
-            this.openChange = (Long) objects[0];
+            this.openChange = ((BigDecimal) objects[1]).longValue();
         }
 
         public Long getOpen() {
@@ -64,8 +65,8 @@ public class OrderStateRepository {
 
     private final String totalOrdersSql = "SELECT count(*)            AS total,\n" +
             "       sum(case\n" +
-            "               when (YEAR(o.TIMESTAMP) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) AND\n" +
-            "                     MONTH(o.TIMESTAMP) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)) THEN 1\n" +
+            "               when (YEAR(o.TIMESTAMP) = YEAR(CURRENT_DATE) AND\n" +
+            "                     MONTH(o.TIMESTAMP) = MONTH(CURRENT_DATE)) THEN 1\n" +
             "               else 0 end) AS totalChange\n" +
             "FROM orders o";
 
@@ -84,7 +85,7 @@ public class OrderStateRepository {
         public TotalOrdersState(){}
         public TotalOrdersState(Object[] objects){
             this.total = (Long) objects[0];
-            this.totalChange = (Long) objects[0];
+            this.totalChange = ((BigDecimal) objects[1]).longValue();
         }
 
         public Long getTotal() {

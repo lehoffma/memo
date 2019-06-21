@@ -65,11 +65,9 @@ export class OrdersOverTimeChartComponent implements OnInit {
 			const regexResults = isoRegex.exec(currentStep.toISOString());
 			const currentStepISO = regexResults[1] + "T" + "00:00:00" + "Z";
 
-			//todo remove demo
-			const randomData = Math.floor(Math.random() * 20);
 			let dataEntry: OverTimeData = {
 				timestamp: currentStepISO,
-				amount: serverData[currentStepISO] || randomData
+				amount: serverData[currentStepISO] || 0
 			};
 
 			newData.push(dataEntry);

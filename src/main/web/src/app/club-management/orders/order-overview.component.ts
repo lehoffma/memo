@@ -20,6 +20,7 @@ export class OrderOverviewComponent implements OnDestroy {
 	onDestroy$ = new Subject();
 	constructor(public orderOverviewService: OrderOverviewService,
 				private cdRef: ChangeDetectorRef) {
+		//to update the "last updated:" sign
 		timer(5000, 15000)
 			.pipe(takeUntil(this.onDestroy$))
 			.subscribe(it => this.cdRef.detectChanges());

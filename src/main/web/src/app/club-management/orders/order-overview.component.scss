@@ -43,7 +43,7 @@ memo-number-card {
 	display: flex;
 	flex-direction: column;
 
-	> *:not(:first-child){
+	> *:not(:first-child) {
 		margin-top: 16px;
 		margin-left: 0;
 	}
@@ -51,7 +51,7 @@ memo-number-card {
 	@media all and (min-width: 650px) {
 		flex-direction: row;
 
-		> *:not(:first-child){
+		> *:not(:first-child) {
 			margin-top: 0;
 			margin-left: 16px;
 		}
@@ -66,6 +66,10 @@ memo-number-card {
 	.right-side {
 		width: 33%;
 	}
+}
+
+.card-container {
+	flex: 1;
 }
 
 .left-side {

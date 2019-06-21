@@ -1,4 +1,8 @@
 <ng-container *ngLet="state$ | async as state">
+	<div class="overview-header">
+		<h2>Kostenübersicht</h2>
+		<span class="last-refresh-date">Stand: {{state?.timestamp | dateFormat:'relative'}}</span>
+	</div>
 	<memo-data-container [error]="error" [initialLoad]="state === null" [renderer]="dashboardTemplate"
 						 class="overall-data-container"
 						 errorStateHeadline="Kostenübersicht konnte nicht geladen werden"
@@ -7,10 +11,6 @@
 	</memo-data-container>
 
 	<ng-template #dashboardTemplate>
-		<div class="overview-header">
-			<h2>Kostenübersicht</h2>
-			<span class="last-refresh-date">Stand: {{state.timestamp | dateFormat:'relative'}}</span>
-		</div>
 		<div class="overview-numbers-container">
 			<memo-number-card
 				[title]="'Gesamtbilanz'"
