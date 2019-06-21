@@ -6,6 +6,8 @@ import memo.data.util.PredicateFactory;
 import memo.data.util.PredicateSupplierMap;
 import memo.model.Entry;
 import memo.model.management.AccountingState;
+import memo.model.management.ItemAccountingSummary;
+import memo.model.management.MonthAccountingSummary;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
@@ -19,8 +21,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Named
 @ApplicationScoped
@@ -88,7 +92,7 @@ public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
             "     SHOP_ITEMS item\n" +
             "WHERE e.ITEM_ID = item.ID;";
 
-    private final String monthlyChangesQuery = "SELECT SUM(e.ACTUALVALUE) AS totalBalance, MONTH(e.DATE) AS month\n" +
+    private final String monthlyChangesQuery = "SELECT SUM(e.ACTUALVALUE) AS totalBalance, MONTH(e.DATE) AS month, YEAR(e.DATE) AS year\n" +
             "FROM ENTRIES e\n" +
             "GROUP BY YEAR(e.DATE), month;";
 
@@ -100,6 +104,24 @@ public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
             "GROUP BY e.ITEM_ID\n" +
             "ORDER BY item.DATE DESC LIMIT 3";
 
+    private final String incomeByCategoryQuery = "SELECT category.NAME as categoryName,\n" +
+            "       (\n" +
+            "           SELECT sum(e.ACTUALVALUE)\n" +
+            "           FROM entries e\n" +
+            "           WHERE e.ACTUALVALUE >= 0\n" +
+            "             AND category.ID = e.CATEGORY_ID\n" +
+            "       )             as sum\n" +
+            "from entry_categories category";
+
+    private final String expensesByCategoryQuery = "SELECT category.NAME as categoryName,\n" +
+            "       (\n" +
+            "           SELECT sum(e.ACTUALVALUE)\n" +
+            "           FROM entries e\n" +
+            "           WHERE e.ACTUALVALUE < 0\n" +
+            "             AND category.ID = e.CATEGORY_ID\n" +
+            "       )             as sum\n" +
+            "from entry_categories category";
+
     public AccountingState state() {
         Object accountingState = DatabaseManager.createEntityManager()
                 .createNativeQuery(stateQuery)
@@ -107,25 +129,47 @@ public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
 
         AccountingState state = new AccountingState((Object[]) accountingState);
 
-        List<AccountingState.MonthAccountingSummary> monthlyChanges = DatabaseManager.createEntityManager()
+        List<Object[]> monthlyChangesResult = new ArrayList<Object[]>(DatabaseManager.createEntityManager()
                 .createNativeQuery(monthlyChangesQuery)
-                .getResultList();
+                .getResultList());
 
-        List<AccountingState.ItemAccountingSummary> itemTotals = DatabaseManager.createEntityManager()
+        List<MonthAccountingSummary> monthlyChanges = monthlyChangesResult.stream()
+                .map(MonthAccountingSummary::new)
+                .collect(Collectors.toList());
+
+
+        List<Object[]> itemTotalsResult = new ArrayList<Object[]>(DatabaseManager.createEntityManager()
                 .createNativeQuery(itemTotalsQuery)
-                .getResultList();
+                .getResultList());
+        List<ItemAccountingSummary> itemTotals = itemTotalsResult.stream()
+                .map(ItemAccountingSummary::new)
+                .collect(Collectors.toList());
 
         state.setMonthlyChanges(monthlyChanges);
         state.setItemTotals(itemTotals);
 
+        List<Object[]> incomeByCategoryResult = new ArrayList<>(DatabaseManager.createEntityManager()
+                .createNativeQuery(incomeByCategoryQuery)
+                .getResultList()
+        );
+        state.setIncomeByCategory(incomeByCategoryResult);
+
+        List<Object[]> expensesByCategoryResult = new ArrayList<>(DatabaseManager.createEntityManager()
+                .createNativeQuery(expensesByCategoryQuery)
+                .getResultList()
+        );
+        state.setExpensesByCategory(expensesByCategoryResult);
+
+        state.fillUpMonths();
+
         return state;
     }
 
-    public List<Entry> get(String Sid, String SeventId, String sType, HttpServletResponse response) {
+    public List<Entry> get(String id, String eventId, String type, HttpServletResponse response) {
         return this.getIf(new MapBuilder<String, Function<String, List<Entry>>>()
-                        .buildPut(Sid, this::get)
-                        .buildPut(SeventId, this::findByEventId)
-                        .buildPut(sType, s -> this.findByEventType(EventServlet.getType(sType))),
+                        .buildPut(id, this::get)
+                        .buildPut(eventId, this::findByEventId)
+                        .buildPut(type, s -> this.findByEventType(EventServlet.getType(type))),
                 this.getAll()
         );
     }

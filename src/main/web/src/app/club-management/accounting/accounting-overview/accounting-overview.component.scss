@@ -6,6 +6,13 @@
 	min-height: calc(100vh - 64px);
 	max-width: 1000px;
 	margin: auto;
+
+	.overall-data-container{
+		::ng-deep > .loader-wrapper,
+		::ng-deep > .empty-state {
+			margin-top: 100px;
+		}
+	}
 }
 
 memo-number-card {

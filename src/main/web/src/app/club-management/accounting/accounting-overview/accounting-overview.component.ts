@@ -2,12 +2,13 @@ import {Component, OnInit} from "@angular/core";
 import {EntryService} from "../../../shared/services/api/entry.service";
 import {Observable, of} from "rxjs";
 import {AccountingState} from "../../../shared/model/accounting-state";
-import {endOfMonth, format, isBefore, startOfMonth, subMonths} from "date-fns";
-import {Params} from "@angular/router";
-import {map} from "rxjs/operators";
+import {endOfMonth, format, isBefore, startOfMonth} from "date-fns";
+import {Params, Router} from "@angular/router";
+import {catchError, map, share} from "rxjs/operators";
 
 import * as deLocale from "date-fns/locale/de";
-import * as shape from 'd3-shape';
+import * as shape from "d3-shape";
+import {flatMap} from "../../../util/util";
 
 @Component({
 	selector: "memo-accounting-overview",
@@ -16,79 +17,14 @@ import * as shape from 'd3-shape';
 })
 export class AccountingOverviewComponent implements OnInit {
 	curve = shape.curveMonotoneX;
-
-	// state$: Observable<AccountingState> = this.entryService.getState();
-	state$: Observable<AccountingState> = of({
-		timestamp: new Date(),
-		currentBalance: 5000.76,
-		lastMonthChange: 250.22,
-		tourTotal: 2512.22,
-		tourChange: -200.50,
-		partyTotal: -250.22,
-		partyChange: 125.00,
-		merchTotal: 0.00,
-		merchChange: 20.00,
-		itemTotals: [
-			{
-				itemId: 1,
-				itemTitle: "Tolle Weihnachtsfahrt nach Nürnberg",
-				totalBalance: 350.00
-			},
-			{
-				itemId: 2,
-				itemTitle: "Langweilige Tour nach Freiburg",
-				totalBalance: -500.25
-			}
-		],
-		monthlyChanges: [
-			{
-				totalBalance: 100.203,
-				month: subMonths(startOfMonth(new Date()), 1)
-			},
-			{
-				totalBalance: 205.22,
-				month: subMonths(startOfMonth(new Date()), 2)
-			},
-			{
-				totalBalance: -500.44,
-				month: subMonths(startOfMonth(new Date()), 3)
-			},
-			{
-				totalBalance: 0,
-				month: subMonths(startOfMonth(new Date()), 4)
-			},
-			{
-				totalBalance: 1252,
-				month: subMonths(startOfMonth(new Date()), 5)
-			},
-			{
-				totalBalance: -205,
-				month: subMonths(startOfMonth(new Date()), 6)
-			},
-			{
-				totalBalance: 100,
-				month: subMonths(startOfMonth(new Date()), 7)
-			},
-			{
-				totalBalance: -200,
-				month: subMonths(startOfMonth(new Date()), 8)
-			}
-		],
-		expensesByCategory: {
-			"Verpflegung": 100,
-			"Tickets": 155,
-			"Mietkosten": 750,
-			"Steuern": 100,
-			"Sonstiges": 0
-		},
-		incomeByCategory: {
-			"Verpflegung": 0,
-			"Tickets": 822.50,
-			"Mietkosten": 100,
-			"Steuern": 540,
-			"Sonstiges": 300
-		},
-	});
+	error: any;
+	state$: Observable<AccountingState> = this.entryService.getState().pipe(
+		share(),
+		catchError(error => {
+			this.error = error;
+			return of(null);
+		})
+	);
 
 	expensesByCategory$ = this.state$.pipe(map(state => this.toPieChart(state.expensesByCategory)));
 	incomeByCategory$ = this.state$.pipe(map(state => this.toPieChart(state.incomeByCategory)));
@@ -106,15 +42,30 @@ export class AccountingOverviewComponent implements OnInit {
 		{name: "Kontostand", value: "#43a047"}
 	];
 
-	renderMoney(input: number): string{
+	renderMoney(input: number): string {
 		return input.toFixed(2) + " €";
 	}
 
-	constructor(private entryService: EntryService) {
+	categoriesAreEmpty(categories: { name: string; value: number }[]): boolean {
+		return categories === null || categories.reduce((acc, category) => acc + category.value, 0) === 0;
+	}
+
+	getYMax(series: { name: string, series: { name: string, value: number }[] }[]): number {
+		return Math.max(
+			...flatMap(val => val.series, series)
+				.map(serie => serie.value),
+			//take 100 as minimum
+			100
+		);
+	}
+
+	constructor(private entryService: EntryService,
+				private router: Router) {
 	}
 
 	ngOnInit() {
 	}
+
 
 	public getMonthDetailParams(date: Date): Params {
 		return {
@@ -159,5 +110,11 @@ export class AccountingOverviewComponent implements OnInit {
 			acc.push({name: key, value: byCategory[key]});
 			return acc;
 		}, []);
+	}
+
+	showCostsByCategory(event: any) {
+		//?entryType=Verpflegung
+		const selected = (event.name !== undefined) ? event.name : event;
+		this.router.navigate(["management", "costs"], {queryParams: {entryType: selected}});
 	}
 }

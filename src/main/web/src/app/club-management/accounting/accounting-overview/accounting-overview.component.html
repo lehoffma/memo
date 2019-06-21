@@ -1,99 +1,149 @@
-<ng-container *ngIf="state$ | async as state">
-	<div class="overview-header">
-		<h2>Kostenübersicht</h2>
-		<span class="last-refresh-date">Stand: {{state.timestamp | dateFormat:'relative'}}</span>
-	</div>
-	<div class="overview-numbers-container">
-		<memo-number-card
-			[title]="'Gesamtbilanz'"
-			[render]="renderMoney"
-			[total]="state.currentBalance"
-			[change]="state.lastMonthChange">
+<ng-container *ngLet="state$ | async as state">
+	<memo-data-container [error]="error" [initialLoad]="state === null" [renderer]="dashboardTemplate"
+						 class="overall-data-container"
+						 errorStateHeadline="Kostenübersicht konnte nicht geladen werden"
+						 errorStateSubtitle="Versuche es in ein paar Momenten noch mal!"
+	>
+	</memo-data-container>
 
-		</memo-number-card>
-
-		<memo-number-card
-			[title]="'Touren'"
-			[render]="renderMoney"
-			[total]="state.tourTotal"
-			[change]="state.tourChange">
-
-		</memo-number-card>
-
-		<memo-number-card
-			[title]="'Partys'"
-			[render]="renderMoney"
-			[total]="state.partyTotal"
-			[change]="state.partyChange">
-
-		</memo-number-card>
-		<memo-number-card
-			[title]="'Merchandise'"
-			[render]="renderMoney"
-			[total]="state.merchTotal"
-			[change]="state.merchChange">
-
-		</memo-number-card>
-
-	</div>
-
-
-	<memo-dashboard-container containerTitle="Gesamt über Zeit" class="linechart-container">
-		<div class="chart-container" *ngIf="totalOverTime$ | async as totalOverTime">
-			<ngx-charts-area-chart [gradient]="false"
-								   [baseValue]="0"
-								   [customColors]="lineChartCustomColors"
-								   [xAxis]="true"
-								   [yAxis]="true"
-								   [curve]="curve"
-								   [xAxisLabel]="'Zeit'"
-								   [yAxisLabel]="'Einnahmen'"
-								   [autoScale]="false"
-								   [results]="totalOverTime">
-			</ngx-charts-area-chart>
+	<ng-template #dashboardTemplate>
+		<div class="overview-header">
+			<h2>Kostenübersicht</h2>
+			<span class="last-refresh-date">Stand: {{state.timestamp | dateFormat:'relative'}}</span>
 		</div>
-	</memo-dashboard-container>
+		<div class="overview-numbers-container">
+			<memo-number-card
+				[title]="'Gesamtbilanz'"
+				[render]="renderMoney"
+				[total]="state.currentBalance"
+				[change]="state.lastMonthChange">
 
-	<div class="accounting-preview-container">
-		<memo-dashboard-container icon="subject" containerTitle="Letzte Abrechnungen" link="/management/costs/time">
-			<a memoCostPreview *ngFor="let monthlyChange of state.monthlyChanges | slice:0:5"
-			   routerLink="/management/costs"
-			   [queryParams]="monthlyChange.month | pipeFunction:getMonthDetailParams"
-			   [label]="monthlyChange.month | date:'MMMM yyyy'"
-			   [totalBalance]="monthlyChange.totalBalance"></a>
-		</memo-dashboard-container>
+			</memo-number-card>
 
-		<memo-dashboard-container icon="directions_car" containerTitle="Letzte Events">
-			<a memoCostPreview *ngFor="let itemTotal of state.itemTotals | slice:0:5"
-			   routerLink="/management/costs"
-			   [queryParams]="itemTotal.itemId | pipeFunction:getItemDetailParams"
-			   [label]="itemTotal.itemTitle"
-			   [totalBalance]="itemTotal.totalBalance"></a>
-		</memo-dashboard-container>
-	</div>
+			<memo-number-card
+				[title]="'Touren'"
+				[render]="renderMoney"
+				[total]="state.tourTotal"
+				[change]="state.tourChange">
 
-	<div fxLayout="row" fxLayoutGap="16px" fxLayout.lt-sm="column">
-		<memo-dashboard-container class="pie-chart" containerTitle="Ausgaben pro Kategorie">
-			<div class="chart-container">
-				<ngx-charts-pie-chart *ngIf="expensesByCategory$ | async as expenses"
-									  [doughnut]="true"
-									  [legend]="true"
-									  legendPosition="bottom"
-									  [customColors]="customColors"
-									  [results]="expenses"></ngx-charts-pie-chart>
+			</memo-number-card>
+
+			<memo-number-card
+				[title]="'Partys'"
+				[render]="renderMoney"
+				[total]="state.partyTotal"
+				[change]="state.partyChange">
+
+			</memo-number-card>
+			<memo-number-card
+				[title]="'Merchandise'"
+				[render]="renderMoney"
+				[total]="state.merchTotal"
+				[change]="state.merchChange">
+
+			</memo-number-card>
+
+		</div>
+
+
+		<memo-dashboard-container containerTitle="Gesamt über Zeit" class="linechart-container">
+			<div class="chart-container" *ngIf="totalOverTime$ | async as totalOverTime">
+				<ngx-charts-area-chart [gradient]="false"
+									   [baseValue]="0"
+									   [customColors]="lineChartCustomColors"
+									   [xAxis]="true"
+									   [yAxis]="true"
+									   [curve]="curve"
+									   [xAxisLabel]="'Zeit'"
+									   [yAxisLabel]="'Einnahmen'"
+									   [yScaleMax]="totalOverTime | pipeFunction:getYMax"
+									   [autoScale]="false"
+									   [results]="totalOverTime">
+				</ngx-charts-area-chart>
 			</div>
 		</memo-dashboard-container>
 
-		<memo-dashboard-container class="pie-chart" containerTitle="Einnahmen pro Kategorie">
-			<div class="chart-container">
-				<ngx-charts-pie-chart *ngIf="incomeByCategory$ | async as income"
-									  [doughnut]="true"
-									  [legend]="true"
-									  legendPosition="bottom"
-									  [customColors]="customColors"
-									  [results]="income"></ngx-charts-pie-chart>
-			</div>
-		</memo-dashboard-container>
-	</div>
+		<div class="accounting-preview-container">
+			<memo-dashboard-container icon="subject" containerTitle="Letzte Abrechnungen"
+									  *ngLet="state.monthlyChanges | slice:0:5 as monthlyChanges"
+									  link="/management/costs/time">
+				<memo-data-container [data]="monthlyChanges"
+									 [renderer]="monthlyPreview"
+				></memo-data-container>
+
+				<ng-template #monthlyPreview let-monthlyChange>
+					<a memoCostPreview
+					   routerLink="/management/costs"
+					   [queryParams]="monthlyChange.month | pipeFunction:getMonthDetailParams"
+					   [label]="monthlyChange.month | date:'MMMM yyyy'"
+					   [totalBalance]="monthlyChange.totalBalance"></a>
+				</ng-template>
+			</memo-dashboard-container>
+
+			<memo-dashboard-container icon="directions_car"
+									  *ngLet="state.itemTotals | slice:0:0 as itemTotals"
+									  containerTitle="Letzte Events">
+				<memo-data-container [data]="itemTotals"
+									 [renderer]="costPreview"
+									 emptyStateIcon="receipt"
+									 emptyStateHeadline="Keine Abrechnungen"
+									 emptyStateSubtitle="Es gibt noch keine Abrechnungen. Erstelle einen Posten, um dies zu ändern!"
+				>
+					<memo-data-empty-state-actions>
+						<a mat-raised-button color="accent" routerLink="/shop/create/entries">
+							Posten erstellen
+						</a>
+					</memo-data-empty-state-actions>
+				</memo-data-container>
+
+				<ng-template #costPreview let-itemTotal>
+					<a memoCostPreview
+					   routerLink="/management/costs"
+					   [queryParams]="itemTotal.itemId | pipeFunction:getItemDetailParams"
+					   [label]="itemTotal.itemTitle"
+					   [totalBalance]="itemTotal.totalBalance"></a>
+				</ng-template>
+			</memo-dashboard-container>
+		</div>
+
+		<div fxLayout="row" fxLayoutGap="16px" fxLayout.lt-sm="column">
+			<memo-dashboard-container class="pie-chart" containerTitle="Ausgaben pro Kategorie">
+				<div class="chart-container" *ngLet="expensesByCategory$ | async as expenses">
+					<memo-data-container [initialLoad]="expenses === null"
+										 [empty]="expenses | pipeFunction:categoriesAreEmpty"
+										 [renderer]="expensesPieChart"
+					></memo-data-container>
+					<ng-template #expensesPieChart>
+						<ngx-charts-pie-chart
+							[doughnut]="true"
+							[legend]="true"
+							legendPosition="bottom"
+							[customColors]="customColors"
+							(select)="showCostsByCategory($event)"
+							[results]="expenses"></ngx-charts-pie-chart>
+					</ng-template>
+				</div>
+			</memo-dashboard-container>
+
+			<memo-dashboard-container class="pie-chart" containerTitle="Einnahmen pro Kategorie">
+				<div class="chart-container" *ngLet="incomeByCategory$ | async as income">
+					<memo-data-container [initialLoad]="income === null"
+										 [empty]="income | pipeFunction:categoriesAreEmpty"
+										 [renderer]="incomePieChart"
+					></memo-data-container>
+					<ng-template #incomePieChart>
+						<ngx-charts-pie-chart *ngIf="incomeByCategory$ | async as income"
+											  [doughnut]="true"
+											  [legend]="true"
+											  legendPosition="bottom"
+											  (select)="showCostsByCategory($event)"
+											  [customColors]="customColors"
+											  [results]="income"></ngx-charts-pie-chart>
+					</ng-template>
+
+				</div>
+			</memo-dashboard-container>
+		</div>
+	</ng-template>
 
 </ng-container>

@@ -1,11 +1,10 @@
 package memo.model.management;
 
+import memo.model.EntryCategory;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,89 +24,60 @@ public class AccountingState {
     private List<ItemAccountingSummary> itemTotals;
     private List<MonthAccountingSummary> monthlyChanges;
 
+    private Map<String, BigDecimal> expensesByCategory;
+    private Map<String, BigDecimal> incomeByCategory;
+
     public AccountingState() {
     }
 
     public AccountingState(Object[] objects) {
         //todo expenses by category
-        this.currentBalance = BigDecimal.valueOf((Double) Optional.ofNullable(objects[0]).orElse(0D));
-        this.lastMonthChange = BigDecimal.valueOf((Double) Optional.ofNullable(objects[1]).orElse(0D));
-        this.tourTotal = BigDecimal.valueOf((Double) Optional.ofNullable(objects[2]).orElse(0D));
-        this.tourChange = BigDecimal.valueOf((Double) Optional.ofNullable(objects[3]).orElse(0D));
-        this.partyTotal = BigDecimal.valueOf((Double) Optional.ofNullable(objects[4]).orElse(0D));
-        this.partyChange = BigDecimal.valueOf((Double) Optional.ofNullable(objects[5]).orElse(0D));
-        this.merchTotal = BigDecimal.valueOf((Double) Optional.ofNullable(objects[6]).orElse(0D));
-        this.merchChange = BigDecimal.valueOf((Double) Optional.ofNullable(objects[7]).orElse(0D));
+        //todo income by category
+        this.currentBalance = (BigDecimal) Optional.ofNullable(objects[0]).orElse(BigDecimal.ZERO);
+        this.lastMonthChange = (BigDecimal) Optional.ofNullable(objects[1]).orElse(BigDecimal.ZERO);
+        this.tourTotal = (BigDecimal) Optional.ofNullable(objects[2]).orElse(BigDecimal.ZERO);
+        this.tourChange = (BigDecimal) Optional.ofNullable(objects[3]).orElse(BigDecimal.ZERO);
+        this.partyTotal = (BigDecimal) Optional.ofNullable(objects[4]).orElse(BigDecimal.ZERO);
+        this.partyChange = (BigDecimal) Optional.ofNullable(objects[5]).orElse(BigDecimal.ZERO);
+        this.merchTotal = (BigDecimal) Optional.ofNullable(objects[6]).orElse(BigDecimal.ZERO);
+        this.merchChange = (BigDecimal) Optional.ofNullable(objects[7]).orElse(BigDecimal.ZERO);
         this.itemTotals = new ArrayList<>();
         this.monthlyChanges = new ArrayList<>();
     }
 
-
-    public class ItemAccountingSummary {
-        private BigDecimal totalBalance;
-        private String itemTitle;
-        private Integer itemId;
-
-        public ItemAccountingSummary(BigDecimal totalBalance, String itemTitle, Integer itemId) {
-            this.totalBalance = totalBalance;
-            this.itemTitle = itemTitle;
-            this.itemId = itemId;
-        }
-
-        public BigDecimal getTotalBalance() {
-            return totalBalance;
-        }
-
-        public ItemAccountingSummary setTotalBalance(BigDecimal totalBalance) {
-            this.totalBalance = totalBalance;
-            return this;
-        }
-
-        public String getItemTitle() {
-            return itemTitle;
-        }
-
-        public ItemAccountingSummary setItemTitle(String itemTitle) {
-            this.itemTitle = itemTitle;
-            return this;
-        }
-
-        public Integer getItemId() {
-            return itemId;
-        }
-
-        public ItemAccountingSummary setItemId(Integer itemId) {
-            this.itemId = itemId;
-            return this;
-        }
+    public AccountingState setExpensesByCategory(List<Object[]> queryResult){
+        this.expensesByCategory = queryResult.stream()
+                .collect(Collectors.toMap(
+                        (Object[] o) -> (String) o[0],
+                        (Object[] o) -> Optional.ofNullable((BigDecimal) o[1]).orElse(BigDecimal.ZERO).abs()
+                ));
+        return this;
     }
 
-    public class MonthAccountingSummary {
-        private BigDecimal totalBalance;
-        private LocalDate month;
+    public AccountingState setIncomeByCategory(List<Object[]> queryResult){
+        this.incomeByCategory = queryResult.stream()
+                .collect(Collectors.toMap(
+                        (Object[] o) -> (String) o[0],
+                        (Object[] o) -> Optional.ofNullable((BigDecimal) o[1]).orElse(BigDecimal.ZERO).abs()
+                ));
+        return this;
+    }
+    public Map<String, BigDecimal> getExpensesByCategory() {
+        return expensesByCategory;
+    }
 
-        public MonthAccountingSummary(BigDecimal totalBalance, LocalDate month) {
-            this.totalBalance = totalBalance;
-            this.month = month;
-        }
+    public AccountingState setExpensesByCategory(Map<String, BigDecimal> expensesByCategory) {
+        this.expensesByCategory = expensesByCategory;
+        return this;
+    }
 
-        public BigDecimal getTotalBalance() {
-            return totalBalance;
-        }
+    public Map<String, BigDecimal> getIncomeByCategory() {
+        return incomeByCategory;
+    }
 
-        public MonthAccountingSummary setTotalBalance(BigDecimal totalBalance) {
-            this.totalBalance = totalBalance;
-            return this;
-        }
-
-        public LocalDate getMonth() {
-            return month;
-        }
-
-        public MonthAccountingSummary setMonth(LocalDate month) {
-            this.month = month;
-            return this;
-        }
+    public AccountingState setIncomeByCategory(Map<String, BigDecimal> incomeByCategory) {
+        this.incomeByCategory = incomeByCategory;
+        return this;
     }
 
     public BigDecimal getCurrentBalance() {
@@ -208,7 +178,7 @@ public class AccountingState {
         //min size: one year
 
         List<MonthAccountingSummary> monthlyChanges = new ArrayList<>(this.monthlyChanges).stream()
-                .sorted(Comparator.comparing(it -> it.month))
+                .sorted(Comparator.comparing(MonthAccountingSummary::getMonth))
                 .collect(Collectors.toList());
 
         MonthAccountingSummary firstSummary = monthlyChanges.get(0);

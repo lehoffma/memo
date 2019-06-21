@@ -6,7 +6,7 @@ import {toPaymentMethod} from "../../../shop/checkout/payment/payment-method";
 import {parse} from "date-fns";
 
 
-interface DateTimeObject {
+export interface DateTimeObject {
 	dayOfMonth: number;
 	dayOfWeek: string;
 	dayOfYear: number;
@@ -19,7 +19,19 @@ interface DateTimeObject {
 	year: number;
 }
 
-function getIsoDateFromDateTimeObject(dateTime: DateTimeObject): string {
+export interface DateObject {
+	chronology: { id: string, calendarType: string };
+	dayOfMonth: number;
+	dayOfWeek: string;
+	dayOfYear: number;
+	era: string;
+	leapYear: boolean;
+	month: string;
+	monthValue: number;
+	year: number;
+}
+
+export function getIsoDateFromDateTimeObject(dateTime: DateTimeObject): string {
 	let {year, monthValue, dayOfMonth, hour, minute, second} = dateTime;
 
 	return year + "-" +
@@ -28,8 +40,21 @@ function getIsoDateFromDateTimeObject(dateTime: DateTimeObject): string {
 		((+hour < 10) ? "0" + hour : hour) + ":" +
 		((+minute < 10) ? "0" + minute : minute) + ":" +
 		((+second < 10) ? "0" + second : second) + "Z";
+}
 
-
+export function getIsoDateFromDateObject(date: DateObject): string {
+	return getIsoDateFromDateTimeObject({
+		year: date.year,
+		month: date.month,
+		monthValue: date.monthValue,
+		dayOfMonth: date.dayOfMonth,
+		hour: 0,
+		minute: 0,
+		second: 0,
+		dayOfWeek: date.dayOfWeek,
+		dayOfYear: date.dayOfYear,
+		nano: 0
+	});
 }
 
 export interface BaseObject {
@@ -55,8 +80,7 @@ export function setProperties<T>(object: T, properties: any): T {
 				|| key.toLowerCase().includes("time"))) {
 				if (value.dayOfMonth && value.minute) {
 					value = parse(getIsoDateFromDateTimeObject(value));
-				}
-				else {
+				} else {
 					value = parse(value);
 				}
 			} else if (isNumber(value) && key !== "mobile" && key !== "telephone") {

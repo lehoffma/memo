@@ -11,7 +11,7 @@ import {Sort} from "../../model/api/sort";
 import {Filter} from "../../model/api/filter";
 import {Page} from "../../model/api/page";
 import {ParamMap} from "@angular/router";
-import {setProperties} from "../../model/util/base-object";
+import {getIsoDateFromDateObject, setProperties} from "../../model/util/base-object";
 import {AccountingState, DatePreview} from "../../model/accounting-state";
 import {setMonth, setYear} from "date-fns";
 
@@ -31,10 +31,10 @@ export class EntryService extends ServletService<Entry> {
 
 
 	jsonToObservable(json: any): Observable<Entry> {
-		return combineLatest(
+		return combineLatest([
 			this.entryCategoryService.getById(json["category"]),
 			this.eventService.getById(json["item"])
-		)
+		])
 			.pipe(
 				map(([category, item]) => setProperties(setProperties(createEntry(), json), {category, item}))
 			)
@@ -43,8 +43,19 @@ export class EntryService extends ServletService<Entry> {
 
 	getState(): Observable<AccountingState> {
 		return this.performRequest(this.http.get<AccountingState>(this.baseUrl + "/state")).pipe(
-			map(it => ({...it, timestamp: new Date()}))
+			map(it => ({...it, timestamp: new Date()})),
+			map(it => this.transformDates(it)),
 		)
+	}
+
+
+	private transformDates(state: AccountingState): AccountingState{
+		state.monthlyChanges = state.monthlyChanges.map(it => ({
+			totalBalance: it.totalBalance,
+			month: new Date(getIsoDateFromDateObject(it.month as any))
+		}));
+		console.log(state.monthlyChanges);
+		return state;
 	}
 
 	/**

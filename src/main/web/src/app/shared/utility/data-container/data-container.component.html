@@ -7,7 +7,7 @@
 	</div>
 </div>
 <ng-template #noError>
-	<div class="loader-wrapper" *ngIf="data === null || loading; else noLoading">
+	<div class="loader-wrapper" *ngIf="data === null || loading || initialLoad; else noLoading">
 		<div class="loader"></div>
 	</div>
 	<ng-template #noLoading>
