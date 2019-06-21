@@ -73,8 +73,9 @@
 
 }
 
-.preview-body {
+:host ::ng-deep .preview-body {
 	display: block;
 	background: white;
 	min-height: 50px;
+	height: 100%;
 }

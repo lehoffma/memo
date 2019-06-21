@@ -33,7 +33,7 @@
 	}
 }
 
-:host.with-change{
+:host.with-change {
 	--card-main-size: #{font-size(medium-large)};
 }
 
@@ -75,6 +75,13 @@
 	--on-card-icon: #{grey(400)};
 }
 
+:host.loading {
+	--number-card-background: #{grey(200)} !important;
+	--on-card-default: #{grey(700)} !important;
+	--on-card-main: #{grey(900)} !important;
+	--on-card-light: #{grey(600)} !important;
+	--on-card-icon: #{grey(400)} !important;
+}
 
 .card-container {
 	display: flex;
@@ -142,7 +149,7 @@
 :host {
 	border-radius: 4px;
 
-	&.with-link {
+	&.with-link:not(.loading) {
 		cursor: pointer;
 		transition: transform 0.2s ease-in;
 
@@ -158,5 +165,24 @@
 			}
 		}
 	}
+}
 
+:host .loading-text {
+	display: none;
+}
+
+:host.loading {
+	cursor: default;
+
+	.card-container {
+		pointer-events: none;
+	}
+
+	.main-text {
+		display: none;
+	}
+
+	.loading-text {
+		display: block;
+	}
 }

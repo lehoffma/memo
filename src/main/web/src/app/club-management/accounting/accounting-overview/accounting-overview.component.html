@@ -13,7 +13,7 @@
 	<ng-template #dashboardTemplate>
 		<div class="overview-numbers-container">
 			<memo-number-card
-				[title]="'Gesamtbilanz'"
+				[cardTitle]="'Gesamtbilanz'"
 				[render]="renderMoney"
 				[total]="state.currentBalance"
 				[change]="state.lastMonthChange">
@@ -21,7 +21,7 @@
 			</memo-number-card>
 
 			<memo-number-card
-				[title]="'Touren'"
+				[cardTitle]="'Touren'"
 				[render]="renderMoney"
 				[total]="state.tourTotal"
 				[change]="state.tourChange">
@@ -29,14 +29,14 @@
 			</memo-number-card>
 
 			<memo-number-card
-				[title]="'Partys'"
+				[cardTitle]="'Partys'"
 				[render]="renderMoney"
 				[total]="state.partyTotal"
 				[change]="state.partyChange">
 
 			</memo-number-card>
 			<memo-number-card
-				[title]="'Merchandise'"
+				[cardTitle]="'Merchandise'"
 				[render]="renderMoney"
 				[total]="state.merchTotal"
 				[change]="state.merchChange">

@@ -8,8 +8,11 @@
 
 <ng-template #cardContent>
 	<div fxLayout="column">
-		<span class="number-card-label">{{title}}</span>
-		<span class="number-card-main">{{total | pipeFunction:render}}</span>
+		<span class="number-card-label">{{cardTitle}}</span>
+		<span class="number-card-main">
+			<span class="main-text">{{total | pipeFunction:render}}</span>
+			<span class="loading-text">Lade Daten</span>
+		</span>
 		<div class="number-change-container" *ngIf="withChange">
 			<mat-icon>trending_{{change > 0 ? 'up' : change < 0 ? 'down' : 'flat'}}</mat-icon>
 			<span class="number-change">

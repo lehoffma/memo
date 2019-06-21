@@ -22,7 +22,7 @@
 						</div>
 						<span class="link-description">{{nestedChild.description}}</span>
 					</a>
-					<a href="{{nestedChild.link}}" *ngIf="nestedChild.link">
+					<a href="{{nestedChild.link}}" target="_blank" rel="noopener" *ngIf="nestedChild.link">
 						<div>
 							<mat-icon *ngIf="nestedChild.icon">{{nestedChild.icon}}</mat-icon>
 							<span>{{nestedChild.name}}</span>
@@ -40,7 +40,7 @@
 					</div>
 					<span class="link-description">{{childLink.description}}</span>
 				</a>
-				<a href="{{childLink.link}}" *ngIf="childLink.link">
+				<a href="{{childLink.link}}" target="_blank" rel="noopener" *ngIf="childLink.link">
 					<div>
 						<mat-icon *ngIf="childLink.icon">{{childLink.icon}}</mat-icon>
 						{{childLink.name}}

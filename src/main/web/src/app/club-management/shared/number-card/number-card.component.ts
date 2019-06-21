@@ -10,7 +10,7 @@ import {IconProp} from "@fortawesome/fontawesome-svg-core";
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NumberCardComponent implements OnInit {
-	@Input() title: string;
+	@Input() cardTitle: string;
 	@Input() total: number;
 	@Input() change: number;
 

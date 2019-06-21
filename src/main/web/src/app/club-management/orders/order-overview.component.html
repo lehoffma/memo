@@ -5,41 +5,23 @@
 <div fxLayout.gt-sm="row" fxLayoutAlign.gt-sm="flex-start flex-start" fxLayout="column" fxLayoutGap="16px">
 	<div fxLayout="column" fxLayoutGap="16px" class="left-side">
 		<div class="number-card-container">
-			<div *ngLet="openOrders$ | async as openOrders" class="card-container">
-				<memo-data-container [initialLoad]="openOrders === null"
-									 [renderer]="openOrdersTemplate"
+			<memo-number-card cardTitle="Offene Bestellungen" *ngLet="openOrders$ |async as openOrders"
+							  matIcon="access_time"
+							  link="/management/orders"
+							  [queryParams]="{status: '0,1,2,3,7,8'}"
+							  [class.loading]="openOrders === null"
+							  [total]="openOrders?.open || 0"
+							  [change]="openOrders?.openChange|| 0">
+			</memo-number-card>
 
-				>
-				</memo-data-container>
-				<ng-template #openOrdersTemplate>
-					<memo-number-card title="Offene Bestellungen"
-									  matIcon="access_time"
-									  link="/management/orders"
-									  [queryParams]="{status: '0,1,2,3,7,8'}"
-									  [class.loading]="openOrders === null"
-									  [total]="openOrders?.open || 0"
-									  [change]="openOrders?.openChange|| 0">
-					</memo-number-card>
-				</ng-template>
-			</div>
-
-			<div *ngLet="totalOrders$ | async as totalOrders" class="card-container">
-				<memo-data-container [initialLoad]="totalOrders === null"
-									 [renderer]="totalOrdersTemplate"
-
-				>
-				</memo-data-container>
-				<ng-template #totalOrdersTemplate>
-					<memo-number-card title="Bestellungen insgesamt"
-									  colorSelector="change"
-									  matIcon="receipt"
-									  link="/management/orders"
-									  [class.loading]="totalOrders === null"
-									  [total]="totalOrders?.total|| 0"
-									  [change]="totalOrders?.totalChange|| 0">
-					</memo-number-card>
-				</ng-template>
-			</div>
+			<memo-number-card cardTitle="Bestellungen insgesamt" *ngLet="totalOrders$ | async as totalOrders"
+							  colorSelector="change"
+							  matIcon="receipt"
+							  link="/management/orders"
+							  [class.loading]="totalOrders === null"
+							  [total]="totalOrders?.total|| 0"
+							  [change]="totalOrders?.totalChange|| 0">
+			</memo-number-card>
 		</div>
 		<memo-dashboard-container *ngLet="ordersOverTime$ | async as ordersOverTime"
 								  containerTitle="Bestellungen über Zeit">

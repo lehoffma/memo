@@ -2,10 +2,7 @@ package memo.auth.api.strategy;
 
 import memo.auth.api.AuthenticationConditionFactory;
 import memo.auth.api.AuthenticationPredicateFactory;
-import memo.model.Permission;
-import memo.model.ShopItem;
-import memo.model.Stock;
-import memo.model.User;
+import memo.model.*;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -25,6 +22,17 @@ public class StockAuthStrategy implements AuthenticationStrategy<Stock> {
                 AuthenticationConditionFactory.userFulfillsMinimumRoleOfItem(
                         Stock::getItem, ShopItem::getExpectedReadRole
                 )
+        ));
+    }
+
+    @Override
+    public boolean isAllowedToReadState(User user) {
+        return userIsAuthorized(user, null, Arrays.asList(
+                //the user is logged in..
+                AuthenticationConditionFactory.<Stock>userIsLoggedIn()
+                        //..and has the correct permissions necessary..
+                        .and(AuthenticationConditionFactory
+                                .userHasCorrectPermission(it -> it.getPermissions().getStock(), Permission.read))
         ));
     }
 
