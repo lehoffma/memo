@@ -61,7 +61,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	}
 
 
-	addParticipant(participant: ParticipantUser, eventType: EventType, eventId: number): Observable<Participant> {
+	addParticipant(participant: ParticipantUser): Observable<Participant> {
 		let {user, ...newParticipant} = participant;
 
 		return this.discountService.getDiscountedPriceOfEvent(newParticipant.item.id, user.id)

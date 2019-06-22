@@ -24,10 +24,12 @@ import {
 	BatchModifyParticipantComponent,
 	BatchModifyParticipantOptions
 } from "./batch-modify-participant/batch-modify-participant.component";
-import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 import {of} from "rxjs/internal/observable/of";
+import {RowActionType} from "../../../../../shared/utility/material-table/util/row-action-type";
+import {ParticipantsOverviewService} from "./participants-overview.service";
 
 
 @Component({
@@ -55,11 +57,25 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 			: false
 	);
 
-	rowActions$: Observable<RowAction<ParticipantUser>[]> = this.userActionsService.getUserActions<ParticipantUser>(T => T.user);
+	rowActions$: Observable<RowAction<ParticipantUser>[]> = this.userActionsService.getUserActions<ParticipantUser>(
+		T => T.user
+	).pipe(
+		map(actions => {
+			const editAction = actions.find(action => action.name === RowActionType.EDIT);
+
+			editAction.link = undefined;
+			editAction.route = undefined;
+
+			return [
+				editAction,
+				...actions.filter(action => action.name !== RowActionType.EDIT)
+			]
+		})
+	);
 
 	selectedActions: TableAction<ParticipantUser>[] = [];
 
-	@ViewChild("bulkEditingMenu", { static: true }) bulkEditingMenu: any;
+	@ViewChild("bulkEditingMenu", {static: true}) bulkEditingMenu: any;
 
 	columns$: Observable<TableColumn<ParticipantUser>[]> = this.participantListService.eventInfo$.pipe(
 		map(eventInfo => {
@@ -80,11 +96,11 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 
 	dataSource = new ParticipantDataSource(this.participantUserService, this.userService);
 
-	filter$ = combineLatest(
+	filter$ = combineLatest([
 		this.participantListService.view$,
 		this.participantListService.eventInfo$,
 		this.activatedRoute.queryParamMap,
-	)
+	])
 		.pipe(
 			map(([view, info, queryParamMap]: [ParticipantListOption, { eventType: EventType, eventId: number }, ParamMap]) => {
 				let viewFilters = Filter.none();
@@ -123,17 +139,17 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 		})
 	);
 
-	@ViewChild("statusInput", { static: true }) statusInput: TemplateRef<any>;
+	@ViewChild("statusInput", {static: true}) statusInput: TemplateRef<any>;
 	availableStatus = OrderStatusPairList;
 	statusFormControl = new FormControl(undefined, {validators: [Validators.required]});
 
-	@ViewChild("isDriverInput", { static: true }) isDriverInput: TemplateRef<any>;
+	@ViewChild("isDriverInput", {static: true}) isDriverInput: TemplateRef<any>;
 	isDriverFormControl = new FormControl();
 
-	@ViewChild("needsTicketInput", { static: true }) needsTicketInput: TemplateRef<any>;
+	@ViewChild("needsTicketInput", {static: true}) needsTicketInput: TemplateRef<any>;
 	needsTicketFormControl = new FormControl();
 
-	@ViewChild("participantsTable", { static: false }) participantsTable: ExpandableMaterialTableComponent<ParticipantUser>;
+	@ViewChild("participantsTable", {static: false}) participantsTable: ExpandableMaterialTableComponent<ParticipantUser>;
 
 	private bulkEditDialogOptions: BatchModifyParticipantOptions[];
 
@@ -146,6 +162,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 				private userActionsService: UserActionsService,
 				private matDialog: MatDialog,
 				private eventService: EventService,
+				private participantsOverviewService: ParticipantsOverviewService,
 				private snackBar: MatSnackBar,
 				private router: Router,
 				private activatedRoute: ActivatedRoute,
@@ -237,7 +254,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 				const selectedRows = this.participantsTable.selection.selected;
 
 				combineLatest(
-					...selectedRows
+					selectedRows
 						.map(it => ({
 							...it,
 							[property]: option.formControl.value
@@ -254,8 +271,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 				)
 					.subscribe(() => {
 						this.participantsTable.selection.clear();
-						this.dataSource.reload();
-						this.participantListService.reloadStats();
+						this.participantsOverviewService.reload("participants");
 					});
 			})
 	}

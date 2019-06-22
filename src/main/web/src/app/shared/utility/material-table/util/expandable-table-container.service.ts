@@ -2,7 +2,7 @@ import {TableActionEvent} from "./table-action-event";
 import {RowActionType} from "./row-action-type";
 import {OnDestroy} from "@angular/core";
 import {ActionPermissions} from "./action-permissions";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 
 export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 	actionHandlers: {
@@ -12,8 +12,10 @@ export abstract class ExpandableTableContainerService<T> implements OnDestroy {
 	protected constructor(public permissions$: Observable<ActionPermissions>,) {
 	}
 
+	onDestroy$ = new Subject();
 
 	ngOnDestroy() {
+		this.onDestroy$.next(true);
 	}
 
 	/**

@@ -8,7 +8,7 @@ import {
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {UserService} from "../../../../../../shared/services/api/user.service";
 import {ResponsiveColumnsHelper} from "../../../../../../shared/utility/material-table/responsive-columns.helper";
-import {WaitingListTableService} from "./waiting-list-table.service";
+import {ParticipantListActions, WaitingListTableService} from "./waiting-list-table.service";
 import {WaitingListDataSource, WaitingListUserService} from "./waiting-list-data-source";
 import {EventType} from "../../../../../shared/model/event-type";
 import {Filter} from "../../../../../../shared/model/api/filter";
@@ -22,10 +22,11 @@ import {
 	BatchModifyParticipantOptions
 } from "../batch-modify-participant/batch-modify-participant.component";
 import {FormControl, Validators} from "@angular/forms";
-import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {WaitingListService} from "../../../../../../shared/services/api/waiting-list.service";
 import {ParticipantListService} from "../participant-list.service";
+import {RowActionType} from "../../../../../../shared/utility/material-table/util/row-action-type";
 
 @Component({
 	selector: "memo-waiting-list",
@@ -36,11 +37,33 @@ import {ParticipantListService} from "../participant-list.service";
 	]
 })
 export class WaitingListComponent implements OnInit, AfterViewInit {
-	rowActions$: Observable<RowAction<WaitingListUser>[]> = this.userActionsService.getUserActions<WaitingListUser>(T => T.user);
+	rowActions$: Observable<RowAction<WaitingListUser>[]> = this.userActionsService.getUserActions<WaitingListUser>(
+		T => T.user,
+		true,
+		(canRead, canEdit, canRemove) => {
+			return {
+				name: ParticipantListActions.TRANSFER_TO_PARTICIPANTS,
+				icon: "compare_arrows",
+				predicate: () => canEdit,
+			}
+		},
+	).pipe(
+		map(actions => {
+			const editAction = actions.find(action => action.name === RowActionType.EDIT);
+
+			editAction.link = undefined;
+			editAction.route = undefined;
+
+			return [
+				editAction,
+				...actions.filter(action => action.name !== RowActionType.EDIT)
+			]
+		})
+	);
 
 	selectedActions: TableAction<WaitingListUser>[] = [];
 
-	@ViewChild("bulkEditingMenu", { static: true }) bulkEditingMenu: any;
+	@ViewChild("bulkEditingMenu", {static: true}) bulkEditingMenu: any;
 
 	columns: TableColumn<WaitingListUser>[] = [
 		{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
@@ -76,19 +99,19 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 		);
 
 
-	@ViewChild("waitingListTable", { static: true }) waitingListTable: ExpandableMaterialTableComponent<WaitingListUser>;
+	@ViewChild("waitingListTable", {static: true}) waitingListTable: ExpandableMaterialTableComponent<WaitingListUser>;
 
 	batchEditOptions: BatchModifyParticipantOptions[] = [];
-	@ViewChild("isDriverInput", { static: true }) isDriverInput: TemplateRef<any>;
+	@ViewChild("isDriverInput", {static: true}) isDriverInput: TemplateRef<any>;
 	isDriverFormControl = new FormControl();
 
-	@ViewChild("needsTicketInput", { static: true }) needsTicketInput: TemplateRef<any>;
+	@ViewChild("needsTicketInput", {static: true}) needsTicketInput: TemplateRef<any>;
 	needsTicketFormControl = new FormControl();
 
-	@ViewChild("colorInput", { static: true }) colorInput: TemplateRef<any>;
+	@ViewChild("colorInput", {static: true}) colorInput: TemplateRef<any>;
 	colorFormControl = new FormControl(undefined, {validators: [Validators.required]});
 
-	@ViewChild("sizeInput", { static: false }) sizeInput: TemplateRef<any>;
+	@ViewChild("sizeInput", {static: false}) sizeInput: TemplateRef<any>;
 	sizeFormControl = new FormControl(undefined, {validators: [Validators.required]});
 
 	constructor(public waitingListTableService: WaitingListTableService,

@@ -2,13 +2,13 @@ import {Injectable} from "@angular/core";
 import {ExpandableTableContainerService} from "../../../../../shared/utility/material-table/util/expandable-table-container.service";
 import {ParticipantUser} from "../../../../shared/model/participant";
 import {LogInService} from "../../../../../shared/services/api/login.service";
-import { MatDialog } from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
-import {filter, first, map, mergeMap, take} from "rxjs/operators";
+import {filter, first, map, mergeMap, switchMap, take, takeUntil} from "rxjs/operators";
 import {EventType} from "../../../../shared/model/event-type";
 import {OrderedItemService} from "../../../../../shared/services/api/ordered-item.service";
 import {WindowService} from "../../../../../shared/services/window.service";
-import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable} from "rxjs";
 import {ModifyParticipantComponent} from "./modify-participant/modify-participant.component";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {UserService} from "../../../../../shared/services/api/user.service";
@@ -18,6 +18,8 @@ import {ParticipantDataSource} from "./participant-data-source";
 import {ParticipantListOption} from "./participants-category-selection/participants-category-selection.component";
 import {WaitingListUser} from "../../../../shared/model/waiting-list";
 import {ShopEvent} from "../../../../shared/model/event";
+import {WaitingListService} from "../../../../../shared/services/api/waiting-list.service";
+import {ParticipantsOverviewService} from "./participants-overview.service";
 
 export interface EventInfo {
 	eventType: EventType,
@@ -66,7 +68,9 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 				private capacityService: CapacityService,
 				private participantService: OrderedItemService,
 				private windowService: WindowService,
+				private participantsOverviewService: ParticipantsOverviewService,
 				private eventService: EventService,
+				private waitingListService: WaitingListService,
 				private dialog: MatDialog,
 	) {
 		super(
@@ -97,8 +101,13 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			)
 		);
 
-		this.actionHandlers["editMultiple"] = this.editMultiple.bind(this);
+		this.participantsOverviewService.watchReload("participants").pipe(takeUntil(this.onDestroy$))
+			.subscribe(() => {
+				this.reloadStats();
+				this.dataSource.reload();
+			});
 
+		this.actionHandlers["editMultiple"] = this.editMultiple.bind(this);
 	}
 
 	reloadStats() {
@@ -152,12 +161,11 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 		this.openModifyDialog().pipe(
 			mergeMap(({result, info}) => {
 				return this.participantService
-					.addParticipant(result.entry, info.eventInfo.eventType, info.eventInfo.eventId);
+					.addParticipant(result.entry);
 			})
 		)
 			.subscribe(it => {
-				this.reloadStats();
-				this.dataSource.reload();
+				this.participantsOverviewService.reload("participants");
 			}, error => {
 				console.error(error);
 			})
@@ -176,8 +184,7 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 				}),
 			)
 			.subscribe(it => {
-				this.reloadStats();
-				this.dataSource.reload();
+				this.participantsOverviewService.reload("participants");
 			}, error => {
 				console.error(error);
 			})
@@ -193,8 +200,7 @@ export class ParticipantListService extends ExpandableTableContainerService<Part
 			this.participantService
 				.remove(participantUser.id)
 				.subscribe(response => {
-					this.reloadStats();
-					this.dataSource.reload();
+					this.participantsOverviewService.reload("participants");
 				}, error => {
 					console.error(error);
 				})

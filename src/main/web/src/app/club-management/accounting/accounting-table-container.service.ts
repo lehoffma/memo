@@ -10,7 +10,7 @@ import {NavigationService} from "../../shared/services/navigation.service";
 import {BehaviorSubject, combineLatest, Observable, of, Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged, first, map, mergeMap, takeUntil, tap} from "rxjs/operators";
 import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
-import { MatDialog } from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
 import {PageRequest} from "../../shared/model/api/page-request";
 import {Direction, Sort} from "../../shared/model/api/sort";
@@ -52,12 +52,9 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 
 	entries$: Observable<Entry[]> = this.dataSource.connect();
 
-	subscriptions = [];
-
 	loading = false;
 
 	private resetPage = new Subject();
-	private onDestroy$ = new Subject();
 
 	constructor(protected loginService: LogInService,
 				protected router: Router,
@@ -107,7 +104,6 @@ export class AccountingTableContainerService extends ExpandableTableContainerSer
 	ngOnDestroy() {
 		super.ngOnDestroy();
 		this.onDestroy$.next(true);
-		this.subscriptions.forEach(it => it.unsubscribe());
 	}
 
 

@@ -76,7 +76,7 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	@Output() onAction = new EventEmitter<TableActionEvent<T>>();
 	@Output() pageChange = new EventEmitter<PageEvent>();
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-	pageSize = 1;
+	pageSize = 20;
 
 	@Input() emptyStateHeader: string;
 	@Input() emptyStateSubtitle: string;

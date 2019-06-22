@@ -48,7 +48,6 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 	entries$: Observable<User[]> = this.dataSource.connect();
 
 	private resetPage = new Subject();
-	private onDestroy$ = new Subject();
 	constructor(private loginService: LogInService,
 				private router: Router,
 				private navigationService: NavigationService,

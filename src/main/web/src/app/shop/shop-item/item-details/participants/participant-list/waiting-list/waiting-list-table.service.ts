@@ -1,10 +1,10 @@
-import {Injectable} from "@angular/core";
+import {Injectable, OnDestroy} from "@angular/core";
 import {ExpandableTableContainerService} from "../../../../../../shared/utility/material-table/util/expandable-table-container.service";
 import {WaitingListEntry, WaitingListUser} from "../../../../../shared/model/waiting-list";
 import {ActivatedRoute, UrlSegment} from "@angular/router";
 import {LogInService} from "../../../../../../shared/services/api/login.service";
-import {Observable} from "rxjs";
-import {filter, first, map, mergeMap} from "rxjs/operators";
+import {combineLatest, Observable, of, Subject} from "rxjs";
+import {catchError, filter, first, map, mergeMap, switchMap, takeUntil} from "rxjs/operators";
 import {EventType} from "../../../../../shared/model/event-type";
 import {EventInfo, ParticipantListService} from "../participant-list.service";
 import {EventService} from "../../../../../../shared/services/api/event.service";
@@ -12,11 +12,22 @@ import {WaitingListDataSource} from "./waiting-list-data-source";
 import {ParticipantListOption} from "../participants-category-selection/participants-category-selection.component";
 import {ParticipantUser} from "../../../../../shared/model/participant";
 import {ModifyParticipantComponent, ModifyParticipantEvent} from "../modify-participant/modify-participant.component";
-import { MatDialog } from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {WaitingListService} from "../../../../../../shared/services/api/waiting-list.service";
+import {MatSnackBar} from "@angular/material";
+import {OrderedItemService} from "../../../../../../shared/services/api/ordered-item.service";
+import {UserService} from "../../../../../../shared/services/api/user.service";
+import {OrderStatus} from "../../../../../../shared/model/order-status";
+import {ParticipantsOverviewService} from "../participants-overview.service";
+
+
+export enum ParticipantListActions {
+	TRANSFER_TO_PARTICIPANTS = "Auf Teilnehmerliste schieben"
+}
+
 
 @Injectable()
-export class WaitingListTableService extends ExpandableTableContainerService<WaitingListUser> {
+export class WaitingListTableService extends ExpandableTableContainerService<WaitingListUser> implements OnDestroy{
 	dataSource: WaitingListDataSource;
 
 	eventInfo$: Observable<EventInfo> = this.activatedRoute.url
@@ -54,10 +65,61 @@ export class WaitingListTableService extends ExpandableTableContainerService<Wai
 				private participantListService: ParticipantListService,
 				private eventService: EventService,
 				private waitingListService: WaitingListService,
+				private snackBar: MatSnackBar,
+				private shopItemService: EventService,
+				private userService: UserService,
+				private participantOverviewService: ParticipantsOverviewService,
+				private participantService: OrderedItemService,
 				private activatedRoute: ActivatedRoute) {
 		super(
 			loginService.getActionPermissions("party", "tour")
-		)
+		);
+
+		this.participantOverviewService.watchReload("waiting-list").pipe(takeUntil(this.onDestroy$))
+			.subscribe(() => {
+				this.dataSource.reload();
+			});
+
+		this.actionHandlers[ParticipantListActions.TRANSFER_TO_PARTICIPANTS] = this.transferToParticipants.bind(this);
+	}
+
+	transferToParticipants(entries: WaitingListUser[]){
+		if(!entries || entries.length === 0){
+			return;
+		}
+
+		const handleError = (error: any) => {
+			this.snackBar.open("Fehler beim Übertragen zur Teilnehmerliste!", "Okay", {duration: 5000});
+			console.error(error);
+			return of(null);
+		};
+
+		combineLatest(entries.map(entry =>
+			this.waitingListService.remove(entry.id)
+				.pipe(
+					catchError(handleError),
+					switchMap(() => {
+						return this.shopItemService.getById(entry.shopItem)
+							.pipe(
+								switchMap((item) => this.participantService.addParticipant({
+									user: entry.user,
+									item,
+									id: -1,
+									size: entry.size,
+									needsTicket: entry.needsTicket,
+									isDriver: entry.isDriver,
+									color: entry.color,
+									status: OrderStatus.RESERVED,
+									description: "",
+									price: 0
+								})),
+								catchError(handleError),
+							)
+					})
+				)
+		)).subscribe(() => {
+			this.participantOverviewService.reload("both");
+		}, handleError)
 	}
 
 	add(): void {
@@ -73,8 +135,7 @@ export class WaitingListTableService extends ExpandableTableContainerService<Wai
 			})
 		)
 			.subscribe(it => {
-				this.dataSource.reload();
-				this.participantListService.reloadStats();
+				this.participantOverviewService.reload("waiting-list");
 			}, error => {
 				console.error(error);
 			})
@@ -94,8 +155,7 @@ export class WaitingListTableService extends ExpandableTableContainerService<Wai
 			})
 		)
 			.subscribe(it => {
-				this.dataSource.reload();
-				this.participantListService.reloadStats();
+				this.participantOverviewService.reload("waiting-list");
 			}, error => {
 				console.error(error);
 			})
@@ -141,8 +201,7 @@ export class WaitingListTableService extends ExpandableTableContainerService<Wai
 			this.waitingListService
 				.remove(participantUser.id)
 				.subscribe(response => {
-					this.dataSource.reload();
-					this.participantListService.reloadStats();
+					this.participantOverviewService.reload("waiting-list");
 				}, error => {
 					console.error(error);
 				})
