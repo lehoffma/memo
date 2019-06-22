@@ -56,6 +56,8 @@ import {ProgressiveImageLoadingModule} from "./shared/progressive-image-loading/
 import {ClubModule} from "./club/club.module";
 import {faFire} from "@fortawesome/free-solid-svg-icons/faFire";
 import {faCubes, faTshirt} from "@fortawesome/free-solid-svg-icons";
+import {MatPaginatorIntl} from "@angular/material";
+import {MatPaginatorIntlDe} from "./shared/i18n/mat-paginator-intl.de";
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -163,6 +165,7 @@ registerLocaleData(localeDe);
 	],
 	providers: [
 		UnauthorizedHttpClient,
+		{provide: MatPaginatorIntl, useClass: MatPaginatorIntlDe},
 		{provide: LOCALE_ID, useValue: "de-DE"},
 		{provide: DateAdapter, useClass: DateFnsAdapter},
 		{provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS},

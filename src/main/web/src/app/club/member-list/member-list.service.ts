@@ -19,7 +19,7 @@ export class MemberListService extends ExpandableTableContainerService<User> {
 		.pipe(
 			map(paramMap => paramMap.has("sortBy") && paramMap.has("direction")
 				? Sort.by(paramMap.get("direction"), getAllQueryValues(paramMap, "sortBy").join(","))
-				: Sort.by(Direction.DESCENDING, "date")),
+				: Sort.by(Direction.ASCENDING, "id")),
 			distinctUntilChanged((a, b) => Sort.equal(a, b))
 		);
 

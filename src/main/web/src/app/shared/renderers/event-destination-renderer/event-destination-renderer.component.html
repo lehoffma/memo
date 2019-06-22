@@ -6,14 +6,15 @@
 		</span>
 		<ng-template #destinationContainer>
 			<div class="destination-address">
-				<span class="destination-street">{{destination.street}}{{destination.streetNr ? " " + destination.streetNr : ""}}</span>
+				<span
+					class="destination-street">{{destination.street}}{{destination.streetNr ? " " + destination.streetNr : ""}}</span>
 				<span class="destination-delimiter">,</span>
 				<span class="destination-city"> {{destination.city}}</span>
 			</div>
 			<span class="destination-miles" *ngIf="miles">Insgesamt {{miles}} Meilen</span>
 		</ng-template>
 	</div>
-	<a href="{{tourUrl}}" mat-icon-button
+	<a href="{{tourUrl}}" mat-icon-button target="_blank" rel="noopener"
 	   matTooltip="Auf Google Maps ansehen"
 	   class="small-icon-button maps-link">
 		<mat-icon>map</mat-icon>

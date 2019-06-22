@@ -73,7 +73,7 @@ public class User implements Serializable {
     @Column(nullable = false)
     private Integer miles = 0;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
