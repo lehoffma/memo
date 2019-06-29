@@ -22,8 +22,23 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 	_cartItem$ = new BehaviorSubject(null);
 	amountOptions = [];
 	subscription: Subscription;
-	discounts$: Observable<Discount[]> = of([]);
-	discountValue$: Observable<number> = of(0);
+	discounts$: Observable<Discount[]> = combineLatest([
+		this._cartItem$,
+		this.loginService.currentUser$
+	])
+		.pipe(
+			mergeMap(([cartItem, user]) =>
+				this.discountService.getEventDiscounts(
+					cartItem.id, user !== null ? user.id : null
+				)
+			)
+		);
+
+	discountValue$: Observable<number> = this.discounts$
+		.pipe(
+			map(discounts => discounts.reduce((acc, discount) =>
+				acc + discount.amount, 0))
+		);
 
 	constructor(private shoppingCartService: ShoppingCartService,
 				private discountService: DiscountService,
@@ -47,29 +62,11 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		let maxAmount$: Observable<number> = this.getMaxAmount(this.cartItem);
-		this.discounts$ = combineLatest(
-			this._cartItem$,
-			this.loginService.currentUser$
-		)
-			.pipe(
-				mergeMap(([cartItem, user]) =>
-					this.discountService.getEventDiscounts(
-						cartItem.id, user !== null ? user.id : null
-					)
-						.pipe(
-							map(discounts => discounts.map(it => {
-								return {
-									...it,
-									amount: it.amount
-								}
-							}))
-						)
-				)
-			);
+
 		this.discountValue$ = this.discounts$
 			.pipe(
 				map(discounts => discounts.reduce((acc, discount) =>
-					acc + (discount.eligible ? discount.amount : 0), 0))
+					acc + discount.amount, 0))
 			);
 
 		this.subscription = maxAmount$.subscribe(maxAmount => {

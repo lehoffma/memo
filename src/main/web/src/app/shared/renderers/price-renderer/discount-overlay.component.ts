@@ -17,12 +17,10 @@ export class DiscountOverlayComponent implements OnInit {
 				@Inject(MAT_DIALOG_DATA) public data: any) {
 		this.basePrice = data.basePrice;
 		this.price = data.price;
-		this.discounts = data.discounts
-			.filter(discount => discount.eligible);
+		this.discounts = data.discounts;
 	}
 
 
 	ngOnInit() {
 	}
-
 }

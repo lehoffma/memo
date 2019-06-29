@@ -10,7 +10,7 @@
 			(-{{percentageSaved | percent:'2.2-2':'en'}})
 		</span>
 	</span>
-	<div>
+	<div fxLayoutGap="8px">
 		<button mat-icon-button class="additional-discount-possibilities-icon small-icon-button discount-overlay-trigger"
 				[matMenuTriggerFor]="menu"
 				*ngIf="showDiscountPossibilities && nonEligibleDiscounts.length > 0"
@@ -20,9 +20,15 @@
 		</button>
 
 		<mat-menu #menu="matMenu" class="discount-menu">
-			<a class="discount-menu--item" mat-menu-item *ngFor="let discount of nonEligibleDiscounts" routerLink="{{discount?.link.url}}">
+			<a class="discount-menu--item" mat-menu-item *ngFor="let discount of nonEligibleDiscounts" routerLink="{{discount?.linkUrl}}">
 				<span>{{discount?.reason}}:</span>
-				<span class="amount">{{discount?.amount}}€</span>
+
+				<span *ngIf="!discount.isPercentage; else percentageDisplay" class="amount">
+					{{discount.amount | number:'1.2-2'}}€
+				</span>
+				<ng-template #percentageDisplay>
+					<span class="amount">{{discount.amount | number:'1.2-2'}}%</span>
+				</ng-template>
 			</a>
 		</mat-menu>
 

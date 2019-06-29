@@ -78,7 +78,7 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 			.pipe(
 				mergeMap((json) => {
 					return combineLatest(
-						...json.content
+						json.content
 							.map(it => this.jsonToObservable(it))
 					)
 						.pipe(

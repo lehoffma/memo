@@ -8,6 +8,7 @@ import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.ParticipantsAuthStrategy;
 import memo.data.EventRepository;
 import memo.data.ParticipantRepository;
+import memo.discounts.model.DiscountEntity;
 import memo.model.*;
 import org.apache.logging.log4j.LogManager;
 
@@ -57,6 +58,8 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
                 color -> color::setOrderedItems);
         this.manyToOne(object, Order.class, OrderedItem::getOrder, OrderedItem::getId, Order::getItems,
                 order -> order::setItems);
+        this.manyToMany(object, DiscountEntity.class, OrderedItem::getDiscounts, OrderedItem::getId, DiscountEntity::getOrderedItems,
+                discountEntity -> discountEntity::setOrderedItems);
     }
 
     @GET

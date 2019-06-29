@@ -2,9 +2,15 @@ package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import memo.auth.AuthenticationService;
-import memo.auth.api.strategy.ConfigurableAuthStrategy;
-import memo.data.DiscountService;
-import memo.model.Discount;
+import memo.data.EventRepository;
+import memo.data.UserRepository;
+import memo.discounts.auth.DiscountAuthStrategy;
+import memo.discounts.data.DiscountRepository;
+import memo.discounts.model.DiscountEntity;
+import memo.model.OrderedItem;
+import memo.model.ShopItem;
+import memo.model.User;
+import memo.util.model.Page;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -13,41 +19,97 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import java.util.List;
-import java.util.Map;
+import javax.ws.rs.core.Response;
 
 @Path("/discounts")
 @Named
 @RequestScoped
-public class DiscountServlet extends AbstractApiServlet<Discount> {
-    private DiscountService discountService;
+public class DiscountServlet extends AbstractApiServlet<DiscountEntity> {
+    private DiscountRepository discountRepository;
+    private EventRepository eventRepository;
+    private UserRepository userRepository;
 
     public DiscountServlet() {
     }
 
+
     @Inject
-    public DiscountServlet(DiscountService discountService,
-                           AuthenticationService authService) {
-        super(new ConfigurableAuthStrategy<>(true));
-        this.discountService = discountService;
+    public DiscountServlet(AuthenticationService authService,
+                           DiscountAuthStrategy discountAuthStrategy,
+                           EventRepository eventRepository,
+                           UserRepository userRepository,
+                           DiscountRepository discountRepository) {
+        super(discountAuthStrategy);
         this.authenticationService = authService;
+        this.discountRepository = discountRepository;
+        this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    protected void updateDependencies(JsonNode jsonNode, Discount object) {
+    protected void updateDependencies(JsonNode jsonNode, DiscountEntity object) {
 
     }
 
+    @Override
+    protected void updateDependencies(JsonNode jsonNode, DiscountEntity object, DiscountEntity previous) {
+        //todo update the many-to-many deps?
+        this.nonOwningManyToMany(object, previous, OrderedItem.class, DiscountEntity::getOrderedItems,
+                DiscountEntity::getId, OrderedItem::getDiscounts, orderedItem -> orderedItem::setDiscounts);
+    }
+
+    public interface TriFunction<T, U, V> {
+        V apply(T t, U u);
+    }
+
+    private Page<DiscountEntity> getDiscounts(String itemId, String userId,
+                                              TriFunction<ShopItem, User, Page<DiscountEntity>> inputConsumer) {
+        ShopItem shopItem = itemId == null
+                ? null
+                : this.eventRepository.getById(itemId)
+                .orElseThrow(() -> new WebApplicationException("ShopItem not found!", Response.Status.NOT_FOUND));
+
+        User user = userId == null
+                ? null
+                : this.userRepository.getById(userId)
+                .orElseThrow(() -> new WebApplicationException("User not found!", Response.Status.NOT_FOUND));
+
+        return inputConsumer.apply(shopItem, user);
+    }
+
     @GET
-    public Map<String, Object> get(@QueryParam("eventId") String eventId,
-                                   @QueryParam("userId") String userId,
-                                   @Context HttpServletRequest req) {
-        List<Discount> discounts = this.getList(req,
-                () -> discountService.getUserDiscount(eventId, userId),
-                null
-        );
-        return buildMap("discounts", discounts);
+    @Path("getPossibilities")
+    public Page<DiscountEntity> getPossibilities(@QueryParam("itemId") String itemId,
+                                                 @QueryParam("userId") String userId,
+                                                 @Context HttpServletRequest request) {
+        return this.getDiscounts(itemId, userId, (shopItem, user) -> this.get(
+                request,
+                discountRepository,
+                (repository, id, pageRequest, filter, sort, requestingUser, serializationOption) ->
+                        this.discountRepository.getDiscountPossibilities(shopItem, user, pageRequest)
+        ));
+    }
+
+    @GET
+    @Path("get")
+    public Page<DiscountEntity> get(@QueryParam("itemId") String itemId,
+                                    @QueryParam("userId") String userId,
+                                    @Context HttpServletRequest request) {
+        return this.getDiscounts(itemId, userId, (shopItem, user) -> this.get(
+                request,
+                discountRepository,
+                (repository, id, pageRequest, filter, sort, requestingUser, serializationOption) ->
+                        this.discountRepository.getDiscounts(shopItem, user, pageRequest)
+        ));
+    }
+
+
+    @GET
+    public Object get(@Context HttpServletRequest request) {
+        //to enable getById stuff
+        return this.get(request, discountRepository);
     }
 
 }

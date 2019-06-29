@@ -277,8 +277,15 @@ public abstract class AbstractApiServlet<T> {
         return resultPage;
     }
 
-    protected Object get(HttpServletRequest request,
-                         PagingAndSortingRepository<T> repository) {
+    public interface EntitySupplier<T, U> {
+        public U get(PagingAndSortingRepository<T> repository, String id, PageRequest pageRequest, Filter filter,
+                     Sort sort, User requestingUser, SerializationOption serializationOption);
+    }
+
+    protected <U> U get(HttpServletRequest request,
+                             PagingAndSortingRepository<T> repository,
+                             EntitySupplier<T, U> entitySupplier
+    ) {
         Map<String, String[]> parameterMap = request.getParameterMap();
         logger.debug("Method GET called with params " + paramMapToString(parameterMap));
 
@@ -290,29 +297,41 @@ public abstract class AbstractApiServlet<T> {
         User requestingUser = authenticationService.parseNullableUserFromRequestHeader(request);
         String id = getParameter(parameterMap, "id");
 
-        switch (serializationOption) {
-            case PAGE:
-                return this.getPage(
-                        pageRequest,
-                        filter,
-                        sort,
-                        requestingUser,
-                        repository,
-                        id
-                );
-            case CSV:
-                return this.getCsv(
-                        pageRequest,
-                        filter,
-                        sort,
-                        requestingUser,
-                        repository,
-                        id
-                );
-            default:
-                logger.error("Serialization option " + serializationOption.toStringValue() + " not implemented yet");
-                throw new WebApplicationException(Response.Status.BAD_REQUEST);
-        }
+        return entitySupplier.get(repository, id, pageRequest, filter, sort, requestingUser, serializationOption);
+    }
+
+    protected Object get(HttpServletRequest request,
+                         PagingAndSortingRepository<T> repository) {
+        //default page/csv constructors
+        return this.get(
+                request,
+                repository,
+                (repository1, id, pageRequest, filter, sort, requestingUser, serializationOption) -> {
+                    switch (serializationOption) {
+                        case PAGE:
+                            return this.getPage(
+                                    pageRequest,
+                                    filter,
+                                    sort,
+                                    requestingUser,
+                                    repository,
+                                    id
+                            );
+                        case CSV:
+                            return this.getCsv(
+                                    pageRequest,
+                                    filter,
+                                    sort,
+                                    requestingUser,
+                                    repository,
+                                    id
+                            );
+                        default:
+                            logger.error("Serialization option " + serializationOption.toStringValue() + " not implemented yet");
+                            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+                    }
+                }
+        );
     }
 
 

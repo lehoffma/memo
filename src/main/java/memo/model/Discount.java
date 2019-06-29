@@ -3,7 +3,7 @@ package memo.model;
 import java.math.BigDecimal;
 
 public class Discount {
-    //todo as database entity?
+    //todo as database entity
 
     public static class DiscountLink {
         private String url;
@@ -29,6 +29,7 @@ public class Discount {
     }
 
     private BigDecimal amount;
+    //todo remove, instead use 2 api calls (getDiscountsForUser and getAllPossibleDiscounts)
     private Boolean eligible;
     private Boolean showLink;
     private DiscountLink link;

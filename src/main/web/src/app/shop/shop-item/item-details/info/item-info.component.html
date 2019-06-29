@@ -5,6 +5,7 @@
 		</mat-icon>
 		<memo-price-renderer [price]="event.price"
 							 [discounts]="discounts$ | async"
+							 [discountPossibilities]="discountPossibilities$ | async"
 							 [showDiscountPossibilities]="true"
 							 [additionalInfo]="isTour(event) ? 'Tourpreis, zzgl. Ticketpreis' : ''"
 							 [showExplanation]="true">

@@ -16,6 +16,7 @@ package memo.model;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public enum ClubRole {
     Gast("Gast"),
@@ -37,6 +38,14 @@ public enum ClubRole {
     ClubRole(String stringValue, String alternativeSpelling) {
         this.stringValue = stringValue;
         this.alternativeSpelling = alternativeSpelling;
+    }
+
+    public static List<ClubRole> getList(ClubRole... except){
+        List<ClubRole> exceptList = Arrays.stream(except).collect(Collectors.toList());
+
+        return Arrays.stream(ClubRole.values())
+                .filter(role -> exceptList.stream().noneMatch(it -> role.getStringValue().equalsIgnoreCase(it.getStringValue())))
+                .collect(Collectors.toList());
     }
 
     public String getStringValue() {

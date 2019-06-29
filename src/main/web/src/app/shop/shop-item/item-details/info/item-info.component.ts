@@ -34,13 +34,24 @@ export class ItemInfoComponent implements OnInit {
 		delete: boolean;
 	};
 	discounts$: Observable<Discount[]> =
-		combineLatest(
+		combineLatest([
 			this._event$,
 			this.loginService.accountObservable
 				.pipe(defaultIfEmpty(-1))
-		)
+		])
 			.pipe(
 				mergeMap(([event, userId]) => this.discountService.getEventDiscounts(event.id, userId)),
+				defaultIfEmpty([]),
+			);
+
+	discountPossibilities$: Observable<Discount[]> =
+		combineLatest([
+			this._event$,
+			this.loginService.accountObservable
+				.pipe(defaultIfEmpty(-1))
+		])
+			.pipe(
+				mergeMap(([event, userId]) => this.discountService.getEventDiscountPossibilities(event.id, userId)),
 				defaultIfEmpty([]),
 			);
 	public available$ = this._event$

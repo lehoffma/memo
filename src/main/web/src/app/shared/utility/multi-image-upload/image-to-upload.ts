@@ -5,6 +5,6 @@ export interface ImageToUpload {
 }
 
 export function isImageToUpload(value: any): value is ImageToUpload {
-	return value.id !== undefined && value.name !== undefined && value.data !== undefined
-		&& value.name !== value.data;
+	return value.id !== undefined && value.name !== undefined && value.model !== undefined
+		&& value.name !== value.model;
 }

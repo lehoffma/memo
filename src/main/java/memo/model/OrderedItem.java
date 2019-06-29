@@ -3,12 +3,14 @@ package memo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import memo.discounts.model.DiscountEntity;
 import memo.serialization.OrderIdDeserializer;
 import memo.serialization.ShopItemIdDeserializer;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -56,6 +58,15 @@ public class OrderedItem implements Serializable {
     @JsonDeserialize(using = OrderIdDeserializer.class)
     private Order order;
 
+    //todo
+    @ManyToMany()
+    @JoinTable(name = "orderedItem_discounts",
+            //todo its exactly the wrong way around..
+            joinColumns = @JoinColumn(name = "orderedItem_id"),
+            inverseJoinColumns = @JoinColumn(name = "discount_id")
+    )
+    private List<DiscountEntity> discounts;
+
     private BigDecimal price = BigDecimal.valueOf(0);
 
     private OrderStatus status = OrderStatus.Reserved;
@@ -86,6 +97,16 @@ public class OrderedItem implements Serializable {
     //**************************************************************
     //  getters and setters
     //**************************************************************
+
+
+    public List<DiscountEntity> getDiscounts() {
+        return discounts;
+    }
+
+    public OrderedItem setDiscounts(List<DiscountEntity> discounts) {
+        this.discounts = discounts;
+        return this;
+    }
 
     public int getId() {
         return id;

@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Discount} from "./discount";
-import { MatDialog } from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {DiscountOverlayComponent} from "./discount-overlay.component";
 import {DiscountService} from "../../../shop/shared/services/discount.service";
 
@@ -66,31 +66,33 @@ export class PriceRendererComponent implements OnInit {
 	 * Example:
 	 * {
 	 * 		amount: 5.00
-	 * 		reason: "Membership-Discount"
-	 * 		eligible: true (i.e. the logged in user is a member)
-	 * },
-	 * {
-	 * 		amount: 5.00
-	 * 		reason: Membership-Discount
-	 * 		eligible: false (i.e. visitor is not logged in or the logged in user is not a member),
-	 * 		link: {
-	 * 			url: /signup/ (alternatively: /applyForMembership/)
-	 * 			text: "Click here to signup" (alternatively: "Apply for membership")
-	 * 		}
+	 * 		reason: "Membership-Discount",
+	 * 		//...filter properties...
 	 * }
-	 * Another Example:
-	 *        amount: 10.00
-	 *        reason: Summer Sale
-	 *        eligible: true
 	 * @param {Discount[]} discounts
 	 */
 	@Input() set discounts(discounts: Discount[]) {
-		let discountsCopy = discounts ? discounts : [];
-		this._discounts = discountsCopy;
+		this._discounts = discounts ? discounts : [];
 		//update the actual price value
 		this.price = this.price;
-		this.nonEligibleDiscounts = discountsCopy
-			.filter(discount => !discount.eligible && discount.showLink);
+	}
+
+	/**
+	 * All the discounts that apply to the given item, but not the currentl user
+	 *
+	 * Example
+	 *
+	 * {
+	 * 		amount: 5.00
+	 * 		reason: Membership-Discount
+	 * 		linkUrl: "/signup/",
+	 * 		linkText: "Click here to signup"
+	 * }
+	 * 
+	 * @param discounts
+	 */
+	@Input() set discountPossibilities(discounts: Discount[]) {
+		this.nonEligibleDiscounts = discounts ? discounts : [];
 	}
 
 	ngOnInit() {

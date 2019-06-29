@@ -1,19 +1,38 @@
 import {Injectable} from "@angular/core";
-import {ApiCache} from "../../../shared/utility/cache/api-cache";
-import {Permission} from "../../../shared/model/permission";
-import {HttpClient, HttpParams} from "@angular/common/http";
-import {catchError, map, mergeMap, retry} from "rxjs/operators";
-import {Observable, of} from "rxjs";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {map, mergeMap} from "rxjs/operators";
+import {Observable} from "rxjs";
 import {Discount} from "../../../shared/renderers/price-renderer/discount";
 import {EventService} from "../../../shared/services/api/event.service";
+import {ServletService} from "../../../shared/services/api/servlet.service";
+import {Filter} from "../../../shared/model/api/filter";
+import {PageRequest} from "../../../shared/model/api/page-request";
+import {Direction, Sort} from "../../../shared/model/api/sort";
+import {Page} from "../../../shared/model/api/page";
 
 @Injectable()
-export class DiscountService {
-	protected _cache: ApiCache<Permission> = new ApiCache<Permission>();
-	private baseUrl = "/api/discounts";
+export class DiscountService extends ServletService<Discount> {
+	constructor(protected http: HttpClient,
+				protected  eventService: EventService) {
+		super(http, "/api/discounts")
+	}
 
-	constructor(private http: HttpClient,
-				private eventService: EventService) {
+
+	addOrModify(requestMethod: <T>(url: string, body: (any | null), options?: { headers?: HttpHeaders; observe?: "body"; params?: HttpParams; reportProgress?: boolean; responseType?: "json"; withCredentials?: boolean }) => Observable<T>, entry: Discount, options?: any): Observable<Discount> {
+		//todo allow creating discounts once the infrastructure around it has been changed
+		return undefined;
+	}
+
+	private getForCustomUrl(url: string, filter: Filter, pageRequest: PageRequest, sort: Sort): Observable<Page<Discount>>{
+		let params = this.buildParams(filter, pageRequest, sort);
+		const request = this.getRequest(params, url)
+			.pipe(
+				map(page => this.addPrevAndNext(page, filter, pageRequest, sort))
+			);
+
+		const cacheParams = params.set("url", url);
+
+		return this._cache.other(cacheParams, request);
 	}
 
 	/**
@@ -22,32 +41,59 @@ export class DiscountService {
 	 * @returns {Observable<Discount[]>}
 	 */
 	getUserDiscounts(userId?: number): Observable<Discount[]> {
-		let params = new HttpParams();
-		if (userId) {
-			params = params.set("userId", "" + userId);
-		}
-		const request = this.request(this.http.get<{ discounts: Discount[] }>(this.baseUrl, {params}))
-			.pipe(map(response => response.discounts));
-
-		return this._cache.other(params, request);
+		return this.getForCustomUrl(
+			"/api/discounts/get",
+			Filter.by({userId: "" + userId}),
+			PageRequest.all(),
+			Sort.by(Direction.DESCENDING, "id")
+		).pipe(
+			map(it => it.content)
+		);
 	}
 
 	/**
 	 *
-	 * @param {number} eventId
+	 * @param {number} itemId
 	 * @param {number} userId
 	 * @returns {Observable<Discount[]>}
 	 */
-	getEventDiscounts(eventId: number, userId?: number): Observable<Discount[]> {
-		let params = new HttpParams()
-			.set("eventId", "" + eventId);
-		if (userId) {
-			params = params.set("userId", "" + userId);
+	getEventDiscounts(itemId: number, userId?: number): Observable<Discount[]> {
+		let filter = Filter.by({itemId: "" + itemId});
+		if (userId !== undefined) {
+			filter = Filter.combine(
+				filter,
+				Filter.by({userId: "" + userId})
+			);
 		}
-		let request = this.request(this.http.get<{ discounts: Discount[] }>(this.baseUrl, {params}))
-			.pipe(map(response => response.discounts));
 
-		return this._cache.other(params, request);
+		return this.getForCustomUrl(
+			"/api/discounts/get",
+			filter,
+			PageRequest.all(),
+			Sort.by(Direction.DESCENDING, "id")
+		).pipe(
+			map(it => it.content)
+		);
+	}
+
+	getEventDiscountPossibilities(itemId :number, userId?: number): Observable<Discount[]>{
+		let filter = Filter.by({itemId: "" + itemId});
+		if (userId !== undefined) {
+			filter = Filter.combine(
+				filter,
+				Filter.by({userId: "" + userId})
+			);
+		}
+
+		return this.getForCustomUrl(
+			// "/api/discounts/getPossibilities",
+			"/api/discounts/get",
+			filter,
+			PageRequest.all(),
+			Sort.by(Direction.DESCENDING, "id")
+		).pipe(
+			map(it => it.content)
+		);
 	}
 
 	invalidateEventDiscounts(eventId: number, userId?: number) {
@@ -110,12 +156,11 @@ export class DiscountService {
 	 * @param {Discount[]} discounts
 	 * @returns {number}
 	 */
-	getTotalDiscount(discounts: Discount[]): number {
+	private getTotalDiscount(discounts: Discount[]): number {
 		if (!discounts) {
 			return 0;
 		}
 		return discounts
-			.filter(discount => discount.eligible)
 			.reduce((acc, discount) => acc + discount.amount, 0);
 	}
 
@@ -127,31 +172,29 @@ export class DiscountService {
 	 * @returns {number}
 	 */
 	getDiscountedPrice(basePrice: number, discounts: Discount[]): number {
+		discounts
+		//non-percentage discounts first, then sort by id
+			.sort((a, b) => {
+				if (a.isPercentage === b.isPercentage) {
+					return b.id - a.id;
+				}
+
+				if (a.isPercentage && !b.isPercentage) {
+					return -1;
+				}
+				if (!a.isPercentage && b.isPercentage) {
+					return 1;
+				}
+				return 0;
+			})
+			.reduce((price, discount) => {
+				if (discount.isPercentage) {
+					return price - price * discount.amount;
+				}
+				return price - discount.amount;
+			}, basePrice);
+
 		return Math.max(basePrice - this.getTotalDiscount(discounts), 0);
 	}
 
-	/**
-	 *
-	 * @param error
-	 * @returns {any}
-	 */
-	private handleError(error: Error): Observable<any> {
-		console.error(error);
-		return of(error);
-	}
-
-	/**
-	 *
-	 * @param requestObservable
-	 * @returns {Observable<T>}
-	 */
-	private request<U>(requestObservable: Observable<U>): Observable<U> {
-		return requestObservable
-			.pipe(
-				//retry 2 times before throwing an error
-				retry(2),
-				//log any errors
-				catchError(error => this.handleError(error))
-			)
-	}
 }
