@@ -6,6 +6,7 @@ export interface Discount {
 	linkUrl?: string;
 	linkText?: string;
 	reason: string;
+	limitPerUserAndItem: number;
 
 	users: number[];
 	minAge: number;

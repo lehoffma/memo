@@ -299,7 +299,10 @@ export class CheckoutComponent implements OnInit {
 			...Object.keys(grouped)
 				.map(key => this.discountService.getPrices(grouped[key][0].item, userId)
 					.pipe(
-						//only one item gets discount
+						//todo nope
+						//	query every ordered item that includes this item (n)
+						//	and apply discount (limit - n) times
+						//	but dont just set price, set discounts list to all available ones
 						map(({discounted, normal}) => [
 							{...grouped[key][0], price: discounted},
 							...grouped[key].slice(1)

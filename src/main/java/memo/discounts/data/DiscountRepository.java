@@ -62,7 +62,14 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
                                 "   AND (discount.maxMiles IS NULL OR (:itemMiles IS NOT NULL AND discount.maxMiles >= :itemMiles))" +
                                 "   AND (discount.items IS EMPTY OR (:itemId IS NOT NULL AND EXISTS(SELECT item from discount.items item WHERE item.id = :itemId)))" +
                                 "   AND (discount.itemTypes IS EMPTY OR (:itemType IS NOT NULL AND :itemType MEMBER OF discount.itemTypes))" +
-
+                                //user conditions
+                                "   AND (" +
+                                "           discount.limitPerUserAndItem IS NULL OR discount.limitPerUserAndItem < 0" +
+                                "           OR (" +
+                                "                  :userId IS NOT NULL AND" +
+                                "                  (SELECT count(orderedItem) FROM OrderedItem orderedItem WHERE orderedItem.order.user.id = :userId) < discount.limitPerUserAndItem" +
+                                "           )" +
+                                "   )" +
                                 "   AND ((discount.minAge IS NOT NULL AND (:userAge IS NOT NULL AND discount.minAge > :userAge))" +
                                 "   OR (discount.maxAge IS NOT NULL AND (:userAge IS NOT NULL AND discount.maxAge < :userAge))" +
                                 "   OR (discount.minMembershipDurationInDays IS NOT NULL AND (:userMembershipDays IS NOT NULL AND discount.minMembershipDurationInDays > :userMembershipDays))" +
@@ -84,7 +91,6 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
     private TypedQuery<DiscountEntity> getQuery(String selectString,
                                                 ClubRole clubRole, Integer itemId, Integer itemMiles, BigDecimal itemPrice,
                                                 Long userAgeInYears, Long membershipInDays, Integer itemType, Integer userId) {
-        //todo work limit into the query
         return DatabaseManager.createEntityManager()
                 .createQuery(
                         "SELECT " + selectString + " \n" +
@@ -92,7 +98,7 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
                                 "     discount.items as items LEFT JOIN" +
                                 "     discount.clubRoles as clubRoles LEFT JOIN" +
                                 "     discount.itemTypes as itemTypes LEFT JOIN" +
-                                "     discount.users as users\n" +
+                                "     discount.users as users \n" +
                                 "WHERE (discount.discountStart IS NULL OR discount.discountStart <= CURRENT_DATE) " +
                                 "   AND (discount.discountEnd IS NULL OR discount.discountEnd >= CURRENT_DATE)" +
                                 //item conditions
@@ -103,6 +109,13 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
                                 "   AND (discount.items IS EMPTY OR (:itemId IS NOT NULL AND EXISTS(SELECT item from discount.items item WHERE item.id = :itemId)))" +
                                 "   AND (discount.itemTypes IS EMPTY OR (:itemType IS NOT NULL AND :itemType MEMBER OF discount.itemTypes))" +
                                 //user conditions
+                                "   AND (" +
+                                "           discount.limitPerUserAndItem IS NULL OR discount.limitPerUserAndItem < 0" +
+                                "           OR (" +
+                                "                  :userId IS NOT NULL AND" +
+                                "                  (SELECT count(orderedItem) FROM OrderedItem orderedItem WHERE orderedItem.order.user.id = :userId) < discount.limitPerUserAndItem" +
+                                "           )" +
+                                "   )" +
                                 "   AND (discount.minAge IS NULL OR (:userAge IS NOT NULL AND discount.minAge <= :userAge))" +
                                 "   AND (discount.maxAge IS NULL OR (:userAge IS NOT NULL AND discount.maxAge >= :userAge))" +
                                 "   AND (discount.minMembershipDurationInDays IS NULL OR (:userMembershipDays IS NOT NULL AND discount.minMembershipDurationInDays <= :userMembershipDays))" +
