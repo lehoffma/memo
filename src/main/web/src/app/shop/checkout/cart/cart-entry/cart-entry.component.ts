@@ -4,12 +4,14 @@ import {EventUtilityService} from "../../../../shared/services/event-utility.ser
 import {Event, maximumItemAmount} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {BehaviorSubject, combineLatest, Observable, of, Subscription} from "rxjs";
-import {filter, map, mergeMap} from "rxjs/operators";
+import {filter, map, mergeMap, share, switchMap} from "rxjs/operators";
 import {ShoppingCartItem, ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
 import {Discount} from "../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../shared/services/discount.service";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {CapacityService} from "../../../../shared/services/api/capacity.service";
+import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
+import {flatMap, flatten} from "../../../../util/util";
 
 
 @Component({
@@ -19,9 +21,15 @@ import {CapacityService} from "../../../../shared/services/api/capacity.service"
 })
 export class CartEntryComponent implements OnInit, OnDestroy {
 
-	_cartItem$ = new BehaviorSubject(null);
+	_cartItem$: BehaviorSubject<ShoppingCartItem> = new BehaviorSubject(null);
 	amountOptions = [];
 	subscription: Subscription;
+
+
+	//calculate discounts according to limit
+	//	check how many orderedItems there already are for the current user (N)
+	//	apply discount limit - N times
+	//todo discount refactor doesn't update correctly on amount change
 	discounts$: Observable<Discount[]> = combineLatest([
 		this._cartItem$,
 		this.loginService.currentUser$
@@ -29,7 +37,30 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 		.pipe(
 			mergeMap(([cartItem, user]) =>
 				this.discountService.getEventDiscounts(
-					cartItem.id, user !== null ? user.id : null
+					cartItem.id, user === null ? undefined : user.id
+				).pipe(
+					switchMap(discounts => {
+						if (!discounts.some(discount => discount.limitPerUserAndItem > 0)) {
+							//apply all discounts on all items if there is no limit at all
+							return of(flatten(new Array(cartItem.amount).fill(discounts)));
+						}
+
+						return this.orderedItemService.getAmountOfOrdersForLoggedInUser(cartItem.item.id)
+							.pipe(
+								map(amountOfOrders => {
+									//apply discount (limit - amountOfOrders) times
+
+									return flatMap(discount => {
+										const howOften = discount.limitPerUserAndItem - amountOfOrders;
+										if (howOften <= 0) {
+											return [];
+										}
+										return new Array(howOften).fill(discount);
+									}, discounts);
+								}),
+								share()
+							)
+					})
 				)
 			)
 		);
@@ -43,6 +74,7 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 	constructor(private shoppingCartService: ShoppingCartService,
 				private discountService: DiscountService,
 				private capacityService: CapacityService,
+				private orderedItemService: OrderedItemService,
 				private loginService: LogInService,
 				private stockService: StockService) {
 	}

@@ -15,6 +15,7 @@ import java.sql.Date;
 import java.util.List;
 
 
+//todo discount refactor add color/sizes?
 @Entity
 @Table(name = "Discounts")
 public class DiscountEntity {
@@ -55,22 +56,22 @@ public class DiscountEntity {
     private List<User> users;
 
     //    Birthday,
-    private Integer minAge;
-    private Integer maxAge;
+    private Integer minAge = null;
+    private Integer maxAge = null;
     //    JoinDate,
-    private Integer minMembershipDurationInDays;
-    private Integer maxMembershipDurationInDays;
+    private Integer minMembershipDurationInDays = null;
+    private Integer maxMembershipDurationInDays = null;
     //    ClubRole,
     @ElementCollection
     @Enumerated
     @JsonDeserialize(using = ClubRoleListDeserializer.class)
     private List<ClubRole> clubRoles;
     //    IsWoelfeClubMember,
-    private Boolean woelfeClubMembership;
+    private Boolean woelfeClubMembership = null;
     //    HasSeasonTicket,
-    private Boolean seasonTicket;
+    private Boolean seasonTicket = null;
     //    IsStudent,
-    private Boolean isStudent;
+    private Boolean isStudent = null;
 
 
     //    ItemIdList,
@@ -80,17 +81,17 @@ public class DiscountEntity {
     @JsonDeserialize(using = ShopItemIdListDeserializer.class)
     private List<ShopItem> items;
     //    ItemDate,
-    private Date discountStart;
-    private Date discountEnd;
+    private Date discountStart = null;
+    private Date discountEnd = null;
     //    ItemPrice,
-    private BigDecimal minPrice;
-    private BigDecimal maxPrice;
+    private BigDecimal minPrice = null;
+    private BigDecimal maxPrice = null;
     //    ItemType,
     @ElementCollection
     private List<Integer> itemTypes;
     //    ItemMiles
-    private BigDecimal minMiles;
-    private BigDecimal maxMiles;
+    private BigDecimal minMiles = null;
+    private BigDecimal maxMiles = null;
 
     @JsonIgnore
     public List<OrderedItem> getOrderedItems() {

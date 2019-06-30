@@ -129,7 +129,7 @@ export class ModifyOrderService {
 		return of([]);
 	}
 
-	updateOrderedItems(orderedItems: OrderedItem[]) {
+	updateOrderedItems(orderedItems: OrderedItem[], user: User) {
 		if (orderedItems.length === 0) {
 			return of([]);
 		}
@@ -142,14 +142,14 @@ export class ModifyOrderService {
 						.pipe(
 							//but modify them in case they're different
 							mergeMap(prevAddress => isEdited(prevAddress, item, ["id"])
-								? this.orderedItemService.modify(item)
+								? this.orderedItemService.modify(item, user.id)
 								//otherwise don't do anything
 								: of(prevAddress)
 							)
 						);
 				}
 
-				return this.orderedItemService.add(item);
+				return this.orderedItemService.add(item, user.id);
 			})
 		);
 	}
@@ -157,8 +157,9 @@ export class ModifyOrderService {
 	/**
 	 *
 	 * @param {OrderedItem[]} orderedItems
+	 * @param user
 	 */
-	handleOrderedItems(orderedItems: OrderedItem[]): Observable<number[]> {
+	handleOrderedItems(orderedItems: OrderedItem[], user: User): Observable<number[]> {
 		return this.removeOldOrderedItems(orderedItems)
 			.pipe(
 				mergeMap(() => {
@@ -167,7 +168,7 @@ export class ModifyOrderService {
 						return of([]);
 					}
 
-					return this.updateOrderedItems(orderedItems);
+					return this.updateOrderedItems(orderedItems, user);
 				}),
 				map(orderedItems => [...orderedItems].map(it => it.id))
 			);
@@ -218,7 +219,8 @@ export class ModifyOrderService {
 					...it,
 					item: it.item.id
 				}
-			}) as any[]
+			}) as any[],
+			value.user
 		)
 			.pipe(
 				mergeMap(newIds => {

@@ -67,7 +67,9 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
                                 "           discount.limitPerUserAndItem IS NULL OR discount.limitPerUserAndItem < 0" +
                                 "           OR (" +
                                 "                  :userId IS NOT NULL AND" +
-                                "                  (SELECT count(orderedItem) FROM OrderedItem orderedItem WHERE orderedItem.order.user.id = :userId) < discount.limitPerUserAndItem" +
+                                "                  (SELECT count(distinct orderedItem) FROM OrderedItem orderedItem " +
+                                "                       WHERE orderedItem.order.user.id = :userId " +
+                                "                           AND orderedItem.item.id = :itemId) < discount.limitPerUserAndItem" +
                                 "           )" +
                                 "   )" +
                                 "   AND ((discount.minAge IS NOT NULL AND (:userAge IS NOT NULL AND discount.minAge > :userAge))" +
@@ -113,7 +115,9 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
                                 "           discount.limitPerUserAndItem IS NULL OR discount.limitPerUserAndItem < 0" +
                                 "           OR (" +
                                 "                  :userId IS NOT NULL AND" +
-                                "                  (SELECT count(orderedItem) FROM OrderedItem orderedItem WHERE orderedItem.order.user.id = :userId) < discount.limitPerUserAndItem" +
+                                "                  (SELECT count(distinct orderedItem) FROM OrderedItem orderedItem " +
+                                "                       WHERE orderedItem.order.user.id = :userId " +
+                                "                           AND orderedItem.item.id = :itemId) < discount.limitPerUserAndItem" +
                                 "           )" +
                                 "   )" +
                                 "   AND (discount.minAge IS NULL OR (:userAge IS NOT NULL AND discount.minAge <= :userAge))" +

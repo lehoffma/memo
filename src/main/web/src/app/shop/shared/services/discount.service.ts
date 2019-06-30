@@ -23,17 +23,6 @@ export class DiscountService extends ServletService<Discount> {
 		return undefined;
 	}
 
-	private getForCustomUrl(url: string, filter: Filter, pageRequest: PageRequest, sort: Sort): Observable<Page<Discount>>{
-		let params = this.buildParams(filter, pageRequest, sort);
-		const request = this.getRequest(params, url)
-			.pipe(
-				map(page => this.addPrevAndNext(page, filter, pageRequest, sort))
-			);
-
-		const cacheParams = params.set("url", url);
-
-		return this._cache.other(cacheParams, request);
-	}
 
 	/**
 	 *
@@ -41,7 +30,7 @@ export class DiscountService extends ServletService<Discount> {
 	 * @returns {Observable<Discount[]>}
 	 */
 	getUserDiscounts(userId?: number): Observable<Discount[]> {
-		return this.getForCustomUrl(
+		return this.getPagedForCustomUrl(
 			"/api/discounts/get",
 			Filter.by({userId: "" + userId}),
 			PageRequest.all(),
@@ -59,14 +48,14 @@ export class DiscountService extends ServletService<Discount> {
 	 */
 	getEventDiscounts(itemId: number, userId?: number): Observable<Discount[]> {
 		let filter = Filter.by({itemId: "" + itemId});
-		if (userId !== undefined) {
+		if (userId !== undefined && userId !== null) {
 			filter = Filter.combine(
 				filter,
 				Filter.by({userId: "" + userId})
 			);
 		}
 
-		return this.getForCustomUrl(
+		return this.getPagedForCustomUrl(
 			"/api/discounts/get",
 			filter,
 			PageRequest.all(),
@@ -85,7 +74,7 @@ export class DiscountService extends ServletService<Discount> {
 			);
 		}
 
-		return this.getForCustomUrl(
+		return this.getPagedForCustomUrl(
 			// "/api/discounts/getPossibilities",
 			"/api/discounts/get",
 			filter,

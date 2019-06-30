@@ -4,7 +4,7 @@ import {ShoppingCartContent} from "../model/shopping-cart-content";
 import {ShoppingCartItem, ShoppingCartOption} from "../model/shopping-cart-item";
 import {MerchColor} from "../../shop/shared/model/merch-color";
 import {EventService} from "./api/event.service";
-import {map, mergeMap} from "rxjs/operators";
+import {filter, map, mergeMap} from "rxjs/operators";
 import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {LogInService} from "./api/login.service";
 import {DiscountService} from "app/shop/shared/services/discount.service";
@@ -49,12 +49,13 @@ export class ShoppingCartService implements OnInit {
 						return of([]);
 					}
 
+					//todo discount refactor
 					return (combineLatest(
-						...allItems
+						allItems
 							.map(cartItem => this.loginService.currentUser$
 								.pipe(
 									mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
-										cartItem.item.id, cartItem.item.price, user !== null ? user.id : null
+										cartItem.item.id, cartItem.item.price, user !== null ? user.id : undefined
 									)),
 									map(discountedPrice => (cartItem.amount - 1) * cartItem.item.price + discountedPrice)
 								)

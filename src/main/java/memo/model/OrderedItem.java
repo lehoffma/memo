@@ -30,7 +30,14 @@ import java.util.Objects;
                 name = "OrderedItem.findByEventAndUser",
                 query = "SELECT DISTINCT item FROM Order o join OrderedItem item " +
                         "WHERE o.user.id = :userId AND item.item.id = :eventId"
-        )
+        ),
+        @NamedQuery(
+                name = "OrderedItem.findValidByEventAndUser",
+                query = "SELECT DISTINCT item FROM Order o join OrderedItem item " +
+                        "WHERE o.user.id = :userId AND item.item.id = :eventId" +
+                        //not cancelled
+                        "   AND item.status != :cancelled"
+        ),
 })
 public class OrderedItem implements Serializable {
 
@@ -58,10 +65,8 @@ public class OrderedItem implements Serializable {
     @JsonDeserialize(using = OrderIdDeserializer.class)
     private Order order;
 
-    //todo
     @ManyToMany()
     @JoinTable(name = "orderedItem_discounts",
-            //todo its exactly the wrong way around..
             joinColumns = @JoinColumn(name = "orderedItem_id"),
             inverseJoinColumns = @JoinColumn(name = "discount_id")
     )

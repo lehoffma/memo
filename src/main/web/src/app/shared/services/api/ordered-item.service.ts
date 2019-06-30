@@ -42,13 +42,13 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 
 	}
 
-	add(orderedItem: OrderedItem): Observable<OrderedItem> {
+	add(orderedItem: OrderedItem, userId: number): Observable<OrderedItem> {
 		const modifiedItem: OrderedItem = {...orderedItem};
 		if (modifiedItem.item && EventUtilityService.isEvent(modifiedItem.item)) {
 			modifiedItem.item = <any>modifiedItem.item.id;
 		}
 
-		return this.http.post<AddOrModifyResponse>(this.baseUrl, {orderedItem: modifiedItem}, {
+		return this.http.post<AddOrModifyResponse>(this.baseUrl, {orderedItem: modifiedItem, user: userId}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
 			.pipe(
@@ -73,7 +73,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 					newParticipant.price = discountedPrice;
 					//todo add name/phone number to text or order
 
-					return this.add(newParticipant)
+					return this.add(newParticipant, user.id)
 						.pipe(
 							mergeMap(item => {
 								let order = setProperties(createOrder(), {
@@ -92,13 +92,13 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 			)
 	}
 
-	modify(orderedItem: OrderedItem): Observable<OrderedItem> {
+	modify(orderedItem: OrderedItem, userId: number): Observable<OrderedItem> {
 		const modifiedItem: OrderedItem = {...orderedItem};
 		if (modifiedItem.item && EventUtilityService.isEvent(modifiedItem.item)) {
 			modifiedItem.item = <any>modifiedItem.item.id;
 		}
 
-		return this.http.put<AddOrModifyResponse>(this.baseUrl, {orderedItem: modifiedItem}, {
+		return this.http.put<AddOrModifyResponse>(this.baseUrl, {orderedItem: modifiedItem, user: userId}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
 			.pipe(
@@ -118,7 +118,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 		}
 
 		//todo add name/phone number to text or order
-		return this.modify(modifiedParticipant);
+		return this.modify(modifiedParticipant, user.id);
 	}
 
 	remove(id: number): Observable<Object> {
@@ -144,12 +144,27 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	}
 
 	getStateOfItem(itemId: string, showCancelled = false): Observable<ParticipantState> {
+		const url = "/api/orderedItem/state";
 		const params = new HttpParams()
 			.set("id", itemId)
 			.set("showCancelled", "" + showCancelled);
-		const request = this.http.get<ParticipantState>("/api/orderedItem/state", {params});
 
-		return this._cache.other(params, request);
+		return this.getForCustomUrl(url, params);
+	}
+
+	getOrderedItemsForLoggedInUser(shopItemId: number | string): Observable<OrderedItem[]> {
+		const url = "/api/orderedItem/byUserAndItem";
+		const params = new HttpParams()
+			.set("itemId", shopItemId + "");
+
+		return this.getForCustomUrl(url, params);
+	}
+
+	getAmountOfOrdersForLoggedInUser(shopItemId: number): Observable<number> {
+		const url = "/api/orderedItem/byUserAndItem/count";
+		const params = new HttpParams()
+			.set("itemId", shopItemId + "");
+		return this.getForCustomUrl(url, params);
 	}
 
 
@@ -177,7 +192,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 		return this.modify({
 			...item,
 			status
-		})
+		}, order.user)
 			.pipe(
 				tap(() => this.orderService.invalidateValue(order.id)),
 				mergeMap(items => this.orderService.getById(order.id)),
@@ -200,7 +215,7 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 					item.status = newStatus;
 					return item;
 				})
-				.map(item => this.modify(item))
+				.map(item => this.modify(item, order.user))
 		)
 			.pipe(
 				tap(() => this.orderService.invalidateValue(order.id)),

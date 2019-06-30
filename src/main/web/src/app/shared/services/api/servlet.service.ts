@@ -181,6 +181,23 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 		return this.getForUrl(this.baseUrl, filter, pageRequest, sort);
 	}
 
+	protected getForCustomUrl<U>(url: string,
+								 params: HttpParams,
+								 request: Observable<U> = this.http.get<U>(url, {params})): Observable<U> {
+		const cacheParams = params.set("_cacheUrl", url);
+		return this._cache.other(cacheParams, request);
+	}
+
+	protected getPagedForCustomUrl(url: string, filter: Filter, pageRequest: PageRequest, sort: Sort): Observable<Page<T>> {
+		const params = this.buildParams(filter, pageRequest, sort);
+		const request = this.getRequest(params, url)
+			.pipe(
+				map(page => this.addPrevAndNext(page, filter, pageRequest, sort))
+			);
+
+		return this.getForCustomUrl(url, params, request);
+	}
+
 	/**
 	 *
 	 * @param url

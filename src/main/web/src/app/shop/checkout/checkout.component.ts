@@ -14,7 +14,7 @@ import {BankAccount} from "../../shared/model/bank-account";
 import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
 import {combineLatest, Observable, of} from "rxjs";
-import {distinctUntilChanged, filter, first, map, mergeMap} from "rxjs/operators";
+import {distinctUntilChanged, filter, first, map, mergeMap, switchMap, take} from "rxjs/operators";
 import {OrderedItem} from "../../shared/model/ordered-item";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../shared/services/api/user.service";
@@ -22,7 +22,7 @@ import {debitRequiresAccountValidator} from "../../shared/validators/debit-requi
 import {ShoppingCartItem} from "../../shared/model/shopping-cart-item";
 import {flatMap, flatten} from "../../util/util";
 import {DiscountService} from "app/shop/shared/services/discount.service";
-import {processInParallelAndWait} from "../../util/observable-util";
+import {processInParallelAndWait, processSequentiallyAndWait} from "../../util/observable-util";
 import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
 import {setProperties} from "../../shared/model/util/base-object";
 import {PaymentMethod} from "./payment/payment-method";
@@ -179,12 +179,13 @@ export class CheckoutComponent implements OnInit {
 		return this.bankAccountService.updateAccountsOfUser(previousValue, accounts, this.user);
 	}
 
-	handleOrderedItems(orderedItems: OrderedItem[]) {
+	handleOrderedItems(orderedItems: OrderedItem[], user: User) {
 		if (orderedItems.length === 0) {
 			return of([]);
 		}
-		return combineLatest(
-			...orderedItems.map(item => this.orderedItemService.add(item))
+		//process in order so the discounts are assigned correctly
+		return processSequentiallyAndWait(
+			orderedItems.map(item => this.orderedItemService.add(item, user.id))
 		);
 	}
 
@@ -200,19 +201,20 @@ export class CheckoutComponent implements OnInit {
 
 
 		this.loading = true;
-		this.logInService.accountObservable
+		this.logInService.currentUser$
 			.pipe(
-				first(),
-				mergeMap(userId => this.cartService.content
+				take(1),
+				mergeMap(user => this.cartService.content
 					.pipe(
 						first(),
+						//todo error handling
 						//combine cart content into one array
-						mergeMap(content => this.combineCartContent(content)),
+						map(content => this.combineCartContent(content)),
 						//map events to orderedItem interface to make it usable on the backend
-						mergeMap(events => this.mapToOrderedItems(events, userId)),
-						mergeMap(items => this.handleOrderedItems(items)),
+						map(events => this.mapToOrderedItems(events, user.id)),
+						switchMap(items => this.handleOrderedItems(items, user)),
 						map(orderedItems => setProperties(createOrder(), {
-							user: userId,
+							user: user.id,
 							timeStamp: new Date(),
 							method: this.formGroup.get("payment").get("method").value,
 							items: orderedItems.map(it => it.id)
@@ -234,8 +236,6 @@ export class CheckoutComponent implements OnInit {
 				error => {
 					console.error(error);
 					this.snackBar.open(error.message, "Schließen");
-				},
-				() => {
 				}
 			);
 	}
@@ -245,10 +245,8 @@ export class CheckoutComponent implements OnInit {
 	 * @param {ShoppingCartContent} content
 	 * @returns {Observable<any[]>}
 	 */
-	private combineCartContent(content: ShoppingCartContent): Observable<ShoppingCartItem[]> {
-		return of(
-			[...content.partys, ...content.tours, ...content.merch]
-		);
+	private combineCartContent(content: ShoppingCartContent): ShoppingCartItem[] {
+		return [...content.partys, ...content.tours, ...content.merch]
 	}
 
 	/**
@@ -258,11 +256,11 @@ export class CheckoutComponent implements OnInit {
 	 * @returns {OrderedItem[]}
 	 */
 	private mapToOrderedItems(events: ShoppingCartItem[], userId: number) {
-		const items = flatMap(it => {
+		const items: OrderedItem[] = flatMap(it => {
 			const partialItem = {
 				id: it.id,
 				item: it.item.id,
-				price: 0,
+				price: it.item.price,
 				status: OrderStatus.RESERVED
 			};
 			if (it.options && it.options.length > 0) {
@@ -273,46 +271,19 @@ export class CheckoutComponent implements OnInit {
 			}
 			return [...new Array(it.amount)
 				.fill({
-					...partialItem,
 					size: null,
 					color: null,
 					isDriver: false,
-					needsTicket: false
+					needsTicket: false,
+					...partialItem,
 				})]
 		}, events);
 
 		if (items.length === 0) {
-			return of([]);
+			return [];
 		}
 
-		//group by item id
-		const grouped: { [id: string]: { size?: string, item?: number, color?: MerchColor, isDriver?: boolean, needsTicket?: boolean }[] } = items
-			.reduce((grouped, it) => {
-				if (!grouped[it.item]) {
-					grouped[it.item] = [];
-				}
-				grouped[it.item].push(it);
-				return grouped;
-			}, {});
-
-		return combineLatest(
-			...Object.keys(grouped)
-				.map(key => this.discountService.getPrices(grouped[key][0].item, userId)
-					.pipe(
-						//todo nope
-						//	query every ordered item that includes this item (n)
-						//	and apply discount (limit - n) times
-						//	but dont just set price, set discounts list to all available ones
-						map(({discounted, normal}) => [
-							{...grouped[key][0], price: discounted},
-							...grouped[key].slice(1)
-								.map(it => ({...it, price: normal}))
-						])
-					)
-				)
-		).pipe(
-			map(items => flatten(items))
-		);
+		return items;
 
 	}
 }

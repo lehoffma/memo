@@ -8,8 +8,13 @@ import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.ParticipantsAuthStrategy;
 import memo.data.EventRepository;
 import memo.data.ParticipantRepository;
+import memo.data.UserRepository;
+import memo.discounts.data.DiscountRepository;
 import memo.discounts.model.DiscountEntity;
 import memo.model.*;
+import memo.util.JsonHelper;
+import memo.util.model.Page;
+import memo.util.model.PageRequest;
 import org.apache.logging.log4j.LogManager;
 
 import javax.enterprise.context.RequestScoped;
@@ -20,9 +25,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Path("/orderedItem")
 @Named
@@ -31,6 +34,8 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     private ParticipantRepository participantRepository;
     private EventRepository eventRepository;
     private OrderServlet orderServlet;
+    private UserRepository userRepository;
+    private DiscountRepository discountRepository;
 
     public OrderedItemServlet() {
     }
@@ -38,12 +43,16 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     @Inject
     public OrderedItemServlet(ParticipantRepository participantRepository,
                               OrderServlet orderServlet,
+                              DiscountRepository discountRepository,
                               EventRepository eventRepository,
+                              UserRepository userRepository,
                               ParticipantsAuthStrategy authStrategy,
                               AuthenticationService authService) {
         super();
         logger = LogManager.getLogger(OrderedItemServlet.class);
         this.participantRepository = participantRepository;
+        this.discountRepository = discountRepository;
+        this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.orderServlet = orderServlet;
         this.authenticationStrategy = authStrategy;
@@ -70,6 +79,29 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
 
 
     @GET
+    @Path("/byUserAndItem/count")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Integer getCountByUserAndItem(@Context HttpServletRequest request){
+        //todo separate count query?
+        return this.getByUserAndItem(request).size();
+    }
+
+    @GET
+    @Path("/byUserAndItem")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<OrderedItem> getByUserAndItem(@Context HttpServletRequest request){
+        User requestingUser = authenticationService.parseNullableUserFromRequestHeader(request);
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        Integer itemId = Integer.valueOf(getParameter(parameterMap, "itemId"));
+
+        if(requestingUser == null){
+            return new ArrayList<>();
+        }
+
+        return this.participantRepository.findValidByUserAndEvent(requestingUser.getId(), itemId);
+    }
+
+    @GET
     @Path("/state")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getState(@Context HttpServletRequest request) {
@@ -94,13 +126,31 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
         return Response.ok(participantRepository.getStateOfItem(shopItem, showCancelled.equals("true"))).build();
     }
 
+    private OrderedItem setDiscounts(OrderedItem item, User user) {
+        //get all discounts that can be applied
+        Page<DiscountEntity> discounts = this.discountRepository.getDiscounts(item.getItem(), user, new PageRequest()
+                .setPage(1)
+                .setPageSize(1000));
+        item.setDiscounts(discounts.getContent());
+        return item;
+    }
+
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response post(@Context HttpServletRequest request, String body) {
+        JsonNode jsonItem = JsonHelper.getJsonObject(body, "user");
+        int userId = jsonItem.intValue();
+        User user = this.userRepository.getUserByID(userId);
+
+        if(user == null){
+            throw new WebApplicationException("No user found with id=" + userId, Response.Status.BAD_REQUEST);
+        }
+
         OrderedItem createdItem = this.post(request, body, new ApiServletPostOptions<>(
                         "orderedItem", new OrderedItem(), OrderedItem.class, OrderedItem::getId
                 )
+                        .setTransform(item -> this.setDiscounts(item, user))
                         .setPreconditions(Collections.singletonList(
                                 new ModifyPrecondition<>(
                                         item -> orderServlet.checkOrder(Collections.singletonList(item)),
@@ -117,9 +167,19 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response put(@Context HttpServletRequest request, String body) {
+        JsonNode jsonItem = JsonHelper.getJsonObject(body, "user");
+        int userId = jsonItem.intValue();
+        User user = this.userRepository.getUserByID(userId);
+
+        if(user == null){
+            throw new WebApplicationException("No user found with id=" + userId, Response.Status.BAD_REQUEST);
+        }
+
         OrderedItem item = this.put(request, body, new ApiServletPutOptions<>(
-                "orderedItem", OrderedItem.class, OrderedItem::getId, "id"
-        ));
+                        "orderedItem", OrderedItem.class, OrderedItem::getId, "id"
+                )
+                        .setTransform(it -> this.setDiscounts(it, user))
+        );
 
         return this.respond(item, "id", OrderedItem::getId);
     }

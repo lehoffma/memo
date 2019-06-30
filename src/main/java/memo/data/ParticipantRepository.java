@@ -101,6 +101,14 @@ public class ParticipantRepository extends AbstractPagingAndSortingRepository<Or
                 .setParameter("userId", userId)
                 .getResultList();
     }
+    public List<OrderedItem> findValidByUserAndEvent(Integer userId, Integer eventId) {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("OrderedItem.findValidByEventAndUser", OrderedItem.class)
+                .setParameter("eventId", eventId)
+                .setParameter("userId", userId)
+                .setParameter("cancelled", OrderStatus.Cancelled)
+                .getResultList();
+    }
 
     public List<OrderedItem> findByEvent(String eventId) throws NumberFormatException {
         Integer id = Integer.parseInt(eventId);
