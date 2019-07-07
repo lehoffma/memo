@@ -301,10 +301,12 @@ public class PredicateFactory {
 
     public static Function getTransform(String requestKey) {
         String key = requestKey.toLowerCase();
-        if (key.contains("date") || key.contains("timestamp")) {
+        List<String> dateKeys = Arrays.asList("minDate", "maxDate", "timestamp", "date");
+        if (dateKeys.stream().anyMatch(dateKey -> dateKey.equalsIgnoreCase(key))) {
             return s -> PredicateFactory.isoToTimestamp((String) s);
         }
-        if (key.contains("role")) {
+        List<String> roleKeys = Arrays.asList("role", "clubRole", "expectedReadRole", "expectedCheckInRole", "expectedWriteRole");
+        if (roleKeys.stream().anyMatch(roleKey -> roleKey.equalsIgnoreCase(key))) {
             return s -> ClubRole.fromString((String) s).orElse(ClubRole.Gast);
         }
         return s -> s;

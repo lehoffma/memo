@@ -1,0 +1,16 @@
+<memo-results-container *ngLet="currentResults$ | async as results"
+						[results]="results"
+						[filterOptions]="filterOptions$ | async"
+						[sortingOptions]="sortingOptions"
+						[title]="'Discounts'"
+						[page]="resultsDataSource.currentPage$ | async"
+						[canAdd]="userCanAddItem$ | async"
+						(onAdd)="redirectToForm()"
+						(pageChange)="pageAt($event)"
+>
+	<div class="discount-grid">
+		<memo-discount-grid-item *ngFor="let discount of results"
+								 (stopDiscount)="stopDiscount($event)"
+								 [discount]="discount"></memo-discount-grid-item>
+	</div>
+</memo-results-container>

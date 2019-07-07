@@ -145,7 +145,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 
 
 	initPaginatorFromUrlAndUpdatePage(queryParamMap: ParamMap): PageRequest {
-		const pageRequest = PagedDataSource.initPaginatorFromUrl2(queryParamMap);
+		const pageRequest = PagedDataSource.initPaginatorFromUrl(queryParamMap);
 		this._pageEvents$.next({
 			length: 200,
 			pageIndex: pageRequest.page,
@@ -155,7 +155,7 @@ export class PagedDataSource<T> extends DataSource<T> {
 		return pageRequest;
 	}
 
-	static initPaginatorFromUrl2(queryParamMap: ParamMap): PageRequest {
+	static initPaginatorFromUrl(queryParamMap: ParamMap): PageRequest {
 		if (queryParamMap.has("page")) {
 			const page = +queryParamMap.get("page");
 			const pageSize = +queryParamMap.get("pageSize");

@@ -3,9 +3,11 @@ package memo.discounts.data;
 import memo.data.AbstractPagingAndSortingRepository;
 import memo.data.Repository;
 import memo.data.util.PredicateFactory;
+import memo.data.util.PredicateSupplierMap;
 import memo.discounts.auth.DiscountAuthStrategy;
 import memo.discounts.model.DiscountEntity;
 import memo.model.ClubRole;
+import memo.model.Discount;
 import memo.model.ShopItem;
 import memo.model.User;
 import memo.util.DatabaseManager;
@@ -17,15 +19,18 @@ import memo.util.model.PageRequest;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Named
 @ApplicationScoped
@@ -235,10 +240,42 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
         );
     }
 
+
+    private List<Predicate> getByItemId(CriteriaBuilder builder, Root<DiscountEntity> root, Filter.FilterRequest filterRequest) {
+        /*
+        "SELECT distinct d FROM DiscountEntity d JOIN d.items items WHERE items.id = :itemId"
+         */
+
+        EntityManager em = DatabaseManager.createEntityManager();
+        Metamodel metamodel = em.getMetamodel();
+        EntityType<DiscountEntity> discountEntityType = metamodel.entity(DiscountEntity.class);
+        ListJoin<DiscountEntity, ShopItem> discountItemJoin = root.join(discountEntityType.getList("items", ShopItem.class), JoinType.LEFT);
+        Path<ShopItem> itemId = discountItemJoin.get("id");
+
+        List<Predicate> idMatchers = filterRequest.getValues().stream()
+                .map(value -> builder.equal(itemId, value))
+                .collect(Collectors.toList());
+
+        //add "is empty" predicate
+        //if its empty, the other predicates have to match though..
+        //todo discount
+        // minPrice
+        // maxPrice
+        // itemTypes
+        // minMiles
+        // maxMiles
+        idMatchers.add(builder.isNull(discountItemJoin.get("id")));
+
+        Predicate anyIdMatches = PredicateFactory.combineByOr(builder, idMatchers);
+        return Collections.singletonList(anyIdMatches);
+    }
+
     @Override
     public List<Predicate> fromFilter(CriteriaBuilder builder, Root<DiscountEntity> root, Filter.FilterRequest filterRequest) {
         //todo
-        return PredicateFactory.fromFilter(builder, root, filterRequest);
+        return PredicateFactory.fromFilter(builder, root, filterRequest, new PredicateSupplierMap<DiscountEntity>()
+                .buildPut("item", this::getByItemId)
+        );
     }
 
     @Override

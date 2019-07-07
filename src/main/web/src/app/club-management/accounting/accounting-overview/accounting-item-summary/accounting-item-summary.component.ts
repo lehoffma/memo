@@ -46,7 +46,7 @@ export class AccountingItemSummaryComponent implements OnInit {
 			map(options => options.filter(option => option.isShown())),
 		);
 
-	page$ = new BehaviorSubject(PagedDataSource.initPaginatorFromUrl2(this.activatedRoute.snapshot.queryParamMap));
+	page$ = new BehaviorSubject(PagedDataSource.initPaginatorFromUrl(this.activatedRoute.snapshot.queryParamMap));
 
 	//results data handling
 	resultsDataSource: ManualPagedDataSource<Event> = new ManualPagedDataSource<Event>(this.eventService, this.page$);

@@ -33,15 +33,17 @@ public class DiscountEntity {
     //discounts cannot be deleted, they can only become outdated
     //at which point they cannot apply on anything anymore and are hidden from the usual discount creation table
     //time-based discounts should become outdated as soon as their time runs out (java scheduled job should be able to do that)
-    private Boolean outdated;
+    private Boolean outdated = false;
 
-    private Integer limitPerUserAndItem;
+    //-1 means no limit at all
+    private Integer limitPerUserAndItem = -1;
 
     //a link for the user to become eligible (e.g. for the membership discount)
     //show link: linkUrl !== null && linkText !== null
     private String linkUrl;
     private String linkText;
 
+    @Column(nullable = false)
     private String reason;
 
     @ManyToMany(mappedBy = "discounts")

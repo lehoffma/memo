@@ -162,6 +162,20 @@
 		]
 	},
 	{
+		"route": "management/discounts",
+		"name": "Discounts",
+		"icon": "local_offer",
+		"loginNeeded": true,
+		"minimumPermission": {
+			"userManagement": 1,
+			"merch": 1,
+			"tour": 1,
+			"party": 1,
+			"funds": 1,
+			"stock": 1
+		}
+	},
+	{
 		"route": "management/orders-overview",
 		"icon": "",
 		"name": "Bestellungen",

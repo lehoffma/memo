@@ -1,0 +1,59 @@
+@import "variables";
+
+:host {
+	position: relative;
+}
+
+mat-card {
+	border-top: 4px solid primary();
+
+	&.outdated {
+		border-color: grey();
+
+		.discount-amount {
+			color: grey();
+		}
+	}
+}
+
+.condition-container {
+	border-top: 1px solid grey(200);
+	padding-top: 8px;
+	margin-top: 16px;
+}
+
+.condition-row {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: grey(700);
+	cursor: pointer;
+
+	mat-icon {
+		margin-right: 4px;
+	}
+}
+
+h3.discount-amount {
+	margin: 0;
+	display: flex;
+	justify-content: center;
+	font-size: font-size(medium-larger);
+	font-weight: 400;
+	color: primary();
+}
+
+h4.discount-title {
+	display: flex;
+	justify-content: center;
+	font-weight: 400;
+	font-size: font-size(medium);
+	margin: 8px 0 0;
+	text-align: center;
+}
+
+button.overflow-button.mat-icon-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+}

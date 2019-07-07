@@ -1,0 +1,38 @@
+<mat-card [class.outdated]="discount.outdated">
+	<h3 class="discount-amount">
+		-{{discount.isPercentage
+		? ((discount.amount * 100).toFixed(2) + '%')
+		: (discount.amount.toFixed(2) + "€")}}
+	</h3>
+	<h4 class="discount-title">{{discount.reason}}</h4>
+
+	<div class="condition-container" fxLayout="column" fxLayoutGap="4px">
+		<div class="condition-row"
+			 *ngFor="let key of discount | pipeFunction: objectKeys | pipeFunction:filterNull:discount">
+			<ng-container *ngLet="properties[key] as property">
+				<mat-icon>{{property.matIcon}}</mat-icon>
+				<span matTooltip="{{properties[key].tooltip}}"
+					matTooltipPosition="below">
+					{{property.getString
+					? property.getString(discount[key])
+					: (property.getString$(discount[key]) | async)
+					}}
+				</span>
+			</ng-container>
+		</div>
+	</div>
+
+	<button mat-icon-button class="overflow-button" [matMenuTriggerFor]="overflowMenu">
+		<mat-icon>more_vert</mat-icon>
+	</button>
+	<mat-menu #overflowMenu="matMenu">
+		<a mat-menu-item routerLink="edit/{{discount.id}}">
+			<mat-icon>edit</mat-icon>
+			<span>Bearbeiten</span>
+		</a>
+		<button mat-menu-item (click)="stopDiscount.emit(discount)">
+			<mat-icon>cancel</mat-icon>
+			<span>Discount stoppen</span>
+		</button>
+	</mat-menu>
+</mat-card>

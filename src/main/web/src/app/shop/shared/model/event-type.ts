@@ -4,6 +4,17 @@ export enum EventType {
 	partys = "partys"
 }
 
+export function integerToString(eventType: number): string {
+	switch (eventType) {
+		case 3:
+			return "Merchandise";
+		case 2:
+			return "Veranstaltungen";
+		case 1:
+			return "Touren";
+	}
+	return "invalid";
+}
 
 export function integerToType(eventType: number) {
 	switch (eventType) {

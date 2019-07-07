@@ -33,6 +33,7 @@ import {TrendRowComponent} from "./orders/trend-row/trend-row.component";
 import {DataContainerModule} from "../shared/utility/data-container/data-container.module";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {MerchStockStatusChartComponent} from "./stock/merch-stock-status-chart/merch-stock-status-chart.component";
+import {DiscountsModule} from "./discounts/discounts.module";
 
 const tableCellComponents = [
 	//merch table cell
@@ -60,6 +61,7 @@ const tableCellComponents = [
 		AreaChartModule,
 		DataContainerModule,
 		FontAwesomeModule,
+		DiscountsModule,
 	],
 	declarations: [
 		routedComponents,

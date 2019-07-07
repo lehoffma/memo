@@ -17,11 +17,16 @@ import {ShopItemIsVisibleToUserGuard} from "../shared/authentication/http-error-
 import {MerchStockContainerComponent} from "./stock/merch-stock/merch-stock-container/merch-stock-container.component";
 import {OrderOverviewComponent} from "./orders/order-overview.component";
 import {StockOverviewComponent} from "./stock/stock-overview.component";
+import {DiscountsComponent} from "./discounts/discounts.component";
+import {DiscountFormComponent} from "./discounts/discount-form/discount-form.component";
 
 const routes: Route[] = [
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
 	{path: "management", redirectTo: "management/dashboard", pathMatch: "full", canActivate: [AuthenticatedGuard]},
 	{path: "management/dashboard", component: DashboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
+	{path: "management/discounts", component: DiscountsComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
+	{path: "management/discounts/form", component: DiscountFormComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
+	{path: "management/discounts/edit/:id", component: DiscountFormComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
 	{path: "management/orders-overview", component: OrderOverviewComponent, canActivate: [AuthenticatedGuard]},
 	{path: "management/orders", component: OrderManagementComponent, canActivate: [AuthenticatedGuard]},
 	{path: "management/costs", component: AccountingComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},

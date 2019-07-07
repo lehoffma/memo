@@ -8,7 +8,6 @@ import {ServletService} from "../../../shared/services/api/servlet.service";
 import {Filter} from "../../../shared/model/api/filter";
 import {PageRequest} from "../../../shared/model/api/page-request";
 import {Direction, Sort} from "../../../shared/model/api/sort";
-import {Page} from "../../../shared/model/api/page";
 
 @Injectable()
 export class DiscountService extends ServletService<Discount> {
@@ -65,7 +64,7 @@ export class DiscountService extends ServletService<Discount> {
 		);
 	}
 
-	getEventDiscountPossibilities(itemId :number, userId?: number): Observable<Discount[]>{
+	getEventDiscountPossibilities(itemId: number, userId?: number): Observable<Discount[]> {
 		let filter = Filter.by({itemId: "" + itemId});
 		if (userId !== undefined) {
 			filter = Filter.combine(
