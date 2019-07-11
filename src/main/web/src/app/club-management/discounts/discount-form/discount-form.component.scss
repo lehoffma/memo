@@ -1,0 +1,29 @@
+@import "../../../shop/shop-item/modify-shop-item/modify-shop-item.component";
+@import "variables";
+
+:host {
+	margin-bottom: 1rem;
+}
+
+.form-buttons {
+	margin-top: 20px;
+	display: flex;
+	justify-content: flex-end;
+}
+
+@media all and (min-width: 800px) {
+	.desktop-row {
+		display: flex;
+		justify-content: space-between;
+		> * {
+			width: 200px;
+		}
+	}
+}
+
+.input-prefix {
+	padding-bottom: 8px;
+	display: block;
+	padding-right: 8px;
+	color: grey();
+}

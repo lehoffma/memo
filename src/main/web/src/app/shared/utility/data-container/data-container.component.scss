@@ -1,0 +1,31 @@
+.empty-state {
+	> div {
+		justify-content: center;
+		align-items: center;
+	}
+
+}
+
+
+@media all and (min-width: 600px) {
+	.empty-state {
+		&.horizontal {
+			flex-direction: row-reverse;
+
+			mat-icon {
+				width: 144px;
+				height: 144px;
+				font-size: 144px;
+			}
+
+			> div {
+				justify-content: flex-start;
+				align-items: flex-start;
+			}
+
+			.empty-state-subheader {
+				text-align: start;
+			}
+		}
+	}
+}

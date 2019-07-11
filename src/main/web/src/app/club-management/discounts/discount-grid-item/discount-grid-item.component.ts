@@ -41,6 +41,12 @@ export class DiscountGridItemComponent implements OnInit {
 				map(users => users.map(it => it.firstName + " " + it.surname).join(", "))
 			)
 		},
+		clubRoles: {
+			matIcon: "person",
+			tooltip: "Gilt nur für diese Arten von Usern",
+			isEmpty: value => !value || value.length === 0,
+			getString: value => value.map(it => it).join(", ")
+		},
 		//todo all the other ones...
 	};
 

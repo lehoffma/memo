@@ -328,6 +328,9 @@ memo-comments-section .reply-form-container memo-comment-input form {
 	font-weight: 500;
 }
 
+mat-icon {
+	user-select: none;
+}
 
 @media all and (min-width: 800px) {
 	.desktop-column,

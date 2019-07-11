@@ -9,9 +9,13 @@ import {MemoMaterialModule} from "../../../material.module";
 import {RouterModule} from "@angular/router";
 import {SharedPipesModule} from "../../shared/pipes/shared-pipes.module";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import {ContentContainerModule} from "../../shared/content/content-container.module";
+import {ReactiveFormsModule} from "@angular/forms";
+import { DiscountConditionFormComponent } from './discount-form/discount-condition-form/discount-condition-form.component';
+import {DataContainerModule} from "../../shared/utility/data-container/data-container.module";
 
 @NgModule({
-	declarations: [DiscountsComponent, DiscountFormComponent, DiscountGridItemComponent],
+	declarations: [DiscountsComponent, DiscountFormComponent, DiscountGridItemComponent, DiscountConditionFormComponent],
 	imports: [
 		CommonModule,
 		SharedSearchModule,
@@ -19,7 +23,10 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 		MemoMaterialModule,
 		RouterModule,
 		SharedPipesModule,
-		FlexLayoutModule
+		FlexLayoutModule,
+		ContentContainerModule,
+		ReactiveFormsModule,
+		DataContainerModule
 	],
 	exports: [
 		DiscountsComponent,

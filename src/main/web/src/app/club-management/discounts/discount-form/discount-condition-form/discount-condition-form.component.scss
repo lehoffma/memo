@@ -1,0 +1,13 @@
+@import "variables";
+
+memo-data-container {
+	::ng-deep {
+		.empty-state {
+			padding: 0;
+
+			.empty-state-headline {
+				color: grey(800);
+			}
+		}
+	}
+}

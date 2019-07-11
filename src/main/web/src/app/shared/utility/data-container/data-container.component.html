@@ -1,9 +1,11 @@
-<div class="empty-state" *ngIf="error else noError">
+<div class="empty-state" [class.horizontal]="errorStateType === 'horizontal'" *ngIf="error else noError">
 	<mat-icon class="empty-state-header-icon">{{errorStateIcon || 'error'}}</mat-icon>
-	<span class="empty-state-headline">{{errorStateHeadline || 'Error!'}}</span>
-	<span class="empty-state-subheader">{{errorStateSubtitle || 'Es ist ein Fehler aufgetreten.'}}</span>
-	<div class="empty-state-actions">
-		<ng-content select="memo-data-error-state-actions"></ng-content>
+	<div fxLayout="column">
+		<span class="empty-state-headline">{{errorStateHeadline || 'Error!'}}</span>
+		<span class="empty-state-subheader">{{errorStateSubtitle || 'Es ist ein Fehler aufgetreten.'}}</span>
+		<div class="empty-state-actions">
+			<ng-content select="memo-data-error-state-actions"></ng-content>
+		</div>
 	</div>
 </div>
 <ng-template #noError>
@@ -11,13 +13,16 @@
 		<div class="loader"></div>
 	</div>
 	<ng-template #noLoading>
-		<div *ngIf="data?.length === 0 || empty; else notEmpty" class="empty-state">
+		<div *ngIf="data?.length === 0 || empty; else notEmpty" class="empty-state"
+			 [class.horizontal]="emptyStateType === 'horizontal'">
 			<mat-icon class="empty-state-header-icon">{{emptyStateIcon || 'find_in_page'}}</mat-icon>
-			<span class="empty-state-headline">{{emptyStateHeadline || 'Keine Daten'}}</span>
-			<span
-				class="empty-state-subheader">{{emptyStateSubtitle || 'Wir konnten leider keine Daten finden.'}}</span>
-			<div class="empty-state-actions">
-				<ng-content select="memo-data-empty-state-actions"></ng-content>
+			<div fxLayout="column">
+				<span class="empty-state-headline">{{emptyStateHeadline || 'Keine Daten'}}</span>
+				<span
+					class="empty-state-subheader">{{emptyStateSubtitle || 'Wir konnten leider keine Daten finden.'}}</span>
+				<div class="empty-state-actions">
+					<ng-content select="memo-data-empty-state-actions"></ng-content>
+				</div>
 			</div>
 		</div>
 

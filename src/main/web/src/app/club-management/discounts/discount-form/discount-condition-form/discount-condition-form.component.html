@@ -1,0 +1,18 @@
+<memo-data-container [empty]="formArray.controls.length === 0"
+					 [renderer]="conditionRenderer"
+					 emptyStateType="horizontal"
+					 emptyStateIcon="local_offer"
+					 emptyStateHeadline="Füge eine Bedingung hinzu"
+					 emptyStateSubtitle="Im Moment gilt dieser Discount für alle Nutzer und Items."
+>
+	<memo-data-empty-state-actions>
+		<button mat-raised-button color="accent" (click)="addControl()">
+			Bedingung hinzufügen
+		</button>
+	</memo-data-empty-state-actions>
+</memo-data-container>
+
+
+<ng-template #conditionRenderer>
+	Hallo
+</ng-template>

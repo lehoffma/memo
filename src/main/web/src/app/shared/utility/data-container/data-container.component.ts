@@ -1,5 +1,7 @@
 import {Component, Input, OnInit, TemplateRef} from "@angular/core";
 
+export type EmptyStateType = "vertical" | "horizontal";
+
 @Component({
 	selector: "memo-data-error-state-actions",
 	template: `<ng-content></ng-content>`,
@@ -39,6 +41,9 @@ export class DataContainerComponent implements OnInit {
 	@Input() emptyStateSubtitle: string;
 
 	@Input() renderer: TemplateRef<any>;
+
+	@Input() emptyStateType: EmptyStateType = "vertical";
+	@Input() errorStateType: EmptyStateType = "vertical";
 
 	constructor() {
 	}

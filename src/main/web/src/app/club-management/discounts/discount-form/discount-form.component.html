@@ -1,3 +1,106 @@
-<p>
-  discount-form works!
-</p>
+<ng-container *ngLet="previousValue$ | async as previousValue">
+	<div class="modify-shop-item-container">
+		<h3 class="container--header">
+			Discount {{previousValue ? 'bearbeiten' : 'erstellen'}}
+		</h3>
+		<form [formGroup]="formGroup" (ngSubmit)="submitModifiedObject()">
+
+			<memo-form-container [title]="'Informationen'" [subtitle]="'Alle Felder sind verpflichtend'"
+								 class="grouped"
+								 [formGroup]="formGroup">
+
+				<div class="form-input-container">
+					<label class="form-label">Grund</label>
+					<mat-form-field appearance="outline" class="small-outline-formfield">
+						<input matInput name="reasonInput"
+							   required
+							   formControlName="reason"
+						>
+						<mat-error *ngIf="formGroup.get('reason').hasError('required')" align="end">
+							Dieses Feld darf nicht leer bleiben!
+						</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="flex-start center">
+					<div class="form-input-container">
+						<label class="form-label">Menge</label>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
+							<input matInput name="amountInput"
+								   required type="number"
+								   formControlName="amount"
+							>
+							<span *ngIf="!formGroup.get('isPercentage').value" class="input-prefix" matPrefix>max.</span>
+							<span *ngIf="!formGroup.get('isPercentage').value" matSuffix>€</span>
+							<span *ngIf="formGroup.get('isPercentage').value" matSuffix>%</span>
+							<mat-error *ngIf="formGroup.get('amount').hasError('required')" align="end">
+								Dieses Feld darf nicht leer bleiben!
+							</mat-error>
+							<mat-error *ngIf="formGroup.get('amount').hasError('minimum')" align="end">
+								Bitte gib einen Wert größer gleich 0 ein!
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<mat-checkbox formControlName="isPercentage">
+						Prozentual
+					</mat-checkbox>
+				</div>
+
+				<div fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="flex-start center">
+					<div class="form-input-container">
+						<label class="form-label" optional>
+							Limit pro User und Item
+						</label>
+						<mat-form-field appearance="outline" class="small-outline-formfield">
+							<input matInput name="limitPerUserAndItemInput" type="number"
+								   formControlName="limitPerUserAndItem"
+								   placeholder="Default: Kein Limit"
+							>
+							<mat-hint align="end">-1 entspricht keinem Limit</mat-hint>
+						</mat-form-field>
+					</div>
+					<mat-icon matTooltip="Wie oft ein Discount von einem User angewendet werden darf">help</mat-icon>
+				</div>
+			</memo-form-container>
+
+			<memo-form-container title="Link" subtitle="Link zu Seite, auf der User sich für Discount qualifizieren können" class="grouped">
+				<div class="form-input-container">
+					<label class="form-label" optional>Link URL</label>
+					<mat-form-field appearance="outline" class="small-outline-formfield">
+						<input matInput name="linkUrlInput"
+							   formControlName="linkUrl"
+						>
+					</mat-form-field>
+				</div>
+
+				<div class="form-input-container">
+					<label class="form-label" optional>Link Text</label>
+					<mat-form-field appearance="outline" class="small-outline-formfield">
+						<input matInput name="linkTextInput"
+							   formControlName="linkText">
+					</mat-form-field>
+				</div>
+			</memo-form-container>
+
+			<memo-form-container [title]="'Bedingungen'" class="grouped">
+				<memo-discount-condition-form [formArray]="formGroup.get('conditions')"></memo-discount-condition-form>
+			</memo-form-container>
+
+
+			<div class="form-buttons">
+				<a mat-button routerLink="/management/discounts/" color="warning" type="button">Abbrechen</a>
+				<button mat-raised-button color="accent"
+						[disabled]="!formGroup.valid || formGroup.pending || loading">
+					<span *ngIf="!loading; else loadingSpinner">
+						{{previousValue ? 'Erstellen' : 'Speichern'}}
+					</span>
+					<ng-template #loadingSpinner>
+						<mat-icon class="loading-spinner">refresh</mat-icon>
+						<span>Speichert...</span>
+					</ng-template>
+				</button>
+			</div>
+		</form>
+	</div>
+</ng-container>
