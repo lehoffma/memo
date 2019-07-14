@@ -1,0 +1,50 @@
+<ng-container [ngSwitch]="type.type">
+	<mat-checkbox *ngSwitchCase="conditionType.boolean" [formControl]="control">
+		{{type.formLabel || type.label}}
+	</mat-checkbox>
+	<div *ngSwitchCase="conditionType.itemTypeList" class="form-input-container">
+		<div class="form-label">{{type.formLabel || type.label}}</div>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<mat-select [formControl]="control" multiple>
+				<mat-option *ngFor="let option of itemTypeOptions" [value]="option.value">
+					{{option.label}}
+				</mat-option>
+			</mat-select>
+			<mat-hint align="end">Nur einer der Typen muss übereinstimmen</mat-hint>
+		</mat-form-field>
+	</div>
+	<div *ngSwitchCase="conditionType.clubRoleList" class="form-input-container">
+		<div class="form-label">{{type.formLabel || type.label}}</div>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<mat-select [formControl]="control" multiple>
+				<mat-select-trigger *ngLet="(control.value === null) ? '' : control.value.join(', ') as label" [title]="label">
+					{{label}}
+				</mat-select-trigger>
+				<mat-option *ngFor="let option of clubRoleOptions" [value]="option">{{option}}</mat-option>
+			</mat-select>
+			<mat-hint align="end">Nur einer der Rollen muss übereinstimmen</mat-hint>
+		</mat-form-field>
+	</div>
+	<div *ngSwitchCase="conditionType.minMaxNumber" fxLayout="column" [formGroup]="minMaxFormGroup">
+		<div class="form-input-container">
+			<label class="form-label" optional>min.</label>
+			<mat-form-field appearance="outline" class="small-outline-formfield">
+				<input matInput formControlName="min" type="number"/>
+			</mat-form-field>
+		</div>
+
+		<div class="form-input-container">
+			<label class="form-label" optional>max.</label>
+			<mat-form-field appearance="outline" class="small-outline-formfield">
+				<input matInput formControlName="max" type="number"/>
+			</mat-form-field>
+		</div>
+	</div>
+	<div class="form-input-container" *ngSwitchDefault>
+		<div class="form-label">{{type.formLabel || type.label}}</div>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<input matInput [formControl]="control"/>
+		</mat-form-field>
+	</div>
+
+</ng-container>

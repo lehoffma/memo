@@ -60,7 +60,7 @@
 							<mat-hint align="end">-1 entspricht keinem Limit</mat-hint>
 						</mat-form-field>
 					</div>
-					<mat-icon matTooltip="Wie oft ein Discount von einem User angewendet werden darf">help</mat-icon>
+					<mat-icon matTooltip="Wie oft ein Discount von einem User verwendet werden kann">help</mat-icon>
 				</div>
 			</memo-form-container>
 
@@ -83,13 +83,30 @@
 				</div>
 			</memo-form-container>
 
-			<memo-form-container [title]="'Bedingungen'" class="grouped">
-				<memo-discount-condition-form [formArray]="formGroup.get('conditions')"></memo-discount-condition-form>
+			<memo-form-container [title]="'Item-Bedingungen'" *ngLet="(itemMatches$ | async) as matches"
+								 [subtitle]="matches === null ? 'Validiere...' : ('Gilt im Moment für ' + (matches) + ' Item' + (matches === 1 ? '' : 's'))"
+								 class="grouped">
+				<memo-discount-condition-form [formArray]="formGroup.get('itemConditions')"
+											  [conditionOptions]="itemDiscountConditions"
+											  emptyStateIcon="local_offer"
+											  emptyStateTitle="Füge eine Item-Bedingung hinzu"
+											  emptyStateSubtitle="Im Moment gilt dieser Discount für alle Items."
+				></memo-discount-condition-form>
 			</memo-form-container>
 
+			<memo-form-container [title]="'User-Bedingungen'" class="grouped" *ngLet="(userMatches$ | async) as matches"
+								 [subtitle]="matches === null ? 'Validiere...' : ('Gilt im Moment für ' + (matches) + ' Nutzer')" >
+				<memo-discount-condition-form [formArray]="formGroup.get('userConditions')"
+											  [conditionOptions]="userDiscountConditions"
+											  emptyStateIcon="person"
+											  emptyStateTitle="Füge eine User-Bedingung hinzu"
+											  emptyStateSubtitle="Im Moment gilt dieser Discount für alle User."
+				></memo-discount-condition-form>
+			</memo-form-container>
 
 			<div class="form-buttons">
 				<a mat-button routerLink="/management/discounts/" color="warning" type="button">Abbrechen</a>
+
 				<button mat-raised-button color="accent"
 						[disabled]="!formGroup.valid || formGroup.pending || loading">
 					<span *ngIf="!loading; else loadingSpinner">

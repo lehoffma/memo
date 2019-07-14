@@ -1,3 +1,18 @@
+
+export enum ConditionType{
+	minMaxPrice,
+	minMaxDate,
+	minMaxNumber,
+	userList,
+	itemList,
+	itemTypeList,
+	clubRoleList,
+	boolean,
+}
+
+
+
+
 export interface Discount {
 	id: number;
 	amount: number;
@@ -18,10 +33,10 @@ export interface Discount {
 	seasonTicket: boolean;
 	isStudent: boolean;
 
-	items: number[];
 	discountStart: string;
 	discountEnd: string;
 
+	items: number[];
 	minPrice: number;
 	maxPrice: number;
 	itemTypes: number[];

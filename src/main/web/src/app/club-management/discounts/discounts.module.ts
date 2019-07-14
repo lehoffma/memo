@@ -13,9 +13,10 @@ import {ContentContainerModule} from "../../shared/content/content-container.mod
 import {ReactiveFormsModule} from "@angular/forms";
 import { DiscountConditionFormComponent } from './discount-form/discount-condition-form/discount-condition-form.component';
 import {DataContainerModule} from "../../shared/utility/data-container/data-container.module";
+import { DiscountConditionFormFactoryComponent } from './discount-form/discount-condition-form/discount-condition-form-factory.component';
 
 @NgModule({
-	declarations: [DiscountsComponent, DiscountFormComponent, DiscountGridItemComponent, DiscountConditionFormComponent],
+	declarations: [DiscountsComponent, DiscountFormComponent, DiscountGridItemComponent, DiscountConditionFormComponent, DiscountConditionFormFactoryComponent],
 	imports: [
 		CommonModule,
 		SharedSearchModule,

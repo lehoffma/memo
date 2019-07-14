@@ -1,9 +1,9 @@
 <memo-data-container [empty]="formArray.controls.length === 0"
 					 [renderer]="conditionRenderer"
 					 emptyStateType="horizontal"
-					 emptyStateIcon="local_offer"
-					 emptyStateHeadline="Füge eine Bedingung hinzu"
-					 emptyStateSubtitle="Im Moment gilt dieser Discount für alle Nutzer und Items."
+					 [emptyStateIcon]="emptyStateIcon"
+					 [emptyStateHeadline]="emptyStateTitle"
+					 [emptyStateSubtitle]="emptyStateSubtitle"
 >
 	<memo-data-empty-state-actions>
 		<button mat-raised-button color="accent" (click)="addControl()">
@@ -14,5 +14,33 @@
 
 
 <ng-template #conditionRenderer>
-	Hallo
+	<!-- todo table? -->
+	<div *ngFor="let control of formArray.controls; let i = index" class="control-row"  [formGroup]="control"
+		 fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="flex-start flex-start">
+
+		<div class="form-input-container">
+			<div class="form-label">Typ</div>
+			<mat-form-field appearance="outline" class="small-outline-formfield">
+				<mat-select formControlName="type">
+					<mat-option *ngFor="let option of conditionOptions" [value]="option">
+						{{option.label}}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+
+
+		<memo-discount-condition-form-factory *ngIf="control.get('type').value as option"
+											  [control]="control.get('value')"
+											  [type]="option">
+		</memo-discount-condition-form-factory>
+
+		<button mat-icon-button class="remove-button" (click)="removeControl(i)" matTooltip="Bedingung entfernen">
+			<mat-icon>clear</mat-icon>
+		</button>
+	</div>
+
+	<button mat-raised-button color="accent" (click)="addControl()">
+		Bedingung hinzufügen
+	</button>
 </ng-template>

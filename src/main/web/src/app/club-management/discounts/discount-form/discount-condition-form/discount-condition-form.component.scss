@@ -11,3 +11,27 @@ memo-data-container {
 		}
 	}
 }
+
+.remove-button {
+	position: absolute;
+	right: -16px;
+	top: 16px;
+}
+
+.control-row {
+	position: relative;
+}
+
+.control-row:not(:first-of-type)::before {
+	content: "UND";
+	position: absolute;
+	left: -56px;
+	transform: translateY(-50%);
+	top: 50%;
+	z-index: 10;
+	background: accent(50);
+	color: accent();
+	padding-left: 4px;
+	padding-right: 4px;
+	font-weight: 500;
+}

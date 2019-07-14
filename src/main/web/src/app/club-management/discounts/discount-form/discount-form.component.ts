@@ -5,6 +5,7 @@ import {Discount} from "../../../shared/renderers/price-renderer/discount";
 import {ActivatedRoute} from "@angular/router";
 import {switchMap} from "rxjs/operators";
 import {DiscountService} from "../../../shop/shared/services/discount.service";
+import {itemDiscountConditions, userDiscountConditions} from "./discount-condition-form/discount-condition-form.component";
 
 @Component({
 	selector: "memo-discount-form",
@@ -12,7 +13,10 @@ import {DiscountService} from "../../../shop/shared/services/discount.service";
 	styleUrls: ["./discount-form.component.scss"]
 })
 export class DiscountFormComponent implements OnInit {
+	userDiscountConditions = userDiscountConditions;
+	itemDiscountConditions = itemDiscountConditions;
 
+	//todo add warning if conditions don't match anything?
 	formGroup: FormGroup = this.fb.group({
 		amount: this.fb.control(0, {validators: [Validators.min(0)]}),
 		isPercentage: this.fb.control(false),
@@ -20,11 +24,15 @@ export class DiscountFormComponent implements OnInit {
 		linkText: this.fb.control(""),
 		reason: this.fb.control("", {validators: [Validators.required]}),
 		limitPerUserAndItem: this.fb.control(-1, {validators: [Validators.required, Validators.min(-1)]}),
-		conditions: this.fb.array([])
+		itemConditions: this.fb.array([]),
+		userConditions: this.fb.array([]),
 	});
 
 	loading: boolean;
 	error: any;
+
+	itemMatches$: Observable<number> = of(5);
+	userMatches$: Observable<number> = of(5);
 
 	previousValue$: Observable<Discount> = this.activatedRoute.paramMap.pipe(
 		switchMap(map => map.has("id")
