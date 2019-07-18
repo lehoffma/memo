@@ -28,7 +28,7 @@ public class DiscountEntity {
 
     //discounts can be either percentage-based or absolute values
     @Column(nullable = false)
-    private Boolean isPercentage;
+    private Boolean isPercentage = false;
 
     //discounts cannot be deleted, they can only become outdated
     //at which point they cannot apply on anything anymore and are hidden from the usual discount creation table

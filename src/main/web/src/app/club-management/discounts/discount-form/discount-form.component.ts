@@ -265,7 +265,6 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 			take(1),
 			switchMap(previous => {
 				const newValue = this.formToDiscount(previous);
-				console.log(newValue);
 				if (previous) {
 					return this.discountService.modify(newValue as Discount);
 				} else {
