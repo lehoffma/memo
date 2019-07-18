@@ -6,7 +6,7 @@
 					 [emptyStateSubtitle]="emptyStateSubtitle"
 >
 	<memo-data-empty-state-actions>
-		<button mat-raised-button color="accent" (click)="addControl()">
+		<button mat-raised-button type="button" color="accent" (click)="addControl()">
 			Bedingung hinzufügen
 		</button>
 	</memo-data-empty-state-actions>
@@ -14,33 +14,39 @@
 
 
 <ng-template #conditionRenderer>
-	<!-- todo table? -->
-	<div *ngFor="let control of formArray.controls; let i = index" class="control-row"  [formGroup]="control"
-		 fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="flex-start flex-start">
+	<ng-container *ngLet="usedOptions$ | async as usedOptions">
+		<!-- todo table? -->
+		<div *ngFor="let control of formArray.controls; let i = index" class="control-row" [formGroup]="control"
+			 fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="flex-start flex-start">
 
-		<div class="form-input-container">
-			<div class="form-label">Typ</div>
-			<mat-form-field appearance="outline" class="small-outline-formfield">
-				<mat-select formControlName="type">
-					<mat-option *ngFor="let option of conditionOptions" [value]="option">
-						{{option.label}}
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
+			<div class="form-input-container">
+				<div class="form-label">Typ</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
+					<mat-select formControlName="type">
+						<mat-option
+							*ngFor="let option of conditionOptions | pipeFunction:filterUsedOptions:control.get('type').value:(usedOptions || [])"
+							[value]="option">
+							{{option.label}}
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+			</div>
+
+
+			<memo-discount-condition-form-factory *ngIf="control.get('type').value as option"
+												  [control]="control.get('value')"
+												  [type]="option">
+			</memo-discount-condition-form-factory>
+
+			<button mat-icon-button type="button" class="remove-button" (click)="removeControl(i)"
+					matTooltip="Bedingung entfernen">
+				<mat-icon>clear</mat-icon>
+			</button>
 		</div>
-
-
-		<memo-discount-condition-form-factory *ngIf="control.get('type').value as option"
-											  [control]="control.get('value')"
-											  [type]="option">
-		</memo-discount-condition-form-factory>
-
-		<button mat-icon-button class="remove-button" (click)="removeControl(i)" matTooltip="Bedingung entfernen">
-			<mat-icon>clear</mat-icon>
+		<button mat-raised-button type="button" color="accent" *ngIf="usedOptions?.length < conditionOptions.length"
+				(click)="addControl()">
+			Bedingung hinzufügen
 		</button>
-	</div>
+	</ng-container>
 
-	<button mat-raised-button color="accent" (click)="addControl()">
-		Bedingung hinzufügen
-	</button>
 </ng-template>

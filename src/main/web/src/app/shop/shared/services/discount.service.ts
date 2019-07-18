@@ -1,10 +1,10 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {map, mergeMap} from "rxjs/operators";
+import {map, mergeMap, tap} from "rxjs/operators";
 import {Observable} from "rxjs";
 import {Discount} from "../../../shared/renderers/price-renderer/discount";
 import {EventService} from "../../../shared/services/api/event.service";
-import {ServletService} from "../../../shared/services/api/servlet.service";
+import {AddOrModifyResponse, ServletService} from "../../../shared/services/api/servlet.service";
 import {Filter} from "../../../shared/model/api/filter";
 import {PageRequest} from "../../../shared/model/api/page-request";
 import {Direction, Sort} from "../../../shared/model/api/sort";
@@ -18,8 +18,13 @@ export class DiscountService extends ServletService<Discount> {
 
 
 	addOrModify(requestMethod: <T>(url: string, body: (any | null), options?: { headers?: HttpHeaders; observe?: "body"; params?: HttpParams; reportProgress?: boolean; responseType?: "json"; withCredentials?: boolean }) => Observable<T>, entry: Discount, options?: any): Observable<Discount> {
-		//todo allow creating discounts once the infrastructure around it has been changed
-		return undefined;
+		return this.performRequest(requestMethod<AddOrModifyResponse>(this.baseUrl, {discount: entry}, {
+			headers: new HttpHeaders().set("Content-Type", "application/json")
+		}))
+			.pipe(
+				tap(response => this._cache.invalidateById(response.id)),
+				mergeMap(response => this.getById(response.id))
+			);
 	}
 
 
@@ -74,8 +79,8 @@ export class DiscountService extends ServletService<Discount> {
 		}
 
 		return this.getPagedForCustomUrl(
-			// "/api/discounts/getPossibilities",
-			"/api/discounts/get",
+			"/api/discounts/getPossibilities",
+			// "/api/discounts/get",
 			filter,
 			PageRequest.all(),
 			Sort.by(Direction.DESCENDING, "id")

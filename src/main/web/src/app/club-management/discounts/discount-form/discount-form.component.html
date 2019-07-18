@@ -1,5 +1,5 @@
 <ng-container *ngLet="previousValue$ | async as previousValue">
-	<div class="modify-shop-item-container">
+	<div class="modify-shop-item-container" *ngLet="loading$ | async as loading">
 		<h3 class="container--header">
 			Discount {{previousValue ? 'bearbeiten' : 'erstellen'}}
 		</h3>
@@ -110,7 +110,7 @@
 				<button mat-raised-button color="accent"
 						[disabled]="!formGroup.valid || formGroup.pending || loading">
 					<span *ngIf="!loading; else loadingSpinner">
-						{{previousValue ? 'Erstellen' : 'Speichern'}}
+						{{previousValue ? 'Speichern' : 'Erstellen'}}
 					</span>
 					<ng-template #loadingSpinner>
 						<mat-icon class="loading-spinner">refresh</mat-icon>

@@ -17,16 +17,19 @@ public class DiscountAuthStrategy implements AuthenticationStrategy<DiscountEnti
 
     @Override
     public boolean isAllowedToCreate(User user, DiscountEntity object) {
+        //todo which roles?
         return false;
     }
 
     @Override
     public boolean isAllowedToModify(User user, DiscountEntity object) {
+        //todo which roles?
         return false;
     }
 
     @Override
     public boolean isAllowedToDelete(User user, DiscountEntity object) {
+        //there is no delete method anyway (only setting to "outdated")
         return false;
     }
 }

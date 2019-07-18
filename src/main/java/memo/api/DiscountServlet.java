@@ -1,12 +1,15 @@
 package memo.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import memo.api.util.ApiServletPostOptions;
+import memo.api.util.ApiServletPutOptions;
 import memo.auth.AuthenticationService;
 import memo.data.EventRepository;
 import memo.data.UserRepository;
 import memo.discounts.auth.DiscountAuthStrategy;
 import memo.discounts.data.DiscountRepository;
 import memo.discounts.model.DiscountEntity;
+import memo.model.Entry;
 import memo.model.OrderedItem;
 import memo.model.ShopItem;
 import memo.model.User;
@@ -16,11 +19,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/discounts")
@@ -110,6 +111,29 @@ public class DiscountServlet extends AbstractApiServlet<DiscountEntity> {
     public Object get(@Context HttpServletRequest request) {
         //to enable getById stuff
         return this.get(request, discountRepository);
+    }
+
+
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response post(@Context HttpServletRequest request, String body) {
+        DiscountEntity entry = this.post(request, body, new ApiServletPostOptions<>(
+                "discount", new DiscountEntity(), DiscountEntity.class, DiscountEntity::getId
+        ));
+
+        return this.respond(entry, "id", DiscountEntity::getId);
+    }
+
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response put(@Context HttpServletRequest request, String body) {
+        DiscountEntity entry = this.put(request, body, new ApiServletPutOptions<>(
+                "discount", DiscountEntity.class, DiscountEntity::getId
+        ));
+
+        return this.respond(entry, "id", DiscountEntity::getId);
     }
 
 }

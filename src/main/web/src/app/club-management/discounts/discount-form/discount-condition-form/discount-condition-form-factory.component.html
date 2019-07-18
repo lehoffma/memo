@@ -1,7 +1,9 @@
 <ng-container [ngSwitch]="type.type">
-	<mat-checkbox *ngSwitchCase="conditionType.boolean" [formControl]="control">
-		{{type.formLabel || type.label}}
-	</mat-checkbox>
+	<div *ngSwitchCase="conditionType.boolean" class="checkbox-container" fxLayout="row" fxLayoutAlign="flex-start center">
+		<mat-checkbox [formControl]="control">
+			{{type.formLabel || type.label}}
+		</mat-checkbox>
+	</div>
 	<div *ngSwitchCase="conditionType.itemTypeList" class="form-input-container">
 		<div class="form-label">{{type.formLabel || type.label}}</div>
 		<mat-form-field appearance="outline" class="small-outline-formfield">
@@ -10,7 +12,7 @@
 					{{option.label}}
 				</mat-option>
 			</mat-select>
-			<mat-hint align="end">Nur einer der Typen muss übereinstimmen</mat-hint>
+			<mat-hint align="end">Nur ein Typ muss erfüllt sein</mat-hint>
 		</mat-form-field>
 	</div>
 	<div *ngSwitchCase="conditionType.clubRoleList" class="form-input-container">
@@ -22,7 +24,7 @@
 				</mat-select-trigger>
 				<mat-option *ngFor="let option of clubRoleOptions" [value]="option">{{option}}</mat-option>
 			</mat-select>
-			<mat-hint align="end">Nur einer der Rollen muss übereinstimmen</mat-hint>
+			<mat-hint align="end">Nur eine Rolle muss erfüllt sein</mat-hint>
 		</mat-form-field>
 	</div>
 	<div *ngSwitchCase="conditionType.minMaxNumber" fxLayout="column" [formGroup]="minMaxFormGroup">
