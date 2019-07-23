@@ -85,12 +85,15 @@ export abstract class BaseSearchResultsComponent<T> implements OnDestroy {
 						  protected dataService: ServletService<T>,
 						  protected router: Router,
 	) {
+	}
+
+	initialize(){
 		this.resultsDataSource.isExpandable = false;
 		this.resultsDataSource.filter$ = this.filter$;
 		this.resultsDataSource.sort$ = this.sortedBy;
 		this.init();
 		this.initResults();
-		this.resultsDataSource.writePaginatorUpdatesToUrl(router, () => this.navigationService.queryParams$.getValue());
+		this.resultsDataSource.writePaginatorUpdatesToUrl(this.router, () => this.navigationService.queryParams$.getValue());
 		this.resultsDataSource.updateOn(this.filter$);
 		this.resultsDataSource.updateOn(this.sortedBy);
 		combineLatest([this.filter$, this.sortedBy]).pipe(skip(1), takeUntil(this.onDestroy$)).subscribe(() => {

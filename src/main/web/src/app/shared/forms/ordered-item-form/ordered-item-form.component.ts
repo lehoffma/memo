@@ -27,7 +27,10 @@ export class OrderedItemFormComponent implements OnInit {
 	 */
 	updateItem(item: OrderedItem, index: number = this.formGroup.get("items").value.length) {
 		const currentValue = this.formGroup.get("items").value;
-		currentValue.splice(index, 1, item);
+		currentValue.splice(index, 1, {
+			...currentValue[index],
+			...item
+		});
 		this.formGroup.get("items").setValue([...currentValue]);
 	}
 

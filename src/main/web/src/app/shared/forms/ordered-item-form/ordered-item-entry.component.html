@@ -62,7 +62,13 @@
 		</div>
 		<div class="price labelled-value right-aligned">
 			<span class="label">Preis</span>
-			<span>{{orderedItem.price | currency:'EUR':'symbol'}}</span>
+			<span *ngLet="orderedItem | pipeFunction:getPrice as discountedPrice">
+				<span matTooltip="Bezahlter Preis">{{discountedPrice | currency:'EUR':'symbol'}} </span>
+				<span *ngIf="discountedPrice !== orderedItem.price"
+						matTooltip="Grundpreis">
+					({{orderedItem.price | currency:'EUR':'symbol'}})
+				</span>
+			</span>
 		</div>
 	</div>
 </div>

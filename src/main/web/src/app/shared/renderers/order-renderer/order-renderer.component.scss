@@ -276,7 +276,7 @@
 	padding: 8px;
 	border-top: 1px solid memo-grey(100);
 
-	> button ::ng-deep span{
+	> button ::ng-deep span {
 		text-decoration: underline;
 	}
 }
@@ -305,8 +305,13 @@
 }
 
 .order-price {
-	font-weight: 500;
-	font-size: font-size();
+	margin-left: 16px;
+
+	&,
+	button {
+		font-weight: 500;
+		font-size: font-size();
+	}
 }
 
 img {

@@ -7,7 +7,9 @@ import {filter, scan} from "rxjs/operators";
 import {Filter} from "../model/api/filter";
 import {FilterOption} from "./filter-options/filter-option";
 
-@Injectable()
+@Injectable({
+	providedIn: "root"
+})
 export class FilterOptionBuilder {
 	options: {
 		option: (input: Filter) => Observable<FilterOption>;

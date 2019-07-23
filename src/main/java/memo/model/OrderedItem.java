@@ -4,6 +4,7 @@ package memo.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import memo.discounts.model.DiscountEntity;
+import memo.serialization.DiscountIdListDeserializer;
 import memo.serialization.OrderIdDeserializer;
 import memo.serialization.ShopItemIdDeserializer;
 
@@ -70,6 +71,7 @@ public class OrderedItem implements Serializable {
             joinColumns = @JoinColumn(name = "orderedItem_id"),
             inverseJoinColumns = @JoinColumn(name = "discount_id")
     )
+    @JsonDeserialize(using = DiscountIdListDeserializer.class)
     private List<DiscountEntity> discounts;
 
     private BigDecimal price = BigDecimal.valueOf(0);

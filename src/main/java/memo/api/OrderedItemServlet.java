@@ -35,7 +35,6 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     private EventRepository eventRepository;
     private OrderServlet orderServlet;
     private UserRepository userRepository;
-    private DiscountRepository discountRepository;
 
     public OrderedItemServlet() {
     }
@@ -43,7 +42,6 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
     @Inject
     public OrderedItemServlet(ParticipantRepository participantRepository,
                               OrderServlet orderServlet,
-                              DiscountRepository discountRepository,
                               EventRepository eventRepository,
                               UserRepository userRepository,
                               ParticipantsAuthStrategy authStrategy,
@@ -51,7 +49,6 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
         super();
         logger = LogManager.getLogger(OrderedItemServlet.class);
         this.participantRepository = participantRepository;
-        this.discountRepository = discountRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.orderServlet = orderServlet;
@@ -126,15 +123,6 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
         return Response.ok(participantRepository.getStateOfItem(shopItem, showCancelled.equals("true"))).build();
     }
 
-    private OrderedItem setDiscounts(OrderedItem item, User user) {
-        //get all discounts that can be applied
-        Page<DiscountEntity> discounts = this.discountRepository.getDiscounts(item.getItem(), user, new PageRequest()
-                .setPage(1)
-                .setPageSize(1000));
-        item.setDiscounts(discounts.getContent());
-        return item;
-    }
-
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
@@ -150,7 +138,6 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
         OrderedItem createdItem = this.post(request, body, new ApiServletPostOptions<>(
                         "orderedItem", new OrderedItem(), OrderedItem.class, OrderedItem::getId
                 )
-                        .setTransform(item -> this.setDiscounts(item, user))
                         .setPreconditions(Collections.singletonList(
                                 new ModifyPrecondition<>(
                                         item -> orderServlet.checkOrder(Collections.singletonList(item)),
@@ -178,7 +165,6 @@ public class OrderedItemServlet extends AbstractApiServlet<OrderedItem> {
         OrderedItem item = this.put(request, body, new ApiServletPutOptions<>(
                         "orderedItem", OrderedItem.class, OrderedItem::getId, "id"
                 )
-                        .setTransform(it -> this.setDiscounts(it, user))
         );
 
         return this.respond(item, "id", OrderedItem::getId);

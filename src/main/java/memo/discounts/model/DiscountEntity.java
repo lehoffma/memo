@@ -21,7 +21,7 @@ import java.util.List;
 public class DiscountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private BigDecimal amount;
@@ -116,11 +116,11 @@ public class DiscountEntity {
         return this;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public DiscountEntity setId(Long id) {
+    public DiscountEntity setId(Integer id) {
         this.id = id;
         return this;
     }

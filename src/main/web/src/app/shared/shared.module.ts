@@ -48,9 +48,9 @@ import {LetModule} from "./utility/let/let.module";
 import {AutocompleteFormsModule} from "./forms/autocomplete/autocomplete-forms.module";
 import {FigureCardComponent} from "./figure-card/figure-card.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
-import { OrderItemStatusComponent } from './renderers/order-renderer/order-item-status/order-item-status.component';
+import {OrderItemStatusComponent} from "./renderers/order-renderer/order-item-status/order-item-status.component";
 import {ContentContainerModule} from "./content/content-container.module";
-import { OrderPreviewRendererComponent } from './renderers/order-preview-renderer/order-preview-renderer.component';
+import {OrderPreviewRendererComponent} from "./renderers/order-preview-renderer/order-preview-renderer.component";
 import {DataContainerModule} from "./utility/data-container/data-container.module";
 
 const forms = [

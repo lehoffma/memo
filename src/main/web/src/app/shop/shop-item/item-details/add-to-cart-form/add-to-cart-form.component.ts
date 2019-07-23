@@ -23,6 +23,7 @@ import { MatDialog } from "@angular/material/dialog";
 import {ManageWaitingListDialogComponent} from "./manage-waiting-list-dialog.component";
 import {integerToType} from "../../../shared/model/event-type";
 import {isEdited} from "../../../../util/util";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
 	selector: "memo-add-to-cart-form",
@@ -137,6 +138,7 @@ export class AddToCartFormComponent implements OnInit {
 				private shoppingCartService: ShoppingCartService,
 				private waitingListService: WaitingListService,
 				private matDialog: MatDialog,
+				private snackBar: MatSnackBar,
 				private loginService: LogInService,
 				private stockService: StockService,
 				private capacityService: CapacityService) {
@@ -287,6 +289,7 @@ export class AddToCartFormComponent implements OnInit {
 		});
 
 		this.model.amount = 0;
+		this.snackBar.open("Artikel wurde(n) deinem Warenkorb hinzugefügt!", "Okay", {duration: 5000});
 	}
 
 	/**

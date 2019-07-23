@@ -1,13 +1,14 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {map, mergeMap, tap} from "rxjs/operators";
-import {Observable} from "rxjs";
-import {Discount} from "../../../shared/renderers/price-renderer/discount";
+import {map, mergeMap, share, switchMap, tap} from "rxjs/operators";
+import {Observable, of} from "rxjs";
+import {Discount, getDiscountedPrice} from "../../../shared/renderers/price-renderer/discount";
 import {EventService} from "../../../shared/services/api/event.service";
 import {AddOrModifyResponse, ServletService} from "../../../shared/services/api/servlet.service";
 import {Filter} from "../../../shared/model/api/filter";
 import {PageRequest} from "../../../shared/model/api/page-request";
 import {Direction, Sort} from "../../../shared/model/api/sort";
+import {flatMap, flatten} from "../../../util/util";
 
 @Injectable()
 export class DiscountService extends ServletService<Discount> {
@@ -144,18 +145,6 @@ export class DiscountService extends ServletService<Discount> {
 			);
 	}
 
-	/**
-	 *
-	 * @param {Discount[]} discounts
-	 * @returns {number}
-	 */
-	private getTotalDiscount(discounts: Discount[]): number {
-		if (!discounts) {
-			return 0;
-		}
-		return discounts
-			.reduce((acc, discount) => acc + discount.amount, 0);
-	}
 
 	/**
 	 * Calculates the reduced price according to the array of discounts given.
@@ -165,29 +154,7 @@ export class DiscountService extends ServletService<Discount> {
 	 * @returns {number}
 	 */
 	getDiscountedPrice(basePrice: number, discounts: Discount[]): number {
-		discounts
-		//non-percentage discounts first, then sort by id
-			.sort((a, b) => {
-				if (a.isPercentage === b.isPercentage) {
-					return b.id - a.id;
-				}
-
-				if (a.isPercentage && !b.isPercentage) {
-					return -1;
-				}
-				if (!a.isPercentage && b.isPercentage) {
-					return 1;
-				}
-				return 0;
-			})
-			.reduce((price, discount) => {
-				if (discount.isPercentage) {
-					return price - price * discount.amount;
-				}
-				return price - discount.amount;
-			}, basePrice);
-
-		return Math.max(basePrice - this.getTotalDiscount(discounts), 0);
+		return getDiscountedPrice(basePrice, discounts);
 	}
 
 }

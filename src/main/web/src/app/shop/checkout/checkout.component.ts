@@ -5,7 +5,7 @@ import {LogInService} from "../../shared/services/api/login.service";
 import {AddressService} from "../../shared/services/api/address.service";
 import {Address} from "../../shared/model/address";
 import {ShoppingCartService} from "../../shared/services/shopping-cart.service";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {OrderService} from "../../shared/services/api/order.service";
 import {createOrder, Order} from "../../shared/model/order";
 import {ShoppingCartContent} from "../../shared/model/shopping-cart-content";
@@ -20,14 +20,14 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../shared/services/api/user.service";
 import {debitRequiresAccountValidator} from "../../shared/validators/debit-requires-account.validator";
 import {ShoppingCartItem} from "../../shared/model/shopping-cart-item";
-import {flatMap, flatten} from "../../util/util";
+import {flatMap} from "../../util/util";
 import {DiscountService} from "app/shop/shared/services/discount.service";
 import {processInParallelAndWait, processSequentiallyAndWait} from "../../util/observable-util";
 import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
 import {setProperties} from "../../shared/model/util/base-object";
 import {PaymentMethod} from "./payment/payment-method";
-import {MerchColor} from "../shared/model/merch-color";
 import {paymentConfig} from "../shared/model/event";
+import {Discount} from "../../shared/renderers/price-renderer/discount";
 
 @Component({
 	selector: "memo-checkout",
@@ -208,10 +208,12 @@ export class CheckoutComponent implements OnInit {
 					.pipe(
 						first(),
 						//todo error handling
+						//todo discounts hinzufügen?
 						//combine cart content into one array
 						map(content => this.combineCartContent(content)),
 						//map events to orderedItem interface to make it usable on the backend
 						map(events => this.mapToOrderedItems(events, user.id)),
+						switchMap(items => this.addDiscounts(items, user.id)),
 						switchMap(items => this.handleOrderedItems(items, user)),
 						map(orderedItems => setProperties(createOrder(), {
 							user: user.id,
@@ -247,6 +249,17 @@ export class CheckoutComponent implements OnInit {
 	 */
 	private combineCartContent(content: ShoppingCartContent): ShoppingCartItem[] {
 		return [...content.partys, ...content.tours, ...content.merch]
+	}
+
+	private addDiscounts(items: OrderedItem[], userId: number): Observable<OrderedItem[]> {
+		return combineLatest(
+			items.map(item => this.discountService.getEventDiscounts(item.item as any, userId).pipe(
+				map((discounts: Discount[]) => ({
+					...item,
+					discounts: discounts.map(it => it.id)
+				} as any))
+			))
+		) as Observable<OrderedItem[]>
 	}
 
 	/**

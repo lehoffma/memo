@@ -5,6 +5,7 @@ import {Event} from "../../../shop/shared/model/event";
 import {EventType} from "../../../shop/shared/model/event-type";
 import {orderStatusToString} from "../../model/order-status";
 import {ConfirmationDialogService} from "../../services/confirmation-dialog.service";
+import {getDiscountedPrice} from "../../renderers/price-renderer/discount";
 
 @Component({
 	selector: "memo-ordered-item-entry",
@@ -29,6 +30,15 @@ export class OrderedItemEntryComponent implements OnInit {
 	}
 
 	ngOnInit() {
+	}
+
+
+	getPrice(orderedItem: OrderedItem): number {
+		const discounts = orderedItem.discounts;
+		if (!discounts) {
+			return orderedItem.price;
+		}
+		return getDiscountedPrice(orderedItem.price, discounts)
 	}
 
 	getEventData(item: Event): { link: string; type: EventType } {

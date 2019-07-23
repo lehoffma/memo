@@ -6,7 +6,7 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet.service";
 import {EventUtilityService} from "../event-utility.service";
 import {Observable, of} from "rxjs";
-import {map, mergeMap, share, tap} from "rxjs/operators";
+import {map, mergeMap, share, switchMap, tap} from "rxjs/operators";
 import {OrderService} from "./order.service";
 import {createOrder, Order} from "../../model/order";
 import {PaymentMethod} from "../../../shop/checkout/payment/payment-method";
@@ -24,6 +24,10 @@ import {EventService} from "./event.service";
 import {setProperties} from "../../model/util/base-object";
 import {Event} from "../../../shop/shared/model/event";
 import {ParticipantState} from "../../model/participant-state";
+import {Discount, getDiscountAmount, getDiscountedPrice} from "../../renderers/price-renderer/discount";
+import {flatMap, flatten} from "../../../util/util";
+import {ShoppingCartItem} from "../../model/shopping-cart-item";
+import {User} from "../../model/user";
 
 interface ParticipantApiResponse {
 	orderedItems: Participant[]
@@ -165,6 +169,48 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 		const params = new HttpParams()
 			.set("itemId", shopItemId + "");
 		return this.getForCustomUrl(url, params);
+	}
+
+
+	public getDiscountsForCartItem(cartItem: ShoppingCartItem, user: User): Observable<Discount[]> {
+		return this.discountService.getEventDiscounts(
+			cartItem.id, user === null ? undefined : user.id
+		).pipe(
+			switchMap(discounts => {
+				if (!discounts.some(discount => discount.limitPerUserAndItem > 0)) {
+					//apply all discounts on all items if there is no limit at all
+					return of(flatten(new Array(cartItem.amount).fill(discounts)));
+				}
+
+				return this.getAmountOfOrdersForLoggedInUser(cartItem.item.id)
+					.pipe(
+						map(amountOfOrders => {
+							//apply discount (limit - amountOfOrders) times
+
+							return flatMap(discount => {
+								const howOften = discount.limitPerUserAndItem - amountOfOrders;
+								if (howOften <= 0) {
+									return [];
+								}
+								return new Array(Math.min(cartItem.amount, howOften)).fill(discount);
+							}, discounts);
+						}),
+						share()
+					)
+			})
+		) as Observable<Discount[]>
+	}
+
+	public getDiscountedPriceForCartItem(cartItem: ShoppingCartItem, user: User): Observable<number> {
+		return this.getDiscountsForCartItem(cartItem, user).pipe(
+			map(discounts => getDiscountedPrice(cartItem.item.price  * cartItem.amount, discounts))
+		)
+	}
+
+	public getDiscountValueForCartItem(cartItem: ShoppingCartItem, user: User): Observable<number> {
+		return this.getDiscountsForCartItem(cartItem, user).pipe(
+			map(discounts => getDiscountAmount(cartItem.item.price * cartItem.amount, discounts))
+		)
 	}
 
 

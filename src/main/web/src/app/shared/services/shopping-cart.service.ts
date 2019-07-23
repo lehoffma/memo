@@ -4,11 +4,13 @@ import {ShoppingCartContent} from "../model/shopping-cart-content";
 import {ShoppingCartItem, ShoppingCartOption} from "../model/shopping-cart-item";
 import {MerchColor} from "../../shop/shared/model/merch-color";
 import {EventService} from "./api/event.service";
-import {filter, map, mergeMap} from "rxjs/operators";
+import {filter, map, mergeMap, switchMap} from "rxjs/operators";
 import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {LogInService} from "./api/login.service";
 import {DiscountService} from "app/shop/shared/services/discount.service";
 import {StorageService} from "./storage.service";
+import {getDiscountAmount} from "../renderers/price-renderer/discount";
+import {OrderedItemService} from "./api/ordered-item.service";
 
 @Injectable()
 export class ShoppingCartService implements OnInit {
@@ -27,6 +29,7 @@ export class ShoppingCartService implements OnInit {
 	constructor(private eventService: EventService,
 				private loginService: LogInService,
 				private storage: StorageService,
+				private orderedItemService: OrderedItemService,
 				private discountService: DiscountService
 	) {
 		this.initFromLocalStorage();
@@ -49,17 +52,11 @@ export class ShoppingCartService implements OnInit {
 						return of([]);
 					}
 
-					//todo discount refactor
-					return (combineLatest(
-						allItems
-							.map(cartItem => this.loginService.currentUser$
-								.pipe(
-									mergeMap(user => this.discountService.calculateDiscountedPriceOfEvent(
-										cartItem.item.id, cartItem.item.price, user !== null ? user.id : undefined
-									)),
-									map(discountedPrice => (cartItem.amount - 1) * cartItem.item.price + discountedPrice)
-								)
-							)));
+					return this.loginService.currentUser$.pipe(
+						switchMap((user) => combineLatest(
+							allItems.map(cartItem => this.orderedItemService.getDiscountedPriceForCartItem(cartItem, user))
+						))
+					);
 				}),
 				map(prices => prices.reduce((acc, current) => acc + current, 0))
 			)

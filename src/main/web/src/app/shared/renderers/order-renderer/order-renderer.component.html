@@ -22,7 +22,9 @@
 		</div>
 		<div>
 			<span class="label">Gesamt</span>
-			<span class="labelled-value">{{total | currency:'EUR':'symbol'}}</span>
+			<span class="labelled-value" *ngLet="total$ | async as total">
+				{{total !== null ? (total | currency:'EUR':'symbol') : '...'}}
+			</span>
 		</div>
 	</div>
 	<div class="method" [class.line-under]="!(bankAccount$ | async)">
@@ -57,8 +59,11 @@
 						<h3 class="labelled-value">{{item.originalItem.item.title}}</h3>
 					</a>
 					<div class="order-price">
-						<!--<span class="order-price-amount">{{item.amount}} x </span>-->
-						<span class="order-price-value">{{item.originalItem.price | currency:'EUR':'symbol'}}</span>
+						<button class="order-price-value link-button"
+								matTooltip="Zeige Preisaufschlüsselung"
+								(click)="openDiscountDialog(item)">
+							{{item.originalItem | pipeFunction:getPrice | currency:'EUR':'symbol'}}
+						</button>
 					</div>
 				</div>
 

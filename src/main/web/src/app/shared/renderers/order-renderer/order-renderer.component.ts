@@ -1,15 +1,17 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from "@angular/core";
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges} from "@angular/core";
 import {Order} from "../../model/order";
 import {OrderedItem} from "../../model/ordered-item";
 import {EventUtilityService} from "../../services/event-utility.service";
 import {OrderStatus, orderStatusTooltip, orderStatusToString} from "../../model/order-status";
 import {UserBankAccountService} from "../../services/api/user-bank-account.service";
 import {BankAccount} from "../../model/bank-account";
-import {EMPTY, Observable} from "rxjs";
+import {BehaviorSubject, EMPTY, Observable, Subject} from "rxjs";
 import {User} from "../../model/user";
 import {UserService} from "../../services/api/user.service";
-import {Event} from "../../../shop/shared/model/event";
-import {MerchColor} from "../../../shop/shared/model/merch-color";
+import {DiscountService} from "../../../shop/shared/services/discount.service";
+import {MatDialog, MatSnackBar} from "@angular/material";
+import {getDiscountedPrice} from "../price-renderer/discount";
+import {DiscountOverlayComponent} from "../price-renderer/discount-overlay.component";
 
 interface OrderedEventItem {
 	originalItem: OrderedItem;
@@ -29,7 +31,7 @@ interface OrderedEventItem {
 	styleUrls: ["./order-renderer.component.scss"],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OrderRendererComponent implements OnInit, OnChanges {
+export class OrderRendererComponent implements OnInit, OnDestroy, OnChanges {
 	@Input() orderEntry: Order;
 	@Input() withActions = false;
 	@Input() isOnDetailsPage = false;
@@ -37,7 +39,7 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 	@Input() withRemove = true;
 	@Input() canSeeDescription = false;
 	orderedEventItems: OrderedEventItem[] = [];
-	total: number = 0;
+	total$: BehaviorSubject<number> = new BehaviorSubject(null);
 
 	bankAccount$: Observable<BankAccount> = EMPTY;
 	user$: Observable<User> = EMPTY;
@@ -45,7 +47,12 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 	@Output() onRemove: EventEmitter<Order> = new EventEmitter<Order>();
 	@Output() onCancel: EventEmitter<OrderedItem> = new EventEmitter();
 
+	onDestroy$ = new Subject();
+
 	constructor(private bankAccountService: UserBankAccountService,
+				private snackBar: MatSnackBar,
+				private matDialog: MatDialog,
+				private discountService: DiscountService,
 				private userService: UserService) {
 	}
 
@@ -59,8 +66,13 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 		}
 	}
 
+	ngOnDestroy(): void {
+		this.onDestroy$.next(true);
+	}
+
+
 	init() {
-		const events:OrderedEventItem[] = this.orderEntry.items
+		const events: OrderedEventItem[] = this.orderEntry.items
 			.reduce((events: OrderedEventItem[], item) => {
 				const eventId = item.item.id;
 				//todo merge same orders together
@@ -71,17 +83,17 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 				// 	: events.findIndex(it => it.originalItem.item.id === eventId && it.originalItem.price === item.price);
 				// //it's not already part of the array
 				// if (eventIndex === -1) {
-					events.push({
-						originalItem: item,
-						link: "/shop/" + EventUtilityService.getEventType(item.item) + "/" + item.item.id,
-						amount: 1,
-						status: {
-							css: orderStatusToString(item.status).replace(" ", "-"),
-							label: orderStatusToString(item.status),
-							tooltip: orderStatusTooltip(item.status),
-							value: item.status
-						},
-					});
+				events.push({
+					originalItem: item,
+					link: "/shop/" + EventUtilityService.getEventType(item.item) + "/" + item.item.id,
+					amount: 1,
+					status: {
+						css: orderStatusToString(item.status).replace(" ", "-"),
+						label: orderStatusToString(item.status),
+						tooltip: orderStatusTooltip(item.status),
+						value: item.status
+					},
+				});
 				// } else {
 				// 	events[eventIndex].amount++;
 				// }
@@ -91,8 +103,18 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 		this.user$ = this.userService.getById(this.orderEntry.user);
 		this.bankAccount$ = +(this.orderEntry.bankAccount) > 0 ? this.bankAccountService.getById(this.orderEntry.bankAccount) : EMPTY;
 		this.orderedEventItems = events;
-		this.total = events
-			.reduce((acc, event) => acc + event.originalItem.price * event.amount, 0);
+
+		this.total$.next(events.reduce((acc, event) => {
+			return acc + this.getPrice(event.originalItem);
+		}, 0));
+	}
+
+	getPrice(orderedItem: OrderedItem): number {
+		const discounts = orderedItem.discounts;
+		if (!discounts) {
+			return orderedItem.price;
+		}
+		return getDiscountedPrice(orderedItem.price, discounts)
 	}
 
 	remove() {
@@ -105,5 +127,15 @@ export class OrderRendererComponent implements OnInit, OnChanges {
 
 	canBeCancelled(item: OrderedEventItem) {
 		return item.status.value !== OrderStatus.PARTICIPATED && item.status.value !== OrderStatus.CANCELLED;
+	}
+
+	openDiscountDialog(item: OrderedEventItem) {
+		this.matDialog.open(DiscountOverlayComponent, {
+			data: {
+				basePrice: item.originalItem.price,
+				price: this.getPrice(item.originalItem),
+				discounts: item.originalItem.discounts
+			}
+		})
 	}
 }

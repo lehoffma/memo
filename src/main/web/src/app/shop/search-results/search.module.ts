@@ -22,7 +22,6 @@ import {FilterOptionBuilder} from "../../shared/search/filter-option-builder.ser
 		ResultsEntryComponent,
 	],
 	providers: [
-		FilterOptionBuilder
 	],
 	exports: [
 		ResultsComponent,

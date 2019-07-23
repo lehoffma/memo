@@ -1,5 +1,4 @@
-
-export enum ConditionType{
+export enum ConditionType {
 	minMaxPrice,
 	minMaxDate,
 	minMaxNumber,
@@ -9,8 +8,6 @@ export enum ConditionType{
 	clubRoleList,
 	boolean,
 }
-
-
 
 
 export interface Discount {
@@ -44,3 +41,32 @@ export interface Discount {
 	maxMiles: number;
 }
 
+export function getDiscountedPrice(basePrice: number, discounts: Discount[]): number {
+	const discountedValue = discounts
+	//non-percentage discounts first, then sort by id
+		.sort((a, b) => {
+			if (a.isPercentage === b.isPercentage) {
+				return b.id - a.id;
+			}
+
+			if (a.isPercentage && !b.isPercentage) {
+				return -1;
+			}
+			if (!a.isPercentage && b.isPercentage) {
+				return 1;
+			}
+			return 0;
+		})
+		.reduce((price, discount) => {
+			if (discount.isPercentage) {
+				return price - price * discount.amount;
+			}
+			return price - discount.amount;
+		}, basePrice);
+
+	return Math.max(discountedValue, 0);
+}
+
+export function getDiscountAmount(price: number, discounts: Discount[]): number{
+	return Math.abs(getDiscountedPrice(price, discounts) - price)
+}

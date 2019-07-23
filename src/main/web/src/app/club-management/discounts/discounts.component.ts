@@ -68,7 +68,9 @@ export class DiscountsComponent extends BaseSearchResultsComponent<Discount> {
 			loginService,
 			discountService,
 			router
-		)
+		);
+
+		this.initialize();
 	}
 
 	ngOnInit() {

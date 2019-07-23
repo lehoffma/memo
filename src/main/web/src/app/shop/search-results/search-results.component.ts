@@ -38,7 +38,7 @@ export class SearchResultComponent extends BaseSearchResultsComponent<Event> {
 	constructor(protected activatedRoute: ActivatedRoute,
 				protected searchFilterService: SearchFilterService,
 				protected matDialog: MatDialog,
-				protected filterOptionBuilder: FilterOptionBuilder,
+				public filterOptionBuilder: FilterOptionBuilder,
 				protected filterOptionFactory: FilterOptionFactoryService,
 				protected navigationService: NavigationService,
 				protected loginService: LogInService,
@@ -73,7 +73,9 @@ export class SearchResultComponent extends BaseSearchResultsComponent<Event> {
 			loginService,
 			eventService,
 			router
-		)
+		);
+
+		this.initialize();
 	}
 
 
@@ -108,6 +110,7 @@ export class SearchResultComponent extends BaseSearchResultsComponent<Event> {
 			.subscribe(console.log, console.error)
 	}
 
+	// buildFilterOptions = this._buildFilterOptions.bind(this);
 	protected buildFilterOptions(filter: Filter): Observable<FilterOption[]> {
 		return this.filterOptionBuilder
 			.empty()
