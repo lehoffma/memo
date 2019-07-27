@@ -10,6 +10,7 @@ import {OrderedItem} from "../../model/ordered-item";
 	providers: [ModifyOrderService]
 })
 export class OrderedItemFormComponent implements OnInit {
+	//todo support editing discounts per item?
 	@Input() formGroup: FormGroup;
 	showInlineForm = -1;
 	showNewItemForm = false;

@@ -23,7 +23,7 @@
 			<a class="discount-menu--item" mat-menu-item *ngFor="let discount of nonEligibleDiscounts" routerLink="{{discount?.linkUrl}}">
 				<span>{{discount?.reason}}:</span>
 
-				<span *ngIf="!discount.isPercentage; else percentageDisplay" class="amount">
+				<span *ngIf="!discount.percentage; else percentageDisplay" class="amount">
 					{{discount.amount | number:'1.2-2'}}€
 				</span>
 				<ng-template #percentageDisplay>

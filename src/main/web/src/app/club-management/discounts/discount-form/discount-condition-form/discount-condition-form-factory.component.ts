@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from "@angular/core";
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {FormBuilder, FormControl, FormGroup} from "@angular/forms";
 import {ConditionOption} from "./discount-condition-form.component";
 import {ConditionType} from "../../../../shared/renderers/price-renderer/discount";
@@ -6,6 +6,7 @@ import {EventType} from "../../../../shop/shared/model/event-type";
 import {ClubRole, clubRoles} from "../../../../shared/model/club-role";
 import {Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";
+import {DiscountFormService} from "../discount-form.service";
 
 @Component({
 	selector: "memo-discount-condition-form-factory",
@@ -33,7 +34,13 @@ export class DiscountConditionFormFactoryComponent implements OnInit, OnDestroy 
 
 	onDestroy$ = new Subject();
 
-	constructor(private fb: FormBuilder) {
+	constructor(private fb: FormBuilder,
+				private cdRef: ChangeDetectorRef,
+				private discountFormService: DiscountFormService,) {
+		this.discountFormService.refresh$.pipe(takeUntil(this.onDestroy$))
+			.subscribe(() => {
+				this.cdRef.detectChanges();
+			});
 		this.minMaxFormGroup.valueChanges.pipe(takeUntil(this.onDestroy$))
 			.subscribe(value => {
 				this.control.setValue(value);
@@ -41,6 +48,13 @@ export class DiscountConditionFormFactoryComponent implements OnInit, OnDestroy 
 	}
 
 	ngOnInit() {
+		const value = this.control.value;
+		if (!value) {
+			return;
+		}
+		this.minMaxFormGroup.setValue({
+			...value
+		})
 	}
 
 	ngOnDestroy(): void {

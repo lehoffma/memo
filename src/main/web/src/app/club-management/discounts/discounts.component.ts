@@ -84,8 +84,8 @@ export class DiscountsComponent extends BaseSearchResultsComponent<Discount> {
 				{key: "isActive", label: "Nur aktive", query: [{key: "outdated", value: "false"}]},
 			]),
 			new MultiFilterOption("percentage", "Typ", [
-				{key: "onlyPercentage", label: "Prozentual", query: [{key: "isPercentage", value: "true"}]},
-				{key: "onlyAbsolute", label: "Absolut", query: [{key: "isPercentage", value: "false"}]},
+				{key: "onlyPercentage", label: "Prozentual", query: [{key: "percentage", value: "true"}]},
+				{key: "onlyAbsolute", label: "Absolut", query: [{key: "percentage", value: "false"}]},
 			])
 		])
 	}

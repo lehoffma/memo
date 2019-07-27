@@ -34,7 +34,7 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 	//todo add warning if conditions don't match anything?
 	formGroup: FormGroup = this.fb.group({
 		amount: this.fb.control(0, {validators: [Validators.min(0.01)]}),
-		isPercentage: this.fb.control(false),
+		percentage: this.fb.control(false),
 		linkUrl: this.fb.control(""),
 		linkText: this.fb.control(""),
 		reason: this.fb.control("", {validators: [Validators.required]}),
@@ -47,6 +47,7 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 	disabled$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	error: any;
 
+	//todo discounts redesign
 	itemMatches$: Observable<number> = of(5);
 	userMatches$: Observable<number> = of(5);
 
@@ -106,7 +107,7 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 			case ConditionType.minMaxNumber:
 			case ConditionType.minMaxPrice:
 				const min = discount["min" + this.capitalizeFirstLetter(option.key)];
-				const max = discount["min" + this.capitalizeFirstLetter(option.key)];
+				const max = discount["max" + this.capitalizeFirstLetter(option.key)];
 				return of({min, max});
 			case ConditionType.userList:
 				const value = discount[option.key] as number[];
@@ -125,6 +126,10 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 	}
 
 	private addToConditionFormArray(discount: Discount, keys: string[], formArray: FormArray): Observable<any> {
+		if (keys.length === 0) {
+			return of(null);
+		}
+
 		return combineLatest(keys
 			.map((key: keyof Discount) => {
 				const option = discountKeyToConditionOption(key);
@@ -137,7 +142,10 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 				return this.discountToFormCondition(option, discount)
 					.pipe(
 						tap(value => {
-							console.log(option, value);
+							if (formArray.controls.find(control => control.get("type").value.key === option.key)) {
+								return;
+							}
+
 							formArray.push(this.fb.group({
 								type: this.fb.control(option, {validators: [Validators.required]}),
 								value: this.fb.control(value,)
@@ -151,7 +159,7 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 	private discountToForm(discount: Discount) {
 		this.formGroup.enable();
 		this.formGroup.get("amount").setValue(discount.amount);
-		this.formGroup.get("isPercentage").setValue(discount.isPercentage);
+		this.formGroup.get("percentage").setValue(discount.percentage);
 		this.formGroup.get("linkUrl").setValue(discount.linkUrl);
 		this.formGroup.get("linkText").setValue(discount.linkText);
 		this.formGroup.get("reason").setValue(discount.reason);
@@ -239,14 +247,13 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 			...(previousValue || {}),
 			id: (previousValue && previousValue.id) || null,
 			amount: formValue.amount,
-			isPercentage: formValue.isPercentage || false,
+			percentage: formValue.percentage || false,
 			linkUrl: formValue.linkUrl,
 			linkText: formValue.linkText,
 			reason: formValue.reason,
 			limitPerUserAndItem: formValue.limitPerUserAndItem,
 			outdated: false,
 		};
-		console.log(formValue, itemConditions, userConditions);
 
 		discount = itemConditions.reduce((acc, condition) => {
 			return this.addConditionFormValueToDiscount(condition.type, condition.value, acc);

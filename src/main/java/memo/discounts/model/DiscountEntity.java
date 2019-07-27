@@ -28,7 +28,7 @@ public class DiscountEntity {
 
     //discounts can be either percentage-based or absolute values
     @Column(nullable = false)
-    private Boolean isPercentage = false;
+    private Boolean percentage = false;
 
     //discounts cannot be deleted, they can only become outdated
     //at which point they cannot apply on anything anymore and are hidden from the usual discount creation table
@@ -135,11 +135,11 @@ public class DiscountEntity {
     }
 
     public Boolean getPercentage() {
-        return isPercentage;
+        return percentage;
     }
 
     public DiscountEntity setPercentage(Boolean percentage) {
-        isPercentage = percentage;
+        this.percentage = percentage;
         return this;
     }
 
@@ -251,11 +251,11 @@ public class DiscountEntity {
         return this;
     }
 
-    public Boolean getStudent() {
+    public Boolean getIsStudent() {
         return isStudent;
     }
 
-    public DiscountEntity setStudent(Boolean student) {
+    public DiscountEntity setIsStudent(Boolean student) {
         isStudent = student;
         return this;
     }

@@ -1,4 +1,5 @@
 @import "variables";
+@import "theme";
 
 :host {
 	position: relative;
@@ -25,12 +26,11 @@ mat-card {
 .condition-row {
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	color: grey(700);
 	cursor: pointer;
 
 	mat-icon {
-		margin-right: 4px;
+		margin-right: 8px;
 	}
 }
 
@@ -50,6 +50,15 @@ h4.discount-title {
 	font-size: font-size(medium);
 	margin: 8px 0 0;
 	text-align: center;
+}
+
+.discount-limit {
+	display: flex;
+	justify-content: center;
+	font-weight: 400;
+	font-size: font-size(smallest);
+	color: grey(700);
+	margin-top: 4px;
 }
 
 button.overflow-button.mat-icon-button {

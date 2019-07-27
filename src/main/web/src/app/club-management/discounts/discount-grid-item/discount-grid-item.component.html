@@ -1,22 +1,20 @@
 <mat-card [class.outdated]="discount.outdated">
 	<h3 class="discount-amount">
-		-{{discount.isPercentage
-		? ((discount.amount * 100).toFixed(2) + '%')
+		-{{discount.percentage
+		? ((discount.amount).toFixed(2) + '%')
 		: (discount.amount.toFixed(2) + "€")}}
 	</h3>
 	<h4 class="discount-title">{{discount.reason}}</h4>
+	<span class="discount-limit">{{discount.limitPerUserAndItem | pipeFunction:limitToString}}</span>
 
 	<div class="condition-container" fxLayout="column" fxLayoutGap="4px">
 		<div class="condition-row"
 			 *ngFor="let key of discount | pipeFunction: objectKeys | pipeFunction:filterNull:discount">
-			<ng-container *ngLet="properties[key] as property">
+			<ng-container *ngLet="key | pipeFunction:getProperties as property">
 				<mat-icon>{{property.matIcon}}</mat-icon>
-				<span matTooltip="{{properties[key].tooltip}}"
-					matTooltipPosition="below">
-					{{property.getString
-					? property.getString(discount[key])
-					: (property.getString$(discount[key]) | async)
-					}}
+				<span matTooltip="{{property.tooltip}}" *ngLet="property | pipeFunction:getLabel:discount:key as label$"
+					  matTooltipPosition="below">
+					{{label$ | async}}
 				</span>
 			</ng-container>
 		</div>

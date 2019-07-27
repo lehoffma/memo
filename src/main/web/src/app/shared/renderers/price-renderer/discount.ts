@@ -13,7 +13,7 @@ export enum ConditionType {
 export interface Discount {
 	id: number;
 	amount: number;
-	isPercentage: boolean;
+	percentage: boolean;
 	outdated: boolean;
 	linkUrl?: string;
 	linkText?: string;
@@ -45,21 +45,21 @@ export function getDiscountedPrice(basePrice: number, discounts: Discount[]): nu
 	const discountedValue = discounts
 	//non-percentage discounts first, then sort by id
 		.sort((a, b) => {
-			if (a.isPercentage === b.isPercentage) {
+			if (a.percentage === b.percentage) {
 				return b.id - a.id;
 			}
 
-			if (a.isPercentage && !b.isPercentage) {
+			if (a.percentage && !b.percentage) {
 				return -1;
 			}
-			if (!a.isPercentage && b.isPercentage) {
+			if (!a.percentage && b.percentage) {
 				return 1;
 			}
 			return 0;
 		})
 		.reduce((price, discount) => {
-			if (discount.isPercentage) {
-				return price - price * discount.amount;
+			if (discount.percentage) {
+				return price - price * (discount.amount / 100);
 			}
 			return price - discount.amount;
 		}, basePrice);

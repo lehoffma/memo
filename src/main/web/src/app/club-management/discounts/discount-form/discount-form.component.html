@@ -30,9 +30,9 @@
 								   required type="number"
 								   formControlName="amount"
 							>
-							<span *ngIf="!formGroup.get('isPercentage').value" class="input-prefix" matPrefix>max.</span>
-							<span *ngIf="!formGroup.get('isPercentage').value" matSuffix>€</span>
-							<span *ngIf="formGroup.get('isPercentage').value" matSuffix>%</span>
+							<span *ngIf="!formGroup.get('percentage').value" class="input-prefix" matPrefix>max.</span>
+							<span *ngIf="!formGroup.get('percentage').value" matSuffix>€</span>
+							<span *ngIf="formGroup.get('percentage').value" matSuffix>%</span>
 							<mat-error *ngIf="formGroup.get('amount').hasError('required')" align="end">
 								Dieses Feld darf nicht leer bleiben!
 							</mat-error>
@@ -42,7 +42,7 @@
 						</mat-form-field>
 					</div>
 
-					<mat-checkbox formControlName="isPercentage">
+					<mat-checkbox formControlName="percentage">
 						Prozentual
 					</mat-checkbox>
 				</div>

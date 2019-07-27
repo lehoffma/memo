@@ -15,7 +15,7 @@
 			<span>
 				{{discount.reason}}
 			</span>
-			<span *ngIf="!discount.isPercentage; else percentageDisplay">
+			<span *ngIf="!discount.percentage; else percentageDisplay">
 				-{{discount.amount | number:'1.2-2'}}€
 			</span>
 			<ng-template #percentageDisplay>
