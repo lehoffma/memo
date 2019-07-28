@@ -7,7 +7,7 @@ import {FilterOption} from "../../shared/search/filter-options/filter-option";
 import {SortingOptionHelper} from "../../shared/model/sorting-option";
 import {Direction, Sort} from "../../shared/model/api/sort";
 import {LogInService} from "../../shared/services/api/login.service";
-import {map} from "rxjs/operators";
+import {map, switchMap} from "rxjs/operators";
 import {ActivatedRoute, Router} from "@angular/router";
 import {SearchFilterService} from "../../shared/search/search-filter.service";
 import {NavigationService} from "../../shared/services/navigation.service";
@@ -16,6 +16,8 @@ import {DateRangeFilterOption} from "../../shared/search/filter-options/date-ran
 import {ShopItemFilterOption} from "../../shared/search/filter-options/shop-item-filter-option";
 import {EventService} from "../../shared/services/api/event.service";
 import {MultiFilterOption} from "../../shared/search/filter-options/multi-filter-option";
+import {ConfirmationDialogService} from "../../shared/services/confirmation-dialog.service";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
 	selector: "memo-discounts",
@@ -28,8 +30,10 @@ export class DiscountsComponent extends BaseSearchResultsComponent<Discount> {
 				protected activatedRoute: ActivatedRoute,
 				protected searchFilterService: SearchFilterService,
 				protected navigationService: NavigationService,
+				protected confirmDialogService: ConfirmationDialogService,
 				protected eventService: EventService,
 				protected discountService: DiscountService,
+				protected snackBar: MatSnackBar,
 				protected router: Router,) {
 		super(
 			//todo
@@ -95,7 +99,27 @@ export class DiscountsComponent extends BaseSearchResultsComponent<Discount> {
 	}
 
 	stopDiscount(discount: Discount) {
-		console.warn(discount);
-		//todo set "outdated" to true and invalidate caches/reload the data
+		this.confirmDialogService.openDialogWithConfirmation(
+			"Möchtest du diesen Discount wirklich deaktivieren? Dadurch kann er auf keine zukünftigen Bestellungen mehr angewendet werden!",
+			{
+				title: "Discount deaktivieren",
+				cancelMessage: "Nein, aktiv lassen",
+				confirmMessage: "Ja, deaktivieren"
+			}
+		)
+			.pipe(
+				//set "outdated" to true and invalidate caches/reload the data
+				switchMap(() => this.discountService.deactivate(discount))
+			)
+			.subscribe(
+				() => {
+					this.snackBar.open("Discount wurde erfolgreich deaktiviert!", "Okay", {duration: 3000});
+					this.resultsDataSource.update();
+				},
+				error => {
+					console.error(error);
+					this.snackBar.open("Discount konnte nicht deaktiviert werden!", "Okay");
+				}
+			)
 	}
 }

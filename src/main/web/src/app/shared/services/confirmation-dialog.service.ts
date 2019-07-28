@@ -1,10 +1,11 @@
 import {Injectable} from "@angular/core";
-import { MatDialog } from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {ConfirmationDialogComponent} from "../utility/confirmation-dialog/confirmation-dialog.component";
 import {Observable} from "rxjs";
-import {map} from "rxjs/operators";
+import {filter, map} from "rxjs/operators";
 
 export interface ConfirmDialogOptions {
+	title: string;
 	confirmMessage: string;
 	cancelMessage: string;
 }
@@ -20,6 +21,12 @@ export class ConfirmationDialogService {
 
 		let dialogRef = this.mdDialog.open(ConfirmationDialogComponent, {data});
 		return dialogRef.afterClosed();
+	}
+
+	openDialogWithConfirmation(message: string, options: Partial<ConfirmDialogOptions> = {}): Observable<any> {
+		return this.openDialog(message, options).pipe(
+			filter(yes => yes)
+		)
 	}
 
 	openWithCallback<T>(message: string, callback: () => T, options?: Partial<ConfirmDialogOptions>): Observable<T | null> {

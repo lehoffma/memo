@@ -1,9 +1,13 @@
+<h3 *ngIf="title" mat-dialog-title>
+	{{title}}
+</h3>
+
 <mat-dialog-content>
 	<div>
 		{{message}}
 	</div>
 </mat-dialog-content>
-<mat-dialog-actions>
+<mat-dialog-actions fxLayoutGap="8px">
 	<button mat-button matDialogClose>
 		{{cancelMessage}}
 	</button>

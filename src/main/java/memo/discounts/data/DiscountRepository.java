@@ -7,7 +7,6 @@ import memo.data.util.PredicateSupplierMap;
 import memo.discounts.auth.DiscountAuthStrategy;
 import memo.discounts.model.DiscountEntity;
 import memo.model.ClubRole;
-import memo.model.Discount;
 import memo.model.ShopItem;
 import memo.model.User;
 import memo.util.DatabaseManager;
@@ -66,7 +65,7 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
                                 "   AND (discount.minMiles IS NULL OR (:itemMiles IS NOT NULL AND discount.minMiles <= :itemMiles))" +
                                 "   AND (discount.maxMiles IS NULL OR (:itemMiles IS NOT NULL AND discount.maxMiles >= :itemMiles))" +
                                 "   AND (discount.items IS EMPTY OR (:itemId IS NOT NULL AND EXISTS(SELECT item from discount.items item WHERE item.id = :itemId)))" +
-                                "   AND (discount.itemTypes IS EMPTY OR (:itemType IS NOT NULL AND :itemType MEMBER OF discount.itemTypes))" +
+                                "   AND (discount.itemTypes IS EMPTY OR (:itemType IS NOT NULL AND EXISTS(SELECT itemType from discount.itemTypes itemType WHERE itemType = :itemType)))" +
                                 //user conditions
                                 "   AND (" +
                                 "           discount.limitPerUserAndItem IS NULL OR discount.limitPerUserAndItem < 0" +
@@ -81,7 +80,7 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
                                 "   OR (discount.maxAge IS NOT NULL AND (:userAge IS NOT NULL AND discount.maxAge < :userAge))" +
                                 "   OR (discount.minMembershipDurationInDays IS NOT NULL AND (:userMembershipDays IS NOT NULL AND discount.minMembershipDurationInDays > :userMembershipDays))" +
                                 "   OR (discount.maxMembershipDurationInDays IS NOT NULL AND (:userMembershipDays IS NOT NULL AND discount.maxMembershipDurationInDays < :userMembershipDays))" +
-                                "   OR (discount.clubRoles IS NOT EMPTY AND :clubRole IS NOT NULL AND :clubRole NOT MEMBER OF discount.clubRoles)" +
+                                "   OR (discount.clubRoles IS NOT EMPTY AND :clubRole IS NOT NULL AND NOT EXISTS(SELECT clubRole FROM discount.clubRoles clubRole WHERE clubRole = :clubRole))" +
                                 "   OR (discount.users IS NOT EMPTY AND :userId IS NOT NULL AND NOT EXISTS(SELECT user from discount.users user WHERE user.id = :userId)))" +
                                 "   ",
                         DiscountEntity.class)
@@ -108,13 +107,13 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
                                 "     discount.users as users \n" +
                                 "WHERE (discount.discountStart IS NULL OR discount.discountStart <= CURRENT_DATE) " +
                                 "   AND (discount.discountEnd IS NULL OR discount.discountEnd >= CURRENT_DATE)" +
-                                //item conditions
+//                                //item conditions
                                 "   AND (discount.minPrice IS NULL OR (:itemPrice IS NOT NULL AND discount.minPrice <= :itemPrice))" +
                                 "   AND (discount.maxPrice IS NULL OR (:itemPrice IS NOT NULL AND discount.maxPrice >= :itemPrice))" +
                                 "   AND (discount.minMiles IS NULL OR (:itemMiles IS NOT NULL AND discount.minMiles <= :itemMiles))" +
                                 "   AND (discount.maxMiles IS NULL OR (:itemMiles IS NOT NULL AND discount.maxMiles >= :itemMiles))" +
                                 "   AND (discount.items IS EMPTY OR (:itemId IS NOT NULL AND EXISTS(SELECT item from discount.items item WHERE item.id = :itemId)))" +
-                                "   AND (discount.itemTypes IS EMPTY OR (:itemType IS NOT NULL AND :itemType MEMBER OF discount.itemTypes))" +
+                                "   AND (discount.itemTypes IS EMPTY OR (:itemType IS NOT NULL AND EXISTS(SELECT itemType from discount.itemTypes itemType WHERE itemType = :itemType)))" +
                                 //user conditions
                                 "   AND (" +
                                 "           discount.limitPerUserAndItem IS NULL OR discount.limitPerUserAndItem < 0" +
@@ -129,7 +128,7 @@ public class DiscountRepository extends AbstractPagingAndSortingRepository<Disco
                                 "   AND (discount.maxAge IS NULL OR (:userAge IS NOT NULL AND discount.maxAge >= :userAge))" +
                                 "   AND (discount.minMembershipDurationInDays IS NULL OR (:userMembershipDays IS NOT NULL AND discount.minMembershipDurationInDays <= :userMembershipDays))" +
                                 "   AND (discount.maxMembershipDurationInDays IS NULL OR (:userMembershipDays IS NOT NULL AND discount.maxMembershipDurationInDays >= :userMembershipDays))" +
-                                "   AND (discount.clubRoles IS empty OR (:clubRole IS NOT NULL AND :clubRole MEMBER OF discount.clubRoles))" +
+                                "   AND (discount.clubRoles IS empty OR (:clubRole IS NOT NULL AND EXISTS(SELECT role from discount.clubRoles role WHERE role = :clubRole)))" +
                                 "   AND (discount.users IS EMPTY OR (:userId IS NOT NULL AND EXISTS(SELECT user from discount.users user WHERE user.id = :userId)))" +
                                 "   ",
                         DiscountEntity.class)

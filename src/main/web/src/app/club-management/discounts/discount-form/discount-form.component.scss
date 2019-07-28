@@ -16,14 +16,23 @@
 		content: "Achtung! ";
 	}
 }
-.error-subtitle ::ng-deep .subtitle {
-	 &::before {
-		 content: "Fehler! ";
-	 }
- }
 
-.warn-subtitle ::ng-deep .subtitle ,
-.error-subtitle ::ng-deep .subtitle{
+.error-subtitle ::ng-deep .subtitle {
+	&::before {
+		content: "Fehler! ";
+	}
+}
+
+.amount-input-parent {
+	flex-wrap: wrap-reverse;
+}
+
+.amount-input-container {
+	width: 205px;
+}
+
+.warn-subtitle ::ng-deep .subtitle,
+.error-subtitle ::ng-deep .subtitle {
 	color: warn(700) !important;
 	font-weight: bold;
 }

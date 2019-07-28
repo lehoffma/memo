@@ -12,7 +12,7 @@ mat-card {
 		border-color: grey();
 
 		.discount-amount {
-			color: grey();
+			color: grey(700);
 		}
 	}
 }
@@ -28,6 +28,7 @@ mat-card {
 	align-items: center;
 	color: grey(700);
 	cursor: pointer;
+	font-size: font-size(smaller);
 
 	mat-icon {
 		margin-right: 8px;
@@ -65,4 +66,18 @@ button.overflow-button.mat-icon-button {
 	position: absolute;
 	top: 0;
 	right: 0;
+}
+
+.outdated-indicator {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: font-size(smaller);
+	color: warn(800);
+	border: 1px solid;
+	background: warn(100);
+	border-radius: 4px;
+	width: 80px;
+	margin: 8px auto auto;
+	cursor: pointer;
 }

@@ -109,7 +109,7 @@ public class DiscountServlet extends AbstractApiServlet<DiscountEntity> {
 
     @GET
     public Object get(@Context HttpServletRequest request) {
-        //to enable getById stuff
+        //to enable getById/filtering stuff
         return this.get(request, discountRepository);
     }
 

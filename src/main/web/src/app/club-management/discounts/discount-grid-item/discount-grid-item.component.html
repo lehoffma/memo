@@ -6,6 +6,8 @@
 	</h3>
 	<h4 class="discount-title">{{discount.reason}}</h4>
 	<span class="discount-limit">{{discount.limitPerUserAndItem | pipeFunction:limitToString}}</span>
+	<span class="outdated-indicator" *ngIf="discount.outdated"
+		  matTooltip="Dieser Discount wurde deaktiviert">Deaktiviert</span>
 
 	<div class="condition-container" fxLayout="column" fxLayoutGap="4px">
 		<div class="condition-row"
@@ -28,9 +30,9 @@
 			<mat-icon>edit</mat-icon>
 			<span>Bearbeiten</span>
 		</a>
-		<button mat-menu-item (click)="stopDiscount.emit(discount)">
+		<button mat-menu-item *ngIf="!discount.outdated" (click)="stopDiscount.emit(discount)">
 			<mat-icon>cancel</mat-icon>
-			<span>Discount stoppen</span>
+			<span>Deaktivieren</span>
 		</button>
 	</mat-menu>
 </mat-card>

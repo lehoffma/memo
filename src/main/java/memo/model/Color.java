@@ -28,6 +28,7 @@ public class Color implements Serializable {
     private Integer id;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")
+    @JsonIgnore
     private List<OrderedItem> orderedItems = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "color")

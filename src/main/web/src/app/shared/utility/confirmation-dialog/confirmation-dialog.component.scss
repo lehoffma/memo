@@ -1,4 +1,13 @@
 mat-dialog-actions {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-end;
+}
+
+mat-dialog-content{
+	margin-bottom: 24px;
+}
+
+:host{
+	display: block;
+	max-width: 400px;
 }

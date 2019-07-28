@@ -1,6 +1,6 @@
 package memo.discounts.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.model.ClubRole;
@@ -18,6 +18,7 @@ import java.util.List;
 //todo discount refactor add color/sizes?
 @Entity
 @Table(name = "Discounts")
+@JsonIgnoreProperties({"orderedItems"})
 public class DiscountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -95,13 +96,11 @@ public class DiscountEntity {
     private BigDecimal minMiles = null;
     private BigDecimal maxMiles = null;
 
-    @JsonIgnore
     public List<OrderedItem> getOrderedItems() {
         return orderedItems;
     }
 
     //todo
-    @JsonIgnore
     public DiscountEntity setOrderedItems(List<OrderedItem> orderedItems) {
         this.orderedItems = orderedItems;
         return this;

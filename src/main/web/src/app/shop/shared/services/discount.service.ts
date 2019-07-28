@@ -1,14 +1,13 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {map, mergeMap, share, switchMap, tap} from "rxjs/operators";
-import {Observable, of} from "rxjs";
+import {map, mergeMap, tap} from "rxjs/operators";
+import {Observable} from "rxjs";
 import {Discount, getDiscountedPrice} from "../../../shared/renderers/price-renderer/discount";
 import {EventService} from "../../../shared/services/api/event.service";
 import {AddOrModifyResponse, ServletService} from "../../../shared/services/api/servlet.service";
 import {Filter} from "../../../shared/model/api/filter";
 import {PageRequest} from "../../../shared/model/api/page-request";
 import {Direction, Sort} from "../../../shared/model/api/sort";
-import {flatMap, flatten} from "../../../util/util";
 
 @Injectable()
 export class DiscountService extends ServletService<Discount> {
@@ -26,6 +25,12 @@ export class DiscountService extends ServletService<Discount> {
 				tap(response => this._cache.invalidateById(response.id)),
 				mergeMap(response => this.getById(response.id))
 			);
+	}
+
+	deactivate(discount: Discount): Observable<any> {
+		const copy = {...discount};
+		copy.outdated = true;
+		return this.modify(copy);
 	}
 
 
