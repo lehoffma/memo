@@ -17,7 +17,9 @@
 	<ng-container *ngLet="usedOptions$ | async as usedOptions">
 		<!-- todo table? -->
 		<div *ngFor="let control of formArray.controls; let i = index" class="control-row" [formGroup]="control"
-			 fxLayout="row" fxLayoutGap="8px" fxLayoutAlign="flex-start flex-start">
+			 fxLayout.gt-xs="row"
+			 fxLayout="column" fxLayoutGap="8px" fxLayoutAlign="flex-start flex-start"
+		>
 
 			<div class="form-input-container">
 				<div class="form-label">Typ</div>

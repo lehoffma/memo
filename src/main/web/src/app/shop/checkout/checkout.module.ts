@@ -11,6 +11,7 @@ import {ShopItemDetailsModule} from "../shop-item/item-details/shop-item-details
 import {UserModule} from "../../user/user.module";
 import {SharedCheckoutModule} from "./shared-checkout.module";
 import {RadioSelectionModule} from "../../shared/utility/radio-selection/radio-selection.module";
+import {DataContainerModule} from "../../shared/utility/data-container/data-container.module";
 
 @NgModule({
 	imports: [
@@ -24,7 +25,8 @@ import {RadioSelectionModule} from "../../shared/utility/radio-selection/radio-s
 		SharedModule,
 		SignUpModule,
 		SharedCheckoutModule,
-		RadioSelectionModule
+		RadioSelectionModule,
+		DataContainerModule
 	],
 	declarations: [
 		routedComponents,

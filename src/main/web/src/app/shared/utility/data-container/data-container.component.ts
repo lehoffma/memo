@@ -35,10 +35,12 @@ export class DataContainerComponent implements OnInit {
 	@Input() errorStateIcon: string;
 	@Input() errorStateHeadline: string;
 	@Input() errorStateSubtitle: string;
+	@Input() largeErrorState: boolean = false;
 
 	@Input() emptyStateIcon: string;
 	@Input() emptyStateHeadline: string;
 	@Input() emptyStateSubtitle: string;
+	@Input() largeEmptyState: boolean = false;
 
 	@Input() renderer: TemplateRef<any>;
 

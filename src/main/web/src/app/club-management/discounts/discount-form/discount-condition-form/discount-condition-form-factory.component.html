@@ -1,13 +1,14 @@
 <ng-container [ngSwitch]="type.type">
-	<div *ngSwitchCase="conditionType.boolean" class="checkbox-container" fxLayout="row" fxLayoutAlign="flex-start center">
-		<mat-checkbox [formControl]="control">
+	<div *ngSwitchCase="conditionType.boolean" class="checkbox-container" fxLayout="row"
+		 fxLayoutAlign="flex-start center">
+		<mat-checkbox [formControl]="formControlMap[conditionFormType.BOOLEAN]">
 			{{type.formLabel || type.label}}
 		</mat-checkbox>
 	</div>
 	<div *ngSwitchCase="conditionType.itemTypeList" class="form-input-container">
 		<div class="form-label">{{type.formLabel || type.label}}</div>
 		<mat-form-field appearance="outline" class="small-outline-formfield">
-			<mat-select [formControl]="control" multiple>
+			<mat-select [formControl]="formControlMap[conditionFormType.LIST]" multiple>
 				<mat-option *ngFor="let option of itemTypeOptions" [value]="option.value">
 					{{option.label}}
 				</mat-option>
@@ -18,8 +19,11 @@
 	<div *ngSwitchCase="conditionType.clubRoleList" class="form-input-container">
 		<div class="form-label">{{type.formLabel || type.label}}</div>
 		<mat-form-field appearance="outline" class="small-outline-formfield">
-			<mat-select [formControl]="control" multiple>
-				<mat-select-trigger *ngLet="(control.value === null) ? '' : control.value.join(', ') as label" [title]="label">
+			<mat-select *ngLet="formControlMap[conditionFormType.LIST] as listFormControl"
+						[formControl]="listFormControl" multiple>
+				<mat-select-trigger
+					*ngLet="(listFormControl.value === null) ? '' : listFormControl.value.join(', ') as label"
+					[title]="label">
 					{{label}}
 				</mat-select-trigger>
 				<mat-option *ngFor="let option of clubRoleOptions" [value]="option">{{option}}</mat-option>
@@ -27,11 +31,13 @@
 			<mat-hint align="end">Nur eine Rolle muss erfüllt sein</mat-hint>
 		</mat-form-field>
 	</div>
-	<div *ngSwitchCase="conditionType.minMaxNumber" fxLayout="column" [formGroup]="minMaxFormGroup">
+	<div *ngSwitchCase="conditionType.minMaxNumber" fxLayout="column"
+		 [formGroup]="formControlMap[conditionFormType.MIN_MAX]">
 		<div class="form-input-container">
 			<label class="form-label" optional>min.</label>
 			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput formControlName="min" type="number"/>
+				<span matSuffix *ngIf="suffixMap[type.key] as suffix">{{suffix}}</span>
 			</mat-form-field>
 		</div>
 
@@ -39,13 +45,15 @@
 			<label class="form-label" optional>max.</label>
 			<mat-form-field appearance="outline" class="small-outline-formfield">
 				<input matInput formControlName="max" type="number"/>
+				<span matSuffix *ngIf="suffixMap[type.key] as suffix">{{suffix}}</span>
 			</mat-form-field>
 		</div>
 	</div>
 	<div class="form-input-container" *ngSwitchDefault>
 		<div class="form-label">{{type.formLabel || type.label}}</div>
 		<mat-form-field appearance="outline" class="small-outline-formfield">
-			<input matInput [formControl]="control"/>
+			<input matInput [formControl]="formControlMap[conditionFormType.TEXT]"/>
+			<span matSuffix *ngIf="suffixMap[type.key] as suffix">{{suffix}}</span>
 		</mat-form-field>
 	</div>
 

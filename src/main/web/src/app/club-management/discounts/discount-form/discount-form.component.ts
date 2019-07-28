@@ -1,9 +1,9 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from "@angular/core";
-import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BehaviorSubject, combineLatest, Observable, of, Subject} from "rxjs";
 import {ConditionType, Discount} from "../../../shared/renderers/price-renderer/discount";
 import {ActivatedRoute, Router} from "@angular/router";
-import {filter, switchMap, take, takeUntil, tap} from "rxjs/operators";
+import {catchError, debounceTime, filter, map, startWith, switchMap, take, takeUntil, tap} from "rxjs/operators";
 import {DiscountService} from "../../../shop/shared/services/discount.service";
 import {
 	ConditionOption,
@@ -17,8 +17,14 @@ import {ShopItem} from "../../../shared/model/shop-item";
 import {UserService} from "../../../shared/services/api/user.service";
 import {EventService} from "../../../shared/services/api/event.service";
 import {DiscountFormService} from "./discount-form.service";
-import {isNumber} from "../../../util/util";
+import {isNumber, NOW} from "../../../util/util";
 import {MatSnackBar} from "@angular/material";
+import {Filter, FilterBuilder} from "../../../shared/model/api/filter";
+import {PageRequest} from "../../../shared/model/api/page-request";
+import {Sort} from "../../../shared/model/api/sort";
+import {isNullOrUndefined} from "util";
+import {Page} from "../../../shared/model/api/page";
+import {subDays, subYears} from "date-fns";
 
 export type ConditionFormType = { type: ConditionOption; value: any };
 
@@ -31,7 +37,6 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 	userDiscountConditions = userDiscountConditions;
 	itemDiscountConditions = itemDiscountConditions;
 
-	//todo add warning if conditions don't match anything?
 	formGroup: FormGroup = this.fb.group({
 		amount: this.fb.control(0, {validators: [Validators.min(0.01)]}),
 		percentage: this.fb.control(false),
@@ -47,9 +52,10 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 	disabled$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 	error: any;
 
-	//todo discounts redesign
-	itemMatches$: Observable<number> = of(5);
-	userMatches$: Observable<number> = of(5);
+	itemMatches$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
+	itemMatchesError$: BehaviorSubject<any> = new BehaviorSubject<number>(null);
+	userMatches$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
+	userMatchesError$: BehaviorSubject<any> = new BehaviorSubject<number>(null);
 
 	previousValue$: Observable<Discount> = this.activatedRoute.paramMap.pipe(
 		switchMap(map => map.has("id")
@@ -86,7 +92,10 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 			.subscribe(it => this.cdRef.detectChanges());
 
 		this.previousValue$.pipe(filter(it => it !== null), takeUntil(this.onDestroy$))
-			.subscribe(previous => this.discountToForm(previous))
+			.subscribe(previous => this.discountToForm(previous));
+
+		this.initItemMatchCounter();
+		this.initUserMatchCounter();
 	}
 
 	ngOnInit() {
@@ -94,6 +103,135 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy(): void {
 		this.onDestroy$.next(true)
+	}
+
+	private arrayAsFilter<T>(array: T[] | null | undefined): T[] | null | undefined {
+		return (!array || array.length === 0)
+			? null
+			: array
+	}
+
+
+	private userConditionsToItemFilter(conditions: Partial<Discount>): Filter {
+		//"minAge", "maxAge", "minMembershipDurationInDays", "maxMembershipDurationInDays",
+		return new FilterBuilder()
+			.add(
+				"id",
+				this.arrayAsFilter(conditions.users),
+				input => input.join(",")
+			)
+			//see below for an explanation
+			.add(
+				"minJoinDate",
+				conditions.maxMembershipDurationInDays,
+				input => subDays(NOW, input).toISOString()
+			)
+			.add(
+				"maxJoinDate",
+				conditions.minMembershipDurationInDays,
+				input => subDays(NOW, input).toISOString()
+			)
+			//example: minAge = 7 (years)
+			//converted: birthday has to be _before_ [today - 7 years], i.e. maxBirthday = [today - 7 years]
+			.add(
+				"maxBirthday",
+				conditions.minAge,
+				input => subYears(NOW, input).toISOString()
+			)
+			//example: maxAge = 7 (years)
+			//converted: birthday has to be _after_ [today - 7 years], i.e. minBirthday = [today - 7 years]
+			.add(
+				"minBirthday",
+				conditions.maxAge,
+				input => subYears(NOW, input).toISOString()
+			)
+			.add("clubRole", this.arrayAsFilter(conditions.clubRoles))
+			.add("woelfeClubMembership", conditions.woelfeClubMembership)
+			.add("seasonTicket", conditions.seasonTicket)
+			.add("isStudent", conditions.isStudent)
+			.build();
+	}
+
+	private itemConditionsToItemFilter(conditions: Partial<Discount>): Filter {
+		//"items", "minPrice", "maxPrice", "itemTypes", "minMiles", "maxMiles"
+		return new FilterBuilder()
+			.add(
+				"id",
+				this.arrayAsFilter(conditions.items),
+				input => input.join(",")
+			)
+			.add("minPrice", conditions.minPrice)
+			.add("maxPrice", conditions.maxPrice)
+			.add(
+				"type",
+				this.arrayAsFilter(conditions.itemTypes),
+				input => input.join(",")
+			)
+			.add("minMiles", conditions.minMiles)
+			.add("maxMiles", conditions.maxMiles)
+			.build();
+	}
+
+	private initMatchCounter(
+		formControl: AbstractControl,
+		matchesSubject$: Subject<number>,
+		errorSubject$: Subject<any>,
+		conditionsToFilter: (conditions: Partial<Discount>) => Filter,
+		getPage$: (filter: Filter, page: PageRequest, sort: Sort) => Observable<Page<any>>,
+	) {
+		this.formGroup.valueChanges.pipe(
+			startWith(true),
+			filter(() => formControl.valid),
+			debounceTime(300),
+			tap(() => {
+				matchesSubject$.next(null);
+				errorSubject$.next(null);
+			}),
+			map(() => this.formToDiscount()),
+			map(value => conditionsToFilter(value)),
+			switchMap(filter => getPage$(filter, PageRequest.first(), Sort.none()).pipe(
+				catchError(error => {
+					console.error(error);
+					matchesSubject$.next(undefined);
+					errorSubject$.next(true);
+					this.cdRef.detectChanges();
+					return of(null);
+				}),
+			)),
+
+			takeUntil(this.onDestroy$)
+		)
+			.subscribe(itemMatches => {
+				if (!itemMatches) {
+					return;
+				}
+				matchesSubject$.next(itemMatches.totalElements);
+				this.cdRef.detectChanges();
+			}, error => {
+				console.error(error);
+				errorSubject$.next(true);
+				this.cdRef.detectChanges();
+			})
+	}
+
+	private initItemMatchCounter() {
+		this.initMatchCounter(
+			this.formGroup.get("itemConditions"),
+			this.itemMatches$,
+			this.itemMatchesError$,
+			conditions => this.itemConditionsToItemFilter(conditions),
+			(filter, page, sort) => this.itemService.get(filter, page, sort)
+		);
+	}
+
+	private initUserMatchCounter() {
+		this.initMatchCounter(
+			this.formGroup.get("userConditions"),
+			this.userMatches$,
+			this.userMatchesError$,
+			conditions => this.userConditionsToItemFilter(conditions),
+			(filter, page, sort) => this.userService.get(filter, page, sort)
+		);
 	}
 
 	private discountToFormCondition(option: ConditionOption, discount: Discount): Observable<any> {
@@ -198,6 +336,9 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 	}
 
 	private addConditionFormValueToDiscount(type: ConditionOption, value: any, discount: Partial<Discount>): Partial<Discount> {
+		if (isNullOrUndefined(value)) {
+			return discount;
+		}
 		switch (type.type) {
 			case ConditionType.boolean:
 				return {
@@ -233,8 +374,12 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 				return {
 					...discount,
 					items: (value as ShopItem[]).map(it => it.id)
-				}
-
+				};
+			default:
+				console.warn("Unhandled case ", type);
+		}
+		return {
+			...discount,
 		}
 	}
 
@@ -294,4 +439,17 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 
 	}
 
+	getSubtitle(matches: number, itemMatchesError: any, type: "items" | "nutzer") {
+		const validating = (matches === null && itemMatchesError === null);
+		if (validating) {
+			return "Validiere...";
+		}
+
+		if (itemMatchesError !== null) {
+			return "Ungültiger Input!";
+		}
+
+		const suffix = type === "items" ? "Items" : "Nutzer";
+		return "Gilt im Moment für " + matches + " " + suffix;
+	}
 }

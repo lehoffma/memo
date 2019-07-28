@@ -1,9 +1,10 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from "@angular/core";
-import {FormArray, FormBuilder, Validators} from "@angular/forms";
+import {AbstractControl, FormArray, FormBuilder, Validators} from "@angular/forms";
 import {ConditionType, Discount} from "../../../../shared/renderers/price-renderer/discount";
 import {BehaviorSubject, Subject} from "rxjs";
 import {map, takeUntil} from "rxjs/operators";
 import {DiscountFormService} from "../discount-form.service";
+import {isArray, isBoolean} from "util";
 
 export interface ConditionOption {
 	key: string;
@@ -78,6 +79,45 @@ export class DiscountConditionFormComponent implements OnInit, OnDestroy {
 			map(value => value.map(it => it.type)),
 			takeUntil(this.onDestroy$)
 		).subscribe(value => this.usedOptions$.next(value));
+
+		this.formArray.valueChanges.pipe(takeUntil(this.onDestroy$))
+			.subscribe(() => this.updateControls());
+	}
+
+	private updateControls() {
+		this.formArray.controls.forEach(control => {
+			this.updateControlValue(control);
+		})
+	}
+
+	private updateControlValue(control: AbstractControl) {
+		if (!control) {
+			return;
+		}
+		//init value based on type
+		const type = control.value.type;
+		const currentValue = control.value.value;
+		switch (type.type) {
+			case ConditionType.boolean:
+				if (!isBoolean(currentValue)) {
+					control.get("value").setValue(false);
+				}
+				break;
+			case ConditionType.clubRoleList:
+			case ConditionType.itemTypeList:
+			case ConditionType.itemList:
+			case ConditionType.userList:
+				if (!isArray(currentValue)) {
+					control.get("value").setValue([]);
+				}
+				break;
+			case ConditionType.minMaxDate:
+			case ConditionType.minMaxNumber:
+			case ConditionType.minMaxPrice:
+				if (isBoolean(currentValue) || isArray(currentValue)) {
+					control.get("value").setValue({min: "", max: ""})
+				}
+		}
 	}
 
 	filterUsedOptions(options: ConditionOption[], currentValue: ConditionOption, usedValues: ConditionOption[]) {

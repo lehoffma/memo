@@ -4,7 +4,7 @@
 			<div fxLayout="column" fxLayoutAlign="flex-start center">
 				<div class="image-container">
 					<img
-						src="{{(participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png') | imageSize:'thumbnail' | async}}"
+						src="{{(participant.user.images.length > 0 ? participant.user.images[0]: 'resources/images/Logo.png') | imageSize:'medium' | async}}"
 						alt="Profilbild von {{participant?.user?.firstName + ' ' + participant?.user?.surname}}">
 				</div>
 				<h3>

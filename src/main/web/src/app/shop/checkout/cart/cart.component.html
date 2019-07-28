@@ -1,9 +1,10 @@
-<div class="cart">
-	<mat-card class="container">
+<div class="cart" *ngLet="shoppingCartItems|async as events">
+	<mat-card class="container"
+			  *ngIf="events && (events.merch.length > 0 || events.tours.length > 0 || events.partys.length > 0); else emptyState">
 		<div class="container--header">
 			<h3>Warenkorb</h3>
 		</div>
-		<div *ngIf="shoppingCartItems|async as events">
+		<div>
 			<memo-cart-entry *ngFor="let tour of events.tours" [cartItem]="tour">
 
 			</memo-cart-entry>
@@ -28,4 +29,16 @@
 			</a>
 		</div>
 	</mat-card>
+
+	<ng-template #emptyState>
+		<memo-data-container [empty]="true"
+							 [largeEmptyState]="true"
+							 emptyStateIcon="shopping_cart"
+							 emptyStateHeadline="Dein Warenkorb ist leer"
+							 emptyStateSubtitle="Gehe zum Shop, um dies zu ändern!">
+			<memo-data-empty-state-actions>
+				<a routerLink="/shop" mat-raised-button color="accent">Zum Shop</a>
+			</memo-data-empty-state-actions>
+		</memo-data-container>
+	</ng-template>
 </div>

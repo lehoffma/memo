@@ -1,3 +1,5 @@
+import {isNullOrUndefined} from "util";
+
 export class Filter {
 	[key: string]: string;
 
@@ -5,7 +7,7 @@ export class Filter {
 		Object.assign(<any>this, filters);
 	}
 
-	static equal(filterA: Filter, filterB: Filter): boolean{
+	static equal(filterA: Filter, filterB: Filter): boolean {
 		return Object.keys(filterA).every(key => filterA[key] === filterB[key])
 			&& Object.keys(filterB).every(key => filterA[key] === filterB[key]);
 	}
@@ -25,11 +27,14 @@ export class Filter {
 
 	static combine(...filters: Filter[]): Filter {
 		return filters.reduce((acc: Filter, filter: Filter) => {
+			if (!filter) {
+				return acc;
+			}
+
 			Object.keys(filter).forEach(key => {
 				if (!acc[key]) {
 					acc[key] = filter[key];
-				}
-				else {
+				} else {
 					const values = acc[key].split(",");
 					if (!values.includes(filter[key])) {
 						acc[key] += "," + filter[key];
@@ -39,5 +44,23 @@ export class Filter {
 			return acc;
 
 		}, Filter.none())
+	}
+}
+
+
+export class FilterBuilder {
+	private filters: Filter[] = [];
+
+	add<T>(key: string, value: T | undefined | null, toString: (input: T) => string = input => input.toString()): FilterBuilder {
+		if (isNullOrUndefined(value)) {
+			return this;
+		}
+
+		this.filters.push(Filter.by({[key]: toString(value)}));
+		return this;
+	}
+
+	build() {
+		return Filter.combine(...this.filters)
 	}
 }

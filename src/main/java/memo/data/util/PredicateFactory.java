@@ -265,7 +265,7 @@ public class PredicateFactory {
         String rootKey = boundedKey.substring(3);
 
         //lowercase the first letter (to transform something like "minDate" to "date")
-        char c[] = rootKey.toCharArray();
+        char[] c = rootKey.toCharArray();
         c[0] = Character.toLowerCase(c[0]);
         rootKey = new String(c);
 
@@ -304,6 +304,10 @@ public class PredicateFactory {
         List<String> dateKeys = Arrays.asList("minDate", "maxDate", "timestamp", "date");
         if (dateKeys.stream().anyMatch(dateKey -> dateKey.equalsIgnoreCase(key))) {
             return s -> PredicateFactory.isoToTimestamp((String) s);
+        }
+        List<String> sqlDateKeys = Arrays.asList("minBirthday", "maxBirthday", "minJoinDate", "maxJoinDate");
+        if(sqlDateKeys.stream().anyMatch(dateKey -> dateKey.equalsIgnoreCase(key))){
+            return s -> PredicateFactory.isoToSqlDate((String) s);
         }
         List<String> roleKeys = Arrays.asList("role", "clubRole", "expectedReadRole", "expectedCheckInRole", "expectedWriteRole");
         if (roleKeys.stream().anyMatch(roleKey -> roleKey.equalsIgnoreCase(key))) {
@@ -396,6 +400,11 @@ public class PredicateFactory {
         TemporalAccessor minDateTemporalAccessor = DateTimeFormatter.ISO_DATE_TIME
                 .parse(isoDate);
         return LocalDateTime.from(minDateTemporalAccessor);
+    }
+
+    private static java.sql.Date isoToSqlDate(String isoDate) {
+        LocalDateTime localDateTime = isoToDate(isoDate);
+        return java.sql.Date.valueOf(localDateTime.toLocalDate());
     }
 
     private static Timestamp isoToTimestamp(String isoDate) {

@@ -235,6 +235,50 @@ memo-comments-section .reply-form-container memo-comment-input form {
 			margin-left: 16px;
 		}
 	}
+
+	&.large-empty-state {
+		.empty-state-header-icon {
+			font-size: 144px;
+			width: 144px;
+			height: 144px;
+		}
+	}
+}
+
+.empty-state {
+	> div {
+		justify-content: center;
+		align-items: center;
+	}
+}
+
+@media all and (max-width: 600px) {
+	.empty-state-headline {
+		text-align: center;
+	}
+}
+
+@media all and (min-width: 600px) {
+	.empty-state {
+		&.horizontal {
+			flex-direction: row-reverse;
+
+			mat-icon {
+				width: 144px;
+				height: 144px;
+				font-size: 144px;
+			}
+
+			> div {
+				justify-content: flex-start;
+				align-items: flex-start;
+			}
+
+			.empty-state-subheader {
+				text-align: start;
+			}
+		}
+	}
 }
 
 

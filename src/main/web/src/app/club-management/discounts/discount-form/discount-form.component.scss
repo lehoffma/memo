@@ -11,10 +11,28 @@
 	justify-content: flex-end;
 }
 
+.warn-subtitle ::ng-deep .subtitle {
+	&::before {
+		content: "Achtung! ";
+	}
+}
+.error-subtitle ::ng-deep .subtitle {
+	 &::before {
+		 content: "Fehler! ";
+	 }
+ }
+
+.warn-subtitle ::ng-deep .subtitle ,
+.error-subtitle ::ng-deep .subtitle{
+	color: warn(700) !important;
+	font-weight: bold;
+}
+
 @media all and (min-width: 800px) {
 	.desktop-row {
 		display: flex;
 		justify-content: space-between;
+
 		> * {
 			width: 200px;
 		}

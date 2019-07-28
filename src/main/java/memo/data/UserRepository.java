@@ -5,6 +5,7 @@ import memo.auth.api.strategy.UserAuthStrategy;
 import memo.data.util.PredicateFactory;
 import memo.data.util.PredicateSupplierMap;
 import memo.model.*;
+import memo.model.Order;
 import memo.util.Configuration;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
@@ -15,20 +16,18 @@ import org.apache.logging.log4j.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.ListJoin;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static memo.data.util.PredicateFactory.getBounded;
+import static memo.data.util.PredicateFactory.getTransform;
 
 @Named
 @ApplicationScoped

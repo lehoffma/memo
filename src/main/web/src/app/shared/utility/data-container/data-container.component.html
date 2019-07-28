@@ -1,4 +1,6 @@
-<div class="empty-state" [class.horizontal]="errorStateType === 'horizontal'" *ngIf="error else noError">
+<div class="empty-state"
+	 [class.large-empty-state]="largeErrorState"
+	 [class.horizontal]="errorStateType === 'horizontal'" *ngIf="error else noError">
 	<mat-icon class="empty-state-header-icon">{{errorStateIcon || 'error'}}</mat-icon>
 	<div fxLayout="column">
 		<span class="empty-state-headline">{{errorStateHeadline || 'Error!'}}</span>
@@ -14,6 +16,7 @@
 	</div>
 	<ng-template #noLoading>
 		<div *ngIf="data?.length === 0 || empty; else notEmpty" class="empty-state"
+			 [class.large-empty-state]="largeEmptyState"
 			 [class.horizontal]="emptyStateType === 'horizontal'">
 			<mat-icon class="empty-state-header-icon">{{emptyStateIcon || 'find_in_page'}}</mat-icon>
 			<div fxLayout="column">

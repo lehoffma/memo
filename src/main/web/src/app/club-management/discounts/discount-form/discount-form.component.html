@@ -64,7 +64,9 @@
 				</div>
 			</memo-form-container>
 
-			<memo-form-container title="Link" subtitle="Link zu Seite, auf der User sich für Discount qualifizieren können" class="grouped">
+			<memo-form-container title="Link"
+								 subtitle="Link zu Seite, auf der User sich für Discount qualifizieren können"
+								 class="grouped">
 				<div class="form-input-container">
 					<label class="form-label" optional>Link URL</label>
 					<mat-form-field appearance="outline" class="small-outline-formfield">
@@ -83,26 +85,36 @@
 				</div>
 			</memo-form-container>
 
-			<memo-form-container [title]="'Item-Bedingungen'" *ngLet="(itemMatches$ | async) as matches"
-								 [subtitle]="matches === null ? 'Validiere...' : ('Gilt im Moment für ' + (matches) + ' Item' + (matches === 1 ? '' : 's'))"
-								 class="grouped">
-				<memo-discount-condition-form [formArray]="formGroup.get('itemConditions')"
-											  [conditionOptions]="itemDiscountConditions"
-											  emptyStateIcon="local_offer"
-											  emptyStateTitle="Füge eine Item-Bedingung hinzu"
-											  emptyStateSubtitle="Im Moment gilt dieser Discount für alle Items."
-				></memo-discount-condition-form>
-			</memo-form-container>
 
-			<memo-form-container [title]="'User-Bedingungen'" class="grouped" *ngLet="(userMatches$ | async) as matches"
-								 [subtitle]="matches === null ? 'Validiere...' : ('Gilt im Moment für ' + (matches) + ' Nutzer')" >
-				<memo-discount-condition-form [formArray]="formGroup.get('userConditions')"
-											  [conditionOptions]="userDiscountConditions"
-											  emptyStateIcon="person"
-											  emptyStateTitle="Füge eine User-Bedingung hinzu"
-											  emptyStateSubtitle="Im Moment gilt dieser Discount für alle User."
-				></memo-discount-condition-form>
-			</memo-form-container>
+			<ng-container *ngLet="itemMatchesError$ | async as itemMatchesError">
+				<memo-form-container [title]="'Item-Bedingungen'" *ngLet="(itemMatches$ | async) as matches"
+									 class="grouped"
+									 [class.warn-subtitle]="matches === 0"
+									 [class.error-subtitle]="itemMatchesError !== null"
+									 [subtitle]="getSubtitle(matches, itemMatchesError, 'items')">
+					<memo-discount-condition-form [formArray]="formGroup.get('itemConditions')"
+												  [conditionOptions]="itemDiscountConditions"
+												  emptyStateIcon="local_offer"
+												  emptyStateTitle="Füge eine Item-Bedingung hinzu"
+												  emptyStateSubtitle="Im Moment gilt dieser Discount für alle Items."
+					></memo-discount-condition-form>
+				</memo-form-container>
+			</ng-container>
+
+			<ng-container *ngLet="userMatchesError$ | async as userMatchesError">
+				<memo-form-container [title]="'User-Bedingungen'" class="grouped"
+									 *ngLet="(userMatches$ | async) as matches"
+									 [class.warn-subtitle]="matches === 0"
+									 [class.error-subtitle]="userMatchesError !== null"
+									 [subtitle]="getSubtitle(matches, userMatchesError, 'nutzer')">
+					<memo-discount-condition-form [formArray]="formGroup.get('userConditions')"
+												  [conditionOptions]="userDiscountConditions"
+												  emptyStateIcon="person"
+												  emptyStateTitle="Füge eine User-Bedingung hinzu"
+												  emptyStateSubtitle="Im Moment gilt dieser Discount für alle User."
+					></memo-discount-condition-form>
+				</memo-form-container>
+			</ng-container>
 
 			<div class="form-buttons">
 				<a mat-button routerLink="/management/discounts/" color="warning" type="button">Abbrechen</a>

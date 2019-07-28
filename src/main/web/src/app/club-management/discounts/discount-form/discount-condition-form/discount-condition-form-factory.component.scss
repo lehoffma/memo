@@ -2,3 +2,13 @@
 	height: 75px;
 	padding-left: 16px;
 }
+
+:host{
+	width: 100%;
+}
+
+@media all and (min-width: 650px){
+	.form-input-container {
+		max-width: 200px;
+	}
+}
