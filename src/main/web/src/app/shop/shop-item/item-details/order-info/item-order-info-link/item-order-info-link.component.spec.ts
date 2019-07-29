@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ItemOrderInfoComponent } from './item-order-info.component';
+import { ItemOrderInfoLinkComponent } from './item-order-info-link.component';
 
-describe('ItemOrderInfoComponent', () => {
-  let component: ItemOrderInfoComponent;
-  let fixture: ComponentFixture<ItemOrderInfoComponent>;
+describe('ItemOrderInfoLinkComponent', () => {
+  let component: ItemOrderInfoLinkComponent;
+  let fixture: ComponentFixture<ItemOrderInfoLinkComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ItemOrderInfoComponent ]
+      declarations: [ ItemOrderInfoLinkComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ItemOrderInfoComponent);
+    fixture = TestBed.createComponent(ItemOrderInfoLinkComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

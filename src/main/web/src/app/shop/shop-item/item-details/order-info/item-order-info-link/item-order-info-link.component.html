@@ -1,0 +1,36 @@
+<a class="order-link" routerLink="/management/orders/{{order.id}}" [class.newest]="isNewest">
+	<div class="order-container">
+		<span class="ordered-header-main-message">
+			Bestellung vom {{order.timeStamp | dateFormat:'DD.MM.YYYY'}}
+		</span>
+		<div class="ordered-items" fxLayout="column">
+			<div class="ordered-item"
+				 *ngFor="let orderedItem of order.items | pipeFunction:filterItem:item; let i = index"
+				 fxLayout="row" fxLayoutGap="4px">
+				<span class="item-index">{{i + 1}}.</span>
+				<span class="ordered-item-details" *ngIf="item.type !== 2">
+					<!-- if the item is merch -->
+					<span *ngIf="item.type === 3">
+						{{orderedItem.size}}, {{orderedItem?.color?.name}}
+					</span>
+					<!-- if the item is tour -->
+					<span *ngIf="item.type === 1">
+						{{orderedItem.needsTicket ? "Mit Ticket" : "Kein Ticket"}}{{orderedItem.isDriver ? ", Fahrer" : ""}}
+					</span>
+				</span>
+				<!-- todo: other colors for failed statusses? -->
+				<span class="ordered-item-status">
+					{{orderedItem.status | pipeFunction:statusToString}}
+				</span>
+			</div>
+			<ng-container *ngLet="(order.items | pipeFunction:getAmountOfOtherOrderedItems:item) as amountOfItems">
+				<span class="other-ordered-items-indicator" *ngIf="amountOfItems > 0">
+					+{{amountOfItems}} {{amountOfItems === 1 ? 'weiteres Item' : 'weitere Items'}}
+				</span>
+			</ng-container>
+		</div>
+	</div>
+	<mat-icon>
+		keyboard_arrow_right
+	</mat-icon>
+</a>

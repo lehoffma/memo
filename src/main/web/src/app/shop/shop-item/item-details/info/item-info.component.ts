@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core";
-import {Event} from "../../../shared/model/event";
+import {Event, ShopEvent} from "../../../shared/model/event";
 import {ShoppingCartService} from "../../../../shared/services/shopping-cart.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {StockService} from "../../../../shared/services/api/stock.service";
@@ -24,7 +24,7 @@ import {Address} from "../../../../shared/model/address";
 	styleUrls: ["./item-info.component.scss"]
 })
 export class ItemInfoComponent implements OnInit {
-	_event$: BehaviorSubject<Event> = new BehaviorSubject(undefined);
+	_event$: BehaviorSubject<ShopEvent> = new BehaviorSubject(undefined);
 	@Input() permissions: {
 		checkIn: boolean;
 		edit: boolean;

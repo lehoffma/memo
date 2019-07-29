@@ -1,0 +1,25 @@
+<ng-container *ngIf="orderedItemDetails$ | async as orders">
+	<ng-container *ngLet="event$ |async as shopItem">
+		<div class="info-container-parent">
+			<h3 class="item-order-info-title">Deine Bestellungen</h3>
+			<div *ngIf="orders.length > 0" class="order-info-container mat-elevation-z3">
+				<memo-item-order-info-link *ngIf="newestOrder$ | async as newestOrder" [isNewest]="true" [item]="shopItem"
+										   [order]="newestOrder"></memo-item-order-info-link>
+
+				<div class="older-orders-container" *ngIf="otherOrders$ | async as otherOrders">
+					<button mat-button type="button" class="older-orders-trigger"
+							[class.opened]="showOtherOrders"
+							(click)="showOtherOrders = !showOtherOrders">
+						<span>{{otherOrders.length}} weitere Bestellung{{otherOrders.length === 1 ? '' : 'en'}}</span>
+						<mat-icon>keyboard_arrow_right</mat-icon>
+					</button>
+					<!-- todo tolle wooosh animation -->
+					<div class="older-orders" *ngIf="showOtherOrders">
+						<memo-item-order-info-link *ngFor="let order of otherOrders" [item]="shopItem"
+												   [order]="order"></memo-item-order-info-link>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+</ng-container>

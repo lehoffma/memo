@@ -9,7 +9,7 @@ import {EventService} from "../../shared/services/api/event.service";
 import {NavigationService} from "../../shared/services/navigation.service";
 import {BehaviorSubject, combineLatest, Observable, of, Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged, first, map, mergeMap, takeUntil, tap} from "rxjs/operators";
-import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
+import {ItemImagePopupComponent} from "../../shop/shop-item/item-details/image-popup/item-image-popup.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
 import {PageRequest} from "../../shared/model/api/page-request";

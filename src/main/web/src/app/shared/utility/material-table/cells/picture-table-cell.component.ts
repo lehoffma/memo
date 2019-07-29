@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {ExpandableTableCellComponent} from "../util/expandable-table-cell.component";
 import { MatDialog } from "@angular/material/dialog";
-import {ItemImagePopupComponent} from "../../../../shop/shop-item/item-details/container/image-popup/item-image-popup.component";
+import {ItemImagePopupComponent} from "../../../../shop/shop-item/item-details/image-popup/item-image-popup.component";
 
 @Component({
 	selector: "td [memoPictureTableCellComponent], memo-picture-table-cell",

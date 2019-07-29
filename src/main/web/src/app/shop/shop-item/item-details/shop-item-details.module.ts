@@ -6,9 +6,8 @@ import {FullNameTableCellComponent} from "./participants/participant-list/full-n
 import {ParticipantsComponent} from "./participants/participants.component";
 import {ModifyParticipantComponent} from "./participants/participant-list/modify-participant/modify-participant.component";
 import {ClothesSizePipe} from "./details/clothes-size.pipe";
-import {ItemDetailsContainerComponent} from "./container/item-details-container.component";
 import {ItemInfoComponent} from "./info/item-info.component";
-import {ItemImagePopupComponent} from "./container/image-popup/item-image-popup.component";
+import {ItemImagePopupComponent} from "./image-popup/item-image-popup.component";
 import {CommentsSectionModule} from "./comments-section/comments-section.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MemoMaterialModule} from "../../../../material.module";
@@ -26,8 +25,9 @@ import {MilesPipe} from "./participants/miles.pipe";
 import {ManageWaitingListDialogComponent} from "./add-to-cart-form/manage-waiting-list-dialog.component";
 import {SharedCheckoutModule} from "../../checkout/shared-checkout.module";
 import {ParticipantsModule} from "./participants/participant-list/participants.module";
-import {ItemOrderInfoComponent} from "./item-order-info/item-order-info.component";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import {ItemOrderInfoComponent} from "./order-info/item-order-info.component";
+import { ItemOrderInfoLinkComponent } from './order-info/item-order-info-link/item-order-info-link.component';
 
 @NgModule({
 	imports: [
@@ -57,7 +57,6 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 		ClothesSizePipe,
 		AddressRendererPipe,
 
-		ItemDetailsContainerComponent,
 		ItemInfoComponent,
 		ItemImagePopupComponent,
 		OrderStatusTableCellComponent,
@@ -67,6 +66,7 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 		MilesPipe,
 		ManageWaitingListDialogComponent,
 		ItemOrderInfoComponent,
+		ItemOrderInfoLinkComponent,
 	],
 	entryComponents: [
 		FullNameTableCellComponent,

@@ -3,17 +3,19 @@ import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "./servlet
 import {createOrder, Order} from "../../model/order";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {mergeMap, tap} from "rxjs/operators";
+import {map, mergeMap, tap} from "rxjs/operators";
 import {CapacityService} from "./capacity.service";
 import {StockService} from "./stock.service";
 import {Event} from "../../../shop/shared/model/event";
 import {EventType, typeToInteger} from "../../../shop/shared/model/event-type";
 import {Filter} from "../../model/api/filter";
 import {PageRequest} from "../../model/api/page-request";
-import {Sort} from "../../model/api/sort";
+import {Direction, Sort} from "../../model/api/sort";
 import {Page} from "../../model/api/page";
 import {setProperties} from "../../model/util/base-object";
 import {DiscountService} from "../../../shop/shared/services/discount.service";
+import {OrderedItem} from "../../model/ordered-item";
+import {OrderStatus} from "../../model/order-status";
 
 @Injectable()
 export class OrderService extends ServletService<Order> {
@@ -44,6 +46,18 @@ export class OrderService extends ServletService<Order> {
 			pageRequest,
 			sort
 		);
+	}
+
+
+	getOrdersForShopItem(itemId: number, userId: number): Observable<Order[]>{
+		return this.get(
+			Filter.by({"userId": "" + userId, "eventId": "" + itemId}),
+			PageRequest.all(),
+			Sort.by(Direction.DESCENDING, "timeStamp")
+		)
+			.pipe(
+				map(it => it.content),
+			)
 	}
 
 	/**

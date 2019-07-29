@@ -20,7 +20,7 @@ import {Permission} from "../../../../shared/model/permission";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {canCheckIn, canConclude, canDeleteEntries, canEdit, canReadEntries, canReadOrders} from "../../../../util/permissions-util";
-import {ItemImagePopupComponent} from "../container/image-popup/item-image-popup.component";
+import {ItemImagePopupComponent} from "../image-popup/item-image-popup.component";
 import { MatDialog } from "@angular/material/dialog";
 import {SpiedOnElementDirective} from "../../../../shared/utility/spied-on-element.directive";
 import {WindowService} from "../../../../shared/services/window.service";
@@ -146,35 +146,6 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 				}
 			})
 		);
-	orderedItemDetails$: Observable<Order> = combineLatest(
-		this.loginService.currentUser$,
-		this.event$
-	)
-		.pipe(
-			filter(([user, event]) => user !== null && event !== null),
-			//check if there is an order for this item
-			mergeMap(([user, event]) => this.orderService.getAll(
-				Filter.by({"userId": "" + user.id}), Sort.by(Direction.DESCENDING, "timeStamp")
-				)
-					.pipe(
-						map(orders =>
-							orders.find(order => order.items.some(
-								(item: OrderedItem) => item.item.id === event.id
-									&& item.status !== OrderStatus.CANCELLED
-								)
-								&& order.user === user.id
-							)
-						)
-					)
-			),
-			filter(order => !!order)
-		);
-	linkToOrder$: Observable<string> = this.orderedItemDetails$
-		.pipe(
-			map(order => "/management/orders/" + order.id)
-		);
-
-
 	subscriptions = [];
 
 

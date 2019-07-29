@@ -9,6 +9,7 @@
 @media all and (max-width: 800px) {
 	:host ::ng-deep memo-multi-image-upload ::ng-deep memo-multi-image-container {
 		margin: -1rem;
+		margin-bottom: 0;
 		width: calc(100% + 2rem) !important;
 		max-width: none;
 
@@ -62,7 +63,11 @@
 		memo-tour-route-input {
 			display: flex;
 			flex-direction: column;
-			margin-bottom: 0;
+			margin-bottom: 16px;
+
+			@media all and (max-width: 500px) {
+				margin-bottom: 0;
+			}
 		}
 
 		@media all and (max-width: 800px) {
@@ -142,8 +147,11 @@ mat-datepicker-toggle ::ng-deep svg {
 		}
 	}
 
+}
+
+@media all and (min-width: 500px){
 	memo-multi-image-upload {
-		box-shadow: none;
+		margin-bottom: 0;
 	}
 }
 
