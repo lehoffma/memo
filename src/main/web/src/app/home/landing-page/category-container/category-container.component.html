@@ -13,6 +13,14 @@
 			<a routerLink="{{moreItemsLink}}">Mehr</a>
 		</div>
 
-		<memo-results [events]="items"></memo-results>
+		<memo-results [events]="items">
+			<memo-results-empty-state class="empty-state">
+				<mat-icon class="empty-state-header-icon">{{emptyStateIcon || 'find_in_page'}}</mat-icon>
+				<div fxLayout="column">
+					<span class="empty-state-headline">{{emptyStateHeadline || 'Keine Items'}}</span>
+					<span class="empty-state-subheader">{{emptyStateSubtitle || ''}}</span>
+				</div>
+			</memo-results-empty-state>
+		</memo-results>
 	</div>
 </div>

@@ -6,9 +6,14 @@
 
 	</memo-results-entry>
 </div>
-<div *ngIf="events && events.length === 0" class="no-results">
-	Keine Ergebnisse!
-</div>
+<ng-container *ngIf="events && events.length === 0">
+	<div class="results-empty-state" [ngSwitch]="!!customEmptyState">
+		<ng-content select="memo-results-empty-state" *ngSwitchCase="true"></ng-content>
+		<div class="no-results" *ngSwitchDefault mat-raised-button color="accent">
+			Keine Ergebnisse!
+		</div>
+	</div>
+</ng-container>
 <div *ngIf="!events">
 	<div class="loader-wrapper">
 		<div class="loader"></div>

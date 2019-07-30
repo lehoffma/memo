@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
 import {routedComponents, SearchRoutingModule} from "./search.routing";
-import {ResultsComponent} from "./results/results.component";
+import {ResultsComponent, ResultsEmptyStateComponent} from "./results/results.component";
 import {ResultsEntryComponent} from "./results/results-entry/results-entry.component";
 import {CommonModule} from "@angular/common";
 import {MemoMaterialModule} from "../../../material.module";
@@ -20,11 +20,13 @@ import {FilterOptionBuilder} from "../../shared/search/filter-option-builder.ser
 		routedComponents,
 		ResultsComponent,
 		ResultsEntryComponent,
+		ResultsEmptyStateComponent,
 	],
 	providers: [
 	],
 	exports: [
 		ResultsComponent,
+		ResultsEmptyStateComponent,
 		ResultsEntryComponent,
 	]
 })

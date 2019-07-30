@@ -17,6 +17,10 @@ export class CategoryContainerComponent implements OnInit {
 
 	@Input() direction: "left-to-right" | "right-to-left" = "left-to-right";
 
+	@Input() emptyStateIcon: string;
+	@Input() emptyStateHeadline: string;
+	@Input() emptyStateSubtitle: string;
+
 	@HostBinding("class.is-reverse")
 	get isReverse() {
 		return this.direction === "right-to-left";

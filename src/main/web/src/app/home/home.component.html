@@ -24,12 +24,18 @@
 <memo-category-container header="Touren"
 						 itemsHeader="Bevorstehende Touren"
 						 moreItemsLink="/shop/tours"
+						 emptyStateHeadline="Keine Ergebnisse"
+						 emptyStateSubtitle="Es sind bisher keine weiteren Touren angekündigt.
+						 Probier es zu einem anderen Zeitpunkt noch mal!"
 						 [items]="tours$ | async"
 						 [explanation]="tourExplanation">
 </memo-category-container>
 
 <memo-category-container header="Veranstaltungen" direction="right-to-left"
 						 itemsHeader="Bevorstehende Veranstaltungen"
+						 emptyStateHeadline="Keine Ergebnisse"
+						 emptyStateSubtitle="Es sind bisher keine weiteren Veranstaltungen angekündigt.
+						 Probier es zu einem anderen Zeitpunkt noch mal!"
 						 moreItemsLink="/shop/partys"
 						 [items]="partys$ | async"
 						 [explanation]="partyExplanation">
@@ -39,6 +45,9 @@
 <memo-category-container header="Merchandise"
 						 itemsHeader="Neueste Artikel"
 						 moreItemsLink="/shop/merch"
+						 emptyStateHeadline="Keine Ergebnisse"
+						 emptyStateSubtitle="Es sind leider noch keine Merchandise-Artikel für dich verfügbar.
+						 Probier es zu einem anderen Zeitpunkt noch mal!"
 						 [items]="merch$ | async"
 						 [explanation]="merchExplanation">
 </memo-category-container>

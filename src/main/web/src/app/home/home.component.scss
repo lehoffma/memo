@@ -102,6 +102,9 @@
 	max-width: 800px;
 }
 
+memo-category-container ::ng-deep .empty-state-subheader{
+	white-space: pre-line;
+}
 
 ::ng-deep .loader-wrapper {
 	transform: scale(0.5);

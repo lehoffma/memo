@@ -1,6 +1,15 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, ContentChild, Input, OnInit} from "@angular/core";
 import {trigger} from "@angular/animations";
 import {ShopEvent} from "../../shared/model/event";
+import {ExpandableMaterialTableEmptyStateActions} from "../../../shared/utility/material-table/expandable-material-table.component";
+
+@Component({
+	selector: "memo-results-empty-state",
+	template: "<ng-content></ng-content>"
+})
+export class ResultsEmptyStateComponent{
+
+}
 
 @Component({
 	selector: "memo-results",
@@ -29,6 +38,7 @@ import {ShopEvent} from "../../shared/model/event";
 export class ResultsComponent implements OnInit {
 	@Input() events: ShopEvent[];
 
+	@ContentChild(ResultsEmptyStateComponent, {static: true}) customEmptyState: ResultsEmptyStateComponent;
 
 	constructor() {
 	}
