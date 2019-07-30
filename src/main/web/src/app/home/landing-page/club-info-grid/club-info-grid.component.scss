@@ -1,0 +1,56 @@
+@import "theme";
+
+:host {
+	display: block;
+	margin-bottom: 16px;
+}
+
+.grid {
+	display: grid;
+	grid-column-gap: 8px;
+	grid-row-gap: 8px;
+	max-width: 1250px;
+
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	margin: 8px 8px auto;
+}
+
+@media all and (min-width: 800px) {
+	.grid {
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	}
+}
+
+@media all and (min-width: 1250px) {
+	.grid {
+		margin: 16px auto auto;
+	}
+}
+
+.grid-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: primary();
+	height: 150px;
+	color: white;
+	text-decoration: none;
+	transition: transform 250ms ease-in, box-shadow 250ms ease-in;
+
+	&:hover {
+		transform: translateY(-3px);
+		@include mat-elevation(8);
+	}
+
+	mat-icon {
+		font-size: 72px;
+		height: 72px;
+		width: 72px;
+	}
+
+	> span {
+		font-size: font-size(medium);
+		margin-top: 8px;
+	}
+}

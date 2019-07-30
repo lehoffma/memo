@@ -11,6 +11,15 @@ html, body, main, memo-app {
 	font-size: font-size(default);
 }
 
+.landing-page-header {
+	> * {
+		display:inline;
+		box-shadow: 0.2em 0 0 primary(), -0.2em 0 0 primary();
+		background-color: primary();
+		color: white;
+	}
+}
+
 .mat-stroked-button.mat-accent {
 	border-color: accent() !important;
 }

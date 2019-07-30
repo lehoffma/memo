@@ -4,37 +4,42 @@
 		 fallbackImage="/resources/images/landing-page-hero-image-preview.jpg"
 		 alt=""/>
 
-	<div>
+	<div  class="home-header-main">
+		<div>
+			<div class="landing-page-header">
+				<h1>Willkommen im Meilenwölfe Shop!</h1>
+			</div>
+			<div class="invisible call-to-action-container" [style.visibility]="!(userIsLoggedOut$ | async) ? 'hidden' : 'visible'">
+				<a mat-raised-button routerLink="/login" color="accent" class="login-button">Login</a>
+				<a mat-stroked-button routerLink="/signup" class="signup-button">Registrieren</a>
+			</div>
+		</div>
+
 		<img src="../../resources/images/Logo.png" class="header-logo"/>
-
-		<h1>Willkommen im Meilenwölfe Shop!</h1>
-		<div class="invisible" [style.visibility]="!(userIsLoggedOut$ | async) ? 'hidden' : 'visible'">
-			<a mat-stroked-button routerLink="/login" class="login-button">Login</a>
-			<a mat-raised-button routerLink="/signup" color="accent">Registrieren</a>
-		</div>
 	</div>
 </div>
 
-<div class="category-overview-container desktop">
-	<div class="overview-preview-container container mat-elevation-z3" *ngFor="let eventPreview of events">
-		<div class="container--header">
-			<h3>{{eventPreview.title}}</h3>
-			<a routerLink="{{eventPreview.route}}">MEHR</a>
-		</div>
+<memo-club-info-grid></memo-club-info-grid>
 
-		<memo-results [events]="eventPreview.events | async">
+<memo-category-container header="Touren"
+						 itemsHeader="Bevorstehende Touren"
+						 moreItemsLink="/shop/tours"
+						 [items]="tours$ | async"
+						 [explanation]="tourExplanation">
+</memo-category-container>
 
-		</memo-results>
-	</div>
-</div>
+<memo-category-container header="Veranstaltungen" direction="right-to-left"
+						 itemsHeader="Bevorstehende Veranstaltungen"
+						 moreItemsLink="/shop/partys"
+						 [items]="partys$ | async"
+						 [explanation]="partyExplanation">
 
-<div class="mobile">
-	<div class="container--header mat-elevation-z2">
-		<h3>Neueste</h3>
-		<a routerLink="/shop/search">MEHR</a>
-	</div>
-	<memo-results [events]="combinedEvents | async">
-	</memo-results>
+</memo-category-container>
 
-	<a routerLink="/shop/search" [queryParams]="{date: 'upcoming'}" class="show-more-link">Zeige mehr</a>
-</div>
+<memo-category-container header="Merchandise"
+						 itemsHeader="Neueste Artikel"
+						 moreItemsLink="/shop/merch"
+						 [items]="merch$ | async"
+						 [explanation]="merchExplanation">
+</memo-category-container>
+

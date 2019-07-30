@@ -58,6 +58,7 @@ import {faFire} from "@fortawesome/free-solid-svg-icons/faFire";
 import {faCubes, faTshirt} from "@fortawesome/free-solid-svg-icons";
 import {MatPaginatorIntl} from "@angular/material";
 import {MatPaginatorIntlDe} from "./shared/i18n/mat-paginator-intl.de";
+import {LandingPageModule} from "./home/landing-page/landing-page.module";
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -146,6 +147,7 @@ registerLocaleData(localeDe);
 		ClubModule,
 		ClubManagementModule,
 		UserModule,
+		LandingPageModule,
 	],
 	declarations: [
 		AppComponent,

@@ -1,0 +1,18 @@
+
+<div class="explanation-container" fxLayout="column">
+	<div class="landing-page-header">
+		<h3>{{header}}</h3>
+	</div>
+	<span class="explanation">{{explanation}}</span>
+</div>
+
+<div class="category-overview-container">
+	<div class="overview-preview-container container mat-elevation-z3">
+		<div class="container--header">
+			<h3>{{itemsHeader}}</h3>
+			<a routerLink="{{moreItemsLink}}">Mehr</a>
+		</div>
+
+		<memo-results [events]="items"></memo-results>
+	</div>
+</div>

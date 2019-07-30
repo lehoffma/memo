@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {trigger} from "@angular/animations";
+import {ShopEvent} from "../../shared/model/event";
 
 @Component({
 	selector: "memo-results",
@@ -26,7 +27,7 @@ import {trigger} from "@angular/animations";
 	]
 })
 export class ResultsComponent implements OnInit {
-	@Input() events: Event[];
+	@Input() events: ShopEvent[];
 
 
 	constructor() {

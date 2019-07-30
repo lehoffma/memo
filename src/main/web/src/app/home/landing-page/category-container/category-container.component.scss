@@ -1,0 +1,84 @@
+@import "theme";
+
+:host {
+	display: flex;
+	flex-direction: column;
+	width: calc(100% - 32px);
+	max-width: 1250px;
+	margin: 16px 16px 32px;
+
+	::ng-deep .container--header {
+		display: flex;
+		justify-content: space-between;
+
+		h3 {
+			font-size: font-size(medium);
+		}
+
+		a {
+			font-size: font-size(medium);
+		}
+	}
+}
+
+.landing-page-header {
+	h3 {
+		font-size: font-size(medium-larger);
+		font-weight: 500;
+	}
+}
+
+.explanation {
+	margin-top: 8px;
+	margin-left: -4px;
+}
+
+.explanation-container{
+	flex: 1;
+}
+
+.category-overview-container{
+	flex: 2;
+	margin-top: 16px;
+	margin-left: -4px;
+}
+
+memo-results {
+	padding: 0 16px 16px;
+}
+
+@media all and (min-width: 800px) {
+	:host{
+		flex-direction: row;
+		margin: 48px 16px 32px;
+	}
+	.category-overview-container {
+		margin-left: 32px;
+		margin-top: 0;
+	}
+}
+
+@media all and (min-width: 1250px) {
+	:host {
+		margin: 48px auto 32px;
+	}
+}
+
+@media all and (min-width: 1282px) {
+	:host {
+		width: 100%;
+	}
+}
+
+
+//reverse stuff
+:host.is-reverse {
+	@media all and (min-width: 800px) {
+		flex-direction: row-reverse;
+
+		.category-overview-container {
+			margin-right: 32px;
+			margin-left: 0;
+		}
+	}
+}

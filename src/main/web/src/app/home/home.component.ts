@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from "@angular/core";
 import {Merchandise} from "../shop/shared/model/merchandise";
-import {Event} from "../shop/shared/model/event";
+import {Event, ShopEvent} from "../shop/shared/model/event";
 import {EventService} from "../shared/services/api/event.service";
 import {EventType, typeToInteger} from "../shop/shared/model/event-type";
 import {ShopItemType} from "../shop/shared/model/shop-item-type";
@@ -90,6 +90,49 @@ export class HomeComponent implements OnInit, OnDestroy {
 	userIsLoggedOut$ = this.loginService.isLoggedInObservable()
 		.pipe(map(it => !it));
 
+
+	tours$: Observable<ShopEvent[]> = this.loginService.isLoggedInObservable()
+		.pipe(
+			mergeMap(() => this.eventService.get(
+				Filter.by({
+					"type": typeToInteger(EventType.tours) + "",
+					"minDate": NOW.toISOString()
+				}),
+				PageRequest.first(7),
+				Sort.by(Direction.ASCENDING, "date"))
+			),
+			map(it => it.content)
+		);
+	tourExplanation: string = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+
+	partys$: Observable<ShopEvent[]> = this.loginService.isLoggedInObservable()
+		.pipe(
+			mergeMap(() => this.eventService.get(
+				Filter.by({
+					"type": typeToInteger(EventType.partys) + "",
+					"minDate": NOW.toISOString()
+				}),
+				PageRequest.first(7),
+				Sort.by(Direction.ASCENDING, "date"))
+			),
+			map(it => it.content)
+		);
+	partyExplanation = this.tourExplanation;
+
+	merch$: Observable<ShopEvent[]> = this.loginService.isLoggedInObservable()
+		.pipe(
+			mergeMap(() => this.eventService.get(
+				Filter.by({
+					"type": typeToInteger(EventType.merch) + ""
+				}),
+				PageRequest.first(7),
+				Sort.by(Direction.ASCENDING, "date"))
+			),
+			map(it => it.content),
+			//todo remove demo
+			map(it => [...it, ...it, ...it])
+		);
+	merchExplanation = this.tourExplanation;
 
 	constructor(private eventService: EventService,
 				private http: HttpClient,
