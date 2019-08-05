@@ -33,9 +33,56 @@
 	</div>
 </div>
 
-<ng-container *ngIf="canGetTreasurerNotifications$ | async"
-			  [formGroup]="formGroup.get('' + NotificationType.DEBIT_TREASURER)">
-	<div class="notification-setting-block" fxLayout="column">
+<div class="notification-setting-block" fxLayout="column"
+	 [formGroup]="formGroup.get('' + NotificationType.NEW_COMMENT)">
+	<h4>Kommentare</h4>
+	<span class="subtitle">Neue Kommentare in Events oder Merchandise Artikeln, für die du verantwortlich bist</span>
+
+	<div fxLayout="row" fxLayoutGap="16px">
+		<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+		<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+	</div>
+</div>
+
+<div class="notification-setting-block" fxLayout="column"
+	 [formGroup]="formGroup.get('' + NotificationType.MARKED_AS_REPORT_WRITER)">
+	<h4>Berichtverantwortlichkeit</h4>
+	<span class="subtitle">Wenn du als Berichtverantwortlicher für eine Tour hinzugefügt wurdest</span>
+
+	<div fxLayout="row" fxLayoutGap="16px">
+		<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+		<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+	</div>
+</div>
+
+<div class="notification-setting-block" fxLayout="column"
+	 [formGroup]="formGroup.get('' + NotificationType.UPCOMING_EVENT)">
+	<h4>Bevorstehende Events</h4>
+	<span class="subtitle">Erhalte Erinnerungen für Events am Tag, an dem sie stattfinden.</span>
+
+	<div fxLayout="row" fxLayoutGap="16px">
+		<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+		<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+	</div>
+</div>
+
+
+<ng-container *ngIf="canGetOrderCheckNotifications$ | async">
+	<div class="notification-setting-block" fxLayout="column"
+		 [formGroup]="formGroup.get('' + NotificationType.CHECK_ON_ORDER)">
+		<h4>Vernachlässigte Bestellungen</h4>
+		<span class="subtitle">Erhalte Erinnerungen für Bestellungen, die seit längerer Zeit offen sind und bearbeitet werden sollten.</span>
+
+		<div fxLayout="row" fxLayoutGap="16px">
+			<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+			<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+		</div>
+	</div>
+</ng-container>
+
+<ng-container *ngIf="canGetTreasurerNotifications$ | async">
+	<div class="notification-setting-block" fxLayout="column"
+		 [formGroup]="formGroup.get('' + NotificationType.DEBIT_TREASURER)">
 		<h4>Lastschrift</h4>
 		<span class="subtitle">Eingehende Bestellungen, die mit <b>Lastschrift</b> bezahlt werden sollen</span>
 

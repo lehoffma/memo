@@ -22,10 +22,6 @@ public class NotificationInitializer {
 
     @PostConstruct
     public void initialize() {
-        //todo new notifications:
-        //new comment(s) on [participated, responsible]
-        //time-based notifications (order status check, upcoming Xs)
-
         List<NotificationTemplate> templates = Arrays.asList(
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.CLUBROLE_CHANGE_REQUEST)
@@ -49,17 +45,38 @@ public class NotificationInitializer {
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.TRANSFER_TREASURER)
                         .setTemplate("Überprüfe die eingegangene Überweisung!")
-                        .setLink("/management/orders/{OrderId}")
+                        .setLink("/management/orders/{OrderId}"),
+                new NotificationTemplate()
+                        .setNotificationType(NotificationType.NEW_COMMENT)
+                        .setTemplate("Neuer Kommentar von {Username} unter {ItemName}!")
+                        .setImagePath("{UserProfilePicture}")
+                        .setLink("/shop/{ItemType}/{ItemId}"),
+                new NotificationTemplate()
+                        .setNotificationType(NotificationType.MARKED_AS_REPORT_WRITER)
+                        .setTemplate("Du wurdest als Berichtverantwortlicher für {ItemName} hinzugefügt!")
+                        .setImagePath("{ItemImage}")
+                        .setLink("/shop/{ItemType}/{ItemId}"),
+                new NotificationTemplate()
+                        .setNotificationType(NotificationType.UPCOMING_EVENT)
+                        .setTemplate("Bevorstehendes Event: {ItemName} heute um {ItemTime}!")
+                        .setImagePath("{ItemImage}")
+                        .setLink("/shop/{ItemType}/{ItemId}"),
+                new NotificationTemplate()
+                        .setNotificationType(NotificationType.CHECK_ON_ORDER)
+                        .setTemplate("Einige alte Bestellungen müssen noch geupdated werden!")
+                        //todo link
+                        .setLink("/management/orders?status=Reserved")
         );
         List<NotificationTemplate> currentTemplates = new ArrayList<>(DatabaseManager.createEntityManager()
                 .createQuery("SELECT e FROM NotificationTemplate e", NotificationTemplate.class)
                 .getResultList());
         List<NotificationTemplate> newTemplates = templates.stream()
-                .filter(t -> currentTemplates.stream().noneMatch(c -> c.getNotificationType().equals(t.getNotificationType())))
+                .filter(t -> currentTemplates.stream()
+                        .noneMatch(c -> c.getNotificationType().getValue().equals(t.getNotificationType().getValue())))
                 .collect(Collectors.toList());
         List<NotificationTemplate> changedTemplates = templates.stream()
                 .filter(t -> currentTemplates.stream()
-                        .anyMatch(c -> c.getNotificationType().equals(t.getNotificationType())
+                        .anyMatch(c -> c.getNotificationType().getValue().equals(t.getNotificationType().getValue())
                                 && (!Objects.equals(c.getTemplate(), t.getTemplate())
                                 || !Objects.equals(c.getLink(), t.getLink())
                                 || !Objects.equals(c.getImagePath(), t.getImagePath()))
@@ -77,6 +94,15 @@ public class NotificationInitializer {
             DatabaseManager.getInstance().updateAll(changedTemplates, NotificationTemplate.class);
         }
 
+        //todo emails for
+        //   - NEW_COMMENT
+        //   - MARKED_AS_REPORT_WRITER
+        //
+
+        this.updateEmailTemplates();
+    }
+
+    private void updateEmailTemplates(){
         List<EmailTemplate> emailTemplates = Arrays.asList(
                 new EmailTemplate()
                         .setNotificationType(NotificationType.REGISTRATION)
@@ -124,11 +150,12 @@ public class NotificationInitializer {
                 .createQuery("SELECT e FROM EmailTemplate e", EmailTemplate.class)
                 .getResultList());
         List<EmailTemplate> newEmailTemplates = emailTemplates.stream()
-                .filter(t -> currentEmailTemplates.stream().noneMatch(c -> c.getNotificationType().equals(t.getNotificationType())))
+                .filter(t -> currentEmailTemplates.stream()
+                        .noneMatch(c -> c.getNotificationType().getValue().equals(t.getNotificationType().getValue())))
                 .collect(Collectors.toList());
         List<EmailTemplate> changedEmailTemplates = emailTemplates.stream()
                 .filter(t -> currentEmailTemplates.stream()
-                        .anyMatch(c -> c.getNotificationType().equals(t.getNotificationType())
+                        .anyMatch(c -> c.getNotificationType().getValue().equals(t.getNotificationType().getValue())
                                 && (!c.getSubject().equals(t.getSubject()) || !c.getFilePath().equals(t.getFilePath()))
                         )
                 )

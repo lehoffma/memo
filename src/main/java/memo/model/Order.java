@@ -23,6 +23,12 @@ import java.util.Objects;
                 name = "Order.findByUser",
                 query = "SELECT o FROM Order o " +
                         " WHERE o.user.id = :userId"
+        ),
+        @NamedQuery(
+                name = "Order.findUnhandledOrders",
+                query = "SELECT DISTINCT o from Order o JOIN OrderedItem item\n" +
+                        "WHERE o.id = item.order.id AND o.timeStamp < :sevenDaysBeforeNow " +
+                        "AND item.status != :cancelled AND item.status != :completed"
         )
 })
 public class Order implements Serializable {

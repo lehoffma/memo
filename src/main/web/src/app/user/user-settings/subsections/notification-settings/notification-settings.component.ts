@@ -34,6 +34,11 @@ export class NotificationSettingsComponent extends BaseSettingsSubsectionCompone
 			map(it => it === null ? false : isAuthenticated(it.clubRole, ClubRole.Kassenwart))
 		);
 
+	canGetOrderCheckNotifications$: Observable<boolean> = this.loginService.currentUser$
+		.pipe(
+			map(it => it === null ? false : isAuthenticated(it.clubRole, ClubRole.Organisator))
+		);
+
 	canGetClubroleChangeNotifications$: Observable<boolean> = this.loginService.currentUser$
 		.pipe(
 			map(it => it === null ? false : isAuthenticated(it.clubRole, ClubRole.Admin))
@@ -76,6 +81,23 @@ export class NotificationSettingsComponent extends BaseSettingsSubsectionCompone
 				[UserNotificationBroadcastType.MAIL]: this.fb.control(true)
 			}),
 			[UserNotificationType.TRANSFER_TREASURER]: this.fb.group({
+				[UserNotificationBroadcastType.NOTIFICATION]: this.fb.control(true),
+				[UserNotificationBroadcastType.MAIL]: this.fb.control(true)
+			}),
+			//todo there are no mails for these notification types
+			[UserNotificationType.NEW_COMMENT]: this.fb.group({
+				[UserNotificationBroadcastType.NOTIFICATION]: this.fb.control(true),
+				[UserNotificationBroadcastType.MAIL]: this.fb.control(true)
+			}),
+			[UserNotificationType.MARKED_AS_REPORT_WRITER]: this.fb.group({
+				[UserNotificationBroadcastType.NOTIFICATION]: this.fb.control(true),
+				[UserNotificationBroadcastType.MAIL]: this.fb.control(true)
+			}),
+			[UserNotificationType.UPCOMING_EVENT]: this.fb.group({
+				[UserNotificationBroadcastType.NOTIFICATION]: this.fb.control(true),
+				[UserNotificationBroadcastType.MAIL]: this.fb.control(true)
+			}),
+			[UserNotificationType.CHECK_ON_ORDER]: this.fb.group({
 				[UserNotificationBroadcastType.NOTIFICATION]: this.fb.control(true),
 				[UserNotificationBroadcastType.MAIL]: this.fb.control(true)
 			}),

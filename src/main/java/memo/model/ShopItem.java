@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import memo.serialization.*;
 import memo.util.model.EventType;
+import org.eclipse.jetty.util.annotation.Name;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -39,6 +40,10 @@ import java.util.*;
                 name = "ShopItem.findByParticipant",
                 query = "SELECT item from ShopItem item join item.orders orderedItem join orderedItem.order order2\n" +
                         "    WHERE order2.user.id =:userId"
+        ),
+        @NamedQuery(
+                name = "ShopItem.findByDateRange",
+                query = "SELECT distinct item from ShopItem item WHERE item.date >= :startOfDay AND item.date <= :endOfDay"
         )
 })
 public class ShopItem implements Serializable {

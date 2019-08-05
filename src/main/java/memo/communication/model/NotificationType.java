@@ -12,8 +12,6 @@ public enum NotificationType {
     DEBIT_CUSTOMER(3),
     TRANSFER_CUSTOMER(4),
 
-    //notification only
-    ////nothing yet
 
     //both
     CLUBROLE_CHANGE_REQUEST(5),
@@ -21,7 +19,14 @@ public enum NotificationType {
     OBJECT_HAS_CHANGED(7),
 
     DEBIT_TREASURER(8),
-    TRANSFER_TREASURER(9);
+    TRANSFER_TREASURER(9),
+    NEW_COMMENT(10),
+    MARKED_AS_REPORT_WRITER(11),
+
+    //notification only
+    UPCOMING_EVENT(12),
+    CHECK_ON_ORDER(13);
+
 
     private Integer value;
 

@@ -5,6 +5,7 @@ import memo.api.util.ApiServletPostOptions;
 import memo.api.util.ApiServletPutOptions;
 import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.CommentAuthStrategy;
+import memo.communication.strategy.CommentNotificationStrategy;
 import memo.data.CommentRepository;
 import memo.model.Comment;
 import memo.model.ShopItem;
@@ -32,10 +33,12 @@ public class CommentServlet extends AbstractApiServlet<Comment> {
     @Inject
     public CommentServlet(CommentRepository commentRepository,
                           CommentAuthStrategy authStrategy,
+                          CommentNotificationStrategy commentNotificationStrategy,
                           AuthenticationService authService) {
         super();
         logger = LogManager.getLogger(CommentServlet.class);
         this.commentRepository = commentRepository;
+        this.notificationStrategy = commentNotificationStrategy;
         this.authenticationStrategy = authStrategy;
         this.authenticationService = authService;
     }

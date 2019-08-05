@@ -1,12 +1,10 @@
 package memo.data;
 
-import memo.api.EventServlet;
 import memo.auth.api.strategy.ShopItemAuthStrategy;
 import memo.data.util.PredicateFactory;
 import memo.data.util.PredicateSupplierMap;
 import memo.model.*;
 import memo.util.DatabaseManager;
-import memo.util.MapBuilder;
 import memo.util.model.Filter;
 
 import javax.annotation.PostConstruct;
@@ -17,8 +15,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
-import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -81,6 +80,19 @@ public class EventRepository extends AbstractPagingAndSortingRepository<ShopItem
                 .getResultList();
     }
 
+    public List<ShopItem> getEventsOfDay(LocalDateTime localDateTime) {
+        LocalDateTime startOfDay = localDateTime.with(LocalTime.MIN);
+        LocalDateTime endOfDay = localDateTime.with(LocalTime.MAX);
+
+        Timestamp startOfDayTimestamp = Timestamp.valueOf(startOfDay);
+        Timestamp endOfDayTimestamp = Timestamp.valueOf(endOfDay);
+
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("ShopItem.findByDateRange", ShopItem.class)
+                .setParameter("startOfDay", startOfDayTimestamp)
+                .setParameter("endOfDay", endOfDayTimestamp)
+                .getResultList();
+    }
 
     @Override
     public List<ShopItem> getAll() {

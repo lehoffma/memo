@@ -9,6 +9,7 @@ import memo.util.model.EventType;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -28,13 +29,17 @@ public class ReplacementFactory {
     public Map<String, BiFunction<Notification, Map<String, Object>, String>> getAllReplacements() {
         return new MapBuilder<String, BiFunction<Notification, Map<String, Object>, String>>()
                 //notifications
-                .buildPut("{ItemId}", (notification, data) -> ((ShopItem) data.get("event")).getId().toString())
-                .buildPut("{ItemName}", (notification, data) -> ((ShopItem) data.get("event")).getTitle())
+                .buildPut("{ItemId}", (notification, data) -> ((ShopItem) data.get("item")).getId().toString())
+                .buildPut("{ItemName}", (notification, data) -> ((ShopItem) data.get("item")).getTitle())
+                .buildPut("{ItemTime}", (notification, data) -> {
+                    Timestamp timestamp = ((ShopItem) data.get("item")).getDate();
+                    return timestamp.toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+                })
                 .buildPut("{ItemType}", (notification, data) ->
-                        EventType.findByValue(((ShopItem) data.get("event")).getType())
+                        EventType.findByValue(((ShopItem) data.get("item")).getType())
                                 .map(EventType::getStringRepresentation)
                                 .orElse(""))
-                .buildPut("{ItemImage}", (notification, data) -> ((ShopItem) data.get("event")).getImages().stream()
+                .buildPut("{ItemImage}", (notification, data) -> ((ShopItem) data.get("item")).getImages().stream()
                         .findFirst()
                         .map(Image::getApiPath)
                         .orElse(""))
@@ -54,9 +59,9 @@ public class ReplacementFactory {
                 )
 
                 //email
-                .buildPut("{ItemLink}", (notification, data) -> BASE_URL + "/" + ((ShopItem) data.get("event")).link())
+                .buildPut("{ItemLink}", (notification, data) -> BASE_URL + "/" + ((ShopItem) data.get("item")).link())
                 .buildPut("{ItemDestination}", (notification, data) -> {
-                    ShopItem item = (ShopItem) data.get("event");
+                    ShopItem item = (ShopItem) data.get("item");
                     return item.getRoute().get(item.getRoute().size() - 1).getCity();
                 })
                 .buildPut("{Recipient}", (notification, data) -> notification.getUser().fullName())
@@ -71,6 +76,7 @@ public class ReplacementFactory {
                     List<OrderedItem> items = (List<OrderedItem>) data.get("orderedItems");
 
                     //todo change when rework on discount system is implemented
+                    //  ugh
                     return items.stream()
                             .map(item -> "<p>" +
                                     item.getItem().getTitle() + " (" + item.getPrice() + "&#8364;)" +

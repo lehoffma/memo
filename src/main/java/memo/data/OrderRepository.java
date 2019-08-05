@@ -21,6 +21,8 @@ import javax.persistence.metamodel.Metamodel;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -59,6 +61,16 @@ public class OrderRepository extends AbstractPagingAndSortingRepository<Order> {
         return null;
     }
 
+    public List<Order> findStaleOrders() {
+        return DatabaseManager.createEntityManager()
+                .createNamedQuery("Order.findUnhandledOrders", Order.class)
+                .setParameter("cancelled", OrderStatus.Cancelled)
+                .setParameter("completed", OrderStatus.Completed)
+                .setParameter("sevenDaysBeforeNow",
+                        Timestamp.valueOf(LocalDateTime.now().minus(7, ChronoUnit.DAYS).with(LocalTime.MIN))
+                )
+                .getResultList();
+    }
 
     public List<Order> findByOrderedItem(String orderedItemId) {
         return this.withParsedId(orderedItemId,

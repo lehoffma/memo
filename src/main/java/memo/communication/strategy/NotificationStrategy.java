@@ -15,7 +15,7 @@ public interface NotificationStrategy<T> {
 
     void post(T item);
 
-    void put(T item);
+    void put(T item, T previous);
 
     void delete(T item);
 }

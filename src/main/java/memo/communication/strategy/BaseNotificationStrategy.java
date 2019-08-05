@@ -12,7 +12,7 @@ public class BaseNotificationStrategy<T> implements NotificationStrategy<T> {
     }
 
     @Override
-    public void put(T item) {
+    public void put(T item, T previous) {
 
     }
 

@@ -474,7 +474,7 @@ public abstract class AbstractApiServlet<T> {
         DatabaseManager.getInstance().update(item, clazz);
 
         //send notifications if defined
-        notificationStrategy.put(item);
+        notificationStrategy.put(item, copy);
 
         return item;
     }

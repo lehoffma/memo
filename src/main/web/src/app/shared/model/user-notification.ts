@@ -26,9 +26,6 @@ export enum UserNotificationType {
 	DEBIT_CUSTOMER,
 	TRANSFER_CUSTOMER,
 
-	//notification only
-	////nothing yet
-
 	//both
 	CLUBROLE_CHANGE_REQUEST,
 	RESPONSIBLE_USER,
@@ -36,6 +33,12 @@ export enum UserNotificationType {
 
 	DEBIT_TREASURER,
 	TRANSFER_TREASURER,
+	NEW_COMMENT,
+	MARKED_AS_REPORT_WRITER,
+
+	//notification only
+	UPCOMING_EVENT,
+	CHECK_ON_ORDER,
 }
 
 export const notificationTypeMap: { [value: string]: UserNotificationType } = {
@@ -49,6 +52,10 @@ export const notificationTypeMap: { [value: string]: UserNotificationType } = {
 	OBJECT_HAS_CHANGED: UserNotificationType.OBJECT_HAS_CHANGED,
 	DEBIT_TREASURER: UserNotificationType.DEBIT_TREASURER,
 	TRANSFER_TREASURER: UserNotificationType.TRANSFER_TREASURER,
+	NEW_COMMENT: UserNotificationType.NEW_COMMENT,
+	MARKED_AS_REPORT_WRITER: UserNotificationType.MARKED_AS_REPORT_WRITER,
+	UPCOMING_EVENT: UserNotificationType.UPCOMING_EVENT,
+	CHECK_ON_ORDER: UserNotificationType.CHECK_ON_ORDER,
 };
 
 export function notificationTypeFromString(input: string): UserNotificationType {
@@ -66,6 +73,10 @@ export const notificationTypes: UserNotificationType[] = [
 	UserNotificationType.OBJECT_HAS_CHANGED,
 	UserNotificationType.DEBIT_TREASURER,
 	UserNotificationType.TRANSFER_TREASURER,
+	UserNotificationType.NEW_COMMENT,
+	UserNotificationType.MARKED_AS_REPORT_WRITER,
+	UserNotificationType.UPCOMING_EVENT,
+	UserNotificationType.CHECK_ON_ORDER,
 ];
 
 export const configurableNotificationTypes: UserNotificationType[] = [
@@ -84,7 +95,7 @@ export enum UserNotificationBroadcastType {
 export const broadcastTypeMap: { [value: string]: UserNotificationBroadcastType } = {
 	MAIL: UserNotificationBroadcastType.MAIL,
 	NOTIFICATION: UserNotificationBroadcastType.NOTIFICATION
-}
+};
 
 export function broadcastTypeFromString(input: string): UserNotificationBroadcastType {
 	return broadcastTypeMap[input];

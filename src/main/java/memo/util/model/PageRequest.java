@@ -21,4 +21,8 @@ public class PageRequest {
         this.pageSize = pageSize;
         return this;
     }
+
+    public static PageRequest all() {
+        return new PageRequest().setPage(0).setPageSize(10000);
+    }
 }
