@@ -26,6 +26,7 @@
 						<memo-order-renderer *ngFor="let order of tabOrders"
 											 [withActions]="canEdit$ | async"
 											 [canSeeDescription]="canSeeDescription$ | async"
+											 [withRemove]="false"
 											 [orderEntry]="order">
 						</memo-order-renderer>
 					</div>

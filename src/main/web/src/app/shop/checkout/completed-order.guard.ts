@@ -9,7 +9,7 @@ export class CompletedOrderGuard implements CanActivate {
 	}
 
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-		const userCompletedOrder = this.orderService.completedOrder !== null;
+		const userCompletedOrder = this.orderService.completedOrder !== null || route.queryParamMap.has("id");
 
 		if (!userCompletedOrder) {
 			this.router.navigate([""])

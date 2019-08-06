@@ -1,16 +1,17 @@
 package memo.data;
 
-import memo.model.*;
-import memo.util.model.EventType;
+import memo.discounts.model.DiscountEntity;
+import memo.model.Order;
+import memo.model.OrderedItem;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Named
 @ApplicationScoped
@@ -31,57 +32,45 @@ public class DiscountService {
         this.userRepository = userRepository;
     }
 
-    public Discount getUserDiscount() {
-        return new Discount()
-                .setAmount(new BigDecimal("5.00"))
-                .setEligible(false)
-                .setShowLink(false)
-                .setLink(new Discount.DiscountLink()
-                        .setUrl("/membership/apply")
-                        .setText("Werde jetzt Mitglied, um 5 Euro auf alle Touren zu sparen!"))
-                .setReason("Mitglieder-Rabatt");
-    }
+    public BigDecimal getDiscountedPrice(BigDecimal price, List<DiscountEntity> discounts) {
+        List<DiscountEntity> copy = new ArrayList<>(discounts);
+        //non-percentage discounts first, then sort by id
+        copy.sort(
+                Comparator.comparing(DiscountEntity::getPercentage)
+                        .thenComparing(DiscountEntity::getId)
+        );
 
-    public boolean isFirstOrder(ShopItem item, User user) {
-        List<Order> userOrders = orderRepository.findByUser(user.getId().toString());
-
-        return userOrders.stream()
-                .noneMatch(order -> order.getItems().stream()
-                        .anyMatch(orderedItem -> !orderedItem.getStatus().equals(OrderStatus.Cancelled)
-                                && orderedItem.getItem().getId().equals(item.getId()))
+        BigDecimal discounted = price;
+        for (DiscountEntity discountEntity : copy) {
+            if (discountEntity.getPercentage()) {
+                // return price - price * (discount.amount / 100);
+                discounted = discounted.subtract(
+                        discounted.multiply(
+                                discountEntity.getAmount().divide(
+                                        BigDecimal.valueOf(100)
+                                ).setScale(4, RoundingMode.HALF_UP)
+                        )
                 );
-    }
-
-    public BigDecimal getDiscountedPrice(Integer eventId, Integer userId) {
-        return getDiscountedPrice("" + eventId, "" + userId);
-    }
-
-    public BigDecimal getDiscountedPrice(String eventId, String userId) {
-        return eventRepository.getById(eventId)
-                .map(event -> event.getPrice().subtract(getUserDiscount(eventId, userId).stream()
-                        .filter(Discount::getEligible)
-                        .map(Discount::getAmount)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add))
-                )
-                .map(price -> price.max(BigDecimal.ZERO))
-                .orElse(BigDecimal.ZERO);
-    }
-
-    public List<Discount> getUserDiscount(String eventId, String userId) {
-        List<ShopItem> shopItems = eventRepository.get(eventId);
-        if (shopItems.isEmpty() || shopItems.get(0).getType() != EventType.tours.getValue()) {
-            return new ArrayList<>();
+            } else {
+                discounted = discounted.subtract(discountEntity.getAmount());
+            }
         }
 
-        Discount discount = getUserDiscount();
+        if (discounted.floatValue() < 0f) {
+            return BigDecimal.ZERO;
+        }
 
-        Optional<User> user = userRepository.getById(userId);
-        user.ifPresent(it -> {
-            boolean firstOrder = isFirstOrder(shopItems.get(0), it);
-            discount.setEligible(firstOrder && (it.getClubRole().ordinal() > ClubRole.Gast.ordinal()));
-            discount.setShowLink((it.getClubRole().ordinal() <= ClubRole.Gast.ordinal()));
-        });
+        return discounted;
+    }
 
-        return Arrays.asList(discount);
+    public BigDecimal getDiscountedPrice(OrderedItem orderedItem) {
+        return getDiscountedPrice(orderedItem.getPrice(), orderedItem.getDiscounts());
+    }
+
+    public BigDecimal getTotalPrice(Order order) {
+        return order.getItems().stream()
+                .map(this::getDiscountedPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(2, RoundingMode.HALF_UP);
     }
 }

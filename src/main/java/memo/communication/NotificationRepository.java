@@ -123,6 +123,7 @@ public class NotificationRepository extends AbstractPagingAndSortingRepository<N
         Integer id = Integer.valueOf(userId);
         String unsubCheck = this.getUnsubCheck(id);
 
+        //todo returns the wrong value
         return ((Long) DatabaseManager.createEntityManager()
                 .createNativeQuery("SELECT COUNT(*) FROM notifications n, notification_templates template " +
                         "WHERE n.NOTIFICATIONTYPE = template.NOTIFICATION_TEMPLATE_ID AND n.USER_ID = ?1 " +

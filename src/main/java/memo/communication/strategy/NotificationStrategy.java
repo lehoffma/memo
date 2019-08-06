@@ -4,7 +4,8 @@ import java.util.function.Function;
 
 public interface NotificationStrategy<T> {
     default void async(Runnable runnable) {
-        new Thread(runnable);
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     default <U> U waitFor(Function<T, U> function, T input) {

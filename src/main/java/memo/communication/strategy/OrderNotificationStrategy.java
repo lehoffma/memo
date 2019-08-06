@@ -57,8 +57,11 @@ public class OrderNotificationStrategy extends BaseNotificationStrategy<Order> {
         User admin = userRepository.getAdmin();
         BankAcc bankAccount = order.getBankAccount();
         Map<String, Object> options = new MapBuilder<String, Object>()
-                .buildPut("orderId", order.getId())
-                .buildPut("bankAccId", bankAccount.getId());
+                .buildPut("orderId", order.getId());
+
+        if (bankAccount != null) {
+            options.put("bankAccId", bankAccount.getId());
+        }
 
         dataAsString = JsonHelper.toString(options);
         switch (order.getMethod()) {

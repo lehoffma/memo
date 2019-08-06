@@ -3,6 +3,7 @@ import {NotificationService} from "../../shared/services/api/user-notification.s
 import {NotificationStatus, UserNotification} from "../../shared/model/user-notification";
 import {Observable} from "rxjs";
 import {map, mergeMap} from "rxjs/operators";
+import {Params} from "@angular/router";
 
 @Component({
 	selector: "memo-notification-overview",
@@ -19,11 +20,34 @@ export class NotificationOverviewComponent implements OnInit {
 	loading$ = this.notificationService.loading$;
 
 	constructor(private notificationService: NotificationService) {
+		this.getBaseLink = this.getBaseLink.bind(this);
+		this.getQueryParams = this.getQueryParams.bind(this);
 	}
 
 	ngOnInit() {
 	}
 
+	getBaseLink(input: string): string {
+		const result = /([^?]+)\??(.*)?/g.exec(input);
+		if (!result) {
+			return input;
+		}
+		return result[1];
+	}
+
+	getQueryParams(input: string): Params {
+		const result = /([^?]+)\??(.*)?/g.exec(input);
+		if (!result || !result[2]) {
+			return {};
+		}
+
+		const paramsString = result[2];
+		return paramsString.split("&").reduce((params, paramString) => {
+			const [key, value] = paramString.split("=");
+			params[key] = value;
+			return params;
+		}, {});
+	}
 
 	loadMore() {
 		this.notificationService.loadMore();
@@ -35,7 +59,7 @@ export class NotificationOverviewComponent implements OnInit {
 		}
 	}
 
-	markAsDeleted(notification: UserNotification){
+	markAsDeleted(notification: UserNotification) {
 		this.notificationService.markAsDeleted(notification);
 	}
 }

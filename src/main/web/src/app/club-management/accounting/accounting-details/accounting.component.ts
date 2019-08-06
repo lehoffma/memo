@@ -35,7 +35,7 @@ export class AccountingComponent implements OnInit, OnDestroy {
 
 	filterOptions: FilterOption<FilterOptionType>[] = [
 		new DateRangeFilterOption(
-			"timestamp",
+			"date",
 			"Datum",
 		),
 		new ShopItemFilterOption(

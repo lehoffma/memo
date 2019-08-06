@@ -2,11 +2,13 @@ package memo.communication;
 
 import memo.auth.TokenService;
 import memo.communication.model.Notification;
+import memo.data.DiscountService;
 import memo.model.*;
 import memo.util.MapBuilder;
 import memo.util.model.EventType;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -26,8 +28,20 @@ import java.util.stream.Collectors;
 public class ReplacementFactory {
     private final String BASE_URL = "https://shop.meilenwoelfe.de/";
 
+    private DiscountService discountService;
+
+    public ReplacementFactory() {
+
+    }
+
+    @Inject
+    public ReplacementFactory(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
     public Map<String, BiFunction<Notification, Map<String, Object>, String>> getAllReplacements() {
         return new MapBuilder<String, BiFunction<Notification, Map<String, Object>, String>>()
+                .buildPut("{Now}", (notification, data) -> DateTimeFormatter.ISO_DATE_TIME.format(LocalDateTime.now()))
                 //notifications
                 .buildPut("{ItemId}", (notification, data) -> ((ShopItem) data.get("item")).getId().toString())
                 .buildPut("{ItemName}", (notification, data) -> ((ShopItem) data.get("item")).getTitle())
@@ -75,18 +89,18 @@ public class ReplacementFactory {
                 .buildPut("{OrderedItems}", (notification, data) -> {
                     List<OrderedItem> items = (List<OrderedItem>) data.get("orderedItems");
 
-                    //todo change when rework on discount system is implemented
-                    //  ugh
                     return items.stream()
                             .map(item -> "<p>" +
-                                    item.getItem().getTitle() + " (" + item.getPrice() + "&#8364;)" +
+                                    item.getItem().getTitle() + " ("
+                                    + this.discountService.getDiscountedPrice(item)
+                                        .setScale(2, BigDecimal.ROUND_HALF_UP)
+                                    + "&#8364;)" +
                                     "</p>"
                             )
                             .collect(Collectors.joining());
                 })
-                .buildPut("{OrderPrice}", (notification, data) -> ((Order) data.get("order")).getItems().stream()
-                        .map(OrderedItem::getPrice)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .buildPut("{OrderPrice}", (notification, data) -> this.discountService
+                        .getTotalPrice((Order) data.get("order"))
                         .toString()
                 )
                 .buildPut("{OrderUsername}", (notification, data) -> ((Order) data.get("order")).getUser().fullName())

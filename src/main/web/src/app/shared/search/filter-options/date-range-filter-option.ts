@@ -11,8 +11,8 @@ export class DateRangeFilterOption implements FilterOption<FilterOptionType.DATE
 	constructor(
 		public key: string,
 		public title: string,
-		private minDateKey = "minDate",
-		private maxDateKey = "maxDate"
+		private minDateKey = "min" + key.charAt(0).toUpperCase() + key.slice(1),
+		private maxDateKey = "max" + key.charAt(0).toUpperCase() + key.slice(1)
 	) {
 
 	}

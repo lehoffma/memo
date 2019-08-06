@@ -208,7 +208,6 @@ export class CheckoutComponent implements OnInit {
 					.pipe(
 						first(),
 						//todo error handling
-						//todo discounts hinzufügen?
 						//combine cart content into one array
 						map(content => this.combineCartContent(content)),
 						//map events to orderedItem interface to make it usable on the backend
@@ -233,7 +232,8 @@ export class CheckoutComponent implements OnInit {
 					this.orderedItemService.invalidateCache();
 					this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
 					this.cartService.reset();
-					this.router.navigateByUrl("/order-complete");
+					console.log({id: order.id});
+					this.router.navigate(["/order-complete"], {queryParams: {id: order.id}});
 				},
 				error => {
 					console.error(error);

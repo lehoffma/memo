@@ -301,7 +301,7 @@ public class PredicateFactory {
 
     public static Function getTransform(String requestKey) {
         String key = requestKey.toLowerCase();
-        List<String> dateKeys = Arrays.asList("minDate", "maxDate", "timestamp", "date");
+        List<String> dateKeys = Arrays.asList("minDate", "maxDate", "timestamp", "date", "maxTimeStamp", "minTimeStamp");
         if (dateKeys.stream().anyMatch(dateKey -> dateKey.equalsIgnoreCase(key))) {
             return s -> PredicateFactory.isoToTimestamp((String) s);
         }

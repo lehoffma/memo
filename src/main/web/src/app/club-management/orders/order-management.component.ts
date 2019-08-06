@@ -24,7 +24,7 @@ export class OrderManagementComponent implements OnInit, OnDestroy {
 	sortingOptions: SortingOption<any>[] = orderSortingOptions;
 	filterOptions: FilterOption<FilterOptionType>[] = [
 		new DateRangeFilterOption(
-			"timestamp",
+			"timeStamp",
 			"Datum",
 		),
 		new ShopItemFilterOption(

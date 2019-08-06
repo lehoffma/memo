@@ -1,17 +1,38 @@
-<div class="order-complete-prompt mat-elevation-z3">
-	<div class="order-complete-prompt-header">
-		<mat-icon>check</mat-icon>
-	</div>
-	<span class="order-complete-prompt-text">Deine Bestellung wurde erfolgreich weitergeleitet!</span>
-	<div class="order-complete-prompt-actions">
-		<a mat-raised-button color="primary" routerLink="/">
-			Zur Startseite
+<memo-data-container [error]="error$ | async"
+					 errorStateHeadline="Fehler"
+					 errorStateSubtitle="Konnte Bestellung nicht finden. Probier es später noch mal!"
+					 [initialLoad]="loading$ | async"
+					 [renderer]="renderer"
+>
+	<memo-data-error-state-actions>
+		<a mat-raised-button routerLink="/user/order-history" color="accent">
+			Zu deinen Bestellungen
 		</a>
+	</memo-data-error-state-actions>
+</memo-data-container>
+
+<ng-template #renderer>
+	<div class="order-complete-container">
+		<div class="order-complete-prompt mat-elevation-z3">
+			<div class="order-complete-prompt-header">
+				<mat-icon>check</mat-icon>
+			</div>
+			<span class="order-complete-prompt-text">Deine Bestellung wurde erfolgreich weitergeleitet!</span>
+			<div class="order-complete-prompt-actions">
+				<a mat-raised-button color="primary" routerLink="/">
+					Zur Startseite
+				</a>
+			</div>
+		</div>
+
+		<div class="order-container">
+			<memo-order-renderer *ngIf="order$ | async as order" [orderEntry]="order"
+								 [isOnDetailsPage]="false"
+								 [canSeeDescription]="canSeeDescription$ | async"
+								 [withActions]="canEdit$ | async"
+								 [withRemove]="false">
+
+			</memo-order-renderer>
+		</div>
 	</div>
-</div>
-
-<div class="order-container">
-	<memo-order-renderer *ngIf="order$ | async as order" [orderEntry]="order">
-
-	</memo-order-renderer>
-</div>
+</ng-template>

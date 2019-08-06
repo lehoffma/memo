@@ -64,8 +64,7 @@ public class NotificationInitializer {
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.CHECK_ON_ORDER)
                         .setTemplate("Einige alte Bestellungen müssen noch geupdated werden!")
-                        //todo link
-                        .setLink("/management/orders?status=Reserved")
+                        .setLink("/management/orders?status=0,1,2,3,6,7,8,9&maxTimeStamp={Now}")
         );
         List<NotificationTemplate> currentTemplates = new ArrayList<>(DatabaseManager.createEntityManager()
                 .createQuery("SELECT e FROM NotificationTemplate e", NotificationTemplate.class)

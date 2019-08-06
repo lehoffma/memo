@@ -1,6 +1,11 @@
 @import "theme";
 
-:host {
+:host ::ng-deep .empty-state {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+
+.order-complete-container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -62,7 +67,7 @@
 }
 
 @media all and (min-width: 800px) {
-	:host {
+	.order-complete-container {
 		padding: 1rem;
 		flex-direction: row-reverse;
 		justify-content: center;

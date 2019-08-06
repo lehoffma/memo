@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import memo.data.BankAccountRepository;
-import memo.data.EventRepository;
-import memo.data.OrderRepository;
-import memo.data.UserRepository;
+import memo.data.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,10 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Named
@@ -26,6 +20,7 @@ import java.util.stream.Collectors;
 public class DataParser {
     private EventRepository eventRepository;
     private OrderRepository orderRepository;
+    private ParticipantRepository participantRepository;
     private UserRepository userRepository;
     private BankAccountRepository bankAccountRepository;
 
@@ -36,10 +31,12 @@ public class DataParser {
     public DataParser(EventRepository eventRepository,
                       OrderRepository orderRepository,
                       UserRepository userRepository,
+                      ParticipantRepository participantRepository,
                       BankAccountRepository bankAccountRepository) {
         this.eventRepository = eventRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
+        this.participantRepository = participantRepository;
         this.bankAccountRepository = bankAccountRepository;
     }
 
@@ -65,9 +62,18 @@ public class DataParser {
                 break;
             case "orderedItemIds":
                 key = "orderedItems";
-                //todo test
-                System.out.println(entry.getValue());
-                value = new ArrayList<>();
+                try {
+                    String ids = entry.getValue().toString();
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    List<Integer> idList = objectMapper.readValue(ids, List.class);
+                    value = idList.stream()
+                            .map(id -> participantRepository.getById(id).orElse(null))
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
+                } catch (IOException e) {
+                    logger.error("Could not convert data to ID List: " + entry.getValue(), e);
+                    value = new ArrayList<>();
+                }
                 break;
             case "orderId":
                 key = "order";

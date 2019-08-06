@@ -27,7 +27,9 @@
 		<a *ngFor="let notification of notifications$ | async"
 		   class="notification {{notification.status}}"
 		   (click)="markAsRead(notification)"
-		   routerLink="{{notification.link}}">
+		   routerLink="{{notification.link | pipeFunction:getBaseLink}}"
+		   [queryParams]="notification.link | pipeFunction:getQueryParams"
+		>
 			<img src="{{notification.imagePath || 'resources/images/Logo.png'}}"/>
 
 

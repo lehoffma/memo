@@ -83,7 +83,6 @@ export class DiscountsComponent extends BaseSearchResultsComponent<Discount> {
 	protected buildFilterOptions(filter: Filter): Observable<FilterOption[]> {
 		return of([
 			new DateRangeFilterOption("date", "Zeitraum"),
-			new ShopItemFilterOption("item", "Nach Item filtern", id => this.eventService.getById(id)),
 			new MultiFilterOption("outdated", "Aktiv", [
 				{key: "isActive", label: "Nur aktive", query: [{key: "outdated", value: "false"}]},
 			]),
