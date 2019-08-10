@@ -14,12 +14,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Named
 @ApplicationScoped
 public class CommentNotificationStrategy extends BaseNotificationStrategy<Comment> {
     private static final Logger logger = LogManager.getLogger(CommentNotificationStrategy.class);
     private NotificationRepository notificationRepository;
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public CommentNotificationStrategy() {
         super();
@@ -50,6 +53,6 @@ public class CommentNotificationStrategy extends BaseNotificationStrategy<Commen
 
     @Override
     public void post(Comment comment) {
-        this.async(() -> this.notifyResponsiblePeople(comment));
+        this.async(() -> this.notifyResponsiblePeople(comment), executorService);
     }
 }

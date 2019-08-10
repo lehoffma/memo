@@ -1,11 +1,11 @@
 package memo.communication.strategy;
 
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 public interface NotificationStrategy<T> {
-    default void async(Runnable runnable) {
-        Thread thread = new Thread(runnable);
-        thread.start();
+    default void async(Runnable runnable, ExecutorService executorService) {
+        executorService.execute(runnable);
     }
 
     default <U> U waitFor(Function<T, U> function, T input) {

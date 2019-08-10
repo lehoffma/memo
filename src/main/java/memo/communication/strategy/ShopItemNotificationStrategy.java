@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
@@ -27,6 +29,7 @@ import java.util.function.Function;
 public class ShopItemNotificationStrategy extends BaseNotificationStrategy<ShopItem> {
     private static final Logger logger = LogManager.getLogger(ShopItemNotificationStrategy.class);
     private NotificationRepository notificationRepository;
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public ShopItemNotificationStrategy() {
         super();
@@ -55,7 +58,7 @@ public class ShopItemNotificationStrategy extends BaseNotificationStrategy<ShopI
     }
 
     public void post(ShopItem item) {
-        this.async(() -> this.sendCreationEmails(item));
+        this.async(() -> this.sendCreationEmails(item), executorService);
     }
 
     private static class ChangelogEntry {
@@ -175,6 +178,6 @@ public class ShopItemNotificationStrategy extends BaseNotificationStrategy<ShopI
 
 
     public void put(ShopItem item, ShopItem previous) {
-        this.async(() -> this.sendUpdateEmails(item, previous));
+        this.async(() -> this.sendUpdateEmails(item, previous), executorService);
     }
 }

@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Named
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class OrderNotificationStrategy extends BaseNotificationStrategy<Order> {
     private NotificationRepository notificationRepository;
     private UserRepository userRepository;
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public OrderNotificationStrategy() {
 
@@ -97,6 +100,6 @@ public class OrderNotificationStrategy extends BaseNotificationStrategy<Order> {
 
     @Override
     public void post(Order item) {
-        this.async(() -> this.postOrder(item));
+        this.async(() -> this.postOrder(item), executorService);
     }
 }

@@ -24,6 +24,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Path("/requestRoleChange")
 @Named
@@ -32,6 +34,7 @@ public class RoleChangeRequestServlet {
     private static final Logger logger = LogManager.getLogger(RoleChangeRequestServlet.class);
     private NotificationRepository notificationRepository;
     private UserRepository userRepository;
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public RoleChangeRequestServlet() {
     }
@@ -70,12 +73,15 @@ public class RoleChangeRequestServlet {
                             .buildPut("userId", user.getId())
                             .buildPut("newRole", clubRole));
 
-                    this.notificationRepository.save(
-                            new Notification()
-                                    .setUser(admin)
-                                    .setNotificationType(NotificationType.CLUBROLE_CHANGE_REQUEST)
-                                    .setData(data)
-                    );
+                    executorService.execute(() -> {
+                        this.notificationRepository.save(
+                                new Notification()
+                                        .setUser(admin)
+                                        .setNotificationType(NotificationType.CLUBROLE_CHANGE_REQUEST)
+                                        .setData(data)
+                        );
+                    });
+
                     return Response.ok().build();
                 } else {
                     logger.error("The given userId " + userId + " doesn't match any user in the database.");
