@@ -12,6 +12,7 @@ import memo.util.MapBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,6 +40,11 @@ public class ShopItemNotificationStrategy extends BaseNotificationStrategy<ShopI
     public ShopItemNotificationStrategy(NotificationRepository notificationRepository) {
         super();
         this.notificationRepository = notificationRepository;
+    }
+
+    @PreDestroy
+    public void onDestroy() {
+        this.executorService.shutdownNow();
     }
 
     private void sendCreationEmails(ShopItem item) {

@@ -11,6 +11,7 @@ import memo.model.User;
 import memo.util.JsonHelper;
 import memo.util.MapBuilder;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,6 +30,11 @@ public class OrderNotificationStrategy extends BaseNotificationStrategy<Order> {
 
     public OrderNotificationStrategy() {
 
+    }
+
+    @PreDestroy
+    public void onDestroy() {
+        this.executorService.shutdownNow();
     }
 
     @Inject

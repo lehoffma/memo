@@ -14,6 +14,7 @@ import memo.util.MapBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,6 +38,12 @@ public class RoleChangeRequestServlet {
     private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public RoleChangeRequestServlet() {
+        executorService.shutdownNow();
+    }
+
+    @PreDestroy
+    public void onDestroy() {
+        this.executorService.shutdownNow();
     }
 
     @Inject
