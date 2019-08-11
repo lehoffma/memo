@@ -1,9 +1,10 @@
 version: "3.7"
 services:
-  web:
+  memo:
     container_name: memoshop
     build:
-      dockerfile: .
+      context: .
+      dockerfile: Dockerfile
       network: host
     restart: always
     image: meilenwoelfe/shop:latest
