@@ -5,7 +5,7 @@
 
     <groupId>org.meilenwoelfe.shop</groupId>
     <artifactId>memo</artifactId>
-    <version>1.0.0-alpha-0</version>
+    <version>1.0.0</version>
     <packaging>war</packaging>
 
     <name>Meilenshop</name>
@@ -15,6 +15,7 @@
         <!-- Use the latest version whenever possible. -->
         <jackson.version>2.9.9</jackson.version>
         <apache-cxf.version>3.2.6</apache-cxf.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>

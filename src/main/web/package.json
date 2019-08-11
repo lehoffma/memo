@@ -1,6 +1,6 @@
 {
 	"name": "memo-web",
-	"version": "1.0.0-alpha.1",
+	"version": "1.0.0",
 	"scripts": {
 		"start": "ng serve --proxy-config proxy.conf.json",
 		"start-mobile": "ng serve --proxy-config proxy.conf.json --host 192.168.188.75",

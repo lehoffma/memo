@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  web:
+    container_name: memoshop
+    build:
+      dockerfile: .
+      network: host
+    restart: always
+    image: meilenwoelfe/shop:latest
+    volumes:
+      - /usr/share/tomcat8/MemoShop/pictures:/usr/share/tomcat8/MemoShop/pictures
+    ports:
+      - 8080:8080
+    logging:
+      options:
+        max-size: "50m"
+

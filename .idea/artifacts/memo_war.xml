@@ -7,7 +7,7 @@
         <packaging>war</packaging>
       </options>
     </properties>
-    <root id="archive" name="memo-1.0.0-alpha-0.war">
+    <root id="archive" name="memo-1.0.0.war">
       <element id="artifact" artifact-name="memo:war exploded" />
     </root>
   </artifact>
