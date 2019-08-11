@@ -4,10 +4,10 @@ services:
     container_name: memoshop
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-arm32v7
       network: host
     restart: always
-    image: meilenwoelfe/shop:1.0.0-amd64
+    image: meilenwoelfe/shop:1.0.0-arm32v7
     volumes:
       - /usr/share/tomcat8/MemoShop/pictures:/usr/share/tomcat8/MemoShop/pictures
     ports:
