@@ -11,7 +11,7 @@ import java.util.Objects;
  * Entity implementation class for Entity: EntryCategory
  */
 @Entity
-@Table(name = "ENTRY_CATEGORIES")
+@Table(name = "entry_categories")
 public class EntryCategory implements Serializable {
 
 

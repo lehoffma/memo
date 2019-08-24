@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 
 @Entity
-@Table(name = "IMAGES")
+@Table(name = "images")
 @NamedQueries({
         @NamedQuery(
                 name = "Image.findByFileName",

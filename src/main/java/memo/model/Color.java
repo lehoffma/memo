@@ -10,7 +10,7 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "COLORS")
+@Table(name = "colors")
 public class Color implements Serializable {
 
     //**************************************************************

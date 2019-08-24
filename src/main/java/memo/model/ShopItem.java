@@ -17,7 +17,7 @@ import java.util.*;
  * Entity implementation class for Entity: ShopItem
  */
 @Entity
-@Table(name = "SHOP_ITEMS", indexes = {@Index(columnList = "type", name = "item_type")})
+@Table(name = "shop_items", indexes = {@Index(columnList = "type", name = "item_type")})
 @NamedQueries({
         @NamedQuery(
                 name = "ShopItem.findBySearchTerm",

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ORDERED_ITEMS")
+@Table(name = "ordered_items")
 @NamedQueries({
         @NamedQuery(
                 name = "OrderedItem.findByUser",

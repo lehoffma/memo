@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "NOTIFICATION_TEMPLATES")
+@Table(name = "notification_templates")
 public class NotificationTemplate {
     @Id
     @Column(name = "NOTIFICATION_TEMPLATE_ID")

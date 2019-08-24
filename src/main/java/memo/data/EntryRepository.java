@@ -88,17 +88,17 @@ public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
             "                   MONTH(e.DATE) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)) THEN e.ACTUALVALUE\n" +
             "             else 0 end)                                          AS merchChange\n" +
             "\n" +
-            "FROM ENTRIES e,\n" +
-            "     SHOP_ITEMS item\n" +
+            "FROM entries e,\n" +
+            "     shop_items item\n" +
             "WHERE e.ITEM_ID = item.ID;";
 
     private final String monthlyChangesQuery = "SELECT SUM(e.ACTUALVALUE) AS totalBalance, MONTH(e.DATE) AS month, YEAR(e.DATE) AS year\n" +
-            "FROM ENTRIES e\n" +
+            "FROM entries e\n" +
             "GROUP BY YEAR(e.DATE), month;";
 
     private final String itemTotalsQuery = "SELECT SUM(e.ACTUALVALUE) AS totalBalance, item.TITLE AS itemTitle, item.ID AS itemId\n" +
-            "FROM ENTRIES e,\n" +
-            "     SHOP_ITEMS item\n" +
+            "FROM entries e,\n" +
+            "     shop_items item\n" +
             "WHERE e.ITEM_ID = item.ID\n" +
             "  AND item.DATE <= CURRENT_DATE\n" +
             "GROUP BY e.ITEM_ID\n" +

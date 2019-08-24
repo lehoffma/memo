@@ -15,8 +15,7 @@ import java.util.Objects;
  * Entity implementation class for Entity: AdDress
  */
 @Entity
-@Table(name = "ADDRESSES")
-
+@Table(name = "addresses")
 public class Address implements Serializable {
 
     //**************************************************************

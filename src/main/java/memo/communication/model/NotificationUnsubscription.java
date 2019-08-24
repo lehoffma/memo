@@ -9,7 +9,7 @@ import memo.serialization.UserIdSerializer;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "NOTIFICATION_UNSUBSCRIPTIONS", indexes = {@Index(columnList = "user_id", name = "unsubscription_user")})
+@Table(name = "notification_unsubscriptions", indexes = {@Index(columnList = "user_id", name = "unsubscription_user")})
 public class NotificationUnsubscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

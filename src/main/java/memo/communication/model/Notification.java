@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 @Entity
-@Table(name = "NOTIFICATIONS")
+@Table(name = "notifications")
 public class Notification {
 
     @Id

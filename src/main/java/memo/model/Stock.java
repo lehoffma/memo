@@ -14,7 +14,7 @@ import java.util.Objects;
  * Entity implementation class for Entity: Stock
  */
 @Entity
-@Table(name = "STOCK")
+@Table(name = "stock")
 @NamedQueries({
         @NamedQuery(
                 name = "Stock.findByShopItemType",

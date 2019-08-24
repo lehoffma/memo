@@ -15,7 +15,7 @@ import java.util.Objects;
  * Entity implementation class for Entity: User
  */
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 @NamedQueries({
         @NamedQuery(
                 name = "User.findBySearchTerm",

@@ -22,13 +22,14 @@
         <class>memo.model.Stock</class>
         <class>memo.model.User</class>
 
+        <class>memo.discounts.model.DiscountEntity</class>
         <class>memo.communication.model.Notification</class>
         <class>memo.communication.model.NotificationTemplate</class>
         <class>memo.communication.model.EmailTemplate</class>
         <class>memo.communication.model.NotificationUnsubscription</class>
 
         <properties>
-            <!--<property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.MySQLPlatform"/>-->
+            <property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.MySQLPlatform"/>
             <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
             <property name="eclipselink.ddl-generation.output-mode" value="database"/>
 <!--            <property name="eclipselink.logging.level" value="FINE"/>-->

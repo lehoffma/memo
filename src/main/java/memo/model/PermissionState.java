@@ -10,8 +10,7 @@ import java.util.Objects;
  * Entity implementation class for Entity: PermissionState
  */
 @Entity
-@Table(name = "PERMISSION_STATES")
-
+@Table(name = "permission_states")
 public class PermissionState implements Serializable {
 
     //**************************************************************

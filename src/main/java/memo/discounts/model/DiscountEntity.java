@@ -17,7 +17,7 @@ import java.util.List;
 
 //todo discount refactor add color/sizes?
 @Entity
-@Table(name = "Discounts")
+@Table(name = "discounts")
 @JsonIgnoreProperties({"orderedItems"})
 public class DiscountEntity {
     @Id

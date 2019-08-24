@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "EMAIL_NOTIFICATION")
+@Table(name = "email_notification")
 public class EmailTemplate {
     @Id
     @Column(name = "EMAIL_TEMPLATE_ID")

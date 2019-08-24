@@ -10,7 +10,7 @@ import memo.serialization.UserIdSerializer;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "WAITING_LIST")
+@Table(name = "waiting_list")
 public class WaitingListEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

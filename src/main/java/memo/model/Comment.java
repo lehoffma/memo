@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "COMMENTS")
+@Table(name = "comments")
 @NamedQueries({
         @NamedQuery(
                 name = "Comment.findTopLevelByEventId",

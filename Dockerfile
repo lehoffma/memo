@@ -1,7 +1,8 @@
 # todo java 11
 FROM tomee:8-jre-7.1.0-plus
 
-RUN rm -rf /usr/local/tomee/webapps/ROOT/*
+RUN rm -rf /usr/local/tomee/webapps/ROOT/
+RUN rm -f /usr/local/tomee/webapps/ROOT.war
 ADD target/memo-1.0.0.war /usr/local/tomee/webapps/ROOT.war
 ADD tomee.xml /usr/local/tomee/conf/
 ADD tomcat-users.xml /usr/local/tomee/conf/

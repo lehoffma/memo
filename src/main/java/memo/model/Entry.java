@@ -17,7 +17,7 @@ import java.util.Objects;
  * Entity implementation class for Entity: Entry
  */
 @Entity
-@Table(name = "ENTRIES")
+@Table(name = "entries")
 @NamedQueries({
         @NamedQuery(
                 name = "Entry.findByEventId",
