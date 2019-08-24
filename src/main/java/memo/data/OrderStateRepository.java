@@ -159,7 +159,8 @@ public class OrderStateRepository {
             "FROM orders o, ordered_items item, shop_items shop_item\n" +
             "where o.ID = item.ORDER_ID AND item.ITEM_ID = shop_item.ID\n" +
             "GROUP BY item.ITEM_ID\n" +
-            "ORDER BY count DESC";
+            "ORDER BY count DESC\n" +
+            "LIMIT 10";
 
     public List<PopularItemsDataPoint> popularItems() {
         return ((List<Object[]>) DatabaseManager.createEntityManager()
@@ -203,7 +204,8 @@ public class OrderStateRepository {
             "FROM orders o, ordered_items item, colors color\n" +
             "where o.ID = item.ORDER_ID AND item.COLOR_ID IS NOT NULL\n" +
             "GROUP BY item.COLOR_ID\n" +
-            "ORDER BY count DESC";
+            "ORDER BY count DESC\n" +
+            "LIMIT 10";
 
     public List<PopularColorsDataPoint> popularColors() {
         return ((List<Object[]>) DatabaseManager.createEntityManager()
@@ -258,7 +260,8 @@ public class OrderStateRepository {
             "FROM orders o, ordered_items item\n" +
             "where o.ID = item.ORDER_ID AND item.SIZE IS NOT NULL\n" +
             "GROUP BY item.SIZE\n" +
-            "ORDER BY count DESC";
+            "ORDER BY count DESC\n" +
+            "LIMIT 10";
 
     public List<PopularSizesDataPoint> popularSizes() {
         return ((List<Object[]>) DatabaseManager.createEntityManager()

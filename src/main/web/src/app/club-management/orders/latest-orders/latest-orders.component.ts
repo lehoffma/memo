@@ -23,7 +23,7 @@ export class LatestOrdersComponent implements OnInit {
 
 	public latestOrders$: Observable<UserOrder[]> = this.orderService.get(
 		Filter.none(),
-		PageRequest.first(),
+		PageRequest.first(5),
 		Sort.by("desc", "timeStamp")
 	).pipe(
 		map(it => it.content),

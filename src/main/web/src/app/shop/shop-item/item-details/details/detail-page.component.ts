@@ -10,9 +10,9 @@ import {userPermissions} from "../../../../shared/model/user";
 import {Filter} from "../../../../shared/model/api/filter";
 import {CommentService} from "../../../../shared/services/api/comment.service";
 import {PagedDataSource} from "../../../../shared/utility/material-table/paged-data-source";
-import {filter, map, mergeMap, scan, startWith, take, tap} from "rxjs/operators";
+import {filter, map, mergeMap, scan, startWith, take} from "rxjs/operators";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
-import {Direction, Sort} from "../../../../shared/model/api/sort";
+import {Sort} from "../../../../shared/model/api/sort";
 import {ParticipantUser} from "../../../shared/model/participant";
 import {AddressService} from "../../../../shared/services/api/address.service";
 import {Address} from "../../../../shared/model/address";
@@ -21,12 +21,9 @@ import {LogInService} from "../../../../shared/services/api/login.service";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {canCheckIn, canConclude, canDeleteEntries, canEdit, canReadEntries, canReadOrders} from "../../../../util/permissions-util";
 import {ItemImagePopupComponent} from "../image-popup/item-image-popup.component";
-import { MatDialog } from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {SpiedOnElementDirective} from "../../../../shared/utility/spied-on-element.directive";
 import {WindowService} from "../../../../shared/services/window.service";
-import {OrderedItem} from "../../../../shared/model/ordered-item";
-import {OrderStatus} from "../../../../shared/model/order-status";
-import {Order} from "../../../../shared/model/order";
 import {OrderService} from "../../../../shared/services/api/order.service";
 import {UserService} from "../../../../shared/services/api/user.service";
 import {GroupedParticipants} from "../participants/participants.component";
@@ -267,7 +264,7 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 		selectedElement.elementRef.nativeElement.scrollIntoView();
 	}
 
-	scrollToId(id: string){
+	scrollToId(id: string) {
 		this.scrollTo({id, label: ""});
 	}
 

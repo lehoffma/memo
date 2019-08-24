@@ -40,7 +40,8 @@ export function paymentConfig(event: Event): PaymentConfig {
 		[PaymentMethod.TRANSFER]: true,
 		[PaymentMethod.DEBIT]: true
 	};
-	if (event.paymentMethods) {
+	const hasPaymentMethods = event.paymentMethods && event.paymentMethods.length > 0;
+	if (hasPaymentMethods) {
 		methods = event.paymentMethods.reduce((acc, method) => ({...acc, [method]: true}), {} as any);
 	}
 
