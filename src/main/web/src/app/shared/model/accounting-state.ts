@@ -1,5 +1,3 @@
-import {EntryCategory} from "./entry-category";
-
 export interface AccountingState {
 	timestamp?: Date,
 
@@ -31,8 +29,14 @@ export interface AccountingState {
 	}
 }
 
-export interface DatePreview {
-	date: Date,
+
+export interface DatePreview{
+	date: Date;
+	totalBalance: number;
+}
+
+export interface DatePreviewApiResponse {
+	date: string;
 	totalBalance: number;
 }
 

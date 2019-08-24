@@ -50,6 +50,7 @@ export class BaseApiCache<T, U> {
 	 *
 	 * @param {HttpParams} params
 	 * @param {Observable<any>} fallback
+	 * @param url
 	 * @returns {Observable<any>}
 	 */
 	other<V>(params: HttpParams, fallback: Observable<V>, url?: string): Observable<V> {
@@ -87,9 +88,10 @@ export class BaseApiCache<T, U> {
 	 *
 	 * @param {keyof ApiInnerCache<T>} type
 	 * @param {HttpParams} params
+	 * @param url
 	 */
-	invalidateParams(type: keyof ApiInnerCache<T>, params: HttpParams) {
-		const key = this.getKeyFromParams(params);
+	invalidateParams(type: keyof ApiInnerCache<T>, params: HttpParams, url?: string) {
+		const key = this.getKeyFromParams(params, url);
 		this.invalidate(type, key);
 	}
 

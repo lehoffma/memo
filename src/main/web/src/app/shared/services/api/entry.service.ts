@@ -3,8 +3,8 @@ import {createEntry, Entry} from "../../model/entry";
 import {AddOrModifyRequest, AddOrModifyResponse, ServletService} from "app/shared/services/api/servlet.service";
 import {EntryCategoryService} from "./entry-category.service";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {combineLatest, Observable, of} from "rxjs";
-import {delay, map, mergeMap, tap} from "rxjs/operators";
+import {combineLatest, Observable} from "rxjs";
+import {map, mergeMap, tap} from "rxjs/operators";
 import {EventService} from "./event.service";
 import {PageRequest} from "../../model/api/page-request";
 import {Sort} from "../../model/api/sort";
@@ -12,8 +12,8 @@ import {Filter} from "../../model/api/filter";
 import {Page} from "../../model/api/page";
 import {ParamMap} from "@angular/router";
 import {getIsoDateFromDateObject, setProperties} from "../../model/util/base-object";
-import {AccountingState, DatePreview} from "../../model/accounting-state";
-import {setMonth, setYear} from "date-fns";
+import {AccountingState, DatePreview, DatePreviewApiResponse} from "../../model/accounting-state";
+import {getMonth, getYear, parse, setMonth, setYear} from "date-fns";
 
 interface EntryApiResponse {
 	entries: Entry[];
@@ -133,87 +133,55 @@ export class EntryService extends ServletService<Entry> {
 			);
 	}
 
-	getTimespanSummaries(timespan: "month" | "year", year: number): Observable<DatePreview[]> {
-
+	private fillMissingData(datePreviews: DatePreview[], timespan: "month" | "year", year: number): DatePreview[] {
 		if (timespan === "year") {
-			return of([
-				{
-					totalBalance: 2500.20,
-					date: setYear(new Date(), 2014)
-				},
-				{
-					totalBalance: -2000.20,
-					date: setYear(new Date(), 2015)
-				},
-				{
-					totalBalance: 355.55,
-					date: setYear(new Date(), 2016)
-				},
-				{
-					totalBalance: -2200.00,
-					date: setYear(new Date(), 2017)
-				},
-				{
-					totalBalance: 1999.99,
-					date: setYear(new Date(), 2018)
-				},
-				{
-					totalBalance: -50.22,
-					date: setYear(new Date(), 2019)
+			const startYear = 2014;
+			const endYear = getYear(new Date());
+			const filledData: DatePreview[] = [];
+			let previewIndex = 0;
+			for (let currentYear = startYear; currentYear <= endYear; currentYear++) {
+				let datePreview: DatePreview = {date: setYear(new Date(), currentYear), totalBalance: 0};
+				if (datePreviews.length > previewIndex) {
+					const y = getYear(datePreviews[previewIndex].date);
+					if (y === currentYear) {
+						datePreview = datePreviews[previewIndex];
+						previewIndex++;
+					}
 				}
-			])
+				filledData.push(datePreview);
+			}
+			return filledData;
 		}
 
-		//todo remove demo
-		return of([
-			{
-				totalBalance: 100.203,
-				date: setYear(setMonth(new Date(), 0), year)
-			},
-			{
-				totalBalance: 100.203,
-				date: setYear(setMonth(new Date(), 1), year)
-			},
-			{
-				totalBalance: 205.22,
-				date: setYear(setMonth(new Date(), 2), year)
-			},
-			{
-				totalBalance: -500.44,
-				date: setYear(setMonth(new Date(), 3), year)
-			},
-			{
-				totalBalance: 0,
-				date: setYear(setMonth(new Date(), 4), year)
-			},
-			{
-				totalBalance: 0,
-				date: setYear(setMonth(new Date(), 5), year)
-			},
-			{
-				totalBalance: 0,
-				date: setYear(setMonth(new Date(), 6), year)
-			},
-			{
-				totalBalance: 0,
-				date: setYear(setMonth(new Date(), 7), year)
-			},
-			{
-				totalBalance: 0,
-				date: setYear(setMonth(new Date(), 8), year)
-			},
-			{
-				totalBalance: 0,
-				date: setYear(setMonth(new Date(), 9), year)
-			},
-			{
-				totalBalance: 0,
-				date: setYear(setMonth(new Date(), 10), year)
-			},
-			{
-				totalBalance: 0,
-				date: setYear(setMonth(new Date(), 11), year)
+		const filledData: DatePreview[] = [];
+		let previewIndex = 0;
+		for (let month = 0; month < 12; month++) {
+			let datePreview: DatePreview = {date: setMonth(setYear(new Date(), year), month), totalBalance: 0};
+			if (datePreviews.length > previewIndex) {
+				const m = getMonth(datePreviews[previewIndex].date);
+				if (m === month) {
+					datePreview = datePreviews[previewIndex];
+					previewIndex++;
+				}
 			}
-		]).pipe(delay(500))
+			filledData.push(datePreview);
+		}
+		return filledData;
+	}
+
+	getTimespanSummaries(timespan: "month" | "year", year: number, reload = false): Observable<DatePreview[]> {
+		const params = new HttpParams().set("timespan", timespan).set("year", year + "");
+		const request = this.performRequest(this.http.get<DatePreviewApiResponse[]>(this.baseUrl + "/timespanSummary", {params}))
+			.pipe(
+				map(summaries => summaries.map(it => ({...it, date: parse(it.date)}))),
+				map(summaries => this.fillMissingData(summaries, timespan, year)),
+				tap(it=> console.log(it)),
+			);
+
+		if (reload) {
+			this._cache.invalidateParams("other", params, "/timespanSummary");
+		}
+
+		return this._cache.other<DatePreview[]>(params, request, "/timespanSummary");
 	}
 }

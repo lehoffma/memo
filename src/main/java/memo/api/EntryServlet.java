@@ -7,6 +7,7 @@ import memo.auth.AuthenticationService;
 import memo.auth.api.strategy.EntryAuthStrategy;
 import memo.data.EntryRepository;
 import memo.model.*;
+import memo.model.management.AccountingTimespan;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,6 +19,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Map;
 
 @Path("/entry")
 @Named
@@ -54,6 +56,28 @@ public class EntryServlet extends AbstractApiServlet<Entry> {
         }
 
         return Response.ok(entryRepository.state()).build();
+    }
+
+    @GET
+    @Path("/timespanSummary")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getTimespanSummary(@Context HttpServletRequest request) {
+        User requestingUser = authenticationService.parseNullableUserFromRequestHeader(request);
+        boolean isAllowed = this.authenticationStrategy.isAllowedToReadState(requestingUser);
+
+        if (!isAllowed) {
+            return Response.status(Response.Status.FORBIDDEN)
+                    .build();
+        }
+
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        AccountingTimespan timespan = AccountingTimespan.fromQueryValue(getParameter(parameterMap, "timespan"))
+                .orElseThrow(() -> new WebApplicationException(Response.Status.BAD_REQUEST));
+        Integer year = timespan == AccountingTimespan.MONTH
+                ? Integer.valueOf(getParameter(parameterMap, "year"))
+                : null;
+
+        return Response.ok(entryRepository.getTimespanSummaries(timespan, year)).build();
     }
 
     @GET

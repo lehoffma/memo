@@ -5,9 +5,7 @@ import memo.auth.api.strategy.EntryAuthStrategy;
 import memo.data.util.PredicateFactory;
 import memo.data.util.PredicateSupplierMap;
 import memo.model.Entry;
-import memo.model.management.AccountingState;
-import memo.model.management.ItemAccountingSummary;
-import memo.model.management.MonthAccountingSummary;
+import memo.model.management.*;
 import memo.util.DatabaseManager;
 import memo.util.MapBuilder;
 import memo.util.model.Filter;
@@ -163,6 +161,40 @@ public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
         state.fillUpMonths();
 
         return state;
+    }
+
+    private String groupedByYearQuery = "SELECT SUM(e.ACTUALVALUE), MAKEDATE(YEAR(e.Date), 1)\n" +
+            "FROM entries e\n" +
+            "GROUP BY YEAR(e.DATE)";
+
+    private String groupedByMonthQuery = "SELECT SUM(e.ACTUALVALUE), DATE_ADD(MAKEDATE(?1, 1), INTERVAL (MONTH(e.DATE)) MONTH) - INTERVAL 1 MONTH\n" +
+            "FROM entries e\n" +
+            "WHERE year(e.DATE) = ?1\n" +
+            "GROUP BY MONTH(e.DATE)";
+
+
+    public List<AccountingDatePreviewApi> getTimespanSummaries(AccountingTimespan timespan, Integer year){
+        if(timespan == AccountingTimespan.YEAR){
+            List<Object[]> summaries = new ArrayList<>(DatabaseManager.createEntityManager()
+                    .createNativeQuery(groupedByYearQuery)
+                    .getResultList());
+
+            return summaries.stream()
+                    .map(AccountingDatePreview::new)
+                    .map(AccountingDatePreviewApi::new)
+                    .collect(Collectors.toList());
+        }
+        else{
+            List<Object[]> summaries = new ArrayList<>(DatabaseManager.createEntityManager()
+                    .createNativeQuery(groupedByMonthQuery)
+                    .setParameter(1, year)
+                    .getResultList());
+
+            return summaries.stream()
+                    .map(AccountingDatePreview::new)
+                    .map(AccountingDatePreviewApi::new)
+                    .collect(Collectors.toList());
+        }
     }
 
     public List<Entry> get(String id, String eventId, String type, HttpServletResponse response) {
