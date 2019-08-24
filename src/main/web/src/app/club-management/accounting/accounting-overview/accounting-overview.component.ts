@@ -1,10 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import {EntryService} from "../../../shared/services/api/entry.service";
-import {Observable, of} from "rxjs";
+import {BehaviorSubject, of} from "rxjs";
 import {AccountingState} from "../../../shared/model/accounting-state";
 import {endOfMonth, format, isBefore, startOfMonth} from "date-fns";
 import {Params, Router} from "@angular/router";
-import {catchError, map, share} from "rxjs/operators";
+import {catchError, filter, map} from "rxjs/operators";
 
 import * as deLocale from "date-fns/locale/de";
 import * as shape from "d3-shape";
@@ -18,17 +18,11 @@ import {flatMap} from "../../../util/util";
 export class AccountingOverviewComponent implements OnInit {
 	curve = shape.curveMonotoneX;
 	error: any;
-	state$: Observable<AccountingState> = this.entryService.getState().pipe(
-		share(),
-		catchError(error => {
-			this.error = error;
-			return of(null);
-		})
-	);
+	state$: BehaviorSubject<AccountingState> = new BehaviorSubject<AccountingState>(null);
 
-	expensesByCategory$ = this.state$.pipe(map(state => this.toPieChart(state.expensesByCategory)));
-	incomeByCategory$ = this.state$.pipe(map(state => this.toPieChart(state.incomeByCategory)));
-	totalOverTime$ = this.state$.pipe(map(state => this.toLineChart(state.monthlyChanges)));
+	expensesByCategory$ = this.state$.pipe(filter(it => it !== null), map(state => this.toPieChart(state.expensesByCategory)));
+	incomeByCategory$ = this.state$.pipe(filter(it => it !== null), map(state => this.toPieChart(state.incomeByCategory)));
+	totalOverTime$ = this.state$.pipe(filter(it => it !== null), map(state => this.toLineChart(state.monthlyChanges)));
 
 	customColors: { name: string; value: string }[] = [
 		{name: "Verpflegung", value: "#FFC107"},
@@ -61,6 +55,13 @@ export class AccountingOverviewComponent implements OnInit {
 
 	constructor(private entryService: EntryService,
 				private router: Router) {
+		this.entryService.getState(true).pipe(
+			catchError(error => {
+				this.error = error;
+				return of(null);
+			})
+		)
+			.subscribe(value => this.state$.next(value));
 	}
 
 	ngOnInit() {

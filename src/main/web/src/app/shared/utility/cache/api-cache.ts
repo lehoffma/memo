@@ -45,14 +45,15 @@ export class BaseApiCache<T, U> {
 		return (<Observable<U>>this.getFromCache("search", key, fallback));
 	}
 
+
 	/**
 	 *
 	 * @param {HttpParams} params
 	 * @param {Observable<any>} fallback
 	 * @returns {Observable<any>}
 	 */
-	other<V>(params: HttpParams, fallback: Observable<V>): Observable<V> {
-		const key = this.getKeyFromParams(params);
+	other<V>(params: HttpParams, fallback: Observable<V>, url?: string): Observable<V> {
+		const key = this.getKeyFromParams(params, url);
 		return (<Observable<V>>this.getFromCache("other", key, fallback));
 	}
 
@@ -112,7 +113,7 @@ export class BaseApiCache<T, U> {
 	 * @param {keyof ApiInnerCache<T>} type
 	 * @param key
 	 */
-	private invalidate(type: keyof ApiInnerCache<T>, key: string) {
+	public invalidate(type: keyof ApiInnerCache<T>, key: string) {
 		if (this.cache[type][key]) {
 			console.debug(`Invalidating Cache for type ${type} and key ${key}.`);
 			this.cache[type][key].invalidate();

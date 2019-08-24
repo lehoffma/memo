@@ -101,7 +101,7 @@ public class EntryRepository extends AbstractPagingAndSortingRepository<Entry> {
             "     shop_items item\n" +
             "WHERE e.ITEM_ID = item.ID\n" +
             "  AND item.DATE <= CURRENT_DATE\n" +
-            "GROUP BY e.ITEM_ID\n" +
+            "GROUP BY e.ITEM_ID AND item.DATE\n" +
             "ORDER BY item.DATE DESC LIMIT 3";
 
     private final String incomeByCategoryQuery = "SELECT category.NAME as categoryName,\n" +

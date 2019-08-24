@@ -81,7 +81,7 @@
 			</memo-dashboard-container>
 
 			<memo-dashboard-container icon="directions_car"
-									  *ngLet="state.itemTotals | slice:0:0 as itemTotals"
+									  *ngLet="state.itemTotals as itemTotals"
 									  containerTitle="Letzte Events">
 				<memo-data-container [data]="itemTotals"
 									 [renderer]="costPreview"

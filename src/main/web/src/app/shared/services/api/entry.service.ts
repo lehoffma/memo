@@ -41,20 +41,25 @@ export class EntryService extends ServletService<Entry> {
 	}
 
 
-	getState(): Observable<AccountingState> {
-		return this.performRequest(this.http.get<AccountingState>(this.baseUrl + "/state")).pipe(
+	getState(reload: boolean = false): Observable<AccountingState> {
+		const params = new HttpParams();
+		const request = this.performRequest(this.http.get<AccountingState>(this.baseUrl + "/state")).pipe(
 			map(it => ({...it, timestamp: new Date()})),
 			map(it => this.transformDates(it)),
-		)
+		);
+		if (reload) {
+			this._cache.invalidate("other", "/state?");
+		}
+
+		return this._cache.other<AccountingState>(params, request, "/state");
 	}
 
 
-	private transformDates(state: AccountingState): AccountingState{
+	private transformDates(state: AccountingState): AccountingState {
 		state.monthlyChanges = state.monthlyChanges.map(it => ({
 			totalBalance: it.totalBalance,
 			month: new Date(getIsoDateFromDateObject(it.month as any))
 		}));
-		console.log(state.monthlyChanges);
 		return state;
 	}
 
