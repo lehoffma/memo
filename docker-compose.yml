@@ -9,7 +9,7 @@ services:
     restart: always
     image: meilenwoelfe/shop:1.0.0-amd64
     volumes:
-      - /usr/share/tomcat8/MemoShop/pictures:/usr/share/tomcat8/MemoShop/pictures
+      - /Memoshop/pictures:/root/MemoShop/pictures
     ports:
       - 8080:8080
     logging:

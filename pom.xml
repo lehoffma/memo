@@ -5,7 +5,7 @@
 
     <groupId>org.meilenwoelfe.shop</groupId>
     <artifactId>memo</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
     <packaging>war</packaging>
 
     <name>Meilenshop</name>
@@ -16,6 +16,8 @@
         <jackson.version>2.9.9</jackson.version>
         <apache-cxf.version>3.2.6</apache-cxf.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencyManagement>
@@ -344,8 +346,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
         </plugins>

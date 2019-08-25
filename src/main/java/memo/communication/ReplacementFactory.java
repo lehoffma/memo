@@ -11,6 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -93,7 +94,7 @@ public class ReplacementFactory {
                             .map(item -> "<p>" +
                                     item.getItem().getTitle() + " ("
                                     + this.discountService.getDiscountedPrice(item)
-                                        .setScale(2, BigDecimal.ROUND_HALF_UP)
+                                        .setScale(2, RoundingMode.HALF_UP)
                                     + "&#8364;)" +
                                     "</p>"
                             )
