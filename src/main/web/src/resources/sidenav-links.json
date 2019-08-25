@@ -257,7 +257,7 @@
 		]
 	},
 	{
-		"route": "impressum",
+		"route": "club/impressum",
 		"icon": "info",
 		"name": "Impressum",
 		"drawLineAbove": true

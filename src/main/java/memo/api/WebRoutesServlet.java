@@ -30,6 +30,8 @@ import java.io.IOException;
                 "/user",
                 "/user/*",
 
+                "/notifications",
+                "/membership/*",
 
                 "/cart",
                 "/checkout",
