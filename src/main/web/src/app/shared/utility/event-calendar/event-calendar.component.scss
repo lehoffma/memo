@@ -74,10 +74,18 @@
 
 		&.party {
 			background: $accent-default;
+
+			&:hover {
+				background: lighten($accent-default, 5%);
+			}
 		}
 
 		&.tour {
 			background: $primary-default;
+
+			&:hover {
+				background: lighten($primary-default, 5%);
+			}
 		}
 
 		color: white;
@@ -95,9 +103,6 @@
 		outline: none;
 		cursor: pointer;
 
-		&:hover {
-			background: lighten($primary-default, 5%);
-		}
 
 		span {
 			word-break: break-all;

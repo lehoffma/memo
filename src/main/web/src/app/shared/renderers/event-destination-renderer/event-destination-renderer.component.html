@@ -5,16 +5,23 @@
 			Lade Addresse
 		</span>
 		<ng-template #destinationContainer>
-			<div class="destination-address">
-				<span
-					class="destination-street">{{destination.street}}{{destination.streetNr ? " " + destination.streetNr : ""}}</span>
-				<span class="destination-delimiter">,</span>
-				<span class="destination-city"> {{destination.city}}</span>
-			</div>
-			<span class="destination-miles" *ngIf="miles">Insgesamt {{miles}} Meilen</span>
+			<ng-container *ngIf="destination?.street && destination?.city; else noAddress">
+				<div class="destination-address">
+				<span class="destination-street">
+					{{destination?.street}}{{destination?.streetNr ? " " + destination?.streetNr : ""}}
+				</span>
+					<span class="destination-delimiter">,</span>
+					<span class="destination-city"> {{destination?.city}}</span>
+				</div>
+				<span class="destination-miles" *ngIf="miles">Insgesamt {{miles}} Meilen</span>
+			</ng-container>
+		</ng-template>
+		<ng-template #noAddress>
+			<div class="no-address-entered">Keine Addresse angegeben</div>
 		</ng-template>
 	</div>
-	<a href="{{tourUrl}}" mat-icon-button target="_blank" rel="noopener"
+	<a href="{{tourUrl}}" *ngIf="destination?.street && destination?.city"
+	   mat-icon-button target="_blank" rel="noopener"
 	   matTooltip="Auf Google Maps ansehen"
 	   class="small-icon-button maps-link">
 		<mat-icon>map</mat-icon>

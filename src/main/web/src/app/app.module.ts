@@ -59,6 +59,7 @@ import {faCubes, faTshirt} from "@fortawesome/free-solid-svg-icons";
 import {MatPaginatorIntl} from "@angular/material";
 import {MatPaginatorIntlDe} from "./shared/i18n/mat-paginator-intl.de";
 import {LandingPageModule} from "./home/landing-page/landing-page.module";
+import {faCheck} from "@fortawesome/free-solid-svg-icons/faCheck";
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -92,7 +93,7 @@ const cookieConfig: NgcCookieConsentConfig = {
 const shareButtonsIcons = [
 	faFacebookF, faTwitter, faFacebook, faEnvelope, faGlobe,
 	faWhatsapp, faFacebookMessenger, faTelegramPlane, faLink,
-	faFire, faCubes, faTshirt
+	faFire, faCubes, faTshirt, faCheck,
 ];
 
 library.add(...shareButtonsIcons);

@@ -6,10 +6,11 @@ import {NotificationStatus, UserNotification} from "../../model/user-notificatio
 import {filter, mergeMap, scan, tap} from "rxjs/operators";
 import {AuthService} from "../../authentication/auth.service";
 import {MatSnackBar} from "@angular/material";
+import {environment} from "../../../../environments/environment";
 
 @Injectable()
 export class NotificationService implements OnDestroy {
-	baseUrl = "ws:localhost:8080/api/notifications_stream";
+	baseUrl = `ws${environment.production ? 's' :''}:localhost:8080/api/notifications_stream`;
 	notifications$: BehaviorSubject<UserNotification[]> = new BehaviorSubject([]);
 	unreadNotifications$ = new BehaviorSubject(0);
 	totalNotifications$ = new BehaviorSubject(0);

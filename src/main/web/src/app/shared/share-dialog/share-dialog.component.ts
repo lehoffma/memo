@@ -9,10 +9,10 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 export class ShareDialogComponent implements OnInit {
 	public title: string = "";
 	public image: string = "";
-	public description: string = "";
+	public shareDescription: string = "";
 	public additionalTags: string[] = [];
 	public url = "";
-	public tags = ["Meilenwölfe", "MeilenwoelfeShop"];
+	public tags = ["Meilenwölfe", "Meilenwoelfe", "MeilenwoelfeShop", "VfL Wolfsburg"];
 
 	constructor(private dialogRef: MatDialogRef<ShareDialogComponent>,
 				@Inject(MAT_DIALOG_DATA) public data: any) {
@@ -20,11 +20,14 @@ export class ShareDialogComponent implements OnInit {
 
 
 	ngOnInit() {
-		const {title, image, url, description, additionalTags} = this.data;
+		const {title, image, url, additionalTags} = this.data;
 		this.title = title;
 		this.image = image;
 		this.url = url;
-		this.description = description;
+		const type = url.includes("/tours/")
+			? "Tour"
+			: (url.includes("/partys/") ? "Veranstaltung" : "Merchandise-Artikel");
+		this.shareDescription = `Schau dir diese${type === 'Merchandise-Artikel' ? 'n' : ''} ${type} an: `;
 		this.additionalTags = additionalTags;
 		this.tags = [...this.tags, ...this.additionalTags];
 	}

@@ -45,10 +45,12 @@ export class RouteListComponent implements OnInit {
 	);
 	@Input() miles;
 
-	durationInWords = "";
+	durationInWords = null;
 
 	@Input() set duration(duration: number) {
-		this.durationInWords = format(duration * 1000, "H [Std.] mm [Min.]", {locale: deLocale});
+		if(duration !== null){
+			this.durationInWords = format(duration * 1000, "H [Std.] mm [Min.]", {locale: deLocale});
+		}
 	}
 
 

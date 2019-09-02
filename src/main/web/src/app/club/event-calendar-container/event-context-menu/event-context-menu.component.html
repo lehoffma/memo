@@ -33,7 +33,7 @@
 					<mat-icon class="details__item--icon">event</mat-icon>
 					<span class="details__item--label">{{event.date | dateFormat}}</span>
 				</div>
-				<div class="details__item">
+				<div class="details__item" *ngIf="event.destination">
 					<mat-icon class="details__item--icon">place</mat-icon>
 					<span class="details__item--label">{{event.destination}}</span>
 				</div>

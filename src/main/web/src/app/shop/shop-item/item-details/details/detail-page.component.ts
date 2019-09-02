@@ -269,10 +269,13 @@ export class DetailPageComponent implements OnInit, AfterViewInit {
 	}
 
 	openShareDialog() {
+		//<protocol>//<hostname>:<port>/<pathname>
+		const location = window.location;
+		const url = location.protocol + "//" + location.hostname + (location.port === "80" ? '' : (':' + location.port)) + location.pathname;
 		this.matDialog.open(ShareDialogComponent, {
 			data: {
 				title: this.event.title,
-				url: "https://shop.meilenwoelfe.de/" + this.navigationService.getUrlOfItem(this.event),
+				url: url,
 				description: this.event.description,
 				image: this.event.images[0],
 				additionalTags: []

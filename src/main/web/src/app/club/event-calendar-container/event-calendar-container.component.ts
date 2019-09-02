@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from "@angular/core";
 import {EventService} from "../../shared/services/api/event.service";
 import {EventType, integerToType, typeToInteger} from "../../shop/shared/model/event-type";
-import { MatDialog } from "@angular/material/dialog";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {EventContextMenuComponent} from "./event-context-menu/event-context-menu.component";
 import {CreateEventContextMenuComponent} from "./create-event-context-menu/create-event-context-menu.component";
 import {LogInService} from "../../shared/services/api/login.service";
@@ -10,7 +10,7 @@ import {Permission, visitorPermissions} from "../../shared/model/permission";
 import {isNullOrUndefined} from "util";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BehaviorSubject, Observable, of, Subject} from "rxjs";
-import {defaultIfEmpty, filter, map, mergeMap, takeUntil} from "rxjs/operators";
+import {defaultIfEmpty, filter, map, mergeMap, switchMap, takeUntil} from "rxjs/operators";
 import {Event} from "../../shop/shared/model/event";
 import {Filter} from "../../shared/model/api/filter";
 import {getMonth, getYear} from "date-fns";
@@ -30,7 +30,7 @@ import {OrderStatus, statusToInt} from "../../shared/model/order-status";
 })
 export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	currentlySelectedMonth$ = new BehaviorSubject(getMonth(new Date()));
-	events$: Observable<Event[]> = this.getUpdatedEvents();
+	events$: BehaviorSubject<Event[]> = new BehaviorSubject<Event[]>([]);
 
 	onDestroy$ = new Subject<any>();
 	month = getMonth(new Date());
@@ -66,6 +66,8 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 						this.selectedView = "calendar";
 				}
 			});
+
+		this.getUpdatedEvents().subscribe(events => this.events$.next(events));
 
 		const paramMap = this.activatedRoute.snapshot.queryParamMap;
 		if (paramMap.has("month")) {
@@ -142,7 +144,9 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 						.pipe(
 							map(address => ({
 								...event,
-								destination: `${address.city}, ${address.country}`
+								destination: (address.city && address.country)
+									? `${address.city}, ${address.country}`
+									: null
 							}))
 						)
 					),
@@ -171,15 +175,15 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 			}
 		});
 
-		dialogRef.afterClosed()
+		dialogRef.afterClosed().pipe(
+			filter(value => value === "deleted"),
+			switchMap(() => this.getUpdatedEvents())
+		)
 			.subscribe(value => {
-					if (value === "deleted") {
-						this.events$ = this.getUpdatedEvents();
-						// this.subscriptions.push(this.events$.subscribe());
-						this.snackBar.open("Löschen erfolgreich.", "Schließen", {
-							duration: 1000
-						});
-					}
+					this.events$.next(value);
+					this.snackBar.open("Löschen erfolgreich.", "Schließen", {
+						duration: 1000
+					});
 				}, console.error
 			)
 	}

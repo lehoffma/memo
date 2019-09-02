@@ -59,7 +59,7 @@
 
 
 <div class="route-info-container">
-	<div class="route-info">
+	<div class="route-info" *ngIf="durationInWords !== null">
 		<mat-icon>watch_later</mat-icon>
 		<span>{{durationInWords}}</span>
 	</div>

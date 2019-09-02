@@ -1,8 +1,13 @@
 mat-dialog-actions {
 	display: flex;
 	justify-content: center;
+	align-content: center;
 }
 
 share-buttons {
 	justify-content: center;
+
+	::ng-deep div.sb-button.sb-default {
+		display: none;
+	}
 }

@@ -79,9 +79,7 @@
 			h3 {
 				margin: 0;
 				max-width: 100%;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-				overflow: hidden;
+				word-break: break-word;
 				font-weight: 500;
 				font-size: font-size(medium);
 			}
@@ -107,7 +105,17 @@
 				}
 			}
 		}
+	}
 
+	@media all and (max-width: 600px){
+		flex-direction: column;
+
+		img{
+
+			margin: 0;
+			border-radius: 0;
+			width: 100%;
+		}
 	}
 }
 
