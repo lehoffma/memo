@@ -2,18 +2,18 @@
 <resources>
     <Resource id="MemoDB" type="javax.sql.DataSource">
         JdbcDriver = com.mysql.jdbc.Driver
-        <!--        JdbcUrl = jdbc:mysql://192.168.188.98:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
-        JdbcUrl = jdbc:mysql://127.0.0.1:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true
-        <!--        JdbcUrl = jdbc:mysql://127.0.0.1:3306/docker_test?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
+        <!--        JdbcUrl = jdbc:mysql://${jdcb_host}:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
+<!--        JdbcUrl = jdbc:mysql://192.168.188.98:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
+        JdbcUrl = jdbc:mysql://localhost:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true
         UserName = meilenwoelfe
         Password = qwertzui
         JtaManaged = true
     </Resource>
     <Resource id="MemoDB_unmanaged" type="javax.sql.DataSource">
         JdbcDriver = com.mysql.jdbc.Driver
-        <!--        JdbcUrl = jdbc:mysql://192.168.188.98:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
-        JdbcUrl = jdbc:mysql://127.0.0.1:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true
-        <!--        JdbcUrl = jdbc:mysql://127.0.0.1:3306/docker_test?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
+        <!--        JdbcUrl = jdbc:mysql://${jdcb_host}:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
+<!--        JdbcUrl = jdbc:mysql://192.168.188.98:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
+        JdbcUrl = jdbc:mysql://localhost:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true
         UserName = meilenwoelfe
         Password = qwertzui
         JtaManaged = false

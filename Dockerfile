@@ -8,6 +8,8 @@ ADD tomee.xml /usr/local/tomee/conf/
 ADD tomcat-users.xml /usr/local/tomee/conf/
 ADD settings.xml /usr/local/tomee/conf/
 
+ADD setenv.sh /usr/local/tomee/bin/setenv.sh
+
 CMD ["catalina.sh", "run"]
 
 HEALTHCHECK --interval=10s --timeout=3s --retries=6 CMD curl -f http://localhost:8080/ROOT.com/health || exit 1

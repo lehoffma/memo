@@ -59,6 +59,11 @@
 
 	.label {
 		width: 130px;
+		min-width: 130px;
+	}
+
+	.labelled-value{
+		word-break: break-all;
 	}
 }
 
@@ -237,6 +242,7 @@
 		}
 	}
 }
+
 
 .header {
 	justify-content: space-between;

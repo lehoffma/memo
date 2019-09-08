@@ -1,4 +1,5 @@
 @import "theme";
+@import "variables";
 
 :host {
 	display: flex;
@@ -36,8 +37,11 @@
 		memo-profile-link {
 			&:not(:last-child)::after {
 				content: ",";
-				color: accent();
 				margin-left: -2px;
+
+				@media all and (min-width: 800px){
+					color: white;
+				}
 			}
 		}
 	}
