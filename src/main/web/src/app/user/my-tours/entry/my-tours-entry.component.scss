@@ -40,6 +40,7 @@
 			flex-direction: column;
 			justify-content: flex-start;
 			align-items: center;
+			min-width: 40px;
 
 			&:not(.past-event) {
 				.event-date-top {
