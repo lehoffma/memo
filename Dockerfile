@@ -5,6 +5,7 @@ RUN rm -rf /usr/local/tomee/webapps/ROOT/
 RUN rm -f /usr/local/tomee/webapps/ROOT.war
 ADD target/memo-2.0.0.war /usr/local/tomee/webapps/ROOT.war
 ADD tomee.xml /usr/local/tomee/conf/
+ADD server.xml /usr/local/tomee/conf/
 ADD tomcat-users.xml /usr/local/tomee/conf/
 ADD settings.xml /usr/local/tomee/conf/
 

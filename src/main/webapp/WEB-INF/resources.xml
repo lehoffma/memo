@@ -5,6 +5,7 @@
         <!--        JdbcUrl = jdbc:mysql://${jdcb_host}:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
 <!--        JdbcUrl = jdbc:mysql://192.168.188.98:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
         JdbcUrl = jdbc:mysql://localhost:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true
+<!--        JdbcUrl = jdbc:mysql://81.169.246.104:3306/docker_test?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
         UserName = meilenwoelfe
         Password = qwertzui
         JtaManaged = true
@@ -14,6 +15,7 @@
         <!--        JdbcUrl = jdbc:mysql://${jdcb_host}:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
 <!--        JdbcUrl = jdbc:mysql://192.168.188.98:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
         JdbcUrl = jdbc:mysql://localhost:3306/memo_dev?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true
+<!--        JdbcUrl = jdbc:mysql://81.169.246.104:3306/docker_test?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin&amp;autoReconnect=true-->
         UserName = meilenwoelfe
         Password = qwertzui
         JtaManaged = false

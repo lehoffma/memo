@@ -7,7 +7,7 @@
     "build-dev": "ng build",
     "build": "ng build --prod",
     "build-with-more-memory": "node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --prod --build-optimizer",
-    "build-with-stats": "cross-env NODE_OPTIONS=--max_old_space_size=4096 ng build --prod --stats-json",
+    "build-with-stats": "cross-env NODE_OPTIONS=--max_old_space_size=4096 ng build --prod --stats-json --sourceMap=true",
     "bundle-report": "webpack-bundle-analyzer ../webapp/stats-es5.json",
     "test": "ng test",
     "test-once": "ng test --watch=false --browsers ChromeHeadless",
@@ -72,6 +72,6 @@
     "ts-node": "^7.0.0",
     "tslint": "^5.11.0",
     "typescript": "~3.5.3",
-    "webpack-bundle-analyzer": "^3.3.2"
+    "webpack-bundle-analyzer": "^3.5.0"
   }
 }
