@@ -5,16 +5,15 @@ import {User} from "../../../../../shared/model/user";
 import {UserService} from "../../../../../shared/services/api/user.service";
 import {LogInService} from "../../../../../shared/services/api/login.service";
 import {Router} from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {EditCommentDialogComponent} from "../edit-comment-dialog/edit-comment-dialog.component";
 import {ConfirmationDialogService} from "../../../../../shared/services/confirmation-dialog.service";
 import {WindowService} from "../../../../../shared/services/window.service";
-import {BehaviorSubject, combineLatest, Observable, of, Subscription} from "rxjs";
+import {BehaviorSubject, combineLatest, EMPTY, Observable, of, Subscription} from "rxjs";
 import {filter, first, mergeMap, scan, tap} from "rxjs/operators";
-import {distanceInWordsStrict} from "date-fns";
-import * as deLocale from "date-fns/locale/de";
-import {EMPTY} from "rxjs";
+import {de as deLocale} from "date-fns/locale";
 import {setProperties} from "../../../../../shared/model/util/base-object";
+import {formatDistanceStrict} from "date-fns";
 
 @Component({
 	selector: "memo-comment-block",
@@ -119,7 +118,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 	addComment(commentText: string, parentCommentId: number) {
 		let currentComment: Comment = this._comment$.value;
 		//limit to 2 levels (q&a)
-		if(currentComment.parent === null){
+		if (currentComment.parent === null) {
 			this.loginService.currentUser$
 				.pipe(
 					first(),
@@ -154,8 +153,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 					})
 				)
 				.subscribe();
-		}
-		else {
+		} else {
 			this.onAddComment.emit({commentText, parentCommentId});
 		}
 	}
@@ -169,8 +167,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 				this.showChildren = true;
 			}
 			this.showReplyBox = true;
-		}
-		else {
+		} else {
 			this.loginService.redirectUrl = this.router.url;
 			this.router.navigate(["login"]);
 		}
@@ -222,8 +219,7 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 				}, error => {
 					console.error("removing the comment went wrong", error);
 				})
-		}
-		else {
+		} else {
 			this.onDelete.emit({comment, parentId});
 		}
 	}
@@ -255,6 +251,6 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 	}
 
 	distanceInWords(date: Date) {
-		return distanceInWordsStrict(new Date(), date, {addSuffix: true, locale: deLocale});
+		return formatDistanceStrict(new Date(), date, {addSuffix: true, locale: deLocale});
 	}
 }

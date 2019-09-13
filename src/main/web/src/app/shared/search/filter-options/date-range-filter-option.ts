@@ -1,6 +1,6 @@
 import {FilterOption, FilterOptionType} from "./filter-option";
 import {Params} from "@angular/router";
-import {parse} from "date-fns";
+import {parseISO} from "date-fns";
 import {AbstractControl, FormBuilder, FormGroup} from "@angular/forms";
 import {Observable, of} from "rxjs";
 
@@ -20,10 +20,10 @@ export class DateRangeFilterOption implements FilterOption<FilterOptionType.DATE
 	toFormValue(params: Params): { from: Date, to: Date } {
 		const value: { from: Date, to: Date } = {from: null, to: null};
 		if (params[this.minDateKey]) {
-			value.from = parse(params[this.minDateKey]);
+			value.from = parseISO(params[this.minDateKey]);
 		}
 		if (params[this.maxDateKey]) {
-			value.to = parse(params[this.maxDateKey]);
+			value.to = parseISO(params[this.maxDateKey]);
 		}
 
 		return value;

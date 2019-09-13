@@ -7,14 +7,16 @@
 	flex-direction: column;
 
 	> div {
-		width: 100%;
-		display: flex;
-		justify-content: flex-start;
-
-		> div {
-			max-width: 200px;
+		@media all and (min-width: 500px){
+			width: 100%;
 			display: flex;
 			justify-content: space-between;
+
+			> div {
+				max-width: 200px;
+				display: flex;
+				justify-content: space-between;
+			}
 		}
 	}
 }

@@ -31,9 +31,9 @@ import {PopularSizesComponent} from "./orders/popular-sizes/popular-sizes.compon
 import {LatestOrdersComponent} from "./orders/latest-orders/latest-orders.component";
 import {TrendRowComponent} from "./orders/trend-row/trend-row.component";
 import {DataContainerModule} from "../shared/utility/data-container/data-container.module";
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {MerchStockStatusChartComponent} from "./stock/merch-stock-status-chart/merch-stock-status-chart.component";
 import {DiscountsModule} from "./discounts/discounts.module";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 const tableCellComponents = [
 	//merch table cell

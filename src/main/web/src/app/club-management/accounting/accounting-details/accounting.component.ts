@@ -58,7 +58,7 @@ export class AccountingComponent implements OnInit, OnDestroy {
 		{header: "Bilder", columnDef: "images", cell: element => element, type: "image"},
 		{
 			header: "Datum", columnDef: "date", cell: element => ({
-				title: format(element.date, "DD.MM.YYYY"),
+				title: format(element.date, "dd.MM.yyyy"),
 				subtitle: relativeDateFormat(element.date)
 			}),
 			type: "title-subtitle"

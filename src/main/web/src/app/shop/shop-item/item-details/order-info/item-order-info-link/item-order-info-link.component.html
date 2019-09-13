@@ -1,7 +1,7 @@
 <a class="order-link" routerLink="/management/orders/{{order.id}}" [class.newest]="isNewest">
 	<div class="order-container">
 		<span class="ordered-header-main-message">
-			Bestellung vom {{order.timeStamp | dateFormat:'DD.MM.YYYY'}}
+			Bestellung vom {{order.timeStamp | dateFormat:'dd.MM.yyyy'}}
 		</span>
 		<div class="ordered-items" fxLayout="column">
 			<div class="ordered-item"

@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from "@angular/core";
 import {addDays, format, isBefore, setHours, setMilliseconds, setMinutes, setSeconds, subMonths, subYears} from "date-fns";
 import {dateWithCorrectTimezone, NOW} from "../../../util/util";
-import * as deLocale from "date-fns/locale/de";
+import {de as deLocale} from "date-fns/locale";
 import * as shape from 'd3-shape';
 
 export type OverTimeData = { timestamp: string, amount: number };
@@ -83,7 +83,7 @@ export class OrdersOverTimeChartComponent implements OnInit {
 			series: data
 			//todo make name more readable maybe
 				.map(it => ({
-					name: format(new Date(it.timestamp), "DD. MMM", {locale: deLocale}),
+					name: format(new Date(it.timestamp), "dd. MMM", {locale: deLocale}),
 					value: it.amount
 				}))
 		}]

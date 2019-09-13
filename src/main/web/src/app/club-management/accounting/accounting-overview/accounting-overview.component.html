@@ -65,7 +65,7 @@
 
 		<div class="accounting-preview-container">
 			<memo-dashboard-container icon="subject" containerTitle="Letzte Abrechnungen"
-									  *ngLet="state.monthlyChanges | slice:0:5 as monthlyChanges"
+									  *ngLet="state.monthlyChanges | pipeFunction:sortMonthlyChanges | slice:0:5 as monthlyChanges"
 									  link="/management/costs/time">
 				<memo-data-container [data]="monthlyChanges"
 									 [renderer]="monthlyPreview"

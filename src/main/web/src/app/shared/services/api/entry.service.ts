@@ -13,7 +13,7 @@ import {Page} from "../../model/api/page";
 import {ParamMap} from "@angular/router";
 import {getIsoDateFromDateObject, setProperties} from "../../model/util/base-object";
 import {AccountingState, DatePreview, DatePreviewApiResponse} from "../../model/accounting-state";
-import {getMonth, getYear, parse, setMonth, setYear} from "date-fns";
+import {getMonth, getYear, parse, parseISO, setMonth, setYear} from "date-fns";
 
 interface EntryApiResponse {
 	entries: Entry[];
@@ -173,9 +173,8 @@ export class EntryService extends ServletService<Entry> {
 		const params = new HttpParams().set("timespan", timespan).set("year", year + "");
 		const request = this.performRequest(this.http.get<DatePreviewApiResponse[]>(this.baseUrl + "/timespanSummary", {params}))
 			.pipe(
-				map(summaries => summaries.map(it => ({...it, date: parse(it.date)}))),
+				map(summaries => summaries.map(it => ({...it, date: parseISO(it.date)}))),
 				map(summaries => this.fillMissingData(summaries, timespan, year)),
-				tap(it=> console.log(it)),
 			);
 
 		if (reload) {

@@ -5,7 +5,7 @@ import {BehaviorSubject} from "rxjs";
 import {filter, map} from "rxjs/operators";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {format} from "date-fns";
-import * as deLocale from "date-fns/locale/de";
+import {de as deLocale} from "date-fns/locale";
 
 enum AddressDisplayFormat {
 	Short = "short",

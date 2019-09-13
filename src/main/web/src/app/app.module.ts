@@ -38,7 +38,6 @@ import {NgProgressHttpModule} from "@ngx-progressbar/http";
 import {NgProgressModule} from "@ngx-progressbar/core";
 import {SectionsComponent} from "./home/footer/sections.component";
 import {NgcCookieConsentConfig, NgcCookieConsentModule} from "ngx-cookieconsent";
-import {library} from "@fortawesome/fontawesome-svg-core";
 
 import {faFacebookF} from "@fortawesome/free-brands-svg-icons/faFacebookF";
 import {faTwitter} from "@fortawesome/free-brands-svg-icons/faTwitter";
@@ -46,6 +45,7 @@ import {faWhatsapp} from "@fortawesome/free-brands-svg-icons/faWhatsapp";
 import {faFacebookMessenger} from "@fortawesome/free-brands-svg-icons/faFacebookMessenger";
 import {faTelegramPlane} from "@fortawesome/free-brands-svg-icons/faTelegramPlane";
 
+import {FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {faLink} from "@fortawesome/free-solid-svg-icons/faLink";
 import {faFacebook} from "@fortawesome/free-brands-svg-icons/faFacebook";
 import {faEnvelope} from "@fortawesome/free-solid-svg-icons/faEnvelope";
@@ -55,7 +55,7 @@ import {FlexLayoutModule} from "@angular/flex-layout";
 import {ProgressiveImageLoadingModule} from "./shared/progressive-image-loading/progressive-image-loading.module";
 import {ClubModule} from "./club/club.module";
 import {faFire} from "@fortawesome/free-solid-svg-icons/faFire";
-import {faCubes, faTshirt} from "@fortawesome/free-solid-svg-icons";
+import {faCubes, fas, faTshirt} from "@fortawesome/free-solid-svg-icons";
 import {MatPaginatorIntl} from "@angular/material";
 import {MatPaginatorIntlDe} from "./shared/i18n/mat-paginator-intl.de";
 import {LandingPageModule} from "./home/landing-page/landing-page.module";
@@ -96,8 +96,6 @@ const shareButtonsIcons = [
 	faFire, faCubes, faTshirt, faCheck,
 ];
 
-library.add(...shareButtonsIcons);
-
 
 registerLocaleData(localeDe);
 
@@ -129,6 +127,7 @@ registerLocaleData(localeDe);
 			provide: calendarAdapter,
 			useFactory: adapterFactory
 		}),
+		FontAwesomeModule,
 		MatPasswordStrengthModule.forRoot(),
 		FlexLayoutModule,
 		NgProgressModule,
@@ -177,4 +176,8 @@ registerLocaleData(localeDe);
 	]
 })
 export class AppModule {
+	constructor(private library: FaIconLibrary) {
+		library.addIconPacks(fas)
+		library.addIcons(...shareButtonsIcons);
+	}
 }

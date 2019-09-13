@@ -6,7 +6,7 @@
 			<div class="my-events-info">
 				<div class="event-date" [ngClass]="{'past-event': eventIsInThePast}">
 					<span class="event-date-top">{{event?.date | dateFormat:'MMM'}}</span>
-					<span class="event-date-bottom">{{event?.date | dateFormat:'DD'}}</span>
+					<span class="event-date-bottom">{{event?.date | dateFormat:'dd'}}</span>
 				</div>
 				<div class="event-other-info">
 					<h3 class="event-title">

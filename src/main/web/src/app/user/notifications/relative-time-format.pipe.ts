@@ -1,13 +1,18 @@
 import {Pipe, PipeTransform} from "@angular/core";
-import {format} from "date-fns";
+import {formatDistance, parseISO} from "date-fns";
+import {de} from "date-fns/locale";
 
 @Pipe({
 	name: "relativeTimeFormat"
 })
 export class RelativeTimeFormatPipe implements PipeTransform {
 	transform(value: Date | string): string {
-		//todo date-fns v2
-		// return formatDistance()
-		return format(value, "DD.MM.YYYY [um] HH:mm");
+		let date: Date;
+		if (value instanceof Date) {
+			date = value;
+		} else {
+			date = parseISO(value);
+		}
+		return formatDistance(date, new Date(), {includeSeconds: false, addSuffix: true, locale: de})
 	}
 }

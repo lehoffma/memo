@@ -47,7 +47,6 @@ export class UserPreviewDirective implements OnDestroy {
 
 	destroyOverlay() {
 		//todo sometimes doesn't close correctly
-		console.log(this.overlayRef);
 		if (this.overlayRef) {
 			this.overlayRef.detach();
 			this.overlayRef.dispose();

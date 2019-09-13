@@ -14,9 +14,9 @@ import {
 	parse,
 	setDate,
 	setMonth,
-	setYear
+	setYear, toDate
 } from "date-fns";
-import * as deLocale from "date-fns/locale/de";
+import {de} from "date-fns/locale";
 import {isString} from "./util";
 
 interface DisplayFormat {
@@ -45,24 +45,24 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 		dateNames: range(31, i => "" + i),
 		monthNames: {
 			long: range(12, i => format(this.createDate(2018, i - 1, 1), "MMMM", {
-				locale: deLocale
+				locale: de
 			})),
 			short: range(12, i => format(this.createDate(2018, i - 1, 1), "MMM", {
-				locale: deLocale
+				locale: de
 			})),
 			narrow: range(12, i => format(this.createDate(2018, i - 1, 1), "MMM", {
-				locale: deLocale
+				locale: de
 			}))
 				.map(it => it.substring(0, 1))
 		},
 		longDaysOfWeek: range(7, i => format(this.createDate(2018, 0, i), "dddd", {
-			locale: deLocale
+			locale: de
 		})),
 		shortDaysOfWeek: range(7, i => format(this.createDate(2018, 0, i), "ddd", {
-			locale: deLocale
+			locale: de
 		})),
 		narrowDaysOfWeek: range(7, i => format(this.createDate(2018, 0, i), "dd", {
-			locale: deLocale
+			locale: de
 		}))
 	};
 
@@ -80,7 +80,7 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 	}
 
 	clone(date: Date): Date {
-		return parse(date);
+		return toDate(date);
 	}
 
 	createDate(year: number, month: number, day: number): Date {
@@ -102,7 +102,7 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 		}
 
 		return format(date, formatString, {
-			locale: deLocale
+			locale: de
 		});
 	}
 
@@ -166,19 +166,22 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 	}
 
 	parse(value: any, parseFormat: any): Date | null {
-		const dateFormatRegex = /[\d]{2}\.[\d]{2}\.[\d]{2,4}/;
-		//todo: update once calendar updates to v2 of date-fns..
-		let date = null;
-		if (dateFormatRegex.test(value)) {
-			const parts = value.match(/(\d+)/g);
-			// note parts[1]-1
-			date = new Date(parts[2], parts[1] - 1, parts[0]);
-		}
-		if (ISO_8601_REGEX.test(value)) {
-			date = parse(value);
-		}
+		//todo use previous version if this one doesn't work
+		return parse(value, parseFormat, new Date());
 
-		return date;
+		// const dateFormatRegex = /[\d]{2}\.[\d]{2}\.[\d]{2,4}/;
+		// //todo: update once calendar updates to v2 of date-fns..
+		// let date = null;
+		// if (dateFormatRegex.test(value)) {
+		// 	const parts = value.match(/(\d+)/g);
+		// 	// note parts[1]-1
+		// 	date = new Date(parts[2], parts[1] - 1, parts[0]);
+		// }
+		// if (ISO_8601_REGEX.test(value)) {
+		// 	date = parse(value);
+		// }
+		//
+		// return date;
 	}
 
 	toIso8601(date: Date): string {
@@ -193,7 +196,7 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 		let formatString = "";
 		if (displayFormat.day) {
 			if (displayFormat.day === "numeric") {
-				formatString += "DD.";
+				formatString += "dd.";
 			}
 		}
 		if (displayFormat.month) {
@@ -215,7 +218,7 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 		}
 		if (displayFormat.year) {
 			if (displayFormat.year === "numeric") {
-				formatString += "YYYY";
+				formatString += "yyyy";
 			}
 		}
 		return formatString;

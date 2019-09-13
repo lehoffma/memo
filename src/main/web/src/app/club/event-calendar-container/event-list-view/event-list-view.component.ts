@@ -98,7 +98,7 @@ export class EventListViewComponent implements OnInit {
 			[month: string]: (Party | Tour)[];
 		} = remainingEvents
 			.reduce((groups, event) => {
-				const monthName = format(event.date, "MMMM YYYY");
+				const monthName = format(event.date, "MMMM yyyy");
 				if (groups[monthName]) {
 					groups[monthName].push(event);
 				}

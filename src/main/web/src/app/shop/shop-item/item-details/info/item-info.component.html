@@ -16,7 +16,7 @@
 	<div class="item-date-container item-details-row" *ngIf="!isMerch(event)">
 		<mat-icon matTooltip="Datum und Uhrzeit">access_time</mat-icon>
 		<div class="date-container">
-			<span>{{event.date | dateFormat:'DD. MMMM YYYY'}}, {{event.date | dateFormat:'HH:mm'}} Uhr</span>
+			<span>{{event.date | dateFormat:'dd. MMMM yyyy'}}, {{event.date | dateFormat:'HH:mm'}} Uhr</span>
 			<span class="relative-date">{{event.date | dateFormat:'relative'}}</span>
 		</div>
 	</div>

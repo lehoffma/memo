@@ -3,7 +3,7 @@
 	<div class="header container--header">
 		<div>
 			<h2>Bestellung Nr. {{orderEntry?.id}}</h2>
-			<span class="date-subtitle">Bestellt am {{orderEntry?.timeStamp | dateFormat:'DD. MMMM YYYY'}}</span>
+			<span class="date-subtitle">Bestellt am {{orderEntry?.timeStamp | dateFormat:'dd. MMMM yyyy'}}</span>
 		</div>
 		<button mat-icon-button [matMenuTriggerFor]="editMenu" *ngIf="!isOnDetailsPage">
 			<mat-icon>more_vert</mat-icon>

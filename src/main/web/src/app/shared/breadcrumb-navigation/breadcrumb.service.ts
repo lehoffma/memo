@@ -27,13 +27,21 @@ export class BreadcrumbService {
 		"members": {de: "Mitglieder"},
 		"cart": {de: "Warenkorb"},
 		"calendar": {de: "Kalender"},
+		"membership": {de: "Mitgliedschaft"},
+		"apply": {de: "Mitglied werden"},
+		"change": {de: "Mitgliedsstatus ändern"},
 		"applyForMembership": {de: "Mitglied werden"},
 		"requestMembership": {de: "Mitgliedsstatus ändern"},
 		"my-events": {de: "Deine Events"},
 		"order-history": {de: "Deine Bestellungen"},
 		"create": {de: "Erstellen"},
 		"entries": {de: "Kosten"},
-		"account-settings": {de: "Dein Account"}
+		"account-settings": {de: "Dein Account"},
+		"leaderboard": {de: "Meilentabelle"},
+		"club": {de: "Verein"},
+		"time": {de: "Abrechnungen über Zeit"},
+		"orders-overview": {de: "Bestellungsübersicht"},
+		"stock-overview": {de: "Bestandsübersicht"},
 	};
 
 	currentLocale = "de";

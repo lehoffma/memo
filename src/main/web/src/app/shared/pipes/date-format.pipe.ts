@@ -1,11 +1,11 @@
 import {Pipe, PipeTransform} from "@angular/core";
-import {differenceInDays, differenceInYears, distanceInWordsToNow, format, isBefore, parse} from "date-fns";
+import {differenceInDays, differenceInYears, format, formatDistance, isBefore, parseISO} from "date-fns";
 import {isString} from "../../util/util";
 
-import * as deLocale from "date-fns/locale/de/index"
+import {de as deLocale} from "date-fns/locale"
 
-export function relativeDateFormat(value: Date|string){
-	const distance = distanceInWordsToNow(value, {locale: deLocale});
+export function relativeDateFormat(value: Date) {
+	const distance = formatDistance(value, new Date(), {locale: deLocale});
 	const before = isBefore(value, new Date());
 	const suffix = (["Tage", "Monate", "Jahre"].some(it => distance.includes(it))) ? "n" : "";
 
@@ -16,24 +16,34 @@ export function relativeDateFormat(value: Date|string){
 	name: "dateFormat"
 })
 export class DateFormatPipe implements PipeTransform {
-	transform(value: Date | string, formatString: string = "DD.MM.YYYY"): string {
+	transform(value: Date | string, formatString: string = "dd.MM.yyyy"): string {
+		let date: Date;
+		if (value instanceof Date) {
+			date = value;
+		} else {
+			date = parseISO(value);
+		}
+		if(!value){
+			date = new Date();
+		}
+
 		if (isString(value)) {
-			return format(parse(value), formatString, {locale: deLocale});
+			return format(date, formatString, {locale: deLocale});
 		}
 		if (formatString === "relative") {
-			return relativeDateFormat(value);
+			return relativeDateFormat(date);
 		}
 		if (formatString === "age") {
-			const difference = -differenceInYears(value, new Date());
+			const difference = -differenceInYears(date, new Date());
 
 			return difference + " Jahr" + ((difference === 1) ? "" : "e");
 		}
-		if(formatString === "days"){
-			const diff = -differenceInDays(value, new Date());
+		if (formatString === "days") {
+			const diff = -differenceInDays(date, new Date());
 
-			return diff + " Tag" + (diff === 1 ? '' : 'en');
+			return diff + " Tag" + (diff === 1 ? "" : "en");
 		}
 
-		return format(value, formatString, {locale: deLocale})
+		return format(date, formatString, {locale: deLocale})
 	}
 }

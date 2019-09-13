@@ -1,9 +1,9 @@
 import {ClubRole, idToClubRoleEnum} from "../club-role";
 import {jsonToPermissions, UserPermissions} from "../permission";
 import {isArray} from "util";
-import {isNumber} from "../../../util/util";
+import {isNumber, isString} from "../../../util/util";
 import {toPaymentMethod} from "../../../shop/checkout/payment/payment-method";
-import {parse} from "date-fns";
+import {parseISO} from "date-fns";
 
 
 export interface DateTimeObject {
@@ -79,9 +79,11 @@ export function setProperties<T>(object: T, properties: any): T {
 				|| key.toLowerCase().includes("day")
 				|| key.toLowerCase().includes("time"))) {
 				if (value.dayOfMonth && value.minute) {
-					value = parse(getIsoDateFromDateTimeObject(value));
-				} else {
-					value = parse(value);
+					value = parseISO(getIsoDateFromDateTimeObject(value));
+				} else if (isString(value)){
+					value = parseISO(value);
+				} else{
+					value = new Date(value);
 				}
 			} else if (isNumber(value) && key !== "mobile" && key !== "telephone") {
 				value = +value;

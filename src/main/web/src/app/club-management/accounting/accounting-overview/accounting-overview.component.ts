@@ -6,7 +6,7 @@ import {endOfMonth, format, isBefore, startOfMonth} from "date-fns";
 import {Params, Router} from "@angular/router";
 import {catchError, filter, map} from "rxjs/operators";
 
-import * as deLocale from "date-fns/locale/de";
+import {de as deLocale} from "date-fns/locale";
 import * as shape from "d3-shape";
 import {flatMap} from "../../../util/util";
 
@@ -67,6 +67,15 @@ export class AccountingOverviewComponent implements OnInit {
 	ngOnInit() {
 	}
 
+	sortMonthlyChanges(changes: {
+		month: Date,
+		totalBalance: number;
+	}[]): {
+		month: Date,
+		totalBalance: number;
+	}[] {
+		return changes.sort((a, b) => isBefore(b.month, a.month) ? -1 : 1);
+	}
 
 	public getMonthDetailParams(date: Date): Params {
 		return {
