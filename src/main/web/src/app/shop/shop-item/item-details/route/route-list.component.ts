@@ -49,7 +49,7 @@ export class RouteListComponent implements OnInit {
 
 	@Input() set duration(duration: number) {
 		if(duration !== null){
-			this.durationInWords = format(duration * 1000, "H [Std.] mm [Min.]", {locale: deLocale});
+			this.durationInWords = format(duration * 1000, "H 'Std.' mm 'Min.'", {locale: deLocale});
 		}
 	}
 

@@ -14,6 +14,7 @@ import { PaginationComponent } from './pagination/pagination.component';
 import {AutocompleteFormsModule} from "../forms/autocomplete/autocomplete-forms.module";
 import {RouterModule} from "@angular/router";
 import {SearchInputComponent} from "./search-input/search-input.component";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 @NgModule({
 	imports: [
@@ -23,6 +24,7 @@ import {SearchInputComponent} from "./search-input/search-input.component";
 		MemoMaterialModule,
 		AutocompleteFormsModule,
 		LetModule,
+		FlexLayoutModule,
 	],
 	declarations: [
 		ResultsContainerComponent,
