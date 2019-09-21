@@ -5,16 +5,15 @@ const GOOGLE_ANALYTICS_KEY = process.env.GOOGLE_ANALYTICS_KEY;
 //this script writes the maps/analytics api keys from the CI environment to the environment files so we can use them
 //in the app
 try {
-	console.log(GOOGLE_MAPS_API_KEY.slice(0,4));
 	let changedFiles = replace.sync({
-		files: 'environments/*.ts',
+		files: 'src/environments/*.ts',
 		from: /{GOOGLE_MAPS_API_KEY}/g,
 		to: GOOGLE_MAPS_API_KEY,
 		allowEmptyPaths: false,
 	});
 
 	changedFiles.push(...replace.sync({
-		files: 'environments/*.ts',
+		files: 'src/environments/*.ts',
 		from: /{GOOGLE_ANALYTICS_KEY}/g,
 		to: GOOGLE_ANALYTICS_KEY,
 		allowEmptyPaths: false,
