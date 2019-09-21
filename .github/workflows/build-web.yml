@@ -24,6 +24,6 @@ jobs:
         cd src/main/web
         npm install
         npm run build-with-more-memory --if-present
-        npm test-once
       env:
         CI: true
+        NODE_OPTIONS: --max_old_space_size=4096
