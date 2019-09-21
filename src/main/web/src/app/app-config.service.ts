@@ -10,6 +10,7 @@ export interface AppConfig {
 
 export function getAppConfig(): Promise<AppConfig> {
 	//use environment variable, if available
+	console.log(environment.GOOGLE_ANALYTICS_KEY.slice(0,2));
 	if (environment.GOOGLE_ANALYTICS_KEY !== "{GOOGLE_ANALYTICS_KEY}" && environment.GOOGLE_MAPS_API_KEY !== "{GOOGLE_MAPS_API_KEY}") {
 		const mapsApiKey = environment.GOOGLE_ANALYTICS_KEY;
 		const analyticsKey = environment.GOOGLE_MAPS_API_KEY;
