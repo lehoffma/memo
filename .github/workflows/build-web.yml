@@ -21,9 +21,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: npm install, build, and test
       run: |
+        node write-key-to-env-file.js
         cd src/main/web
         npm install
         npm run build
       env:
         CI: true
         NODE_OPTIONS: --max_old_space_size=4096
+        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        GOOGLE_ANALYTICS_KEY: ${{ secrets.GOOGLE_ANALYTICS_KEY }}

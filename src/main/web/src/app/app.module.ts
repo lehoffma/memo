@@ -8,11 +8,10 @@ import {ToolbarComponent} from "./home/navigation/toolbar/toolbar.component";
 import {ToolbarElementComponent} from "./home/navigation/toolbar/element/toolbar-element.component";
 import {SideNavComponent} from "./home/navigation/sidenav/sidenav.component";
 import {ROUTES} from "./app.routes";
-import {memoConfig} from "./app.config";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ToolbarProfileLinkComponent} from "./home/navigation/toolbar/profile-link/toolbar-profile-link.component";
 import {ImpressumComponent} from "./club/impressum/impressum.component";
-import {AgmCoreModule} from "@agm/core";
+import {AgmCoreModule, MapsAPILoader} from "@agm/core";
 import {MemoMaterialModule} from "../material.module";
 import {DateAdapter, MAT_DATE_FORMATS, MAT_NATIVE_DATE_FORMATS} from "@angular/material/core";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
@@ -60,6 +59,7 @@ import {MatPaginatorIntl} from "@angular/material";
 import {MatPaginatorIntlDe} from "./shared/i18n/mat-paginator-intl.de";
 import {LandingPageModule} from "./home/landing-page/landing-page.module";
 import {faCheck} from "@fortawesome/free-solid-svg-icons/faCheck";
+import {CustomMapsApiLoaderService} from "./util/custom-maps-api-loader.service";
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -118,10 +118,7 @@ registerLocaleData(localeDe);
 
 		//dependencies
 		NgcCookieConsentModule.forRoot(cookieConfig),
-		AgmCoreModule.forRoot({
-			apiKey: memoConfig.mapsApiKey,
-			libraries: ["places"]
-		}),
+		AgmCoreModule.forRoot(),
 		ShareButtonsModule,
 		CalendarModule.forRoot({
 			provide: calendarAdapter,
@@ -172,12 +169,13 @@ registerLocaleData(localeDe);
 		{provide: DateAdapter, useClass: DateFnsAdapter},
 		{provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS},
 		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
-		{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
+		{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+		{provide: MapsAPILoader, useClass: CustomMapsApiLoaderService},
 	]
 })
 export class AppModule {
 	constructor(private library: FaIconLibrary) {
-		library.addIconPacks(fas)
+		library.addIconPacks(fas);
 		library.addIcons(...shareButtonsIcons);
 	}
 }

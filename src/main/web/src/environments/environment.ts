@@ -5,4 +5,6 @@
 
 export const environment = {
 	production: false,
+	GOOGLE_MAPS_API_KEY: "{GOOGLE_MAPS_API_KEY}",
+	GOOGLE_ANALYTICS_KEY: "{GOOGLE_ANALYTICS_KEY}",
 };

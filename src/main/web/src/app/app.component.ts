@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Inject, LOCALE_ID, OnDestroy, OnInit, PLATFORM_ID} from "@angular/core";
-import { DateAdapter } from "@angular/material/core";
+import {DateAdapter} from "@angular/material/core";
 import {AuthService} from "./shared/authentication/auth.service";
 import {ActivatedRoute, NavigationEnd, NavigationStart, Router} from "@angular/router";
 import {distinctUntilChanged, filter, map, mergeMap, startWith, takeUntil} from "rxjs/operators";
@@ -11,6 +11,8 @@ import {combineLatest} from "rxjs";
 import {ScrollingService} from "./shared/services/scrolling.service";
 import {isPlatformBrowser} from "@angular/common";
 import {NotificationService} from "./shared/services/api/user-notification.service";
+import {GMapsService} from "./shop/shared/services/gmaps.service";
+import {MapsAPILoader} from "@agm/core";
 
 @Component({
 	selector: "memo-app",
@@ -43,6 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
 				private activatedRoute: ActivatedRoute,
 				private notificationService: NotificationService,
 				private router: Router,
+				private __loader: MapsAPILoader,
 				@Inject(PLATFORM_ID) private platformId: Object,
 				@Inject(LOCALE_ID) public locale: any) {
 		dateAdapter.setLocale(locale); // DD.MM.YYYY
@@ -50,6 +53,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.authService.initRefreshToken();
+		this.__loader.load();
 
 		this.scrollUpOnPageChange();
 
@@ -69,7 +73,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
 	configureAnalyticsCookies() {
 		//cookie consent/google analytics configuration
-		combineLatest(
+		combineLatest([
 			this.cookieConsentService.statusChange$.pipe(
 				map((event: NgcStatusChangeEvent) => event.status === "allow"),
 				startWith(this.cookieConsentService.hasAnswered() && this.cookieConsentService.hasConsented())
@@ -78,22 +82,24 @@ export class AppComponent implements OnInit, OnDestroy {
 				.pipe(
 					filter(event => event instanceof NavigationEnd)
 				)
-		)
+		])
 			.pipe(takeUntil(this.onDestroy$))
 			.subscribe(([hasConsented, event]: [boolean, NavigationEnd]) => {
 				if (!hasConsented) {
 					return;
 				}
 
-				if (!this.gaIsInitialized) {
-					insertGoogleAnalyticsHeadScripts();
-					this.gaIsInitialized = true;
-				}
+				(this.gaIsInitialized ? Promise.resolve() : insertGoogleAnalyticsHeadScripts())
+					.then(() => {
+						this.gaIsInitialized = true;
 
-				const url = event.urlAfterRedirects;
-				if (url !== null && url !== undefined && url !== "" && url.indexOf("null") < 0) {
-					googleAnalytics(url);
-				}
+						const url = event.urlAfterRedirects;
+						if (url !== null && url !== undefined && url !== "" && url.indexOf("null") < 0) {
+							return googleAnalytics(url);
+						}
+						return Promise.resolve();
+					})
+
 			});
 	}
 

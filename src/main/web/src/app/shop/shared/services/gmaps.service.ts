@@ -13,7 +13,7 @@ export class GMapsService extends GoogleMapsAPIWrapper {
 
 	getGeocodedAddress(address: string): Observable<MapsGeocodingResult[]> {
 		console.log("Getting Address - ", address);
-		return Observable.create(observer => {
+		return new Observable(observer => {
 			try {
 				//if we don't call load(), the google variable might still be undefined on startup
 				this.__loader.load().then(() => {
