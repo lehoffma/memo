@@ -6,21 +6,19 @@ const GOOGLE_ANALYTICS_KEY = process.env.GOOGLE_ANALYTICS_KEY;
 //in the app
 try {
 	const options = {
-		files: ['environments/environment.ts', 'environments/environment.prod.ts'],
-		from: /{GOOGLE_MAPS_API_KEY}/g,
+		files: 'environments/*.ts',
+		from: /\{GOOGLE_MAPS_API_KEY\}/g,
 		to: GOOGLE_MAPS_API_KEY,
 		allowEmptyPaths: false,
 	};
 	let changedFiles = replace.sync(options);
 
-	options.from = /{GOOGLE_ANALYTICS_KEY}/g;
+	options.from = /\{GOOGLE_ANALYTICS_KEY\}/g;
 	options.to = GOOGLE_ANALYTICS_KEY;
 
-	changedFiles = replace.sync(options);
+	changedFiles.push(...replace.sync(options));
 
 	console.log("changed files: " +  changedFiles.join(","));
-
-	import("environments/environment.ts").then(it => console.log(it.environment.production));
 
 	console.log("API Keys set");
 } catch (error) {
