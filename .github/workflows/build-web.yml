@@ -21,8 +21,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: npm install, build, and test
       run: |
-        node write-key-to-env-file.js
         cd src/main/web
+        node write-key-to-env-file.js
         npm install
         npm run build
       env:
