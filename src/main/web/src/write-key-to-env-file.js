@@ -18,6 +18,10 @@ try {
 
 	changedFiles = replace.sync(options);
 
+	console.log("changed files: " +  changedFiles.join(","));
+
+	import("environments/environment.ts").then(it => console.log(it.environment.production));
+
 	console.log("API Keys set");
 } catch (error) {
 	console.error('Error occurred:', error);
