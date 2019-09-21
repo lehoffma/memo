@@ -22,8 +22,8 @@ jobs:
     - name: npm install, build, and test
       run: |
         cd src/main/web
-        npm run write-key-to-env-file
         npm install
+        npm run write-key-to-env-file
         npm run build
       env:
         CI: true
