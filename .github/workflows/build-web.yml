@@ -1,32 +1,59 @@
 name: Node CI
 
-on:  
+on:
   push:
     branches:
-    - develop
+      - develop
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x]
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm install, build, and test
-      run: |
-        cd src/main/web
-        npm install
-        npm run write-key-to-env-file
-        npm run build
-      env:
-        CI: true
-        NODE_OPTIONS: --max_old_space_size=4096
-        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
-        GOOGLE_ANALYTICS_KEY: ${{ secrets.GOOGLE_ANALYTICS_KEY }}
+      # checkout the latest develop branch
+      - uses: actions/checkout@v1
+
+      ### Angular build ###
+
+      # setup nodejs latest LTS version
+      - name: Use Node.js 12.10.0
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.10.0'
+
+      # build frontend
+      - name: npm install and build
+        run: |
+          cd src/main/web
+          npm install
+          npm run write-key-to-env-file
+          npm run build
+        env:
+          CI: true
+          NODE_OPTIONS: --max_old_space_size=4096
+          GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+          GOOGLE_ANALYTICS_KEY: ${{ secrets.GOOGLE_ANALYTICS_KEY }}
+
+      ### Java build ###
+
+      # setup java 8
+      - uses: actions/setup-java@v1
+        with:
+          # The JDK version to make available on the path. Takes a whole or semver Jdk version, or 1.x syntax (e.g. 1.8 => Jdk 8.x)
+          java-version: '1.8'
+          # (x64 or x86) - defaults to x64
+          architecture: x64
+      # build WAR file
+      - name: Build with Maven
+        run: mvn package --file pom.xml
+
+      ### Docker build ###
+
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: meilenshop/shop
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          dockerfile: Dockerfile
+          snapshot: true
