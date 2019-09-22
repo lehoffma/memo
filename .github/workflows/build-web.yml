@@ -45,7 +45,7 @@ jobs:
           architecture: x64
       # build WAR file
       - name: Build with Maven
-        run: mvn package --file pom.xml
+        run: mvn package --file pom.xml -U -DskipTests
 
       ### Docker build ###
 
