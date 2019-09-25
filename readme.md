@@ -40,15 +40,4 @@ Otto-von-Guericke University in Magdeburg.
 Following the official launch in the summer of 2018, the Meilenshop has since become the standard way for people to find 
 out about upcoming Meilenwölfe tours, events and even merchandise.
 
-## Features
-Kleiner Text + jeweils Screenshots
-
-- see/manage upcoming events/tours/merchandise
-- Miles leaderboard 
-- Notifications
-
-For Club Admins:
-- Manage costs 
-- Manage orders
-- Manage merchandise inventory
 

@@ -21,7 +21,6 @@ export class CustomMapsApiLoaderService extends LazyMapsAPILoader {
 
 		return this.appConfigService.config$.pipe(
 			map(config => {
-				console.log(config);
 				this._config = {
 					...this._config,
 					libraries: ["places"],
