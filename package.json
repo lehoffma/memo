@@ -1,0 +1,12 @@
+{
+	"name": "memo-web-parent",
+	"version": "1.0.0",
+	"scripts": {
+		"write-config-to-dockerfile": "node write-config-to-dockerfile.js"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@types/node": "~8.9.4",
+		"replace-in-file": "^4.1.3"
+	}
+}

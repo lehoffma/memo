@@ -51,7 +51,7 @@ jobs:
       ### todo: add replace-environment-placeholders-in-dockerfile step
       - name: Replace environment placeholders in Dockerfile
         run: |
-          cd src/main/web
+          npm install
           npm run write-config-to-dockerfile
         env:
           EMAIL_HOST: ${{ secrets.EMAIL_HOST }}

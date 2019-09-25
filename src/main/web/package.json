@@ -12,7 +12,6 @@
 		"test": "ng test",
 		"test-once": "ng test --watch=false --browsers ChromeHeadless",
 		"write-key-to-env-file": "node src/write-key-to-env-file.js",
-		"write-config-to-dockerfile": "node src/write-config-to-dockerfile.js",
 		"lint": "ng lint",
 		"e2e": "ng e2e"
 	},

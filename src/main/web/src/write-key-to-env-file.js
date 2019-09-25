@@ -19,7 +19,7 @@ try {
 		allowEmptyPaths: false,
 	}));
 
-	console.log("changed files: " +  changedFiles.join(","));
+	console.log("performed " + changedFiles.length + " replacements");
 
 	console.log("API Keys set");
 } catch (error) {

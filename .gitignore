@@ -67,3 +67,5 @@ target/
 /.idea/
 /src/main/resources/config.properties
 !/src/main/webapp/WEB-INF/
+
+/node_modules/
