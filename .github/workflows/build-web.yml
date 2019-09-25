@@ -47,6 +47,25 @@ jobs:
       - name: Build with Maven
         run: mvn package --file pom.xml -U -DskipTests
 
+
+      ### todo: add replace-environment-placeholders-in-dockerfile step
+      - name: Replace environment placeholders in Dockerfile
+        run: |
+          cd src/main/web
+          npm run write-config-to-dockerfile
+        env:
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_USER_NAME: ${{ secrets.EMAIL_USER_NAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+
+          JWT_ACCESS_TOKEN_KEY: ${{ secrets.JWT_ACCESS_TOKEN_KEY }}
+          JWT_REFRESH_TOKEN_KEY: ${{ secrets.JWT_REFRESH_TOKEN_KEY }}
+
       ### Docker build ###
 
       - name: Publish to Registry

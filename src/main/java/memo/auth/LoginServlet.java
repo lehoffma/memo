@@ -35,8 +35,8 @@ public class LoginServlet {
     public LoginServlet() {
         super();
         adminLoginInfo = new LoginInformation(
-                Configuration.get("admin.email"),
-                Configuration.get("admin.password")
+                Configuration.get("ADMIN_EMAIL"),
+                Configuration.get("ADMIN_PASSWORD")
         );
     }
 
@@ -44,8 +44,8 @@ public class LoginServlet {
     public LoginServlet(UserRepository userRepository) {
         super();
         adminLoginInfo = new LoginInformation(
-                Configuration.get("admin.email"),
-                Configuration.get("admin.password")
+                Configuration.get("ADMIN_EMAIL"),
+                Configuration.get("ADMIN_PASSWORD")
         );
         this.userRepository = userRepository;
     }

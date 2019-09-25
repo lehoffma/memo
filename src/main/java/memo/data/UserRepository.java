@@ -110,8 +110,8 @@ public class UserRepository extends AbstractPagingAndSortingRepository<User> {
      * @return
      */
     public User getAdmin() {
-        String email = Configuration.get("admin.email");
-        String password = Configuration.get("admin.password");
+        String email = Configuration.get("ADMIN_EMAIL");
+        String password = Configuration.get("ADMIN_PASSWORD");
         List<User> userList = this.findByEmail(email);
 
         logger.trace("Querying admin user with email = " + email);
