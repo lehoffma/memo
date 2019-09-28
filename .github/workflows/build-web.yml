@@ -48,7 +48,6 @@ jobs:
         run: mvn package --file pom.xml -U -DskipTests
 
 
-      ### todo: add replace-environment-placeholders-in-dockerfile step
       - name: Replace environment placeholders in Dockerfile
         run: |
           npm install
