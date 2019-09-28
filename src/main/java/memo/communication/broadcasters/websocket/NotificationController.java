@@ -58,6 +58,7 @@ public class NotificationController {
         this.sessionHandler.addSession(session);
 
         Integer amount = 20;
+        System.out.println("Opened websocket connection for user: " + userId);
         this.websocketMessageDispatcher.sendNotifications(session, amount, true);
     }
 

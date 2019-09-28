@@ -29,6 +29,7 @@ export class NotificationService implements OnDestroy {
 				tap(() => this.loading$.next(true)),
 				mergeMap(user => this.websocketService.connect(this.baseUrl + "?access_token=" + authService.getToken())
 					.pipe(
+						tap(() => this.loading$.next(false)),
 						scan((acc, value) => {
 							if (this.isFirstMessage(value)) {
 								this.totalNotifications$.next(value.total);
