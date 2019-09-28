@@ -1,6 +1,8 @@
 
-<ngx-charts-pie-chart [doughnut]="true"
-					  [legend]="true"
-					  legendPosition="bottom"
-					  [customColors]="customColors"
-					  [results]="data"></ngx-charts-pie-chart>
+<ng-container *ngLet="legendPosition$ | async as legendPosition">
+	<ngx-charts-pie-chart [doughnut]="true"
+						  [legend]="true"
+						  [legendPosition]="legendPosition"
+						  [customColors]="customColors"
+						  [results]="data"></ngx-charts-pie-chart>
+</ng-container>
