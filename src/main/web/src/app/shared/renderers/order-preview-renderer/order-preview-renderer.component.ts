@@ -3,6 +3,7 @@ import {User} from "../../model/user";
 import {OrderedItem} from "../../model/ordered-item";
 import {EventUtilityService} from "../../services/event-utility.service";
 import {OrderStatusData} from "../../model/order-status";
+import {Order} from "../../model/order";
 
 @Component({
 	selector: "memo-order-preview-renderer",
@@ -13,6 +14,7 @@ export class OrderPreviewRendererComponent implements OnInit {
 	@Input() timestamp: Date;
 	@Input() user: User;
 	@Input() items: OrderedItem[];
+	@Input() order: Order;
 
 	orderStatusData = OrderStatusData;
 

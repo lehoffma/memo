@@ -10,6 +10,7 @@
 
 <ng-template #renderer let-order>
 	<memo-order-preview-renderer [items]="order.items"
+								 [order]="order"
 								 [timestamp]="order.timeStamp"
 								 [user]="order.user">
 	</memo-order-preview-renderer>

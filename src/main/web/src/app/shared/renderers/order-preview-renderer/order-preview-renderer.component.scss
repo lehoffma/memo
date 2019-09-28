@@ -8,6 +8,12 @@
 	&:not(:last-of-type) {
 		border-bottom: 1px solid grey(100);
 	}
+
+	> a {
+		&:hover {
+			background: memo-grey(50);
+		}
+	}
 }
 
 

@@ -1,36 +1,38 @@
-<div fxLayout="row" fxLayoutAlign="space-between center">
-	<div fxLayout="row" fxLayoutAlign="flex-start center">
-		<img [lazySrc]="(user.images[0] || 'resources/images/Logo.png') | imageSize:'large' | async"
-			 lazySrcVisible="visible"
-			 class="user-profile-picture"/>
-		<memo-profile-link [user]="user"></memo-profile-link>
-	</div>
-	<span class="relative-timestamp" [matTooltip]="timestamp | dateFormat:'dd.MM.yyyy \'um\' HH:mm'">
+<a routerLink="/management/orders/{{order.id}}">
+	<div fxLayout="row" fxLayoutAlign="space-between center">
+		<div fxLayout="row" fxLayoutAlign="flex-start center">
+			<img [lazySrc]="(user.images[0] || 'resources/images/Logo.png') | imageSize:'large' | async"
+				 lazySrcVisible="visible"
+				 class="user-profile-picture"/>
+			<memo-profile-link [user]="user"></memo-profile-link>
+		</div>
+		<span class="relative-timestamp" [matTooltip]="timestamp | dateFormat:'dd.MM.yyyy \'um\' HH:mm'">
 		{{timestamp | relativeDateFormat | async}}
 	</span>
-</div>
-<ul class="ordered-items-list">
-	<li *ngFor="let item of items">
-		<div fxLayout="row">
-			<a class="item-title" [routerLink]="getItemLink(item)">{{item.item.title}}</a>
-			<div class="additional-icons" fxLayoutGap="4px">
-				<mat-icon class="item-color" *ngIf="item.color" [matTooltip]="item.color.name">color_lens</mat-icon>
-				<mat-icon class="item-size" *ngIf="item.size" matTooltip="Größe: {{item.size}}">shopping_cart</mat-icon>
-				<mat-icon class="item-driver" *ngIf="item.isDriver"
-						  matTooltip="Dieser Nutzer hat sich als Fahrer angemeldet">
-					drive_eta
-				</mat-icon>
-				<mat-icon class="item-ticket" *ngIf="!item.color && !item.size && item.needsTicket"
-						  matTooltip="Dieser Nutzer benötigt ein Stadionticket">
-					local_play
-				</mat-icon>
-				<div class="item-status {{orderStatusData[item.status].colorClass}}">
-					<mat-icon [matTooltip]="orderStatusData[item.status].tooltip">
-						{{orderStatusData[item.status].icon || 'info'}}
+	</div>
+	<ul class="ordered-items-list">
+		<li *ngFor="let item of items">
+			<div fxLayout="row">
+				<a class="item-title" [routerLink]="getItemLink(item)">{{item.item.title}}</a>
+				<div class="additional-icons" fxLayoutGap="4px">
+					<mat-icon class="item-color" *ngIf="item.color" [matTooltip]="item.color.name">color_lens</mat-icon>
+					<mat-icon class="item-size" *ngIf="item.size" matTooltip="Größe: {{item.size}}">shopping_cart</mat-icon>
+					<mat-icon class="item-driver" *ngIf="item.isDriver"
+							  matTooltip="Dieser Nutzer hat sich als Fahrer angemeldet">
+						drive_eta
 					</mat-icon>
+					<mat-icon class="item-ticket" *ngIf="!item.color && !item.size && item.needsTicket"
+							  matTooltip="Dieser Nutzer benötigt ein Stadionticket">
+						local_play
+					</mat-icon>
+					<div class="item-status {{orderStatusData[item.status].colorClass}}">
+						<mat-icon [matTooltip]="orderStatusData[item.status].tooltip">
+							{{orderStatusData[item.status].icon || 'info'}}
+						</mat-icon>
+					</div>
 				</div>
 			</div>
-		</div>
-	</li>
-</ul>
+		</li>
+	</ul>
+</a>
 
