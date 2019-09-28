@@ -74,7 +74,6 @@ public class MailBroadcaster extends BaseMessageBroadcaster {
     private void logEmail(Level priority, String to, String subject, String text) {
         logger.log(priority, "recipient: " + to);
         logger.log(priority, "subject: " + subject);
-        logger.log(priority, "email text: " + text);
     }
 
 
