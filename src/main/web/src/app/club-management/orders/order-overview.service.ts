@@ -63,7 +63,6 @@ export class OrderOverviewService {
 					))
 				)
 			}),
-			tap(it => console.log(it)),
 		);
 		return this._cache.search(params, request, url);
 	}

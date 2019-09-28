@@ -1,8 +1,8 @@
 import {ChangeDetectorRef, Component, Input, OnInit} from "@angular/core";
-import {addDays, format, isBefore, setHours, setMilliseconds, setMinutes, setSeconds, subMonths, subYears} from "date-fns";
+import {addDays, format, isBefore, setHours, setMilliseconds, setMinutes, setSeconds, subMonths} from "date-fns";
 import {dateWithCorrectTimezone, NOW} from "../../../util/util";
 import {de as deLocale} from "date-fns/locale";
-import * as shape from 'd3-shape';
+import * as shape from "d3-shape";
 
 export type OverTimeData = { timestamp: string, amount: number };
 
@@ -31,6 +31,7 @@ export class OrdersOverTimeChartComponent implements OnInit {
 	lineChartData: LineChartData;
 
 	loading = true;
+	hasData = true;
 
 	@Input() set data(data: OverTimeData[]) {
 		if (data === null) {
@@ -40,6 +41,7 @@ export class OrdersOverTimeChartComponent implements OnInit {
 		this.loading = false;
 
 		this._data = this.fillMissingTimestamps(data, this.startDate, this.endDate);
+		this.hasData = data.some(it => it.amount > 0);
 		this.lineChartData = this.toLineChartData(this._data);
 	}
 
@@ -56,6 +58,8 @@ export class OrdersOverTimeChartComponent implements OnInit {
 			acc[entry.timestamp] = entry.amount;
 			return acc;
 		}, {});
+
+		console.log(serverData);
 
 		let currentStep = from;
 		while (isBefore(currentStep, to)) {

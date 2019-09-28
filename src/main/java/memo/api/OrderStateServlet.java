@@ -85,7 +85,7 @@ public class OrderStateServlet extends AbstractApiServlet<Order> {
     @Produces({MediaType.APPLICATION_JSON})
     public Response ordersOverTime(@Context HttpServletRequest request) {
         //todo read from request?
-        LocalDateTime from = LocalDateTime.now().minus(1, ChronoUnit.YEARS);
+        LocalDateTime from = LocalDateTime.now().minus(1, ChronoUnit.MONTHS);
         LocalDateTime to = LocalDateTime.now();
 
         return this.readState(request, () -> orderStateRepository.ordersOverTime(from, to), "orders");

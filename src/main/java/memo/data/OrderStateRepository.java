@@ -111,7 +111,7 @@ public class OrderStateRepository {
     private final String ordersOverTimeSql = "SELECT count(*) as amount, CONCAT(DATE_FORMAT(o.TIMESTAMP, '%Y-%m-%d'), 'T00:00:00Z') as timestamp\n" +
             "    from orders o\n" +
             "    WHERE o.TIMESTAMP > ?1 AND o.TIMESTAMP < ?2\n" +
-            "    group by EXTRACT(DAY FROM o.TIMESTAMP)";
+            "    group by EXTRACT(DAY FROM o.TIMESTAMP), EXTRACT(MONTH from o.TIMESTAMP), EXTRACT(YEAR from o.TIMESTAMP)";
 
     public List<DataPoint> ordersOverTime(LocalDateTime from, LocalDateTime to) {
         Timestamp fromTimestamp = Timestamp.valueOf(from);
