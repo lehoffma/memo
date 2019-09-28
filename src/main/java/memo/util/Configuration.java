@@ -31,10 +31,10 @@ public class Configuration {
             prop.load(resource);
             noPropertiesFile = false;
         } catch (IOException e) {
-            logger.error("Could not read property file at '" + path + "'", e);
+            logger.info("Could not read property file at '" + path + "', falling back to environment variables mode.");
             noPropertiesFile = true;
         } catch (NullPointerException e) {
-            logger.error("Could not find property file at '" + path + "'", e);
+            logger.info("Could not find property file at '" + path + "', falling back to environment variables mode.");
             noPropertiesFile = true;
         }
         //return an empty properties object if the file could not be found

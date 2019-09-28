@@ -10,7 +10,7 @@ import {environment} from "../../../../environments/environment";
 
 @Injectable()
 export class NotificationService implements OnDestroy {
-	baseUrl = `ws${environment.production ? 's:104.248.30.39' :':localhost'}:8080/api/notifications_stream`;
+	baseUrl = `ws${environment.production ? 's:shop.meilenwoelfe.de' :':localhost'}:8080/api/notifications_stream`;
 	notifications$: BehaviorSubject<UserNotification[]> = new BehaviorSubject([]);
 	unreadNotifications$ = new BehaviorSubject(0);
 	totalNotifications$ = new BehaviorSubject(0);
