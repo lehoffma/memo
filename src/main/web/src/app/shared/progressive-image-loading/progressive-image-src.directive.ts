@@ -2,7 +2,7 @@ import {ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy} from "@angul
 import {filter, mergeMap, takeUntil} from "rxjs/operators";
 import {ImageLazyLoadService} from "./image-lazy-load.service";
 import {WindowService} from "../services/window.service";
-import {BehaviorSubject, combineLatest, interval, Subject} from "rxjs";
+import {BehaviorSubject, combineLatest, Subject} from "rxjs";
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
 
 @Directive({
@@ -48,6 +48,13 @@ export class ProgressiveImageSrcDirective implements OnDestroy {
 				private domSanitizer: DomSanitizer,
 				private imageLazyLoadService: ImageLazyLoadService,
 				private windowService: WindowService,) {
+		this.hasBeenLoadedOnce$.pipe(takeUntil(this.onDestroy$))
+			.subscribe(it => {
+				setTimeout(() => {
+					this.cdRef.detectChanges()
+				}, 100);
+			});
+
 		combineLatest([
 			this._imageSrc$,
 			this.windowService.dimension$
@@ -68,7 +75,7 @@ export class ProgressiveImageSrcDirective implements OnDestroy {
 		this.fullyLoadedImage$.pipe(filter(it => it !== null), takeUntil(this.onDestroy$))
 			.subscribe((image) => {
 				this.hasBeenLoadedOnce$.next(true);
-			})
+			});
 	}
 
 	ngOnDestroy(): void {

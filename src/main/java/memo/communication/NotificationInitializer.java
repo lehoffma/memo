@@ -64,7 +64,13 @@ public class NotificationInitializer {
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.CHECK_ON_ORDER)
                         .setTemplate("Einige alte Bestellungen müssen noch geupdated werden!")
-                        .setLink("/management/orders?status=0,1,2,3,6,7,8,9&maxTimeStamp={Now}")
+                        .setLink("/management/orders?status=0,1,2,3,6,7,8,9&maxTimeStamp={Now}"),
+                new NotificationTemplate()
+                        .setNotificationType(NotificationType.WAITING_LIST_CAPACITY_CHANGE)
+                        .setTemplate("Die Kapazität von {ItemName} wurde erhöht! (Du stehst auf der Warteliste)")
+                        .setImagePath("{ItemImage}")
+                        .setLink("/shop/{ItemType}/{ItemId}")
+
         );
         List<NotificationTemplate> currentTemplates = new ArrayList<>(DatabaseManager.createEntityManager()
                 .createQuery("SELECT e FROM NotificationTemplate e", NotificationTemplate.class)
@@ -101,7 +107,7 @@ public class NotificationInitializer {
         this.updateEmailTemplates();
     }
 
-    private void updateEmailTemplates(){
+    private void updateEmailTemplates() {
         List<EmailTemplate> emailTemplates = Arrays.asList(
                 new EmailTemplate()
                         .setNotificationType(NotificationType.REGISTRATION)

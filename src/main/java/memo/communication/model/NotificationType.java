@@ -25,7 +25,8 @@ public enum NotificationType {
 
     //notification only
     UPCOMING_EVENT(12),
-    CHECK_ON_ORDER(13);
+    CHECK_ON_ORDER(13),
+    WAITING_LIST_CAPACITY_CHANGE(14);
 
 
     private Integer value;

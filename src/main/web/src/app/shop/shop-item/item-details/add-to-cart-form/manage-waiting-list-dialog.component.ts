@@ -25,7 +25,12 @@ export class ManageWaitingListDialogComponent implements OnInit {
 				private formBuilder: FormBuilder) {
 		this.waitingList = [...data.waitingList];
 		this.amount = this.waitingList.length;
-		this.amountOptions = range((data.event.paymentLimit === -1 ? 20 : data.event.paymentLimit) + 1, index => index - 1);
+		this.amountOptions = range(
+			((data.event.paymentLimit === -1 || !data.event.paymentLimit)
+				? 20
+				: data.event.paymentLimit) + 1,
+				index => index - 1
+		);
 	}
 
 	ngOnInit() {

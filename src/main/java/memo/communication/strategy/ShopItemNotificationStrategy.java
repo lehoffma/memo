@@ -3,12 +3,10 @@ package memo.communication.strategy;
 import memo.communication.NotificationRepository;
 import memo.communication.model.Notification;
 import memo.communication.model.NotificationType;
-import memo.model.Order;
-import memo.model.OrderedItem;
-import memo.model.ShopItem;
-import memo.model.User;
+import memo.model.*;
 import memo.util.JsonHelper;
 import memo.util.MapBuilder;
+import memo.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -127,59 +125,88 @@ public class ShopItemNotificationStrategy extends BaseNotificationStrategy<ShopI
         return changes;
     }
 
-    protected void sendUpdateEmails(ShopItem changedItem, ShopItem previous) {
-        if (changedItem != null) {
-            //notify participants of changes
-            List<OrderedItem> orders = new ArrayList<>(changedItem.getOrders());
+    private void sendObjectHasChangedNotifications(ShopItem changedItem) {
+        //notify participants of changes
+        List<OrderedItem> orders = new ArrayList<>(changedItem.getOrders());
 
-            //todo save "changelog", i.e. which attributes have been changed?
-            String changelogDataAsString = JsonHelper.toString(new MapBuilder<String, Object>()
-                    .buildPut("itemId", changedItem.getId())
+        //todo save "changelog", i.e. which attributes have been changed?
+        String changelogDataAsString = JsonHelper.toString(new MapBuilder<String, Object>()
+                        .buildPut("itemId", changedItem.getId())
 //                    .buildPut("changes", this.getChangelog(changedItem, previous))
-            );
+        );
 
-            orders.stream()
-                    .map(OrderedItem::getOrder)
-                    .map(Order::getUser)
-                    .distinct()
-                    .forEach(participant -> notificationRepository.save(
-                            new Notification()
-                                    .setUser(participant)
-                                    .setNotificationType(NotificationType.OBJECT_HAS_CHANGED)
-                                    .setData(changelogDataAsString)
-                    ));
+        orders.stream()
+                .map(OrderedItem::getOrder)
+                .map(Order::getUser)
+                .distinct()
+                .forEach(participant -> notificationRepository.save(
+                        new Notification()
+                                .setUser(participant)
+                                .setNotificationType(NotificationType.OBJECT_HAS_CHANGED)
+                                .setData(changelogDataAsString)
+                ));
+    }
 
-            String itemDataAsString = JsonHelper.toString(new MapBuilder<String, Object>()
-                    .buildPut("itemId", changedItem.getId()));
+    private void notifyNewlyAddedUsers(List<User> newUsers,
+                                       List<User> previousUsers,
+                                       NotificationType notificationType,
+                                       String itemDataAsString) {
+        //notify newly added users
+        newUsers.stream()
+                //only send mails to newly added users
+                .filter(user -> previousUsers.stream().noneMatch(it -> it.getId().equals(user.getId())))
+                .forEach(user -> notificationRepository.save(
+                        new Notification()
+                                .setUser(user)
+                                .setNotificationType(notificationType)
+                                .setData(itemDataAsString)
+                ));
+    }
 
-            //notify newly added responsible users
-            List<User> newResponsible = new ArrayList<>(changedItem.getAuthor());
-            List<User> previousResponsible = new ArrayList<>(previous.getAuthor());
-            newResponsible.stream()
-                    //only send mails to newly added users
-                    .filter(user -> previousResponsible.stream().noneMatch(it -> it.getId().equals(user.getId())))
-                    .forEach(user -> notificationRepository.save(
-                            new Notification()
-                                    .setUser(user)
-                                    .setNotificationType(NotificationType.RESPONSIBLE_USER)
-                                    .setData(itemDataAsString)
-                    ));
-
-
-            //notify newly added report-responsible people
-            List<User> newReportWriters = new ArrayList<>(changedItem.getReportWriters());
-            List<User> previousReportWriters = new ArrayList<>(previous.getReportWriters());
-
-            newReportWriters.stream()
-                    //only send mails to newly added users
-                    .filter(user -> previousReportWriters.stream().noneMatch(it -> it.getId().equals(user.getId())))
-                    .forEach(user -> notificationRepository.save(
-                            new Notification()
-                                    .setUser(user)
-                                    .setNotificationType(NotificationType.MARKED_AS_REPORT_WRITER)
-                                    .setData(itemDataAsString)
-                    ));
+    private void notifyUsersAboutEventCapacityChange(ShopItem changedItem, ShopItem previous, String itemDataAsString) {
+        //only if capacity has been increased
+        if (changedItem.getCapacity() <= previous.getCapacity()) {
+            return;
         }
+
+        //get distinct users on waiting list
+        previous.getWaitingList().stream()
+                .map(WaitingListEntry::getUser)
+                .filter(Util.distinctByKey(User::getId))
+                //save notification for each one
+                .forEach(user -> notificationRepository.save(
+                        new Notification()
+                                .setUser(user)
+                                .setNotificationType(NotificationType.WAITING_LIST_CAPACITY_CHANGE)
+                                .setData(itemDataAsString)
+                ));
+    }
+
+    protected void sendUpdateEmails(ShopItem changedItem, ShopItem previous) {
+        if (changedItem == null) {
+            return;
+        }
+
+        this.sendObjectHasChangedNotifications(changedItem);
+
+        String itemDataAsString = JsonHelper.toString(new MapBuilder<String, Object>()
+                .buildPut("itemId", changedItem.getId()));
+
+        this.notifyNewlyAddedUsers(
+                changedItem.getAuthor(),
+                previous.getAuthor(),
+                NotificationType.RESPONSIBLE_USER,
+                itemDataAsString
+        );
+
+        this.notifyNewlyAddedUsers(
+                changedItem.getReportWriters(),
+                previous.getReportWriters(),
+                NotificationType.MARKED_AS_REPORT_WRITER,
+                itemDataAsString
+        );
+
+        this.notifyUsersAboutEventCapacityChange(changedItem, previous, itemDataAsString);
     }
 
 

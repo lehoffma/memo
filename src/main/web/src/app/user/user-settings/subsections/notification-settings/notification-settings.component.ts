@@ -101,6 +101,10 @@ export class NotificationSettingsComponent extends BaseSettingsSubsectionCompone
 				[UserNotificationBroadcastType.NOTIFICATION]: this.fb.control(true),
 				[UserNotificationBroadcastType.MAIL]: this.fb.control(true)
 			}),
+			[UserNotificationType.WAITING_LIST_CAPACITY_CHANGE]: this.fb.group({
+				[UserNotificationBroadcastType.NOTIFICATION]: this.fb.control(true),
+				[UserNotificationBroadcastType.MAIL]: this.fb.control(true)
+			}),
 		});
 
 		this.init();

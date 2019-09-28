@@ -1,4 +1,4 @@
-export interface UserNotification {
+ export interface UserNotification {
 	id: string;
 	text: string;
 	type: UserNotificationType;
@@ -9,6 +9,7 @@ export interface UserNotification {
 }
 
 //todo redesign: change notification templates
+// 	...what?
 
 export enum NotificationStatus {
 	READ = "READ",
@@ -39,6 +40,7 @@ export enum UserNotificationType {
 	//notification only
 	UPCOMING_EVENT,
 	CHECK_ON_ORDER,
+	WAITING_LIST_CAPACITY_CHANGE,
 }
 
 export const notificationTypeMap: { [value: string]: UserNotificationType } = {
@@ -56,6 +58,7 @@ export const notificationTypeMap: { [value: string]: UserNotificationType } = {
 	MARKED_AS_REPORT_WRITER: UserNotificationType.MARKED_AS_REPORT_WRITER,
 	UPCOMING_EVENT: UserNotificationType.UPCOMING_EVENT,
 	CHECK_ON_ORDER: UserNotificationType.CHECK_ON_ORDER,
+	WAITING_LIST_CAPACITY_CHANGE: UserNotificationType.WAITING_LIST_CAPACITY_CHANGE,
 };
 
 export function notificationTypeFromString(input: string): UserNotificationType {
@@ -77,6 +80,7 @@ export const notificationTypes: UserNotificationType[] = [
 	UserNotificationType.MARKED_AS_REPORT_WRITER,
 	UserNotificationType.UPCOMING_EVENT,
 	UserNotificationType.CHECK_ON_ORDER,
+	UserNotificationType.WAITING_LIST_CAPACITY_CHANGE,
 ];
 
 export const configurableNotificationTypes: UserNotificationType[] = [
