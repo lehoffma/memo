@@ -67,7 +67,7 @@ public class NotificationInitializer {
                         .setLink("/management/orders?status=0,1,2,3,6,7,8,9&maxTimeStamp={Now}"),
                 new NotificationTemplate()
                         .setNotificationType(NotificationType.WAITING_LIST_CAPACITY_CHANGE)
-                        .setTemplate("Die Kapazität von {ItemName} wurde erhöht! (Du stehst auf der Warteliste)")
+                        .setTemplate("Es wurden neue {ItemCapacityType} für {ItemName} hinzugefügt!")
                         .setImagePath("{ItemImage}")
                         .setLink("/shop/{ItemType}/{ItemId}")
 

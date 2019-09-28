@@ -170,7 +170,7 @@ public class ShopItemNotificationStrategy extends BaseNotificationStrategy<ShopI
         }
 
         //get distinct users on waiting list
-        previous.getWaitingList().stream()
+        changedItem.getWaitingList().stream()
                 .map(WaitingListEntry::getUser)
                 .filter(Util.distinctByKey(User::getId))
                 //save notification for each one

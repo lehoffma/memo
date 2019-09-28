@@ -46,6 +46,15 @@ public class ReplacementFactory {
                 //notifications
                 .buildPut("{ItemId}", (notification, data) -> ((ShopItem) data.get("item")).getId().toString())
                 .buildPut("{ItemName}", (notification, data) -> ((ShopItem) data.get("item")).getTitle())
+                .buildPut("{ItemCapacityType}", (notification, data) -> {
+                    ShopItem item = (ShopItem) data.get("item");
+                    if(item.getType() == EventType.merch.getValue()){
+                        return "Artikel";
+                    }
+                    else{
+                        return "Plätze";
+                    }
+                })
                 .buildPut("{ItemTime}", (notification, data) -> {
                     Timestamp timestamp = ((ShopItem) data.get("item")).getDate();
                     return timestamp.toLocalDateTime().format(DateTimeFormatter.ofPattern("HH:mm"));

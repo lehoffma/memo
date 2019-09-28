@@ -34,6 +34,17 @@
 </div>
 
 <div class="notification-setting-block" fxLayout="column"
+	 [formGroup]="formGroup.get('' + NotificationType.WAITING_LIST_CAPACITY_CHANGE)">
+	<h4>Neu frei gewordene Plätze</h4>
+	<span class="subtitle">Kapazitätsänderungen an Events oder Merchandise, bei denen du auf der Warteliste stehst</span>
+
+	<div fxLayout="row" fxLayoutGap="16px">
+		<mat-checkbox [formControlName]="'' + BroadcasterType.MAIL">Email</mat-checkbox>
+		<mat-checkbox [formControlName]="'' + BroadcasterType.NOTIFICATION">Web</mat-checkbox>
+	</div>
+</div>
+
+<div class="notification-setting-block" fxLayout="column"
 	 [formGroup]="formGroup.get('' + NotificationType.NEW_COMMENT)">
 	<h4>Kommentare</h4>
 	<span class="subtitle">Neue Kommentare in Events oder Merchandise Artikeln, für die du verantwortlich bist</span>
