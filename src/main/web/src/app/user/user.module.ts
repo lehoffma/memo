@@ -9,7 +9,6 @@ import {SharedModule} from "../shared/shared.module";
 import {MemoMaterialModule} from "../../material.module";
 import {AgmCoreModule} from "@agm/core";
 import {ConfirmEmailComponent} from "./confirm-email/confirm-email.component";
-import {RelativeTimeFormatPipe} from "./notifications/relative-time-format.pipe";
 import {BoldNotificationTextPipe} from "./notifications/bold-notification-text.pipe";
 import {SafeHtmlPipe} from "./notifications/safe-html.pipe";
 import {UserSettingsComponent} from "./user-settings/user-settings.component";
@@ -22,7 +21,7 @@ import {NotificationSettingsComponent} from "./user-settings/subsections/notific
 import {UserEventEmptyStateComponent} from "./user-event-empty-state/user-event-empty-state.component";
 import {SharedSearchModule} from "../shared/search/shared-search.module";
 import {FlexLayoutModule} from "@angular/flex-layout";
-import { PaymentSettingsComponent } from './user-settings/subsections/payment-settings/payment-settings.component';
+import {PaymentSettingsComponent} from "./user-settings/subsections/payment-settings/payment-settings.component";
 import {DataContainerModule} from "../shared/utility/data-container/data-container.module";
 
 @NgModule({
@@ -47,7 +46,6 @@ import {DataContainerModule} from "../shared/utility/data-container/data-contain
 		ParticipatedToursPreviewComponent,
 
 		ConfirmEmailComponent,
-		RelativeTimeFormatPipe,
 		BoldNotificationTextPipe,
 		SafeHtmlPipe,
 		UserSettingsComponent,

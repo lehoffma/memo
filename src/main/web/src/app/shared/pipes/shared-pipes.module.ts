@@ -3,6 +3,7 @@ import {DateFormatPipe} from "./date-format.pipe";
 import {ImageSizePipe} from "./image-size.pipe";
 import {ClubRoleIconPipe} from "./club-role-icon.pipe";
 import {PipeFunction} from "./function.pipe";
+import { RelativeDateFormatPipe } from './relative-date-format.pipe';
 
 
 @NgModule({
@@ -11,13 +12,15 @@ import {PipeFunction} from "./function.pipe";
 		DateFormatPipe,
 		ImageSizePipe,
 		ClubRoleIconPipe,
-		PipeFunction
+		PipeFunction,
+		RelativeDateFormatPipe
 	],
 	declarations: [
 		DateFormatPipe,
 		ImageSizePipe,
 		ClubRoleIconPipe,
-		PipeFunction
+		PipeFunction,
+		RelativeDateFormatPipe
 	],
 	providers: [],
 })

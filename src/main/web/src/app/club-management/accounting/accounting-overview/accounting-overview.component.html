@@ -1,7 +1,9 @@
 <ng-container *ngLet="state$ | async as state">
 	<div class="overview-header">
 		<h2>Kostenübersicht</h2>
-		<span class="last-refresh-date">Stand: {{state?.timestamp | dateFormat:'relative'}}</span>
+		<span class="last-refresh-date" [matTooltip]="state?.timestamp | dateFormat:'dd.MM.yyyy \'um\' HH:mm:ss'">
+			Stand: {{state?.timestamp | relativeDateFormat | async}}
+		</span>
 	</div>
 	<memo-data-container [error]="error" [initialLoad]="state === null" [renderer]="dashboardTemplate"
 						 class="overall-data-container"

@@ -1,6 +1,6 @@
 <div class="overview-header">
 	<h2>Bestellungsübersicht</h2>
-	<span class="last-refresh-date">Stand: {{orderOverviewService.loadDate | dateFormat:'relative'}}</span>
+	<span class="last-refresh-date">Stand: {{orderOverviewService.loadDate | relativeDateFormat | async}}</span>
 </div>
 <div fxLayout.gt-sm="row" fxLayoutAlign.gt-sm="flex-start flex-start" fxLayout="column" fxLayoutGap="16px">
 	<div fxLayout="column" fxLayoutGap="16px" class="left-side">

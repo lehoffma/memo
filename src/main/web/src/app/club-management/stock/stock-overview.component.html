@@ -1,6 +1,6 @@
 <div class="overview-header">
 	<h2>Bestandsübersicht</h2>
-	<span class="last-refresh-date">Stand: {{stockOverviewService?.loadDate | dateFormat:'relative'}}</span>
+	<span class="last-refresh-date">Stand: {{stockOverviewService?.loadDate | relativeDateFormat | async}}</span>
 </div>
 
 <ng-container *ngLet="state$ | async as state">

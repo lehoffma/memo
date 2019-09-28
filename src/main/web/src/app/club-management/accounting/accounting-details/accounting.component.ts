@@ -15,14 +15,14 @@ import {MultiFilterOption} from "../../../shared/search/filter-options/multi-fil
 import {EventService} from "../../../shared/services/api/event.service";
 import {EntryCategoryService} from "../../../shared/services/api/entry-category.service";
 import {of} from "rxjs/internal/observable/of";
-import {format} from "date-fns";
+import {format, formatDistanceToNow} from "date-fns";
 import {RowAction} from "../../../shared/utility/material-table/util/row-action";
 import {RowActionType} from "../../../shared/utility/material-table/util/row-action-type";
 import {EventUtilityService} from "../../../shared/services/event-utility.service";
 import {ShopEvent} from "../../../shop/shared/model/event";
 import {TagColor} from "../../../shared/utility/material-table/cells/tag-table-cell.component";
 import {EntryCategory} from "../../../shared/model/entry-category";
-import {relativeDateFormat} from "../../../shared/pipes/date-format.pipe";
+import {de as deLocale} from "date-fns/locale";
 
 
 @Component({
@@ -59,7 +59,7 @@ export class AccountingComponent implements OnInit, OnDestroy {
 		{
 			header: "Datum", columnDef: "date", cell: element => ({
 				title: format(element.date, "dd.MM.yyyy"),
-				subtitle: relativeDateFormat(element.date)
+				subtitle: formatDistanceToNow(element.date, {addSuffix: true, locale: deLocale})
 			}),
 			type: "title-subtitle"
 		},

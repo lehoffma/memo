@@ -36,9 +36,10 @@
 			<div class="notification-details">
 				<div class="notification-text">
 					<span [innerHtml]="notification.text | boldNotificationText | safeHtml"></span>
-					<span class="timestamp">
-				{{notification.timestamp | relativeTimeFormat}}
-			</span>
+					<span class="timestamp" matTooltipShowDelay="500"
+						  [matTooltip]="notification.timestamp | dateFormat:'dd.MM.yyyy \'um\' HH:mm:ss'">
+						{{notification.timestamp | relativeDateFormat | async}}
+					</span>
 				</div>
 
 				<div class="actions">

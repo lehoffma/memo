@@ -6,7 +6,7 @@
 		<memo-profile-link [user]="user"></memo-profile-link>
 	</div>
 	<span class="relative-timestamp" [matTooltip]="timestamp | dateFormat:'dd.MM.yyyy \'um\' HH:mm'">
-		{{timestamp | dateFormat:'relative'}}
+		{{timestamp | relativeDateFormat | async}}
 	</span>
 </div>
 <ul class="ordered-items-list">

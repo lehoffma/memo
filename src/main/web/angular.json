@@ -187,7 +187,8 @@
 	"schematics": {
 		"@schematics/angular:component": {
 			"prefix": "memo",
-			"styleext": "scss"
+			"styleext": "scss",
+			"changeDetection": "OnPush"
 		},
 		"@schematics/angular:directive": {
 			"prefix": "memo"
