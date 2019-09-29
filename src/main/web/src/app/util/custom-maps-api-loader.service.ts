@@ -1,8 +1,8 @@
 import {ApplicationRef, Inject, Injectable} from "@angular/core";
 import {LAZY_MAPS_API_CONFIG, LazyMapsAPILoader} from "@agm/core";
 import {AppConfigService} from "../app-config.service";
-import {DocumentRef, WindowRef} from "@agm/core/utils/browser-globals";
 import {map} from "rxjs/operators";
+import {DocumentRef, WindowRef} from "@agm/core/utils/browser-globals";
 
 @Injectable()
 export class CustomMapsApiLoaderService extends LazyMapsAPILoader {
