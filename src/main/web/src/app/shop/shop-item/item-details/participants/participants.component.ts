@@ -25,6 +25,13 @@ export class ParticipantsComponent implements OnInit {
 	constructor() {
 	}
 
+	extraPersonsTooltip(participant: GroupedParticipants): string {
+		if(participant.user.firstName.toLowerCase() === "eddi" && participant.user.surname.toLowerCase() === "externer"){
+			return "Es wurden insgesamt " + (participant.extraPersons + 1) + " externe Personen angemeldet";
+		}
+		return "Dieser Nutzer hat " + participant.extraPersons + " extra Person"
+			+ (participant.extraPersons === 1 ? "" : "en") + " angemeldet"
+	}
 
 	ngOnInit() {
 	}

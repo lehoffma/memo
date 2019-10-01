@@ -18,6 +18,7 @@ import {
 } from "date-fns";
 import {de} from "date-fns/locale";
 import {isString} from "./util";
+import { Injectable } from "@angular/core";
 
 interface DisplayFormat {
 	day?: string;
@@ -38,6 +39,7 @@ export function range<T>(length: number, mappingFunction: (index: number) => T):
 		.map(mappingFunction);
 }
 
+@Injectable()
 export class DateFnsAdapter extends DateAdapter<Date> {
 
 	_localeData = {

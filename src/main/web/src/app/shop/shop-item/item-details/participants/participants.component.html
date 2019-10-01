@@ -22,29 +22,29 @@
 			 : ('Dieser Nutzer benötigt keine Tickets.')"
 					 [class.needs-ticket]="participant.needsTicketAmount > 0">
 					<ng-container *ngIf="participant.needsTicketAmount > 0">
-				<span class="ticket-amount">
-					{{participant.needsTicketAmount}}
-				</span>
+						<span class="ticket-amount">
+							{{participant.needsTicketAmount}}
+						</span>
 						<span class="multiplier">x</span>
 					</ng-container>
 					<mat-icon>local_play</mat-icon>
 				</div>
 				<div class="participant-badge extra-persons"
 					 [style.visibility]="(participant.extraPersons > 0) ? 'visible' : 'hidden'"
-					 [matTooltip]="'Dieser Nutzer hat ' + participant.extraPersons + ' extra Person' + (participant.extraPersons === 1 ? '' : 'en') + ' angemeldet'"
+					 [matTooltip]="participant | pipeFunction:extraPersonsTooltip"
 				>
-			<span class="extra-persons-amount">
-				+{{participant.extraPersons}}
-			</span>
+					<span class="extra-persons-amount">
+						+{{participant.extraPersons}}
+					</span>
 					<span>Person{{(participant.extraPersons === 1 ? '' : 'en')}}</span>
 				</div>
 				<div class="participant-badge is-driver"
 					 [style.visibility]="(isAllowedToSeeMetaInfo && participant.isDriverAmount > 0 && type === 'tours') ? 'visible' : 'hidden'"
 					 [matTooltip]="participant.isDriverAmount + ' sind als Fahrer angemeldet.'"
 				>
-			<span class="driver-amount">
-				{{participant.isDriverAmount}}
-			</span>
+					<span class="driver-amount">
+						{{participant.isDriverAmount}}
+					</span>
 					<span class="multiplier">x</span>
 					<mat-icon>directions_car</mat-icon>
 				</div>

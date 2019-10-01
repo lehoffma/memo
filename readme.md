@@ -5,7 +5,7 @@
 
 # Meilenwölfe Shop
 
-[![Actions Status](https://github.com/lehoffma/memo/workflows/Node%20CI/badge.svg)](https://github.com/lehoffma/memo/workflows/Node%20CI/badge.svg)
+[![Actions Status](https://github.com/lehoffma/memo/workflows/Node%20CI/badge.svg)](https://github.com/lehoffma/memo/actions)
 
 The Meilenwölfe Event and Merchandise Online Shop (or Meilenshop, for short) is a website built for the VfL Wolfsburg fanclub [Meilenwoelfe e.V.](https://www.meilenwoelfe.de)
 Built from the ground up, it combines the features of a traditional online shop with those of a club management system into one interface.
@@ -23,7 +23,7 @@ The shop can be found at [shop.meilenwoelfe.de](https://shop.meilenwoelfe.de). G
 <b>Backend</b>
 - JavaEE
 
-Deployment is _(not yet, but soon)_ managed via [Docker](https://www.docker.com/) and Github Actions.
+Deployment is managed via [Docker](https://www.docker.com/) and [Github Actions](https://github.com/lehoffma/memo/actions).
 
 ## Motivation & History
 
