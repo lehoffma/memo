@@ -22,7 +22,7 @@ import {DiscountFormComponent} from "./discounts/discount-form/discount-form.com
 
 const routes: Route[] = [
 	//nur eingeloggte user, die Kassenwart oder Admin sind, können diese Routen sehen
-	{path: "management", redirectTo: "management/dashboard", pathMatch: "full", canActivate: [AuthenticatedGuard]},
+	{path: "management", redirectTo: "management/orders-overview", pathMatch: "full", canActivate: [AuthenticatedGuard]},
 	{path: "management/dashboard", component: DashboardComponent, canActivate: [AuthenticatedGuard, IsMemberGuard]},
 	{path: "management/discounts", component: DiscountsComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
 	{path: "management/discounts/form", component: DiscountFormComponent, canActivate: [AuthenticatedGuard, IsTreasurerGuard]},
