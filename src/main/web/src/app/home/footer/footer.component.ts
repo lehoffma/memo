@@ -1,4 +1,5 @@
 import {Component, OnInit} from "@angular/core";
+import {getYear} from "date-fns";
 
 @Component({
 	selector: "memo-footer",
@@ -12,4 +13,7 @@ export class FooterComponent implements OnInit {
 	ngOnInit() {
 	}
 
+	getYear() {
+		return getYear(new Date());
+	}
 }
