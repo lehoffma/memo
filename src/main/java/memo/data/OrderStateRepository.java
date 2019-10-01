@@ -203,7 +203,7 @@ public class OrderStateRepository {
             "SELECT count(*) AS count, color.NAME as name, color.HEX as hex\n" +
             "FROM orders o, ordered_items item, colors color\n" +
             "where o.ID = item.ORDER_ID AND item.COLOR_ID IS NOT NULL\n" +
-            "GROUP BY item.COLOR_ID\n" +
+            "GROUP BY color.NAME\n" +
             "ORDER BY count DESC\n" +
             "LIMIT 10";
 

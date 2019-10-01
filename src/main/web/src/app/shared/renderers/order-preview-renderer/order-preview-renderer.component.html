@@ -1,7 +1,7 @@
 <a routerLink="/management/orders/{{order.id}}">
 	<div fxLayout="row" fxLayoutAlign="space-between center">
 		<div fxLayout="row" fxLayoutAlign="flex-start center">
-			<img [lazySrc]="(user.images[0] || 'resources/images/Logo.png') | imageSize:'large' | async"
+			<img [lazySrc]="(user.images[0] || 'resources/images/Logo.png') | imageSize:'thumbnail' | async"
 				 lazySrcVisible="visible"
 				 class="user-profile-picture"/>
 			<memo-profile-link [user]="user"></memo-profile-link>

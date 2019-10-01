@@ -9,7 +9,7 @@
 <ng-template #templateRef let-item>
 	<memo-trend-row [name]="item.item.title" [amount]="item.amount" link="/management/orders" [queryParams]="{eventId: item.item.id}">
 		<img class="row-icon item-icon"
-			 lazySrc="{{item.item.images[0] || 'resources/images/Logo.png'}}"
+			 lazySrc="{{(item.item.images[0] | imageSize:'thumbnail' | async) || 'resources/images/Logo.png' }}"
 			 lazySrcVisible="visible"
 		/>
 	</memo-trend-row>

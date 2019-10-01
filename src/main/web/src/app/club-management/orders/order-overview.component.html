@@ -41,6 +41,7 @@
 </div>
 
 <div fxLayout="column" fxLayout.gt-sm="row"
+	 fxLayoutAlign.gt-sm="flex-start flex-start"
 	 fxLayoutGap="16px">
 	<memo-dashboard-container containerTitle="Beliebteste Items" *ngLet="popularItems$ | async as popularItems">
 		<memo-popular-items [items]="popularItems"></memo-popular-items>

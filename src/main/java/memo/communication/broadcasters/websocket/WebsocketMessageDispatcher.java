@@ -46,7 +46,6 @@ public class WebsocketMessageDispatcher {
         String userId = (String) session.getUserProperties().get("userId");
         Integer offset = (Integer) session.getUserProperties().getOrDefault("offset", 0);
 
-        System.out.println("Sending " + amount + " messages to " + userId);
         List<Notification> notifications = notificationRepository.getWebNotificationsByUserId(userId, amount, offset);
         List<Map<String, Object>> dataMap = notifications.stream()
                 .map(it -> notificationBroadcaster.toJson(it))
@@ -62,7 +61,6 @@ public class WebsocketMessageDispatcher {
 
         session.getUserProperties().put("offset", offset + amount);
         String json = mapper.valueToTree(jsonMap).toString();
-        System.out.println("Websocket message: " + json);
         this.sessionHandler.sendToSession(session, json);
     }
 }
