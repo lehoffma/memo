@@ -30,6 +30,7 @@ import {OrderedItemService} from "../../../../../shared/services/api/ordered-ite
 import {of} from "rxjs/internal/observable/of";
 import {RowActionType} from "../../../../../shared/utility/material-table/util/row-action-type";
 import {ParticipantsOverviewService} from "./participants-overview.service";
+import {ErrorHandlingService} from "../../../../../shared/error-handling/error-handling.service";
 
 
 @Component({
@@ -159,6 +160,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 				public participantUserService: ParticipantUserService,
 				private participantService: OrderedItemService,
 				public breakpointObserver: BreakpointObserver,
+				private errorHandlingService: ErrorHandlingService,
 				private userActionsService: UserActionsService,
 				private matDialog: MatDialog,
 				private eventService: EventService,
@@ -262,8 +264,9 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 						.map(it => this.participantService.modifyParticipant(it)
 							.pipe(
 								catchError(error => {
-									console.error(error);
-									this.snackBar.open("Nicht alle Änderungen konnten gesichert werden. Die Konsole beinhaltet mehr Informationen.");
+									this.errorHandlingService.errorCallback(error, {
+										errorMessage: "Nicht alle Änderungen konnten gespeichert werden"
+									});
 									return of(null);
 								})
 							)

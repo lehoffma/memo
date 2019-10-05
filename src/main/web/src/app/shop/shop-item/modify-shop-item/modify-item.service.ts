@@ -27,6 +27,7 @@ import {TransactionBuilder} from "../../../util/transaction-builder";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {setProperties} from "../../../shared/model/util/base-object";
 import {stringToNumberLimit} from "./shared/payment-method-configuration/payment-method-limit-util";
+import {ErrorHandlingService} from "../../../shared/error-handling/error-handling.service";
 
 @Injectable()
 export class ModifyItemService {
@@ -54,6 +55,7 @@ export class ModifyItemService {
 				public userService: UserService,
 				public location: Location,
 				public router: Router,
+				private errorHandlingService: ErrorHandlingService,
 				public matSnackBar: MatSnackBar,
 				public navigationService: NavigationService,
 				public entryService: EntryService,
@@ -446,25 +448,9 @@ export class ModifyItemService {
 					this.reset();
 				},
 				error => {
-					//todo global error handler that shows toast or some kind of notification
-					if (error.status === 403) {
-						this.matSnackBar.open("Du besitzt nicht die nötigen Rechte für diese Aktion.", "Schließen",
-							{
-								duration: 5000
-							});
-					} else if (error.status === 500) {
-						this.matSnackBar.open("Beim Verarbeiten dieser Aktion ist leider ein Fehler aufgetreten.", "Schließen",
-							{
-								duration: 5000
-							});
-					} else if (error.status === 503 || error.status === 504) {
-						this.matSnackBar.open("Der Server antwortet nicht.", "Schließen",
-							{
-								duration: 5000
-							});
-					}
-					console.log("adding or editing object went wrong");
-					console.error(error);
+					this.errorHandlingService.errorCallback(error, {
+						errorMessage: "Item konnte nicht gespeichert werden",
+					});
 					console.log(newObject);
 					this.loading = false;
 				},

@@ -139,7 +139,7 @@ export function updateListOfItem<T extends { id: number }, U>(previousValue: T[]
 							return of([]);
 						}
 						return combineLatest(
-							...newIds.map(id => getById(id))
+							newIds.map(id => getById(id))
 						)
 							.pipe(
 								filter(it => it.length === newIds.length),

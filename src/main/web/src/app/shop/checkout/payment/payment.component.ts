@@ -12,6 +12,7 @@ export class PaymentComponent implements OnInit {
 	@Input() allowedMethods: {
 		[method in PaymentMethod]: boolean;
 	};
+	@Input() bankAccountError: any;
 
 	paymentMethodEnum = PaymentMethod;
 	loading = false;

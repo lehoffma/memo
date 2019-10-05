@@ -7,6 +7,7 @@ import {filter, mergeMap, scan, tap} from "rxjs/operators";
 import {AuthService} from "../../authentication/auth.service";
 import {MatSnackBar} from "@angular/material";
 import {environment} from "../../../../environments/environment";
+import {ErrorHandlingService} from "../../error-handling/error-handling.service";
 
 @Injectable()
 export class NotificationService implements OnDestroy {
@@ -20,6 +21,7 @@ export class NotificationService implements OnDestroy {
 
 	constructor(private websocketService: WebsocketService<UserNotification[]>,
 				private authService: AuthService,
+				private errorHandlingService: ErrorHandlingService,
 				private snackBar: MatSnackBar,
 				private loginService: LogInService) {
 		this.notificationSubscription = this.loginService.currentUser$
@@ -80,8 +82,8 @@ export class NotificationService implements OnDestroy {
 			this.unreadNotifications$.next(this.unreadNotifications$.getValue() - 1);
 		} else {
 			//display error message that something went wrong
-			this.snackBar.open("Die Notification konnte leider nicht als gelesen markiert werden. Probiere es später noch mal!", null, {
-				duration: 5000
+			this.errorHandlingService.errorCallback(null, {
+				errorMessage: "Die Notification konnte leider nicht als gelesen markiert werden. Probiere es später noch mal!"
 			});
 		}
 	}
@@ -99,8 +101,8 @@ export class NotificationService implements OnDestroy {
 			this.notifications$.next(currentValue.filter(it => it.id !== notification.id));
 		} else {
 			//display error message that something went wrong
-			this.snackBar.open("Die Notification konnte leider nicht gelöscht werden. Probiere es später noch mal!", null, {
-				duration: 5000
+			this.errorHandlingService.errorCallback(null, {
+				errorMessage: "Die Notification konnte leider nicht gelöscht werden. Probiere es später noch mal!"
 			});
 		}
 	}

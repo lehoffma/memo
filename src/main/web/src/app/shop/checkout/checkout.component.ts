@@ -13,14 +13,14 @@ import {UserBankAccountService} from "../../shared/services/api/user-bank-accoun
 import {BankAccount} from "../../shared/model/bank-account";
 import {EventService} from "../../shared/services/api/event.service";
 import {OrderStatus} from "../../shared/model/order-status";
-import {combineLatest, Observable, of} from "rxjs";
-import {distinctUntilChanged, filter, first, map, mergeMap, switchMap, take} from "rxjs/operators";
+import {combineLatest, Observable, of, throwError} from "rxjs";
+import {catchError, distinctUntilChanged, filter, first, map, mergeMap, switchMap, take} from "rxjs/operators";
 import {OrderedItem} from "../../shared/model/ordered-item";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UserService} from "../../shared/services/api/user.service";
 import {debitRequiresAccountValidator} from "../../shared/validators/debit-requires-account.validator";
 import {ShoppingCartItem} from "../../shared/model/shopping-cart-item";
-import {flatMap} from "../../util/util";
+import {flatMap, SNACKBAR_PRESETS} from "../../util/util";
 import {DiscountService} from "app/shop/shared/services/discount.service";
 import {processInParallelAndWait, processSequentiallyAndWait} from "../../util/observable-util";
 import {OrderedItemService} from "../../shared/services/api/ordered-item.service";
@@ -28,6 +28,14 @@ import {setProperties} from "../../shared/model/util/base-object";
 import {PaymentMethod} from "./payment/payment-method";
 import {paymentConfig} from "../shared/model/event";
 import {Discount} from "../../shared/renderers/price-renderer/discount";
+import {ErrorHandlingService} from "../../shared/error-handling/error-handling.service";
+
+export enum CheckoutError{
+	DISCOUNT_FETCH,
+	ORDERED_ITEMS_SAVE,
+	ORDER_SAVE,
+	OTHER,
+}
 
 @Component({
 	selector: "memo-checkout",
@@ -48,6 +56,10 @@ export class CheckoutComponent implements OnInit {
 
 	subscriptions = [];
 
+	addressError: any;
+	bankAccountError: any;
+	error: CheckoutError;
+	checkOutError = CheckoutError;
 
 	allowedMethods$ = this.cartService.content.pipe(
 		map(content => {
@@ -75,6 +87,7 @@ export class CheckoutComponent implements OnInit {
 				private eventService: EventService,
 				private orderService: OrderService,
 				private snackBar: MatSnackBar,
+				private errorHandlingService: ErrorHandlingService,
 				private router: Router,
 				private userService: UserService,
 				private addressService: AddressService,
@@ -113,7 +126,14 @@ export class CheckoutComponent implements OnInit {
 				this.user = user;
 
 				processInParallelAndWait(
-					user.addresses.map(addressId => this.addressService.getById(addressId))
+					user.addresses.map(addressId =>
+						this.addressService.getById(addressId).pipe(
+							catchError(error => this.errorHandlingService.errorCallback(error, {
+								errorMessage: "Fehler beim Laden deiner Addressen",
+								setError: () => this.addressError = error
+							}))
+						)
+					)
 				)
 					.pipe(first())
 					.subscribe(addresses => {
@@ -122,7 +142,14 @@ export class CheckoutComponent implements OnInit {
 					});
 
 				processInParallelAndWait(
-					user.bankAccounts.map(id => this.bankAccountService.getById(id))
+					user.bankAccounts.map(id =>
+						this.bankAccountService.getById(id).pipe(
+							catchError(error => this.errorHandlingService.errorCallback(error, {
+								errorMessage: "Fehler beim Laden deiner Bankkonten",
+								setError: () => this.bankAccountError = error
+							}))
+						)
+					)
 				)
 					.pipe(first())
 					.subscribe(accounts => {
@@ -158,7 +185,6 @@ export class CheckoutComponent implements OnInit {
 	ngOnInit() {
 	}
 
-
 	/**
 	 *
 	 * @param {Address[]} previousValue
@@ -166,7 +192,11 @@ export class CheckoutComponent implements OnInit {
 	 * @returns {Observable<User>}
 	 */
 	updateAddresses(previousValue: Address[], addresses: Address[]) {
-		return this.addressService.updateAddressesOfUser(previousValue, addresses, this.user);
+		return this.addressService.updateAddressesOfUser(previousValue, addresses, this.user).pipe(
+			catchError(error => this.errorHandlingService.errorCallback(error, {
+				errorMessage: "Addressen konnten nicht aktualisiert werden"
+			})),
+		)
 	}
 
 	/**
@@ -176,7 +206,11 @@ export class CheckoutComponent implements OnInit {
 	 * @returns {Observable<User>}
 	 */
 	updateAccounts(previousValue: BankAccount[], accounts: BankAccount[]) {
-		return this.bankAccountService.updateAccountsOfUser(previousValue, accounts, this.user);
+		return this.bankAccountService.updateAccountsOfUser(previousValue, accounts, this.user).pipe(
+			catchError(error => this.errorHandlingService.errorCallback(error, {
+				errorMessage: "Bankkonten konnten nicht aktualisiert werden"
+			})),
+		)
 	}
 
 	handleOrderedItems(orderedItems: OrderedItem[], user: User) {
@@ -199,7 +233,7 @@ export class CheckoutComponent implements OnInit {
 			? this.formGroup.get("payment").get("selectedAccount").value
 			: null;
 
-
+		this.error = undefined;
 		this.loading = true;
 		this.logInService.currentUser$
 			.pipe(
@@ -207,13 +241,22 @@ export class CheckoutComponent implements OnInit {
 				mergeMap(user => this.cartService.content
 					.pipe(
 						first(),
-						//todo error handling
 						//combine cart content into one array
 						map(content => this.combineCartContent(content)),
 						//map events to orderedItem interface to make it usable on the backend
 						map(events => this.mapToOrderedItems(events, user.id)),
-						switchMap(items => this.addDiscounts(items, user.id)),
-						switchMap(items => this.handleOrderedItems(items, user)),
+						switchMap(items => this.addDiscounts(items, user.id).pipe(
+							catchError(error => this.errorHandlingService.errorCallback(error, {
+								errorMessage: "Es ist ein Fehler beim Ermitteln deiner Rabatte aufgetreten",
+								setError: () => this.error = CheckoutError.DISCOUNT_FETCH
+							})),
+						)),
+						switchMap(items => this.handleOrderedItems(items, user).pipe(
+							catchError(error => this.errorHandlingService.errorCallback(error, {
+								errorMessage: "Es ist ein Fehler beim Übermitteln der gekauften Produkte aufgetreten",
+								setError: () => this.error = CheckoutError.ORDERED_ITEMS_SAVE
+							})),
+						)),
 						map(orderedItems => setProperties(createOrder(), {
 							user: user.id,
 							timeStamp: new Date(),
@@ -221,7 +264,12 @@ export class CheckoutComponent implements OnInit {
 							items: orderedItems.map(it => it.id)
 						})),
 						map((order: Order) => bankAccount ? setProperties(order, {bankAccount: bankAccount.id}) : order),
-						mergeMap(order => this.orderService.add(order))
+						mergeMap(order => this.orderService.add(order).pipe(
+							catchError(error => this.errorHandlingService.errorCallback(error, {
+								errorMessage: "Es ist ein Fehler beim Übermitteln der Bestellung aufgetreten",
+								setError: () => this.error = CheckoutError.ORDER_SAVE
+							})),
+						))
 					)
 				)
 			)
@@ -230,14 +278,17 @@ export class CheckoutComponent implements OnInit {
 					this.orderService.completedOrder = order.id;
 					this.loading = false;
 					this.orderedItemService.invalidateCache();
-					this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {duration: 2000});
+					this.snackBar.open("Bestellung abgeschlossen!", "Schließen", {...SNACKBAR_PRESETS.info});
 					this.cartService.reset();
-					console.log({id: order.id});
 					this.router.navigate(["/order-complete"], {queryParams: {id: order.id}});
 				},
 				error => {
-					console.error(error);
-					this.snackBar.open(error.message, "Schließen");
+					//another error we haven't handled yet
+					if(!this.snackBar._openedSnackBarRef){
+						console.error(error);
+						this.error = CheckoutError.OTHER;
+						this.snackBar.open(error.message, "Schließen", {...SNACKBAR_PRESETS.error});
+					}
 				}
 			);
 	}

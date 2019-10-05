@@ -7,7 +7,9 @@
 			<span class="checkout-step-label-number">1</span>
 			<span class="checkout-step-label-text">Adresse</span>
 		</div>
-		<memo-address-form [selection]="true" [formGroup]="formGroup.get('address')"></memo-address-form>
+		<memo-address-form [selection]="true"
+						   [error]="addressError"
+						   [formGroup]="formGroup.get('address')"></memo-address-form>
 	</div>
 
 	<div class="checkout-step payment-container">
@@ -15,15 +17,37 @@
 			<span class="checkout-step-label-number">2</span>
 			<span class="checkout-step-label-text">Bezahlung</span>
 		</div>
-		<memo-payment [allowedMethods]="allowedMethods$ | async" [formGroup]="formGroup.get('payment')"></memo-payment>
+		<memo-payment [allowedMethods]="allowedMethods$ | async"
+					  [bankAccountError]="bankAccountError"
+					  [formGroup]="formGroup.get('payment')"></memo-payment>
 	</div>
 
+
+	<div class="error-message" *ngIf="error">
+		<p>
+			<ng-container [ngSwitch]="error">
+				<ng-container *ngSwitchCase="checkOutError.ORDER_SAVE">
+					Die Bestellung konnte nicht korrekt an den Server übermittelt werden.
+				</ng-container>
+				<ng-container *ngSwitchCase="checkOutError.ORDERED_ITEMS_SAVE">
+					Der Bestellungsinhalt konnte nicht korrekt an den Server übermittelt werden.
+				</ng-container>
+				<ng-container *ngSwitchCase="checkOutError.DISCOUNT_FETCH">
+					Deine Discounts konnten nicht ermittelt werden.
+				</ng-container>
+				<ng-container *ngSwitchCase="checkOutError.OTHER">
+					Ein unerwarteter Fehler ist aufgetreten.
+				</ng-container>
+			</ng-container>
+			Wende dich bitte an den Administrator oder probiere es später noch mal!
+		</p>
+	</div>
 
 	<div class="checkout-total">
 		<button mat-raised-button color="primary"
 				(click)="submit()"
 				[disabled]="!formGroup.valid || formGroup.pending || loading">
-			<span *ngIf="!loading; else loadingSpinner">
+			<span *ngIf="!loading && !error; else loadingSpinner">
 				Einkauf abschließen
 			</span>
 			<ng-template #loadingSpinner>

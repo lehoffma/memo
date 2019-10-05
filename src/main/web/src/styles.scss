@@ -13,7 +13,7 @@ html, body, main, memo-app {
 
 .landing-page-header {
 	> * {
-		display:inline;
+		display: inline;
 		box-shadow: 0.2em 0 0 primary(), -0.2em 0 0 primary();
 		background-color: primary();
 		color: white;
@@ -405,5 +405,24 @@ mat-icon {
 
 	.desktop-column {
 		flex-direction: column;
+	}
+}
+
+.mat-snack-bar-container {
+	max-width: none !important;
+
+	.mat-simple-snackbar-action {
+		color: memo-blue(400);
+	}
+}
+
+.mat-snack-bar-container.error {
+	background: memo-red();
+	color: white;
+
+	.mat-simple-snackbar-action {
+		color: memo-blue(100);
+		margin-left: 24px;
+		border-radius: 4px;
 	}
 }

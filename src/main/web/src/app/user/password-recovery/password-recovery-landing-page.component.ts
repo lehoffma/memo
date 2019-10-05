@@ -7,6 +7,7 @@ import {filter, mergeMap, tap} from "rxjs/operators";
 import {LogInService} from "../../shared/services/api/login.service";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import {JwtHelperService} from "../../shared/services/jwt-helper.service";
+import {SNACKBAR_PRESETS} from "../../util/util";
 
 @Component({
 	selector: "memo-password-recovery-landing-page",
@@ -80,11 +81,10 @@ export class PasswordRecoveryLandingPageComponent implements OnInit, OnDestroy {
 				() => {
 					//reset was successful
 					this.loading = false;
-					this.snackBar.open("Passwort wurde erfolgreich zurückgesetzt!", null, {
-						duration: 1500
-					})
+					this.snackBar.open("Passwort wurde erfolgreich zurückgesetzt!", null, {...SNACKBAR_PRESETS.info})
 				},
 				error => {
+					this.snackBar.open("Passwort konnte nicht zurückgesetzt werden", null, {...SNACKBAR_PRESETS.error});
 					this.error = error.message;
 					this.loading = false;
 				}

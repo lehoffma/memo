@@ -8,7 +8,9 @@
 		<p>Die Rechnung wird dir per Email zugeschickt.</p>
 		<p>Gib das Geld bitte bei der nächsten Gelegenheit an eine zuständige Person.</p>
 	</div>
-	<memo-bank-account-form *ngSwitchCase="paymentMethodEnum.DEBIT" [formGroup]="formGroup" [selection]="true">
+	<memo-bank-account-form *ngSwitchCase="paymentMethodEnum.DEBIT"
+							[error]="bankAccountError"
+							[formGroup]="formGroup" [selection]="true">
 
 	</memo-bank-account-form>
 	<div *ngSwitchCase="paymentMethodEnum.TRANSFER" class="payment-selection-body">

@@ -11,6 +11,8 @@ import {ConfirmationDialogService} from "../../../../shared/services/confirmatio
 import {EventService} from "../../../../shared/services/api/event.service";
 import {Router} from "@angular/router";
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
+import {ErrorHandlingService} from "../../../../shared/error-handling/error-handling.service";
+import {SNACKBAR_PRESETS} from "../../../../util/util";
 
 @Component({
 	selector: "memo-item-info-header",
@@ -41,6 +43,7 @@ export class ItemInfoHeaderComponent implements OnInit {
 				private eventService: EventService,
 				private snackBar: MatSnackBar,
 				private router: Router,
+				private errorHandlingService: ErrorHandlingService,
 				private responsibilityService: ResponsibilityService) {
 	}
 
@@ -66,15 +69,12 @@ export class ItemInfoHeaderComponent implements OnInit {
 					this.eventService.remove(this.event.id)
 						.subscribe(
 							success => {
-								this.snackBar.open("Das Item wurde erfolgreich gelöscht", null, {
-									duration: 5000
-								});
+								this.snackBar.open("Das Item wurde erfolgreich gelöscht", null, {...SNACKBAR_PRESETS.info});
 								this.router.navigateByUrl("/");
 							},
 							error => {
-								console.error(error);
-								this.snackBar.open("Das Item konnte nicht gelöscht werden.", null, {
-									duration: 5000
+								this.errorHandlingService.errorCallback(error, {
+									errorMessage: "Das Item konnte nicht gelöscht werden."
 								});
 							}
 						)

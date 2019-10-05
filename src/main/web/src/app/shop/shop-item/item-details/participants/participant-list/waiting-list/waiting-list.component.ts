@@ -27,6 +27,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {WaitingListService} from "../../../../../../shared/services/api/waiting-list.service";
 import {ParticipantListService} from "../participant-list.service";
 import {RowActionType} from "../../../../../../shared/utility/material-table/util/row-action-type";
+import {ErrorHandlingService} from "../../../../../../shared/error-handling/error-handling.service";
 
 @Component({
 	selector: "memo-waiting-list",
@@ -120,6 +121,7 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 				private participantListService: ParticipantListService,
 				private userActionsService: UserActionsService,
 				private matDialog: MatDialog,
+				private errorHandlingService: ErrorHandlingService,
 				private snackBar: MatSnackBar,
 				private activatedRoute: ActivatedRoute,
 				public breakpointObserver: BreakpointObserver,
@@ -233,7 +235,7 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 				const selectedRows = this.waitingListTable.selection.selected;
 
 				combineLatest(
-					...selectedRows
+					selectedRows
 						.map(it => ({
 							...it,
 							[property]: option.formControl.value,
@@ -242,8 +244,9 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 						.map(it => this.waitingListService.modify(it)
 							.pipe(
 								catchError(error => {
-									console.error(error);
-									this.snackBar.open("Nicht alle Änderungen konnten gesichert werden. Die Konsole beinhaltet mehr Informationen.");
+									this.errorHandlingService.errorCallback(error, {
+										errorMessage: "Nicht alle Änderungen konnten gesichert werden"
+									});
 									return of(null);
 								})
 							)

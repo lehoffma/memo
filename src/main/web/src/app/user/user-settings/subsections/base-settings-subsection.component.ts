@@ -7,6 +7,7 @@ import {distinctUntilChanged, filter, map, switchMap, take, takeUntil} from "rxj
 import {AccountSettingsService} from "./account-settings.service";
 import {isEqual} from "date-fns";
 import {MatSnackBar} from "@angular/material";
+import {SNACKBAR_PRESETS} from "../../../util/util";
 
 export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestroy {
 	public formGroup: FormGroup;
@@ -36,9 +37,7 @@ export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestr
 			switchMap(it => this.save(formGroup, it))
 		).subscribe(
 			updatedUser => {
-				this.snackBar.open("Die Änderungen wurden erfolgreich gespeichert!", null, {
-					duration: 5000
-				});
+				this.snackBar.open("Die Änderungen wurden erfolgreich gespeichert!", null, {...SNACKBAR_PRESETS.info});
 				this.accountSettingsService.loading(false);
 				this.reset(this.formGroup);
 			},
@@ -46,7 +45,7 @@ export abstract class BaseSettingsSubsectionComponent implements OnInit, OnDestr
 				console.error(error);
 				this.error = error;
 				this.accountSettingsService.loading(false);
-				this.snackBar.open("Änderungen konnten nicht gespeichert werden.", "Schließen");
+				this.snackBar.open("Änderungen konnten nicht gespeichert werden.", "Schließen", {...SNACKBAR_PRESETS.error});
 			},
 			() => {
 			}

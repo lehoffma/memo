@@ -19,6 +19,7 @@ import {OrderedItemService} from "../../../../../../shared/services/api/ordered-
 import {UserService} from "../../../../../../shared/services/api/user.service";
 import {OrderStatus} from "../../../../../../shared/model/order-status";
 import {ParticipantsOverviewService} from "../participants-overview.service";
+import {ErrorHandlingService} from "../../../../../../shared/error-handling/error-handling.service";
 
 
 export enum ParticipantListActions {
@@ -63,6 +64,7 @@ export class WaitingListTableService extends ExpandableTableContainerService<Wai
 	constructor(private loginService: LogInService,
 				private dialog: MatDialog,
 				private participantListService: ParticipantListService,
+				private errorHandlingService: ErrorHandlingService,
 				private eventService: EventService,
 				private waitingListService: WaitingListService,
 				private snackBar: MatSnackBar,
@@ -89,8 +91,9 @@ export class WaitingListTableService extends ExpandableTableContainerService<Wai
 		}
 
 		const handleError = (error: any) => {
-			this.snackBar.open("Fehler beim Übertragen zur Teilnehmerliste!", "Okay", {duration: 5000});
-			console.error(error);
+			this.errorHandlingService.errorCallback(error, {
+				errorMessage: "Fehler beim Übertragen zur Teilnehmerliste"
+			});
 			return of(null);
 		};
 

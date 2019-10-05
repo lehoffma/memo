@@ -8,8 +8,9 @@ import {Location} from "@angular/common";
 import {filter, first, map, mergeMap} from "rxjs/operators";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Sort} from "../../../../../shared/model/api/sort";
-import {flatMap} from "../../../../../util/util";
+import {flatMap, SNACKBAR_PRESETS} from "../../../../../util/util";
 import {MatSnackBar} from "@angular/material";
+import {ErrorHandlingService} from "../../../../../shared/error-handling/error-handling.service";
 
 @Component({
 	selector: "memo-modify-merch-stock-container",
@@ -28,6 +29,7 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 				private eventService: EventService,
 				private formBuilder: FormBuilder,
 				private location: Location,
+				private errorHandlingService: ErrorHandlingService,
 				private snackBar: MatSnackBar,
 				private router: Router,
 				private activatedRoute: ActivatedRoute) {
@@ -80,10 +82,11 @@ export class ModifyMerchStockContainerComponent implements OnInit {
 		this.stockService.pushChanges(this.merch, [...this.previousStock], [...stockList])
 			.subscribe(result => {
 				this.router.navigate([".."], {relativeTo: this.activatedRoute});
-				this.snackBar.open("Änderungen wurden erfolgreich gespeichert!");
+				this.snackBar.open("Änderungen wurden erfolgreich gespeichert!", "Okay", {...SNACKBAR_PRESETS.info});
 			}, error => {
-				console.error(error);
-				this.snackBar.open("Error! Änderungen konnten leider nicht gespeichert werden.");
+				this.errorHandlingService.errorCallback(error, {
+					errorMessage: "Änderungen konnten nicht gespeichert werden"
+				});
 			})
 	}
 }

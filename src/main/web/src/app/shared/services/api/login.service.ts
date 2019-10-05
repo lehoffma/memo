@@ -10,6 +10,7 @@ import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {catchError, distinctUntilChanged, filter, map, mergeMap, retry, share} from "rxjs/operators";
 import {EventService} from "./event.service";
 import {tap} from "rxjs/internal/operators/tap";
+import {SNACKBAR_PRESETS} from "../../../util/util";
 
 interface LoginApiResponse {
 	id: number;
@@ -140,9 +141,7 @@ export class LogInService {
 					this.pushNewData(null);
 
 					//notify user
-					this.snackBar.open("Du wurdest ausgeloggt.", "Schließen", {
-						duration: 2000
-					});
+					this.snackBar.open("Du wurdest ausgeloggt.", "Schließen", {...SNACKBAR_PRESETS.info});
 					return true;
 				}),
 				retry(3),
