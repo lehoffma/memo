@@ -158,3 +158,29 @@
 	}
 }
 
+
+.error-info-box.ng-star-inserted {
+	display: flex;
+	align-items: flex-start;
+	border-left: 4px solid memo-orange(700);
+	background: memo-orange(100);
+	margin-bottom: 16px;
+	padding: 16px;
+	color: memo-orange(700);
+
+	@include mat-elevation(3);
+
+	mat-icon {
+		font-size: 24px;
+		margin-right: 8px;
+	}
+
+	span {
+		font-weight: 500;
+	}
+
+
+	@media all and (min-width: 650px) {
+		align-items: center;
+	}
+}

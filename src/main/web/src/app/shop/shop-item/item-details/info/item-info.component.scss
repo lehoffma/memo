@@ -70,6 +70,7 @@
 
 
 	.item-price-container {
+		align-items: flex-start;
 
 		mat-icon {
 			margin-top: 10px;
@@ -155,3 +156,4 @@ share-buttons {
 	width: 100%;
 	justify-content: center;
 }
+

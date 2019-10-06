@@ -10,7 +10,7 @@
 			(-{{percentageSaved | percent:'2.2-2':'en'}})
 		</span>
 	</span>
-	<div fxLayoutGap="8px">
+	<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
 		<button mat-icon-button class="additional-discount-possibilities-icon small-icon-button discount-overlay-trigger"
 				[matMenuTriggerFor]="menu"
 				*ngIf="showDiscountPossibilities && nonEligibleDiscounts.length > 0"
@@ -43,8 +43,26 @@
 				help_outline
 			</mat-icon>
 		</button>
+
+
+<!--		<div class="error-indicator" *ngIf="discountError">-->
+<!--			<mat-icon matTooltip="Discounts konnten nicht geladen werden">warning</mat-icon>-->
+<!--		</div>-->
+<!--		<div class="error-indicator" *ngIf="discountPossibilitiesError">-->
+<!--			<mat-icon matTooltip="Discountmöglichkeiten konnten nicht geladen werden">warning</mat-icon>-->
+<!--		</div>-->
 	</div>
 </div>
 <div class="additional-price-info" *ngIf="additionalInfo">
 	{{additionalInfo}}
+</div>
+<div class="additional-price-info error-indicator" *ngIf="additionalInfo && discountError">
+	<mat-icon [inline]="true">warning</mat-icon>
+	Discounts konnten nicht geladen werden
+</div>
+<div class="additional-price-info error-indicator"
+	 [class.no-margin]="additionalInfo && discountError"
+	 *ngIf="additionalInfo && discountPossibilitiesError">
+	<mat-icon [inline]="true">warning</mat-icon>
+	Discountmöglichkeiten konnten nicht geladen werden
 </div>

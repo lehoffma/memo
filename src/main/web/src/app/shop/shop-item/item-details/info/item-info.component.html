@@ -4,6 +4,8 @@
 			attach_money
 		</mat-icon>
 		<memo-price-renderer [price]="event.price"
+							 [discountError]="discountError"
+							 [discountPossibilitiesError]="discountPossibilitiesError"
 							 [discounts]="discounts$ | async"
 							 [discountPossibilities]="discountPossibilities$ | async"
 							 [showDiscountPossibilities]="true"

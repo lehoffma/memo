@@ -33,6 +33,12 @@ export class PriceRendererComponent implements OnInit {
 	 */
 	@Input() additionalInfo: string;
 
+
+	//if querying the discounts failed for some reason, a little error icon is shown
+	@Input() discountError: any;
+	//if querying the discount possibilities failed for some reason, a little error icon is shown
+	@Input() discountPossibilitiesError: any;
+
 	constructor(private matDialog: MatDialog,
 				private discountService: DiscountService) {
 	}
@@ -88,7 +94,7 @@ export class PriceRendererComponent implements OnInit {
 	 * 		linkUrl: "/signup/",
 	 * 		linkText: "Click here to signup"
 	 * }
-	 * 
+	 *
 	 * @param discounts
 	 */
 	@Input() set discountPossibilities(discounts: Discount[]) {
