@@ -17,7 +17,7 @@ import {ShopItem} from "../../../shared/model/shop-item";
 import {UserService} from "../../../shared/services/api/user.service";
 import {EventService} from "../../../shared/services/api/event.service";
 import {DiscountFormService} from "./discount-form.service";
-import {isNumber, NOW} from "../../../util/util";
+import {isNumber, NOW, SNACKBAR_PRESETS} from "../../../util/util";
 import {MatSnackBar} from "@angular/material";
 import {Filter, FilterBuilder} from "../../../shared/model/api/filter";
 import {PageRequest} from "../../../shared/model/api/page-request";
@@ -425,12 +425,12 @@ export class DiscountFormComponent implements OnInit, OnDestroy {
 			}),
 		).subscribe(result => {
 			console.log(result);
-			this.snackBar.open("Discount erfolgreich gespeichert", "Okay", {duration: 5000});
+			this.snackBar.open("Discount erfolgreich gespeichert", "Okay", {...SNACKBAR_PRESETS.info});
 			this.loading$.next(false);
 			this.router.navigateByUrl("/management/discounts");
 		}, error => {
 			console.error(error);
-			this.snackBar.open("Fehler! Konnte Discount nicht speichern", "Okay");
+			this.snackBar.open("Fehler! Konnte Discount nicht speichern", "Okay", {...SNACKBAR_PRESETS.error});
 			this.loading$.next(false);
 		});
 	}

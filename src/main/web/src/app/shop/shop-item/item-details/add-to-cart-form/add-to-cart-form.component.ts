@@ -22,7 +22,7 @@ import {LogInService} from "../../../../shared/services/api/login.service";
 import { MatDialog } from "@angular/material/dialog";
 import {ManageWaitingListDialogComponent} from "./manage-waiting-list-dialog.component";
 import {integerToType} from "../../../shared/model/event-type";
-import {isEdited} from "../../../../util/util";
+import {isEdited, SNACKBAR_PRESETS} from "../../../../util/util";
 import {MatSnackBar} from "@angular/material";
 
 @Component({
@@ -289,7 +289,7 @@ export class AddToCartFormComponent implements OnInit {
 		});
 
 		this.model.amount = 0;
-		this.snackBar.open("Artikel wurde(n) deinem Warenkorb hinzugefügt!", "Okay", {duration: 5000});
+		this.snackBar.open("Artikel wurde(n) deinem Warenkorb hinzugefügt!", "Okay", {...SNACKBAR_PRESETS.info});
 	}
 
 	/**

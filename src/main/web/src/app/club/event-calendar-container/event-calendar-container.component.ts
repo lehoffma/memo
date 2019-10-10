@@ -22,6 +22,8 @@ import {PageRequest} from "../../shared/model/api/page-request";
 import {Tour} from "../../shop/shared/model/tour";
 import {Party} from "../../shop/shared/model/party";
 import {OrderStatus, statusToInt} from "../../shared/model/order-status";
+import {SNACKBAR_PRESETS} from "../../util/util";
+import {ErrorHandlingService} from "../../shared/error-handling/error-handling.service";
 
 @Component({
 	selector: "memo-event-calendar-container",
@@ -39,6 +41,7 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 	selectedView: "calendar" | "list" = "calendar";
 
 	constructor(private eventService: EventService,
+				private errorHandlingService: ErrorHandlingService,
 				private addressService: AddressService,
 				private participantService: ParticipantUserService,
 				private loginService: LogInService,
@@ -181,10 +184,12 @@ export class EventCalendarContainerComponent implements OnInit, OnDestroy {
 		)
 			.subscribe(value => {
 					this.events$.next(value);
-					this.snackBar.open("Löschen erfolgreich.", "Schließen", {
-						duration: 1000
-					});
-				}, console.error
+					this.snackBar.open("Löschen erfolgreich.", "Schließen", {...SNACKBAR_PRESETS.info});
+				}, error => {
+					this.errorHandlingService.errorCallback(error, {
+						errorMessage: "Event konnte nicht gelöscht werden",
+					})
+				}
 			)
 	}
 

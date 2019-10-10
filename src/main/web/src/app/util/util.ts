@@ -1,6 +1,7 @@
 import {isArray, isNullOrUndefined} from "util";
 import {Observable} from "rxjs";
 import {isAfter, isBefore} from "date-fns";
+import {MatSnackBarConfig} from "@angular/material/snack-bar";
 
 export type SortingFunction<T> = (a: T, b: T) => number;
 
@@ -151,3 +152,18 @@ export function arrayIsEqual<T>(left: T[], right: T[]): boolean {
 
 //typescript utilities
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+
+
+export type SnackbarMessageTypes = "error" | "info";
+export const SNACKBAR_PRESETS: {
+	[type in SnackbarMessageTypes]: MatSnackBarConfig
+} = {
+	error: {
+		duration: 10000,
+		panelClass: "error",
+	},
+	info: {
+		duration: 50000,
+		panelClass: "info",
+	}
+}

@@ -13,6 +13,7 @@ import {Direction, Sort} from "../../shared/model/api/sort";
 import {getAllQueryValues} from "../../shared/model/util/url-util";
 import {ManualPagedDataSource} from "../../shared/utility/material-table/manual-paged-data-source";
 import {PageRequest} from "../../shared/model/api/page-request";
+import {SNACKBAR_PRESETS} from "../../util/util";
 
 @Injectable()
 export class OrderManagementService implements OnDestroy {
@@ -99,13 +100,11 @@ export class OrderManagementService implements OnDestroy {
 				mergeMap(yes => this.orderService.remove(order.id))
 			)
 			.subscribe(() => {
-				this.snackBar.open("Das Löschen der Bestellung war erfolgreich.", "Schließen");
+				this.snackBar.open("Das Löschen der Bestellung war erfolgreich.", "Schließen", {...SNACKBAR_PRESETS.info});
 				this.dataSource.reload();
 			}, error => {
 				console.error(error);
-				this.snackBar.open("Ein Fehler ist aufgetreten!", "Nochmal?", {
-					duration: 3000
-				})
+				this.snackBar.open("Ein Fehler ist aufgetreten!", "Nochmal?", {...SNACKBAR_PRESETS.error})
 					.onAction()
 					.subscribe(() => this.removeOrder(order));
 			});

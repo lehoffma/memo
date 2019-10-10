@@ -18,6 +18,8 @@ import {ModifiedImages} from "../../shop/shop-item/modify-shop-item/modified-ima
 import {processSequentially} from "../../util/observable-util";
 import {ImageToUpload} from "../../shared/utility/multi-image-upload/image-to-upload";
 import {setProperties} from "../../shared/model/util/base-object";
+import {ErrorHandlingService} from "../../shared/error-handling/error-handling.service";
+import {SNACKBAR_PRESETS} from "../../util/util";
 
 @Injectable()
 export class SignUpService {
@@ -32,6 +34,7 @@ export class SignUpService {
 
 	constructor(private navigationService: NavigationService,
 				private addressService: AddressService,
+				private errorHandlingService: ErrorHandlingService,
 				private imageUploadService: ImageUploadService,
 				private bankAccountService: UserBankAccountService,
 				private userService: UserService,
@@ -208,9 +211,7 @@ export class SignUpService {
 					//add bank account and its address to user
 					mergeMap(newUser => this.uploadBankAccount(newUser, this.newUserDebitInfo)),
 					mergeMap(newUser => this.userService.add(newUser)),
-					tap(() => this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {
-						duration: 1000
-					})),
+					tap(() => this.snackBar.open("Die Registrierung war erfolgreich!", "Schließen", {...SNACKBAR_PRESETS.info})),
 					mergeMap(() => this.loginService.login(this.newUser.email, this.newUser.password)),
 					tap(wereCorrect => {
 						if (wereCorrect) {
@@ -224,17 +225,15 @@ export class SignUpService {
 						}
 					}),
 					catchError(error => {
-						this.snackBar.open(
-							"Bei der Registrierung ist leider ein Fehler aufgetreten! Grund: " + error.message,
-							"Schließen",
-							{
-								duration: 10000,
-							});
+						this.errorHandlingService.errorCallback(error, {
+							errorMessage: "Bei der Registrierung ist ein Fehler aufgetreten"
+						});
+
 						return EMPTY;
 					}),
 					first()
 				)
-				.subscribe(null, null, () => this.submittingFinalUser = false);
+				.subscribe({complete: () => this.submittingFinalUser = false});
 		}
 	}
 }

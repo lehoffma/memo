@@ -43,3 +43,9 @@
 
 	</memo-cart-tour-participant>
 </div>
+<div *ngIf="discountError" class="error-info-box">
+	<mat-icon>error</mat-icon>
+	<div>
+		<span>Discounts für dieses Item konnten nicht geladen werden.</span>
+	</div>
+</div>

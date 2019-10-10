@@ -70,3 +70,19 @@
 	margin-left: 16px;
 	color: primary();
 }
+
+.error-indicator {
+	display: flex;
+	align-items: center;
+	color: memo-orange(700);
+	font-weight: 500;
+	margin-top: 4px;
+
+	&.no-margin {
+		margin-top: 0;
+	}
+
+	mat-icon {
+		margin-right: 4px;
+	}
+}

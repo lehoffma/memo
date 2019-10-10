@@ -3,8 +3,8 @@ import {ShoppingCartService} from "../../../../shared/services/shopping-cart.ser
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {Event, maximumItemAmount} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/api/stock.service";
-import {BehaviorSubject, combineLatest, Observable, Subscription} from "rxjs";
-import {filter, map, mergeMap} from "rxjs/operators";
+import {BehaviorSubject, combineLatest, Observable, of, Subscription} from "rxjs";
+import {catchError, filter, map, mergeMap} from "rxjs/operators";
 import {ShoppingCartItem, ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
 import {Discount, getDiscountAmount} from "../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../shared/services/discount.service";
@@ -28,12 +28,18 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 	//calculate discounts according to limit
 	//	check how many orderedItems there already are for the current user (N)
 	//	apply discount limit - N times
+	discountError: any;
 	discounts$: Observable<Discount[]> = combineLatest([
 		this._cartItem$,
 		this.loginService.currentUser$
 	])
 		.pipe(
 			mergeMap(([cartItem, user]) => this.orderedItemService.getDiscountsForCartItem(cartItem, user)),
+			catchError(error => {
+				console.error(error);
+				this.discountError = error;
+				return of([]);
+			})
 		);
 
 	discountValue$: Observable<number> = combineLatest([

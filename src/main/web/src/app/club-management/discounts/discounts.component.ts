@@ -18,6 +18,7 @@ import {EventService} from "../../shared/services/api/event.service";
 import {MultiFilterOption} from "../../shared/search/filter-options/multi-filter-option";
 import {ConfirmationDialogService} from "../../shared/services/confirmation-dialog.service";
 import {MatSnackBar} from "@angular/material";
+import {SNACKBAR_PRESETS} from "../../util/util";
 
 @Component({
 	selector: "memo-discounts",
@@ -112,12 +113,12 @@ export class DiscountsComponent extends BaseSearchResultsComponent<Discount> {
 			)
 			.subscribe(
 				() => {
-					this.snackBar.open("Discount wurde erfolgreich deaktiviert!", "Okay", {duration: 3000});
+					this.snackBar.open("Discount wurde erfolgreich deaktiviert!", "Okay", {...SNACKBAR_PRESETS.info});
 					this.resultsDataSource.update();
 				},
 				error => {
 					console.error(error);
-					this.snackBar.open("Discount konnte nicht deaktiviert werden!", "Okay");
+					this.snackBar.open("Discount konnte nicht deaktiviert werden!", "Okay", {...SNACKBAR_PRESETS.error});
 				}
 			)
 	}

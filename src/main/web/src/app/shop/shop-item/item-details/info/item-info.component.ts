@@ -4,8 +4,8 @@ import {ShoppingCartService} from "../../../../shared/services/shopping-cart.ser
 import {EventUtilityService} from "../../../../shared/services/event-utility.service";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
-import {BehaviorSubject, combineLatest, Observable} from "rxjs";
-import {defaultIfEmpty, filter, map, mergeMap} from "rxjs/operators";
+import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
+import {catchError, defaultIfEmpty, filter, map, mergeMap} from "rxjs/operators";
 import {LogInService} from "../../../../shared/services/api/login.service";
 import {Discount} from "../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../shared/services/discount.service";
@@ -33,6 +33,11 @@ export class ItemInfoComponent implements OnInit {
 		entries: boolean;
 		delete: boolean;
 	};
+
+	//if querying the discounts failed for some reason, a little error icon is shown
+	discountError: any;
+	//if querying the discount possibilities failed for some reason, a little error icon is shown
+	discountPossibilitiesError: any;
 	discounts$: Observable<Discount[]> =
 		combineLatest([
 			this._event$,
@@ -42,6 +47,11 @@ export class ItemInfoComponent implements OnInit {
 			.pipe(
 				mergeMap(([event, userId]) => this.discountService.getEventDiscounts(event.id, userId)),
 				defaultIfEmpty([]),
+				catchError(error => {
+					console.error(error);
+					this.discountError = error;
+					return of([])
+				})
 			);
 
 	discountPossibilities$: Observable<Discount[]> =
@@ -53,7 +63,13 @@ export class ItemInfoComponent implements OnInit {
 			.pipe(
 				mergeMap(([event, userId]) => this.discountService.getEventDiscountPossibilities(event.id, userId)),
 				defaultIfEmpty([]),
+				catchError(error => {
+					console.error(error);
+					this.discountPossibilitiesError = error;
+					return of([])
+				})
 			);
+
 	public available$ = this._event$
 		.pipe(
 			filter(event => event.id >= 0),
