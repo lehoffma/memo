@@ -6,18 +6,25 @@ import {environment} from "../environments/environment";
 export interface AppConfig {
 	mapsApiKey: string;
 	analyticsKey: string;
+	sentryDsn: string;
 }
 
 export function getAppConfig(): Promise<AppConfig> {
 	//use environment variable, if available
-	if (environment.GOOGLE_ANALYTICS_KEY !== "{GOOGLE_ANALYTICS_KEY}" && environment.GOOGLE_MAPS_API_KEY !== "{GOOGLE_MAPS_API_KEY}") {
+	if (environment.GOOGLE_ANALYTICS_KEY !== "{GOOGLE_ANALYTICS_KEY}"
+		&& environment.GOOGLE_MAPS_API_KEY !== "{GOOGLE_MAPS_API_KEY}"
+		&& environment.SENTRY_DSN !== "{SENTRY_DSN}"
+
+	) {
 		const analyticsKey = environment.GOOGLE_ANALYTICS_KEY;
 		const mapsApiKey = environment.GOOGLE_MAPS_API_KEY;
+		const sentryDsn = environment.SENTRY_DSN;
 
 		if (mapsApiKey && analyticsKey) {
 			return Promise.resolve({
 				analyticsKey,
-				mapsApiKey
+				mapsApiKey,
+				sentryDsn
 			} as AppConfig)
 		}
 	}

@@ -49,6 +49,10 @@ import {MatPaginatorIntlDe} from "./shared/i18n/mat-paginator-intl.de";
 import {LandingPageModule} from "./home/landing-page/landing-page.module";
 import {CustomMapsApiLoaderService} from "./util/custom-maps-api-loader.service";
 import {faFacebook, faFacebookF, faFacebookMessenger, faTelegramPlane, faTwitter, faWhatsapp} from "@fortawesome/free-brands-svg-icons";
+import {SentryErrorHandlerService} from "./util/sentry-error-handler.service";
+
+import * as Sentry from '@sentry/browser';
+
 
 const cookieConfig: NgcCookieConsentConfig = {
 	"cookie": {
@@ -87,6 +91,7 @@ const shareButtonsIcons = [
 
 
 registerLocaleData(localeDe);
+
 
 @NgModule({
 	imports: [
@@ -160,6 +165,7 @@ registerLocaleData(localeDe);
 		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
 		{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
 		{provide: MapsAPILoader, useClass: CustomMapsApiLoaderService},
+		{provide: ErrorHandler, useClass: SentryErrorHandlerService},
 		// {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
 	]
 })

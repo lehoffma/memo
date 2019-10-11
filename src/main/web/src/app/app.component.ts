@@ -11,7 +11,6 @@ import {combineLatest} from "rxjs";
 import {ScrollingService} from "./shared/services/scrolling.service";
 import {isPlatformBrowser} from "@angular/common";
 import {NotificationService} from "./shared/services/api/user-notification.service";
-import {GMapsService} from "./shop/shared/services/gmaps.service";
 import {MapsAPILoader} from "@agm/core";
 
 @Component({

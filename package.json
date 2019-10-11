@@ -4,7 +4,9 @@
 	"scripts": {
 		"write-config-to-dockerfile": "node write-config-to-dockerfile.js"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"@sentry/cli": "^1.48.0"
+	},
 	"devDependencies": {
 		"@types/node": "~8.9.4",
 		"replace-in-file": "^4.1.3"
