@@ -27,9 +27,10 @@ async function createReleaseAndUpload() {
 	}
 }
 
+const isReleaseBranch = GITHUB_REF === "refs/heads/release";
 console.log(GITHUB_REF);
-console.log("is dev: " + (GITHUB_REF === "develop"));
-console.log("is release: " + (GITHUB_REF === "release"));
-if(null !== null){
+console.log("is dev: " + (GITHUB_REF === "refs/heads/develop"));
+console.log("is release: " + (GITHUB_REF === "refs/heads/release"));
+if(isReleaseBranch){
 	createReleaseAndUpload();
 }

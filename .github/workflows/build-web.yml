@@ -23,7 +23,7 @@ jobs:
           node-version: '12.10.0'
 
       # build frontend
-      - name: npm install and build + publish to sentry
+      - name: npm install and build
         ###   - build frontend with sourcemaps
         run: |
           cd src/main/web
@@ -39,7 +39,7 @@ jobs:
 
       ### Docker preparation & Sentry release  ###
 
-      - name: Replace environment placeholders in Dockerfile and prepare sentry releases
+      - name: Replace environment placeholders in Dockerfile and publish release to sentry
         ### if release branch:
         ###   - push release to sentry (+ sourcemaps)
         ### remove sourcemaps so they don't get served on our production servers
