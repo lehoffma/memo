@@ -2,7 +2,8 @@
 	"name": "memo-web-parent",
 	"version": "1.0.0",
 	"scripts": {
-		"write-config-to-dockerfile": "node write-config-to-dockerfile.js"
+		"write-config-to-dockerfile": "node write-config-to-dockerfile.js",
+		"sentry-release": "node sentry-release.js"
 	},
 	"dependencies": {
 		"@sentry/cli": "^1.48.0"
