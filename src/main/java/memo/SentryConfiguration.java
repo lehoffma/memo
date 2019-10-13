@@ -13,6 +13,6 @@ public class SentryConfiguration {
     @PostConstruct
     public void startup() {
         //reads init value from SENTRY_DSN environment variable
-        Sentry.init();
+//        Sentry.init();
     }
 }
