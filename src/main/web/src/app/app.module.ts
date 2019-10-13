@@ -165,7 +165,7 @@ registerLocaleData(localeDe);
 		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
 		{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
 		{provide: MapsAPILoader, useClass: CustomMapsApiLoaderService},
-		{provide: ErrorHandler, useClass: SentryErrorHandlerService},
+		// {provide: ErrorHandler, useClass: SentryErrorHandlerService},
 		// {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
 	]
 })
