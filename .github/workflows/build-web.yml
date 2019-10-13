@@ -62,6 +62,10 @@ jobs:
           JWT_REFRESH_TOKEN_KEY: ${{ secrets.JWT_REFRESH_TOKEN_KEY }}
 
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          ## needed for the sentry release script
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: lennart-hoffmann
+          SENTRY_PROJECT : meilenshop
 
 
       ### Java build ###
