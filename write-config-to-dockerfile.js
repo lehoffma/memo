@@ -8,6 +8,9 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const JWT_ACCESS_TOKEN_KEY = process.env.JWT_ACCESS_TOKEN_KEY;
 const JWT_REFRESH_TOKEN_KEY = process.env.JWT_REFRESH_TOKEN_KEY;
+const SENTRY_DSN = process.env.SENTRY_DSN;
+
+const GITHUB_SHA = process.env.GITHUB_SHA;
 
 //this script writes the maps/analytics api keys from the CI environment to the environment files so we can use them
 //in the app
@@ -21,6 +24,8 @@ const replacements = [
     {from: /{ADMIN_PASSWORD}/g, to: ADMIN_PASSWORD},
     {from: /{JWT_ACCESS_TOKEN_KEY}/g, to: JWT_ACCESS_TOKEN_KEY},
     {from: /{JWT_REFRESH_TOKEN_KEY}/g, to: JWT_REFRESH_TOKEN_KEY},
+    {from: /{SENTRY_DSN}/g, to: SENTRY_DSN},
+    {from: /{SENTRY_RELEASE}/g, to: GITHUB_SHA},
 ];
 
 try {

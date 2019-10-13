@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" packages="org.apache.logging.log4j.core,io.sentry.log4j2">
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d  %p --- [%15.15t] %-40.40c{1.} : %m%n"/>
+        </Console>
+
+        <Sentry name="Sentry"/>
+    </appenders>
+
+    <loggers>
+        <root level="INFO">
+            <appender-ref ref="Console"/>
+            <!-- Note that the Sentry logging threshold is overridden to the WARN level -->
+            <appender-ref ref="Sentry" level="WARN"/>
+        </root>
+    </loggers>
+</configuration>

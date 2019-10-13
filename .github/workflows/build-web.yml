@@ -24,6 +24,7 @@ jobs:
 
       # build frontend
       - name: npm install and build
+        ###   - build frontend with sourcemaps
         run: |
           cd src/main/web
           npm install
@@ -34,6 +35,34 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=4096
           GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
           GOOGLE_ANALYTICS_KEY: ${{ secrets.GOOGLE_ANALYTICS_KEY }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
+      ### Docker preparation & Sentry release  ###
+
+      - name: Replace environment placeholders in Dockerfile and publish release to sentry
+        ### if release branch:
+        ###   - push release to sentry (+ sourcemaps)
+        ### remove sourcemaps so they don't get served on our production servers
+        run: |
+          npm install
+          npm run write-config-to-dockerfile
+          npm run sentry-release
+          rm -rf ./src/main/webapp/*.js.map
+        env:
+          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_USER_NAME: ${{ secrets.EMAIL_USER_NAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
+
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+
+          JWT_ACCESS_TOKEN_KEY: ${{ secrets.JWT_ACCESS_TOKEN_KEY }}
+          JWT_REFRESH_TOKEN_KEY: ${{ secrets.JWT_REFRESH_TOKEN_KEY }}
+
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+
 
       ### Java build ###
 
@@ -49,23 +78,6 @@ jobs:
         run: mvn package --file pom.xml -U -DskipTests
 
 
-      - name: Replace environment placeholders in Dockerfile
-        run: |
-          npm install
-          npm run write-config-to-dockerfile
-        env:
-          EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-          EMAIL_USER: ${{ secrets.EMAIL_USER }}
-          EMAIL_USER_NAME: ${{ secrets.EMAIL_USER_NAME }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          EMAIL_PORT: ${{ secrets.EMAIL_PORT }}
-
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-
-          JWT_ACCESS_TOKEN_KEY: ${{ secrets.JWT_ACCESS_TOKEN_KEY }}
-          JWT_REFRESH_TOKEN_KEY: ${{ secrets.JWT_REFRESH_TOKEN_KEY }}
-
       ### Docker build ###
 
       - name: Publish to Registry
@@ -76,3 +88,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           dockerfile: Dockerfile
           snapshot: true
+
+
+
+
