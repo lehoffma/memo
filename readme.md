@@ -43,14 +43,4 @@ Following the official launch in the summer of 2018, the Meilenshop has since be
 out about upcoming Meilenwölfe tours, events and even merchandise.
 
 
-## Features
-Kleiner Text + jeweils Screenshots
 
-- see/manage upcoming events/tours/merchandise
-- Miles leaderboard 
-- Notifications
-
-For Club Admins:
-- Manage costs 
-- Manage orders
-- Manage merchandise inventory
