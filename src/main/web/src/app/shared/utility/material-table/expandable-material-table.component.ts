@@ -84,6 +84,12 @@ export class ExpandableMaterialTableComponent<T> implements OnInit, OnDestroy {
 	//todo static false?
 	@ContentChild(ExpandableMaterialTableEmptyStateActions, {static: true}) customActions: ExpandableMaterialTableEmptyStateActions;
 
+	//sorting is enabled by default. If the property doesn't support sorting, you have to define it here
+	@Input() sortConfiguration: {
+		[columnName: string]: boolean;
+	} = {};
+	@Input() noSorting = false;
+
 	public selection: SelectionModel<T>;
 	public expansionSelection: SelectionModel<any>;
 	private onDestroy$: Subject<any> = new Subject<any>();

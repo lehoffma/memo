@@ -20,6 +20,10 @@ html, body, main, memo-app {
 	}
 }
 
+.mat-header-cell {
+	border-width: 2px !important;
+}
+
 .mat-stroked-button.mat-accent {
 	border-color: accent() !important;
 }

@@ -8,6 +8,7 @@
 								[columns]="columns"
 								[displayedColumns]="displayedColumns$ | async"
 								[permissions]="waitingListTableService.permissions$ | async"
+								[noSorting]="true"
 								(onAction)="waitingListTableService.handleTableAction($event)"
 								emptyStateIcon="access_time"
 								emptyStateHeader="Die Warteliste ist leer"

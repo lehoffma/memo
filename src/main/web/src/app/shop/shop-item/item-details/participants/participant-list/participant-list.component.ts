@@ -40,9 +40,6 @@ import {ErrorHandlingService} from "../../../../../shared/error-handling/error-h
 	providers: [ParticipantListService]
 })
 export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestroy {
-	//todo fix user not being sortable
-	//todo fix name sorting using username
-
 	_partOfForm = false;
 	@HostBinding("class.part-of-form")
 	@Input()
@@ -165,6 +162,11 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 	@ViewChild("participantsTable", {static: false}) participantsTable: ExpandableMaterialTableComponent<ParticipantUser>;
 
 	private bulkEditDialogOptions: BatchModifyParticipantOptions[];
+
+
+	sortConfiguration = {
+		user: false
+	};
 
 	onDestroy$ = new Subject();
 
