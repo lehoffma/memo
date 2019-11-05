@@ -20,6 +20,15 @@
 	</button>
 </div>
 
+
+<div class="options-container">
+	<div class="labelled-value">
+		<span class="label">Name</span>
+		<span *ngIf="orderedItem.name">{{orderedItem.name }}</span>
+		<span *ngIf="!orderedItem.name" class="no-description">-/-</span>
+	</div>
+</div>
+
 <div class="options-container">
 	<div class="labelled-value">
 		<span class="label">Beschreibung</span>
