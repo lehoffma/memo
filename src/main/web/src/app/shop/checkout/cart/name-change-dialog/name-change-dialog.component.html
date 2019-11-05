@@ -1,0 +1,27 @@
+<div mat-dialog-title>
+	Teilnehmer bearbeiten
+</div>
+<mat-dialog-content>
+	<div class="subtitle">
+		<!-- todo? -->
+	</div>
+	<div class="form-input-container" [formGroup]="formGroup">
+		<span class="form-label">Name</span>
+		<mat-form-field appearance="outline" class="small-outline-formfield">
+			<input matInput required formControlName="name"/>
+			<mat-error *ngIf="formGroup.get('name').hasError('required')" align="end">
+				Bitte gib einen Namen ein.
+			</mat-error>
+		</mat-form-field>
+	</div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="flex-end center">
+	<button mat-button matDialogClose>
+		Abbrechen
+	</button>
+	<button mat-raised-button color="accent" [disabled]="!formGroup.valid" [matDialogClose]="formGroup.value">
+		Speichern
+	</button>
+</mat-dialog-actions>
+
+

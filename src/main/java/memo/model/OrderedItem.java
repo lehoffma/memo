@@ -83,6 +83,8 @@ public class OrderedItem implements Serializable {
 
     private String size;
 
+    private String name;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private Color color;
@@ -194,6 +196,15 @@ public class OrderedItem implements Serializable {
 
     public OrderedItem setDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public OrderedItem setName(String name) {
+        this.name = name;
         return this;
     }
 

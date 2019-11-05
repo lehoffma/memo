@@ -79,4 +79,10 @@ export class ModifyParticipantComponent implements OnInit {
 			modifiedId: modifiedParticipant
 		} as ModifyParticipantEvent);
 	}
+
+	updateName(){
+		if(!this.entry.name){
+			this.entry.name = this.entry.user.firstName + " " + this.entry.user.surname;
+		}
+	}
 }

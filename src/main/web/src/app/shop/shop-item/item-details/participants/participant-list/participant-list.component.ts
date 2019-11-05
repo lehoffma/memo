@@ -40,6 +40,9 @@ import {ErrorHandlingService} from "../../../../../shared/error-handling/error-h
 	providers: [ParticipantListService]
 })
 export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestroy {
+	//todo fix user not being sortable
+	//todo fix name sorting using username
+
 	_partOfForm = false;
 	@HostBinding("class.part-of-form")
 	@Input()
@@ -81,7 +84,16 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 	columns$: Observable<TableColumn<ParticipantUser>[]> = this.participantListService.eventInfo$.pipe(
 		map(eventInfo => {
 			let columns: TableColumn<ParticipantUser>[] = [
-				{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
+				{
+					columnDef: "user",
+					header: "Bestellt von",
+					cell: element => element.user.firstName + " " + element.user.surname
+				},
+				{
+					columnDef: "name",
+					header: "Name",
+					cell: element => element.name || "-/-"
+				},
 				{columnDef: "status", header: "Status", cell: element => orderStatusToString(element.status)}
 			];
 			if (eventInfo.eventType === EventType.tours) {

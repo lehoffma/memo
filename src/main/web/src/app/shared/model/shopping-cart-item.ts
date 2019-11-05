@@ -3,8 +3,9 @@ import {Event} from "../../shop/shared/model/event";
 
 
 export interface ShoppingCartOption {
-	size?: string,
-	color?: MerchColor,
+	name?: string;
+	size?: string;
+	color?: MerchColor;
 	isDriver?: boolean;
 	needsTicket?: boolean;
 }

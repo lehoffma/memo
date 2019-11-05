@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {UserService} from "./user.service";
 import {User, userPermissions} from "../../model/user";
-import { MatSnackBar } from "@angular/material/snack-bar";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {ActionPermissions} from "../../utility/material-table/util/action-permissions";
 import {Permission, UserPermissions} from "../../model/permission";
 import {HttpClient, HttpParams} from "@angular/common/http";
@@ -9,7 +9,6 @@ import {AuthService} from "../../authentication/auth.service";
 import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {catchError, distinctUntilChanged, filter, map, mergeMap, retry, share} from "rxjs/operators";
 import {EventService} from "./event.service";
-import {tap} from "rxjs/internal/operators/tap";
 import {SNACKBAR_PRESETS} from "../../../util/util";
 
 interface LoginApiResponse {
@@ -34,6 +33,9 @@ export class LogInService {
 			distinctUntilChanged(),
 			mergeMap(id => id !== null ? this.userService.valueChanges(id) : of(null)),
 		);
+
+	private _currentUser$: BehaviorSubject<User> = new BehaviorSubject<User>(null);
+
 	private readonly loginUrl = "/api/login";
 	private readonly logoutUrl = "/api/logout";
 
@@ -45,6 +47,11 @@ export class LogInService {
 				private snackBar: MatSnackBar,
 				private userService: UserService) {
 		this.loginFromToken();
+		this.currentUser$.subscribe(it => this._currentUser$.next(it));
+	}
+
+	currentUser(){
+		return this._currentUser$.getValue();
 	}
 
 	/**

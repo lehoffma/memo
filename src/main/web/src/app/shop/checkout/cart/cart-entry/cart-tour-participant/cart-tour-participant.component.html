@@ -1,8 +1,11 @@
 <div class="participant-entry-container">
 	<span class="participant-title">
-		<span class="participant-index">{{index}}.</span><span class="participant-name">{{name}}</span>
+		<span class="participant-index">{{index}}.</span><span class="participant-name">{{option?.name || 'Teilnehmer'}}</span>
+		<button class="link-button edit-name-dialog-button" (click)="openNameChangeDialog()">
+			<span>Ändern</span>
+		</button>
 	</span>
-	<div class="participant-options">
+	<div class="participant-options" *ngIf="option.isDriver !== undefined && option.needsTicket !== undefined">
 		<div class="is-driver-container">
 			<mat-checkbox name="isDriverCheckbox" [(ngModel)]="option.isDriver"
 						  (ngModelChange)="optionChange.emit(option)">

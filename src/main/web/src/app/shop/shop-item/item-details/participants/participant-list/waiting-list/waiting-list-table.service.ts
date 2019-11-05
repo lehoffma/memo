@@ -109,6 +109,7 @@ export class WaitingListTableService extends ExpandableTableContainerService<Wai
 									item,
 									id: -1,
 									size: entry.size,
+									name: entry.name,
 									needsTicket: entry.needsTicket,
 									isDriver: entry.isDriver,
 									color: entry.color,

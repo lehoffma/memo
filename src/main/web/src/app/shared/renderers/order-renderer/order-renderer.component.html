@@ -74,6 +74,30 @@
 					{{item.originalItem.description}}
 				</div>
 
+				<table class="secondary-information-container" *ngIf="item.originalItem.item.type !== 3">
+					<tbody>
+					<tr class="info-row">
+						<td class="label">Name</td>
+						<td class="center" [class.no-value]="!item.originalItem.name">
+							{{item.originalItem.name || 'Nicht angegeben'}}
+						</td>
+					</tr>
+					</tbody>
+				</table>
+
+				<table class="secondary-information-container" *ngIf="item.originalItem.item.type === 3">
+					<tbody>
+					<tr class="info-row">
+						<td class="label">Farbe</td>
+						<td class="center">{{item.originalItem.color.name}}</td>
+					</tr>
+					<tr class="info-row">
+						<td class="label">Größe</td>
+						<td class="center">{{item.originalItem.size}}</td>
+					</tr>
+					</tbody>
+				</table>
+
 				<div class="ordered-item-tags">
 					<ng-container *ngIf="item.originalItem.item.type !== 3">
 						<div class="tag" *ngIf="item.originalItem.isDriver"
@@ -89,18 +113,6 @@
 					</ng-container>
 				</div>
 
-				<table class="secondary-information-container" *ngIf="item.originalItem.item.type === 3">
-					<tbody>
-					<tr class="info-row">
-						<td class="label">Farbe</td>
-						<td class="center">{{item.originalItem.color.name}}</td>
-					</tr>
-					<tr class="info-row">
-						<td class="label">Größe</td>
-						<td class="center">{{item.originalItem.size}}</td>
-					</tr>
-					</tbody>
-				</table>
 
 				<memo-order-item-status [status]="item.status"></memo-order-item-status>
 

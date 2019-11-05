@@ -22,6 +22,8 @@ The shop can be found at [shop.meilenwoelfe.de](https://shop.meilenwoelfe.de). G
 
 <b>Backend</b>
 - JavaEE
+- Docker
+- Sentry
 
 Deployment is managed via [Docker](https://www.docker.com/) and [Github Actions](https://github.com/lehoffma/memo/actions).
 
@@ -41,3 +43,14 @@ Following the official launch in the summer of 2018, the Meilenshop has since be
 out about upcoming Meilenwölfe tours, events and even merchandise.
 
 
+## Features
+Kleiner Text + jeweils Screenshots
+
+- see/manage upcoming events/tours/merchandise
+- Miles leaderboard 
+- Notifications
+
+For Club Admins:
+- Manage costs 
+- Manage orders
+- Manage merchandise inventory

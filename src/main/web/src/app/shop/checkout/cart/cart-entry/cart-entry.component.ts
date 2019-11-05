@@ -4,7 +4,7 @@ import {EventUtilityService} from "../../../../shared/services/event-utility.ser
 import {Event, maximumItemAmount} from "../../../shared/model/event";
 import {StockService} from "../../../../shared/services/api/stock.service";
 import {BehaviorSubject, combineLatest, Observable, of, Subscription} from "rxjs";
-import {catchError, filter, map, mergeMap} from "rxjs/operators";
+import {catchError, filter, map, mergeMap, tap} from "rxjs/operators";
 import {ShoppingCartItem, ShoppingCartOption} from "../../../../shared/model/shopping-cart-item";
 import {Discount, getDiscountAmount} from "../../../../shared/renderers/price-renderer/discount";
 import {DiscountService} from "../../../shared/services/discount.service";
@@ -171,10 +171,7 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 	updateOptions(cartItem: ShoppingCartItem): ShoppingCartOption[] {
 		const options = [...cartItem.options];
 
-		//parties don't have any options to update
-		if (!this.itemIsTour(cartItem.item) && !this.itemIsMerch(cartItem.item)) {
-			return options;
-		}
+		//todo parties now have options too
 
 		let diff = cartItem.amount - options.length;
 
@@ -187,9 +184,11 @@ export class CartEntryComponent implements OnInit, OnDestroy {
 
 		//we have to add dummy options
 		else {
-			const dummyOption: ShoppingCartOption = this.itemIsTour(cartItem.item)
-				? {isDriver: false, needsTicket: true}
-				: {color: options[options.length - 1].color, size: options[options.length - 1].size};
+			const dummyOption: ShoppingCartOption = (this.itemIsTour(cartItem.item))
+				? {isDriver: false, needsTicket: true, name: "Teilnehmer"}
+				: (this.itemIsMerch(cartItem.item)
+					? {color: options[options.length - 1].color, size: options[options.length - 1].size}
+					: {name: "Teilnehmer"});
 
 			while (diff-- > 0) {
 				options.push({...dummyOption})

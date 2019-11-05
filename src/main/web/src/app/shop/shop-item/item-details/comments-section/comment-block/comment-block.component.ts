@@ -251,6 +251,6 @@ export class CommentBlockComponent implements OnInit, OnDestroy {
 	}
 
 	distanceInWords(date: Date) {
-		return formatDistanceStrict(new Date(), date, {addSuffix: true, locale: deLocale});
+		return formatDistanceStrict(date, new Date(), {addSuffix: true, locale: deLocale});
 	}
 }

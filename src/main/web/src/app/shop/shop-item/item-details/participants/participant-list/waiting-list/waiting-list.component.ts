@@ -67,7 +67,8 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 	@ViewChild("bulkEditingMenu", {static: true}) bulkEditingMenu: any;
 
 	columns: TableColumn<WaitingListUser>[] = [
-		{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
+		{columnDef: "user", header: "Bestellt von", cell: element => element.user.firstName + " " + element.user.surname},
+		{columnDef: "name", header: "Name", cell: element => element.name || "-/-"},
 		...this.getAdditionalColumns()
 	];
 	displayedColumns$ = this.getDisplayedColumns();
