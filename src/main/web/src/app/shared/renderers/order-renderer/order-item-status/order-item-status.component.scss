@@ -89,3 +89,16 @@
 	font-weight: 500;
 }
 
+.cancel-timestamp {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: memo-red(600);
+	font-weight: 500;
+	font-size: font-size(smallest);
+	margin-top: -12px;
+
+	mat-icon {
+		margin-right: 4px;
+	}
+}

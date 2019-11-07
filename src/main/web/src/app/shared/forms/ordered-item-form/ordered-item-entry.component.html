@@ -65,7 +65,8 @@
 	<div class="options-container">
 		<div class="labelled-value right-aligned">
 			<span class="label">Status</span>
-			<span class="status {{orderToString(orderedItem?.status)}}">
+			<span class="status {{orderToString(orderedItem?.status)}}"
+				  [matTooltip]="orderedItem.lastCancelTimestamp ? (orderedItem.lastCancelTimestamp | dateFormat:'dd.MM.yyyy \'um\' HH:mm:SS'): ''">
 				{{orderToString(orderedItem?.status)}}
 			</span>
 		</div>

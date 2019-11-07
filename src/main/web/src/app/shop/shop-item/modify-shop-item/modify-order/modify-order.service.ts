@@ -10,11 +10,12 @@ import {Params, Router} from "@angular/router";
 import {User} from "../../../../shared/model/user";
 import {OrderedItemService} from "../../../../shared/services/api/ordered-item.service";
 import {processSequentially} from "../../../../util/observable-util";
-import {map, mergeMap} from "rxjs/operators";
+import {map, mergeMap, tap} from "rxjs/operators";
 import {isEdited} from "../../../../util/util";
 import {PaymentMethod} from "../../../checkout/payment/payment-method";
 import {BankAccount} from "../../../../shared/model/bank-account";
 import {setProperties} from "../../../../shared/model/util/base-object";
+import {OrderStatus} from "../../../../shared/model/order-status";
 
 @Injectable()
 export class ModifyOrderService {
@@ -48,6 +49,7 @@ export class ModifyOrderService {
 				private orderedItemService: OrderedItemService,
 				private router: Router,
 				private userService: UserService) {
+
 	}
 
 	initFromParams(params: Params) {
@@ -136,20 +138,33 @@ export class ModifyOrderService {
 
 		return processSequentially(
 			orderedItems.map(item => {
-				//only add routes that aren't already part of the system
+
+				//only add orders that aren't already part of the system
 				if (item.id >= 0) {
 					return this.orderedItemService.getById(item.id)
 						.pipe(
 							//but modify them in case they're different
-							mergeMap(prevAddress => isEdited(prevAddress, item, ["id"])
-								? this.orderedItemService.modify(item, user.id)
+							mergeMap(prevOrder => isEdited(prevOrder, item, ["id", "item", "discounts"])
+								? this.orderedItemService.modify({
+									...item,
+									//update cancel timestamp if status is modified to cancelled
+									lastCancelTimestamp: (prevOrder.status !== OrderStatus.CANCELLED && item.status === OrderStatus.CANCELLED)
+										? new Date()
+										: item.lastCancelTimestamp
+								}, user.id)
 								//otherwise don't do anything
-								: of(prevAddress)
+								: of(prevOrder)
 							)
 						);
 				}
 
-				return this.orderedItemService.add(item, user.id);
+				return this.orderedItemService.add({
+					...item,
+					//update cancel timestamp if status is created as cancelled
+					lastCancelTimestamp: (item.status === OrderStatus.CANCELLED)
+						? new Date()
+						: null
+				}, user.id);
 			})
 		);
 	}
@@ -179,27 +194,6 @@ export class ModifyOrderService {
 	 * @returns {Observable<Order>}
 	 */
 	getRequest(): Observable<Order> {
-		/*
-
-		"user": [undefined, {
-			validators: [Validators.required]
-		}],
-		"date": [undefined, {
-			validators: [Validators.required]
-		}],
-		"time": [undefined, {
-			validators: [Validators.required, Validators.pattern(/([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/i)]
-		}],
-		"method": [undefined, {
-			validators: [Validators.required]
-		}],
-		"items": [[], {
-			validators: [Validators.required]
-		}],
-		"bankAccount": [undefined, {
-			validators: []
-		}]
-		 */
 		const value = {...this.formGroup.value} as { user: User, date: Date, time: string, method: PaymentMethod, items: OrderedItem[], bankAccount: BankAccount }
 		let order: Order = setProperties(createOrder(), {
 			timeStamp: this.getDate(value.date, value.time),

@@ -11,6 +11,7 @@ export interface OrderedItem {
 	price: number,
 	status: OrderStatus,
 	discounts?: Discount[];
+	lastCancelTimestamp: Date;
 	size?: string,
 	color?: MerchColor,
 	isDriver?: boolean;

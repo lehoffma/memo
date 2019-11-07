@@ -102,6 +102,11 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 			modifiedItem.item = <any>modifiedItem.item.id;
 		}
 
+		//reset last cancel timestamp if order status has changed to non-cancelled
+		if(modifiedItem.status !== OrderStatus.CANCELLED){
+			modifiedItem.lastCancelTimestamp = null;
+		}
+
 		return this.http.put<AddOrModifyResponse>(this.baseUrl, {orderedItem: modifiedItem, user: userId}, {
 			headers: new HttpHeaders().set("Content-Type", "application/json")
 		})
@@ -235,6 +240,10 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 	 * @returns {Observable<Order>}
 	 */
 	changeStatusOfOrderItem(order: Order, item: OrderedItem, status: OrderStatus): Observable<Order> {
+		if(status === OrderStatus.CANCELLED){
+			item.lastCancelTimestamp = new Date();
+		}
+
 		return this.modify({
 			...item,
 			status
@@ -259,6 +268,9 @@ export class OrderedItemService extends ServletService<OrderedItem> {
 			items
 				.map(item => {
 					item.status = newStatus;
+					if(newStatus === OrderStatus.CANCELLED){
+						item.lastCancelTimestamp = new Date();
+					}
 					return item;
 				})
 				.map(item => this.modify(item, order.user))

@@ -20,5 +20,5 @@
 	</button>
 	<memo-ordered-item-input-form *ngIf="showNewItemForm && showInlineForm === -1"
 								  (onCancel)="showNewItemForm = false"
-								  (onSubmit)="updateItem($event, i); showNewItemForm = false"></memo-ordered-item-input-form>
+								  (onSubmit)="updateItem($event); showNewItemForm = false"></memo-ordered-item-input-form>
 </div>

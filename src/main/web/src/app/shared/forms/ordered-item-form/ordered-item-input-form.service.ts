@@ -14,6 +14,7 @@ export class OrderedItemInputFormService implements OnDestroy {
 
 	public addOrderedItemForm: FormGroup = this.formBuilder.group({
 		"id": [-1],
+		"lastCancelTimestamp": [undefined],
 		"item": [undefined, {
 			validators: [Validators.required]
 		}],
@@ -95,6 +96,7 @@ export class OrderedItemInputFormService implements OnDestroy {
 			name: orderedItem.name || "",
 			item: orderedItem.item,
 			description: orderedItem.description,
+			lastCancelTimestamp: orderedItem.lastCancelTimestamp || null,
 			price: orderedItem.price,
 			status: orderedItem.status,
 			size: orderedItem.size,

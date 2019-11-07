@@ -30,6 +30,8 @@ export class OrderItemStatusComponent implements OnInit {
 		this.statusData.Completed.tooltip,
 		this.statusData.Participated.tooltip
 	];
+	OrderStatus = OrderStatus;
+	@Input() cancelTimestamp: Date;
 
 
 	constructor() {
