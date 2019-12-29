@@ -7,7 +7,6 @@ import {take} from "rxjs/operators";
 export class SentryErrorHandlerService implements ErrorHandler {
 	constructor(private configService: AppConfigService) {
 		configService.config$.pipe(take(1)).subscribe(config => {
-			console.log(config);
 			Sentry.init({
 				dsn: config.sentryDsn,
 				release: config.sentryRelease,
