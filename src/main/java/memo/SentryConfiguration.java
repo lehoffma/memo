@@ -1,6 +1,7 @@
 package memo;
 
 import io.sentry.Sentry;
+import io.sentry.SentryClientFactory;
 import io.sentry.SentryOptions;
 
 import javax.annotation.PostConstruct;
@@ -14,7 +15,6 @@ public class SentryConfiguration {
     @PostConstruct
     public void startup() {
         //reads init value from SENTRY_DSN environment variable
-        //todo set stacktrace.app.packages
-//        Sentry.init();
+        Sentry.init();
     }
 }

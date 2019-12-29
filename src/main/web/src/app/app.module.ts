@@ -52,6 +52,7 @@ import {faFacebook, faFacebookF, faFacebookMessenger, faTelegramPlane, faTwitter
 import {SentryErrorHandlerService} from "./util/sentry-error-handler.service";
 
 import * as Sentry from '@sentry/browser';
+import {GlobalErrorHandlerService} from "./shared/utility/error-handling/global-error-handler.service";
 
 
 const cookieConfig: NgcCookieConsentConfig = {
@@ -165,9 +166,7 @@ registerLocaleData(localeDe);
 		{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
 		{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
 		{provide: MapsAPILoader, useClass: CustomMapsApiLoaderService},
-		//todo sentry
-		// {provide: ErrorHandler, useClass: SentryErrorHandlerService},
-		// {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
+		{provide: ErrorHandler, useClass: SentryErrorHandlerService}
 	]
 })
 export class AppModule {
