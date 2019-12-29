@@ -16,6 +16,7 @@ async function createReleaseAndUpload() {
 		console.log('Uploading source maps');
 		await cli.releases.uploadSourceMaps(release, {
 			include: ['src/main/webapp'],
+
             //todo
 			// urlPrefix: '~/',
 			rewrite: false,

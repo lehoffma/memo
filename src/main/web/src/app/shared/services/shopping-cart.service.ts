@@ -1,5 +1,5 @@
 import {Injectable, OnInit} from "@angular/core";
-import {EventType} from "../../shop/shared/model/event-type";
+import {EventType, getEventTypes, typeToInteger} from "../../shop/shared/model/event-type";
 import {ShoppingCartContent} from "../model/shopping-cart-content";
 import {ShoppingCartItem, ShoppingCartOption} from "../model/shopping-cart-item";
 import {MerchColor} from "../../shop/shared/model/merch-color";
@@ -102,7 +102,8 @@ export class ShoppingCartService implements OnInit {
 	 */
 	itemsAreEqual(itemA: ShoppingCartItem, itemB: ShoppingCartItem) {
 		const optionIsEqual = (optionA: ShoppingCartOption, optionB: ShoppingCartOption): boolean => {
-			return this.doesntExistOrIsEqual(optionA, optionB, "size") &&
+			return this.doesntExistOrIsEqual(optionA, optionB, "name") &&
+				this.doesntExistOrIsEqual(optionA, optionB, "size") &&
 				this.doesntExistOrIsEqual(optionA.color, optionB.color, "hex") &&
 				this.doesntExistOrIsEqual(optionA.color, optionB.color, "name");
 		};
@@ -213,6 +214,7 @@ export class ShoppingCartService implements OnInit {
 	 * @returns {ShoppingCartContent}
 	 */
 	private push(type: EventType, item: ShoppingCartItem, content: ShoppingCartContent) {
+
 		//Vergleicht ob das Objekt den gleichen inhalt hat.
 		let itemIndex = content[type].findIndex(cartItem => this.itemsAreEqual(cartItem, item));
 		//Wenn ja, wird die Anzahl angepasst
@@ -226,6 +228,18 @@ export class ShoppingCartService implements OnInit {
 		}
 		//wenn nein, wird das item hinzugefügt
 		else {
+			//if a new tour/party was pushed, the first name should be the username by default
+			// the rest will just be blank
+			if(item.item.type !== typeToInteger(EventType.merch)){
+				const user = this.loginService.currentUser();
+				if(!item.options || item.options.length === 0){
+					item.options.push({
+						name: ""
+					});
+				}
+				item.options[0].name = user.firstName + " " + user.surname;
+			}
+
 			content[type].push(item);
 		}
 		return content;

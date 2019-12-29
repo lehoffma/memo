@@ -28,6 +28,8 @@ public class WaitingListEntry {
     @JsonDeserialize(using = UserIdDeserializer.class)
     private User user;
 
+    private String name;
+
     private String size;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -98,6 +100,15 @@ public class WaitingListEntry {
 
     public WaitingListEntry setUser(User user) {
         this.user = user;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public WaitingListEntry setName(String name) {
+        this.name = name;
         return this;
     }
 }

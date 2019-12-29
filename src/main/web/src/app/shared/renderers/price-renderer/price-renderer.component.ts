@@ -80,7 +80,7 @@ export class PriceRendererComponent implements OnInit {
 	@Input() set discounts(discounts: Discount[]) {
 		this._discounts = discounts ? discounts : [];
 		//update the actual price value
-		this.price = this.price;
+		this.price = this._basePrice;
 	}
 
 	/**

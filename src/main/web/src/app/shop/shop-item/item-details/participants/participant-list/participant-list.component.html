@@ -42,6 +42,7 @@
 								[columns]="columns"
 								[displayedColumns]="displayedColumns$ | async"
 								[permissions]="participantListService.permissions$ | async"
+								[sortConfiguration]="sortConfiguration"
 								(onAction)="participantListService.handleTableAction($event)"
 								emptyStateIcon="person"
 								emptyStateHeader="Keine Teilnehmer"

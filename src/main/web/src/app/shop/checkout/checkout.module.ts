@@ -12,6 +12,8 @@ import {UserModule} from "../../user/user.module";
 import {SharedCheckoutModule} from "./shared-checkout.module";
 import {RadioSelectionModule} from "../../shared/utility/radio-selection/radio-selection.module";
 import {DataContainerModule} from "../../shared/utility/data-container/data-container.module";
+import {NameChangeDialogComponent} from "./cart/name-change-dialog/name-change-dialog.component";
+import {FlexLayoutModule} from "@angular/flex-layout";
 
 @NgModule({
 	imports: [
@@ -26,14 +28,19 @@ import {DataContainerModule} from "../../shared/utility/data-container/data-cont
 		SignUpModule,
 		SharedCheckoutModule,
 		RadioSelectionModule,
-		DataContainerModule
+		DataContainerModule,
+		FlexLayoutModule
 	],
 	declarations: [
 		routedComponents,
 		CartEntryComponent,
 		PaymentComponent,
+		NameChangeDialogComponent,
 	],
-	exports: []
+	exports: [],
+	entryComponents: [
+		NameChangeDialogComponent
+	]
 })
 export class CheckoutModule {
 }

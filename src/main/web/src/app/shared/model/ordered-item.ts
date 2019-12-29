@@ -5,11 +5,13 @@ import {Discount} from "../renderers/price-renderer/discount";
 
 export interface OrderedItem {
 	id: number,
+	name?: string;
 	item: Event,
 	description: string,
 	price: number,
 	status: OrderStatus,
 	discounts?: Discount[];
+	lastCancelTimestamp: Date;
 	size?: string,
 	color?: MerchColor,
 	isDriver?: boolean;

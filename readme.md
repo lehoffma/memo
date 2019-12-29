@@ -22,6 +22,8 @@ The shop can be found at [shop.meilenwoelfe.de](https://shop.meilenwoelfe.de). G
 
 <b>Backend</b>
 - JavaEE
+- Docker
+- Sentry
 
 Deployment is managed via [Docker](https://www.docker.com/) and [Github Actions](https://github.com/lehoffma/memo/actions).
 
@@ -39,5 +41,6 @@ The development for the website was started in early 2017, originally as a team 
 Otto-von-Guericke University in Magdeburg.
 Following the official launch in the summer of 2018, the Meilenshop has since become the standard way for people to find 
 out about upcoming Meilenwölfe tours, events and even merchandise.
+
 
 

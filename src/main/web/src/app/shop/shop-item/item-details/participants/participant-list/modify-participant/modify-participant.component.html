@@ -11,8 +11,19 @@
 			<div>
 				<memo-user-autocomplete [required]="true" [resetOnSelect]="false"
 										[user]="entry.user"
-										(userChanged)="entry.user = $event"></memo-user-autocomplete>
+										(userChanged)="entry.user = $event; updateName()"></memo-user-autocomplete>
 			</div>
+
+			<div class="form-input-container">
+				<div class="form-label">Name</div>
+				<mat-form-field appearance="outline" class="small-outline-formfield">
+					<input matInput name="name" [(ngModel)]="entry.name"/>
+					<mat-error *ngIf="entry.name?.length === 0" align="end">
+						Bitte gib einen Namen ein.
+					</mat-error>
+				</mat-form-field>
+			</div>
+
 			<div class="form-input-container" *ngIf="data.editingParticipant">
 				<div class="form-label">Status</div>
 				<mat-form-field appearance="outline" class="small-outline-formfield">

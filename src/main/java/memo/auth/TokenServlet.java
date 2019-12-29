@@ -1,6 +1,7 @@
 package memo.auth;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import memo.data.UserRepository;
@@ -83,7 +84,12 @@ public class TokenServlet {
             logger.trace("Issued a new refresh token: for email: " + email);
             return new MapBuilder<String, String>()
                     .buildPut("refresh_token", newlyRefreshedToken);
-        } catch (Exception e) {
+        }
+        catch (ExpiredJwtException e) {
+            logger.info("JWT is expired: " + e.getMessage());
+            throw new WebApplicationException(Response.Status.BAD_REQUEST);
+        }
+        catch (Exception e) {
             logger.error("Could not refresh refreshToken", e);
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
         }

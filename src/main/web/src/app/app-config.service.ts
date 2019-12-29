@@ -7,6 +7,7 @@ export interface AppConfig {
 	mapsApiKey: string;
 	analyticsKey: string;
 	sentryDsn: string;
+	sentryRelease: string;
 }
 
 export function getAppConfig(): Promise<AppConfig> {
@@ -14,17 +15,20 @@ export function getAppConfig(): Promise<AppConfig> {
 	if (environment.GOOGLE_ANALYTICS_KEY !== "{GOOGLE_ANALYTICS_KEY}"
 		&& environment.GOOGLE_MAPS_API_KEY !== "{GOOGLE_MAPS_API_KEY}"
 		&& environment.SENTRY_DSN !== "{SENTRY_DSN}"
+		&& environment.SENTRY_RELEASE !== "{SENTRY_RELEASE}"
 
 	) {
 		const analyticsKey = environment.GOOGLE_ANALYTICS_KEY;
 		const mapsApiKey = environment.GOOGLE_MAPS_API_KEY;
 		const sentryDsn = environment.SENTRY_DSN;
+		const sentryRelease = environment.SENTRY_RELEASE;
 
 		if (mapsApiKey && analyticsKey) {
 			return Promise.resolve({
 				analyticsKey,
 				mapsApiKey,
-				sentryDsn
+				sentryDsn,
+				sentryRelease
 			} as AppConfig)
 		}
 	}

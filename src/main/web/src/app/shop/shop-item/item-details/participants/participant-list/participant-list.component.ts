@@ -81,7 +81,16 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 	columns$: Observable<TableColumn<ParticipantUser>[]> = this.participantListService.eventInfo$.pipe(
 		map(eventInfo => {
 			let columns: TableColumn<ParticipantUser>[] = [
-				{columnDef: "name", header: "Name", cell: element => element.user.firstName + " " + element.user.surname},
+				{
+					columnDef: "user",
+					header: "Bestellt von",
+					cell: element => element.user.firstName + " " + element.user.surname
+				},
+				{
+					columnDef: "name",
+					header: "Name",
+					cell: element => element.name || "-/-"
+				},
 				{columnDef: "status", header: "Status", cell: element => orderStatusToString(element.status)}
 			];
 			if (eventInfo.eventType === EventType.tours) {
@@ -153,6 +162,11 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 	@ViewChild("participantsTable", {static: false}) participantsTable: ExpandableMaterialTableComponent<ParticipantUser>;
 
 	private bulkEditDialogOptions: BatchModifyParticipantOptions[];
+
+
+	sortConfiguration = {
+		user: false
+	};
 
 	onDestroy$ = new Subject();
 

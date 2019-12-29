@@ -20,6 +20,15 @@
 	</button>
 </div>
 
+
+<div class="options-container">
+	<div class="labelled-value">
+		<span class="label">Name</span>
+		<span *ngIf="orderedItem.name">{{orderedItem.name }}</span>
+		<span *ngIf="!orderedItem.name" class="no-description">-/-</span>
+	</div>
+</div>
+
 <div class="options-container">
 	<div class="labelled-value">
 		<span class="label">Beschreibung</span>
@@ -56,7 +65,8 @@
 	<div class="options-container">
 		<div class="labelled-value right-aligned">
 			<span class="label">Status</span>
-			<span class="status {{orderToString(orderedItem?.status)}}">
+			<span class="status {{orderToString(orderedItem?.status)}}"
+				  [matTooltip]="orderedItem.lastCancelTimestamp ? (orderedItem.lastCancelTimestamp | dateFormat:'dd.MM.yyyy \'um\' HH:mm:SS'): ''">
 				{{orderToString(orderedItem?.status)}}
 			</span>
 		</div>

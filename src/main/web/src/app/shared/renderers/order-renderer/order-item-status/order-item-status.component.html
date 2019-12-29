@@ -19,3 +19,7 @@
 <div class="status" [matTooltip]="status.tooltip">
 	{{status.label}}
 </div>
+<div class="cancel-timestamp" *ngIf="cancelTimestamp && status.value === OrderStatus.CANCELLED">
+	<mat-icon [inline]="true">date_range</mat-icon>
+	<span>{{cancelTimestamp | dateFormat:"dd.MM.yyyy 'um' HH:mm:SS"}}</span>
+</div>

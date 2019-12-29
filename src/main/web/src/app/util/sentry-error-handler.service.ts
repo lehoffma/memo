@@ -8,10 +8,10 @@ export class SentryErrorHandlerService implements ErrorHandler {
 	constructor(private configService: AppConfigService) {
 		configService.config$.pipe(take(1)).subscribe(config => {
 			Sentry.init({
-				dsn: config.sentryDsn
+				dsn: config.sentryDsn,
+				release: config.sentryRelease,
 			});
 
-			throw new Error("Javascript error test");
 		})
 	}
 

@@ -27,6 +27,12 @@
 	}
 }
 
+.no-value {
+	font-size: font-size(smaller);
+	color: grey(600);
+	font-style: italic;
+}
+
 .label {
 	color: grey(600);
 	font-size: font-size(smallest);

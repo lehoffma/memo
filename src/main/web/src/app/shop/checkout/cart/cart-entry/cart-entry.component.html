@@ -31,11 +31,10 @@
 		<!--<mat-icon mat-icon-button (click)="deleteItem()">close</mat-icon>-->
 	</div>
 </div>
-<div *ngIf="itemIsTour(cartItem.item)" class="participants-container">
+<div *ngIf="!itemIsMerch(cartItem.item)" class="participants-container">
 	<memo-cart-tour-participant
 		*ngFor="let option of cartItem.options; let i = index"
 		[index]="i + 1"
-		[name]="'Teilnehmer'"
 		[(option)]="cartItem.options[i]"
 		(onRemove)="deleteOption(i)"
 	>

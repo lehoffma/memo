@@ -11,6 +11,7 @@ import memo.serialization.ShopItemIdDeserializer;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,6 +83,10 @@ public class OrderedItem implements Serializable {
     private String description;
 
     private String size;
+
+    private String name;
+
+    private java.sql.Timestamp lastCancelTimestamp;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
@@ -194,6 +199,24 @@ public class OrderedItem implements Serializable {
 
     public OrderedItem setDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public OrderedItem setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Timestamp getLastCancelTimestamp() {
+        return lastCancelTimestamp;
+    }
+
+    public OrderedItem setLastCancelTimestamp(Timestamp lastCancelTimestamp) {
+        this.lastCancelTimestamp = lastCancelTimestamp;
         return this;
     }
 
