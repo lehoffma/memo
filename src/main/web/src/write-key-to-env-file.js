@@ -2,6 +2,7 @@ const replace = require('replace-in-file');
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 const GOOGLE_ANALYTICS_KEY = process.env.GOOGLE_ANALYTICS_KEY;
 const SENTRY_DSN = process.env.SENTRY_DSN;
+const SENTRY_RELEASE = process.env.GITHUB_SHA;
 
 //this script writes the maps/analytics api keys from the CI environment to the environment files so we can use them
 //in the app
@@ -24,6 +25,13 @@ try {
 		files: 'src/environments/*.ts',
 		from: /{SENTRY_DSN}/g,
 		to: SENTRY_DSN,
+		allowEmptyPaths: false,
+	}));
+
+	changedFiles.push(...replace.sync({
+		files: 'src/environments/*.ts',
+		from: /{SENTRY_RELEASE}/g,
+		to: SENTRY_RELEASE,
 		allowEmptyPaths: false,
 	}));
 
