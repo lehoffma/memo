@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, OnInit, TemplateRef, ViewChild} from "@angular/core";
-import {catchError, map, startWith} from "rxjs/operators";
+import {AfterViewInit, ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild} from "@angular/core";
+import {catchError, map, startWith, takeUntil} from "rxjs/operators";
 import {RowAction, TableAction} from "../../../../../../shared/utility/material-table/util/row-action";
 import {
 	ExpandableMaterialTableComponent,
@@ -14,7 +14,7 @@ import {EventType} from "../../../../../shared/model/event-type";
 import {Filter} from "../../../../../../shared/model/api/filter";
 import {WaitingListUser} from "../../../../../shared/model/waiting-list";
 import {ActivatedRoute} from "@angular/router";
-import {combineLatest, Observable, of} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, of} from "rxjs";
 import {ParticipantListOption} from "../participants-category-selection/participants-category-selection.component";
 import {UserActionsService} from "../../../../../../shared/services/user-actions.service";
 import {
@@ -28,6 +28,7 @@ import {WaitingListService} from "../../../../../../shared/services/api/waiting-
 import {ParticipantListService} from "../participant-list.service";
 import {RowActionType} from "../../../../../../shared/utility/material-table/util/row-action-type";
 import {ErrorHandlingService} from "../../../../../../shared/error-handling/error-handling.service";
+import {DestroyableComponent} from "../../../../../../util/destroyable.component";
 
 @Component({
 	selector: "memo-waiting-list",
@@ -37,7 +38,7 @@ import {ErrorHandlingService} from "../../../../../../shared/error-handling/erro
 		WaitingListTableService
 	]
 })
-export class WaitingListComponent implements OnInit, AfterViewInit {
+export class WaitingListComponent extends DestroyableComponent implements OnInit, AfterViewInit {
 	rowActions$: Observable<RowAction<WaitingListUser>[]> = this.userActionsService.getUserActions<WaitingListUser>(
 		T => T.user,
 		true,
@@ -62,7 +63,7 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 		})
 	);
 
-	selectedActions: TableAction<WaitingListUser>[] = [];
+	selectedActions$: BehaviorSubject<TableAction<WaitingListUser>[]> = new BehaviorSubject([]);
 
 	@ViewChild("bulkEditingMenu", {static: true}) bulkEditingMenu: any;
 
@@ -125,8 +126,10 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 				private errorHandlingService: ErrorHandlingService,
 				private snackBar: MatSnackBar,
 				private activatedRoute: ActivatedRoute,
+				private cdRef: ChangeDetectorRef,
 				public breakpointObserver: BreakpointObserver,
 				public userService: UserService) {
+		super();
 		this.waitingListTableService.dataSource = this.dataSource;
 	}
 
@@ -174,7 +177,7 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 	}
 
 	ngAfterViewInit(): void {
-		this.selectedActions = [
+		this.selectedActions$.next([
 			{
 				name: "editMultiple",
 				label: "",
@@ -183,7 +186,15 @@ export class WaitingListComponent implements OnInit, AfterViewInit {
 				menu: this.bulkEditingMenu,
 				tooltip: "Batchbearbeitung"
 			}
-		];
+		]);
+
+
+		this.dataSource.isLoading$.pipe(takeUntil(this.onDestroy$))
+			.subscribe(it =>
+				setTimeout(() => {
+					this.cdRef.detectChanges()
+				}, 50)
+			);
 
 
 		this.batchEditOptions = [

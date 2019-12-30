@@ -62,7 +62,7 @@
 			<memo-participants [participants]="participants$ | async"
 							   [type]="item.type"
 							   [isAllowedToSeeMetaInfo]="!!(participantsLink$ | async)"
-							   [canCheckIn]="(permissions$ | async).checkIn"
+							   [canCheckIn]="(permissions$ | async)?.checkIn"
 							   (shareEvent)="openShareDialog()"
 							   (toRegistration)="scrollToId('info')"
 							   content></memo-participants>
