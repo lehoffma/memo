@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, HostBinding, Input, OnDestroy, OnInit, TemplateRef, ViewChild} from "@angular/core";
+import {AfterViewInit, ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, TemplateRef, ViewChild} from "@angular/core";
 import {ParticipantUser} from "../../../../shared/model/participant";
 import {ParticipantListService} from "./participant-list.service";
 import {RowAction, TableAction} from "../../../../../shared/utility/material-table/util/row-action";
@@ -13,7 +13,7 @@ import {ResponsiveColumnsHelper} from "../../../../../shared/utility/material-ta
 import {BreakpointObserver} from "@angular/cdk/layout";
 import {Filter} from "../../../../../shared/model/api/filter";
 import {EventType} from "../../../../shared/model/event-type";
-import {combineLatest, Observable, Subject} from "rxjs";
+import {BehaviorSubject, combineLatest, Observable, Subject} from "rxjs";
 import {ParticipantListOption} from "./participants-category-selection/participants-category-selection.component";
 import {EventService} from "../../../../../shared/services/api/event.service";
 import {FormControl, Validators} from "@angular/forms";
@@ -74,7 +74,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 		})
 	);
 
-	selectedActions: TableAction<ParticipantUser>[] = [];
+	selectedActions$: BehaviorSubject<TableAction<ParticipantUser>[]> = new BehaviorSubject([]);
 
 	@ViewChild("bulkEditingMenu", {static: true}) bulkEditingMenu: any;
 
@@ -180,6 +180,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 				private eventService: EventService,
 				private participantsOverviewService: ParticipantsOverviewService,
 				private snackBar: MatSnackBar,
+				private cdRef: ChangeDetectorRef,
 				private router: Router,
 				private activatedRoute: ActivatedRoute,
 				public userService: UserService) {
@@ -191,7 +192,8 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 
 					this.router.navigate([], {queryParams: {showCancelled}, queryParamsHandling: "merge"})
 				}
-			})
+			});
+
 	}
 
 	ngOnInit() {
@@ -221,7 +223,15 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 	}
 
 	ngAfterViewInit(): void {
-		this.selectedActions = [
+
+		this.dataSource.isLoading$.pipe(takeUntil(this.onDestroy$))
+			.subscribe(it =>
+				setTimeout(() => {
+					this.cdRef.detectChanges()
+				}, 50)
+			);
+
+		this.selectedActions$.next([
 			{
 				name: "editMultiple",
 				label: "",
@@ -230,7 +240,7 @@ export class ParticipantListComponent implements OnInit, AfterViewInit, OnDestro
 				menu: this.bulkEditingMenu,
 				tooltip: "Batchbearbeitung",
 			}
-		];
+		]);
 
 		this.bulkEditDialogOptions = [
 			{

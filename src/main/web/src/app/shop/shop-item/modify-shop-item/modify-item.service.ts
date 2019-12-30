@@ -425,7 +425,7 @@ export class ModifyItemService {
 		request
 			.subscribe(
 				(result: ShopItem) => {
-					const isNewItem = (!this || !this.eventType && !this.eventId);
+					const isNewItem = !(this.previousValue || this.previousStock);
 					const snackBarMessage = isNewItem ? "Item wurde erfolgreich erstellt" : "Änderungen wurden erfolgreich gespeichert";
 					this.matSnackBar.open(snackBarMessage, "OK",
 						{

@@ -3,7 +3,7 @@
 								[dataService]="waitingListUserService"
 								[filter$]="filter$"
 								[rowActions]="rowActions$ | async"
-								[selectedActions]="selectedActions"
+								[selectedActions]="selectedActions$ | async"
 								[title]="'Warteliste'"
 								[columns]="columns"
 								[displayedColumns]="displayedColumns$ | async"

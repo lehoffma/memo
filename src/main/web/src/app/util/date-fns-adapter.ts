@@ -109,7 +109,6 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 	}
 
 	getDate(date: Date): number {
-		console.log(date);
 		return getDate(date);
 	}
 
@@ -168,22 +167,7 @@ export class DateFnsAdapter extends DateAdapter<Date> {
 	}
 
 	parse(value: any, parseFormat: any): Date | null {
-		//todo use previous version if this one doesn't work
 		return parse(value, parseFormat, new Date());
-
-		// const dateFormatRegex = /[\d]{2}\.[\d]{2}\.[\d]{2,4}/;
-		// //todo: update once calendar updates to v2 of date-fns..
-		// let date = null;
-		// if (dateFormatRegex.test(value)) {
-		// 	const parts = value.match(/(\d+)/g);
-		// 	// note parts[1]-1
-		// 	date = new Date(parts[2], parts[1] - 1, parts[0]);
-		// }
-		// if (ISO_8601_REGEX.test(value)) {
-		// 	date = parse(value);
-		// }
-		//
-		// return date;
 	}
 
 	toIso8601(date: Date): string {
