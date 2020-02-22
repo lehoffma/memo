@@ -89,7 +89,7 @@ jobs:
           name: meilenshop/shop
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          dockerfile: Dockerfile-arm32v7
+          dockerfile: Dockerfile.staging
           snapshot: true
 
 

@@ -1,5 +1,5 @@
 # todo java 11
-FROM arm32v7/tomee:8-jre-7.1.0-plus
+FROM tomee:8-jre-7.1.0-plus
 
 RUN rm -rf /usr/local/tomee/webapps/ROOT/
 RUN rm -f /usr/local/tomee/webapps/ROOT.war
@@ -9,7 +9,7 @@ ADD server.xml /usr/local/tomee/conf/
 ADD tomcat-users.xml /usr/local/tomee/conf/
 ADD settings.xml /usr/local/tomee/conf/
 
-ADD setenv-arm32v7.sh /usr/local/tomee/bin/setenv.sh
+ADD setenv.sh /usr/local/tomee/bin/setenv.sh
 
 ENV EMAIL_HOST {EMAIL_HOST}
 ENV EMAIL_USER {EMAIL_HOST}
