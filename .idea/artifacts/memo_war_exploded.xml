@@ -54,8 +54,8 @@
           <element id="library" level="project" name="Maven: org.mindrot:jbcrypt:0.4" />
           <element id="library" level="project" name="Maven: org.apache.commons:commons-lang3:3.7" />
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.6" />
-          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.11.0" />
-          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.11.0" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.15.0" />
+          <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.15.0" />
           <element id="library" level="project" name="Maven: io.sentry:sentry-log4j2:1.7.27" />
           <element id="library" level="project" name="Maven: io.sentry:sentry:1.7.27" />
           <element id="library" level="project" name="Maven: javax.mail:javax.mail-api:1.6.1" />
