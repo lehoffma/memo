@@ -44,7 +44,7 @@ export abstract class ServletService<T> extends CachedService<T> implements Serv
 			.pipe(
 				mergeMap(json => {
 					if (json.empty) {
-						throwError(new Error("ID doesn't exist"));
+						throw new Error("ID doesn't exist");
 					}
 					return this.jsonToObservable(json.content[0])
 				})

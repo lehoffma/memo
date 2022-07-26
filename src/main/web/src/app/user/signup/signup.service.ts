@@ -221,7 +221,7 @@ export class SignUpService {
 							this.submittingFinalUser = false;
 						}
 						else {
-							throwError(new Error());
+							throw new Error();
 						}
 					}),
 					catchError(error => {
